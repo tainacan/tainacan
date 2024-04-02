@@ -240,10 +240,10 @@ export default class CollectionsModal extends React.Component {
                                     )
                                 }                                                
                                 </ul>
-                                { this.state.isLoadingCollections ? <div class="spinner-container"><Spinner /></div> : null }
+                                { this.state.isLoadingCollections ? <div className="spinner-container"><Spinner /></div> : null }
                             </div>
                         )
-                        : this.state.isLoadingCollections ? <div class="spinner-container"><Spinner /></div> :
+                        : this.state.isLoadingCollections ? <div className="spinner-container"><Spinner /></div> :
                         <div className="modal-loadmore-section">
                             <p>{ __('Sorry, no collections found.', 'tainacan') }</p>
                         </div>
@@ -271,7 +271,7 @@ export default class CollectionsModal extends React.Component {
                                     </li>
                                 )
                             } 
-                            { this.state.isLoadingCollections ? <div class="spinner-container"><Spinner /></div> : null }                                               
+                            { this.state.isLoadingCollections ? <div className="spinner-container"><Spinner /></div> : null }                                               
                             </ul>
                             <div className="modal-loadmore-section">
                                 <p>{ __('Showing', 'tainacan') + " " + this.state.modalCollections.length + " " + __('of', 'tainacan') + " " + this.state.totalModalCollections + " " + __('collections', 'tainacan') + "."}</p>

@@ -215,7 +215,7 @@ export default class ParentTermModal extends React.Component {
                         <div>
                             <div className="modal-radio-list">
                                 
-                                <p class="modal-radio-area-label">{__('Non specific term', 'tainacan')}</p>
+                                <p className="modal-radio-area-label">{__('Non specific term', 'tainacan')}</p>
                                 <RadioControl
                                     className={'repository-radio-option'}
                                     selected={ this.state.temporaryFacetId != null ? this.state.temporaryFacetId : ''}
@@ -227,7 +227,7 @@ export default class ParentTermModal extends React.Component {
                                         this.setState({ temporaryFacetId: aFacetId});
                                     } } />
                                 <hr/>
-                                <p class="modal-radio-area-label">{__('Terms', 'tainacan')}</p>
+                                <p className="modal-radio-area-label">{__('Terms', 'tainacan')}</p>
                                 <RadioControl
                                     selected={ this.state.temporaryFacetId }
                                     options={

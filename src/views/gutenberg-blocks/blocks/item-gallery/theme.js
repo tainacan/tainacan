@@ -282,13 +282,13 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                                 (item.title.description && !self.options.hide_media_description)
                             )
                         ) {
-                            innerHTML += '<div class="pswp__caption-inner">';
+                            innerHTML += '<div className="pswp__caption-inner">';
                             
                             if (item.title.caption && !self.options.hide_media_caption)
-                                innerHTML += '<span class="pswp__figure_caption">' + item.title.caption.innerHTML + '</span>';
+                                innerHTML += '<span className="pswp__figure_caption">' + item.title.caption.innerHTML + '</span>';
 
                             if (item.title.description && !self.options.hide_media_description)
-                                innerHTML += '<span class="pswp__description">' + item.title.description.innerHTML + '</span>';
+                                innerHTML += '<span className="pswp__description">' + item.title.description.innerHTML + '</span>';
                             
                             innerHTML += '</div>';
                         }

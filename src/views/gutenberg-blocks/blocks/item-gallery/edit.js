@@ -383,7 +383,7 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
             
             {  itemId || templateMode ? (
                 <div className={ 'item-gallery-edit-container' }>
-                    <div class="preview-warning">{__('Warning: this is just a demonstration. To see the gallery in action, either preview or publish your post.', 'tainacan') }</div>
+                    <div className="preview-warning">{__('Warning: this is just a demonstration. To see the gallery in action, either preview or publish your post.', 'tainacan') }</div>
                     <ServerSideRender
                         block="tainacan/item-gallery"
                         attributes={ attributes }

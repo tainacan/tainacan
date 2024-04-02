@@ -325,10 +325,10 @@ export default class TermModal extends React.Component {
                                         } } />    
                                 }                                                
                                 </ul>
-                                { this.state.isLoadingTerms ? <div class="spinner-container"><Spinner /></div> : null }
+                                { this.state.isLoadingTerms ? <div className="spinner-container"><Spinner /></div> : null }
                             </div>
                         )
-                        : this.state.isLoadingTerms ? <div class="spinner-container"><Spinner /></div> :
+                        : this.state.isLoadingTerms ? <div className="spinner-container"><Spinner /></div> :
                         <div className="modal-loadmore-section">
                             <p>{ __('Sorry, no terms found.', 'tainacan') }</p>
                         </div>
@@ -350,7 +350,7 @@ export default class TermModal extends React.Component {
                                     } } />    
                             }                                                
                             </ul>
-                            { this.state.isLoadingTerms ? <div class="spinner-container"><Spinner /></div> : null }
+                            { this.state.isLoadingTerms ? <div className="spinner-container"><Spinner /></div> : null }
                             <div className="modal-loadmore-section">
                                 <p>{ __('Showing', 'tainacan') + " " + this.state.modalTerms.length + " " + __('of', 'tainacan') + " " + this.state.totalModalTerms + " " + __('terms', 'tainacan') + "."}</p>
                                 {
@@ -365,7 +365,7 @@ export default class TermModal extends React.Component {
                                 }
                             </div>
                         </div>
-                    ) : this.state.isLoadingTerms ? <div class="spinner-container"><Spinner /></div> :
+                    ) : this.state.isLoadingTerms ? <div className="spinner-container"><Spinner /></div> :
                     <div className="modal-loadmore-section">
                         <p>{ __('Sorry, no terms found.', 'tainacan') }</p>
                     </div>
@@ -448,7 +448,7 @@ export default class TermModal extends React.Component {
                             </div>
                         ) :
                         this.state.isLoadingTaxonomies ? (
-                            <div class="spinner-container"><Spinner /></div>
+                            <div className="spinner-container"><Spinner /></div>
                         ) :
                         <div className="modal-loadmore-section">
                             <p>{ __('Sorry, no taxonomy found.', 'tainacan') }</p>
@@ -485,7 +485,7 @@ export default class TermModal extends React.Component {
                                 }
                             </div>
                         </div>
-                    ) : this.state.isLoadingTaxonomies ? <div class="spinner-container"><Spinner /></div> :
+                    ) : this.state.isLoadingTaxonomies ? <div className="spinner-container"><Spinner /></div> :
                     <div className="modal-loadmore-section">
                         <p>{ __('Sorry, no taxonomy found.', 'tainacan') }</p>
                     </div>

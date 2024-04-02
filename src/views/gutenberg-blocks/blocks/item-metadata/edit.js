@@ -293,7 +293,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
             }
 
             { isLoading ? 
-                <div class="spinner-container">
+                <div className="spinner-container">
                     <Spinner />
                 </div> :
                 <div className={ 'item-metadata-edit-container' }>

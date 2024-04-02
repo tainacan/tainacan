@@ -1,5 +1,5 @@
 const { __ } = wp.i18n;
-
+const { useEffect } = wp.element;
 const { useBlockProps, BlockControls, AlignmentControl } = wp.blockEditor;
 
 export default function ({ attributes, setAttributes, context }) {
@@ -24,8 +24,10 @@ export default function ({ attributes, setAttributes, context }) {
     if (context['tainacan/metadataSectionDescription'])
         sectionDescription = context['tainacan/metadataSectionDescription'];
 
-    if ( context['tainacan/metadataSectionId'] || context['tainacan/metadataSectionDescription'] )
-        setAttributes({ sectionId, sectionDescription });
+    useEffect(() => {
+        if ( context['tainacan/metadataSectionId'] || context['tainacan/metadataSectionDescription'] )
+            setAttributes({ sectionId, sectionDescription });
+    }, [ context ]);
 
     return <>
             <BlockControls group="block">

@@ -353,7 +353,7 @@ export default class CollectionModal extends React.Component {
                                 }
                             </div>
                         </div>
-                    ) : this.state.isLoadingCollections ? <div class="spinner-container"><Spinner /></div> :
+                    ) : this.state.isLoadingCollections ? <div className="spinner-container"><Spinner /></div> :
                     <div className="modal-loadmore-section">
                         <p>{ __('Sorry, no collection found.', 'tainacan') }</p>
                     </div>

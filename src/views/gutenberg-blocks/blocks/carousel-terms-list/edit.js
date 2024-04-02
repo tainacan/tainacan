@@ -89,7 +89,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                     id={ isNaN(term.id) ? term.id : 'term-id-' + term.id }
                     href={ term.url }>
                     { ( !showTermThumbnail && Array.isArray(termItems) ) ?
-                        <div class="term-items-grid">
+                        <div className="term-items-grid">
                             <img
                                 src={ termItems[0] ? thumbHelper.getSrc(termItems[0]['thumbnail'], 'tainacan-medium', termItems[0]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                 srcSet={ termItems[0] ? thumbHelper.getSrcSet(termItems[0]['thumbnail'], 'tainacan-medium', termItems[0]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
@@ -433,12 +433,12 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
             }
 
             { isLoading ?
-                <div class="spinner-container">
+                <div className="spinner-container">
                     <Spinner />
                 </div> :
                 <div>
                     { isSelected && terms.length ?
-                        <div class="preview-warning">{__('Warning: this is just a demonstration. To see the carousel in action, either preview or publish your post.', 'tainacan')}</div>
+                        <div className="preview-warning">{__('Warning: this is just a demonstration. To see the carousel in action, either preview or publish your post.', 'tainacan')}</div>
                         : null
                     }
                     {  terms.length ? (
@@ -454,7 +454,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                                 </ul>
                             </div>
                             <button
-                                    class="swiper-button-prev"
+                                    className="swiper-button-prev"
                                     slot="button-prev"
                                     style={{ cursor: 'not-allowed' }}>
                                 <svg
@@ -473,7 +473,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                                 </svg>
                             </button>
                             <button
-                                    class="swiper-button-next"
+                                    className="swiper-button-next"
                                     slot="button-next"
                                     style={{ cursor: 'not-allowed' }}>
                                 <svg
