@@ -230,14 +230,12 @@ export default {
         }
     },
     computed: {
-        metadatumMappers() {
-            return this.getMetadatumMappers();
-        },
+        ...mapGetters('metadata', {
+            'metadatumMappers': 'getMetadatumMappers',
+            'activeMetadatumList': 'getMetadata'
+        }),
         isNewMetadataMapperMetadataDisabled() {
             return !this.newMetadataLabel || !this.newMetadataUri;
-        },
-        activeMetadatumList() { 
-            return this.getMetadata();
         }
     },
     mounted() {
@@ -276,10 +274,6 @@ export default {
             'cleanMetadata',
             'fetchMetadatumMappers',
             'updateMetadataMapperMetadata',
-        ]),
-        ...mapGetters('metadata',[
-            'getMetadatumMappers',
-            'getMetadata'
         ]),
         loadMetadataMappers() {
             this.isLoadingMetadatumMappers = true;

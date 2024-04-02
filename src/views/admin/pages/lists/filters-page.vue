@@ -537,6 +537,9 @@ export default {
         }
     },
     computed: {
+        ...mapGetters('collection', {
+            'collection': 'getCollection',
+        }),
         activeFiltersList: {
             get() {
                 return this.getFilters();
@@ -545,9 +548,6 @@ export default {
                 this.updateFilters(value);
             }
         },
-        collection() {
-            return this.getCollection();
-        }
     },
     watch: {
         '$route.query': {
@@ -624,17 +624,13 @@ export default {
             'moveFilterDown'
         ]),
         ...mapGetters('filter',[
-            'getFilters',
-            'getFilterTypes'
+            'getFilters'
         ]),
         ...mapActions('metadata', [
             'fetchMetadata',
         ]),
         ...mapGetters('metadata', [
             'getMetadata',
-        ]),
-        ...mapGetters('collection', [
-            'getCollection',
         ]),
         handleChangeOnFilter($event) {
             switch( $event.type ) {

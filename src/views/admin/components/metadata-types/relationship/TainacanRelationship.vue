@@ -175,9 +175,9 @@
             }
         },
         computed: {
-            collection() {
-                return this.getCollection();
-            },
+            ...mapGetters('collection', {
+                'collection': 'getCollection'
+            }),
             maxMultipleValues() {
                 return (
                     this.itemMetadatum &&
@@ -271,9 +271,6 @@
             }
         },
         methods: {
-            ...mapGetters('collection', [
-                'getCollection'
-            ]),
             onInput(newSelected) {
                 // First we reset the input
                 this.search('');

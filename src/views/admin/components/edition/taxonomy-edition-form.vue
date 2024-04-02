@@ -268,7 +268,7 @@
 <script>
     import { nextTick } from 'vue';
     import { permalinkGetter, formHooks } from "../../js/mixins";
-    import { mapActions, mapGetters } from 'vuex';
+    import { mapActions } from 'vuex';
     import TermsList from '../lists/terms-list.vue';
     import CustomDialog from '../other/custom-dialog.vue';
 
@@ -388,9 +388,6 @@
                 'updateTaxonomy',
                 'fetchTaxonomy',
                 'fetchOnlySlug'
-            ]),
-            ...mapGetters('taxonomy',[
-                'getTaxonomy',
             ]),
             onChangeTab(tab) {
                 this.tabIndex = tab;

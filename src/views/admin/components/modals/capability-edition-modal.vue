@@ -110,9 +110,9 @@ export default {
         }
     },
     computed: {
-        roles() {
-            return this.getRoles();
-        }
+        ...mapGetters('capability', {
+            'roles': 'getRoles',
+        })
     },
     created() {
         this.isLoading = true;
@@ -125,9 +125,6 @@ export default {
             'fetchRoles',
             'addCapabilityToRole',
             'removeCapabilityFromRole'
-        ]),
-        ...mapGetters('capability', [
-            'getRoles',
         ]),
         updateRole(role, value) {
             if (value)

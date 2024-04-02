@@ -830,14 +830,12 @@ export default {
         }
     },
     computed: {
+        ...mapGetters('item', {
+            'itemSubmission': 'getItemSubmission',
+            'itemSubmissionMetadata': 'getItemSubmissionMetadata',
+        }),
         showSteppedLayout() {
             return this.isLayoutSteps;
-        },
-        itemSubmission() {
-            return this.getItemSubmission();
-        },
-        itemSubmissionMetadata() {
-            return this.getItemSubmissionMetadata();
         },
         itemMetadata() {
 
@@ -976,10 +974,6 @@ export default {
             'submitItemSubmission',
             'finishItemSubmission',
             'clearItemSubmission'
-        ]),
-        ...mapGetters('item',[
-            'getItemSubmission',
-            'getItemSubmissionMetadata',
         ]),
         ...mapActions('metadata',[
             'fetchMetadata',

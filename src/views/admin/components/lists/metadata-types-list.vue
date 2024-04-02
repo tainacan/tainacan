@@ -10,7 +10,7 @@
                 {{ $i18n.get('label_available_metadata_types') }}
             </h3>
             <sortable 
-                    :list="availableMetadatumList"
+                    :list="availableMetadataTypes"
                     item-key="id"
                     :options="{
                         group: {
@@ -166,14 +166,9 @@ export default {
         }
     },
     computed: {
-        availableMetadatumList: {
-            get() {
-                return this.getMetadatumTypes();
-            },
-            set(value) {
-                return this.updateMetadatumTypes(value);
-            }
-        },
+        ...mapGetters('metadata', {
+            'availableMetadataTypes': 'getMetadatumTypes'
+        }),
     },
     mounted() {
 
@@ -191,9 +186,6 @@ export default {
     methods: {
         ...mapActions('metadata', [
             'fetchMetadatumTypes'
-        ]),
-        ...mapGetters('metadata',[
-            'getMetadatumTypes'
         ]),
         addMetadatumViaButton(metadatumType) {
             this.$emitter.emit('addMetadatumViaButton', metadatumType);

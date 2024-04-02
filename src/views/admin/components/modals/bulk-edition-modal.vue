@@ -367,9 +367,9 @@
             }
         },
         computed: {
-            metadata() {
-                return this.getMetadata();
-            }
+            ...mapGetters('metadata', {
+                'metadata': 'getMetadata'
+            })
         },
         created(){
             if (this.collectionId) {
@@ -435,9 +435,6 @@
             ]),
             ...mapActions('metadata', [
                 'fetchMetadata'
-            ]),
-            ...mapGetters('metadata', [
-                'getMetadata'
             ]),
             finalizeProcedure(criterion){
 

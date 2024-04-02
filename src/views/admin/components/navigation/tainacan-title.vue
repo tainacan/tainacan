@@ -72,14 +72,14 @@ export default {
         }
     },
     computed: {
+        ...mapGetters('collection', {
+            'collection': 'getCollection'
+        }),
         slotPassed() {
             const slots = useSlots();
             return !!slots['default'];
         },
-        collection() {
-            return this.getCollection();
-        },
-         collectionBreadCrumbItem() {
+        collectionBreadCrumbItem() {
             return { 
                 url: this.collection && this.collection.id ? this.$routerHelper.getCollectionPath(this.collection.id) : '',
                 name: this.collection && this.collection.name ? this.collection.name : ''
@@ -111,9 +111,6 @@ export default {
         this.$emitter.on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
     },
     methods: {
-        ...mapGetters('collection', [
-            'getCollection'
-        ]),
         collectionBreadCrumbUpdate(breadCrumbItems) {
             this.childrenBreadCrumbItems = breadCrumbItems;
         }

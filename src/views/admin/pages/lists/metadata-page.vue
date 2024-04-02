@@ -83,9 +83,9 @@ export default {
         }
     },
     computed: {
-        collection() {
-            return this.getCollection();
-        },
+        ...mapGetters('collection', {
+            'collection': 'getCollection'
+        }),
         repositoryTabLabel() {
             let label = this.$i18n.get('metadata');
             const metadata = this.getMetadata();
@@ -115,9 +115,6 @@ export default {
             this.$emitter.emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('metadata') }]);
     },
     methods: {
-        ...mapGetters('collection',[
-            'getCollection'
-        ]),
         ...mapGetters('metadata',[
             'getMetadatumTypes',
             'getMetadata',

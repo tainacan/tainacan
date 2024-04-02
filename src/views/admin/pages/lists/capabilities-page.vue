@@ -102,6 +102,9 @@
             }
         },
         computed: {
+            ...mapGetters('collection', {
+                'collection': 'getCollection'
+            }),
             capabilities() {
                 const capabilities = this.getCapabilities()
   
@@ -140,9 +143,6 @@
                 } else {
                     return []
                 }
-            },
-            collection() {
-                return this.getCollection();
             }
         },
         mounted() {
@@ -159,9 +159,6 @@
             ]),
             ...mapGetters('capability', [
                 'getCapabilities'
-            ]),
-            ...mapGetters('collection', [
-                'getCollection'
             ]),
             loadCapabilities() {
                 this.isLoading = true;

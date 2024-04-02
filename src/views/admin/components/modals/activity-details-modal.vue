@@ -593,9 +593,9 @@
             }
         },
         computed: {
-            activity() {
-                return this.getActivity();
-            },
+            ...mapGetters('activity', {
+                'activity': 'getActivity'
+            }),
             relatedToLink() {
                 switch(this.activity.object_type) {
                     case 'Tainacan\\Entities\\Collection':
@@ -650,9 +650,6 @@
         methods: {
             ...mapActions('activity', [
                 'fetchActivity'
-            ]),
-            ...mapGetters('activity', [
-                'getActivity'
             ]),
             approveActivity(){
                 this.$emit('approveActivity', this.activity.id);

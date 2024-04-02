@@ -92,9 +92,9 @@
             }
         },
         computed: {
-            facetsFromItemSearch() {
-                return this.getFacets();
-            }
+            ...mapGetters('search', {
+                'facetsFromItemSearch': 'getFacets'
+            }),
         },
         watch: {
             selected: {
@@ -147,9 +147,6 @@
             this.$eventBusSearchEmitter.off('hasToReloadFacets', this.reloadOptions); 
         }, 
         methods: {
-            ...mapGetters('search', [
-                'getFacets'
-            ]),
             reloadOptions(shouldReload) {
                 if ( !this.isUsingElasticSearch && shouldReload )
                     this.loadOptions();

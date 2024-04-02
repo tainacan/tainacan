@@ -45,9 +45,9 @@ export const dynamicFilterTypeMixin = {
     },
     emits: ['update-parent-collapse'],
     computed: {
-        facetsFromItemSearch() {
-            return this.getFacets();
-        }
+        ...mapGetters('search', {
+            'facetsFromItemSearch': 'getFacets'
+        }),
     },
     watch: {
         isLoadingItems: {
@@ -59,9 +59,6 @@ export const dynamicFilterTypeMixin = {
         }
     },
     methods: {
-        ...mapGetters('search', [
-            'getFacets'
-        ]),
         getValuesPlainText({ metadatumId, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0', countItems = true }) {
 
             if (isInCheckboxModal || search || !this.isUsingElasticSearch) {

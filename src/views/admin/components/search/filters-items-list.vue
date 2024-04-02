@@ -311,24 +311,20 @@
             }
         },
         computed: {
-            filters() {
-                return this.getFilters();
-            },
-            repositoryCollectionFilters() {
-                return this.getRepositoryCollectionFilters();
-            },
-            taxonomyFilters() {
-                return this.getTaxonomyFilters();
-            },
-            getQuery() {
-                return this.getPostQuery();
-            },
+            ...mapGetters('collection', {
+                'collection': 'getCollection'
+            }),
+            ...mapGetters('search', {
+                'getQuery': 'getPostQuery'
+            }),
+            ...mapGetters('filter', {
+                'filters': 'getFilters',
+                'taxonomyFilters': 'getTaxonomyFilters',
+                'repositoryCollectionFilters': 'getRepositoryCollectionFilters'
+            }),
             taxonomyId () {
                 const taxonomyArray = this.taxonomy.split("_");
                 return taxonomyArray[taxonomyArray.length - 1];
-            },
-            collection() {
-                return this.getCollection();
             }
         },
         watch: {
@@ -394,11 +390,7 @@
      
         },
         methods: {
-            ...mapGetters('search',[
-                'getPostQuery'
-            ]),
             ...mapGetters('collection',[
-                'getCollection',
                 'getCollections'
             ]),
             ...mapActions('collection',[
@@ -408,11 +400,6 @@
                 'fetchFilters',
                 'fetchTaxonomyFilters',
                 'fetchRepositoryCollectionFilters'
-            ]),
-            ...mapGetters('filter', [
-                'getFilters',
-                'getTaxonomyFilters',
-                'getRepositoryCollectionFilters'
             ]),
             prepareFilters() {
                 // Cancels previous Request

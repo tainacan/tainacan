@@ -2045,12 +2045,16 @@ export default {
         }
     },
     computed: {
-        collection() {
-            return this.getCollection();
-        },
-        highlightedItem () {
-            return this.getHighlightedItem();
-        },
+        ...mapGetters('collection', {
+            'collection': 'getCollection',
+        }),
+        ...mapGetters('bulkedition', {
+            'groupId': 'getGroupId'
+        }),
+        ...mapGetters('search', {
+            'highlightedItem': 'getHighlightedItem',
+            'itemsPerPage': 'getItemsPerPage'
+        }),
         selectedItems () {
             if (this.$adminOptions.itemsSingleSelectionMode || this.$adminOptions.itemsMultipleSelectionMode)
                 this.$eventBusSearch.setSelectedItemsForIframe(this.getSelectedItems());
@@ -2077,9 +2081,6 @@ export default {
                 }
             }
             return true;
-        },
-        itemsPerPage(){
-            return this.getItemsPerPage();
         },
         totalPages(){
             return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));
@@ -2283,18 +2284,12 @@ export default {
         ...mapActions('collection', [
             'deleteItem',
         ]),
-        ...mapGetters('collection', [
-            'getCollection',
-        ]),
         ...mapActions('bulkedition', [
             'createEditGroup',
             'createSequenceEditGroup',
             'trashItemsInBulk',
             'deleteItemsInBulk',
             'untrashItemsInBulk'
-        ]),
-        ...mapGetters('bulkedition', [
-            'getGroupId'
         ]),
         ...mapActions('search', [
             'setSeletecItems',
@@ -2303,12 +2298,8 @@ export default {
             'removeSelectedItem'
         ]),
         ...mapGetters('search', [
-            'getOrder',
-            'getOrderBy',
             'getStatus',
             'getSelectedItems',
-            'getHighlightedItem',
-            'getItemsPerPage'
         ]),
         setSelectedItemChecked(itemId) {
             if (this.$adminOptions.itemsSingleSelectionMode) {
@@ -2346,8 +2337,7 @@ export default {
                 object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems,
                 collectionId: this.collectionId
             }).then(() => {
-                let sequenceId = this.getGroupId();
-                this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));
+                this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, this.groupId, 1));
             });
         },
         selectAllItemsOnPage() {
@@ -2397,11 +2387,9 @@ export default {
                             collectionId: this.collectionId,
                             object: [itemId]
                         }).then(() => {
-                            let groupId = this.getGroupId();
-
                             this.untrashItemsInBulk({
                                 collectionId: this.collectionId,
-                                groupId: groupId
+                                groupId: this.groupId
                             }).then(() => this.$eventBusSearch.loadItems() );
                         });
                     }
@@ -2449,11 +2437,9 @@ export default {
                             collectionId: this.collectionId,
                             object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems
                         }).then(() => {
-                            let groupId = this.getGroupId();
-
                             this.untrashItemsInBulk({
                                 collectionId: this.collectionId,
-                                groupId: groupId
+                                groupId: this.groupId
                             }).then(() => {
                                 this.$eventBusSearch.loadItems();
                                 this.$emitter.emit('openProcessesPopup');
@@ -2481,12 +2467,10 @@ export default {
                             collectionId: this.collectionId,
                             object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems
                         }).then(() => {
-                            let groupId = this.getGroupId();
-
                             if (this.isOnTrash) {
                                 this.deleteItemsInBulk({
                                     collectionId: this.collectionId,
-                                    groupId: groupId
+                                    groupId: this.groupId
                                 }).then(() => {
                                     this.$eventBusSearch.loadItems();
                                     this.$emitter.emit('openProcessesPopup');
@@ -2494,7 +2478,7 @@ export default {
                             } else {
                                 this.trashItemsInBulk({
                                     collectionId: this.collectionId,
-                                    groupId: groupId
+                                    groupId: this.groupId
                                 }).then(() => {
                                     this.$eventBusSearch.loadItems();
                                     this.$emitter.emit('openProcessesPopup');

@@ -849,9 +849,9 @@ export default {
         }
     },
     computed: {
-        collection() {
-            return this.getCollection()
-        },
+        ...mapGetters('collection', {
+            'collection': 'getCollection'
+        }),
         itemMetadata() {
             const realItemMetadata = JSON.parse(JSON.stringify(this.getItemMetadata()));
 
@@ -877,21 +877,17 @@ export default {
             });
             return tweakedItemMetadata;
         },
-        metadataSections() {
-            return this.getMetadataSections();
-        },
-        lastUpdated() {
-            return this.getLastUpdated();
-        },
-        group() {
-            return this.getGroup();
-        },
-        itemIdInSequence() {
-            return this.getItemIdInSequence();
-        },
-        totalAttachments() {
-            return this.getTotalAttachments();
-        },
+        ...mapGetters('metadata', {
+            'metadataSections': 'getMetadataSections'
+        }),
+        ...mapGetters('item', {
+            'totalAttachments': 'getTotalAttachments',
+            'lastUpdated': 'getLastUpdated'
+        }),
+        ...mapGetters('bulkedition', { 
+            'itemIdInSequence': 'getItemIdInSequence',
+            'group': 'getGroup'
+        }),
         totalRelatedItems() {
             return (this.item && this.item.related_items) ? Object.values(this.item.related_items).reduce((totalItems, aRelatedItemsGroup) => totalItems + parseInt(aRelatedItemsGroup.total_items), 0) : false;
         },
@@ -1144,29 +1140,16 @@ export default {
         ]),
         ...mapGetters('item',[
             'getItemMetadata',
-            'getTotalAttachments',
-            'getLastUpdated',
-            'getAttachments'
         ]),
         ...mapActions('collection', [
             'deleteItem',
-        ]),
-        ...mapGetters('collection', [
-            'getCollection',
         ]),
         ...mapActions('bulkedition', [
             'fetchItemIdInSequence',
 			'fetchSequenceGroup'
         ]),
-        ...mapGetters('bulkedition', [
-            'getItemIdInSequence',
-            'getGroup'
-        ]),
         ...mapActions('metadata',[
             'fetchMetadataSections'
-        ]),
-        ...mapGetters('metadata',[
-            'getMetadataSections'
         ]),
         onSubmit(status, sequenceDirection) {
 

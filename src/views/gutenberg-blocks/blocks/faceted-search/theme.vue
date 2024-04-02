@@ -770,6 +770,24 @@
             }
         },
         computed: {
+            ...mapGetters('collection', {
+                'items': 'getItems',
+                'itemsListTemplate': 'getItemsListTemplate'
+            }),
+            ...mapGetters('metadata', {
+                'metadata': 'getMetadata'
+            }),
+            ...mapGetters('search', {
+                'searchQuery': 'getSearchQuery',
+                'orderBy': 'getOrderBy',
+                'order': 'getOrder',
+                'viewMode': 'getViewMode',
+                'totalItems': 'getTotalItems',
+                'sentenceMode': 'getSentenceMode',
+                'metaKey': 'getMetaKey',
+                'page': 'getPage',
+                'itemsPerPage': 'getItemsPerPage'
+            }),
             wrapperClasses() {
                 return {
                     'is-filters-menu-open': !this.hideFilters && this.isFiltersModalActive && !this.openAdvancedSearch,
@@ -782,38 +800,8 @@
             isSortingByCustomMetadata() {
                 return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'creation_date' && this.orderBy != 'date' && this.orderBy != 'modified'); 
             },
-            items() {
-                return this.getItems();
-            },
-            itemsListTemplate() {
-                return this.getItemsListTemplate();
-            },
-            totalItems() {
-                return this.getTotalItems();
-            },
-            metadata() {
-                return this.getMetadata();
-            },
-            searchQuery() {
-                return this.getSearchQuery();
-            },
-            sentenceMode() {
-                return this.getSentenceMode();
-            },
-            viewMode() {
-                return this.getViewMode();
-            },
-            orderBy() {
-                return this.getOrderBy();
-            },
-            order() {
-                return this.getOrder();
-            },
             showLoading() {
                 return this.isLoadingItems || this.isLoadingMetadata;
-            },
-            metaKey() {
-                return this.getMetaKey();
             },
             orderByName() {
                 const metadatumName =  this.$orderByHelper.getOrderByMetadatumName({
@@ -1128,8 +1116,8 @@
             let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
             if (existingViewModeIndex >= 0) {
                 if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
-                    this.latestPerPageAfterViewModeWithoutPagination = this.getItemsPerPage();
-                    this.latestPageAfterViewModeWithoutPagination = this.getPage();
+                    this.latestPerPageAfterViewModeWithoutPagination = this.itemsPerPage;
+                    this.latestPageAfterViewModeWithoutPagination = this.page;
 
                     this.$eventBusSearch.setItemsPerPage(24, true);
                 }
@@ -1191,27 +1179,8 @@
 
         },
         methods: {
-            ...mapGetters('collection', [
-                'getCollection',
-                'getItems',
-                'getItemsListTemplate'
-            ]),
             ...mapActions('metadata', [
                 'fetchMetadata'
-            ]),
-            ...mapGetters('metadata', [
-                'getMetadata'
-            ]),
-            ...mapGetters('search', [
-                'getSearchQuery',
-                'getOrderBy',
-                'getOrder',
-                'getViewMode',
-                'getTotalItems',
-                'getSentenceMode',
-                'getMetaKey',
-                'getPage',
-                'getItemsPerPage'
             ]),
             parseHooks() {
                 if (wp !== undefined && wp.hooks !== undefined) {
@@ -1324,8 +1293,8 @@
                 let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(aViewMode => aViewMode == viewMode);
                 if (existingViewModeIndex >= 0) {
                     if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
-                        this.latestPerPageAfterViewModeWithoutPagination = this.getItemsPerPage();
-                        this.latestPageAfterViewModeWithoutPagination = this.getPage();
+                        this.latestPerPageAfterViewModeWithoutPagination = this.itemsPerPage;
+                        this.latestPageAfterViewModeWithoutPagination = this.page;
 
                         this.$eventBusSearch.setItemsPerPage(24, true);
                     }

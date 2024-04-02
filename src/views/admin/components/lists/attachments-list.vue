@@ -114,12 +114,10 @@
             }
         },
         computed: {
-            attachments() {
-                return this.getAttachments();
-            },
-            totalAttachments() {
-                return this.getTotalAttachments();
-            }
+            ...mapGetters('item', {
+                'attachments': 'getAttachments',
+                'totalAttachments': 'getTotalAttachments'
+            })
         },
         watch: {
             shouldLoadAttachments() {
@@ -133,10 +131,6 @@
         methods: {
             ...mapActions('item', [
                 'fetchAttachments',
-            ]),
-            ...mapGetters('item', [
-                'getAttachments',
-                'getTotalAttachments'
             ]),
             onChangeAttachmentsPerPage(value) {
                 
