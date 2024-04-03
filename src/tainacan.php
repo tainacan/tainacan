@@ -7,7 +7,7 @@ Author: Tainacan.org
 Author URI: https://tainacan.org/
 Version: 0.21.0RC
 Requires at least: 5.9
-Tested up to: 6.4
+Tested up to: 6.5
 Requires PHP: 7.0
 Stable tag: 0.20.8
 Text Domain: tainacan
