@@ -209,7 +209,7 @@
                                         :value="Array.isArray(selectedConditionalValue) ? selectedConditionalValue[0] : selectedConditionalValue"
                                         :allow-new="false"
                                         :maxtags="1"
-                                        @input="selectConditionalValue"
+                                        @update:value="($event) => selectConditionalValue($event)"
                                     />
                             </b-field>
                         </transition>

@@ -99,7 +99,7 @@
                                             :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                             :disabled="bulkEditionProcedures[criterion].isDone"
                                             class="tainacan-bulk-edition-field"
-                                            @input="addToBulkEditionProcedures($event, 'oldValue', criterion)"
+                                            @update:value="($event) => addToBulkEditionProcedures($event, 'oldValue', criterion)"
                                         />
 
                                     <div class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last tainacan-by-text">
