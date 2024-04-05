@@ -1184,17 +1184,26 @@ class Item extends Entity {
 
 		if ( $metadata_section->is_conditional_section() ) {
 			$rules = $metadata_section->get_conditional_section_rules();
+
 			if ( !empty($rules) ) {
 				foreach ( $rules as $meta_id => $meta_values_conditional ) {
 					$meta_values = [];
 					$metadatum = new \Tainacan\Entities\Metadatum($meta_id);
 					$metadatum_type = $metadatum->get_metadata_type_object();
+
 					if ( $metadatum_type->get_primitive_type() == 'term' ) {
 						$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($this, $metadatum);
-						$term_values = $metadatum->is_multiple() ? $item_metadata->get_value() : array( $item_metadata->get_value() );
-						$meta_values = array_map(function($term) {
-							return $term->get_id();
-						}, $term_values);
+						
+						if ( $metadatum->is_multiple() )  {
+							$term_values = $item_metadata->get_value();
+							$meta_values = array_map(function($term) {
+								return $term->get_id();
+							}, $term_values);
+						} else {
+							$term_values = $item_metadata->get_value();
+							$meta_values = $term_values == false ? [] : $term_values;
+						}
+
 					} else {
 						$item_id = $this->get_id();
 						$meta_values = get_post_meta( $item_id, $meta_id );
