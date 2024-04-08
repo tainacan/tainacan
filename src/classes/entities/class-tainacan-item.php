@@ -1201,7 +1201,7 @@ class Item extends Entity {
 							}, $term_values);
 						} else {
 							$term_values = $item_metadata->get_value();
-							$meta_values = $term_values == false ? [] : $term_values;
+							$meta_values = $term_values == false ? [] : [ $term_values->get_id() ];
 						}
 
 					} else {
