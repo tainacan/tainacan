@@ -517,11 +517,11 @@ export default {
         itemsLocations: { 
             handler() {
                 setTimeout(() => {
-                    if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject ) {
+                    if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].leafletObject ) {
                         if (this.itemsLocations.length == 1)
-                            this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
+                            this.$refs['tainacan-view-mode-map'].leafletObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
                         else
-                            this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
+                            this.$refs['tainacan-view-mode-map'].leafletObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
                     }
                 }, 500)
             },
@@ -555,8 +555,8 @@ export default {
             this.$userPrefs.set(prefsGeocoordinateMetadatum, id);
         },
         onMapReady() {
-            if ( LeafletActiveArea && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject )
-                this.$refs['tainacan-view-mode-map'].mapObject.setActiveArea('leaflet-active-area');
+            if ( LeafletActiveArea && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].leafletObject )
+                this.$refs['tainacan-view-mode-map'].leafletObject.setActiveArea('leaflet-active-area');
         },
         getItemImageHeight(imageWidth, imageHeight) {  
             let itemWidth = 120;
@@ -571,19 +571,19 @@ export default {
         clearSelectedMarkers() {
             this.mapSelectedItemId = false;
             this.selectedMarkerIndexes = [];
-            if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject ) {
+            if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].leafletObject ) {
                 if (this.itemsLocations.length == 1)
-                    this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
+                    this.$refs['tainacan-view-mode-map'].leafletObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
                 else
-                    this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
+                    this.$refs['tainacan-view-mode-map'].leafletObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
             }
         },
         showItemByLocation(index) {
             this.mapSelectedItemId = this.itemsLocations[index].item.id;
             this.selectedMarkerIndexes = [];
             this.selectedMarkerIndexes.push(index);
-            if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject )
-                this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds( [ this.itemsLocations[index].location ],  { animate: true, maxZoom: 16 });
+            if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].leafletObject )
+                this.$refs['tainacan-view-mode-map'].leafletObject.panInsideBounds( [ this.itemsLocations[index].location ],  { animate: true, maxZoom: 16 });
         },
         showLocationsByItem(item) {
             this.mapSelectedItemId = item.id;
@@ -596,11 +596,11 @@ export default {
             })
 
             if ( selectedLocationsByItem.length) {
-                if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject ) {
+                if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].leafletObject ) {
                     if (selectedLocationsByItem.length > 1)
-                        this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
+                        this.$refs['tainacan-view-mode-map'].leafletObject.flyToBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
                     else
-                        this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
+                        this.$refs['tainacan-view-mode-map'].leafletObject.panInsideBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
                 }
             } else {
                 this.$buefy.snackbar.open({
