@@ -213,8 +213,8 @@
             this.$emitter.off('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
         },
         methods: {
-            onUpdateFromLatitudeInput: _.debounce( function($event) {
-                let newLatitude = $event.target.value;
+            onUpdateFromLatitudeInput: _.debounce( function(value) {
+                let newLatitude = value;
                 if ( !isNaN(newLatitude) ) {
                     this.latitude = newLatitude;
                     this.onUpdateFromLatitudeAndLongitude();
@@ -232,8 +232,8 @@
                     }
                 }
             }, 250),
-            onUpdateFromLongitudeInput: _.debounce( function($event) {
-                let newLongitude = $event.target.value;
+            onUpdateFromLongitudeInput: _.debounce( function(value) {
+                let newLongitude = value;
 
                 if ( !isNaN(newLongitude) ) {
                     this.longitude = newLongitude;
