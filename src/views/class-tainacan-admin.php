@@ -84,11 +84,21 @@ class Admin {
 			'tainacan_mobile_app',
 			array( &$this, 'mobile_app' )
 		);
+
+		$dashboard_page_suffix = add_submenu_page(
+			$this->menu_slug,
+			__('Dashboard', 'tainacan'),
+			__('Dashboard', 'tainacan'),
+			'manage_tainacan',
+			'tainacan_dashboard',
+			array( &$this, 'dashboard' )
+		);
 		
 		add_action( 'load-' . $page_suffix, array( &$this, 'load_admin_page' ) );
 		add_action( 'load-' . $roles_page_suffix, array( &$this, 'load_roles_page' ) );
 		add_action( 'load-' . $reports_page_suffix, array( &$this, 'load_reports_page' ) );
 		add_action( 'load-' . $mobile_app_page_suffix, array( &$this, 'load_mobile_app_page' ) );
+		add_action( 'load-' . $dashboard_page_suffix, array( &$this, 'load_dashboard_page' ) );
 	}
 
 	function load_admin_page() {
@@ -109,6 +119,10 @@ class Admin {
 
 	function load_mobile_app_page() {
 		add_action( 'admin_enqueue_scripts', array( &$this, 'add_mobile_app_css' ), 90 );
+	}
+	function load_dashboard_page() {
+		add_action( 'admin_enqueue_scripts', array( &$this, 'add_dashboard_css' ), 90 );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'add_dashboard_js' ), 90 );
 	}
 
 	function login_styles_reset( $style ) {
@@ -140,6 +154,19 @@ class Admin {
 		global $TAINACAN_BASE_URL;
 
 		wp_enqueue_style( 'tainacan-mobile-app-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-mobile-app.css', [], TAINACAN_VERSION );
+	}
+
+	function add_dashboard_css() {
+		global $TAINACAN_BASE_URL;
+
+		wp_admin_css( 'dashboard' );
+		//wp_enqueue_style( 'tainacan-dashboard-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-dashboard.css', [], TAINACAN_VERSION );
+	}
+
+	function add_dashboard_js() {
+		global $TAINACAN_BASE_URL;
+
+		wp_enqueue_script( 'dashboard' );
 	}
 
 	function add_roles_js() {
@@ -523,6 +550,12 @@ class Admin {
 		require_once('mobile-app/class-tainacan-mobile-app.php');
 		$Mobile_app = new Mobile_App();
 		$Mobile_app->admin_page();
+	}
+
+	public function dashboard() {
+		require_once('dashboard/class-tainacan-dashboard.php');
+		$dashboard = new Dashboard();
+		$dashboard->admin_page();
 	}
 
 }
