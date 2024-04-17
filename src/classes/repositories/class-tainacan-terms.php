@@ -137,7 +137,7 @@ class Terms extends Repository {
 				if ( $mapped['map'] != 'termmeta' ) {
 					$get_ = 'get_' . $prop;
 
-					if ( $term->WP_Term->{$mapped['map']} ||
+					if ( isset($term->WP_Term->{$mapped['map']}) ||
 					     ($mapped['map'] == 'parent' && $term->WP_Term->{$mapped['map']} >= 0) ) {
 
 						$args[ $mapped['map'] ] = $term->$get_();
@@ -247,6 +247,8 @@ class Terms extends Repository {
 	}
 
 	public function update( $object, $args = null ) {
+		error_log( "update:" . json_encode($object) );
+		error_log( "update-des:" . json_encode($object->get_description()) );
 		return $this->insert( $object );
 	}
 
