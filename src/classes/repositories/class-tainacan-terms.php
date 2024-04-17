@@ -247,8 +247,6 @@ class Terms extends Repository {
 	}
 
 	public function update( $object, $args = null ) {
-		error_log( "update:" . json_encode($object) );
-		error_log( "update-des:" . json_encode($object->get_description()) );
 		return $this->insert( $object );
 	}
 
