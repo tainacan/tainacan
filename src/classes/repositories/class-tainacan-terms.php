@@ -137,7 +137,7 @@ class Terms extends Repository {
 				if ( $mapped['map'] != 'termmeta' ) {
 					$get_ = 'get_' . $prop;
 
-					if ( $term->WP_Term->{$mapped['map']} ||
+					if ( isset($term->WP_Term->{$mapped['map']}) ||
 					     ($mapped['map'] == 'parent' && $term->WP_Term->{$mapped['map']} >= 0) ) {
 
 						$args[ $mapped['map'] ] = $term->$get_();
