@@ -132,14 +132,11 @@ export default {
         }
     },
     computed: {
-        collection() {
-            return this.getCollection();
-        }
+        ...mapGetters('collection', {
+            'collection': 'getCollection'
+        })
     },
     methods: {
-        ...mapGetters('collection', [
-            'getCollection'
-        ]),
         openAvailableExportersModal(){
 
             this.$buefy.modal.open({

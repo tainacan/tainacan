@@ -187,7 +187,6 @@ export const deleteMetadatumInsideMetadataSection = (state, metadatum) => {
                 const existingIndex = existingParentChildrenObject.findIndex((aMetadatum) => aMetadatum.id == metadatum.id);
                 if (existingIndex >= 0)
                     existingParentChildrenObject.splice(existingIndex, 1);
-                
                 existingParent.metadata_type_options.children_objects = existingParentChildrenObject;
                 
                 metadataSection['metadata_object_list'].splice(existingParentIndex, 1, existingParent); 
@@ -240,4 +239,8 @@ export const moveMetadatumUp = (state, { index, sectionIndex }) => {
 
 export const moveMetadatumDown = (state, { index, sectionIndex }) => {
     state.metadataSections[sectionIndex].metadata_object_list.splice(index + 1, 0, state.metadataSections[sectionIndex].metadata_object_list.splice(index, 1)[0]);
+}
+
+export const moveMetadatum = (state, { newIndex, oldIndex, sectionIndex }) => {
+    state.metadataSections[sectionIndex].metadata_object_list.splice(newIndex, 0, state.metadataSections[sectionIndex].metadata_object_list.splice(oldIndex, 1)[0]);
 }

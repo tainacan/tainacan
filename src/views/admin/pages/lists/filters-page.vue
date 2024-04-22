@@ -537,6 +537,9 @@ export default {
         }
     },
     computed: {
+        ...mapGetters('collection', {
+            'collection': 'getCollection',
+        }),
         activeFiltersList: {
             get() {
                 return this.getFilters();
@@ -545,9 +548,6 @@ export default {
                 this.updateFilters(value);
             }
         },
-        collection() {
-            return this.getCollection();
-        }
     },
     watch: {
         '$route.query': {
@@ -624,17 +624,13 @@ export default {
             'moveFilterDown'
         ]),
         ...mapGetters('filter',[
-            'getFilters',
-            'getFilterTypes'
+            'getFilters'
         ]),
         ...mapActions('metadata', [
             'fetchMetadata',
         ]),
         ...mapGetters('metadata', [
             'getMetadata',
-        ]),
-        ...mapGetters('collection', [
-            'getCollection',
         ]),
         handleChangeOnFilter($event) {
             switch( $event.type ) {
@@ -644,6 +640,7 @@ export default {
                 case 'remove':
                     this.removeFilter(this.activeFiltersList[$event.oldIndex]);
                     break;
+                case 'change':
                 case 'update': {
                     const newActiveFiltersList = JSON.parse(JSON.stringify(this.activeFiltersList));
                     const element = newActiveFiltersList.splice($event.oldIndex, 1)[0];
@@ -710,9 +707,8 @@ export default {
             this.activeFiltersList.splice(this.newFilterIndex, 1);
         },
         handleChangeOnMetadata($event) {
-            if ($event.removed) {
+            if ( $event.type == 'removed' )
                 this.oldMetadatumIndex = $event.removed.oldIndex;
-            }
         },
         updateFiltersOrder() {
             let filtersOrder = [];
@@ -1124,6 +1120,12 @@ export default {
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     overflow: hidden;
+                    -webkit-touch-callout: none;
+                    -webkit-user-select: none;
+                    -khtml-user-select: none;
+                    -moz-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
                 }
                 .not-saved {
                     font-style: italic;

@@ -106,6 +106,10 @@
                 type: Function,
                 default: () => {}
             },
+            hideCancel: {
+                type: Boolean,
+                default: false,
+            },
             amountOfTerms: {
                 type: Number,
                 default: 1

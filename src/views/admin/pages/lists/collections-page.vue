@@ -433,12 +433,10 @@ export default {
         }
     },
     computed: {
-        collections() {
-            return this.getCollections();
-        },
-        repositoryTotalCollections(){
-            return this.getRepositoryTotalCollections();
-        },
+        ...mapGetters('collection', {
+            'collections': 'getCollections',
+            'repositoryTotalCollections': 'getRepositoryTotalCollections'
+        }),
         collectionTaxonomies() {
             let collectionTaxonomies = this.getCollectionTaxonomies();
 
@@ -510,8 +508,6 @@ export default {
             'fetchMetadatumMappers'
         ]),
         ...mapGetters('collection', [
-            'getCollections',
-            'getRepositoryTotalCollections',
             'getCollectionTaxonomies'
         ]),
         onChangeTab(status) {

@@ -141,9 +141,9 @@ export default {
         }
     },
     computed: {
-        collection() {
-            return this.getCollection();
-        }
+        ...mapGetters('collection', {
+            'collection': 'getCollection'
+        })
     },
     watch: {
         '$route': {
@@ -160,11 +160,6 @@ export default {
         this.activeRoute = this.$route.name;
 
         this.pageTitle = this.$route.meta.title;   
-    },
-    methods: {
-        ...mapGetters('collection', [
-            'getCollection'
-        ])
     }
 }
 </script>

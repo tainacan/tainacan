@@ -186,9 +186,9 @@ export default {
         }
     },
     computed: {
-        collections() {
-            return this.getCollections(); 
-        }
+        ...mapGetters('collection', {
+            'collections': 'getCollections'
+        }),
     },
     mounted() {
         this.loadCollections();
@@ -197,9 +197,6 @@ export default {
          ...mapActions('collection', [
             'fetchCollections',
             'cleanCollections'
-        ]),
-        ...mapGetters('collection', [
-            'getCollections'
         ]),
         loadCollections() {
             this.cleanCollections();    

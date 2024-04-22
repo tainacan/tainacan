@@ -223,7 +223,7 @@
                                 </a>
                                 <a 
                                         v-if="metadataSection.current_user_can_delete"
-                                        :disabled="metadataSection.metadata_object_list.length"
+                                        :disabled="metadataSection.metadata_object_list.length > 0"
                                         :style="{ visibility: metadataSection.collection_id != collectionId || metadataSection.id === 'default_section' || metadataSection.metadata_object_list.length ? 'hidden' : 'visible' }"
                                         @click.prevent="removeMetadataSection(metadataSection)">
                                     <span
@@ -276,7 +276,8 @@
                                     chosenClass: 'sortable-chosen',
                                     filter: '.not-sortable-item',
                                     preventOnFilter: false,
-                                    animation: 250
+                                    animation: 250,
+                                    dataIdAttr: 'data-metadatum-id'
                                 }"
                                 @update="handleChange($event, sectionIndex)"
                                 @add="handleChange($event, sectionIndex)"
@@ -285,6 +286,10 @@
                                 <div 
                                         v-if="metadatum != undefined && metadatum.parent == 0"
                                         v-show="(metadataNameFilterString == '' || filterByMetadatumName(metadatum)) && filterByMetadatumType(metadatum)"
+                                        :key="metadatum.id"
+                                        :data-metadatum-id="metadatum.id"
+                                        :data-collection-id="metadatum.collection_id"
+                                        :data-original-section-index="sectionIndex"
                                         class="active-metadatum-item"
                                         :class="{
                                             'is-compact-item': !isCollapseOpen(metadatum.id),
@@ -642,7 +647,8 @@ export default {
             'moveMetadataSectionUp',
             'moveMetadataSectionDown',
             'moveMetadatumUp',
-            'moveMetadatumDown'
+            'moveMetadatumDown',
+            'moveMetadatum'
         ]),
         ...mapGetters('metadata',[
             'getMetadataSections',
@@ -656,6 +662,7 @@ export default {
                 case 'remove':
                     this.removeMetadataSection(this.activeFiltersList[$event.oldIndex]);
                     break;
+                case 'change':
                 case 'update': {
                     const newMetadataSectionsList = JSON.parse(JSON.stringify(this.activeMetadataSectionsList));
                     const element = newMetadataSectionsList.splice($event.oldIndex, 1)[0];
@@ -677,37 +684,52 @@ export default {
                         this.addNewMetadatum(this.getMetadatumTypes()[$event.oldIndex], $event.newIndex, sectionIndex);
                         $event.originalTarget.removeChild($event.item)
                     } else {
-                        
+                        this.isLoadingMetadataSections = true;
+
+                        const previousSectionIndex = $event.item.dataset['originalSectionIndex'];
+
+                        const previousSectionMetadataObjectList = JSON.parse(JSON.stringify(this.activeMetadataSectionsList[previousSectionIndex].metadata_object_list));
+                        const newSectionMetadataObjectList = JSON.parse(JSON.stringify(this.activeMetadataSectionsList[sectionIndex].metadata_object_list));
+                        const element = previousSectionMetadataObjectList.splice($event.oldIndex, 1)[0];
+                        newSectionMetadataObjectList.splice($event.newIndex, 0, element);
+            
+                        const newMetadataSectionsList = JSON.parse(JSON.stringify(this.activeMetadataSectionsList));
+                        newMetadataSectionsList[sectionIndex].metadata_object_list = newSectionMetadataObjectList;
+                        newMetadataSectionsList[previousSectionIndex].metadata_object_list = previousSectionMetadataObjectList;
+
+                        this.updateMetadataSections(newMetadataSectionsList);
+                        $event.originalTarget.removeChild($event.item);
+
                         this.updateMetadatum({
                             collectionId: this.collectionId,
-                            metadatumId: this.activeMetadataSectionsList[sectionIndex].metadata_object_list[$event.oldIndex].id,
-                            isRepositoryLevel: this.activeMetadataSectionsList[sectionIndex].metadata_object_list[$event.oldIndex].collection_id === 'default',
+                            metadatumId: $event.item.dataset['metadatumId'],
+                            isRepositoryLevel: $event.item.dataset['collectionId'] === 'default',
                             index: $event.newIndex,
                             options: {},
                             includeOptionsAsHtml: true,
                             sectionId: this.activeMetadataSectionsList[sectionIndex].id
+                        }).then(() => {
+                            this.updateMetadataSectionsOrder(newMetadataSectionsList)
+                                .then( () => this.isLoadingMetadataSections = false )
+                                .catch( () => this.isLoadingMetadataSections = false );
+                        }).catch(() => {
+                            this.isLoadingMetadataSections = false;
                         });
-
-                        const newSectionMetadataObjectList = JSON.parse(JSON.stringify(this.activeMetadataSectionsList[sectionIndex].metadata_object_list));
-                        const element = newSectionMetadataObjectList.splice($event.oldIndex, 1)[0];
-                        newSectionMetadataObjectList.splice($event.newIndex, 0, element);
-
-                        const newMetadataSectionsList = JSON.parse(JSON.stringify(this.activeMetadataSectionsList));
-                        newMetadataSectionsList[sectionIndex].metadata_object_list = newSectionMetadataObjectList;
-                        this.updateMetadataSections(newMetadataSectionsList);
-
-                        this.updateMetadataSectionsOrder(sectionIndex);
                     }
 
                     break;
-                case 'update':
+                case 'change':
+                case 'update': {
+                    this.moveMetadatum({ newIndex: $event.newIndex, oldIndex: $event.oldIndex, sectionIndex: sectionIndex });
                     this.updateMetadataOrder(sectionIndex);
                     break;
+                }
             }   
 
         },
         updateMetadataOrder(sectionIndex) {
             let metadataOrder = [];
+            
             for (let metadatum of this.activeMetadataSectionsList[sectionIndex].metadata_object_list)
                 if (metadatum != undefined)
                     metadataOrder.push({
@@ -717,17 +739,16 @@ export default {
             
             this.isUpdatingMetadataOrder = true;
             this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder, metadataSectionId: this.activeMetadataSectionsList[sectionIndex].id  })
-                .then(() => {
-                    this.isUpdatingMetadataOrder = false
-                
-                    
-                })
+                .then(() => this.isUpdatingMetadataOrder = false)
                 .catch(() => this.isUpdatingMetadataOrder = false);
                 
         },
-        updateMetadataSectionsOrder() {
+        updateMetadataSectionsOrder(metadataSectionsList) {
+            if (metadataSectionsList == undefined)
+                metadataSectionsList = this.activeMetadataSectionsList;
+
             let metadataSectionsOrder = [];
-            for (let metadataSection of this.activeMetadataSectionsList)
+            for (let metadataSection of metadataSectionsList)
                 if (metadataSection != undefined) {
                     metadataSectionsOrder.push({
                         'id': metadataSection.id,
@@ -756,12 +777,13 @@ export default {
         onChangeEnableSection($event, index) {
             let metadataSectionsOrder = [];
             for (let metadataSection of this.activeMetadataSectionsList)
-                if (metadataSection != undefined)
+                if (metadataSection != undefined) {
                     metadataSectionsOrder.push({
                         'id': metadataSection.id,
                         'enabled': metadataSection.enabled,
                         'metadata_order': metadataSection.metadata_object_list.map((aMetadatum) => { return { 'id': aMetadatum.id, 'enabled': aMetadatum.enabled } })
                     });
+                }
             
             metadataSectionsOrder[index].enabled = $event;
             this.isUpdatingMetadataSectionsOrder = true;
@@ -771,7 +793,6 @@ export default {
         },
         addMetadatumViaButton(metadatumType) {
             this.addNewMetadatum(metadatumType, this.activeMetadataSectionsList[0].metadata_object_list.length, 0);
-            
             // Higlights the clicked metadatum
             this.highlightedMetadatum = metadatumType.name;
             this.$emit('on-update-highlighted-metadatum', this.highlightedMetadatum);

@@ -476,18 +476,16 @@
             }
         },
         computed: {
-            collection() {
-                return this.getCollection();
-            },
-            metadataSections() {
-                return this.getMetadataSections();
-            },
-            item() {
-                // Fills hook forms with it's real values 
-                this.updateExtraFormData(this.getItem());
-
-                return this.getItem();
-            },
+            ...mapGetters('collection', {
+                'collection': 'getCollection'
+            }),
+            ...mapGetters('metadata', {
+                'metadataSections': 'getMetadataSections'
+            }),
+            ...mapGetters('item', {
+                'item': 'getItem',
+                'totalAttachments': 'getTotalAttachments'
+            }),
             itemMetadata() {
                 const realItemMetadata = JSON.parse(JSON.stringify(this.getItemMetadata()));
                 const tweakedItemMetadata = realItemMetadata.map((anItemMetadatum) => {
@@ -514,9 +512,6 @@
             },
             totalRelatedItems() {
                 return (this.item && this.item.related_items) ? Object.values(this.item.related_items).reduce((totalItems, aRelatedItemsGroup) => totalItems + parseInt(aRelatedItemsGroup.total_items), 0) : false;
-            },
-            totalAttachments() {
-                return this.getTotalAttachments();
             },
             itemVisibility() {
                 return (this.collection && this.collection.status == 'publish' && this.item && this.item.status == 'publish') ? 'open_access' : 'restrict_access'
@@ -552,6 +547,12 @@
             },
             shouldDisplayItemSingleAttachments() {
                 return !this.$adminOptions.hideItemSingleAttachments && (this.collection && this.collection.item_enable_attachments === 'yes');
+            }
+        },
+        watch: {
+            item() {
+                // Fills hook forms with it's real values 
+                this.updateExtraFormData(this.item);
             }
         },
         created() {
@@ -609,18 +610,10 @@
                 'fetchItemMetadata',
             ]),
             ...mapGetters('item', [
-                'getItem',
-                'getItemMetadata',
-                'getTotalAttachments'
-            ]),
-            ...mapGetters('collection', [
-                'getCollection'
+                'getItemMetadata'
             ]),
             ...mapActions('metadata',[
                 'fetchMetadataSections'
-            ]),
-            ...mapGetters('metadata',[
-                'getMetadataSections'
             ]),
             loadMetadata() {
                 // Obtains Item Metadatum

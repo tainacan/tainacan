@@ -391,6 +391,9 @@
             }
         },
         computed: {
+            ...mapGetters('bgprocess', {
+               'processes': 'getProcesses'
+            }),
             activities(){
                 let activitiesList = this.getActivities();
 
@@ -400,9 +403,6 @@
                         moment(activity['log_date'], 'YYYY-MM-DD h:mm:ss').format('DD/MM/YYYY, hh:mm:ss');
 
                 return activitiesList;
-            },
-            processes(){
-                return this.getProcesses();
             }
         },
         created() {
@@ -450,9 +450,6 @@
             ]),
             ...mapActions('bgprocess', [
                 'fetchProcesses',
-            ]),
-            ...mapGetters('bgprocess', [
-                'getProcesses'
             ]),
             onChangeTab(tab) {
                 this.tab = tab;

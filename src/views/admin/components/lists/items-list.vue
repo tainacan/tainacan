@@ -2045,12 +2045,16 @@ export default {
         }
     },
     computed: {
-        collection() {
-            return this.getCollection();
-        },
-        highlightedItem () {
-            return this.getHighlightedItem();
-        },
+        ...mapGetters('collection', {
+            'collection': 'getCollection',
+        }),
+        ...mapGetters('bulkedition', {
+            'groupId': 'getGroupId'
+        }),
+        ...mapGetters('search', {
+            'highlightedItem': 'getHighlightedItem',
+            'itemsPerPage': 'getItemsPerPage'
+        }),
         selectedItems () {
             if (this.$adminOptions.itemsSingleSelectionMode || this.$adminOptions.itemsMultipleSelectionMode)
                 this.$eventBusSearch.setSelectedItemsForIframe(this.getSelectedItems());
@@ -2077,9 +2081,6 @@ export default {
                 }
             }
             return true;
-        },
-        itemsPerPage(){
-            return this.getItemsPerPage();
         },
         totalPages(){
             return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));
@@ -2245,11 +2246,11 @@ export default {
         itemsLocations: {
             handler() {
                 setTimeout(() => {
-                    if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject ) {
+                    if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].leafletObject ) {
                         if (this.itemsLocations.length == 1)
-                            this.$refs['tainacan-admin-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 48], paddingTopRight: [48, 48] });
+                            this.$refs['tainacan-admin-view-mode-map'].leafletObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 48], paddingTopRight: [48, 48] });
                         else
-                            this.$refs['tainacan-admin-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 48], paddingTopRight: [48, 48] });
+                            this.$refs['tainacan-admin-view-mode-map'].leafletObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 48], paddingTopRight: [48, 48] });
                     }
                 }, 500);
             },
@@ -2276,19 +2277,12 @@ export default {
             deep: true
         }
     },
-    mounted() {
-        if (this.highlightsItem)
-            setTimeout(() => this.$eventBusSearch.highlightsItem(null), 3000);
-    },
     created() {
         this.shouldUseLegacyMasonyCols = wp !== undefined && wp.hooks !== undefined && wp.hooks.hasFilter('tainacan_use_legacy_masonry_view_mode_cols') && wp.hooks.applyFilters('tainacan_use_legacy_masonry_view_mode_cols', false);
     },
     methods: {
         ...mapActions('collection', [
             'deleteItem',
-        ]),
-        ...mapGetters('collection', [
-            'getCollection',
         ]),
         ...mapActions('bulkedition', [
             'createEditGroup',
@@ -2297,9 +2291,6 @@ export default {
             'deleteItemsInBulk',
             'untrashItemsInBulk'
         ]),
-        ...mapGetters('bulkedition', [
-            'getGroupId'
-        ]),
         ...mapActions('search', [
             'setSeletecItems',
             'cleanSelectedItems',
@@ -2307,12 +2298,8 @@ export default {
             'removeSelectedItem'
         ]),
         ...mapGetters('search', [
-            'getOrder',
-            'getOrderBy',
             'getStatus',
             'getSelectedItems',
-            'getHighlightedItem',
-            'getItemsPerPage'
         ]),
         setSelectedItemChecked(itemId) {
             if (this.$adminOptions.itemsSingleSelectionMode) {
@@ -2350,8 +2337,7 @@ export default {
                 object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems,
                 collectionId: this.collectionId
             }).then(() => {
-                let sequenceId = this.getGroupId();
-                this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));
+                this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, this.groupId, 1));
             });
         },
         selectAllItemsOnPage() {
@@ -2401,11 +2387,9 @@ export default {
                             collectionId: this.collectionId,
                             object: [itemId]
                         }).then(() => {
-                            let groupId = this.getGroupId();
-
                             this.untrashItemsInBulk({
                                 collectionId: this.collectionId,
-                                groupId: groupId
+                                groupId: this.groupId
                             }).then(() => this.$eventBusSearch.loadItems() );
                         });
                     }
@@ -2453,11 +2437,9 @@ export default {
                             collectionId: this.collectionId,
                             object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems
                         }).then(() => {
-                            let groupId = this.getGroupId();
-
                             this.untrashItemsInBulk({
                                 collectionId: this.collectionId,
-                                groupId: groupId
+                                groupId: this.groupId
                             }).then(() => {
                                 this.$eventBusSearch.loadItems();
                                 this.$emitter.emit('openProcessesPopup');
@@ -2485,12 +2467,10 @@ export default {
                             collectionId: this.collectionId,
                             object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems
                         }).then(() => {
-                            let groupId = this.getGroupId();
-
                             if (this.isOnTrash) {
                                 this.deleteItemsInBulk({
                                     collectionId: this.collectionId,
-                                    groupId: groupId
+                                    groupId: this.groupId
                                 }).then(() => {
                                     this.$eventBusSearch.loadItems();
                                     this.$emitter.emit('openProcessesPopup');
@@ -2498,7 +2478,7 @@ export default {
                             } else {
                                 this.trashItemsInBulk({
                                     collectionId: this.collectionId,
-                                    groupId: groupId
+                                    groupId: this.groupId
                                 }).then(() => {
                                     this.$eventBusSearch.loadItems();
                                     this.$emitter.emit('openProcessesPopup');
@@ -2513,7 +2493,17 @@ export default {
             });
         },
         filterBySelectedItems() {
-            this.$eventBusSearch.filterBySelectedItems(this.selectedItems);
+            let newQuery = {
+                postin: JSON.parse(JSON.stringify(this.selectedItems)),
+            }
+
+            if ( this.$route.query['fetch_only'] )
+                newQuery['fetch_only'] =  this.$route.query['fetch_only'];
+
+            if ( this.$route.query['fetch_only_meta'] )
+                newQuery['fetch_only_meta'] =  this.$route.query['fetch_only_meta'];
+
+            this.$router.replace({ path: this.$route.path, query: newQuery });
         },
         openItem() {
             if (this.contextMenuItem != null) {
@@ -2635,25 +2625,25 @@ export default {
             this.$userPrefs.set(prefsGeocoordinateMetadatum, id);
         },
         onMapReady() {
-            if ( LeafletActiveArea && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject )
-                this.$refs['tainacan-admin-view-mode-map'].mapObject.setActiveArea('leaflet-active-area');
+            if ( LeafletActiveArea && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].leafletObject )
+                this.$refs['tainacan-admin-view-mode-map'].leafletObject.setActiveArea('leaflet-active-area');
         },
         clearSelectedMarkers() {
             this.mapSelectedItemId = false;
             this.selectedMarkerIndexes = [];
-            if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject ) {
+            if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].leafletObject ) {
                 if (this.itemsLocations.length == 1)
-                    this.$refs['tainacan-admin-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 48], paddingTopRight: [48, 48] });
+                    this.$refs['tainacan-admin-view-mode-map'].leafletObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 48], paddingTopRight: [48, 48] });
                 else
-                    this.$refs['tainacan-admin-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 48], paddingTopRight: [48, 48] });
+                    this.$refs['tainacan-admin-view-mode-map'].leafletObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 48], paddingTopRight: [48, 48] });
             }
         },
         showItemByLocation(index) {
             this.mapSelectedItemId = this.itemsLocations[index].item.id;
             this.selectedMarkerIndexes = [];
             this.selectedMarkerIndexes.push(index);
-            if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject )
-                this.$refs['tainacan-admin-view-mode-map'].mapObject.panInsideBounds( [ this.itemsLocations[index].location ],  { animate: true, maxZoom: 16, paddingTopLeft: [48, 286], paddingTopRight: [48, 48] });
+            if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].leafletObject )
+                this.$refs['tainacan-admin-view-mode-map'].leafletObject.panInsideBounds( [ this.itemsLocations[index].location ],  { animate: true, maxZoom: 16, paddingTopLeft: [48, 286], paddingTopRight: [48, 48] });
         },
         showLocationsByItem(item) {
             this.mapSelectedItemId = item.id;
@@ -2666,11 +2656,11 @@ export default {
             })
 
             if ( selectedLocationsByItem.length) {
-                if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject ) {
+                if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].leafletObject ) {
                     if (selectedLocationsByItem.length > 1)
-                        this.$refs['tainacan-admin-view-mode-map'].mapObject.flyToBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 286], paddingTopRight: [48, 48] });
+                        this.$refs['tainacan-admin-view-mode-map'].leafletObject.flyToBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 286], paddingTopRight: [48, 48] });
                     else
-                        this.$refs['tainacan-admin-view-mode-map'].mapObject.panInsideBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 286], paddingTopRight: [48, 48] });
+                        this.$refs['tainacan-admin-view-mode-map'].leafletObject.panInsideBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 286], paddingTopRight: [48, 48] });
                 }
             } else {
                 this.$buefy.snackbar.open({

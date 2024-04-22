@@ -34,10 +34,14 @@
                     preventOnFilter: false,
                     animation: 250
                 }"
-                @change="handleChange"> 
+                @update="handleChange($event)"
+                @add="handleChange($event)"
+                @remove="handleChange($event)"> 
             <template #item="{ element: metadatum, index }">
                 <div 
                         v-show="(metadataNameFilterString == '' || filterByMetadatumName(metadatum)) && filterByMetadatumType(metadatum)"
+                        :data-metadatum-id="metadatum.id"
+                        :data-collection-id="metadatum.collection_id"
                         class="active-metadatum-item" 
                         :class="{
                             'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadatum.parent == 0 || metadatum.collection_id != collectionId || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied,
@@ -235,7 +239,7 @@
 </template>
 
 <script>
-    import { mapActions } from 'vuex';
+    import { mapActions, mapGetters } from 'vuex';
     import MetadatumEditionForm from '../../edition/metadatum-edition-form.vue';
     import MetadatumDetails from '../../other/metadatum-details.vue';
     import CustomDialog from '../../other/custom-dialog.vue';
@@ -326,17 +330,22 @@
                 'deleteMetadatum',
                 'updateChildMetadataOrder'
             ]),
+            ...mapGetters('metadata',[
+                'getMetadatumTypes'
+            ]),
             handleChange($event) {  
-                
                 switch ($event.type) {
                     case 'add':
-                        this.addNewMetadatum(this.childrenMetadata[$event.oldIndex], $event.newIndex);
+                        if ( !$event.from.classList.contains('active-metadata-area') ) {
+                            this.addNewMetadatum(this.getMetadatumTypes()[$event.oldIndex], $event.newIndex);
+                            $event.originalTarget.removeChild($event.item);
+                        }
                         break;
                     case 'remove':
                         this.removeMetadatum(this.childrenMetadata[$event.oldIndex]);
                         break;
+                    case 'change':
                     case 'update': {
-
                         const newChildrenMetadata = JSON.parse(JSON.stringify(this.childrenMetadata));
                         const element = newChildrenMetadata.splice($event.oldIndex, 1)[0];
                         newChildrenMetadata.splice($event.newIndex, 0, element);
@@ -443,6 +452,9 @@
                 this.updateMetadataOrder();
             },
             isAvailableChildMetadata(to, from, item) {
+                if (!item || !item.id)
+                    return false;
+                
                 if (from.el && from.el.className === 'active-metadata-area')
                     return false;
 
@@ -470,15 +482,16 @@
 </script>
 
 <style lang="scss" scoped>
+
 .child-metadata-list-container {
     position: relative;
     margin-left: 42px;
     border-left: 1px solid var(--tainacan-gray2);
 
     section.field {
-        padding: 0.5em 1em 0 1em;
+        padding: 0.5em 1em 0 1em !important;
         position: absolute;
-        width: 100%;
+        width: 100% !important;
     }
     .children-icon {
         position: absolute;

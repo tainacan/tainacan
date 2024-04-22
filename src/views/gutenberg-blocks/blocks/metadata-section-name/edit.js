@@ -1,6 +1,6 @@
 const { __ } = wp.i18n;
 const { ToolbarDropdownMenu, SVG, Path, __experimentalHeading: Heading } = wp.components;
-
+const { useEffect } = wp.element;
 const { useBlockProps, BlockControls, AlignmentControl } = wp.blockEditor;
 
 const levelToPath = {
@@ -35,8 +35,10 @@ export default function ({ attributes, setAttributes, context }) {
     if (context['tainacan/metadataSectionName'])
         sectionName = context['tainacan/metadataSectionName'];
 
-    if ( context['tainacan/metadataSectionId'] || context['tainacan/metadataSectionName'] )
-        setAttributes({ sectionId, sectionName });
+    useEffect(() => {
+        if ( context['tainacan/metadataSectionId'] || context['tainacan/metadataSectionName'] )
+            setAttributes({ sectionId, sectionName });
+    }, [ context ]);
     
     return <>
 

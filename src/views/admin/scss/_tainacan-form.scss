@@ -49,7 +49,7 @@
           background-color: var(--tainacan-red1);  
         }
     }
-    a[disabled] {
+    a[disabled="true"] {
         opacity: 0.5;
         user-select: none;
         pointer-events: none;

@@ -209,12 +209,9 @@ export default {
         }
     },
     computed: {
-        uploadedFileList() {
-            return this.getFiles();
-        },
-        collection() {
-            return this.getCollection()
-        }
+        ...mapGetters('collection', {
+            'collection': 'getCollection'
+        })
     },
     created() {
         // Obtains collection ID
@@ -233,10 +230,6 @@ export default {
             'sendFile',
             'cleanFiles',
             'deleteItem'
-        ]),
-         ...mapGetters('collection', [
-            'getFiles',
-            'getCollection'
         ]),
         ...mapActions('item', [
             'sendItem',

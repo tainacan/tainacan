@@ -48,7 +48,7 @@
         <template v-if="allowNewFromOptions && itemMetadatum.item">
             <!-- Term creation modal, used on admin for a complete term creation -->
             <b-modal
-                    v-model:active="isTermCreationModalOpen"
+                    :model-value="isTermCreationModalOpen"
                     :width="768"
                     trap-focus
                     aria-role="dialog"

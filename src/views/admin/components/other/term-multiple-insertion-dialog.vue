@@ -139,10 +139,14 @@
                 type: Function,
                 default: () => {}
             },
+            hideCancel: {
+                type: Boolean,
+                default: false,
+            },
             taxonomyId: '',
             excludeTree: '',
             isHierarchical: Boolean,
-            initialTermParent: String,
+            initialTermParent: [ String, Number ],
             initialTermParentName: String
         },
         emits: [

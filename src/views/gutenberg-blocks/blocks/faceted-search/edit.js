@@ -227,7 +227,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                                     onClick={ onToggle }
                                                     aria-expanded={ isOpen }>
                                                         { __('Items list source', 'tainacan')  }
-                                                        <span class="components-dropdown-menu__indicator"></span>  
+                                                        <span className="components-dropdown-menu__indicator"></span>  
                                                 </ToolbarButton>
                                         ) }
                                         renderContent={ ( { onToggle } ) => (
@@ -808,7 +808,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                 ) :
                 (
                     <div style={{ fontSize: (baseFontSize - 2) + 'px' }}>
-                        <div class="preview-warning">
+                        <div className="preview-warning">
                             { __('Warning: this is just a demonstration. To see the items list, either preview or publish your post.', 'tainacan') }
                         </div>
                         <div 
@@ -828,139 +828,139 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                     '--tainacan-primary': primaryColor,
                                     '--tainacan-secondary': secondaryColor
                                 }}
-                                class="items-list-placeholder">
-                            <div class="search-control">
+                                className="items-list-placeholder">
+                            <div className="search-control">
                                 { 
                                     !hideSearch ?
-                                    <span class="fake-searchbar">
-                                        { !hideAdvancedSearch ? <span class="fake-advanced-searchbar"></span> : null }
+                                    <span className="fake-searchbar">
+                                        { !hideAdvancedSearch ? <span className="fake-advanced-searchbar"></span> : null }
                                     </span>
                                     : null
                                 }
                                 {
-                                    showFiltersButtonInsideSearchControl && !hideHideFiltersButton ? <span class="fake-button"><div class="fake-icon"></div><div class="fake-text"></div></span> : null
+                                    showFiltersButtonInsideSearchControl && !hideHideFiltersButton ? <span className="fake-button"><div className="fake-icon"></div><div className="fake-text"></div></span> : null
                                 }
                                 { 
                                     !hideDisplayedMetadataButton ?
-                                    <span class="fake-button"><div class="fake-text"></div></span>
+                                    <span className="fake-button"><div className="fake-text"></div></span>
                                     :null
                                 }
                                 { 
                                     !hideSortingArea ?
-                                    <span class="fake-button"> { !hideSortByButton ? <div class="fake-text"></div> : null }<div class="fake-icon"></div><div class="fake-text"></div></span>
+                                    <span className="fake-button"> { !hideSortByButton ? <div className="fake-text"></div> : null }<div className="fake-icon"></div><div className="fake-text"></div></span>
                                 :null 
                                 }
                                 {
                                     !showInlineViewModeOptions ? 
-                                        <span class="fake-button"><div class="fake-icon"></div><div class="fake-text"></div></span> 
+                                        <span className="fake-button"><div className="fake-icon"></div><div className="fake-text"></div></span> 
                                     : 
-                                        <div class="fake-buttons-group">
-                                            { Array(3).fill().map( () => <div class="fake-button"><div class="fake-icon"></div></div> )}
-                                            { showFullscreenWithViewModes ? <span class="fake-button"><div class="fake-icon"></div></span> : null }
+                                        <div className="fake-buttons-group">
+                                            { Array(3).fill().map( () => <div className="fake-button"><div className="fake-icon"></div></div> )}
+                                            { showFullscreenWithViewModes ? <span className="fake-button"><div className="fake-icon"></div></span> : null }
                                         </div>
                                 }
                                 {
-                                    !showFullscreenWithViewModes ? <span class="fake-button"><div class="fake-icon"></div><div class="fake-text"></div></span> : null
+                                    !showFullscreenWithViewModes ? <span className="fake-button"><div className="fake-icon"></div><div className="fake-text"></div></span> : null
                                 }
                                 {
-                                    !hideExposersButton ? <span class="fake-button"><div class="fake-icon"></div><div class="fake-text"></div></span> : null
+                                    !hideExposersButton ? <span className="fake-button"><div className="fake-icon"></div><div className="fake-text"></div></span> : null
                                 }
                             </div>
-                            <div class="below-search-control">
-                                { !showFiltersButtonInsideSearchControl & !hideHideFiltersButton && !hideFilters ? <span class="fake-hide-button"><div class="fake-icon"></div></span> : null }
+                            <div className="below-search-control">
+                                { !showFiltersButtonInsideSearchControl & !hideHideFiltersButton && !hideFilters ? <span className="fake-hide-button"><div className="fake-icon"></div></span> : null }
                                 { 
                                     !hideFilters && !filtersAsModal && !startWithFiltersHidden ?
                                         <div 
                                                 style={{
                                                     flexBasis: filtersAreaWidth + '%'
                                                 }}
-                                                class="filters">
-                                            <div class="fake-filters-heading"></div>
+                                                className="filters">
+                                            <div className="fake-filters-heading"></div>
                                             { Array(2).fill().map( () => {
-                                                return <div class="fake-filter">
-                                                    <span class="fake-text"></span>
-                                                    <span class="fake-searchbar"></span>
+                                                return <div className="fake-filter">
+                                                    <span className="fake-text"></span>
+                                                    <span className="fake-searchbar"></span>
                                                 </div>
                                             } )}
-                                            <div class="fake-filter">
-                                                <span class="fake-text"></span>
-                                                <div class="fake-checkbox-list">
+                                            <div className="fake-filter">
+                                                <span className="fake-text"></span>
+                                                <div className="fake-checkbox-list">
                                                     { Array(4).fill().map( () => {
                                                         return <div>
-                                                            <span class="fake-checkbox"></span>
-                                                            <span class="fake-text"></span>
+                                                            <span className="fake-checkbox"></span>
+                                                            <span className="fake-text"></span>
                                                         </div>
                                                     } ) }
-                                                    <div class="fake-link"></div>
+                                                    <div className="fake-link"></div>
                                                 </div>
                                             </div>
-                                            <div class="fake-filter">
-                                                <span class="fake-text"></span>
-                                                <span class="fake-searchbar"></span>
+                                            <div className="fake-filter">
+                                                <span className="fake-text"></span>
+                                                <span className="fake-searchbar"></span>
                                             </div>
-                                            <div class="fake-filter">
-                                                <span class="fake-text"></span>
-                                                <div class="fake-checkbox-list">
+                                            <div className="fake-filter">
+                                                <span className="fake-text"></span>
+                                                <div className="fake-checkbox-list">
                                                     { Array(2).fill().map( () => {
                                                         return <div>
-                                                            <span class="fake-checkbox"></span>
-                                                            <span class="fake-text"></span>
+                                                            <span className="fake-checkbox"></span>
+                                                            <span className="fake-text"></span>
                                                         </div>
                                                     } ) }
-                                                    <div class="fake-link"></div>
+                                                    <div className="fake-link"></div>
                                                 </div>
                                             </div>
                                         </div> 
                                     : null 
                                 }
-                                <div class="aside-filters">    
+                                <div className="aside-filters">    
                                     <div className={ 'items' + (hideItemsThumbnail ? ' items-without-thumbnail' : '') }>
                                         { Array(5).fill().map( () => {
-                                            return <div class="fake-item">
-                                                <div class="fake-item-header">
-                                                    <div class="fake-text"></div>
+                                            return <div className="fake-item">
+                                                <div className="fake-item-header">
+                                                    <div className="fake-text"></div>
                                                 </div>
                                                 <div 
                                                         style={{ 
                                                             backgroundImage: tainacan_plugin ? 'url("' + tainacan_plugin.base_url + '/assets/images/placeholder_square.png")' : '' 
                                                         }}
-                                                        class="fake-item-thumb"></div>
-                                                { Array(3).fill().map( () => <div class="fake-item-description"></div> ) }
+                                                        className="fake-item-thumb"></div>
+                                                { Array(3).fill().map( () => <div className="fake-item-description"></div> ) }
                                             </div>
                                         } ) }
-                                        <div class="fake-item fake-item-hovered">
-                                            <div class="fake-item-header">
-                                                <div class="fake-tooltip"><div class="fake-link"></div></div>
-                                                <div class="fake-text"></div>
+                                        <div className="fake-item fake-item-hovered">
+                                            <div className="fake-item-header">
+                                                <div className="fake-tooltip"><div className="fake-link"></div></div>
+                                                <div className="fake-text"></div>
                                             </div>
                                             <div 
                                                     style={{ 
                                                         backgroundImage: tainacan_plugin ? 'url("' + tainacan_plugin.base_url + '/assets/images/placeholder_square.png")' : '' 
                                                     }}
-                                                    class="fake-item-thumb"></div>
-                                            { Array(3).fill().map( () => <div class="fake-item-description"></div> ) }
+                                                    className="fake-item-thumb"></div>
+                                            { Array(3).fill().map( () => <div className="fake-item-description"></div> ) }
                                         </div>
                                         { Array(2).fill().map( () => {
-                                            return <div class="fake-item">
-                                                <div class="fake-item-header">
-                                                    <div class="fake-text"></div>
+                                            return <div className="fake-item">
+                                                <div className="fake-item-header">
+                                                    <div className="fake-text"></div>
                                                 </div>
                                                 <div 
                                                         style={{ 
                                                             backgroundImage: tainacan_plugin ? 'url("' + tainacan_plugin.base_url + '/assets/images/placeholder_square.png")' : '' 
                                                         }}
-                                                        class="fake-item-thumb"></div>
-                                                { Array(3).fill().map( () => <div class="fake-item-description"></div> ) }
+                                                        className="fake-item-thumb"></div>
+                                                { Array(3).fill().map( () => <div className="fake-item-description"></div> ) }
                                             </div>
                                         } ) }
                                     </div>
                                     { !hidePaginationArea ?
-                                    <div class="pagination">
-                                        <span class="fake-text"></span>
-                                        { !hideItemsPerPageButton ? <span class="fake-button"><div class="fake-text"></div></span> : null }
-                                        { !hideGoToPageButton ? <span class="fake-button"><div class="fake-text"></div></span> : null }
-                                        <div class="fake-buttons-group">
-                                            { Array(6).fill().map( () => <div class="fake-link"></div> ) }
+                                    <div className="pagination">
+                                        <span className="fake-text"></span>
+                                        { !hideItemsPerPageButton ? <span className="fake-button"><div className="fake-text"></div></span> : null }
+                                        { !hideGoToPageButton ? <span className="fake-button"><div className="fake-text"></div></span> : null }
+                                        <div className="fake-buttons-group">
+                                            { Array(6).fill().map( () => <div className="fake-link"></div> ) }
                                         </div>
                                     </div>
                                     : null }

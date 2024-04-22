@@ -146,6 +146,7 @@ UserPrefsPlugin.install = function (app, options = {}) {
             'collections_per_page': 12,
             'taxonomies_per_page': 12,
             'activities_per_page': 12,
+            'processes_per_page': 12,
             'order': 'DESC',
             'order_by': 'date',
             'view_mode': undefined,

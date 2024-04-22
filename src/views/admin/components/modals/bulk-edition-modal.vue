@@ -99,7 +99,7 @@
                                             :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                             :disabled="bulkEditionProcedures[criterion].isDone"
                                             class="tainacan-bulk-edition-field"
-                                            @input="addToBulkEditionProcedures($event, 'oldValue', criterion)"
+                                            @update:value="($event) => addToBulkEditionProcedures($event, 'oldValue', criterion)"
                                         />
 
                                     <div class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last tainacan-by-text">
@@ -117,7 +117,7 @@
                                             :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                                             :disabled="bulkEditionProcedures[criterion].isDone"  
-                                            @input="addToBulkEditionProcedures($event, 'newValue', criterion)"
+                                            @update:value="($event) => addToBulkEditionProcedures($event, 'newValue', criterion)"
                                         />
                                 </div>
 
@@ -128,7 +128,7 @@
                                             :disabled="bulkEditionProcedures[criterion].isDone"
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                             :placeholder="$i18n.get('instruction_select_a_status2')"
-                                            @update:model-value="addToBulkEditionProcedures($event, 'newValue', criterion)">
+                                            @update:model-update:value="($event) => addToBulkEditionProcedures($event, 'newValue', criterion)">
                                         <option
                                                 v-for="(statusOption, index) of $statusHelper.getStatuses().filter(option => { return option.value != 'trash' })"
                                                 :key="index"
@@ -144,7 +144,7 @@
                                             :disabled="bulkEditionProcedures[criterion].isDone"
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                             :placeholder="$i18n.get('instruction_select_a_comments_status')"
-                                            @update:model-value="addToBulkEditionProcedures($event, 'newValue', criterion)">
+                                            @update:model-update:value="($event) => addToBulkEditionProcedures($event, 'newValue', criterion)">
                                         <option
                                                 v-for="(statusOption, index) of $commentsStatusHelper.getStatuses()"
                                                 :key="index"
@@ -202,7 +202,7 @@
                                             :class="{ 'is-field-history': bulkEditionProcedures[criterion].isDone }"
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                             :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting"
-                                            @input="addToBulkEditionProcedures($event, 'newValue', criterion)"
+                                            @update:value="($event) => addToBulkEditionProcedures($event, 'newValue', criterion)"
                                         />
                                 </template>
                             </template>
@@ -329,7 +329,7 @@
             TainacanCompound: defineAsyncComponent(() => import('../metadata-types/compound/TainacanCompound.vue')),
             TainacanUser: defineAsyncComponent(() => import('../metadata-types/user/TainacanUser.vue')),
             TainacanGeocoordinate: defineAsyncComponent(() => import('../metadata-types/geocoordinate/TainacanGeoCoordinate.vue')),
-            TainacanURL: defineAsyncComponent(() => import('../metadata-types/url/TainacanURL.vue'))
+            TainacanUrl: defineAsyncComponent(() => import('../metadata-types/url/TainacanUrl.vue'))
         },
         props: {
             modalTitle: String,
@@ -367,9 +367,9 @@
             }
         },
         computed: {
-            metadata() {
-                return this.getMetadata();
-            }
+            ...mapGetters('metadata', {
+                'metadata': 'getMetadata'
+            })
         },
         created(){
             if (this.collectionId) {
@@ -436,9 +436,6 @@
             ...mapActions('metadata', [
                 'fetchMetadata'
             ]),
-            ...mapGetters('metadata', [
-                'getMetadata'
-            ]),
             finalizeProcedure(criterion){
 
                 Object.assign(this.bulkEditionProcedures[criterion], { 'isDone': true });
@@ -449,7 +446,7 @@
             },
             executeBulkEditionProcedure(criterion){
                 let procedure = this.bulkEditionProcedures[criterion];
-
+                
                 if (procedure.action === this.editionActions.redefine) {
                     Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 

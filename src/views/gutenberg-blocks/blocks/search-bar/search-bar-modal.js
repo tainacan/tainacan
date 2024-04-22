@@ -266,7 +266,7 @@ export default class SearchBarModal extends React.Component {
                         <div>
                             <div className="modal-radio-list">
                                 
-                                <p class="modal-radio-area-label">{__('Repository', 'tainacan')}</p>
+                                <p className="modal-radio-area-label">{__('Repository', 'tainacan')}</p>
                                 <RadioControl
                                     className={'repository-radio-option'}
                                     selected={ this.state.temporaryCollectionId }
@@ -275,7 +275,7 @@ export default class SearchBarModal extends React.Component {
                                         this.setState({ temporaryCollectionId: aCollectionId });
                                     } } />
                                 <hr/>
-                                <p class="modal-radio-area-label">{__('Collections', 'tainacan')}</p>
+                                <p className="modal-radio-area-label">{__('Collections', 'tainacan')}</p>
                                 <RadioControl
                                     selected={ this.state.temporaryCollectionId }
                                     options={

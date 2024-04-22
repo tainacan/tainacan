@@ -123,15 +123,11 @@ export default {
         }
     },
     computed: {
-        totalItems(){    
-            return this.getTotalItems();
-        },
-        page(){
-            return this.getPage();
-        },
-        itemsPerPage(){
-            return this.getItemsPerPage();
-        },
+        ...mapGetters('search', {
+            'totalItems': 'getTotalItems',
+            'page': 'getPage',
+            'itemsPerPage': 'getItemsPerPage'
+        }),
         totalPages(){
             return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));    
         },
@@ -150,20 +146,13 @@ export default {
         }
     },
     methods: {
-        ...mapGetters('search', [
-            'getTotalItems',
-            'getPage',
-            'getItemsPerPage',
-            'getPostQuery'
-        ]),
         onChangeItemsPerPage(value) {
-            if ( this.itemsPerPage == value){
+            if ( this.itemsPerPage == value )
                 return false;
-            } else if (Number(value) > Number(this.maxItemsPerPage)) {
+            else if ( Number(value) > Number(this.maxItemsPerPage) )
                 this.$eventBusSearch.setItemsPerPage(this.maxItemsPerPage);
-            } else {
+            else
                 this.$eventBusSearch.setItemsPerPage(value);
-            }
         },
         onPageChange(page) {
             if(page == 0)

@@ -402,18 +402,18 @@ export default {
         }
     },
     computed: {
-        item() {
-            return this.getItem();
-        },
-        page() {
-            this.setMaxAndMinPages();
-            return this.getPage();
-        },
-        totalPages() {
-            return this.getTotalPages();
-        }
+        ...mapGetters('item', {
+            'item': 'getItem'
+        }),
+        ...mapGetters('search', {
+            'totalPages': 'getTotalPages',
+            'page': 'getPage',
+        })
     },
     watch: {
+        page() {
+            this.setMaxAndMinPages();
+        },
         isLoading: {
             handler(val, oldValue) {
                 if (val === false && oldValue === true && this.swiper && this.items && this.items.length) {
@@ -539,14 +539,6 @@ export default {
         ...mapActions('item', [
             'fetchItem',
             'replaceItem'
-        ]),
-        ...mapGetters('item', [
-            'getItem'
-        ]),
-         ...mapGetters('search', [
-            'getTotalPages',
-            'getPage',
-            'getItemsPerPage'
         ]),
         setMaxAndMinPages () {
             this.minPage = JSON.parse(JSON.stringify(this.getPage() < this.minPage ? this.getPage() : this.minPage));

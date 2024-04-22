@@ -95,6 +95,9 @@
             }
         },
         computed: {
+            ...mapGetters('search', {
+                'totalItems': 'getTotalItems'
+            }),
             filterTags() {
                 let tags = this.getFilterTags();
                 let flattenTags = [];
@@ -127,9 +130,6 @@
                 });
 
                 return flattenTags;
-            },
-            totalItems() {
-                return this.getTotalItems()
             }
         },
         watch: {
@@ -166,8 +166,7 @@
         },
         methods: {
             ...mapGetters('search',[
-                'getFilterTags',
-                'getTotalItems'
+                'getFilterTags'
             ]),
             removeMetaQuery({ filterId, value, singleLabel, label, taxonomy, metadatumId, metadatumName, argType }) {
                 this.$eventBusSearch.resetPageOnStore();

@@ -422,6 +422,10 @@ export const moveMetadatumDown = ({ commit }, { index, sectionIndex }) => {
     commit('moveMetadatumDown', { index, sectionIndex });
 }
 
+export const moveMetadatum = ({ commit }, { newIndex, oldIndex, sectionIndex }) => {
+    commit('moveMetadatum', { newIndex, oldIndex, sectionIndex });
+}
+
 // METADATA SECTION METADATA LIST
 export const fetchMetadataSectionMetadata = ({commit}, { collectionId , metadataSectionId }) => {
     return new Promise((resolve, reject) => {

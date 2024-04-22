@@ -130,9 +130,9 @@ export default {
         }
     },
     computed: {
-        metadatumMappers() {
-            return this.getMetadatumMappers();
-        },
+        ...mapGetters('metadata', {
+            'metadatumMappers': 'getMetadatumMappers'
+        }),
         hasPresetsHook() {
             if (wp !== undefined && wp.hooks !== undefined)
                 return wp.hooks.hasFilter(`tainacan_collections_presets`);
@@ -171,9 +171,6 @@ export default {
     methods: {
         ...mapActions('metadata', [
             'fetchMetadatumMappers'
-        ]),
-        ...mapGetters('metadata', [
-            'getMetadatumMappers'
         ]),
         onNewCollectionPreset(collectionPreset) {
             this.isCreatingCollectionPreset = true;

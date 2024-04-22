@@ -320,12 +320,10 @@
             }
         },
         computed: {
-            originalRole() {
-                return this.getRole()
-            },
-            capabilities() {
-                return this.getCapabilities();
-            },
+            ...mapGetters('capability', {
+                'originalRole': 'getRole',
+                'capabilities': 'getCapabilities'
+            }),
             collectionCapabilities() {
                 let collectionCapabilities = {}
 
@@ -423,13 +421,6 @@
                 'updateRole',
                 'fetchRole',
                 'fetchCapabilities'
-            ]),
-            ...mapGetters('collection', [
-                'getCollections'
-            ]),
-            ...mapGetters('capability', [
-                'getRole',
-                'getCapabilities'
             ]),
             onUpdateCapability(value, capabilityKey) {
                 this.showNotice = false;

@@ -62,12 +62,12 @@ export default {
         isRepositoryLevel: Boolean
     },
     computed: {
-        status() {
-            return this.getStatus();
-        },
-        collection() {
-            return this.getCollection();
-        },
+        ...mapGetters('search', {
+            'status': 'getStatus'
+        }),
+        ...mapGetters('collection', {
+            'collection': 'getCollection'
+        }),
         repositoryTotalItems() {
 
             if (!this.$adminOptions.hideItemsListStatusTabsTotalItems) {
@@ -94,11 +94,7 @@ export default {
         }
     },
     methods: {
-        ...mapGetters('search', [
-            'getStatus'
-        ]),
         ...mapGetters('collection', [
-            'getCollection',
             'getCollections'
         ]),
         onChangeTab(status) {

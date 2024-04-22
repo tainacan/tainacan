@@ -423,9 +423,9 @@ export default {
         }
     },
     computed: {
-        metadatumTypes() {
-            return this.getMetadatumTypes();
-        },
+        ...mapGetters('metadata', {
+            'metadatumTypes': 'getMetadatumTypes'
+        }),
         collectionNonChildMetadata() {
             return Array.isArray(this.collectionMetadata) ? this.collectionMetadata.filter((metadatum) => !this.checkIfMetadatumIsChild(metadatum)) : [];
         }
@@ -475,12 +475,6 @@ export default {
             'fetchMetadata',
             'fetchMetadatumTypes',
             'sendMetadatum'
-        ]),
-        ...mapGetters('metadata', [
-            'getMetadatumTypes'
-        ]),
-        ...mapGetters('bgprocess', [
-            'getProcess'
         ]),
         ...mapActions('collection', [
             'fetchCollectionBasics'

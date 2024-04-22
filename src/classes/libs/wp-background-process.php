@@ -81,7 +81,7 @@
 		 * @var string
 		 * @access protected
 		 */
-		protected $cron_interval;
+		protected $cron_interval = 5;
 
 		/**
 		 * Initiate new background process
@@ -289,8 +289,11 @@
 		 * @return $this
 		 */
 		protected function unlock_process() {
-			$this->debug('unlocking process');
+			$this->debug('unlocking process: '. $this->identifier . '_process_lock');
+			global $wpdb;
+			$wpdb->query('START TRANSACTION');
 			delete_site_transient( $this->identifier . '_process_lock' );
+			$wpdb->query('COMMIT');
 
 			return $this;
 		}

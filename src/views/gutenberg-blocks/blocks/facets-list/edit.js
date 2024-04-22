@@ -147,7 +147,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                         <span>{ facet.label ? facet.label : '' }</span>
                         {
                             facet.total_items ?
-                            <span class="facet-item-count" style={{ display: !showItemsCount ? 'none' : '' }}>
+                            <span className="facet-item-count" style={{ display: !showItemsCount ? 'none' : '' }}>
                                 { itemsCountStyle === 'below' ? 
                                     ( facet.total_items != 1 ? (facet.total_items + ' ' + __('items', 'tainacan' )) : (facet.total_items + ' ' + __('item', 'tainacan' )) )
                                     :
@@ -182,19 +182,19 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                 </a>
                 { appendChildTerms && facet.total_children > 0 ?
                     isLoadingChildTerms == facetId ? 
-                    <div class="spinner-container">
+                    <div className="spinner-container">
                         <Spinner />
                     </div>
                     :
                     ( childFacetsObject[facetId] && childFacetsObject[facetId].visible ?
-                        <ul class="child-term-facets">
+                        <ul className="child-term-facets">
                             { 
                                 childFacetsObject[facetId].facets.length ? 
                                     childFacetsObject[facetId].facets.map((aChildTermFacet) => {
                                         return prepareFacet(aChildTermFacet);
                                     })
                                     :
-                                    <p class="no-child-facet-found">{ __( 'The child terms of this facet do not contain items.', 'tainacan' )}</p>
+                                    <p className="no-child-facet-found">{ __( 'The child terms of this facet do not contain items.', 'tainacan' )}</p>
                             }
                         </ul>
                     : null )
@@ -790,14 +790,14 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
 
             {
                 showSearchBar ?
-                <div class="facets-search-bar">
+                <div className="facets-search-bar">
                     <Button
                         onClick={ () => {  setContent(); }}
                         label={__('Search', 'tainacan')}>
-                        <span class="icon">
+                        <span className="icon">
                             <i>
                                 <svg width="24" height="24" viewBox="-2 -4 20 20">
-                                <path class="st0" d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
+                                <path className="st0" d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
                                     c0.7,0.3,1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.5,1.2,0.5,2.5,0.2,3.7c0,0.2-0.1,0.4-0.2,0.6c0,0.1-0.2,0.6-0.2,0.6
                                     c0.6,0.6,1.3,1.3,1.9,1.9c0.7,0.7,1.3,1.3,2,2c0,0,0.3,0.2,0.3,0.3c0,0.3-0.1,0.7-0.3,1c-0.2,0.6-0.8,1-1.4,1.2
                                     c-0.1,0-0.6,0.2-0.6,0.1c0,0-4.2-4.2-4.2-4.2c0,0-0.8,0.3-0.8,0.4c-1.3,0.4-2.8,0.5-4.1-0.1c-0.7-0.3-1.3-0.7-1.8-1.2
@@ -866,7 +866,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
             }
             
             { isLoading ? 
-                <div class="spinner-container">
+                <div className="spinner-container">
                     <Spinner />
                 </div> :
                 <div>
@@ -901,10 +901,10 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
 
             { showLoadMore && facets.length > 0 && !isLoading ?
                 <button
-                        class="show-more-button"
+                        className="show-more-button"
                         disabled
                         label={__('Show more', 'tainacan')}>
-                    <span class="icon">
+                    <span className="icon">
                         <i>
                             <svg
                                     width="24"

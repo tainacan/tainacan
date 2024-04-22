@@ -748,46 +748,32 @@
             }
         },
         computed: {
+            ...mapGetters('collection', {
+                'items': 'getItems',
+                'collection': 'getCollection'
+            }),
+            ...mapGetters('metadata', {
+                'metadata': 'getMetadata'
+            }),
+            ...mapGetters('search', {
+                'searchQuery': 'getSearchQuery',
+                'sentenceMode': 'getSentenceMode',
+                'status': 'getStatus',
+                'orderBy': 'getOrderBy',
+                'order': 'getOrder',
+                'totalItems': 'getTotalItems',
+                'adminViewMode': 'getAdminViewMode',
+                'metaKey': 'getMetaKey'
+            }),
             isSortingByCustomMetadata() {
                 return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'date' && this.orderBy != 'modified');
-            },
-            items() {
-                return this.getItems();
-            },
-            totalItems() {
-                this.updateCollectionInfo();
-                return this.getTotalItems();
-            },
-            metadata() {
-                return this.getMetadata();
-            },
-            collection() {
-                return this.getCollection();
-            },
-            searchQuery() {
-                return this.getSearchQuery();
-            },
-            status() {
-                return this.getStatus();
-            },
-            sentenceMode() {
-                return this.getSentenceMode();
-            },
-            adminViewMode() {
-                const currentAdminViewMode = this.getAdminViewMode();
-                return ['table', 'cards', 'records', 'grid', 'masonry', 'list', 'map'].indexOf(currentAdminViewMode) >= 0 ? currentAdminViewMode : 'table';
-            },
-            orderBy() {
-                return this.getOrderBy();
-            },
-            order() {
-                return this.getOrder();
             },
             showLoading() {
                 return this.isLoadingItems || this.isLoadingMetadata;
             },
-            metaKey() {
-                return this.getMetaKey();
+            adminViewMode() {
+                const currentAdminViewMode = this.getAdminViewMode();
+                return ['table', 'cards', 'records', 'grid', 'masonry', 'list', 'map'].indexOf(currentAdminViewMode) >= 0 ? currentAdminViewMode : 'table';
             },
             orderByName() {
                 const metadatumName =  this.$orderByHelper.getOrderByMetadatumName({
@@ -949,6 +935,9 @@
                             this.$refs['filters-modal'].focus();
                     }, 800);
                 }
+            },
+            totalItems() {
+                this.updateCollectionInfo();
             }
         },
         created() {
@@ -1030,28 +1019,14 @@
 
         },
         methods: {
-            ...mapGetters('collection', [
-                'getItems',
-                'getCollection'
-            ]),
             ...mapActions('collection', [
                 'fetchCollectionBasics'
             ]),
             ...mapActions('metadata', [
                 'fetchMetadata'
             ]),
-            ...mapGetters('metadata', [
-                'getMetadata'
-            ]),
             ...mapGetters('search', [
-                'getSearchQuery',
-                'getSentenceMode',
-                'getStatus',
-                'getOrderBy',
-                'getOrder',
-                'getTotalItems',
                 'getAdminViewMode',
-                'getMetaKey'
             ]),
             onOpenImportersModal() {
                 this.$buefy.modal.open({

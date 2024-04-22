@@ -183,7 +183,3 @@ export const cleanSelectedItems = ({ commit }) => {
 export const removeSelectedItem = ({ commit }, selectedItem ) => {
     commit('removeSelectedItem', selectedItem);
 };
-
-export const highlightsItem = ({ commit }, itemId ) => {
-    commit('setHighlightedItem', itemId);
-};

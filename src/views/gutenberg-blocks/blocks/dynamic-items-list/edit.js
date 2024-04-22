@@ -886,13 +886,13 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
             
                 <div> {
                     isLoadingCollection ? 
-                        <div class="spinner-container">
+                        <div className="spinner-container">
                             <Spinner />
                         </div>
                         :
                         <a
                                 href={ collection.url ? collection.url : '' }
-                                class="dynamic-items-collection-header">
+                                className="dynamic-items-collection-header">
                             <div
                                     style={{
                                         backgroundColor: collectionBackgroundColor ? collectionBackgroundColor : '', 
@@ -905,21 +905,21 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                         ((!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
                                     }>
                                 <h3 style={{  color: collectionTextColor ? collectionTextColor : '' }}>
-                                    { showCollectionLabel ? <span class="label">{ __('Collection', 'tainacan') }<br/></span> : null }
+                                    { showCollectionLabel ? <span className="label">{ __('Collection', 'tainacan') }<br/></span> : null }
                                     { collection && collection.name ? collection.name : '' }
                                 </h3>
                             </div>
                             {
                                 collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? 
                                     <div   
-                                        class="collection-thumbnail"
+                                        className="collection-thumbnail"
                                         style={{ 
                                             backgroundImage: 'url(' + (collection.thumbnail['tainacan-medium'] != undefined ? (collection.thumbnail['tainacan-medium'][0]) : (collection.thumbnail['medium'][0])) + ')',
                                         }}/>
                                 : null
                             }  
                             <div
-                                    class="collection-header-image"
+                                    className="collection-header-image"
                                     style={{
                                         backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
                                         minHeight: collection && collection.header_image ? '' : '80px',
@@ -933,12 +933,12 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
 
             {
                 showSearchBar ?
-                <div class="dynamic-items-search-bar">
+                <div className="dynamic-items-search-bar">
                     <Button
                         onClick={ () => { order = 'asc'; setAttributes({ order: order }); setContent(); }}
                         className={order == 'asc' ? 'sorting-button-selected' : ''}
                         label={__('Sort ascending', 'tainacan')}>
-                        <span class="icon">
+                        <span className="icon">
                             <i>
                                 <svg width="24" height="24" viewBox="-2 -4 20 20">
                                 <path d="M6.7,10.8l-3.3,3.3L0,10.8h2.5V0h1.7v10.8H6.7z M11.7,0.8H8.3v1.7h3.3V0.8z M14.2,5.8H8.3v1.7h5.8V5.8z M16.7,10.8H8.3v1.7	h8.3V10.8z"/>       
@@ -950,7 +950,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                         onClick={ () => { order = 'desc'; setAttributes({ order: order }); setContent(); }}
                         className={order == 'desc' ? 'sorting-button-selected' : ''}
                         label={__('Sort descending', 'tainacan')}>
-                        <span class="icon">
+                        <span className="icon">
                             <i>
                                 <svg width="24" height="24" viewBox="-2 -4 20 20">
                                 <path d="M6.7,3.3H4.2v10.8H2.5V3.3H0L3.3,0L6.7,3.3z M11.6,2.5H8.3v1.7h3.3V2.5z M14.1,7.5H8.3v1.7h5.8V7.5z M16.6,12.5H8.3v1.7 h8.3V12.5z"/>
@@ -961,10 +961,10 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                     <Button
                         onClick={ () => { setContent(); }}
                         label={__('Search', 'tainacan')}>
-                        <span class="icon">
+                        <span className="icon">
                             <i>
                                 <svg width="24" height="24" viewBox="-2 -4 20 20">
-                                <path class="st0" d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
+                                <path className="st0" d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
                                     c0.7,0.3,1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.5,1.2,0.5,2.5,0.2,3.7c0,0.2-0.1,0.4-0.2,0.6c0,0.1-0.2,0.6-0.2,0.6
                                     c0.6,0.6,1.3,1.3,1.9,1.9c0.7,0.7,1.3,1.3,2,2c0,0,0.3,0.2,0.3,0.3c0,0.3-0.1,0.7-0.3,1c-0.2,0.6-0.8,1-1.4,1.2
                                     c-0.1,0-0.6,0.2-0.6,0.1c0,0-4.2-4.2-4.2-4.2c0,0-0.8,0.3-0.8,0.4c-1.3,0.4-2.8,0.5-4.1-0.1c-0.7-0.3-1.3-0.7-1.8-1.2
@@ -980,10 +980,10 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                             onChange={ (value) =>  { _.debounce(applySearchString(value), 300); } }
                             type="text"/>
                     <Button
-                            class="previous-button"
+                            className="previous-button"
                             disabled
                             label={__('Previous page', 'tainacan')}>
-                        <span class="icon">
+                        <span className="icon">
                             <i>
                                 <svg
                                         width="30"
@@ -998,10 +998,10 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                         </span>
                     </Button>
                     <Button
-                            class="next-button"
+                            className="next-button"
                             disabled
                             label={__('Next page', 'tainacan')}>
-                        <span class="icon">
+                        <span className="icon">
                             <i>
                                 <svg
                                         width="30"
@@ -1062,7 +1062,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
             }
             
             { isLoading ? 
-                <div class="spinner-container">
+                <div className="spinner-container">
                     <Spinner />
                 </div> :
                 <div>

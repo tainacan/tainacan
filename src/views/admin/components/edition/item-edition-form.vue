@@ -397,7 +397,7 @@
                                                         <i class="tainacan-icon tainacan-icon-metadata" />
                                                     </span>
                                                     <span
-                                                            v-if="metadataSections.length > 1 && collection.item_enable_metadata_enumeration === 'yes'"
+                                                            v-if="metadataSections.length > 1 && collection && collection.item_enable_metadata_enumeration === 'yes'"
                                                             style="opacity: 0.65;"
                                                             class="metadata-section-enumeration">
                                                         {{ Number(sectionIndex) + 1 }}.
@@ -443,7 +443,7 @@
                                                             :hide-help-buttons="false"
                                                             :help-info-bellow-label="false"
                                                             :is-mobile-screen="isMobileScreen"
-                                                            :enumerate-metadatum="metadataSections.length > 1 && collection.item_enable_metadata_enumeration === 'yes' ? ( (Number(sectionIndex) + 1) + '.' + (Number(getMetadatumOrderInSection(sectionIndex, itemMetadatum.metadatum)) + 1) ) : false"
+                                                            :enumerate-metadatum="metadataSections.length > 1 && collection && collection.item_enable_metadata_enumeration === 'yes' ? ( (Number(sectionIndex) + 1) + '.' + (Number(getMetadatumOrderInSection(sectionIndex, itemMetadatum.metadatum)) + 1) ) : false"
                                                             :is-last-metadatum="index > 2 && (index == itemMetadata.length - 1)"
                                                             :is-focused="focusedMetadatum === index"
                                                             :is-metadata-navigation="isMetadataNavigation"
@@ -671,7 +671,7 @@
                     <template v-else> 
                         <span 
                                 v-if="form.status === 'auto-draft'"
-                                class="has-text-danger">
+                                class="has-text-warning">
                             {{ $i18n.get('info_autodraft_updated') }}
                         </span>
                         <span v-else>
@@ -849,9 +849,9 @@ export default {
         }
     },
     computed: {
-        collection() {
-            return this.getCollection()
-        },
+        ...mapGetters('collection', {
+            'collection': 'getCollection'
+        }),
         itemMetadata() {
             const realItemMetadata = JSON.parse(JSON.stringify(this.getItemMetadata()));
 
@@ -877,21 +877,17 @@ export default {
             });
             return tweakedItemMetadata;
         },
-        metadataSections() {
-            return this.getMetadataSections();
-        },
-        lastUpdated() {
-            return this.getLastUpdated();
-        },
-        group() {
-            return this.getGroup();
-        },
-        itemIdInSequence() {
-            return this.getItemIdInSequence();
-        },
-        totalAttachments() {
-            return this.getTotalAttachments();
-        },
+        ...mapGetters('metadata', {
+            'metadataSections': 'getMetadataSections'
+        }),
+        ...mapGetters('item', {
+            'totalAttachments': 'getTotalAttachments',
+            'lastUpdated': 'getLastUpdated'
+        }),
+        ...mapGetters('bulkedition', { 
+            'itemIdInSequence': 'getItemIdInSequence',
+            'group': 'getGroup'
+        }),
         totalRelatedItems() {
             return (this.item && this.item.related_items) ? Object.values(this.item.related_items).reduce((totalItems, aRelatedItemsGroup) => totalItems + parseInt(aRelatedItemsGroup.total_items), 0) : false;
         },
@@ -1144,29 +1140,16 @@ export default {
         ]),
         ...mapGetters('item',[
             'getItemMetadata',
-            'getTotalAttachments',
-            'getLastUpdated',
-            'getAttachments'
         ]),
         ...mapActions('collection', [
             'deleteItem',
-        ]),
-        ...mapGetters('collection', [
-            'getCollection',
         ]),
         ...mapActions('bulkedition', [
             'fetchItemIdInSequence',
 			'fetchSequenceGroup'
         ]),
-        ...mapGetters('bulkedition', [
-            'getItemIdInSequence',
-            'getGroup'
-        ]),
         ...mapActions('metadata',[
             'fetchMetadataSections'
-        ]),
-        ...mapGetters('metadata',[
-            'getMetadataSections'
         ]),
         onSubmit(status, sequenceDirection) {
 

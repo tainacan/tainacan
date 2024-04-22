@@ -181,7 +181,7 @@
             TainacanCompound: defineAsyncComponent(() => import('./compound/TainacanCompound.vue')),
             TainacanUser: defineAsyncComponent(() => import('./user/TainacanUser.vue')),
             TainacanGeocoordinate: defineAsyncComponent(() => import('./geocoordinate/TainacanGeoCoordinate.vue')),
-            TainacanURL: defineAsyncComponent(() => import('./url/TainacanURL.vue'))
+            TainacanUrl: defineAsyncComponent(() => import('./url/TainacanUrl.vue'))
         },
         props: {
             itemMetadatum: Object,
@@ -306,7 +306,7 @@
                                 currentValues = this.values.map(term => term.value)
                             else
                                 currentValues = this.values;
-                                
+                             
                             if (Array.isArray(currentValues)) {
                                 for (let value of currentValues) {
                                     let foundIndex = this.itemMetadatum.value.findIndex(element => value == element.id);
@@ -326,7 +326,10 @@
                         
                         // A single term value
                         case 'Object':
-                            if (this.values.length && this.values[0] == this.itemMetadatum.value.id)
+                            if (
+                                ( Array.isArray(this.values) && this.values.length && this.values[0] == this.itemMetadatum.value.id ) ||
+                                ( this.values == this.itemMetadatum.value.id )
+                            ) 
                                 return;
                             break;
 
@@ -336,7 +339,6 @@
                                 return;
                     }
                 }
-                
                 // If none is the case, the value is update request is sent to the API
                 this.$emit('input', {
                     itemId: this.itemMetadatum.item.id,

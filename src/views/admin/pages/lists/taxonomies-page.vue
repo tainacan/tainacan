@@ -283,12 +283,10 @@
             }
         },
         computed: {
-            taxonomies(){
-                return this.get();
-            },
-            repositoryTotalTaxonomies(){
-                return this.getRepositoryTotalTaxonomies();
-            },
+            ...mapGetters('taxonomy', {
+                'taxonomies': 'get',
+                'repositoryTotalTaxonomies': 'getRepositoryTotalTaxonomies'
+            }),
             statusOptionsForTaxonomies() {
                 return this.$statusHelper.getStatuses().filter((status) => status.slug != 'draft' && (status.slug != 'private' || (status.slug == 'private' && this.$userCaps.hasCapability('tnc_rep_read_private_taxonomies'))));
             }
@@ -324,10 +322,6 @@
         methods: {
             ...mapActions('taxonomy', [
                 'fetch',
-            ]),
-            ...mapGetters('taxonomy', [
-                'get',
-                'getRepositoryTotalTaxonomies'
             ]),
             onChangeTab(status) {
                 this.page = 1;
