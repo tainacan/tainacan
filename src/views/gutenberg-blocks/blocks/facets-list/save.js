@@ -30,28 +30,27 @@ export default function({ attributes }) {
     return <div 
                 { ...blockProps }
                 data-module="facets-list"
-                metadatum-id={ metadatumId }
-                metadatum-type={ metadatumType }
-                collection-id={ collectionId }  
-                collection-slug={ collectionSlug }
-                parent-term-id={ parentTerm ? parentTerm.id : undefined }  
-                show-image={ '' + showImage }
-                name-inside-image={ nameInsideImage === true ? 'true' : 'false' }
-                show-items-count={ '' + showItemsCount }
-                show-search-bar={ '' + showSearchBar }
-                show-load-more={ '' + showLoadMore }
-                image-size={ imageSize }
-                append-child-terms={ (appendChildTerms === true ? 'true' : 'false') }
-                link-term-facets-to-term-page={ linkTermFacetsToTermPage === false ? 'false' : 'true' }
-                layout={ layout }
-                items-count-style={ itemsCountStyle }
-                cloud-rate={ cloudRate }
-                grid-margin={ gridMargin }
-                max-facets-number={ maxFacetsNumber }
-                max-columns-count={ maxColumnsCount }
-                tainacan-api-root={ tainacan_blocks.root }
-                tainacan-base-url={ tainacan_blocks.base_url }
-                tainacan-site-url={ tainacan_blocks.site_url }
+                data-metadatum-id={ metadatumId }
+                data-metadatum-type={ metadatumType }
+                data-collection-id={ collectionId }  
+                data-collection-slug={ collectionSlug }
+                data-parent-term-id={ parentTerm ? parentTerm.id : undefined }  
+                data-show-image={ '' + showImage }
+                data-name-inside-image={ nameInsideImage === true ? 'true' : 'false' }
+                data-show-items-count={ '' + showItemsCount }
+                data-show-search-bar={ '' + showSearchBar }
+                data-show-load-more={ '' + showLoadMore }
+                data-image-size={ imageSize }
+                data-append-child-terms={ (appendChildTerms === true ? 'true' : 'false') }
+                data-link-term-facets-to-term-page={ linkTermFacetsToTermPage === false ? 'false' : 'true' }
+                data-layout={ layout }
+                data-items-count-style={ itemsCountStyle }
+                data-cloud-rate={ cloudRate }
+                data-grid-margin={ gridMargin }
+                data-max-facets-number={ maxFacetsNumber }
+                data-max-columns-count={ maxColumnsCount }
+                data-tainacan-api-root={ tainacan_blocks.root }
+                data-tainacan-site-url={ tainacan_blocks.site_url }
                 id={ 'wp-block-tainacan-facets-list_' + blockId }>
                     { content }
             </div>

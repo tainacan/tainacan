@@ -1,45 +1,45 @@
 <template>
     <b-field
-            class="filter-item-forms"
             :ref="isMobileScreen ? ('filter-field-id-' + filter.id) : null"
-            @touchstart.native="setFilterFocus(filter.id)"
-            @mousedown.native="setFilterFocus(filter.id)"
-            :style="{ columnSpan: filtersAsModal && filter.filter_type_object && filter.filter_type_object.component && (filter.filter_type_object.component == 'tainacan-filter-taxonomy-checkbox' || filter.filter_type_object.component == 'tainacan-filter-checkbox') ? 'all' : 'unset'}">
+            class="filter-item-forms"
+            :style="{ columnSpan: filtersAsModal && filter.filter_type_object && filter.filter_type_object.component && (filter.filter_type_object.component == 'tainacan-filter-taxonomy-checkbox' || filter.filter_type_object.component == 'tainacan-filter-checkbox') ? 'all' : 'unset'}"
+            @touchstart="setFilterFocus(filter.id)"
+            @mousedown="setFilterFocus(filter.id)">
         <b-collapse
                 v-if="displayFilter"
-                class="show" 
-                :open.sync="singleCollapseOpen"
+                v-model="singleCollapseOpen" 
+                class="show"
                 animation="filter-item">
-            <button
-                    :for="'filter-input-id-' + filter.id"
-                    :aria-controls="'filter-input-id-' + filter.id"
-                    :aria-expanded="singleCollapseOpen"
-                    v-tooltip="{
-                        delay: {
-                            shown: 500,
-                            hide: 300,
-                        },
-                        content: filter.name,
-                        html: false,
-                        autoHide: false,
-                        placement: 'top-start',
-                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
-                    }"
-                    :id="'filter-label-id-' + filter.id"
-                    :aria-label="filter.name"
-                    class="label"
-                    slot="trigger"
-                    slot-scope="props">
-                <span class="icon">
-                    <i 
-                            :class="{
-                                'tainacan-icon-arrowdown' : props.open,
-                                'tainacan-icon-arrowright' : !props.open
-                            }"
-                            class="tainacan-icon tainacan-icon-1-25em"/>
-                </span>
-                <span class="collapse-label">{{ filter.name }}</span>
-            </button>
+            <template #trigger="props">
+                <button
+                        :id="'filter-label-id-' + filter.id"
+                        v-tooltip="{
+                            delay: {
+                                shown: 500,
+                                hide: 300,
+                            },
+                            content: filter.name,
+                            html: false,
+                            autoHide: false,
+                            placement: 'top-start',
+                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
+                        }"
+                        :for="'filter-input-id-' + filter.id"
+                        :aria-controls="'filter-input-id-' + filter.id"
+                        :aria-expanded="singleCollapseOpen"
+                        :aria-label="filter.name"
+                        class="label">
+                    <span class="icon">
+                        <i 
+                                :class="{
+                                    'tainacan-icon-arrowdown' : props && props.open,
+                                    'tainacan-icon-arrowright' : props && !props.open
+                                }"
+                                class="tainacan-icon tainacan-icon-1-25em" />
+                    </span>
+                    <span class="collapse-label">{{ filter.name }}</span>
+                </button>
+            </template>
             <div :id="'filter-input-id-' + filter.id">
                 <component
                         :is="filter.filter_type_object ? filter.filter_type_object.component : null"
@@ -49,9 +49,9 @@
                         :is-repository-level="isRepositoryLevel"
                         :is-loading-items="isLoadingItems"
                         :current-collection-id="$eventBusSearch.collectionId"
-                        @input="onInput"
-                        @updateParentCollapse="onFilterUpdateParentCollapse" 
-                        :filters-as-modal="filtersAsModal" />
+                        :filters-as-modal="filtersAsModal"
+                        @input="onInput" 
+                        @update-parent-collapse="onFilterUpdateParentCollapse" />
             </div>
         </b-collapse>
         <div 
@@ -60,8 +60,6 @@
             <div class="collapse-trigger">
                 <button
                         
-                        :for="'filter-input-id-' + filter.id"
-                        :aria-controls="'filter-input-id-' + filter.id"
                         v-tooltip="{
                             delay: {
                                 shown: 500,
@@ -73,10 +71,12 @@
                             placement: 'top-start',
                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                         }"
-                        @click="displayFilter = true"
-                        class="label">
+                        :for="'filter-input-id-' + filter.id"
+                        :aria-controls="'filter-input-id-' + filter.id"
+                        class="label"
+                        @click="displayFilter = true">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-arrowright tainacan-icon-1-25em"/>
+                        <i class="tainacan-icon tainacan-icon-arrowright tainacan-icon-1-25em" />
                     </span>
                     <span class="collapse-label">{{ filter.name }}</span>
                 </button>
@@ -86,32 +86,22 @@
 </template>
 
 <script>
-    import TainacanFilterNumeric from './numeric/Numeric.vue';
-    import TainacanFilterDate from './date/Date.vue';
-    import TainacanFilterSelectbox from './selectbox/Selectbox.vue';
-    import TainacanFilterAutocomplete from './autocomplete/Autocomplete.vue';
-    import TainacanFilterCheckbox from './checkbox/Checkbox.vue';
-    import TainacanFilterTaginput from './taginput/Taginput.vue';
-    import TainacanFilterTaxonomyCheckbox from './taxonomy/Checkbox.vue';
-    import TainacanFilterTaxonomyTaginput from './taxonomy/Taginput.vue';
-    import TainacanFilterDateInterval from './date-interval/DateInterval.vue';
-    import TainacanFilterNumericInterval from './numeric-interval/NumericInterval.vue';
-    import TainacanFilterNumericListInterval from './numeric-list-interval/NumericListInterval.vue';
+    import { defineAsyncComponent } from 'vue';
 
     export default {
         name: 'TainacanFilterItem',
          components: {
-            TainacanFilterNumeric,
-            TainacanFilterDate,
-            TainacanFilterSelectbox,
-            TainacanFilterAutocomplete,
-            TainacanFilterCheckbox,
-            TainacanFilterTaginput,
-            TainacanFilterTaxonomyCheckbox,
-            TainacanFilterTaxonomyTaginput,
-            TainacanFilterDateInterval,
-            TainacanFilterNumericInterval,
-            TainacanFilterNumericListInterval
+            TainacanFilterNumeric: defineAsyncComponent(() => import('./numeric/TainacanFilterNumeric.vue')),
+            TainacanFilterDate: defineAsyncComponent(() => import('./date/TainacanFilterDate.vue')),
+            TainacanFilterSelectbox: defineAsyncComponent(() => import('./selectbox/TainacanFilterSelectbox.vue')),
+            TainacanFilterAutocomplete: defineAsyncComponent(() => import('./autocomplete/TainacanFilterAutocomplete.vue')),
+            TainacanFilterCheckbox: defineAsyncComponent(() => import('./checkbox/TainacanFilterCheckbox.vue')),
+            TainacanFilterTaginput: defineAsyncComponent(() => import('./taginput/TainacanFilterTaginput.vue')),
+            TainacanFilterTaxonomyCheckbox: defineAsyncComponent(() => import('./taxonomy/TainacanFilterCheckbox.vue')),
+            TainacanFilterTaxonomyTaginput: defineAsyncComponent(() => import('./taxonomy/TainacanFilterTaginput.vue')),
+            TainacanFilterDateInterval: defineAsyncComponent(() => import('./date-interval/TainacanFilterDateInterval.vue')),
+            TainacanFilterNumericInterval: defineAsyncComponent(() => import('./numeric-interval/TainacanFilterNumericInterval.vue')),
+            TainacanFilterNumericListInterval: defineAsyncComponent(() => import('./numeric-list-interval/TainacanFilterNumericListInterval.vue'))
         },
         props: {
             filter: Object,
@@ -150,7 +140,7 @@
         },
         methods: {
             onInput(inputEvent) {
-                this.$eventBusSearch.$emit('input', inputEvent);
+                this.$eventBusSearchEmitter.emit('input', inputEvent);
             },
             onFilterUpdateParentCollapse(open) {
                 const componentsThatShouldCollapseIfEmpty = ['tainacan-filter-taxonomy-checkbox', 'tainacan-filter-selectbox', 'tainacan-filter-checkbox'];

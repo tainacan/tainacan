@@ -197,7 +197,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 	 */
 	function test_metadata_metadata_type(){
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
-		$this->assertEquals( 10, sizeof( $Tainacan_Metadata->fetch_metadata_types() ) );
+		$this->assertEquals( 11, sizeof( $Tainacan_Metadata->fetch_metadata_types() ) );
 	}
 
 	/**

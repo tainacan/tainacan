@@ -6,13 +6,13 @@
                 &nbsp;
             <b-switch
                     size="is-small" 
-                    :value="displaySuggestions"
-                    @input="onUpdateDisplaySuggestions"
+                    :model-value="displaySuggestions"
                     :true-value="'yes'"
-                    :false-value="'no'" />
+                    :false-value="'no'"
+                    @update:model-value="onUpdateDisplaySuggestions" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-text', 'display_suggestions')"
-                    :message="$i18n.getHelperMessage('tainacan-text', 'display_suggestions')"/>
+                    :message="$i18n.getHelperMessage('tainacan-text', 'display_suggestions')" />
         </b-field>
         <b-field :addons="false">
             <label class="label is-inline">
@@ -22,10 +22,10 @@
                         :message="$i18n.getHelperMessage('tainacan-text', 'mask')" />
             </label>
             <b-input
-                    :value="displaySuggestions === 'yes' ? '' : mask"
+                    :model-value="displaySuggestions === 'yes' ? '' : mask"
                     :disabled="displaySuggestions === 'yes'"
                     name="mask"
-                    @input="onUpdateMask" />
+                    @update:model-value="onUpdateMask" />
         </b-field>
     </section>
 </template>
@@ -35,6 +35,7 @@
         props: {
             value: [ String, Object, Array ]
         },
+        emits: ['update:value'],
         data() {
             return {
                 displaySuggestions: String,
@@ -48,11 +49,11 @@
         methods: {
             onUpdateDisplaySuggestions(value) {
                 this.displaySuggestions = value;
-                this.$emit('input', { display_suggestions: value, mask: value == 'yes' ? '' : this.mask });
+                this.$emit('update:value', { display_suggestions: value, mask: value == 'yes' ? '' : this.mask });
             },
             onUpdateMask(value) {
                 this.mask = value;
-                this.$emit('input', { display_suggestions: this.displaySuggestions, mask: value });
+                this.$emit('update:value', { display_suggestions: this.displaySuggestions, mask: value });
             }
         }
     }

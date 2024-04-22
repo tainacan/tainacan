@@ -1,25 +1,25 @@
 <template>
     <div class="block">
         <b-autocomplete
+                v-model="selected"
                 icon="magnify"
                 size="is-small"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                v-model="selected"
                 :data="options"
                 expanded
                 :loading="isLoadingOptions"
-                @input="($event) => { resetPage(); search($event); }"
                 field="label"
-                @select="onSelect"
                 clearable
                 :placeholder="(metadatumType === 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_search_metadata')"
                 check-infinite-scroll
+                @update:model-value="($event) => { resetPage(); search($event); }"
+                @select="onSelect"
                 @infinite-scroll="searchMore">
-            <template slot-scope="props">
+            <template #default="props">
                 <div class="media">
                     <div
-                            class="media-left"
-                            v-if="props.option.img">
+                            v-if="props.option.img"
+                            class="media-left">
                         <img
                                 :alt="$i18n.get('label_thumbnail')"
                                 width="24"
@@ -37,7 +37,7 @@
             </template>
             <template 
                     v-if="!isLoadingOptions" 
-                    slot="empty">
+                    #empty>
                 {{ $i18n.get('info_no_options_found'	) }}
             </template>
         </b-autocomplete>
@@ -45,11 +45,14 @@
 </template>
 
 <script>
-    import { tainacan as axios, isCancel } from '../../../js/axios'
+    import { tainacanApi, isCancel } from '../../../js/axios'
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../../../js/filter-types-mixin';
 
     export default {
         mixins: [filterTypeMixin, dynamicFilterTypeMixin],
+        emits: [
+            'input',
+        ],
         data(){
             return {
                 selected:'',
@@ -62,8 +65,11 @@
             }
         },
         watch: {
-            'query'() {
-                this.updateSelectedValues();
+            'query': {
+                handler() {
+                    this.updateSelectedValues();
+                },
+                deep: true
             }
         },
         mounted() {
@@ -168,7 +174,7 @@
 
                         let endpoint = '/items/' + metadata.value + '?fetch_only=title,thumbnail';
 
-                        axios.get(endpoint)
+                        tainacanApi.get(endpoint)
                             .then( res => {
                                 let item = res.data;
                                 this.label = item.title;

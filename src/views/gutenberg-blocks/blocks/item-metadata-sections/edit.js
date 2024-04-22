@@ -1,5 +1,7 @@
 const { __ } = wp.i18n;
 
+const { useEffect } = wp.element;
+
 const { Button, Spinner, Placeholder, ToggleControl, PanelBody } = wp.components;
 
 const ServerSideRender = wp.serverSideRender;
@@ -7,13 +9,12 @@ const { useBlockProps, InnerBlocks, BlockControls, AlignmentControl, InspectorCo
 
 import SingleItemModal from '../../js/selection/single-item-modal.js';
 import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
-import tainacan from '../../js/axios.js';
+import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 
 export default function ({ attributes, setAttributes, isSelected }) {
     
     let {
-        content, 
         collectionId,
         itemId,
         isLoading,
@@ -34,6 +35,10 @@ export default function ({ attributes, setAttributes, isSelected }) {
     } );
     const className = blockProps.className;
 
+    useEffect(() => {
+        setContent();
+    }, []);
+
     function setContent() {
 
         if (collectionId) {
@@ -51,7 +56,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
 
             let endpoint = '/collection/'+ collectionId + '/metadata-sections';
 
-            tainacan.get(endpoint, { cancelToken: metadataSectionsRequestSource.token })
+            tainacanApi.get(endpoint, { cancelToken: metadataSectionsRequestSource.token })
                 .then(response => {
 
                     metadataSections = response.data ? response.data : [];
@@ -117,14 +122,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
         }
     }
     
-    return content == 'preview' ? 
-        <div className={className}>
-            <img
-                    width="100%"
-                    src={ `${tainacan_blocks.base_url}/assets/images/related-carousel-items.png` } />
-        </div>
-        : (
-        <div { ...blockProps }>
+    return <div { ...blockProps }>
 
             <InspectorControls>
                 <PanelBody
@@ -220,7 +218,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
             }
 
             { isLoading ? 
-                <div class="spinner-container">
+                <div className="spinner-container">
                     <Spinner />
                 </div> :
                 <div className={ 'item-metadata-sections-edit-container' }>
@@ -241,6 +239,5 @@ export default function ({ attributes, setAttributes, isSelected }) {
                 </div>
             }
             
-        </div>
-    );
+        </div>;
 };

@@ -1,6 +1,6 @@
 const { __ } = wp.i18n;
 const { ToolbarDropdownMenu, SVG, Path, __experimentalHeading: Heading } = wp.components;
-
+const { useEffect } = wp.element;
 const { useBlockProps, BlockControls, AlignmentControl } = wp.blockEditor;
 
 const levelToPath = {
@@ -15,7 +15,6 @@ const levelToPath = {
 export default function ({ attributes, setAttributes, context }) {
     
     let {
-        content, 
         sectionId,
         sectionName,
         labelLevel,
@@ -36,17 +35,12 @@ export default function ({ attributes, setAttributes, context }) {
     if (context['tainacan/metadataSectionName'])
         sectionName = context['tainacan/metadataSectionName'];
 
-    if ( context['tainacan/metadataSectionId'] || context['tainacan/metadataSectionName'] )
-        setAttributes({ sectionId, sectionName });
+    useEffect(() => {
+        if ( context['tainacan/metadataSectionId'] || context['tainacan/metadataSectionName'] )
+            setAttributes({ sectionId, sectionName });
+    }, [ context ]);
     
-    return content == 'preview' ? 
-            <div className={className}>
-                <img
-                        width="100%"
-                        src={ `${tainacan_blocks.base_url}/assets/images/related-carousel-items.png` } />
-            </div>
-        : (
-        <>
+    return <>
 
             <BlockControls group="block">
                 <ToolbarDropdownMenu
@@ -105,6 +99,5 @@ export default function ({ attributes, setAttributes, context }) {
                     id={ 'tainacan-metadata-section-name-block-id--' + sectionId }>
                 { sectionName }
             </Heading>
-        </>
-    );
+        </>;
 };

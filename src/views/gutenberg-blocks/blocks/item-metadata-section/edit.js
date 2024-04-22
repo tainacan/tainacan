@@ -1,5 +1,7 @@
 const { __ } = wp.i18n;
 
+const { useEffect } = wp.element;
+
 const { Button, Spinner, Placeholder, ToggleControl, PanelBody } = wp.components;
 
 const ServerSideRender = wp.serverSideRender;
@@ -7,13 +9,12 @@ const { useBlockProps, InnerBlocks, BlockControls, AlignmentControl, InspectorCo
 
 import SingleItemMetadataSectionModal from '../../js/selection/single-item-metadata-section-modal.js';
 import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
-import tainacan from '../../js/axios.js';
+import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 
 export default function ({ attributes, setAttributes, isSelected }) {
     
     let {
-        content, 
         collectionId,
         itemId,
         isLoading,
@@ -37,6 +38,10 @@ export default function ({ attributes, setAttributes, isSelected }) {
         }
     } );
     const className = blockProps.className;
+
+    useEffect(() => {
+        setContent();
+    }, []);
 
     function setContent() {
 
@@ -66,7 +71,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
 
                 let endpoint = '/collection/'+ collectionId + '/metadata-sections/' + sectionId;
 
-                tainacan.get(endpoint, { cancelToken: metadataSectionRequestSource.token })
+                tainacanApi.get(endpoint, { cancelToken: metadataSectionRequestSource.token })
                     .then(response => {
 
                         let metadataSection = response.data ? response.data : [];
@@ -152,21 +157,8 @@ export default function ({ attributes, setAttributes, isSelected }) {
             setContent();
         }
     }
-
-    // Executed only on the first load of page
-    if (content === undefined || (content && content.length && content[0].type)) {
-        setAttributes({ content: '' });
-        setContent();
-    }
     
-    return content == 'preview' ? 
-        <div className={className}>
-            <img
-                    width="100%"
-                    src={ `${tainacan_blocks.base_url}/assets/images/related-carousel-items.png` } />
-        </div>
-        : (
-        <div { ...blockProps }>
+    return <div { ...blockProps }>
 
             { sectionId ? 
                 <InspectorControls>
@@ -214,7 +206,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
                                 });
                             }}
                             onSelectItem={ (selectedItemId) => {
-                                itemId = selectedItemId;
+                                itemId = Number(selectedItemId);
                                 setAttributes({ 
                                     itemId: itemId
                                 });
@@ -271,7 +263,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
             }
 
             { isLoading ? 
-                <div class="spinner-container">
+                <div className="spinner-container">
                     <Spinner />
                 </div> :
                 <div className={ 'item-metadata-sections-edit-container' }>
@@ -293,6 +285,5 @@ export default function ({ attributes, setAttributes, isSelected }) {
                 </div>
             }
             
-        </div>
-    );
+        </div>;
 };

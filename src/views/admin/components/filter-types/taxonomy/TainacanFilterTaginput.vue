@@ -13,12 +13,12 @@
                 :aria-close-label="$i18n.get('remove_value')"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :class="{'has-selected': selected != undefined && selected != []}"
-                @typing="search"
-                @input="($event) => { resetPage(); onSelect($event) }"
                 :placeholder="$i18n.get('info_type_to_add_terms')"
                 check-infinite-scroll
+                @typing="search"
+                @update:model-value="($event) => { resetPage(); onSelect($event) }"
                 @infinite-scroll="searchMore">
-            <template slot-scope="props">
+            <template #default="props">
                 <div class="media">
                     <div class="media-content">
                         <span class="ellipsed-text">{{ props.option.label }}</span>
@@ -30,7 +30,7 @@
             </template>
             <template 
                     v-if="!isLoadingOptions" 
-                    slot="empty">
+                    #empty>
                 {{ $i18n.get('info_no_options_found'	) }}
             </template>
         </b-taginput>
@@ -39,11 +39,14 @@
 
 <script>
     import qs from 'qs';
-    import { tainacan as axios } from '../../../js/axios';
+    import { tainacanApi } from '../../../js/axios';
     import { filterTypeMixin } from '../../../js/filter-types-mixin';
     
     export default {
         mixins: [ filterTypeMixin ],
+        emits: [
+            'input',
+        ],
         data(){
             return {
                 isLoadingOptions: false,
@@ -64,8 +67,11 @@
                 },
                 immediate: true
             },
-            'query'() {
-                this.updateSelectedValues();
+            'query': {
+                handler() {
+                    this.updateSelectedValues();
+                },
+                deep: true
             }
         },
         created() {
@@ -126,7 +132,7 @@
                 
                 const valuesToIgnore = JSON.parse(JSON.stringify(this.selected));
 
-                return axios.get(endpoint).then( res => {
+                return tainacanApi.get(endpoint).then( res => {
                     for (let term of res.data.values) {   
 
                         if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {

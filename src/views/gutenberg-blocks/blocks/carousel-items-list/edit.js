@@ -9,7 +9,7 @@ const { useSelect } = wp.data;
 import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
 import pick from 'lodash/pick';
 import CarouselItemsModal from './dynamic-and-carousel-items-modal.js';
-import tainacan from '../../js/axios.js';
+import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
@@ -103,7 +103,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                 <a 
                     id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
                     href={ item.url }>
-                    <div class="items-list-item--image-wrap">
+                    <div className="items-list-item--image-wrap">
                         <img
                             src={ thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype']) }
                             srcSet={ thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype']) }
@@ -144,7 +144,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
             
             let endpoint = '/collection/' + collectionId + '/items?'+ qs.stringify({ postin: selectedItems, perpage: selectedItems.length }) + '&orderby=post__in&fetch_only=title,url,thumbnail';
             
-            tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
+            tainacanApi.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
 
                     for (let item of response.data.items)
@@ -184,7 +184,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
             
             endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
             
-            tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
+            tainacanApi.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
 
                     for (let item of response.data.items)
@@ -208,7 +208,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                 isLoadingCollection: isLoadingCollection
             });
 
-            tainacan.get('/collections/' + collectionId + '?fetch_only=name,thumbnail,header_image')
+            tainacanApi.get('/collections/' + collectionId + '?fetch_only=name,thumbnail,header_image')
                 .then(response => {
                     collection = response.data;
                     isLoadingCollection = false;      
@@ -580,13 +580,13 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
             
                 <div> {
                     isLoadingCollection ? 
-                        <div class="spinner-container">
+                        <div className="spinner-container">
                             <Spinner />
                         </div>
                         :
                         <a
                                 href={ collection.url ? collection.url : '' }
-                                class="carousel-items-collection-header">
+                                className="carousel-items-collection-header">
                             <div
                                     style={{
                                         backgroundColor: collectionBackgroundColor ? collectionBackgroundColor : '', 
@@ -599,21 +599,21 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                                         ((!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
                                     }>
                                 <h3 style={{  color: collectionTextColor ? collectionTextColor : '' }}>
-                                    { showCollectionLabel ? <span class="label">{ __('Collection', 'tainacan') }<br/></span> : null }
+                                    { showCollectionLabel ? <span className="label">{ __('Collection', 'tainacan') }<br/></span> : null }
                                     { collection && collection.name ? collection.name : '' }
                                 </h3>
                             </div>
                             {
                                 collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? 
                                     <div   
-                                        class="collection-thumbnail"
+                                        className="collection-thumbnail"
                                         style={{ 
                                             backgroundImage: 'url(' + (collection.thumbnail['tainacan-medium'] != undefined ? (collection.thumbnail['tainacan-medium'][0]) : (collection.thumbnail['medium'][0])) + ')',
                                         }}/>
                                 : null
                             }  
                             <div
-                                    class="collection-header-image"
+                                    className="collection-header-image"
                                     style={{
                                         backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
                                         minHeight: collection && collection.header_image ? '' : '80px',
@@ -667,12 +667,12 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
             }
             
             { isLoading ? 
-                <div class="spinner-container">
+                <div className="spinner-container">
                     <Spinner />
                 </div> :
                 <div>
                     { isSelected && items.length ? 
-                        <div class="preview-warning">{__('Warning: this is just a demonstration. To see the carousel in action, either preview or publish your post.', 'tainacan')}</div>
+                        <div className="preview-warning">{__('Warning: this is just a demonstration. To see the carousel in action, either preview or publish your post.', 'tainacan')}</div>
                         : null
                     }
                     {  items.length ? (
@@ -692,7 +692,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                                 </ul>
                             </div>
                             <button 
-                                    class="swiper-button-prev" 
+                                    className="swiper-button-prev" 
                                     slot="button-prev"
                                     style={{ cursor: 'not-allowed' }}>
                                 <svg
@@ -711,7 +711,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                                 </svg>
                             </button>
                             <button 
-                                    class="swiper-button-next" 
+                                    className="swiper-button-next" 
                                     slot="button-next"
                                     style={{ cursor: 'not-allowed' }}>
                                 <svg

@@ -20,7 +20,6 @@ const levelToPath = {
 export default function ({ attributes, setAttributes, isSelected }) {
     
     let {
-        content, 
         collectionId,
         itemId,
         metadatumId,
@@ -52,15 +51,8 @@ export default function ({ attributes, setAttributes, isSelected }) {
             });
         }
     }
-
-    return content == 'preview' ? 
-            <div className={className}>
-                <img
-                        width="100%"
-                        src={ `${tainacan_blocks.base_url}/assets/images/related-carousel-items.png` } />
-            </div>
-        : (
-        <div { ...blockProps }>
+    
+    return <div { ...blockProps }>
 
             <BlockControls group="block">
                 <ToolbarDropdownMenu
@@ -149,19 +141,19 @@ export default function ({ attributes, setAttributes, isSelected }) {
                             existingMetadatumId={ metadatumId }
                             isTemplateMode={ templateMode }
                             onSelectCollection={ (selectedCollectionId) => {
-                                collectionId = selectedCollectionId;
+                                collectionId = Number(selectedCollectionId);
                                 setAttributes({ 
                                     collectionId: collectionId
                                 });
                             }}
                             onSelectItem={ (selectedItemId) => {
-                                itemId = selectedItemId;
+                                itemId = Number(selectedItemId);
                                 setAttributes({ 
                                     itemId: itemId
                                 });
                             }}
                             onApplySelectedMetadatum={ (selectedMetadatum) => {
-                                metadatumId = selectedMetadatum.metadatumId;
+                                metadatumId = Number(selectedMetadatum.metadatumId);
                                 metadatumType = selectedMetadatum.metadatumType;
                                 
                                 setAttributes({
@@ -224,6 +216,5 @@ export default function ({ attributes, setAttributes, isSelected }) {
                 ) : null
             }
             
-        </div>
-    );
+        </div>;
 };

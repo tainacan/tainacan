@@ -80,6 +80,12 @@ class Test_Importer extends Importer {
 	protected $extra_values = [
 		'extra val 1', 'extra val 2', 'extra val 3', 'extra val 4', 'extra val 5'
 	];
+
+	protected $tax_repo;
+	protected $col_repo;
+	protected $items_repo;
+	protected $metadata_repo;
+	protected $item_metadata_repo;
 	
 	public function __construct($attributes = array()) {
 		parent::__construct($attributes);

@@ -10,18 +10,18 @@
                 :remove-on-keys="[]"
                 field="label"
                 attached
-                @input="($event) => { resetPage(); onSelect($event) }"
-                @typing="search"
                 :aria-close-label="$i18n.get('remove_value')"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="getInputPlaceholder"
                 check-infinite-scroll
+                @update:model-value="($event) => { resetPage(); onSelect($event) }"
+                @typing="search"
                 @infinite-scroll="searchMore">
-            <template slot-scope="props">
+            <template #default="props">
                 <div class="media">
                     <div
-                            class="media-left"
-                            v-if="props.option.img">
+                            v-if="props.option.img"
+                            class="media-left">
                         <img
                                 :alt="$i18n.get('label_thumbnail')"
                                 width="24"
@@ -37,7 +37,7 @@
             </template>
             <template 
                     v-if="!isLoadingOptions" 
-                    slot="empty">
+                    #empty>
                 {{ $i18n.get('info_no_options_found'	) }}
             </template>
         </b-taginput>
@@ -50,6 +50,9 @@
 
     export default {
         mixins: [filterTypeMixin, dynamicFilterTypeMixin],
+        emits: [
+            'input',
+        ],
         data() {
             return {
                 results:'',
@@ -73,8 +76,11 @@
             }
         },
         watch: {
-            'query'() {
-                this.updateSelectedValues();
+            'query': {
+                handler() {
+                    this.updateSelectedValues();
+                },
+                deep: true
             }
         },
         created() {

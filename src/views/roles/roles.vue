@@ -1,19 +1,18 @@
 <template>
-    <div
-            id="tainacan-roles-app"
-            class="has-mounted wrap">
+    <div class="has-mounted wrap">
         <router-view /> 
     </div> 
 </template>
 
 <script>
-    import "floating-vue/dist/style.css";
     export default { 
         name: "RolesPage"
     }
 </script>
 
 <style lang="scss">
+    @import url('floating-vue/dist/style.css');
+
     .tainacan_page_tainacan_roles #wpbody {
         overflow-x: hidden;
     }

@@ -104,6 +104,7 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 
 		if ( ! empty( $this->data ) ) {
 			global $wpdb;
+			$wpdb->query('START TRANSACTION');
 			$wpdb->insert(
 				$this->table, 
 				[
@@ -119,6 +120,7 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 				]
 			);
 			$this->ID = $wpdb->insert_id;
+			$wpdb->query('COMMIT');
 		}
 
 		return $this;
@@ -139,6 +141,7 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 			if (!isset($batch->output)) {
 				$batch->output = '';
 			}
+			$wpdb->query('START TRANSACTION');
 			$wpdb->update(
 				$this->table, 
 				[
@@ -150,6 +153,7 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 				],
 				['ID' => $key]
 			);
+			$wpdb->query('COMMIT');
 		}
 
 		return $this;
@@ -164,6 +168,7 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 	 */
 	public function open( $key ) {
 		global $wpdb;
+		$wpdb->query('START TRANSACTION');
 		$wpdb->update(
 			$this->table, 
 			[
@@ -171,6 +176,7 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 			],
 			['ID' => $key]
 		);
+		$wpdb->query('COMMIT');
 
 		return $this;
 	}
@@ -196,12 +202,13 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 			$params['progress_label'] = __('Process completed with errors','tainacan');
 			$params['progress_value'] = 100;
 		}
+		$wpdb->query('START TRANSACTION');
 		$wpdb->update(
 			$this->table, 
 			$params,
 			['ID' => $key]
 		);
-
+		$wpdb->query('COMMIT');
 		return $this;
 	}
 
@@ -214,10 +221,12 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 	 */
 	public function delete( $key ) {
 		global $wpdb;
+		$wpdb->query('START TRANSACTION');
 		$wpdb->delete(
 			$this->table, 
 			['ID' => $key]
 		);
+		$wpdb->query('COMMIT');
 		return $this;
 	}
 	
@@ -353,7 +362,8 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 				$task = $this->task( $task );
 			} catch (\Exception $e) {
 				// TODO: Add Stacktrace
-				$this->write_error_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'Fatal Error: ' . $e->getMessage()]]);
+				$this->debug('Fatal Error: ' . $e->getMessage());
+				$this->write_error_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'Try Fatal Error: ' . $e->getMessage()]]);
 				$this->write_error_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'Process aborted']]);
 				$task = false;
 				$close_status = 'errored';
@@ -398,9 +408,9 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 		global $wpdb;
 
 		$table  = $this->table;
-
+		$wpdb->query('START TRANSACTION');
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE done = FALSE AND action LIKE %s", $this->action ) ); // @codingStandardsIgnoreLine.
-
+		$wpdb->query('COMMIT');
 		return $this;
 	}
 

@@ -8,17 +8,7 @@
     "description": "A metadata section label, used to identify different metadata sections.",
     "textdomain": "tainacan",
     "parent": [ "tainacan/item-metadata-section" ],
-    "example": {
-        "attributes": {
-            "content": "preview"
-        }
-    },
     "attributes": {
-        "content": {
-            "type": "array",
-            "source": "query",
-            "selector": "div"
-        },
         "sectionId": {
             "type": "string",
             "default": ""

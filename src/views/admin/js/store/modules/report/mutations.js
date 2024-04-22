@@ -1,4 +1,4 @@
-import Vue from 'vue';
+
 
 export const setSummary = (state, summary) => {
   state.summary = summary;
@@ -65,5 +65,5 @@ export const setTreeMapChartOptions = (state, areaChartOptions) => {
 };
 
 export const setReportLatestCachedOn = (state, { report, reportLatestCachedOn }) => {
-  Vue.set(state.reportsLatestCachedOn, report, reportLatestCachedOn);
+  Object.assign(state.reportsLatestCachedOn, { [report]: reportLatestCachedOn });
 };

@@ -701,10 +701,12 @@ return apply_filters( 'tainacan-i18n', [
 	'label_multiple_terms'							 => __( 'Multiple terms', 'tainacan' ),
 	'label_multiple'								 => __( 'Multiple', 'tainacan' ),
 	'label_separator'								 => __( 'Separator', 'tainacan' ),
+	'label_loading_items'							 => __( 'Loading items...', 'tainacan' ),
 	'label_items_list_options'				 		 => __( 'Items list options', 'tainacan' ),
 	'label_item_edition_form_options'				 => __( 'Item edition form options', 'tainacan' ),
 	'label_item_submission_options'				 	 => __( 'Item submission options', 'tainacan' ),
 	'label_metadata_related_features'				 => __( 'Metadata related features', 'tainacan' ),
+	'label_preview'									 => __( 'Preview', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -1023,6 +1025,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_validating_slug'					 		 =>	__( 'Validating slug...', 'tainacan'),
 	'info_no_taxonomy_metadata_created'		 		 =>	__( 'No taxonomy metadata created yet', 'tainacan'),
 	'info_child_terms_chart'						 => __( 'Click on the term bar on the chart aside to see its child terms (if any) in this panel', 'tainacan' ),
+	'info_nothing_like_this_so_far'					 => __( 'Nothing like this so far.', 'tainacan'),
 	'info_metadata_autocomplete_suggestions'		 => __( 'Some values already used on this metadatum:', 'tainacan' ),
 	'info_related_items'							 => __( 'These are items that are related to this item via their own relationship type metadata. You can edit such relation on their pages.', 'tainacan'),
 	'info_document_option_forced_iframe'			 => __( 'Attempt to use an iframe to embed url content on the item page. You may use this option if the autoembed does not work.', 'tainacan'),
@@ -1060,6 +1063,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_%s_terms_created'							 => __( '%s terms created with success.', 'tainacan' ),
 	'info_terms_creation_failed_due_to_value_%s'	 => __( 'Terms creation failed due to value: %s.', 'tainacan' ),
 	'info_terms_creation_failed_due_to_values_%s'	 => __( 'Terms creation failed due to values: %s.', 'tainacan' ),
+	'info_autodraft_updated'						 => __( 'Autodraft updated. Please create the item to keep your changes.', 'tainacan' ),
 
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),

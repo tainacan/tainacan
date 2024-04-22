@@ -52,6 +52,38 @@
 		protected $cron_interval_identifier;
 
 		/**
+		 * cron_hook_check_identifier
+		 *
+		 * @var string
+		 * @access protected
+		 */
+		protected $cron_hook_check_identifier;
+
+		/**
+		 * process_lock_in_time
+		 *
+		 * @var string
+		 * @access protected
+		 */
+		protected $process_lock_in_time;
+		
+		/**
+		 * queue_lock_time
+		 *
+		 * @var string
+		 * @access protected
+		 */
+		protected $queue_lock_time;
+		
+		/**
+		 * cron_interval
+		 *
+		 * @var string
+		 * @access protected
+		 */
+		protected $cron_interval = 5;
+
+		/**
 		 * Initiate new background process
 		 */
 		public function __construct() {
@@ -257,8 +289,11 @@
 		 * @return $this
 		 */
 		protected function unlock_process() {
-			$this->debug('unlocking process');
+			$this->debug('unlocking process: '. $this->identifier . '_process_lock');
+			global $wpdb;
+			$wpdb->query('START TRANSACTION');
 			delete_site_transient( $this->identifier . '_process_lock' );
+			$wpdb->query('COMMIT');
 
 			return $this;
 		}

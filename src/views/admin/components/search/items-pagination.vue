@@ -8,15 +8,16 @@
                 class="shown-items is-hidden-mobile">
             {{ 
                 $i18n.get('info_showing_items') +
-                getFirstItem() +
-                $i18n.get('info_to') + 
-                getLastItemNumber() +
-                $i18n.get('info_of')
+                    getFirstItem() +
+                    $i18n.get('info_to') + 
+                    getLastItemNumber() +
+                    $i18n.get('info_of')
             }} 
             <span :class="{ 'has-text-warning': isSortingByCustomMetadata }">
                 {{ totalItems + '.' }}
             </span>
             <span 
+                    v-if="isSortingByCustomMetadata"
                     v-tooltip="{
                         content: $i18n.get('info_items_hidden_due_sorting'),
                         autoHide: false,
@@ -24,62 +25,63 @@
                         popperClass: ['tainacan-tooltip', 'tooltip']
                     }"
                     style="margin-top: -3px"
-                    class="icon has-text-warning"
-                    v-if="isSortingByCustomMetadata">
+                    class="icon has-text-warning">
                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alertcircle" />
             </span>
         </div> 
         <div 
-                id="tainacanItemsPerPageButton"
                 v-if="!hideItemsPerPageButton"
+                id="tainacanItemsPerPageButton"
                 class="items-per-page">
             <b-field 
                     id="items-per-page-select"
                     horizontal 
                     :label="$i18n.get('label_items_per_page')"> 
                 <b-select 
-                        :value="itemsPerPage"
+                        :model-value="itemsPerPage"
                         aria-controls="items-list-results"
                         aria-labelledby="items-per-page-select"
-                        @input="onChangeItemsPerPage">
-                    <template v-for="(itemsPerPageOption, index) of itemsPerPageOptions">
+                        @update:model-value="onChangeItemsPerPage">
+                    <template 
+                            v-for="(itemsPerPageOption, index) of itemsPerPageOptions"
+                            :key="index">
                         <option
-                                :key="index"
                                 v-if="maxItemsPerPage >= 12"
                                 :value="itemsPerPageOption">
-                        {{ itemsPerPageOption }} &nbsp;
+                            {{ itemsPerPageOption }} &nbsp;
                         </option>
                     </template>
                 </b-select>
             </b-field>
         </div>
         <div 
-                id="tainacanGoToPageButton"
                 v-if="!hideGoToPageButton"
+                id="tainacanGoToPageButton"
                 class="go-to-page items-per-page">
             <b-field 
-                    horizontal 
-                    id="go-to-page-dropdown"
+                    id="go-to-page-dropdown" 
+                    horizontal
                     :label="$i18n.get('label_go_to_page')"> 
                 <b-dropdown 
                         position="is-top-right"
-                        @change="onPageChange"
                         aria-role="list"
-                        trap-focus>
-                    <button
-                            aria-labelledby="go-to-page-dropdown"
-                            class="button is-white"
-                            slot="trigger">
-                        <span>{{ page }}</span>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
-                        </span>
-                    </button>
+                        trap-focus
+                        @change="onPageChange">
+                    <template #trigger>
+                        <button
+                                aria-labelledby="go-to-page-dropdown"
+                                class="button is-white">
+                            <span>{{ page }}</span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                            </span>
+                        </button>
+                    </template>
                     <b-dropdown-item
-                            aria-controls="items-list-results"
-                            role="button" 
-                            :key="pageNumber"
                             v-for="pageNumber in totalPages"
+                            :key="pageNumber" 
+                            aria-controls="items-list-results"
+                            role="button"
                             :value="Number(pageNumber)"
                             aria-role="listitem">
                         {{ pageNumber }}
@@ -90,17 +92,17 @@
         
         <div class="pagination"> 
             <b-pagination
+                    :model-value="page"
                     aria-controls="items-list-results"
-                    @change="onPageChange"
                     :total="totalItems"
-                    :current.sync="page"
                     order="is-centered"
                     size="is-small"
                     :per-page="itemsPerPage"
                     :aria-next-label="$i18n.get('label_next_page')"
                     :aria-previous-label="$i18n.get('label_previous_page')"
                     :aria-page-label="$i18n.get('label_page')"
-                    :aria-current-label="$i18n.get('label_current_page')" /> 
+                    :aria-current-label="$i18n.get('label_current_page')"
+                    @change="onPageChange" /> 
         </div>
     </div>
 </template>
@@ -109,7 +111,7 @@
 import { mapGetters } from 'vuex';
 
 export default {
-    name: 'Pagination',
+    name: 'ItemsPagination',
     props: {
         isSortingByCustomMetadata: Boolean,
         hideItemsPerPageButton: false,
@@ -121,15 +123,11 @@ export default {
         }
     },
     computed: {
-        totalItems(){    
-            return this.getTotalItems();
-        },
-        page(){
-            return this.getPage();
-        },
-        itemsPerPage(){
-            return this.getItemsPerPage();
-        },
+        ...mapGetters('search', {
+            'totalItems': 'getTotalItems',
+            'page': 'getPage',
+            'itemsPerPage': 'getItemsPerPage'
+        }),
         totalPages(){
             return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));    
         },
@@ -148,20 +146,13 @@ export default {
         }
     },
     methods: {
-        ...mapGetters('search', [
-            'getTotalItems',
-            'getPage',
-            'getItemsPerPage',
-            'getPostQuery'
-        ]),
         onChangeItemsPerPage(value) {
-            if ( this.itemsPerPage == value){
+            if ( this.itemsPerPage == value )
                 return false;
-            } else if (Number(value) > Number(this.maxItemsPerPage)) {
+            else if ( Number(value) > Number(this.maxItemsPerPage) )
                 this.$eventBusSearch.setItemsPerPage(this.maxItemsPerPage);
-            } else {
+            else
                 this.$eventBusSearch.setItemsPerPage(value);
-            }
         },
         onPageChange(page) {
             if(page == 0)

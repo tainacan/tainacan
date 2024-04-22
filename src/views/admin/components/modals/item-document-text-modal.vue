@@ -1,15 +1,17 @@
 <template>
     <form class="tainacan-modal-content tainacan-form">
         <div class="tainacan-modal-title">
-            <h2 id="item-document-text-modal-title">{{ $i18n.get('instruction_write_text') }}</h2>
+            <h2 id="item-document-text-modal-title">
+                {{ $i18n.get('instruction_write_text') }}
+            </h2>
             <hr>
         </div>
         <b-input
-                aria-labelledby="item-document-text-modal-title"
                 ref="item-document-text-input"
+                v-model="localTextContent"
+                aria-labelledby="item-document-text-modal-title"
                 type="textarea"
-                :autofocus="true"
-                v-model="localTextContent"/>
+                :autofocus="true" />
 
         <div class="field is-grouped form-submit">
             <div class="control">
@@ -17,15 +19,15 @@
                         id="button-cancel-text-content-writing"
                         class="button is-outlined"
                         type="button"
-                        @click="$emit('cancelTextWriting');$parent.close();">
+                        @click="$emit('cancelTextWriting');$emit('close');">
                     {{ $i18n.get('cancel') }}</button>
             </div>
             <div class="control">
                 <button
                         id="button-submit-text-content-writing"
                         type="submit"
-                        @click.prevent="confirmTextWriting();$parent.close();"
-                        class="button is-success">
+                        class="button is-success"
+                        @click.prevent="confirmTextWriting();$emit('close');">
                     {{ $i18n.get('save') }}</button>
             </div>
         </div>
@@ -37,6 +39,11 @@ export default {
     props: {
         textContent: ''
     },
+    emits: [
+        'confirmTextWriting',
+        'cancelTextWriting',
+        'close'
+    ],
     data(){
         return {
             localTextContent: ''

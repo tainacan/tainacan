@@ -8,6 +8,11 @@ class Bulk_Edit_Process extends Generic_Process {
 	private $meta_key = '_tnc_bulk';
 	private $group_id = false;
 
+	private $items_repository;
+	private $metadatum_repository;
+	private $item_metadata_repository;
+	private $bulk_edit_data;
+
 	public function __construct($attributes = array()) {
 		$this->array_attributes = array_merge($this->array_attributes, [
 			'group_id',
@@ -93,9 +98,9 @@ class Bulk_Edit_Process extends Generic_Process {
 		$metadata_label = __('Changed metadata', 'tainacan');
 
 		$message  = __('Bulk edit finished', 'tainacan');
-		$message .= "<p> <strong> ${title_label}: </strong> ${name} </p>";
-		$message .= "<p> <strong> ${author_label}: </strong> ${author_name} </p>";
-		$message .= "<p> <strong> ${metadata_label}: </strong> ${metadata} </p>";
+		$message .= "<p> <strong> $title_label: </strong> $name </p>";
+		$message .= "<p> <strong> $author_label: </strong> $author_name </p>";
+		$message .= "<p> <strong> $metadata_label: </strong> $metadata </p>";
 
 		return $message;
 	}
@@ -268,7 +273,7 @@ class Bulk_Edit_Process extends Generic_Process {
 
 			$serealize_erro = (object) array('err' => array());
 			$erro = $item_metadata->get_errors();
-			array_walk_recursive($erro, function($v, $k, &$t) {$t->err[] = $v;}, $serealize_erro);
+			array_walk_recursive($erro, function($v, $k, $t) {$t->err[] = $v;}, $serealize_erro);
 			$this->add_error_log( __('errors: ', 'tainacan') . implode(", ", $serealize_erro->err) );
 
 			return false;
@@ -516,7 +521,13 @@ class Bulk_Edit_Process extends Generic_Process {
 
 		$this->add_error_log( sprintf( __( 'Please verify, invalid value(s) to edit item ID: "%d"', 'tainacan' ), $item->get_id() ) );
 		$serealize_erro = (object) array('err' => array());
-		array_walk_recursive($item->get_errors(), create_function('&$v, $k, &$t', '$t->err[] = $v;'), $serealize_erro);
+		array_walk_recursive(
+			$item->get_errors(),
+			function (&$v, $k, &$t) {
+				$t->err[] = $v;
+			}, 
+			$serealize_erro
+		);
 		$this->add_error_log( __('errors: ', 'tainacan') . implode(", ", $serealize_erro->err) );
 
 		return false;
@@ -538,7 +549,12 @@ class Bulk_Edit_Process extends Generic_Process {
 
 		$this->add_error_log( sprintf( __( 'Please verify, invalid value(s) to edit item ID: "%d"', 'tainacan' ), $item->get_id() ) );
 		$serealize_erro = (object) array('err' => array());
-		array_walk_recursive($item->get_errors(), create_function('&$v, $k, &$t', '$t->err[] = $v;'), $serealize_erro);
+		array_walk_recursive(
+			$item->get_errors(),
+			function (&$v, $k, &$t) {
+				$t->err[] = $v;
+			},
+			$serealize_erro);
 		$this->add_error_log( __('errors: ', 'tainacan') . implode(", ", $serealize_erro->err) );
 
 		return false;

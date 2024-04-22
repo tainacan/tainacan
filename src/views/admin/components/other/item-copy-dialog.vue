@@ -1,12 +1,12 @@
 <template>
     <div 
+            ref="itemCopyDialog"
             aria-labelledby="alert-dialog-title"
             autofocus
             role="alertdialog"
             tabindex="-1"
             aria-modal
-            class="tainacan-form tainacan-dialog dialog"
-            ref="itemCopyDialog">
+            class="tainacan-form tainacan-dialog dialog">
         <div    
                 class="modal-card" 
                 style="width: auto">
@@ -16,7 +16,7 @@
                 <span class="icon is-large">
                     <i 
                             :class="'tainacan-icon-' + icon"
-                            class="tainacan-icon"/>
+                            class="tainacan-icon" />
                 </span>
             </div>
             <section 
@@ -42,9 +42,9 @@
                                 :aria-minus-label="$i18n.get('label_decrease')"
                                 :aria-plus-label="$i18n.get('label_increase')"
                                 min="1" 
-                                :value="copyCount"
+                                :model-value="copyCount"
                                 step="1"
-                                @input="copyCount = $event"/>
+                                @update:model-value="copyCount = $event" />
                     </b-field>
                 </div>
             </section>
@@ -53,7 +53,7 @@
                         type="submit"
                         class="button is-outlined"
                         :disabled="isLoading"
-                        @click="onConfirm(newItems); $parent.close();">
+                        @click="onConfirm(newItems); $emit('close');">
                     {{ hasCopied ? $i18n.get('label_return_to_list') : $i18n.get('cancel') }}
                 </button>
                 <button 
@@ -68,24 +68,24 @@
                 <button 
                         v-if="copyCount == 1 && hasCopied && newItems.length == 1"
                         class="button is-secondary" 
-                        @click.prevent="$router.push($routerHelper.getItemEditPath(collectionId, newItems[0].id)); $parent.close();"
-                        type="submit">
+                        type="submit"
+                        @click.prevent="$router.push($routerHelper.getItemEditPath(collectionId, newItems[0].id)); $emit('close');">
                     {{ $i18n.getFrom('items','edit_item') }}
                 </button>
                 <button 
-                        style="margin-left: 24px;"
                         v-if="copyCount > 1 && hasCopied && newItems.length > 1"
+                        style="margin-left: 24px;"
                         class="button is-secondary" 
                         :class="{'is-loading': isCreatingSequenceEditGroup }"
-                        @click.prevent="sequenceEditGroup()"
-                        type="submit">
+                        type="submit"
+                        @click.prevent="sequenceEditGroup()">
                     {{ $i18n.get('label_sequence_edit_items') }}
                 </button>
                 <button 
                         v-if="copyCount > 1 && hasCopied && newItems.length > 1"
                         class="button is-secondary"
-                        @click.prevent="openBulkEditionModal()"
-                        type="submit">
+                        type="submit"
+                        @click.prevent="openBulkEditionModal()">
                     {{ $i18n.get('label_bulk_edit_items') }}
                 </button>
             </footer>
@@ -105,9 +105,12 @@
                 type: Function,
                 default: () => {}
             },
-            collectionId: String,
+            collectionId: [String, Number],
             itemId: String
         },
+        emits: [
+            'close'
+        ],
         data() {
             return {
                 isLoading: Boolean,
@@ -169,7 +172,7 @@
                     let sequenceId = group.id;
                     this.isCreatingSequenceEditGroup = false;
                     this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));
-                    this.$parent.close();
+                    this.$emit('close');
                 });
             },
             openBulkEditionModal() {
@@ -192,7 +195,7 @@
                     closeButtonAriaLabel: this.$i18n.get('close')
                 }); 
 
-                this.$parent.close();
+                this.$emit('close');
             },
         }
     }
@@ -214,11 +217,11 @@
         align-items: flex-end;
     }
 
-    .field.is-horizontal /deep/ .label {
+    .field.is-horizontal :deep(.label) {
         white-space: nowrap;
     }
 
-    .field.is-horizontal /deep/ .has-numberinput {
+    .field.is-horizontal :deep(.has-numberinput) {
         margin-top: 0;
     }
 

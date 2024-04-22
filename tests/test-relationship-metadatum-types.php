@@ -19,7 +19,7 @@ class RelationshipMetadatumTypes extends TAINACAN_UnitTestCase {
 	private $collection_book = null;
 	private $collection_article = null;
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		$this->collection_book =    $this->tainacan_entity_factory->create_entity('collection', ['name' => 'Book',   'status' => 'publish'], true);
 		$this->collection_author =  $this->tainacan_entity_factory->create_entity('collection', ['name' => 'Author', 'status' => 'publish'], true);

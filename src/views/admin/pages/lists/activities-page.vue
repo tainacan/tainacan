@@ -1,14 +1,14 @@
 <template>
     <div>
         <div
-            :class="{
-                   'repository-level-page': isRepositoryLevel,
-                   'page-container': isRepositoryLevel,
-                   'tainacan-modal-content': isItemLevel
-               }">
+                :class="{
+                    'repository-level-page': isRepositoryLevel,
+                    'page-container': isRepositoryLevel,
+                    'tainacan-modal-content': isItemLevel
+                }">
             <tainacan-title
                     v-if="!isItemLevel"
-                    :bread-crumb-items="[{ path: '', label: $i18n.get('activities') }]"/>
+                    :bread-crumb-items="[{ path: '', label: $i18n.get('activities') }]" />
             <header 
                     v-else
                     class="tainacan-modal-title">
@@ -23,18 +23,18 @@
                         class="tabs">
                     <ul>
                         <li
-                                @click="onChangeTab('')"
-                                :class="{ 'is-active': tab == undefined || tab == ''}"><a>{{ $i18n.get('activities') }}</a></li>
+                                :class="{ 'is-active': tab == undefined || tab == ''}"
+                                @click="onChangeTab('')"><a>{{ $i18n.get('activities') }}</a></li>
                         <li
-                                @click="onChangeTab('processes')"
-                                :class="{ 'is-active': tab == 'processes'}"><a>{{ $i18n.get('processes') }}</a></li>
+                                :class="{ 'is-active': tab == 'processes'}"
+                                @click="onChangeTab('processes')"><a>{{ $i18n.get('processes') }}</a></li>
                     </ul>
                 </div>
 
                 <b-loading
-                        :is-full-page="false"
-                        :active.sync="isLoading" 
-                        :can-cancel="false"/>
+                        v-model="isLoading"
+                        :is-full-page="false" 
+                        :can-cancel="false" />
 
                 <div 
                         v-if="tab != 'processes'"
@@ -43,11 +43,10 @@
                     <b-field class="header-item">
                         <b-datepicker
                                 ref="datepicker"
-                                :placeholder="$i18n.get('instruction_filter_activities_date')"
                                 v-model="searchDates"
+                                :placeholder="$i18n.get('instruction_filter_activities_date')"
                                 range
                                 :trap-focus="false"
-                                @input="searchActivities()"
                                 :date-formatter="(date) => dateFormatter(date)"
                                 :date-parser="(date) => dateParser(date)"
                                 icon="calendar-today"
@@ -74,14 +73,15 @@
                                     $i18n.get('datepicker_month_october'),
                                     $i18n.get('datepicker_month_november'),
                                     $i18n.get('datepicker_month_december')
-                                ]"/>
+                                ]"
+                                @update:model-value="searchActivities()" />
                         <p
-                                class="control"
-                                v-if="searchDates && searchDates.length != 0">
+                                v-if="searchDates && searchDates.length != 0"
+                                class="control">
                             <button 
                                     class="button"
                                     @click="clearSearchDates()">
-                                <span class="icon"><i class="tainacan-icon tainacan-icon-close"/></span>
+                                <span class="icon"><i class="tainacan-icon tainacan-icon-close" /></span>
                             </button>
                         </p>
                     </b-field>
@@ -95,15 +95,15 @@
                                 :placeholder="$i18n.get('instruction_type_search_users_filter')"
                                 keep-first
                                 open-on-focus
-                                @input="fetchUsersForFiltering"
-                                @focus.once="($event) => fetchUsersForFiltering($event.target.value)"
-                                @select="filterActivitiesByUser"
                                 :loading="isFetchingUsers"
                                 field="name"
                                 icon="account"
                                 check-infinite-scroll
+                                @update:model-value="fetchUsersForFiltering"
+                                @focus.once="($event) => fetchUsersForFiltering($event.target.value)"
+                                @select="filterActivitiesByUser"
                                 @infinite-scroll="fetchMoreUsersForFiltering">
-                            <template slot-scope="props">
+                            <template #default="props">
                                 <div class="media">
                                     <div
                                             v-if="props.option.avatar_urls && props.option.avatar_urls['24']"
@@ -119,7 +119,7 @@
                             </template>
                             <template 
                                     v-if="!isFetchingUsers"
-                                    slot="empty">
+                                    #empty>
                                 {{ $i18n.get('info_no_user_found') }}
                             </template>
                         </b-autocomplete>
@@ -127,15 +127,15 @@
 
                     <b-field class="header-item">
                         <b-input 
+                                v-model="searchQuery"
                                 :placeholder="$i18n.get('instruction_search')"
                                 type="search"
                                 size="is-small"
                                 :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
                                 autocomplete="on"
-                                v-model="searchQuery"
-                                @keyup.enter.native="searchActivities()"
                                 icon-right="magnify"
                                 icon-right-clickable
+                                @keyup.enter="searchActivities()"
                                 @icon-right-click="searchActivities()" />
                     </b-field>
                 </div>
@@ -145,62 +145,62 @@
                         class="sub-header">
                     <b-field class="header-item">
                         <b-datepicker
-                            ref="datepicker"
-                            :placeholder="$i18n.get('instruction_filter_activities_date')"
-                            range
-                            icon="calendar-today"
-                            v-model="searchDates"
-                            @input="searchProcesses()"
-                            :date-formatter="(date) => dateFormatter(date)"
-                            :date-parser="(date) => dateParser(date)"
-                            :years-range="[-50, 3]"
-                            :day-names="[
-                                $i18n.get('datepicker_short_sunday'),
-                                $i18n.get('datepicker_short_monday'),
-                                $i18n.get('datepicker_short_tuesday'),
-                                $i18n.get('datepicker_short_wednesday'),
-                                $i18n.get('datepicker_short_thursday'),
-                                $i18n.get('datepicker_short_friday'),
-                                $i18n.get('datepicker_short_saturday'),
-                            ]"
-                            :month-names="[
-                                $i18n.get('datepicker_month_january'),
-                                $i18n.get('datepicker_month_february'),
-                                $i18n.get('datepicker_month_march'),
-                                $i18n.get('datepicker_month_april'),
-                                $i18n.get('datepicker_month_may'),
-                                $i18n.get('datepicker_month_june'),
-                                $i18n.get('datepicker_month_july'),
-                                $i18n.get('datepicker_month_august'),
-                                $i18n.get('datepicker_month_september'),
-                                $i18n.get('datepicker_month_october'),
-                                $i18n.get('datepicker_month_november'),
-                                $i18n.get('datepicker_month_december'),
-                            ]"
-                        />
+                                ref="datepicker"
+                                v-model="searchDates"
+                                :placeholder="$i18n.get('instruction_filter_activities_date')"
+                                range
+                                icon="calendar-today"
+                                :date-formatter="(date) => dateFormatter(date)"
+                                :date-parser="(date) => dateParser(date)"
+                                :years-range="[-50, 3]"
+                                :day-names="[
+                                    $i18n.get('datepicker_short_sunday'),
+                                    $i18n.get('datepicker_short_monday'),
+                                    $i18n.get('datepicker_short_tuesday'),
+                                    $i18n.get('datepicker_short_wednesday'),
+                                    $i18n.get('datepicker_short_thursday'),
+                                    $i18n.get('datepicker_short_friday'),
+                                    $i18n.get('datepicker_short_saturday'),
+                                ]"
+                                :month-names="[
+                                    $i18n.get('datepicker_month_january'),
+                                    $i18n.get('datepicker_month_february'),
+                                    $i18n.get('datepicker_month_march'),
+                                    $i18n.get('datepicker_month_april'),
+                                    $i18n.get('datepicker_month_may'),
+                                    $i18n.get('datepicker_month_june'),
+                                    $i18n.get('datepicker_month_july'),
+                                    $i18n.get('datepicker_month_august'),
+                                    $i18n.get('datepicker_month_september'),
+                                    $i18n.get('datepicker_month_october'),
+                                    $i18n.get('datepicker_month_november'),
+                                    $i18n.get('datepicker_month_december'),
+                                ]"
+                                @update:model-value="searchProcesses()"
+                            />
                         <p
-                            class="control"
-                            v-if="searchDates && searchDates.length != 0">
+                                v-if="searchDates && searchDates.length != 0"
+                                class="control">
                             <button
-                                class="button"
-                                @click="clearSearchDates()">
-                                <span class="icon"><i class="tainacan-icon tainacan-icon-close"/></span>
+                                    class="button"
+                                    @click="clearSearchDates()">
+                                <span class="icon"><i class="tainacan-icon tainacan-icon-close" /></span>
                             </button>
                         </p>
                     </b-field>
 
                     <b-field class="header-item">
                         <b-input
-                            :placeholder="$i18n.get('instruction_search')"
-                            type="search"
-                            size="is-small"
-                            :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
-                            autocomplete="on"
-                            v-model="searchQuery"
-                            @keyup.enter.native="searchProcesses()"
-                            icon-right="magnify"
-                            icon-right-clickable
-                            @icon-right-click="searchProcesses" />
+                                v-model="searchQuery"
+                                :placeholder="$i18n.get('instruction_search')"
+                                type="search"
+                                size="is-small"
+                                :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
+                                autocomplete="on"
+                                icon-right="magnify"
+                                icon-right-clickable
+                                @keyup.enter="searchProcesses()"
+                                @icon-right-click="searchProcesses" />
                     </b-field>
                 </div>
 
@@ -210,13 +210,13 @@
                         :total-activities="totalActivities"
                         :page="activitiesPage"
                         :activities-per-page="activitiesPerPage"
-                        :activities="activities"/>
+                        :activities="activities" />
                 <template v-if="tab != 'processes' && !$userCaps.hasCapability('tnc_rep_read_logs')">
                     <section class="section">
                         <div class="content has-text-grey has-text-centered">
                             <p>
                                 <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities"/>
+                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities" />
                                 </span>
                             </p>
                             <p>{{ $i18n.get('info_can_not_read_activities') }}</p>
@@ -231,7 +231,7 @@
                         :page="processesPage"
                         :processes-per-page="processesPerPage"
                         :processes="processes"
-                        @updateTotalProcesses="(total) => { totalProcesses = total; $console.log(totalProcesses);}" />
+                        @update-total-processes="(total) => { totalProcesses = total; $console.log(totalProcesses);}" />
 
                 <!-- Empty state processes image -->
                 <div v-if="tab == 'processes' && processes.length <= 0 && !isLoading">
@@ -239,25 +239,27 @@
                         <div class="content has-text-grey has-text-centered">
                             <p>
                                 <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities"/>
+                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities" />
                                 </span>
                             </p>
-                            <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_process') }}</p>
+                            <p>
+                                {{ $i18n.get('info_no_process') }}
+                            </p>
                         </div>
                     </section>
                 </div>
 
                 <!-- Footer -->
                 <div
-                        class="pagination-area"
-                        v-if="tab != 'processes' && totalActivities > 0">
+                        v-if="tab != 'processes' && totalActivities > 0"
+                        class="pagination-area">
                     <div class="shown-items">
                         {{
                             $i18n.get('info_showing_activities') + ' ' +
-                            (activitiesPerPage * (activitiesPage - 1) + 1) +
-                            $i18n.get('info_to') +
-                            getLastActivityNumber() +
-                            $i18n.get('info_of') + totalActivities + '.'
+                                (activitiesPerPage * (activitiesPage - 1) + 1) +
+                                $i18n.get('info_to') +
+                                getLastActivityNumber() +
+                                $i18n.get('info_of') + totalActivities + '.'
                         }}
                     </div>
                     <div class="items-per-page">
@@ -265,40 +267,48 @@
                                 horizontal
                                 :label="$i18n.get('label_activities_per_page')">
                             <b-select
-                                    :value="activitiesPerPage"
-                                    @input="onChangeActivitiesPerPage"
-                                    :disabled="activities.length <= 0">
-                                <option value="12">12</option>
-                                <option value="24">24</option>
-                                <option value="48">48</option>
-                                <option :value="maxActivitiesPerPage">{{ maxActivitiesPerPage }}</option>
+                                    :model-value="activitiesPerPage"
+                                    :disabled="activities.length <= 0"
+                                    @update:model-value="onChangeActivitiesPerPage">
+                                <option value="12">
+                                    12
+                                </option>
+                                <option value="24">
+                                    24
+                                </option>
+                                <option value="48">
+                                    48
+                                </option>
+                                <option :value="maxActivitiesPerPage">
+                                    {{ maxActivitiesPerPage }}
+                                </option>
                             </b-select>
                         </b-field>
                     </div>
                     <div class="pagination">
                         <b-pagination
-                                @change="onPageChange"
+                                v-model="activitiesPage"
                                 :total="totalActivities"
-                                :current.sync="activitiesPage"
                                 order="is-centered"
                                 size="is-small"
                                 :per-page="activitiesPerPage"
                                 :aria-next-label="$i18n.get('label_next_page')"
                                 :aria-previous-label="$i18n.get('label_previous_page')"
                                 :aria-page-label="$i18n.get('label_page')"
-                                :aria-current-label="$i18n.get('label_current_page')"/>
+                                :aria-current-label="$i18n.get('label_current_page')"
+                                @change="onPageChange" />
                     </div>
                 </div>
                 <div 
-                        class="pagination-area" 
-                        v-if="tab == 'processes' && processes.length > 0">
+                        v-if="tab == 'processes' && processes.length > 0" 
+                        class="pagination-area">
                     <div class="shown-items">
                         {{
                             $i18n.get('info_showing_processes') + ' ' +
-                            (processesPerPage * (processesPage - 1) + 1) +
-                            $i18n.get('info_to') +
-                            getLastProcessesNumber() +
-                            $i18n.get('info_of') + totalProcesses + '.'
+                                (processesPerPage * (processesPage - 1) + 1) +
+                                $i18n.get('info_to') +
+                                getLastProcessesNumber() +
+                                $i18n.get('info_of') + totalProcesses + '.'
                         }}
                     </div>
                     <div class="items-per-page">
@@ -306,28 +316,36 @@
                                 horizontal 
                                 :label="$i18n.get('label_processes_per_page')">
                             <b-select
-                                    :value="processesPerPage"
-                                    @input="onChangeProcessesPerPage"
-                                    :disabled="processes.length <= 0">
-                                <option value="12">12</option>
-                                <option value="24">24</option>
-                                <option value="48">48</option>
-                                <option :value="maxActivitiesPerPage">{{ maxActivitiesPerPage }}</option>
+                                    :model-value="processesPerPage"
+                                    :disabled="processes.length <= 0"
+                                    @update:model-value="onChangeProcessesPerPage">
+                                <option value="12">
+                                    12
+                                </option>
+                                <option value="24">
+                                    24
+                                </option>
+                                <option value="48">
+                                    48
+                                </option>
+                                <option :value="maxActivitiesPerPage">
+                                    {{ maxActivitiesPerPage }}
+                                </option>
                             </b-select>
                         </b-field>
                     </div>
                     <div class="pagination">
                         <b-pagination
-                                @change="onPageChange"
+                                v-model="processesPage"
                                 :total="totalProcesses"
-                                :current.sync="processesPage"
                                 order="is-centered"
                                 size="is-small"
                                 :per-page="processesPerPage"
                                 :aria-next-label="$i18n.get('label_next_page')"
                                 :aria-previous-label="$i18n.get('label_previous_page')"
                                 :aria-page-label="$i18n.get('label_page')"
-                                :aria-current-label="$i18n.get('label_current_page')"/>
+                                :aria-current-label="$i18n.get('label_current_page')"
+                                @change="onPageChange" />
                     </div>
                 </div>
             </div>
@@ -357,6 +375,7 @@
                 processesPage: 1,
                 activitiesPerPage: 12,
                 processesPerPage: 12,
+                totalProcesses: 0,
                 isRepositoryLevel: false,
                 tab: '',
                 isItemLevel: false,
@@ -372,6 +391,9 @@
             }
         },
         computed: {
+            ...mapGetters('bgprocess', {
+               'processes': 'getProcesses'
+            }),
             activities(){
                 let activitiesList = this.getActivities();
 
@@ -381,9 +403,6 @@
                         moment(activity['log_date'], 'YYYY-MM-DD h:mm:ss').format('DD/MM/YYYY, hh:mm:ss');
 
                 return activitiesList;
-            },
-            processes(){
-                return this.getProcesses();
             }
         },
         created() {
@@ -394,7 +413,7 @@
         },
         mounted(){
             if (!this.isRepositoryLevel)
-                this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('activities') }]);
+                this.$emitter.emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('activities') }]);
 
             if (this.$route.query.tab == 'processes' && this.isRepositoryLevel)
                 this.tab = 'processes';
@@ -431,9 +450,6 @@
             ]),
             ...mapActions('bgprocess', [
                 'fetchProcesses',
-            ]),
-            ...mapGetters('bgprocess', [
-                'getProcesses'
             ]),
             onChangeTab(tab) {
                 this.tab = tab;

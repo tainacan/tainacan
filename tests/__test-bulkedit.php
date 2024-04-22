@@ -20,7 +20,7 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 
 	public $items_ids = [];
 
-	function setUp() {
+	function setUp(): void {
 		parent::setUp();
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',

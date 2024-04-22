@@ -142,7 +142,8 @@ abstract class Filter_Type {
     /**
      * @param $options
      */
-    public function set_options( $options ){
+    public function set_options( $options ) {
+        $options = $options ?? '';
 	    $this->options = ( is_array( $options ) ) ? $options : (!is_array(unserialize( $options )) ? [] : unserialize( $options ));
     }
 

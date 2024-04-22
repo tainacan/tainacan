@@ -14,10 +14,10 @@ const {
     Placeholder,
     PanelBody
 } = wp.components;
-
+const { useEffect } = wp.element;
 const { InspectorControls, BlockControls, RichText, useBlockProps } = wp.blockEditor;
 
-import tainacan from '../../js/axios.js';
+import tainacanApi from '../../js/axios.js';
 import CollectionModal from '../faceted-search/collection-modal.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 
@@ -104,6 +104,13 @@ export default function ({ attributes, setAttributes }) {
         setAttributes({ isLayoutSteps: isLayoutSteps });
     }
 
+    // Fill the enabledMetadata object with the metadata that are enabled initially
+    useEffect(() => {
+        if ( collectionId && collectionId != 'preview' ) {
+            loadCollectionMetadata(collectionId)
+        }
+    }, []);
+
     function openCollectionModal() {
         isCollectionModalOpen = true;
         setAttributes( {
@@ -111,10 +118,8 @@ export default function ({ attributes, setAttributes }) {
         } );
     }
 
-    function toggleIsEnabledMetadatum(isEnabled, index) {
-
-        enabledMetadata.splice(index, 1, isEnabled);
-
+    function toggleIsEnabledMetadatum(isEnabled, metadatumId) {
+        enabledMetadata[metadatumId] = isEnabled;
         setAttributes({
             enabledMetadata: JSON.parse(JSON.stringify(enabledMetadata))
         });
@@ -124,13 +129,17 @@ export default function ({ attributes, setAttributes }) {
         isLoadingCollectionMetadata = true;
         setAttributes({ isLoadingCollectionMetadata, isLoadingCollectionMetadata });
 
-        tainacan.get('/collection/' + selectedCollectionId + '/metadata/?nopaging=1&include_disabled=false&parent=0')
+        tainacanApi.get('/collection/' + selectedCollectionId + '/metadata/?nopaging=1&include_disabled=false&parent=0')
             .then(response => {
+                if ( Array.isArray(enabledMetadata) && enabledMetadata.length == 0 )
+                    enabledMetadata = {};
+                
                 collectionMetadata = response.data;
-                enabledMetadata = new Array(response.data.length).fill(true);
-
+                collectionMetadata.forEach(aMetadatum => {
+                    if ( enabledMetadata['' + aMetadatum.id] === undefined )
+                        enabledMetadata['' + aMetadatum.id] = true;
+                });
                 isLoadingCollectionMetadata = false;
-
                 setAttributes({
                     isLoadingCollectionMetadata : isLoadingCollectionMetadata,
                     collectionMetadata: collectionMetadata,
@@ -262,16 +271,17 @@ export default function ({ attributes, setAttributes }) {
                                     help={ __('Uncheck the metadata that you do not want to be shown on the form', 'tainacan') }
                                 >
                                 <ul id="metadata-checkbox-list">
-                                    { enabledMetadata.length ?
-                                        enabledMetadata.map((isMetadatumEnabled, index) => {
+                                    { 
+                                        collectionMetadata.length ?
+                                        collectionMetadata.map(metadatum => {
                                             return (
                                                 <li>
                                                     <CheckboxControl
-                                                        label={ collectionMetadata[index].name + (collectionMetadata[index].required == 'yes' ? ' *' : '') }
-                                                        disabled={ collectionMetadata[index].required == 'yes' }
-                                                        checked={ isMetadatumEnabled ? true : false }
-                                                        help={ collectionMetadata[index].metadata_type_object.name + (collectionMetadata[index].required == 'yes' ? (', ' + __('Required', 'tainacan')) : '' ) + (collectionMetadata[index].collection_id != collectionId ? (' (' + __('Inherited', 'tainacan') + ')' ) : '') }
-                                                        onChange={  (isEnabled) => toggleIsEnabledMetadatum(isEnabled, index) }
+                                                        label={ metadatum.name + (metadatum.required == 'yes' ? ' *' : '') }
+                                                        disabled={ metadatum.required == 'yes' }
+                                                        checked={ enabledMetadata[metadatum.id] ? true : false }
+                                                        help={ metadatum.metadata_type_object.name + (metadatum.required == 'yes' ? (', ' + __('Required', 'tainacan')) : '' ) + (metadatum.collection_id != collectionId ? (' (' + __('Inherited', 'tainacan') + ')' ) : '') }
+                                                        onChange={  (isEnabled) => toggleIsEnabledMetadatum(isEnabled, metadatum.id) }
                                                     />
                                                 </li>
                                             )
@@ -579,7 +589,7 @@ export default function ({ attributes, setAttributes }) {
                     ) : (
 
                         <div style={{ fontSize: (baseFontSize - 2) + 'px' }}>
-                            <div class="preview-warning">
+                            <div className="preview-warning">
                                 { __('Warning: this is just a demonstration. To see the submission form, either preview or publish your post.', 'tainacan') }
                             </div>
                             <div
@@ -593,7 +603,7 @@ export default function ({ attributes, setAttributes }) {
                                         '--tainacan-primary': primaryColor,
                                         '--tainacan-secondary': secondaryColor
                                     }}
-                                    class="item-submission-form-placeholder">
+                                    className="item-submission-form-placeholder">
 
                                 <div>
                                     {
@@ -602,25 +612,25 @@ export default function ({ attributes, setAttributes }) {
                                         <div>
                                             { documentSectionLabel ?
                                                 <span>
-                                                    <span style={{ display: 'flex', alignItems: 'baseline', marginBottom: '5px' }}><span class="fake-text section-label"></span>{ !hideHelpButtons && !helpInfoBellowLabel ? <span class="fake-text fake-help-button"></span> : null }</span>
-                                                    { (!hideHelpButtons && helpInfoBellowLabel) ? <div><span class="fake-text fake-text-help-description"></span></div> : null }
+                                                    <span style={{ display: 'flex', alignItems: 'baseline', marginBottom: '5px' }}><span className="fake-text section-label"></span>{ !hideHelpButtons && !helpInfoBellowLabel ? <span className="fake-text fake-help-button"></span> : null }</span>
+                                                    { (!hideHelpButtons && helpInfoBellowLabel) ? <div><span className="fake-text fake-text-help-description"></span></div> : null }
                                                 </span>
                                             : null }
                                             { [ hideFileModalButton, hideTextModalButton, hideLinkModalButton ].filter((option) => { return option == false }).length > 1 ?
-                                                <div class="documents-section">
-                                                    { hideFileModalButton ? null : <span class="fake-circle"><span class="fake-icon"></span></span> }
-                                                    { hideTextModalButton ? null : <span class="fake-circle"><span class="fake-icon"></span></span> }
-                                                    { hideLinkModalButton ? null : <span class="fake-circle"><span class="fake-icon"></span></span> }
+                                                <div className="documents-section">
+                                                    { hideFileModalButton ? null : <span className="fake-circle"><span className="fake-icon"></span></span> }
+                                                    { hideTextModalButton ? null : <span className="fake-circle"><span className="fake-icon"></span></span> }
+                                                    { hideLinkModalButton ? null : <span className="fake-circle"><span className="fake-icon"></span></span> }
                                                 </div>
                                             : (
                                                 (!hideFileModalButton && hideTextModalButton && hideLinkModalButton) ?
-                                                    <div class="fake-image-uploader"></div>
+                                                    <div className="fake-image-uploader"></div>
                                                 : (
                                                     (hideFileModalButton && !hideTextModalButton && hideLinkModalButton) ?
-                                                        <span class="fake-textarea"></span>
+                                                        <span className="fake-textarea"></span>
                                                     : (
                                                         (hideFileModalButton && hideTextModalButton && !hideLinkModalButton) ?
-                                                            <span class="fake-input" style={{ width: '100%' }}></span>
+                                                            <span className="fake-input" style={{ width: '100%' }}></span>
                                                         : null
                                                     )
                                                 )
@@ -633,11 +643,11 @@ export default function ({ attributes, setAttributes }) {
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                                             { !thumbnailSectionLabel ?
                                                 <span>
-                                                    <span style={{ display: 'flex', alignItems: 'baseline' }}><span class="fake-text section-label"></span>{ !hideHelpButtons && !helpInfoBellowLabel ? <span class="fake-text fake-help-button"></span> : null }</span>
-                                                    { (!hideHelpButtons && helpInfoBellowLabel) ? <div><span class="fake-text fake-text-help-description"></span></div> : null }
+                                                    <span style={{ display: 'flex', alignItems: 'baseline' }}><span className="fake-text section-label"></span>{ !hideHelpButtons && !helpInfoBellowLabel ? <span className="fake-text fake-help-button"></span> : null }</span>
+                                                    { (!hideHelpButtons && helpInfoBellowLabel) ? <div><span className="fake-text fake-text-help-description"></span></div> : null }
                                                 </span>
                                             : null }
-                                            <div class="fake-switch"><span class="fake-icon"></span><span class="fake-text"></span></div>
+                                            <div className="fake-switch"><span className="fake-icon"></span><span className="fake-text"></span></div>
                                         </div>
                                     ) : null
                                     }
@@ -647,12 +657,12 @@ export default function ({ attributes, setAttributes }) {
                                         { !attachmentsSectionLabel ?
                                         <span
                                                 style={{ position: 'relative' }}
-                                                class="fake-text section-label">
-                                            <div class="fake-tooltip"><div class="fake-link"></div></div>
+                                                className="fake-text section-label">
+                                            <div className="fake-tooltip"><div className="fake-link"></div></div>
                                         </span>
                                         : null }
-                                        <div class="attachments-section">
-                                            <div class="fake-image-uploader"></div>
+                                        <div className="attachments-section">
+                                            <div className="fake-image-uploader"></div>
                                         </div>
                                     </div>
                                     ) : null
@@ -661,45 +671,45 @@ export default function ({ attributes, setAttributes }) {
                                     showAllowCommentsSection ?
                                     (
                                         <div>
-                                            <span style={{ display: 'flex', alignItems: 'baseline' }}><span class="fake-text section-label"></span>{ !hideHelpButtons && !helpInfoBellowLabel ? <span class="fake-text fake-help-button"></span> : null }</span>
-                                            { (!hideHelpButtons && helpInfoBellowLabel) ? <div><span class="fake-text fake-text-help-description"></span></div> : null }
-                                            <div class="fake-switch"><span class="fake-icon"></span><span class="fake-text"></span></div>
+                                            <span style={{ display: 'flex', alignItems: 'baseline' }}><span className="fake-text section-label"></span>{ !hideHelpButtons && !helpInfoBellowLabel ? <span className="fake-text fake-help-button"></span> : null }</span>
+                                            { (!hideHelpButtons && helpInfoBellowLabel) ? <div><span className="fake-text fake-text-help-description"></span></div> : null }
+                                            <div className="fake-switch"><span className="fake-icon"></span><span className="fake-text"></span></div>
                                         </div>
                                     ) : null }
                                 </div>
                                 <div style={{ flexGrow: '1' }}>
                                     { metadataSectionLabel ?
-                                        <div class="fake-text section-label"></div>
+                                        <div className="fake-text section-label"></div>
                                     : null }
                                     { !hideCollapses && !isLayoutSteps ? 
-                                        <div class="fake-link"></div>
+                                        <div className="fake-link"></div>
                                     : null }
                                     { isLayoutSteps ? 
-                                        <div class="fake-steps">
-                                            <div class="fake-step"/>
-                                            <div class="fake-step"/>
-                                            <div class="fake-step"/>
+                                        <div className="fake-steps">
+                                            <div className="fake-step"/>
+                                            <div className="fake-step"/>
+                                            <div className="fake-step"/>
                                         </div>
                                     : null }
-                                    <div class="metadata-section">
+                                    <div className="metadata-section">
                                         { enabledMetadata.length ?
                                             enabledMetadata.map( (isEnabled) => {
                                                 return isEnabled ?
-                                                    <div class={ 'fake-metadata' + (!hideCollapses ? ' has-collapse' : '') }>
-                                                        { !hideCollapses ? <span class="fake-collapse-arrow"></span> : null }
+                                                    <div className={ 'fake-metadata' + (!hideCollapses ? ' has-collapse' : '') }>
+                                                        { !hideCollapses ? <span className="fake-collapse-arrow"></span> : null }
                                                         <span style={{ lineHeight: '0em' }}>
-                                                            <span class="fake-text"></span>{ !hideMetadataTypes ? <span class="fake-text fake-text-info"></span> : null }{ !hideHelpButtons && !helpInfoBellowLabel ? <span class="fake-text fake-help-button"></span> : null }
-                                                            { (!hideHelpButtons && helpInfoBellowLabel) ? <div><span class="fake-text fake-text-help-description"></span></div> : null }
+                                                            <span className="fake-text"></span>{ !hideMetadataTypes ? <span className="fake-text fake-text-info"></span> : null }{ !hideHelpButtons && !helpInfoBellowLabel ? <span className="fake-text fake-help-button"></span> : null }
+                                                            { (!hideHelpButtons && helpInfoBellowLabel) ? <div><span className="fake-text fake-text-help-description"></span></div> : null }
                                                         </span>
-                                                        <span class="fake-input"></span>
+                                                        <span className="fake-input"></span>
                                                     </div>
                                                 : null
                                             }) :
                                             Array(12).fill().map( () => {
-                                                return <div class={ 'fake-metadata' + (!hideCollapses ? ' has-collapse' : '') }>
-                                                    { !hideCollapses ? <span class="fake-collapse-arrow"></span> : null }
-                                                    <span class="fake-text"></span>
-                                                    <span class="fake-input"></span>
+                                                return <div className={ 'fake-metadata' + (!hideCollapses ? ' has-collapse' : '') }>
+                                                    { !hideCollapses ? <span className="fake-collapse-arrow"></span> : null }
+                                                    <span className="fake-text"></span>
+                                                    <span className="fake-input"></span>
                                                 </div>
                                             })
                                         }
@@ -707,8 +717,8 @@ export default function ({ attributes, setAttributes }) {
                                 </div>
 
                                 { showTermsAgreementCheckbox ?
-                                    <div class="fake-checkbox-confirmation">
-                                        <span class="fake-checkbox"></span>
+                                    <div className="fake-checkbox-confirmation">
+                                        <span className="fake-checkbox"></span>
                                         <RichText
                                                 { ...blockProps }
                                                 tagName="p"
@@ -720,10 +730,10 @@ export default function ({ attributes, setAttributes }) {
                                     : null
                                 }
 
-                                <div class="form-footer">
-                                    <span class="fake-button outline"><span class="fake-text"></span></span>
-                                    <span class="fake-text"></span>
-                                    <span class="fake-button"><span class="fake-text"></span></span>
+                                <div className="form-footer">
+                                    <span className="fake-button outline"><span className="fake-text"></span></span>
+                                    <span className="fake-text"></span>
+                                    <span className="fake-button"><span className="fake-text"></span></span>
                                 </div>
                             </div>
                         </div>

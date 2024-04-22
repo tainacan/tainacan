@@ -1,12 +1,10 @@
-import Vue from 'vue';
+import { createApp, h } from 'vue';
 import CarouselCollectionsListTheme from './theme.vue';
 import { ThumbnailHelperPlugin } from '../../../admin/js/utilities.js';
-import VueBlurHash from 'vue-blurhash';
+import VueBlurHash from 'another-vue3-blurhash';
+import getDataAttribute from '../../js/compatibility/tainacan-blocks-compat-data-attributes.js';
 
 export default (element) => {
-
-    // Vue Dev Tools!
-    Vue.config.devtools = TAINACAN_ENV === 'development';
 
     function renderTainacanCollectionsCarouselBlocks() {
 
@@ -18,89 +16,41 @@ export default (element) => {
 
             // Checks if this carousel isn't already mounted
             blocks = blocks.filter((block) => block.classList && !block.classList.contains('has-mounted'));
-            const blockIds = Object.values(blocks).map((block) => block.id);
        
             // Creates a new Vue Instance to manage each block isolatelly
-            for (let blockId of blockIds) {
+            blocks.forEach((block) => {
 
-                // Configure Vue logic before passing it to constructor:
-                let vueOptions = {
-                    data: {
-                        selectedItem: [],
-                        maxItemsNumber: 12,
-                        arrowsPosition: 'around',
-                        autoPlay: false,
-                        autoPlaySpeed: 3,
-                        largeArrows: false,
-                        arrowsStyle: 'type-1',
-                        maxCollectionsPerScreen: 6,
-                        spaceBetweenCollections: 32,
-                        spaceAroundCarousel: 50,
-                        imageSize: 'tainacan-medium',
-                        loopSlides: false,
-                        hideName: true,
-                        showCollectionThumbnail: false,
-                        tainacanApiRoot: '',
-                        tainacanBaseUrl: '',
-                        className: '',
-                        style: ''
-                    },
-                    render(h) { 
+                const VueCollectionsList = createApp( {
+                    render() { 
                         return h(CarouselCollectionsListTheme, {
-                            props: {
-                                blockId: blockId,
-                                selectedCollections: this.selectedCollections,
-                                maxItemsNumber: this.maxItemsNumber,
-                                arrowsPosition: this.arrowsPosition,
-                                autoPlay: this.autoPlay,
-                                autoPlaySpeed: this.autoPlaySpeed,
-                                loopSlides: this.loopSlides,
-                                largeArrows: this.largeArrows,
-                                arrowsStyle: this.arrowsStyle,
-                                imageSize: this.imageSize,
-                                maxCollectionsPerScreen: this.maxCollectionsPerScreen,
-                                spaceBetweenCollections: this.spaceBetweenCollections,
-                                spaceAroundCarousel: this.spaceAroundCarousel,
-                                hideName: this.hideName,
-                                showCollectionThumbnail: this.showCollectionThumbnail,
-                                tainacanApiRoot: this.tainacanApiRoot,
-                                tainacanBaseUrl: this.tainacanBaseUrl,
-                                className: this.className,
-                                customStyle: this.style
-                            }
+                            blockId: block.id,
+                            selectedCollections: JSON.parse(getDataAttribute(block, 'selected-collections', '[]')),
+                            maxItemsNumber: Number(getDataAttribute(block, 'max-collections-number', 12)),
+                            maxCollectionsPerScreen: Number(getDataAttribute(block, 'max-collections-per-screen', 9)),
+                            spaceBetweenCollections: Number(getDataAttribute(block, 'space-between-collections', 32)),
+                            spaceAroundCarousel: Number(getDataAttribute(block, 'space-around-carousel', 50)),
+                            arrowsPosition: getDataAttribute(block, 'arrows-position', 'around'),
+                            autoPlay: getDataAttribute(block, 'auto-play', 'false') == 'true',
+                            largeArrows: getDataAttribute(block, 'large-arrows', 'false') == 'true',
+                            arrowsStyle: getDataAttribute(block, 'arrows-style', 'type-1'),
+                            autoPlaySpeed: Number(getDataAttribute(block, 'auto-play-speed', 3)),
+                            loopSlides: getDataAttribute(block, 'loop-slides', 'false') == 'true',
+                            imageSize: getDataAttribute(block, 'image-size', 'tainacan-medium'),
+                            hideName: getDataAttribute(block, 'hide-name', 'false') == 'true',
+                            showCollectionThumbnail: getDataAttribute(block, 'show-collection-thumbnail', 'false') == 'true',
+                            tainacanApiRoot: getDataAttribute(block, 'tainacan-api-root'),
                         });
                     },
-                    beforeMount () {
-                        this.className = this.$el.attributes.class != undefined ? this.$el.attributes.class.value : undefined;
-                        this.selectedCollections = this.$el.attributes['selected-collections'] != undefined ? JSON.parse(this.$el.attributes['selected-collections'].value) : undefined;
-                        this.maxItemsNumber = this.$el.attributes['max-collections-number'] != undefined ? this.$el.attributes['max-collections-number'].value : undefined;
-                        this.maxCollectionsPerScreen = this.$el.attributes['max-collections-per-screen'] != undefined ? this.$el.attributes['max-collections-per-screen'].value : 6;
-                        this.spaceBetweenCollections = this.$el.attributes['space-between-collections'] != undefined ? this.$el.attributes['space-between-collections'].value : 32;
-                        this.spaceAroundCarousel = this.$el.attributes['space-around-carousel'] != undefined ? this.$el.attributes['space-around-carousel'].value : 50;
-                        this.arrowsPosition = this.$el.attributes['arrows-position'] != undefined ? this.$el.attributes['arrows-position'].value : undefined;
-                        this.autoPlay = this.$el.attributes['auto-play'] != undefined ? this.$el.attributes['auto-play'].value == 'true' : false;
-                        this.largeArrows = this.$el.attributes['large-arrows'] != undefined ? this.$el.attributes['large-arrows'].value == 'true' : false;
-                        this.arrowsStyle = this.$el.attributes['arrows-style'] != undefined ? this.$el.attributes['arrows-style'].value : undefined;
-                        this.autoPlaySpeed = this.$el.attributes['auto-play-speed'] != undefined ? this.$el.attributes['auto-play-speed'].value : 3;
-                        this.loopSlides = this.$el.attributes['loop-slides'] != undefined ? this.$el.attributes['loop-slides'].value == 'true' : false;
-                        this.imageSize = this.$el.attributes['image-size'] != undefined ? this.$el.attributes['image-size'].value : 'tainacan-medium';
-                        this.hideName = this.$el.attributes['hide-name'] != undefined ? this.$el.attributes['hide-name'].value == 'true' : false;
-                        this.showCollectionThumbnail = this.$el.attributes['show-collection-thumbnail'] != undefined ? this.$el.attributes['show-collection-thumbnail'].value == 'true' : false;
-                        this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
-                        this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
-                        this.style = this.$el.attributes.style != undefined ? this.$el.attributes.style.value : undefined;
-                    },
-                    methods: {
-                        __(text, domain) {
-                            return wp.i18n.__(text, domain);
-                        }
+                    mounted() {
+                        block.classList.add('has-mounted');
                     }
-                };
+                });
 
-                Vue.use(VueBlurHash);
-                Vue.use(ThumbnailHelperPlugin);
-                new Vue( Object.assign({ el: '#' + blockId }, vueOptions) );
-            }
+                VueCollectionsList.use(VueBlurHash);
+                VueCollectionsList.use(ThumbnailHelperPlugin);
+
+                VueCollectionsList.mount('#' + block.id);
+            });
         }
     }
 

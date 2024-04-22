@@ -1,8 +1,8 @@
-import Vue from 'vue';
+import { createApp } from 'vue';
 import store from '../../admin/js/store/store';
 import router from './reports-router';
-import { Snackbar, Modal } from 'buefy';
-import VueApexCharts from 'vue-apexcharts';
+import { Snackbar, Modal } from '@ntohq/buefy-next';
+import VueApexCharts from 'vue3-apexcharts';
 import cssVars from 'css-vars-ponyfill';
 import { 
     I18NPlugin,
@@ -29,9 +29,6 @@ import frLocaleConfig from 'apexcharts/dist/locales/fr.json';
 import ptBrLocaleConfig from 'apexcharts/dist/locales/pt-br.json';
 
 export default (element) => {
-
-    // Vue Dev Tools!
-    Vue.config.devtools = TAINACAN_ENV === 'development';
 
     function renderTainacanReportsPage() {
         
@@ -72,25 +69,29 @@ export default (element) => {
                 }
             }
 
-            Vue.use(VueApexCharts)
+            const VueReports = createApp(ReportsPage);
 
-            Vue.use(I18NPlugin);
-            Vue.use(UserCapabilitiesPlugin);
-            Vue.use(StatusHelperPlugin);
-            Vue.use(Snackbar);
-            Vue.use(Modal);
+            VueReports.use(store);
+            VueReports.use(router);
 
-            Vue.component('tainacan-reports-subheader', TainacanReportsSubheader);
-            Vue.component('number-block', NumberBlock);
-            Vue.component('items-per-term-block', ItemsPerTermBlock);
-            Vue.component('items-per-term-collection-block', ItemsPerTermCollectionBlock);
-            Vue.component('terms-per-taxonomy-block', TermsPerTaxonomyBlock);
-            Vue.component('metadata-types-block', MetadataTypesBlock);
-            Vue.component('metadata-distribution-block', MetadataDistributionBlock);
-            Vue.component('collections-list-block', CollectionsListBlock);
-            Vue.component('activities-block', ActivitiesBlock);
-            Vue.component('activities-per-user-block', ActivitiesPerUserBlock);
-            Vue.component('apexchart', VueApexCharts);
+            VueReports.use(VueApexCharts)
+
+            VueReports.use(I18NPlugin);
+            VueReports.use(UserCapabilitiesPlugin);
+            VueReports.use(StatusHelperPlugin);
+            VueReports.use(Snackbar);
+            VueReports.use(Modal);
+
+            VueReports.component('tainacan-reports-subheader', TainacanReportsSubheader);
+            VueReports.component('number-block', NumberBlock);
+            VueReports.component('items-per-term-block', ItemsPerTermBlock);
+            VueReports.component('items-per-term-collection-block', ItemsPerTermCollectionBlock);
+            VueReports.component('terms-per-taxonomy-block', TermsPerTaxonomyBlock);
+            VueReports.component('metadata-types-block', MetadataTypesBlock);
+            VueReports.component('metadata-distribution-block', MetadataDistributionBlock);
+            VueReports.component('collections-list-block', CollectionsListBlock);
+            VueReports.component('activities-block', ActivitiesBlock);
+            VueReports.component('activities-per-user-block', ActivitiesPerUserBlock);
 
             // Changing title of pages
             router.beforeEach((to, from, next) => {
@@ -99,12 +100,7 @@ export default (element) => {
                     next();
             });
 
-            new Vue({
-                el: '#tainacan-reports-app',
-                store,
-                router,
-                render: h => h(ReportsPage)
-            });
+            VueReports.mount('#tainacan-reports-app');
 
             // Initialize Ponyfill for Custom CSS properties
             cssVars({

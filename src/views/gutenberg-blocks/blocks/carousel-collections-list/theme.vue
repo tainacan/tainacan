@@ -1,160 +1,156 @@
 <template>
-    <div 
-            :style="customStyle"
-            :class="className + ' has-mounted'">
-        <div  
-                :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') "
-                :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }"
-                v-if="collections.length > 0 || isLoading">
-            <div 
-                    class="swiper"
-                    :id="blockId + '-carousel'">
-                <ul 
-                        v-if="isLoading"
-                        role="list"
-                        class="swiper-wrapper">
-                    <li 
-                            role="listitem"
-                            :key="index"
-                            v-for="index in 18"
-                            class="swiper-slide collection-list-item skeleton">
-                        <a>
-                            <img>
-                            <span v-if="!hideName" />
-                        </a>
-                    </li>
-                </ul>
-                <ul 
-                        v-else
-                        role="list"
-                        class="swiper-wrapper">
-                    <li 
-                            role="listitem"
-                            :key="index"
-                            v-for="(collection, index) of collections"
-                            :class="'swiper-slide collection-list-item ' + (!showCollectionThumbnail ? 'collection-list-item-grid' : '')">      
-                        <a 
-                                v-if="showCollectionThumbnail"
-                                :id="isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id"
-                                :href="collection.url">
-                            <img
+    <div  
+            v-if="collections.length > 0 || isLoading"
+            :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') "
+            :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }">
+        <div 
+                :id="blockId + '-carousel'"
+                class="swiper">
+            <ul 
+                    v-if="isLoading"
+                    role="list"
+                    class="swiper-wrapper">
+                <li 
+                        v-for="index in 18"
+                        :key="index"
+                        role="listitem"
+                        class="swiper-slide collection-list-item skeleton">
+                    <a>
+                        <img>
+                        <span v-if="!hideName" />
+                    </a>
+                </li>
+            </ul>
+            <ul 
+                    v-else
+                    role="list"
+                    class="swiper-wrapper">
+                <li 
+                        v-for="(collection, index) of collections"
+                        :key="index"
+                        role="listitem"
+                        :class="'swiper-slide collection-list-item ' + (!showCollectionThumbnail ? 'collection-list-item-grid' : '')">      
+                    <a 
+                            v-if="showCollectionThumbnail"
+                            :id="isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id"
+                            :href="collection.url">
+                        <img
                                 :src=" 
                                     collection.thumbnail && collection.thumbnail[imageSize] && collection.thumbnail[imageSize][0] 
                                         ?
-                                    collection.thumbnail[imageSize][0] 
+                                            collection.thumbnail[imageSize][0] 
                                         :
-                                    (collection.thumbnail && collection.thumbnail['thumbnail'] && collection.thumbnail['thumbnail'][0]
-                                        ?    
-                                    collection.thumbnail['thumbnail'][0] 
-                                        : 
-                                    `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
+                                            (collection.thumbnail && collection.thumbnail['thumbnail'] && collection.thumbnail['thumbnail'][0]
+                                                ?    
+                                                    collection.thumbnail['thumbnail'][0] 
+                                                : 
+                                                    $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
                                 "
                                 :data-src=" 
                                     collection.thumbnail && collection.thumbnail[imageSize] && collection.thumbnail[imageSize][0] 
                                         ?
-                                    collection.thumbnail[imageSize][0] 
+                                            collection.thumbnail[imageSize][0] 
                                         :
-                                    (collection.thumbnail && collection.thumbnail['thumbnail'] && collection.thumbnail['thumbnail'][0]
-                                        ?    
-                                    collection.thumbnail['thumbnail'][0] 
-                                        : 
-                                    `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
+                                            (collection.thumbnail && collection.thumbnail['thumbnail'] && collection.thumbnail['thumbnail'][0]
+                                                ?    
+                                                    collection.thumbnail['thumbnail'][0] 
+                                                : 
+                                                    $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
                                 "
-                                :alt="collection.name ? collection.name : $root.__('Thumbnail', 'tainacan')">
-                            <span v-if="!hideName">{{ collection.name ? collection.name : '' }}</span>
-                        </a>
-                        <a 
-                                v-else
-                                :id="isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id"
-                                :href="collection.url">
-                            <div class="collection-items-grid">
-                                <blur-hash-image
-                                        :height="collectionItems[collection.id][0] ? $thumbHelper.getHeight(collectionItems[collection.id][0]['thumbnail'], imageSize) : 275"
-                                        :width="collectionItems[collection.id][0] ? $thumbHelper.getWidth(collectionItems[collection.id][0]['thumbnail'], imageSize) : 275"
-                                        :src="collectionItems[collection.id][0] ? $thumbHelper.getSrc(collectionItems[collection.id][0]['thumbnail'], imageSize, collectionItems[collection.id][0]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
-                                        :srcset="collectionItems[collection.id][0] ? $thumbHelper.getSrcSet(collectionItems[collection.id][0]['thumbnail'], imageSize, collectionItems[collection.id][0]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
-                                        :hash="collectionItems[collection.id][0] ? $thumbHelper.getBlurhashString(collectionItems[collection.id][0]['thumbnail'], imageSize) : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
-                                        :alt="collectionItems[collection.id][0] && collectionItems[collection.id][0].thumbnail_alt ? collectionItems[collection.id][0].thumbnail_alt : (collectionItems[collection.id][0] && collectionItems[collection.id][0].name ? collectionItems[collection.id][0].name : $root.__( 'Thumbnail', 'tainacan' ))"
-                                        :transition-duration="500" />
-                                <blur-hash-image
-                                        :height="collectionItems[collection.id][1] ? $thumbHelper.getHeight(collectionItems[collection.id][1]['thumbnail'], imageSize) : 275"
-                                        :width="collectionItems[collection.id][1] ? $thumbHelper.getWidth(collectionItems[collection.id][1]['thumbnail'], imageSize) : 275"
-                                        :src="collectionItems[collection.id][1] ? $thumbHelper.getSrc(collectionItems[collection.id][1]['thumbnail'], imageSize, collectionItems[collection.id][1]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
-                                        :srcset="collectionItems[collection.id][1] ? $thumbHelper.getSrcSet(collectionItems[collection.id][1]['thumbnail'], imageSize, collectionItems[collection.id][1]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
-                                        :hash="collectionItems[collection.id][1] ? $thumbHelper.getBlurhashString(collectionItems[collection.id][1]['thumbnail'], imageSize) : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
-                                        :alt="collectionItems[collection.id][1] && collectionItems[collection.id][1].thumbnail_alt ? collectionItems[collection.id][1].thumbnail_alt : (collectionItems[collection.id][1] && collectionItems[collection.id][1].name ? collectionItems[collection.id][1].name : $root.__( 'Thumbnail', 'tainacan' ))"
-                                        :transition-duration="500" />
-                                <blur-hash-image
-                                        :height="collectionItems[collection.id][2] ? $thumbHelper.getHeight(collectionItems[collection.id][2]['thumbnail'], imageSize) : 275"
-                                        :width="collectionItems[collection.id][2] ? $thumbHelper.getWidth(collectionItems[collection.id][2]['thumbnail'], imageSize) : 275"
-                                        :src="collectionItems[collection.id][2] ? $thumbHelper.getSrc(collectionItems[collection.id][2]['thumbnail'], imageSize, collectionItems[collection.id][2]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
-                                        :srcset="collectionItems[collection.id][2] ? $thumbHelper.getSrcSet(collectionItems[collection.id][2]['thumbnail'], imageSize, collectionItems[collection.id][2]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
-                                        :hash="collectionItems[collection.id][2] ? $thumbHelper.getBlurhashString(collectionItems[collection.id][2]['thumbnail'], imageSize) : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
-                                        :alt="collectionItems[collection.id][2] && collectionItems[collection.id][2].thumbnail_alt ? collectionItems[collection.id][2].thumbnail_alt : (collectionItems[collection.id][2] && collectionItems[collection.id][2].name ? collectionItems[collection.id][2].name : $root.__( 'Thumbnail', 'tainacan' ))"
-                                        :transition-duration="500" />
-                            </div>
-                            <span v-if="!hideName">{{ collection.name ? collection.name : '' }}</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <button 
-                    class="swiper-button-prev" 
-                    :id="blockId + '-prev'" 
-                    slot="button-prev"
-                    :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
-                <svg
-                        :width="largeArrows ? 60 : 42"
-                        :height="largeArrows ? 60 : 42"
-                        viewBox="0 0 24 24">
-                    <path
-                            v-if="arrowsStyle === 'type-2'"
-                            d="M 10.694196,6 12.103795,7.4095983 8.5000002,11.022321 H 19.305804 v 1.955358 H 8.5000002 L 12.103795,16.590402 10.694196,18 4.6941962,12 Z"/>
-                    <path 
+                                :alt="collection.name ? collection.name : wpI18n('Thumbnail', 'tainacan')">
+                        <span v-if="!hideName">{{ collection.name ? collection.name : '' }}</span>
+                    </a>
+                    <a 
                             v-else
-                            d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-                    <path
-                            d="M0 0h24v24H0z"
-                            fill="none"/>
-                </svg>
-            </button>
-            <button 
-                    class="swiper-button-next" 
-                    :id="blockId + '-next'" 
-                    slot="button-next"
-                    :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
-                <svg
-                        :width="largeArrows ? 60 : 42"
-                        :height="largeArrows ? 60 : 42"
-                        viewBox="0 0 24 24">
-                    <path
-                            v-if="arrowsStyle === 'type-2'"
-                            d="M 13.305804,6 11.896205,7.4095983 15.5,11.022321 H 4.6941964 v 1.955358 H 15.5 L 11.896205,16.590402 13.305804,18 l 6,-6 z"/>
-                    <path 
-                            v-else
-                            d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-                    <path
-                            d="M0 0h24v24H0z"
-                            fill="none"/>
-                </svg>
-            </button>
+                            :id="isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id"
+                            :href="collection.url">
+                        <div class="collection-items-grid">
+                            <blur-hash-image
+                                    :height="collectionItems[collection.id][0] ? $thumbHelper.getHeight(collectionItems[collection.id][0]['thumbnail'], imageSize) : 275"
+                                    :width="collectionItems[collection.id][0] ? $thumbHelper.getWidth(collectionItems[collection.id][0]['thumbnail'], imageSize) : 275"
+                                    :src="collectionItems[collection.id][0] ? $thumbHelper.getSrc(collectionItems[collection.id][0]['thumbnail'], imageSize, collectionItems[collection.id][0]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
+                                    :srcset="collectionItems[collection.id][0] ? $thumbHelper.getSrcSet(collectionItems[collection.id][0]['thumbnail'], imageSize, collectionItems[collection.id][0]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
+                                    :hash="collectionItems[collection.id][0] ? $thumbHelper.getBlurhashString(collectionItems[collection.id][0]['thumbnail'], imageSize) : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
+                                    :alt="collectionItems[collection.id][0] && collectionItems[collection.id][0].thumbnail_alt ? collectionItems[collection.id][0].thumbnail_alt : (collectionItems[collection.id][0] && collectionItems[collection.id][0].name ? collectionItems[collection.id][0].name : wpI18n( 'Thumbnail', 'tainacan' ))"
+                                    :transition-duration="500" />
+                            <blur-hash-image
+                                    :height="collectionItems[collection.id][1] ? $thumbHelper.getHeight(collectionItems[collection.id][1]['thumbnail'], imageSize) : 275"
+                                    :width="collectionItems[collection.id][1] ? $thumbHelper.getWidth(collectionItems[collection.id][1]['thumbnail'], imageSize) : 275"
+                                    :src="collectionItems[collection.id][1] ? $thumbHelper.getSrc(collectionItems[collection.id][1]['thumbnail'], imageSize, collectionItems[collection.id][1]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
+                                    :srcset="collectionItems[collection.id][1] ? $thumbHelper.getSrcSet(collectionItems[collection.id][1]['thumbnail'], imageSize, collectionItems[collection.id][1]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
+                                    :hash="collectionItems[collection.id][1] ? $thumbHelper.getBlurhashString(collectionItems[collection.id][1]['thumbnail'], imageSize) : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
+                                    :alt="collectionItems[collection.id][1] && collectionItems[collection.id][1].thumbnail_alt ? collectionItems[collection.id][1].thumbnail_alt : (collectionItems[collection.id][1] && collectionItems[collection.id][1].name ? collectionItems[collection.id][1].name : wpI18n( 'Thumbnail', 'tainacan' ))"
+                                    :transition-duration="500" />
+                            <blur-hash-image
+                                    :height="collectionItems[collection.id][2] ? $thumbHelper.getHeight(collectionItems[collection.id][2]['thumbnail'], imageSize) : 275"
+                                    :width="collectionItems[collection.id][2] ? $thumbHelper.getWidth(collectionItems[collection.id][2]['thumbnail'], imageSize) : 275"
+                                    :src="collectionItems[collection.id][2] ? $thumbHelper.getSrc(collectionItems[collection.id][2]['thumbnail'], imageSize, collectionItems[collection.id][2]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
+                                    :srcset="collectionItems[collection.id][2] ? $thumbHelper.getSrcSet(collectionItems[collection.id][2]['thumbnail'], imageSize, collectionItems[collection.id][2]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
+                                    :hash="collectionItems[collection.id][2] ? $thumbHelper.getBlurhashString(collectionItems[collection.id][2]['thumbnail'], imageSize) : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
+                                    :alt="collectionItems[collection.id][2] && collectionItems[collection.id][2].thumbnail_alt ? collectionItems[collection.id][2].thumbnail_alt : (collectionItems[collection.id][2] && collectionItems[collection.id][2].name ? collectionItems[collection.id][2].name : wpI18n( 'Thumbnail', 'tainacan' ))"
+                                    :transition-duration="500" />
+                        </div>
+                        <span v-if="!hideName">{{ collection.name ? collection.name : '' }}</span>
+                    </a>
+                </li>
+            </ul>
         </div>
-        <div
-                v-else-if="collections.length <= 0 && !isLoading"
-                class="spinner-container">
-            {{ $root.__('No collections found.', 'tainacan') }}
-        </div>
+        <button 
+                :id="blockId + '-prev'" 
+                class="swiper-button-prev" 
+                :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
+            <svg
+                    :width="largeArrows ? 60 : 42"
+                    :height="largeArrows ? 60 : 42"
+                    viewBox="0 0 24 24">
+                <path
+                        v-if="arrowsStyle === 'type-2'"
+                        d="M 10.694196,6 12.103795,7.4095983 8.5000002,11.022321 H 19.305804 v 1.955358 H 8.5000002 L 12.103795,16.590402 10.694196,18 4.6941962,12 Z" />
+                <path 
+                        v-else
+                        d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                <path
+                        d="M0 0h24v24H0z"
+                        fill="none" />
+            </svg>
+        </button>
+        <button 
+                :id="blockId + '-next'" 
+                class="swiper-button-next" 
+                :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
+            <svg
+                    :width="largeArrows ? 60 : 42"
+                    :height="largeArrows ? 60 : 42"
+                    viewBox="0 0 24 24">
+                <path
+                        v-if="arrowsStyle === 'type-2'"
+                        d="M 13.305804,6 11.896205,7.4095983 15.5,11.022321 H 4.6941964 v 1.955358 H 15.5 L 11.896205,16.590402 13.305804,18 l 6,-6 z" />
+                <path 
+                        v-else
+                        d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                <path
+                        d="M0 0h24v24H0z"
+                        fill="none" />
+            </svg>
+        </button>
+    </div>
+    <div
+            v-else-if="collections.length <= 0 && !isLoading"
+            class="spinner-container">
+        {{ wpI18n('No collections found.', 'tainacan') }}
     </div>
 </template>
  
 <script>
+import { nextTick } from 'vue';
 import axios from 'axios';
 import qs from 'qs';
 import 'swiper/css';
 import 'swiper/css/a11y';
 import 'swiper/css/autoplay';
 import 'swiper/css/navigation';
-import Swiper, { Autoplay, Navigation, A11y } from 'swiper';
+import Swiper from 'swiper';
+import { Autoplay, Navigation, A11y } from 'swiper/modules';
 
 export default {
     name: "CarouselCollectionsListTheme",
@@ -175,9 +171,7 @@ export default {
         imageSize: String,
         showCollectionThumbnail: Boolean,
         tainacanApiRoot: String,
-        tainacanBaseUrl: String,
-        className: String,
-        customStyle: String
+        tainacanBaseUrl: String
     },
     data() {
         return {
@@ -197,25 +191,27 @@ export default {
         }
     },
     created() {
-        
         this.apiRoot = (tainacan_blocks && tainacan_blocks.root && !this.tainacanApiRoot) ? tainacan_blocks.root : this.tainacanApiRoot;
             
         this.tainacanAxios = axios.create({ baseURL: this.apiRoot });
         if (tainacan_blocks && tainacan_blocks.nonce)
             this.tainacanAxios.defaults.headers.common['X-WP-Nonce'] = tainacan_blocks.nonce;
-
-        this.fetchCollections();
+        
+            this.fetchCollections();
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (typeof this.swiper.destroy == 'function')
             this.swiper.destroy();
     },
     methods: {
+        wpI18n(string, context) {
+            return wp && wp.i18n ? wp.i18n.__(string, context) : string;
+        },
         fetchCollections() {
             this.isLoading = true;
             this.errorMessage = 'No collections found.';
 
-            this.$nextTick(() => {
+            nextTick(() => {
                 this.mountCarousel();
             });
             
@@ -223,7 +219,7 @@ export default {
                 this.collectionsRequestSource.cancel('Previous collections search canceled.');
 
             this.collectionsRequestSource = axios.CancelToken.source();
-
+            
             let endpoint = '/collections?'+ qs.stringify({ postin: this.selectedCollections, perpage: this.selectedCollections.length, fetch_preview_image_items: this.showCollectionThumbnail ? 0 : 3 }) + '&orderby=post__in&fetch_only=name,url,thumbnail';
 
             this.tainacanAxios.get(endpoint, { cancelToken: this.collectionsRequestSource.token })
@@ -238,7 +234,7 @@ export default {
                     this.isLoading = false;
                     this.totalCollections = response.headers['x-wp-total'];
 
-                    this.$nextTick(() => {
+                    nextTick(() => {
                         this.mountCarousel();
                     });
 
@@ -285,10 +281,10 @@ export default {
                 autoplay: (self.autoPlay && !self.isLoading) ? { delay: self.autoPlaySpeed*1000 } : false,
                 loop: self.loopSlides && !self.isLoading,
                 a11y: {
-                    prevSlideMessage: self.$root.__( 'Previous slide', 'tainacan'),
-                    nextSlideMessage: self.$root.__( 'Next slide', 'tainacan'),
-                    firstSlideMessage: self.$root.__('This is the first slide', 'tainacan'),
-                    lastSlideMessage: self.$root.__('This is the last slide', 'tainacan')
+                    prevSlideMessage: wp.i18n.__( 'Previous slide', 'tainacan'),
+                    nextSlideMessage: wp.i18n.__( 'Next slide', 'tainacan'),
+                    firstSlideMessage: wp.i18n.__('This is the first slide', 'tainacan'),
+                    lastSlideMessage: wp.i18n.__('This is the last slide', 'tainacan')
                 },
                 modules: [Autoplay, Navigation, A11y]
             });

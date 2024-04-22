@@ -7,8 +7,10 @@ export const viewModesMixin = {
         }
     },
     props: {
-        collectionId: Number,
+        collectionId: [String, Number],
+        termId: [String, Number],
         displayedMetadata: Array,
+        shouldHideItemsThumbnail: Boolean,
         items:  {
             type: Array,
             default: () => [],
@@ -78,7 +80,7 @@ export const viewModesMixin = {
             if (this.queries) {
                 // Inserts information necessary for item by item navigation on single pages
                 this.queries['pos'] = ((this.queries['paged'] - 1) * this.queries['perpage']) + index;
-                this.queries['source_list'] = this.$root.termId ? 'term' : (!this.$root.collectionId || this.$root.collectionId == 'default' ? 'repository' : 'collection');
+                this.queries['source_list'] = this.termId ? 'term' : (!this.collectionId || this.collectionId == 'default' ? 'repository' : 'collection');
                 this.queries['ref'] = this.$route.path;
                 return itemUrl + '?' + qs.stringify(this.queries);
             }

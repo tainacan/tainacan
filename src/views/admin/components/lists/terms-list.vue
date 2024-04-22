@@ -6,18 +6,18 @@
             <!-- Search input -->
             <b-field class="is-clearfix terms-search">
                 <b-input
+                        v-model="searchString"
                         expanded
                         autocomplete="on"
                         :placeholder="$i18n.get('instruction_search')"
                         :aria-name="$i18n.get('instruction_search')"
-                        v-model="searchString"
                         icon-right="magnify"
                         type="search" />
             </b-field>
             
             <span
-                    class="selected-terms-info"
-                    v-if="selectedColumnIndex >= 0 && currentUserCanEditTaxonomy">
+                    v-if="selectedColumnIndex >= 0 && currentUserCanEditTaxonomy"
+                    class="selected-terms-info">
                 {{ selectedColumnIndex == 0 ? $i18n.get('label_all_root_terms_selected') : $i18n.getWithVariables('label_terms_child_of_%s_selected', [ selectedColumnObject.name ]) }}
                 <button
                         type="button"
@@ -32,31 +32,32 @@
                     v-if="selected.length && selectedColumnIndex < 0"
                     class="field selected-terms-info">
                 <b-dropdown
-                        :mobile-modal="true"
                         id="selected-terms-dropdown"
+                        :mobile-modal="true"
                         aria-role="list"
                         trap-focus
                         position="is-bottom-left">
-                    <button
-                            type="button"
-                            class="button is-white"
-                            slot="trigger">
-                        <span>{{ selected.length == 1 ? $i18n.get('label_one_selected_term') : $i18n.getWithVariables('label_%s_selected_terms', [ selected.length ]) }}</span>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
-                        </span>
-                    </button>
+                    <template #trigger>
+                        <button
+                                type="button"
+                                class="button is-white">
+                            <span>{{ selected.length == 1 ? $i18n.get('label_one_selected_term') : $i18n.getWithVariables('label_%s_selected_terms', [ selected.length ]) }}</span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                            </span>
+                        </button>
+                    </template>
                     <b-dropdown-item
-                            custom
                             v-for="term of selected"
                             :key="term.id"
+                            custom
                             aria-role="list-item">
                         <label class="b-checkbox checkbox">
                             <input
-                                type="checkbox"
-                                @input="updateSelectedTerms(term)"
-                                :checked="isTermSelected(term.id)"
-                                :value="getTermIdAsNumber(term.id)">
+                                    type="checkbox"
+                                    :checked="isTermSelected(term.id)"
+                                    :value="getTermIdAsNumber(term.id)"
+                                    @input="updateSelectedTerms(term)">
                             <span class="check" /> 
                             <span class="control-label">
                                 <span 
@@ -72,32 +73,33 @@
                     v-if="currentUserCanEditTaxonomy"
                     class="field">
                 <b-dropdown
+                        id="bulk-actions-dropdown"
                         :mobile-modal="true"
                         position="is-bottom-left"
                         :disabled="amountOfTermsSelected <= 1"
-                        id="bulk-actions-dropdown"
                         aria-role="list"
                         trap-focus>
-                    <button
-                            type="button"
-                            class="button is-white"
-                            slot="trigger">
-                        <span>{{ $i18n.get('label_actions_for_the_selection') }}</span>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
-                        </span>
-                    </button>
+                    <template #trigger>
+                        <button
+                                type="button"
+                                class="button is-white">
+                            <span>{{ $i18n.get('label_actions_for_the_selection') }}</span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                            </span>
+                        </button>
+                    </template>
                     <b-dropdown-item
-                            @click="$emit('deleteSelectedTerms')"
                             id="item-delete-selected-terms"
-                            aria-role="listitem">
+                            aria-role="listitem"
+                            @click="$emitter.emit('deleteSelectedTerms')">
                         {{ $i18n.get('label_delete_permanently') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="isHierarchical"
-                            @click="$emit('updateSelectedTermsParent')"
                             id="item-update-selected-terms"
-                            aria-role="listitem">
+                            aria-role="listitem"
+                            @click="$emitter.emit('updateSelectedTermsParent')">
                         {{ $i18n.get('label_update_parent') }}
                     </b-dropdown-item>
                 </b-dropdown>
@@ -112,9 +114,9 @@
                 :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"
                 :selected="selected"
                 :selected-column-index="selectedColumnIndex"
-                @onUpdateSelectedTerms="(newSelected) => selected = newSelected"
-                @onUpdateSelectedColumnIndex="(newColumnSelected) => { selectedColumnIndex = newColumnSelected.index; selectedColumnObject = newColumnSelected.object; }"
-         />
+                @on-update-selected-terms="(newSelected) => selected = newSelected"
+                @on-update-selected-column-index="(newColumnSelected) => { selectedColumnIndex = newColumnSelected.index; selectedColumnObject = newColumnSelected.object; }"
+            />
     </div>
 </template>
 
@@ -127,7 +129,7 @@ export default {
         TermsListHierarchical
     },
     props: {
-        taxonomyId: Number,
+        taxonomyId: [ String, Number ],
         currentUserCanEditTaxonomy: Boolean,
         isHierarchical: Boolean
     },
@@ -196,7 +198,7 @@ export default {
             .control {
                 margin: 0;
             }
-            /deep/ .input {
+            :deep(.input) {
                 height: 0.875em;
             }
             .input .icon .mdi::before {
@@ -216,7 +218,7 @@ export default {
                     color: var(--tainacan-secondary)
                 }
             } 
-            /deep/ .field-body>.field {
+            :deep(.field-body>.field) {
                 padding: 0px !important;
                 margin-left: 0px !important;
             }
@@ -235,10 +237,10 @@ export default {
             }
 
             #selected-terms-dropdown {
-                /deep/ .dropdown-trigger {
+                :deep(.dropdown-trigger) {
                     font-size: 1.125em !important;
                 }
-                /deep/ .dropdown-menu {
+                :deep(.dropdown-menu) {
                     width: max-content;
                     max-width: 380px;
                 }
@@ -282,7 +284,7 @@ export default {
         align-items: stretch;
         min-height: 1.5em;
 
-        /deep/ .b-checkbox, /deep/ .b-radio {
+        :deep(.b-checkbox), :deep(.b-radio) {
             margin-right: 0px;
             margin-bottom: 0;
             -webkit-break-inside: avoid;

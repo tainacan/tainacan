@@ -19,7 +19,7 @@ export const filterTypeMixin = {
         isRepositoryLevel: Boolean,
         isUsingElasticSearch: Boolean,
         isLoadingItems: Boolean,
-        currentCollectionId: Boolean
+        currentCollectionId: [Number, String]
     },
     created() {
         this.collectionId = this.filter.collection_id ? this.filter.collection_id : this.collectionId;
@@ -43,10 +43,11 @@ export const dynamicFilterTypeMixin = {
             facetSearchPage: 1
         }
     },
+    emits: ['update-parent-collapse'],
     computed: {
-        facetsFromItemSearch() {
-            return this.getFacets();
-        }
+        ...mapGetters('search', {
+            'facetsFromItemSearch': 'getFacets'
+        }),
     },
     watch: {
         isLoadingItems: {
@@ -58,9 +59,6 @@ export const dynamicFilterTypeMixin = {
         }
     },
     methods: {
-        ...mapGetters('search', [
-            'getFacets'
-        ]),
         getValuesPlainText({ metadatumId, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0', countItems = true }) {
 
             if (isInCheckboxModal || search || !this.isUsingElasticSearch) {
@@ -109,7 +107,7 @@ export const dynamicFilterTypeMixin = {
                 return new Object ({
                     request: 
                         new Promise((resolve, reject) => {
-                            axios.tainacan.get(url, { cancelToken: source.token })
+                            axios.tainacanApi.get(url, { cancelToken: source.token })
                                 .then(res => {
                                     this.isLoadingOptions = false;
 
@@ -137,7 +135,7 @@ export const dynamicFilterTypeMixin = {
                     for (const facet in this.facetsFromItemSearch) {
                         if (facet == this.filter.id) {
                             this.prepareOptionsForPlainText(this.facetsFromItemSearch[facet], search, valuesToIgnore, isInCheckboxModal);
-                            this.$emit('updateParentCollapse', this.facetsFromItemSearch[facet].length > 0 );
+                            this.$emit('update-parent-collapse', this.facetsFromItemSearch[facet].length > 0 );
                         }
                     }   
                     resolve();
@@ -190,7 +188,7 @@ export const dynamicFilterTypeMixin = {
                 return new Object ({
                     request:
                         new Promise((resolve, reject) => {
-                            axios.tainacan.get(url + '&' + qs.stringify(query_items))
+                            axios.tainacanApi.get(url + '&' + qs.stringify(query_items))
                                 .then(res => {
 
                                     this.isLoadingOptions = false;
@@ -218,7 +216,7 @@ export const dynamicFilterTypeMixin = {
                     for (const facet in this.facetsFromItemSearch) {
                         if (facet == this.filter.id) {
                             this.prepareOptionsForRelationship(this.facetsFromItemSearch[facet], search, valuesToIgnore, isInCheckboxModal);
-                            this.$emit('updateParentCollapse', this.facetsFromItemSearch[facet].length > 0 );
+                            this.$emit('update-parent-collapse', this.facetsFromItemSearch[facet].length > 0 );
                         }    
                     }
                     resolve();
@@ -371,7 +369,7 @@ export const dynamicFilterTypeMixin = {
             }
         },
     },
-    beforeDestroy() {
+    beforeUnmount() {
         // Cancels previous Request
         if (this.getOptionsValuesCancel != undefined)
             this.getOptionsValuesCancel.cancel('Facet search Canceled.');

@@ -19,6 +19,7 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
     public $until;
     public $sets;
     public $metadataPrefix;
+    
 
     /**
      * @signature CONSTRUTOR
@@ -186,7 +187,7 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
                         $this->xml_creater->addChild($this->working_node, $key, '');
                 }
             }
-        }catch(Exception $e){
+        }catch(\Exception $e){
             var_dump($e,$this->working_node,'dc:' . $key);
         }
     }

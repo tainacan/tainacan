@@ -17,7 +17,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 
 	public $items_ids = [];
 
-	function setUp() {
+	function setUp(): void {
 		parent::setUp();
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -263,7 +263,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 			]
 		);
 
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$items = $Tainacan_Items->fetch([
 
@@ -310,7 +310,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 			]
 		);
 
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		//$bulk->add_value($this->multiple_meta, 'super');
 
@@ -383,7 +383,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 			]
 		);
 
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$items = $Tainacan_Items->fetch([
 			'tax_query' => [
@@ -431,7 +431,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 			]
 		);
 
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$query = [
 			'meta_query' => [
@@ -456,7 +456,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 			]
 		);
 
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 
 		$items = $Tainacan_Items->fetch([
@@ -500,7 +500,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 			]
 		);
 
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 
 		$items = $Tainacan_Items->fetch([
@@ -570,7 +570,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 			]
 		);
 
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 
 		$items = $Tainacan_Items->fetch([
@@ -632,7 +632,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 		]);
 		$this->assertEquals(0, $items->found_posts);
 
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$items = $Tainacan_Items->fetch([
 			'meta_query' => [
@@ -676,7 +676,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> $this->category->get_id(),
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$process = $this->new_process(
 			[
@@ -690,7 +690,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> $this->category->get_id(),
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		// should add super only to the 20 items that had test
 		$items = $Tainacan_Items->fetch([
@@ -741,7 +741,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> $this->metadatum->get_id(),
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 
 		// should add super only to the 20 items that had even
@@ -794,7 +794,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 			]
 		);
 		// all items selected, search and replace the value of one
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$items = $Tainacan_Items->fetch([
 			'meta_query' => [
@@ -839,7 +839,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> $this->category->get_id(),
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$items = $Tainacan_Items->fetch([
 			'tax_query' => [
@@ -910,7 +910,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> $this->metadatum->get_id(),
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$items = $Tainacan_Items->fetch([
 			'meta_query' => [
@@ -967,7 +967,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> null,
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 
 		$items = $Tainacan_Items->fetch([
@@ -1002,7 +1002,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> $this->multiple_meta->get_id(),
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$process = $this->new_process(
 			[
@@ -1015,7 +1015,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> $this->multiple_meta->get_id(),
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 
 		$ids = array_slice($this->items_ids, 2, 7);
@@ -1032,7 +1032,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> $this->multiple_meta->get_id(),
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 
 
@@ -1095,7 +1095,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> $core_title->get_id(),
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$process = $this->new_process(
 			[
@@ -1108,7 +1108,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> $core_description->get_id(),
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$items = $Tainacan_Items->fetch([
 			'meta_query' => [
@@ -1171,7 +1171,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> null,
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 
@@ -1219,7 +1219,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> null,
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$trashed = $Tainacan_Items->fetch_ids(['post_status' => 'trash', 'posts_per_page' => -1]);
 		$rest = $Tainacan_Items->fetch_ids(['posts_per_page' => -1]);
@@ -1238,7 +1238,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> null,
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$trashed = $Tainacan_Items->fetch_ids(['post_status' => 'trash', 'posts_per_page' => -1]);
 		$private = $Tainacan_Items->fetch_ids(['post_status' => 'private', 'posts_per_page' => -1]);
@@ -1272,7 +1272,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> null,
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$items = $Tainacan_Items->fetch_ids(['posts_per_page' => -1]);
 		$this->assertEquals(40, sizeof($items), 'Items must be on trash to be deleted');
@@ -1288,7 +1288,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> null,
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 
 		$process = $this->new_process(
@@ -1302,7 +1302,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> null,
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 
 		$trashed = $Tainacan_Items->fetch_ids(['post_status' => 'trash', 'posts_per_page' => -1]);
@@ -1341,7 +1341,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> $this->category->get_id(),
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$items = $Tainacan_Items->fetch([
 
@@ -1369,7 +1369,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> $this->category->get_id(),
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$items = $Tainacan_Items->fetch([
 
@@ -1430,7 +1430,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> $category2->get_id(),
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 
 		$items = $Tainacan_Items->fetch([
@@ -1458,7 +1458,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> $category2->get_id(),
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$items = $Tainacan_Items->fetch([
 
@@ -1550,7 +1550,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> $this->category->get_id(),
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 
 		$items = $Tainacan_Items->fetch([
@@ -1634,7 +1634,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> $this->metadatum->get_id(),
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		// single valued metadatum dont accept array
 		$items = $Tainacan_Items->fetch([
@@ -1672,7 +1672,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> $this->multiple_meta->get_id(),
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 
 		$items = $Tainacan_Items->fetch([
@@ -1730,7 +1730,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> null,
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 
 		$query = [
@@ -1756,7 +1756,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id" 	=> null,
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$items = $Tainacan_Items->fetch([
 			'comment_status' => 'closed',
@@ -1822,7 +1822,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id_from"       => $this->metadatum->get_id(),
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 		$query = [
 			'meta_query' => [
@@ -1847,7 +1847,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id_from"       => 'created_by',
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 		$query = [
 			'meta_query' => [
 				[
@@ -1897,7 +1897,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				"metadatum_id_from"       => $this->category->get_id()
 			]
 		);
-		$this->assertInternalType('int', $this->run_process($process));
+		$this->assertIsInt($this->run_process($process));
 
 
 		$query = [

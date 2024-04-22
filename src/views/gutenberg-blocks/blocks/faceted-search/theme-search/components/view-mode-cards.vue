@@ -10,23 +10,23 @@
                     v-if="isLoading"
                     class="tainacan-cards-container">
                 <div 
-                        :key="item"
                         v-for="item in 12"
+                        :key="item"
                         class="skeleton tainacan-card" />
             </div>
 
             <!-- CARDS VIEW MODE -->
             <div 
-                    role="list"
                     v-if="!isLoading && items.length > 0"
+                    role="list"
                     class="tainacan-cards-container">
                 <div 
-                        role="listitem"
+                        v-for="(item, index) of items"
                         :key="index"
+                        role="listitem"
                         :aria-setsize="totalItems"
                         :aria-posinset="getPosInSet(index)"
-                        :data-tainacan-item-id="item.id"
-                        v-for="(item, index) of items">        
+                        :data-tainacan-item-id="item.id">        
 
                     <a
                             class="tainacan-card"
@@ -64,9 +64,9 @@
                                         placement: 'auto-start',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"          
-                                    @click.prevent="starSlideshowFromHere(index)"
-                                    class="icon slideshow-icon">
-                                <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                                    class="icon slideshow-icon"
+                                    @click.prevent="starSlideshowFromHere(index)">
+                                <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em" />
                             </span>
                         </div>
 
@@ -75,20 +75,20 @@
                             <div 
                                     v-if="!shouldHideItemsThumbnail"
                                     class="card-thumbnail">
-                            <blur-hash-image
-                                    v-if="item.thumbnail != undefined"
-                                    :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 120)"
-                                    :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 120)"
-                                    :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
-                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
-                                    :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
-                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                    :transition-duration="500"
-                            />
+                                <blur-hash-image
+                                        v-if="item.thumbnail != undefined"
+                                        :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 120)"
+                                        :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 120)"
+                                        :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
+                                        :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
+                                        :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
+                                        :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                        :transition-duration="500"
+                                    />
                             </div>
                             
                             <div class="list-metadata media-body">
-                            <!-- Description -->
+                                <!-- Description -->
                                 <p 
                                         v-tooltip="{
                                             delay: {
@@ -129,11 +129,6 @@ export default {
     mixins: [
         viewModesMixin
     ],
-    data() {
-        return {
-            shouldHideItemsThumbnail: this.$root.hideItemsThumbnail
-        }
-    },
     computed: {
         descriptionMaxCharacter() {
             return (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? (this.shouldHideItemsThumbnail ? 185 : 155) : (this.shouldHideItemsThumbnail ? 480 : 330);

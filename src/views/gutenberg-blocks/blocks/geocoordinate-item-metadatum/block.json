@@ -8,17 +8,7 @@
     "description": "A single item geocoordinate metadatum, containing location information.",
     "textdomain": "tainacan",
     "parent": [],
-    "example": {
-        "attributes": {
-            "content": "preview"
-        }
-    },
     "attributes": {
-        "content": {
-            "type": "array",
-            "source": "query",
-            "selector": "div"
-        },
         "dataSource": {
             "type": "string",
             "default": "selection"

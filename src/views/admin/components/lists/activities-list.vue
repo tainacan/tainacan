@@ -6,32 +6,38 @@
                     <tr>
                         <!-- Title -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_activity_title') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_activity_title') }}
+                            </div>
                         </th>
                         <!-- Created by -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_created_by') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_created_by') }}
+                            </div>
                         </th>
                         <!-- Activity date -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_activity_date') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_activity_date') }}
+                            </div>
                         </th>
                         <!--&lt;!&ndash; Approbation &ndash;&gt;-->
                         <!--<th>-->
-                            <!--<div class="th-wrap">{{ $i18n.get('label_approbation') }}</div>-->
+                        <!--<div class="th-wrap">{{ $i18n.get('label_approbation') }}</div>-->
                         <!--</th>-->
                     </tr>
                 </thead>
                 <tbody>
                     <tr
-                            :key="index"
-                            v-for="(activity, index) of activities">
+                            v-for="(activity, index) of activities"
+                            :key="index">
                         <!-- Name -->
                         <td
                                 class="column-default-width column-main-content"
-                                @click="openActivityDetailsModal(activity)"
                                 :label="$i18n.get('label_activity_title')"
-                                :aria-label="$i18n.get('label_activity_title') + ': ' + activity.title">
+                                :aria-label="$i18n.get('label_activity_title') + ': ' + activity.title"
+                                @click="openActivityDetailsModal(activity)">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -49,9 +55,9 @@
                         <!-- User -->
                         <td
                                 class="table-creation column-small-width"
-                                @click="openActivityDetailsModal(activity)"
                                 :label="$i18n.get('label_created_by')"
-                                :aria-label="$i18n.get('label_created_by') + ': ' + activity.user_name">
+                                :aria-label="$i18n.get('label_created_by') + ': ' + activity.user_name"
+                                @click="openActivityDetailsModal(activity)">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -63,14 +69,14 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    v-html="activity.user_name"/>
+                                    v-html="activity.user_name" />
                         </td>
                         <!-- Activity Date -->
                         <td
                                 class="table-creation column-small-width"
-                                @click="openActivityDetailsModal(activity)"
                                 :label="$i18n.get('label_activity_date')"
-                                :aria-label="$i18n.get('label_activity_date') + ': ' + activity.date">
+                                :aria-label="$i18n.get('label_activity_date') + ': ' + activity.date"
+                                @click="openActivityDetailsModal(activity)">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -82,7 +88,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    v-html="activity.date"/>
+                                    v-html="activity.date" />
                         </td>
                     </tr>
                 </tbody>
@@ -95,7 +101,7 @@
                 <div class="content has-text-grey has-text-centered">
                     <p>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities"/>
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities" />
                         </span>
                     </p>
                     <p>{{ $i18n.get('info_no_activities') }}</p>

@@ -5,24 +5,42 @@
                 {{ $i18n.getHelperTitle('tainacan-numeric', 'step') }}<span>&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-numeric', 'step')"
-                        :message="$i18n.getHelperMessage('tainacan-numeric', 'step')"/>
+                        :message="$i18n.getHelperMessage('tainacan-numeric', 'step')" />
             </label>
             <div
                     v-if="!showEditStepOptions"
                     class="is-flex">
                 <b-select
-                        name="step_options"
                         v-model="step"
-                        @input="onUpdateStep">
-                    <option value="0.001">0.001</option>
-                    <option value="0.01">0.01</option>
-                    <option value="0.1">0.1</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="100">100</option>
-                    <option value="1000">1000</option>
+                        name="step_options"
+                        @update:model-value="onUpdateStep">
+                    <option value="0.001">
+                        0.001
+                    </option>
+                    <option value="0.01">
+                        0.01
+                    </option>
+                    <option value="0.1">
+                        0.1
+                    </option>
+                    <option value="1">
+                        1
+                    </option>
+                    <option value="2">
+                        2
+                    </option>
+                    <option value="5">
+                        5
+                    </option>
+                    <option value="10">
+                        10
+                    </option>
+                    <option value="100">
+                        100
+                    </option>
+                    <option value="1000">
+                        1000
+                    </option>
                     <option
                             v-if="step && ![0.001,0.01,0.1,1,2,5,10,100,1000].find( (element) => element == step )"
                             :value="step">
@@ -40,7 +58,7 @@
                                 popperClass: ['tainacan-tooltip', 'tooltip']
                             }"
                             class="icon">
-                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-edit has-text-secondary"/>
+                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-edit has-text-secondary" />
                     </span>
                 </button>
             </div>
@@ -48,14 +66,14 @@
                     v-if="showEditStepOptions"
                     class="is-flex">
                 <b-input
-                        name="max_options"
                         v-model="step"
-                        @input="onUpdateStep"
+                        name="max_options"
                         type="number"
-                        step="1" />
+                        step="1"
+                        @update:model-value="onUpdateStep" />
                 <button
-                        @click.prevent="showEditStepOptions = false"
-                        class="button is-white is-pulled-right">
+                        class="button is-white is-pulled-right"
+                        @click.prevent="showEditStepOptions = false">
                     <span 
                             v-tooltip="{
                                 content: $i18n.get('close'),
@@ -64,7 +82,7 @@
                                 popperClass: ['tainacan-tooltip', 'tooltip']
                             }"
                             class="icon">
-                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close has-text-secondary"/>
+                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close has-text-secondary" />
                     </span>
                 </button>
             </div>
@@ -80,7 +98,7 @@
                     v-model="min"
                     name="min"
                     step="1"
-                    @input="onUpdateMin"/>
+                    @update:model-value="onUpdateMin" />
         </b-field>
         <b-field :addons="false">
             <label class="label is-inline">
@@ -93,7 +111,7 @@
                     v-model="max"
                     name="max"
                     step="1"
-                    @input="onUpdateMax"/>
+                    @update:model-value="onUpdateMax" />
         </b-field>
     </section>
 </template>
@@ -103,6 +121,7 @@
         props: {
             value: [ String, Object, Array ]
         },
+        emits: ['update:value'],
         data() {
             return {
                 step: [Number, String],
@@ -118,13 +137,13 @@
         },
         methods: {
             onUpdateStep(value) {
-                this.$emit('input', { step: value, min: this.min, max: this.max });
+                this.$emit('update:value', { step: value, min: this.min, max: this.max });
             },
             onUpdateMin(value) {
-                this.$emit('input', { step: this.step, min: value, max: this.max });
+                this.$emit('update:value', { step: this.step, min: value, max: this.max });
             },
             onUpdateMax(value) {
-                this.$emit('input', { step: this.step, min: this.min, max: value });
+                this.$emit('update:value', { step: this.step, min: this.min, max: value });
             }
         }
     }

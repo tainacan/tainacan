@@ -28,7 +28,7 @@ export const fetchProcesses = ({ commit }, {page, processesPerPage, shouldUpdate
             endpoint += `&search=${search}`;
         }
 
-        axios.tainacan.get(endpoint)
+        axios.tainacanApi.get(endpoint)
         .then( res => {
             let processes = res.data;
             /*
@@ -46,7 +46,7 @@ export const fetchProcesses = ({ commit }, {page, processesPerPage, shouldUpdate
 
 export const updateProcess = ({ commit }, { id, status }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.patch(`/bg-processes/${id}/`, {
+        axios.tainacanApi.patch(`/bg-processes/${id}/`, {
             status: status,
         })
             .then( res => {
@@ -66,7 +66,7 @@ export const heartBitUpdateProcess = ({ commit }, aProcess) => {
 
 export const fetchProcess = ({ commit }, id) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(`/bg-processes/${id}/`)
+        axios.tainacanApi.get(`/bg-processes/${id}/`)
         .then( res => {
             let aProcess = res.data;
             commit('setProcess', aProcess);
@@ -81,7 +81,7 @@ export const fetchProcess = ({ commit }, id) => {
 
 export const fetchProcessErrorLog = ({ commit }, { id: id, isFull: isFull }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(`/bg-processes/${id}/log`)
+        axios.tainacanApi.get(`/bg-processes/${id}/log`)
         .then( res => {
             let errorLog = res.data;
             commit('setProcessErrorLog', errorLog);
@@ -99,7 +99,7 @@ export const cleanProcesses = ({ commit }) => {
 
 export const deleteProcess = ({ commit }, id) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.delete('/bg-processes/' + id).then( res => {
+        axios.tainacanApi.delete('/bg-processes/' + id).then( res => {
             commit('deleteProcess', { id: id });
             resolve( res );
         }).catch((error) => { 

@@ -5,7 +5,7 @@ const { Spinner, Button, Placeholder } = wp.components;
 const { InnerBlocks, useBlockProps } = wp.blockEditor;
 
 import SingleItemModal from '../../js/selection/single-item-modal.js';
-import tainacan from '../../js/axios.js';
+import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 
 export default function ({ attributes, setAttributes, isSelected }) {
@@ -40,7 +40,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
 
         let endpoint = '/items/'+ itemId + '?fetch_only=related_items';
 
-        tainacan.get(endpoint, { cancelToken: itemRequestSource.token })
+        tainacanApi.get(endpoint, { cancelToken: itemRequestSource.token })
             .then(response => {
 
                 relatedItems = response.data && response.data.related_items ? Object.values(response.data.related_items) : [];
@@ -216,7 +216,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
             }
             
             { isLoading ? 
-                <div class="spinner-container">
+                <div className="spinner-container">
                     <Spinner />
                 </div> :
                 <div>

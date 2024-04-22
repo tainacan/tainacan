@@ -38,6 +38,16 @@ module.exports = {
         filename: '[name].js',
         chunkFilename: `[name].js?ver=[contenthash]`
     },
+    resolve: {
+        fallback: {
+            fs: false,
+            net: false,
+            tls: false
+        },
+        alias: {
+            vue: 'vue/dist/vue.esm-bundler.js',
+        }
+    },
     module: {
         rules: [
             {
@@ -57,7 +67,7 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: [
-                    'vue-style-loader',
+                    'style-loader',
                     'css-loader',
                     'postcss-loader',
                 ],
@@ -84,19 +94,14 @@ module.exports = {
             }
         ]
     },
-    resolve: {
-        fallback: {
-            fs: false,
-            net: false,
-            tls: false
-        }
-    },
     performance: {
         hints: false
     },
     plugins: [
         new webpack.DefinePlugin({
-            'TAINACAN_ENV': JSON.stringify(process.env.NODE_ENV)
+            'TAINACAN_ENV': JSON.stringify(process.env.NODE_ENV),
+            __VUE_OPTIONS_API__: true,
+            __VUE_PROD_DEVTOOLS__: true,
         }),
         new VueLoaderPlugin({
             prettify: false

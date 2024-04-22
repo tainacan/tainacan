@@ -7,6 +7,9 @@ namespace Tainacan\Tests;
  */
 class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCase {
 
+	private $metadatum2;
+	private $metadatum3;
+
     protected function create_meta_requirements() {
         $collection = $this->tainacan_entity_factory->create_entity(
             'collection',

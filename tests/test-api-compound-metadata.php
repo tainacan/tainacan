@@ -7,7 +7,10 @@ namespace Tainacan\Tests;
  */
 class TAINACAN_REST_Compound_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
-	function setUp() {
+	public $collection;
+	public $item;
+
+	function setUp(): void {
 		parent::setUp();
 
 		$this->collection = $this->tainacan_entity_factory->create_entity(

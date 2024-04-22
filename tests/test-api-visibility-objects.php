@@ -31,7 +31,7 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 	public $term_public;
 	public $term_private;
 
-	function setUp() {
+	function setUp(): void {
 		parent::setUp();
 
 		$taxonomy_public = $this->tainacan_entity_factory->create_entity(

@@ -1,3 +1,4 @@
+# to run localy ./bin/act -j test
 name: Tainacan tests
 
 on:
@@ -23,7 +24,7 @@ jobs:
       matrix:
         # Notes regarding supported versions in WP:
         # The base matrix only contains the PHP versions which are supported on all supported WP versions.
-        php: ['7.0', '7.3', '7.4']
+        php: ['7.4', '8.3']
         wp: ['latest', '5.9']
         experimental: [false]
 
@@ -50,7 +51,7 @@ jobs:
         # in combination with PHP < 7.4 is not properly/sufficiently supported
         # within WP Core.
         # See: https://core.trac.wordpress.org/ticket/52496
-        image: mysql:${{ ( matrix.wp == 5.3 && '5.6' ) || ( (matrix.wp < 5.9 || matrix.php < 7.4) && '5.7' ) || '8.0' }}
+        image: mysql:8.0
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: false
         ports:
@@ -72,6 +73,9 @@ jobs:
       - name: Check PHP Version
         run: php -v
 
+      - name: install tools deps
+        run: sudo apt install mariadb-client -y
+
       - name: Add bootstrap-config
         run: |
           mv ./tests/bootstrap-config-sample.php ./tests/bootstrap-config.php
@@ -90,29 +94,18 @@ jobs:
       - name: Determine supported PHPUnit version
         id: set_phpunit
         run: |
-          if [[ "${{ matrix.php }}" = "8.0" ]]; then
-            wget https://phar.phpunit.de/phpunit-9.3.0.phar -P /tmp
-            chmod +x /tmp/phpunit-9.3.0.phar
-            mv /tmp/phpunit-9.3.0.phar /usr/local/bin/phpunit
-          elif [[ "${{ matrix.php }}" > "6.0" ]]; then
+          if [[ "${{ matrix.php }}" > "8.0" ]]; then
+            wget https://phar.phpunit.de/phpunit-9.6.16.phar -P /tmp
+            chmod +x /tmp/phpunit-9.6.16.phar
+            mv /tmp/phpunit-9.6.16.phar /usr/local/bin/phpunit
+          else 
             wget https://phar.phpunit.de/phpunit-6.5.7.phar -P /tmp
             chmod +x /tmp/phpunit-6.5.7.phar
             mv /tmp/phpunit-6.5.7.phar /usr/local/bin/phpunit
-          else
-            wget https://phar.phpunit.de/phpunit-5.phar -P /tmp
-            chmod +x /tmp/phpunit-5.phar
-            mv /tmp/phpunit-5.phar /usr/local/bin/phpunit
           fi
 
       # Install dependencies and handle caching in one go.
       # @link https://github.com/marketplace/actions/install-composer-dependencies
-      - name: Install Composer dependencies for PHP < 7.3
-        if: ${{ matrix.php < 7.3 }}
-        uses: "ramsey/composer-install@v1"
-        with:
-          composer-options: --ignore-platform-reqs
-          dependency-versions: "lowest"
-     
       - name: Install Composer dependencies for PHP < 8.0
         if: ${{ matrix.php >= 7.3 && matrix.php < 8.0 }}
         uses: "ramsey/composer-install@v1"

@@ -7,13 +7,16 @@
                 autocomplete="on"
                 @focus="onMobileSpecialFocus">
         <b-select
+                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 expanded
                 :disabled="disabled"
-                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : $i18n.get('label_selectbox_init')"
-                :value="value"
-                @input="onSelected($event)">
-            <option value="">{{ itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ($i18n.get('label_selectbox_init') + '...') }}</option>
+                :model-value="value"
+                :class="{ 'has-placeholder-selected': value === '' }"
+                @update:model-value="onSelected($event)">
+            <option value="">
+                {{ itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ($i18n.get('label_selectbox_init') + '...') }}
+            </option>
             <option
                     v-for="(option, index) in getOptions"
                     :key="index"
@@ -32,6 +35,10 @@
             value: [String, Number, Array],
             disabled: false,
         },
+        emits: [
+            'update:value',
+            'mobile-special-focus'
+        ],
         computed: {
             getOptions() {
                 if (this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.options ) {
@@ -43,11 +50,11 @@
         },
         methods: {
             onSelected(value) {
-                this.$emit('input', value);
+                this.$emit('update:value', value);
             },
             onMobileSpecialFocus($event) {
                 $event.target.blur();
-                this.$emit('mobileSpecialFocus');
+                this.$emit('mobile-special-focus');
             }
         }
     }

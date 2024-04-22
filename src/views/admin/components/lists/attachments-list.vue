@@ -4,8 +4,8 @@
                 style="position: relative;"
                 class="table-container">
             <b-loading
-                    :is-full-page="false" 
-                    :active.sync="isLoading" />
+                    v-model="isLoading" 
+                    :is-full-page="false" />
             <div
                     v-if="attachments.length > 0"
                     class="table-wrapper">
@@ -23,20 +23,20 @@
                         <file-item
                                 :show-name="true"
                                 :modal-on-click="true"
-                                :file="attachment"/>
+                                :file="attachment" />
                         <span
                                 v-if="isEditable && form.document != attachment.id"
                                 class="file-item-control">
                             <a 
-                                    @click="onDeleteAttachment(attachment)"
                                     v-tooltip="{
                                         content: $i18n.get('delete'),
                                         autoHide: true,
                                         placement: 'bottom',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
-                                    class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
+                                    class="icon"
+                                    @click="onDeleteAttachment(attachment)">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
                             </a>
                         </span>
                     </div>
@@ -49,7 +49,7 @@
                     <div class="content has-text-grey has-text-centered">
                         <p>
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-attachments"/>
+                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-attachments" />
                             </span>
                         </p>
                         <p>{{ $i18n.getWithVariables('info_no_%s_on_item_yet', [ collection && collection.item_attachment_label ? collection.item_attachment_label : $i18n.get('label_attachments') ]) }}</p>
@@ -59,29 +59,29 @@
         </div>
 
         <div 
-                class="pagination-area" 
-                v-if="attachments.length > 0">
+                v-if="attachments.length > 0" 
+                class="pagination-area">
             <div class="shown-items">
                 {{
                     $i18n.getWithVariables('info_showing_%s', [ collection && collection.item_attachment_label ? collection.item_attachment_label : $i18n.get('label_attachments') ]) + ' ' +
-                    (attachmentsPerPage * (attachmentsPage - 1) + 1) +
-                    $i18n.get('info_to') +
-                    getLastAttachmentsNumber() +
-                    $i18n.get('info_of') + totalAttachments + '.'
+                        (attachmentsPerPage * (attachmentsPage - 1) + 1) +
+                        $i18n.get('info_to') +
+                        getLastAttachmentsNumber() +
+                        $i18n.get('info_of') + totalAttachments + '.'
                 }}
             </div>
             <div class="pagination">
                 <b-pagination
-                        @change="onPageChange"
+                        v-model="attachmentsPage"
                         :total="totalAttachments"
-                        :current.sync="attachmentsPage"
                         order="is-centered"
                         size="is-small"
                         :per-page="attachmentsPerPage"
                         :aria-next-label="$i18n.get('label_next_page')"
                         :aria-previous-label="$i18n.get('label_previous_page')"
                         :aria-page-label="$i18n.get('label_page')"
-                        :aria-current-label="$i18n.get('label_current_page')"/>
+                        :aria-current-label="$i18n.get('label_current_page')"
+                        @change="onPageChange" />
             </div>
         </div>
     </div>
@@ -103,6 +103,9 @@
             shouldLoadAttachments: Boolean,
             isEditable: Boolean,
         },
+        emits: [
+            'on-delete-attachment',
+        ],
         data() {
             return {
                 attachmentsPage: 1,
@@ -111,12 +114,10 @@
             }
         },
         computed: {
-            attachments() {
-                return this.getAttachments();
-            },
-            totalAttachments() {
-                return this.getTotalAttachments();
-            }
+            ...mapGetters('item', {
+                'attachments': 'getAttachments',
+                'totalAttachments': 'getTotalAttachments'
+            })
         },
         watch: {
             shouldLoadAttachments() {
@@ -130,10 +131,6 @@
         methods: {
             ...mapActions('item', [
                 'fetchAttachments',
-            ]),
-            ...mapGetters('item', [
-                'getAttachments',
-                'getTotalAttachments'
             ]),
             onChangeAttachmentsPerPage(value) {
                 
@@ -167,9 +164,8 @@
                     // excludeDocumentId: this.form.document,
                     // excludeThumbnailId: this.item.thumbnail_id
                 })
-                    .then((response) => {
+                    .then(() => {
                         this.isLoading = false;
-                        this.totalAttachments = response.total;
                     })
                     .catch((error) => {
                         this.isLoading = false;
@@ -177,7 +173,7 @@
                     }) 
             },
             onDeleteAttachment(attachment) {
-                this.$emit('onDeleteAttachment', attachment);
+                this.$emit('on-delete-attachment', attachment);
             }
         }
     }

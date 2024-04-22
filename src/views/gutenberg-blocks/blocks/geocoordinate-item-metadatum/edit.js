@@ -11,7 +11,6 @@ import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainac
 export default function ({ attributes, setAttributes, isSelected }) {
     
     let {
-        content, 
         collectionId,
         itemId,
         metadatumId,
@@ -43,14 +42,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
         }
     }
 
-    return content == 'preview' ? 
-            <div className={className}>
-                <img
-                        width="100%"
-                        src={ `${tainacan_blocks.base_url}/assets/images/related-carousel-items.png` } />
-            </div>
-        : (
-        <div { ...blockProps }>
+    return <div { ...blockProps }>
             { dataSource == 'selection' ? (
                 <BlockControls group="other">
                     {
@@ -161,6 +153,5 @@ export default function ({ attributes, setAttributes, isSelected }) {
                 ) : null
             }
             
-        </div>
-    );
+        </div>;
 };

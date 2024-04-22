@@ -35,7 +35,7 @@ class TAINACAN_HTML_Injection extends TAINACAN_UnitTestCase
     private $taxonomy = null;
     private $taxonomy_db = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $link = $this->link;

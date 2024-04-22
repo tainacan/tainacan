@@ -1,10 +1,10 @@
 <template>
     <form
+            id="termEditForm"
             autofocus
             role="dialog"
             tabindex="-1"
             aria-modal
-            id="termEditForm"
             class="tainacan-form term-creation-panel"
             @submit.prevent="saveEdition(form)">
 
@@ -12,8 +12,8 @@
     
         <div>
             <b-loading
-                    :is-full-page="false"
-                    :active.sync="isLoading" />
+                    v-model="isLoading"
+                    :is-full-page="false" />
 
             <!-- Name -------------- -->
             <b-field
@@ -25,13 +25,13 @@
                     <span class="required-term-asterisk">*</span>
                     <help-button
                             :title="$i18n.get('label_name')"
-                            :message="$i18n.get('info_help_term_name')"/> 
+                            :message="$i18n.get('info_help_term_name')" /> 
                 </label>
                 <b-input
-                        :placeholder="$i18n.get('label_term_without_name')"
                         v-model="form.name"
+                        :placeholder="$i18n.get('label_term_without_name')"
                         name="name"
-                        @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
+                        @focus="clearErrors({ name: 'name', repeated: 'repeated' })" />
             </b-field>
 
             <!-- Parent -------------- -->
@@ -40,32 +40,32 @@
                     :addons="false"
                     :type="((formErrors.parent !== '' || formErrors.repeated !== '') && (formErrors.parent !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
                     :message="formErrors.parent ? formErrors : formErrors.repeated">
-            <label class="label is-inline">
+                <label class="label is-inline">
                     {{ $i18n.get('label_parent_term') }}
                     <b-switch
-                            @input="onToggleSwitch()"
-                            id="tainacan-checkbox-has-parent" 
+                            id="tainacan-checkbox-has-parent"
+                            v-model="hasParent" 
                             size="is-small"
-                            v-model="hasParent" />
+                            @update:model-value="onToggleSwitch()" />
                     <help-button
                             :title="$i18n.get('label_parent_term')"
-                            :message="$i18n.get('info_help_parent_term')"/>
+                            :message="$i18n.get('info_help_parent_term')" />
                 </label>
                 <b-autocomplete
                         id="tainacan-add-parent-field"
+                        v-model="parentTermName"
                         :placeholder="$i18n.get('instruction_parent_term')"
                         :data="parentTerms"
                         field="name"
                         clearable
-                        v-model="parentTermName"
-                        @select="onSelectParentTerm($event)"
                         :loading="isFetchingParentTerms"
-                        @input="fetchParentTerms"
-                        @focus="clearErrors('parent');"
                         :disabled="!hasParent"
                         check-infinite-scroll
+                        @select="onSelectParentTerm($event)"
+                        @update:model-value="fetchParentTerms"
+                        @focus="clearErrors('parent');"
                         @infinite-scroll="fetchMoreParentTerms">
-                    <template slot-scope="props">
+                    <template #default="props">
                         <div class="media">
                             <div 
                                     v-if="props.option.header_image"
@@ -79,7 +79,9 @@
                             </div>
                         </div>
                     </template>
-                    <template slot="empty">{{ $i18n.get('info_no_parent_term_found') }}</template>
+                    <template #empty>
+                        {{ $i18n.get('info_no_parent_term_found') }}
+                    </template>
                 </b-autocomplete>
             </b-field>
 
@@ -93,8 +95,7 @@
                     <button
                             type="button"
                             class="wp-block-button__link wp-element-button"
-                            @click.prevent="cancelEdition()"
-                            slot="trigger">
+                            @click.prevent="cancelEdition()">
                         {{ $i18n.get('cancel') }}
                     </button>
                 </div>
@@ -115,13 +116,17 @@
     import { mapActions } from 'vuex';
 
     export default {
-        name: 'TermEditionForm',
+        name: 'TermCreationPanel',
         mixins: [ formHooks ],
         props: {
             originalForm: Object,
             taxonomyId: '',
             isHierarchical: Boolean
         },
+        emits: [
+            'on-edition-finished',
+            'on-edition-canceled'
+        ],
         data() {
             return {
                 formErrors: {},
@@ -170,14 +175,14 @@
             saveEdition(term) {
 
                 if (term.id === 'new') {
-                    this.$emit('onEditionFinished', { name: this.form.name, parent: this.form.parent });
+                    this.$emit('on-edition-finished', { name: this.form.name, parent: this.form.parent });
                     this.form = {};
                     this.formErrors = {};
                     this.isLoading = false;
                 }
             },
             cancelEdition() {
-                this.$emit('onEditionCanceled', this.form);
+                this.$emit('on-edition-canceled', this.form);
             },
             clearErrors(attributes) {
                 if (attributes instanceof Object) {

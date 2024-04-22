@@ -7,20 +7,20 @@
                     class="filter-tags-info">
                 <span 
                         style="margin-right: 1em"
-                        v-html="totalItems == 1 ? $i18n.getWithVariables('info_item_%s_found', [totalItems]) : $i18n.getWithVariables('info_items_%s_found', [totalItems])" />
+                        v-html="totalItems === null ? $i18n.get('label_loading_items') : totalItems == 1 ? $i18n.getWithVariables('info_item_%s_found', [totalItems]) : $i18n.getWithVariables('info_items_%s_found', [totalItems])" />
                 <span>
                     <span v-html="filterTags.length == 1 ? $i18n.getWithVariables('info_%s_applied_filter', [filterTags.length]) : $i18n.getWithVariables('info_%s_applied_filters', [filterTags.length])" />
                     &nbsp;
                     <a 
-                            @click="clearAllFilters()"
-                            id="button-clear-all">
+                            id="button-clear-all"
+                            @click="clearAllFilters()">
                         {{ $i18n.get('label_clear_filters') }}
                     </a>
                 </span>
             </p>
             <div 
-                    class="swiper"
-                    :id="'tainacanFilterTagsSwiper' + (isInsideModal ? 'InsideModal' : '')">
+                    :id="'tainacanFilterTagsSwiper' + (isInsideModal ? 'InsideModal' : '')"
+                    class="swiper">
                 <ul class="swiper-wrapper">
                     <li 
                             v-for="(filterTag, index) of filterTags"
@@ -33,7 +33,7 @@
                             </div>
                             <div
                                     class="filter-tag-metadatum-value"
-                                    v-html="filterTag.singleLabel != undefined ? filterTag.singleLabel : filterTag.label"/>
+                                    v-html="filterTag.singleLabel != undefined ? filterTag.singleLabel : filterTag.label" />
                         </span>
                         <a
                                 v-if="filterTag.filterId || filterTag.argType == 'postin'"
@@ -44,31 +44,29 @@
                     </li>
                 </ul>
                 <button 
-                        class="swiper-button-prev" 
                         id="tainacan-filter-tags-prev" 
-                        slot="button-prev">
+                        class="swiper-button-prev">
                     <svg
                             width="24"
                             height="24"
                             viewBox="0 0 24 24">
-                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
                         <path
                                 d="M0 0h24v24H0z"
-                                fill="none"/>
+                                fill="none" />
                     </svg>
                 </button>
                 <button 
-                        class="swiper-button-next" 
                         id="tainacan-filter-tags-next" 
-                        slot="button-next">
+                        class="swiper-button-next">
                     <svg
                             width="24"
                             height="24"
                             viewBox="0 0 24 24">
-                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
                         <path
                                 d="M0 0h24v24H0z"
-                                fill="none"/>
+                                fill="none" />
                     </svg>
                 </button>
             </div>
@@ -77,11 +75,14 @@
 </template>
 
 <script>
+    import { nextTick } from 'vue';
     import { mapGetters } from 'vuex';
+
     import 'swiper/css';
     import 'swiper/css/mousewheel';
     import 'swiper/css/navigation';
-    import Swiper, { Mousewheel, Navigation } from 'swiper';
+    import Swiper from 'swiper';
+    import { Mousewheel, Navigation } from 'swiper/modules';
 
     export default {
         name: 'FiltersTagsList',
@@ -94,6 +95,9 @@
             }
         },
         computed: {
+            ...mapGetters('search', {
+                'totalItems': 'getTotalItems'
+            }),
             filterTags() {
                 let tags = this.getFilterTags();
                 let flattenTags = [];
@@ -126,19 +130,19 @@
                 });
 
                 return flattenTags;
-            },
-            totalItems() {
-                return this.getTotalItems()
             }
         },
         watch: {
-            filterTags() {
-                if (typeof this.swiper.update == 'function')
-                    this.swiper.update();
+            filterTags: {
+                handler() {
+                    if (typeof this.swiper.update == 'function')
+                        this.swiper.update();
+                },
+                deep: true
             }
         },
         mounted() {
-           this.$nextTick(() => {
+           nextTick(() => {
                 this.swiper = new Swiper('#tainacanFilterTagsSwiper' + (this.isInsideModal ? 'InsideModal' : ''), {
                     mousewheel: true,
                     observer: true,
@@ -156,14 +160,13 @@
                 });
             });
         },
-        beforeDestroy() {
+        beforeUnmount() {
             if (typeof this.swiper.destroy == 'function')
                 this.swiper.destroy();
         },
         methods: {
             ...mapGetters('search',[
-                'getFilterTags',
-                'getTotalItems'
+                'getFilterTags'
             ]),
             removeMetaQuery({ filterId, value, singleLabel, label, taxonomy, metadatumId, metadatumName, argType }) {
                 this.$eventBusSearch.resetPageOnStore();

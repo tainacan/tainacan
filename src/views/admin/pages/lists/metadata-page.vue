@@ -3,7 +3,7 @@
             :class="{ 'repository-level-page page-container': isRepositoryLevel }"
             style="padding-bottom: 0;">
         <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: $i18n.get('metadata') }]"/>
+                :bread-crumb-items="[{ path: '', label: $i18n.get('metadata') }]" />
         
         <template v-if="isRepositoryLevel">
             <p>{{ $i18n.get('info_repository_metadata_inheritance') }}</p>
@@ -21,17 +21,17 @@
                         <repository-metadata-list
                                 v-if="isRepositoryLevel"
                                 :metadata-type-filter-options="metadataTypeFilterOptions"
-                                @onUpdatehightlightedMetadatum="(newValue) => hightlightedMetadatum = newValue" />
+                                @on-update-highlighted-metadatum="(newValue) => highlightedMetadatum = newValue" />
                         <collection-metadata-list
                                 v-else
                                 :metadata-type-filter-options="metadataTypeFilterOptions"
-                                @onUpdatehightlightedMetadatum="(newValue) => hightlightedMetadatum = newValue" />
+                                @on-update-highlighted-metadatum="(newValue) => highlightedMetadatum = newValue" />
 
                         <!-- Available Metadata Area -->
                         <metadata-types-list 
-                                :hightlighted-metadatum="hightlightedMetadatum"
+                                :highlighted-metadatum="highlightedMetadatum"
                                 :is-repository-level="isRepositoryLevel"
-                                @onFinishedLoadingMetadataTypes="createMetadataTypeFilterOptions"/>
+                                @on-finished-loading-metadata-types="createMetadataTypeFilterOptions" />
                     </div>
                 </b-tab-item>
 
@@ -39,7 +39,7 @@
                 <b-tab-item :label="$i18n.get('mapping')">
                     <metadata-mapping-list
                             v-if="activeTab == 1"
-                            :is-repository-level="isRepositoryLevel"/>
+                            :is-repository-level="isRepositoryLevel" />
                 </b-tab-item>
             </b-tabs>
             
@@ -49,7 +49,7 @@
                 <div class="content has-text-grey has-text-centered">
                     <p>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-metadata"/>
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-metadata" />
                         </span>
                     </p>
                     <p>{{ $i18n.get('info_can_not_edit_metadata') }}</p>
@@ -78,14 +78,14 @@ export default {
         return {
             isRepositoryLevel: false,
             activeTab: 0,
-            hightlightedMetadatum: '',
+            highlightedMetadatum: '',
             metadataTypeFilterOptions: []
         }
     },
     computed: {
-        collection() {
-            return this.getCollection();
-        },
+        ...mapGetters('collection', {
+            'collection': 'getCollection'
+        }),
         repositoryTabLabel() {
             let label = this.$i18n.get('metadata');
             const metadata = this.getMetadata();
@@ -112,12 +112,9 @@ export default {
     },
     mounted() {
         if (!this.isRepositoryLevel)
-            this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('metadata') }]);
+            this.$emitter.emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('metadata') }]);
     },
     methods: {
-        ...mapGetters('collection',[
-            'getCollection'
-        ]),
         ...mapGetters('metadata',[
             'getMetadatumTypes',
             'getMetadata',
@@ -326,6 +323,7 @@ export default {
                 .grip-icon { 
                     color: var(--tainacan-gray3); 
                     position: relative;
+                    flex-shrink: 0;
                 }
                 .metadatum-name {
                     white-space: nowrap;
@@ -359,6 +357,12 @@ export default {
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     overflow: hidden;
+                    -webkit-touch-callout: none;
+                    -webkit-user-select: none;
+                    -khtml-user-select: none;
+                    -moz-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
                 }
                 .not-saved {
                     font-style: italic;

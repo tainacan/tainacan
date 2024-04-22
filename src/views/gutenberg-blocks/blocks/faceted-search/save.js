@@ -58,7 +58,7 @@ export default function({ attributes }) {
         updatedListType = 'collection';
     else if (updatedListType === '' && termId && taxonomyId)
         updatedListType = 'term';
-        
+    console.log('save', updatedListType, collectionOrderByMeta)
     // Gets attributes such as style, that are automatically added by the editor hook
     const blockProps = useBlockProps.save();
 
@@ -85,34 +85,34 @@ export default function({ attributes }) {
         <main 
                 id="tainacan-items-page"
                 data-module="faceted-search"
-                term-id={ updatedListType == 'term' ? termId : null }
-                taxonomy={ updatedListType == 'term' ? 'tnc_tax_' + taxonomyId : null  }
-                collection-id={ updatedListType == 'collection' ? collectionId : null }  
-                default-view-mode={ defaultViewMode != 'none' ? defaultViewMode : (updatedListType == 'collection' ? collectionDefaultViewMode : (hideItemsThumbnail ? 'table' : 'masonry') ) }
-                is-forced-view-mode={ defaultViewMode == 'none' ? 'true' : 'false' }
-                enabled-view-modes={ enabledViewModes ? enabledViewModes.toString() : '' }  
-                hide-filters = { hideFilters.toString() }
-                hide-hide-filters-button= { hideHideFiltersButton.toString() }
-                hide-search = { hideSearch.toString() }
-                hide-advanced-search = { hideAdvancedSearch.toString() }
-                hide-displayed-metadata-button = { hideDisplayedMetadataButton.toString() }
-                hide-pagination-area = { hidePaginationArea.toString() }
-                hide-sorting-area = { hideSortingArea.toString() }
-                hide-items-thumbnail = { hideItemsThumbnail ? hideItemsThumbnail.toString() : 'false' }
-                hide-sort-by-button = { hideSortByButton.toString() }
-                hide-exposers-button = { hideExposersButton.toString() }
-                hide-items-per-page-button = { hideItemsPerPageButton.toString() }
-                default-items-per-page = { defaultItemsPerPage }
-                hide-go-to-page-button = { hideGoToPageButton.toString() }
-                show-filters-button-inside-search-control = { showFiltersButtonInsideSearchControl.toString() }
-                start-with-filters-hidden = { startWithFiltersHidden.toString() }
-                filters-as-modal = { filtersAsModal.toString() }
-                show-inline-view-mode-options = { showInlineViewModeOptions.toString() }
-                show-fullscreen-with-view-modes = { showFullscreenWithViewModes.toString() } 
-                default-order = { order ? order : 'ASC' }
-                default-orderby = { updatedListType == 'collection' ? (collectionOrderBy ? collectionOrderBy : 'date') : (orderBy ? orderBy : 'date') }
-                default-orderby-meta = { updatedListType == 'collection' ? (collectionOrderByMeta ? collectionOrderByMeta : '') : (orderByMeta ? orderByMeta : '') }
-                default-orderby-type = { updatedListType == 'collection' ? (collectionOrderByType ? collectionOrderByType : '') : (orderByType ? orderByType : '') } >
+                data-term-id={ updatedListType == 'term' ? termId : null }
+                data-taxonomy={ updatedListType == 'term' ? 'tnc_tax_' + taxonomyId : null  }
+                data-collection-id={ updatedListType == 'collection' ? collectionId : null }  
+                data-default-view-mode={ defaultViewMode != 'none' ? defaultViewMode : (updatedListType == 'collection' ? collectionDefaultViewMode : (hideItemsThumbnail ? 'table' : 'masonry') ) }
+                data-is-forced-view-mode={ defaultViewMode == 'none' ? 'true' : 'false' }
+                data-enabled-view-modes={ enabledViewModes ? enabledViewModes.toString() : '' }  
+                data-hide-filters = { hideFilters.toString() }
+                data-hide-hide-filters-button= { hideHideFiltersButton.toString() }
+                data-hide-search = { hideSearch.toString() }
+                data-hide-advanced-search = { hideAdvancedSearch.toString() }
+                data-hide-displayed-metadata-button = { hideDisplayedMetadataButton.toString() }
+                data-hide-pagination-area = { hidePaginationArea.toString() }
+                data-hide-sorting-area = { hideSortingArea.toString() }
+                data-hide-items-thumbnail = { hideItemsThumbnail ? hideItemsThumbnail.toString() : 'false' }
+                data-hide-sort-by-button = { hideSortByButton.toString() }
+                data-hide-exposers-button = { hideExposersButton.toString() }
+                data-hide-items-per-page-button = { hideItemsPerPageButton.toString() }
+                data-default-items-per-page = { defaultItemsPerPage }
+                data-hide-go-to-page-button = { hideGoToPageButton.toString() }
+                data-show-filters-button-inside-search-control = { showFiltersButtonInsideSearchControl.toString() }
+                data-start-with-filters-hidden = { startWithFiltersHidden.toString() }
+                data-filters-as-modal = { filtersAsModal.toString() }
+                data-show-inline-view-mode-options = { showInlineViewModeOptions.toString() }
+                data-show-fullscreen-with-view-modes = { showFullscreenWithViewModes.toString() } 
+                data-default-order = { order ? order : 'ASC' }
+                data-default-orderby = { updatedListType == 'collection' ? (collectionOrderBy ? collectionOrderBy : 'date') : (orderBy ? orderBy : 'date') }
+                data-default-orderby-meta = { updatedListType == 'collection' ? (collectionOrderByMeta ? collectionOrderByMeta : '') : (orderByMeta ? orderByMeta : '') }
+                data-default-orderby-type = { updatedListType == 'collection' ? (collectionOrderByType ? collectionOrderByType : '') : (orderByType ? orderByType : '') } >
         </main>
     </div>
 };

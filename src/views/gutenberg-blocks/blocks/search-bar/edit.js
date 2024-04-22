@@ -57,16 +57,16 @@ export default function({ attributes, setAttributes, isSelected }) {
                             }}>
                             <div 
                                 style={{ color: collectionTextColor ? collectionTextColor : '' }}
-                                class="search-bar-collection-header-title">
-                                { showCollectionLabel ? <span class="label">{ __('Collection', 'tainacan') }</span> : null }
+                                className="search-bar-collection-header-title">
+                                { showCollectionLabel ? <span className="label">{ __('Collection', 'tainacan') }</span> : null }
                                 <h3 
-                                    class="has-text-color"
+                                    className="has-text-color"
                                     style={{ fontSize: collectionTextSize ? collectionTextSize + 'rem' : '2rem' }}>
                                     { collectionName ? collectionName : '' }
                                 </h3>
                             </div>
                             { collectionId && collectionSlug ?
-                                <div class="tainacan-search-container">
+                                <div className="tainacan-search-container">
                                     <form
                                             style={{ maxWidth: maxWidth ? maxWidth + '%' : '80%' }}
                                             className={ 
@@ -84,9 +84,9 @@ export default function({ attributes, setAttributes, isSelected }) {
                                             placeholder={ placeholderText }
                                         /> 
                                         <button 
-                                                class="button"
+                                                className="button"
                                                 type="submit">  
-                                            <span class="icon">
+                                            <span className="icon">
                                                 <i>
                                                     <svg
                                                         style={{ fill: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}    
@@ -130,9 +130,9 @@ export default function({ attributes, setAttributes, isSelected }) {
                                 placeholder={ placeholderText }
                             /> 
                             <button 
-                                    class="button"
+                                    className="button"
                                     type="submit">  
-                                <span class="icon">
+                                <span className="icon">
                                     <i>
                                         <svg
                                                 style={{ fill: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}    
@@ -398,7 +398,7 @@ export default function({ attributes, setAttributes, isSelected }) {
                             alt="Tainacan Logo"/>
                     )}>
                     <p>
-                        <span class="icon">
+                        <span className="icon">
                             <i>
                                 <svg width="24" height="24" viewBox="-2 -2 20 20">
                                 <path d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
@@ -446,16 +446,16 @@ export default function({ attributes, setAttributes, isSelected }) {
                             }}>
                             <div 
                                 style={{ color: collectionTextColor ? collectionTextColor : '' }}
-                                class="search-bar-collection-header-title">
-                                { showCollectionLabel ? <span class="label">{ __('Collection', 'tainacan') }</span> : null }
+                                className="search-bar-collection-header-title">
+                                { showCollectionLabel ? <span className="label">{ __('Collection', 'tainacan') }</span> : null }
                                 <h3 
-                                    class="has-text-color"
+                                    className="has-text-color"
                                     style={{ fontSize: collectionTextSize ? collectionTextSize + 'rem' : '2rem' }}>
                                     { collectionName ? collectionName : '' }
                                 </h3>
                             </div>
                             { collectionId && collectionSlug ?
-                                <div class="tainacan-search-container">
+                                <div className="tainacan-search-container">
                                     <div
                                             style={{ maxWidth: maxWidth ? maxWidth + '%' : '80%' }}
                                             className={ 
@@ -471,9 +471,9 @@ export default function({ attributes, setAttributes, isSelected }) {
                                             placeholder={ placeholderText }
                                         /> 
                                         <button 
-                                                class="button"
+                                                className="button"
                                                 onClick={(event) => { event.preventDefault(); return false; }}>  
-                                            <span class="icon">
+                                            <span className="icon">
                                                 <i>
                                                     <svg
                                                         style={{ fill: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}    
@@ -501,7 +501,7 @@ export default function({ attributes, setAttributes, isSelected }) {
             }
             
             { collectionId && collectionSlug && !showCollectionHeader ?
-                    <div class="tainacan-search-container">
+                    <div className="tainacan-search-container">
                         <div
                                 style={{ maxWidth: maxWidth ? maxWidth + '%' : '80%' }}
                                 className={ 
@@ -517,8 +517,8 @@ export default function({ attributes, setAttributes, isSelected }) {
                                 placeholder={ placeholderText }
                             /> 
                             <button 
-                                    class="button">  
-                                <span class="icon">
+                                    className="button">  
+                                <span className="icon">
                                     <i>
                                         <svg
                                             style={{ fill: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}    

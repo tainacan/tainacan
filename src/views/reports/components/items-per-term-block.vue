@@ -13,10 +13,10 @@
                     </label>
                     <select
                             v-if="!isFetchingData"
-                            name="select_taxonomies"
                             id="select_taxonomies"
-                            :placeholder="$i18n.get('label_select_a_taxonomy')"
-                            v-model="selectedTaxonomy">
+                            v-model="selectedTaxonomy"
+                            name="select_taxonomies"
+                            :placeholder="$i18n.get('label_select_a_taxonomy')">
                         <option 
                                 v-for="(taxonomy, index) of taxonomiesListArray"
                                 :key="index"
@@ -30,16 +30,16 @@
                         class="box-header__item">
                     <label for="max_terms">{{ $i18n.get('label_terms_per_page') }}</label>
                     <input
+                            id="max_terms"
+                            v-model.number="maxTermsToDisplay"
                             type="number"
                             step="1"
                             min="1"
                             max="999"
                             class="screen-per-page"
                             name="max_terms"
-                            id="max_terms"
                             maxlength="3"
-                            :disabled="isBuildingChart"
-                            v-model.number="maxTermsToDisplay">
+                            :disabled="isBuildingChart">
                 </div>
                 <div 
                         v-if="selectedTaxonomy && selectedTaxonomy.id && currentTotalTerms >= 56"
@@ -47,17 +47,17 @@
                     <span class="displaying-num">{{ currentTotalTerms + ' ' + $i18n.get('terms') }}</span>
                     <span class="pagination-links">
                         <span
-                                @click="!isBuildingChart ? termsDisplayedPage = 1 : null"
                                 :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isBuildingChart}"
                                 class="first-page button"
-                                aria-hidden="true">
+                                aria-hidden="true"
+                                @click="!isBuildingChart ? termsDisplayedPage = 1 : null">
                             «
                         </span>
                         <span
-                                @click="(termsDisplayedPage > 1 && !isBuildingChart) ? termsDisplayedPage-- : null"
                                 :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isBuildingChart}"
                                 class="prev-page button"
-                                aria-hidden="true">
+                                aria-hidden="true"
+                                @click="(termsDisplayedPage > 1 && !isBuildingChart) ? termsDisplayedPage-- : null">
                             ‹
                         </span>
                         <span class="paging-input">
@@ -67,31 +67,31 @@
                                 {{ $i18n.get('label_current_page') }}
                             </label>
                             <input
-                                    class="current-page"
                                     id="current-page-selector"
+                                    v-model.number="termsDisplayedPage"
+                                    class="current-page"
                                     type="number"
                                     step="1"
                                     min="1"
                                     :disabled="isBuildingChart || maxTermsToDisplay >= currentTotalTerms"
                                     :max="Math.ceil(currentTotalTerms/maxTermsToDisplay)"
                                     name="paged"
-                                    v-model.number="termsDisplayedPage"
                                     size="1"
                                     aria-describedby="table-paging">
                             <span class="tablenav-paging-text"> de <span class="total-pages">{{ Math.ceil(currentTotalTerms/maxTermsToDisplay) }}</span></span>
                         </span>
                         <span 
-                                @click="(!isBuildingChart && termsDisplayedPage < Math.ceil(currentTotalTerms/maxTermsToDisplay)) ? termsDisplayedPage++ : null"
                                 :class="{'tablenav-pages-navspan disabled' : isBuildingChart || termsDisplayedPage >= Math.ceil(currentTotalTerms/maxTermsToDisplay) }"
                                 aria-hidden="true"
-                                class="next-page button">
+                                class="next-page button"
+                                @click="(!isBuildingChart && termsDisplayedPage < Math.ceil(currentTotalTerms/maxTermsToDisplay)) ? termsDisplayedPage++ : null">
                             ›
                         </span>
                         <span
-                                @click="!isBuildingChart ? termsDisplayedPage = Math.ceil(currentTotalTerms/maxTermsToDisplay) : null"
                                 :class="{'tablenav-pages-navspan disabled': isBuildingChart || termsDisplayedPage >= Math.ceil(currentTotalTerms/maxTermsToDisplay) }"
                                 class="last-page button"
-                                aria-hidden="true">
+                                aria-hidden="true"
+                                @click="!isBuildingChart ? termsDisplayedPage = Math.ceil(currentTotalTerms/maxTermsToDisplay) : null">
                             »
                         </span>
                     </span>
@@ -129,7 +129,9 @@
                     &nbsp;{{ $i18n.get('taxonomies') }}
                 </p>
                 <br>
-                <p class="subtitle is-6">{{ $i18n.get('info_no_taxonomy_created') }}</p>
+                <p class="subtitle is-6">
+                    {{ $i18n.get('info_no_taxonomy_created') }}
+                </p>
             </div>
         </div>
     </div>
@@ -171,7 +173,8 @@ export default {
                 if (this.taxonomiesListArray && this.taxonomiesListArray.length)
                     this.selectedTaxonomy = this.taxonomiesListArray[0];
             },
-            immediate: true
+            immediate: true,
+            deep: true
         },
         selectedTaxonomy: {
             handler() {
@@ -179,7 +182,8 @@ export default {
                 if (this.selectedTaxonomy && this.selectedTaxonomy.id)
                     this.loadTaxonomyTerms();
             },
-            immediate: true
+            immediate: true,
+            deep: true
         },
         termsDisplayedPage() {
             this.buildTaxonomyTermsChart();

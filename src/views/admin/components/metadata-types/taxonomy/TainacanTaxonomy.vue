@@ -2,23 +2,22 @@
     <div>
         <tainacan-taxonomy-tag-input
                 v-if="getComponent == 'tainacan-taxonomy-tag-input'"
+                v-model:value="valueComponent"
                 :disabled="disabled || isFetchingTerms"
                 :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
-                v-model="valueComponent"
                 :allow-new="allowNewFromOptions"
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : $i18n.get('instruction_type_existing_term')"
                 :taxonomy-id="taxonomyId"
                 :item-metadatum="itemMetadatum"
-                @showAddNewTerm="openTermCreationModal"
-                :has-counter="false" />
+                :has-counter="false"
+                @show-add-new-term="openTermCreationModal" />
         <checkbox-radio-metadata-input
                 v-else
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 :is-modal="false"
                 :parent="0"
                 :allow-new="allowNewFromOptions"
-                @showAddNewTerm="openTermCreationModal"
-                :taxonomy_id="taxonomyId"
+                :taxonomy-id="taxonomyId"
                 :selected="!valueComponent ? [] : valueComponent"
                 :metadatum-id="itemMetadatum.metadatum.id"
                 :taxonomy="taxonomy"
@@ -28,19 +27,20 @@
                 :metadatum="itemMetadatum.metadatum"
                 :amount-selected="Array.isArray(valueComponent) ? valueComponent.length : (valueComponent ? '1' : '0')"
                 :is-checkbox="getComponent == 'tainacan-taxonomy-checkbox'"
-                @input="(selected) => valueComponent = selected"
                 :is-mobile-screen="isMobileScreen"
-                @mobileSpecialFocus="onMobileSpecialFocus"
+                @show-add-new-term="openTermCreationModal"
+                @input="(selected) => valueComponent = selected"
+                @mobile-special-focus="onMobileSpecialFocus"
             />
         <div
                 v-if="displayCreateNewTerm && !isTermCreationPanelOpen && (maxMultipleValues !== undefined ? (maxMultipleValues > valueComponent.length) : true)"
                 class="add-new-term">
             <a
-                    @click="openTermCreationModal"
                     class="add-link"
-                    :class="{ 'is-loading': isAddingNewTermVaue }">
+                    :class="{ 'is-loading': isAddingNewTermVaue }"
+                    @click="openTermCreationModal">
                 <span class="icon is-small">
-                    <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                    <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                 </span>
                 &nbsp;{{ $i18n.get('label_create_new_term') }}
             </a>
@@ -48,7 +48,7 @@
         <template v-if="allowNewFromOptions && itemMetadatum.item">
             <!-- Term creation modal, used on admin for a complete term creation -->
             <b-modal
-                    :active.sync="isTermCreationModalOpen"
+                    :model-value="isTermCreationModalOpen"
                     :width="768"
                     trap-focus
                     aria-role="dialog"
@@ -63,38 +63,40 @@
                         :taxonomy-id="taxonomyId"
                         :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
                         :is-term-insertion-flow="true"
-                        @onEditionFinished="($event) => addRecentlyCreatedTerm($event.term)"
-                        @onEditionCanceled="() => $console.log('Editing canceled')"
-                        @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />
+                        @on-edition-finished="($event) => addRecentlyCreatedTerm($event.term)"
+                        @close="isTermCreationModalOpen = false" />
             </b-modal>
 
             <!-- Term creation panel, used on item submission block for a simpler term creation -->
             <transition name="filter-item">
-                <term-creation-panel
+                <component
+                        :is="'term-creation-panel'"
+                        v-if="isTermCreationPanelOpen"
                         :metadatum-id="itemMetadatum.metadatum.id"
                         :item-id="itemMetadatum.item.id"
                         :is-hierarchical="isHierarchical"
-                        v-if="isTermCreationPanelOpen"
                         :taxonomy-id="taxonomyId"
                         :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
-                        @onEditionFinished="($event) => addTermToBeCreated($event)"
-                        @onEditionCanceled="() => isTermCreationPanelOpen = false"
-                        @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />
+                        @on-edition-finished="($event) => addTermToBeCreated($event)"
+                        @on-edition-canceled="() => isTermCreationPanelOpen = false"
+                        @on-error-found="($event) => $console.log('Form with errors: ' + $event)" />
             </transition>
         </template>
     </div>
 </template>
 
 <script>
-    import TainacanTaxonomyTagInput from './TaxonomyTaginput.vue';
+    import TainacanTaxonomyTagInput from './TainacanTaxonomyTaginput.vue';
     import CheckboxRadioMetadataInput from '../../other/checkbox-radio-metadata-input.vue';
-    import { tainacan as axios } from '../../../js/axios.js';
+    import { tainacanApi } from '../../../js/axios';
     import { mapActions } from 'vuex';
+    import { defineAsyncComponent } from 'vue';
 
     export default {
         components: {
             TainacanTaxonomyTagInput,
-            CheckboxRadioMetadataInput
+            CheckboxRadioMetadataInput,
+            TermEditionForm: defineAsyncComponent(() => import('../../edition/term-edition-form.vue')),
         },
         props: {
             itemMetadatum: Object,
@@ -105,6 +107,11 @@
             allowNew: false,
             isMobileScreen: false,
         },
+        emits: [
+            'updateTaxonomyInputs',
+            'mobile-special-focus',
+            'update:value'
+        ],
         data(){
             return {
                 valueComponent: null,
@@ -156,8 +163,11 @@
             }
         },
         watch: {
-            valueComponent( val ) {
-                this.$emit('input', val);
+            valueComponent: {
+                handler( val ) {
+                    this.$emit('update:value', val);
+                },
+                deep: true
             }
         },
         created() {
@@ -224,22 +234,22 @@
                     let val = this.valueComponent;
 
                     if ((!Array.isArray(val) || val.length == 0) && this.itemMetadatum.metadatum.multiple === 'no') {
-                        axios.patch(`/item/${this.itemMetadatum.item.id}/metadata/${this.itemMetadatum.metadatum.id}`, {
+                        tainacanApi.patch(`/item/${this.itemMetadatum.item.id}/metadata/${this.itemMetadatum.metadatum.id}`, {
                             values: term.id,
                         }).then(() => {
                             this.isAddingNewTermVaue = false;
                             this.valueComponent = term.id;
-                            this.$emit('update-taxonomy-inputs', { taxonomyId: this.taxonomyId, metadatumId: this.itemMetadatum.metadatum.id });
+                            this.$emit('updateTaxonomyInputs', { taxonomyId: this.taxonomyId, metadatumId: this.itemMetadatum.metadatum.id });
                         })
                     } else {
                         val = val ? val : [];
                         val.push( this.getComponent == ('tainacan-taxonomy-checkbox' || 'tainacan-taxonomy-radio') ? term.id : {'label': term.name, 'value': term.id} );
-                        axios.patch(`/item/${this.itemMetadatum.item.id}/metadata/${this.itemMetadatum.metadatum.id}`, {
+                        tainacanApi.patch(`/item/${this.itemMetadatum.item.id}/metadata/${this.itemMetadatum.metadatum.id}`, {
                             values: val,
                         }).then(() => {
                             this.isAddingNewTermVaue = false;
                             this.valueComponent = val;
-                            this.$emit('update-taxonomy-inputs', { taxonomyId: this.taxonomyId, metadatumId: this.itemMetadatum.metadatum.id });
+                            this.$emit('updateTaxonomyInputs', { taxonomyId: this.taxonomyId, metadatumId: this.itemMetadatum.metadatum.id });
                         })
                     }
                 }
@@ -261,7 +271,7 @@
                     this.isTermCreationModalOpen = true;
             },
             onMobileSpecialFocus() {
-                this.$emit('mobileSpecialFocus');
+                this.$emit('mobile-special-focus');
             }
         }
     }

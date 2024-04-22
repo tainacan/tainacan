@@ -66,29 +66,29 @@ export default function({ attributes }) {
         <div 
                 id="tainacan-item-submission-form"
                 data-module="item-submission-form"
-                collection-id={ collectionId }
-                hide-file-modal-button={ hideFileModalButton.toString() }
-                hide-text-modal-button={ hideTextModalButton.toString() }
-                hide-link-modal-button={ hideLinkModalButton.toString() }
-                hide-thumbnail-section={ hideThumbnailSection.toString() }
-                hide-attachments-section={ hideAttachmentsSection.toString() }
-                show-allow-comments-section={ showAllowCommentsSection.toString() }
-                hide-help-buttons={ hideHelpButtons.toString() }
-                hide-metadata-types={ hideMetadataTypes.toString() }
-                hide-collapses={ hideCollapses.toString() }
-                enabled-metadata={ enabledMetadata.toString() }
-                sent-form-heading={ sentFormHeading }
-                sent-form-message={ sentFormMessage }
-                document-section-label={ documentSectionLabel }
-                thumbnail-section-label={ thumbnailSectionLabel }
-                attachments-section-label={ attachmentsSectionLabel }
-                metadata-section-label={ metadataSectionLabel }
-                show-item-link-button={ showItemLinkButton ? showItemLinkButton.toString() : 'false' }
-                show-terms-agreement-checkbox={ showTermsAgreementCheckbox ? showTermsAgreementCheckbox.toString() : 'false' }
-                terms-agreement-message={ termsAgreementMessageHTML }
-                item-link-button-label={ itemLinkButtonLabel ? itemLinkButtonLabel : __( 'Go to the item page', 'tainacan' ) }
-                help-info-bellow-label={ helpInfoBellowLabel ? helpInfoBellowLabel.toString() : 'false' }
-                is-layout-steps={ isLayoutSteps !== undefined ? isLayoutSteps.toString() : 'false' } >
+                data-collection-id={ collectionId }
+                data-hide-file-modal-button={ hideFileModalButton.toString() }
+                data-hide-text-modal-button={ hideTextModalButton.toString() }
+                data-hide-link-modal-button={ hideLinkModalButton.toString() }
+                data-hide-thumbnail-section={ hideThumbnailSection.toString() }
+                data-hide-attachments-section={ hideAttachmentsSection.toString() }
+                data-show-allow-comments-section={ showAllowCommentsSection.toString() }
+                data-hide-help-buttons={ hideHelpButtons.toString() }
+                data-hide-metadata-types={ hideMetadataTypes.toString() }
+                data-hide-collapses={ hideCollapses.toString() }
+                data-enabled-metadata={ JSON.stringify(enabledMetadata) }
+                data-sent-form-heading={ sentFormHeading }
+                data-sent-form-message={ sentFormMessage }
+                data-document-section-label={ documentSectionLabel }
+                data-thumbnail-section-label={ thumbnailSectionLabel }
+                data-attachments-section-label={ attachmentsSectionLabel }
+                data-metadata-section-label={ metadataSectionLabel }
+                data-show-item-link-button={ showItemLinkButton ? showItemLinkButton.toString() : 'false' }
+                data-show-terms-agreement-checkbox={ showTermsAgreementCheckbox ? showTermsAgreementCheckbox.toString() : 'false' }
+                data-terms-agreement-message={ termsAgreementMessageHTML }
+                data-item-link-button-label={ itemLinkButtonLabel ? itemLinkButtonLabel : __( 'Go to the item page', 'tainacan' ) }
+                data-help-info-bellow-label={ helpInfoBellowLabel ? helpInfoBellowLabel.toString() : 'false' }
+                data-is-layout-steps={ isLayoutSteps !== undefined ? isLayoutSteps.toString() : 'false' } >
         </div>
     </div>
 };

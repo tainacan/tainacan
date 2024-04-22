@@ -56,8 +56,8 @@ class Item extends Entity {
 		$array_item['_thumbnail_id']     = $this->get__thumbnail_id();
 		$array_item['author_name']       = $this->get_author_name();
 		$array_item['url']               = get_permalink( $this->get_id() );
-		$array_item['creation_date']     = $this->get_date_i18n( explode( ' ', $array_item['creation_date'] )[0] );
-		$array_item['modification_date'] = $this->get_date_i18n( explode( ' ', $array_item['modification_date'] )[0] );
+		$array_item['creation_date']     = $this->get_date_i18n( explode( ' ', $array_item['creation_date'] ?? '' )[0] );
+		$array_item['modification_date'] = $this->get_date_i18n( explode( ' ', $array_item['modification_date'] ?? '' )[0] );
 		$array_item['document_mimetype'] = $this->get_document_mimetype();
 		return apply_filters('tainacan-item-to-array', $array_item, $this);
 	}
@@ -922,7 +922,7 @@ class Item extends Entity {
 				$output .= $embed;
 			}
 		}
-		return wp_kses_tainacan($output);
+		return apply_filters("tainacan-item-get-attachment-as-html", wp_kses_tainacan($output), $img_size, $this);
 
 	}
 
@@ -1183,15 +1183,33 @@ class Item extends Entity {
 		$return = '';
 
 		if ( $metadata_section->is_conditional_section() ) {
-
 			$rules = $metadata_section->get_conditional_section_rules();
-			if( !empty($rules) ) {
-				$item_id = $this->get_id();
 
+			if ( !empty($rules) ) {
 				foreach ( $rules as $meta_id => $meta_values_conditional ) {
+					$meta_values = [];
+					$metadatum = new \Tainacan\Entities\Metadatum($meta_id);
+					$metadatum_type = $metadatum->get_metadata_type_object();
 
-					$meta_values = get_post_meta( $item_id, $meta_id );
-					if (!array_intersect($meta_values, $meta_values_conditional))
+					if ( $metadatum_type->get_primitive_type() == 'term' ) {
+						$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($this, $metadatum);
+						
+						if ( $metadatum->is_multiple() )  {
+							$term_values = $item_metadata->get_value();
+							$meta_values = array_map(function($term) {
+								return $term->get_id();
+							}, $term_values);
+						} else {
+							$term_values = $item_metadata->get_value();
+							$meta_values = $term_values == false ? [] : [ $term_values->get_id() ];
+						}
+
+					} else {
+						$item_id = $this->get_id();
+						$meta_values = get_post_meta( $item_id, $meta_id );
+					}
+
+					if ( !array_intersect($meta_values, $meta_values_conditional) )
 						return $return;
 				}
 			}

@@ -1,8 +1,8 @@
 <template>
     <form 
             tabindex="0"
-            @submit.prevent.stop="performAdvancedSearch"
-            class="tnc-advanced-search-container">
+            class="tnc-advanced-search-container"
+            @submit.prevent.stop="performAdvancedSearch">
         <h3>{{ $i18n.get('advanced_search') }}</h3>
         <transition-group name="filter-item">
             <b-field
@@ -19,8 +19,8 @@
                             :placeholder="$i18n.get('instruction_select_a_metadatum')"
                             :aria-label="$i18n.get('instruction_select_a_metadatum')"
                             :disabled="advancedSearchQuery[searchCriterion.type] && advancedSearchQuery[searchCriterion.type][searchCriterion.index]"
-                            :value="(advancedSearchQuery[searchCriterion.type] && advancedSearchQuery[searchCriterion.type][searchCriterion.index] ) ? advancedSearchQuery[searchCriterion.type][searchCriterion.index].key : null"
-                            @input="addMetadatumToAdvancedSearchQuery(
+                            :model-value="(advancedSearchQuery[searchCriterion.type] && advancedSearchQuery[searchCriterion.type][searchCriterion.index] ) ? advancedSearchQuery[searchCriterion.type][searchCriterion.index].key : null"
+                            @update:model-value="addMetadatumToAdvancedSearchQuery(
                                 { 
                                     metadatumId: $event,
                                     type: (metadataAsObject[$event] && metadataAsObject[$event].metadata_type_object) ? metadataAsObject[$event].metadata_type_object.primitive_type : '',
@@ -29,27 +29,28 @@
                                 searchCriterion,
                                 index
                             )">
-                        <template v-for="(metadatum, metadatumIndex) in metadataAsArray">
+                        <template
+                                v-for="(metadatum, metadatumIndex) in metadataAsArray"
+                                :key="metadatumIndex">
                             <option
                                     v-if="metadatum.metadata_type_object.component !== 'tainacan-user' &&
                                         metadatum.metadata_type_object.component !== 'tainacan-geocoordinate' &&
                                         metadatum.metadata_type_object.component !== 'tainacan-relationship' &&
                                         metadatum.metadata_type_object.component !== 'tainacan-compound' &&
                                         metadatum.parent <= 0"
-                                    :value="metadatum.id"
-                                    :key="metadatumIndex">
+                                    :value="metadatum.id">
                                 {{ metadatum.name }}
                             </option>
                             <optgroup
                                     v-if="metadatum.metadata_type_object.component === 'tainacan-compound'"
-                                    :key="metadatumIndex"
                                     :label="metadatum.name">
-                                <template v-for="(childMetadatum, childIndex) of metadatum.metadata_type_options.children_objects">
+                                <template 
+                                        v-for="(childMetadatum, childIndex) of metadatum.metadata_type_options.children_objects"
+                                        :key="childIndex">
                                     <option
                                             v-if="childMetadatum.metadata_type_object.component !== 'tainacan-user' &&
                                                 childMetadatum.metadata_type_object.component !== 'tainacan-geocoordinate' &&
                                                 childMetadatum.metadata_type_object.component !== 'tainacan-relationship'"
-                                            :key="childIndex"
                                             :value="childMetadatum.id">
                                         {{ childMetadatum.name }}
                                     </option>
@@ -65,30 +66,30 @@
                 <!-- Comparators -->
                 <b-field class="column">
                     <b-select
-                            :loading="isLoadingMetadata"
                             v-if="searchCriterion.type == 'metaquery' && advancedSearchQuery.metaquery[searchCriterion.index]"
-                            @input="addComparatorToAdvancedSearchQuery($event, searchCriterion)"
-                            :value="advancedSearchQuery.metaquery[searchCriterion.index].compare"
+                            :loading="isLoadingMetadata"
+                            :model-value="advancedSearchQuery.metaquery[searchCriterion.index].compare"
                             :placeholder="$i18n.get('label_criterion_to_compare')"
-                            :aria-label="$i18n.get('label_criterion_to_compare')">
+                            :aria-label="$i18n.get('label_criterion_to_compare')"
+                            @update:model-value="addComparatorToAdvancedSearchQuery($event, searchCriterion)">
                         <option 
                                 v-for="(comparator, key) in getComparators(searchCriterion)"
                                 :key="key"
                                 :value="key"
-                        >{{ comparator }}</option>
+                            >{{ comparator }}</option>
                     </b-select>
                     <b-select
-                            :loading="isLoadingMetadata"
                             v-else-if="searchCriterion.type == 'taxquery' && advancedSearchQuery.taxquery[searchCriterion.index]"
-                            @input="addComparatorToAdvancedSearchQuery($event, searchCriterion)"
-                            :value="advancedSearchQuery.taxquery[searchCriterion.index].operator"
+                            :loading="isLoadingMetadata"
+                            :model-value="advancedSearchQuery.taxquery[searchCriterion.index].operator"
                             :placeholder="$i18n.get('label_criterion_to_compare')"
-                            :aria-label="$i18n.get('label_criterion_to_compare')">
+                            :aria-label="$i18n.get('label_criterion_to_compare')"
+                            @update:model-value="addComparatorToAdvancedSearchQuery($event, searchCriterion)">
                         <option 
                                 v-for="(comparator, key) in getComparators(searchCriterion)"
                                 :key="key"
                                 :value="key"
-                        >{{ comparator }}</option>
+                            >{{ comparator }}</option>
                     </b-select>
                     <b-input
                             v-else
@@ -104,36 +105,36 @@
                                 v-if="getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'int' || getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'float'"
                                 type="number"
                                 step="any"
-                                @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
-                                :value="advancedSearchQuery.metaquery[searchCriterion.index].value"
+                                :model-value="advancedSearchQuery.metaquery[searchCriterion.index].value"
                                 :placeholder="$i18n.get('label_number_to_search_for')"
                                 :aria-label="$i18n.get('label_number_to_search_for')"
-                        />
+                                @update:model-value="addValueToAdvancedSearchQuery($event, searchCriterion)"
+                            />
                         <input
                                 v-else-if="getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'date'"
+                                v-imask="{ mask: dateMask, skipInvalid: false }"
                                 class="input"
                                 :value="parseValidDateToNavigatorLanguage(advancedSearchQuery.metaquery[searchCriterion.index].value)"
-                                v-mask="dateMask"
-                                @input="addValueToAdvancedSearchQuery($event.target.value, searchCriterion)"
-                                :placeholder="dateFormat" 
-                                type="text"
-                                :aria-label="$i18n.get('label_date_to_search_for')" >
+                                :placeholder="dateFormat"
+                                type="text" 
+                                :aria-label="$i18n.get('label_date_to_search_for')"
+                                @input="addValueToAdvancedSearchQuery($event.target.value, searchCriterion)">
                         <b-input
                                 v-else
                                 type="text"
-                                @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
-                                :value="advancedSearchQuery.metaquery[searchCriterion.index].value"
+                                :model-value="advancedSearchQuery.metaquery[searchCriterion.index].value"
                                 :placeholder="$i18n.get('label_string_to_search_for')"
                                 :aria-label="$i18n.get('label_string_to_search_for')"
-                        />
+                                @update:model-value="addValueToAdvancedSearchQuery($event, searchCriterion)"
+                            />
                     </template>
                     <b-input
                             v-else-if="searchCriterion.type == 'taxquery' && advancedSearchQuery.taxquery[searchCriterion.index]"
-                            :value="advancedSearchQuery.taxquery[searchCriterion.index].terms"
-                            @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
+                            :model-value="advancedSearchQuery.taxquery[searchCriterion.index].terms"
                             type="text"
                             :placeholder="$i18n.get('label_string_to_search_for')"
-                            :aria-label="$i18n.get('label_string_to_search_for')" />
+                            :aria-label="$i18n.get('label_string_to_search_for')"
+                            @update:model-value="addValueToAdvancedSearchQuery($event, searchCriterion)" />
                     <b-input
                             v-else
                             type="text"
@@ -143,10 +144,10 @@
 
                 <div class="field">
                     <button
-                            @click.prevent="removeCriterion(searchCriterion)"
                             class="button button-remove-criterion is-pulled-right has-text-secondary"
                             type="button"
-                            :aria-label="$i18n.get('remove_search_criterion')">
+                            :aria-label="$i18n.get('remove_search_criterion')"
+                            @click.prevent="removeCriterion(searchCriterion)">
                         <span 
                                 v-tooltip="{
                                     content: $i18n.get('remove_search_criterion'),
@@ -154,7 +155,7 @@
                                     placement: 'auto-end'
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-cancel"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-cancel" />
                         </span>
                     </button>
                 </div>
@@ -168,19 +169,19 @@
                     role="button"
                     @click="addSearchCriteria">
                 <span class="icon">
-                    <i class="has-text-secondary tainacan-icon tainacan-icon-add"/>
+                    <i class="has-text-secondary tainacan-icon tainacan-icon-add" />
                 </span>
                 {{ searchCriteria.length &lt;= 0 ?
                     $i18n.get('add_one_search_criterion') :
-                        $i18n.get('add_another_search_criterion')
+                    $i18n.get('add_another_search_criterion')
                 }}
             </a>
             <a
-                    role="button"
                     v-if="Object.keys(advancedSearchQuery.taxquery).length > 0 || Object.keys(advancedSearchQuery.metaquery).length > 0"
+                    role="button"
                     @click="clearSearch();">
                 <span class="icon">
-                    <i class="has-text-secondary tainacan-icon tainacan-icon-remove"/>
+                    <i class="has-text-secondary tainacan-icon tainacan-icon-remove" />
                 </span>
                 {{ $i18n.get('label_remove_all_criteria') }}
             </a>
@@ -193,8 +194,8 @@
             <p class="control">
                 <button
                         type="reset"
-                        @click="clearSearch(); $emit('close')"
-                        class="button is-outlined">
+                        class="button is-outlined"
+                        @click="clearSearch(); $emit('close')">
                     {{ $i18n.get('label_close_search') }}
                 </button>
             </p>
@@ -203,7 +204,6 @@
                         aria-controls="items-list-results"
                         type="submit"
                         :disabled="!hasUpdatedSearch"
-                        @click.prevent="performAdvancedSearch"
                         class="button is-secondary">
                     {{ $i18n.get('apply') }}
                 </button>
@@ -211,8 +211,8 @@
         </div>
 
         <b-loading 
-                :is-full-page="false" 
-                :active.sync="isLoadingMetadata" />
+                v-model="isLoadingMetadata" 
+                :is-full-page="false" />
         
         <section
                 v-if="!isLoadingMetadata && metadataAsArray && metadataAsArray.length <= 0"
@@ -220,7 +220,7 @@
             <div class="content has-text-gray has-text-centered">
                 <p>
                     <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
+                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
                     </span>
                 </p>
                 <p>
@@ -236,14 +236,22 @@
     import { mapActions } from 'vuex';
     import { dateInter } from '../../js/mixins.js';
     import moment from 'moment';
+    import { IMaskDirective } from 'vue-imask';
 
     export default {
         name: "AdvancedSearch",
+        directives: {
+            imask: IMaskDirective
+        },
         mixins: [ dateInter ],
         props: {
             isRepositoryLevel: false,
             collectionId: ''
         },
+        emits: [
+            'close',
+            'performAdvancedSearch'
+        ],
         data() {
             return {
                 metaqueryOperatorsForInterval: {
@@ -356,7 +364,7 @@
                 })
                 .catch(() => this.isLoadingMetadata = false);  
         },
-        beforeDestroy() {
+        beforeUnmount() {
             // Cancels previous Request
             if (this.metadataSearchCancel != undefined)
                 this.metadataSearchCancel.cancel('Metadata search Canceled.');
@@ -393,7 +401,7 @@
                             Object.prototype.hasOwnProperty.call(this.metaqueryOperatorsRegular, metaquery[meta]['compare']) ||
                             Object.prototype.hasOwnProperty.call(this.metaqueryOperatorsForInterval, metaquery[meta]['compare'])
                         )
-                            this.$set(this.advancedSearchQuery.metaquery, `${meta}`, metaquery[meta]);
+                            Object.assign( this.advancedSearchQuery.metaquery, { [`${meta}`]: metaquery[meta] });
                     }
 
                     let metakeys = Object.keys(this.advancedSearchQuery.metaquery);
@@ -412,7 +420,7 @@
 
                     for (let tax in taxquery) {
                         if ( Object.prototype.hasOwnProperty.call(this.taxqueryOperators, taxquery[tax]['operator']) )
-                            this.$set(this.advancedSearchQuery.taxquery, `${tax}`, taxquery[tax]);
+                            Object.assign( this.advancedSearchQuery.taxquery, { [`${tax}`]: taxquery[tax] });
                     }
 
                     let taxkeys = Object.keys(this.advancedSearchQuery.taxquery);
@@ -467,7 +475,7 @@
                             let expectedIndex = queryIndex;
                             while(!isCriterionIndexUpdated && expectedIndex < this.searchCriteria.length) {
                                 if (this.searchCriteria[expectedIndex] && this.searchCriteria[expectedIndex].type == 'metaquery') {
-                                    this.$set(this.searchCriteria[expectedIndex], 'index', queryIndex);
+                                    Object.assign(this.searchCriteria[expectedIndex], { 'index': queryIndex });
                                     isCriterionIndexUpdated = true;
                                 } else {
                                     expectedIndex++;
@@ -479,7 +487,7 @@
                             let expectedIndex = queryIndex;
                             while(!isCriterionIndexUpdated && expectedIndex < this.searchCriteria.length) {
                                 if (this.searchCriteria[expectedIndex] && this.searchCriteria[expectedIndex].type == 'taxquery') {
-                                    this.$set(this.searchCriteria[expectedIndex], 'index', queryIndex);
+                                    Object.assign(this.searchCriteria[expectedIndex], { 'index': queryIndex });
                                     isCriterionIndexUpdated = true;
                                 } else {
                                     expectedIndex++;
@@ -521,8 +529,8 @@
                     
                     // Convert fake placeholder criterion row to a tax row
                     let totalOfTaxCriteria = this.searchCriteria.reduce((counter, { type }) => type === 'taxquery' ? counter += 1 : counter, 0);
-                    this.$set(this.searchCriteria[index], 'type', 'taxquery');
-                    this.$set(this.searchCriteria[index], 'index', totalOfTaxCriteria);
+                    Object.assign(this.searchCriteria[index], { 'type': 'taxquery' });
+                    Object.assign(this.searchCriteria[index], { 'index': totalOfTaxCriteria });
 
                     // Was selected a taxonomy criteria      
                     this.advancedSearchQuery.taxquery.push({
@@ -534,8 +542,8 @@
 
                     // Convert fake placeholder criterion row to a meta row
                     let totalOfMetaCriteria = this.searchCriteria.reduce((counter, { type }) => type === 'metaquery' ? counter += 1 : counter, 0);
-                    this.$set(this.searchCriteria[index], 'type', 'metaquery');
-                    this.$set(this.searchCriteria[index], 'index', totalOfMetaCriteria);
+                    Object.assign(this.searchCriteria[index], { 'type': 'metaquery' });
+                    Object.assign(this.searchCriteria[index], { 'index': totalOfMetaCriteria });
 
                     // Was selected a metadatum criteria
                     if (type != 'date' && type != 'int' && type != 'float') {
@@ -556,9 +564,9 @@
                     return;
 
                 if (searchCriterion.type == 'metaquery' && this.advancedSearchQuery.metaquery[searchCriterion.index])
-                    this.$set(this.advancedSearchQuery.metaquery[searchCriterion.index], 'value', value);
+                    Object.assign(this.advancedSearchQuery.metaquery[searchCriterion.index], { 'value': value });
                 else if (searchCriterion.type == 'taxquery' && this.advancedSearchQuery.taxquery[searchCriterion.index])
-                    this.$set(this.advancedSearchQuery.taxquery[searchCriterion.index], 'terms', value);
+                    Object.assign(this.advancedSearchQuery.taxquery[searchCriterion.index], { 'terms': value });
 
                 this.hasUpdatedSearch = true;
             },
@@ -567,9 +575,9 @@
                     return;
 
                 if (searchCriterion.type == 'metaquery' && this.advancedSearchQuery.metaquery[searchCriterion.index])
-                    this.$set(this.advancedSearchQuery.metaquery[searchCriterion.index], 'compare', comparator);
+                    Object.assign(this.advancedSearchQuery.metaquery[searchCriterion.index], { 'compare': comparator });
                 else if (searchCriterion.type == 'taxquery' && this.advancedSearchQuery.taxquery[searchCriterion.index])
-                    this.$set(this.advancedSearchQuery.taxquery[searchCriterion.index], 'operator', comparator);
+                    Object.assign(this.advancedSearchQuery.taxquery[searchCriterion.index], { 'operator': comparator });
 
                 this.hasUpdatedSearch = true;
             },
@@ -583,7 +591,7 @@
                 } 
 
                 if ( Object.keys(this.advancedSearchQuery.taxquery).length > 1 )
-                    this.$set(this.advancedSearchQuery.taxquery, 'relation', 'AND');
+                    Object.assign(this.advancedSearchQuery.taxquery, { 'relation': 'AND' });
                 else if ( Object.prototype.hasOwnProperty.call(this.advancedSearchQuery.taxquery, 'relation') )
                     delete this.advancedSearchQuery.taxquery.relation;
 
@@ -595,13 +603,13 @@
                             let value = this.advancedSearchQuery.metaquery[metaquery].value;
                             
                             if (value.includes('/'))
-                                this.$set(this.advancedSearchQuery.metaquery[metaquery], 'value', this.convertDateToMatchInDB(value));
+                                Object.assign(this.advancedSearchQuery.metaquery[metaquery], { 'value': this.convertDateToMatchInDB(value) });
                         }
                     }
                 }
 
                 if ( Object.keys(this.advancedSearchQuery.metaquery).length > 1 )
-                    this.$set(this.advancedSearchQuery.metaquery, 'relation', 'AND');
+                    Object.assign(this.advancedSearchQuery.metaquery, { 'relation': 'AND' });
                 else if ( Object.prototype.hasOwnProperty.call(this.advancedSearchQuery.metaquery, 'relation') )
                     delete this.advancedSearchQuery.metaquery.relation;
                 
@@ -615,13 +623,14 @@
                             let value = this.advancedSearchQuery.metaquery[metaquery].value;
                             
                             if (value.includes('-'))
-                                this.$set(this.advancedSearchQuery.metaquery[metaquery], 'value', this.parseValidDateToNavigatorLanguage(value));
+                                Object.assign(this.advancedSearchQuery.metaquery[metaquery], { 'value': this.parseValidDateToNavigatorLanguage(value) });
                         }
                     }
                 }
 
                 this.hasUpdatedSearch = false;
-                this.$eventBusSearch.$emit('performAdvancedSearch', this.advancedSearchQuery);
+                this.$store.dispatch('search/setPage', 1);
+                this.$eventBusSearch.performAdvancedSearch(this.advancedSearchQuery);
             },
             getAdvancedSearchQueryCriterionMetadataType(searchCriterion) {
                 if (this.advancedSearchQuery.metaquery[searchCriterion] &&
@@ -676,7 +685,9 @@
                     }
                 }
             }
-
+            .add-link-advanced-search {
+                margin-top: 0.75rem;
+            }
             .add-link-advanced-search a {
                 font-size: 0.8125em;
                 display: inline-flex;

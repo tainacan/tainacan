@@ -1,14 +1,14 @@
 <template>
     <div :class="isCreatingNewItem ? 'item-creation-container' : 'item-edition-container'"><!-- Do NOT remove this classes, they may be used by third party plugins -->
         <b-loading
+                v-model="isLoading"
                 :is-full-page="false"
-                :active.sync="isLoading"
-                :can-cancel="false"/>
+                :can-cancel="false" />
 
         <tainacan-title 
                 v-if="!$adminOptions.hideItemEditionPageTitle || ($adminOptions.hideItemEditionPageTitle && isEditingItemMetadataInsideIframe)"
                 :bread-crumb-items="[{ path: '', label: $i18n.get('item') }]">
-           <h1 v-if="isCreatingNewItem">
+            <h1 v-if="isCreatingNewItem">
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
                         class="status-tag"
@@ -37,7 +37,7 @@
                     <i 
                             class="tainacan-icon tainacan-icon-1em"
                             :class="$statusHelper.getIcon(item.status)"
-                            />
+                        />
                     <help-button
                             :title="$i18n.get('status_' + item.status)"
                             :message="$i18n.get('info_item_' + item.status) + ' ' + $i18n.get('instruction_edit_item_status')" />
@@ -60,8 +60,8 @@
                                 width="24">
                             <path
                                     d="M0 0h24v24H0z"
-                                    fill="none"/>
-                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                                    fill="none" />
+                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
                         </svg>
                     </i>
                 </span>
@@ -80,12 +80,12 @@
                 </h1>
             </transition>
             <button 
-                    v-if="!formErrors.length || isUpdatingValues"
+                    v-if="!errors.length || isUpdatingValues"
                     @click="isMobileSubheaderOpen = !isMobileSubheaderOpen">
                 <span 
                         v-if="isUpdatingValues"
                         class="icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-spin"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-spin" />
                 </span>
                 <span 
                         v-else
@@ -98,22 +98,22 @@
                                 width="24">
                             <path
                                     d="M0 0h24v24H0z"
-                                    fill="none"/>
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                                    fill="none" />
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
                         </svg>
                     </i>
                 </span>
             </button>
             <item-metadatum-errors-tooltip 
                     v-else
-                    :form-errors="formErrors" />
+                    :form-errors="errors" />
         </div>
 
         <transition name="item-appear">
             <div 
                     v-if="isMobileSubheaderOpen"
-                    @click="isMobileSubheaderOpen = false;"
-                    class="tainacan-mobile-app-header_panel-backdrop" />
+                    class="tainacan-mobile-app-header_panel-backdrop"
+                    @click="isMobileSubheaderOpen = false;" />
         </transition>
         <transition name="panel-from-top">
             <div 
@@ -127,7 +127,7 @@
                     {{ $i18n.get('title_edit_item') + ' ' }}
                     <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
                 </h1>
-                <span v-if="!formErrors.length">{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}</span>
+                <span v-if="!errors.length">{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}</span>
                 <span 
                         v-else
                         class="help is-danger">
@@ -178,14 +178,14 @@
                             class="column main-column"
                             :class="
                                 (( (shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
-                                (shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)) ? 'is-7' : 'is-12'">
+                                    (shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)) ? 'is-7' : 'is-12'">
 
                         <!-- Hook for extra Form options -->
                         <template v-if="hasBeginRightForm">
                             <form
-                                id="form-item-begin-right"
-                                class="form-hook-region"
-                                v-html="getBeginRightForm"/>
+                                    id="form-item-begin-right"
+                                    class="form-hook-region"
+                                    v-html="getBeginRightForm" />
                         </template>
 
                         <div class="b-tabs">
@@ -196,11 +196,11 @@
                                 <ul class="swiper-wrapper">
                                     <li 
                                             v-for="(tab, tabIndex) of tabs"
+                                            :id="tab.slug + '-tab-label'"
                                             :key="tabIndex"
                                             :class="{ 'is-active': activeTab === tab.slug }"
-                                            @click="activeTab = tab.slug"
                                             class="swiper-slide"
-                                            :id="tab.slug + '-tab-label'">
+                                            @click="activeTab = tab.slug">
                                         <a>
                                             <span class="icon has-text-gray4">
                                                 <i :class="'tainacan-icon tainacan-icon-18px tainacan-icon-' + tab.icon" />
@@ -215,31 +215,29 @@
                                     </li>
                                 </ul>
                                 <button 
-                                        class="swiper-button-prev" 
                                         id="tainacan-tabs-prev" 
-                                        slot="button-prev">
+                                        class="swiper-button-prev">
                                     <svg
                                             width="24"
                                             height="24"
                                             viewBox="0 0 32 32">
-                                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
                                         <path
                                                 d="M0 0h24v24H0z"
-                                                fill="none"/>
+                                                fill="none" />
                                     </svg>
                                 </button>
                                 <button 
-                                        class="swiper-button-next" 
-                                        id="tainacan-tabs-next" 
-                                        slot="button-next">
+                                        id="tainacan-tabs-next"
+                                        class="swiper-button-next">
                                     <svg
                                             width="24"
                                             height="24"
                                             viewBox="0 0 24 24">
-                                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
                                         <path
                                                 d="M0 0h24v24H0z"
-                                                fill="none"/>
+                                                fill="none" />
                                     </svg>
                                 </button>
                             </nav>
@@ -276,7 +274,7 @@
                                             <span class="icon">
                                                 <i
                                                         :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
-                                                        class="tainacan-icon tainacan-icon-1-25em"/>
+                                                        class="tainacan-icon tainacan-icon-1-25em" />
                                             </span>
                                             <template v-if="isMobileScreen">{{ collapseAll ? $i18n.get('label_collapse') : $i18n.get('label_expand') }}</template>
                                             <template v-else>{{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}</template>
@@ -288,9 +286,9 @@
                                                 :style="$adminOptions.hideItemEditionCollapses ? 'padding-left: 0.35em !important;' : ''">
                                             <b-button
                                                     v-if="!$adminOptions.hideItemEditionFocusMode && (collection && collection.item_enable_metadata_focus_mode === 'yes') && !isMetadataNavigation && !showOnlyRequiredMetadata && !metadataNameFilterString" 
-                                                    @click="isMetadataNavigation = true; setMetadatumFocus({ index: 0, scrollIntoView: true });"
                                                     class="collapse-all has-text-secondary"
-                                                    size="is-small">
+                                                    size="is-small"
+                                                    @click="isMetadataNavigation = true; setMetadatumFocus({ index: 0, scrollIntoView: true });">
                                                 <span
                                                         class="icon">
                                                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-play" />
@@ -300,8 +298,8 @@
                                             <b-button 
                                                     v-if="isMetadataNavigation"
                                                     :disabled="focusedMetadatum === 0"
-                                                    @click="focusPreviousMetadatum" 
-                                                    outlined>
+                                                    outlined 
+                                                    @click="focusPreviousMetadatum">
                                                 <span
                                                         class="icon">
                                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore tainacan-icon-rotate-180" />
@@ -311,8 +309,8 @@
                                             <b-button 
                                                     v-if="isMetadataNavigation"
                                                     :disabled="(focusedMetadatum === itemMetadata.length - 1) && (!isCurrentlyFocusedOnCompoundMetadatum || isOnLastMetadatumOfCompoundNavigation)"
-                                                    @click="focusNextMetadatum"
-                                                    outlined>
+                                                    outlined
+                                                    @click="focusNextMetadatum">
                                                 <span
                                                         class="icon">
                                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore" />
@@ -321,8 +319,8 @@
                                             </b-button>
                                             <b-button
                                                     v-if="isMetadataNavigation" 
-                                                    @click="setMetadatumFocus({ index: 0, scrollIntoView: true }); isMetadataNavigation = false;"
-                                                    outlined>
+                                                    outlined
+                                                    @click="setMetadatumFocus({ index: 0, scrollIntoView: true }); isMetadataNavigation = false;">
                                                 <span
                                                         class="icon has-success-color">
                                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-finish" />
@@ -335,16 +333,16 @@
                                                 v-if="isUpdatingValues && isMetadataNavigation && !$adminOptions.mobileAppMode"
                                                 class="update-warning">
                                             <span class="icon">
-                                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-updating"/>
+                                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-updating" />
                                             </span>
                                         </span>
 
                                         <b-switch
                                                 v-if="!isMetadataNavigation && !$adminOptions.hideItemEditionRequiredOnlySwitch && (collection && collection.item_enable_metadata_required_filter === 'yes')"
                                                 id="tainacan-switch-required-metadata"
+                                                v-model="showOnlyRequiredMetadata"
                                                 :style="'font-size: 0.625em;' + (isMobileScreen ? 'margin-right: 2rem;' : '')"
-                                                size="is-small"
-                                                v-model="showOnlyRequiredMetadata">
+                                                size="is-small">
                                             {{ isMobileScreen ? $i18n.get('label_required') : $i18n.get('label_only_required') }} *
                                         </b-switch>
 
@@ -353,17 +351,17 @@
                                                 class="header-item metadata-name-search">
                                             <b-input
                                                     v-if="!isMobileScreen || openMetadataNameFilter"
-                                                    :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
                                                     v-model="metadataNameFilterString"
+                                                    :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
                                                     icon="magnify"
                                                     size="is-small"
                                                     icon-right="close-circle"
                                                     icon-right-clickable
                                                     @icon-right-click="openMetadataNameFilterClose" />
                                             <span
-                                                    @click="openMetadataNameFilter = true"
-                                                    v-else 
-                                                    class="icon is-small metadata-name-search-icon">
+                                                    v-else
+                                                    class="icon is-small metadata-name-search-icon" 
+                                                    @click="openMetadataNameFilter = true">
                                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search" />
                                             </span>
                                         </b-field>
@@ -371,15 +369,15 @@
 
                                     <div 
                                             v-for="(metadataSection, sectionIndex) of metadataSections"
-                                            :key="sectionIndex"
-                                            :class="'metadata-section-slug-' + metadataSection.slug + (isSectionHidden(metadataSection.id) ? ' metadata-section-hidden' : '')"
                                             :id="'metadata-section-id-' + metadataSection.id"
+                                            :key="sectionIndex"
                                             v-tooltip="{
                                                 content: isSectionHidden(metadataSection.id) ? $i18n.get('info_metadata_section_hidden_conditional') : false,
                                                 autoHide: true,
                                                 placement: 'auto',
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
-                                            }">
+                                            }"
+                                            :class="'metadata-section-slug-' + metadataSection.slug + (isSectionHidden(metadataSection.id) ? ' metadata-section-hidden' : '')">
                                         <div class="metadata-section-header section-label">
                                             <span   
                                                     class="collapse-handle"
@@ -389,17 +387,17 @@
                                                         class="icon">
                                                     <i 
                                                             :class="{
-                                                                'tainacan-icon-arrowdown' : (metadataSectionCollapses[sectionIndex] || errorMessage) && !isSectionHidden(metadataSection.id),
-                                                                'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || errorMessage) || isSectionHidden(metadataSection.id)
+                                                                'tainacan-icon-arrowdown' : (metadataSectionCollapses[sectionIndex] || formErrorMessage) && !isSectionHidden(metadataSection.id),
+                                                                'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || formErrorMessage) || isSectionHidden(metadataSection.id)
                                                             }"
-                                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                                                 </span>
                                                 <label>
                                                     <span class="icon has-text-gray4">
-                                                        <i class="tainacan-icon tainacan-icon-metadata"/>
+                                                        <i class="tainacan-icon tainacan-icon-metadata" />
                                                     </span>
                                                     <span
-                                                            v-if="metadataSections.length > 1 && collection.item_enable_metadata_enumeration === 'yes'"
+                                                            v-if="metadataSections.length > 1 && collection && collection.item_enable_metadata_enumeration === 'yes'"
                                                             style="opacity: 0.65;"
                                                             class="metadata-section-enumeration">
                                                         {{ Number(sectionIndex) + 1 }}.
@@ -420,22 +418,23 @@
                                         </div>
                                         <transition name="filter-item">
                                             <div 
-                                                    class="metadata-section-metadata-list"
-                                                    v-show="(metadataSectionCollapses[sectionIndex] || isMetadataNavigation) && !isSectionHidden(metadataSection.id)">
+                                                    v-show="(metadataSectionCollapses[sectionIndex] || isMetadataNavigation) && !isSectionHidden(metadataSection.id)"
+                                                    class="metadata-section-metadata-list">
                                                 <p
-                                                        class="metadatum-description-help-info"
-                                                        v-if="metadataSection.description && metadataSection.description_bellow_name == 'yes'">
+                                                        v-if="metadataSection.description && metadataSection.description_bellow_name == 'yes'"
+                                                        class="metadatum-description-help-info">
                                                     {{ metadataSection.description }}
                                                 </p>
 
-                                                <template v-for="(itemMetadatum, index) of itemMetadata">
+                                                <template 
+                                                        v-for="(itemMetadatum, index) of itemMetadata"
+                                                        :key="index">
                                                     <tainacan-form-item
                                                             v-if="itemMetadatum.metadatum.metadata_section_id == metadataSection.id"
-                                                            :key="index"
-                                                            :id="'metadatum-index--' + index"
-                                                            v-show="(!showOnlyRequiredMetadata || itemMetadatum.metadatum.required === 'yes') && (metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"      
-                                                            :class="{ 'is-metadata-navigation-active': isMetadataNavigation }"
+                                                            v-show="(!showOnlyRequiredMetadata || itemMetadatum.metadatum.required === 'yes') && (metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"
+                                                            :id="'metadatum-index--' + index"      
                                                             :ref="'tainacan-form-item--' + index"
+                                                            :class="{ 'is-metadata-navigation-active': isMetadataNavigation }"
                                                             :item-metadatum="itemMetadatum"
                                                             :metadata-name-filter-string="metadataNameFilterString"
                                                             :is-collapsed="metadataCollapses[index]"
@@ -444,14 +443,15 @@
                                                             :hide-help-buttons="false"
                                                             :help-info-bellow-label="false"
                                                             :is-mobile-screen="isMobileScreen"
-                                                            :enumerate-metadatum="metadataSections.length > 1 && collection.item_enable_metadata_enumeration === 'yes' ? ( (Number(sectionIndex) + 1) + '.' + (Number(getMetadatumOrderInSection(sectionIndex, itemMetadatum.metadatum)) + 1) ) : false"
+                                                            :enumerate-metadatum="metadataSections.length > 1 && collection && collection.item_enable_metadata_enumeration === 'yes' ? ( (Number(sectionIndex) + 1) + '.' + (Number(getMetadatumOrderInSection(sectionIndex, itemMetadatum.metadatum)) + 1) ) : false"
                                                             :is-last-metadatum="index > 2 && (index == itemMetadata.length - 1)"
                                                             :is-focused="focusedMetadatum === index"
                                                             :is-metadata-navigation="isMetadataNavigation"
-                                                            @changeCollapse="onChangeCollapse($event, index)"
-                                                            @touchstart.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }): ''"
-                                                            @mousedown.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }) : ''"
-                                                            @mobileSpecialFocus="setMetadatumFocus({ index: index, scrollIntoView: true })" />
+                                                            @input="updateItemMetadataValue"
+                                                            @change-collapse="onChangeCollapse($event, index)"
+                                                            @touchstart="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }): ''"
+                                                            @mousedown="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }) : ''"
+                                                            @mobile-special-focus="setMetadatumFocus({ index: index, scrollIntoView: true })" />
                                                 </template>
                                             </div>
                                         </transition>
@@ -463,9 +463,9 @@
                                                 formHooks['item'] != undefined &&
                                                 formHooks['item']['end-right'] != undefined">
                                         <form
-                                            id="form-item-end-right"
-                                            class="form-hook-region"
-                                            v-html="formHooks['item']['end-right'].join('')"/>
+                                                id="form-item-end-right"
+                                                class="form-hook-region"
+                                                v-html="formHooks['item']['end-right'].join('')" />
                                     </template>
                                 </div>
 
@@ -484,11 +484,11 @@
                                     </div>
 
                                     <related-items-list
+                                            v-model:is-loading="isLoading"
                                             :item-id="itemId"
                                             :collection-id="collectionId"
                                             :related-items="item.related_items"
-                                            :is-editable="!$adminOptions.itemEditionMode"
-                                            :is-loading.sync="isLoading" />
+                                            :is-editable="!$adminOptions.itemEditionMode" />
                                     
                                 </div>
 
@@ -503,19 +503,19 @@
                                             :item="item"
                                             :form="form"
                                             :collection="collection"
-                                            @onSetDocument="setDocument"
-                                            @onRemoveDocument="removeDocument"
-                                            @onSetFileDocument="setFileDocument"
-                                            @onSetTextDocument="setTextDocument"
-                                            @onSetURLDocument="setURLDocument" />
+                                            @on-set-document="setDocument"
+                                            @on-remove-document="removeDocument"
+                                            @on-set-file-document="setFileDocument"
+                                            @on-set-text-document="setTextDocument"
+                                            @on-set-url-document="setURLDocument" />
                                     <item-thumbnail-edition-form 
                                             :item="item"
                                             :form="form"
                                             :collection="collection"
                                             :is-loading="isLoading"
-                                            @onDeleteThumbnail="deleteThumbnail"
-                                            @onUpdateThumbnailAlt="($event) => onUpdateThumbnailAlt($event)"
-                                            @openThumbnailMediaFrame="thumbnailMediaFrame.openFrame($event)" />
+                                            @on-delete-thumbnail="deleteThumbnail"
+                                            @on-update-thumbnail-alt="($event) => onUpdateThumbnailAlt($event)"
+                                            @open-thumbnail-media-frame="thumbnailMediaFrame.openFrame($event)" />
                                 </div>
 
                                 <!-- Attachments on mobile modal -->
@@ -532,8 +532,8 @@
                                             :is-loading="isLoading"
                                             :total-attachments="totalAttachments"
                                             :should-load-attachments="shouldLoadAttachments"
-                                            @openAttachmentsMediaFrame="($event) => attachmentsMediaFrame.openFrame($event)"
-                                            @onDeleteAttachment="deleteAttachment($event)" />
+                                            @open-attachments-media-frame="($event) => attachmentsMediaFrame.openFrame($event)"
+                                            @on-delete-attachment="deleteAttachment($event)" />
                                 </div>
 
                             </section>
@@ -555,7 +555,7 @@
                                 <form
                                         id="form-item-begin-left"
                                         class="form-hook-region"
-                                        v-html="getBeginLeftForm"/>
+                                        v-html="getBeginLeftForm" />
                             </template>
 
                             <!-- Document -------------------------------- -->
@@ -564,11 +564,11 @@
                                     :item="item"
                                     :form="form"
                                     :collection="collection"
-                                    @onSetDocument="setDocument"
-                                    @onRemoveDocument="removeDocument"
-                                    @onSetFileDocument="setFileDocument"
-                                    @onSetTextDocument="setTextDocument"
-                                    @onSetURLDocument="setURLDocument" />
+                                    @on-set-document="setDocument"
+                                    @on-remove-document="removeDocument"
+                                    @on-set-file-document="setFileDocument"
+                                    @on-set-text-document="setTextDocument"
+                                    @on-set-url-document="setURLDocument" />
 
                             <hr v-if="shouldDisplayItemEditionDocument && shouldDisplayItemEditionThumbnail">
 
@@ -579,9 +579,9 @@
                                     :form="form"
                                     :collection="collection"
                                     :is-loading="isLoading"
-                                    @onDeleteThumbnail="deleteThumbnail"
-                                    @onUpdateThumbnailAlt="($event) => onUpdateThumbnailAlt($event)"
-                                    @openThumbnailMediaFrame="thumbnailMediaFrame.openFrame($event)" />
+                                    @on-delete-thumbnail="deleteThumbnail"
+                                    @on-update-thumbnail-alt="($event) => onUpdateThumbnailAlt($event)"
+                                    @open-thumbnail-media-frame="thumbnailMediaFrame.openFrame($event)" />
 
                             <hr v-if="(shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs) || hasEndLeftForm">
 
@@ -594,17 +594,17 @@
                                     :is-loading="isLoading"
                                     :total-attachments="totalAttachments"
                                     :should-load-attachments="shouldLoadAttachments"
-                                    @openAttachmentsMediaFrame="($event) => attachmentsMediaFrame.openFrame($event)"
-                                    @onDeleteAttachment="deleteAttachment($event)" />
+                                    @open-attachments-media-frame="($event) => attachmentsMediaFrame.openFrame($event)"
+                                    @on-delete-attachment="deleteAttachment($event)" />
 
                             <hr v-if="hasEndLeftForm">
 
                             <!-- Hook for extra Form options -->
                             <template v-if="hasEndLeftForm">
                                 <form
-                                    id="form-item-end-left"
-                                    class="form-hook-region"
-                                    v-html="getEndLeftForm"/>
+                                        id="form-item-end-left"
+                                        class="form-hook-region"
+                                        v-html="getEndLeftForm" />
                             </template>
 
                         </div>
@@ -615,13 +615,19 @@
 
             </form>
 
+        </transition>
+
+        <transition
+                mode="out-in"
+                :name="(isOnSequenceEdit && sequenceRightDirection != undefined) ? (sequenceRightDirection ? 'page-right' : 'page-left') : ''">
+                
             <!-- In case user enters this page whithout having permission -->
             <template v-if="!isLoading && ((isCreatingNewItem && collection && collection.current_user_can_edit_items == false) || (!isCreatingNewItem && item && item.current_user_can_edit != undefined && collection && collection.current_user_can_edit_items == false))">
                 <section class="section">
                     <div class="content has-text-grey has-text-centered">
                         <p>
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items"/>
+                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
                             </span>
                         </p>
                         <p>{{ $i18n.get('info_can_not_edit_item') }}</p>
@@ -638,19 +644,19 @@
             <!-- Sequence Progress -->
             <div
                     v-if="isOnSequenceEdit"
-                    class="sequence-progress-background"/>
+                    class="sequence-progress-background" />
             <div
                     v-if="isOnSequenceEdit && itemPosition != undefined && group != null && group.items_count != undefined"
                     :style="{ width: (itemPosition/group.items_count)*100 + '%' }"
-                    class="sequence-progress"/>
+                    class="sequence-progress" />
 
             <!-- Last Updated Info -->
             <div 
                     v-if="!$adminOptions.mobileAppMode"
                     class="update-info-section">
                 <p
-                        class="footer-message"
-                        v-if="isOnSequenceEdit">
+                        v-if="isOnSequenceEdit"
+                        class="footer-message">
                     {{ $i18n.get('label_sequence_editing_item') + " " + itemPosition + " " + $i18n.get('info_of') + " " + ((group != null && group.items_count != undefined) ? group.items_count : '') + "." }}&nbsp;
                 </p>
                 <p class="footer-message">
@@ -658,39 +664,48 @@
                             v-if="isUpdatingValues"
                             class="update-warning">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating" />
                         </span>
                         <span>{{ $i18n.get('info_updating_metadata_values') }}</span>
                     </span>
-                    <span v-else>{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}</span>
-
+                    <template v-else> 
+                        <span 
+                                v-if="form.status === 'auto-draft'"
+                                class="has-text-warning">
+                            {{ $i18n.get('info_autodraft_updated') }}
+                        </span>
+                        <span v-else>
+                            {{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
+                        </span>
+                    </template>
+                    
                     <span class="help is-danger">
                         {{ formErrorMessage }}
                         <item-metadatum-errors-tooltip 
-                                v-if="formErrors.length"
-                                :form-errors="formErrors" />
+                                v-if="errors.length"
+                                :form-errors="errors" />
                     </span>
                 </p>
 
                 <!-- Comment Status ------------------------ -->
                 <div 
+                        v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemEditionCommentsToggle"
                         style="margin-left: 2em;"
-                        class="section-status"
-                        v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemEditionCommentsToggle">
+                        class="section-status">
                     <div class="field has-addons">
                         <b-switch
                                 id="tainacan-checkbox-comment-status"
+                                v-model="form.comment_status"
                                 size="is-small"
                                 true-value="open"
-                                false-value="closed"
-                                v-model="form.comment_status">
+                                false-value="closed">
                             <span class="icon has-text-gray4">
-                                <i class="tainacan-icon tainacan-icon-comment"/>
+                                <i class="tainacan-icon tainacan-icon-comment" />
                             </span>
                             {{ $i18n.get('label_allow_comments') }}
                             <help-button
                                     :title="$i18n.getHelperTitle('items', 'comment_status')"
-                                    :message="$i18n.getHelperMessage('items', 'comment_status')"/>
+                                    :message="$i18n.getHelperMessage('items', 'comment_status')" />
                         </b-switch>
                     </div>
                 </div>
@@ -708,21 +723,22 @@
                     :current-user-can-delete="item && item.current_user_can_delete"
                     :current-user-can-publish="collection && collection.current_user_can_publish_items"
                     :is-editing-item-metadata-inside-iframe="isEditingItemMetadataInsideIframe"
-                    @onSubmit="onSubmit"
-                    @onDiscard="onDiscard"
-                    @onPrevInSequence="onPrevInSequence"
-                    @onNextInSequence="onNextInSequence" />
+                    @on-submit="onSubmit"
+                    @on-discard="onDiscard"
+                    @on-prev-in-sequence="onPrevInSequence"
+                    @on-next-in-sequence="onNextInSequence" />
 
         </footer>
     </div>
 </template>
 
 <script>
+import { nextTick, defineAsyncComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 
-import { eventBusItemMetadata } from '../../js/event-bus-item-metadata';
 import wpMediaFrames from '../../js/wp-media-frames';
 import { formHooks } from '../../js/mixins';
+import { itemMetadataMixin } from '../../js/item-metadata-mixin';
 
 import RelatedItemsList from '../lists/related-items-list.vue';
 import CustomDialog from '../other/custom-dialog.vue';
@@ -737,7 +753,9 @@ import ItemFormFooterButtons from './item-form-footer-buttons.vue';
 import 'swiper/css';
 import 'swiper/css/mousewheel';
 import 'swiper/css/navigation';
-import Swiper, { Mousewheel, Navigation } from 'swiper';
+
+import Swiper from 'swiper';
+import { Mousewheel, Navigation } from 'swiper/modules';
 
 export default {
     name: 'ItemEditionForm',
@@ -747,9 +765,10 @@ export default {
         ItemThumbnailEditionForm,
         ItemDocumentEditionForm,
         ItemAttachmentsEditionForm,
-        ItemFormFooterButtons
+        ItemFormFooterButtons,
+        TainacanFormItem: defineAsyncComponent(() => import('../metadata-types/tainacan-form-item.vue')),
     },
-    mixins: [ formHooks ],
+    mixins: [ formHooks, itemMetadataMixin ],
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
             this.$buefy.modal.open({
@@ -771,15 +790,18 @@ export default {
             next()
         }
     },
+    emits: [
+        'toggleItemEditionFooterDropdown'
+    ],
     data(){
         return {
             swiper: {},
             selected: 'Home',
             pageTitle: '',
-            itemId: Number,
+            itemId: [String, Number],
             item: {},
             itemRequestCancel: undefined,
-            collectionId: Number,
+            collectionId: [String, Number],
             sequenceId: Number,
             itemPosition: Number,
             isCreatingNewItem: false,
@@ -791,7 +813,7 @@ export default {
             metadataSectionCollapses: [],
             collapseAll: true,
             form: {
-                collectionId: Number,
+                collectionId: [String, Number],
                 status: '',
                 document: '',
                 document_type: '',
@@ -827,11 +849,12 @@ export default {
         }
     },
     computed: {
-        collection() {
-            return this.getCollection()
-        },
+        ...mapGetters('collection', {
+            'collection': 'getCollection'
+        }),
         itemMetadata() {
             const realItemMetadata = JSON.parse(JSON.stringify(this.getItemMetadata()));
+
             const tweakedItemMetadata = realItemMetadata.map((anItemMetadatum) => {
 
                 // We need this because repository level metadata have an array of section IDs
@@ -854,29 +877,19 @@ export default {
             });
             return tweakedItemMetadata;
         },
-        metadataSections() {
-            return this.getMetadataSections();
-        },
-        lastUpdated() {
-            return this.getLastUpdated();
-        },
-        group() {
-            return this.getGroup();
-        },
-        itemIdInSequence() {
-            return this.getItemIdInSequence();
-        },
-        totalAttachments() {
-            return this.getTotalAttachments();
-        },
+        ...mapGetters('metadata', {
+            'metadataSections': 'getMetadataSections'
+        }),
+        ...mapGetters('item', {
+            'totalAttachments': 'getTotalAttachments',
+            'lastUpdated': 'getLastUpdated'
+        }),
+        ...mapGetters('bulkedition', { 
+            'itemIdInSequence': 'getItemIdInSequence',
+            'group': 'getGroup'
+        }),
         totalRelatedItems() {
             return (this.item && this.item.related_items) ? Object.values(this.item.related_items).reduce((totalItems, aRelatedItemsGroup) => totalItems + parseInt(aRelatedItemsGroup.total_items), 0) : false;
-        },
-        formErrors() {
-           return eventBusItemMetadata && eventBusItemMetadata.errors && eventBusItemMetadata.errors.length ? eventBusItemMetadata.errors : []
-        },
-        conditionalSections() {
-            return eventBusItemMetadata && eventBusItemMetadata.conditionalSections ? eventBusItemMetadata.conditionalSections : [];
         },
         isEditingItemMetadataInsideIframe() {
             return this.$route.query && this.$route.query.editingmetadata;
@@ -946,7 +959,7 @@ export default {
 
             // Clear form variables
             this.cleanItemMetadata();
-            eventBusItemMetadata.clearAllErrors();
+            this.clearAllErrors();
             this.formErrorMessage = '';
 
             this.isLoading = true;
@@ -968,13 +981,13 @@ export default {
             // Obtains current Sequence Group Info
             this.fetchSequenceGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
         },
-        tabs:{
+        tabs: {
             handler() {
                 if (this.tabs.length >= 2) {
                     if (typeof this.swiper.update == 'function')
                         this.swiper.update();
                     else {
-                        this.$nextTick(() => {
+                        nextTick(() => {
                             this.swiper = new Swiper('#tainacanTabsSwiper', {
                                 watchOverflow: true,
                                 mousewheel: true,
@@ -994,13 +1007,14 @@ export default {
                     }
                 }
             },
-            immediate: true
+            immediate: true,
+            deep: true
         }
     },
     created() {
         // Obtains collection ID
         this.cleanItemMetadata();
-        eventBusItemMetadata.clearAllErrors();
+        this.clearAllErrors();
         this.formErrorMessage = '';
         this.collectionId = this.$route.params.collectionId;
         this.form.collectionId = this.collectionId;
@@ -1062,12 +1076,12 @@ export default {
                  * Creates the conditional metadata set to later watch values
                  * of certain metadata that control sections visibility.
                  */
-                eventBusItemMetadata.conditionalSections = {};
+                this.conditionalSections = {};
                 for (let metadataSection of metadataSections) {
                     if ( metadataSection.is_conditional_section == 'yes') { 
                         const conditionalSectionId = Object.keys(metadataSection.conditional_section_rules);
                         if ( conditionalSectionId.length ) {
-                            eventBusItemMetadata.conditionalSections[metadataSection.id] = {
+                            this.conditionalSections[metadataSection.id] = {
                                 sectionId: metadataSection.id,
                                 metadatumId: conditionalSectionId[0],
                                 metadatumValues: metadataSection.conditional_section_rules[conditionalSectionId[0]],
@@ -1083,22 +1097,13 @@ export default {
             });
 
         // Sets feedback variables
-        eventBusItemMetadata.$on('isUpdatingValue', (status) => {
-            this.isUpdatingValues = status;
-        });
-        eventBusItemMetadata.$on('hasErrorsOnForm', (hasErrors) => {
-            if (hasErrors)
-                this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
-            else
-                this.formErrorMessage = '';
-        });
         this.cleanLastUpdated();
 
         // Updates variables for metadata navigation from compound childs
-        eventBusItemMetadata.$on('isOnFirstMetadatumOfCompoundNavigation', (isOnFirstMetadatumOfCompoundNavigation) => {
+        this.$emitter.on('isOnFirstMetadatumOfCompoundNavigation', (isOnFirstMetadatumOfCompoundNavigation) => {
             this.isOnFirstMetadatumOfCompoundNavigation = isOnFirstMetadatumOfCompoundNavigation
         });
-        eventBusItemMetadata.$on('isOnLastMetadatumOfCompoundNavigation', (isOnLastMetadatumOfCompoundNavigation) => {
+        this.$emitter.on('isOnLastMetadatumOfCompoundNavigation', (isOnLastMetadatumOfCompoundNavigation) => {
             this.isOnLastMetadatumOfCompoundNavigation = isOnLastMetadatumOfCompoundNavigation
         });
 
@@ -1110,11 +1115,9 @@ export default {
         if (this.$adminOptions.mobileAppMode)
             this.isMobileSubheaderOpen = true;
     },
-    beforeDestroy () {
-        eventBusItemMetadata.$off('isUpdatingValue');
-        eventBusItemMetadata.$off('hasErrorsOnForm');
-        eventBusItemMetadata.$off('isOnFirstMetadatumOfCompoundNavigation');
-        eventBusItemMetadata.$off('isOnLastMetadatumOfCompoundNavigation');
+    beforeUnmount () {
+        this.$emitter.off('isOnFirstMetadatumOfCompoundNavigation');
+        this.$emitter.off('isOnLastMetadatumOfCompoundNavigation');
         window.removeEventListener('resize', this.handleWindowResize);
         if (typeof this.swiper.destroy == 'function')
             this.swiper.destroy();
@@ -1137,29 +1140,16 @@ export default {
         ]),
         ...mapGetters('item',[
             'getItemMetadata',
-            'getTotalAttachments',
-            'getLastUpdated',
-            'getAttachments'
         ]),
         ...mapActions('collection', [
             'deleteItem',
-        ]),
-        ...mapGetters('collection', [
-            'getCollection',
         ]),
         ...mapActions('bulkedition', [
             'fetchItemIdInSequence',
 			'fetchSequenceGroup'
         ]),
-        ...mapGetters('bulkedition', [
-            'getItemIdInSequence',
-            'getGroup'
-        ]),
         ...mapActions('metadata',[
             'fetchMetadataSections'
-        ]),
-        ...mapGetters('metadata',[
-            'getMetadataSections'
         ]),
         onSubmit(status, sequenceDirection) {
 
@@ -1182,7 +1172,7 @@ export default {
                 promise = this.updateItem(data);
 
             // Clear errors so we don't have them duplicated from api
-            eventBusItemMetadata.errors = [];
+            this.errors = [];
 
             promise.then(updatedItem => {
 
@@ -1241,7 +1231,7 @@ export default {
                 if (errors.errors) {
                     for (let error of errors.errors) {
                         for (let metadatum of Object.keys(error)){
-                            eventBusItemMetadata.errors.push({ 
+                            this.errors.push({ 
                                 metadatum_id: metadatum,
                                 errors: error[metadatum]
                             });
@@ -1254,6 +1244,12 @@ export default {
 
                 this.isLoading = false;
             });
+        },
+        hasErrorsOnForm(hasErrors) {
+            if (hasErrors)
+                this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
+            else
+                this.formErrorMessage = '';
         },
         onDiscard() {
             if (!this.$adminOptions.itemEditionMode && !this.$adminOptions.mobileAppMode)
@@ -1271,13 +1267,13 @@ export default {
             this.isLoading = true;
 
             // Updates Collection BreadCrumb
-            this.$root.$emit('onCollectionBreadCrumbUpdate', [
+            this.$emitter.emit('onCollectionBreadCrumbUpdate', [
                 { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
                 { path: '', label: this.$i18n.get('new') }
             ]);
 
             // Clear errors so we don't have them duplicated from api
-            eventBusItemMetadata.errors = [];
+            this.errors = [];
 
             // Creates draft Item
             this.form.comment_status = this.form.comment_status == 'open' ? 'open' : 'closed';
@@ -1306,7 +1302,7 @@ export default {
 
                 // If a parameter was passed with a suggestion of item title, also send a patch to item metadata
                 if (this.$route.query.newitemtitle) {
-                    eventBusItemMetadata.$emit('input', {
+                    this.updateItemMetadataValue({
                         itemId: this.itemId,
                         metadatumId: this.$route.query.newmetadatumid,
                         values: this.$route.query.newitemtitle,
@@ -1350,8 +1346,8 @@ export default {
                         const currentItemMetadatum = metadata.find(anItemMetadatum => anItemMetadatum.metadatum.id == this.conditionalSections[conditionalSectionId].metadatumId);
                         if (currentItemMetadatum) {
                             const itemMetadatumValues = Array.isArray(currentItemMetadatum.value) ? currentItemMetadatum.value : [ currentItemMetadatum.value ];
-                            const conditionalValues = Array.isArray(eventBusItemMetadata.conditionalSections[conditionalSectionId].metadatumValues) ? eventBusItemMetadata.conditionalSections[conditionalSectionId].metadatumValues : [eventBusItemMetadata.conditionalSections[conditionalSectionId].metadatumValues];
-                            eventBusItemMetadata.conditionalSections[conditionalSectionId].hide = Array.isArray(itemMetadatumValues) ? itemMetadatumValues.every(aValue => conditionalValues.indexOf(aValue['id'] ? aValue['id'] : aValue) < 0) : conditionalValues.indexOf(itemMetadatumValues) < 0;
+                            const conditionalValues = Array.isArray(this.conditionalSections[conditionalSectionId].metadatumValues) ? this.conditionalSections[conditionalSectionId].metadatumValues : [this.conditionalSections[conditionalSectionId].metadatumValues];
+                            this.conditionalSections[conditionalSectionId].hide = Array.isArray(itemMetadatumValues) ? itemMetadatumValues.every(aValue => conditionalValues.indexOf(aValue['id'] ? aValue['id'] : aValue) < 0) : conditionalValues.indexOf(itemMetadatumValues) < 0;
                         }
                     }
 
@@ -1405,7 +1401,7 @@ export default {
                 .catch((errors) => {
                     for (let error of errors.errors) {
                         for (let metadatum of Object.keys(error)){
-                            eventBusItemMetadata.errors.push({ 
+                            this.errors.push({ 
                                 metadatum_id: metadatum, 
                                 errors: error[metadatum]
                             });
@@ -1488,7 +1484,7 @@ export default {
                 .catch((errors) => {
                     for (let error of errors.errors) {
                         for (let metadatum of Object.keys(error)){
-                            eventBusItemMetadata.errors.push({ 
+                            this.errors.push({ 
                                 metadatum_id: metadatum, 
                                 errors: error[metadatum]
                             });
@@ -1516,7 +1512,7 @@ export default {
             .catch((errors) => {
                 for (let error of errors.errors) {
                     for (let metadatum of Object.keys(error)){
-                        eventBusItemMetadata.errors.push({
+                        this.errors.push({
                             metadatum_id: metadatum,
                             errors: error[metadatum]
                         });
@@ -1591,7 +1587,7 @@ export default {
                         .catch((errors) => {
                             for (let error of errors.errors) {
                                 for (let metadatum of Object.keys(error)){
-                                    eventBusItemMetadata.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                                    this.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                                 }
                             }
                             this.formErrorMessage = errors.error_message;
@@ -1657,18 +1653,18 @@ export default {
                 this.metadataCollapses[i] = this.collapseAll;
             
             for (let i = 0; i < this.metadataSectionCollapses.length; i++)
-                this.$set(this.metadataSectionCollapses, i, this.collapseAll);
+                Object.assign(this.metadataSectionCollapses, { [i]: this.collapseAll });
 
         },
         onChangeCollapse(event, index) {
             if (event && !this.metadataCollapses[index] && this.itemMetadata[index].metadatum && this.itemMetadata[index].metadatum['metadata_type'] === "Tainacan\\Metadata_Types\\GeoCoordinate")
-                eventBusItemMetadata.$emit('itemEditionFormResize');
+                this.$emitter.emit('itemEditionFormResize');
                 
             this.metadataCollapses.splice(index, 1, event);
         },
         toggleMetadataSectionCollapse(sectionIndex) {
             if (!this.isMetadataNavigation) 
-                this.$set(this.metadataSectionCollapses, sectionIndex, (this.errorMessage ? true : !this.metadataSectionCollapses[sectionIndex]));
+                Object.assign( this.metadataSectionCollapses, { [sectionIndex]: (this.formErrorMessage ? true : !this.metadataSectionCollapses[sectionIndex]) });
         },
         onDeletePermanently() {
             this.$buefy.modal.open({
@@ -1709,14 +1705,14 @@ export default {
 
                     // Updates Collection BreadCrumb
                     if (this.isOnSequenceEdit) {
-                        this.$root.$emit('onCollectionBreadCrumbUpdate', [
+                        this.$emitter.emit('onCollectionBreadCrumbUpdate', [
                             { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
                             { path: '', label: this.$i18n.get('sequence') },
                             { path: '', label: this.item.title },
                             { path: '', label: this.$i18n.get('edit') }
                         ]);
                     } else {
-                        this.$root.$emit('onCollectionBreadCrumbUpdate', [
+                        this.$emitter.emit('onCollectionBreadCrumbUpdate', [
                             { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
                             { path: this.$routerHelper.getItemPath(this.form.collectionId, this.itemId), label: this.item.title },
                             { path: '', label: this.$i18n.get('edit') }
@@ -1724,7 +1720,7 @@ export default {
                     }
 
                     // Fills hook forms with it's real values
-                    this.$nextTick()
+                    nextTick()
                         .then(() => {
                             this.updateExtraFormData(this.item);
                         });
@@ -1801,8 +1797,8 @@ export default {
                 this.openMetadataNameFilter = false;
         },
         handleWindowResize: _.debounce( function() {
-            this.$nextTick(() => {
-                eventBusItemMetadata.$emit('itemEditionFormResize');
+            nextTick(() => {
+                this.$emitter.emit('itemEditionFormResize');
                 if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
                     this.isMobileScreen = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
             });
@@ -1812,14 +1808,14 @@ export default {
             const isPreviouslyFocusedOnCompoundMetadatum = previouslyFocusedMetadatum.metadatum && previouslyFocusedMetadatum.metadatum.metadata_type === 'Tainacan\\Metadata_Types\\Compound';
             
             if (isPreviouslyFocusedOnCompoundMetadatum || this.isCurrentlyFocusedOnCompoundMetadatum)
-                eventBusItemMetadata.$emit('focusPreviousChildMetadatum');
+                this.$emitter.emit('focusPreviousChildMetadatum');
                 
             if ( !this.isCurrentlyFocusedOnCompoundMetadatum || (this.isCurrentlyFocusedOnCompoundMetadatum && this.isOnFirstMetadatumOfCompoundNavigation) )
                 this.setMetadatumFocus({ index: this.focusedMetadatum - 1, scrollIntoView: true });
         },
         focusNextMetadatum() {
             if (this.isCurrentlyFocusedOnCompoundMetadatum && !this.isOnLastMetadatumOfCompoundNavigation)
-                eventBusItemMetadata.$emit('focusNextChildMetadatum');
+                this.$emitter.emit('focusNextChildMetadatum');
 
             if ( !this.isCurrentlyFocusedOnCompoundMetadatum || (this.isCurrentlyFocusedOnCompoundMetadatum && this.isOnLastMetadatumOfCompoundNavigation) )
                 this.setMetadatumFocus({ index: this.focusedMetadatum + 1, scrollIntoView: true });  
@@ -1879,7 +1875,7 @@ export default {
         },
         getMetadatumOrderInSection(sectionIndex, metadatum) {
 
-            if ( !Array.isArray(this.collection['metadata_section_order']) || !this.collection['metadata_section_order'][sectionIndex] || !Array.isArray(this.collection['metadata_section_order'][sectionIndex]['metadata_order']) )
+            if ( !this.collection || !Array.isArray(this.collection['metadata_section_order']) || !this.collection['metadata_section_order'][sectionIndex] || !Array.isArray(this.collection['metadata_section_order'][sectionIndex]['metadata_order']) )
                 return -1;
 
             let enabledMetadata = [];
@@ -2153,7 +2149,7 @@ export default {
             .metadata-navigation {
                 margin-right: auto;
             }
-            .metadata-navigation /deep/ .button {
+            .metadata-navigation :deep(.button) {
                 border-radius: 0 !important;
                 margin-left: 0;
                 min-height: 2.25em;

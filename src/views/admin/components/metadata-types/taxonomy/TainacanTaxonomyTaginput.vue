@@ -1,17 +1,15 @@
 <template>
     <b-taginput
+            :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
+            v-model="selected"
             expanded
             :disabled="disabled"
-            :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
             size="is-small"
             icon="magnify"
-            @add="emitAdd"
-            @remove="emitRemove"
-            v-model="selected"
             :data="options"
-            :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"            
+            :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
             field="label"
-            :remove-on-keys="[]"
+            :remove-on-keys="[]"            
             :dropdown-position="isLastMetadatum ? 'top' :'auto'"
             attached
             ellipsis
@@ -20,13 +18,15 @@
             :loading="isFetching"
             :class="{ 'has-selected': selected != undefined && selected != [] }"
             autocomplete
-            @typing="search"
             check-infinite-scroll
-            @infinite-scroll="searchMore"
             :has-counter="false"
             :append-to-body="!itemMetadatum.item"
-            :open-on-focus="false">
-        <template slot-scope="props">
+            :open-on-focus="false"
+            @add="emitAdd"
+            @remove="emitRemove"
+            @typing="search"
+            @infinite-scroll="searchMore">
+        <template #default="props">
             <div class="media">
                 <div class="media-content">
                     {{ props.option.label }}
@@ -35,13 +35,13 @@
         </template>
         <template 
                 v-if="!isFetching && options.length <= 0 && searchName.length > 0"
-                slot="empty">
+                #empty>
             {{ $i18n.get('info_no_terms_found') }}
         </template>
-        <template 
+        <template
                 v-if="allowNew && !isFetching && searchName.length > 0"
-                slot="footer">
-                <a @click="$emit('showAddNewTerm', { name: searchName })">
+                #footer>
+            <a @click="$emit('show-add-new-term', { name: searchName })">
                 {{ $i18n.get('label_create_new_term') + ' "' + searchName + '"' }}
             </a>
         </template>
@@ -61,6 +61,10 @@
             maxtags: '',
             isLastMetadatum: false
         },
+        emits: [
+            'update:value',
+            'show-add-new-term'
+        ],
         data() {
             return {
                 selected: [],
@@ -168,7 +172,7 @@
                     for (let term of val)
                         results.push( term.value );
                 
-                    this.$emit('input', results);
+                    this.$emit('update:value', results);
                 }
             },
             emitRemove(){
@@ -178,7 +182,7 @@
                 for (let term of val)
                     results.push(term.value);
 
-                this.$emit('input', results);
+                this.$emit('update:value', results);
             }
         }
     }

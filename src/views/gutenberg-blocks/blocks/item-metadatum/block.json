@@ -7,17 +7,7 @@
     "keywords": [ "item", "metadatum", "field", "value" ],
     "description": "A single item metadatum, including a label and its value.",
     "textdomain": "tainacan",
-    "example": {
-        "attributes": {
-            "content": "preview"
-        }
-    },
     "attributes": {
-        "content": {
-            "type": "array",
-            "source": "query",
-            "selector": "div"
-        },
         "dataSource": {
             "type": "string",
             "default": "selection"

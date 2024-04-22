@@ -5,15 +5,15 @@
                 :bread-crumb-items="[
                     { path: $routerHelper.getAvailableImportersPath(), label: $i18n.get('importers') },
                     { path: '', label: importerType != undefined ? (importerName != undefined ? importerName :importerType) : $i18n.get('title_importer_page') }
-                ]"/>
+                ]" />
         <form   
-                @click="formErrorMessage = ''"
+                v-if="importer != undefined && importer != null"
                 class="tainacan-form" 
                 label-width="120px"
-                v-if="importer != undefined && importer != null">
+                @click="formErrorMessage = ''">
             <div 
-                        v-if="importer.manual_collection || importer.accepts.file || importer.accepts.url"
-                        class="columns">
+                    v-if="importer.manual_collection || importer.accepts.file || importer.accepts.url"
+                    class="columns">
 
                 <div class="column">
 
@@ -25,7 +25,7 @@
                         <help-button 
                                 :title="$i18n.get('label_source_file')" 
                                 :message="$i18n.get('info_source_file_upload')"
-                                extra-classes="tainacan-repository-tooltip"/>
+                                extra-classes="tainacan-repository-tooltip" />
                         <br>
                         <b-upload
                                 v-if="importer.tmp_file == undefined && (importerFile == undefined || importerFile == null || importerFile == '')" 
@@ -36,7 +36,7 @@
                                 <div class="content has-text-centered">
                                     <p>
                                         <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-upload"/>
+                                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-upload" />
                                         </span>
                                     </p>
                                     <p>{{ $i18n.get('instruction_drop_file_or_click_to_upload') }}</p>
@@ -44,8 +44,8 @@
                             </section>
                         </b-upload>
                         <div 
-                                class="control selected-source-file"
-                                v-if="importerFile != undefined">
+                                v-if="importerFile != undefined"
+                                class="control selected-source-file">
                             <span>{{ (importerFile.length != undefined && importerFile.length > 0 ) ? importerFile[0].name : importerFile.name }}</span>
                             <a 
                                     target="_blank"
@@ -58,13 +58,13 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         }"
                                         class="icon">
-                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close"/>
+                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close" />
                                 </span>
                             </a>
                         </div>
                         <div 
-                                class="control selected-source-file"
-                                v-if="importerFile == undefined && importer.tmp_file">
+                                v-if="importerFile == undefined && importer.tmp_file"
+                                class="control selected-source-file">
                             <p>{{ $i18n.get('label_select_file') + ': ' + importer.tmp_file }}</p>
                         </div>
                     </b-field>
@@ -77,10 +77,10 @@
                         <help-button 
                                 :title="$i18n.get('label_url_source_link')" 
                                 :message="$i18n.get('info_url_source_link_helper')"
-                                extra-classes="tainacan-repository-tooltip"/>
+                                extra-classes="tainacan-repository-tooltip" />
                         <b-input
                                 id="tainacan-url-link-source"
-                                v-model="url"/>  
+                                v-model="url" />  
                     </b-field>
                 </div>
 
@@ -103,16 +103,16 @@
                         <help-button 
                                 :title="$i18n.get('label_target_collection')" 
                                 :message="$i18n.get('info_target_collection_helper')"
-                                extra-classes="tainacan-repository-tooltip"/>
+                                extra-classes="tainacan-repository-tooltip" />
                         <br>
                         <div class="is-inline">
                             <b-select
-                                    expanded
                                     id="tainacan-select-target-collection"
-                                    :value="collectionId"
-                                    @input="onSelectCollection($event)"
+                                    expanded
+                                    :model-value="collectionId"
                                     :loading="isFetchingCollections"
-                                    :placeholder="$i18n.get('instruction_select_a_target_collection')">
+                                    :placeholder="$i18n.get('instruction_select_a_target_collection')"
+                                    @update:model-value="onSelectCollection($event)">
                                 <option
                                         v-for="collection of collections"
                                         :key="collection.id"
@@ -121,12 +121,11 @@
                             </b-select>
                             <router-link
                                     v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
-                                    tag="a" 
                                     style="font-size: 0.875em;"
                                     class="add-link"     
                                     :to="{ path: $routerHelper.getNewCollectionPath(), query: { fromImporter: true }}">
                                 <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-add"/>
+                                    <i class="tainacan-icon tainacan-icon-add" />
                                 </span>
                                 {{ $i18n.get('new_blank_collection') }}
                             </router-link>
@@ -141,7 +140,7 @@
             <div v-if="importer.options_form != undefined && importer.options_form != null && importer.options_form != ''">
                 <!-- Importer custom options -->
                 <form id="importerOptionsForm">
-                    <div v-html="importer.options_form"/>
+                    <div v-html="importer.options_form" />
                 </form>
             </div>
 
@@ -159,42 +158,42 @@
                         v-if="!importer.manual_mapping"
                         class="control">
                     <button
+                            id="button-submit-importer-creation"
                             :disabled="
-                                    (formErrorMessage != undefined && formErrorMessage != '') ||
+                                (formErrorMessage != undefined && formErrorMessage != '') ||
                                     sessionId == undefined || 
                                     importer == undefined || 
                                     (importer.manual_collection && collectionId == undefined) ||
                                     (importer.accepts.file && !importer.accepts.url && !importerFile) || 
                                     (!importer.accepts.file && importer.accepts.url && !url) ||
                                     (importer.accepts.file && importer.accepts.url && !importerFile && !url)"
-                            id="button-submit-importer-creation"
-                            @click.prevent="onFinishImporter()"
                             :class="{ 'is-loading': isLoadingRun, 'is-success': !isLoadingRun }"
-                            class="button">{{ $i18n.get('run') }}</button>
+                            class="button"
+                            @click.prevent="onFinishImporter()">{{ $i18n.get('run') }}</button>
                 </div>
                 <div 
                         v-if="importer.manual_mapping"
                         class="control">
                     <button
+                            id="button-submit-collection-creation"
                             :disabled="
-                                    (formErrorMessage != undefined && formErrorMessage != '') ||
+                                (formErrorMessage != undefined && formErrorMessage != '') ||
                                     sessionId == undefined || 
                                     importer == undefined || 
                                     (importer.manual_collection && collectionId == undefined) ||
                                     (importer.accepts.file && !importer.accepts.url && !importerFile) || 
                                     (!importer.accepts.file && importer.accepts.url && !url) ||
                                     (importer.accepts.file && importer.accepts.url && !importerFile && !url)"
-                            id="button-submit-collection-creation"
-                            @click.prevent="onFinishImporter()"
                             :class="{ 'is-loading': isLoadingUpload, 'is-success': !isLoadingUpload }"
-                            class="button">{{ $i18n.get('next') }}</button>
+                            class="button"
+                            @click.prevent="onFinishImporter()">{{ $i18n.get('next') }}</button>
                 </div>
             </div>
         </form>
         
         <b-loading 
-                :active.sync="isLoading" 
-                :can-cancel="false"/>
+                v-model="isLoading" 
+                :can-cancel="false" />
     </div>
 </template>
 
@@ -462,7 +461,7 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    /deep/ .columns {
+    :deep(.columns) {
         padding-left: var(--tainacan-one-column);
         padding-right: var(--tainacan-one-column);
     }

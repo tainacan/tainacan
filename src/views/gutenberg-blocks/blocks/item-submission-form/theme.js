@@ -1,11 +1,12 @@
 // Main imports
-import Vue from 'vue';
+import { createApp, h } from 'vue';
 import {
     Field,
     Numberinput,
     Switch,
     Tabs,
     Tag,
+    Icon,
     Modal,
     Checkbox,
     Collapse,
@@ -21,26 +22,27 @@ import {
     Taginput,
     Snackbar,
     Steps
-} from 'buefy';
+} from '@ntohq/buefy-next';
 import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
-import VueTheMask from 'vue-the-mask';
+import mitt from 'mitt';
+import getDataAttribute from '../../js/compatibility/tainacan-blocks-compat-data-attributes.js';
 
 // Metadata Types
-import Text from '../../../admin/components/metadata-types/text/Text.vue';
-import Textarea from '../../../admin/components/metadata-types/textarea/Textarea.vue';
-import Selectbox from '../../../admin/components/metadata-types/selectbox/Selectbox.vue';
-import Numeric from '../../../admin/components/metadata-types/numeric/Numeric.vue';
-import Date from '../../../admin/components/metadata-types/date/Date.vue';
-import Relationship from '../../../admin/components/metadata-types/relationship/Relationship.vue';
-import Taxonomy from '../../../admin/components/metadata-types/taxonomy/Taxonomy.vue';
-import Compound from '../../../admin/components/metadata-types/compound/Compound.vue';
-import User from '../../../admin/components/metadata-types/user/User.vue';
-import GeoCoordinate from '../../../admin/components/metadata-types/geocoordinate/GeoCoordinate.vue';
+import TainacanText from '../../../admin/components/metadata-types/text/TainacanText.vue';
+import TainacanTextarea from '../../../admin/components/metadata-types/textarea/TainacanTextarea.vue';
+import TainacanSelectbox from '../../../admin/components/metadata-types/selectbox/TainacanSelectbox.vue';
+import TainacanNumeric from '../../../admin/components/metadata-types/numeric/TainacanNumeric.vue';
+import TainacanDate from '../../../admin/components/metadata-types/date/TainacanDate.vue';
+import TainacanRelationship from '../../../admin/components/metadata-types/relationship/TainacanRelationship.vue';
+import TainacanTaxonomy from '../../../admin/components/metadata-types/taxonomy/TainacanTaxonomy.vue';
+import TainacanCompound from '../../../admin/components/metadata-types/compound/TainacanCompound.vue';
+import TainacanUser from '../../../admin/components/metadata-types/user/TainacanUser.vue';
+import TainacanGeoCoordinate from '../../../admin/components/metadata-types/geocoordinate/TainacanGeoCoordinate.vue';
+import TainacanUrl from '../../../admin/components/metadata-types/url/TainacanUrl.vue';
 
 // Main components
-import ItemSubmissionForm from './item-submission/item-submission-form.vue';
-import ItemSubmission from './theme.vue';
+import ItemSubmissionForm from './theme.vue';
 
 // Remaining imports
 import TainacanFormItem from '../../../admin/components/metadata-types/tainacan-form-item.vue';
@@ -50,11 +52,12 @@ import store from '../../../admin/js/store/store';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, StatusHelperPlugin, CommentsStatusHelperPlugin, AdminOptionsHelperPlugin } from '../../../admin/js/admin-utilities';
 import { ThumbnailHelperPlugin } from '../../../admin/js/utilities';
 
+const isParameterTrue = function(value) {
+    return (value == true || value == 'true' || value == '1' || value == 1) ? true : false;
+}
+
 export default (element) => {
     function renderItemSubmissionForm() {
-
-        // Vue Dev Tools!
-        Vue.config.devtools = TAINACAN_ENV === 'development';
 
         // Gets the div with the content of the block
         let blockElement = element ? element : document.getElementById('tainacan-item-submission-form');
@@ -62,34 +65,77 @@ export default (element) => {
         // Mount only if the div exists
         if ( blockElement && blockElement.classList && !blockElement.classList.contains('has-mounted') ) {
 
-            /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
+            const VueItemSubmission = createApp({
+                created() {
+                    blockElement.classList.add('tainacan-item-submission-form'); // This used to be on the component, but as Vue now do not renders the component inside a div...
+                },
+                mounted() {
+                    blockElement.classList.add('has-mounted');
+                },
+                render: () => h(ItemSubmissionForm, {
+                    collectionId: getDataAttribute(blockElement, 'collection-id'),
+                    hideFileModalButton: isParameterTrue(getDataAttribute(blockElement,'hide-file-modal-button')),
+                    hideTextModalButton: isParameterTrue(getDataAttribute(blockElement,'hide-text-modal-button')),
+                    hideLinkModalButton: isParameterTrue(getDataAttribute(blockElement,'hide-link-modal-button')),
+                    hideThumbnailSection: isParameterTrue(getDataAttribute(blockElement,'hide-thumbnail-section')),
+                    hideAttachmentsSection: isParameterTrue(getDataAttribute(blockElement,'hide-attachments-section')),
+                    showAllowCommentsSection: isParameterTrue(getDataAttribute(blockElement,'show-allow-comments-section')),
+                    hideCollapses: isParameterTrue(getDataAttribute(blockElement,'hide-collapses')),
+                    hideHelpButtons: isParameterTrue(getDataAttribute(blockElement,'hide-help-buttons')),
+                    hideMetadataTypes: isParameterTrue(getDataAttribute(blockElement,'hide-metadata-types')),
+                    helpInfoBellowLabel: isParameterTrue(getDataAttribute(blockElement,'help-info-bellow-label')),
+                    isLayoutSteps: isParameterTrue(getDataAttribute(blockElement,'is-layout-steps')),
+                    documentSectionLabel: getDataAttribute(blockElement,'document-section-label'),
+                    thumbnailSectionLabel: getDataAttribute(blockElement,'thumbnail-section-label'),
+                    attachmentsSectionLabel: getDataAttribute(blockElement,'attachments-section-label'),
+                    metadataSectionLabel: getDataAttribute(blockElement,'metadata-section-label'),
+                    sentFormHeading: getDataAttribute(blockElement,'sent-form-heading'),
+                    sentFormMessage: getDataAttribute(blockElement,'sent-form-message'),
+                    itemLinkButtonLabel: getDataAttribute(blockElement,'item-link-button-label'),
+                    showItemLinkButton: isParameterTrue(getDataAttribute(blockElement,'show-item-link-button')),
+                    showTermsAgreementCheckbox: isParameterTrue(getDataAttribute(blockElement,'show-terms-agreement-checkbox')),
+                    termsAgreementMessage: getDataAttribute(blockElement,'terms-agreement-message'),
+                    enabledMetadata: (() => {
+                        try {
+                            return JSON.parse(getDataAttribute(blockElement,'enabled-metadata'));
+                        } catch {
+                            return {};
+                        }
+                    })(),
+                })
+            });
+
+            VueItemSubmission.use(store);
+
+            /* Registers Extra VueItemSubmission Plugins passed to the window.tainacan_extra_plugins  */
             if (typeof window.tainacan_extra_plugins != "undefined") {
                 for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins))
-                    Vue.use(extraVuePluginObject);
+                    VueItemSubmission.use(extraVuePluginObject);
             }
 
             // Configure and Register Plugins
-            Vue.use(Field);
-            Vue.use(Numberinput);
-            Vue.use(Switch);
-            Vue.use(Tabs);
-            Vue.use(Tag);
-            Vue.use(Checkbox);
-            Vue.use(Radio);
-            Vue.use(Button);
-            Vue.use(Select);
-            Vue.use(Loading);
-            Vue.use(Dropdown);
-            Vue.use(Datepicker);
-            Vue.use(Upload);
-            Vue.use(Taginput);
-            Vue.use(Autocomplete);
-            Vue.use(Collapse);
-            Vue.use(Snackbar);
-            Vue.use(Modal);
-            Vue.use(Input);
-            Vue.use(Steps);
-            Vue.use(VTooltip, {
+            VueItemSubmission.use(Field);
+            VueItemSubmission.use(Numberinput);
+            VueItemSubmission.use(Switch);
+            VueItemSubmission.use(Tabs);
+            VueItemSubmission.use(Tag);
+            VueItemSubmission.use(Icon);
+            VueItemSubmission.use(Checkbox);
+            VueItemSubmission.use(Radio);
+            VueItemSubmission.use(Button);
+            VueItemSubmission.use(Select);
+            VueItemSubmission.use(Loading);
+            VueItemSubmission.use(Dropdown);
+            VueItemSubmission.use(Datepicker);
+            VueItemSubmission.use(Upload);
+            VueItemSubmission.use(Taginput);
+            VueItemSubmission.use(Autocomplete);
+            VueItemSubmission.use(Collapse);
+            VueItemSubmission.use(Snackbar);
+            VueItemSubmission.use(Modal);
+            VueItemSubmission.use(Input);
+            VueItemSubmission.use(Steps);
+            VueItemSubmission.use(VTooltip, {
                 popperTriggers: ['hover'],
                 themes: {
                     'taianacan-tooltip': {
@@ -106,141 +152,45 @@ export default (element) => {
                     }
                 }
             });
-            Vue.use(I18NPlugin);
-            Vue.use(UserPrefsPlugin);
-            Vue.use(StatusHelperPlugin);
-            Vue.use(RouterHelperPlugin);
-            Vue.use(ConsolePlugin, {visual: false});
-            Vue.use(VueTheMask);
-            Vue.use(CommentsStatusHelperPlugin);
-            Vue.use(ThumbnailHelperPlugin);
-            Vue.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
+            VueItemSubmission.use(I18NPlugin);
+            VueItemSubmission.use(UserPrefsPlugin);
+            VueItemSubmission.use(StatusHelperPlugin);
+            VueItemSubmission.use(RouterHelperPlugin);
+            VueItemSubmission.use(ConsolePlugin, { visual: false });
+            VueItemSubmission.use(CommentsStatusHelperPlugin);
+            VueItemSubmission.use(ThumbnailHelperPlugin);
+            VueItemSubmission.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
 
-            /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
-            if (typeof window.tainacan_extra_components != "undefined") {
-                for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components)) {
-                    Vue.component(extraVueComponentName, extraVueComponentObject);
+            /* Registers Extra VueItemSubmission Components passed to the window.tainacan_extra_components  */
+            if ( typeof window.tainacan_extra_components != "undefined" ) {
+                for ( let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components) ) {
+                    VueItemSubmission.component(extraVueComponentName, extraVueComponentObject);
                 }
             }
 
             /* Metadata */
-            Vue.component('tainacan-text', Text);
-            Vue.component('tainacan-textarea', Textarea);
-            Vue.component('tainacan-selectbox', Selectbox);
-            Vue.component('tainacan-numeric', Numeric);
-            Vue.component('tainacan-date', Date);
-            Vue.component('tainacan-relationship', Relationship);
-            Vue.component('tainacan-taxonomy', Taxonomy);
-            Vue.component('tainacan-compound', Compound);
-            Vue.component('tainacan-user', User);
-            Vue.component('tainacan-geocoordinate', GeoCoordinate);
-
-            /* Main page component */
-            Vue.component('item-submission-form', ItemSubmissionForm);
-            Vue.component('item-submission', ItemSubmission);
+            VueItemSubmission.component('tainacan-text', TainacanText);
+            VueItemSubmission.component('tainacan-textarea', TainacanTextarea);
+            VueItemSubmission.component('tainacan-selectbox', TainacanSelectbox);
+            VueItemSubmission.component('tainacan-numeric', TainacanNumeric);
+            VueItemSubmission.component('tainacan-date', TainacanDate);
+            VueItemSubmission.component('tainacan-relationship', TainacanRelationship);
+            VueItemSubmission.component('tainacan-taxonomy', TainacanTaxonomy);
+            VueItemSubmission.component('tainacan-compound', TainacanCompound);
+            VueItemSubmission.component('tainacan-user', TainacanUser);
+            VueItemSubmission.component('tainacan-geocoordinate', TainacanGeoCoordinate);
+            VueItemSubmission.component('tainacan-url', TainacanUrl);
 
             /* Others */
-            Vue.component('tainacan-form-item', TainacanFormItem);
-            Vue.component('term-creation-panel', TermCreationPanel);
-            Vue.component('help-button', HelpButton);
-                
-            const VueItemSubmission = new Vue({
-                store,
-                data: {
-                    collectionId: '',
-                    hideFileModalButton: false,
-                    hideTextModalButton: false,
-                    hideLinkModalButton: false,
-                    hideThumbnailSection: false,
-                    hideAttachmentsSection: false,
-                    showAllowCommentsSection: false,
-                    hideHelpButtons: false,
-                    hideMetadataTypes: false,
-                    hideCollapses: false,
-                    enabledMetadata: [],
-                    sentFormHeading: '',
-                    sentFormMessage: '',
-                    documentSectionLabel: '',
-                    thumbnailSectionLabel: '',
-                    attachmentsSectionLabel: '',
-                    metadataSectionLabel: '',
-                    showItemLinkButton: false,
-                    itemLinkButtonLabel: '',
-                    helpInfoBellowLabel: false,
-                    showItemLinkButton: false,
-                    termsAgreementMessage: '',
-                    isLayoutSteps: false
-                },
-                beforeMount () {
-                    // Collection source settings
-                    if (this.$el.attributes['collection-id'] != undefined)
-                        this.collectionId = this.$el.attributes['collection-id'].value;
+            VueItemSubmission.component('tainacan-form-item', TainacanFormItem);
+            VueItemSubmission.component('term-creation-panel', TermCreationPanel);
+            VueItemSubmission.component('help-button', HelpButton);
 
-                    // Elements shown on form
-                    if (this.$el.attributes['hide-file-modal-button'] != undefined)
-                        this.hideFileModalButton = this.isParameterTrue('hide-file-modal-button');
-                    if (this.$el.attributes['hide-text-modal-button'] != undefined)
-                        this.hideTextModalButton = this.isParameterTrue('hide-text-modal-button');
-                    if (this.$el.attributes['hide-link-modal-button'] != undefined)
-                        this.hideLinkModalButton = this.isParameterTrue('hide-link-modal-button');
-                    if (this.$el.attributes['hide-thumbnail-section'] != undefined)
-                        this.hideThumbnailSection = this.isParameterTrue('hide-thumbnail-section');
-                    if (this.$el.attributes['hide-attachments-section'] != undefined)
-                        this.hideAttachmentsSection = this.isParameterTrue('hide-attachments-section');
-                    if (this.$el.attributes['show-allow-comments-section'] != undefined)
-                        this.showAllowCommentsSection = this.isParameterTrue('show-allow-comments-section');
-                    if (this.$el.attributes['hide-collapses'] != undefined)
-                        this.hideCollapses = this.isParameterTrue('hide-collapses');
-                    if (this.$el.attributes['hide-help-buttons'] != undefined)
-                        this.hideHelpButtons = this.isParameterTrue('hide-help-buttons');
-                    if (this.$el.attributes['hide-metadata-types'] != undefined)
-                        this.hideMetadataTypes = this.isParameterTrue('hide-metadata-types');
-                    if (this.$el.attributes['help-info-bellow-label'] != undefined)
-                        this.helpInfoBellowLabel = this.isParameterTrue('help-info-bellow-label');
-                    if (this.$el.attributes['is-layout-steps'] != undefined)
-                        this.isLayoutSteps = this.isParameterTrue('is-layout-steps');
+            // Global emitter
+            const emitter = mitt();
+            VueItemSubmission.config.globalProperties.$emitter = emitter;
 
-                    // Form sections labels
-                    if (this.$el.attributes['document-section-label'] != undefined)
-                        this.documentSectionLabel = this.$el.attributes['document-section-label'].value;
-                    if (this.$el.attributes['thumbnail-section-label'] != undefined)
-                        this.thumbnailSectionLabel = this.$el.attributes['thumbnail-section-label'].value;
-                    if (this.$el.attributes['attachments-section-label'] != undefined)
-                        this.attachmentsSectionLabel = this.$el.attributes['attachments-section-label'].value;
-                    if (this.$el.attributes['metadata-section-label'] != undefined)
-                        this.metadataSectionLabel = this.$el.attributes['metadata-section-label'].value;
-
-                    // Form submission feedback messages
-                    if (this.$el.attributes['sent-form-heading'] != undefined)
-                        this.sentFormHeading = this.$el.attributes['sent-form-heading'].value;
-                    if (this.$el.attributes['sent-form-message'] != undefined)
-                        this.sentFormMessage = this.$el.attributes['sent-form-message'].value;
-                    if (this.$el.attributes['item-link-button-label'] != undefined)
-                        this.itemLinkButtonLabel = this.$el.attributes['item-link-button-label'].value;
-                    if (this.$el.attributes['show-item-link-button'] != undefined)
-                        this.showItemLinkButton = this.isParameterTrue('show-item-link-button');
-                    
-                    /* Terms agreements confirmation checkbox */
-                    if (this.$el.attributes['show-terms-agreement-checkbox'] != undefined)
-                        this.showTermsAgreementCheckbox = this.isParameterTrue('show-terms-agreement-checkbox');
-                    if (this.$el.attributes['terms-agreement-message'] != undefined)
-                        this.termsAgreementMessage = this.$el.attributes['terms-agreement-message'].value;
-    
-                    // List of metadata
-                    if (this.$el.attributes['enabled-metadata'] != undefined && this.$el.attributes['enabled-metadata'].value)
-                        this.enabledMetadata = this.$el.attributes['enabled-metadata'].value.split(',');
-
-                },
-                methods: {
-                    isParameterTrue(parameter) {
-                        const value = this.$el.attributes[parameter].value;
-                        return (value == true || value == 'true' || value == '1' || value == 1) ? true : false;
-                    }
-                },
-                render: h => h(ItemSubmission)
-            });
-
-            VueItemSubmission.$mount('#tainacan-item-submission-form');
+            VueItemSubmission.mount('#' + blockElement.id);
 
             // Initialize Ponyfill for Custom CSS properties
             cssVars({

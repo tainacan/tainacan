@@ -7,17 +7,7 @@
     "keywords": [ "item", "metadata", "section", "regions", "fields" ],
     "description": "A single metadata section, including its label and metadata whitin it.",
     "textdomain": "tainacan",
-    "example": {
-        "attributes": {
-            "content": "preview"
-        }
-    },
     "attributes": {
-        "content": {
-            "type": "array",
-            "source": "query",
-            "selector": "div"
-        },
         "dataSource": {
             "type": "string",
             "default": "selection"

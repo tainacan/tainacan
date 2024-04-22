@@ -4,12 +4,14 @@
             class="block">
         <b-select
                 v-if="!isLoadingOptions"
-                :value="selected"
+                :model-value="selected"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                @input="($event) => { resetPage(); onSelect($event) }"
                 :placeholder="$i18n.get('label_selectbox_init')"
-                expanded>
-            <option value="">{{ $i18n.get('label_selectbox_init') }}...</option>
+                expanded
+                @update:model-value="($event) => { resetPage(); onSelect($event) }">
+            <option value="">
+                {{ $i18n.get('label_selectbox_init') }}...
+            </option>
             <option
                     v-for="(option, index) in options"
                     :key="index"
@@ -30,6 +32,10 @@
 
     export default {
         mixins: [filterTypeMixin, dynamicFilterTypeMixin],
+        emits: [
+            'input',
+            'update-parent-collapse'
+        ],
         data(){
             return {
                 options: [],
@@ -42,7 +48,8 @@
                     if (this.isUsingElasticSearch)
                         this.loadOptions();
                 },
-                immediate: true
+                immediate: true,
+                deep: true
             }
         },
         mounted() {
@@ -50,10 +57,10 @@
                 this.loadOptions(); 
         },
         created() {
-            this.$eventBusSearch.$on('has-to-reload-facets', this.reloadOptions);
+            this.$eventBusSearchEmitter.on('hasToReloadFacets', this.reloadOptions);
         },
-        beforeDestroy() {
-            this.$eventBusSearch.$off('has-to-reload-facets', this.reloadOptions); 
+        beforeUnmount() {
+            this.$eventBusSearchEmitter.off('hasToReloadFacets', this.reloadOptions); 
         },
         methods: {
             reloadOptions(shouldReload) {
@@ -76,7 +83,7 @@
                         this.updateSelectedValues();
                         
                         if (res && res.data && res.data.values)
-                            this.$emit('updateParentCollapse', res.data.values.length > 0 );
+                            this.$emit('update-parent-collapse', res.data.values.length > 0 );
                     })
                     .catch( error => {
                         if (isCancel(error))

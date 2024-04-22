@@ -1,7 +1,7 @@
 <template>
     <span 
-            @mouseenter="loadMetadataElements"
-            class="tainacan-help-tooltip-trigger">
+            class="tainacan-help-tooltip-trigger"
+            @mouseenter="loadMetadataElements">
         <v-tooltip 
                 :popper-class="['tainacan-tooltip', 'tooltip', 'tainacan-helper-tooltip', 'is-danger']"
                 delay="{
@@ -16,10 +16,10 @@
             <template #popper>
                 <p><strong>{{ $i18n.get('instruction_click_error_to_go_to_metadata') }}</strong></p>
                 <ol>
-                    <template v-for="(error, index) of formErrors">
-                        <li 
-                                v-if="error.errors.length"
-                                :key="index">
+                    <template
+                            v-for="(error, index) of formErrors"
+                            :key="index">
+                        <li v-if="error.errors.length">
                             <a 
                                     v-if="['thumbnail', 'attachments', 'document'].includes(error.metadatum_id)"
                                     @click="metadataElements[error.metadatum_id].scrollIntoView({ behavior: 'smooth', block: 'center' })">
@@ -40,12 +40,12 @@
 </template>
 
 <script>
-import { VTooltip } from 'floating-vue'; 
+import { Tooltip } from 'floating-vue'; 
 export default {
     name: 'HelpButton',
-    components: [
-        VTooltip
-    ],
+    components: {
+        'v-tooltip': Tooltip
+    },
     props: {
         formErrors: Array
     },

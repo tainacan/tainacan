@@ -9,7 +9,7 @@ const { useSelect } = wp.data;
 import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
 import pick from 'lodash/pick';
 import TermsModal from '../terms-list/terms-modal.js';
-import tainacan from '../../js/axios.js';
+import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
@@ -89,7 +89,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                     id={ isNaN(term.id) ? term.id : 'term-id-' + term.id }
                     href={ term.url }>
                     { ( !showTermThumbnail && Array.isArray(termItems) ) ?
-                        <div class="term-items-grid">
+                        <div className="term-items-grid">
                             <img
                                 src={ termItems[0] ? thumbHelper.getSrc(termItems[0]['thumbnail'], 'tainacan-medium', termItems[0]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                 srcSet={ termItems[0] ? thumbHelper.getSrcSet(termItems[0]['thumbnail'], 'tainacan-medium', termItems[0]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
@@ -139,7 +139,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
         terms = [];
 
         let endpoint = '/taxonomy/' + taxonomyId + '/terms/?'+ qs.stringify({ hideempty: 0, include: selectedTerms.map((term) => { return term.id; }), fetch_preview_image_items: showTermThumbnail ? 0 : 3 }) + '&order=asc';
-        tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
+        tainacanApi.get(endpoint, { cancelToken: itemsRequestSource.token })
             .then(response => {
 
                 for (let term of response.data)
@@ -433,12 +433,12 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
             }
 
             { isLoading ?
-                <div class="spinner-container">
+                <div className="spinner-container">
                     <Spinner />
                 </div> :
                 <div>
                     { isSelected && terms.length ?
-                        <div class="preview-warning">{__('Warning: this is just a demonstration. To see the carousel in action, either preview or publish your post.', 'tainacan')}</div>
+                        <div className="preview-warning">{__('Warning: this is just a demonstration. To see the carousel in action, either preview or publish your post.', 'tainacan')}</div>
                         : null
                     }
                     {  terms.length ? (
@@ -454,7 +454,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                                 </ul>
                             </div>
                             <button
-                                    class="swiper-button-prev"
+                                    className="swiper-button-prev"
                                     slot="button-prev"
                                     style={{ cursor: 'not-allowed' }}>
                                 <svg
@@ -473,7 +473,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                                 </svg>
                             </button>
                             <button
-                                    class="swiper-button-next"
+                                    className="swiper-button-next"
                                     slot="button-next"
                                     style={{ cursor: 'not-allowed' }}>
                                 <svg

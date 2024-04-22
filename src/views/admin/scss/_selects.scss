@@ -30,9 +30,10 @@
         &:not(.is-danger):active {
             box-shadow: none !important;
             text-decoration: none !important;
-            border: 1px solid var(--tainacan-secondary) !important;
+            border-color: var(--tainacan-secondary) !important;
         }
-        &[disabled=disabled] {
+        &[disabled=disabled],
+        &:disabled {
             background: var(--tainacan-gray1) !important;
         }
         &:hover,
@@ -40,9 +41,13 @@
             color: var(--tainacan-input-color) !important;
         }
         &:hover {
-            border: 1px solid var(--tainacan-input-color) !important;
+            border-color: var(--tainacan-input-color) !important;
         }
-        
+        &.has-placeholder-selected,
+        &.has-placeholder-selected:hover,
+        &.has-placeholder-selected:focus {
+            color: var(--tainacan-info-color) !important;
+        }
     }
     &:not(.is-loading)::after {
         content: "arrowdown" !important;

@@ -9,9 +9,9 @@ const { __, _x, _n, _nx } = wp.i18n;
     _nx( '_nx_single', '_nx_plural', number, '_nx_context', 'my-domain' );
 **/
 export const I18NPlugin = {};
-I18NPlugin.install = function (Vue, options = {}) {
+I18NPlugin.install = function (app, options = {}) {
     
-    Vue.prototype.$i18n = {
+    app.config.globalProperties.$i18n = {
         get(key) {
             return __(key, 'tainacan');
         },

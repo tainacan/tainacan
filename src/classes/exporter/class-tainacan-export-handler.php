@@ -4,6 +4,14 @@ namespace Tainacan;
 
 class Export_Handler {
 	
+	/**
+	 * bg_exporter
+	 *
+	 * @var Background_Exporter
+	 * @access protected
+	 */
+	protected $bg_exporter;
+
 	private $registered_exporters = [];
 	
 	function __construct() {

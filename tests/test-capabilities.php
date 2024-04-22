@@ -13,9 +13,10 @@ use Tainacan\Entities\Collection;
 /**
  * @group permissions
  */
+#[\AllowDynamicProperties]
 class Capabilities extends TAINACAN_UnitTestCase {
 
-	function setUp() {
+	function setUp(): void {
 		parent::setUp();
 
 		/**
@@ -857,7 +858,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 	}
 
 	/**
-	 * @group collectionss
+	 * @group collections
 	 */
 	function test_manage_collection_can_edit_collection() {
 		global $current_user;

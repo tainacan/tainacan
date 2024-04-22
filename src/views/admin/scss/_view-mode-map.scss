@@ -8,7 +8,7 @@
     &.has-selected-item { 
         #tainacan-admin-view-mode-map,
         #tainacan-view-mode-map {
-            /deep/ .leaflet-active-area {
+            :deep(.leaflet-active-area) {
                 left: 310px;
             }
         }
@@ -19,7 +19,7 @@
         border: none;
         border-left: 1px solid var(--tainacan-input-border-color);
 
-        /deep/ .leaflet-active-area {
+        :deep(.leaflet-active-area) {
             position: absolute;
             top: 56px;
             left: 10px;
@@ -27,12 +27,12 @@
             height: calc(60vh - 76px)
         }
 
-        /deep/ .leaflet-marker-pane {
+        :deep(.leaflet-marker-pane) {
             filter: hue-rotate(-22deg);
         }
-        /deep/ div.tainacan-metadatum.metadata-type-geocoordinate,
-        /deep/ span[data-module="geocoordinate-item-metadatum"],
-        /deep/ span[data-module="geocoordinate-item-metadatum"]+br {
+        :deep(div.tainacan-metadatum.metadata-type-geocoordinate),
+        :deep(span[data-module="geocoordinate-item-metadatum"]),
+        :deep(span[data-module="geocoordinate-item-metadatum"]+br) {
             display: none;
             visibility: hidden;
         }
@@ -68,7 +68,7 @@
                     margin: 0;
                 }
                 
-                /deep/ select {
+                :deep(select) {
                     background-color: var(--tainacan-input-background-color);
                 }
             }

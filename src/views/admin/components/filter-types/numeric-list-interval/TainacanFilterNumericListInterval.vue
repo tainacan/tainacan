@@ -1,17 +1,17 @@
 <template>
     <div>
         <b-select
+                v-model="selectedInterval"
                 expanded
                 :placeholder="$i18n.get('instruction_select_a_interval')"
-                @input="($event) => { resetPage; changeInterval($event) }"
-                v-model="selectedInterval">
+                @update:model-value="($event) => { resetPage; changeInterval($event) }">
             <option value="">
                 {{ $i18n.get('label_selectbox_init') }}...
             </option>
             <option
                     v-for="(interval, index) in filterTypeOptions.intervals"
-                    :value="index"
-                    :key="index">
+                    :key="index"
+                    :value="index">
                 {{ interval.label }}
             </option>
         </b-select>
@@ -22,6 +22,9 @@
     import { filterTypeMixin } from '../../../js/filter-types-mixin';
     export default {
         mixins: [ filterTypeMixin ],
+        emits: [
+            'input',
+        ],
         data() {
             return {
                 valueInit: 0,
@@ -30,8 +33,11 @@
             }
         },
         watch: {
-            'query'() {
-                this.updateSelectedValues();
+            'query': {
+                handler() {
+                    this.updateSelectedValues();
+                },
+                deep: true
             }
         },        
         mounted() {

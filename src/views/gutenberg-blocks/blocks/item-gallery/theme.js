@@ -5,7 +5,8 @@
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
 import 'photoswipe/dist/photoswipe.css';
-import Swiper, { Navigation, A11y, Thumbs, Pagination } from 'swiper';
+import Swiper from 'swiper';
+import { Navigation, A11y, Thumbs, Pagination } from 'swiper/modules';
 
 const { __ } = wp.i18n;
 
@@ -223,9 +224,9 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 let currentURL = window.location.toString();
                 if (currentURL.indexOf("#") > 0) {
                     currentURL = currentURL.substring(0, currentURL.indexOf("#"));
-                    window.history.replaceState({}, '', currentURL + '#gid=' + this.options.media_id + '&pid=' + (self.lightbox.pswp.currIndex + 1));
+                    window.history.replaceState(window.history.state, '', currentURL + '#gid=' + this.options.media_id + '&pid=' + (self.lightbox.pswp.currIndex + 1));
                 } else {
-                    window.history.pushState({}, '', currentURL + '#gid=' + this.options.media_id + '&pid=' + (self.lightbox.pswp.currIndex + 1));  
+                    window.history.pushState(window.history.state, '', currentURL + '#gid=' + this.options.media_id + '&pid=' + (self.lightbox.pswp.currIndex + 1));  
                 } 
             }
         });
@@ -281,13 +282,13 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                                 (item.title.description && !self.options.hide_media_description)
                             )
                         ) {
-                            innerHTML += '<div class="pswp__caption-inner">';
+                            innerHTML += '<div className="pswp__caption-inner">';
                             
                             if (item.title.caption && !self.options.hide_media_caption)
-                                innerHTML += '<span class="pswp__figure_caption">' + item.title.caption.innerHTML + '</span>';
+                                innerHTML += '<span className="pswp__figure_caption">' + item.title.caption.innerHTML + '</span>';
 
                             if (item.title.description && !self.options.hide_media_description)
-                                innerHTML += '<span class="pswp__description">' + item.title.description.innerHTML + '</span>';
+                                innerHTML += '<span className="pswp__description">' + item.title.description.innerHTML + '</span>';
                             
                             innerHTML += '</div>';
                         }

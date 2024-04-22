@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import { nextTick } from 'vue';
 import { mapGetters } from 'vuex';
 import { reportsChartMixin } from '../js/reports-mixin';
 
@@ -53,6 +54,7 @@ export default {
                 this.buildActivitiesPerUserChart();
             },
             immediate: true,
+            deep: true
         }
     },
     methods: {
@@ -145,7 +147,7 @@ export default {
             setTimeout(() => { 
                 this.isBuildingChart = false;
                 
-                this.$nextTick(() => {
+                nextTick(() => {
                     if (this.$refs && this.$refs['activities-per-user-chart'] && this.$refs['activities-per-user-chart'].chart) {
                         this.validActions.forEach((action) => {
                             if (action !== 'update-metadata-value')

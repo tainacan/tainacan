@@ -13,6 +13,9 @@ class Collections extends Repository {
 	public $entities_type = '\Tainacan\Entities\Collection';
 
 	private static $instance = null;
+	private $old_collection;
+	private $old_core_title;
+	private $old_core_description;
 
 	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {

@@ -1,5 +1,5 @@
 // Main imports
-import Vue from 'vue';
+import { createApp, h, defineAsyncComponent } from 'vue';
 import {
     Field,
     Input,
@@ -13,6 +13,7 @@ import {
     Checkbox,
     Radio,
     Tag,
+    Icon,
     Loading,
     Dropdown,
     Modal,
@@ -21,13 +22,12 @@ import {
     Toast,
     Pagination,
     Numberinput
-} from 'buefy';
+} from '@ntohq/buefy-next';
 import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
-import qs from 'qs';
-import VueBlurHash from 'vue-blurhash';
+import VueBlurHash from 'another-vue3-blurhash';
 
-import ThemeItemsPage from './theme-search/theme-items-page.vue';
+import getDataAttribute from '../../js/compatibility/tainacan-blocks-compat-data-attributes.js';
 import ThemeSearch from './theme.vue';
 
 // Remaining imports
@@ -38,17 +38,28 @@ import {
     I18NPlugin,
     UserPrefsPlugin,
     ConsolePlugin,
-    AdminOptionsHelperPlugin
+    AdminOptionsHelperPlugin,
+    AxiosErrorHandlerPlugin
 } from '../../../admin/js/admin-utilities';
 import { 
     ThumbnailHelperPlugin,
     OrderByHelperPlugin
 } from '../../../admin/js/utilities';
+import mitt from 'mitt';
+
+const isParameterTrue = function(value) {
+    return (value == true || value == 'true' || value == '1' || value == 1) ? true : false;
+}
+
+const maybeConvertFromJSON = function(someString) {
+    try {
+        return JSON.parse(someString);
+    } catch(error) {
+        return someString;
+    }
+}
 
 export default (element) => {
-
-    // Vue Dev Tools!
-    Vue.config.devtools = TAINACAN_ENV === 'development';
 
     function renderTainacanItemsListComponent() {
 
@@ -58,35 +69,107 @@ export default (element) => {
         // Mount only if the div exists and it is not already mounted
         if ( blockElement && blockElement.classList && !blockElement.classList.contains('has-mounted') ) {
 
+            // Filters logic
+            const possibleHideFilters = isParameterTrue(getDataAttribute(blockElement,'hide-filters'));
+
+            // View Modes Logic
+            const registeredViewModes =
+                ( tainacan_plugin && tainacan_plugin.registered_view_modes && tainacan_plugin.registered_view_modes.length ) ?
+                tainacan_plugin.registered_view_modes :
+                [ 'table', 'cards', 'records', 'masonry', 'slideshow', 'list', 'map' ];
+
+            // At first, we consider that all registered view modes are included.
+            let possibleViewModes = registeredViewModes;
+            if ( getDataAttribute(blockElement, 'enabled-view-modes') != undefined )
+                possibleViewModes = getDataAttribute(blockElement, 'enabled-view-modes').split(',');
+
+            // View Mode settings
+            let possibleDefaultViewMode = 'masonry';
+            if ( getDataAttribute(blockElement, 'default-view-mode') != undefined )
+                possibleDefaultViewMode = getDataAttribute(blockElement, 'default-view-mode');
+        
+            if ( possibleViewModes.indexOf(possibleDefaultViewMode) < 0 )
+                possibleViewModes.push(possibleDefaultViewMode);
+
+            const VueItemsList = createApp({
+                created() {
+                    blockElement.setAttribute('aria-live', 'polite');
+                    blockElement.classList.add('theme-items-list'); // This used to be on the component, but as Vue now do not renders the component inside a div...
+                },
+                mounted() {
+                    blockElement.classList.add('has-mounted');
+                },
+                render: () => h(ThemeSearch, {
+                    collectionId: getDataAttribute(blockElement, 'collection-id'),
+                    termId: getDataAttribute(blockElement, 'term-id'),
+                    taxonomy: getDataAttribute(blockElement, 'taxonomy'),
+                    defaultOrder: getDataAttribute(blockElement, 'default-order', 'ASC'),
+                    defaultOrderBy: (() => {
+                        const defaultOrderByValue = maybeConvertFromJSON(getDataAttribute(blockElement, 'default-orderby', 'date'));
+                        return defaultOrderByValue === 'creation_date' ? 'date' : defaultOrderByValue;
+                    })(),
+                    defaultOrderByMeta: getDataAttribute(blockElement, 'default-orderby-meta'),
+                    defaultOrderByType: maybeConvertFromJSON(getDataAttribute(blockElement, 'default-orderby-type')),
+                    defaultViewMode: possibleDefaultViewMode,
+                    enabledViewModes: possibleViewModes,
+                    isForcedViewMode: new Boolean(getDataAttribute(blockElement, 'is-forced-view-mode')),
+                    hideFilters: possibleHideFilters,
+                    hideHideFiltersButton: isParameterTrue(getDataAttribute(blockElement, 'hide-hide-filters-button')),
+                    hideSearch: isParameterTrue(getDataAttribute(blockElement, 'hide-search')),
+                    hideAdvancedSearch: isParameterTrue(getDataAttribute(blockElement, 'hide-advanced-search')),
+                    hideDisplayedMetadataButton: isParameterTrue(getDataAttribute(blockElement, 'hide-displayed-metadata-button')),
+                    hideSortingArea: isParameterTrue(getDataAttribute(blockElement, 'hide-sorting-area')),
+                    hideItemsThumbnail: isParameterTrue(getDataAttribute(blockElement, 'hide-items-thumbnail')),
+                    hideSortByButton: isParameterTrue(getDataAttribute(blockElement, 'hide-sort-by-button')),
+                    hideExposersButton: isParameterTrue(getDataAttribute(blockElement, 'hide-exposers-button')),
+                    hideItemsPerPageButton: isParameterTrue(getDataAttribute(blockElement, 'hide-items-per-page-button')),
+                    hideGoToPageButton: isParameterTrue(getDataAttribute(blockElement, 'hide-go-to-page-button')),
+                    hidePaginationArea: isParameterTrue(getDataAttribute(blockElement, 'hide-pagination-area')),
+                    defaultItemsPerPage: new Number(getDataAttribute(blockElement, 'default-items-per-page', 12)),
+                    showFiltersButtonInsideSearchControl: isParameterTrue(getDataAttribute(blockElement, 'show-filters-button-inside-search-control')),
+                    startWithFiltersHidden: isParameterTrue(getDataAttribute(blockElement, 'start-with-filters-hidden')),
+                    filtersAsModal: isParameterTrue(getDataAttribute(blockElement, 'filters-as-modal')),
+                    showInlineViewModeOptions: isParameterTrue(getDataAttribute(blockElement, 'show-inline-view-mode-options')),
+                    showFullscreenWithViewModes: isParameterTrue(getDataAttribute(blockElement, 'show-fullscreen-with-view-modes'))
+                }),
+            });
+
+            VueItemsList.use(store);
+            VueItemsList.use(routerTheme);
+
+            if ( !possibleHideFilters )
+                VueItemsList.component('filters-items-list', defineAsyncComponent(() => import('../../../admin/components/search/filters-items-list.vue')));
+
             /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
             if (typeof window.tainacan_extra_plugins != "undefined") {
                 for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins)) {
-                    Vue.component(extraVuePluginName, extraVuePluginObject);
+                    VueItemsList.component(extraVuePluginName, extraVuePluginObject);
                 }
             }
 
             // Configure and Register Plugins
-            Vue.use(Field);
-            Vue.use(Input);
-            Vue.use(Autocomplete);
-            Vue.use(Taginput);
-            Vue.use(Collapse);
-            Vue.use(Button); 
-            Vue.use(Datepicker);
-            Vue.use(Select);
-            Vue.use(Checkbox);
-            Vue.use(Radio);
-            Vue.use(Tag);
-            Vue.use(Tabs);
-            Vue.use(Loading);
-            Vue.use(Dropdown);
-            Vue.use(Modal);
-            Vue.use(Dialog);
-            Vue.use(Snackbar);
-            Vue.use(Toast);
-            Vue.use(Pagination);
-            Vue.use(Numberinput);
-            Vue.use(VTooltip, {
+            VueItemsList.use(Field);
+            VueItemsList.use(Input);
+            VueItemsList.use(Autocomplete);
+            VueItemsList.use(Taginput);
+            VueItemsList.use(Collapse);
+            VueItemsList.use(Button); 
+            VueItemsList.use(Datepicker);
+            VueItemsList.use(Select);
+            VueItemsList.use(Checkbox);
+            VueItemsList.use(Radio);
+            VueItemsList.use(Tag);
+            VueItemsList.use(Icon);
+            VueItemsList.use(Tabs);
+            VueItemsList.use(Loading);
+            VueItemsList.use(Dropdown);
+            VueItemsList.use(Modal);
+            VueItemsList.use(Dialog);
+            VueItemsList.use(Snackbar);
+            VueItemsList.use(Toast);
+            VueItemsList.use(Pagination);
+            VueItemsList.use(Numberinput);
+            VueItemsList.use(VTooltip, {
                 popperTriggers: ['hover'],
                 themes: {
                     'taianacan-tooltip': {
@@ -97,192 +180,34 @@ export default (element) => {
                     }
                 }
             });
-            Vue.use(VueBlurHash);
-            Vue.use(I18NPlugin);
-            Vue.use(UserPrefsPlugin);
-            Vue.use(ThumbnailHelperPlugin);
-            Vue.use(OrderByHelperPlugin);
-            Vue.use(ConsolePlugin, {visual: false});
-            Vue.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
+            VueItemsList.use(VueBlurHash);
+            VueItemsList.use(I18NPlugin);
+            VueItemsList.use(UserPrefsPlugin);
+            VueItemsList.use(ThumbnailHelperPlugin);
+            VueItemsList.use(OrderByHelperPlugin);
+            VueItemsList.use(AxiosErrorHandlerPlugin);
+            VueItemsList.use(ConsolePlugin, {visual: false});
+            VueItemsList.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
 
             /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
             if (typeof window.tainacan_extra_components != "undefined") {
                 for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components)) {
-                    Vue.component(extraVueComponentName, extraVueComponentObject);
+                    VueItemsList.component(extraVueComponentName, extraVueComponentObject);
                 }
             }
-
-            // Filters logic
-            let possibleHideFilters = false;
-            if ( blockElement.attributes['hide-filters'] != undefined ) {
-                const hideFiltersValue = blockElement.attributes['hide-filters'].value;
-                possibleHideFilters = ( hideFiltersValue == true || hideFiltersValue == 'true' || hideFiltersValue == '1' || hideFiltersValue == 1 ) ? true : false;
-            }
-
-            if ( !possibleHideFilters ) {
-                import('../../../admin/components/search/filters-items-list.vue')
-                    .then(importedModule => Vue.component('filters-items-list', importedModule.default))
-                    .catch(error => console.log(error));
-            }
-
-            /* Main page component */
-            Vue.component('theme-items-page', ThemeItemsPage);
-            Vue.component('theme-search', ThemeSearch);
-
-            // View Modes Logic
-            const registeredViewModes =
-                ( tainacan_plugin && tainacan_plugin.registered_view_modes && tainacan_plugin.registered_view_modes.length ) ?
-                tainacan_plugin.registered_view_modes :
-                [ 'table', 'cards', 'records', 'masonry', 'slideshow', 'list', 'map' ];
-
-            // At first, we consider that all registered view modes are included.
-            let possibleViewModes = registeredViewModes;
-            if ( blockElement.attributes['enabled-view-modes'] != undefined )
-                possibleViewModes = blockElement.attributes['enabled-view-modes'].value.split(',');
-
-            // View Mode settings
-            let possibleDefaultViewMode = 'masonry';
-            if ( blockElement.attributes['default-view-mode'] != undefined)
-                possibleDefaultViewMode = blockElement.attributes['default-view-mode'].value;
-        
-            if ( possibleViewModes.indexOf(possibleDefaultViewMode) < 0 )
-                possibleViewModes.push(possibleDefaultViewMode);
 
             // Logic for dynamic importing Tainacan oficial view modes only if they are necessary
             possibleViewModes.forEach(viewModeSlug => {
                 if ( registeredViewModes.indexOf(viewModeSlug) >= 0 )
-                    import('./theme-search/components/view-mode-' + viewModeSlug + '.vue')
-                        .then(importedModule => Vue.component('view-mode-' + viewModeSlug, importedModule.default) )
-                        .catch(error => console.log(error)); 
+                    VueItemsList.component('view-mode-' + viewModeSlug, defineAsyncComponent(() => import('./theme-search/components/view-mode-' + viewModeSlug + '.vue')));
             });
 
-            Vue.use(eventBusSearch, { store: store, router: routerTheme});
-                
-            const VueItemsList = new Vue({
-                store,
-                router: routerTheme,
-                data: {
-                    termId: '',
-                    taxonomy: '',
-                    collectionId: '',
-                    defaultViewMode: '',
-                    defaultOrder: 'ASC',
-                    defaultOrderBy: 'date',
-                    defaultOrderByMeta: '',
-                    defaultOrderByType: '',
-                    isForcedViewMode: false,
-                    enabledViewModes: {},
-                    defaultItemsPerPage: '',
-                    hideFilters: false,
-                    hideHideFiltersButton: false,
-                    hideSearch: false,
-                    hideAdvancedSearch: false,
-                    hideDisplayedMetadataButton: false,
-                    hideSortByButton: false,
-                    hideSortingArea: false,
-                    hideItemsThumbnail: false,
-                    hideItemsPerPageButton: false,
-                    hideGoToPageButton: false,
-                    hidePaginationArea: false,
-                    showFiltersButtonInsideSearchControl: false,
-                    startWithFiltersHidden: false,
-                    filtersAsModal: false,
-                    showInlineViewModeOptions: false,
-                    showFullscreenWithViewModes: false
-                },
-                beforeMount() {
-                    
-                    // Loads params if passed previously 
-                    if (this.$route.hash && this.$route.hash.split('#/?') && this.$route.hash.split('#/?')[1]) {
-                        const existingQueries = qs.parse(this.$route.hash.split('#/?')[1]); 
+            const emitter = mitt();
+            VueItemsList.config.globalProperties.$emitter = emitter;
+            
+            VueItemsList.use(eventBusSearch);
 
-                        for (let key of Object.keys(existingQueries))
-                            this.$route.query[key] = existingQueries[key];
-                    }
-
-                    // Collection or Term source settings
-                    if (this.$el.attributes['collection-id'] != undefined)
-                        this.collectionId = this.$el.attributes['collection-id'].value;
-                    if (this.$el.attributes['term-id'] != undefined)
-                        this.termId = this.$el.attributes['term-id'].value;
-                    if (this.$el.attributes['taxonomy'] != undefined)
-                        this.taxonomy = this.$el.attributes['taxonomy'].value;
-
-                    // Sorting options
-                    if (this.$el.attributes['default-order'] != undefined)
-                        this.defaultOrder = this.$el.attributes['default-order'].value;
-                    if (this.$el.attributes['default-orderby'] != undefined) {
-                        this.defaultOrderBy = this.maybeConvertFromJSON(this.$el.attributes['default-orderby'].value);
-                        this.defaultOrderBy === 'creation_date' ? 'date' : this.defaultOrderBy;
-                    }
-                    if (this.$el.attributes['default-orderby-meta'] != undefined)
-                        this.defaultOrderByMeta = this.$el.attributes['default-orderby-meta'].value;
-                    if (this.$el.attributes['default-orderby-type'] != undefined)
-                        this.defaultOrderByType = this.maybeConvertFromJSON(this.$el.attributes['default-orderby-type'].value);
-
-                    // View modes settings
-                    if (this.$el.attributes['is-forced-view-mode'] != undefined)
-                        this.isForcedViewMode = new Boolean(this.$el.attributes['is-forced-view-mode'].value);
-                    
-                    this.defaultViewMode = possibleDefaultViewMode;
-                    this.enabledViewModes = possibleViewModes;
-
-                    // Options related to hidding elements
-                    this.hideFilters = possibleHideFilters;
-                    if (this.$el.attributes['hide-hide-filters-button'] != undefined)
-                        this.hideHideFiltersButton = this.isParameterTrue('hide-hide-filters-button');
-                    if (this.$el.attributes['hide-search'] != undefined)
-                        this.hideSearch = this.isParameterTrue('hide-search');
-                    if (this.$el.attributes['hide-advanced-search'] != undefined)
-                        this.hideAdvancedSearch = this.isParameterTrue('hide-advanced-search');
-                    if (this.$el.attributes['hide-displayed-metadata-button'] != undefined)
-                        this.hideDisplayedMetadataButton = this.isParameterTrue('hide-displayed-metadata-button');
-                    if (this.$el.attributes['hide-sorting-area'] != undefined)
-                        this.hideSortingArea = this.isParameterTrue('hide-sorting-area');
-                    if (this.$el.attributes['hide-items-thumbnail'] != undefined)
-                        this.hideItemsThumbnail = this.isParameterTrue('hide-items-thumbnail');
-                    if (this.$el.attributes['hide-sort-by-button'] != undefined)
-                        this.hideSortByButton = this.isParameterTrue('hide-sort-by-button');
-                    if (this.$el.attributes['hide-exposers-button'] != undefined)
-                        this.hideExposersButton = this.isParameterTrue('hide-exposers-button');
-                    if (this.$el.attributes['hide-items-per-page-button'] != undefined)
-                        this.hideItemsPerPageButton = this.isParameterTrue('hide-items-per-page-button');
-                    if (this.$el.attributes['hide-go-to-page-button'] != undefined)
-                        this.hideGoToPageButton = this.isParameterTrue('hide-go-to-page-button');
-                    if (this.$el.attributes['hide-pagination-area'] != undefined)
-                        this.hidePaginationArea = this.isParameterTrue('hide-pagination-area');
-
-                    // Other Tweaks
-                    if (this.$el.attributes['default-items-per-page'] != undefined)
-                        this.defaultItemsPerPage = this.$el.attributes['default-items-per-page'].value;
-                    if (this.$el.attributes['show-filters-button-inside-search-control'] != undefined)
-                        this.showFiltersButtonInsideSearchControl = this.isParameterTrue('show-filters-button-inside-search-control');
-                    if (this.$el.attributes['start-with-filters-hidden'] != undefined)
-                        this.startWithFiltersHidden = this.isParameterTrue('start-with-filters-hidden');
-                    if (this.$el.attributes['filters-as-modal'] != undefined)
-                        this.filtersAsModal = this.isParameterTrue('filters-as-modal');
-                    if (this.$el.attributes['show-inline-view-mode-options'] != undefined)
-                        this.showInlineViewModeOptions = this.isParameterTrue('show-inline-view-mode-options');
-                    if (this.$el.attributes['show-fullscreen-with-view-modes'] != undefined)
-                        this.showFullscreenWithViewModes = this.isParameterTrue('show-fullscreen-with-view-modes');
-                },
-                methods: {
-                    isParameterTrue(parameter) {
-                        const value = this.$el.attributes[parameter].value;
-                        return (value == true || value == 'true' || value == '1' || value == 1) ? true : false;
-                    },
-                    maybeConvertFromJSON(someString) {
-                        try {
-                            return JSON.parse(someString);
-                        } catch(error) {
-                            return someString;
-                        }
-                    }
-                },
-                render: h => h(ThemeSearch)
-            });
-
-            VueItemsList.$mount('#tainacan-items-page');
+            VueItemsList.mount('#' + blockElement.id);
 
             // Initialize Ponyfill for Custom CSS properties
             cssVars({

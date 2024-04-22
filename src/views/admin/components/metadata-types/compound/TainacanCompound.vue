@@ -1,130 +1,134 @@
 <template>
-<div class="child-metadata-inputs">
-    <a
-            v-if="!hideCollapses && childItemMetadataGroups.length > 0"
-            class="collapse-all"
-            @click="toggleCollapseAllChildren()">
-        <span class="icon">
-            <i
-                    :class="{ 'tainacan-icon-arrowdown' : collapseAllChildren, 'tainacan-icon-arrowright' : !collapseAllChildren }"
-                    class="tainacan-icon tainacan-icon-1-25em"/>
-        </span>
-        {{ collapseAllChildren ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-    </a>
-    
-    <div
-            v-if="childItemMetadataGroups.length > 0"
-            class="multiple-inputs">
-        <template v-for="(childItemMetadata, groupIndex) of childItemMetadataGroups">
-            <hr 
-                    v-if="groupIndex > 0"
-                    :key="groupIndex">
-            
-            <template v-for="(childItemMetadatum, childIndex) of childItemMetadata">
-                <div 
-                        class="field"
-                        :key="groupIndex + '-' + childIndex"
-                        v-if="isRemovingGroup">
-                    <span class="collapse-handle">
-                        <span class="icon">
-                            <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                        </span>
-                        <label class="label has-tooltip">
-                            <span
-                                    v-if="enumerateMetadatum"
-                                    style="opacity: 0.65;"
-                                    class="metadatum-section-enumeration">
-                                {{ enumerateMetadatum }}.
-                            </span>
-                            {{ childItemMetadatum.metadatum.name }}
-                        </label>
-                        <span
-                            v-if="childItemMetadatum.metadatum.required == 'yes'"
-                            class="required-metadatum-asterisk">
-                            *
-                        </span>
-                        <span class="metadata-type">
-                            ({{ childItemMetadatum.metadatum.metadata_type_object.name }})
-                        </span>
-                        <help-button 
-                                :title="childItemMetadatum.metadatum.name"
-                                :message="childItemMetadatum.metadatum.description"/>
-                    </span> 
-                    <div 
-                            class="skeleton"
-                            :style="{ 
-                                minHeight: (childItemMetadatum.metadatum.metadata_type_object.component == 'tainacan-checkbox' || childItemMetadatum.metadatum.metadata_type_object.component == 'tainacan-taxonomy-checkbox') ? '150px' : '30px'
-                            }" />
-                </div>
-                <tainacan-form-item
-                        v-else
-                        v-show="(metadataNameFilterString == '' || filterByMetadatumName(childItemMetadatum))"
-                        :key="groupIndex + '-' + childIndex"
-                        :ref="'tainacan-form-item--' + groupIndex + '-' + childIndex"
-                        :item-metadatum="childItemMetadatum"
-                        :hide-collapses="hideCollapses"
-                        :hide-metadata-types="hideMetadataTypes"
-                        :hide-help-buttons="hideHelpButtons"
-                        :help-info-bellow-label="helpInfoBellowLabel"
-                        :is-collapsed="childItemMetadatum.collapse"
-                        :is-mobile-screen="isMobileScreen"
-                        @changeCollapse="onChangeCollapse($event, groupIndex, childIndex)"
-                        :class="{ 
-                            'is-last-input': childIndex == childItemMetadata.length - 1,
-                            'is-metadata-navigation-active': isMetadataNavigation
-                        }"
-                        :is-focused="(focusedGroupMetadatum === groupIndex) && (focusedChildMetadatum === childIndex)"
-                        :is-metadata-navigation="isMetadataNavigation"
-                        :enumerate-metadatum="enumerateMetadatum ? ( enumerateMetadatum + ( childItemMetadataGroups.length > 1 ? ( '.' + (Number(groupIndex) + 1) ) : '' ) + '.' + (Number(childIndex) + 1) ) : false"
-                        @touchstart.native="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }): ''"
-                        @mousedown.native="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }) : ''"
-                        @mobileSpecialFocus="setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: true })"
-                    />
-
-            </template>
-            <a 
-                    v-if="isMultiple" 
-                    @click="removeGroup(groupIndex)"
-                    class="add-link"
-                    :key="groupIndex">
-                <span class="icon is-small">
-                    <i class="tainacan-icon has-text-secondary tainacan-icon-remove"/>
-                </span>
-                &nbsp;{{ $i18n.get('label_remove_value') }}
-            </a>
-        </template>
-        <transition name="filter-item">
-            <span 
-                    v-if="isCreatingGroup"
-                    style="width: 100%;"
-                    class="icon has-text-success loading-icon">
-                <div class="control has-icons-right is-loading is-clearfix" />
+    <div class="child-metadata-inputs">
+        <a
+                v-if="!hideCollapses && childItemMetadataGroups.length > 0"
+                class="collapse-all"
+                @click="toggleCollapseAllChildren()">
+            <span class="icon">
+                <i
+                        :class="{ 'tainacan-icon-arrowdown' : collapseAllChildren, 'tainacan-icon-arrowright' : !collapseAllChildren }"
+                        class="tainacan-icon tainacan-icon-1-25em" />
             </span>
-        </transition>
-    </div>
-    <p 
-            v-else
-            class="empty-label">
-        {{ $i18n.get('info_no_value_compound_metadata') }}
-    </p>
-    <a
-            v-if="isMultiple && (maxMultipleValues === undefined || maxMultipleValues === 0 || (maxMultipleValues !== 1 && maxMultipleValues > childItemMetadataGroups.length))"
-            :disabled="itemMetadatum.item.id && (childItemMetadataGroups.length > 0 && !someValueOnLastInput)"
-            @click="addGroup"
-            class="is-inline-block add-link">
-        <span class="icon is-small">
-            <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
-        </span>
-        &nbsp;{{ $i18n.get('label_add_value') }}
-    </a>
+            {{ collapseAllChildren ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+        </a>
+    
+        <div
+                v-if="childItemMetadataGroups.length > 0"
+                class="multiple-inputs">
+            <template 
+                    v-for="(childItemMetadata, groupIndex) of childItemMetadataGroups"
+                    :key="groupIndex">
+                <hr v-if="groupIndex > 0">
+            
+                <template 
+                        v-for="(childItemMetadatum, childIndex) of childItemMetadata"
+                        :key="groupIndex + '-' + childIndex">
+                    <div 
+                            v-if="isRemovingGroup"
+                            class="field">
+                        <span class="collapse-handle">
+                            <span class="icon">
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                            </span>
+                            <label class="label has-tooltip">
+                                <span
+                                        v-if="enumerateMetadatum"
+                                        style="opacity: 0.65;"
+                                        class="metadatum-section-enumeration">
+                                    {{ enumerateMetadatum }}.
+                                </span>
+                                {{ childItemMetadatum.metadatum.name }}
+                            </label>
+                            <span
+                                    v-if="childItemMetadatum.metadatum.required == 'yes'"
+                                    class="required-metadatum-asterisk">
+                                *
+                            </span>
+                            <span class="metadata-type">
+                                ({{ childItemMetadatum.metadatum.metadata_type_object.name }})
+                            </span>
+                            <help-button 
+                                    :title="childItemMetadatum.metadatum.name"
+                                    :message="childItemMetadatum.metadatum.description" />
+                        </span> 
+                        <div 
+                                class="skeleton"
+                                :style="{ 
+                                    minHeight: (childItemMetadatum.metadatum.metadata_type_object.component == 'tainacan-checkbox' || childItemMetadatum.metadatum.metadata_type_object.component == 'tainacan-taxonomy-checkbox') ? '150px' : '30px'
+                                }" />
+                    </div>
+                    <tainacan-form-item
+                            v-else
+                            v-show="(metadataNameFilterString == '' || filterByMetadatumName(childItemMetadatum))"
+                            :ref="'tainacan-form-item--' + groupIndex + '-' + childIndex"
+                            :item-metadatum="childItemMetadatum"
+                            :hide-collapses="hideCollapses"
+                            :hide-metadata-types="hideMetadataTypes"
+                            :hide-help-buttons="hideHelpButtons"
+                            :help-info-bellow-label="helpInfoBellowLabel"
+                            :is-collapsed="childItemMetadatum.collapse"
+                            :is-mobile-screen="isMobileScreen"
+                            :class="{ 
+                                'is-last-input': childIndex == childItemMetadata.length - 1,
+                                'is-metadata-navigation-active': isMetadataNavigation
+                            }"
+                            :is-focused="(focusedGroupMetadatum === groupIndex) && (focusedChildMetadatum === childIndex)"
+                            :is-metadata-navigation="isMetadataNavigation"
+                            :enumerate-metadatum="enumerateMetadatum ? ( enumerateMetadatum + ( childItemMetadataGroups.length > 1 ? ( '.' + (Number(groupIndex) + 1) ) : '' ) + '.' + (Number(childIndex) + 1) ) : false"
+                            @input="($event) => $emitter.emit('updateValueFromCompound', $event)"
+                            @change-collapse="onChangeCollapse($event, groupIndex, childIndex)"
+                            @touchstart="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }): ''"
+                            @mousedown="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }) : ''"
+                            @mobile-special-focus="setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: true })"
+                        />
 
-</div>
+                </template>
+                <a 
+                        v-if="isMultiple" 
+                        class="add-link"
+                        @click="removeGroup(groupIndex)">
+                    <span class="icon is-small">
+                        <i class="tainacan-icon has-text-secondary tainacan-icon-remove" />
+                    </span>
+                    &nbsp;{{ $i18n.get('label_remove_value') }}
+                </a>
+            </template>
+            <transition name="filter-item">
+                <span 
+                        v-if="isCreatingGroup"
+                        style="width: 100%;"
+                        class="icon has-text-success loading-icon">
+                    <div class="control has-icons-right is-loading is-clearfix" />
+                </span>
+            </transition>
+        </div>
+        <p 
+                v-else
+                class="empty-label">
+            {{ $i18n.get('info_no_value_compound_metadata') }}
+        </p>
+        <a
+                v-if="isMultiple && (maxMultipleValues === undefined || maxMultipleValues === 0 || (maxMultipleValues !== 1 && maxMultipleValues > childItemMetadataGroups.length))"
+                :disabled="itemMetadatum.item.id && (childItemMetadataGroups.length > 0 && !someValueOnLastInput)"
+                class="is-inline-block add-link"
+                @click="addGroup">
+            <span class="icon is-small">
+                <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
+            </span>
+            &nbsp;{{ $i18n.get('label_add_value') }}
+        </a>
+
+    </div>
 </template>
 
 <script>
-    import { eventBusItemMetadata } from '../../../js/event-bus-item-metadata';
+    import { nextTick, defineAsyncComponent } from 'vue';
+    import { mapActions } from 'vuex';
 
     export default {
+        components: {
+            TainacanFormItem: defineAsyncComponent(() => import('../tainacan-form-item.vue')),
+        },
         props: {
             itemMetadatum: Object,
             value: [String, Number, Array],
@@ -136,7 +140,7 @@
             metadataNameFilterString: '',
             isMobileScreen: false,
             isMetadataNavigation: false,
-            enumerateMetadatum: [Boolean|String],
+            enumerateMetadatum: [Boolean,String],
             isFocused: false
         },
         data() {
@@ -176,29 +180,32 @@
                 handler() {
                     this.createChildMetadataGroups();
                 },
-                immediate: true
+                immediate: true,
+                deep: true
             },
             isMetadataNavigation() {
                 this.focusedGroupMetadatum = 0;
                 this.focusedChildMetadatum = 0;
             },
             isFocused() {                
-                if (this.isFocused) {
+                if ( this.isFocused )
                     this.setMetadatumChildFocus({ groupIndex: this.focusedGroupMetadatum, childIndex: this.focusedChildMetadatum, scrollIntoView: true });
-                }
             }
         },
         created() {
-            eventBusItemMetadata.$on('hasRemovedItemMetadataGroup', this.laterUpdateIsRemovingGroup);
-            eventBusItemMetadata.$on('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
-            eventBusItemMetadata.$on('focusNextChildMetadatum', this.focusNextChildMetadatum);
+            this.$emitter.on('hasRemovedItemMetadataGroup', this.laterUpdateIsRemovingGroup);
+            this.$emitter.on('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
+            this.$emitter.on('focusNextChildMetadatum', this.focusNextChildMetadatum);
         },
-        beforeDestroy() {
-            eventBusItemMetadata.$off('hasRemovedItemMetadataGroup', this.laterUpdateIsRemovingGroup);
-            eventBusItemMetadata.$off('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
-            eventBusItemMetadata.$off('focusNextChildMetadatum', this.focusNextChildMetadatum);
+        beforeUnmount() {
+            this.$emitter.off('hasRemovedItemMetadataGroup', this.laterUpdateIsRemovingGroup);
+            this.$emitter.off('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
+            this.$emitter.off('focusNextChildMetadatum', this.focusNextChildMetadatum);
         },
         methods: {
+            ...mapActions('item', [
+                'fetchCompoundFirstParentMetaId'
+            ]),
             createChildMetadataGroups() {
                 let currentChildItemMetadataGroups = [];
 
@@ -288,9 +295,9 @@
                 if (this.itemMetadatum.item && this.itemMetadatum.item.id) {
                 
                     // Sends value to api so we can obtain the parent_meta_id
-                    eventBusItemMetadata.fetchCompoundFirstParentMetaId({
-                        itemId: this.itemMetadatum.item.id,
-                        metadatumId: this.itemMetadatum.metadatum.id
+                    this.fetchCompoundFirstParentMetaId({
+                        item_id: this.itemMetadatum.item.id,
+                        metadatum_id: this.itemMetadatum.metadatum.id
                     }).then((parentMetaId) => {
 
                         // Create a new placeholder parent_meta_id group here.
@@ -360,7 +367,7 @@
                 
                 if (this.itemMetadatum.value && this.itemMetadatum.value[groupIndex] && this.itemMetadatum.value[groupIndex][0]) {
                     this.isRemovingGroup = true;
-                    eventBusItemMetadata.$emit('remove_group', {
+                    this.$emitter.emit('removeCompoundGroup', {
                         itemId: this.itemMetadatum.item.id,
                         metadatumId: this.itemMetadatum.metadatum.id,
                         parentMetaId: this.itemMetadatum.item.id ? this.itemMetadatum.value[groupIndex][0].parent_meta_id : groupIndex
@@ -394,8 +401,8 @@
 
                 // This keeps the navigation going on when no child input exists
                 if (this.childItemMetadataGroups.length === 0) {
-                    eventBusItemMetadata.$emit('isOnFirstMetadatumOfCompoundNavigation', true);
-                    eventBusItemMetadata.$emit('isOnLastMetadatumOfCompoundNavigation', true);
+                    this.$emitter.emit('isOnFirstMetadatumOfCompoundNavigation', true);
+                    this.$emitter.emit('isOnLastMetadatumOfCompoundNavigation', true);
                 }
             },
             focusNextChildMetadatum() {
@@ -409,13 +416,13 @@
 
                 // This keeps the navigation going on when no child input exists
                 if (this.childItemMetadataGroups.length === 0) {
-                    eventBusItemMetadata.$emit('isOnFirstMetadatumOfCompoundNavigation', true);
-                    eventBusItemMetadata.$emit('isOnLastMetadatumOfCompoundNavigation', true);
+                    this.$emitter.emit('isOnFirstMetadatumOfCompoundNavigation', true);
+                    this.$emitter.emit('isOnLastMetadatumOfCompoundNavigation', true);
                 }
             },
             informItemEditionFormOfChildNavigation() {
-                eventBusItemMetadata.$emit('isOnFirstMetadatumOfCompoundNavigation', this.focusedGroupMetadatum === 0 && this.focusedChildMetadatum === 0);
-                eventBusItemMetadata.$emit('isOnLastMetadatumOfCompoundNavigation', (this.focusedGroupMetadatum === this.childItemMetadataGroups.length - 1) && (this.focusedChildMetadatum === this.childItemMetadataGroups[this.focusedGroupMetadatum].length - 1) );
+                this.$emitter.emit('isOnFirstMetadatumOfCompoundNavigation', this.focusedGroupMetadatum === 0 && this.focusedChildMetadatum === 0);
+                this.$emitter.emit('isOnLastMetadatumOfCompoundNavigation', (this.focusedGroupMetadatum === this.childItemMetadataGroups.length - 1) && (this.focusedChildMetadatum === this.childItemMetadataGroups[this.focusedGroupMetadatum].length - 1) );
             },
             setMetadatumChildFocus({ groupIndex = 0, childIndex = 0, scrollIntoView = false }) {
                 const previousGroupIndex = this.focusedGroupMetadatum;
@@ -458,7 +465,7 @@
                 }
             },
             laterUpdateIsRemovingGroup() {
-                this.$nextTick(() => {
+                nextTick(() => {
                     this.isRemovingGroup = false;
                 });
             }
@@ -519,10 +526,10 @@
             .field {
                 padding-left: 12px;
                 
-                /deep/ .label {
+                :deep(.label) {
                     margin-left: 0;
                 }
-                /deep/ .collapse-handle {
+                :deep(.collapse-handle) {
                     margin-left: -28px;
                 }
             }

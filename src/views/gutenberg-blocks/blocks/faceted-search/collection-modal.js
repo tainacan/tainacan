@@ -1,4 +1,4 @@
-import tainacan from '../../js/axios.js';
+import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
 
@@ -111,7 +111,7 @@ export default class CollectionModal extends React.Component {
             modalCollections: someModalCollections
         });
 
-        tainacan.get(endpoint)
+        tainacanApi.get(endpoint)
             .then(response => {
 
                 let otherModalCollections = this.state.modalCollections;
@@ -189,7 +189,7 @@ export default class CollectionModal extends React.Component {
         else if (this.state.collectionsOrderBy == 'title-desc')
             endpoint += '&orderby=title&order=desc';
 
-        tainacan.get(endpoint, { cancelToken: aCollectionRequestSource.token })
+        tainacanApi.get(endpoint, { cancelToken: aCollectionRequestSource.token })
             .then(response => {
                 let someCollections = response.data.map((collection) => ({ 
                     name: collection.name, 
@@ -353,7 +353,7 @@ export default class CollectionModal extends React.Component {
                                 }
                             </div>
                         </div>
-                    ) : this.state.isLoadingCollections ? <div class="spinner-container"><Spinner /></div> :
+                    ) : this.state.isLoadingCollections ? <div className="spinner-container"><Spinner /></div> :
                     <div className="modal-loadmore-section">
                         <p>{ __('Sorry, no collection found.', 'tainacan') }</p>
                     </div>

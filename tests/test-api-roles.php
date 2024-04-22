@@ -7,7 +7,7 @@ namespace Tainacan\Tests;
  *
  */
 class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		// reset WP_Roles object. Possible bug was cleaning database between tests, but not the object
 		global $wpdb;

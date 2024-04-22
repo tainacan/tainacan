@@ -7,7 +7,6 @@
                     v-if="!$adminOptions.hideTainacanHeaderHomeButton"
                     class="level-item home-area">
                 <router-link
-                        tag="a"
                         to="/"
                         :aria-label="$i18n.get('label_plugin_home_page')">
                     <span
@@ -18,13 +17,12 @@
                                 popperClass: ['tainacan-tooltip', 'tainacan-repository-header-tooltip', 'tooltip']
                             }"
                             class="icon">
-                        <i class="tainacan-icon tainacan-icon-home has-text-blue5"/>
+                        <i class="tainacan-icon tainacan-icon-home has-text-blue5" />
                     </span>
                 </router-link>
             </div>
             <div class="level-item logo-area">
                 <router-link
-                        tag="a"
                         to="/"
                         :aria-label="$i18n.get('label_plugin_home_page')">
                     <h1>
@@ -44,11 +42,11 @@
                     v-if="!$adminOptions.hideTainacanHeaderSearchInput"
                     class="is-hidden-tablet">
                 <button
-                        @click="$router.push($routerHelper.getItemsPath())"
                         class="button is-small is-white level-item"
-                        :aria-label="$i18n.get('search')">
+                        :aria-label="$i18n.get('search')"
+                        @click="$router.push($routerHelper.getItemsPath())">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search" />
                     </span>
                 </button>
             </div>
@@ -61,12 +59,12 @@
                         :placeholder="$i18n.get('instruction_search_in_repository')"
                         class="search-header"
                         size="is-small"
-                        :value="searchQuery"
-                        @input.native="futureSearchQuery = $event.target.value"
-                        @keyup.enter.native="updateSearch()"
+                        :model-value="searchQuery"
                         icon-right="magnify"
                         icon-right-clickable
-                        @icon-right-click="updateSearch()" />
+                        @update:model-value="(value) => futureSearchQuery = value"
+                        @keyup.enter="updateSearch"
+                        @icon-right-click="updateSearch" />
                 <router-link
                         v-if="!$adminOptions.hideTainacanHeaderAdvancedSearch"
                         class="advanced-search-text"
@@ -77,9 +75,9 @@
             </div>
             <button
                     v-if="!$adminOptions.hideTainacanHeaderProcessesPopup"
-                    @click="showProcesses = !showProcesses"
                     class="button is-small is-white level-item"
-                    :aria-label="$i18n.get('processes')">
+                    :aria-label="$i18n.get('processes')"
+                    @click="showProcesses = !showProcesses">
                 <span
                         v-tooltip="{
                             content: $i18n.get('processes'),
@@ -88,12 +86,12 @@
                             popperClass: ['tainacan-tooltip', 'tainacan-repository-header-tooltip', 'tooltip']
                         }"
                         class="icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processes"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processes" />
                 </span>
             </button>
             <processes-popup
                     v-if="showProcesses"
-                    @closeProcessesPopup="showProcesses = false"/>
+                    @close-processes-popup="showProcesses = false" />
             <a
                     class="level-item"
                     :href="wordpressAdmin"
@@ -106,7 +104,7 @@
                             popperClass: ['tainacan-tooltip', 'tainacan-repository-header-tooltip', 'tooltip']
                         }"
                         class="icon">
-                    <i class="tainacan-icon tainacan-icon-wordpress"/>
+                    <i class="tainacan-icon tainacan-icon-wordpress" />
                 </span>
             </a>
         </div>
@@ -132,21 +130,21 @@
             }
         },
         created(){
-            this.$root.$on('openProcessesPopup', () => {
+            this.$emitter.on('openProcessesPopup', () => {
                 this.showProcesses = true;
             });
         },
-        beforeDestroy() {
-            this.$root.$off('openProcessesPopup');
+        beforeUnmount() {
+            this.$emitter.off('openProcessesPopup');
         },
         methods: {
-            updateSearch() {
+            async updateSearch() {
                 if (this.$route.path !== '/items') {
-                    this.$router.push({
+                    await this.$router.push({
                         path: '/items',
                     });
                 }
-                this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
+                await this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
             }
         }
     }

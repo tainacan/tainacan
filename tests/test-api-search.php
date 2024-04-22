@@ -6,7 +6,7 @@ namespace Tainacan\Tests;
  * @group api
  * **/
 class TAINACAN_REST_Search extends TAINACAN_UnitApiTestCase {
-	function setUp() {
+	function setUp(): void {
 		parent::setUp();
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();

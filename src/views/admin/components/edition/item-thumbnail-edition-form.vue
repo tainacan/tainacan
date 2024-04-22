@@ -5,17 +5,17 @@
                 class="section-label">
             <label>
                 <span class="icon has-text-gray4">
-                    <i class="tainacan-icon tainacan-icon-image"/>
+                    <i class="tainacan-icon tainacan-icon-image" />
                 </span>
                 {{ collection && collection.item_thumbnail_label ? collection.item_thumbnail_label : $i18n.get('label_thumbnail') }}
             </label>
             <help-button
                     :title="collection && collection.item_thumbnail_label ? collection.item_thumbnail_label: $i18n.getHelperTitle('items', '_thumbnail_id')"
-                    :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
+                    :message="$i18n.getHelperMessage('items', '_thumbnail_id')" />
 
         </div>
         <div 
-                v-if="!isLoading && !$adminOptions.hideItemEditionThumbnail"
+                v-if="!$adminOptions.hideItemEditionThumbnail"
                 class="section-box section-thumbnail">
             <div class="thumbnail-field">
                 <file-item
@@ -28,13 +28,13 @@
                             thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype) ] },
                             title: $i18n.get('label_thumbnail'),
                             description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(item['thumbnail'], 'full', item.document_mimetype) + `'/>` 
-                        }"/>
+                        }" />
                 <figure
                         v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
                         class="image">
                     <span 
-                            class="image-placeholder"
-                            v-if="item.document_type == 'empty' && item.document_mimetype == 'empty'">
+                            v-if="item.document_type == 'empty' && item.document_mimetype == 'empty'"
+                            class="image-placeholder">
                         {{ $i18n.get('label_empty_thumbnail') }}
                     </span>
                     <img
@@ -47,7 +47,7 @@
                         :label="$i18n.get('label_thumbnail_alt')">
                     <help-button 
                             :title="$i18n.get('label_thumbnail_alt')" 
-                            :message="$i18n.get('info_thumbnail_alt')"/>
+                            :message="$i18n.get('info_thumbnail_alt')" />
                     <textarea
                             id="tainacan-text-description"
                             class="textarea"
@@ -57,10 +57,10 @@
                 </b-field>    
                 <div class="thumbnail-buttons-row">
                     <a
-                            class="button is-rounded is-secondary"
                             id="button-edit-thumbnail"
+                            class="button is-rounded is-secondary"
                             :aria-label="$i18n.get('label_button_edit_thumb')"
-                            @click.prevent="($event) => $emit('openThumbnailMediaFrame', $event)">
+                            @click.prevent="($event) => $emit('open-thumbnail-media-frame', $event)">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('edit'),
@@ -69,7 +69,7 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-edit"/>
+                            <i class="tainacan-icon tainacan-icon-edit" />
                         </span>
                     </a>
                     <a
@@ -77,7 +77,7 @@
                             id="button-delete-thumbnail"
                             class="button is-rounded is-secondary"
                             :aria-label="$i18n.get('label_button_delete_thumb')"
-                            @click="$emit('onDeleteThumbnail')">
+                            @click="$emit('on-delete-thumbnail')">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('delete'),
@@ -86,7 +86,7 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-delete"/>
+                            <i class="tainacan-icon tainacan-icon-delete" />
                         </span>
                     </a>
                 </div>
@@ -107,9 +107,14 @@ export default {
         collection: Object,
         form: Object
     },
+    emits: [
+        'open-thumbnail-media-frame',
+        'on-delete-thumbnail',
+        'on-update-thumbnail-alt'
+    ],
     methods: {
         updateThumbnailAlt: _.debounce(function($event) {
-            this.$emit('onUpdateThumbnailAlt', $event.target.value);
+            this.$emit('on-update-thumbnail-alt', $event.target.value);
         }, 750)
     }
 }

@@ -1,4 +1,4 @@
-import tainacan from '../../js/axios.js';
+import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 
 const { __ } = wp.i18n;
@@ -120,7 +120,7 @@ export default class CollectionsModal extends React.Component {
             modalCollections: currentModalCollections,
         });
 
-        tainacan.get(endpoint)
+        tainacanApi.get(endpoint)
             .then(response => {
 
                 for (let collection of response.data) {
@@ -164,7 +164,7 @@ export default class CollectionsModal extends React.Component {
         if (name != undefined && name != '')
             endpoint += '&search=' + name;
 
-        tainacan.get(endpoint, { cancelToken: aCollectionRequestSource.token })
+        tainacanApi.get(endpoint, { cancelToken: aCollectionRequestSource.token })
             .then(response => {
 
                 let someCollections = this.state.collections;
@@ -238,10 +238,10 @@ export default class CollectionsModal extends React.Component {
                                     )
                                 }                                                
                                 </ul>
-                                { this.state.isLoadingCollections ? <div class="spinner-container"><Spinner /></div> : null }
+                                { this.state.isLoadingCollections ? <div className="spinner-container"><Spinner /></div> : null }
                             </div>
                         )
-                        : this.state.isLoadingCollections ? <div class="spinner-container"><Spinner /></div> :
+                        : this.state.isLoadingCollections ? <div className="spinner-container"><Spinner /></div> :
                         <div className="modal-loadmore-section">
                             <p>{ __('Sorry, no collections found.', 'tainacan') }</p>
                         </div>
@@ -269,7 +269,7 @@ export default class CollectionsModal extends React.Component {
                                     </li>
                                 )
                             } 
-                            { this.state.isLoadingCollections ? <div class="spinner-container"><Spinner /></div> : null }                                               
+                            { this.state.isLoadingCollections ? <div className="spinner-container"><Spinner /></div> : null }                                               
                             </ul>
                             <div className="modal-loadmore-section">
                                 <p>{ __('Showing', 'tainacan') + " " + this.state.modalCollections.length + " " + __('of', 'tainacan') + " " + this.state.totalModalCollections + " " + __('collections', 'tainacan') + "."}</p>

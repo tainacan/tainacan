@@ -11,7 +11,14 @@ use Tainacan\Entities;
  *
  * */
 class REST_Background_Processes_Controller extends REST_Controller {
-    private $table = '';
+    
+    /**
+	 * table
+	 *
+	 * @var String
+	 * @access protected
+	 */
+    private $table;
 
     protected function get_schema() {
         return "TODO:get_schema";
@@ -185,7 +192,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
         $process_type = '';
         if (isset($request['search'])) {
             $name = $request['search'];
-            $process_type = "AND name LIKE '%${name}%'";
+            $process_type = "AND name LIKE '%$name%'";
             $process_type = $wpdb->prepare($process_type);
         }
 

@@ -1,21 +1,23 @@
 <template>
     <form class="tainacan-modal-content tainacan-form">
         <div class="tainacan-modal-title">
-            <h2 id="item-document-url-modal-title">{{ $i18n.get('instruction_insert_url') }}</h2>
+            <h2 id="item-document-url-modal-title">
+                {{ $i18n.get('instruction_insert_url') }}
+            </h2>
             <hr>
         </div>
         <b-input 
-                aria-labelledby="item-document-url-modal-title"
                 ref="item-document-url-input"
-                v-model="localUrlLink" />
+                v-model="localUrlLink"
+                aria-labelledby="item-document-url-modal-title" />
         <br>
         <b-field
                 :addons="false"
                 :label="$i18n.get('label_document_option_forced_iframe')">
                 &nbsp;
             <b-switch
-                    size="is-small" 
-                    v-model="localUrlForcedIframe" />
+                    v-model="localUrlForcedIframe" 
+                    size="is-small" />
             <help-button
                     :title="$i18n.get('label_document_option_forced_iframe')"
                     :message="$i18n.get('info_document_option_forced_iframe')" />
@@ -26,18 +28,18 @@
                 group-multiline>
             <b-field :label="$i18n.get('label_document_option_iframe_width')">
                 <b-numberinput
-                        :aria-minus-label="$i18n.get('label_decrease')"
-                        :aria-plus-label="$i18n.get('label_increase')"
-                        min="1" 
                         v-model="localUrlIframeWidth"
+                        :aria-minus-label="$i18n.get('label_decrease')"
+                        :aria-plus-label="$i18n.get('label_increase')" 
+                        min="1"
                         step="1" />
             </b-field>
             <b-field :label="$i18n.get('label_document_option_iframe_height')">
                 <b-numberinput
-                        :aria-minus-label="$i18n.get('label_decrease')"
-                        :aria-plus-label="$i18n.get('label_increase')"
-                        min="1" 
                         v-model="localUrlIframeHeight"
+                        :aria-minus-label="$i18n.get('label_decrease')"
+                        :aria-plus-label="$i18n.get('label_increase')" 
+                        min="1"
                         step="1" />
             </b-field>
         </b-field>
@@ -54,8 +56,8 @@
                 :label="$i18n.get('label_document_option_is_image')">
                 &nbsp;
             <b-switch
-                    size="is-small" 
-                    v-model="localUrlIsImage" />
+                    v-model="localUrlIsImage" 
+                    size="is-small" />
             <help-button
                     :title="$i18n.get('label_document_option_is_image')"
                     :message="$i18n.get('info_document_option_is_image')" />
@@ -67,14 +69,14 @@
                         id="button-cancel-url-link-selection"
                         class="button is-outlined"
                         type="button"
-                        @click="$parent.close()">
+                        @click="$emit('close')">
                     {{ $i18n.get('cancel') }}</button>
             </div>
             <div class="control">
                 <button
                         id="button-submit-url-link-selection"
-                        @click.prevent="confirmURLSelection();$parent.close();"
-                        class="button is-success">
+                        class="button is-success"
+                        @click.prevent="confirmURLSelection();$emit('close');">
                     {{ $i18n.get('save') }}</button>
             </div>
         </div>
@@ -90,6 +92,10 @@ export default {
         urlIframeHeight: 450,
         urlIsImage: false,
     },
+    emits: [
+        'confirmURLSelection',
+        'close'
+    ],
     data(){
         return {
             localUrlLink: '',

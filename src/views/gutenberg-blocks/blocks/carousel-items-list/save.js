@@ -32,28 +32,27 @@ export default function ({ attributes }) {
     return <div 
                 { ...blockProps }
                 data-module="carousel-items-list"
-                search-url={ searchURL }
-                selected-items={ JSON.stringify(selectedItems) }
-                arrows-position={ arrowsPosition }
-                load-strategy={ loadStrategy }
-                collection-id={ collectionId }  
-                auto-play={ '' + autoPlay }
-                auto-play-speed={ autoPlaySpeed }
-                loop-slides={ '' + loopSlides }
-                hide-title={ '' + hideTitle }
-                large-arrows={ '' + largeArrows }
-                arrows-style={ arrowsStyle }
-                image-size={ imageSize }
-                show-collection-header={ '' + showCollectionHeader }
-                show-collection-label={ '' + showCollectionLabel }
-                collection-background-color={ collectionBackgroundColor }
-                collection-text-color={ collectionTextColor }
-                max-items-number={ maxItemsNumber }
-                max-items-per-screen={ maxItemsPerScreen }
-                space-between-items={ spaceBetweenItems }
-                space-around-carousel={ spaceAroundCarousel }
-                tainacan-api-root={ tainacan_blocks.root }
-                tainacan-base-url={ tainacan_blocks.base_url }
+                data-search-url={ searchURL }
+                data-selected-items={ JSON.stringify(selectedItems) }
+                data-arrows-position={ arrowsPosition }
+                data-load-strategy={ loadStrategy }
+                data-collection-id={ collectionId }  
+                data-auto-play={ '' + autoPlay }
+                data-auto-play-speed={ autoPlaySpeed }
+                data-loop-slides={ '' + loopSlides }
+                data-hide-title={ '' + hideTitle }
+                data-large-arrows={ '' + largeArrows }
+                data-arrows-style={ arrowsStyle }
+                data-image-size={ imageSize }
+                data-show-collection-header={ '' + showCollectionHeader }
+                data-show-collection-label={ '' + showCollectionLabel }
+                data-collection-background-color={ collectionBackgroundColor }
+                data-collection-text-color={ collectionTextColor }
+                data-max-items-number={ maxItemsNumber }
+                data-max-items-per-screen={ maxItemsPerScreen }
+                data-space-between-items={ spaceBetweenItems }
+                data-space-around-carousel={ spaceAroundCarousel }
+                data-tainacan-api-root={ tainacan_blocks.root }
                 id={ 'wp-block-tainacan-carousel-items-list_' + blockId }>
                     { content }
             </div>

@@ -31,9 +31,9 @@ export default function({ attributes, setAttributes, isSelected }){
                 <button
                         onClick={ () => removeTermOfId(term.id) }
                         type="button"
-                        class="components-button has-icon"
+                        className="components-button has-icon"
                         aria-label={__('Remove', 'tainacan')}>
-                    <span class="dashicon dashicons dashicons-no-alt" />
+                    <span className="dashicon dashicons dashicons-no-alt" />
                 </button>     
                 <a 
                     id={ isNaN(term.id) ? term.id : 'term-id-' + term.id }

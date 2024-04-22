@@ -1,9 +1,9 @@
-import { tainacan } from '../../../axios';
+import { tainacanApi } from '../../../axios';
 
 export const fetchAvailableExposers = ({ commit }) => {
 
     return new Promise((resolve, reject) => {
-        tainacan.get('/exposers/' )
+        tainacanApi.get('/exposers/' )
             .then(res => {
                 commit('setAvailableExposers', res.data);
                 resolve(res.data);

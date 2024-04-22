@@ -1,23 +1,23 @@
 <template>
-<div class="circular-counter html">
-    <svg 
-            width="48" 
-            height="48" 
-            xmlns="http://www.w3.org/2000/svg">
-        <g>
-            <circle     
-                    id="circle" 
-                    class="circle-animation" 
-                    :style="{ 'animation-duration': time + 's' }"
-                    r="16" 
-                    cy="28" 
-                    cx="28" 
-                    stroke-width="3" 
-                    stroke="white" 
-                    fill="none"/>
-        </g>
-    </svg>
-</div>
+    <div class="circular-counter html">
+        <svg 
+                width="48" 
+                height="48" 
+                xmlns="http://www.w3.org/2000/svg">
+            <g>
+                <circle     
+                        id="circle" 
+                        class="circle-animation" 
+                        :style="{ 'animation-duration': time + 's' }"
+                        r="16" 
+                        cy="28" 
+                        cx="28" 
+                        stroke-width="3" 
+                        stroke="white" 
+                        fill="none" />
+            </g>
+        </svg>
+    </div>
 </template>
 
 <script>

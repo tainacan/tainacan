@@ -30,10 +30,10 @@ class Relationship extends Metadata_Type {
 							<div class="dropdown-menu" style="">
 								<div class="dropdown-content">
 									<a class="dropdown-item is-hovered">
-										<span>'. __('Collection') . ' 2 <strong>'._('item') . ' 9</strong>9</span>
+										<span>'. __('Collection') . ' 3 <strong>'._('item') . ' 2</strong>9</span>
 									</a>
 									<a class="dropdown-item">
-										<span>'. __('Collection') . ' 3 <strong>'._('item') . ' 9</strong>9</span>
+										<span>'. __('Collection') . ' 3 <strong>'._('item') . ' 4</strong>9</span>
 									</a>
 									<a class="dropdown-item">
 										<span>'. __('Collection') . ' 3 <strong>'._('item') . ' 9</strong>8</span>
