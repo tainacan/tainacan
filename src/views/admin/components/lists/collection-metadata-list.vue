@@ -682,7 +682,7 @@ export default {
                     
                     if ( !$event.from.classList.contains('active-metadata-area') ) {
                         this.addNewMetadatum(this.getMetadatumTypes()[$event.oldIndex], $event.newIndex, sectionIndex);
-                        $event.originalTarget.removeChild($event.item)
+                        $event.to.removeChild($event.item)
                     } else {
                         this.isLoadingMetadataSections = true;
 
@@ -698,7 +698,7 @@ export default {
                         newMetadataSectionsList[previousSectionIndex].metadata_object_list = previousSectionMetadataObjectList;
 
                         this.updateMetadataSections(newMetadataSectionsList);
-                        $event.originalTarget.removeChild($event.item);
+                        $event.to.removeChild($event.item);
 
                         this.updateMetadatum({
                             collectionId: this.collectionId,
