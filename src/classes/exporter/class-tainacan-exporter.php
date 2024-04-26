@@ -721,6 +721,10 @@ abstract class Exporter {
 	public function	append_to_file($key, $data) {
 		if ( array_key_exists ( $key , $this->output_files ) ) {
 			$fp = fopen($this->output_files[$key]['filename'], 'a');
+			if($fp == false) {
+				$file_name = $this->output_files[$key]['filename'];
+				throw new \Exception("Cannot open file $file_name");
+			}
 			fwrite($fp, $data);
 			fclose($fp);
 		} else { // será?
