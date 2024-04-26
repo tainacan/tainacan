@@ -372,6 +372,10 @@ class Item_Metadata extends Repository {
 
 			$terms = wp_get_object_terms( $item_metadata->get_item()->get_id(), $taxonomy_slug );
 
+			if( is_wp_error($terms) ) {
+				return null;
+			}
+			
 			if ( $unique ) {
 				$terms = reset( $terms );
 

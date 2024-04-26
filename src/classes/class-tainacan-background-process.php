@@ -347,7 +347,7 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 
 			$this->debug('Shutdown with Fatal error captured');
 			$this->debug($error_str);
-			$this->write_error_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'Fatal Error: ' . $error_str]] );
+			$this->write_error_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'Fatal Error: see the server error log for more details']] );
 			$this->write_error_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'Process aborted']]);
 			$this->close( $batch->key, 'errored' );
 			$this->debug('Batch closed due to captured error');
@@ -363,7 +363,7 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 			} catch (\Exception $e) {
 				// TODO: Add Stacktrace
 				$this->debug('Fatal Error: ' . $e->getMessage());
-				$this->write_error_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'Try Fatal Error: ' . $e->getMessage()]]);
+				$this->write_error_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'Try Fatal Error: see the server error log for more details']]);
 				$this->write_error_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'Process aborted']]);
 				$task = false;
 				$close_status = 'errored';
