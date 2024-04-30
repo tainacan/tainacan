@@ -1143,6 +1143,29 @@
             }
         }
     }
+
+    // Rules for Tainacan View Modes are similar to those applied 
+    // for .theme-items-list in /blocks/faceted-search/theme.vue
+    .items-list.items-layout-tainacan-view-modes {
+
+        // Not really used in EVERY container, but a rather frequent value
+        --tainacan-container-padding: 0.875em;
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            margin: 0;
+        }
+        ul {
+            list-style: none;
+        }
+        .loading-overlay {
+            min-height: auto !important;
+        }
+    }
 }
 .block-editor-block-list__block:not(.has-text-color)>.wp-block-tainacan-dynamic-items-list {
     li.item-list-item {

@@ -1188,7 +1188,7 @@ class Theme_Helper {
 	 * @param array $args {
 		 *     Optional. Array of arguments.
 		 *     @type string  $item_id							The Item ID
-		 *     @type string  $items_list_layout					The type of list to be rendered. Accepts 'grid', 'list', 'mosaic' and 'carousel'. 
+		 *     @type string  $items_list_layout					The type of list to be rendered. Accepts 'grid', 'list', 'mosaic', 'carousel' and 'tainacan-view-mode. 
 		 * 	   @type string  $order								Sorting direction to the related items query. Either 'desc' or 'asc'. 
 		 * 	   @type string  $orderby							Sortby metadata. By now we're accepting only 'title' and 'date'.
 		 *     @type string  $class_name						Extra class to add to the wrapper, besides the default wp-block-tainacan-carousel-related-items
@@ -1265,15 +1265,44 @@ class Theme_Helper {
 						? $block_args['image_size']
 						: ($no_crop_images_to_square ? 'tainacan-medium-full' : 'tainacan-medium');
 
-					// Remove attribute description to avoid poluting HTML
+					// No need to pass the complete item to avoid poluting HTML
 					$related_group['items'] = array_map(
-						function($el) use ($image_size) {
+						function($el) use ($args) {
+
+							// In Tainacan View Modes, we fetch items from api so we only need ID
+							if ( $args['items_list_layout'] === 'tainacan-view-modes' )
+								return $el['id'];
+
+							// For other layouts, we simply remove attribute description
 							unset($el['description']);
 							return $el;
 						}, $related_group['items']
 					);
+					
+					if ( isset($args['items_list_layout']) && $args['items_list_layout'] === 'carousel' ) {
+						$items_list_args = wp_parse_args([
+							'collection_id' => $related_group['collection_id'],
+							'load_strategy' => 'parent',
+							'selected_items' => json_encode($related_group['items']),
+							'image_size' => $image_size
+						], $block_args);
 
-					if ( isset($args['items_list_layout']) && $args['items_list_layout'] !== 'carousel' ) {
+						$items_list_div = $this->get_tainacan_items_carousel($items_list_args);
+
+					} else if ( isset($args['items_list_layout']) && $args['items_list_layout'] === 'tainacan-view-modes' ) {
+						$items_list_args = wp_parse_args([
+							'collection_id' => $related_group['collection_id'],
+							'load_strategy' => 'selection', // Tainacan View Modes fetch item from api to get item metadata as well
+							'selected_items' => json_encode($related_group['items']),
+							'layout' => $args['items_list_layout'],
+							'displayed_metadata' => json_encode(isset( $block_args['displayed_metadata'] ) ? $block_args['displayed_metadata'] : []),
+							'selected_items' => json_encode($related_group['items']),
+							'tainacan_view_mode' => $block_args['tainacan_view_mode']
+						], $block_args);
+
+						$items_list_div = $this->get_tainacan_dynamic_items_list($items_list_args);
+
+					} else {
 						$items_list_args = wp_parse_args([
 							'collection_id' => $related_group['collection_id'],
 							'load_strategy' => 'parent',
@@ -1283,16 +1312,8 @@ class Theme_Helper {
 						], $block_args);
 
 						$items_list_div = $this->get_tainacan_dynamic_items_list($items_list_args);
-					} else {
-						$items_list_args = wp_parse_args([
-							'collection_id' => $related_group['collection_id'],
-							'load_strategy' => 'parent',
-							'selected_items' => json_encode($related_group['items']),
-							'image_size' => $image_size
-						], $block_args);
 
-						$items_list_div = $this->get_tainacan_items_carousel($items_list_args);
-					}
+					} 
 				}
 				
 				$output .= '<div class="wp-block-group" data-related-collection-id="' . $related_group['collection_id'] . '" data-related-metadata-id="' . $related_group['metadata_id'] . '">

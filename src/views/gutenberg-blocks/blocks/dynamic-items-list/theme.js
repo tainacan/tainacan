@@ -1,8 +1,11 @@
-import { createApp, h } from 'vue';
+import { createApp, h, defineAsyncComponent } from 'vue';
 
 import DynamicItemsListTheme from './theme.vue';
 import { ThumbnailHelperPlugin } from '../../../admin/js/utilities.js';
+import { I18NPlugin } from '../../../admin/js/admin-utilities';
 import VueBlurHash from 'another-vue3-blurhash';
+import VTooltip from 'floating-vue';
+
 import getDataAttribute from '../../js/compatibility/tainacan-blocks-compat-data-attributes.js';
 
 export default (element) => {
@@ -20,9 +23,32 @@ export default (element) => {
     
             // Creates a new Vue Instance to manage each block isolatelly
             blocks.forEach((block) => {
+
+                // View Modes Logic
+                let registeredViewModes =
+                    ( tainacan_blocks && tainacan_blocks.registered_view_modes && tainacan_blocks.registered_view_modes.length ) ?
+                    tainacan_blocks.registered_view_modes :
+                    [ 'table', 'cards', 'records', 'masonry', 'list', 'map' ];
+
+                // At first, we consider that all registered view modes are included.
+                let possibleViewModes = registeredViewModes.filter((aViewMode) => aViewMode === 'slideshow');
+                if ( getDataAttribute(block, 'enabled-view-modes') != undefined )
+                    possibleViewModes = getDataAttribute(block, 'enabled-view-modes').split(',');
+
+                // View Mode settings
+                let possibleDefaultViewMode = 'masonry';
+                if ( getDataAttribute(block, 'tainacan-view-mode') != undefined )
+                    possibleDefaultViewMode = getDataAttribute(block, 'tainacan-view-mode');
+            
+                if ( possibleViewModes.indexOf(possibleDefaultViewMode) < 0 )
+                    possibleViewModes.push(possibleDefaultViewMode);
+                
     
                 // Configure Vue logic before passing it to constructor:
                 const VueDynamicItemsList = createApp( {
+                    mounted() {
+                        block.classList.add('has-mounted');
+                    },
                     render() { 
                         return h(DynamicItemsListTheme, {
                             searchURL: getDataAttribute(block, 'search-url'),
@@ -50,14 +76,31 @@ export default (element) => {
                             showCollectionLabel: getDataAttribute(block, 'show-collection-label', 'false') == 'true',
                             collectionBackgroundColor: getDataAttribute(block, 'collection-background-color'),
                             collectionTextColor: getDataAttribute(block, 'collection-text-color'),
-                            tainacanApiRoot: getDataAttribute(block, 'tainacan-api-root')
+                            tainacanApiRoot: getDataAttribute(block, 'tainacan-api-root'),
+                            tainacanViewMode: possibleDefaultViewMode,
+                            enabledViewModes: possibleViewModes,
+                            displayedMetadata: JSON.parse(getDataAttribute(block, 'displayed-metadata', '[]')),
                         });
-                    },
-                    mounted() {
-                        block.classList.add('has-mounted');
                     }
                 });
 
+                // Logic for dynamic importing Tainacan oficial view modes only if they are necessary
+                possibleViewModes.forEach(viewModeSlug => {
+                    if ( registeredViewModes.indexOf(viewModeSlug) >= 0 )
+                        VueDynamicItemsList.component('view-mode-' + viewModeSlug, defineAsyncComponent(() => import('../faceted-search/theme-search/components/view-mode-' + viewModeSlug + '.vue')));
+                });
+                VueDynamicItemsList.use(VTooltip, {
+                    popperTriggers: ['hover'],
+                    themes: {
+                        'taianacan-tooltip': {
+                            '$extend': 'tooltip',
+                            triggers: ['hover', 'focus', 'touch'],
+                            autoHide: true,
+                            html: true,
+                        }
+                    }
+                });
+                VueDynamicItemsList.use(I18NPlugin);
                 VueDynamicItemsList.use(ThumbnailHelperPlugin);
                 VueDynamicItemsList.use(VueBlurHash);
 
