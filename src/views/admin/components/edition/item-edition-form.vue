@@ -1230,7 +1230,7 @@ export default {
                 // Sends info to iframe containing item edition form and other use cases
                 parent.postMessage({ 
                     type: 'itemEditionMessage',
-                    item: this.$adminOptions.itemEditionMode ? this.item : null
+                    item: this.$adminOptions.itemEditionMode ? JSON.parse(JSON.stringify(this.item)) : null
                 },
                 tainacan_plugin.admin_url);
 
@@ -1241,7 +1241,7 @@ export default {
                     webkit.messageHandlers &&
                     webkit.messageHandlers.cordova_iab
                 )
-                    webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify({ 'type': 'item_updated', 'item': this.item }));
+                    webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify({ 'type': 'item_updated', 'item': JSON.parse(JSON.stringify(this.item)) }));
             })
             .catch((errors) => {
                 
@@ -1885,7 +1885,7 @@ export default {
                 webkit.messageHandlers &&
                 webkit.messageHandlers.cordova_iab
             )
-                webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify({ 'type': 'exited_from_navigation', 'item': this.item }));
+                webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify({ 'type': 'exited_from_navigation', 'item': JSON.parse(JSON.stringify(this.item)) }));
         },
         isSectionHidden(sectionId) {
             return this.conditionalSections[sectionId] && this.conditionalSections[sectionId].hide;

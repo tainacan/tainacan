@@ -128,7 +128,7 @@
                                             :disabled="bulkEditionProcedures[criterion].isDone"
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                             :placeholder="$i18n.get('instruction_select_a_status2')"
-                                            @update:model-update:value="($event) => addToBulkEditionProcedures($event, 'newValue', criterion)">
+                                            @update:model-value="($event) => addToBulkEditionProcedures($event, 'newValue', criterion)">
                                         <option
                                                 v-for="(statusOption, index) of $statusHelper.getStatuses().filter(option => { return option.value != 'trash' })"
                                                 :key="index"
@@ -144,7 +144,7 @@
                                             :disabled="bulkEditionProcedures[criterion].isDone"
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                             :placeholder="$i18n.get('instruction_select_a_comments_status')"
-                                            @update:model-update:value="($event) => addToBulkEditionProcedures($event, 'newValue', criterion)">
+                                            @update:model-value="($event) => addToBulkEditionProcedures($event, 'newValue', criterion)">
                                         <option
                                                 v-for="(statusOption, index) of $commentsStatusHelper.getStatuses()"
                                                 :key="index"
