@@ -14,30 +14,60 @@
     list-style: none;
     animation-name: appear;   
     animation-duration: 0.5s;
+
+    @supports (contain: inline-size) {
+        container-type: inline-size; 
+    }
     
     &:not(.tainacan-masonry-container--legacy){
         &>li,
         &>.tainacan-masonry-grid-sizer {
             list-style-type: none;
-            width: calc(14.285% - 25px);
-
-            @media screen and (max-width: 2560px) {
+            width: calc(12.5% - 25px);
+            
+            @container (max-width: 2380px) {
+                width: calc(14.285% - 25px);
+            }
+            @container (max-width: 1980px) {
                 width: calc(16.666% - 25px);
             }
-            @media screen and (max-width: 1920px) {
+            @container (max-width: 1480px) {
                 width: calc(20% - 25px);
             }
-            @media screen and (max-width: 1740px) {
+            @container (max-width: 1240px) {
                 width: calc(25% - 25px);
             }
-            @media screen and (max-width: 1440px) {
+            @container (max-width: 940px) {
                 width: calc(33.333% - 25px);
             }
-            @media screen and (max-width: 1024px) {
+            @container (max-width: 720px) {
                 width: calc(50% - 25px);
             }
-            @media screen and (max-width: 620px) {
+            @container (max-width: 380px) {
                 width: calc(100% - 25px);
+            }
+
+            @supports not (contain: inline-size) {
+                width: calc(14.285% - 25px);
+
+                @media screen and (max-width: 2560px) {
+                    width: calc(16.666% - 25px);
+                }
+                @media screen and (max-width: 1920px) {
+                    width: calc(20% - 25px);
+                }
+                @media screen and (max-width: 1740px) {
+                    width: calc(25% - 25px);
+                }
+                @media screen and (max-width: 1440px) {
+                    width: calc(33.333% - 25px);
+                }
+                @media screen and (max-width: 1024px) {
+                    width: calc(50% - 25px);
+                }
+                @media screen and (max-width: 620px) {
+                    width: calc(100% - 25px);
+                }
             }
         }
     }
