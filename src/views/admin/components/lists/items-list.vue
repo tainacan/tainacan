@@ -1700,20 +1700,25 @@
                                     v-if="Object.keys(geocoordinateMetadata).length"
                                     class="geocoordinate-panel--input">
                                 <label>{{ $i18n.get('label_showing_locations_for') }}&nbsp;</label>
-                                <b-select
+                                <div 
                                         id="tainacan-select-geocoordinate-metatum"
-                                        v-model="selectedGeocoordinateMetadatumId"
-                                        :placeholder="$i18n.get('instruction_select_geocoordinate_metadatum')">
-                                    <option
-                                            v-for="(geocoordinateMetadatum, geocoordinateMetadatumId) in geocoordinateMetadata"
-                                            :key="geocoordinateMetadatum.id"
-                                            role="button"
-                                            :class="{ 'is-active': selectedGeocoordinateMetadatumId == geocoordinateMetadatumId }"
-                                            :value="geocoordinateMetadatumId"
-                                            @click="onChangeSelectedGeocoordinateMetadatum(geocoordinateMetadatumId)">
-                                        {{ geocoordinateMetadatum.name }}
-                                    </option>
-                                </b-select>
+                                        class="control">
+                                    <span class="select">
+                                        <select
+                                                v-model="selectedGeocoordinateMetadatumId"
+                                                :placeholder="$i18n.get('instruction_select_geocoordinate_metadatum')">
+                                            <option
+                                                    v-for="(geocoordinateMetadatum, geocoordinateMetadatumId) in geocoordinateMetadata"
+                                                    :key="geocoordinateMetadatum.id"
+                                                    role="button"
+                                                    :class="{ 'is-active': selectedGeocoordinateMetadatumId == geocoordinateMetadatumId }"
+                                                    :value="geocoordinateMetadatumId"
+                                                    @click="onChangeSelectedGeocoordinateMetadatum(geocoordinateMetadatumId)">
+                                                {{ geocoordinateMetadatum.name }}
+                                            </option>
+                                        </select>
+                                    </span>
+                                </div>
                             </div>
                             <section 
                                     v-else
@@ -2677,6 +2682,7 @@ export default {
 <style lang="scss" scoped>
 
     @import "../../scss/_variables.scss";
+    @import "../../scss/_tables.scss";
     @import "../../scss/_view-mode-cards.scss";
     @import "../../scss/_view-mode-masonry.scss";
     @import "../../scss/_view-mode-grid.scss";

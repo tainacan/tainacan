@@ -184,7 +184,7 @@
                     class="mosaic-container skeleton" /> 
         </ul>
     </template>
-    <div v-else>
+    <template v-else>
         <ul 
                 v-if="items.length > 0 && layout !== 'mosaic' && layout !== 'tainacan-view-modes'"
                 :style="{
@@ -263,14 +263,14 @@
         </ul>
         <div 
                 v-if="layout === 'tainacan-view-modes'"
-                class="items-list"
-                :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
+                class="items-list items-layout-tainacan-view-modes">
             <div 
                     v-if="(!isLoading && !isLoadingMetadata ) && registeredViewModes !== undefined && registeredViewModes[tainacanViewMode] != undefined && registeredViewModes[tainacanViewMode].type == 'template'"
                     v-html="itemsListTemplate" />
             <component
                     :is="registeredViewModes[tainacanViewMode] != undefined ? registeredViewModes[tainacanViewMode].component : ''"
                     v-if="registeredViewModes !== undefined && registeredViewModes[tainacanViewMode] != undefined && registeredViewModes[tainacanViewMode].type == 'component'"
+                    :container-id="blockId"
                     :collection-id="collectionId"
                     :displayed-metadata="displayedMetadataObjects"
                     :should-hide-items-thumbnail="false"
@@ -285,7 +285,7 @@
                 class="spinner-container">
             {{ wpI18n(errorMessage, 'tainacan') }}
         </div>
-    </div>
+    </template>
 </template>
 
 <script>
@@ -296,6 +296,7 @@ import debounce from 'lodash/debounce.js';
 export default {
     name: "DynamicItemsListTheme",
     props: {
+        blockId: String,
         collectionId: [String, Number],  
         showImage: Boolean,
         showName: Boolean,
@@ -408,13 +409,15 @@ export default {
                 if (
                     this.layout == 'tainacan-view-modes' &&
                     this.registeredViewModes !== undefined &&
-                    this.registeredViewModes[this.tainacanViewMode] != undefined &&
-                    this.registeredViewModes[this.tainacanViewMode]['dynamic_metadata'] == true
+                    this.registeredViewModes[this.tainacanViewMode] != undefined
                 ) {
+                    endpoint += '&view_mode=' + this.tainacanViewMode;
+
                     if ( this.displayedMetadataObjects.length > 0 )
                         endpoint += '&fetch_only=title,url,thumbnail&fetch_only_meta=' + this.displayedMetadataObjects.map((aMetadatum) => aMetadatum.id).join(',');
                     else 
                         endpoint += '&fetch_only=title,description,url,thumbnail';
+
                 } else {
                     endpoint += '&fetch_only=title,url,thumbnail';
                 }
@@ -491,13 +494,32 @@ export default {
                 delete queryObject.admin_view_mode;
                 delete queryObject.fetch_only_meta;
                 
-                endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
+                endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject);
+                
+                if (
+                    this.layout == 'tainacan-view-modes' &&
+                    this.registeredViewModes !== undefined &&
+                    this.registeredViewModes[this.tainacanViewMode] != undefined
+                ) {
+                    endpoint += '&view_mode=' + this.tainacanViewMode;
+
+                    if ( this.displayedMetadataObjects.length > 0 )
+                        endpoint += '&fetch_only=title,url,thumbnail&fetch_only_meta=' + this.displayedMetadataObjects.map((aMetadatum) => aMetadatum.id).join(',');
+                    else 
+                        endpoint += '&fetch_only=title,description,url,thumbnail';
+
+                } else {
+                    endpoint += '&fetch_only=title,url,thumbnail';
+                }
                 
                 this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
                     .then(response => {
 
                         for (let item of response.data.items)
                             this.items.push(item);
+
+                        if ( response.data.template )
+                            this.itemsListTemplate = response.data.template;
 
                         this.isLoading = false;
                         this.totalItems = response.headers['x-wp-total'];

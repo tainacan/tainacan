@@ -152,6 +152,14 @@
         "imageSize": {
             "type": "string",
             "default": "tainacan-medium"
+        },
+        "tainacanViewMode": {
+            "type": "string",
+            "default": "masonry"
+        },
+        "displayedMetadata": {
+            "type": "array",
+            "default": []
         }
     },
     "supports": {

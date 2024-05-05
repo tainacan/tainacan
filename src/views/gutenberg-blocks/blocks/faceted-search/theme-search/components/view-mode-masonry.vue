@@ -113,11 +113,11 @@ export default {
                         if (this.masonry !== false)
                             this.masonry.destroy();
                         
-                        this.masonry = new Masonry( '.tainacan-masonry-container', {
+                        this.masonry = new Masonry( this.containerId ? ( '#' + this.containerId + ' .tainacan-masonry-container' ) : '.tainacan-masonry-container', {
                             itemSelector: 'li',
                             columnWidth: '.tainacan-masonry-grid-sizer',
                             gutter: 25,
-                            percentPosition: true
+                            percentPosition: true,
                         });
                     });
                 }

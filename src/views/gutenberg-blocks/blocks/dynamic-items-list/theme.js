@@ -42,7 +42,6 @@ export default (element) => {
             
                 if ( possibleViewModes.indexOf(possibleDefaultViewMode) < 0 )
                     possibleViewModes.push(possibleDefaultViewMode);
-                
     
                 // Configure Vue logic before passing it to constructor:
                 const VueDynamicItemsList = createApp( {
@@ -80,6 +79,7 @@ export default (element) => {
                             tainacanViewMode: possibleDefaultViewMode,
                             enabledViewModes: possibleViewModes,
                             displayedMetadata: JSON.parse(getDataAttribute(block, 'displayed-metadata', '[]')),
+                            blockId: block.id
                         });
                     }
                 });
@@ -89,6 +89,14 @@ export default (element) => {
                     if ( registeredViewModes.indexOf(viewModeSlug) >= 0 )
                         VueDynamicItemsList.component('view-mode-' + viewModeSlug, defineAsyncComponent(() => import('../faceted-search/theme-search/components/view-mode-' + viewModeSlug + '.vue')));
                 });
+                
+               /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
+                if (typeof window.tainacan_extra_components != "undefined") {
+                    for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components)) {
+                        VueDynamicItemsList.component(extraVueComponentName, extraVueComponentObject);
+                    }
+                }
+
                 VueDynamicItemsList.use(VTooltip, {
                     popperTriggers: ['hover'],
                     themes: {

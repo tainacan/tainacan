@@ -592,6 +592,8 @@ export default {
 
 <style lang="scss" scoped>
 
+    @import "../../scss/_tables.scss";
+
     .selection-control {
         
         padding: 6px 0px 0px 12px;

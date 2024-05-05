@@ -1,5 +1,9 @@
-.tainacan-masonry-container {
+.theme-items-list .tainacan-masonry-container,
+.items-list-area .tainacan-masonry-container {
     min-height: 50vh;
+}
+.tainacan-masonry-container {
+    list-style: none;
     margin-left: 25px;
     padding: 0;
     display: flex;

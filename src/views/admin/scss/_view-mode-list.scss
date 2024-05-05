@@ -1,5 +1,9 @@
-.tainacan-list-container {
+.theme-items-list .tainacan-list-container,
+.items-list-area .tainacan-list-container {
     min-height: 50vh;
+}
+.tainacan-list-container {
+    list-style: none;
     padding: 0;
     height: auto !important;
     display: flex;

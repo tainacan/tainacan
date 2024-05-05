@@ -255,6 +255,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+    @import '../../../../../admin/scss/_variables.scss';
+    @import '../../../../../admin/scss/_tables.scss';
     
     tr .actions-cell {
         opacity: 0;

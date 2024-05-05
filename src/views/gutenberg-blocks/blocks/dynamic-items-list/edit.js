@@ -1,6 +1,8 @@
-const { __ } = wp.i18n;
+const { __, sprintf } = wp.i18n;
 
-const { ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Placeholder, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { Card, CardBody, Icon, ToolbarDropdownMenu, ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Placeholder, ColorPalette, BaseControl, PanelBody } = wp.components;
+
+const { createInterpolateElement } = wp.element;
 
 const { InspectorControls, BlockControls, useBlockProps, store } = wp.blockEditor;
 
@@ -49,7 +51,9 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
         sampleBackgroundImage,
         mosaicDensity,
         maxColumnsCount,
-        imageSize
+        imageSize,
+        tainacanViewMode,
+        displayedMetadata
     } = attributes;
 
     // Gets blocks props from hook
@@ -131,18 +135,20 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
             >
                 { loadStrategy == 'selection' ?
                     <Button
+                        tabindex="-1"
                         onClick={ () => removeItemOfId(item.id) }
                         icon={ () => (
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M12 13.06l3.712 3.713 1.061-1.06L13.061 12l3.712-3.712-1.06-1.06L12 10.938 8.288 7.227l-1.061 1.06L10.939 12l-3.712 3.712 1.06 1.061L12 13.061z"></path></svg>
                         ) }
-                        label={__('Remove', 'tainacan')}/>
-                    :null
+                        label={__('Remove', 'tainacan')}
+                        title={__('Remove', 'tainacan')} />
+                    : null
                 }
                 <a 
-                    id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
-                    href={ item.url } 
-                    onClick={ (event) => event.preventDefault() }
-                    className={ (!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '') }>
+                        id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
+                        href={ item.url } 
+                        onClick={ (event) => event.preventDefault() }
+                        className={ (!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '') }>
                     <img
                         src={ thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype']) }
                         srcSet={ thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype']) }
@@ -546,7 +552,27 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
 
             { items.length ?
                 <BlockControls>
-                    { TainacanBlocksCompatToolbar({ controls: layoutControls }) }
+                    { TainacanBlocksCompatToolbar({
+                        controls: layoutControls,
+                        extraComponents: <ToolbarDropdownMenu
+                                icon={ () => <Icon icon="plus" /> }
+                                label={ __('Tainacan View Modes', 'tainacan') }
+                                controls={ 
+                                    Object.entries(tainacan_blocks.registered_view_modes)
+                                        .filter((aViewMode) => !aViewMode[1].full_screen)
+                                        .map((aViewMode) => {
+                                            return {
+                                                title: aViewMode[1].label,
+                                                isActive: layout === 'tainacan-view-modes' && tainacanViewMode === aViewMode[0],
+                                                onClick: () => { 
+                                                    setAttributes({ tainacanViewMode: aViewMode[0] })
+                                                    updateLayout('tainacan-view-modes');
+                                                }
+                                            }
+                                        }) 
+                                }
+                            /> 
+                    }) }
                     { loadStrategy != 'parent' ? 
                         (
                             loadStrategy == 'selection' ?
@@ -661,6 +687,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                     <PanelBody
                             title={__('Items', 'tainacan')}
                             initialOpen={ true }
+                            className="wp-block-tainacan-dynamic-items-list-inspector"
                         >
                         { loadStrategy == 'search' ?
                             <div>
@@ -748,16 +775,31 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                         />
                                 </div>
                             : null }
-                            <SelectControl
-                                    label={__('Image size', 'tainacan')}
-                                    value={ imageSize }
-                                    options={ imageSizeOptions }
-                                    onChange={ ( anImageSize ) => { 
-                                        imageSize = anImageSize;
-                                        setAttributes({ imageSize: imageSize });
-                                        setContent();
-                                    }}
-                                />
+                            { layout != 'tainacan-view-modes' ?
+                                <SelectControl
+                                        label={__('Image size', 'tainacan')}
+                                        value={ imageSize }
+                                        options={ imageSizeOptions }
+                                        onChange={ ( anImageSize ) => { 
+                                            imageSize = anImageSize;
+                                            setAttributes({ imageSize: imageSize });
+                                            setContent();
+                                        }}
+                                    />
+                            : null }
+                            { layout == 'tainacan-view-modes' ?
+                                <>
+                                    { createInterpolateElement(
+                                        __( 'When using Tainacan View Modes other metadata than title and description may be rendered. To define which metadata appear by default, go to your <a>collection metadata settings</a> and tweak the "Display on listing" option.', 'tainacan' ),
+                                        {
+                                            a : <a href={ tainacan_blocks.admin_url + '?page=tainacan_admin#/collections/' + collectionId + '/metadata' } />
+                                        }
+                                    ) }
+                                    <ul className="items-list-edit items-layout-list items-layout-tainacan-view-modes">
+                                        { items }
+                                    </ul>
+                                </>
+                            : null }
                         </div>
                     </PanelBody>
                     { layout == 'mosaic' ?
@@ -1018,7 +1060,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                 </div>
             : null
             }
-
+            
             { !items.length && !isLoading ? (
                 <Placeholder
                     className="tainacan-block-placeholder"
@@ -1066,7 +1108,14 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                     <Spinner />
                 </div> :
                 <div>
-                    { layout !== 'mosaic' ? (
+                    { layout === 'tainacan-view-modes' ? (
+                        <>
+                            <div className="preview-warning">{__('Warning: this is just a demonstration. Tainacan view modes can only be rendered outside the editor, so either preview or publish your post.', 'tainacan') }</div>
+                            <div className="items-list-edit items-layout-tainacan-view-modes" dangerouslySetInnerHTML={{ __html: tainacan_blocks.registered_view_modes[tainacanViewMode] && tainacan_blocks.registered_view_modes[tainacanViewMode].placeholder_template ? (tainacan_blocks.registered_view_modes[tainacanViewMode].placeholder_template) : null }} />
+                        </>
+                    ) : null }
+            
+                    { layout !== 'mosaic' && layout !== 'tainacan-view-modes' ? (
                         <ul 
                             style={{
                                 gridGap: layout == 'grid' ? ((showName ? gridMargin + 24 : gridMargin) + 'px') : 'inherit',
@@ -1076,7 +1125,9 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                             className={'items-list-edit items-layout-' + layout + (!showName ? ' items-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '') }>
                             { items }
                         </ul>
-                    ) : 
+                    ) : null }
+
+                    { layout === 'mosaic' ?
                         <ResizableBox
                             size={ {
                                 height: mosaicHeight ? Number(mosaicHeight) + (3 * gridMargin) : 280 + (3 * gridMargin),
@@ -1113,7 +1164,8 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                 { items }
                             </ul>
                         </ResizableBox>
-                    }
+                    : null }
+
                 </div>
             }
         </div>

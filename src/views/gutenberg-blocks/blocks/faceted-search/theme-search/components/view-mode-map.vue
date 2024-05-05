@@ -160,20 +160,26 @@
                                     v-if="Object.keys(geocoordinateMetadata).length"
                                     class="geocoordinate-panel--input">
                                 <label>{{ $i18n.get('label_showing_locations_for') }}&nbsp;</label>
-                                <b-select
+                                <div 
                                         id="tainacan-select-geocoordinate-metatum"
-                                        v-model="selectedGeocoordinateMetadatumId"
-                                        :placeholder="$i18n.get('instruction_select_geocoordinate_metadatum')">
-                                    <option
-                                            v-for="(geocoordinateMetadatum, geocoordinateMetadatumId) in geocoordinateMetadata"
-                                            :key="geocoordinateMetadatum.id"
-                                            role="button"
-                                            :class="{ 'is-active': selectedGeocoordinateMetadatumId == geocoordinateMetadatumId }"
-                                            :value="geocoordinateMetadatumId"
-                                            @click="onChangeSelectedGeocoordinateMetadatum(geocoordinateMetadatumId)">
-                                        {{ geocoordinateMetadatum.name }}
-                                    </option>
-                                </b-select>
+                                        class="control">
+                                    <!-- Not using B-Select here to avoid importing Bulme on view modes inside Gutenberg blocks -->
+                                    <span class="select">
+                                        <select
+                                                v-model="selectedGeocoordinateMetadatumId"
+                                                :placeholder="$i18n.get('instruction_select_geocoordinate_metadatum')">
+                                            <option
+                                                    v-for="(geocoordinateMetadatum, geocoordinateMetadatumId) in geocoordinateMetadata"
+                                                    :key="geocoordinateMetadatum.id"
+                                                    role="button"
+                                                    :class="{ 'is-active': selectedGeocoordinateMetadatumId == geocoordinateMetadatumId }"
+                                                    :value="geocoordinateMetadatumId"
+                                                    @click="onChangeSelectedGeocoordinateMetadatum(geocoordinateMetadatumId)">
+                                                {{ geocoordinateMetadatum.name }}
+                                            </option>
+                                        </select>
+                                    </span>
+                                </div>
                             </div>
                             <section 
                                     v-else
@@ -537,6 +543,7 @@ export default {
                 const geocoordinateMetadataIds = Object.keys(this.geocoordinateMetadata);
                 if (
                     !geocoordinateMetadataIds.length ||
+                    !this.$userPrefs ||
                     !this.$userPrefs.get(prefsGeocoordinateMetadatum) ||
                     !this.geocoordinateMetadata[this.$userPrefs.get(prefsGeocoordinateMetadatum)]
                 )
@@ -552,7 +559,8 @@ export default {
         onChangeSelectedGeocoordinateMetadatum(id) {
             // Setting default geocoordinate metadatum for map view mode
             const prefsGeocoordinateMetadatum = !this.isRepositoryLevel ? 'map_view_mode_selected_geocoordinate_metadatum_' + this.collectionId : 'map_view_mode_selected_geocoordinate_metadatum';
-            this.$userPrefs.set(prefsGeocoordinateMetadatum, id);
+            if ( this.$userPrefs )
+                this.$userPrefs.set(prefsGeocoordinateMetadatum, id);
         },
         onMapReady() {
             if ( LeafletActiveArea && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].leafletObject )
@@ -621,6 +629,46 @@ export default {
 
     .tainacan-records-container--map .tainacan-record .metadata-title {
         padding: 0.6em 0.875em;
+    }
+    #tainacan-select-geocoordinate-metatum select {
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        align-items: center;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        box-shadow: none;
+    }
+    #tainacan-select-geocoordinate-metatum .select:not(.is-loading)::after {
+        border: 3px solid transparent;
+        border-radius: 2px;
+        border-right: 0;
+        border-top: 0;
+        content: " ";
+        display: block;
+        height: 0.625em;
+        margin-top: -0.4375em;
+        pointer-events: none;
+        position: absolute;
+        top: 50%;
+        transform: rotate(-45deg);
+        transform-origin: center;
+        width: 0.625em;
+        content: "arrowdown" !important;
+        font: normal normal normal 20px/1 "TainacanIcons";
+            font-size: 20px;
+            line-height: 1;
+        border: none !important;
+        transform: none !important;
+        right: 10px !important;
+        color: var(--tainacan-secondary) !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        margin-top: -0.275em !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        font-size: 1.2em;
+        line-height: 1.5em;
     }
 </style>
 

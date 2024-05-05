@@ -1,5 +1,9 @@
-.tainacan-records-container {
+.theme-items-list .tainacan-records-container,
+.items-list-area .tainacan-records-container {
     min-height: 50vh;
+}
+.tainacan-records-container {
+    list-style: none;
     padding: 0;
     display: flex;
     flex-wrap: wrap;
@@ -8,24 +12,42 @@
     justify-content: space-evenly;
     animation-name: appear;
     animation-duration: 0.5s;
+    container-type: inline-size; 
 
     &>li,
     .tainacan-records-grid-sizer {
         width: calc(20% - 30px);
 
-        @media screen and (max-width: 2560px) {
+        @container (max-width: 2560px) {
             width: calc(25% - 30px);
         }
-        @media screen and (max-width: 1920px) {
+        @container (max-width: 1920px) {
             width: calc(33.333% - 30px);
         }
-        @media screen and (max-width: 1360px) {
+        @container (max-width: 1360px) {
             width: calc(50% - 30px);
         }
-        @media screen and (max-width: 1024px) {
+        @container (max-width: 1024px) {
             width: 100%;
         }
     }
+    // &>li,
+    // .tainacan-records-grid-sizer {
+    //     width: calc(20% - 30px);
+
+    //     @media screen and (max-width: 2560px) {
+    //         width: calc(25% - 30px);
+    //     }
+    //     @media screen and (max-width: 1920px) {
+    //         width: calc(33.333% - 30px);
+    //     }
+    //     @media screen and (max-width: 1360px) {
+    //         width: calc(50% - 30px);
+    //     }
+    //     @media screen and (max-width: 1024px) {
+    //         width: 100%;
+    //     }
+    // }
     .tainacan-record {
         background-color: rgba(126, 126, 126, 0.05);
         padding: 0px;

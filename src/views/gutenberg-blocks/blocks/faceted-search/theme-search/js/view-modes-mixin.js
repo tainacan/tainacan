@@ -19,11 +19,12 @@ export const viewModesMixin = {
         isLoading: false,
         totalItems: Number,
         isFiltersMenuCompressed: Boolean,
-        enabledViewModes: Array
+        enabledViewModes: Array,
+        containerId: String
     },
     computed: {
         queries() {
-            let currentQueries = this.$route && this.$route.query ? JSON.parse(JSON.stringify(this.$route.query)) : {};
+            let currentQueries = (this.$route && this.$route.query) ? JSON.parse(JSON.stringify(this.$route.query)) : {};
             if (currentQueries) {
                 delete currentQueries['view_mode'];
                 delete currentQueries['fetch_only'];
@@ -123,7 +124,7 @@ export const viewModesMixin = {
             return metadata.value_as_html;
         },
         starSlideshowFromHere(index) {
-            if (this.$router && this.$route && this.$route.query)
+            if ( this.$router && this.$route && this.$route.query )
                 this.$router.replace({ query: {...this.$route.query, ...{'slideshow-from': index } }}).catch((error) => this.$console.log(error));
         },
         getPosInSet(index) {
