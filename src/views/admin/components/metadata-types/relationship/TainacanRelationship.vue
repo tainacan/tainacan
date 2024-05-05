@@ -451,8 +451,11 @@
                                 valuesAsHtml: this.getItemMetadataValuesAsHtml(data.item),
                                 img: data.item.thumbnail ? data.item.thumbnail : ''
                             });
-
+                            
                             this.onInput(this.selected);
+
+                            if ( this.itemMetadatum.metadatum.multiple != 'yes' )
+                                this.activeTab = 1;
                         }
                     }
                 }
