@@ -1,7 +1,7 @@
 const { useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 export default [
-    /* Deprecated on version 0.21.2 for adding tainacan-view-modes layout option */
+    /* Deprecated on version 0.21.3 for adding tainacan-view-modes layout option */
     {
         "attributes": {
             "content": {
@@ -178,38 +178,37 @@ export default [
             // Gets attributes such as style, that are automatically added by the editor hook
             const blockProps = useBlockProps.save();
             return <div
-                        { ...blockProps }
-                        data-module="dynamic-items-list"
-                        search-url={ searchURL }
-                        selected-items={ JSON.stringify(selectedItems) }
-                        collection-id={ collectionId }
-                        show-image={ '' + showImage }
-                        show-name={ '' + showName }
-                        show-search-bar={ '' + showSearchBar }
-                        show-collection-header={ '' + showCollectionHeader }
-                        show-collection-label={ '' + showCollectionLabel }
-                        image-size={ imageSize }
-                        layout={ layout }
-                        load-strategy={ loadStrategy }
-                        mosaic-height={ mosaicHeight }
-                        mosaic-density={ mosaicDensity }
-                        mosaic-grid-rows={ mosaicGridRows } 
-                        mosaic-grid-columns={ mosaicGridColumns }
-                        mosaic-item-focal-point-x={ (mosaicItemFocalPoint && mosaicItemFocalPoint.x ? mosaicItemFocalPoint.x : 0.5) } 
-                        mosaic-item-focal-point-y={ (mosaicItemFocalPoint && mosaicItemFocalPoint.y ? mosaicItemFocalPoint.y : 0.5) } 
-                        max-columns-count={ maxColumnsCount }
-                        collection-background-color={ collectionBackgroundColor }
-                        collection-text-color={ collectionTextColor }
-                        grid-margin={ gridMargin }
-                        max-items-number={ maxItemsNumber }
-                        order={ order }
-                        order-by={ orderBy }
-                        order-by-meta-key={ orderByMetaKey }
-                        tainacan-api-root={ tainacan_blocks.root }
-                        tainacan-base-url={ tainacan_blocks.base_url }
-                        id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>
-                            { content }
-                    </div>
+                    { ...blockProps }
+                    data-module="dynamic-items-list"
+                    data-search-url={ searchURL }
+                    data-selected-items={ JSON.stringify(selectedItems) }
+                    data-collection-id={ collectionId }
+                    data-show-image={ '' + showImage }
+                    data-show-name={ '' + showName }
+                    data-show-search-bar={ '' + showSearchBar }
+                    data-show-collection-header={ '' + showCollectionHeader }
+                    data-show-collection-label={ '' + showCollectionLabel }
+                    data-image-size={ imageSize }
+                    data-layout={ layout }
+                    data-load-strategy={ loadStrategy }
+                    data-mosaic-height={ mosaicHeight }
+                    data-mosaic-density={ mosaicDensity }
+                    data-mosaic-grid-rows={ mosaicGridRows } 
+                    data-mosaic-grid-columns={ mosaicGridColumns }
+                    data-mosaic-item-focal-point-x={ (mosaicItemFocalPoint && mosaicItemFocalPoint.x ? mosaicItemFocalPoint.x : 0.5) } 
+                    data-mosaic-item-focal-point-y={ (mosaicItemFocalPoint && mosaicItemFocalPoint.y ? mosaicItemFocalPoint.y : 0.5) } 
+                    data-max-columns-count={ maxColumnsCount }
+                    data-collection-background-color={ collectionBackgroundColor }
+                    data-collection-text-color={ collectionTextColor }
+                    data-grid-margin={ gridMargin }
+                    data-max-items-number={ maxItemsNumber }
+                    data-order={ order !== undefined ? order : '' }
+                    data-order-by={ orderBy !== undefined ? orderBy : 'date' }
+                    data-order-by-meta-key={ orderByMetaKey !== undefined ? orderByMetaKey : '' }
+                    data-tainacan-api-root={ tainacan_blocks.root }
+                    id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>
+                        { content }
+                </div>
         }
     },
     /* Deprecated during Vue 3 migration to prepend attributes with data- */
