@@ -38,7 +38,8 @@
                             v-for="(statusOption, index) of availableStatus"
                             :key="index"
                             v-model="selectedStatus"
-                            :native-value="statusOption.slug">
+                            :native-value="statusOption.slug"
+                            :disabled="(statusOption.slug === 'private' || statusOption.slug === 'publish') && !currentUserCanPublish">
                         <span class="icon has-text-gray">
                             <i 
                                     class="tainacan-icon tainacan-icon-18px"
