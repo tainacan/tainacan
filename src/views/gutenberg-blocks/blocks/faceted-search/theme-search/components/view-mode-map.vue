@@ -626,6 +626,7 @@ export default {
 
     @import "../../../../../admin/scss/_view-mode-records.scss";
     @import "../../../../../admin/scss/_view-mode-map.scss";
+    @import "../../../../../admin/scss/_selects.scss";
 
     .tainacan-records-container--map .tainacan-record .metadata-title {
         padding: 0.6em 0.875em;
