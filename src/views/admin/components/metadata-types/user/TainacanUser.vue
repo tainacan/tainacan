@@ -6,7 +6,7 @@
                 :disabled="disabled"
                 size="is-small"
                 icon="account"
-                :model-value="selected"
+                :model-value="JSON.parse(JSON.stringify(selected))"
                 :data="options"
                 :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
                 autocomplete
@@ -30,16 +30,19 @@
             <template #default="props">
                 <div class="media">
                     <div
-                            v-if="props.option.avatar_urls && props.option.avatar_urls['24']"
+                            v-if="props.option.img"
                             class="media-left">
                         <img
                                 width="24"
-                                :src="props.option.avatar_urls['24']">
+                                :src="props.option.img">
                     </div>
                     <div class="media-content">
                         {{ props.option.name }}
                     </div>
                 </div>
+            </template>
+            <template #tag="props">
+                {{ (props.tag && props.tag.name) ? props.tag.name : '' }}
             </template>
             <template 
                     v-if="!isLoading"
@@ -98,7 +101,7 @@ export default {
         ]),
         onInput(newSelected) {
             this.selected = newSelected;
-            this.$emit('update:value', newSelected.map((user) => user.id || user.value));
+            this.$emit('update:value', this.selected.map((user) => user.id || user.value));
         },
         onBlur() {
             this.$emit('blur');
@@ -109,17 +112,14 @@ export default {
                 this.isLoading = true;
                 let query = qs.stringify({ include: this.itemMetadatum.value });
                 let endpoint = '/users/';
-
+                
                 wpApi.get(endpoint + '?' + query)
                     .then((res) => {
-                        for (let user of res.data) {
-                            this.selected.push({
-                                name: user.name,
-                                value: user.id,
-                                img:  user.avatar_urls && user.avatar_urls['24'] ? user.avatar_urls['24'] : ''
-                            }) ;
-                        }   
-                        
+                        this.selected = res.data.map((user) => ({
+                            name: user.name,
+                            value: user.id,
+                            img: user.avatar_urls && user.avatar_urls['24'] ? user.avatar_urls['24'] : ''
+                        }));
                         this.isLoading = false;
                     })
                     .catch(() => this.isLoading = false );
