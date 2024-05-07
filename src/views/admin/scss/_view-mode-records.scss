@@ -1,6 +1,15 @@
-.theme-items-list .tainacan-records-container,
-.items-list-area .tainacan-records-container {
-    min-height: 50vh;
+.theme-items-list,
+.items-list-area {
+    .tainacan-records-container--skeleton,
+    .tainacan-records-container {
+        min-height: 50vh;
+    }
+}
+.table-wrapper {
+    @supports (contain: inline-size) {
+        container-type: inline-size;
+        container-name: tablewrapper; 
+    }
 }
 .tainacan-records-container {
     list-style: none;
@@ -14,27 +23,23 @@
     animation-name: appear;
     animation-duration: 0.5s;
 
-    @supports (contain: inline-size) {
-        container-type: inline-size; 
-    }
-
     &>li,
     .tainacan-records-grid-sizer {
         width: calc(16.666% - 30px);
 
-        @container (max-width: 2560px) {
+        @container tablewrapper (max-width: 2560px) {
             width: calc(20% - 30px);
         }
-        @container (max-width: 1920px) {
+        @container tablewrapper (max-width: 1920px) {
             width: calc(25% - 30px);
         }
-        @container (max-width: 1320px) {
+        @container tablewrapper (max-width: 1320px) {
             width: calc(33.333% - 30px);
         }
-        @container (max-width: 1000px) {
+        @container tablewrapper (max-width: 1000px) {
             width: calc(50% - 30px);
         }
-        @container (max-width: 740px) {
+        @container tablewrapper (max-width: 740px) {
             width: 100%;
         }
 
@@ -240,33 +245,50 @@
 }
 .tainacan-records-container--skeleton {
     display: block;
-    min-height: 50vh;
     padding-left: 30px;
     padding-right: 30px;
     column-gap: 30px;
     height: auto !important;
-    column-count: 6;
 
     .skeleton {
         width: 100%;
         margin-bottom: 30px;
         break-inside: avoid;
     }
+        
+    column-count: 6;
 
-    @media screen and (max-width: 2560px) {
+    @container tablewrapper (max-width: 2560px) {
         column-count: 5;
     }
-    @media screen and (max-width: 1920px) {
+    @container tablewrapper (max-width: 1920px) {
         column-count: 4;
     }
-    @media screen and (max-width: 1320px) {
+    @container tablewrapper (max-width: 1320px) {
         column-count: 3;
     }
-    @media screen and (max-width: 1000px) {
+    @container tablewrapper (max-width: 1000px) {
         column-count: 2;
     }
-    @media screen and (max-width: 748px) {
+    @container tablewrapper (max-width: 740px) {
         column-count: 1;
+    }
+
+    @supports not (contain: inline-size) {
+        column-count: 5;
+
+        @media screen and (max-width: 2560px) {
+            column-count: 4;
+        }
+        @media screen and (max-width: 1920px) {
+            column-count: 3;
+        }
+        @media screen and (max-width: 1360px) {
+            column-count: 2;
+        }
+        @media screen and (max-width: 1024px) {
+            column-count: 1;
+        }
     }
 }
 
