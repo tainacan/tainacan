@@ -136,7 +136,7 @@ export default (element) => {
             app.use(FloatingVue, {
                 popperTriggers: ['hover', 'touch'],
                 themes: {
-                    'taianacan-tooltip': {
+                    'tainacan-tooltip': {
                         '$extend': 'tooltip',
                         triggers: ['hover', 'focus', 'touch'],
                         autoHide: true,
