@@ -555,6 +555,14 @@ export default {
             this.tainacanAxios.get(metadataEndpoint)
                 .then(response => {
                     this.displayedMetadataObjects = response.data;
+                    this.displayedMetadataObjects.unshift({
+                        name: this.wpI18n('Thumbnail', 'tainacan'),
+                        metadatum: 'row_thumbnail',
+                        metadata_type: undefined,
+                        slug: 'thumbnail',
+                        id: undefined,
+                        display: true
+                    });
                     this.fetchItems();
                     this.isLoadingMetadata = false;      
                 });
@@ -575,5 +583,12 @@ export default {
 <style lang="scss">
 
     @import './style.scss';
+    
+    // Tooltips
+    @import url('floating-vue/dist/style.css');
+    @import '../../../admin/scss/_tooltips.scss';
+
+    // Vue Blurhash transtition effect
+    @import '../../../../../node_modules/another-vue3-blurhash/dist/style.css';
 
 </style>
