@@ -244,24 +244,27 @@
     }
 
     &:not(.tainacan-masonry-container--legacy) {
-        column-count: 7;
+        column-count: 8;
 
-        @media screen and (max-width: 2560px) {
+        @media screen and (max-width: 2380px) {
+            column-count: 7;
+        }
+        @media screen and (max-width: 1980px) {
             column-count: 6;
         }
-        @media screen and (max-width: 1920px) {
+        @media screen and (max-width: 1480px) {
             column-count: 5;
         }
-        @media screen and (max-width: 1740px) {
+        @media screen and (max-width: 1240px) {
             column-count: 4;
         }
-        @media screen and (max-width: 1440px) {
+        @media screen and (max-width: 940px) {
             column-count: 3;
         }
-        @media screen and (max-width: 1024px) {
+        @media screen and (max-width: 720px) {
             column-count: 2;
         }
-        @media screen and (max-width: 620px) {
+        @media screen and (max-width: 380px) {
             column-count: 1;
         }
     }

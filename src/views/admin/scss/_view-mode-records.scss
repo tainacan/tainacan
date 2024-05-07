@@ -28,13 +28,13 @@
         @container (max-width: 1920px) {
             width: calc(25% - 30px);
         }
-        @container (max-width: 1360px) {
+        @container (max-width: 1320px) {
             width: calc(33.333% - 30px);
         }
-        @container (max-width: 1024px) {
+        @container (max-width: 1000px) {
             width: calc(50% - 30px);
         }
-        @container (max-width: 768px) {
+        @container (max-width: 740px) {
             width: 100%;
         }
 
@@ -245,7 +245,7 @@
     padding-right: 30px;
     column-gap: 30px;
     height: auto !important;
-    column-count: 5;
+    column-count: 6;
 
     .skeleton {
         width: 100%;
@@ -254,15 +254,18 @@
     }
 
     @media screen and (max-width: 2560px) {
-        column-count: 4;
+        column-count: 5;
     }
     @media screen and (max-width: 1920px) {
+        column-count: 4;
+    }
+    @media screen and (max-width: 1320px) {
         column-count: 3;
     }
-    @media screen and (max-width: 1360px) {
+    @media screen and (max-width: 1000px) {
         column-count: 2;
     }
-    @media screen and (max-width: 1024px) {
+    @media screen and (max-width: 748px) {
         column-count: 1;
     }
 }
