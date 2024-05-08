@@ -1,3 +1,5 @@
+@import '../../../admin/scss/_variables';
+@import '../../../admin/scss/_custom_variables';
 @import '../../scss/gutenberg-blocks-variables.scss';
 
 .wp-block-tainacan-dynamic-items-list {
@@ -1191,9 +1193,6 @@
     .items-list.items-layout-tainacan-view-modes {
         width: 100%;
 
-        // Not really used in EVERY container, but a rather frequent value
-        --tainacan-container-padding: 0.875em;
-
         h1,
         h2,
         h3,
@@ -1212,6 +1211,9 @@
         canvas.child {
             max-width: 100%;
         }
+    }
+    div + .items-list.items-layout-tainacan-view-modes {
+        margin-top: 1.5rem;
     }
 }
 .block-editor-block-list__block:not(.has-text-color)>.wp-block-tainacan-dynamic-items-list {
