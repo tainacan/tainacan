@@ -583,6 +583,9 @@ export default {
 <style lang="scss">
 
     @import './style.scss';
+
+    @import '../../../admin/scss/_variables';
+    @import '../../../admin/scss/_custom_variables';
     
     // Tooltips
     @import url('floating-vue/dist/style.css');

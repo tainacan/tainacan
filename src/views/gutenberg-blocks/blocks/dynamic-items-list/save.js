@@ -63,7 +63,6 @@ export default function({ attributes }) {
                 data-order-by={ orderBy !== undefined ? orderBy : 'date' }
                 data-order-by-meta-key={ orderByMetaKey !== undefined ? orderByMetaKey : '' }
                 data-tainacan-view-mode={ tainacanViewMode }
-                data-displayed-metadata={ JSON.stringify(displayedMetadata) }
                 data-tainacan-api-root={ tainacan_blocks.root }
                 id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>
                     { content }

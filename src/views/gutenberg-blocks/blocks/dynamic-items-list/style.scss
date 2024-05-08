@@ -1,5 +1,3 @@
-@import '../../../admin/scss/_variables';
-@import '../../../admin/scss/_custom_variables';
 @import '../../scss/gutenberg-blocks-variables.scss';
 
 .wp-block-tainacan-dynamic-items-list {
@@ -249,6 +247,10 @@
 
 .wp-block-tainacan-dynamic-items-list,
 .wp-block-tainacan-dynamic-items-list-inspector {
+
+    .items-layout-tainacan-view-modes-preview-area {
+        margin-top: 20px;
+    }
 
     // Style for both grid and list View Modes ----------------------------------------------------
     ul.items-list-edit li.item-list-item {
@@ -1174,7 +1176,7 @@
 
     // Tainacan View Modes preview on the editor -----------------
     .items-list-edit.items-layout-tainacan-view-modes {
-        margin: 12px 0 !important;
+        margin: 6px 0 !important;
         ul { 
             padding-left: 0 !important;
         }

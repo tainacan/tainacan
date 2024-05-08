@@ -1,6 +1,6 @@
 const { __, sprintf } = wp.i18n;
 
-const { Card, CardBody, Icon, ToolbarDropdownMenu, ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Placeholder, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { Icon, ToolbarDropdownMenu, ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Placeholder, ColorPalette, BaseControl, PanelBody } = wp.components;
 
 const { createInterpolateElement } = wp.element;
 
@@ -52,8 +52,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
         mosaicDensity,
         maxColumnsCount,
         imageSize,
-        tainacanViewMode,
-        displayedMetadata
+        tainacanViewMode
     } = attributes;
 
     // Gets blocks props from hook
@@ -790,14 +789,18 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                             { layout == 'tainacan-view-modes' ?
                                 <>
                                     { createInterpolateElement(
-                                        __( 'When using Tainacan View Modes other metadata than title and description may be rendered. To define which metadata appear by default, go to your <a>collection metadata settings</a> and tweak the "Display on listing" option.', 'tainacan' ),
+                                        __( 'When using Tainacan View Modes, other metadata than title may be rendered. To define which metadata appear by default, go to your <a>collection metadata settings</a> and tweak the "Display on listing" option.', 'tainacan' ),
                                         {
                                             a : <a href={ tainacan_blocks.admin_url + '?page=tainacan_admin#/collections/' + collectionId + '/metadata' } />
                                         }
                                     ) }
-                                    <ul className="items-list-edit items-layout-list items-layout-tainacan-view-modes">
-                                        { items }
-                                    </ul>
+                                    <BaseControl
+                                            label={ __( 'Items that will be displayed', 'tainacan' ) }
+                                            className={ 'items-layout-tainacan-view-modes-preview-area' }>
+                                        <ul className="items-list-edit items-layout-list items-layout-tainacan-view-modes">
+                                            { items }
+                                        </ul>
+                                    </BaseControl>
                                 </>
                             : null }
                         </div>
