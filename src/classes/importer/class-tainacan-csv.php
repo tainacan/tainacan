@@ -197,7 +197,12 @@ class CSV extends Importer {
 					? explode( $this->get_option('multivalued_delimiter'), $valueToInsert)
 					: [$valueToInsert];
 
+				if(!is_array($header)) {
+					$this->add_error_log('the compound metadata specification is invalid');
+					continue;
+				}
 				$key = key($header);
+
 				$returnValue = [];
 				foreach($valueToInsert as $index => $metadatumValue) {
 					$childrenHeaders = str_getcsv($compoundHeaders[$key], $this->get_option('delimiter'), $this->get_option('enclosure'));
@@ -206,7 +211,7 @@ class CSV extends Importer {
 						str_getcsv($metadatumValue, $this->get_option('delimiter'), $this->get_option('enclosure'));
 
 					if ( sizeof($childrenHeaders) != sizeof($childrenValue) ) {
-						$this->add_error_log('Mismatch count headers childrens and row columns. file value:' . $metadatumValue);
+						$this->add_error_log('Mismatch count headers childrens and row columns in compound metadata. file value:' . $metadatumValue);
 						return false;
 					}
 					$tmp = [];
