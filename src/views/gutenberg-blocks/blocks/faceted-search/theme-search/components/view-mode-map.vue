@@ -631,6 +631,13 @@ export default {
     .tainacan-records-container--map .tainacan-record .metadata-title {
         padding: 0.6em 0.875em;
     }
+    .tainacan-records-close-button .icon {
+        align-items: center;
+        display: inline-flex;
+        justify-content: center;
+        height: 1.5rem;
+        width: 1.5rem;
+    }
     #tainacan-select-geocoordinate-metatum select {
         -moz-appearance: none;
         -webkit-appearance: none;
