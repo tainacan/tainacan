@@ -294,16 +294,12 @@ export default {
                 margin-left: 1.5em;
                 padding-right: 1em;
                 min-height: 330px;
-
-                .active-metadata-area {
-                    margin-left: 0.5rem;
-                }
             }
 
             .active-metadatum-item,
             .active-metadata-sections-item {
                 background-color: var(--tainacan-white);
-                padding: 0.7em 0.9em;
+                padding: 0;
                 margin: 0px 4px;
                 min-height: 2.8571em;
                 display: block; 
@@ -316,7 +312,7 @@ export default {
                 }
                 
                 .handle {
-                    padding-right: 6em;
+                    padding: 0.7em 6.9em 0.7em 0.9em;
                     white-space: nowrap;
                     display: flex;
                 }
@@ -410,12 +406,10 @@ export default {
                         }
                     }
                 }
-                &:not(.not-sortable-item):hover {
-                    .sorting-buttons {
-                        opacity: 1.0;
-                        visibility: visible;
-                        left: -2em
-                    }
+                &:not(.not-sortable-item) .handle:hover >.sorting-buttons {
+                    opacity: 1.0;
+                    visibility: visible;
+                    left: -2em
                 }
 
                 &.is-compact-item .metadatum-name {
@@ -453,8 +447,8 @@ export default {
             .active-filter-item:hover.not-sortable-item .icon-level-identifier .tainacan-icon::before {
                 color: var(--tainacan-gray3) !important;
             }
-            .active-metadatum-item:hover:not(.not-sortable-item),
-            .active-metadata-sections-item:hover:not(.not-sortable-item) {
+            .active-metadatum-item:not(.not-sortable-item) .handle:hover,
+            .active-metadata-sections-item:hover:not(.not-sortable-item) .handle:hover {
                 background-color: var(--tainacan-turquoise1);
                 border-color: var(--tainacan-turquoise1);
 
@@ -487,8 +481,8 @@ export default {
                 &::before { background-color: var(--tainacan-blue5); }
             }
 
-            &.active-metadatum-item:hover:not(.not-sortable-item),
-            &.active-metadata-sections-item:hover:not(.not-sortable-item) {
+            &.active-metadatum-item:not(.not-sortable-item) .handle:hover,
+            &.active-metadata-sections-item:not(.not-sortable-item) .handle:hover {
                 background-color: var(--tainacan-blue1);
                 border-color: var(--tainacan-blue1);
                 
@@ -496,7 +490,7 @@ export default {
                     color: var(--tainacan-blue5) !important; 
                 }
             }
-            .sorting-buttons button {
+            & > .sorting-buttons button {
                 background: var(--tainacan-blue1);
                 &:hover {
                     color: var(--tainacan-blue5);
