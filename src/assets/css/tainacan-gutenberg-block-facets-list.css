@@ -185,6 +185,8 @@
   .wp-block-tainacan-facets-list ul.facets-list-edit li.facet-list-item {
     display: flex;
     align-items: flex-start; }
+    .wp-block-tainacan-facets-list ul.facets-list-edit li.facet-list-item a {
+      pointer-events: none; }
     .wp-block-tainacan-facets-list ul.facets-list-edit li.facet-list-item button {
       position: absolute !important;
       background-color: rgba(255, 255, 255, 0.75);
