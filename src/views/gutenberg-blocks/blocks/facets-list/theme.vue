@@ -33,6 +33,7 @@
         <ul
                 v-if="layout !== 'list'"
                 :style="{
+                    listStyle: 'none',
                     gridGap: layout == 'grid' ? (gridMargin + 'px') : 'inherit',
                     marginTop: showSearchBar ? '1.5em' : '4px'
                 }"
@@ -50,6 +51,7 @@
         <ul
                 v-else
                 :style="{
+                    listStyle: 'none',
                     marginTop: showSearchBar ? '1.5em' : '4px'
                 }"
                 class="facets-list"
@@ -73,6 +75,7 @@
         <ul 
                 v-if="facets.length > 0 && layout != 'list'"
                 :style="{
+                    listStyle: 'none',
                     gridGap: layout == 'grid' ? (gridMargin + 'px') : 'inherit',
                     marginTop: showSearchBar ? '1.5em' : '0px'
                 }"
@@ -102,6 +105,7 @@
         <ul 
                 v-if="facets.length > 0 && layout == 'list'"
                 :style="{
+                    listStyle: 'none',
                     marginTop: showSearchBar ? '1.5em' : '0px'
                 }"
                 class="facets-list"
@@ -321,14 +325,14 @@ export default {
                     if (this.isMetadatumTypeTaxonomy) {
                         for (let facet of response.data.values) {
                             this.facets.push(Object.assign({ 
-                                term_url: facet.entity && facet.entity.url ? facet.entity.url : this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value,
-                                url: this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
+                                term_url: facet.entity && facet.entity.url ? facet.entity.url : this.tainacanSiteUrl + '/' + this.collectionSlug + '/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value,
+                                url: this.tainacanSiteUrl + '/' + this.collectionSlug + '/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
                             }, facet));
                         }
                     } else {
                         for (let facet of response.data.values) {
                             this.facets.push(Object.assign({ 
-                                url: this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?metaquery[0][key]=' + this.metadatumId + '&metaquery[0][value]=' + facet.value
+                                url: this.tainacanSiteUrl + '/' + this.collectionSlug + '/?metaquery[0][key]=' + this.metadatumId + '&metaquery[0][value]=' + facet.value
                             }, facet));
                         }
                     }
@@ -387,8 +391,8 @@ export default {
                     
                     for (let facet of response.data.values) {
                         childFacets.push(Object.assign({ 
-                            term_url: facet.entity && facet.entity.url ? facet.entity.url : this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value,
-                            url: this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
+                            term_url: facet.entity && facet.entity.url ? facet.entity.url : this.tainacanSiteUrl + '/' + this.collectionSlug + '/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value,
+                            url: this.tainacanSiteUrl + '/' + this.collectionSlug + '/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
                         }, facet));
                     }
 

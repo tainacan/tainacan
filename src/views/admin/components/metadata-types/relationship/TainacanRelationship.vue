@@ -11,7 +11,7 @@
                         :disabled="disabled"
                         size="is-small"
                         icon="magnify"
-                        :model-value="selected"
+                        :model-value="JSON.parse(JSON.stringify(selected))"
                         :data="options"
                         :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
                         autocomplete
@@ -50,6 +50,9 @@
                                 class="tainacan-relationship-group">
                             <div v-html="props.option.valuesAsHtml" />
                         </div>
+                    </template>
+                    <template #tag="props">
+                        {{ (props.tag && props.tag.label) ? props.tag.label : '' }}
                     </template>
                     <template 
                             v-if="!isLoading"

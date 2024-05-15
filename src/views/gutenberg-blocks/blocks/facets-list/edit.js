@@ -261,14 +261,14 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                 if (isMetadatumTypeTaxonomy(metadatumType)) {
                     for (let facet of response.data.values) {
                         facetsObject.push(Object.assign({ 
-                            term_url: facet.entity && facet.entity.url ? facet.entity.url : tainacan_blocks.site_url + '/' + collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value,
-                            url: tainacan_blocks.site_url + '/' + collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
+                            term_url: facet.entity && facet.entity.url ? facet.entity.url : tainacan_blocks.site_url + '/' + collectionSlug + '/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value,
+                            url: tainacan_blocks.site_url + '/' + collectionSlug + '/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
                         }, facet));
                     }
                 } else {
                     for (let facet of response.data.values) {
                         facetsObject.push(Object.assign({ 
-                            url: tainacan_blocks.site_url + '/' + collectionSlug + '/#/?metaquery[0][key]=' + metadatumId + '&metaquery[0][value]=' + facet.value
+                            url: tainacan_blocks.site_url + '/' + collectionSlug + '/?metaquery[0][key]=' + metadatumId + '&metaquery[0][value]=' + facet.value
                         }, facet));
                     }
                 }
@@ -344,8 +344,8 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
 
                 for (let facet of response.data.values) {
                     childFacets.push(Object.assign({ 
-                        term_url: facet.entity && facet.entity.url ? facet.entity.url : tainacan_blocks.site_url + '/' + collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value,
-                        url: tainacan_blocks.site_url + '/' + collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
+                        term_url: facet.entity && facet.entity.url ? facet.entity.url : tainacan_blocks.site_url + '/' + collectionSlug + '/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value,
+                        url: tainacan_blocks.site_url + '/' + collectionSlug + '/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
                     }, facet));
                 }
                 

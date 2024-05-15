@@ -31,7 +31,7 @@ export default (element) => {
             VueRoles.use(FloatingVue, {
                 popperTriggers: ['hover'],
                 themes: {
-                    'taianacan-tooltip': {
+                    'tainacan-tooltip': {
                         $extend: 'tooltip',
                         triggers: ['hover', 'focus', 'touch'],
                         html: true,

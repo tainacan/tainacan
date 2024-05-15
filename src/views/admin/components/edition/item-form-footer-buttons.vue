@@ -108,7 +108,7 @@
                         {{ status == 'draft' ? $i18n.get('label_update_draft') : $i18n.get('label_change_to_draft') }}
                     </b-dropdown-item>
                     <b-dropdown-item
-                            v-if="currentUserCanPublish && !$adminOptions.hideItemEditionStatusPublishOption"
+                            v-if="currentUserCanPublish"
                             :class="{ 'is-forced-last-option': status == 'private' }"
                             aria-role="listitem"
                             @click="$emit(
