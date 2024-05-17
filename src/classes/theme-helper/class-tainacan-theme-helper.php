@@ -1324,6 +1324,7 @@ class Theme_Helper {
 		*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
 		*	   @type bool    $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon
 		*	   @type string  $thumbnailsSize				  Media size for the thumbnail images. Defaults to 'tainacan-medium'
+		*	   @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.
 		* }		
 		* @return string  The HTML div to be used for rendering the item galery component
 	 */
@@ -1347,7 +1348,8 @@ class Theme_Helper {
 			'showDownloadButtonMain' =>			true,
 			'lightboxHasLightBackground' => 	false,
 			'showArrowsAsSVG' =>				true,
-			'thumbnailsSize' =>					'tainacan-medium'	
+			'thumbnailsSize' =>					'tainacan-medium',
+			'thumbsHaveFixedHeight'	=>			false	
 		);
 		$args = wp_parse_args($args, $defaults);
 		
@@ -1376,6 +1378,7 @@ class Theme_Helper {
 		$lightbox_has_light_background = $args['lightboxHasLightBackground'];
 		$show_arrows_as_svg = $args['showArrowsAsSVG'];
 		$thumbnails_size = $args['thumbnailsSize'];
+		$thumbs_have_fixed_height = $args['thumbsHaveFixedHeight'];
 
 		// Prefils arrays with proper values to avoid messsy IFs
 		$layout_elements = array(
@@ -1630,6 +1633,7 @@ class Theme_Helper {
 				'wrapper_attributes' => $wrapper_attributes,
 				'class_main_div' => '',
 				'class_thumbs_div' => '',
+				'class_thumbs_li' => $thumbs_have_fixed_height ? 'has-fixed-height' : '',
 				'swiper_main_options' => $swiper_main_options,
 				'swiper_thumbs_options' => $swiper_thumbs_options,
 				'swiper_arrows_as_svg' => $show_arrows_as_svg,
@@ -2072,6 +2076,7 @@ class Theme_Helper {
 		*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
 		*	   @type bool    $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon
 		*	   @type string  $thumbnailsSize	 		      Media size for the thumbnail images. Defaults to 'tainacan-medium'
+		*	   @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.
 		* @return string  The HTML div to be used for rendering the item galery component
 	 */
 	public function get_tainacan_item_gallery_template($args = []) {
@@ -2094,7 +2099,8 @@ class Theme_Helper {
 			'showDownloadButtonMain' =>			true,
 			'lightboxHasLightBackground' => 	false,
 			'showArrowsAsSVG' =>				true,
-			'thumbnailsSize' =>					'tainacan-medium'
+			'thumbnailsSize' =>					'tainacan-medium',
+			'thumbsHaveFixedHeight' =>			false
 		);
 		$args = wp_parse_args($args, $defaults);
 
@@ -2116,6 +2122,7 @@ class Theme_Helper {
 		$lightbox_has_light_background = $args['lightboxHasLightBackground'];
 		$show_arrows_as_svg = $args['showArrowsAsSVG'];
 		$thumbnails_size = $args['thumbnailsSize'];
+		$thumbs_have_fixed_height = $args['thumbsHaveFixedHeight'];
 
 		// Prefils arrays with proper values to avoid messsy IFs
 		$layout_elements = array(

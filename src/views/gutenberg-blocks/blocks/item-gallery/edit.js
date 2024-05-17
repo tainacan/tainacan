@@ -39,7 +39,8 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
         showDownloadButtonMain,
         lightboxHasLightBackground,
         templateMode,
-        thumbnailsSize
+        thumbnailsSize,
+        thumbsHaveFixedHeight
     } = attributes;
 
     // Gets blocks props from hook
@@ -258,6 +259,15 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                             }}
                             min={ 32 }
                             max={ 400 }
+                        />
+                        <ToggleControl
+                            label={ __('Thumbnails have fixed height', 'tainacan') }
+                            help={ __( 'If checked, the thumbnails will have fixed the item size height, otherwise they will have fixed the item size width.', 'tainacan' ) }
+                            checked={ thumbsHaveFixedHeight }
+                            onChange={ ( isChecked ) => {
+                                thumbsHaveFixedHeight = isChecked;
+                                setAttributes({ thumbsHaveFixedHeight: thumbsHaveFixedHeight });
+                            }}
                         />
                         <ToggleControl
                             label={__('Hide file name', 'tainacan')}

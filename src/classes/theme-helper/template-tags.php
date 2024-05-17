@@ -1138,6 +1138,7 @@ function tainacan_has_related_items($item_id = false) {
 	*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
 	*	   @type bool    $showArrowsAsSVG			      Decides if the swiper carousel arrows will be an SVG icon or font icon
 	*	   @type string  $thumbnailsSize				  Media size for the thumbnail images. Defaults to 'tainacan-medium'
+	*	   @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.
 	* }		
 	* @return void
  */
