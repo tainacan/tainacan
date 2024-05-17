@@ -1327,6 +1327,9 @@ export default {
                     });
                 }
 
+                if ( this.collection && this.item )
+                    wp.hooks.doAction('tainacan_item_edition_item_loaded', JSON.parse(JSON.stringify(this.collection)), JSON.parse(JSON.stringify(this.item)));
+
                 // Loads metadata and attachments
                 this.loadMetadata();
 
@@ -1367,6 +1370,9 @@ export default {
                             this.conditionalSections[conditionalSectionId].hide = Array.isArray(itemMetadatumValues) ? itemMetadatumValues.every(aValue => conditionalValues.indexOf(aValue['id'] ? aValue['id'] : aValue) < 0) : conditionalValues.indexOf(itemMetadatumValues) < 0;
                         }
                     }
+                    
+                    if ( this.collection && this.item && metadata)
+                        wp.hooks.doAction('tainacan_item_edition_metadata_loaded', JSON.parse(JSON.stringify(this.collection)), JSON.parse(JSON.stringify(this.item)), metadata);
 
                     this.isLoading = false;
                 });
@@ -1764,6 +1770,9 @@ export default {
                         this.urlIframeWidth = this.form.document_options['forced_iframe_width'];
                     if (this.form.document_options !== undefined && this.form.document_options['forced_iframe_height'] !== undefined)
                         this.urlIframeHeight = this.form.document_options['forced_iframe_height'];
+
+                    if ( this.collection && this.item )
+                        wp.hooks.doAction('tainacan_item_edition_item_loaded', JSON.parse(JSON.stringify(this.collection)), JSON.parse(JSON.stringify(this.item)));
 
                     this.loadMetadata();
                     this.setLastUpdated(this.item.modification_date);
