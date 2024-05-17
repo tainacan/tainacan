@@ -1,0 +1,32 @@
+/* Styles Tainacan links in the WordPress admin top bar */
+#wpadminbar #wp-admin-bar-tainacan-taxonomies-edition-link a,
+#wpadminbar #wp-admin-bar-tainacan-taxonomy-edition-link a,
+#wpadminbar #wp-admin-bar-tainacan-taxonomies-edition-link a,
+#wpadminbar #wp-admin-bar-tainacan-repository-items-edition-link a {
+	background-color: #1d3968;
+}
+#wpadminbar #wp-admin-bar-tainacan-item-edition-link a,
+#wpadminbar #wp-admin-bar-tainacan-collection-edition-link a,
+#wpadminbar #wp-admin-bar-tainacan-collections-edition-link a {
+	background-color: #187181;
+}
+#wpadminbar #wp-admin-bar-tainacan-taxonomies-edition-link a::before,
+#wpadminbar #wp-admin-bar-tainacan-taxonomy-edition-link a::before,
+#wpadminbar #wp-admin-bar-tainacan-taxonomies-edition-link a::before,
+#wpadminbar #wp-admin-bar-tainacan-item-edition-link a::before,
+#wpadminbar #wp-admin-bar-tainacan-collection-edition-link a::before,
+#wpadminbar #wp-admin-bar-tainacan-collections-edition-link a::before,
+#wpadminbar #wp-admin-bar-tainacan-repository-items-edition-link a::before {
+	color: white;
+	content: '\f464';
+    top: 2px;
+}
+#wpadminbar #wp-admin-bar-tainacan-taxonomies-edition-link:hover a,
+#wpadminbar #wp-admin-bar-tainacan-taxonomy-edition-link:hover a,
+#wpadminbar #wp-admin-bar-tainacan-taxonomies-edition-link:hover a,
+#wpadminbar #wp-admin-bar-tainacan-item-edition-link:hover a,
+#wpadminbar #wp-admin-bar-tainacan-collection-edition-link:hover a,
+#wpadminbar #wp-admin-bar-tainacan-collections-edition-link:hover a,
+#wpadminbar #wp-admin-bar-tainacan-repository-items-edition-link:hover a  {
+	color: white;
+}

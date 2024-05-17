@@ -24,11 +24,4 @@
 [data-module="dynamic-items-list"]:not(.has-mounted) {
   min-height: 360px; }
 
-/* Admin menu links */
-#wpadminbar #wp-admin-bar-tainacan-item-edition-link > .ab-item::before,
-#wpadminbar #wp-admin-bar-tainacan-collection-edition-link > .ab-item::before,
-#wpadminbar #wp-admin-bar-tainacan-collections-edition-link > .ab-item::before {
-  content: '\f464';
-  top: 2px; }
-
 /*# sourceMappingURL=tainacan-gutenberg-block-common-theme-styles.css.map */

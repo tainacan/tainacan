@@ -170,6 +170,7 @@ $Tainacan_Theme_Helper = \Tainacan\Theme_Helper::get_instance();
 
 require_once(__DIR__ . '/../views/gutenberg-blocks/class-tainacan-gutenberg-block.php');
 
+$Tainacan_Admin_Bar_Items = new \Tainacan\Admin_Bar_Items();
 $Tainacan_Search_Engine = new \Tainacan\Search_Engine();
 $Tainacan_Elastic_press = \Tainacan\Elastic_Press::get_instance();
 
