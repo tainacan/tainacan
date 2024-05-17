@@ -1323,6 +1323,8 @@ class Theme_Helper {
 		*	   @type bool	 $showDownloadButtonMain		  Displays a download button below the Main slider
 		*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
 		*	   @type bool    $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon
+		*	   @type string  $thumbnailsSize				  Media size for the thumbnail images. Defaults to 'tainacan-medium'
+		* }		
 		* @return string  The HTML div to be used for rendering the item galery component
 	 */
 	public function get_tainacan_item_gallery($args = []) {
@@ -1344,7 +1346,8 @@ class Theme_Helper {
 			'openLightboxOnClick' => 			true,
 			'showDownloadButtonMain' =>			true,
 			'lightboxHasLightBackground' => 	false,
-			'showArrowsAsSVG' =>				true
+			'showArrowsAsSVG' =>				true,
+			'thumbnailsSize' =>					'tainacan-medium'	
 		);
 		$args = wp_parse_args($args, $defaults);
 		
@@ -1372,6 +1375,7 @@ class Theme_Helper {
 		$show_download_button_main = $args['showDownloadButtonMain'];
 		$lightbox_has_light_background = $args['lightboxHasLightBackground'];
 		$show_arrows_as_svg = $args['showArrowsAsSVG'];
+		$thumbnails_size = $args['thumbnailsSize'];
 
 		// Prefils arrays with proper values to avoid messsy IFs
 		$layout_elements = array(
@@ -1506,7 +1510,7 @@ class Theme_Helper {
 				
 				$media_items_thumbnails[] =
 					tainacan_get_the_media_component_slide(array(
-						'media_content' => get_the_post_thumbnail($item_id, 'tainacan-medium'),
+						'media_content' => get_the_post_thumbnail($item_id, $thumbnails_size),
 						'media_content_full' => $open_lightbox_on_click ? ($is_document_type_attachment ? tainacan_get_the_document($item_id, 'full') : sprintf('<div class="attachment-without-image">%s</div>', tainacan_get_the_document($item_id, 'full')) ) : '',
 						'media_title' => $is_document_type_attachment ? get_the_title(tainacan_get_the_document_raw($item_id)) : '',
 						'media_description' => $is_document_type_attachment ? get_the_content(null, false, tainacan_get_the_document_raw($item_id)) : '',
@@ -1520,7 +1524,7 @@ class Theme_Helper {
 				foreach ( $attachments as $attachment ) {
 					$media_items_thumbnails[] = 
 						tainacan_get_the_media_component_slide(array(
-							'media_content' => wp_get_attachment_image( $attachment->ID, 'tainacan-medium', false ),
+							'media_content' => wp_get_attachment_image( $attachment->ID, $thumbnails_size, false ),
 							'media_content_full' => ( $open_lightbox_on_click && !$layout_elements['main'] ) ? ( wp_attachment_is('image', $attachment->ID) ? wp_get_attachment_image( $attachment->ID, 'full', false) : sprintf('<div class="attachment-without-image tainacan-embed-container"><iframe id="tainacan-attachment-iframe--%s" src="%s"></iframe></div>', $block_id, tainacan_get_attachment_html_url($attachment->ID)) ) : '',
 							'media_title' => $attachment->post_title,
 							'media_description' => $attachment->post_content,
@@ -2067,6 +2071,7 @@ class Theme_Helper {
 		*	   @type bool	 $showDownloadButtonMain		  Displays a download button below the Main slider
 		*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
 		*	   @type bool    $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon
+		*	   @type string  $thumbnailsSize	 		      Media size for the thumbnail images. Defaults to 'tainacan-medium'
 		* @return string  The HTML div to be used for rendering the item galery component
 	 */
 	public function get_tainacan_item_gallery_template($args = []) {
@@ -2088,7 +2093,8 @@ class Theme_Helper {
 			'openLightboxOnClick' => 			true,
 			'showDownloadButtonMain' =>			true,
 			'lightboxHasLightBackground' => 	false,
-			'showArrowsAsSVG' =>				true
+			'showArrowsAsSVG' =>				true,
+			'thumbnailsSize' =>					'tainacan-medium'
 		);
 		$args = wp_parse_args($args, $defaults);
 
@@ -2109,6 +2115,7 @@ class Theme_Helper {
 		$show_download_button_main = $args['showDownloadButtonMain'];
 		$lightbox_has_light_background = $args['lightboxHasLightBackground'];
 		$show_arrows_as_svg = $args['showArrowsAsSVG'];
+		$thumbnails_size = $args['thumbnailsSize'];
 
 		// Prefils arrays with proper values to avoid messsy IFs
 		$layout_elements = array(
