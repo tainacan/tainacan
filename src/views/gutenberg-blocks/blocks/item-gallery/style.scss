@@ -316,9 +316,7 @@
 
         img {
             width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
-            height: var(--tainacan-media-thumbs-carousel-item-size, 136px);
             max-width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
-            max-height: var(--tainacan-media-thumbs-carousel-item-size, 136px);
             object-fit: cover;
             object-position: center;
             border-bottom-width: 6px;

@@ -1120,7 +1120,7 @@ function tainacan_has_related_items($item_id = false) {
  *
  * @param array $args {
 	*     Optional. Array of arguments.
-	*     @type string  $item_id						  The Item ID
+	*      @type string  $item_id						  The Item ID
 	* 	   @type string	 $blockId 						  A unique identifier for the gallery, will be generated automatically if not provided,
 	* 	   @type array 	 $layoutElements 				  Array of elements present in the gallery. Possible values are 'main' and 'carousel'
 	* 	   @type array 	 $mediaSources 					  Array of sources for the gallery. Possible values are 'document' and 'attachments'
@@ -1137,6 +1137,8 @@ function tainacan_has_related_items($item_id = false) {
 	*	   @type bool	 $showDownloadButtonMain		  Displays a download button below the Main slider
 	*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
 	*	   @type bool    $showArrowsAsSVG			      Decides if the swiper carousel arrows will be an SVG icon or font icon
+	*	   @type string  $thumbnailsSize				  Media size for the thumbnail images. Defaults to 'tainacan-medium'
+	* }		
 	* @return void
  */
 function tainacan_the_item_gallery($args = []) {
