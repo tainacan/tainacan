@@ -446,28 +446,28 @@ class Theme_Helper {
 			'div' => [
 				'id' => true,
 				'data-module' => true,
-				'collection-id' => true,
-				'hide-file-modal-button' => true,
-				'hide-text-modal-button' => true,
-				'hide-link-modal-button' => true,
-				'hide-thumbnail-section' => true,
-				'hide-attachments-section' => true,
-				'show-allow-comments-section' => true,
-				'hide-collapses' => true,
-				'hide-help-buttons' => true,
-				'hide-metadata-types' => true,
-				'help-info-bellow-label' => true,
-				'document-section-label' => true,
-				'thumbnail-section-label' => true,
-				'attachments-section-label' => true,
-				'metadata-section-label' => true,
-				'sent-form-heading' => true,
-				'sent-form-message' => true,
-				'item-link-button-label' => true,
-				'show-item-link-button' => true,
-				'show-terms-agreement-checkbox' => true,
-				'terms-agreement-message' => true,
-				'enabled-metadata' => true,
+				'data-collection-id' => true,
+				'data-hide-file-modal-button' => true,
+				'data-hide-text-modal-button' => true,
+				'data-hide-link-modal-button' => true,
+				'data-hide-thumbnail-section' => true,
+				'data-hide-attachments-section' => true,
+				'data-show-allow-comments-section' => true,
+				'data-hide-collapses' => true,
+				'data-hide-help-buttons' => true,
+				'data-hide-metadata-types' => true,
+				'data-help-info-bellow-label' => true,
+				'data-document-section-label' => true,
+				'data-thumbnail-section-label' => true,
+				'data-attachments-section-label' => true,
+				'data-metadata-section-label' => true,
+				'data-sent-form-heading' => true,
+				'data-sent-form-message' => true,
+				'data-item-link-button-label' => true,
+				'data-show-item-link-button' => true,
+				'data-show-terms-agreement-checkbox' => true,
+				'data-terms-agreement-message' => true,
+				'data-enabled-metadata' => true,
 			]
 		];
 
@@ -1036,7 +1036,37 @@ class Theme_Helper {
 			$props .= sprintf("%s='%s' ", $key_attr, esc_attr($value));
 		}
 		
-		return "<div data-module='carousel-items-list' id='tainacan-items-carousel-shortcode_" . uniqid() . "' $props ></div>";
+		$allowed_html = [
+			'div' => [
+				'id',
+				'class',
+				'style',
+				'data-module',
+				'data-search-url',
+				'data-selected-items',
+				'data-arrows-position',
+				'data-load-strategy',
+				'data-collection-id',
+				'data-auto-play',
+				'data-auto-play-speed',
+				'data-loop-slides',
+				'data-hide-title',
+				'data-large-arrows',
+				'data-arrows-style',
+				'data-image-size',
+				'data-show-collection-header',
+				'data-show-collection-label',
+				'data-collection-background-color',
+				'data-collection-text-color',
+				'data-max-items-number',
+				'data-max-items-per-screen',
+				'data-space-between-items',
+				'data-space-around-carousel',
+				'data-tainacan-api-root'
+			]
+		];
+
+		return wp_kses( "<div data-module='carousel-items-list' id='tainacan-items-carousel-shortcode_" . uniqid() . "' $props ></div>", $allowed_html );
 	} 
 
 	/**
@@ -1114,7 +1144,43 @@ class Theme_Helper {
 			$props .= sprintf("%s='%s' ", $key_attr, esc_attr($value));
 		}
 		
-		return "<div data-module='dynamic-items-list' id='tainacan-dynamic-items-list-shortcode_" . uniqid(). "' $props ></div>";
+		$allowed_html = [
+			'div' => [
+				'data-module',
+                'data-search-url',
+                'data-selected-items',
+                'data-collection-id',
+                'data-show-image',
+                'data-show-name',
+                'data-show-search-bar',
+                'data-show-collection-header',
+                'data-show-collection-label',
+                'data-image-size',
+                'data-layout',
+                'data-load-strategy',
+                'data-mosaic-height',
+                'data-mosaic-density',
+                'data-mosaic-grid-rows',
+                'data-mosaic-grid-columns',
+                'data-mosaic-item-focal-point-x',
+                'data-mosaic-item-focal-point-y',
+                'data-max-columns-count',
+                'data-collection-background-color',
+                'data-collection-text-color',
+                'data-grid-margin',
+                'data-max-items-number',
+                'data-order',
+                'data-order-by',
+                'data-order-by-meta-key',
+                'data-tainacan-view-mode',
+                'data-tainacan-api-root',
+                'id',
+				'class',
+				'style'
+			]
+		];
+		
+		return wp_kses( "<div data-module='dynamic-items-list' id='tainacan-dynamic-items-list-shortcode_" . uniqid(). "' $props ></div>", $allowed_html );
 	} 
 
 	/**
