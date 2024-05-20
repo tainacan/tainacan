@@ -83,6 +83,12 @@ If you have Imagick installed on your server, Tainacan will be able to automatic
 * Contribute to the source code: [https://github.com/tainacan/tainacan](https://github.com/tainacan/tainacan)
 * Check our documentation Wiki: [https://wiki.tainacan.org/](https://wiki.tainacan.org/)
 
+== Frequently Asked Questions ==
+
+= Where do I report security bugs found in this plugin? =
+
+Please report security bugs found in the source code of the Tainacan plugin through the [Patchstack Vulnerability Disclosure Program](https://wordpress.org/plugins/tainacan/). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+
 == Screenshots ==
 
 1. Manage your repository
