@@ -5,6 +5,7 @@
                 icon="magnify"
                 :data="options"
                 autocomplete
+                :open-on-focus="true"
                 :loading="isLoadingOptions"
                 expanded
                 :remove-on-keys="[]"
@@ -16,6 +17,7 @@
                 :placeholder="$i18n.get('info_type_to_add_terms')"
                 check-infinite-scroll
                 @typing="search"
+                @focus="($event) => { searchQuery = $event.target.value; performSearch(searchQuery) }"
                 @update:model-value="($event) => { resetPage(); onSelect($event) }"
                 @infinite-scroll="searchMore">
             <template #default="props">
@@ -88,8 +90,7 @@
             this.updateSelectedValues();
         },
         methods: {
-            search: _.debounce( function(query) {
-
+            performSearch(query) {
                 // String update
                 if (query != this.searchQuery) {
                     this.searchQuery = query;
@@ -166,9 +167,12 @@
                     this.isLoadingOptions = false;
                     this.$console.log(error);
                 });
+            },
+            search: _.debounce( function(query) {
+                this.performSearch(query);
             }, 500),
             searchMore: _.debounce(function () {
-                this.search(this.searchQuery)
+                this.performSearch(this.searchQuery)
             }, 250),
             updateSelectedValues() {
                 

@@ -285,7 +285,7 @@ export const dynamicFilterTypeMixin = {
             if (this.options.length < this.maxNumOptionsCheckboxList && !search)
                 this.noMorePage = 1;
 
-            if (this.filter.max_options && this.options.length >= this.filter.max_options) {
+            if ((this.filterTypeOptions.use_max_options == true && this.filter.max_options) && this.options.length >= this.filter.max_options) {
                 let showViewAllButton = true;
 
                 if (this.options.length === this.filter.max_options){
@@ -358,7 +358,7 @@ export const dynamicFilterTypeMixin = {
             if (this.options.length < this.maxNumOptionsCheckboxList)
                 this.noMorePage = 1;
             
-            if (this.filter.max_options && this.options.length >= this.filter.max_options) {
+            if ((this.filterTypeOptions.use_max_options == true && this.filter.max_options) && this.options.length >= this.filter.max_options) {
                 let showViewAllButton = true;
 
                 if(this.options.length === this.filter.max_options){
