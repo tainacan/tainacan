@@ -499,9 +499,14 @@ class Theme_Helper {
 		// Passes arguments to custom props
 		if ($args) {
 			foreach ($args as $key => $value) {
-				if ($value == true || $value == 'true') {
-					$props .= str_replace('_', '-', $key) . '="' . $value . '" ';
-				}
+				if (is_bool($value))
+					$value = $value ? 'true' : 'false';
+				// Changes from PHP '_' notation to HTML '-' notation
+				$key_attr = str_replace('_', '-', $key);
+				if ( $key !== 'class' && $key !== 'style' && $key !== 'id' && strpos($key, 'data-') === false )
+					$key_attr = 'data-' . $key_attr;
+				
+				$props .= sprintf("%s='%s' ", $key_attr, esc_attr($value));
 			}
 		}
 
@@ -1096,36 +1101,39 @@ class Theme_Helper {
 				$value = $value ? 'true' : 'false';
 			// Changes from PHP '_' notation to HTML '-' notation
 			$key_attr = str_replace('_', '-', $key);
+			if ( $key !== 'class' && $key !== 'style' && $key !== 'id' && strpos($key, 'data-') === false )
+				$key_attr = 'data-' . $key_attr;
+			
 			$props .= sprintf("%s='%s' ", $key_attr, esc_attr($value));
 		}
 		
 		$allowed_html = [
 			'div' => [
-				'id',
-				'class',
-				'style',
-				'data-module',
-				'data-search-url',
-				'data-selected-items',
-				'data-arrows-position',
-				'data-load-strategy',
-				'data-collection-id',
-				'data-auto-play',
-				'data-auto-play-speed',
-				'data-loop-slides',
-				'data-hide-title',
-				'data-large-arrows',
-				'data-arrows-style',
-				'data-image-size',
-				'data-show-collection-header',
-				'data-show-collection-label',
-				'data-collection-background-color',
-				'data-collection-text-color',
-				'data-max-items-number',
-				'data-max-items-per-screen',
-				'data-space-between-items',
-				'data-space-around-carousel',
-				'data-tainacan-api-root'
+				'id' => true,
+				'class' => true,
+				'style' => true,
+				'data-module' => true,
+				'data-search-url' => true,
+				'data-selected-items' => true,
+				'data-arrows-position' => true,
+				'data-load-strategy' => true,
+				'data-collection-id' => true,
+				'data-auto-play' => true,
+				'data-auto-play-speed' => true,
+				'data-loop-slides' => true,
+				'data-hide-title' => true,
+				'data-large-arrows' => true,
+				'data-arrows-style' => true,
+				'data-image-size' => true,
+				'data-show-collection-header' => true,
+				'data-show-collection-label' => true,
+				'data-collection-background-color' => true,
+				'data-collection-text-color' => true,
+				'data-max-items-number' => true,
+				'data-max-items-per-screen' => true,
+				'data-space-between-items' => true,
+				'data-space-around-carousel' => true,
+				'data-tainacan-api-root' => true
 			]
 		];
 
@@ -1204,46 +1212,49 @@ class Theme_Helper {
 				$value = $value ? 'true' : 'false';
 			// Changes from PHP '_' notation to HTML '-' notation
 			$key_attr = str_replace('_', '-', $key);
+			if ( $key !== 'class' && $key !== 'style' && $key !== 'id' && strpos($key, 'data-') === false )
+				$key_attr = 'data-' . $key_attr;
+
 			$props .= sprintf("%s='%s' ", $key_attr, esc_attr($value));
 		}
 		
 		$allowed_html = [
 			'div' => [
-				'data-module',
-                'data-search-url',
-                'data-selected-items',
-                'data-collection-id',
-                'data-show-image',
-                'data-show-name',
-                'data-show-search-bar',
-                'data-show-collection-header',
-                'data-show-collection-label',
-                'data-image-size',
-                'data-layout',
-                'data-load-strategy',
-                'data-mosaic-height',
-                'data-mosaic-density',
-                'data-mosaic-grid-rows',
-                'data-mosaic-grid-columns',
-                'data-mosaic-item-focal-point-x',
-                'data-mosaic-item-focal-point-y',
-                'data-max-columns-count',
-                'data-collection-background-color',
-                'data-collection-text-color',
-                'data-grid-margin',
-                'data-max-items-number',
-                'data-order',
-                'data-order-by',
-                'data-order-by-meta-key',
-                'data-tainacan-view-mode',
-                'data-tainacan-api-root',
-                'id',
-				'class',
-				'style'
+				'data-module' => true,
+                'data-search-url' => true,
+                'data-selected-items' => true,
+                'data-collection-id' => true,
+                'data-show-image' => true,
+                'data-show-name' => true,
+                'data-show-search-bar' => true,
+                'data-show-collection-header' => true,
+                'data-show-collection-label' => true,
+                'data-image-size' => true,
+                'data-layout' => true,
+                'data-load-strategy' => true,
+                'data-mosaic-height' => true,
+                'data-mosaic-density' => true,
+                'data-mosaic-grid-rows' => true,
+                'data-mosaic-grid-columns' => true,
+                'data-mosaic-item-focal-point-x' => true,
+                'data-mosaic-item-focal-point-y' => true,
+                'data-max-columns-count' => true,
+                'data-collection-background-color' => true,
+                'data-collection-text-color' => true,
+                'data-grid-margin' => true,
+                'data-max-items-number' => true,
+                'data-order' => true,
+                'data-order-by' => true,
+                'data-order-by-meta-key' => true,
+                'data-tainacan-view-mode' => true,
+                'data-tainacan-api-root' => true,
+                'id' => true,
+				'class' => true,
+				'style' => true
 			]
 		];
 		
-		return wp_kses( "<div data-module='dynamic-items-list' id='tainacan-dynamic-items-list-shortcode_" . uniqid(). "' $props ></div>", $allowed_html );
+		return wp_kses("<div data-module='dynamic-items-list' id='tainacan-dynamic-items-list-shortcode_" . uniqid(). "' $props ></div>", $allowed_html );
 	} 
 
 	/**
