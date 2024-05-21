@@ -452,6 +452,11 @@
                 this.updateMetadataOrder();
             },
             isAvailableChildMetadata(to, from, item) {
+
+                // Se não estamos na lista de metadados do repositório, não podemos inserir filhos em metadados que sejam herdados do repositório
+                if ( !this.isRepositoryLevel && this.parent.collection_id === 'default' )
+                    return false;
+                
                 if (!item || !item.dataset || !item.dataset.metadatumType)
                     return false;
                 
