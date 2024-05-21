@@ -452,13 +452,13 @@
                 this.updateMetadataOrder();
             },
             isAvailableChildMetadata(to, from, item) {
-                if (!item || !item.id)
+                if (!item || !item.dataset || !item.dataset.metadatumType)
                     return false;
                 
                 if (from.el && from.el.className === 'active-metadata-area')
                     return false;
-
-                return !['tainacan-compound', 'tainacan-taxonomy'].includes(item.id);
+                
+                return !['tainacan-compound', 'tainacan-taxonomy'].includes(item.dataset.metadatumType);
             },
             isCollapseOpen(metadatumId) {
                 return this.collapses[metadatumId] == true;
