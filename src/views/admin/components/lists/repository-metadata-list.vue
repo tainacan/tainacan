@@ -371,7 +371,7 @@ export default {
                 case 'add':
                     if ( !$event.from.classList.contains('active-metadata-area') ) {
                         this.addNewMetadatum(this.getMetadatumTypes()[$event.oldIndex], $event.newIndex);
-                        $event.originalTarget.removeChild($event.item);
+                        $event.to.removeChild($event.item);
                     }
                     break;
                 case 'remove':

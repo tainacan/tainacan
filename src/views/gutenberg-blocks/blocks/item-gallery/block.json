@@ -110,6 +110,14 @@
         "templateMode": {
             "type": "boolean",
             "default": false
+        },
+        "thumbnailsSize": {
+            "type": "string",
+            "default": "tainacan-medium"
+        },
+        "thumbsHaveFixedHeight": {
+            "type": "boolean",
+            "default": false
         }
     },
     "supports": {

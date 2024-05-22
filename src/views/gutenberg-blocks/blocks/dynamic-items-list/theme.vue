@@ -145,7 +145,7 @@
             </span>
         </button> 
     </div>
-    <template v-if="isLoading">
+    <template v-if="isLoading && layout !== 'tainacan-view-modes'">
         <ul
                 v-if="layout !== 'mosaic'"
                 :style="{
@@ -184,9 +184,9 @@
                     class="mosaic-container skeleton" /> 
         </ul>
     </template>
-    <div v-else>
+    <template v-else>
         <ul 
-                v-if="items.length > 0 && layout !== 'mosaic'"
+                v-if="items.length > 0 && layout !== 'mosaic' && layout !== 'tainacan-view-modes'"
                 :style="{
                     gridGap: layout == 'grid' ? ((showName ? gridMargin + 24 : gridMargin) + 'px') : 'inherit',
                     marginTop: (showSearchBar || showCollectionHeader) ? ((showName ? gridMargin + 24 : gridMargin) + 'px') : '0px'
@@ -261,12 +261,31 @@
                 </li>
             </div>
         </ul>
+        <div 
+                v-if="layout === 'tainacan-view-modes'"
+                class="items-list items-layout-tainacan-view-modes">
+            <div 
+                    v-if="(!isLoading && !isLoadingMetadata ) && registeredViewModes !== undefined && registeredViewModes[tainacanViewMode] != undefined && registeredViewModes[tainacanViewMode].type == 'template'"
+                    v-html="itemsListTemplate" />
+            <component
+                    :is="registeredViewModes[tainacanViewMode] != undefined ? registeredViewModes[tainacanViewMode].component : ''"
+                    v-if="registeredViewModes !== undefined && registeredViewModes[tainacanViewMode] != undefined && registeredViewModes[tainacanViewMode].type == 'component'"
+                    :container-id="blockId"
+                    :collection-id="collectionId"
+                    :displayed-metadata="displayedMetadataObjects"
+                    :should-hide-items-thumbnail="false"
+                    :items="items"
+                    :is-filters-menu-compressed="true"
+                    :total-items="items.length"
+                    :is-loading="isLoadingMetadata || isLoading"
+                    :enabled-view-modes="enabledViewModes" />
+        </div>
         <div
                 v-else-if="!isLoading && items.length <= 0"
                 class="spinner-container">
             {{ wpI18n(errorMessage, 'tainacan') }}
         </div>
-    </div>
+    </template>
 </template>
 
 <script>
@@ -277,6 +296,7 @@ import debounce from 'lodash/debounce.js';
 export default {
     name: "DynamicItemsListTheme",
     props: {
+        blockId: String,
         collectionId: [String, Number],  
         showImage: Boolean,
         showName: Boolean,
@@ -302,7 +322,10 @@ export default {
         showCollectionLabel: Boolean,
         collectionBackgroundColor: String,
         collectionTextColor: String,
-        tainacanApiRoot: String
+        tainacanApiRoot: String,
+        enabledViewModes: Array,
+        tainacanViewMode: String,
+        displayedMetadata: Array
     },    
     data() {
         return {
@@ -318,7 +341,11 @@ export default {
             paged: undefined,
             totalItems: 0,
             apiRoot: '',
-            errorMessage: 'No items found.'
+            errorMessage: 'No items found.',
+            displayedMetadataObjects: [],
+            isLoadingMetadata: false,
+            itemsListTemplate: '',
+            registeredViewModes: tainacan_blocks.registered_view_modes,
         }
     },
     created() {
@@ -335,7 +362,10 @@ export default {
         if (this.showCollectionHeader)
             this.fetchCollectionForHeader();
        
-        this.fetchItems();
+        if (this.layout == 'tainacan-view-modes' && this.registeredViewModes !== undefined && this.registeredViewModes[this.tainacanViewMode] != undefined && this.registeredViewModes[this.tainacanViewMode]['dynamic_metadata'] == true)
+            this.fetchMetadata();
+        else
+            this.fetchItems();
     },
     methods: {
         wpI18n(string, context) {
@@ -373,14 +403,33 @@ export default {
             } else if (this.loadStrategy == 'selection') {
     
                 this.localMaxItemsNumber = this.selectedItems.length;
-                
-                let endpoint = '/collection/' + this.collectionId + '/items?' + qs.stringify({ postin: this.selectedItems, perpage: this.localMaxItemsNumber }) + '&orderby=post__in&fetch_only=title,url,thumbnail';
+
+                let endpoint = '/collection/' + this.collectionId + '/items?' + qs.stringify({ postin: this.selectedItems, perpage: this.localMaxItemsNumber }) + '&orderby=post__in';
+
+                if (
+                    this.layout == 'tainacan-view-modes' &&
+                    this.registeredViewModes !== undefined &&
+                    this.registeredViewModes[this.tainacanViewMode] != undefined
+                ) {
+                    endpoint += '&view_mode=' + this.tainacanViewMode;
+
+                    if ( this.displayedMetadataObjects.length > 0 )
+                        endpoint += '&fetch_only=title,url,thumbnail&fetch_only_meta=' + this.displayedMetadataObjects.map((aMetadatum) => aMetadatum.id).join(',');
+                    else 
+                        endpoint += '&fetch_only=title,description,url,thumbnail';
+
+                } else {
+                    endpoint += '&fetch_only=title,url,thumbnail';
+                }
 
                 this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
                     .then(response => {
 
                         for (let item of response.data.items)
                             this.items.push(item);
+
+                        if ( response.data.template )
+                            this.itemsListTemplate = response.data.template;
 
                         this.isLoading = false;
                         this.totalItems = response.headers['x-wp-total'];
@@ -445,13 +494,32 @@ export default {
                 delete queryObject.admin_view_mode;
                 delete queryObject.fetch_only_meta;
                 
-                endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
+                endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject);
+                
+                if (
+                    this.layout == 'tainacan-view-modes' &&
+                    this.registeredViewModes !== undefined &&
+                    this.registeredViewModes[this.tainacanViewMode] != undefined
+                ) {
+                    endpoint += '&view_mode=' + this.tainacanViewMode;
+
+                    if ( this.displayedMetadataObjects.length > 0 )
+                        endpoint += '&fetch_only=title,url,thumbnail&fetch_only_meta=' + this.displayedMetadataObjects.map((aMetadatum) => aMetadatum.id).join(',');
+                    else 
+                        endpoint += '&fetch_only=title,description,url,thumbnail';
+
+                } else {
+                    endpoint += '&fetch_only=title,url,thumbnail';
+                }
                 
                 this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
                     .then(response => {
 
                         for (let item of response.data.items)
                             this.items.push(item);
+
+                        if ( response.data.template )
+                            this.itemsListTemplate = response.data.template;
 
                         this.isLoading = false;
                         this.totalItems = response.headers['x-wp-total'];
@@ -475,6 +543,30 @@ export default {
                     });
             }
         },
+        fetchMetadata() {
+            let metadataEndpoint = '/collection/' + this.collectionId + '/metadata/?nopaging=1';
+
+            if ( this.displayedMetadata != undefined && this.displayedMetadata.length > 0 )
+                metadataEndpoint += '&' + qs.stringify({ postin: this.displayedMetadata });
+            else
+                metadataEndpoint += '&metakey=display&metavalue=yes';
+            
+            this.isLoadingMetadata = true;
+            this.tainacanAxios.get(metadataEndpoint)
+                .then(response => {
+                    this.displayedMetadataObjects = response.data;
+                    this.displayedMetadataObjects.unshift({
+                        name: this.wpI18n('Thumbnail', 'tainacan'),
+                        metadatum: 'row_thumbnail',
+                        metadata_type: undefined,
+                        slug: 'thumbnail',
+                        id: undefined,
+                        display: true
+                    });
+                    this.fetchItems();
+                    this.isLoadingMetadata = false;      
+                });
+        },
         mosaicPartition(items) {
             const partition = _.groupBy(items, (item, i) => {
                 if (i % 2 == 0)
@@ -491,5 +583,15 @@ export default {
 <style lang="scss">
 
     @import './style.scss';
+
+    @import '../../../admin/scss/_variables';
+    @import '../../../admin/scss/_custom_variables';
+    
+    // Tooltips
+    @import url('floating-vue/dist/style.css');
+    @import '../../../admin/scss/_tooltips.scss';
+
+    // Vue Blurhash transtition effect
+    @import '../../../../../node_modules/another-vue3-blurhash/dist/style.css';
 
 </style>

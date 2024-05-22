@@ -27,7 +27,9 @@ export default function({ attributes }) {
         mosaicItemFocalPoint,
         mosaicDensity,
         maxColumnsCount,
-        imageSize
+        imageSize,
+        tainacanViewMode,
+        displayedMetadata
     } = attributes;
     
     // Gets attributes such as style, that are automatically added by the editor hook
@@ -60,6 +62,7 @@ export default function({ attributes }) {
                 data-order={ order !== undefined ? order : '' }
                 data-order-by={ orderBy !== undefined ? orderBy : 'date' }
                 data-order-by-meta-key={ orderByMetaKey !== undefined ? orderByMetaKey : '' }
+                data-tainacan-view-mode={ tainacanViewMode }
                 data-tainacan-api-root={ tainacan_blocks.root }
                 id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>
                     { content }

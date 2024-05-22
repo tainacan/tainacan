@@ -1,9 +1,14 @@
 const { __ } = wp.i18n;
 
-const { Button, ButtonGroup, BaseControl, Placeholder, RangeControl, ToggleControl, PanelBody } = wp.components;
+const { Button, ButtonGroup, BaseControl, Placeholder, SelectControl, RangeControl, ToggleControl, PanelBody } = wp.components;
 
 const ServerSideRender = wp.serverSideRender;
-const { InspectorControls, useBlockProps } = wp.blockEditor;
+const { InspectorControls, useBlockProps, store } = wp.blockEditor;
+
+const { useSelect } = wp.data;
+
+import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
+import pick from 'lodash/pick';
 
 import SingleItemModal from '../../js/selection/single-item-modal.js';
 import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
@@ -33,7 +38,9 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
         thumbnailsCarouselItemSize,
         showDownloadButtonMain,
         lightboxHasLightBackground,
-        templateMode
+        templateMode,
+        thumbnailsSize,
+        thumbsHaveFixedHeight
     } = attributes;
 
     // Gets blocks props from hook
@@ -55,6 +62,23 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
             });
         }
     }
+
+    // Get available image sizes
+    const {	imageSizes } = useSelect(
+        ( select ) => {
+            const {	getSettings	} = select( store );
+
+            const settings = pick( getSettings(), [
+                'imageSizes'
+            ] );
+            return settings
+        },
+        [ clientId ]
+    );
+    const imageSizeOptions = map(
+        imageSizes,
+        ( { name, slug } ) => ( { value: slug, label: name } )
+    );
 
     return <div { ...blockProps }>
 
@@ -207,6 +231,15 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                             title={__('Thumbnails carousel settings', 'tainacan')}
                             initialOpen={ true }
                         >
+                        <SelectControl
+                                label={__('Image size', 'tainacan')}
+                                value={ thumbnailsSize }
+                                options={ imageSizeOptions }
+                                onChange={ ( aThumbnailsSize ) => { 
+                                    thumbnailsSize = aThumbnailsSize;
+                                    setAttributes({ thumbnailsSize: thumbnailsSize });
+                                }}
+                            />
                         <RangeControl
                             label={ __('Carousel width (%)', 'tainacan') }
                             value={ thumbnailsCarouselWidth }
@@ -226,6 +259,15 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                             }}
                             min={ 32 }
                             max={ 400 }
+                        />
+                        <ToggleControl
+                            label={ __('Thumbnails have fixed height', 'tainacan') }
+                            help={ __( 'If checked, the thumbnails will have fixed the item size height, otherwise they will have fixed the item size width.', 'tainacan' ) }
+                            checked={ thumbsHaveFixedHeight }
+                            onChange={ ( isChecked ) => {
+                                thumbsHaveFixedHeight = isChecked;
+                                setAttributes({ thumbsHaveFixedHeight: thumbsHaveFixedHeight });
+                            }}
                         />
                         <ToggleControl
                             label={__('Hide file name', 'tainacan')}

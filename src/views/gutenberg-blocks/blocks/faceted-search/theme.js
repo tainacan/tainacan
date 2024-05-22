@@ -143,7 +143,7 @@ export default (element) => {
             /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
             if (typeof window.tainacan_extra_plugins != "undefined") {
                 for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins)) {
-                    VueItemsList.component(extraVuePluginName, extraVuePluginObject);
+                    VueItemsList.use(extraVuePluginName, extraVuePluginObject);
                 }
             }
 
@@ -172,7 +172,7 @@ export default (element) => {
             VueItemsList.use(VTooltip, {
                 popperTriggers: ['hover'],
                 themes: {
-                    'taianacan-tooltip': {
+                    'tainacan-tooltip': {
                         '$extend': 'tooltip',
                         triggers: ['hover', 'focus', 'touch'],
                         autoHide: true,

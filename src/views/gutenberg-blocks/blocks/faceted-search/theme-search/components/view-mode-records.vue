@@ -166,7 +166,7 @@ export default {
                         if (this.masonry !== false)
                             this.masonry.destroy();
                         
-                        this.masonry = new Masonry( '.tainacan-records-container', {
+                        this.masonry = new Masonry( this.containerId ? ( '#' + this.containerId + ' .tainacan-records-container' ) : '.tainacan-records-container', {
                             itemSelector: 'li',
                             columnWidth: '.tainacan-records-grid-sizer',
                             gutter: 30,

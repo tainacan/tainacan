@@ -160,20 +160,26 @@
                                     v-if="Object.keys(geocoordinateMetadata).length"
                                     class="geocoordinate-panel--input">
                                 <label>{{ $i18n.get('label_showing_locations_for') }}&nbsp;</label>
-                                <b-select
+                                <div 
                                         id="tainacan-select-geocoordinate-metatum"
-                                        v-model="selectedGeocoordinateMetadatumId"
-                                        :placeholder="$i18n.get('instruction_select_geocoordinate_metadatum')">
-                                    <option
-                                            v-for="(geocoordinateMetadatum, geocoordinateMetadatumId) in geocoordinateMetadata"
-                                            :key="geocoordinateMetadatum.id"
-                                            role="button"
-                                            :class="{ 'is-active': selectedGeocoordinateMetadatumId == geocoordinateMetadatumId }"
-                                            :value="geocoordinateMetadatumId"
-                                            @click="onChangeSelectedGeocoordinateMetadatum(geocoordinateMetadatumId)">
-                                        {{ geocoordinateMetadatum.name }}
-                                    </option>
-                                </b-select>
+                                        class="control">
+                                    <!-- Not using B-Select here to avoid importing Bulme on view modes inside Gutenberg blocks -->
+                                    <span class="select">
+                                        <select
+                                                v-model="selectedGeocoordinateMetadatumId"
+                                                :placeholder="$i18n.get('instruction_select_geocoordinate_metadatum')">
+                                            <option
+                                                    v-for="(geocoordinateMetadatum, geocoordinateMetadatumId) in geocoordinateMetadata"
+                                                    :key="geocoordinateMetadatum.id"
+                                                    role="button"
+                                                    :class="{ 'is-active': selectedGeocoordinateMetadatumId == geocoordinateMetadatumId }"
+                                                    :value="geocoordinateMetadatumId"
+                                                    @click="onChangeSelectedGeocoordinateMetadatum(geocoordinateMetadatumId)">
+                                                {{ geocoordinateMetadatum.name }}
+                                            </option>
+                                        </select>
+                                    </span>
+                                </div>
                             </div>
                             <section 
                                     v-else
@@ -517,11 +523,11 @@ export default {
         itemsLocations: { 
             handler() {
                 setTimeout(() => {
-                    if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject ) {
+                    if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].leafletObject ) {
                         if (this.itemsLocations.length == 1)
-                            this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
+                            this.$refs['tainacan-view-mode-map'].leafletObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
                         else
-                            this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
+                            this.$refs['tainacan-view-mode-map'].leafletObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
                     }
                 }, 500)
             },
@@ -537,6 +543,7 @@ export default {
                 const geocoordinateMetadataIds = Object.keys(this.geocoordinateMetadata);
                 if (
                     !geocoordinateMetadataIds.length ||
+                    !this.$userPrefs ||
                     !this.$userPrefs.get(prefsGeocoordinateMetadatum) ||
                     !this.geocoordinateMetadata[this.$userPrefs.get(prefsGeocoordinateMetadatum)]
                 )
@@ -552,11 +559,12 @@ export default {
         onChangeSelectedGeocoordinateMetadatum(id) {
             // Setting default geocoordinate metadatum for map view mode
             const prefsGeocoordinateMetadatum = !this.isRepositoryLevel ? 'map_view_mode_selected_geocoordinate_metadatum_' + this.collectionId : 'map_view_mode_selected_geocoordinate_metadatum';
-            this.$userPrefs.set(prefsGeocoordinateMetadatum, id);
+            if ( this.$userPrefs )
+                this.$userPrefs.set(prefsGeocoordinateMetadatum, id);
         },
         onMapReady() {
-            if ( LeafletActiveArea && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject )
-                this.$refs['tainacan-view-mode-map'].mapObject.setActiveArea('leaflet-active-area');
+            if ( LeafletActiveArea && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].leafletObject )
+                this.$refs['tainacan-view-mode-map'].leafletObject.setActiveArea('leaflet-active-area');
         },
         getItemImageHeight(imageWidth, imageHeight) {  
             let itemWidth = 120;
@@ -571,19 +579,19 @@ export default {
         clearSelectedMarkers() {
             this.mapSelectedItemId = false;
             this.selectedMarkerIndexes = [];
-            if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject ) {
+            if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].leafletObject ) {
                 if (this.itemsLocations.length == 1)
-                    this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
+                    this.$refs['tainacan-view-mode-map'].leafletObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
                 else
-                    this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
+                    this.$refs['tainacan-view-mode-map'].leafletObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
             }
         },
         showItemByLocation(index) {
             this.mapSelectedItemId = this.itemsLocations[index].item.id;
             this.selectedMarkerIndexes = [];
             this.selectedMarkerIndexes.push(index);
-            if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject )
-                this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds( [ this.itemsLocations[index].location ],  { animate: true, maxZoom: 16 });
+            if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].leafletObject )
+                this.$refs['tainacan-view-mode-map'].leafletObject.panInsideBounds( [ this.itemsLocations[index].location ],  { animate: true, maxZoom: 16 });
         },
         showLocationsByItem(item) {
             this.mapSelectedItemId = item.id;
@@ -596,11 +604,11 @@ export default {
             })
 
             if ( selectedLocationsByItem.length) {
-                if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject ) {
+                if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].leafletObject ) {
                     if (selectedLocationsByItem.length > 1)
-                        this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
+                        this.$refs['tainacan-view-mode-map'].leafletObject.flyToBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
                     else
-                        this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
+                        this.$refs['tainacan-view-mode-map'].leafletObject.panInsideBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
                 }
             } else {
                 this.$buefy.snackbar.open({
@@ -618,9 +626,57 @@ export default {
 
     @import "../../../../../admin/scss/_view-mode-records.scss";
     @import "../../../../../admin/scss/_view-mode-map.scss";
+    @import "../../../../../admin/scss/_selects.scss";
 
     .tainacan-records-container--map .tainacan-record .metadata-title {
         padding: 0.6em 0.875em;
+    }
+    .tainacan-records-close-button .icon {
+        align-items: center;
+        display: inline-flex;
+        justify-content: center;
+        height: 1.5rem;
+        width: 1.5rem;
+    }
+    #tainacan-select-geocoordinate-metatum select {
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        align-items: center;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        box-shadow: none;
+    }
+    #tainacan-select-geocoordinate-metatum .select:not(.is-loading)::after {
+        border: 3px solid transparent;
+        border-radius: 2px;
+        border-right: 0;
+        border-top: 0;
+        content: " ";
+        display: block;
+        height: 0.625em;
+        margin-top: -0.4375em;
+        pointer-events: none;
+        position: absolute;
+        top: 50%;
+        transform: rotate(-45deg);
+        transform-origin: center;
+        width: 0.625em;
+        content: "arrowdown" !important;
+        font: normal normal normal 20px/1 "TainacanIcons";
+            font-size: 20px;
+            line-height: 1;
+        border: none !important;
+        transform: none !important;
+        right: 10px !important;
+        color: var(--tainacan-secondary) !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        margin-top: -0.275em !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        font-size: 1.2em;
+        line-height: 1.5em;
     }
 </style>
 

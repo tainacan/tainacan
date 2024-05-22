@@ -308,19 +308,32 @@
         vertical-align: top;
         word-break: break-word;
         font-size: 0.875em;
-        max-width: calc(var(--tainacan-media-thumbs-carousel-item-size, 136px) + 17px);
         
         @media only screen and (max-width: 380px) {
             margin: 10px 0;
         }
 
+        &:not(.has-fixed-height) {
+            max-width: calc(var(--tainacan-media-thumbs-carousel-item-size, 136px) + 17px);
+
+            img {
+                width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
+                max-width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
+                object-fit: cover;
+                object-position: center
+            }
+        }
+        &.has-fixed-height {
+            width: auto;
+            
+            img {
+                height: var(--tainacan-media-thumbs-carousel-item-size, 136px);
+                max-height: var(--tainacan-media-thumbs-carousel-item-size, 136px);
+                width: auto;
+            }
+        }
+
         img {
-            width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
-            height: var(--tainacan-media-thumbs-carousel-item-size, 136px);
-            max-width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
-            max-height: var(--tainacan-media-thumbs-carousel-item-size, 136px);
-            object-fit: cover;
-            object-position: center;
             border-bottom-width: 6px;
             border-bottom-style: solid;
             background-color: var(--tainacan-media-background, transparent);

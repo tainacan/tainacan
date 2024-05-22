@@ -108,7 +108,7 @@
                                     v-for="(collectionMetadatum, metadatumIndex) of collectionNonChildMetadata"
                                     :key="metadatumIndex"
                                     :value="collectionMetadatum.id"
-                                    :disabled="checkIfMetadatumIsAvailable(collectionMetadatum.id)">
+                                    :disabled="checkIfMetadatumIsAvailable(collectionMetadatum.id) || ( checkIfMetadatumIsCompound(collectionMetadatum) && sourceMetadatum.indexOf('compound|(') < 0 )">
                                 <span class="metadatum-name">
                                     {{ collectionMetadatum.name }}
                                 </span>
@@ -139,7 +139,7 @@
                                     v-for="(collectionMetadatum, metadatumIndex) of collectionNonChildMetadata"
                                     :key="metadatumIndex"
                                     :value="collectionMetadatum.id"
-                                    :disabled="!checkIfMetadatumIsCompound(collectionMetadatum) || checkIfMetadatumIsAvailable(collectionMetadatum.id)">
+                                    :disabled="!checkIfMetadatumIsCompound(collectionMetadatum) || checkIfMetadatumIsAvailable(collectionMetadatum.id) || typeof sourceMetadatum != 'object' || !Object.entries(sourceMetadatum)[0]">
                                 <span class="metadatum-name">
                                     {{ collectionMetadatum.name }}
                                 </span>

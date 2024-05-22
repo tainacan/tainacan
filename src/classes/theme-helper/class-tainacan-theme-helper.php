@@ -14,6 +14,7 @@ class Theme_Helper {
 	 * Stores view modes available to be used by the theme
 	 */
 	private $registered_view_modes = [];
+	protected $default_placeholder_template = '';
 
 	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {
@@ -66,75 +67,9 @@ class Theme_Helper {
 		// add_filter( 'wp_title', array($this, 'archive_repository_wp_title'), 10, 3);
 		
 		add_action( 'wp_head', array($this, 'add_social_meta'), 5 );
-		
-		$this->register_view_mode('table', [
-			'label' => __('Table', 'tainacan'),
-			'description' => __('The classic table display.', 'tainacan'),
-			'dynamic_metadata' => true,
-			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewtable tainacan-icon-1-25em"></i></span>',
-			'type' => 'component',
-			'implements_skeleton' => true,
-			'requires_thumbnail' => false
-		]);
-		$this->register_view_mode('cards', [
-			'label' => __('Cards', 'tainacan'),
-			'dynamic_metadata' => false,
-			'description' => __('A cards view, displaying cropped thumbnails, title and description.', 'tainacan'),
-			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewcards tainacan-icon-1-25em"></i></span>',
-			'type' => 'component',
-			'implements_skeleton' => true,
-			'requires_thumbnail' => false
-		]);
-		$this->register_view_mode('records', [
-			'label' => __('Records', 'tainacan'),
-			'dynamic_metadata' => true,
-			'description' => __('A records view, similiar to cards, but flexible for metadata.', 'tainacan'),
-			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewrecords tainacan-icon-1-25em"></i></span>',
-			'type' => 'component',
-			'implements_skeleton' => true,
-			'requires_thumbnail' => false
-		]);
-		$this->register_view_mode('masonry', [
-			'label' => __('Masonry', 'tainacan'),
-			'dynamic_metadata' => false,
-			'description' => __('A masonry view, similar to pinterest, which will display images without cropping.', 'tainacan'),
-			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewmasonry tainacan-icon-1-25em"></i></span>',
-			'type' => 'component',
-			'implements_skeleton' => true
-		]);
-		$this->register_view_mode('slideshow', [
-			'label' => __('Slides', 'tainacan'),
-			'dynamic_metadata' => false,
-			'description' => __('A fullscreen slideshow view, that shows the item document instead of just thumbnails.', 'tainacan'),
-			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-25em"></i></span>',
-			'type' => 'component',
-			'show_pagination' => false,
-			'full_screen' => true
-		]);
-		$this->register_view_mode('list', [
-			'label' => __('List', 'tainacan'),
-			'dynamic_metadata' => true,
-			'description' => __('A list view, similiar to the records, but full width.', 'tainacan'),
-			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewlist tainacan-icon-1-25em"></i></span>',
-			'type' => 'component',
-			'implements_skeleton' => true,
-			'requires_thumbnail' => false
-		]);
-		$this->register_view_mode('map', [
-			'label' => __('Map', 'tainacan'),
-			'dynamic_metadata' => true,
-			'description' => __('A map view, for displaying items that have geocoordinate metadata.', 'tainacan'),
-			'icon' => '<span class="icon">
-							<i>
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="var(--tainacan-info-color, #505253)" width="1.25em" height="1.25em">
-									<path d="M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z" />
-								</svg>
-							</i>
-						</span>',
-			'type' => 'component',
-			'implements_skeleton' => true,
-			'requires_thumbnail' => false
-		]);
+
+		// Registers view modes and their placeholders
+		$this->register_tainacan_oficial_view_modes();
 	}
 	
 	public function is_post_an_item(\WP_Post $post) {
@@ -499,9 +434,14 @@ class Theme_Helper {
 		// Passes arguments to custom props
 		if ($args) {
 			foreach ($args as $key => $value) {
-				if ($value == true || $value == 'true') {
-					$props .= str_replace('_', '-', $key) . '="' . $value . '" ';
-				}
+				if (is_bool($value))
+					$value = $value ? 'true' : 'false';
+				// Changes from PHP '_' notation to HTML '-' notation
+				$key_attr = str_replace('_', '-', $key);
+				if ( $key !== 'class' && $key !== 'style' && $key !== 'id' && strpos($key, 'data-') === false )
+					$key_attr = 'data-' . $key_attr;
+				
+				$props .= sprintf("%s='%s' ", $key_attr, esc_attr($value));
 			}
 		}
 
@@ -511,28 +451,28 @@ class Theme_Helper {
 			'div' => [
 				'id' => true,
 				'data-module' => true,
-				'collection-id' => true,
-				'hide-file-modal-button' => true,
-				'hide-text-modal-button' => true,
-				'hide-link-modal-button' => true,
-				'hide-thumbnail-section' => true,
-				'hide-attachments-section' => true,
-				'show-allow-comments-section' => true,
-				'hide-collapses' => true,
-				'hide-help-buttons' => true,
-				'hide-metadata-types' => true,
-				'help-info-bellow-label' => true,
-				'document-section-label' => true,
-				'thumbnail-section-label' => true,
-				'attachments-section-label' => true,
-				'metadata-section-label' => true,
-				'sent-form-heading' => true,
-				'sent-form-message' => true,
-				'item-link-button-label' => true,
-				'show-item-link-button' => true,
-				'show-terms-agreement-checkbox' => true,
-				'terms-agreement-message' => true,
-				'enabled-metadata' => true,
+				'data-collection-id' => true,
+				'data-hide-file-modal-button' => true,
+				'data-hide-text-modal-button' => true,
+				'data-hide-link-modal-button' => true,
+				'data-hide-thumbnail-section' => true,
+				'data-hide-attachments-section' => true,
+				'data-show-allow-comments-section' => true,
+				'data-hide-collapses' => true,
+				'data-hide-help-buttons' => true,
+				'data-hide-metadata-types' => true,
+				'data-help-info-bellow-label' => true,
+				'data-document-section-label' => true,
+				'data-thumbnail-section-label' => true,
+				'data-attachments-section-label' => true,
+				'data-metadata-section-label' => true,
+				'data-sent-form-heading' => true,
+				'data-sent-form-message' => true,
+				'data-item-link-button-label' => true,
+				'data-show-item-link-button' => true,
+				'data-show-terms-agreement-checkbox' => true,
+				'data-terms-agreement-message' => true,
+				'data-enabled-metadata' => true,
 			]
 		];
 
@@ -746,23 +686,24 @@ class Theme_Helper {
 	 * @param array|string $args {
 	 * 		Optional. Array of arguments
 	 * 
-	 * 		@type string 		$label				 Label, visible to users. Default to $slug
-	 * 		@type string		$description		 Description, visible only to editors in the admin. Default none.
-	 * 		@type string		$type 				 Type. Accepted values are 'template' or 'component'. Default 'template'
-	 * 		@type string		$template			 Full path  to the template file to be used. Required if $type is set to template.
-	 * 												 Default: theme-path/tainacan/view-mode-{$slug}.php
-	 * 		@type string		$component			 Component tag name. The web component js must be included and must accept two props:
-	 * 												 	* items - the list of items to be rendered
-	 * 												 	* displayed-metadata - list of metadata to be displayed
-	 * 												 Default view-mode-{$slug}
-	 * 		@type string		$thumbnail			 Full URL to an thumbnail that represents the view mode. Displayed in admin.
-	 * 		@type string		$icon 				 HTML that outputs an icon that represents the view mode. Displayed in front end.
-	 * 		@type bool			$show_pagination	 Whether to display or not pagination controls. Default true.
-	 * 		@type bool			$full_screen		 Whether the view mode will display full screen or not. Default false.
-	 * 		@type bool			$dynamic_metadata	 Whether to display or not (and use or not) the "displayed metadata" selector. Default false.
-	 * 		@type bool			$implements_skeleton Whether the view mode has its own strategy for disaplying loading state.
-	 * 		@type string		$skeleton_template	 If the view mode is a template, this is the html of its loading state.
-	 * 		@type bool			$required_thumbnail	 Whether the view mode considers essential that the item thumbnail is available, even if it is a placeholder.
+	 * 		@type string 	$label				 	Label, visible to users. Default to $slug
+	 * 		@type string	$description		 	Description, visible only to editors in the admin. Default none.
+	 * 		@type string	$type 				 	Type. Accepted values are 'template' or 'component'. Default 'template'
+	 * 		@type string	$template			 	Full path  to the template file to be used. Required if $type is set to template.
+	 * 											 	Default: theme-path/tainacan/view-mode-{$slug}.php
+	 * 		@type string	$component			 	Component tag name. The web component js must be included and must accept two props:
+	 * 													 	* items - the list of items to be rendered
+	 * 													 	* displayed-metadata - list of metadata to be displayed
+	 * 													 Default view-mode-{$slug}
+	 * 		@type string	$thumbnail			 	Full URL to an thumbnail that represents the view mode. Displayed in admin.
+	 * 		@type string	$icon 				 	HTML that outputs an icon that represents the view mode. Displayed in front end.
+	 * 		@type bool		$show_pagination	 	Whether to display or not pagination controls. Default true.
+	 * 		@type bool		$full_screen		 	Whether the view mode will display full screen or not. Default false.
+	 * 		@type bool		$dynamic_metadata	 	Whether to display or not (and use or not) the "displayed metadata" selector. Default false.
+	 * 		@type bool		$implements_skeleton 	Whether the view mode has its own strategy for disaplying loading state.
+	 * 		@type string	$skeleton_template	 	If the view mode is a template, this is the html of its loading state.
+	 * 		@type string	$placeholder_template 	The placeholder template is rendered in Gutenberg blocks to demo the view mode appearence.
+	 * 		@type bool		$required_thumbnail		Whether the view mode considers essential that the item thumbnail is available, even if it is a placeholder.
 	 * }
 	 * 
 	 * @return void
@@ -782,6 +723,7 @@ class Theme_Helper {
 			'dynamic_metadata' => false,
 			'implements_skeleton' => false,
 			'skeleton_template' => '',
+			'placeholder_template' => $this->default_placeholder_template,
 			'requires_thumbnail' => true
 		);
 		$args = wp_parse_args($args, $defaults);
@@ -1096,10 +1038,43 @@ class Theme_Helper {
 				$value = $value ? 'true' : 'false';
 			// Changes from PHP '_' notation to HTML '-' notation
 			$key_attr = str_replace('_', '-', $key);
+			if ( $key !== 'class' && $key !== 'style' && $key !== 'id' && strpos($key, 'data-') === false )
+				$key_attr = 'data-' . $key_attr;
+			
 			$props .= sprintf("%s='%s' ", $key_attr, esc_attr($value));
 		}
 		
-		return "<div data-module='carousel-items-list' id='tainacan-items-carousel-shortcode_" . uniqid() . "' $props ></div>";
+		$allowed_html = [
+			'div' => [
+				'id' => true,
+				'class' => true,
+				'style' => true,
+				'data-module' => true,
+				'data-search-url' => true,
+				'data-selected-items' => true,
+				'data-arrows-position' => true,
+				'data-load-strategy' => true,
+				'data-collection-id' => true,
+				'data-auto-play' => true,
+				'data-auto-play-speed' => true,
+				'data-loop-slides' => true,
+				'data-hide-title' => true,
+				'data-large-arrows' => true,
+				'data-arrows-style' => true,
+				'data-image-size' => true,
+				'data-show-collection-header' => true,
+				'data-show-collection-label' => true,
+				'data-collection-background-color' => true,
+				'data-collection-text-color' => true,
+				'data-max-items-number' => true,
+				'data-max-items-per-screen' => true,
+				'data-space-between-items' => true,
+				'data-space-around-carousel' => true,
+				'data-tainacan-api-root' => true
+			]
+		];
+
+		return wp_kses( "<div data-module='carousel-items-list' id='tainacan-items-carousel-shortcode_" . uniqid() . "' $props ></div>", $allowed_html );
 	} 
 
 	/**
@@ -1174,10 +1149,49 @@ class Theme_Helper {
 				$value = $value ? 'true' : 'false';
 			// Changes from PHP '_' notation to HTML '-' notation
 			$key_attr = str_replace('_', '-', $key);
+			if ( $key !== 'class' && $key !== 'style' && $key !== 'id' && strpos($key, 'data-') === false )
+				$key_attr = 'data-' . $key_attr;
+
 			$props .= sprintf("%s='%s' ", $key_attr, esc_attr($value));
 		}
 		
-		return "<div data-module='dynamic-items-list' id='tainacan-dynamic-items-list-shortcode_" . uniqid(). "' $props ></div>";
+		$allowed_html = [
+			'div' => [
+				'data-module' => true,
+                'data-search-url' => true,
+                'data-selected-items' => true,
+                'data-collection-id' => true,
+                'data-show-image' => true,
+                'data-show-name' => true,
+                'data-show-search-bar' => true,
+                'data-show-collection-header' => true,
+                'data-show-collection-label' => true,
+                'data-image-size' => true,
+                'data-layout' => true,
+                'data-load-strategy' => true,
+                'data-mosaic-height' => true,
+                'data-mosaic-density' => true,
+                'data-mosaic-grid-rows' => true,
+                'data-mosaic-grid-columns' => true,
+                'data-mosaic-item-focal-point-x' => true,
+                'data-mosaic-item-focal-point-y' => true,
+                'data-max-columns-count' => true,
+                'data-collection-background-color' => true,
+                'data-collection-text-color' => true,
+                'data-grid-margin' => true,
+                'data-max-items-number' => true,
+                'data-order' => true,
+                'data-order-by' => true,
+                'data-order-by-meta-key' => true,
+                'data-tainacan-view-mode' => true,
+                'data-tainacan-api-root' => true,
+                'id' => true,
+				'class' => true,
+				'style' => true
+			]
+		];
+		
+		return wp_kses("<div data-module='dynamic-items-list' id='tainacan-dynamic-items-list-shortcode_" . uniqid(). "' $props ></div>", $allowed_html );
 	} 
 
 	/**
@@ -1188,14 +1202,16 @@ class Theme_Helper {
 	 * @param array $args {
 		 *     Optional. Array of arguments.
 		 *     @type string  $item_id							The Item ID
-		 *     @type string  $items_list_layout					The type of list to be rendered. Accepts 'grid', 'list', 'mosaic' and 'carousel'. 
+		 *     @type string  $items_list_layout					The type of list to be rendered. Accepts 'grid', 'list', 'mosaic', 'carousel' and 'tainacan-view-mode. 
 		 * 	   @type string  $order								Sorting direction to the related items query. Either 'desc' or 'asc'. 
 		 * 	   @type string  $orderby							Sortby metadata. By now we're accepting only 'title' and 'date'.
 		 *     @type string  $class_name						Extra class to add to the wrapper, besides the default wp-block-tainacan-carousel-related-items
 		 *     @type string  $collection_heading_class_name		Extra class to add to the collection name wrapper. Defaults to ''
 		 * 	   @type string  $collection_heading_tag			Tag to be used as wrapper of the collection name. Defaults to h2
+		 * 	   @type boolean $hide_collection_heading			Whether to hide the collection name or not. Defaults to false
 		 *     @type string  $metadata_label_class_name			Extra class to add to the metadata label wrapper. Defaults to ''
 		 * 	   @type string  $metadata_label_tag				Tag to be used as wrapper of the metadata label. Defaults to p
+		 * 	   @type boolean $hide_metadata_label				Whether to hide the metadata label or not. Defaults to false
 		 *     @type array   $carousel_args						Array of arguments to be passed to the get_tainacan_items_carousel function if $items_list_layout == carousel
 		 *     @type array   $dynamic_items_args				Array of arguments to be passed to the get_tainacan_dynamic_items function if $items_list_layout != carousel
 		 * @return string  The HTML div to be used for rendering the related items vue component
@@ -1205,8 +1221,10 @@ class Theme_Helper {
 			'class_name' => '',
 			'collection_heading_class_name' => '',
 			'collection_heading_tag' => 'h2', 
+			'hide_collection_heading' => false,
 			'metadata_label_class_name' => '',
 			'metadata_label_tag' => 'p',
+			'hide_metadata_label' => false,
 			'carousel_args' => [],
 			'dynamic_items_args' => []
 		);
@@ -1242,13 +1260,13 @@ class Theme_Helper {
 			if ( isset($related_group['items']) && isset($related_group['total_items']) && $related_group['total_items'] ) {
 				// Adds a heading with the collection name
 				$collection_heading = '';
-				if ( isset($related_group['collection_name']) ) {
+				if ( $args['hide_collection_heading'] !== true && isset($related_group['collection_name']) ) {
 					$collection_heading = wp_kses_post('<' . $args['collection_heading_tag'] . ' class="' . $args['collection_heading_class_name'] . '">' . $related_group['collection_name'] . '</' . $args['collection_heading_tag'] . '>');
 				}
 				
 				// Adds a paragraph with the metadata name
 				$metadata_label = '';
-				if ( isset($related_group['metadata_name']) ) {
+				if ( $args['hide_metadata_label'] !== true && isset($related_group['metadata_name']) ) {
 					$metadata_label = wp_kses_post('<' . $args['metadata_label_tag'] . ' class="' . $args['metadata_label_class_name'] . '">' . $related_group['metadata_name'] . '</' . $args['metadata_label_tag'] . '>');
 				}
 
@@ -1265,15 +1283,44 @@ class Theme_Helper {
 						? $block_args['image_size']
 						: ($no_crop_images_to_square ? 'tainacan-medium-full' : 'tainacan-medium');
 
-					// Remove attribute description to avoid poluting HTML
+					// No need to pass the complete item to avoid poluting HTML
 					$related_group['items'] = array_map(
-						function($el) use ($image_size) {
+						function($el) use ($args) {
+
+							// In Tainacan View Modes, we fetch items from api so we only need ID
+							if ( $args['items_list_layout'] === 'tainacan-view-modes' )
+								return $el['id'];
+
+							// For other layouts, we simply remove attribute description
 							unset($el['description']);
 							return $el;
 						}, $related_group['items']
 					);
+					
+					if ( isset($args['items_list_layout']) && $args['items_list_layout'] === 'carousel' ) {
+						$items_list_args = wp_parse_args([
+							'collection_id' => $related_group['collection_id'],
+							'load_strategy' => 'parent',
+							'selected_items' => json_encode($related_group['items']),
+							'image_size' => $image_size
+						], $block_args);
 
-					if ( isset($args['items_list_layout']) && $args['items_list_layout'] !== 'carousel' ) {
+						$items_list_div = $this->get_tainacan_items_carousel($items_list_args);
+
+					} else if ( isset($args['items_list_layout']) && $args['items_list_layout'] === 'tainacan-view-modes' ) {
+						$items_list_args = wp_parse_args([
+							'collection_id' => $related_group['collection_id'],
+							'load_strategy' => 'selection', // Tainacan View Modes fetch item from api to get item metadata as well
+							'selected_items' => json_encode($related_group['items']),
+							'layout' => $args['items_list_layout'],
+							'displayed_metadata' => json_encode(isset( $block_args['displayed_metadata'] ) ? $block_args['displayed_metadata'] : []),
+							'selected_items' => json_encode($related_group['items']),
+							'tainacan_view_mode' => $block_args['tainacan_view_mode']
+						], $block_args);
+
+						$items_list_div = $this->get_tainacan_dynamic_items_list($items_list_args);
+
+					} else {
 						$items_list_args = wp_parse_args([
 							'collection_id' => $related_group['collection_id'],
 							'load_strategy' => 'parent',
@@ -1283,16 +1330,8 @@ class Theme_Helper {
 						], $block_args);
 
 						$items_list_div = $this->get_tainacan_dynamic_items_list($items_list_args);
-					} else {
-						$items_list_args = wp_parse_args([
-							'collection_id' => $related_group['collection_id'],
-							'load_strategy' => 'parent',
-							'selected_items' => json_encode($related_group['items']),
-							'image_size' => $image_size
-						], $block_args);
 
-						$items_list_div = $this->get_tainacan_items_carousel($items_list_args);
-					}
+					} 
 				}
 				
 				$output .= '<div class="wp-block-group" data-related-collection-id="' . $related_group['collection_id'] . '" data-related-metadata-id="' . $related_group['metadata_id'] . '">
@@ -1361,6 +1400,9 @@ class Theme_Helper {
 		*	   @type bool	 $showDownloadButtonMain		  Displays a download button below the Main slider
 		*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
 		*	   @type bool    $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon
+		*	   @type string  $thumbnailsSize				  Media size for the thumbnail images. Defaults to 'tainacan-medium'
+		*	   @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.
+		* }		
 		* @return string  The HTML div to be used for rendering the item galery component
 	 */
 	public function get_tainacan_item_gallery($args = []) {
@@ -1382,7 +1424,9 @@ class Theme_Helper {
 			'openLightboxOnClick' => 			true,
 			'showDownloadButtonMain' =>			true,
 			'lightboxHasLightBackground' => 	false,
-			'showArrowsAsSVG' =>				true
+			'showArrowsAsSVG' =>				true,
+			'thumbnailsSize' =>					'tainacan-medium',
+			'thumbsHaveFixedHeight'	=>			false	
 		);
 		$args = wp_parse_args($args, $defaults);
 		
@@ -1410,6 +1454,8 @@ class Theme_Helper {
 		$show_download_button_main = $args['showDownloadButtonMain'];
 		$lightbox_has_light_background = $args['lightboxHasLightBackground'];
 		$show_arrows_as_svg = $args['showArrowsAsSVG'];
+		$thumbnails_size = $args['thumbnailsSize'];
+		$thumbs_have_fixed_height = $args['thumbsHaveFixedHeight'];
 
 		// Prefils arrays with proper values to avoid messsy IFs
 		$layout_elements = array(
@@ -1544,7 +1590,7 @@ class Theme_Helper {
 				
 				$media_items_thumbnails[] =
 					tainacan_get_the_media_component_slide(array(
-						'media_content' => get_the_post_thumbnail($item_id, 'tainacan-medium'),
+						'media_content' => get_the_post_thumbnail($item_id, $thumbnails_size),
 						'media_content_full' => $open_lightbox_on_click ? ($is_document_type_attachment ? tainacan_get_the_document($item_id, 'full') : sprintf('<div class="attachment-without-image">%s</div>', tainacan_get_the_document($item_id, 'full')) ) : '',
 						'media_title' => $is_document_type_attachment ? get_the_title(tainacan_get_the_document_raw($item_id)) : '',
 						'media_description' => $is_document_type_attachment ? get_the_content(null, false, tainacan_get_the_document_raw($item_id)) : '',
@@ -1558,7 +1604,7 @@ class Theme_Helper {
 				foreach ( $attachments as $attachment ) {
 					$media_items_thumbnails[] = 
 						tainacan_get_the_media_component_slide(array(
-							'media_content' => wp_get_attachment_image( $attachment->ID, 'tainacan-medium', false ),
+							'media_content' => wp_get_attachment_image( $attachment->ID, $thumbnails_size, false ),
 							'media_content_full' => ( $open_lightbox_on_click && !$layout_elements['main'] ) ? ( wp_attachment_is('image', $attachment->ID) ? wp_get_attachment_image( $attachment->ID, 'full', false) : sprintf('<div class="attachment-without-image tainacan-embed-container"><iframe id="tainacan-attachment-iframe--%s" src="%s"></iframe></div>', $block_id, tainacan_get_attachment_html_url($attachment->ID)) ) : '',
 							'media_title' => $attachment->post_title,
 							'media_description' => $attachment->post_content,
@@ -1664,6 +1710,7 @@ class Theme_Helper {
 				'wrapper_attributes' => $wrapper_attributes,
 				'class_main_div' => '',
 				'class_thumbs_div' => '',
+				'class_thumbs_li' => $thumbs_have_fixed_height ? 'has-fixed-height' : '',
 				'swiper_main_options' => $swiper_main_options,
 				'swiper_thumbs_options' => $swiper_thumbs_options,
 				'swiper_arrows_as_svg' => $show_arrows_as_svg,
@@ -2105,6 +2152,8 @@ class Theme_Helper {
 		*	   @type bool	 $showDownloadButtonMain		  Displays a download button below the Main slider
 		*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
 		*	   @type bool    $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon
+		*	   @type string  $thumbnailsSize	 		      Media size for the thumbnail images. Defaults to 'tainacan-medium'
+		*	   @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.
 		* @return string  The HTML div to be used for rendering the item galery component
 	 */
 	public function get_tainacan_item_gallery_template($args = []) {
@@ -2126,7 +2175,9 @@ class Theme_Helper {
 			'openLightboxOnClick' => 			true,
 			'showDownloadButtonMain' =>			true,
 			'lightboxHasLightBackground' => 	false,
-			'showArrowsAsSVG' =>				true
+			'showArrowsAsSVG' =>				true,
+			'thumbnailsSize' =>					'tainacan-medium',
+			'thumbsHaveFixedHeight' =>			false
 		);
 		$args = wp_parse_args($args, $defaults);
 
@@ -2147,6 +2198,8 @@ class Theme_Helper {
 		$show_download_button_main = $args['showDownloadButtonMain'];
 		$lightbox_has_light_background = $args['lightboxHasLightBackground'];
 		$show_arrows_as_svg = $args['showArrowsAsSVG'];
+		$thumbnails_size = $args['thumbnailsSize'];
+		$thumbs_have_fixed_height = $args['thumbsHaveFixedHeight'];
 
 		// Prefils arrays with proper values to avoid messsy IFs
 		$layout_elements = array(
@@ -2235,5 +2288,196 @@ class Theme_Helper {
 			'search' => get_query_var( 'search', '' ),
 			'termsparent' => get_query_var( 'termsparent', '0' )
 		);
+	}
+
+	/**
+	 * Registers Tainacan oficial View Modes and their placeholders
+	 */
+	function register_tainacan_oficial_view_modes() {
+
+		/**
+		 * Registers the default placeholder template, which is used by Records and any View mode that does not defines it
+		 */
+		$this->default_placeholder_template = '<ul style="list-style: none;width: 100%; height: auto; column-width: 220px; gap: 15px;padding: 0;">' .
+			array_reduce( range(0,5), function($container, $i) {
+				$container .= '<li style="break-inside: avoid; width: calc(100% - 40px); height: auto; background-color: var(--tainacan-block-gray1, #f2f2f2); margin: 0 0 15px 0; padding: 20px;">
+					<div style="width: 100%; height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 0 0 8px 0;"></div>
+					<div style="width: 42px; height: 54px; background-color: var(--tainacan-block-gray2, #dbdbdb);float: right;margin-left: 10px;margin-bottom: 10px;"></div>
+					<div style="width: 60%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>
+					<div style="width: 50%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>
+					<div style="width: 65%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>' .
+					array_reduce( range(0,6), function($item, $m) {
+						$should_appear = rand(0,1);
+						if ($should_appear)
+							$item .= '<div style="width: ' . rand(65,100). '%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>';
+						return $item;	
+					}) .
+				'</li>';
+				return $container;
+			}) .
+		'</ul>';
+		
+		$this->register_view_mode('table', [
+			'label' => __('Table', 'tainacan'),
+			'description' => __('The classic table display.', 'tainacan'),
+			'dynamic_metadata' => true,
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewtable tainacan-icon-1-25em"></i></span>',
+			'type' => 'component',
+			'implements_skeleton' => true,
+			'requires_thumbnail' => false,
+			'placeholder_template' => '<ul style="list-style: none;width: 100%; height: auto; display: flex; flex-direction: column; overflow-x: auto;padding: 0;">' .
+				array_reduce( range(0,9), function($container, $i) {
+					$container .= '<li style="display: flex; align-items: center; flex-direction: row; flex-wrap: nowrap; gap: 15px; width: 100%; height: 40px; background-color: var(--tainacan-block-gray' . ($i % 2 == 0 ? 1 : 0) . ', #f2f2f2); padding: 2px 6px;">
+						<div style="flex-shrink: 0; width: 32px; height: 32px; background-color: var(--tainacan-block-gray2, #dbdbdb);"></div>
+						<div style="width: 180px; height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5);></div>
+						<div style="width: 120px; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
+						<div style="width: 70px; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
+						<div style="width: 100px; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
+						<div style="width: 90px; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
+						<div style="width: 60px; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
+						<div style="width: 70px; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
+						<div style="width: 100px; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
+						<div style="width: 90px; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
+						<div style="width: 100px; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
+					</li>';
+					return $container;
+				}) .
+			'</ul>'
+		]);
+		$this->register_view_mode('cards', [
+			'label' => __('Cards', 'tainacan'),
+			'dynamic_metadata' => false,
+			'description' => __('A cards view, displaying cropped thumbnails, title and description.', 'tainacan'),
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewcards tainacan-icon-1-25em"></i></span>',
+			'type' => 'component',
+			'implements_skeleton' => true,
+			'requires_thumbnail' => false,
+			'placeholder_template' => '<ul style="list-style: none;width: 100%; height: auto; display: grid;grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 15px;padding: 0;">' .
+				array_reduce( range(0,5), function($container, $i) {
+					$container .= '<li style="height: auto; background-color: var(--tainacan-block-gray1, #f2f2f2);padding: 20px;">
+						<div style="width: 100%; height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 0 0 8px 0;"></div>
+						<div style="width: 64px; height: 64px; background-color: var(--tainacan-block-gray2, #dbdbdb);float:left;margin-right:10px;"></div>
+						<div style="margin-left: 74px;">
+							<div style="width: ' . rand(85,100) . '%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>
+							<div style="width: ' . rand(75,90) . '%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>
+							<div style="width: ' . rand(30,65) . '%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>
+						</div>	
+					</li>';
+					return $container;
+				}) .
+			'</ul>'
+		]);
+		$this->register_view_mode('records', [
+			'label' => __('Records', 'tainacan'),
+			'dynamic_metadata' => true,
+			'description' => __('A records view, similiar to cards, but flexible for metadata.', 'tainacan'),
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewrecords tainacan-icon-1-25em"></i></span>',
+			'type' => 'component',
+			'implements_skeleton' => true,
+			'requires_thumbnail' => false,
+			'placeholder_template' => $this->default_placeholder_template
+		]);
+		$this->register_view_mode('masonry', [
+			'label' => __('Masonry', 'tainacan'),
+			'dynamic_metadata' => false,
+			'description' => __('A masonry view, similar to pinterest, which will display images without cropping.', 'tainacan'),
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewmasonry tainacan-icon-1-25em"></i></span>',
+			'type' => 'component',
+			'implements_skeleton' => true,
+			'placeholder_template' => '<ul style="list-style: none;width: 100%; height: auto; column-width: 120px; gap: 15px;padding: 0;">' .
+				array_reduce( range(0,11), function($container, $i) {
+					$container .= '<li style="break-inside: avoid; width: calc(100% - 20px); height: auto; background-color: var(--tainacan-block-gray1, #f2f2f2); margin: 0 0 15px 0; padding: 10px;">
+						<div style="width: 100%;height: ' . ($i % 2 == 0 ? rand(80, 120) : rand(60, 100)) . 'px; background-color: var(--tainacan-block-gray2, #dbdbdb);margin-bottom: 10px;"></div>	
+						<div style="width: 100%;height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
+					</li>';
+					return $container;
+				}) .
+			'</ul>'
+		]);
+		$this->register_view_mode('slideshow', [
+			'label' => __('Slides', 'tainacan'),
+			'dynamic_metadata' => false,
+			'description' => __('A fullscreen slideshow view, that shows the item document instead of just thumbnails.', 'tainacan'),
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-25em"></i></span>',
+			'type' => 'component',
+			'show_pagination' => false,
+			'full_screen' => true,
+			'placeholder_template' => '<div style="background-color: var(--tainacan-block-gray0, #f0f0f0);display: flex; flex-direction: column; gap: 4px; padding: 4px">
+					<div style="display: flex; align-items: center;flex-direction: column; height: calc(100% - 90px); justify-content: center; gap: 12px;padding: 4px;">
+						<div style="width: 800px;max-width: 90%; height: 400px; background-color: var(--tainacan-block-gray2, #dbdbdb);"></div>
+						<div style="width: 300px;max-width: 90%; height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 10px 0;"></div>
+					</div>
+					<ul style="list-style: none;width: 100%; height: 86px;display: flex;flex-direction:row;gap: 4px;margin:0px;padding: 4px;overflow-x: auto;">' .
+						array_reduce( range(0,17), function($container, $i) {
+							$container .= '<li style="width: 76px; height: 76px; flex-shrink: 0; background-color: var(--tainacan-block-gray2, #dbdbdb;">
+								<div style="width: 70px;height:70px; background-color: var(--tainacan-block-gray2, #dbdbdb);margin-bottom: 10px;"></div>
+							</li>';
+							return $container;
+						}) .
+					'</ul>
+				</div>'
+		]);
+		$this->register_view_mode('list', [
+			'label' => __('List', 'tainacan'),
+			'dynamic_metadata' => true,
+			'description' => __('A list view, similiar to the records, but full width.', 'tainacan'),
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewlist tainacan-icon-1-25em"></i></span>',
+			'type' => 'component',
+			'implements_skeleton' => true,
+			'requires_thumbnail' => false,
+			'placeholder_template' => '<ul style="list-style: none;width: 100%; height: auto; display: flex;flex-direction:column; gap: 15px;padding: 0;">' .
+				array_reduce( range(0,5), function($container, $i) {
+					$container .= '<li style="height: auto; background-color: var(--tainacan-block-gray1, #f2f2f2);padding: 20px;">
+						<div style="width: 100%; height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 0 0 8px 0;"></div>
+						<div style="width: 64px; height:' . rand(60,100) . 'px; background-color: var(--tainacan-block-gray2, #dbdbdb);float:left;margin-right:10px;"></div>
+						<div style="margin-left: 74px; column-width: 200px;">' .
+							array_reduce( range(0,11), function($item, $m) {
+								$should_appear = rand(0,1);
+								if ($should_appear)
+									$item .= '<div style="break-inside: avoid;width: ' . rand(45,100). '%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>';
+								return $item;	
+							}) .
+						'</div>	
+					</li>';
+					return $container;
+				}) .
+			'</ul>'
+		]);
+
+		$map_view_mode_placeholder = '';
+		ob_start();
+		?>
+			<div style="display: flex; gap: 4px;">
+				<ul style="float: left;list-style: none;width: 180px; height: auto;display: flex;flex-direction:column;gap: 4px;margin:0px;padding: 0;">
+					<?php echo array_reduce( range(0,5), function($container, $i) {
+							$container .= '<li style="height: 40px; background-color: var(--tainacan-block-gray1, #f2f2f2);display: flex;flex-direction:row;align-items: center;padding: 3px 6px;gap: 6px">
+								<div style="min-width: 32px; height: 32px; background-color: var(--tainacan-block-gray2, #dbdbdb);"></div>		
+								<div style="width: ' . rand(40, 80) . '%; height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
+							</li>';
+							return $container;
+						})
+					?>
+				</ul>
+				<div style="width: calc(100% - 180px); height: auto;background-repeat: no-repeat;background-size: cover; background-color: var(--tainacan-block-gray1, #f2f2f2);background-image: url('data:image/svg+xml,%3Csvg%20width%3D%22803.301%22%20height%3D%22391.635%22%20viewBox%3D%220%200%20212.54%20103.62%22%20xml%3Aspace%3D%22preserve%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M-1.764%2048.512v19.154c1.643-3.092%2012.072%203.154%2010.543%204.4-2.274.13-10.2-1.377-6.518%202.47-4.975%202.865-3.496-.328-3.776-3.699-.125-.328-.173-.585-.25-.868v82.322h212.39V48.51H-1.764zm96.846.12c3.239%202.381%206.627%204.737%202.39%207.61-.123%203.148-.013%206.372-2.39%208.78-1.41%202.379-2.655%204.976-5.803%205.033-4.996-.803-4.05%206.176-8.377%205.357-6.435-3.166-2.866-13.901-9.489-15.79-7.714%203.195-1.378-9.275%203.455-8.514%206.733-.863%2013.475-1.655%2020.214-2.476m-32.926%201.892c3.351.21%2010.733-.612%204.808%203.871-7.285%204.64-2.894%208.74%202.653%2012.288%205.005%201.564%201.787%206.614-2.232%206-5.634%201.216-3.195-3.735-4.979-5.016-3.86.052.7%207.466-4.436%205.12-4.874-.83-5.39%206.603.628%206.05%204.48%206.915%204.413-.687%204.247-4.557%203.648.69%208.11.075%209.91%204.048%206.952%204.696-.63%207.087-4.817%209.589-.432%203.753-5.377%206.367-6.2%2010.142%201.538%205.38-3.581-2.222-7.154.038-2.67.478-4.12%205.98.138%205.671%204.84-2.911%202.436%206.369%207.09%205.704%205.958-2.69%2011.284.075%2014.644%202.59%203.614-.28%201.637%205.416%206.515%204.809%205.063%202.254%205.556%204.004%202.913%208.695-.234%203.194-3.913%204.846-5.614%207.384-3.384%204.52-9.925%207.976-9.675%2013.912-3.303%201.378%201.633%208.579-3.516%203.746-3.212-2.166-1.515-6.244-1.82-9.449-.684-5.575%205.617-13.963-1.204-16.566-2.566-4.201-2.454-9.471-2.277-13.005-4.47.502-5.255-4.622-10.158-4.957-3.732-3.626-8.605-3.759-11.169-8.23-1.54-2.41-3.953-4.564-4.951-7.131.614-3.08.368-6.336-2.6-8.125-3.426-.897-1.898-6.933-8.803-6.592-3.303-.098-6.136%202.724-9.246%203.82-3.904%202.261-3.947%201.71-.824-1.147%201.345-2.476-7.577-10.715-.62-13.204%203.54-2.395%207.91-.168%2011.866-.25%204.296.127%2011.682%201.935%2013.992.943-9.72-5.633%204.37-10.148%209.598-11.717%204.454-1.347%208.688-4.049%2013.294-4.473zm105.28%207.997c3.442-.211%2010.085%201.45%204.81%203.18-5.085%202.027.264%201.798%202.922%202.15l12.268%201.246c3.244-5.525%204.112.794%209.084.107%204.173%202.403%2011.066.24%2013.575%202.274%201.391%206.078-.485%209.82-6.983%208.917.577%204.614-5.54%2010.971-4.816%203.045%205.948-5.668-10.954-2.588-11.062%202.175%204.11-3.36%205.01%204.84%201.363%204.509-2.962%203.313-4.868%206.277-7.64%209.06-.915-6.945-4.9-.154-2.66%203.46-.09%203.552-7.653%203.665-8.056%206.873%204.34%203.952-3.2%205.42-4.218%202.404-.243%203.457%206.236%205.956.883%206.131%201.866%203.31%206.218%204.505%207.79%207.51-4.62.607-12.983-7.129-10.42-8.863.34-1.85-2.834-10.142-4.57-11.768-.971%203.62-5.74%205.006-5.438%208.75-6.681%201.08-3.625-12.508-12.141-9.987-3.004-.673-7.8-1.951-4.028%202.08%2010.37-1.547-2.863%2010.882-4.467%203.947-.707-3.348-7.323-12.563-5.17-4.36%201.583%203.895%204.176%209.357%209.223%207.656.658%201.726-4.62%206.84-5.866%209.642-.15%206.409-2.962%2014.724-9.85%2018.29l-.873-.072-1.166-.132v.001c-2.991-.089-2.415-4.738-3.872-6.787-3.377-3.939%201.386-8.048-2.084-11.556-.916-2.905-2.281-6.522-7.013-5.758-2.752.506-5.004-.321-6.753-2.497-2.791-1.61-.898-5.354-1.448-7.985%201.102-3.649%205.953-5.589%208.585-8.537%205.06-3.076%206.732%203.976%2011.149%202.59%202.733.683%2012.019-.296%208.762-2.806-2.107%205.425-5.946-6.487-4.25%201.957-2.54-.19-5.887-11.26-6.545-7.22%203.569%204.908-.306%205.332-2.602.75-4.135-2.31-9.814%2010.508-10.908%201.62-1.58-2.855%207.522.396%202.953-4.592%203.52-1.875%206.84-4.504%207.221-7.288%202.45%204.338%2013.631-3.1%2010.13-3.49-4.964%202.47-2.5-2.831-1.778-3.937-2.662-1.66-4.452%204.633-3.184%206.983-2.96%201.218-4.755-1.596-7.463-1.152%201.023-5.74%205.767-11.255%2011.87-11.6%203.072.937%2012.01.422%208.235%204.673-7.374-1.313.788%204.043%203.6-.984%202.81-2.97%2010.532.2%204.179-5.349%201.23-4.888%2014.848-7.176%205.76-2.917-5.767%202.158-2.659%205.274%201.585%206.69-.941-4.478%204.829-5.134%207.876-3.293%203.109-2.063%208-4.054%2012.266-5.53.317-.111.743-.18%201.235-.21M96.808%2070.07c2.75-.29%207.002%201.3%202.3%203.34-1.59%201.566-2.44%201.79-3.37-.477-1.69-1.838-.58-2.69%201.07-2.863m7.954%207.477c.227.004.543.08.971.245%204.089%202.577%202.672%207.226-.681%205.1l.235-.408.14-.242c.532-1.215-2.255-4.721-.665-4.695m-2.85%203.233c1.215-.065%203.695%202.36-.16%202.117-.683-1.543-.392-2.087.16-2.117m94.297%204.736c1.721.046%203.042%201.576-1.68%202.297l-.354-.043-.275-.238c.1-1.537%201.277-2.044%202.31-2.016m-66.763%201.2c-1.64%202.106-5.955-2.118-5.252%204.045l.225.021%201.116-.714c3.156-.564%209.618.31%203.912-3.352m9.244%201.057c-.196-.054-.513.389-1.032%201.632.438%201.26-.692%205.471%201.742%204.028-.61-.873-.12-5.5-.71-5.66m51.023.14c4.7.481%201.032%206.488-1.863%207.745-1.348.26-3.249%202.885-4.243%201.16.013-2.775%206.931-3.85%206.106-8.905m-45.983.034c-.848-.33-.386%204.161.804%201.15-.342-.741-.608-1.074-.804-1.15m-28.62%203.978c.5.184%201.143%201.324-.27%201.187-.277-1.062-.03-1.297.27-1.187M3.13%2097.235c1.365-.257%205.198%202.26.586%202.71l-.723-1.348c-.498-.882-.317-1.276.137-1.362m185.89.35c1.287.224%204.24%203.524%201.148%204.157-2.092-3.32-1.92-4.292-1.148-4.157M63.83%2099.233c.184-.398%202.735%202.403.858%201.712-.717-1.09-.919-1.579-.858-1.712m-55.066%201.183c3.11%201.207%206.283%202.622%209.074%201.357%202.408.905%203.908%206.157-.02%203.067-2.514-1.864-9.106.514-9.054-4.424m53.215%201.8c1.6.065%203.35.687%201.1%201.82l-1.29-.293c-2.856-1.098-1.409-1.59.19-1.526m4.634%201.869c1.163-.09%205.186%201.074%206.246%202.632-1.363.325-2.7-.64-3.99-.928-2.62-1.144-2.953-1.65-2.256-1.704m108.85%207.75c.286.056.534.255.715.636%202.679%201.666.062%207.232-2.755%205.52-3.822.034.04-6.554%202.04-6.157m4.422%202.958c1.276.065%202.188%202.773-1.726%203.695.063-2.821.96-3.734%201.726-3.695m5.842%201.23c.692.007%201.604.29%202.735.98%204.372-1.124%209.746%207.127%202.404%203.99l-1.816-.385c-5.213.525-6.325-4.616-3.323-4.585m-1.222%206.352c2.613%201.423%205.416%205.161%206.081.378%202.579%202.5%205.528%206.605%206.7%209.903-2.182%202.743-2.473%209.094-7.274%207.258-4.805-5.496-9.29-3.684-15.46-2.185%201.537-3.151-3.874-8.027%201.461-9.888zm-48.069%201.616c1.26-.083%201.886%201.021-.077%204.226-.787%201.494-.345%204.17-2.477%201.856-3.413-2.509.453-5.944%202.554-6.082m-108.29%202.545c1.497.247%204.66%203.669-.107%202.372-.91-1.94-.573-2.484.107-2.372m3.896%203.342c1.305-.114%204.702%201.97.433%201.923-1.187-1.365-1.026-1.871-.433-1.923m175.4%205.941c.744.047%203.773%204.482%201.845%207.23-1.395%201.334-2.445%204.431-4.818%203.485-1.774-3.385%202.518-5.057%204.054-7.489-1.286-2.362-1.42-3.247-1.081-3.226%22%20fill%3D%22%23dbdbdb%22%20style%3D%22-inkscape-stroke%3Anone%3Bpaint-order%3Astroke%20fill%20markers%22%20transform%3D%22translate(2.01%20-48.632)%22%2F%3E%3C%2Fsvg%3E');background-position: center;"></div>
+			</div>
+		<?php
+		$map_view_mode_placeholder = ob_get_clean();
+
+		$this->register_view_mode('map', [
+			'label' => __('Map', 'tainacan'),
+			'dynamic_metadata' => true,
+			'description' => __('A map view, for displaying items that have geocoordinate metadata.', 'tainacan'),
+			'icon' => '<span class="icon">
+							<i>
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="var(--tainacan-info-color, #505253)" width="1.25em" height="1.25em">
+									<path d="M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z" />
+								</svg>
+							</i>
+						</span>',
+			'type' => 'component',
+			'implements_skeleton' => true,
+			'requires_thumbnail' => false,
+			'placeholder_template' => $map_view_mode_placeholder
+		]);
 	}
 }

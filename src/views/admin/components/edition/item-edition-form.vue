@@ -945,7 +945,20 @@ export default {
         },
         shouldDisplayItemEditionAttachments() {
             return !this.$adminOptions.hideItemEditionAttachments && (this.collection && this.collection.item_enable_attachments === 'yes');
-        }
+        },
+        hasRedirectHook() {
+            if (wp !== undefined && wp.hooks !== undefined)
+                return wp.hooks.hasFilter(`tainacan_item_edition_after_update_redirect`);
+
+            return false;
+        },
+        getRedirectHook() {
+            const itemViewURL = tainacan_plugin.admin_url + '?page=tainacan_admin#' + this.$routerHelper.getItemPath(this.form.collectionId, this.itemId);
+            if (wp !== undefined && wp.hooks !== undefined)
+                return wp.hooks.applyFilters(`tainacan_item_edition_after_update_redirect`, itemViewURL, this.form, this.itemId);
+
+            return itemViewURL;
+        },
     },
     watch: {
         '$route.params.itemPosition'(newItemPosition, oldItemPosition) {
@@ -1194,13 +1207,17 @@ export default {
                 if (!this.$adminOptions.itemEditionMode && !this.$adminOptions.mobileAppMode) {
 
                     if (!this.isOnSequenceEdit) {
-                        if (this.form.status != 'trash') {
-                            if (previousStatus == 'auto-draft')
-                                this.$router.push({ path: this.$routerHelper.getItemPath(this.form.collectionId, this.itemId), query: { recent: true } });
-                            else
-                                this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
-                        } else
-                            this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId));
+                        if ( this.hasRedirectHook ) {
+                            window.location.replace( this.getRedirectHook );
+                        } else {
+                            if (this.form.status != 'trash') {
+                                if (previousStatus == 'auto-draft')
+                                    this.$router.push({ path: this.$routerHelper.getItemPath(this.form.collectionId, this.itemId), query: { recent: true } });
+                                else
+                                    this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
+                            } else
+                                this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId));
+                        }
                     } else {
                         if (sequenceDirection == 'next')
                             this.onNextInSequence();
@@ -1213,7 +1230,7 @@ export default {
                 // Sends info to iframe containing item edition form and other use cases
                 parent.postMessage({ 
                     type: 'itemEditionMessage',
-                    item: this.$adminOptions.itemEditionMode ? this.item : null
+                    item: this.$adminOptions.itemEditionMode ? JSON.parse(JSON.stringify(this.item)) : null
                 },
                 tainacan_plugin.admin_url);
 
@@ -1224,7 +1241,7 @@ export default {
                     webkit.messageHandlers &&
                     webkit.messageHandlers.cordova_iab
                 )
-                    webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify({ 'type': 'item_updated', 'item': this.item }));
+                    webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify({ 'type': 'item_updated', 'item': JSON.parse(JSON.stringify(this.item)) }));
             })
             .catch((errors) => {
                 
@@ -1310,6 +1327,9 @@ export default {
                     });
                 }
 
+                if ( this.collection && this.item )
+                    wp.hooks.doAction('tainacan_item_edition_item_loaded', JSON.parse(JSON.stringify(this.collection)), JSON.parse(JSON.stringify(this.item)));
+
                 // Loads metadata and attachments
                 this.loadMetadata();
 
@@ -1350,6 +1370,9 @@ export default {
                             this.conditionalSections[conditionalSectionId].hide = Array.isArray(itemMetadatumValues) ? itemMetadatumValues.every(aValue => conditionalValues.indexOf(aValue['id'] ? aValue['id'] : aValue) < 0) : conditionalValues.indexOf(itemMetadatumValues) < 0;
                         }
                     }
+                    
+                    if ( this.collection && this.item && metadata)
+                        wp.hooks.doAction('tainacan_item_edition_metadata_loaded', JSON.parse(JSON.stringify(this.collection)), JSON.parse(JSON.stringify(this.item)), metadata);
 
                     this.isLoading = false;
                 });
@@ -1748,6 +1771,9 @@ export default {
                     if (this.form.document_options !== undefined && this.form.document_options['forced_iframe_height'] !== undefined)
                         this.urlIframeHeight = this.form.document_options['forced_iframe_height'];
 
+                    if ( this.collection && this.item )
+                        wp.hooks.doAction('tainacan_item_edition_item_loaded', JSON.parse(JSON.stringify(this.collection)), JSON.parse(JSON.stringify(this.item)));
+
                     this.loadMetadata();
                     this.setLastUpdated(this.item.modification_date);
 
@@ -1868,7 +1894,7 @@ export default {
                 webkit.messageHandlers &&
                 webkit.messageHandlers.cordova_iab
             )
-                webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify({ 'type': 'exited_from_navigation', 'item': this.item }));
+                webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify({ 'type': 'exited_from_navigation', 'item': JSON.parse(JSON.stringify(this.item)) }));
         },
         isSectionHidden(sectionId) {
             return this.conditionalSections[sectionId] && this.conditionalSections[sectionId].hide;

@@ -181,11 +181,11 @@
                 handler() {
                     const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
                     nextTick(() => {
-                        if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject && this.selectedLatLng.length != undefined) {
+                        if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].leafletObject && this.selectedLatLng.length != undefined) {
                             if (this.selectedLatLng.length == 1)
-                                this.$refs[mapComponentRef].mapObject.panInsideBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom });
+                                this.$refs[mapComponentRef].leafletObject.panInsideBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom });
                             else 
-                                this.$refs[mapComponentRef].mapObject.flyToBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom });
+                                this.$refs[mapComponentRef].leafletObject.flyToBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom });
                         }
                     });
                 },
@@ -213,8 +213,8 @@
             this.$emitter.off('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
         },
         methods: {
-            onUpdateFromLatitudeInput: _.debounce( function($event) {
-                let newLatitude = $event.target.value;
+            onUpdateFromLatitudeInput: _.debounce( function(value) {
+                let newLatitude = value;
                 if ( !isNaN(newLatitude) ) {
                     this.latitude = newLatitude;
                     this.onUpdateFromLatitudeAndLongitude();
@@ -232,8 +232,8 @@
                     }
                 }
             }, 250),
-            onUpdateFromLongitudeInput: _.debounce( function($event) {
-                let newLongitude = $event.target.value;
+            onUpdateFromLongitudeInput: _.debounce( function(value) {
+                let newLongitude = value;
 
                 if ( !isNaN(newLongitude) ) {
                     this.longitude = newLongitude;
@@ -304,8 +304,8 @@
                     const existingSelectedIndex = this.selected.indexOf(this.latitude + ',' + this.longitude);
                     this.editingMarkerIndex = existingSelectedIndex;
                     const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-                    if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject )
-                        this.$refs[mapComponentRef].mapObject.panInsideBounds([ this.selectedLatLng[existingSelectedIndex] ],  { animate: true, maxZoom: this.maxZoom });
+                    if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].leafletObject )
+                        this.$refs[mapComponentRef].leafletObject.panInsideBounds([ this.selectedLatLng[existingSelectedIndex] ],  { animate: true, maxZoom: this.maxZoom });
                 }
             },
             onMarkerRemove(index) {
@@ -319,14 +319,14 @@
             },
             handleWindowResize(mapComponentRef) {
                 setTimeout(() => {
-                    if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject ) {
-                        this.$refs[mapComponentRef].mapObject.invalidateSize(true);
+                    if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].leafletObject ) {
+                        this.$refs[mapComponentRef].leafletObject.invalidateSize(true);
 
                         if ( this.selectedLatLng.length != undefined) {
                             if (this.selectedLatLng.length == 1)
-                                this.$refs[mapComponentRef].mapObject.panInsideBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom });
+                                this.$refs[mapComponentRef].leafletObject.panInsideBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom });
                             else 
-                                this.$refs[mapComponentRef].mapObject.flyToBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom }); 
+                                this.$refs[mapComponentRef].leafletObject.flyToBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom }); 
                         }
                     }
                 }, 500);

@@ -22,7 +22,7 @@ export const itemMetadataMixin = {
                 
                 if (this.errors.length > 0 && this.errors[0].errors && this.errors[0].errors.length) {
                     for (let error of this.errors) 
-                        this.$emitter.on('updateErrorMessageOf#' + (error.metadatum_id + (error.parent_meta_id ? '-' + error.parent_meta_id : '')), error);
+                        this.$emitter.emit('updateErrorMessageOf#' + (error.metadatum_id + (error.parent_meta_id ? '-' + error.parent_meta_id : '')), error);
                 }
             },
             deep: true
@@ -61,13 +61,13 @@ export const itemMetadataMixin = {
                         this.$emitter.emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[index]);
                     })
                     .catch(({ error_message, error, item_metadata }) => {
-                        this.isUpdatingValues = false;;
+                        this.isUpdatingValues = false;
                         let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == metadatumId && (parentMetaId ? errorItem.parent_meta_id == parentMetaId : true ));
                         let messages = [];
 
                         for (let index in error)
                             messages.push(error[index]);
-
+                        
                         if ( index >= 0) {
                             Object.assign( this.errors, { [index]: { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages } });
                             this.$emitter.emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[index]);

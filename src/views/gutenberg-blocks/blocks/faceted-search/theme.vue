@@ -1648,7 +1648,6 @@
         }
 
         // Tainacan imports
-        @import "../../../admin/scss/_tables.scss";
         @import "../../../admin/scss/_modals.scss";
         @import "../../../admin/scss/_buttons.scss"; 
         @import "../../../admin/scss/_inputs.scss";

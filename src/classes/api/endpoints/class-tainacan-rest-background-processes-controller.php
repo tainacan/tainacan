@@ -253,6 +253,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
         $item->log = $this->get_log_url($key_log, $item->action);
         $item->error_log = $this->get_log_url($key_log, $item->action, 'error');
         $nonce = wp_create_nonce( 'wp_rest' );
+        $item->output = $item->output ?? '';
         $item->output = str_replace("&_wpnonce=[nonce]", "&_wpnonce=$nonce", $item->output);
         return $item;
     }
@@ -376,14 +377,14 @@ class REST_Background_Processes_Controller extends REST_Controller {
         $upload_url = wp_upload_dir();
         $path = $upload_url['basedir'] . '/tainacan/' . $guid;
         if ( file_exists( $path ) ) {
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mime_type = finfo_file($finfo, $path);
-            $file_name = basename($path);
+            $finfo = @finfo_open(FILEINFO_MIME_TYPE);
+            $mime_type = @finfo_file($finfo, $path);
+            $file_name = @basename($path);
             http_response_code(200);
             header('Content-Description: File Transfer');
             header("Content-Disposition: attachment; filename=$file_name"); 
             header("Content-Type: $mime_type");
-            header("Content-Length: " . filesize( $path ));
+            header("Content-Length: " . @filesize( $path ));
             \readfile($path);
         } else {
             return new \WP_REST_Response("file not found", 404, array('content-type' => 'text/html; charset=utf-8'));

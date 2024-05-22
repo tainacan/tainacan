@@ -260,7 +260,7 @@
                     <!-- The Metadata list, inside each metadata section -->
                     <template v-if="metadataSection.metadata_object_list && Array.isArray(metadataSection.metadata_object_list)">
                         <sortable 
-                                :list="metadataSection.metadata_object_list" 
+                                :list="metadataSection.metadata_object_list.filter((metadatum) => metadatum != undefined && metadatum.parent == 0)" 
                                 item-key="id"
                                 class="active-metadata-area"
                                 :options="{
@@ -284,7 +284,6 @@
                                 @remove="handleChange($event, sectionIndex)">
                             <template #item="{ element: metadatum, index }">
                                 <div 
-                                        v-if="metadatum != undefined && metadatum.parent == 0"
                                         v-show="(metadataNameFilterString == '' || filterByMetadatumName(metadatum)) && filterByMetadatumType(metadatum)"
                                         :key="metadatum.id"
                                         :data-metadatum-id="metadatum.id"
@@ -461,22 +460,22 @@
                                                 v-if="isCollapseOpen(metadatum.id) && openedMetadatumId !== metadatum.id"
                                                 :metadatum="metadatum" />
                                     </transition>
+
+                                    <!-- Child metadata list, inside each compound metadata -->
+                                    <child-metadata-list
+                                            v-if="metadatum.metadata_type_object && metadatum.metadata_type_object.component == 'tainacan-compound'"
+                                            :parent="metadatum"
+                                            :metadata-name-filter-string="metadataNameFilterString"
+                                            :metadata-type-filter-options="metadataTypeFilterOptions"
+                                            :has-some-metadata-type-filter-applied="hasSomeMetadataTypeFilterApplied"
+                                            :is-parent-multiple="metadatum.multiple == 'yes'"
+                                            :is-repository-level="false"
+                                            :collapse-all="collapseAll"
+                                            :section-id="metadataSection.id + ''" />
                                 </div>
-                                
-                                <!-- Child metadata list, inside each compound metadata -->
-                                <child-metadata-list
-                                        v-if="metadatum.metadata_type_object && metadatum.metadata_type_object.component == 'tainacan-compound'"
-                                        :parent="metadatum"
-                                        :metadata-name-filter-string="metadataNameFilterString"
-                                        :metadata-type-filter-options="metadataTypeFilterOptions"
-                                        :has-some-metadata-type-filter-applied="hasSomeMetadataTypeFilterApplied"
-                                        :is-parent-multiple="metadatum.multiple == 'yes'"
-                                        :is-repository-level="false"
-                                        :collapse-all="collapseAll"
-                                        :section-id="metadataSection.id + ''" />
-                                
                                 <!-- Metadata edition form, for each metadata -->
                                 <b-modal 
+                                        v-if="openedMetadatumId == metadatum.id"
                                         :model-value="openedMetadatumId == metadatum.id"
                                         trap-focus
                                         aria-modal
@@ -492,8 +491,8 @@
                                             @on-edition-finished="onEditionFinished()"
                                             @on-edition-canceled="onEditionCanceled()" />
                                 </b-modal>
-
                             </template>
+                                    
                         </sortable><!-- End of .active-metadata-area -->
                     </template>
                     
@@ -679,10 +678,9 @@ export default {
         handleChange($event, sectionIndex) {
             switch ( $event.type ) {
                 case 'add':
-                    
                     if ( !$event.from.classList.contains('active-metadata-area') ) {
                         this.addNewMetadatum(this.getMetadatumTypes()[$event.oldIndex], $event.newIndex, sectionIndex);
-                        $event.originalTarget.removeChild($event.item)
+                        $event.to.removeChild($event.item)
                     } else {
                         this.isLoadingMetadataSections = true;
 
@@ -698,7 +696,7 @@ export default {
                         newMetadataSectionsList[previousSectionIndex].metadata_object_list = previousSectionMetadataObjectList;
 
                         this.updateMetadataSections(newMetadataSectionsList);
-                        $event.originalTarget.removeChild($event.item);
+                        $event.to.removeChild($event.item);
 
                         this.updateMetadatum({
                             collectionId: this.collectionId,

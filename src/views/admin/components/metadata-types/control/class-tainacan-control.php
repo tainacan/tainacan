@@ -141,8 +141,10 @@ class Control extends Metadata_Type {
 	 * @return string The HTML representation of the value, containing one or multiple items names, linked to the item page
 	 */
 	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+		
 		$value = $item_metadata->get_value();
 		$control_metadatum = $this->get_option('control_metadatum');
+
 		if (in_array($control_metadatum, ['document_type', 'collection_id', 'has_thumbnail']))
 			return $this->get_control_metadatum_value($value, $control_metadatum, 'html');
 		
@@ -176,8 +178,30 @@ class Control extends Metadata_Type {
 		
 		$value = $item_metadata->get_value();
 		$control_metadatum = $this->get_option('control_metadatum');
+
+		if (in_array($control_metadatum, ['document_type', 'collection_id', 'has_thumbnail']))
+			return $this->get_control_metadatum_value($value, $control_metadatum, 'string');
 		
-		return $this->get_control_metadatum_value($value, $control_metadatum, 'string');
+		$return = '';
+		if ( $item_metadata->is_multiple() ) {
+			$total = sizeof($value);
+			$count = 0;
+			$prefix = $item_metadata->get_multivalue_prefix();
+			$suffix = $item_metadata->get_multivalue_suffix();
+			$separator = $item_metadata->get_multivalue_separator();
+			foreach ($value as $v) {
+				$return .= $prefix;
+				$return .= (string) $v;
+				$return .= $suffix;
+				$count ++;
+				if ($count < $total)
+					$return .= $separator;
+			}
+		} else {
+			$return = (string) $value;
+		}
+		
+		return $return;
 	}
 
 	private function get_document_as_html( $value ) {

@@ -186,6 +186,8 @@
 
 <style scoped lang="scss">
 
+@import "../../scss/_tables.scss";
+
 .table-container .table-wrapper table.tainacan-table tbody tr {
     cursor: default;
 }

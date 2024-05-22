@@ -70,8 +70,10 @@ class Item_Metadata extends Repository {
 			if ( $unique ) {
 				$item_metadata_value = $this->sanitize_value( $item_metadata->get_value() );
 				if ( !is_numeric($item_metadata->get_value()) && empty( $item_metadata->get_value() ) ) {
-					if ( $item_metadata->get_metadatum()->get_parent() > 0 )
+					if ( $item_metadata->get_metadatum()->get_parent() > 0 ) {
 						delete_metadata_by_mid( 'post', $item_metadata->get_meta_id() );
+						$this->upclean_compound_value( $item_metadata);
+					}
 					else
 						delete_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id() );
 				} elseif ( is_int( $item_metadata->get_meta_id() ) ) {
@@ -205,7 +207,40 @@ class Item_Metadata extends Repository {
 
 	/**
 	 *
-	 * @return null|ind the meta id of the created compound metadata
+	 * @return null|int the meta id of the update compound metadata
+	 */
+	public function upclean_compound_value(Entities\Item_Metadata_Entity $item_metadata) {
+		try {
+			if ( ! $item_metadata->get_parent_meta_id() > 0 ) return null;
+			$current_value = get_metadata_by_mid( 'post', $item_metadata->get_parent_meta_id() );
+			if ( is_object( $current_value ) ) {
+				$current_value = $current_value->meta_value;
+			}
+			if ( ! is_array( $current_value ) ) {
+				return null;
+			}
+
+			global $wpdb;
+			$meta_ids = implode(',', $current_value);
+			$query = $wpdb->prepare( "SELECT meta_id FROM $wpdb->postmeta WHERE post_id = %d AND meta_ID IN ($meta_ids)", $item_metadata->get_item()->get_id() );
+
+			$rows = $wpdb->get_results($query, ARRAY_A );
+
+			if ( is_array( $rows ) ) {
+				$upclean_values = array_map(function($row) {
+					return intval($row['meta_id']);
+				}, $rows);
+				update_metadata_by_mid( 'post', $item_metadata->get_parent_meta_id(), $upclean_values );
+			}
+		} catch (\Exception $e) {
+			error_log($e);
+			return null;
+		}
+	}
+
+	/**
+	 *
+	 * @return null|int the meta id of the created compound metadata
 	 */
 	public function add_compound_value( Entities\Item_Metadata_Entity $item_metadata, $meta_id ) {
 
@@ -337,6 +372,10 @@ class Item_Metadata extends Repository {
 
 			$terms = wp_get_object_terms( $item_metadata->get_item()->get_id(), $taxonomy_slug );
 
+			if( is_wp_error($terms) ) {
+				return null;
+			}
+			
 			if ( $unique ) {
 				$terms = reset( $terms );
 
@@ -370,6 +409,8 @@ class Item_Metadata extends Repository {
 					if ( empty($row['meta_value']) )
 						continue;
 					$value = $this->extract_compound_value( maybe_unserialize( $row['meta_value'] ), $item_metadata->get_item(), $row['meta_id'] );
+					if ( empty($value) )
+						continue;
 					if ( $unique ) {
 						$return_value = $value;
 						break;

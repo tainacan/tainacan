@@ -338,7 +338,7 @@
                     case 'add':
                         if ( !$event.from.classList.contains('active-metadata-area') ) {
                             this.addNewMetadatum(this.getMetadatumTypes()[$event.oldIndex], $event.newIndex);
-                            $event.originalTarget.removeChild($event.item);
+                            $event.to.removeChild($event.item);
                         }
                         break;
                     case 'remove':
@@ -452,13 +452,18 @@
                 this.updateMetadataOrder();
             },
             isAvailableChildMetadata(to, from, item) {
-                if (!item || !item.id)
+
+                // Se não estamos na lista de metadados do repositório, não podemos inserir filhos em metadados que sejam herdados do repositório
+                if ( !this.isRepositoryLevel && this.parent.collection_id === 'default' )
+                    return false;
+                
+                if (!item || !item.dataset || !item.dataset.metadatumType)
                     return false;
                 
                 if (from.el && from.el.className === 'active-metadata-area')
                     return false;
-
-                return !['tainacan-compound', 'tainacan-taxonomy'].includes(item.id);
+                
+                return !['tainacan-compound', 'tainacan-taxonomy'].includes(item.dataset.metadatumType);
             },
             isCollapseOpen(metadatumId) {
                 return this.collapses[metadatumId] == true;

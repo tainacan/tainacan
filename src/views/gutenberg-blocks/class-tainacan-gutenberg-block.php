@@ -221,7 +221,8 @@ function tainacan_blocks_get_plugin_js_settings(){
 		'admin_url'  => admin_url(),
 		'site_url'	 => site_url(),
 		'theme_items_list_url' => esc_url_raw( get_site_url() ) . '/' . \Tainacan\Theme_Helper::get_instance()->get_items_list_slug(),
-		'collections_post_types' => $cpts
+		'collections_post_types' => $cpts,
+		'registered_view_modes' => \Tainacan\Theme_Helper::get_instance()->get_registered_view_modes(),
 	];
 	
 	return $settings;

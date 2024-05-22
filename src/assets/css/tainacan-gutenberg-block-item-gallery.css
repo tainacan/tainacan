@@ -1,5 +1,5 @@
 /**
- * Swiper 11.1.0
+ * Swiper 11.1.1
  * Most modern mobile touch slider and framework with hardware accelerated transitions
  * https://swiperjs.com
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: March 28, 2024
+ * Released on: April 9, 2024
  */
 @font-face {
   font-family: 'swiper-icons';
@@ -669,18 +669,24 @@
     text-align: center;
     vertical-align: top;
     word-break: break-word;
-    font-size: 0.875em;
-    max-width: calc(var(--tainacan-media-thumbs-carousel-item-size, 136px) + 17px); }
+    font-size: 0.875em; }
     @media only screen and (max-width: 380px) {
       .tainacan-media-component__swiper-thumbs li.swiper-slide {
         margin: 10px 0; } }
+    .tainacan-media-component__swiper-thumbs li.swiper-slide:not(.has-fixed-height) {
+      max-width: calc(var(--tainacan-media-thumbs-carousel-item-size, 136px) + 17px); }
+      .tainacan-media-component__swiper-thumbs li.swiper-slide:not(.has-fixed-height) img {
+        width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
+        max-width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
+        object-fit: cover;
+        object-position: center; }
+    .tainacan-media-component__swiper-thumbs li.swiper-slide.has-fixed-height {
+      width: auto; }
+      .tainacan-media-component__swiper-thumbs li.swiper-slide.has-fixed-height img {
+        height: var(--tainacan-media-thumbs-carousel-item-size, 136px);
+        max-height: var(--tainacan-media-thumbs-carousel-item-size, 136px);
+        width: auto; }
     .tainacan-media-component__swiper-thumbs li.swiper-slide img {
-      width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
-      height: var(--tainacan-media-thumbs-carousel-item-size, 136px);
-      max-width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
-      max-height: var(--tainacan-media-thumbs-carousel-item-size, 136px);
-      object-fit: cover;
-      object-position: center;
       border-bottom-width: 6px;
       border-bottom-style: solid;
       background-color: var(--tainacan-media-background, transparent);

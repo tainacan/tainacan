@@ -538,7 +538,7 @@ class System_Check {
 		$current_version = TAINACAN_VERSION;
 
 		$args = array(
-			'slug' => 'Tainacan',
+			'slug' => 'tainacan',
 			'fields' => array(
 					'version' => true,
 			)

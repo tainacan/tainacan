@@ -513,7 +513,7 @@
                                             :help-info-bellow-label="helpInfoBellowLabel"
                                             :is-collapsed="metadataCollapses[index]"
                                             :enumerate-metadatum="metadataSections.length > 1 && collectionItemMetadataEnumeration === 'yes' ? ( (Number(sectionIndex) + 1) + '.' + (Number(getMetadatumOrderInSection(sectionIndex, itemMetadatum.metadatum)) + 1) ) : false"
-                                            @update:model-value="updateItemMetadataValue"
+                                            @input="updateItemMetadataValue"
                                             @change-collapse="onChangeCollapse($event, index)" />
 
                                     <!-- JS-side hook for extra content -->

@@ -1,9 +1,11 @@
 const { ToolbarGroup, ToolbarButton } = wp.components;
 
-export default function TainacanBlocksCompatToolbar({ label, icon, onClick, onClickParams, controls }) {
+export default function TainacanBlocksCompatToolbar({ label, icon, onClick, onClickParams, controls, extraComponents }) {
     
     if (controls !== undefined)
-        return <ToolbarGroup controls={ controls } /> 
+        return <ToolbarGroup controls={ controls }>
+            { extraComponents }
+        </ToolbarGroup> 
     else
         return <ToolbarGroup>
                 <ToolbarButton onClick={ () => onClick(onClickParams) }>
@@ -12,5 +14,6 @@ export default function TainacanBlocksCompatToolbar({ label, icon, onClick, onCl
                     </p>&nbsp;
                     { label }
                 </ToolbarButton>
+                { extraComponents }
             </ToolbarGroup>
 }
