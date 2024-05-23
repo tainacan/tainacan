@@ -4,6 +4,7 @@ namespace Tainacan;
 
 class System_Check {
 
+	private $other_links_slug = 'tainacan_other_links';
 	private $min_php_version = '7.0';
 
 	private $mysql_min_version_check;
@@ -15,15 +16,28 @@ class System_Check {
 	private $health_check_mysql_min_version = '5.0';
 
 	public function __construct() {
-		$this->init();
-	}
-
-	public function init() {
 		$this->prepare_sql_data();
+		add_action( 'admin_menu', array( &$this, 'add_admin_menu' ) );
 	}
 
 	public function admin_page() {
 		include('admin-page.php');
+	}
+
+	public function add_admin_menu() {
+		add_submenu_page(
+			$this->other_links_slug,
+			__('System check', 'tainacan'),
+			__('System check', 'tainacan'),
+			'manage_options',
+			'tainacan_systemcheck',
+			array( &$this, 'systemcheck_page' )
+		);
+	}
+
+	public function systemcheck_page() {
+		\Tainacan\Views::get_instance()->the_admin_navigation_menu();
+		$this->admin_page();
 	}
 
 	public function test_php_version() {

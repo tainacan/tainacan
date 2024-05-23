@@ -135,7 +135,7 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 
 	// Passes global variables to the blocks editor side
 	$block_settings = tainacan_blocks_get_plugin_js_settings();
-	$plugin_settings = \Tainacan\Admin::get_instance()->get_admin_js_localization_params();
+	$plugin_settings = \Tainacan\Views::get_instance()->get_admin_js_localization_params();
 	wp_localize_script( $block_slug, 'tainacan_blocks', $block_settings);
 	wp_localize_script( $block_slug, 'tainacan_plugin', $plugin_settings);
 
@@ -245,7 +245,7 @@ function tainacan_blocks_add_common_theme_scripts() {
 	wp_set_script_translations( 'tainacan-blocks-common-scripts', 'tainacan' );
 
 	$block_settings = tainacan_blocks_get_plugin_js_settings();
-	$plugin_settings = \Tainacan\Admin::get_instance()->get_admin_js_localization_params();
+	$plugin_settings = \Tainacan\Views::get_instance()->get_admin_js_localization_params();
 
 	wp_localize_script( 'tainacan-blocks-common-scripts', 'tainacan_blocks', $block_settings);
 	wp_localize_script( 'tainacan-blocks-common-scripts', 'tainacan_plugin', $plugin_settings);

@@ -151,8 +151,8 @@ $Tainacan_Mappers = \Tainacan\Mappers_Handler::get_instance();
 
 $Tainacan_Embed = \Tainacan\Embed::get_instance();
 
-require_once(__DIR__ . '/../views/class-tainacan-admin.php');
-$Tainacan_Admin = \Tainacan\Admin::get_instance();
+require_once(__DIR__ . '/../views/class-tainacan-views.php');
+$Tainacan_Views = \Tainacan\Views::get_instance();
 
 require_once(__DIR__ . '/../views/admin/classes/hooks/class-tainacan-admin-hooks.php');
 require_once(__DIR__ . '/../views/admin/classes/hooks/admin-hooks-functions.php');
