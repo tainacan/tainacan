@@ -1,0 +1,1 @@
+<div id='tainacan-reports-app'  data-module='reports'></div>

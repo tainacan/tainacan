@@ -62,5 +62,7 @@ sass -E 'UTF-8' --cache-location .tmp/sass-cache-27 src/views/gutenberg-blocks/s
 
 sass -E 'UTF-8' --cache-location .tmp/sass-cache-28 src/views/gutenberg-blocks/scss/gutenberg-blocks-theme-style.scss:src/assets/css/tainacan-gutenberg-block-common-theme-styles.css
 
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-29 src/views/tainacan-pages.scss:src/assets/css/tainacan-pages.css
+
 echo "Compilação do Sass Concluído!"
 exit 0

@@ -2,24 +2,38 @@
 
 namespace Tainacan;
 
-class Item_Submission {
+class Item_Submission extends Pages {
+	use \Tainacan\Traits\Singleton_Instance;
 
-	private $other_links_slug = 'tainacan_other_links';
-
-	public function __construct() {
-        add_action( 'admin_menu', array( &$this, 'add_admin_menu' ) );
+	public function init() {
+		parent::init();
 		add_action( 'admin_init', array( &$this, 'settings_init' ) );
 	}
 
 	public function add_admin_menu() {
+		
 		add_submenu_page(
+			$this->tainacan_root_menu_slug,
+			__('Other', 'tainacan'),
+			__('Other', 'tainacan'),
+			'read',
+			$this->other_links_slug,
+			'#'
+		);
+
+		$tainacan_page_suffix = add_submenu_page(
 			$this->other_links_slug,
 			__('Item Submission', 'tainacan'),
 			__('Item Submission', 'tainacan'),
 			'manage_options',
 			'tainacan_item_submission',
-			array( &$this, 'item_submission_page' )
+			array( &$this, 'render_page' )
 		);
+		add_action( 'load-' . $tainacan_page_suffix, array( &$this, 'load_page' ) );
+	}
+
+	public function render_page_content() {
+		require_once('page.php');
 	}
 
 	public function settings_init() {
@@ -75,15 +89,6 @@ class Item_Submission {
 			'<input type="text" id="tnc_option_recaptch_secret_key" name="tnc_option_recaptch_secret_key" value="%s" />',
 			esc_attr( get_option('tnc_option_recaptch_secret_key') )
 		);
-	}
-
-	public function item_submission_page() {
-		\Tainacan\Views::get_instance()->the_admin_navigation_menu();
-		$this->admin_page();
-	}
-
-	public function admin_page() {
-		include('admin-page.php');
 	}
 
 }

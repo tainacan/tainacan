@@ -135,7 +135,7 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 
 	// Passes global variables to the blocks editor side
 	$block_settings = tainacan_blocks_get_plugin_js_settings();
-	$plugin_settings = \Tainacan\Views::get_instance()->get_admin_js_localization_params();
+	$plugin_settings = \Tainacan\Admin::get_instance()->get_admin_js_localization_params();
 	wp_localize_script( $block_slug, 'tainacan_blocks', $block_settings);
 	wp_localize_script( $block_slug, 'tainacan_plugin', $plugin_settings);
 
@@ -218,7 +218,7 @@ function tainacan_blocks_get_plugin_js_settings(){
 		'nonce'   	 => is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : false,
 		'base_url' 	 => $TAINACAN_BASE_URL,
 		'api_max_items_per_page'    => $TAINACAN_API_MAX_ITEMS_PER_PAGE,
-		'admin_url'  => admin_url(),
+		'admin_url'  => admin_url('admin.php'),
 		'site_url'	 => site_url(),
 		'theme_items_list_url' => esc_url_raw( get_site_url() ) . '/' . \Tainacan\Theme_Helper::get_instance()->get_items_list_slug(),
 		'collections_post_types' => $cpts,
@@ -235,17 +235,19 @@ function tainacan_blocks_add_common_theme_scripts() {
 	global $TAINACAN_BASE_URL;
 	global $TAINACAN_VERSION;
 
+	wp_enqueue_script('underscore');
+
 	wp_enqueue_script(
 		'tainacan-blocks-common-scripts',
 		$TAINACAN_BASE_URL . '/assets/js/tainacan_blocks_common_scripts.js',
-		array('wp-i18n'),
+		array('wp-i18n', 'underscore'),
 		$TAINACAN_VERSION
 	);
 
 	wp_set_script_translations( 'tainacan-blocks-common-scripts', 'tainacan' );
 
 	$block_settings = tainacan_blocks_get_plugin_js_settings();
-	$plugin_settings = \Tainacan\Views::get_instance()->get_admin_js_localization_params();
+	$plugin_settings = \Tainacan\Admin::get_instance()->get_admin_js_localization_params();
 
 	wp_localize_script( 'tainacan-blocks-common-scripts', 'tainacan_blocks', $block_settings);
 	wp_localize_script( 'tainacan-blocks-common-scripts', 'tainacan_plugin', $plugin_settings);
@@ -256,13 +258,21 @@ function tainacan_blocks_add_common_theme_scripts() {
 			tainacan_blocks_add_extra_item_submission_assets();
 	}
 	add_action('wp', 'tainacan_enqueue_extra_item_submission_assets');
+
+	// Necessary do this only when the faceted search block is present
+	function tainacan_enqueue_extra_faceted_search_assets() {
+		if ( has_block( 'tainacan/faceted-search', get_the_ID() ) )
+			tainacan_blocks_add_extra_faceted_search_assets();
+	}
+	add_action('wp', 'tainacan_enqueue_extra_faceted_search_assets');
 }
 
 /** 
  * Registers the extra scripts necessary for item submission block
  */
 function tainacan_blocks_add_extra_item_submission_assets() {
-	
+	global $TAINACAN_BASE_URL;
+
 	// Registers extra script for Google ReCAPTCHA
 	wp_register_script(
 		'tainacan-google-recaptcha-script',
@@ -270,12 +280,21 @@ function tainacan_blocks_add_extra_item_submission_assets() {
 		[], false, true 
 	);
 	
-	wp_enqueue_script('tainacan-google-recaptcha-script');
-
+	wp_enqueue_script('tainacan-google-recaptcha-script');	
+	wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/tainacanicons.css', [], TAINACAN_VERSION );
+		
 	// Registers extra metadata type forms
 	$theme_helper = \Tainacan\Metadata_Types\Metadata_Type_Helper::get_instance();
 	if (isset($theme_helper))
 		$theme_helper->register_metadata_type_component();
+}
+
+/** 
+ * Registers the extra styles necessary for faceted search block
+ */
+function tainacan_blocks_add_extra_faceted_search_assets() {
+	global $TAINACAN_BASE_URL;
+	wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/tainacanicons.css', [], TAINACAN_VERSION );
 }
 
 /** 

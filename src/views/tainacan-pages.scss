@@ -1,0 +1,21 @@
+@import "./admin/scss/_variables.scss";
+@import "./admin/scss/_custom_variables.scss";
+
+.tainacan-pages-container #wpcontent {
+    padding-left: 0;
+}
+#tainacan-page-container {
+    display: flex;
+    width: 100%;
+    background-color: var(--tainacan-primary);
+
+    & > * {
+        flex-grow: 1;
+    }
+
+    #tainacan-navigation-menu {
+        flex-basis: 228px;
+        max-width: 228px;
+        padding: 1rem;
+    }
+}

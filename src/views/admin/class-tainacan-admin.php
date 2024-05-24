@@ -2,16 +2,15 @@
 
 namespace Tainacan;
 
-
-class Admin {
+class Admin extends Pages {
+	use \Tainacan\Traits\Singleton_Instance;
 
 	private $vue_component_page_slug = 'tainacan_admin';
 	private $repository_links_slug = 'tainacan_admin'; // Same as vue_component_page_slug, because it is used in add_submenu_page() to create the root menu and the page has to exist
 	private $collections_links_slug = 'tainacan_collection_links';
 
-	public function __construct() {
-		add_action( 'admin_menu', array( &$this, 'add_admin_menu' ) );
-		add_filter( 'admin_body_class', array( &$this, 'admin_body_class' ) );
+	public function init() {
+		parent::init();
 		add_action( 'wp_ajax_tainacan-sample-permalink', array( &$this, 'ajax_sample_permalink') );
 	}
 
@@ -19,14 +18,14 @@ class Admin {
 
 		// Tainacan Admin Vue component. 
 		$tainacan_page_suffix = add_submenu_page(
-			\Tainacan\Views::get_instance()->tainacan_root_menu_slug,
+			$this->tainacan_root_menu_slug,
 			__( 'Repository', 'tainacan' ),
 			__( 'Repository', 'tainacan' ),
 			'read',
 			$this->repository_links_slug,
-			array( &$this, 'admin_page' ),
+			array( &$this, 'render_page' ),
 		);
-		add_action( 'load-' . $tainacan_page_suffix, array( &$this, 'load_admin_page' ) );
+		add_action( 'load-' . $tainacan_page_suffix, array( &$this, 'load_page' ) );
 		
 		// Inner links to the admin vue component
 		add_submenu_page(
@@ -35,7 +34,7 @@ class Admin {
 			__('Metadata', 'tainacan'),
 			'read',
 			$this->vue_component_page_slug . '#/metadata',
-			array( &$this, 'admin_page' )
+			array( &$this, 'render_page' )
 		);
 		add_submenu_page(
 			$this->repository_links_slug,
@@ -43,7 +42,7 @@ class Admin {
 			__('Filters', 'tainacan'),
 			'read',
 			$this->vue_component_page_slug . '#/filters',
-			array( &$this, 'admin_page' )
+			array( &$this, 'render_page' )
 		);
 		add_submenu_page(
 			$this->repository_links_slug,
@@ -51,7 +50,7 @@ class Admin {
 			__('Taxonomies', 'tainacan'),
 			'read',
 			$this->vue_component_page_slug . '#/taxonomies',
-			array( &$this, 'admin_page' )
+			array( &$this, 'render_page' )
 		);
 		add_submenu_page(
 			$this->repository_links_slug,
@@ -59,7 +58,7 @@ class Admin {
 			__('Activities', 'tainacan'),
 			'read',
 			$this->vue_component_page_slug . '#/activities',
-			array( &$this, 'admin_page' )
+			array( &$this, 'render_page' )
 		);
 		add_submenu_page(
 			$this->repository_links_slug,
@@ -67,7 +66,7 @@ class Admin {
 			__('Capabilities', 'tainacan'),
 			'read',
 			$this->vue_component_page_slug . '#/capabilities',
-			array( &$this, 'admin_page' )
+			array( &$this, 'render_page' )
 		);
 		add_submenu_page(
 			$this->repository_links_slug,
@@ -75,7 +74,7 @@ class Admin {
 			__('Importers', 'tainacan'),
 			'read',
 			$this->vue_component_page_slug . '#/importers',
-			array( &$this, 'admin_page' )
+			array( &$this, 'render_page' )
 		);
 		add_submenu_page(
 			$this->repository_links_slug,
@@ -83,15 +82,15 @@ class Admin {
 			__('Exporters', 'tainacan'),
 			'read',
 			$this->vue_component_page_slug . '#/exporters',
-			array( &$this, 'admin_page' )
+			array( &$this, 'render_page' )
 		);
 		add_submenu_page(
-			\Tainacan\Views::get_instance()->tainacan_root_menu_slug,
+			$this->tainacan_root_menu_slug,
 			__('Collections', 'tainacan'),
 			__('Collections', 'tainacan'),
 			'read',
 			$this->collections_links_slug,
-			array( &$this, 'admin_page' )
+			array( &$this, 'render_page' )
 		);
 		add_submenu_page(
 			$this->collections_links_slug,
@@ -99,7 +98,7 @@ class Admin {
 			__('Collections list', 'tainacan'),
 			'read',
 			$this->vue_component_page_slug . '#/collections',
-			array( &$this, 'admin_page' )
+			array( &$this, 'render_page' )
 		);
 		add_submenu_page(
 			$this->collections_links_slug,
@@ -107,16 +106,11 @@ class Admin {
 			__('Items', 'tainacan'),
 			'read',
 			'tainacan_admin#/items',
-			array( &$this, 'admin_page' )
+			array( &$this, 'render_page' )
 		);
 	}
-
-	function load_admin_page() {
-		add_action( 'admin_enqueue_scripts', array( &$this, 'add_admin_css' ), 90 );
-		add_action( 'admin_enqueue_scripts', array( &$this, 'add_admin_js' ), 90 );
-	}
-
-	function add_admin_css() {
+	
+	function admin_enqueue_css() {
 		global $TAINACAN_BASE_URL;
 
 		wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/tainacanicons.css', [], TAINACAN_VERSION );
@@ -160,7 +154,7 @@ class Admin {
 
 	}
 
-	function add_admin_js() {
+	function admin_enqueue_js() {
 		global $TAINACAN_BASE_URL;
 		global $TAINACAN_EXTRA_SCRIPTS;
 
@@ -177,7 +171,7 @@ class Admin {
 			$deps,
 			TAINACAN_VERSION
 		);
-		$settings = \Tainacan\Views::get_instance()->get_admin_js_localization_params();
+		$settings = $this->get_admin_js_localization_params();
 
 		wp_localize_script( 'tainacan-pages-common-scripts', 'tainacan_plugin', $settings );
 		wp_enqueue_media(
@@ -194,18 +188,13 @@ class Admin {
 	function admin_body_class( $classes ) {
 
 		if ( isset( $_GET['page'] ) && $_GET['page'] == $this->vue_component_page_slug )
-			$classes .= ' tainacan-admin-page';
+			$classes .= ' tainacan-pages-container tainacan-admin-page';
 		
 		return $classes;
 	}
 
-	function admin_page() {
-        \Tainacan\Views::get_instance()->the_admin_navigation_menu();
-		// @deprecated: use tainacan-admin-ui-options instead
-		$admin_options = apply_filters('set_tainacan_admin_options', $_GET);
-		$admin_options = apply_filters('tainacan-admin-ui-options', $_GET);
-		$admin_options = json_encode($admin_options);
-		echo "<div id='tainacan-admin-app' data-module='admin' data-options='$admin_options'></div>";
+	public function render_page_content() {
+		include('page.php');
 	}
 
 	/**
