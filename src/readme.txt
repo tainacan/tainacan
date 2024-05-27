@@ -87,7 +87,7 @@ If you have Imagick installed on your server, Tainacan will be able to automatic
 
 = Where do I report security bugs found in this plugin? =
 
-Please report security bugs found in the source code of the Tainacan plugin through the [Patchstack Vulnerability Disclosure Program](https://wordpress.org/plugins/tainacan/). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+Please report security bugs found in the source code of the Tainacan plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/tainacan). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Screenshots ==
 
