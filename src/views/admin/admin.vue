@@ -96,10 +96,14 @@
         },
         watch: {
             '$route': {
-                handler(to) {
+                handler(to, from) {
                     this.isMenuCompressed = (to.params.collectionId != undefined);
                     this.activeRoute = to.name;
                     this.isRepositoryLevel = this.$route.params.collectionId == undefined;
+
+                    if ( to.path !== from.path ) {
+                        wp.hooks.doAction('tainacan_navigation_path_updated', to);
+                    }
                 },
                 deep: true
             }
@@ -111,9 +115,10 @@
             this.activeRoute = this.$route.name;
             this.isRepositoryLevel = this.$route.params.collectionId == undefined;
 
-            if (jQuery && jQuery( document )) {
+            wp.hooks.doAction('tainacan_navigation_path_updated', this.$route);
+
+            if (jQuery && jQuery( document ))
                 jQuery( document ).ajaxError(this.onHeartBitError);
-            }
         },
         methods: {
             onHeartBitError(event, jqxhr, settings) {

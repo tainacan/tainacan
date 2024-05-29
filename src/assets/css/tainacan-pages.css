@@ -832,12 +832,20 @@ a:hover:not([href]) {
 #tainacan-page-container {
   display: flex;
   width: 100%;
-  background-color: var(--tainacan-primary); }
+  background-color: var(--tainacan-turquoise1); }
   #tainacan-page-container > * {
     flex-grow: 1; }
   #tainacan-page-container #tainacan-navigation-menu {
     flex-basis: 228px;
     max-width: 228px;
-    padding: 1rem; }
+    padding: 1rem;
+    background-color: var(--tainacan-turquoise2); }
+    #tainacan-page-container #tainacan-navigation-menu a {
+      padding: 0.5rem 1rem; }
+      #tainacan-page-container #tainacan-navigation-menu a[aria-current="page"], #tainacan-page-container #tainacan-navigation-menu a:hover, #tainacan-page-container #tainacan-navigation-menu a:focus {
+        background-color: var(--tainacan-turquoise3); }
+    #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children:not(.is-open) > ul {
+      display: none;
+      visibility: hidden; }
 
 /*# sourceMappingURL=tainacan-pages.css.map */

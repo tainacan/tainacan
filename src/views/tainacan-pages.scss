@@ -7,7 +7,7 @@
 #tainacan-page-container {
     display: flex;
     width: 100%;
-    background-color: var(--tainacan-primary);
+    background-color: var(--tainacan-turquoise1);
 
     & > * {
         flex-grow: 1;
@@ -17,5 +17,22 @@
         flex-basis: 228px;
         max-width: 228px;
         padding: 1rem;
+        background-color: var(--tainacan-turquoise2);
+
+        a {
+            padding: 0.5rem 1rem;
+            &[aria-current="page"],
+            &:hover,
+            &:focus {
+                background-color: var(--tainacan-turquoise3);
+            }
+        }
+        
+        .menu-item-has-children {
+            &:not(.is-open) > ul {
+                display: none;
+                visibility: hidden;
+            }
+        }
     }
 }

@@ -243,6 +243,7 @@ abstract class Pages {
 	 * @return void
 	 */
 	function register_user_meta() {
+		wp_insert_term( 'e', 'category', array( 'alias_of' => 'a' ) );
 		$args = array(
 			//'sanitize_callback' => array(&$this, 'santize_user_tainacan_prefs'),
 			//'auth_callback' => 'authorize_my_meta_key',
@@ -270,7 +271,12 @@ abstract class Pages {
 	 */
 	public function render_page() {
 		global $TAINACAN_BASE_URL;
-		wp_enqueue_style( 'tainacan-page-container', $TAINACAN_BASE_URL . '/assets/css/tainacan-pages.css', [], TAINACAN_VERSION );
+		wp_enqueue_style( 
+			'tainacan-page-container',
+			$TAINACAN_BASE_URL . '/assets/css/tainacan-pages.css',
+			[],
+			TAINACAN_VERSION
+		);
 		
 		?>
 		<div id="tainacan-page-container">
@@ -292,7 +298,19 @@ abstract class Pages {
 	 * @return void
 	 */
 	public function render_navigation_menu() {
+		global $TAINACAN_BASE_URL;
 		global $submenu;
+
+		wp_enqueue_script(
+			'tainacan-admin-navigation-menu',
+			$TAINACAN_BASE_URL . '/assets/js/tainacan_admin_navigation_menu.js',
+			[ 'wp-hooks', 'wp-i18n' ],
+			TAINACAN_VERSION
+		);
+		$current_screen = get_current_screen();
+		$current_page_slug = $current_screen->id ? $current_screen->id : 'toplevel_page_tainacan_dashboard';
+		$current_page_parent = $current_screen->parent_file;
+		
 		?>
 		<aside id="tainacan-navigation-menu">
 			<nav>
@@ -306,8 +324,12 @@ abstract class Pages {
 						</a>
 					</h1>
 				</header>
-				<ul>
-					<li><a href="admin.php?page=tainacan_dashboard"><?php _e('Home', 'tainacan'); ?></a></li>
+				<ul id="tainacan-root-menu">
+					<li>
+						<a href="admin.php?page=tainacan_dashboard" <?php echo $current_page_slug === 'toplevel_page_tainacan_dashboard' ? 'aria-current="page"' : ''; ?>>
+							<?php _e('Home', 'tainacan'); ?>
+						</a>
+					</li>
 					<?php
 						$tainacan_root_links = isset( $submenu[$this->tainacan_root_menu_slug] ) ? $submenu[$this->tainacan_root_menu_slug] : [];
 						
@@ -315,26 +337,30 @@ abstract class Pages {
 							foreach( $tainacan_root_links as $tainacan_root_link ) {
 								if (  !current_user_can( $tainacan_root_link[1] ) ) 
 									continue;
-								?>
-								<li>
-									<strong>
-										<?php if ( isset( $submenu[$tainacan_root_link[2]] ) ) : ?>
-											<a onclick="console.log('implement open...')"><?php echo $tainacan_root_link[0]; ?></a>
-										<?php else : ?>
-											<a href="<?php echo $tainacan_root_link[1]; ?>"><?php echo $tainacan_root_link[0]; ?></a>
-										<?php endif; ?>
-									</strong>
-								</li>
 								
-								<?php if ( isset( $submenu[$tainacan_root_link[2]] ) && count( $submenu[$tainacan_root_link[2]] ) ) : ?>
-									<ul>
-									<?php foreach( $submenu[$tainacan_root_link[2]] as $link ) : 
-										if ( !current_user_can( $link[1] ) ) continue;
-									?>
-										<li><a href="admin.php?page=<?php echo $link[2]; ?>"><?php echo $link[0]; ?></a></li>
-									<?php endforeach; ?>
-									</ul>
-								<?php endif;
+								if ( isset( $submenu[$tainacan_root_link[2]] ) ) : ?>
+
+									<li class="menu-item-has-children <?php echo $current_page_parent === $tainacan_root_link[2] ? 'is-open' : ''; ?>">
+										<button type="button" aria-expanded="<?php echo $current_page_parent === $tainacan_root_link[2] ?>"><strong><?php echo $tainacan_root_link[0]; ?></strong></button>
+										
+										<?php if ( count( $submenu[$tainacan_root_link[2]] ) ) : ?>
+											<ul id="<?php echo $tainacan_root_link[2]; ?>">
+												<?php foreach( $submenu[$tainacan_root_link[2]] as $link ) : 
+													if ( !current_user_can( $link[1] ) ) continue;
+												?>
+													<li>
+														<a href="admin.php?page=<?php echo $link[2]; ?>" <?php echo $current_page_slug === 'admin_page_' . $link[2] ? 'aria-current="page"' : ''; ?>><?php echo $link[0]; ?></a>
+													</li>
+												<?php endforeach; ?>
+											</ul>
+										<?php endif; ?>
+									</li>
+
+								<?php else : ?>
+									<li>
+										<a href="<?php echo $tainacan_root_link[1]; ?>"  <?php echo $current_page_slug === 'admin_page_' . $tainacan_root_link[1] ? 'aria-current="page"' : ''; ?>><strong><?php echo $tainacan_root_link[0]; ?></strong></a>
+									</li>
+								<?php endif; 
 							}
 						}
 					?>

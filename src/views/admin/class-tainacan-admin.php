@@ -158,7 +158,7 @@ class Admin extends Pages {
 		global $TAINACAN_BASE_URL;
 		global $TAINACAN_EXTRA_SCRIPTS;
 
-		$deps = ['underscore', 'media-editor', 'media-views', 'customize-controls', 'wp-i18n'];
+		$deps = ['underscore', 'media-editor', 'media-views', 'customize-controls', 'wp-i18n', 'wp-hooks'];
 		if ( !empty($TAINACAN_EXTRA_SCRIPTS) ) {
 			foreach($TAINACAN_EXTRA_SCRIPTS as $dep) {
 				$deps[] = $dep;
