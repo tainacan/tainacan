@@ -4,7 +4,7 @@ Tags: museums, archives, GLAM, collections, repository
 Requires at least: 5.9
 Tested up to: 6.5
 Requires PHP: 7.0
-Stable tag: 0.21.3
+Stable tag: 0.21.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -82,6 +82,12 @@ If you have Imagick installed on your server, Tainacan will be able to automatic
 * Visit our official website: [https://tainacan.org/](https://tainacan.org/)
 * Contribute to the source code: [https://github.com/tainacan/tainacan](https://github.com/tainacan/tainacan)
 * Check our documentation Wiki: [https://wiki.tainacan.org/](https://wiki.tainacan.org/)
+
+== Frequently Asked Questions ==
+
+= Where do I report security bugs found in this plugin? =
+
+Please report security bugs found in the source code of the Tainacan plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/tainacan). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Screenshots ==
 

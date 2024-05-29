@@ -163,8 +163,15 @@ class Admin {
 	}
 
 	function roles_page() {
-		global $TAINACAN_BASE_URL;
-		echo "<div id='tainacan-roles-app' data-module='roles'></div>";
+		$allowed_html = [
+			'div' => [
+				'id' => true,
+				'style' => true,
+				'class' => true,
+				'data-module' => true
+			]
+		];
+		echo wp_kses( "<div id='tainacan-roles-app' data-module='roles'></div>", $allowed_html );
 	}
 
 	function add_reports_css() {
@@ -194,8 +201,16 @@ class Admin {
 	}
 
 	function reports_page() {
-		global $TAINACAN_BASE_URL;
-		echo "<div id='tainacan-reports-app'  data-module='reports'></div>";
+		
+		$allowed_html = [
+			'div' => [
+				'id' => true,
+				'style' => true,
+				'class' => true,
+				'data-module' => true
+			]
+		];
+		echo wp_kses( "<div id='tainacan-reports-app'  data-module='reports'></div>", $allowed_html );
 	}
 
 	function add_admin_css() {
@@ -411,7 +426,16 @@ class Admin {
 		$admin_options = apply_filters('tainacan-admin-ui-options', $_GET);
 		$admin_options = json_encode($admin_options);
 
-		echo "<div id='tainacan-admin-app' data-module='admin' data-options='$admin_options'></div>";
+		$allowed_html = [
+			'div' => [
+				'id' => true,
+				'style' => true,
+				'class' => true,
+				'data-module' => true,
+				'data-options' => true
+			]
+		];
+		echo wp_kses( "<div id='tainacan-admin-app' data-module='admin' data-options='$admin_options'></div>", $allowed_html );
 	}
 
 	function register_user_meta() {
