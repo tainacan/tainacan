@@ -1648,7 +1648,6 @@
         }
 
         // Tainacan imports
-        @import "../../../admin/scss/_tables.scss";
         @import "../../../admin/scss/_modals.scss";
         @import "../../../admin/scss/_buttons.scss"; 
         @import "../../../admin/scss/_inputs.scss";
@@ -1758,79 +1757,6 @@
             }
         }
 
-        .tainacan-table {
-            .tainacan-relationship-group {
-                .tainacan-relationship-metadatum {
-                    display: inline-block;
-                    .tainacan-relationship-metadatum-header {
-                        img {
-                            display: none;
-                        }
-                        .label {
-                            font-weight: normal;
-                            font-size: 1em !important;
-                            margin-top: 0;
-                            margin-left: 0;
-                            margin-bottom: 0;
-                            margin-right: 0;
-                            padding: 0;
-                        }
-                    }
-                    .tainacan-metadatum {
-                        display: none;
-                    }
-                }
-                &>.multivalue-separator {
-                    display: inline-block;
-                    max-height: 100%;
-                    width: 1px;
-                    background: var(--tainacan-gray2);
-                    content: none;
-                    color: transparent;
-                    margin: 0 6px;
-                }
-            }
-        }
-        .column-large-width {
-            .tainacan-compound-group {
-                display: inline-block;
-                font-size: 1.125em;
-                margin-top: -0.25em;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
-                max-width: 100%;
-
-                & * {
-                    display: inline-block;
-                }
-                .label {
-                    font-size: 1em !important;
-                    padding: 0;
-                    color: var(--tainacan-info-color);
-                    &:not(:first-child)::before {
-                        content: ', ';
-                        font-size: 1em;
-                        font-weight: normal;
-                        color: var(--tainacan-info-color);
-                        display: inline-block;
-                        margin-right: 0.35em;
-                        margin-left: -0.15em;
-                    }
-                    &::after {
-                        content: ': ';
-                        font-size: 1em;
-                        color: var(--tainacan-info-color);
-                        display: inline-block;
-                        margin-right: 0.15em;
-                    }
-                }
-                p {
-                    font-size: 1em !important;
-                    line-height: 1.65em !important;
-                }
-            }
-        }
         .metadata-value {
             .tainacan-compound-group {
                 margin-left: 2px;

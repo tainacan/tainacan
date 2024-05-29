@@ -11,7 +11,7 @@
             </h3>
             <sortable 
                     :list="availableMetadataTypes"
-                    item-key="id"
+                    item-key="component"
                     :options="{
                         group: {
                             name: 'metadata',
@@ -25,7 +25,7 @@
                     }">
                 <template #item="{ element: metadatum }">
                     <div 
-                            :id="metadatum.component"
+                            :data-metadatum-type="metadatum.component"
                             class="available-metadatum-item"
                             :class="{ 'highlighted-metadatum' : highlightedMetadatum == metadatum.name, 'inherited-metadatum': metadatum.inherited || isRepositoryLevel }"
                             @click.prevent="addMetadatumViaButton(metadatum)">

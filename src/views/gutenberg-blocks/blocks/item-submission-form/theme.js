@@ -138,7 +138,7 @@ export default (element) => {
             VueItemSubmission.use(VTooltip, {
                 popperTriggers: ['hover'],
                 themes: {
-                    'taianacan-tooltip': {
+                    'tainacan-tooltip': {
                         '$extend': 'tooltip',
                         triggers: ['hover', 'focus', 'touch'],
                         autoHide: true,

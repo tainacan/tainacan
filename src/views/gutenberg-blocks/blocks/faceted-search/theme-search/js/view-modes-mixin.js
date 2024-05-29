@@ -19,11 +19,12 @@ export const viewModesMixin = {
         isLoading: false,
         totalItems: Number,
         isFiltersMenuCompressed: Boolean,
-        enabledViewModes: Array
+        enabledViewModes: Array,
+        containerId: String
     },
     computed: {
         queries() {
-            let currentQueries = JSON.parse(JSON.stringify(this.$route.query));
+            let currentQueries = (this.$route && this.$route.query) ? JSON.parse(JSON.stringify(this.$route.query)) : {};
             if (currentQueries) {
                 delete currentQueries['view_mode'];
                 delete currentQueries['fetch_only'];
@@ -81,7 +82,8 @@ export const viewModesMixin = {
                 // Inserts information necessary for item by item navigation on single pages
                 this.queries['pos'] = ((this.queries['paged'] - 1) * this.queries['perpage']) + index;
                 this.queries['source_list'] = this.termId ? 'term' : (!this.collectionId || this.collectionId == 'default' ? 'repository' : 'collection');
-                this.queries['ref'] = this.$route.path;
+                if ( this.$route && this.$route.path )
+                    this.queries['ref'] = this.$route.path;
                 return itemUrl + '?' + qs.stringify(this.queries);
             }
             return itemUrl;
@@ -122,10 +124,11 @@ export const viewModesMixin = {
             return metadata.value_as_html;
         },
         starSlideshowFromHere(index) {
-            this.$router.replace({ query: {...this.$route.query, ...{'slideshow-from': index } }}).catch((error) => this.$console.log(error));
+            if ( this.$router && this.$route && this.$route.query )
+                this.$router.replace({ query: {...this.$route.query, ...{'slideshow-from': index } }}).catch((error) => this.$console.log(error));
         },
         getPosInSet(index) {
-            if (Number(this.queries.paged) !== NaN && Number(this.queries.perpage) !== NaN)
+            if ( !isNaN(Number(this.queries.paged)) && !isNaN(Number(this.queries.perpage)) )
                 return ((Number(this.queries.paged) - 1) * Number(this.queries.perpage)) + index + 1;
         }
     }

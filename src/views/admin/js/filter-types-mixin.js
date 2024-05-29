@@ -268,31 +268,30 @@ export const dynamicFilterTypeMixin = {
                 }
             }
             
-            if (this.shouldAddOptions === true && this.searchResults && this.searchResults.length)
+            if ( this.shouldAddOptions === true && this.searchResults && this.searchResults.length )
                 this.searchResults = this.searchResults.concat(sResults);
             else
                 this.searchResults = sResults;
 
-            if (opts) {
+            if ( opts ) {
                 if (this.shouldAddOptions === true && this.options && this.options.length)
                     this.options = this.options.concat(opts)
                 else 
                     this.options = opts;
             }
-            else if(!search)
+            else if ( !search )
                 this.noMorePage = 1;
 
-            if (this.options.length < this.maxNumOptionsCheckboxList && !search)
+            if ( this.options.length < this.maxNumOptionsCheckboxList && !search )
                 this.noMorePage = 1;
 
-            if (this.filter.max_options && this.options.length >= this.filter.max_options) {
+            if ( ( this.filterTypeOptions && this.filterTypeOptions.use_max_options == true && this.filter.max_options ) && this.options.length >= this.filter.max_options ) {
                 let showViewAllButton = true;
 
-                if (this.options.length === this.filter.max_options){
+                if ( this.options.length === this.filter.max_options )
                     this.options[this.filter.max_options-1].showViewAllButton = showViewAllButton;
-                } else {
+                else 
                     this.options[this.options.length-1].showViewAllButton = showViewAllButton;
-                }
             }
         },
         prepareOptionsForRelationship(items, search, valuesToIgnore, isInCheckboxModal) {
@@ -340,32 +339,31 @@ export const dynamicFilterTypeMixin = {
                 }
             }
 
-            if (this.shouldAddOptions === true && this.searchResults && this.searchResults.length)
+            if ( this.shouldAddOptions === true && this.searchResults && this.searchResults.length )
                 this.searchResults = this.searchResults.concat(sResults);
             else
                 this.searchResults = sResults;
 
-            if (opts) {
+            if ( opts ) {
                 if (this.shouldAddOptions === true && this.options && this.options.length)
                      this.options = this.options.concat(opts)
                 else 
                     this.options = opts;
             }
-            else if(!search)
+            else if ( !search )
                 this.noMorePage = 1;
         
 
-            if (this.options.length < this.maxNumOptionsCheckboxList)
+            if ( this.options.length < this.maxNumOptionsCheckboxList )
                 this.noMorePage = 1;
             
-            if (this.filter.max_options && this.options.length >= this.filter.max_options) {
+            if ( ( this.filterTypeOptions && this.filterTypeOptions.use_max_options == true && this.filter.max_options ) && this.options.length >= this.filter.max_options ) {
                 let showViewAllButton = true;
 
-                if(this.options.length === this.filter.max_options){
+                if ( this.options.length === this.filter.max_options )
                     this.options[this.filter.max_options-1].showViewAllButton = showViewAllButton;
-                } else {
+                else
                     this.options[this.options.length-1].showViewAllButton = showViewAllButton;
-                }
             }
         },
     },

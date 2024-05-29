@@ -5,6 +5,7 @@
                 size="is-small"
                 :data="options"
                 autocomplete
+                :open-on-focus="true"
                 expanded
                 :loading="isLoadingOptions"
                 :remove-on-keys="[]"
@@ -16,6 +17,7 @@
                 check-infinite-scroll
                 @update:model-value="($event) => { resetPage(); onSelect($event) }"
                 @typing="search"
+                @focus="($event) => { searchQuery = $event.target.value; performSearch(searchQuery) }"
                 @infinite-scroll="searchMore">
             <template #default="props">
                 <div class="media">
@@ -96,8 +98,7 @@
             this.updateSelectedValues();
         },
         methods: {
-            search: _.debounce( function(query) {
-
+            performSearch(query) {
                 // String update
                 if (query != this.searchQuery) {
                     this.searchQuery = query;
@@ -154,7 +155,9 @@
 
                 // Search Request Token for cancelling
                 this.getOptionsValuesCancel = promise.source;
-                
+            },
+            search: _.debounce( function(query) {
+                this.performSearch(query);
             }, 500),
             searchMore: _.debounce(function () {
                 this.search(this.searchQuery);

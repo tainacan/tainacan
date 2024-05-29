@@ -1,6 +1,216 @@
 const { useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 export default [
+    /* Deprecated on version 0.21.3 for adding tainacan-view-modes layout option */
+    {
+        "attributes": {
+            "content": {
+                "type": "array",
+                "source": "children",
+                "selector": "div"
+            },
+            "collectionId": {
+                "type": "string",
+                "default": ""
+            },
+            "items": {
+                "type": "array",
+                "default": []
+            },
+            "showImage": {
+                "type": "boolean",
+                "default": true
+            },
+            "showName": {
+                "type": "boolean",
+                "default": true
+            },
+            "layout": {
+                "type": "string",
+                "default": "grid"
+            },
+            "isModalOpen": {
+                "type": "boolean",
+                "default": false
+            },
+            "gridMargin": {
+                "type": "number",
+                "default": 0
+            },
+            "searchURL": {
+                "type": "string",
+                "default": ""
+            },
+            "itemsRequestSource": {
+                "type": "string",
+                "default": ""
+            },
+            "maxItemsNumber": {
+                "type": "number",
+                "default": 12
+            },
+            "isLoading": {
+                "type": "boolean",
+                "default": false
+            },
+            "isLoadingCollection": {
+                "type": "boolean",
+                "default": false
+            },
+            "showSearchBar": {
+                "type": "boolean",
+                "default": false
+            },
+            "showCollectionHeader": {
+                "type": "boolean",
+                "default": false
+            },
+            "showCollectionLabel": {
+                "type": "boolean",
+                "default": false
+            },
+            "collection": {
+                "type": "object",
+                "default": {}
+            },
+            "searchString": {
+                "type": "string",
+                "default": ""
+            },
+            "selectedItems": {
+                "type": "array",
+                "default": []
+            },
+            "loadStrategy": {
+                "type": "string",
+                "default": "search"
+            },
+            "order": {
+                "type": "string",
+                "default": ""
+            },
+            "orderBy": {
+                "type": "string",
+                "default": "date"
+            },
+            "orderByMetaKey": {
+                "type": "string",
+                "default": ""
+            },
+            "blockId": {
+                "type": "string",
+                "default": ""
+            },
+            "collectionBackgroundColor": {
+                "type": "string",
+                "default": "#373839"
+            },
+            "collectionTextColor": {
+                "type": "string",
+                "default": "#ffffff"
+            },
+            "mosaicHeight": {
+                "type": "number",
+                "default": 280
+            },
+            "mosaicGridColumns": {
+                "type": "number",
+                "default": 3
+            },
+            "mosaicGridRows": {
+                "type": "number",
+                "default": 3
+            },
+            "sampleBackgroundImage": {
+                "type": "string",
+                "default": ""
+            },
+            "mosaicItemFocalPoint": {
+                "type": "object",
+                "default": {
+                    "x": 0.5,
+                    "y": 0.5
+                }
+            },
+            "mosaicDensity": {
+                "type": "number",
+                "default": 5
+            },
+            "maxColumnsCount": {
+                "type": "number",
+                "default": 4
+            },
+            "imageSize": {
+                "type": "string",
+                "default": "tainacan-medium"
+            }
+        },
+        save: function({ attributes }) {
+            const {
+                content, 
+                blockId,
+                collectionId,
+                loadStrategy,
+                selectedItems,
+                showImage,
+                showName,
+                layout,
+                gridMargin,
+                searchURL,
+                maxItemsNumber,
+                order,
+                orderBy,
+                orderByMetaKey,
+                showSearchBar,
+                showCollectionHeader,
+                showCollectionLabel,
+                collectionBackgroundColor,
+                collectionTextColor,
+                mosaicHeight,
+                mosaicGridRows,
+                mosaicGridColumns,
+                mosaicItemFocalPoint,
+                mosaicDensity,
+                maxColumnsCount,
+                imageSize
+            } = attributes;
+            
+            // Gets attributes such as style, that are automatically added by the editor hook
+            const blockProps = useBlockProps.save();
+            return <div
+                    { ...blockProps }
+                    data-module="dynamic-items-list"
+                    data-search-url={ searchURL }
+                    data-selected-items={ JSON.stringify(selectedItems) }
+                    data-collection-id={ collectionId }
+                    data-show-image={ '' + showImage }
+                    data-show-name={ '' + showName }
+                    data-show-search-bar={ '' + showSearchBar }
+                    data-show-collection-header={ '' + showCollectionHeader }
+                    data-show-collection-label={ '' + showCollectionLabel }
+                    data-image-size={ imageSize }
+                    data-layout={ layout }
+                    data-load-strategy={ loadStrategy }
+                    data-mosaic-height={ mosaicHeight }
+                    data-mosaic-density={ mosaicDensity }
+                    data-mosaic-grid-rows={ mosaicGridRows } 
+                    data-mosaic-grid-columns={ mosaicGridColumns }
+                    data-mosaic-item-focal-point-x={ (mosaicItemFocalPoint && mosaicItemFocalPoint.x ? mosaicItemFocalPoint.x : 0.5) } 
+                    data-mosaic-item-focal-point-y={ (mosaicItemFocalPoint && mosaicItemFocalPoint.y ? mosaicItemFocalPoint.y : 0.5) } 
+                    data-max-columns-count={ maxColumnsCount }
+                    data-collection-background-color={ collectionBackgroundColor }
+                    data-collection-text-color={ collectionTextColor }
+                    data-grid-margin={ gridMargin }
+                    data-max-items-number={ maxItemsNumber }
+                    data-order={ order !== undefined ? order : '' }
+                    data-order-by={ orderBy !== undefined ? orderBy : 'date' }
+                    data-order-by-meta-key={ orderByMetaKey !== undefined ? orderByMetaKey : '' }
+                    data-tainacan-api-root={ tainacan_blocks.root }
+                    id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>
+                        { content }
+                </div>
+        }
+    },
     /* Deprecated during Vue 3 migration to prepend attributes with data- */
     {
         "attributes": {

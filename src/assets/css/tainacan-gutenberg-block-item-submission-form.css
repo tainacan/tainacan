@@ -1,3 +1,13 @@
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0; }
+
 #metadata-checkbox-list {
   margin: 8px 12px 18px 12px; }
   #metadata-checkbox-list .components-base-control__help {

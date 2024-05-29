@@ -1,5 +1,19 @@
+.theme-items-list,
+.items-list-area {
+    .tainacan-records-container--skeleton,
+    .tainacan-records-container {
+        min-height: 50vh;
+    }
+}
+.table-wrapper {
+    @supports (contain: inline-size) {
+        container-type: inline-size;
+        container-name: tablewrapper; 
+    }
+}
 .tainacan-records-container {
-    min-height: 50vh;
+    list-style: none;
+    margin-left: 30px;
     padding: 0;
     display: flex;
     flex-wrap: wrap;
@@ -11,19 +25,39 @@
 
     &>li,
     .tainacan-records-grid-sizer {
-        width: calc(20% - 30px);
+        width: calc(16.666% - 30px);
 
-        @media screen and (max-width: 2560px) {
+        @container tablewrapper (max-width: 2560px) {
+            width: calc(20% - 30px);
+        }
+        @container tablewrapper (max-width: 1920px) {
             width: calc(25% - 30px);
         }
-        @media screen and (max-width: 1920px) {
+        @container tablewrapper (max-width: 1320px) {
             width: calc(33.333% - 30px);
         }
-        @media screen and (max-width: 1360px) {
+        @container tablewrapper (max-width: 1000px) {
             width: calc(50% - 30px);
         }
-        @media screen and (max-width: 1024px) {
+        @container tablewrapper (max-width: 740px) {
             width: 100%;
+        }
+
+        @supports not (contain: inline-size) {
+            width: calc(20% - 30px);
+
+            @media screen and (max-width: 2560px) {
+                width: calc(25% - 30px);
+            }
+            @media screen and (max-width: 1920px) {
+                width: calc(33.333% - 30px);
+            }
+            @media screen and (max-width: 1360px) {
+                width: calc(50% - 30px);
+            }
+            @media screen and (max-width: 1024px) {
+                width: 100%;
+            }
         }
     }
     .tainacan-record {
@@ -211,30 +245,50 @@
 }
 .tainacan-records-container--skeleton {
     display: block;
-    min-height: 50vh;
     padding-left: 30px;
     padding-right: 30px;
     column-gap: 30px;
     height: auto !important;
-    column-count: 5;
 
     .skeleton {
         width: 100%;
         margin-bottom: 30px;
         break-inside: avoid;
     }
+        
+    column-count: 6;
 
-    @media screen and (max-width: 2560px) {
+    @container tablewrapper (max-width: 2560px) {
+        column-count: 5;
+    }
+    @container tablewrapper (max-width: 1920px) {
         column-count: 4;
     }
-    @media screen and (max-width: 1920px) {
+    @container tablewrapper (max-width: 1320px) {
         column-count: 3;
     }
-    @media screen and (max-width: 1360px) {
+    @container tablewrapper (max-width: 1000px) {
         column-count: 2;
     }
-    @media screen and (max-width: 1024px) {
+    @container tablewrapper (max-width: 740px) {
         column-count: 1;
+    }
+
+    @supports not (contain: inline-size) {
+        column-count: 5;
+
+        @media screen and (max-width: 2560px) {
+            column-count: 4;
+        }
+        @media screen and (max-width: 1920px) {
+            column-count: 3;
+        }
+        @media screen and (max-width: 1360px) {
+            column-count: 2;
+        }
+        @media screen and (max-width: 1024px) {
+            column-count: 1;
+        }
     }
 }
 

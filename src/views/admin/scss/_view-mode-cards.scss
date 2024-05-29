@@ -1,5 +1,9 @@
-.tainacan-cards-container {
+.theme-items-list .tainacan-cards-container,
+.items-list-area .tainacan-cards-container {
     min-height: 50vh;
+}
+.tainacan-cards-container {
+    list-style: none;
     padding: 0;
     height: auto !important;
     @include display-grid;

@@ -4,7 +4,7 @@
                 v-model="activeTab"
                 size="is-small"
                 animated>
-            <b-tab-item :label="$i18n.get('label_insert_items')">
+            <b-tab-item :label="( itemMetadatum.value.length == 1 || itemMetadatum.metadatum.multiple != 'yes' ) ? $i18n.get('label_select_item') : $i18n.get('label_insert_items')">
                 <b-taginput
                         :id="relationshipInputId"
                         expanded
@@ -257,6 +257,9 @@
                                     img: this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)
                                 });
                             }
+
+                            if ( this.itemMetadatum.value.length > 0 && this.itemMetadatum.metadatum.multiple != 'yes' )
+                                this.activeTab = 1;
                         }
                     })
                     .catch(error => {
@@ -540,7 +543,7 @@
     }
     :deep(.tainacan-relationship-results-container) {
         border: 1px solid var(--tainacan-gray1);
-        background-color: var(--tainacan-white);
+        background-color: var(--tainacan-background-color);
         margin-top: calc(-1 * (0.5em + 1px));
         margin-bottom: calc(-1 * (0.5em + 1px));
         display: flex;
@@ -550,7 +553,10 @@
         transition: height 0.5s ease, min-height 0.5s ease;
 
         .tainacan-relationship-group {
-            padding-bottom: 12px;
+            &:not(:only-child) {
+                padding-bottom: 12px;
+            }
+
             .tainacan-relationship-metadatum {
                 .tainacan-metadatum .label {
                     font-size: 0.75em;

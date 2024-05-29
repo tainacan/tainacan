@@ -38,12 +38,12 @@ export const tainacanErrorHandler = function(error) {
             console.log('Tainacan Error Handler: ', error.response);
         }
 
-    } else if ('Tainacan Error Handler: ', error.request) {
+    } else if ( error.request ) {
         // The request was made but no response was received
         // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
         // http.ClientRequest in node.js
         console.error('Tainacan Error Handler: ', error.request);
-    } else {
+    } else if ( error.message ) {
         // Something happened in setting up the request that triggered an Error
         console.error('Tainacan Error Handler: ', error.message);
     }

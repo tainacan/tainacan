@@ -1,5 +1,9 @@
-.tainacan-grid-container {
+.theme-items-list .tainacan-grid-container,
+.items-list-area .tainacan-grid-container {
     min-height: 50vh;
+}
+.tainacan-grid-container {
+    list-style: none;
     height: auto !important;
     padding: 0;
     @include display-grid;
