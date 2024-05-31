@@ -10,66 +10,25 @@
                         :aria-label="$i18n.get('label_comparator')"
                         class="button is-white">
                     <span class="icon is-small">
-                        <i v-html="comparatorSymbol" />
+                        <i v-html="comparatorsObject[comparator].symbol" />
                     </span>
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                     </span>
                 </button>
             </template>
-            <b-dropdown-item
-                    role="button"
-                    :class="{ 'is-active': comparator == '=' }"
-                    :value="'='"
-                    aria-role="listitem">
-                &#61;&nbsp; {{ $i18n.get('is_equal_to') }}
-            </b-dropdown-item>
-            <b-dropdown-item
-                    role="button"
-                    :class="{ 'is-active': comparator == '!=' }"
-                    :value="'!='"
-                    aria-role="listitem">
-                &#8800;&nbsp; {{ $i18n.get('is_not_equal_to') }}
-            </b-dropdown-item>
-            <b-dropdown-item
-                    role="button"
-                    :class="{ 'is-active': comparator == '>' }"
-                    :value="'>'"
-                    aria-role="listitem">
-                &#62;&nbsp; {{ $i18n.get('after') }}
-            </b-dropdown-item>
-            <b-dropdown-item
-                    role="button"
-                    :class="{ 'is-active': comparator == '>=' }"
-                    :value="'>='"
-                    aria-role="listitem">
-                &#8805;&nbsp; {{ $i18n.get('after_or_on_day') }}
-            </b-dropdown-item>
-            <b-dropdown-item
-                    role="button"
-                    :class="{ 'is-active': comparator == '<' }"
-                    :value="'<'"
-                    aria-role="listitem">
-                &#60;&nbsp; {{ $i18n.get('before') }}
-            </b-dropdown-item>
-            <b-dropdown-item
-                    role="button"
-                    :class="{ 'is-active': comparator == '<=' }"
-                    :value="'<='"
-                    aria-role="listitem">
-                &#8804;&nbsp; {{ $i18n.get('before_or_on_day') }}
-            </b-dropdown-item>
+            <template
+                    v-for="(comparatorObject, comparatorKey) in comparatorsObject"
+                    :key="comparatorKey">
+                <b-dropdown-item
+                        v-if="comparatorObject.enabled == 'yes'"
+                        role="button"
+                        :class="{ 'is-active': comparator == comparatorKey }"
+                        :value="comparatorKey"
+                        aria-role="listitem"
+                        v-html="comparatorObject.symbol + '&nbsp;' + comparatorObject.label" />
+            </template>
         </b-dropdown>
-        <!-- <b-numberinput 
-                v-if="filterTypeOptions.type == 'year'"
-                :placeholder="$i18n.get('instruction_type_value_year')"
-                :aria-labelledby="'filter-label-id-' + filter.id"
-                :aria-minus-label="$i18n.get('label_decrease')"
-                :aria-plus-label="$i18n.get('label_increase')"
-                size="is-small"
-                step="1"
-                @update:model-value="emitOnlyYear($event)"
-                v-model="yearsOnlyValue"/> -->
         <b-datepicker
                 v-model="value"
                 position="is-bottom-right"
@@ -126,26 +85,16 @@
         emits: [
             'input',
         ],
-        data(){
+        data() {
             return {
                 value: null,
+                comparatorsObject: [],
                 comparator: '=', // =, !=, >, >=, <, <=
             }
         },
         computed: {
             yearsOnlyValue() {
                 return this.value && typeof this.value.getUTCFullYear === 'function' ? this.value.getUTCFullYear() : null
-            },
-            comparatorSymbol() {
-                switch(this.comparator) {
-                    case '=': return '&#61;';
-                    case '!=': return '&#8800;';
-                    case '>': return '&#62;';
-                    case '>=': return '&#8805;';
-                    case '<': return '&#60;';
-                    case '<=': return '&#8804;';
-                    default: return '';
-                }
             }
         },
         watch: {
@@ -155,6 +104,40 @@
                 },
                 deep: true,
             },
+        },
+        created() {
+            this.comparatorsObject = {
+                '=': {
+                    symbol: '&#61;',
+                    label: this.$i18n.get('is_equal_to'),
+                    enabled: this.filterTypeOptions.comparators.indexOf('=') < 0 ? 'no' : 'yes'
+                },
+                '!=': {
+                    symbol: '&#8800;',
+                    label: this.$i18n.get('is_not_equal_to'),
+                    enabled: this.filterTypeOptions.comparators.indexOf('!=') < 0 ? 'no' : 'yes'
+                },
+                '>': {
+                    symbol: '&#62;',
+                    label: this.$i18n.get('after'),
+                    enabled: this.filterTypeOptions.comparators.indexOf('>') < 0 ? 'no' : 'yes'
+                },
+                '>=': {
+                    symbol: '&#8805;',
+                    label: this.$i18n.get('after_or_on_day'),
+                    enabled: this.filterTypeOptions.comparators.indexOf('>=') < 0 ? 'no' : 'yes'
+                },
+                '<': {
+                    symbol: '&#60;',
+                    label: this.$i18n.get('before'),
+                    enabled: this.filterTypeOptions.comparators.indexOf('<') < 0 ? 'no' : 'yes'
+                },
+                '<=': {
+                    symbol: '&#8804;',
+                    label: this.$i18n.get('before_or_on_day'),
+                    enabled: this.filterTypeOptions.comparators.indexOf('<=') < 0 ? 'no' : 'yes'
+                },
+            };
         },
         mounted() {
             this.updateSelectedValues();
