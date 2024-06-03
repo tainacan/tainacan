@@ -87,6 +87,11 @@ class Date extends Filter_Type {
 				'comparators' => __('"Comparators" array is required', 'tainacan')
 			];
 
+		if ( count( $this->get_option('comparators') ) < 1 )
+			return [
+				'comparators' => __('At least one comparator should be provided', 'tainacan')
+			];
+
 		return true;
 	}
 

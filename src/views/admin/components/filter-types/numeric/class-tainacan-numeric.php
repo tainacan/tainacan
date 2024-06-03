@@ -16,7 +16,8 @@ class Numeric extends Filter_Type {
 		$this->set_form_component('tainacan-filter-form-numeric');
 		$this->set_use_max_options(false);
 		$this->set_default_options([
-			'step' => 1
+			'step' => 1,
+			'comparators' => [ '=', '!=', '>', '>=', '<', '<=' ]
 		]);
 		$this->set_preview_template('
 			<div>
@@ -77,6 +78,10 @@ class Numeric extends Filter_Type {
 			'step' => [
 				'title' => __( 'Step', 'tainacan' ),
 				'description' => __( 'The amount to be increased or decreased when clicking on the filter control buttons. This also defines whether the input accepts decimal numbers.', 'tainacan' ),
+			],
+			'comparators' => [
+				'title' => __( 'Enabled comparators', 'tainacan' ),
+				'description' => __( 'A list of comparators to be available in the filter, such as equal, greater than, smaller than, etc.', 'tainacan' ),
 			]
 		];
 	}
@@ -89,13 +94,24 @@ class Numeric extends Filter_Type {
 		if ( !in_array($filter->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
 			return true;
 
-		if ( empty($this->get_option('step')) ) {
-			return [
+		$errors = [];
+
+		if ( empty($this->get_option('step')) )
+			$errors[] = [
 				'step' => __('"Step" value is required','tainacan')
 			];
-		}
 
-		return true;
+		if ( empty($this->get_option('comparators')) )
+			$errors[] = [
+				'comparators' => __('"Comparators" array is required', 'tainacan')
+			];
+		
+		if ( count( $this->get_option('comparators') ) < 1 )
+			$errors[] = [
+				'comparators' => __('At least one comparator should be provided', 'tainacan')
+			];
+
+		return count($errors) ? $errors : true;
 	}
 }
 
@@ -134,6 +150,8 @@ class Numeric_Helper {
 				case '<=':
 					$filter_arguments['label'] = '&#8804; ' . $filter_arguments['label'][0];
 				break;
+				default:
+					$filter_arguments['label'] = $filter_arguments['label'][0];
 			}
 		}
 
