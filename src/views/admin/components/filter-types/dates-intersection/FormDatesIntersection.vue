@@ -72,7 +72,9 @@
         <b-field 
                 :addons="false"
                 :label="$i18n.getHelperTitle('tainacan-filter-dates-intersection', 'accept_date_interval')"
-                style="margin-top: 1.125rem;">
+                style="margin-top: 1.125rem;"
+                :type="errors && errors['accept_date_interval'] != undefined ? 'is-danger' : ''"
+                :message="errors && errors['accept_date_interval'] != undefined ? errors['accept_date_interval'] : ''">
                 &nbsp;
             <b-switch
                     v-model="acceptDateInterval"
@@ -179,8 +181,8 @@
             },
             onUpdateSecondDateMetadatumId() {
                 const selectedMetadatum = this.metadata.find( aMetadatum => aMetadatum.id == this.secondDateMetadatumId );
-                this.selectedMetadatumName = selectedMetadatum ? selectedMetadatum.name : '';
-                this.selectedMetadatumId = selectedMetadatum ? selectedMetadatum.id : '';
+                this.secondDateMetadatumName = selectedMetadatum ? selectedMetadatum.name : '';
+                this.secondDateMetadatumId = selectedMetadatum ? selectedMetadatum.id : '';
                 this.emitValues();
             },
             emitValues() {

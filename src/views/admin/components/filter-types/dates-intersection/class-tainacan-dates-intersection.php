@@ -90,24 +90,16 @@ class Dates_Intersection extends Filter_Type {
 		$errors = [];
 
 		if ( empty($this->get_option('secondary_filter_metadatum_id')) )
-			$errors[] = [
-				'secondary_filter_metadatum_id' => __('The secondary date metadatum is required.','tainacan')
-			];
+			$errors['secondary_filter_metadatum_id'] = __('The secondary date metadatum is required.','tainacan');
 
 		if ( empty($this->get_option('first_comparator')) )
-			$errors[] = [
-				'first_comparator' => __('The first comparator is required.','tainacan')
-			];
+			$errors['first_comparator'] = __('The first comparator is required.','tainacan');
 		
 		if ( empty($this->get_option('second_comparator')) )
-			$errors[] = [
-				'second_comparator' => __('The second comparator is required.','tainacan')
-			];
+			$errors['second_comparator'] = __('The second comparator is required.','tainacan');
 
 		if ( empty($this->get_option('accept_date_interval')) )
-			$errors[] = [
-				'accept_date_interval' => __('The filter should define if it accepts date interval.','tainacan')
-			];
+			$errors['accept_date_interval'] = __('The filter should define if it accepts date interval.','tainacan');
 
 		return count($errors) > 0 ? $errors : true;
 	}

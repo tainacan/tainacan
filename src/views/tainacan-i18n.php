@@ -789,6 +789,7 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_select_geocoordinate_metadatum'	 => __( 'Select a geocoordinate metadatum', 'tainacan' ),
 	'instruction_multiple_terms_insertion'			 => __( 'Type or paste here a list of names using a separator to create multiple terms at once.', 'tainacan' ),
 	'instruction_select_second_date_to_compare'		 => __( 'Select the second date metadatum', 'tainacan' ),
+	'instruction_select_second_numeric_to_compare'	 => __( 'Select the second numeric metadatum', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),
