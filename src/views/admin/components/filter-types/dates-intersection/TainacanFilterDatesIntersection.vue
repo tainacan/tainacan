@@ -159,7 +159,7 @@
                 this.$emit('input', {
                     filter: 'intersection',
                     type: 'DATE',
-                    compare: '>=',
+                    compare: this.filterTypeOptions.first_comparator,
                     metadatum_id: this.metadatumId,
                     collection_id: this.collectionId,
                     value: values
@@ -167,7 +167,7 @@
                 this.$emit('input', {
                     filter: 'intersection',
                     type: 'DATE',
-                    compare: '<=',
+                    compare: this.filterTypeOptions.second_comparator,
                     metadatum_id: this.filterTypeOptions.secondary_filter_metadatum_id,
                     collection_id: this.collectionId,
                     value: values

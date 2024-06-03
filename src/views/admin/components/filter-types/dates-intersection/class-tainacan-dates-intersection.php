@@ -17,6 +17,8 @@ class Dates_Intersection extends Filter_Type {
 		$this->set_default_options([
 			'secondary_filter_metadatum_id' => '',
 			'secondary_filter_metadatum_name' => '',
+			'first_comparator' => '>=',
+			'second_comparator' => '<='
 		]);
 		$this->set_use_max_options(false);
 		$this->set_preview_template('
@@ -59,6 +61,14 @@ class Dates_Intersection extends Filter_Type {
 			'secondary_filter_metadatum_name' => [
 				'title' => __( 'Second date metadatum', 'tainacan' ),
 				'description' => __( 'Label of the other metadatum to which this filter will compare values to find if there is an intersection of dates.', 'tainacan' ),
+			],
+			'first_comparator' => [
+				'title' => __( 'First comparator', 'tainacan' ),
+				'description' => __( 'Comparator to be used for checking the first metadata value.', 'tainacan' ),
+			],
+			'second_comparator' => [
+				'title' => __( 'Second comparator', 'tainacan' ),
+				'description' => __( 'Comparator to be used for checking the second metadata value.', 'tainacan' ),
 			]
 		];
 	}
@@ -68,18 +78,28 @@ class Dates_Intersection extends Filter_Type {
 	 * @return array|bool true if is validate or array if has error
 	 */
 	public function validate_options(\Tainacan\Entities\Filter $filter) {
+
 		if ( !in_array($filter->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
 			return true;
 
-		if ( empty($this->get_option('secondary_filter_metadatum_id')) ) {
-			return [
+		$errors = [];
+
+		if ( empty($this->get_option('secondary_filter_metadatum_id')) )
+			$errors[] = [
 				'secondary_filter_metadatum_id' => __('The secondary date metadatum is required.','tainacan')
 			];
-		}
 
-		// Validate if the second date metadatum is a date metadatum
+		if ( empty($this->get_option('first_comparator')) )
+			$errors[] = [
+				'first_comparator' => __('The first comparator is required.','tainacan')
+			];
+		
+		if ( empty($this->get_option('second_comparator')) )
+			$errors[] = [
+				'second_comparator' => __('The second comparator is required.','tainacan')
+			];
 
-		return true;
+		return count($errors) > 0 ? $errors : true;
 	}
 	
 }

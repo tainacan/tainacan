@@ -420,7 +420,7 @@ export default {
             -webkit-column-gap: 0;
             -webkit-column-rule: none;
             column-count: 2;
-            column-gap: 4em;
+            column-gap: 3em;
             column-rule: none;
             padding-bottom: 0.5em;
 
