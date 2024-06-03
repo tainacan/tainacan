@@ -12,7 +12,8 @@
                         v-for="(comparatorObject, comparatorKey) in comparatorsObject"
                         :key="comparatorKey"
                         v-model="comparators"
-                        :native-value="comparatorObject.key"
+                        :native-value="comparatorKey"
+                        :disabled="comparators.indexOf(comparatorKey) >= 0 && comparators.length <= 1"
                         name="metadata_type_relationship[display_related_item_metadata]"
                         @update:model-value="emitValues()">
                     <span v-html="comparatorObject.symbol + '&nbsp;' + comparatorObject.label" />
@@ -33,7 +34,8 @@
         ],
         data() {
             return {
-                comparatorsObject: Object
+                comparatorsObject: Object,
+                comparators: Array
             }
         },
         created() {
@@ -72,8 +74,9 @@
                 };
         },
         methods: {
-            onUpdateComparators(value) {
-                this.$emit('update:model-value', { comparators: value });
+            emitValues() {
+                console.log(this.comparators)
+                this.$emit('update:model-value', { comparators: this.comparators });
             }
         }
     }

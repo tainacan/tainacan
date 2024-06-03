@@ -1,6 +1,7 @@
 <template>
     <div class="date-filter-container">
         <b-dropdown
+                v-if="filterTypeOptions.comparators.length > 1"
                 :mobile-modal="true"
                 aria-role="list"
                 trap-focus
@@ -138,6 +139,7 @@
                     enabled: this.filterTypeOptions.comparators.indexOf('<=') < 0 ? 'no' : 'yes'
                 },
             };
+            this.comparator = this.filterTypeOptions.comparators[0];
         },
         mounted() {
             this.updateSelectedValues();
