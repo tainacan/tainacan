@@ -252,13 +252,15 @@ import { formHooks } from "../../js/mixins";
 import FormFilterNumeric from '../filter-types/numeric/FormNumeric.vue';
 import FormFilterNumericInterval from '../filter-types/numeric-interval/FormNumericInterval.vue';
 import FormFilterNumericListInterval from '../filter-types/numeric-list-interval/FormNumericListInterval.vue';
+import FormFilterDatesIntersection from '../filter-types/dates-intersection/FormDatesIntersection.vue';
 
 export default {
     name: 'FilterEditionForm',
     components: {
         'tainacan-filter-form-numeric': FormFilterNumeric,
         'tainacan-filter-form-numeric-interval': FormFilterNumericInterval,
-        'tainacan-filter-form-numeric-list-interval': FormFilterNumericListInterval
+        'tainacan-filter-form-numeric-list-interval': FormFilterNumericListInterval,
+        'tainacan-filter-form-dates-intersection': FormFilterDatesIntersection
     },
     mixins: [ formHooks ],
     props: {
