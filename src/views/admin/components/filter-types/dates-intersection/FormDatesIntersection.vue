@@ -69,6 +69,24 @@
                 </b-select>
             </b-field>
         </div>
+        <b-field 
+                :addons="false"
+                :label="$i18n.getHelperTitle('tainacan-filter-dates-intersection', 'accept_date_interval')"
+                style="margin-top: 1.125rem;">
+                &nbsp;
+            <b-switch
+                    v-model="acceptDateInterval"
+                    size="is-small"
+                    :true-value="'yes'"
+                    :false-value="'no'"
+                    :native-value="acceptDateInterval == 'yes' ? 'yes' : 'no'"
+                    name="accept_date_interval"
+                    @update:model-value="emitValues()">
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-filter-dates-intersection', 'accept_date_interval')"
+                        :message="$i18n.getHelperMessage('tainacan-filter-dates-intersection', 'accept_date_interval')" />
+            </b-switch>
+        </b-field>
     </div>
 </template>
 
@@ -94,7 +112,8 @@
                 secondDateMetadatumName: String,
                 firstComparator: String,
                 secondComparator: String,
-                comparatorsObject: {}
+                comparatorsObject: {},
+                acceptDateInterval: String
             }
         },
         watch: {
@@ -110,6 +129,7 @@
             this.secondDateMetadatumName = this.modelValue && this.modelValue.secondary_filter_metadatum_name ? this.modelValue.secondary_filter_metadatum_name : '';
             this.firstComparator = this.modelValue && this.modelValue.first_comparator ? this.modelValue.first_comparator : '>=';
             this.secondComparator = this.modelValue && this.modelValue.second_comparator ? this.modelValue.second_comparator : '<=';
+            this.acceptDateInterval = this.modelValue && this.modelValue.accept_date_interval ? this.modelValue.accept_date_interval : 'no';
             
             this.loading = true;
             this.fetchMetadata();
@@ -168,7 +188,8 @@
                     first_comparator: this.firstComparator,
                     second_comparator: this.secondComparator,
                     secondary_filter_metadatum_id: this.secondDateMetadatumId,
-                    secondary_filter_metadatum_name: this.secondDateMetadatumName
+                    secondary_filter_metadatum_name: this.secondDateMetadatumName,
+                    accept_date_interval: this.acceptDateInterval
                 });
             },
             setErrorsAttributes( type, message ) {

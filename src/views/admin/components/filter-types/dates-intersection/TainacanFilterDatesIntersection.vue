@@ -3,7 +3,7 @@
         <b-datepicker
                 v-model="dateInit"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                :placeholder="$i18n.get('label_selectbox_init')"
+                :placeholder="$i18n.get('instruction_select_a_date')"
                 editable
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
@@ -19,17 +19,33 @@
                     $i18n.get('datepicker_short_friday'),
                     $i18n.get('datepicker_short_saturday'),
                 ]"
+                :month-names="[
+                    $i18n.get('datepicker_month_january'),
+                    $i18n.get('datepicker_month_february'),
+                    $i18n.get('datepicker_month_march'),
+                    $i18n.get('datepicker_month_april'),
+                    $i18n.get('datepicker_month_may'),
+                    $i18n.get('datepicker_month_june'),
+                    $i18n.get('datepicker_month_july'),
+                    $i18n.get('datepicker_month_august'),
+                    $i18n.get('datepicker_month_september'),
+                    $i18n.get('datepicker_month_october'),
+                    $i18n.get('datepicker_month_november'),
+                    $i18n.get('datepicker_month_december')
+                ]"
                 @focus="isTouched = true"
                 @update:model-value="($event) => { resetPage(); validadeValues($event) }" />
         <p 
+                v-if="filterTypeOptions.accept_date_interval === 'yes'"
                 style="font-size: 0.75em; margin-bottom: 0.125em;"
                 class="has-text-centered is-marginless">
             {{ $i18n.get('label_until') }}
         </p>  
         <b-datepicker
+                v-if="filterTypeOptions.accept_date_interval === 'yes'"
                 v-model="dateEnd"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                :placeholder="$i18n.get('label_selectbox_init')"
+                :placeholder="$i18n.get('instruction_select_a_date')"
                 editable
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
@@ -44,6 +60,20 @@
                     $i18n.get('datepicker_short_thursday'),
                     $i18n.get('datepicker_short_friday'),
                     $i18n.get('datepicker_short_saturday'),
+                ]"
+                :month-names="[
+                    $i18n.get('datepicker_month_january'),
+                    $i18n.get('datepicker_month_february'),
+                    $i18n.get('datepicker_month_march'),
+                    $i18n.get('datepicker_month_april'),
+                    $i18n.get('datepicker_month_may'),
+                    $i18n.get('datepicker_month_june'),
+                    $i18n.get('datepicker_month_july'),
+                    $i18n.get('datepicker_month_august'),
+                    $i18n.get('datepicker_month_september'),
+                    $i18n.get('datepicker_month_october'),
+                    $i18n.get('datepicker_month_november'),
+                    $i18n.get('datepicker_month_december')
                 ]"
                 @update:model-value="validadeValues()"
                 @focus="isTouched = true" />
@@ -92,13 +122,13 @@
             // only validate if the first value is higher than first
             validadeValues: _.debounce( function (){
                
-                if (this.dateInit === undefined)
+                if ( this.dateInit === undefined )
                     this.dateInit = new Date();
 
-                if (this.dateEnd === undefined)
+                if ( this.dateEnd === undefined )
                     this.dateEnd = new Date();
 
-                if (this.dateInit > this.dateEnd) {
+                if ( this.filterTypeOptions.accept_date_interval === 'yes' && this.dateInit > this.dateEnd ) {
                     this.showErrorMessage();
                     return
                 }
@@ -162,7 +192,7 @@
                     compare: this.filterTypeOptions.first_comparator,
                     metadatum_id: this.metadatumId,
                     collection_id: this.collectionId,
-                    value: values
+                    value: this.filterTypeOptions.accept_date_interval === 'yes' ? values : values[0]
                 });
                 this.$emit('input', {
                     filter: 'intersection',
@@ -170,7 +200,7 @@
                     compare: this.filterTypeOptions.second_comparator,
                     metadatum_id: this.filterTypeOptions.secondary_filter_metadatum_id,
                     collection_id: this.collectionId,
-                    value: values
+                    value: this.filterTypeOptions.accept_date_interval === 'yes' ? values : values[0]
                 });
             }
         }

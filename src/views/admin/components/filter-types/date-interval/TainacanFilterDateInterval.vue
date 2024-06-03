@@ -3,7 +3,7 @@
         <b-datepicker
                 v-model="dateInit"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                :placeholder="$i18n.get('label_selectbox_init')"
+                :placeholder="$i18n.get('instruction_select_a_date')"
                 editable
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
@@ -18,6 +18,20 @@
                     $i18n.get('datepicker_short_thursday'),
                     $i18n.get('datepicker_short_friday'),
                     $i18n.get('datepicker_short_saturday'),
+                ]"
+                :month-names="[
+                    $i18n.get('datepicker_month_january'),
+                    $i18n.get('datepicker_month_february'),
+                    $i18n.get('datepicker_month_march'),
+                    $i18n.get('datepicker_month_april'),
+                    $i18n.get('datepicker_month_may'),
+                    $i18n.get('datepicker_month_june'),
+                    $i18n.get('datepicker_month_july'),
+                    $i18n.get('datepicker_month_august'),
+                    $i18n.get('datepicker_month_september'),
+                    $i18n.get('datepicker_month_october'),
+                    $i18n.get('datepicker_month_november'),
+                    $i18n.get('datepicker_month_december')
                 ]"
                 @focus="isTouched = true"
                 @update:model-value="($event) => { resetPage(); validadeValues($event) }" />
@@ -44,6 +58,20 @@
                     $i18n.get('datepicker_short_thursday'),
                     $i18n.get('datepicker_short_friday'),
                     $i18n.get('datepicker_short_saturday'),
+                ]"
+                :month-names="[
+                    $i18n.get('datepicker_month_january'),
+                    $i18n.get('datepicker_month_february'),
+                    $i18n.get('datepicker_month_march'),
+                    $i18n.get('datepicker_month_april'),
+                    $i18n.get('datepicker_month_may'),
+                    $i18n.get('datepicker_month_june'),
+                    $i18n.get('datepicker_month_july'),
+                    $i18n.get('datepicker_month_august'),
+                    $i18n.get('datepicker_month_september'),
+                    $i18n.get('datepicker_month_october'),
+                    $i18n.get('datepicker_month_november'),
+                    $i18n.get('datepicker_month_december')
                 ]"
                 @update:model-value="validadeValues()"
                 @focus="isTouched = true" />

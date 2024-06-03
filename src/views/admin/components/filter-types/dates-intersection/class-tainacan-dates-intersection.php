@@ -18,7 +18,8 @@ class Dates_Intersection extends Filter_Type {
 			'secondary_filter_metadatum_id' => '',
 			'secondary_filter_metadatum_name' => '',
 			'first_comparator' => '>=',
-			'second_comparator' => '<='
+			'second_comparator' => '<=',
+			'accept_date_interval' => 'no'
 		]);
 		$this->set_use_max_options(false);
 		$this->set_preview_template('
@@ -69,6 +70,10 @@ class Dates_Intersection extends Filter_Type {
 			'second_comparator' => [
 				'title' => __( 'Second comparator', 'tainacan' ),
 				'description' => __( 'Comparator to be used for checking the second metadata value.', 'tainacan' ),
+			],
+			'accept_date_interval' => [
+				'title' => __( 'Accept date interval', 'tainacan' ),
+				'description' => __( 'If checked, the filter will accept date intervals as values.', 'tainacan' ),
 			]
 		];
 	}
@@ -97,6 +102,11 @@ class Dates_Intersection extends Filter_Type {
 		if ( empty($this->get_option('second_comparator')) )
 			$errors[] = [
 				'second_comparator' => __('The second comparator is required.','tainacan')
+			];
+
+		if ( empty($this->get_option('accept_date_interval')) )
+			$errors[] = [
+				'accept_date_interval' => __('The filter should define if it accepts date interval.','tainacan')
 			];
 
 		return count($errors) > 0 ? $errors : true;
