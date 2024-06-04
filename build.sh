@@ -98,6 +98,7 @@ rsync -axz --exclude='vendor/bin/phpc*' --exclude='vendor/squizlabs' --exclude='
  --exclude='vendor/tecnickcom/tcpdf/fonts' \
  --exclude='vendor/smalot/pdfparser/src/Smalot/PdfParser/Tests/' \
  --exclude='vendor/tecnickcom/tcpdf/examples' \
+ --exclude='vendor/composer/installed.json' \
   src/* $wp_plugin_dir/
 
 echo "Removing unecessary source files"
