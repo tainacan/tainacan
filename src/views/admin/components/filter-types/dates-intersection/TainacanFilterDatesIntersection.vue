@@ -200,7 +200,8 @@
                     compare: this.filterTypeOptions.second_comparator,
                     metadatum_id: this.filterTypeOptions.secondary_filter_metadatum_id,
                     collection_id: this.collectionId,
-                    value: this.filterTypeOptions.accept_date_interval === 'yes' ? values : values[0]
+                    value: this.filterTypeOptions.accept_date_interval === 'yes' ? values : values[0],
+                    secondary: true
                 });
             }
         }
