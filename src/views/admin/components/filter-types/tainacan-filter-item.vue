@@ -100,8 +100,10 @@
             TainacanFilterTaxonomyCheckbox: defineAsyncComponent(() => import('./taxonomy/TainacanFilterCheckbox.vue')),
             TainacanFilterTaxonomyTaginput: defineAsyncComponent(() => import('./taxonomy/TainacanFilterTaginput.vue')),
             TainacanFilterDateInterval: defineAsyncComponent(() => import('./date-interval/TainacanFilterDateInterval.vue')),
+            TainacanFilterDatesIntersection: defineAsyncComponent(() => import('./dates-intersection/TainacanFilterDatesIntersection.vue')),
             TainacanFilterNumericInterval: defineAsyncComponent(() => import('./numeric-interval/TainacanFilterNumericInterval.vue')),
-            TainacanFilterNumericListInterval: defineAsyncComponent(() => import('./numeric-list-interval/TainacanFilterNumericListInterval.vue'))
+            TainacanFilterNumericListInterval: defineAsyncComponent(() => import('./numeric-list-interval/TainacanFilterNumericListInterval.vue')),
+            TainacanFilterNumericsIntersection: defineAsyncComponent(() => import('./numerics-intersection/TainacanFilterNumericsIntersection.vue'))
         },
         props: {
             filter: Object,

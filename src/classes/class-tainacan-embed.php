@@ -69,7 +69,7 @@ class Embed {
 			$dimensions = sprintf( 'width="%d" ', (int) $attr['width'] );
 		}
 		
-		$audio = sprintf('<audio controls="" src="%s" %s></audio>', $url, $dimensions);
+		$audio = sprintf('<audio controls="" src="%s" %s></audio>', esc_url( $url ), $dimensions);
 		
 		return $audio;
 		
@@ -77,8 +77,6 @@ class Embed {
 	
 	public function pdf_embed_handler($matches, $attr, $url, $rawattr) {
 		global $TAINACAN_BASE_URL;
-		$viewer_url = $TAINACAN_BASE_URL . '/views/libs/pdf-viewer/pdfjs-dist/web/viewer.html?file=' . $url;
-		//$viewer_url = $TAINACAN_BASE_URL . '/assets/pdfjs-dist/web/viewer.html?file=' . $url;
 		
 		$defaults = array(
 			'width' => '100%',
@@ -93,7 +91,7 @@ class Embed {
 			$dimensions .= sprintf( "height='%s' ", $args['height'] );
 		}
 
-		$pdf = "<iframe id='iframePDF' name='iframePDF' src='$viewer_url' $dimensions allowfullscreen webkitallowfullscreen></iframe>";
+		$pdf = sprintf('<iframe id="iframePDF" name="iframePDF" src="%s" %s allowfullscreen webkitallowfullscreen></iframe>', esc_url( $url ), $dimensions );
 		return $pdf;
 	}
 	

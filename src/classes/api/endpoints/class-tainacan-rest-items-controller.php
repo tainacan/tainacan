@@ -454,7 +454,7 @@ class REST_Items_Controller extends REST_Controller {
 	 * @return array
 	 * @throws \Exception
 	 */
-	private function prepare_filters_arguments ( $args, $collection_id = false ) {
+	private function prepare_filters_arguments ( $args, $collection_id = false, $ignore_filter_arguments = [] ) {
 		$filters_arguments = array();
 		$meta_query = isset($args['meta_query']) ? $args['meta_query'] : [];
 		if(isset($meta_query['value'])) $meta_query =  [$meta_query];
@@ -498,8 +498,7 @@ class REST_Items_Controller extends REST_Controller {
 		}
 
 		foreach($meta_query as $meta) {
-
-			if ( !isset($meta['key']) || !isset($meta['value']) )
+			if ( !isset($meta['key']) || !isset($meta['value']) || ( in_array($meta['key'], $ignore_filter_arguments)  ))
 				continue;
 
 			$meta_id = $meta['key'];
@@ -554,6 +553,7 @@ class REST_Items_Controller extends REST_Controller {
 								$date_format = get_option( 'date_format' ) != false ? get_option( 'date_format' ) : 'Y-m-d';
 								return empty($date) == false ? mysql2date($date_format, $date) : "";
 							}, $meta_label);
+							$meta_type = 'DATE';
 							break;
 						case 'item':
 							$meta_label = array_map(function($item_id) {
@@ -643,7 +643,15 @@ class REST_Items_Controller extends REST_Controller {
 		if($request['collection_id']) {
 			$collection_id = $request['collection_id'];
 		}
-		$filters_args = $this->prepare_filters_arguments($args, $collection_id);
+		$metaqueries = isset($request['metaquery']) ? $request['metaquery'] : [];
+		$ignore_filter_arguments = array_map(
+			function($metaquery) { return $metaquery['key']; },
+			array_filter(
+				$metaqueries,
+				function($metaquery) { return isset($metaquery['key']) && isset($metaquery['secondary']) && $metaquery['secondary'] == 'true'; }
+			)
+		);
+		$filters_args = $this->prepare_filters_arguments($args, $collection_id, $ignore_filter_arguments);
 		if(isset($args['meta_query']) && !empty($args['meta_query']) && is_array($filters_args) && !empty($filters_args)) {
 			foreach($filters_args as $filters_arg) {
 				if($filters_arg['filter'] !== false) {

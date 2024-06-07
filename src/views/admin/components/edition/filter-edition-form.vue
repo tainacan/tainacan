@@ -249,16 +249,22 @@ import { nextTick } from 'vue';
 import { mapActions } from 'vuex';
 import { formHooks } from "../../js/mixins";
 
+import FormFilterDate from '../filter-types/date/FormDate.vue';
 import FormFilterNumeric from '../filter-types/numeric/FormNumeric.vue';
 import FormFilterNumericInterval from '../filter-types/numeric-interval/FormNumericInterval.vue';
 import FormFilterNumericListInterval from '../filter-types/numeric-list-interval/FormNumericListInterval.vue';
+import FormFilterNumericsIntersection from '../filter-types/numerics-intersection/FormNumericsIntersection.vue';
+import FormFilterDatesIntersection from '../filter-types/dates-intersection/FormDatesIntersection.vue';
 
 export default {
     name: 'FilterEditionForm',
     components: {
+        'tainacan-filter-form-date': FormFilterDate,
         'tainacan-filter-form-numeric': FormFilterNumeric,
         'tainacan-filter-form-numeric-interval': FormFilterNumericInterval,
-        'tainacan-filter-form-numeric-list-interval': FormFilterNumericListInterval
+        'tainacan-filter-form-numeric-list-interval': FormFilterNumericListInterval,
+        'tainacan-filter-form-numerics-intersection': FormFilterNumericsIntersection,
+        'tainacan-filter-form-dates-intersection': FormFilterDatesIntersection
     },
     mixins: [ formHooks ],
     props: {
@@ -418,7 +424,7 @@ export default {
             -webkit-column-gap: 0;
             -webkit-column-rule: none;
             column-count: 2;
-            column-gap: 4em;
+            column-gap: 3em;
             column-rule: none;
             padding-bottom: 0.5em;
 

@@ -594,4 +594,73 @@ export default {
     // Vue Blurhash transtition effect
     @import '../../../../../node_modules/another-vue3-blurhash/dist/style.css';
 
+    .metadata-value {
+        .tainacan-compound-group {
+            margin-left: 2px;
+            padding-left: 0.875em;
+            border-left: 1px solid var(--tainacan-gray3);
+
+            .tainacan-compound-metadatum .label {
+                margin-bottom: 0.25em;
+                font-size: 1em !important;
+                color: var(--tainacan-info-color);
+            }
+            .tainacan-compound-metadatum p {
+                margin-bottom: 0.75em;
+                font-size: 1em;
+            }
+            .tainacan-metadatum .label {
+                font-size: 1em;
+            }
+            .multivalue-separator {
+                display: block;
+                max-height: 1px;
+                width: 80px;
+                background: var(--tainacan-gray3);
+                content: none;
+                color: transparent;
+                margin: 1em auto 1em -0.875em;
+            }
+        }
+        .tainacan-relationship-group {
+            .tainacan-relationship-metadatum {
+                .tainacan-relationship-metadatum-header {
+                    display: flex;
+                    align-items: center;
+                    img {
+                        margin-right: 12px;
+                        max-width: 22px;
+                        max-height: 22px;
+                    }
+                    .label {
+                        font-weight: normal;
+                        font-size: 1em !important;
+                        margin-top: 0;
+                        margin-left: 0;
+                        margin-bottom: 0;
+                        margin-right: 0;
+                    }
+                }
+                .tainacan-metadatum {
+                    margin-left: 40px;
+                    .label {
+                        color: var(--tainacan-gray4);
+                        font-size: 1em !important;
+                        line-height: 1em;
+                        margin-top: 8px;
+                        margin-bottom: 2px;
+                    }
+                }
+            }
+            &>.multivalue-separator {
+                display: block;
+                max-height: 1px;
+                width: calc(100% - 40px);
+                background: var(--tainacan-gray2);
+                content: none;
+                color: transparent;
+                margin: 0.5em 0 0.5em 40px;
+            }
+        }
+    }
 </style>

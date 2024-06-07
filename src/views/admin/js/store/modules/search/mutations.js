@@ -21,52 +21,39 @@ export const setAdvancedSearchQuery = (state, advancedSearchQuery) => {
 export const addMetaQuery = ( state, filter ) => {
     state.postquery.metaquery = ( ! state.postquery.metaquery  || state.postquery.metaquery.length == undefined ) ? [] : state.postquery.metaquery;
 
-    let index = state.postquery.metaquery.findIndex( item => item.key === filter.metadatum_id);
-    if ( index >= 0 ) {
-        Object.assign(
-            state.postquery.metaquery, 
-            {
-                [index]: {
-                    key: filter.metadatum_id,
-                    value: filter.value,
-                    compare: filter.compare,
-                    type: filter.type
-                } 
-            }
-        );
-    } else {
-        state.postquery.metaquery.push({
-            key: filter.metadatum_id,
-            value: filter.value,
-            compare: filter.compare,
-            type: filter.type
-        });
+    let metaquery = {
+        key: filter.metadatum_id,
+        value: filter.value
     }
+    if ( filter.compare )
+        metaquery.compare = filter.compare;
+    if ( filter.type )
+        metaquery.type = filter.type;
+    if ( filter.secondary )
+        metaquery.secondary = filter.secondary;
+
+    let index = state.postquery.metaquery.findIndex( item => item.key === filter.metadatum_id);
+    if ( index >= 0 )
+        Object.assign( state.postquery.metaquery, { [index]: metaquery } );
+    else
+        state.postquery.metaquery.push(metaquery);
 };
 
 export const addTaxQuery = ( state, filter ) => {
     state.postquery.taxquery = ( ! state.postquery.taxquery || state.postquery.taxquery.length == undefined ) ? [] : state.postquery.taxquery;
 
-    let index = state.postquery.taxquery.findIndex( item => item.taxonomy === filter.taxonomy);
-
-    if ( index >= 0 ) {
-        Object.assign( 
-            state.postquery.taxquery, 
-            {
-                [index]: {
-                    taxonomy: filter.taxonomy,
-                    terms: filter.terms,
-                    compare: filter.compare
-                } 
-            }
-        );
-    } else {
-        state.postquery.taxquery.push({
-            taxonomy: filter.taxonomy,
-            terms: filter.terms,
-            compare: filter.compare
-        });
+    let taxquery = {
+        taxonomy: filter.taxonomy,
+        terms: filter.terms
     }
+    if ( filter.compare )
+        taxquery.compare = filter.compare;
+
+    let index = state.postquery.taxquery.findIndex( item => item.taxonomy === filter.taxonomy);
+    if ( index >= 0 )
+        Object.assign( state.postquery.taxquery, { [index]: taxquery } );
+    else
+        state.postquery.taxquery.push(taxquery);
 };
 
 export const addFetchOnly = ( state, metadatum ) => {

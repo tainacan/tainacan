@@ -13,7 +13,7 @@
                 <b-select
                         v-model="step"
                         name="step_options"
-                        @update:model-value="onUpdateStep">
+                        @update:model-value="emitValues()">
                     <option value="0.001">
                         0.001
                     </option>
@@ -70,7 +70,7 @@
                         name="max_options"
                         type="number"
                         step="1"
-                        @update:model-value="onUpdateStep" />
+                        @update:model-value="emitValues()" />
                 <button
                         class="button is-white is-pulled-right"
                         @click.prevent="showEditStepOptions = false">
@@ -85,6 +85,26 @@
                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close has-text-secondary" />
                     </span>
                 </button>
+            </div>
+        </b-field>
+        <b-field :addons="false">
+            <label class="label is-inline">
+                {{ $i18n.getHelperTitle('tainacan-filter-numeric', 'comparators') }}<span>&nbsp;*&nbsp;</span>
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-filter-numeric', 'comparators')"
+                        :message="$i18n.getHelperMessage('tainacan-filter-numeric', 'comparators')" />
+            </label>
+            <div>
+                <b-checkbox
+                        v-for="(comparatorObject, comparatorKey) in comparatorsObject"
+                        :key="comparatorKey"
+                        v-model="comparators"
+                        :native-value="comparatorKey"
+                        :disabled="comparators.indexOf(comparatorKey) >= 0 && comparators.length <= 1"
+                        name="numeric_filter_options[comparators]"
+                        @update:model-value="emitValues()">
+                    <span v-html="comparatorObject.symbol + '&nbsp;' + comparatorObject.label" />
+                </b-checkbox>
             </div>
         </b-field>
     </div>
@@ -102,15 +122,50 @@
         data() {
             return {
                 step: [Number, String],
-                showEditStepOptions: false
+                showEditStepOptions: false,
+                comparatorsObject: Object,
+                comparators: Array
             }
         },
         created() {
             this.step = this.modelValue && this.modelValue.step ? this.modelValue.step : 1;
+            this.comparators = ( this.modelValue && this.modelValue.comparators ) ? this.modelValue.comparators : [ '=', '!=', '>', '>=', '<', '<=' ];
+            this.comparatorsObject = {
+                '=': {
+                    symbol: '&#61;',
+                    label: this.$i18n.get('is_equal_to'),
+                    enabled: this.comparators.indexOf('=') < 0 ? 'no' : 'yes'
+                },
+                '!=': {
+                    symbol: '&#8800;',
+                    label: this.$i18n.get('is_not_equal_to'),
+                    enabled: this.comparators.indexOf('!=') < 0 ? 'no' : 'yes'
+                },
+                '>': {
+                    symbol: '&#62;',
+                    label: this.$i18n.get('after'),
+                    enabled: this.comparators.indexOf('>') < 0 ? 'no' : 'yes'
+                },
+                '>=': {
+                    symbol: '&#8805;',
+                    label: this.$i18n.get('after_or_on_day'),
+                    enabled: this.comparators.indexOf('>=') < 0 ? 'no' : 'yes'
+                },
+                '<': {
+                    symbol: '&#60;',
+                    label: this.$i18n.get('before'),
+                    enabled: this.comparators.indexOf('<') < 0 ? 'no' : 'yes'
+                },
+                '<=': {
+                    symbol: '&#8804;',
+                    label: this.$i18n.get('before_or_on_day'),
+                    enabled: this.comparators.indexOf('<=') < 0 ? 'no' : 'yes'
+                }
+            };
         },
         methods: {
-            onUpdateStep(modelValue) {
-                this.$emit('update:model-value', { step: modelValue });
+            emitValues() {
+                this.$emit('update:model-value', { step: this.step, comparators: this.comparators });
             }
         }
     }
