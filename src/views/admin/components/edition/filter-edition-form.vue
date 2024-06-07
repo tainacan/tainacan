@@ -249,6 +249,7 @@ import { nextTick } from 'vue';
 import { mapActions } from 'vuex';
 import { formHooks } from "../../js/mixins";
 
+import FormFilterDate from '../filter-types/date/FormDate.vue';
 import FormFilterNumeric from '../filter-types/numeric/FormNumeric.vue';
 import FormFilterNumericInterval from '../filter-types/numeric-interval/FormNumericInterval.vue';
 import FormFilterNumericListInterval from '../filter-types/numeric-list-interval/FormNumericListInterval.vue';
@@ -258,6 +259,7 @@ import FormFilterDatesIntersection from '../filter-types/dates-intersection/Form
 export default {
     name: 'FilterEditionForm',
     components: {
+        'tainacan-filter-form-date': FormFilterDate,
         'tainacan-filter-form-numeric': FormFilterNumeric,
         'tainacan-filter-form-numeric-interval': FormFilterNumericInterval,
         'tainacan-filter-form-numeric-list-interval': FormFilterNumericListInterval,
