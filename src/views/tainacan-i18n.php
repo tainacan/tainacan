@@ -529,6 +529,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_view_all_%s_collections'					 => __( 'View all %s collections', 'tainacan' ),
 	'label_view_collections_list'                    => __( 'View collections list', 'tainacan' ),
 	'label_comparator'								 => __( 'Comparator', 'tainacan' ),
+	'label_comparators'								 => __( 'Comparators', 'tainacan' ),
 	'label_table_of_items'                           => __( 'Table of Items', 'tainacan' ),
 	'label_create_another_item'                      => __( 'Create another item', 'tainacan' ),
 	'label_recent_collections'	                     => __( 'Recent Collections', 'tainacan' ),
@@ -788,6 +789,8 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_click_to_add_a_point'				 => __( 'Drag to reposition or click to insert a marker', 'tainacan' ),
 	'instruction_select_geocoordinate_metadatum'	 => __( 'Select a geocoordinate metadatum', 'tainacan' ),
 	'instruction_multiple_terms_insertion'			 => __( 'Type or paste here a list of names using a separator to create multiple terms at once.', 'tainacan' ),
+	'instruction_select_second_date_to_compare'		 => __( 'Select the second date metadatum', 'tainacan' ),
+	'instruction_select_second_numeric_to_compare'	 => __( 'Select the second numeric metadatum', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),
@@ -1064,6 +1067,8 @@ return apply_filters( 'tainacan-i18n', [
 	'info_terms_creation_failed_due_to_value_%s'	 => __( 'Terms creation failed due to value: %s.', 'tainacan' ),
 	'info_terms_creation_failed_due_to_values_%s'	 => __( 'Terms creation failed due to values: %s.', 'tainacan' ),
 	'info_autodraft_updated'						 => __( 'Autodraft updated. Please create the item to keep your changes.', 'tainacan' ),
+	'info_intersection_explainer'			 	 	 => __( 'Will show items if the selected value is:', 'tainacan' ),
+	'info_intersection_rules'				 	 	 => __( 'The value must match both rules to appear in the filter.', 'tainacan' ),
 
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
