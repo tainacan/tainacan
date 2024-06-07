@@ -60,16 +60,6 @@
                 &#8804;&nbsp; {{ $i18n.get('before_or_on_day') }}
             </b-dropdown-item>
         </b-dropdown>
-        <!-- <b-numberinput 
-                v-if="filterTypeOptions.type == 'year'"
-                :placeholder="$i18n.get('instruction_type_value_year')"
-                :aria-labelledby="'filter-label-id-' + filter.id"
-                :aria-minus-label="$i18n.get('label_decrease')"
-                :aria-plus-label="$i18n.get('label_increase')"
-                size="is-small"
-                step="1"
-                @update:model-value="emitOnlyYear($event)"
-                v-model="yearsOnlyValue"/> -->
         <b-datepicker
                 v-model="value"
                 position="is-bottom-right"
@@ -105,11 +95,6 @@
                     $i18n.get('datepicker_month_december')
                 ]"
                 @update:model-value="($event) => { resetPage(); emit($event); }" />
-                <!-- filterTypeOptions FOR TYPE 
-                    v-else
-                    :type="filterTypeOptions.type == 'month' ? 'month' : null" 
-                    :placeholder="filterTypeOptions.type == 'month' ? $i18n.get('instruction_select_a_date') : $i18n.get('instruction_select_a_month')"
-                --> 
     </div>
 </template>
 
