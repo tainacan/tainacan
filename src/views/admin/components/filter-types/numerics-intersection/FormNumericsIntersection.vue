@@ -3,9 +3,11 @@
         <b-field :addons="false">
             <label class="label is-inline">
                 {{ $i18n.getHelperTitle('tainacan-filter-numeric-interval', 'step') }}<span>&nbsp;*&nbsp;</span>
-                <help-button
-                        :title="$i18n.getHelperTitle('tainacan-filter-numeric-interval', 'step')"
-                        :message="$i18n.getHelperMessage('tainacan-filter-numeric-interval', 'step')" />
+                <span style="font-size: 1.35em;">
+                    <help-button
+                            :title="$i18n.getHelperTitle('tainacan-filter-numeric-interval', 'step')"
+                            :message="$i18n.getHelperMessage('tainacan-filter-numeric-interval', 'step')" />
+                </span>
             </label>
             <div
                     v-if="!showEditStepOptions"
@@ -116,17 +118,22 @@
                 </option>
             </b-select>
         </b-field>
-        <div style="column-count: 2;">
+        <fieldset 
+                v-if="secondNumericMetadatumId"
+                class="intersection-explainer-section">
+            <legend>
+                <p>
+                    <strong>{{ $i18n.get('info_intersection_explainer') }}</strong>
+                    <span style="font-size: 1.35em;"> 
+                        <help-button 
+                                :title="$i18n.get('label_comparators')"
+                                :message="$i18n.get('info_intersection_rules')" />
+                    </span>
+                </p>
+            </legend>    
             <b-field :addons="false">
-                <label 
-                        style="line-height: normal;"
-                        class="label is-inline">
-                    {{ $i18n.getHelperTitle('tainacan-filter-numerics-intersection', 'first_comparator') }}<span>&nbsp;*&nbsp;</span>
-                    <help-button
-                            :title="$i18n.getHelperTitle('tainacan-filter-numerics-intersection', 'first_comparator')"
-                            :message="$i18n.getHelperMessage('tainacan-filter-numerics-intersection', 'first_comparator')" />
-                </label>
                 <b-select
+                        v-if="showEditFirstComparatorOptions"
                         v-model="firstComparator"
                         @update:model-value="emitValues()">
                     <option
@@ -135,17 +142,50 @@
                             :value="comparatorKey"
                             v-html="comparatorObject.symbol + '&nbsp;' + comparatorObject.label" />
                 </b-select>
+                <strong 
+                        v-else
+                        v-html="comparatorsObject[firstComparator].symbol" />
+                <p v-if="filter.metadatum">
+                    &nbsp;
+                    <em>{{ filter.metadatum.metadatum_name }}</em>
+                </p>
+                <button
+                        v-if="!showEditFirstComparatorOptions"
+                        class="button is-white is-pulled-right"
+                        @click.prevent="showEditFirstComparatorOptions = true">
+                    <span 
+                            v-tooltip="{
+                                content: $i18n.get('edit'),
+                                autoHide: true,
+                                placement: 'bottom',
+                                popperClass: ['tainacan-tooltip', 'tooltip']
+                            }"
+                            class="icon">
+                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-edit has-text-secondary" />
+                    </span>
+                </button>
+                <button
+                        v-else
+                        class="button is-white is-pulled-right"
+                        @click.prevent="showEditFirstComparatorOptions = false">
+                    <span 
+                            v-tooltip="{
+                                content: $i18n.get('close'),
+                                autoHide: true,
+                                placement: 'bottom',
+                                popperClass: ['tainacan-tooltip', 'tooltip']
+                            }"
+                            class="icon">
+                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approved has-text-secondary" />
+                    </span>
+                </button>
             </b-field>
+            <div class="logic-divider">
+                <span>{{ $i18n.get('label_and') }}</span>
+            </div>
             <b-field :addons="false">
-                <label
-                        style="line-height: normal;"
-                        class="label is-inline">
-                    {{ $i18n.getHelperTitle('tainacan-filter-numerics-intersection', 'second_comparator') }}<span>&nbsp;*&nbsp;</span>
-                    <help-button
-                            :title="$i18n.getHelperTitle('tainacan-filter-numerics-intersection', 'second_comparator')"
-                            :message="$i18n.getHelperMessage('tainacan-filter-numerics-intersection', 'second_comparator')" />
-                </label>
                 <b-select
+                        v-if="showEditSecondComparatorOptions"
                         v-model="secondComparator"
                         @update:model-value="emitValues()">
                     <option 
@@ -154,9 +194,45 @@
                             :value="comparatorKey"
                             v-html="comparatorObject.symbol + '&nbsp;' + comparatorObject.label" />
                 </b-select>
+                <strong 
+                        v-else
+                        v-html="comparatorsObject[secondComparator].symbol" />
+                <p>&nbsp;<em>{{ secondNumericMetadatumName }}</em></p>
+                <button
+                        v-if="!showEditSecondComparatorOptions"
+                        class="button is-white is-pulled-right"
+                        @click.prevent="showEditSecondComparatorOptions = true">
+                    <span 
+                            v-tooltip="{
+                                content: $i18n.get('edit'),
+                                autoHide: true,
+                                placement: 'bottom',
+                                popperClass: ['tainacan-tooltip', 'tooltip']
+                            }"
+                            class="icon">
+                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-edit has-text-secondary" />
+                    </span>
+                </button>
+                <button
+                        v-else
+                        class="button is-white is-pulled-right"
+                        @click.prevent="showEditSecondComparatorOptions = false">
+                    <span 
+                            v-tooltip="{
+                                content: $i18n.get('close'),
+                                autoHide: true,
+                                placement: 'bottom',
+                                popperClass: ['tainacan-tooltip', 'tooltip']
+                            }"
+                            class="icon">
+                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approved has-text-secondary" />
+                    </span>
+                </button>
             </b-field>
-        </div>
-        <b-field 
+        </fieldset>
+
+        <!-- Much more complicated logic, will be possible if we implement #889 -->
+        <!-- <b-field 
                 :addons="false"
                 :label="$i18n.getHelperTitle('tainacan-filter-numerics-intersection', 'accept_numeric_interval')"
                 style="margin-top: 1.125rem;"
@@ -175,7 +251,7 @@
                         :title="$i18n.getHelperTitle('tainacan-filter-numerics-intersection', 'accept_numeric_interval')"
                         :message="$i18n.getHelperMessage('tainacan-filter-numerics-intersection', 'accept_numeric_interval')" />
             </b-switch>
-        </b-field>
+        </b-field> -->
     </div>
 </template>
 
@@ -204,7 +280,9 @@
                 firstComparator: String,
                 secondComparator: String,
                 comparatorsObject: {},
-                acceptNumericInterval: String
+                acceptNumericInterval: String,
+                showEditFirstComparatorOptions: false,
+                showEditSecondComparatorOptions: false
             }
         },
         watch: {
@@ -296,3 +374,37 @@
         }
     }
 </script>
+
+<style lang="scss" scoped>
+.intersection-explainer-section {
+    margin-top: 1.25rem;
+    padding: 0.75em 0.75em 0.25em 0.75em;
+    border: 1px solid var(--tainacan-gray1);
+
+    legend {
+        margin: -0.75em 0 0em 0;
+        background-color: var(--tainacan-background-color);
+        padding: 5px 5px 5px 0px;
+    }
+
+    .field {
+        display: flex;
+        gap: 0.5em;
+        margin: 0 -0.5em 0.5em 0em;
+        align-items: center;
+
+        strong {
+            margin-left: 0.75em;
+        }
+    }
+
+    button {
+        border-radius: 100em !important;
+        margin-left: auto;
+    }
+
+    .logic-divider {
+        display: none;
+    }
+} 
+</style>

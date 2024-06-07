@@ -159,11 +159,16 @@
 
                 if (index >= 0) {
                     let metadata = this.query.metaquery[ index ];
-                    if (metadata.value && metadata.value.length > 0) {
-                        const dateValueInit = new Date(metadata.value[0].replace(/-/g, '/'));
-                        this.dateInit = moment(dateValueInit, moment.ISO_8601).toDate();
-                        const dateValueEnd = new Date(metadata.value[1].replace(/-/g, '/'));
-                        this.dateEnd = moment(dateValueEnd, moment.ISO_8601).toDate();
+                    if (metadata.value ) {
+                        if ( Array.isArray(metadata.value) && metadata.value.length > 0 ) {
+                            const dateValueInit = new Date(metadata.value[0].replace(/-/g, '/'));
+                            this.dateInit = moment(dateValueInit, moment.ISO_8601).toDate();
+                            const dateValueEnd = new Date(metadata.value[1].replace(/-/g, '/'));
+                            this.dateEnd = moment(dateValueEnd, moment.ISO_8601).toDate();
+                        } else {
+                            const dateValueInit = new Date(metadata.value.replace(/-/g, '/'));
+                            this.dateInit = moment(dateValueInit, moment.ISO_8601).toDate();
+                        }
                     }
                 } else {
                     this.dateInit = null;
@@ -186,23 +191,27 @@
                     values = [ dateInit, dateEnd ];
                 }
 
-                this.$emit('input', {
-                    filter: 'intersection',
-                    type: 'DATE',
-                    compare: this.filterTypeOptions.first_comparator,
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    value: this.filterTypeOptions.accept_date_interval === 'yes' ? values : values[0]
-                });
-                this.$emit('input', {
-                    filter: 'intersection',
-                    type: 'DATE',
-                    compare: this.filterTypeOptions.second_comparator,
-                    metadatum_id: this.filterTypeOptions.secondary_filter_metadatum_id,
-                    collection_id: this.collectionId,
-                    value: this.filterTypeOptions.accept_date_interval === 'yes' ? values : values[0],
-                    secondary: true
-                });
+                if ( this.filterTypeOptions.accept_date_interval !== 'yes' ) {
+                    this.$emit('input', {
+                        filter: 'intersection',
+                        type: 'DATE',
+                        compare: this.filterTypeOptions.first_comparator,
+                        metadatum_id: this.metadatumId,
+                        collection_id: this.collectionId,
+                        value: values[0]
+                    });
+                    this.$emit('input', {
+                        filter: 'intersection',
+                        type: 'DATE',
+                        compare: this.filterTypeOptions.second_comparator,
+                        metadatum_id: this.filterTypeOptions.secondary_filter_metadatum_id,
+                        collection_id: this.collectionId,
+                        value: values[0],
+                        secondary: true
+                    });                             
+                } else {
+                    // Much more complicated logic to be implemented in the future. See #889
+                }
             }
         }
     }

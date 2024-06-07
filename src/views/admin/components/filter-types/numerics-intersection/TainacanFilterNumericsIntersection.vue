@@ -94,22 +94,26 @@
                 let values =  [ this.valueInit, this.valueEnd ];
                 let type = ! Number.isInteger( this.valueInit ) || ! Number.isInteger( this.valueEnd ) ? 'DECIMAL(20,3)' : 'NUMERIC';
 
-                this.$emit('input', {
-                    filter: 'intersection',
-                    type: type,
-                    compare: this.filterTypeOptions.first_comparator,
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    value: this.filterTypeOptions.accept_numeric_interval === 'yes' ? values : values[0]
-                });
-                this.$emit('input', {
-                    filter: 'intersection',
-                    type: type,
-                    compare: this.filterTypeOptions.second_comparator,
-                    metadatum_id: this.filterTypeOptions.secondary_filter_metadatum_id,
-                    collection_id: this.collectionId,
-                    value: this.filterTypeOptions.accept_numeric_interval === 'yes' ? values : values[0]
-                });
+                if ( this.filterTypeOptions.accept_numeric_interval !== 'yes' ) {
+                    this.$emit('input', {
+                        filter: 'intersection',
+                        type: type,
+                        compare: this.filterTypeOptions.first_comparator,
+                        metadatum_id: this.metadatumId,
+                        collection_id: this.collectionId,
+                        value: this.filterTypeOptions.accept_numeric_interval === 'yes' ? values : values[0]
+                    });
+                    this.$emit('input', {
+                        filter: 'intersection',
+                        type: type,
+                        compare: this.filterTypeOptions.second_comparator,
+                        metadatum_id: this.filterTypeOptions.secondary_filter_metadatum_id,
+                        collection_id: this.collectionId,
+                        value: this.filterTypeOptions.accept_numeric_interval === 'yes' ? values : values[0]
+                    });
+                } else {
+                    // Much more complicated logic to be implemented in the future. See #889
+                }
             },
             updateSelectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
@@ -119,9 +123,13 @@
                 if ( index >= 0 ) {
 
                     let metaquery = this.query.metaquery[ index ];
-                    if ( metaquery.value && metaquery.value.length > 1 ) {
-                        this.valueInit = new Number(metaquery.value[0]);
-                        this.valueEnd = new Number(metaquery.value[1]);
+                    if ( metaquery.value ) {
+                        if ( Array.isArray(metaquery.value) && metaquery.value.length > 1 ) {
+                            this.valueInit = new Number(metaquery.value[0]);
+                            this.valueEnd = new Number(metaquery.value[1]);
+                        } else {
+                            this.valueInit = new Number(metaquery.value);
+                        }
                     }
                 } else {
                     this.valueInit = null;

@@ -44,26 +44,6 @@ class Numerics_Intersection extends Filter_Type {
 						</button>
 					</p>
 				</div>
-				<p class="is-size-7 has-text-centered is-marginless">until</p> 
-				<div class="b-numberinput field is-grouped">
-					<p class="control">
-						<button type="button" class="button is-primary is-small">
-							<span class="icon is-small">
-								<i class="mdi mdi-minus"></i>
-							</span>
-						</button>
-					</p>
-					<div class="control is-small is-clearfix">
-						<input type="number" step="0.01" class="input is-small" value="10">
-					</div>
-					<p class="control">
-						<button type="button" class="button is-primary is-small">
-							<span class="icon is-small">
-								<i class="mdi mdi-plus"></i>
-							</span>
-						</button>
-					</p>
-				</div>
 			</div>
 		');
 	}

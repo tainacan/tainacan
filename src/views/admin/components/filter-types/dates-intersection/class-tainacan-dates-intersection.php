@@ -34,17 +34,6 @@ class Dates_Intersection extends Filter_Type {
 						</div>
 					</div>
 				</div>
-				<p class="is-size-7 has-text-centered is-marginless">until</p> 
-				<div class="datepicker control is-small">
-					<div class="dropdown is-bottom-left is-mobile-modal">
-						<div role="button" class="dropdown-trigger">
-							<div class="control has-icons-left is-small is-clearfix">
-								<input type="text" autocomplete="off" placeholder=" '. __('Select a date', 'tainacan') .'" class="input is-small">
-								<span class="icon is-left is-small"><i class="mdi mdi-calendar-today"></i></span>
-							</div>
-						</div>
-					</div>
-				</div>
 			</div>
 		');
 
