@@ -7,12 +7,55 @@ import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
+// Defines custom marker icons
 delete TainacanLeaflet.Icon.Default.prototype._getIconUrl;
 TainacanLeaflet.Icon.Default.mergeOptions({
     iconRetinaUrl: iconRetinaUrl,
     iconUrl: iconUrl,
     shadowUrl: shadowUrl
 });
+
+// Observes the visibility of the map container to resize the map when it becomes visible
+const mapObserverOptions = {
+    root: null, // use the viewport
+    rootMargin: '0px',
+    threshold: 0.1 // 10% of the element is visible
+};
+
+// The mapObserver repeats part of the initialization logic to prevent the map from looking broke 
+// when it becomes visible after being hidden, for example inside section tabs
+const mapObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            if ( 
+                entry &&
+                entry.target.id &&
+                window.tainacan_leaflet_maps &&
+                window.tainacan_leaflet_maps[entry.target.id]
+            ) {
+                const element = entry.target;
+
+                const children = element.children ? element.children : [];
+                if ( !children.length )
+                    return;
+        
+                const coordinates = [];
+                for (let i = 0; i < children.length; i++) {
+                    if ( children[i].hasAttribute('data-latitude') && children[i].hasAttribute('data-longitude') )
+                        coordinates.push([children[i].getAttribute('data-latitude'), children[i].getAttribute('data-longitude')]);
+                }
+              
+                if ( !coordinates.length )
+                    return;
+
+                const maximum_zoom = element.hasAttribute('data-maximum_zoom') ? element.getAttribute('data-maximum_zoom') : 12;
+
+                window.tainacan_leaflet_maps[element.id].invalidateSize(true);
+                window.tainacan_leaflet_maps[element.id].flyToBounds(coordinates, { maxZoom: maximum_zoom, animate: false });
+            }
+        }
+    });
+}, mapObserverOptions);
 
 /* Loads and instantiates map components passed to data-module="geocoordinate-item-metadatum"*/
 export default (element) => {
@@ -54,7 +97,13 @@ export default (element) => {
         coordinates.forEach(coordinate => {
             TainacanLeaflet.marker(coordinate).addTo(tainacanMap);
         });
-
+        
         tainacanMap.flyToBounds(coordinates, { maxZoom: maximum_zoom });
+
+        mapObserver.observe(element);
+
+        // Stores referenced to the leaflet instances to manipulate them via the window object inside the observer
+        window.tainacan_leaflet_maps = typeof window.tainacan_leaflet_maps != "undefined" ? window.tainacan_leaflet_maps : {};
+        window.tainacan_leaflet_maps[element.id] = tainacanMap;
     }
 };
