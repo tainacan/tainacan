@@ -49,7 +49,8 @@ export default function({ attributes }) {
         orderByType,
         collectionOrderBy,
         collectionOrderByMeta,
-        collectionOrderByType
+        collectionOrderByType,
+        shouldNotHideFiltersOnMobile
     } = attributes;
     
     let updatedListType = '' + listType;
@@ -58,7 +59,7 @@ export default function({ attributes }) {
         updatedListType = 'collection';
     else if (updatedListType === '' && termId && taxonomyId)
         updatedListType = 'term';
-    console.log('save', updatedListType, collectionOrderByMeta)
+    
     // Gets attributes such as style, that are automatically added by the editor hook
     const blockProps = useBlockProps.save();
 
@@ -112,7 +113,8 @@ export default function({ attributes }) {
                 data-default-order = { order ? order : 'ASC' }
                 data-default-orderby = { updatedListType == 'collection' ? (collectionOrderBy ? collectionOrderBy : 'date') : (orderBy ? orderBy : 'date') }
                 data-default-orderby-meta = { updatedListType == 'collection' ? (collectionOrderByMeta ? collectionOrderByMeta : '') : (orderByMeta ? orderByMeta : '') }
-                data-default-orderby-type = { updatedListType == 'collection' ? (collectionOrderByType ? collectionOrderByType : '') : (orderByType ? orderByType : '') } >
+                data-default-orderby-type = { updatedListType == 'collection' ? (collectionOrderByType ? collectionOrderByType : '') : (orderByType ? orderByType : '') }
+                data-should-not-hide-filters-on-mobile = { shouldNotHideFiltersOnMobile ? shouldNotHideFiltersOnMobile.toString() : 'false' } >
         </main>
     </div>
 };

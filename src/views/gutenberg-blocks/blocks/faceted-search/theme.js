@@ -130,7 +130,8 @@ export default (element) => {
                     startWithFiltersHidden: isParameterTrue(getDataAttribute(blockElement, 'start-with-filters-hidden')),
                     filtersAsModal: isParameterTrue(getDataAttribute(blockElement, 'filters-as-modal')),
                     showInlineViewModeOptions: isParameterTrue(getDataAttribute(blockElement, 'show-inline-view-mode-options')),
-                    showFullscreenWithViewModes: isParameterTrue(getDataAttribute(blockElement, 'show-fullscreen-with-view-modes'))
+                    showFullscreenWithViewModes: isParameterTrue(getDataAttribute(blockElement, 'show-fullscreen-with-view-modes')),
+                    shouldNotHideFiltersOnMobile: isParameterTrue(getDataAttribute(blockElement, 'should-not-hide-filters-on-mobile'))
                 }),
             });
 

@@ -76,7 +76,8 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
         orderByType,
         collectionOrderBy,
         collectionOrderByMeta,
-        collectionOrderByType
+        collectionOrderByType,
+        shouldNotHideFiltersOnMobile
     } = attributes;
 
     // Gets blocks props from hook
@@ -89,7 +90,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
 
     if ( enabledViewModes === null || !enabledViewModes.length )
         enabledViewModes = Object.keys(tainacan_plugin.registered_view_modes);
-    console.log('edit', collectionOrderByMeta);
+
     const fontSizes = [
         {
             name: __( 'Tiny', 'tainacan' ),
@@ -204,7 +205,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
         else
             return;
     }
-
+    
     return ( listType == 'preview' ? 
             <div className={className}>
                 <img
@@ -495,6 +496,16 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                             onChange={ ( isChecked ) => {
                                     startWithFiltersHidden = isChecked;
                                     setAttributes({ startWithFiltersHidden: isChecked });
+                                } 
+                            }
+                        />
+                         <ToggleControl
+                            label={__('Should not hide filters even on mobile', 'tainacan')}
+                            help={ shouldNotHideFiltersOnMobile || shouldNotHideFiltersOnMobile === undefined ? __('Toggle to keep filters area visible even on small screen sizes', 'tainacan') : __('Automatically hide filters area on small screen sizes inside a modal', 'tainacan') }
+                            checked={ shouldNotHideFiltersOnMobile && !filtersAsModal }
+                            onChange={ ( isChecked ) => {
+                                    shouldNotHideFiltersOnMobile = isChecked;
+                                    setAttributes({ shouldNotHideFiltersOnMobile: isChecked });
                                 } 
                             }
                         />
