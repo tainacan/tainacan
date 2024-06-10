@@ -406,7 +406,44 @@
 
     <!-- SIDEBAR WITH FILTERS -->
     <template v-if="!hideFilters">
+        
+        <div 
+                v-if="!filtersAsModal && !shouldNotHideFiltersOnMobile && isFiltersModalActive"
+                id="filters-modal"
+                ref="filters-modal"    
+                role="region" 
+                :class="'tainacan-modal tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')">
+            
+            <div class="animation-content modal-content">
+
+               <!-- JS-side hook for extra form content -->
+                <div 
+                        v-if="hooks['filters_before']"
+                        class="faceted-search-hook faceted-search-hook-filters-before"
+                        v-html="hooks['filters_before']" />
+
+                <filters-items-list
+                        id="filters-items-list"
+                        :is-loading-items="isLoadingItems"
+                        :taxonomy="taxonomy"
+                        :collection-id="collectionId + ''"
+                        :is-repository-level="isRepositoryLevel"
+                        :filters-as-modal="false"
+                        :has-filtered="hasFiltered"
+                        :is-mobile-screen="isMobileScreen"
+                        @update-is-loading-items-state="(state) => isLoadingItems = state" />
+
+                <!-- JS-side hook for extra form content -->
+                <div 
+                        v-if="hooks['filters_after']"
+                        class="faceted-search-hook faceted-search-hook-filters-after"
+                        v-html="hooks['filters_after']" />
+            
+            </div>
+        </div>
+
         <b-modal
+                v-else
                 id="filters-modal"
                 ref="filters-modal"     
                 v-model="isFiltersModalActive"       
@@ -418,7 +455,7 @@
                 :custom-class="'tainacan-modal tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')"
                 :can-cancel="hideHideFiltersButton || !filtersAsModal ? ['x', 'outside'] : ['x', 'escape', 'outside']"
                 :close-button-aria-label="$i18n.get('close')">
-
+                
             <!-- JS-side hook for extra form content -->
             <div 
                     v-if="hooks['filters_before']"
@@ -737,7 +774,8 @@
             startWithFiltersHidden: false,
             filtersAsModal: false,
             showInlineViewModeOptions: false,
-            showFullscreenWithViewModes: false
+            showFullscreenWithViewModes: false,
+            shouldNotHideFiltersOnMobile: false
         },
         data() {
             return {
@@ -973,7 +1011,7 @@
                     this.hasAnOpenAlert = true;
             },
             isFiltersModalActive() {
-                if (this.isFiltersModalActive) {
+                if ( this.isFiltersModalActive ) {
                     setTimeout(() => {
                         if (this.filtersAsModal && this.$refs['filters-modal'] && this.$refs['filters-modal'].focus)
                             this.$refs['filters-modal'].focus();
@@ -1129,7 +1167,7 @@
 
 
             // Watches window resize to adjust filter's top position and compression on mobile
-            if (!this.hideFilters) {            
+            if ( !this.hideFilters && !this.shouldNotHideFiltersOnMobile ) {            
                 this.hideFiltersOnMobile();
                 window.addEventListener('resize', this.hideFiltersOnMobile);
             }
@@ -1589,7 +1627,7 @@
                 // Component
                 this.$emitter.off();
                 // Window
-                if (!this.hideFilters)
+                if ( !this.hideFilters && !this.shouldNotHideFiltersOnMobile )
                     window.removeEventListener('resize', this.hideFiltersOnMobile);
                 // $root
                 if (!this.hideAdvancedSearch)

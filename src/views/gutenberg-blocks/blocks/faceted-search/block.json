@@ -212,6 +212,10 @@
         "collectionOrderByType": {
             "type": "string",
             "default": ""
+        },
+        "shouldNotHideFiltersOnMobile": {
+            "type": "boolean",
+            "default": false
         }
     },
     "supports": {
