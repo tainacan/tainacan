@@ -24,7 +24,7 @@
                     {{ $i18n.get('instruction_select_second_date_to_compare' ) }}
                 </option>
                 <option
-                        v-for="option in metadata.filter(aMetadatum => aMetadatum.id != filter.metadatumId )"
+                        v-for="option in metadata.filter(aMetadatum => aMetadatum.id != filter.metadatum_id )"
                         :key="option.id"
                         :value="option.id">
                     {{ option.name }}

@@ -292,12 +292,16 @@ export default {
         }
     },
     created() {
-
+        
         this.form = this.editedFilter;
         this.formErrors = this.form.formErrors != undefined ? this.form.formErrors : {};
         this.formErrorMessage = this.form.formErrors != undefined ? this.form.formErrorMessage : ''; 
 
         this.oldForm = JSON.parse(JSON.stringify(this.originalFilter));
+        
+        if ( this.form.metadatum == undefined && this.oldForm.metadatum != undefined )
+            this.form.metadatum = this.oldForm.metadatum;
+        
     },
     mounted() {
         // Fills hook forms with it's real values 
@@ -322,9 +326,11 @@ export default {
             'updateFilter'
         ]),
         saveEdition(filter) {
+
+            this.isLoading = true;
+
             if ((filter.filter_type_object && filter.filter_type_object.form_component) || filter.edit_form == '') {
-                
-                this.isLoading = true;
+
                 for (let [key, value] of Object.entries(this.form)) {
                     if (key === 'begin_with_filter_collapsed' || key === 'display_in_repository_level_lists')
                         this.form[key] = (value == 'yes' || value == true) ? 'yes' : 'no';
@@ -372,7 +378,6 @@ export default {
                     formObj['display_in_repository_level_lists'] = 'no';
                     
                 this.fillExtraFormData(formObj);
-                this.isLoading = true;
                 this.updateFilter({ filterId: filter.id, index: this.index, options: formObj })
                     .then(() => {
                         this.form = {};
