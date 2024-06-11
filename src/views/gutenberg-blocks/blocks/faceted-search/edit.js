@@ -77,7 +77,8 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
         collectionOrderBy,
         collectionOrderByMeta,
         collectionOrderByType,
-        shouldNotHideFiltersOnMobile
+        shouldNotHideFiltersOnMobile,
+        displayFiltersHorizontally
     } = attributes;
 
     // Gets blocks props from hook
@@ -516,6 +517,15 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                             onChange={ ( isChecked ) => {
                                     filtersAsModal = isChecked;
                                     setAttributes({ filtersAsModal: isChecked });
+                                } 
+                            }
+                        />
+                        <ToggleControl
+                            label={__('Display filters horizontally', 'tainacan')}
+                            checked={ displayFiltersHorizontally }
+                            onChange={ ( isChecked ) => {
+                                    displayFiltersHorizontally = isChecked;
+                                    setAttributes({ displayFiltersHorizontally: isChecked });
                                 } 
                             }
                         />

@@ -50,7 +50,8 @@ export default function({ attributes }) {
         collectionOrderBy,
         collectionOrderByMeta,
         collectionOrderByType,
-        shouldNotHideFiltersOnMobile
+        shouldNotHideFiltersOnMobile,
+        displayFiltersHorizontally
     } = attributes;
     
     let updatedListType = '' + listType;
@@ -114,7 +115,8 @@ export default function({ attributes }) {
                 data-default-orderby = { updatedListType == 'collection' ? (collectionOrderBy ? collectionOrderBy : 'date') : (orderBy ? orderBy : 'date') }
                 data-default-orderby-meta = { updatedListType == 'collection' ? (collectionOrderByMeta ? collectionOrderByMeta : '') : (orderByMeta ? orderByMeta : '') }
                 data-default-orderby-type = { updatedListType == 'collection' ? (collectionOrderByType ? collectionOrderByType : '') : (orderByType ? orderByType : '') }
-                data-should-not-hide-filters-on-mobile = { shouldNotHideFiltersOnMobile ? shouldNotHideFiltersOnMobile.toString() : 'false' } >
+                data-should-not-hide-filters-on-mobile = { shouldNotHideFiltersOnMobile ? shouldNotHideFiltersOnMobile.toString() : 'false' }
+                data-display-filters-horizontally = { displayFiltersHorizontally ? displayFiltersHorizontally.toString() : 'false' } >
         </main>
     </div>
 };

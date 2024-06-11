@@ -216,6 +216,10 @@
         "shouldNotHideFiltersOnMobile": {
             "type": "boolean",
             "default": false
+        },
+        "displayFiltersHorizontally": {
+            "type": "boolean",
+            "default": false
         }
     },
     "supports": {
