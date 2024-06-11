@@ -412,7 +412,7 @@
                 id="filters-modal"
                 ref="filters-modal"    
                 role="region" 
-                :class="'tainacan-modal tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')">
+                :class="'tainacan-modal tainacan-form filters-menu' + (displayFiltersHorizontally ? ' horizontal-filters' : '')">
             
             <div class="animation-content modal-content">
 
@@ -452,7 +452,7 @@
                 :auto-focus="filtersAsModal"
                 :trap-focus="filtersAsModal"
                 full-screen
-                :custom-class="'tainacan-modal tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')"
+                :custom-class="'tainacan-modal tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '') + (displayFiltersHorizontally ? ' horizontal-filters' : '')"
                 :can-cancel="hideHideFiltersButton || !filtersAsModal ? ['x', 'outside'] : ['x', 'escape', 'outside']"
                 :close-button-aria-label="$i18n.get('close')">
                 
@@ -775,7 +775,8 @@
             filtersAsModal: false,
             showInlineViewModeOptions: false,
             showFullscreenWithViewModes: false,
-            shouldNotHideFiltersOnMobile: false
+            shouldNotHideFiltersOnMobile: false,
+            displayFiltersHorizontally: false
         },
         data() {
             return {
@@ -828,6 +829,7 @@
             }),
             wrapperClasses() {
                 return {
+                    'has-horizontal-filters': this.displayFiltersHorizontally,
                     'is-filters-menu-open': !this.hideFilters && this.isFiltersModalActive && !this.openAdvancedSearch,
                     'is-filters-menu-fixed-at-top': this.isFiltersListFixedAtTop,
                     'is-filters-menu-fixed-at-bottom': this.isFiltersListFixedAtBottom,
@@ -1963,7 +1965,7 @@
             }
 
             &:last-child {
-                margin-right: auto;
+                margin-right: 0;
             }
 
             .label {
