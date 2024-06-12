@@ -10,7 +10,7 @@
                 :loading="isLoadingOptions"
                 field="label"
                 clearable
-                :placeholder="(metadatumType === 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_search_metadata')"
+                :placeholder="filter.placeholder ? filter.placeholder : ( (metadatumType === 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_search_metadata') )"
                 check-infinite-scroll
                 @update:model-value="($event) => { resetPage(); search($event); }"
                 @select="onSelect"

@@ -98,7 +98,7 @@ export const removeMetaQuery = ( state, filter ) => {
                 state.postquery.metaquery[index].value.splice(otherIndex, 1)
         } else
             state.postquery.metaquery.splice(index, 1);
-        console.log(filter)
+        
         // Handles removing metaqueries from secondary filter metadata
         if ( filter.secondaryMetadatumId ) {
             let secondaryIndex = state.postquery.metaquery.findIndex( item => item.key == filter.secondaryMetadatumId);

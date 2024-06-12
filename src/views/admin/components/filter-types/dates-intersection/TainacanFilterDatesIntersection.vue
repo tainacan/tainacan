@@ -3,7 +3,7 @@
         <b-datepicker
                 v-model="dateInit"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                :placeholder="$i18n.get('instruction_select_a_date')"
+                :placeholder="filter.placeholder ? filter.placeholder : $i18n.get('instruction_select_a_date')"
                 editable
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
@@ -45,7 +45,7 @@
                 v-if="filterTypeOptions.accept_date_interval === 'yes'"
                 v-model="dateEnd"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                :placeholder="$i18n.get('instruction_select_a_date')"
+                :placeholder="filter.placeholder ? filter.placeholder : $i18n.get('instruction_select_a_date')"
                 editable
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"

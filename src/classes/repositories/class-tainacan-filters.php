@@ -110,7 +110,14 @@ class Filters extends Repository {
 				'description' => __( 'The max number of options to be showed in filter sidebar.', 'tainacan' ),
 				'validation'  => '',
 				'default'     => 4
-			]
+			],
+			'placeholder'     => [
+				'map'         => 'meta',
+				'title'       => __( 'Placeholder', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'The filter input placeholder. This is a simple message that will appear inside textual input and may indicate to the user what kind of information is expected.', 'tainacan' ),
+				'default'     => '',
+			],
 		] );
 	}
 
