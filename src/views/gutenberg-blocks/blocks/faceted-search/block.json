@@ -220,6 +220,10 @@
         "displayFiltersHorizontally": {
             "type": "boolean",
             "default": false
+        },
+        "hideColllapseAllFiltersButton": {
+            "type": "boolean",
+            "default": false
         }
     },
     "supports": {

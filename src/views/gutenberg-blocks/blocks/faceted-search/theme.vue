@@ -406,42 +406,43 @@
 
     <!-- SIDEBAR WITH FILTERS -->
     <template v-if="!hideFilters">
-        
-        <div 
-                v-if="!filtersAsModal && !shouldNotHideFiltersOnMobile && isFiltersModalActive"
-                id="filters-modal"
-                ref="filters-modal"    
-                role="region" 
-                :class="'tainacan-modal tainacan-form filters-menu' + (displayFiltersHorizontally ? ' horizontal-filters' : '')">
-            
-            <div class="animation-content modal-content">
+        <template v-if="!filtersAsModal && shouldNotHideFiltersOnMobile">
+            <div 
+                    v-if="isFiltersModalActive"
+                    id="filters-modal"
+                    ref="filters-modal"    
+                    role="region" 
+                    :class="'tainacan-modal tainacan-form filters-menu' + (displayFiltersHorizontally ? ' horizontal-filters' : '')">
+                
+                <div class="animation-content modal-content">
 
-               <!-- JS-side hook for extra form content -->
-                <div 
-                        v-if="hooks['filters_before']"
-                        class="faceted-search-hook faceted-search-hook-filters-before"
-                        v-html="hooks['filters_before']" />
+                    <!-- JS-side hook for extra form content -->
+                    <div 
+                            v-if="hooks['filters_before']"
+                            class="faceted-search-hook faceted-search-hook-filters-before"
+                            v-html="hooks['filters_before']" />
 
-                <filters-items-list
-                        id="filters-items-list"
-                        :is-loading-items="isLoadingItems"
-                        :taxonomy="taxonomy"
-                        :collection-id="collectionId + ''"
-                        :is-repository-level="isRepositoryLevel"
-                        :filters-as-modal="false"
-                        :has-filtered="hasFiltered"
-                        :is-mobile-screen="isMobileScreen"
-                        @update-is-loading-items-state="(state) => isLoadingItems = state" />
+                    <filters-items-list
+                            id="filters-items-list"
+                            :is-loading-items="isLoadingItems"
+                            :taxonomy="taxonomy"
+                            :collection-id="collectionId + ''"
+                            :is-repository-level="isRepositoryLevel"
+                            :filters-as-modal="false"
+                            :has-filtered="hasFiltered"
+                            :is-mobile-screen="isMobileScreen"
+                            :hide-collapse-all-filters-button="hideCollapseAllFiltersButton"
+                            @update-is-loading-items-state="(state) => isLoadingItems = state" />
 
-                <!-- JS-side hook for extra form content -->
-                <div 
-                        v-if="hooks['filters_after']"
-                        class="faceted-search-hook faceted-search-hook-filters-after"
-                        v-html="hooks['filters_after']" />
-            
+                    <!-- JS-side hook for extra form content -->
+                    <div 
+                            v-if="hooks['filters_after']"
+                            class="faceted-search-hook faceted-search-hook-filters-after"
+                            v-html="hooks['filters_after']" />
+                
+                </div>
             </div>
-        </div>
-
+        </template>
         <b-modal
                 v-else
                 id="filters-modal"
@@ -475,6 +476,7 @@
                     :filters-as-modal="filtersAsModal"
                     :has-filtered="hasFiltered"
                     :is-mobile-screen="isMobileScreen"
+                    :hide-collapse-all-filters-button="hideCollapseAllFiltersButton"
                     @update-is-loading-items-state="(state) => isLoadingItems = state" />
 
             <!-- JS-side hook for extra form content -->
@@ -776,7 +778,8 @@
             showInlineViewModeOptions: false,
             showFullscreenWithViewModes: false,
             shouldNotHideFiltersOnMobile: false,
-            displayFiltersHorizontally: false
+            displayFiltersHorizontally: false,
+            hideCollapseAllFiltersButton: false,
         },
         data() {
             return {
@@ -1172,6 +1175,8 @@
             if ( !this.hideFilters && !this.shouldNotHideFiltersOnMobile ) {            
                 this.hideFiltersOnMobile();
                 window.addEventListener('resize', this.hideFiltersOnMobile);
+            } else {
+                this.isFiltersModalActive = !this.startWithFiltersHidden;
             }
             
             // Uses Intersection Observer o see if the top of the list is on screen and fix filters list position

@@ -16,9 +16,11 @@
         </h3>
 
         <button
-                v-if="!isLoadingFilters &&
-                    ((filters.length >= 0 &&
-                        isRepositoryLevel) || filters.length > 0)"
+                v-if="!hideCollapseAllFiltersButton &&
+                    !isLoadingFilters && (
+                    ( filters.length >= 0 && isRepositoryLevel ) ||
+                    filters.length > 0
+                )"
                 aria-controls="filters-items-list"
                 :aria-expanded="!collapseAll"
                 class="link-style collapse-all"
@@ -33,7 +35,7 @@
             </span>
         </button>
 
-        <br>
+        <br v-if="!hideCollapseAllFiltersButton">
 
         <filters-tags-list
                 v-if="filtersAsModal && hasFiltered"
@@ -293,7 +295,8 @@
             filtersAsModal: Boolean,
             hasFiltered: Boolean,
             isLoadingItems: Boolean,
-            isMobileScreen: false
+            isMobileScreen: false,
+            hideCollapseAllFiltersButton: false
         },
         emits: [
             'update-is-loading-items-state'
