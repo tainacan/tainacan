@@ -91,13 +91,27 @@ export const removeMetaQuery = ( state, filter ) => {
 
     let index = state.postquery.metaquery.findIndex( item => item.key == filter.metadatum_id);
 
-    if (index >= 0) {
+    if ( index >= 0 ) {
         if (!filter.isMultiValue && Array.isArray(state.postquery.metaquery[index].value) && state.postquery.metaquery[index].value.length > 1) {
             let otherIndex = state.postquery.metaquery[index].value.findIndex(item => item == filter.value);
-            if (otherIndex >= 0)
+            if ( otherIndex >= 0 )
                 state.postquery.metaquery[index].value.splice(otherIndex, 1)
         } else
             state.postquery.metaquery.splice(index, 1);
+        console.log(filter)
+        // Handles removing metaqueries from secondary filter metadata
+        if ( filter.secondaryMetadatumId ) {
+            let secondaryIndex = state.postquery.metaquery.findIndex( item => item.key == filter.secondaryMetadatumId);
+
+            if ( secondaryIndex >= 0 ) {
+                if ( !filter.isMultiValue && Array.isArray(state.postquery.metaquery[secondaryIndex].value) && state.postquery.metaquery[secondaryIndex].value.length > 1 ) {
+                    let otherSecondaryIndex = state.postquery.metaquery[secondaryIndex].value.findIndex(item => item == filter.value);
+                    if ( otherSecondaryIndex >= 0 )
+                        state.postquery.metaquery[secondaryIndex].value.splice(otherSecondaryIndex, 1)
+                } else
+                    state.postquery.metaquery.splice(secondaryIndex, 1);
+            }
+        }
     }
 };
 
@@ -188,7 +202,8 @@ export const setFilterTags = ( state, filterArguments ) => {
                     ) ? aFilterArgument.metadatum.metadata_type_object.options.taxonomy : '',
             argType: aFilterArgument.arg_type ? aFilterArgument.arg_type : '',
             metadatumId: (aFilterArgument.filter && aFilterArgument.metadatum.metadatum_id) ? aFilterArgument.metadatum.metadatum_id : (aFilterArgument.metadatum.id || ''),
-            metadatumName: (aFilterArgument.filter && aFilterArgument.filter.name) ? aFilterArgument.filter.name : (aFilterArgument.metadatum.name || '')
+            metadatumName: (aFilterArgument.filter && aFilterArgument.filter.name) ? aFilterArgument.filter.name : (aFilterArgument.metadatum.name || ''),
+            secondaryMetadatumId: (aFilterArgument.filter && aFilterArgument.filter.filter_type_options && aFilterArgument.filter.filter_type_options.secondary_filter_metadatum_id) ? aFilterArgument.filter.filter_type_options.secondary_filter_metadatum_id : '',
         }
     });
     state.filter_tags = filterTags;
