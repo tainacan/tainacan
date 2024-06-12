@@ -185,10 +185,15 @@
                     let dateInit = this.dateInit.getUTCFullYear() + '-' +
                         ('00' + (this.dateInit.getUTCMonth() + 1)).slice(-2) + '-' +
                         ('00' + this.dateInit.getUTCDate()).slice(-2);
-                    let dateEnd = this.dateEnd.getUTCFullYear() + '-' +
-                        ('00' + (this.dateEnd.getUTCMonth() + 1)).slice(-2) + '-' +
-                        ('00' + this.dateEnd.getUTCDate()).slice(-2);
-                    values = [ dateInit, dateEnd ];
+
+                    if ( this.dateEnd !== null ) {
+                        let dateEnd = this.dateEnd.getUTCFullYear() + '-' +
+                            ('00' + (this.dateEnd.getUTCMonth() + 1)).slice(-2) + '-' +
+                            ('00' + this.dateEnd.getUTCDate()).slice(-2);
+                        values = [ dateInit, dateEnd ];
+                    } else {
+                        values = [ dateInit ];
+                    }
                 }
 
                 if ( this.filterTypeOptions.accept_date_interval !== 'yes' ) {

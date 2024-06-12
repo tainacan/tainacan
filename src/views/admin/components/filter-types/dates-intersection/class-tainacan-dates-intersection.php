@@ -118,6 +118,13 @@ class Dates_Intersection_Interval_Helper {
 		}
 		if (
 			isset( $filter_arguments['filter'] ) && 
+			isset( $filter_arguments['filter']['metadatum'] ) &&
+			isset( $filter_arguments['filter']['metadatum']['metadatum_name'] ) 
+		) {
+			$filter_arguments['filter']['name'] = $filter_arguments['filter']['metadatum']['metadatum_name'];
+		}
+		if (
+			isset( $filter_arguments['filter'] ) && 
 			isset( $filter_arguments['filter']['filter_type_options'] ) &&
 			isset( $filter_arguments['filter']['filter_type_options']['secondary_filter_metadatum_name'] ) &&
 			!empty( $filter_arguments['filter']['filter_type_options']['secondary_filter_metadatum_name'] )
