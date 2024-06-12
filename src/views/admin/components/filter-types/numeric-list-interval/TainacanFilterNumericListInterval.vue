@@ -3,7 +3,7 @@
         <b-select
                 v-model="selectedInterval"
                 expanded
-                :placeholder="$i18n.get('instruction_select_a_interval')"
+                :placeholder="filter.placeholder ? filter.placeholder : $i18n.get('instruction_select_a_interval')"
                 @update:model-value="($event) => { resetPage; changeInterval($event) }">
             <option value="">
                 {{ $i18n.get('label_selectbox_init') }}...

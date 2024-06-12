@@ -49,6 +49,24 @@
                         @focus="clearErrors('description')" />
             </b-field>
 
+            <b-field
+                    v-if="form.filter_type_object.use_input_placeholder"
+                    :addons="false"
+                    :type="formErrors['placeholder'] != undefined ? 'is-danger' : ''"
+                    :message="formErrors['placeholder'] != undefined ? formErrors['placeholder'] : ''">
+                <label class="label is-inline">
+                    {{ $i18n.getHelperTitle('filters', 'placeholder') }}
+                    <help-button
+                            :title="$i18n.getHelperTitle('filters', 'placeholder')"
+                            :message="$i18n.getHelperMessage('filters', 'placeholder')"
+                            :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                </label>
+                <b-input
+                        v-model="form.placeholder"
+                        name="placeholder"
+                        @focus="clearErrors('placeholder')" />
+            </b-field>
+
             <b-field 
                     :addons="false"
                     :type="formErrors['status'] != undefined ? 'is-danger' : ''" 

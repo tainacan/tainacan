@@ -72,8 +72,15 @@ class Filter extends Entity {
 	/**
 	 * @return mixed|null
 	 */
-	function get_description(){
+	function get_description() {
     	return $this->get_mapped_property('description');
+    }
+    
+    /**
+	 * @return mixed|null
+	 */
+	function get_placeholder() {
+    	return $this->get_mapped_property('placeholder');
     }
 
     /**
@@ -218,6 +225,16 @@ class Filter extends Entity {
      */
     function set_description($value) {
         $this->set_mapped_property('description', $value);
+    }
+
+    /**
+     * Define the filter placeholder
+     *
+     * @param [string] $value
+     * @return void
+     */
+    function set_placeholder($value) {
+        $this->set_mapped_property('placeholder', $value);
     }
 
     /**

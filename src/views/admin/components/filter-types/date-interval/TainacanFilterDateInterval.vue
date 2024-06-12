@@ -3,7 +3,7 @@
         <b-datepicker
                 v-model="dateInit"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                :placeholder="$i18n.get('instruction_select_a_date')"
+                :placeholder="filter.placeholder ? filter.placeholder : $i18n.get('instruction_select_a_date')"
                 editable
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
@@ -43,7 +43,7 @@
         <b-datepicker
                 v-model="dateEnd"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                :placeholder="$i18n.get('label_selectbox_init')"
+                :placeholder="filter.placeholder ? filter.placeholder : $i18n.get('instruction_select_a_date')"
                 editable
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
