@@ -170,12 +170,13 @@
 		.items-list-area {
 			max-width: 100%;
 		}
-		#filters-modal.horizontal-filters:not(.modal) {
+		#filters-modal.horizontal-filters {
 			overflow: visible;
 
 			.modal-content,
 			.filters-components-list {
 				overflow: visible;
+				width: 100%;
 			}
 
 			.filters-components-list {
@@ -186,13 +187,19 @@
 					vertical-align: text-top;
 				}
 				.filter-item-forms {
-					width: 200px;
-					min-width: 200px;
+					width: 100%;
+					min-width: 272px;
 					break-inside: avoid;
 					display: inline-block;
 					vertical-align: text-top;
-					padding-right: 1.5em;
+					padding-right: 2.25em;
 					margin-bottom: 12px;
+				}
+
+				@media screen and (min-width: 769px) {
+					.filter-item-forms {
+						width: 272px;
+					}
 				}
 			}
 		}

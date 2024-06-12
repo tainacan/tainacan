@@ -55,6 +55,24 @@
       flex-wrap: nowrap;
       flex-direction: row;
       flex: 1 0 auto; }
+      .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control.horizontal-filters {
+        flex-direction: column; }
+        .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control.horizontal-filters .filters {
+          flex-direction: row;
+          flex: 0 1 100%;
+          flex-wrap: wrap;
+          padding: 18px 12px 6px 12px; }
+          .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control.horizontal-filters .filters .fake-filters-heading {
+            margin-right: 90%;
+            top: -0.5em;
+            left: 0.5em; }
+          .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control.horizontal-filters .filters .fake-filters-heading + .fake-link {
+            margin-right: 95%;
+            margin-left: 12px; }
+          .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control.horizontal-filters .filters .fake-filter {
+            margin: 6px 12px;
+            display: inline-flex;
+            width: 16.666%; }
       .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .filters {
         flex: 0 1 var(--tainacan-filter-menu-width-theme, 20%);
         display: flex;
@@ -64,7 +82,7 @@
           display: flex;
           flex-direction: column;
           width: 80%;
-          margin: 5% 12%; }
+          margin: 5% 8%; }
           .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .filters .fake-filter .fake-text {
             margin: 4px 0;
             width: 35%;
