@@ -94,6 +94,10 @@
 	bottom: 0;
 	transition: top ease-in 0.75s, bottom ease-in 0.75s, position ease-in 0.75s;
 
+	&.horizontal-filters {
+		max-width: 100%;
+	}
+
 	@media screen and (max-width: 768px) {
 		padding: 0;
 		z-index: 99999;
@@ -124,6 +128,12 @@
 
 		.modal-close {
 			display: none;
+		}
+
+		&.horizontal-filters {
+			-webkit-flex: 0 1 100%;
+			-ms-flex: 0 1 100%;
+			flex: 0 1 100%;
 		}
 	}
 }
@@ -156,6 +166,52 @@
 		}
 	}
 
+	&.has-horizontal-filters {
+		.items-list-area {
+			max-width: 100%;
+		}
+		#filters-modal.horizontal-filters {
+			overflow: visible;
+
+			.modal-content,
+			.filters-components-list {
+				overflow: visible;
+				width: 100%;
+				max-width: 100% !important;
+				margin: 0;
+			}
+
+			.filters-components-list {
+				margin-bottom: 0;
+
+				& > div {
+					display: inline-block;
+					vertical-align: text-top;
+				}
+				.filter-item-forms {
+					width: 100%;
+					min-width: 272px;
+					break-inside: avoid;
+					display: inline-block;
+					vertical-align: text-top;
+					margin-bottom: 12px;
+				}
+
+				@media screen and (min-width: 769px) {
+					& > div:not(:last-child) {
+						margin-right: 2.25em;
+					}
+					.filter-item-forms {
+						width: 272px;
+					}
+					.filter-item-forms:not(:last-child) {
+						margin-right: 2.25em;
+					}
+				}
+			}
+		}
+	}
+
 	@media screen and (max-width: 768px) {
 		&.is-filters-menu-open {
 			
@@ -167,10 +223,6 @@
 				width: 100%;
 			}
 			
-			#filter-menu-compress-button {
-				display: none;
-			}
-
 			.filters-menu {
 				padding-top: 0;
 

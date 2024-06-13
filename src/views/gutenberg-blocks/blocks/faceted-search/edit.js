@@ -76,7 +76,10 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
         orderByType,
         collectionOrderBy,
         collectionOrderByMeta,
-        collectionOrderByType
+        collectionOrderByType,
+        shouldNotHideFiltersOnMobile,
+        displayFiltersHorizontally,
+        hideColllapseAllFiltersButton
     } = attributes;
 
     // Gets blocks props from hook
@@ -89,7 +92,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
 
     if ( enabledViewModes === null || !enabledViewModes.length )
         enabledViewModes = Object.keys(tainacan_plugin.registered_view_modes);
-    console.log('edit', collectionOrderByMeta);
+
     const fontSizes = [
         {
             name: __( 'Tiny', 'tainacan' ),
@@ -204,7 +207,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
         else
             return;
     }
-
+    
     return ( listType == 'preview' ? 
             <div className={className}>
                 <img
@@ -498,6 +501,16 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                 } 
                             }
                         />
+                         <ToggleControl
+                            label={__('Should not hide filters even on mobile', 'tainacan')}
+                            help={ shouldNotHideFiltersOnMobile || shouldNotHideFiltersOnMobile === undefined ? __('Toggle to keep filters area visible even on small screen sizes.', 'tainacan') : __('Automatically hide filters area on small screen sizes inside a modal', 'tainacan') }
+                            checked={ shouldNotHideFiltersOnMobile && !filtersAsModal }
+                            onChange={ ( isChecked ) => {
+                                    shouldNotHideFiltersOnMobile = isChecked;
+                                    setAttributes({ shouldNotHideFiltersOnMobile: isChecked });
+                                } 
+                            }
+                        />
                         <ToggleControl
                             label={__('Filters as a Modal', 'tainacan')}
                             help={ filtersAsModal ? __('Render the filters area as modal instead of a side panel', 'tainacan') : __('Toggle to show filters list as a side panel instead of a modal', 'tainacan')}
@@ -505,6 +518,24 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                             onChange={ ( isChecked ) => {
                                     filtersAsModal = isChecked;
                                     setAttributes({ filtersAsModal: isChecked });
+                                } 
+                            }
+                        />
+                        <ToggleControl
+                            label={__('Display filters horizontally', 'tainacan')}
+                            checked={ displayFiltersHorizontally }
+                            onChange={ ( isChecked ) => {
+                                    displayFiltersHorizontally = isChecked;
+                                    setAttributes({ displayFiltersHorizontally: isChecked });
+                                } 
+                            }
+                        />
+                        <ToggleControl
+                            label={__('Hide "Collapse all" filters button', 'tainacan')}
+                            checked={ hideColllapseAllFiltersButton }
+                            onChange={ ( isChecked ) => {
+                                    hideColllapseAllFiltersButton = isChecked;
+                                    setAttributes({ hideColllapseAllFiltersButton: isChecked });
                                 } 
                             }
                         />
@@ -866,7 +897,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                     !hideExposersButton ? <span className="fake-button"><div className="fake-icon"></div><div className="fake-text"></div></span> : null
                                 }
                             </div>
-                            <div className="below-search-control">
+                            <div className={ 'below-search-control' + (displayFiltersHorizontally ? ' horizontal-filters' : '') }>
                                 { !showFiltersButtonInsideSearchControl & !hideHideFiltersButton && !hideFilters ? <span className="fake-hide-button"><div className="fake-icon"></div></span> : null }
                                 { 
                                     !hideFilters && !filtersAsModal && !startWithFiltersHidden ?
@@ -876,6 +907,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                                 }}
                                                 className="filters">
                                             <div className="fake-filters-heading"></div>
+                                            { !hideColllapseAllFiltersButton ? <span className="fake-link"></span> : null }
                                             { Array(2).fill().map( () => {
                                                 return <div className="fake-filter">
                                                     <span className="fake-text"></span>

@@ -41,12 +41,19 @@
                 }"
                 aria-controls="filters-modal"
                 :aria-expanded="isFiltersModalActive"
-                :class="hideHideFiltersButton ? 'is-hidden-tablet' : ''"
+                :class="{
+                    'is-hidden-tablet': !shouldNotHideFiltersOnMobile && hideHideFiltersButton,
+                    'is-hidden': shouldNotHideFiltersOnMobile && hideHideFiltersButton
+                }"
                 :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
                 @click="isFiltersModalActive = !isFiltersModalActive">
             <span class="icon">
                 <i 
-                        :class="{ 'tainacan-icon-arrowleft' : isFiltersModalActive, 'tainacan-icon-arrowright' : !isFiltersModalActive }"
+                        :class="{
+                            'tainacan-icon-arrowdown': isFiltersModalActive && displayFiltersHorizontally,
+                            'tainacan-icon-arrowleft': isFiltersModalActive && !displayFiltersHorizontally,
+                            'tainacan-icon-arrowright' : !isFiltersModalActive
+                        }"
                         class="tainacan-icon tainacan-icon-1-25em" />
             </span>
             <span class="text is-hidden-tablet">{{ $i18n.get('filters') }}</span>
@@ -406,7 +413,45 @@
 
     <!-- SIDEBAR WITH FILTERS -->
     <template v-if="!hideFilters">
+        <template v-if="!filtersAsModal && shouldNotHideFiltersOnMobile">
+            <div 
+                    v-if="isFiltersModalActive"
+                    id="filters-modal"
+                    ref="filters-modal"    
+                    role="region" 
+                    :class="'tainacan-modal tainacan-form filters-menu' + (displayFiltersHorizontally ? ' horizontal-filters' : '')">
+                
+                <div class="animation-content modal-content">
+
+                    <!-- JS-side hook for extra form content -->
+                    <div 
+                            v-if="hooks['filters_before']"
+                            class="faceted-search-hook faceted-search-hook-filters-before"
+                            v-html="hooks['filters_before']" />
+
+                    <filters-items-list
+                            id="filters-items-list"
+                            :is-loading-items="isLoadingItems"
+                            :taxonomy="taxonomy"
+                            :collection-id="collectionId + ''"
+                            :is-repository-level="isRepositoryLevel"
+                            :filters-as-modal="false"
+                            :has-filtered="hasFiltered"
+                            :is-mobile-screen="isMobileScreen"
+                            :hide-collapse-all-filters-button="hideCollapseAllFiltersButton"
+                            @update-is-loading-items-state="(state) => isLoadingItems = state" />
+
+                    <!-- JS-side hook for extra form content -->
+                    <div 
+                            v-if="hooks['filters_after']"
+                            class="faceted-search-hook faceted-search-hook-filters-after"
+                            v-html="hooks['filters_after']" />
+                
+                </div>
+            </div>
+        </template>
         <b-modal
+                v-else
                 id="filters-modal"
                 ref="filters-modal"     
                 v-model="isFiltersModalActive"       
@@ -415,10 +460,10 @@
                 :auto-focus="filtersAsModal"
                 :trap-focus="filtersAsModal"
                 full-screen
-                :custom-class="'tainacan-modal tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')"
+                :custom-class="'tainacan-modal tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '') + (displayFiltersHorizontally ? ' horizontal-filters' : '')"
                 :can-cancel="hideHideFiltersButton || !filtersAsModal ? ['x', 'outside'] : ['x', 'escape', 'outside']"
                 :close-button-aria-label="$i18n.get('close')">
-
+                
             <!-- JS-side hook for extra form content -->
             <div 
                     v-if="hooks['filters_before']"
@@ -438,6 +483,7 @@
                     :filters-as-modal="filtersAsModal"
                     :has-filtered="hasFiltered"
                     :is-mobile-screen="isMobileScreen"
+                    :hide-collapse-all-filters-button="hideCollapseAllFiltersButton"
                     @update-is-loading-items-state="(state) => isLoadingItems = state" />
 
             <!-- JS-side hook for extra form content -->
@@ -737,7 +783,10 @@
             startWithFiltersHidden: false,
             filtersAsModal: false,
             showInlineViewModeOptions: false,
-            showFullscreenWithViewModes: false
+            showFullscreenWithViewModes: false,
+            shouldNotHideFiltersOnMobile: false,
+            displayFiltersHorizontally: false,
+            hideCollapseAllFiltersButton: false,
         },
         data() {
             return {
@@ -790,6 +839,7 @@
             }),
             wrapperClasses() {
                 return {
+                    'has-horizontal-filters': this.displayFiltersHorizontally,
                     'is-filters-menu-open': !this.hideFilters && this.isFiltersModalActive && !this.openAdvancedSearch,
                     'is-filters-menu-fixed-at-top': this.isFiltersListFixedAtTop,
                     'is-filters-menu-fixed-at-bottom': this.isFiltersListFixedAtBottom,
@@ -973,7 +1023,7 @@
                     this.hasAnOpenAlert = true;
             },
             isFiltersModalActive() {
-                if (this.isFiltersModalActive) {
+                if ( this.isFiltersModalActive ) {
                     setTimeout(() => {
                         if (this.filtersAsModal && this.$refs['filters-modal'] && this.$refs['filters-modal'].focus)
                             this.$refs['filters-modal'].focus();
@@ -1129,9 +1179,11 @@
 
 
             // Watches window resize to adjust filter's top position and compression on mobile
-            if (!this.hideFilters) {            
+            if ( !this.hideFilters && !this.shouldNotHideFiltersOnMobile ) {            
                 this.hideFiltersOnMobile();
                 window.addEventListener('resize', this.hideFiltersOnMobile);
+            } else {
+                this.isFiltersModalActive = !this.startWithFiltersHidden;
             }
             
             // Uses Intersection Observer o see if the top of the list is on screen and fix filters list position
@@ -1589,7 +1641,7 @@
                 // Component
                 this.$emitter.off();
                 // Window
-                if (!this.hideFilters)
+                if ( !this.hideFilters && !this.shouldNotHideFiltersOnMobile )
                     window.removeEventListener('resize', this.hideFiltersOnMobile);
                 // $root
                 if (!this.hideAdvancedSearch)
@@ -1925,7 +1977,7 @@
             }
 
             &:last-child {
-                margin-right: auto;
+                margin-right: 0;
             }
 
             .label {
