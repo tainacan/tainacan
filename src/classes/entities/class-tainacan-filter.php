@@ -20,7 +20,8 @@ class Filter extends Entity {
         $filter_type,
         $filter_type_options,
         $begin_with_filter_collapsed,
-        $display_in_repository_level_lists;
+        $display_in_repository_level_lists,
+        $description_bellow_name;
 
     static $post_type = 'tainacan-filter';
     public $enabled_for_collection = true;
@@ -195,7 +196,15 @@ class Filter extends Entity {
     public function get_display_in_repository_level_lists() {
         return $this->get_mapped_property('display_in_repository_level_lists');
     }
-
+    	
+	/**
+	 * Return the filter description_bellow_name
+	 *
+	 * @return string
+	 */
+	function get_description_bellow_name() {
+		return $this->get_mapped_property('description_bellow_name');
+	}
 
     /**
      * Define the filter name
@@ -299,6 +308,16 @@ class Filter extends Entity {
 	}
 	public function set_enabled_for_collection($value) {
 		$this->enabled_for_collection = $value;
+	}
+
+    /**
+	 * Set filter description_bellow_name
+	 *
+	 * @param [string] $value If the description will be displayed below the name instead of inside a tooltip (yes/no)
+	 * @return void
+	 */
+	function set_description_bellow_name($value) {
+		$this->set_mapped_property('description_bellow_name', $value);
 	}
 
 

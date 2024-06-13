@@ -30,8 +30,8 @@ export default {
     },
     computed: {
         getHelperTooltipContent() {
-            return `<h5>` + this.title + `</h5>
-                    <p>` + ((this.message != '' && this.message != undefined) ? this.message : this.$i18n.get('info_no_description_provided')) + `</p>`;
+            return ( this.title ? ( `<p style="font-weight: bold">` + this.title + `</p>` ) : '' ) +
+                    `<p>` + ((this.message != '' && this.message != undefined) ? this.message : this.$i18n.get('info_no_description_provided')) + `</p>`;
         }
     }
 }
@@ -39,7 +39,7 @@ export default {
 
 <style lang="scss">
 
-    .tainacan-help-tooltip-trigger>a .icon {
+    .tainacan-help-tooltip-trigger > a .icon {
         i, i::before { font-size: 0.875em !important }
     }
 

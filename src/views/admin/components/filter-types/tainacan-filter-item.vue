@@ -13,17 +13,6 @@
             <template #trigger="props">
                 <button
                         :id="'filter-label-id-' + filter.id"
-                        v-tooltip="{
-                            delay: {
-                                shown: 500,
-                                hide: 300,
-                            },
-                            content: filter.name,
-                            html: false,
-                            autoHide: false,
-                            placement: 'top-start',
-                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
-                        }"
                         :for="'filter-input-id-' + filter.id"
                         :aria-controls="'filter-input-id-' + filter.id"
                         :aria-expanded="singleCollapseOpen"
@@ -37,10 +26,22 @@
                                 }"
                                 class="tainacan-icon tainacan-icon-1-25em" />
                     </span>
-                    <span class="collapse-label">{{ filter.name }}</span>
+                    <span 
+                            class="collapse-label">
+                        {{ filter.name }}
+                    </span>
+                    <help-button
+                            v-if="filter.description_bellow_name !== 'yes' && filter.description" 
+                            :title="filter.name"
+                            :message="filter.description" />
                 </button>
             </template>
             <div :id="'filter-input-id-' + filter.id">
+                <p 
+                        v-if="filter.description_bellow_name === 'yes' && filter.description"
+                        class="filter-description-help-info">
+                    {{ filter.description }}
+                </p>
                 <component
                         :is="filter.filter_type_object ? filter.filter_type_object.component : null"
                         :filter="filter"
@@ -59,18 +60,6 @@
                 class="collapse show disabled-filter">
             <div class="collapse-trigger">
                 <button
-                        
-                        v-tooltip="{
-                            delay: {
-                                shown: 500,
-                                hide: 300,
-                            },
-                            content: $i18n.get('instruction_click_to_load_filter'),
-                            html: false,
-                            autoHide: false,
-                            placement: 'top-start',
-                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
-                        }"
                         :for="'filter-input-id-' + filter.id"
                         :aria-controls="'filter-input-id-' + filter.id"
                         class="label"
@@ -78,7 +67,25 @@
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-arrowright tainacan-icon-1-25em" />
                     </span>
-                    <span class="collapse-label">{{ filter.name }}</span>
+                    <span 
+                            class="collapse-label"
+                            v-tooltip="{
+                                delay: {
+                                    shown: 500,
+                                    hide: 300,
+                                },
+                                content: $i18n.get('instruction_click_to_load_filter'),
+                                html: false,
+                                autoHide: false,
+                                placement: 'top-start',
+                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
+                            }">
+                        {{ filter.name }}
+                    </span>
+                    <help-button
+                            v-if="filter.description_bellow_name !== 'yes' && filter.description" 
+                            :title="filter.name"
+                            :message="filter.description" />
                 </button>
             </div>
         </div>
@@ -218,6 +225,15 @@
                 outline: none;
                 padding: 0 !important;
                 margin: 0;
+
+                .tainacan-help-tooltip-trigger {
+                    font-size: 1.188em;
+
+                    .icon {
+                        margin-right: 0px;
+                        margin-left: 6px;
+                    }
+                }
             }
         }
 
@@ -225,6 +241,13 @@
             font-weight: normal !important;
             font-size: 0.875em;
             width: 100%;
+        }
+
+        .filter-description-help-info {
+            font-size: 0.75em;
+            color: var(--tainacan-info-color);
+            margin-top: -0.25em;
+            margin-bottom: 0.75em;
         }
 
         .taginput-container {
