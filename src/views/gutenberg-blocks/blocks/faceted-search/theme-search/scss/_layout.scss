@@ -192,12 +192,12 @@
 					break-inside: avoid;
 					display: inline-block;
 					vertical-align: text-top;
-					padding-right: 2.25em;
 					margin-bottom: 12px;
 				}
 
 				@media screen and (min-width: 769px) {
 					.filter-item-forms {
+						padding-right: 2.25em;
 						width: 272px;
 					}
 				}
@@ -216,10 +216,6 @@
 				width: 100%;
 			}
 			
-			#filter-menu-compress-button {
-				display: none;
-			}
-
 			.filters-menu {
 				padding-top: 0;
 
