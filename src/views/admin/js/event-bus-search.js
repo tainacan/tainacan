@@ -29,7 +29,7 @@ export default {
                 this.updateURLQueries();
             },
             removeMetaFromFilterTag(filterTag) {
-
+                
                 if (filterTag.singleLabel != undefined || filterTag.label != undefined) {
                     
                     if (filterTag.argType !== 'postin') {
@@ -39,7 +39,8 @@ export default {
                                 label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
                                 isMultiValue: filterTag.singleLabel ? false : true,
                                 taxonomy: filterTag.taxonomy,
-                                value: filterTag.value
+                                value: filterTag.value,
+                                secondaryMetadatumId: filterTag.secondaryMetadatumId
                             });
                         } else {
                             app.config.globalProperties.$store.dispatch('search/removeMetaQuery', {
@@ -47,7 +48,8 @@ export default {
                                 label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
                                 isMultiValue: filterTag.singleLabel ? false : true,
                                 metadatum_id: filterTag.metadatumId,
-                                value: filterTag.value
+                                value: filterTag.value,
+                                secondaryMetadatumId: filterTag.secondaryMetadatumId
                             });
                         }
                     } else {

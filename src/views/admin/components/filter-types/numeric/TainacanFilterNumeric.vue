@@ -35,6 +35,7 @@
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :aria-minus-label="$i18n.get('label_decrease')"
                 :aria-plus-label="$i18n.get('label_increase')"
+                :placeholder="filter.placeholder ? filter.placeholder : ''"
                 size="is-small"
                 :step="Number(filterTypeOptions.step)"
                 @update:model-value="($event) => { resetPage($event); emit($event); }" />

@@ -3,7 +3,7 @@
         <b-datepicker
                 v-model="dateInit"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                :placeholder="$i18n.get('instruction_select_a_date')"
+                :placeholder="filter.placeholder ? filter.placeholder : $i18n.get('instruction_select_a_date')"
                 editable
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
@@ -45,7 +45,7 @@
                 v-if="filterTypeOptions.accept_date_interval === 'yes'"
                 v-model="dateEnd"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                :placeholder="$i18n.get('instruction_select_a_date')"
+                :placeholder="filter.placeholder ? filter.placeholder : $i18n.get('instruction_select_a_date')"
                 editable
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
@@ -185,10 +185,15 @@
                     let dateInit = this.dateInit.getUTCFullYear() + '-' +
                         ('00' + (this.dateInit.getUTCMonth() + 1)).slice(-2) + '-' +
                         ('00' + this.dateInit.getUTCDate()).slice(-2);
-                    let dateEnd = this.dateEnd.getUTCFullYear() + '-' +
-                        ('00' + (this.dateEnd.getUTCMonth() + 1)).slice(-2) + '-' +
-                        ('00' + this.dateEnd.getUTCDate()).slice(-2);
-                    values = [ dateInit, dateEnd ];
+
+                    if ( this.dateEnd !== null ) {
+                        let dateEnd = this.dateEnd.getUTCFullYear() + '-' +
+                            ('00' + (this.dateEnd.getUTCMonth() + 1)).slice(-2) + '-' +
+                            ('00' + this.dateEnd.getUTCDate()).slice(-2);
+                        values = [ dateInit, dateEnd ];
+                    } else {
+                        values = [ dateInit ];
+                    }
                 }
 
                 if ( this.filterTypeOptions.accept_date_interval !== 'yes' ) {

@@ -5,6 +5,7 @@
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :aria-minus-label="$i18n.get('label_decrease')"
                 :aria-plus-label="$i18n.get('label_increase')"
+                :placeholder="filter.placeholder ? filter.placeholder : ''"
                 size="is-small"
                 :step="filterTypeOptions.step"
                 @update:model-value="($event) => { resetPage(); validadeValues($event) }"
@@ -19,6 +20,7 @@
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :aria-minus-label="$i18n.get('label_decrease')"
                 :aria-plus-label="$i18n.get('label_increase')"
+                :placeholder="filter.placeholder ? filter.placeholder : ''"
                 size="is-small"
                 :step="filterTypeOptions.step"
                 @update:model-value="($event) => { resetPage(); validadeValues($event) }" />

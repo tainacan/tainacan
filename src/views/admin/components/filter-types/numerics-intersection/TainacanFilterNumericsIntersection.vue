@@ -5,6 +5,7 @@
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :aria-minus-label="$i18n.get('label_decrease')"
                 :aria-plus-label="$i18n.get('label_increase')"
+                :placeholder="filter.placeholder ? filter.placeholder : ''"
                 size="is-small"
                 :step="filterTypeOptions.step"
                 @update:model-value="($event) => { resetPage(); validadeValues($event) }"
@@ -21,6 +22,7 @@
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :aria-minus-label="$i18n.get('label_decrease')"
                 :aria-plus-label="$i18n.get('label_increase')"
+                :placeholder="filter.placeholder ? filter.placeholder : ''"
                 size="is-small"
                 :step="filterTypeOptions.step"
                 @update:model-value="($event) => { resetPage(); validadeValues($event) }" />
@@ -101,7 +103,7 @@
                         compare: this.filterTypeOptions.first_comparator,
                         metadatum_id: this.metadatumId,
                         collection_id: this.collectionId,
-                        value: this.filterTypeOptions.accept_numeric_interval === 'yes' ? values : values[0]
+                        value: values[0]
                     });
                     this.$emit('input', {
                         filter: 'intersection',
@@ -109,7 +111,8 @@
                         compare: this.filterTypeOptions.second_comparator,
                         metadatum_id: this.filterTypeOptions.secondary_filter_metadatum_id,
                         collection_id: this.collectionId,
-                        value: this.filterTypeOptions.accept_numeric_interval === 'yes' ? values : values[0]
+                        value: values[0],
+                        secondary: true
                     });
                 } else {
                     // Much more complicated logic to be implemented in the future. See #889

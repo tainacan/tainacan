@@ -51,6 +51,45 @@
 
             <b-field 
                     :addons="false"
+                    :label="$i18n.getHelperTitle('filters', 'description_bellow_name')"
+                    :type="formErrors['description_bellow_name'] != undefined ? 'is-danger' : ''"
+                    :message="formErrors['description_bellow_name'] != undefined ? formErrors['description_bellow_name'] : ''">
+                &nbsp;
+                <b-switch
+                        v-model="form.description_bellow_name"
+                        size="is-small"
+                        true-value="yes"
+                        false-value="no"
+                        :native-value="form.description_bellow_name == 'yes' ? 'yes' : 'no'"
+                        name="description_bellow_name"
+                        @update:model-value="clearErrors('description_bellow_name')">
+                    <help-button
+                            :title="$i18n.getHelperTitle('filters', 'description_bellow_name')"
+                            :message="$i18n.getHelperMessage('filters', 'description_bellow_name')"
+                            :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                </b-switch>
+            </b-field>
+
+            <b-field
+                    v-if="form.filter_type_object.use_input_placeholder"
+                    :addons="false"
+                    :type="formErrors['placeholder'] != undefined ? 'is-danger' : ''"
+                    :message="formErrors['placeholder'] != undefined ? formErrors['placeholder'] : ''">
+                <label class="label is-inline">
+                    {{ $i18n.getHelperTitle('filters', 'placeholder') }}
+                    <help-button
+                            :title="$i18n.getHelperTitle('filters', 'placeholder')"
+                            :message="$i18n.getHelperMessage('filters', 'placeholder')"
+                            :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                </label>
+                <b-input
+                        v-model="form.placeholder"
+                        name="placeholder"
+                        @focus="clearErrors('placeholder')" />
+            </b-field>
+
+            <b-field 
+                    :addons="false"
                     :type="formErrors['status'] != undefined ? 'is-danger' : ''" 
                     :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
                 <label class="label is-inline">
@@ -292,12 +331,16 @@ export default {
         }
     },
     created() {
-
+        
         this.form = this.editedFilter;
         this.formErrors = this.form.formErrors != undefined ? this.form.formErrors : {};
         this.formErrorMessage = this.form.formErrors != undefined ? this.form.formErrorMessage : ''; 
 
         this.oldForm = JSON.parse(JSON.stringify(this.originalFilter));
+        
+        if ( this.form.metadatum == undefined && this.oldForm.metadatum != undefined )
+            this.form.metadatum = this.oldForm.metadatum;
+        
     },
     mounted() {
         // Fills hook forms with it's real values 
@@ -322,18 +365,22 @@ export default {
             'updateFilter'
         ]),
         saveEdition(filter) {
+
+            this.isLoading = true;
+
             if ((filter.filter_type_object && filter.filter_type_object.form_component) || filter.edit_form == '') {
-                
-                this.isLoading = true;
+
                 for (let [key, value] of Object.entries(this.form)) {
-                    if (key === 'begin_with_filter_collapsed' || key === 'display_in_repository_level_lists')
+                    if (key === 'begin_with_filter_collapsed' || key === 'display_in_repository_level_lists' || key === 'description_bellow_name' )
                         this.form[key] = (value == 'yes' || value == true) ? 'yes' : 'no';
                 }
                 if (this.form['begin_with_filter_collapsed'] === undefined)
                     this.form['begin_with_filter_collapsed'] = 'no';
                 if (this.form['display_in_repository_level_lists'] === undefined)
                     this.form['display_in_repository_level_lists'] = 'no';
-                
+                if (this.form['description_bellow_name'] === undefined)
+                    this.form['description_bellow_name'] = 'no';
+
                 this.updateFilter({ filterId: filter.id, index: this.index, options: this.form })
                     .then(() => {
                         this.form = {};
@@ -361,7 +408,7 @@ export default {
                 let formObj = {};
                 
                 for (let [key, value] of formData.entries()) {
-                    if (key === 'begin_with_filter_collapsed' || key === 'display_in_repository_level_lists')
+                    if (key === 'begin_with_filter_collapsed' || key === 'display_in_repository_level_lists' || key === 'description_bellow_name' )
                         formObj[key] = (value == 'yes' || value == true) ? 'yes' : 'no';
                     else
                         formObj[key] = value;
@@ -370,9 +417,10 @@ export default {
                     formObj['begin_with_filter_collapsed'] = 'no';
                 if (formObj['display_in_repository_level_lists'] === undefined)
                     formObj['display_in_repository_level_lists'] = 'no';
+                if (formObj['description_bellow_name'] === undefined)
+                    formObj['description_bellow_name'] = 'no';
                     
                 this.fillExtraFormData(formObj);
-                this.isLoading = true;
                 this.updateFilter({ filterId: filter.id, index: this.index, options: formObj })
                     .then(() => {
                         this.form = {};

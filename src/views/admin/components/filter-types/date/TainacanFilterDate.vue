@@ -34,7 +34,7 @@
                 v-model="value"
                 position="is-bottom-right"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                :placeholder="$i18n.get('instruction_select_a_date')"
+                :placeholder="filter.placeholder ? filter.placeholder : $i18n.get('instruction_select_a_date')"
                 editable
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"

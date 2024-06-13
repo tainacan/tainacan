@@ -53,7 +53,16 @@ abstract class Filter_Type {
      * @var string
      */
     private $preview_template = '';
+
+    /**
+     * Defines if the filter type should use the max options
+     */
     protected $use_max_options = true;
+
+    /**
+     * Defines if the filter type should provide a placeholder for the input field
+     */
+    protected $use_input_placeholder = true;
 
     public function __construct(){
         add_action('register_filter_types', array(&$this, 'register_filter_type'));
@@ -126,15 +135,16 @@ abstract class Filter_Type {
     public function _toArray(){
         $attributes = [];
 
-        $attributes['className']        = get_class($this);
-        $attributes['name']             = $this->get_name();
-        $attributes['component']        = $this->get_component();
-        $attributes['script']           = $this->get_script();
-        $attributes['options']          = $this->get_options();
-        $attributes['supported_types']  = $this->get_supported_types();
-        $attributes['preview_template'] = $this->get_preview_template();
-        $attributes['use_max_options']  = $this->get_use_max_options();
-        $attributes['form_component']   = $this->get_form_component();
+        $attributes['className']                = get_class($this);
+        $attributes['name']                     = $this->get_name();
+        $attributes['component']                = $this->get_component();
+        $attributes['script']                   = $this->get_script();
+        $attributes['options']                  = $this->get_options();
+        $attributes['supported_types']          = $this->get_supported_types();
+        $attributes['preview_template']         = $this->get_preview_template();
+        $attributes['use_max_options']          = $this->get_use_max_options();
+        $attributes['use_input_placeholder']    = $this->get_use_input_placeholder();
+        $attributes['form_component']           = $this->get_form_component();
 
         return $attributes;
     }
@@ -206,6 +216,14 @@ abstract class Filter_Type {
 
     public function get_use_max_options() {
         return $this->use_max_options;
+    }
+
+    public function set_use_input_placeholder($use_input_placeholder) {
+        $this->use_input_placeholder = $use_input_placeholder;
+    }
+
+    public function get_use_input_placeholder() {
+        return $this->use_input_placeholder;
     }
 
     /**

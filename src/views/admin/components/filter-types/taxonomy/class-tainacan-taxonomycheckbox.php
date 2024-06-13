@@ -12,6 +12,7 @@ class TaxonomyCheckbox extends Filter_Type {
         $this->set_name( __('Taxonomy Checkbox List', 'tainacan') );
         $this->set_supported_types(['term']);
         $this->set_component('tainacan-filter-taxonomy-checkbox');
+        $this->set_use_input_placeholder(false);
         $this->set_preview_template('
             <div>
                 <div>
