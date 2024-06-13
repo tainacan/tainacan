@@ -32,6 +32,7 @@ import ThemeSearch from './theme.vue';
 
 // Remaining imports
 import store from '../../../admin/js/store/store';
+import HelpButton from '../../../admin/components/other/help-button.vue';
 import routerTheme from './theme-search/js/theme-router.js';
 import eventBusSearch from '../../../admin/js/event-bus-search';
 import { 
@@ -188,6 +189,7 @@ export default (element) => {
             VueItemsList.use(AxiosErrorHandlerPlugin);
             VueItemsList.use(ConsolePlugin, {visual: false});
             VueItemsList.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
+            VueItemsList.component('help-button', HelpButton);
 
             /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
             if (typeof window.tainacan_extra_components != "undefined") {

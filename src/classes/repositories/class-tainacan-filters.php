@@ -118,6 +118,16 @@ class Filters extends Repository {
 				'description' => __( 'The filter input placeholder. This is a simple message that will appear inside textual input and may indicate to the user what kind of information is expected.', 'tainacan' ),
 				'default'     => '',
 			],
+			'description_bellow_name' => [
+				'map'         => 'meta',
+				'title'       => __( 'Description below name', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'Whether the filter description should be displayed below the input label instead of inside a tooltip.', 'tainacan' ),
+				'on_error'    => __( 'Please set the "Description below name" value as "yes" or "no"', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+				'enum'		  => [ 'yes', 'no' ],
+				'default'     => 'no'
+			],
 		] );
 	}
 
