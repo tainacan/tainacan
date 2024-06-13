@@ -68,7 +68,6 @@
                         <i class="tainacan-icon tainacan-icon-arrowright tainacan-icon-1-25em" />
                     </span>
                     <span 
-                            class="collapse-label"
                             v-tooltip="{
                                 delay: {
                                     shown: 500,
@@ -79,7 +78,8 @@
                                 autoHide: false,
                                 placement: 'top-start',
                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
-                            }">
+                            }"        
+                            class="collapse-label">
                         {{ filter.name }}
                     </span>
                     <help-button
