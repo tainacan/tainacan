@@ -177,6 +177,8 @@
 			.filters-components-list {
 				overflow: visible;
 				width: 100%;
+				max-width: 100% !important;
+				margin: 0;
 			}
 
 			.filters-components-list {
@@ -196,9 +198,14 @@
 				}
 
 				@media screen and (min-width: 769px) {
+					& > div:not(:last-child) {
+						margin-right: 2.25em;
+					}
 					.filter-item-forms {
-						padding-right: 2.25em;
 						width: 272px;
+					}
+					.filter-item-forms:not(:last-child) {
+						margin-right: 2.25em;
 					}
 				}
 			}
