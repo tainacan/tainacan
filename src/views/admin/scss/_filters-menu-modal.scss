@@ -38,7 +38,7 @@
 
     &.horizontal-filters {
         .modal-content {
-            padding: var(--tainacan-container-padding) var(--tainacan-one-column);
+            padding: calc(var(--tainacan-container-padding) - 12px) var(--tainacan-one-column) var(--tainacan-container-padding) var(--tainacan-one-column);
         }
     }
 

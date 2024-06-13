@@ -41,12 +41,19 @@
                 }"
                 aria-controls="filters-modal"
                 :aria-expanded="isFiltersModalActive"
-                :class="hideHideFiltersButton ? 'is-hidden-tablet' : ''"
+                :class="{
+                    'is-hidden-tablet': !shouldNotHideFiltersOnMobile && hideHideFiltersButton,
+                    'is-hidden': shouldNotHideFiltersOnMobile && hideHideFiltersButton
+                }"
                 :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
                 @click="isFiltersModalActive = !isFiltersModalActive">
             <span class="icon">
                 <i 
-                        :class="{ 'tainacan-icon-arrowleft' : isFiltersModalActive, 'tainacan-icon-arrowright' : !isFiltersModalActive }"
+                        :class="{
+                            'tainacan-icon-arrowdown': isFiltersModalActive && displayFiltersHorizontally,
+                            'tainacan-icon-arrowleft': isFiltersModalActive && !displayFiltersHorizontally,
+                            'tainacan-icon-arrowright' : !isFiltersModalActive
+                        }"
                         class="tainacan-icon tainacan-icon-1-25em" />
             </span>
             <span class="text is-hidden-tablet">{{ $i18n.get('filters') }}</span>
