@@ -20,10 +20,14 @@
                                 @input="resetPage"> 
                         <span class="check" /> 
                         <span class="control-label">
-                            <span class="checkbox-label-text">{{ option.label }}</span> 
+                            <span 
+                                    :title="option.label"
+                                    class="checkbox-label-text">
+                                {{ option.label }}
+                            </span> 
                             <span 
                                     v-if="option.total_items != undefined"
-                                    class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
+                                    class="facet-item-count has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
                         </span>
                     </label>
                     <button
@@ -328,12 +332,27 @@
         display: flex;
         flex-wrap: nowrap;
         width: 100%;
+        align-items: baseline;
     }
     .checkbox-label-text {
-        white-space: nowrap;
+        white-space: wrap;
         text-overflow: ellipsis;
         overflow: hidden;
         line-height: 1.45em;
         break-inside: avoid;
+        display: -webkit-box;
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical; 
     }
+
+    .facet-item-count {
+        margin-left: auto;
+    }
+
+    .b-checkbox:hover .facet-item-count,
+    .b-checkbox:focus .facet-item-count {
+        --tainacan-info-color: var(--tainacan-input-color);
+    }
+
 </style>
