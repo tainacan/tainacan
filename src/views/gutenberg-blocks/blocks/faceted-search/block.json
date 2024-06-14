@@ -224,6 +224,10 @@
         "hideColllapseAllFiltersButton": {
             "type": "boolean",
             "default": false
+        },
+        "filtersInlineWidth": {
+            "type": "number",
+            "default": 272
         }
     },
     "supports": {

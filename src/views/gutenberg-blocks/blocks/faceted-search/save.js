@@ -51,7 +51,8 @@ export default function({ attributes }) {
         collectionOrderByMeta,
         collectionOrderByType,
         shouldNotHideFiltersOnMobile,
-        displayFiltersHorizontally
+        displayFiltersHorizontally,
+        filtersInlineWidth
     } = attributes;
     
     let updatedListType = '' + listType;
@@ -70,6 +71,7 @@ export default function({ attributes }) {
                 '--tainacan-base-font-size': baseFontSize + 'px',
                 '--tainacan-background-color': backgroundColor,
                 '--tainacan-filter-menu-width-theme': filtersAreaWidth + '%',
+                '--tainacan-filters-inline-width': filtersInlineWidth + 'px',
                 '--tainacan-input-color': inputColor,
                 '--tainacan-input-background-color': inputBackgroundColor,
                 '--tainacan-input-border-color': inputBorderColor,

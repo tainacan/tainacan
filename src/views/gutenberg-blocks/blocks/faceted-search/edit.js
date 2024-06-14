@@ -79,7 +79,8 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
         collectionOrderByType,
         shouldNotHideFiltersOnMobile,
         displayFiltersHorizontally,
-        hideColllapseAllFiltersButton
+        hideColllapseAllFiltersButton,
+        filtersInlineWidth
     } = attributes;
 
     // Gets blocks props from hook
@@ -600,13 +601,24 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                 setAttributes( { baseFontSize: newFontSize } );
                             } }
                         />
-                        <RangeControl
-                            label={ __('Filters Area Width (%)', 'tainacan') }
-                            value={ filtersAreaWidth }
-                            onChange={ ( width ) => setAttributes( { filtersAreaWidth: width } ) }
-                            min={ 10 }
-                            max={ 40 }
-                        />
+                        { !displayFiltersHorizontally && !filtersAsModal ? 
+                            <RangeControl
+                                label={ __('Filters Area Width (%)', 'tainacan') }
+                                value={ filtersAreaWidth }
+                                onChange={ ( width ) => setAttributes( { filtersAreaWidth: width } ) }
+                                min={ 10 }
+                                max={ 40 }
+                            />
+                        : null }
+                        { displayFiltersHorizontally ? 
+                            <RangeControl
+                                label={ __('Filters Inline Width (px)', 'tainacan') }
+                                value={ filtersInlineWidth }
+                                onChange={ ( width ) => setAttributes( { filtersInlineWidth: width } ) }
+                                min={ 100 }
+                                max={ 800 }
+                            />
+                        : null }
                     </PanelBody>
                     <PanelBody
                             title={__('Colors', 'tainacan')}
@@ -846,6 +858,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                 style={{
                                     '--tainacan-background-color': backgroundColor,
                                     '--tainacan-filter-menu-width-theme': filtersAreaWidth + '%',
+                                    '--tainacan-filters-inline-width': filtersInlineWidth + 'px',
                                     '--tainacan-input-color': inputColor,
                                     '--tainacan-input-background-color': inputBackgroundColor,
                                     '--tainacan-input-border-color': inputBorderColor,
