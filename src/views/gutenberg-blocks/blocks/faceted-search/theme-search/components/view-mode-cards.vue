@@ -43,7 +43,7 @@
                             <p 
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: item.title != undefined ? item.title : '',
@@ -57,7 +57,7 @@
                                     v-if="isSlideshowViewModeEnabled"
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 100,
                                         },
                                         content: $i18n.get('label_see_on_fullscreen'),
@@ -92,7 +92,7 @@
                                 <p 
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: item.title != undefined ? item.title : '',

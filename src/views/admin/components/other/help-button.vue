@@ -7,7 +7,7 @@
                     popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-helper-tooltip', extraClasses],
                     html: true,
                     delay: {
-                        shown: 0,
+                        show: 0,
                         hide: 100,
                     }
                 }"

@@ -33,7 +33,7 @@
                     id="filter-menu-compress-button"
                     v-tooltip="{
                         delay: {
-                            shown: 500,
+                            show: 500,
                             hide: 300,
                         },
                         content: !isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
@@ -223,7 +223,7 @@
                         ref="displayedMetadataDropdown" 
                         v-tooltip="{
                             delay: {
-                                shown: 500,
+                                show: 500,
                                 hide: 300,
                             },
                             content: (totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry') ? (adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry') ? $i18n.get('info_current_view_mode_metadata_not_allowed') : $i18n.get('info_cant_select_metadata_without_items') : '',

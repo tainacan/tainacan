@@ -203,7 +203,7 @@
                         <p
                                 v-tooltip="{
                                     delay: {
-                                        shown: 500,
+                                        show: 500,
                                         hide: 300,
                                     },
                                     content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
@@ -534,7 +534,7 @@
                         <p
                                 v-tooltip="{
                                     delay: {
-                                        shown: 500,
+                                        show: 500,
                                         hide: 300,
                                     },
                                     content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
@@ -663,7 +663,7 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`,
@@ -678,7 +678,7 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: item.author_name != undefined ? item.author_name : '',
@@ -694,7 +694,7 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: item.creation_date != undefined ? parseDateToNavigatorLanguage(item.creation_date) : '',
@@ -775,7 +775,7 @@
                                     v-if="collectionId != undefined && titleItemMetadatum"
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: item.metadata != undefined ? renderMetadata(item.metadata, titleItemMetadatum) : '',
@@ -791,7 +791,7 @@
                                     v-if="collectionId == undefined && titleItemMetadatum"
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
@@ -1063,7 +1063,7 @@
                                             column.metadata_type_object.related_mapped_prop == 'title'"
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
@@ -1079,7 +1079,7 @@
                                             column.metadata_type_object.related_mapped_prop == 'description'"
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
@@ -1100,7 +1100,7 @@
                                             column.metadatum !== 'row_description'"
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             popperClass: [ 'tainacan-tooltip', 'tooltip', column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
@@ -1127,7 +1127,7 @@
                                         v-if="column.metadatum == 'row_author'"
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: item[column.slug],
@@ -1142,7 +1142,7 @@
                                         v-if="column.metadatum == 'row_modification'"
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: parseDateToNavigatorLanguage(item[column.slug]),
@@ -1157,7 +1157,7 @@
                                         v-if="column.metadatum == 'row_creation'"
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: parseDateToNavigatorLanguage(item[column.slug]),
@@ -1317,7 +1317,7 @@
                                 v-if="collectionId != undefined && titleItemMetadatum"
                                 v-tooltip="{
                                     delay: {
-                                        shown: 500,
+                                        show: 500,
                                         hide: 300,
                                     },
                                     content: item.metadata != undefined ? renderMetadata(item.metadata, titleItemMetadatum) : '',
@@ -1333,7 +1333,7 @@
                                 v-if="collectionId == undefined && titleItemMetadatum"
                                 v-tooltip="{
                                     delay: {
-                                        shown: 500,
+                                        show: 500,
                                         hide: 300,
                                     },
                                     content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
@@ -1549,7 +1549,7 @@
                                         v-if="collectionId != undefined && titleItemMetadatum"
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: item.metadata != undefined ? renderMetadata(item.metadata, titleItemMetadatum) : '',
@@ -1563,7 +1563,7 @@
                                         v-if="collectionId == undefined && titleItemMetadatum"
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
@@ -1792,7 +1792,7 @@
                                                 v-if="collectionId != undefined && titleItemMetadatum"
                                                 v-tooltip="{
                                                     delay: {
-                                                        shown: 500,
+                                                        show: 500,
                                                         hide: 300,
                                                     },
                                                     content: item.metadata != undefined ? renderMetadata(item.metadata, titleItemMetadatum) : '',
@@ -1808,7 +1808,7 @@
                                                 v-if="collectionId == undefined && titleItemMetadatum"
                                                 v-tooltip="{
                                                     delay: {
-                                                        shown: 500,
+                                                        show: 500,
                                                         hide: 300,
                                                     },
                                                     content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),

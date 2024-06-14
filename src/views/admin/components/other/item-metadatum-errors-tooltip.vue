@@ -5,7 +5,7 @@
         <v-tooltip 
                 :popper-class="['tainacan-tooltip', 'tooltip', 'tainacan-helper-tooltip', 'is-danger']"
                 delay="{
-                    shown: 0,
+                    show: 0,
                     hide: 400,
                 }">
             <a class="help-button has-text-danger">

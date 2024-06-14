@@ -43,7 +43,7 @@
                                     v-if="collectionId && titleItemMetadatum"
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: item.metadata != undefined ? renderMetadata(item, titleItemMetadatum) : '',
@@ -57,7 +57,7 @@
                                     v-if="!collectionId && titleItemMetadatum"
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
@@ -71,7 +71,7 @@
                                     v-if="isSlideshowViewModeEnabled"
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 100,
                                         },
                                         content: $i18n.get('label_see_on_fullscreen'),
