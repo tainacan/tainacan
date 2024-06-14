@@ -30,8 +30,8 @@ export default {
     },
     computed: {
         getHelperTooltipContent() {
-            return ( this.title ? ( `<p style="font-weight: bold">` + this.title + `</p>` ) : '' ) +
-                    `<p>` + ((this.message != '' && this.message != undefined) ? this.message : this.$i18n.get('info_no_description_provided')) + `</p>`;
+            return ( this.title ? ( `<p style="font-weight: bold; color: var(--tainacan-secondary);">` + this.title + `</p>` ) : '' ) +
+                    `<p style="color: var(--tainacan-info-color);">` + ((this.message != '' && this.message != undefined) ? this.message : this.$i18n.get('info_no_description_provided')) + `</p>`;
         }
     }
 }

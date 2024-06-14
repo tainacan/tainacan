@@ -316,7 +316,8 @@
 
         .help-tooltip-header {
             padding: 0.8em 0.8em 0em 0.8em;
-            h5 {
+            h5,
+            p {
                 font-size: 0.875em !important;
                 font-weight: bold;
                 color: var(--tainacan-blue5);
@@ -335,7 +336,7 @@
                 overflow: visible !important;
                 max-height: 100% !important;
                 line-height: normal;
-                color: var(--tainacan-blue5);
+                color: var(--tainacan-info-color);
             }
         }
     }
