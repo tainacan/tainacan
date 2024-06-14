@@ -72,7 +72,7 @@
           .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control.horizontal-filters .filters .fake-filter {
             margin: 6px 12px;
             display: inline-flex;
-            width: 16.666%; }
+            width: var(--tainacan-filters-inline-width, 272px); }
       .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .filters {
         flex: 0 1 var(--tainacan-filter-menu-width-theme, 20%);
         display: flex;

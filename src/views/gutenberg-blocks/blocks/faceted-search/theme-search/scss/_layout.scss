@@ -190,11 +190,11 @@
 				}
 				.filter-item-forms {
 					width: 100%;
-					min-width: 272px;
+					min-width: var(--tainacan-filters-inline-width, 272px);
 					break-inside: avoid;
 					display: inline-block;
 					vertical-align: text-top;
-					margin-bottom: 12px;
+					margin-bottom: 1rem;
 				}
 
 				@media screen and (min-width: 769px) {
@@ -202,7 +202,7 @@
 						margin-right: 2.25em;
 					}
 					.filter-item-forms {
-						width: 272px;
+						width: var(--tainacan-filters-inline-width, 272px);
 					}
 					.filter-item-forms:not(:last-child) {
 						margin-right: 2.25em;
