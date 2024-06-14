@@ -110,7 +110,7 @@
                                     v-if="item.document != '' && item.document_type != 'empty'"
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: $i18n.get('label_document_uploaded'),
@@ -128,7 +128,7 @@
                             <span 
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: $i18n.get('label_button_delete_document'),

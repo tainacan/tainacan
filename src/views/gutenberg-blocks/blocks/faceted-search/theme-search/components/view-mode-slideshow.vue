@@ -9,7 +9,7 @@
                 id="slides-help-button"  
                 v-tooltip="{
                     delay: {
-                        shown: 500,
+                        show: 500,
                         hide: 300,
                     },
                     content: $i18n.get('label_slides_help'),
@@ -29,7 +29,7 @@
                 id="metedata-panel-button"  
                 v-tooltip="{
                     delay: {
-                        shown: 500,
+                        show: 500,
                         hide: 300,
                     },
                     content: isMetadataCompressed ? $i18n.get('label_show_metadata') : $i18n.get('label_hide_metadata'),
@@ -50,7 +50,7 @@
                 id="item-page-button"
                 v-tooltip="{
                     delay: {
-                        shown: 500,
+                        show: 500,
                         hide: 300,
                     },
                     content: $i18n.get('label_item_page'),
@@ -70,7 +70,7 @@
                 id="close-fullscren-button"  
                 v-tooltip="{
                     delay: {
-                        shown: 500,
+                        show: 500,
                         hide: 300,
                     },
                     content: $i18n.get('close'),
@@ -90,7 +90,7 @@
                 id="metadata-compress-button"  
                 v-tooltip="{
                     delay: {
-                        shown: 500,
+                        show: 500,
                         hide: 300,
                     },
                     content: isMetadataCompressed ? $i18n.get('label_show_metadata') : $i18n.get('label_hide_metadata'),
@@ -325,7 +325,7 @@
                                 <span 
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: metadatum.name,

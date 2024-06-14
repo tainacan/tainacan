@@ -41,7 +41,7 @@
                         <a 
                                 v-tooltip="{
                                     delay: {
-                                        shown: 500,
+                                        show: 500,
                                         hide: 300,
                                     },
                                     content: $i18n.get('label_copy_link_url'),
@@ -75,7 +75,7 @@
                         <a 
                                 v-tooltip="{
                                     delay: {
-                                        shown: 500,
+                                        show: 500,
                                         hide: 300,
                                     },
                                     content: $i18n.get('label_open_externally'),
@@ -140,7 +140,7 @@
                         <label 
                                 v-tooltip="{
                                     delay: {
-                                        shown: 500,
+                                        show: 500,
                                         hide: 300,
                                     },
                                     content: selectedExposer.name + (exposerMapper.name != undefined ? ': ' + exposerMapper.name + ' ' + $i18n.get('label_mapper') : ''),
@@ -171,7 +171,7 @@
                                     <a 
                                             v-tooltip="{
                                                 delay: {
-                                                    shown: 500,
+                                                    show: 500,
                                                     hide: 300,
                                                 },
                                                 content: $i18n.get('label_copy_link_url'),
@@ -205,7 +205,7 @@
                                     <a 
                                             v-tooltip="{
                                                 delay: {
-                                                    shown: 500,
+                                                    show: 500,
                                                     hide: 300,
                                                 },
                                                 content: $i18n.get('label_open_externally'),

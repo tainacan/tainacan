@@ -73,7 +73,7 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: bgProcess.name ? bgProcess.name : $i18n.get('label_unnamed_process'),
@@ -91,7 +91,7 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process'),
@@ -111,7 +111,7 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: getDate(bgProcess.queued_on),
@@ -136,7 +136,7 @@
                                         v-if=" bgProcess.status === 'running' "
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: $i18n.get('label_stop_process'),
@@ -152,7 +152,7 @@
                                         v-if=" ( bgProcess.status === 'finished' && !bgProcess.error_log ) || bgProcess.status === null"
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: $i18n.get('label_process_completed'),
@@ -167,7 +167,7 @@
                                         v-if=" bgProcess.status === 'finished-errors' || ( bgProcess.done > 0 && bgProcess.error_log && bgProcess.status === 'finished' ) "
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: $i18n.get('label_process_completed_with_errors'),
@@ -182,7 +182,7 @@
                                         v-if=" bgProcess.status === 'cancelled' "
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: $i18n.get('label_process_cancelled'),
@@ -197,7 +197,7 @@
                                         v-if=" bgProcess.status === 'paused' "
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: $i18n.get('label_process_paused'),
@@ -212,7 +212,7 @@
                                         v-if=" bgProcess.status === 'waiting' "
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: $i18n.get('label_process_waiting'),
@@ -227,7 +227,7 @@
                                         v-if=" bgProcess.status === 'waiting' "
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: $i18n.get('label_delete_process'),
@@ -243,7 +243,7 @@
                                         v-if="bgProcess.status === 'errored'"
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: $i18n.get('label_process_failed'),
@@ -306,7 +306,7 @@
                                 <p
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: getDate(bgProcess.processed_last),

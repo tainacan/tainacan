@@ -41,7 +41,7 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: activity.title,
@@ -61,7 +61,7 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: activity.user_name,
@@ -80,7 +80,7 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: activity.date,

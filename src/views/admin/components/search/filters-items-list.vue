@@ -58,7 +58,7 @@
                                 v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined" 
                                 v-tooltip="{
                                     delay: {
-                                        shown: 500,
+                                        show: 500,
                                         hide: 300,
                                     },
                                     content: $i18n.get('label_filters_from') + ' ' + taxonomyFiltersCollectionNames[key] + ': ',
@@ -101,7 +101,7 @@
                                 v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined" 
                                 v-tooltip="{
                                     delay: {
-                                        shown: 500,
+                                        show: 500,
                                         hide: 300,
                                     },
                                     content: $i18n.get('label_filters_from') + ' ' + taxonomyFiltersCollectionNames[key] + ': ',
@@ -148,7 +148,7 @@
                                 v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined" 
                                 v-tooltip="{
                                     delay: {
-                                        shown: 500,
+                                        show: 500,
                                         hide: 300,
                                     },
                                     content: $i18n.get('label_filters_from') + ' ' + repositoryCollectionNames[key] + ': ',
@@ -191,7 +191,7 @@
                                 v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined" 
                                 v-tooltip="{
                                     delay: {
-                                        shown: 500,
+                                        show: 500,
                                         hide: 300,
                                     },
                                     content: $i18n.get('label_filters_from') + ' ' + repositoryCollectionNames[key] + ': ',

@@ -41,7 +41,7 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 120,
                                         },
                                         content: capability.display_name,
@@ -60,7 +60,7 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 120,
                                         },
                                         content: capability.description,
@@ -82,7 +82,7 @@
                                     <p
                                             v-tooltip="{
                                                 delay: {
-                                                    shown: 500,
+                                                    show: 500,
                                                     hide: 120,
                                                 },
                                                 content: props['complete-roles-list'],
