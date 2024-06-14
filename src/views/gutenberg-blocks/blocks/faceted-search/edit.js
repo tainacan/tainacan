@@ -79,7 +79,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
         collectionOrderByType,
         shouldNotHideFiltersOnMobile,
         displayFiltersHorizontally,
-        hideColllapseAllFiltersButton,
+        hideFilterColllapses,
         filtersInlineWidth
     } = attributes;
 
@@ -532,11 +532,11 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                             }
                         />
                         <ToggleControl
-                            label={__('Hide "Collapse all" filters button', 'tainacan')}
-                            checked={ hideColllapseAllFiltersButton }
+                            label={__('Hide filter collapses button', 'tainacan')}
+                            checked={ hideFilterColllapses }
                             onChange={ ( isChecked ) => {
-                                    hideColllapseAllFiltersButton = isChecked;
-                                    setAttributes({ hideColllapseAllFiltersButton: isChecked });
+                                    hideFilterColllapses = isChecked;
+                                    setAttributes({ hideFilterColllapses: isChecked });
                                 } 
                             }
                         />
@@ -920,7 +920,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                                 }}
                                                 className="filters">
                                             <div className="fake-filters-heading"></div>
-                                            { !hideColllapseAllFiltersButton ? <span className="fake-link"></span> : null }
+                                            { !hideFilterColllapses ? <span className="fake-link"></span> : null }
                                             { Array(2).fill().map( () => {
                                                 return <div className="fake-filter">
                                                     <span className="fake-text"></span>

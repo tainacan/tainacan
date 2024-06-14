@@ -6,7 +6,7 @@
             @touchstart="setFilterFocus(filter.id)"
             @mousedown="setFilterFocus(filter.id)">
         <b-collapse
-                v-if="displayFilter"
+                v-if="!hideCollapses && displayFilter"
                 v-model="singleCollapseOpen" 
                 class="show"
                 animation="filter-item">
@@ -56,7 +56,7 @@
             </div>
         </b-collapse>
         <div 
-                v-if="beginWithFilterCollapsed && !displayFilter"
+                v-if="!hideCollapses && beginWithFilterCollapsed && !displayFilter"
                 class="collapse show disabled-filter">
             <div class="collapse-trigger">
                 <button
@@ -89,6 +89,38 @@
                 </button>
             </div>
         </div>
+        <template v-if="hideCollapses">
+            <label 
+                    :for="'filter-input-id-' + filter.id"
+                    class="label">
+                <span 
+                        class="collapse-label">
+                    {{ filter.name }}
+                </span>
+                <help-button
+                        v-if="filter.description_bellow_name !== 'yes' && filter.description" 
+                        :title="filter.name"
+                        :message="filter.description" />
+            </label>
+            <div :id="'filter-input-id-' + filter.id">
+                <p 
+                        v-if="filter.description_bellow_name === 'yes' && filter.description"
+                        class="filter-description-help-info">
+                    {{ filter.description }}
+                </p>
+                <component
+                        :is="filter.filter_type_object ? filter.filter_type_object.component : null"
+                        :filter="filter"
+                        :query="query"
+                        :is-using-elastic-search="isUsingElasticSearch"
+                        :is-repository-level="isRepositoryLevel"
+                        :is-loading-items="isLoadingItems"
+                        :current-collection-id="$eventBusSearch.collectionId"
+                        :filters-as-modal="filtersAsModal"
+                        @input="onInput" 
+                        @update-parent-collapse="onFilterUpdateParentCollapse" />
+            </div>
+        </template>
     </b-field>
 </template>
 
@@ -119,7 +151,8 @@
             expandAll: true,
             isLoadingItems: true,
             filtersAsModal: Boolean,
-            isMobileScreen: false
+            isMobileScreen: false,
+            hideCollapses: false
         },
         data() {
             return {
@@ -137,7 +170,7 @@
         watch: {
             expandAll() {
                 this.singleCollapseOpen = this.expandAll;
-                if (this.expandAll)
+                if ( this.expandAll )
                     this.displayFilter = true;
             },
             beginWithFilterCollapsed: {
@@ -212,7 +245,29 @@
         .column {
             padding: 0.75em 1px 0.75em 0 !important;
         }
+        & > .label {
+            display: block !important;
+            width: 100%;
+            overflow-x: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.4em !important;
+            border: none;
+            background-color: transparent;
+            color: var(--tainacan-label-color);
+            text-align: left;
+            outline: none;
+            padding: 0 !important;
+            margin: 0 0 8px 0;
 
+            .tainacan-help-tooltip-trigger {
+                font-size: 1.188em;
+
+                .icon {
+                    margin-right: 0px;
+                    margin-left: 6px;
+                }
+            }
+        }
         .collapse {
             .label {
                 display: inline-flex;

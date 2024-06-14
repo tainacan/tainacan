@@ -134,7 +134,7 @@ export default (element) => {
                     showFullscreenWithViewModes: isParameterTrue(getDataAttribute(blockElement, 'show-fullscreen-with-view-modes')),
                     shouldNotHideFiltersOnMobile: isParameterTrue(getDataAttribute(blockElement, 'should-not-hide-filters-on-mobile')),
                     displayFiltersHorizontally: isParameterTrue(getDataAttribute(blockElement, 'display-filters-horizontally')),
-                    hideCollapseAllFiltersButton: isParameterTrue(getDataAttribute(blockElement, 'hide-collapse-all-filters-button')),
+                    hideFilterCollapses: isParameterTrue(getDataAttribute(blockElement, 'hide-filter-collapses')),
                 }),
             });
 

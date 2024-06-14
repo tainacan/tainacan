@@ -514,7 +514,7 @@ class Theme_Helper {
 		 *     @type string[] $enabled_view_modes						The list os enable view modes to display
 		 *     @type bool 	$should_not_hide_filters_on_mobile			Disables the default behavior of automatically collapsing the filters inside a modal when in small screen sizes
 		 *     @type bool 	$display_filters_horizontally				Display the filters in an horizontal panel above search control instead of a sidebar
-		 *     @type bool 	$hide_collapse_all_filters_button			Hides the button that collapses all filters inside the filters panel
+		 *     @type bool 	$hide_filter_collapses			Hides the button that collapses all filters inside the filters panel
 	 * @return string  The HTML div to be used for rendering the items list vue component
 	 */
 	public function search_shortcode($args) {
@@ -623,7 +623,7 @@ class Theme_Helper {
 				'data-show-fullscreen-with-view-modes' => true,
 				'data-should-not-hide-filters-on-mobile' => true,
 				'data-display-filters-horizontally' => true,
-				'data-hide-collapse-all-filters-button' => true
+				'data-hide-filter-collapses' => true
 			]
 		];
 
