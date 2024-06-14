@@ -215,8 +215,16 @@
     .date-filter-container {
         display: flex;
         height: auto;
+        align-items: stretch;
 
-        @media screen and (min-width: 769px) and (max-width: 1500px) {
+        @supports not (contain: inline-size) {
+            @media screen and (min-width: 769px) and (max-width: 1500px) {
+                flex-wrap: wrap;
+                height: 60px;
+            }
+        }
+
+        @container filterscomponentslist (max-width: 170px) {
             flex-wrap: wrap;
             height: 60px;
         }

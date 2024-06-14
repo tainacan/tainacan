@@ -21,7 +21,16 @@
                         <span class="check" /> 
                         <span class="control-label">
                             <span 
-                                    :title="option.label"
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 800,
+                                            hide: 100,
+                                        },
+                                        content: option.label,
+                                        autoHide: true,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                        placement: 'auto-start'
+                                    }"
                                     class="checkbox-label-text">
                                 {{ option.label }}
                             </span> 

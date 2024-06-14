@@ -492,6 +492,12 @@
     .filters-components-list {
         margin-bottom: 64px;
     }
+    @supports (contain: inline-size) {
+        .filters-components-list {
+            container-type: inline-size;
+            container-name: filterscomponentslist; 
+        }
+    }
     .collection-name {
         color: var(--tainacan-heading-color);
         font-size: 0.875em;
