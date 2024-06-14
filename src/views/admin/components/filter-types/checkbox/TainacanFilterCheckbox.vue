@@ -26,7 +26,7 @@
                                             hide: 100,
                                         },
                                         content: option.label,
-                                        autoHide: trie,
+                                        autoHide: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }"
