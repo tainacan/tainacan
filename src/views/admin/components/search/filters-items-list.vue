@@ -16,10 +16,8 @@
         </h3>
 
         <button
-                v-if="!hideCollapseAllFiltersButton &&
-                    !isLoadingFilters && (
-                    ( filters.length >= 0 && isRepositoryLevel ) ||
-                    filters.length > 0
+                v-if="!hideFilterCollapses && !isLoadingFilters && (
+                    ( filters.length >= 0 && isRepositoryLevel ) || filters.length > 0
                 )"
                 aria-controls="filters-items-list"
                 :aria-expanded="!collapseAll"
@@ -35,7 +33,7 @@
             </span>
         </button>
 
-        <br v-if="!hideCollapseAllFiltersButton">
+        <br v-if="!hideFilterCollapses">
 
         <filters-tags-list
                 v-if="filtersAsModal && hasFiltered"
@@ -88,7 +86,8 @@
                                     :expand-all="!collapseAll"
                                     :is-repository-level="key == 'repository-filters'"
                                     :filters-as-modal="filtersAsModal"
-                                    :is-mobile-screen="isMobileScreen" />
+                                    :is-mobile-screen="isMobileScreen"
+                                    :hide-collapses="hideFilterCollapses" />
                         </template>
                         <hr v-if="taxonomyFilter.length > 1">
                     </div>
@@ -131,7 +130,8 @@
                                     :expand-all="!collapseAll"
                                     :is-repository-level="key == 'repository-filters'"
                                     :filters-as-modal="filtersAsModal"
-                                    :is-mobile-screen="isMobileScreen" />
+                                    :is-mobile-screen="isMobileScreen"
+                                    :hide-collapses="hideFilterCollapses" />
                         </template>
                         <hr v-if="taxonomyFilter.length > 1">
                     </div>
@@ -178,7 +178,8 @@
                                     :expand-all="!collapseAll"
                                     :is-repository-level="key == 'repository-filters'"
                                     :filters-as-modal="filtersAsModal"
-                                    :is-mobile-screen="isMobileScreen" />
+                                    :is-mobile-screen="isMobileScreen"
+                                    :hide-collapses="hideFilterCollapses" />
                         </template>
                         <hr v-if="repositoryCollectionFilters.length > 1">
                     </div>
@@ -221,7 +222,8 @@
                                     :expand-all="!collapseAll"
                                     :is-repository-level="key == 'repository-filters'"
                                     :filters-as-modal="filtersAsModal"
-                                    :is-mobile-screen="isMobileScreen" />
+                                    :is-mobile-screen="isMobileScreen"
+                                    :hide-collapses="hideFilterCollapses" />
                         </template>
                         <hr v-if="repositoryCollectionFilters.length > 1">
                     </div>
@@ -239,7 +241,8 @@
                         :expand-all="!collapseAll"
                         :is-repository-level="isRepositoryLevel"
                         :filters-as-modal="filtersAsModal"
-                        :is-mobile-screen="isMobileScreen" />
+                        :is-mobile-screen="isMobileScreen"
+                        :hide-collapses="hideFilterCollapses" />
             </template>
         </div>
         <section
@@ -296,7 +299,7 @@
             hasFiltered: Boolean,
             isLoadingItems: Boolean,
             isMobileScreen: false,
-            hideCollapseAllFiltersButton: false
+            hideFilterCollapses: false
         },
         emits: [
             'update-is-loading-items-state'

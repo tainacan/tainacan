@@ -438,7 +438,7 @@
                             :filters-as-modal="false"
                             :has-filtered="hasFiltered"
                             :is-mobile-screen="isMobileScreen"
-                            :hide-collapse-all-filters-button="hideCollapseAllFiltersButton"
+                            :hide-filter-collapses="hideFilterCollapses"
                             @update-is-loading-items-state="(state) => isLoadingItems = state" />
 
                     <!-- JS-side hook for extra form content -->
@@ -483,7 +483,7 @@
                     :filters-as-modal="filtersAsModal"
                     :has-filtered="hasFiltered"
                     :is-mobile-screen="isMobileScreen"
-                    :hide-collapse-all-filters-button="hideCollapseAllFiltersButton"
+                    :hide-filter-collapses="hideFilterCollapses"
                     @update-is-loading-items-state="(state) => isLoadingItems = state" />
 
             <!-- JS-side hook for extra form content -->
@@ -786,7 +786,7 @@
             showFullscreenWithViewModes: false,
             shouldNotHideFiltersOnMobile: false,
             displayFiltersHorizontally: false,
-            hideCollapseAllFiltersButton: false,
+            hideFilterCollapses: false,
         },
         data() {
             return {
