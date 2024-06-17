@@ -255,7 +255,7 @@
         display: flex;
         flex-wrap: nowrap;
         width: 100%;
-        align-items: baseline;
+        align-items: center;
     }
     .checkbox-label-text {
         white-space: wrap;
