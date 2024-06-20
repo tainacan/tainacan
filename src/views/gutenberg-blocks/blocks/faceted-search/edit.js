@@ -523,7 +523,8 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                             }
                         />
                         <ToggleControl
-                            label={__('Display filters horizontally', 'tainacan')}
+                            label={ __('Display filters horizontally', 'tainacan') }
+                            help={ displayFiltersHorizontally ? __( 'Toggle to not show filters in an horizontal pane above the search control.', 'tainacan') : __( 'Toggle to show filters in an horizontal pane above the search control instead of a vertical sidebar. This layout fits better with select and textual input filters.', 'tainacan') }
                             checked={ displayFiltersHorizontally }
                             onChange={ ( isChecked ) => {
                                     displayFiltersHorizontally = isChecked;
@@ -532,7 +533,8 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                             }
                         />
                         <ToggleControl
-                            label={__('Hide filter collapses button', 'tainacan')}
+                            label={ __('Hide filter collapses button', 'tainacan') }
+                            help={ __('Toggle to not display each filter label as a collapsable button. This is suggested when you have a small amount of filters.', 'tainacan') }
                             checked={ hideFilterColllapses }
                             onChange={ ( isChecked ) => {
                                     hideFilterColllapses = isChecked;
