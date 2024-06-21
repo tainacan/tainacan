@@ -27,6 +27,7 @@
 
         :deep(img) {
             height: auto;
+            max-width: 100%;
         }
 
         &:hover {
@@ -111,7 +112,7 @@
         .metadata-title {
             flex-shrink: 0;
             padding: 0.5em 7em 0.5em 2.75em;
-            min-height: 40px;
+            min-height: 1.5em;
             position: relative;
             font-size: 1em !important; 
             text-overflow: ellipsis;

@@ -336,6 +336,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_grid'                                	 => __( 'Thumbnails', 'tainacan' ),
 	'label_table'                                    => __( 'Table', 'tainacan' ),
 	'label_cards'                                    => __( 'Cards', 'tainacan' ),
+	'label_mosaic'                                   => __( 'Mosaic', 'tainacan' ),
 	/* translators: The 'records' view mode, in the sense of a catalog file */
 	'label_records'                                  => __( 'Records', 'tainacan' ),
 	'label_masonry'                                  => __( 'Masonry', 'tainacan' ),
