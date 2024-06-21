@@ -75,6 +75,7 @@
 
         :deep(img) {
             height: auto;
+            max-width: 100%;
         }
 
         &:hover {
@@ -150,7 +151,7 @@
             flex-shrink: 0;
             padding: 0.5em 7em 0.5em 2.75em;
             font-size: 1.0em !important; 
-            min-height: 40px;
+            min-height: 1.5em;
             position: relative;
             text-overflow: ellipsis;
             white-space: nowrap;
