@@ -77,7 +77,7 @@ export default (element) => {
             const registeredViewModes =
                 ( tainacan_plugin && tainacan_plugin.registered_view_modes && tainacan_plugin.registered_view_modes.length ) ?
                 tainacan_plugin.registered_view_modes :
-                [ 'table', 'cards', 'records', 'masonry', 'slideshow', 'list', 'map' ];
+                [ 'table', 'cards', 'records', 'masonry', 'mosaic', 'slideshow', 'list', 'map'];
 
             // At first, we consider that all registered view modes are included.
             let possibleViewModes = registeredViewModes;
