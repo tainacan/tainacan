@@ -65,7 +65,7 @@ export default function({ attributes }) {
     
     // Gets attributes such as style, that are automatically added by the editor hook
     const blockProps = useBlockProps.save();
-    console.log(hideFilterCollapses)
+    
     return <div 
             style={{
                 'font-size': baseFontSize + 'px',
