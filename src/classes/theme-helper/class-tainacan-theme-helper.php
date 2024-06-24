@@ -37,7 +37,7 @@ class Theme_Helper {
 		// Replace collections permalink to post type archive if cover not enabled
 		add_filter('post_type_link', array($this, 'permalink_filter'), 10, 3);
 
-		// Replace single query to the page content set as cover for the colllection
+		// Replace single query to the page content set as cover for the collection
 		// Redirect to post type archive if no cover page is set
 		add_action('wp', array($this, 'collection_single_redirect'));
 		

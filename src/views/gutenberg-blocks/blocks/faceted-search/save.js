@@ -52,6 +52,7 @@ export default function({ attributes }) {
         collectionOrderByType,
         shouldNotHideFiltersOnMobile,
         displayFiltersHorizontally,
+        hideFilterCollapses,
         filtersInlineWidth
     } = attributes;
     
@@ -64,7 +65,7 @@ export default function({ attributes }) {
     
     // Gets attributes such as style, that are automatically added by the editor hook
     const blockProps = useBlockProps.save();
-
+    console.log(hideFilterCollapses)
     return <div 
             style={{
                 'font-size': baseFontSize + 'px',
@@ -118,6 +119,7 @@ export default function({ attributes }) {
                 data-default-orderby-meta = { updatedListType == 'collection' ? (collectionOrderByMeta ? collectionOrderByMeta : '') : (orderByMeta ? orderByMeta : '') }
                 data-default-orderby-type = { updatedListType == 'collection' ? (collectionOrderByType ? collectionOrderByType : '') : (orderByType ? orderByType : '') }
                 data-should-not-hide-filters-on-mobile = { shouldNotHideFiltersOnMobile ? shouldNotHideFiltersOnMobile.toString() : 'false' }
+                data-hide-filter-collapses = { hideFilterCollapses ? hideFilterCollapses.toString() : 'false' }
                 data-display-filters-horizontally = { displayFiltersHorizontally ? displayFiltersHorizontally.toString() : 'false' } >
         </main>
     </div>
