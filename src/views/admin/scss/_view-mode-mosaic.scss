@@ -4,12 +4,12 @@
     --tainacan-mosaic-view-mode-min-height: 180px;
     display: flex;
     flex-wrap: wrap;
-    grid-gap: calc(2em + 16px) var(--tainacan-mosaic-view-mode-gap, 12px);
+    grid-gap: calc(2em + 18px) var(--tainacan-mosaic-view-mode-gap, 12px);
     list-style: none;
     height: auto;
     min-height: 0px; /* While most view modes set this to 50vh, this causes a bug for this one if there are few items to display */
     margin: 0;
-    margin-bottom: calc(2em + 16px + var(--tainacan-container-padding));
+    margin-bottom: calc(2em + 18px + var(--tainacan-container-padding));
     padding: 0;
     list-style: none;
     animation-name: appear;   
