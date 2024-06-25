@@ -3,7 +3,7 @@ import axios from '../../../axios'
 // ROLES
 export const addCapabilityToRole = ({ commit }, { capabilityKey, role }) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacanApi.patch('/roles/' + role + '?add_cap=' + capabilityKey)
+        axios.tainacanApi.put('/roles/' + role + '?add_cap=' + capabilityKey)
             .then( res => {
                 let role = res.data;
                 commit('addCapabilityToRole', {capabilityKey, role });
@@ -17,7 +17,7 @@ export const addCapabilityToRole = ({ commit }, { capabilityKey, role }) => {
 
 export const removeCapabilityFromRole = ({ commit }, { capabilityKey, role }) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacanApi.patch('/roles/' + role + '?remove_cap=' + capabilityKey)
+        axios.tainacanApi.put('/roles/' + role + '?remove_cap=' + capabilityKey)
             .then( res => {
                 let role = res.data;
                 commit('removeCapabilityFromRole', {capabilityKey, role });
@@ -79,7 +79,7 @@ export const updateRole = ({ commit }, role) => {
 
     return new Promise((resolve, reject) => {
 
-        axios.tainacanApi.patch('/roles/' + role.slug, role)
+        axios.tainacanApi.put('/roles/' + role.slug, role)
             .then(res => {
                 const updatedRole = res.data
                 commit('setRole', updatedRole);

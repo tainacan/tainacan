@@ -46,7 +46,7 @@ export const fetchProcesses = ({ commit }, {page, processesPerPage, shouldUpdate
 
 export const updateProcess = ({ commit }, { id, status }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.patch(`/bg-processes/${id}/`, {
+        axios.tainacanApi.put(`/bg-processes/${id}/`, {
             status: status,
         })
             .then( res => {
