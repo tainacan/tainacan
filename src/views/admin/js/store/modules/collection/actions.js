@@ -348,7 +348,7 @@ export const updateCollection = ({ commit }, {
         collection
     }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.patch('/collections/' + collection_id + '?context=edit', collection).then( res => {
+        axios.tainacanApi.put('/collections/' + collection_id + '?context=edit', collection).then( res => {
             commit('setCollection', collection);
             resolve( res.data );
         }).catch( error => { 
@@ -416,7 +416,7 @@ export const fetchAttachments = ({ commit }, collection_id) => {
 
 export const updateThumbnail = ({ commit }, { collectionId, thumbnailId }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.patch('/collections/' + collectionId + '?context=edit', {
+        axios.tainacanApi.put('/collections/' + collectionId + '?context=edit', {
             _thumbnail_id: thumbnailId
         }).then( res => {
             let collection = res.data
@@ -431,7 +431,7 @@ export const updateThumbnail = ({ commit }, { collectionId, thumbnailId }) => {
 
 export const updateHeaderImage = ({ commit }, { collectionId, headerImageId }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.patch('/collections/' + collectionId + '?context=edit', {
+        axios.tainacanApi.put('/collections/' + collectionId + '?context=edit', {
             header_image_id: headerImageId + ''
         }).then( res => {
             let collection = res.data

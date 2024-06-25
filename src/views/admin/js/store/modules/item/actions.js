@@ -8,7 +8,7 @@ export const updateItemMetadatum = ({ commit }, { item_id, metadatum_id, values,
         body['parent_meta_id'] = parent_meta_id;
         
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.patch(`/item/${item_id}/metadata/${metadatum_id}`, body)
+        axios.tainacanApi.put(`/item/${item_id}/metadata/${metadatum_id}`, body)
             .then( res => {
                 let itemMetadatum = res.data;
                 commit('setSingleMetadatum', itemMetadatum);
@@ -45,7 +45,7 @@ export const fetchItemMetadata = ({ commit }, item_id) => {
 export const fetchCompoundFirstParentMetaId = ({ commit }, { item_id, metadatum_id }) => {
    
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.patch(`/item/${item_id}/metadata/${metadatum_id}`, { value: [] })
+        axios.tainacanApi.put(`/item/${item_id}/metadata/${metadatum_id}`, { value: [] })
             .then( res => {
                 const parentMetaId = res.data.parent_meta_id;
                 resolve(parentMetaId);
@@ -157,7 +157,7 @@ export const sendItem = ( { commit }, item) => {
 export const updateItem = ({ commit }, item) => {
 
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.patch('/items/' + item.id, item)
+        axios.tainacanApi.put('/items/' + item.id, item)
             .then( res => {
                 commit('setItem', res.data);
                 commit('setLastUpdated');
@@ -191,7 +191,7 @@ export const updateItemDocument = ({ commit }, { item_id, document, document_typ
         params['document_options'] = document_options;
         
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.patch('/items/' + item_id, params).then( res => {
+        axios.tainacanApi.put('/items/' + item_id, params).then( res => {
             let item = res.data;
 
             commit('setItem', item);
@@ -246,7 +246,7 @@ export const sendAttachment = ( { commit }, { item_id, file }) => {
 export const removeAttachmentFromItem = ( { commit }, attachmentId) => {
     commit('cleanAttachment');
     return new Promise(( resolve, reject ) => {
-        axios.wpApi.patch('/media/' + attachmentId, {
+        axios.wpApi.put('/media/' + attachmentId, {
             post: 0
         })
             .then( res => {
@@ -306,7 +306,7 @@ export const fetchAttachments = ({ commit }, { page, attachmentsPerPage, itemId,
 
 export const updateThumbnail = ({ commit }, { itemId, thumbnailId, thumbnailAlt }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.patch('/items/' + itemId, {
+        axios.tainacanApi.put('/items/' + itemId, {
             _thumbnail_id: thumbnailId
         }).then( res => {
             let item = res.data
@@ -322,7 +322,7 @@ export const updateThumbnail = ({ commit }, { itemId, thumbnailId, thumbnailAlt 
 
 export const updateThumbnailAlt = ({ commit }, { thumbnailId, thumbnailAlt }) => {
     return new Promise((resolve, reject) => {
-        axios.wpApi.patch('/media/' + thumbnailId + '?force=true', {
+        axios.wpApi.put('/media/' + thumbnailId + '?force=true', {
             alt_text: thumbnailAlt
         }).then( res => {
             let thumbnail = res.data;

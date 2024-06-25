@@ -27,7 +27,7 @@ export const createExporterSession = ({commit}, slug) => {
 export const updateExporterSession = ({commit}, exporterSessionUpdated) => {
 
     return new Promise(( resolve, reject ) => { 
-        tainacanApi.patch(`/exporters/session/${exporterSessionUpdated.id}`, exporterSessionUpdated.body)
+        tainacanApi.put(`/exporters/session/${exporterSessionUpdated.id}`, exporterSessionUpdated.body)
             .then(response => {
                 commit('setExporterSession');
                 resolve( response.data );
