@@ -51,7 +51,7 @@
                         type="submit"
                         class="button is-success"
                         @click="onConfirm(); $emit('close');">
-                    {{ $i18n.get('continue') }}
+                    {{ confirmText ? confirmText : $i18n.get('continue') }}
                 </button>
             </footer>
         </div>
@@ -66,6 +66,10 @@
             title: String,
             message: String,
             icon: String,
+            confirmText: {
+                type: String,
+                default: ''
+            },
             onConfirm: {
                 type: Function,
                 default: () => {}

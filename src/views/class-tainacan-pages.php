@@ -179,7 +179,8 @@ abstract class Pages {
 			'tainacan_enable_relationship_metaquery' => ( 
 				defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') && 
 				true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY 
-			)
+			),
+			'has_permalinks_structure' => get_option('permalink_structure') !== ''
 		];
 		
 		$maps = [

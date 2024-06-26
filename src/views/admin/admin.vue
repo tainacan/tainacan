@@ -5,46 +5,48 @@
             :class="{ 
                 'tainacan-admin-mobile-app-mode': $adminOptions.mobileAppMode
             }">
-        <template v-if="activeRoute == 'HomePage'">
-            <tainacan-header v-if="!$adminOptions.hideTainacanHeader" />
-            <router-view /> 
-        </template>
-        <template v-else>
-            <primary-menu
-                    v-if="!$adminOptions.hidePrimaryMenu" 
-                    :active-route="activeRoute"
-                    :is-menu-compressed="isMenuCompressed" />
-            <button 
-                    v-if="!$adminOptions.hidePrimaryMenu && !$adminOptions.hidePrimaryMenuCompressButton" 
-                    id="menu-compress-button"
-                    class="is-hidden-mobile"
-                    :style="{ top: menuCompressButtonTop }"
-                    :aria-label="$i18n.get('label_shrink_menu')"      
-                    @click="isMenuCompressed = !isMenuCompressed">    
-                <span
-                        v-tooltip="{
-                            content: $i18n.get('label_shrink_menu'),
-                            autoHide: true,
-                            placement: 'auto-end',
-                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']     
-                        }"
-                        class="icon">
-                    <i 
-                            :class="{ 'tainacan-icon-arrowleft' : !isMenuCompressed, 'tainacan-icon-arrowright' : isMenuCompressed }"
-                            class="tainacan-icon tainacan-icon-1-25em" />
-                </span>
-            </button>
-            <tainacan-header v-if="!$adminOptions.hideTainacanHeader" />
-            <tainacan-repository-subheader
-                    v-if="!$adminOptions.hideRepositorySubheader" 
-                    :is-repository-level="isRepositoryLevel"
-                    :is-menu-compressed="isMenuCompressed" />
-            <div 
-                    id="repository-container"
-                    class="column is-main-content"
-                    :style="$adminOptions.hidePrimaryMenu ? '--tainacan-sidebar-width: 0px' : ''">  
-                <router-view /> 
-            </div>
+        <template v-if="hasPermalinksStructure">
+            <template v-if="activeRoute == 'HomePage'">
+                <tainacan-header v-if="!$adminOptions.hideTainacanHeader" />
+                <router-view />
+            </template>
+            <template v-else>
+                <primary-menu
+                        v-if="!$adminOptions.hidePrimaryMenu" 
+                        :active-route="activeRoute"
+                        :is-menu-compressed="isMenuCompressed" />
+                <button 
+                        v-if="!$adminOptions.hidePrimaryMenu && !$adminOptions.hidePrimaryMenuCompressButton" 
+                        id="menu-compress-button"
+                        class="is-hidden-mobile"
+                        :style="{ top: menuCompressButtonTop }"
+                        :aria-label="$i18n.get('label_shrink_menu')"      
+                        @click="isMenuCompressed = !isMenuCompressed">    
+                    <span
+                            v-tooltip="{
+                                content: $i18n.get('label_shrink_menu'),
+                                autoHide: true,
+                                placement: 'auto-end',
+                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']     
+                            }"
+                            class="icon">
+                        <i 
+                                :class="{ 'tainacan-icon-arrowleft' : !isMenuCompressed, 'tainacan-icon-arrowright' : isMenuCompressed }"
+                                class="tainacan-icon tainacan-icon-1-25em" />
+                    </span>
+                </button>
+                <tainacan-header v-if="!$adminOptions.hideTainacanHeader" />
+                <tainacan-repository-subheader
+                        v-if="!$adminOptions.hideRepositorySubheader" 
+                        :is-repository-level="isRepositoryLevel"
+                        :is-menu-compressed="isMenuCompressed" />
+                <div 
+                        id="repository-container"
+                        class="column is-main-content"
+                        :style="$adminOptions.hidePrimaryMenu ? '--tainacan-sidebar-width: 0px' : ''">  
+                    <router-view /> 
+                </div>
+            </template>
         </template>
     </div>
 </template>
@@ -70,7 +72,8 @@
             return {
                 isMenuCompressed: false,
                 isRepositoryLevel : true,
-                activeRoute: '/collections'
+                activeRoute: '/collections',
+                hasPermalinksStructure: false
             }
         },
         computed: {
@@ -109,20 +112,46 @@
             }
         },
         created() {
-            this.$statusHelper.loadStatuses(); 
-            this.$userPrefs.init();
-            this.isMenuCompressed = (this.$route.params.collectionId != undefined);
-            this.activeRoute = this.$route.name;
-            this.isRepositoryLevel = this.$route.params.collectionId == undefined;
 
             wp.hooks.doAction('tainacan_navigation_path_updated', this.$route);
 
-            if (jQuery && jQuery( document ))
-                jQuery( document ).ajaxError(this.onHeartBitError);
+            this.hasPermalinksStructure = tainacan_plugin.has_permalinks_structure;
+
+            if ( this.hasPermalinksStructure ) {
+                this.$statusHelper.loadStatuses(); 
+                this.$userPrefs.init();
+                this.isMenuCompressed = (this.$route.params.collectionId != undefined);
+                this.activeRoute = this.$route.name;
+                this.isRepositoryLevel = this.$route.params.collectionId == undefined;
+
+                if (jQuery && jQuery( document )) {
+                    jQuery( document ).ajaxError(this.onHeartBitError);
+                }
+            } else {
+                this.onPermalinksError();   
+            }
         },
         methods: {
+            onPermalinksError() {
+                this.$buefy.modal.open({
+                    component: CustomDialog,
+                    props: {
+                        title: this.$i18n.get('error_permalinks_label'),
+                        message: this.$i18n.getWithVariables('error_permalinks_detail', [ '<a href="' + tainacan_plugin.admin_url + 'options-permalink.php">', '</a>' ]),
+                        hideCancel: true,
+                        confirmText: this.$i18n.get('label_go_to_permalinks'),
+                        onConfirm: () => {
+                            window.location.href = tainacan_plugin.admin_url + 'options-permalink.php';
+                        }
+                    },
+                    ariaRole: 'alertdialog',
+                    ariaModal: true,
+                    customClass: 'tainacan-modal',
+                    canCancel: false,
+                });
+            },
             onHeartBitError(event, jqxhr, settings) {
-                if (settings && settings.url == '/wp-admin/admin-ajax.php') {
+                if (settings && settings.url == tainacan_plugin.admin_url + 'admin-ajax.php') {
                     this.$buefy.snackbar.open({
                         message: this.$i18n.get('error_connectivity'),
                         type: 'is-danger',
