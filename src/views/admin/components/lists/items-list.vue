@@ -2016,38 +2016,35 @@
                                 :transition-duration="500"
                             />
 
-                        <!-- Checkbox -->
-                        <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
-                        <div
-                                v-if="collectionId && !$adminOptions.hideItemsListSelection && ($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit))"
-                                :class="{ 'is-selecting': isSelectingItems }"
-                                class="mosaic-item-checkbox">
-                            <label
-                                    tabindex="0"
-                                    :class="(!$adminOptions.itemsSingleSelectionMode ? 'b-checkbox checkbox' : 'b-radio radio') + ' is-small'">
-                                <input
-                                        v-if="!$adminOptions.itemsSingleSelectionMode"
-                                        type="checkbox"
-                                        :checked="getSelectedItemChecked(item.id)"
-                                        @input="setSelectedItemChecked(item.id)">
-                                <input
-                                        v-else
-                                        v-model="singleItemSelection"
-                                        type="radio"
-                                        name="item-single-selection"
-                                        :value="item.id">
-                                <span class="check" />
-                                <span class="control-label" />
-                                <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
-                            </label>
-                        </div>
-
                         <!-- Title -->
                         <div
                                 class="metadata-title"
-                                :style="{
-                                    'padding-left': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $adminOptions.itemsSearchSelectionMode ? '0 !important' : (isOnAllItemsTabs ? '0.5em' : '1em')
-                                }">
+                                :style="{ 'padding-left': collectionId && !$adminOptions.hideItemsListSelection && ($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) ? '1.75em' : '1.0em' }">
+                            <!-- Checkbox -->
+                            <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
+                            <div
+                                    v-if="collectionId && !$adminOptions.hideItemsListSelection && ($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit))"
+                                    :class="{ 'is-selecting': isSelectingItems }"
+                                    class="mosaic-item-checkbox">
+                                <label
+                                        tabindex="0"
+                                        :class="(!$adminOptions.itemsSingleSelectionMode ? 'b-checkbox checkbox' : 'b-radio radio') + ' is-small'">
+                                    <input
+                                            v-if="!$adminOptions.itemsSingleSelectionMode"
+                                            type="checkbox"
+                                            :checked="getSelectedItemChecked(item.id)"
+                                            @input="setSelectedItemChecked(item.id)">
+                                    <input
+                                            v-else
+                                            v-model="singleItemSelection"
+                                            type="radio"
+                                            name="item-single-selection"
+                                            :value="item.id">
+                                    <span class="check" />
+                                    <span class="control-label" />
+                                    <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
+                                </label>
+                            </div>
                             <p 
                                     v-tooltip="{
                                         delay: {
