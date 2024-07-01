@@ -697,6 +697,7 @@ class CSV extends Importer {
 		remove_action( 'post_updated', 'wp_save_post_revision' );
 		$collections = $this->get_collections();
 		$collection_definition = isset($collections[$collection_index]) ? $collections[$collection_index] : false;
+
 		if ( !$collection_definition || !is_array($collection_definition) || !isset($collection_definition['id']) || !isset($collection_definition['mapping']) ) {
 			$this->add_error_log('Collection misconfigured');
 			return false;
@@ -712,7 +713,7 @@ class CSV extends Importer {
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-
+		$special_columns = false;
 
 		$itemMetadataArray = [];
 
@@ -731,7 +732,7 @@ class CSV extends Importer {
 			$item = new Entities\Item();
 		}
 
-		if( is_numeric($this->get_transient('item_id')) ) {
+		if ( is_numeric($this->get_transient('item_id')) ) {
 			if ( $item instanceof Entities\Item && $item->get_id() == $this->get_transient('item_id') ) {
 				if ( ! $item->can_edit() ) {
 					$this->add_error_log("You don't have permission to edit item:" . $item->get_id() );
@@ -748,12 +749,12 @@ class CSV extends Importer {
 
 		}
 
-		if( $this->get_transient('item_id') && $item instanceof Entities\Item && is_numeric($item->get_id()) && $item->get_id() > 0 && $this->get_transient('item_action') == 'ignore' ){
+		if ( $this->get_transient('item_id') && $item instanceof Entities\Item && is_numeric($item->get_id()) && $item->get_id() > 0 && $this->get_transient('item_action') == 'ignore' ){
 			$this->add_log('Ignoring repeated Item');
 			return $item;
 		}
 
-		if( is_array( $processed_item ) ) {
+		if ( is_array( $processed_item ) ) {
 			foreach ( $processed_item as $metadatum_source => $values ) {
 
 				if ($metadatum_source == 'special_document' ||
@@ -820,81 +821,89 @@ class CSV extends Importer {
 			}
 		}
 
-		if( (!empty( $itemMetadataArray ) || $special_columns) && $collection instanceof Entities\Collection ) {
-			$item->set_collection( $collection );
-			if ( !$updating_item ) {
-				if( $item->validate() ) {
-					$insertedItem = $Tainacan_Items->insert( $item );
-				} else {
-					$this->add_error_log( 'Error inserting Item Title: ' . $item->get_title() );
-					$this->add_error_log( $item->get_errors() );
-					return false;
-				}
-			} else {
-				$insertedItem = $item;
-			}
-			global $wpdb;
-			$wpdb->query( 'SET autocommit = 0;' );
-			foreach ( $itemMetadataArray as $itemMetadata ) {
-				if($itemMetadata instanceof Entities\Item_Metadata_Entity ) {
-					$itemMetadata->set_item( $insertedItem );  // *I told you
-					if( $itemMetadata->validate() ) {
-						$Tainacan_Item_Metadata->insert( $itemMetadata );
-					} else {
-						$insertedItemId = $updating_item == true ? ' (special_item_id: ' . $insertedItem->get_id() . ')' : '';
-						$this->add_error_log('Error saving value for ' . $itemMetadata->get_metadatum()->get_name() . " in item " . $insertedItem->get_title() . $insertedItemId);
-						$this->add_error_log($itemMetadata->get_errors());
-						continue;
-					}
-				} elseif ( is_array($itemMetadata) ) {
-					if($updating_item == true) {
-						$this->deleteAllValuesCompoundItemMetadata($insertedItem, $itemMetadata[0][0]->get_metadatum()->get_parent());
-					}
-					foreach($itemMetadata as $compoundItemMetadata) {
-						$parent_meta_id = null;
-						foreach($compoundItemMetadata as $itemChildren) {
-							$itemChildren->set_parent_meta_id($parent_meta_id);
-							if( $itemChildren->validate() ) {
-								$item_children_metadata = $Tainacan_Item_Metadata->insert($itemChildren);
-								$parent_meta_id = $item_children_metadata->get_parent_meta_id();
-							} else {
-								$this->add_error_log('Error saving value for ' . $itemChildren->get_metadatum()->get_name() . " in item " . $insertedItem->get_title());
-								$this->add_error_log($itemChildren->get_errors());
-								continue;
-							}
-						}
-					}
-				}
-
-				//if( $result ){
-				//	$values = ( is_array( $itemMetadata->get_value() ) ) ? implode( PHP_EOL, $itemMetadata->get_value() ) : $itemMetadata->get_value();
-				//    $this->add_log( 'Item ' . $insertedItem->get_id() .
-				//        ' has inserted the values: ' . $values . ' on metadata: ' . $itemMetadata->get_metadatum()->get_name() );
-				//} else {
-				//    $this->add_error_log( 'Item ' . $insertedItem->get_id() . ' has an error' );
-				//}
-			}
-			$wpdb->query( 'COMMIT;' );
-			$wpdb->query( 'SET autocommit = 1;' );
-
-			if ( ! $updating_item ) {
-				$insertedItem->set_status('publish' );
-			}
-
-			if($insertedItem->validate()) {
-				$insertedItem = $Tainacan_Items->update( $insertedItem );
-				$this->after_inserted_item(  $insertedItem, $collection_index );
-			} else {
-				$this->add_error_log( 'Error publishing, Item Title: ' . $insertedItem->get_title()  );
-				$this->add_error_log( 'Error publishing, Item ID: ' . $insertedItem->get_id()  );
-				$this->add_error_log( $insertedItem->get_errors() );
-				return false;
-			}
-			return $insertedItem;
-		} else {
+		if ( !( $collection instanceof Entities\Collection ) ) {
 			$this->add_error_log(  'Collection not set');
 			return false;
 		}
+
+		if ( ( empty( $itemMetadataArray ) && !$special_columns ) ) {
+			$this->add_log( 'Found one empty value' );
+			return false;
+		}
+
+
+		$item->set_collection( $collection );
+		if ( !$updating_item ) {
+			if( $item->validate() ) {
+				$insertedItem = $Tainacan_Items->insert( $item );
+			} else {
+				$this->add_error_log( 'Error inserting Item Title: ' . $item->get_title() );
+				$this->add_error_log( $item->get_errors() );
+				return false;
+			}
+		} else {
+			$insertedItem = $item;
+		}
+
+		global $wpdb;
+		$wpdb->query( 'SET autocommit = 0;' );
+
+		foreach ( $itemMetadataArray as $itemMetadata ) {
+			if($itemMetadata instanceof Entities\Item_Metadata_Entity ) {
+				$itemMetadata->set_item( $insertedItem );  // *I told you
+				if( $itemMetadata->validate() ) {
+					$Tainacan_Item_Metadata->insert( $itemMetadata );
+				} else {
+					$insertedItemId = $updating_item == true ? ' (special_item_id: ' . $insertedItem->get_id() . ')' : '';
+					$this->add_error_log('Error saving value for ' . $itemMetadata->get_metadatum()->get_name() . " in item " . $insertedItem->get_title() . $insertedItemId);
+					$this->add_error_log($itemMetadata->get_errors());
+					continue;
+				}
+			} elseif ( is_array($itemMetadata) ) {
+				if($updating_item == true) {
+					$this->deleteAllValuesCompoundItemMetadata($insertedItem, $itemMetadata[0][0]->get_metadatum()->get_parent());
+				}
+				foreach($itemMetadata as $compoundItemMetadata) {
+					$parent_meta_id = null;
+					foreach($compoundItemMetadata as $itemChildren) {
+						$itemChildren->set_parent_meta_id($parent_meta_id);
+						if( $itemChildren->validate() ) {
+							$item_children_metadata = $Tainacan_Item_Metadata->insert($itemChildren);
+							$parent_meta_id = $item_children_metadata->get_parent_meta_id();
+						} else {
+							$this->add_error_log('Error saving value for ' . $itemChildren->get_metadatum()->get_name() . " in item " . $insertedItem->get_title());
+							$this->add_error_log($itemChildren->get_errors());
+							continue;
+						}
+					}
+				}
+			}
+
+			//if( $result ){
+			//	$values = ( is_array( $itemMetadata->get_value() ) ) ? implode( PHP_EOL, $itemMetadata->get_value() ) : $itemMetadata->get_value();
+			//    $this->add_log( 'Item ' . $insertedItem->get_id() .
+			//        ' has inserted the values: ' . $values . ' on metadata: ' . $itemMetadata->get_metadatum()->get_name() );
+			//} else {
+			//    $this->add_error_log( 'Item ' . $insertedItem->get_id() . ' has an error' );
+			//}
+		}
+		$wpdb->query( 'COMMIT;' );
+		$wpdb->query( 'SET autocommit = 1;' );
+
+		if ( ! $updating_item ) {
+			$insertedItem->set_status('publish' );
+		}
+
+		if ( $insertedItem->validate() ) {
+			$insertedItem = $Tainacan_Items->update( $insertedItem );
+			$this->after_inserted_item(  $insertedItem, $collection_index );
+		} else {
+			$this->add_error_log( 'Error publishing, Item Title: ' . $insertedItem->get_title()  );
+			$this->add_error_log( 'Error publishing, Item ID: ' . $insertedItem->get_id()  );
+			$this->add_error_log( $insertedItem->get_errors() );
+			return false;
+		}
+		return $insertedItem;
 	}
 
 	private function is_assoc(array $arr) {
