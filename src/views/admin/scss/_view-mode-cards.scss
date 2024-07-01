@@ -187,6 +187,11 @@
             display: flex;
             margin: 0 !important;
 
+            &:hover,
+            &:focus {
+                background: var(--tainacan-item-hover-background-color);
+            }
+
             .list-metadata {
                 padding: 0.75em 1.375em;
                 flex: 1;
