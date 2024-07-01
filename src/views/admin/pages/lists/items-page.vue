@@ -33,7 +33,7 @@
                     id="filter-menu-compress-button"
                     v-tooltip="{
                         delay: {
-                            shown: 500,
+                            show: 500,
                             hide: 300,
                         },
                         content: !isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
@@ -223,16 +223,16 @@
                         ref="displayedMetadataDropdown" 
                         v-tooltip="{
                             delay: {
-                                shown: 500,
+                                show: 500,
                                 hide: 300,
                             },
-                            content: (totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry') ? (adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry') ? $i18n.get('info_current_view_mode_metadata_not_allowed') : $i18n.get('info_cant_select_metadata_without_items') : '',
+                            content: (totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry' || adminViewMode == 'mosaic') ? (adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry' || adminViewMode == 'mosaic') ? $i18n.get('info_current_view_mode_metadata_not_allowed') : $i18n.get('info_cant_select_metadata_without_items') : '',
                             autoHide: false,
                             placement: 'auto-start',
                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                         }"
                         :mobile-modal="true"
-                        :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry'"
+                        :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry' || adminViewMode == 'mosaic'"
                         class="show metadata-options-dropdown"
                         aria-role="list"
                         trap-focus>
@@ -383,12 +383,15 @@
                                 <span class="view-mode-icon icon is-small gray-icon">
                                     <i 
                                             v-if="adminViewMode !== 'map'"
-                                            :class="{'tainacan-icon-viewtable' : ( adminViewMode == 'table' || adminViewMode == undefined),
-                                                     'tainacan-icon-viewcards' : adminViewMode == 'cards',
-                                                     'tainacan-icon-viewminiature' : adminViewMode == 'grid',
-                                                     'tainacan-icon-viewrecords' : adminViewMode == 'records',
-                                                     'tainacan-icon-viewlist' : adminViewMode == 'list',
-                                                     'tainacan-icon-viewmasonry' : adminViewMode == 'masonry' }"
+                                            :class="{
+                                                'tainacan-icon-viewtable' : ( adminViewMode == 'table' || adminViewMode == undefined),
+                                                'tainacan-icon-viewcards' : adminViewMode == 'cards',
+                                                'tainacan-icon-viewminiature' : adminViewMode == 'grid',
+                                                'tainacan-icon-viewrecords' : adminViewMode == 'records',
+                                                'tainacan-icon-viewlist' : adminViewMode == 'list',
+                                                'tainacan-icon-viewmasonry' : adminViewMode == 'masonry' || adminViewMode == 'mosaic',
+                                                'tainacan-icon-rotate-90' : adminViewMode == 'mosaic'
+                                            }"
                                             class="tainacan-icon tainacan-icon-1-25em" />
                                     <svg
                                             v-else
@@ -425,6 +428,17 @@
                                 <i class="tainacan-icon tainacan-icon-viewcards" />
                             </span>
                             <span>{{ $i18n.get('label_cards') }}</span>
+                        </b-dropdown-item>
+                        <b-dropdown-item 
+                                aria-controls="items-list-results"
+                                role="button"
+                                :class="{ 'is-active': adminViewMode == 'mosaic' }"
+                                :value="'mosaic'"
+                                aria-role="listitem">
+                            <span class="icon gray-icon">
+                                <i class="tainacan-icon tainacan-icon-viewmasonry tainacan-icon-rotate-90" />
+                            </span>
+                            <span>{{ $i18n.get('label_mosaic') }}</span>
                         </b-dropdown-item>
                         <b-dropdown-item
                                 v-if="!collection || (collection && collection.hide_items_thumbnail_on_lists != 'yes')" 
@@ -773,7 +787,7 @@
             },
             adminViewMode() {
                 const currentAdminViewMode = this.getAdminViewMode();
-                return ['table', 'cards', 'records', 'grid', 'masonry', 'list', 'map'].indexOf(currentAdminViewMode) >= 0 ? currentAdminViewMode : 'table';
+                return ['table', 'cards', 'records', 'grid', 'masonry', 'list', 'map', 'mosaic'].indexOf(currentAdminViewMode) >= 0 ? currentAdminViewMode : 'table';
             },
             orderByName() {
                 const metadatumName =  this.$orderByHelper.getOrderByMetadatumName({
@@ -994,6 +1008,7 @@
                     existingViewMode == 'list' || 
                     existingViewMode == 'grid' || 
                     existingViewMode == 'masonry'|| 
+                    existingViewMode == 'mosaic'|| 
                     existingViewMode == 'map')
                         this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
                 else

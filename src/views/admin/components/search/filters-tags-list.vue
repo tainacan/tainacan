@@ -113,7 +113,8 @@
                                 taxonomy: tag.taxonomy,
                                 metadatumName: this.getMetadatumName(tag),
                                 metadatumId: tag.metadatumId,
-                                argType: tag.argType
+                                argType: tag.argType,
+                                secondaryMetadatumId: tag.secondaryMetadatumId
                             });
                         }
                     } else {
@@ -124,11 +125,12 @@
                             taxonomy: tag.taxonomy,
                             metadatumName: this.getMetadatumName(tag),
                             metadatumId: tag.metadatumId,
-                            argType: tag.argType
+                            argType: tag.argType,
+                            secondaryMetadatumId: tag.secondaryMetadatumId
                         });
                     }
                 });
-
+                
                 return flattenTags;
             }
         },
@@ -168,7 +170,7 @@
             ...mapGetters('search',[
                 'getFilterTags'
             ]),
-            removeMetaQuery({ filterId, value, singleLabel, label, taxonomy, metadatumId, metadatumName, argType }) {
+            removeMetaQuery({ filterId, value, singleLabel, label, taxonomy, metadatumId, metadatumName, argType, secondaryMetadatumId }) {
                 this.$eventBusSearch.resetPageOnStore();
                 this.$eventBusSearch.removeMetaFromFilterTag({ 
                     filterId: filterId,
@@ -178,7 +180,8 @@
                     taxonomy: taxonomy,
                     metadatumId: metadatumId,
                     metadatumName:metadatumName,
-                    argType: argType
+                    argType: argType,
+                    secondaryMetadatumId: secondaryMetadatumId
                 });
             },
             clearAllFilters() {

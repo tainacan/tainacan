@@ -354,7 +354,8 @@ class Admin {
 			'wp_elasticpress'    		=> \Tainacan\Elastic_Press::get_instance()->is_active(),
 			'item_submission_captcha_site_key' => get_option("tnc_option_recaptch_site_key"),
 			'tainacan_enable_core_metadata_on_advanced_search' => ( !defined('TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH') || false === TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH ),
-			'tainacan_enable_relationship_metaquery' => ( defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') && true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY )
+			'tainacan_enable_relationship_metaquery' => ( defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') && true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY ),
+			'has_permalinks_structure' => get_option('permalink_structure') !== ''
 		];
 		
 		$maps = [

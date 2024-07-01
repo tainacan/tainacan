@@ -202,7 +202,7 @@ export const cleanMetadata = ({commit}) => {
 export const updateCollectionMetadataOrder = ({ commit }, { collectionId, metadataOrder, metadataSectionId }) => {
 
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.patch('/collections/' + collectionId + '/metadata_section/' + metadataSectionId + '/metadata_order?context=edit', {
+        axios.tainacanApi.put('/collections/' + collectionId + '/metadata_section/' + metadataSectionId + '/metadata_order?context=edit', {
             metadata_order: metadataOrder
         }).then(res => {
             commit('collection/setCollection', res.data, { root: true });
@@ -390,7 +390,7 @@ export const updateMetadataSections = ({commit}, metadataSections) => {
 export const updateCollectionMetadataSectionsOrder = ({ commit }, {collectionId, metadataSectionsOrder }) => {
 
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.patch('/collections/' + collectionId + '/metadata_section_order?context=edit', {
+        axios.tainacanApi.put('/collections/' + collectionId + '/metadata_section_order?context=edit', {
             metadata_section_order: metadataSectionsOrder
         }).then(res => {
             commit('collection/setCollection', res.data, { root: true });

@@ -11,11 +11,13 @@
                 @update:model-value="($event) => { resetPage(); validadeValues($event) }"
             />
         <p 
+                v-if="filterTypeOptions.accept_numeric_interval === 'yes'"
                 style="font-size: 0.75em; margin-bottom: 0.125em;"
                 class="has-text-centered is-marginless">
             {{ $i18n.get('label_until') }}
         </p>
         <b-numberinput
+                v-if="filterTypeOptions.accept_numeric_interval === 'yes'"
                 v-model="valueEnd"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :aria-minus-label="$i18n.get('label_decrease')"
@@ -55,7 +57,10 @@
         methods: {
             // only validate if the first value is higher than first
             validadeValues: _.debounce( function () {
-                if (this.valueInit == null || this.valueEnd == null)
+                if ( this.filterTypeOptions.accept_numeric_interval !== 'yes' )
+                    this.valueEnd = this.valueInit;
+
+                if (this.valueInit == null || this.valueEnd == null )
                     return
 
                 if (this.valueInit.constructor == Number)
@@ -67,10 +72,10 @@
                 this.valueInit = parseFloat(this.valueInit);
                 this.valueEnd = parseFloat(this.valueEnd);
 
-                if (isNaN(this.valueInit) || isNaN(this.valueEnd))
+                if ( isNaN(this.valueInit) || isNaN(this.valueEnd) )
                     return
 
-                if (this.valueInit > this.valueEnd) {                     
+                if ( this.filterTypeOptions.accept_numeric_interval === 'yes' && this.valueInit > this.valueEnd ) {                     
                     this.showErrorMessage();
                     return;
                 }
@@ -91,13 +96,27 @@
                 let values =  [ this.valueInit, this.valueEnd ];
                 let type = ! Number.isInteger( this.valueInit ) || ! Number.isInteger( this.valueEnd ) ? 'DECIMAL(20,3)' : 'NUMERIC';
 
-                this.$emit('input', {
-                    type: type,
-                    compare: 'BETWEEN',
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    value: values
-                });
+                if ( this.filterTypeOptions.accept_numeric_interval !== 'yes' ) {
+                    this.$emit('input', {
+                        filter: 'intersection',
+                        type: type,
+                        compare: this.filterTypeOptions.first_comparator,
+                        metadatum_id: this.metadatumId,
+                        collection_id: this.collectionId,
+                        value: values[0]
+                    });
+                    this.$emit('input', {
+                        filter: 'intersection',
+                        type: type,
+                        compare: this.filterTypeOptions.second_comparator,
+                        metadatum_id: this.filterTypeOptions.secondary_filter_metadatum_id,
+                        collection_id: this.collectionId,
+                        value: values[0],
+                        secondary: true
+                    });
+                } else {
+                    // Much more complicated logic to be implemented in the future. See #889
+                }
             },
             updateSelectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
@@ -107,9 +126,13 @@
                 if ( index >= 0 ) {
 
                     let metaquery = this.query.metaquery[ index ];
-                    if ( metaquery.value && metaquery.value.length > 1 ) {
-                        this.valueInit = new Number(metaquery.value[0]);
-                        this.valueEnd = new Number(metaquery.value[1]);
+                    if ( metaquery.value ) {
+                        if ( Array.isArray(metaquery.value) && metaquery.value.length > 1 ) {
+                            this.valueInit = new Number(metaquery.value[0]);
+                            this.valueEnd = new Number(metaquery.value[1]);
+                        } else {
+                            this.valueInit = new Number(metaquery.value);
+                        }
                     }
                 } else {
                     this.valueInit = null;

@@ -32,6 +32,7 @@ import ThemeSearch from './theme.vue';
 
 // Remaining imports
 import store from '../../../admin/js/store/store';
+import HelpButton from '../../../admin/components/other/help-button.vue';
 import routerTheme from './theme-search/js/theme-router.js';
 import eventBusSearch from '../../../admin/js/event-bus-search';
 import { 
@@ -76,7 +77,7 @@ export default (element) => {
             const registeredViewModes =
                 ( tainacan_plugin && tainacan_plugin.registered_view_modes && tainacan_plugin.registered_view_modes.length ) ?
                 tainacan_plugin.registered_view_modes :
-                [ 'table', 'cards', 'records', 'masonry', 'slideshow', 'list', 'map' ];
+                [ 'table', 'cards', 'records', 'masonry', 'mosaic', 'slideshow', 'list', 'map'];
 
             // At first, we consider that all registered view modes are included.
             let possibleViewModes = registeredViewModes;
@@ -130,7 +131,10 @@ export default (element) => {
                     startWithFiltersHidden: isParameterTrue(getDataAttribute(blockElement, 'start-with-filters-hidden')),
                     filtersAsModal: isParameterTrue(getDataAttribute(blockElement, 'filters-as-modal')),
                     showInlineViewModeOptions: isParameterTrue(getDataAttribute(blockElement, 'show-inline-view-mode-options')),
-                    showFullscreenWithViewModes: isParameterTrue(getDataAttribute(blockElement, 'show-fullscreen-with-view-modes'))
+                    showFullscreenWithViewModes: isParameterTrue(getDataAttribute(blockElement, 'show-fullscreen-with-view-modes')),
+                    shouldNotHideFiltersOnMobile: isParameterTrue(getDataAttribute(blockElement, 'should-not-hide-filters-on-mobile')),
+                    displayFiltersHorizontally: isParameterTrue(getDataAttribute(blockElement, 'display-filters-horizontally')),
+                    hideFilterCollapses: isParameterTrue(getDataAttribute(blockElement, 'hide-filter-collapses')),
                 }),
             });
 
@@ -188,6 +192,7 @@ export default (element) => {
             VueItemsList.use(AxiosErrorHandlerPlugin);
             VueItemsList.use(ConsolePlugin, {visual: false});
             VueItemsList.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
+            VueItemsList.component('help-button', HelpButton);
 
             /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
             if (typeof window.tainacan_extra_components != "undefined") {

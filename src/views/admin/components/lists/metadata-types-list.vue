@@ -58,7 +58,7 @@
                                         content: getPreviewTemplateContent(metadatum),
                                         html: true,
                                         delay: {
-                                            shown: 0,
+                                            show: 0,
                                             hide: 100,
                                         },
                                         placement: 'top',
@@ -123,7 +123,7 @@
                                         content: $i18n.get('info_create_section'),
                                         html: true,
                                         delay: {
-                                            shown: 0,
+                                            show: 0,
                                             hide: 100,
                                         },
                                         placement: 'top',

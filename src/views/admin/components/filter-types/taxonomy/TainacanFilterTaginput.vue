@@ -14,7 +14,7 @@
                 :aria-close-label="$i18n.get('remove_value')"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :class="{'has-selected': selected != undefined && selected != []}"
-                :placeholder="$i18n.get('info_type_to_add_terms')"
+                :placeholder="filter.placeholder ? filter.placeholder : $i18n.get('info_type_to_add_terms')"
                 check-infinite-scroll
                 @typing="search"
                 @focus="($event) => { searchQuery = $event.target.value; performSearch(searchQuery) }"

@@ -37,7 +37,7 @@ class Theme_Helper {
 		// Replace collections permalink to post type archive if cover not enabled
 		add_filter('post_type_link', array($this, 'permalink_filter'), 10, 3);
 
-		// Replace single query to the page content set as cover for the colllection
+		// Replace single query to the page content set as cover for the collection
 		// Redirect to post type archive if no cover page is set
 		add_action('wp', array($this, 'collection_single_redirect'));
 		
@@ -512,6 +512,9 @@ class Theme_Helper {
 		 *     @type string $default_view_mode							The default view mode
 		 *     @type bool	$is_forced_view_mode						Ignores user prefs to always render the choosen default view mode
 		 *     @type string[] $enabled_view_modes						The list os enable view modes to display
+		 *     @type bool 	$should_not_hide_filters_on_mobile			Disables the default behavior of automatically collapsing the filters inside a modal when in small screen sizes
+		 *     @type bool 	$display_filters_horizontally				Display the filters in an horizontal panel above search control instead of a sidebar
+		 *     @type bool 	$hide_filter_collapses			Hides the button that collapses all filters inside the filters panel
 	 * @return string  The HTML div to be used for rendering the items list vue component
 	 */
 	public function search_shortcode($args) {
@@ -617,7 +620,10 @@ class Theme_Helper {
 				'data-start-with-filters-hidden' => true,
 				'data-filters-as-modal' => true,
 				'data-show-inline-view-mode-options' => true,
-				'data-show-fullscreen-with-view-modes' => true
+				'data-show-fullscreen-with-view-modes' => true,
+				'data-should-not-hide-filters-on-mobile' => true,
+				'data-display-filters-horizontally' => true,
+				'data-hide-filter-collapses' => true
 			]
 		];
 
@@ -2478,6 +2484,24 @@ class Theme_Helper {
 			'implements_skeleton' => true,
 			'requires_thumbnail' => false,
 			'placeholder_template' => $map_view_mode_placeholder
+		]);
+
+		$this->register_view_mode('mosaic', [
+			'label' => __('Mosaic', 'tainacan'),
+			'dynamic_metadata' => false,
+			'description' => __('A mosaic view, similar to Flickr and Google Photos, which will display images without cropping.', 'tainacan'),
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewmasonry tainacan-icon-rotate-90 tainacan-icon-1-25em"></i></span>',
+			'type' => 'component',
+			'implements_skeleton' => true,
+			'placeholder_template' => '<ul style="list-style: none;width: 100%; height: auto; display: flex; gap: 24px 0; flex-wrap: wrap;">' .
+				array_reduce( range(0,11), function($container, $i) {
+					$container .= '<li style="flex-grow: 1; max-width: 35%; width: ' . ($i % 2 == 0 ? rand(100, 180) : rand(90, 170)) . 'px; height: 120px ; background-color: var(--tainacan-block-gray1, #f2f2f2); margin: 0; padding: 5px;">
+						<div style="width: 100%;height: 100%; background-color: var(--tainacan-block-gray2, #dbdbdb);margin-bottom: 10px;"></div>
+						<div style="width: 100%;height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
+					</li>';
+					return $container;
+				}) .
+			'</ul>'
 		]);
 	}
 }

@@ -336,6 +336,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_grid'                                	 => __( 'Thumbnails', 'tainacan' ),
 	'label_table'                                    => __( 'Table', 'tainacan' ),
 	'label_cards'                                    => __( 'Cards', 'tainacan' ),
+	'label_mosaic'                                   => __( 'Mosaic', 'tainacan' ),
 	/* translators: The 'records' view mode, in the sense of a catalog file */
 	'label_records'                                  => __( 'Records', 'tainacan' ),
 	'label_masonry'                                  => __( 'Masonry', 'tainacan' ),
@@ -529,6 +530,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_view_all_%s_collections'					 => __( 'View all %s collections', 'tainacan' ),
 	'label_view_collections_list'                    => __( 'View collections list', 'tainacan' ),
 	'label_comparator'								 => __( 'Comparator', 'tainacan' ),
+	'label_comparators'								 => __( 'Comparators', 'tainacan' ),
 	'label_table_of_items'                           => __( 'Table of Items', 'tainacan' ),
 	'label_create_another_item'                      => __( 'Create another item', 'tainacan' ),
 	'label_recent_collections'	                     => __( 'Recent Collections', 'tainacan' ),
@@ -707,7 +709,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_item_submission_options'				 	 => __( 'Item submission options', 'tainacan' ),
 	'label_metadata_related_features'				 => __( 'Metadata related features', 'tainacan' ),
 	'label_preview'									 => __( 'Preview', 'tainacan' ),
-
+	'label_go_to_permalinks'						 => __( 'Go to permalinks', 'tainacan' ),
+	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),
@@ -788,6 +791,8 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_click_to_add_a_point'				 => __( 'Drag to reposition or click to insert a marker', 'tainacan' ),
 	'instruction_select_geocoordinate_metadatum'	 => __( 'Select a geocoordinate metadatum', 'tainacan' ),
 	'instruction_multiple_terms_insertion'			 => __( 'Type or paste here a list of names using a separator to create multiple terms at once.', 'tainacan' ),
+	'instruction_select_second_date_to_compare'		 => __( 'Select the second date metadatum', 'tainacan' ),
+	'instruction_select_second_numeric_to_compare'	 => __( 'Select the second numeric metadatum', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),
@@ -1064,6 +1069,8 @@ return apply_filters( 'tainacan-i18n', [
 	'info_terms_creation_failed_due_to_value_%s'	 => __( 'Terms creation failed due to value: %s.', 'tainacan' ),
 	'info_terms_creation_failed_due_to_values_%s'	 => __( 'Terms creation failed due to values: %s.', 'tainacan' ),
 	'info_autodraft_updated'						 => __( 'Autodraft updated. Please create the item to keep your changes.', 'tainacan' ),
+	'info_intersection_explainer'			 	 	 => __( 'Will show items if the selected value is:', 'tainacan' ),
+	'info_intersection_rules'				 	 	 => __( 'The value must match both rules to appear in the filter.', 'tainacan' ),
 
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
@@ -1112,6 +1119,7 @@ return apply_filters( 'tainacan-i18n', [
 	/* Errors displayed on the interface bottom notifications */
 	'error_connectivity_label' => __('Connectivity issue', 'tainacan'),
 	'error_connectivity' => __('It is possible that you are disconnected or the server is not working properly.', 'tainacan'),
+	'error_permalinks_label' => __('Permalinks issue', 'tainacan'),
 	'error_400'	  => __('Some request went wrong due to invalid syntax.', 'tainacan'),
 	'error_401'	  => __('You must authenticate to access this information. Try logging in again on the WordPress Admin panel.', 'tainacan'),
 	'error_403'	  => __('It seems that you are not allowed to access this content.', 'tainacan'),
@@ -1124,6 +1132,7 @@ return apply_filters( 'tainacan-i18n', [
 	'error_511'	  => __('You must authenticate to get access this information. Try logging in again on the WordPress Admin panel.', 'tainacan'),
 	'error_other' => __('Something went wrong here. You may want to try again or contact the Administrator.', 'tainacan'),
 	'error_connectivity_detail' => __('The WordPress Heartbit API sends requests periodically to the server to update some information. The latest request failed for some reason. It can be the case of a lost connection or bad communication between the browser and the server.', 'tainacan'),
+	'error_permalinks_detail' => __( 'Tainacan requires your Permalink settings to be configured. Please visit %sPermalink settings%s and define it to an option such as "postname".', 'tainacan' ),
 	'error_400_detail'	 => __('The server could not understand the request due to invalid syntax. This is possibly an issue with Tainacan and should be reported to its developers.', 'tainacan'),
 	'error_401_detail'	 => __('You must authenticate to get access this information. Even if you have access to the Tainacan admin panel, it may be the case that your session cookies were lost. Try reloading the page or logging again on the WordPress Admin panel.', 'tainacan'),
 	'error_403_detail'	 => __('It seems that you are not allowed to access this content. Your user might have a role with insufficient capabilities. If that is not the case, check if you are correctly logged in on the WordPress Admin panel.', 'tainacan'),

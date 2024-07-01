@@ -212,6 +212,22 @@
         "collectionOrderByType": {
             "type": "string",
             "default": ""
+        },
+        "shouldNotHideFiltersOnMobile": {
+            "type": "boolean",
+            "default": false
+        },
+        "displayFiltersHorizontally": {
+            "type": "boolean",
+            "default": false
+        },
+        "hideFilterCollapses": {
+            "type": "boolean",
+            "default": false
+        },
+        "filtersInlineWidth": {
+            "type": "number",
+            "default": 272
         }
     },
     "supports": {

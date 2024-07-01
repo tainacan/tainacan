@@ -242,7 +242,7 @@
                                             placement: 'auto',
                                             popperClass: ['tainacan-tooltip', 'tooltip'],
                                             triggers: [],
-                                            shown: bulkEditionProcedures[criterion].tooltipShow
+                                            show: bulkEditionProcedures[criterion].tooltipShow
                                         }"
                                         class="icon">
                                     <i class="has-text-success tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle" />

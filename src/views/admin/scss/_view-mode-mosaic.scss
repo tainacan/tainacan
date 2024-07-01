@@ -1,0 +1,223 @@
+.tainacan-mosaic-container,
+.tainacan-mosaic-container--skeleton {
+    --tainacan-mosaic-view-mode-gap: 12px;
+    --tainacan-mosaic-view-mode-min-height: 180px;
+    display: flex;
+    flex-wrap: wrap;
+    grid-gap: calc(2em + 18px) var(--tainacan-mosaic-view-mode-gap, 12px);
+    list-style: none;
+    height: auto;
+    min-height: 0px; /* While most view modes set this to 50vh, this causes a bug for this one if there are few items to display */
+    margin: 0;
+    margin-bottom: calc(2em + 18px + var(--tainacan-container-padding));
+    padding: 0;
+    list-style: none;
+    animation-name: appear;   
+    animation-duration: 0.5s;
+
+    &::after {
+        content: " ";
+        flex-grow: 1000000000;
+    }
+    
+    & > li,
+    & > .skeleton {
+        flex-grow: calc(var(--tainacan-mosaic-item-width, 300) * (100000 / var(--tainacan-mosaic-item-height, 300)));
+        flex-basis: calc(var(--tainacan-mosaic-view-mode-min-height, 180) * (var(--tainacan-mosaic-item-width, 300) / var(--tainacan-mosaic-item-height, 300)));
+        aspect-ratio: var(--tainacan-mosaic-item-width, 300) / var(--tainacan-mosaic-item-height, 300);
+        position: relative;
+        margin: 0 !important;
+        padding: 0 !important;
+
+        :deep(img) {
+            position: absolute;
+            width: auto;
+            height: 100%;
+        }
+
+        :deep(canvas.child) {
+            aspect-ratio: var(--tainacan-mosaic-item-width, 300) / var(--tainacan-mosaic-item-height, 300);
+        }
+
+        &:hover:not(.skeleton) {
+            background-color: var(--tainacan-item-heading-hover-background-color);
+        }
+        &.selected-mosaic-item:not(.skeleton) {
+            background-color: var(--tainacan-turquoise1);
+        }
+        &:not(.skeleton) { 
+            background-color: var(--tainacan-item-background-color);
+        }
+
+        .tainacan-mosaic-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .mosaic-item-checkbox {
+            position: absolute;
+            margin-top: -2px;
+            margin-left: -1em;
+            z-index: 9;
+        }
+        .actions-area {
+            position: relative;
+            float: right;
+            width: 100%;
+            height: 0px;
+            display: flex;
+            justify-content: flex-end;
+            visibility: hidden;
+            overflow: hidden;
+            opacity: 0.0;
+            padding: 8px;
+            margin-top: -25px;
+            background-color: var(--tainacan-item-heading-hover-background-color);
+            transition: visibility 0.2s ease, opacity 0.3s ease, height 0.2s ease, margin-top 0.1s ease;
+
+            a {
+                margin-left: 8px;
+                opacity: 0;
+                transition: opacity 0.3s ease-in;
+            }
+        }
+        &:hover,
+        &:focus,
+        &:focus-within,
+        &:focus-visible,
+        & > a:focus,
+        & > a:focus-within,
+        & > a:focus-visible {
+            background: var(--tainacan-item-hover-background-color);
+
+            .actions-area { 
+                visibility: visible;
+                opacity: 1.0;
+                height: 42px;
+                margin-top: 0px;
+                background-color: var(--tainacan-item-heading-hover-background-color);
+
+                a {
+                    opacity: 1;
+                }
+            }
+        }
+        & > .selected-mosaic-item {
+            background-color: var(--tainacan-turquoise1);
+            .actions-area,
+            .metadata-title {
+                background-color: var(--tainacan-turquoise1) !important;
+            }
+        }
+
+        .tainacan-mosaic-item-thumbnail {
+            background-size: cover;
+            background-color: var(--tainacan-item-background-color);
+            background-blend-mode: multiply;
+            border-radius: 0px;
+            min-width: 100%;
+            display: flex;
+            justify-content: center;
+
+            &:hover {
+                cursor: pointer;
+            } 
+        }
+
+        .metadata-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            margin: 0;
+            padding: 8px 1em;
+            min-height: calc(1em + 8px);
+            width: 100%;
+            cursor: pointer;
+            position: absolute;
+            top: 100%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+
+            p { 
+                font-size: 0.875em !important;
+                color: var(--tainacan-heading-color) !important; 
+                text-align: left !important;
+                margin-bottom: 0 !important;
+                line-height: 1.5em;
+                word-break: break-word;
+                margin: 0;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+
+            .slideshow-icon {
+                color: var(--tainacan-info-color); 
+                position: absolute;
+                right: 5px;
+                top: 8px;
+                transform: scale(0.0);
+                transition: transform 0.2s ease;
+            }
+            .icon:not(.slideshow-icon) {
+                float: left;
+                margin-top: -1px;
+            }
+        }
+
+
+        &:hover,
+        &:focus,
+        &:focus-within,
+        &:focus-visible,
+        & > a:focus,
+        & > a:focus-within,
+        & > a:focus-visible {
+            .metadata-title {
+                background: var(--tainacan-item-heading-hover-background-color);
+
+                .slideshow-icon {
+                    transform: scale(1.0);
+                }
+            }
+        }
+    }
+
+    &.hide-items-selection {
+        .tainacan-mosaic-item {
+            &:hover { background-color: transparent; cursor: default; }
+            &:hover .tainacan-mosaic-item-thumbnail { cursor: default; }
+        }
+    }
+
+    &.has-title-inside {
+        gap: var(--tainacan-mosaic-view-mode-gap, 12px);
+
+        & > li {
+            .metadata-title {
+                top: unset;
+                bottom: 0;
+                white-space: wrap;
+                overflow: visible;
+                text-overflow: none;
+
+                p {
+                    white-space: wrap;
+                    overflow: visible;
+                    text-overflow: none;
+                }
+            }
+            &:not(:hover):not(:focus):not(:focus-within):not(:focus-visible),
+            & > a:not(:hover):not(:focus):not(:focus-within):not(:focus-visible) {
+                .metadata-title {
+                    display: none;
+                }
+            }
+        } 
+    }
+}

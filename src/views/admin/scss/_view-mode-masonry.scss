@@ -110,6 +110,7 @@
 
         :deep(img) {
             height: auto;
+            max-width: 100%;
         }
 
         &:hover:not(.skeleton) {
@@ -191,7 +192,7 @@
             flex-shrink: 0;
             margin: 0px 6px 0px 24px;
             padding: 8px 1em;
-            min-height: 41px;
+            min-height: calc(1em + 8px);
             cursor: pointer;
             position: relative;
 

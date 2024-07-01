@@ -56,6 +56,33 @@
             flex-direction: row;
             flex: 1 0 auto;
 
+            &.horizontal-filters {
+                flex-direction: column;
+
+                .filters {
+                    flex-direction: row;
+                    flex: 0 1 100%;
+                    flex-wrap: wrap;
+                    padding: 18px 12px 6px 12px;
+
+                    .fake-filters-heading {
+                        margin-right: 90%;
+                        top: -0.5em;
+                        left: 0.5em;
+                    }
+                    .fake-filters-heading + .fake-link {
+                        margin-right: 95%;
+                        margin-left: 12px;
+                    }
+
+                    .fake-filter {
+                        margin: 6px 12px;
+                        display: inline-flex;
+                        width: var(--tainacan-filters-inline-width, 272px);
+                    }
+                }
+            }
+
             .filters {
                 flex: 0 1 var(--tainacan-filter-menu-width-theme, 20%);
                 display: flex;
@@ -66,7 +93,8 @@
                     display: flex;
                     flex-direction: column;
                     width: 80%;
-                    margin: 5% 12%;
+                    margin: 5% 8%;
+
                     .fake-text {
                         margin: 4px 0;
                         width: 35%;

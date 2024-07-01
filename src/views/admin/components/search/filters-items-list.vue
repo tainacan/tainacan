@@ -16,9 +16,9 @@
         </h3>
 
         <button
-                v-if="!isLoadingFilters &&
-                    ((filters.length >= 0 &&
-                        isRepositoryLevel) || filters.length > 0)"
+                v-if="!hideFilterCollapses && !isLoadingFilters && (
+                    ( filters.length >= 0 && isRepositoryLevel ) || filters.length > 0
+                )"
                 aria-controls="filters-items-list"
                 :aria-expanded="!collapseAll"
                 class="link-style collapse-all"
@@ -33,7 +33,7 @@
             </span>
         </button>
 
-        <br>
+        <br v-if="!hideFilterCollapses">
 
         <filters-tags-list
                 v-if="filtersAsModal && hasFiltered"
@@ -56,7 +56,7 @@
                                 v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined" 
                                 v-tooltip="{
                                     delay: {
-                                        shown: 500,
+                                        show: 500,
                                         hide: 300,
                                     },
                                     content: $i18n.get('label_filters_from') + ' ' + taxonomyFiltersCollectionNames[key] + ': ',
@@ -86,7 +86,8 @@
                                     :expand-all="!collapseAll"
                                     :is-repository-level="key == 'repository-filters'"
                                     :filters-as-modal="filtersAsModal"
-                                    :is-mobile-screen="isMobileScreen" />
+                                    :is-mobile-screen="isMobileScreen"
+                                    :hide-collapses="hideFilterCollapses" />
                         </template>
                         <hr v-if="taxonomyFilter.length > 1">
                     </div>
@@ -99,7 +100,7 @@
                                 v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined" 
                                 v-tooltip="{
                                     delay: {
-                                        shown: 500,
+                                        show: 500,
                                         hide: 300,
                                     },
                                     content: $i18n.get('label_filters_from') + ' ' + taxonomyFiltersCollectionNames[key] + ': ',
@@ -129,7 +130,8 @@
                                     :expand-all="!collapseAll"
                                     :is-repository-level="key == 'repository-filters'"
                                     :filters-as-modal="filtersAsModal"
-                                    :is-mobile-screen="isMobileScreen" />
+                                    :is-mobile-screen="isMobileScreen"
+                                    :hide-collapses="hideFilterCollapses" />
                         </template>
                         <hr v-if="taxonomyFilter.length > 1">
                     </div>
@@ -146,7 +148,7 @@
                                 v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined" 
                                 v-tooltip="{
                                     delay: {
-                                        shown: 500,
+                                        show: 500,
                                         hide: 300,
                                     },
                                     content: $i18n.get('label_filters_from') + ' ' + repositoryCollectionNames[key] + ': ',
@@ -176,7 +178,8 @@
                                     :expand-all="!collapseAll"
                                     :is-repository-level="key == 'repository-filters'"
                                     :filters-as-modal="filtersAsModal"
-                                    :is-mobile-screen="isMobileScreen" />
+                                    :is-mobile-screen="isMobileScreen"
+                                    :hide-collapses="hideFilterCollapses" />
                         </template>
                         <hr v-if="repositoryCollectionFilters.length > 1">
                     </div>
@@ -189,7 +192,7 @@
                                 v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined" 
                                 v-tooltip="{
                                     delay: {
-                                        shown: 500,
+                                        show: 500,
                                         hide: 300,
                                     },
                                     content: $i18n.get('label_filters_from') + ' ' + repositoryCollectionNames[key] + ': ',
@@ -219,7 +222,8 @@
                                     :expand-all="!collapseAll"
                                     :is-repository-level="key == 'repository-filters'"
                                     :filters-as-modal="filtersAsModal"
-                                    :is-mobile-screen="isMobileScreen" />
+                                    :is-mobile-screen="isMobileScreen"
+                                    :hide-collapses="hideFilterCollapses" />
                         </template>
                         <hr v-if="repositoryCollectionFilters.length > 1">
                     </div>
@@ -237,7 +241,8 @@
                         :expand-all="!collapseAll"
                         :is-repository-level="isRepositoryLevel"
                         :filters-as-modal="filtersAsModal"
-                        :is-mobile-screen="isMobileScreen" />
+                        :is-mobile-screen="isMobileScreen"
+                        :hide-collapses="hideFilterCollapses" />
             </template>
         </div>
         <section
@@ -293,7 +298,8 @@
             filtersAsModal: Boolean,
             hasFiltered: Boolean,
             isLoadingItems: Boolean,
-            isMobileScreen: false
+            isMobileScreen: false,
+            hideFilterCollapses: false
         },
         emits: [
             'update-is-loading-items-state'
@@ -488,6 +494,12 @@
     }
     .filters-components-list {
         margin-bottom: 64px;
+    }
+    @supports (contain: inline-size) {
+        .filters-components-list {
+            container-type: inline-size;
+            container-name: filterscomponentslist; 
+        }
     }
     .collection-name {
         color: var(--tainacan-heading-color);

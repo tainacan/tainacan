@@ -13,7 +13,11 @@ class Date extends Filter_Type {
 		$this->set_name( __('Date', 'tainacan') );
 		$this->set_supported_types(['date']);
 		$this->set_component('tainacan-filter-date');
+		$this->set_form_component('tainacan-filter-form-date');
 		$this->set_use_max_options(false);
+		$this->set_default_options([
+			'comparators' => [ '=', '!=', '>', '>=', '<', '<=' ]
+		]);
 		$this->set_preview_template('
 			<div>
 				<div>
@@ -55,6 +59,40 @@ class Date extends Filter_Type {
 				</div>
 			</div>
 		');
+	}
+
+
+	/**
+	 * @inheritdoc
+	 */
+	public function get_form_labels(){
+		return [
+			'comparators' => [
+				'title' => __( 'Enabled comparators', 'tainacan' ),
+				'description' => __( 'A list of comparators to be available in the filter, such as equal, greater than, smaller than, etc.', 'tainacan' ),
+			]
+		];
+	}
+
+	/**
+	 * @param \Tainacan\Entities\Filter $filter
+	 * @return array|bool true if is validate or array if has error
+	 */
+	public function validate_options(\Tainacan\Entities\Filter $filter) {
+		if ( !in_array($filter->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
+			return true;
+
+		if ( empty( $this->get_option('comparators') ) )
+			return [
+				'comparators' => __('"Comparators" array is required', 'tainacan')
+			];
+
+		if ( count( $this->get_option('comparators') ) < 1 )
+			return [
+				'comparators' => __('At least one comparator should be provided', 'tainacan')
+			];
+
+		return true;
 	}
 
 }

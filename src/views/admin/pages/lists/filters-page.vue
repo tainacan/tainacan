@@ -976,7 +976,7 @@ export default {
             }
 
             &:not(.available-metadata-area){
-                margin-right: var(--tainacan-one-column);
+                margin-right: 30px;
                 flex-grow: 2;
 
                 @media screen and (max-width: 769px) {

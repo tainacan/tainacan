@@ -1,6 +1,7 @@
 <template>
     <div class="numeric-filter-container">
         <b-dropdown
+                v-if="filterTypeOptions.comparators.length > 1"
                 :mobile-modal="true"
                 aria-role="list"
                 trap-focus
@@ -10,62 +11,31 @@
                         :aria-label="$i18n.get('label_comparator')"
                         class="button is-white">
                     <span class="icon is-small">
-                        <i v-html="comparatorSymbol" />
+                        <i v-html="comparatorsObject[comparator].symbol" />
                     </span>
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                     </span>
                 </button>
             </template>
-            <b-dropdown-item
-                    role="button"
-                    :class="{ 'is-active': comparator == '=' }"
-                    :value="'='"
-                    aria-role="listitem">
-                &#61;&nbsp; {{ $i18n.get('is_equal_to') }}
-            </b-dropdown-item>
-            <b-dropdown-item
-                    role="button"
-                    :class="{ 'is-active': comparator == '!=' }"
-                    :value="'!='"
-                    aria-role="listitem">
-                &#8800;&nbsp; {{ $i18n.get('is_not_equal_to') }}
-            </b-dropdown-item>
-            <b-dropdown-item
-                    role="button"
-                    :class="{ 'is-active': comparator == '>' }"
-                    :value="'>'"
-                    aria-role="listitem">
-                &#62;&nbsp; {{ $i18n.get('greater_than') }}
-            </b-dropdown-item>
-            <b-dropdown-item
-                    role="button"
-                    :class="{ 'is-active': comparator == '>=' }"
-                    :value="'>='"
-                    aria-role="listitem">
-                &#8805;&nbsp; {{ $i18n.get('greater_than_or_equal_to') }}
-            </b-dropdown-item>
-            <b-dropdown-item
-                    role="button"
-                    :class="{ 'is-active': comparator == '<' }"
-                    :value="'<'"
-                    aria-role="listitem">
-                &#60;&nbsp; {{ $i18n.get('less_than') }}
-            </b-dropdown-item>
-            <b-dropdown-item
-                    role="button"
-                    :class="{ 'is-active': comparator == '<=' }"
-                    :value="'<='"
-                    aria-role="listitem">
-                &#8804;&nbsp; {{ $i18n.get('less_than_or_equal_to') }}
-            </b-dropdown-item>
+            <template
+                    v-for="(comparatorObject, comparatorKey) in comparatorsObject"
+                    :key="comparatorKey">
+                <b-dropdown-item
+                        v-if="comparatorObject.enabled == 'yes'"
+                        role="button"
+                        :class="{ 'is-active': comparator == comparatorKey }"
+                        :value="comparatorKey"
+                        aria-role="listitem"
+                        v-html="comparatorObject.symbol + '&nbsp;' + comparatorObject.label" />
+            </template>
         </b-dropdown>
-
         <b-numberinput
                 v-model="value"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :aria-minus-label="$i18n.get('label_decrease')"
                 :aria-plus-label="$i18n.get('label_increase')"
+                :placeholder="filter.placeholder ? filter.placeholder : ''"
                 size="is-small"
                 :step="Number(filterTypeOptions.step)"
                 @update:model-value="($event) => { resetPage($event); emit($event); }" />
@@ -89,19 +59,6 @@
                 comparator: '=' // =, !=, >, >=, <, <=
             }
         },
-        computed: {
-            comparatorSymbol() {
-                switch(this.comparator) {
-                    case '=': return '&#61;';
-                    case '!=': return '&#8800;';
-                    case '>': return '&#62;';
-                    case '>=': return '&#8805;';
-                    case '<': return '&#60;';
-                    case '<=': return '&#8804;';
-                    default: return '';
-                }
-            }
-        },
         watch: {
             'query': {
                 handler() {
@@ -109,6 +66,41 @@
                 },
                 deep: true
             }
+        },
+        created() {
+            this.comparatorsObject = {
+                '=': {
+                    symbol: '&#61;',
+                    label: this.$i18n.get('is_equal_to'),
+                    enabled: this.filterTypeOptions.comparators.indexOf('=') < 0 ? 'no' : 'yes'
+                },
+                '!=': {
+                    symbol: '&#8800;',
+                    label: this.$i18n.get('is_not_equal_to'),
+                    enabled: this.filterTypeOptions.comparators.indexOf('!=') < 0 ? 'no' : 'yes'
+                },
+                '>': {
+                    symbol: '&#62;',
+                    label: this.$i18n.get('greater_than'),
+                    enabled: this.filterTypeOptions.comparators.indexOf('>') < 0 ? 'no' : 'yes'
+                },
+                '>=': {
+                    symbol: '&#8805;',
+                    label: this.$i18n.get('greater_than_or_equal_to'),
+                    enabled: this.filterTypeOptions.comparators.indexOf('>=') < 0 ? 'no' : 'yes'
+                },
+                '<': {
+                    symbol: '&#60;',
+                    label: this.$i18n.get('less_than'),
+                    enabled: this.filterTypeOptions.comparators.indexOf('<') < 0 ? 'no' : 'yes'
+                },
+                '<=': {
+                    symbol: '&#8804;',
+                    label: this.$i18n.get('less_than_or_equal_to'),
+                    enabled: this.filterTypeOptions.comparators.indexOf('<=') < 0 ? 'no' : 'yes'
+                },
+            };
+            this.comparator = this.filterTypeOptions.comparators[0];
         },
         mounted() {
             this.updateSelectedValues();
@@ -165,15 +157,25 @@
         height: auto;
         align-items: stretch;
 
-        @media screen and (min-width: 769px) and (max-width: 1500px) {
+        @supports not (contain: inline-size) {
+            @media screen and (min-width: 769px) and (max-width: 1500px) {
+                flex-wrap: wrap;
+                height: 60px;
+            }
+        }
+
+        @container filterscomponentslist (max-width: 170px) {
             flex-wrap: wrap;
-            align-items: center;
             height: 60px;
+
+            .dropdown {
+                flex-grow: 2 !important;
+            }
         }
         
         .dropdown {
             width: auto;
-            flex-grow: 2;
+            flex-grow: 0;
 
             .dropdown-trigger button {
                 padding: 2px 0.5em 2px 0.5em !important;

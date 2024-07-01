@@ -36,9 +36,15 @@
         }
     }
 
+    &.horizontal-filters {
+        .modal-content {
+            padding: calc(var(--tainacan-container-padding) - 12px) var(--tainacan-one-column) var(--tainacan-container-padding) var(--tainacan-one-column);
+        }
+    }
+
     @media screen and (max-width: 768px) {
 
-        &:not(.filters-menu-modal) {
+        &.modal:not(.filters-menu-modal) {
             .modal-content {
                 background-color: var(--tainacan-background-color);
                 margin: 0 12% 0 0;

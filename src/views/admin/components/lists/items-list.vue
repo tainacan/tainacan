@@ -203,7 +203,7 @@
                         <p
                                 v-tooltip="{
                                     delay: {
-                                        shown: 500,
+                                        show: 500,
                                         hide: 300,
                                     },
                                     content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
@@ -534,7 +534,7 @@
                         <p
                                 v-tooltip="{
                                     delay: {
-                                        shown: 500,
+                                        show: 500,
                                         hide: 300,
                                     },
                                     content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
@@ -663,7 +663,7 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`,
@@ -678,7 +678,7 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: item.author_name != undefined ? item.author_name : '',
@@ -694,7 +694,7 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: item.creation_date != undefined ? parseDateToNavigatorLanguage(item.creation_date) : '',
@@ -775,7 +775,7 @@
                                     v-if="collectionId != undefined && titleItemMetadatum"
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: item.metadata != undefined ? renderMetadata(item.metadata, titleItemMetadatum) : '',
@@ -791,7 +791,7 @@
                                     v-if="collectionId == undefined && titleItemMetadatum"
                                     v-tooltip="{
                                         delay: {
-                                            shown: 500,
+                                            show: 500,
                                             hide: 300,
                                         },
                                         content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
@@ -1063,7 +1063,7 @@
                                             column.metadata_type_object.related_mapped_prop == 'title'"
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
@@ -1079,7 +1079,7 @@
                                             column.metadata_type_object.related_mapped_prop == 'description'"
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
@@ -1100,7 +1100,7 @@
                                             column.metadatum !== 'row_description'"
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             popperClass: [ 'tainacan-tooltip', 'tooltip', column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
@@ -1127,7 +1127,7 @@
                                         v-if="column.metadatum == 'row_author'"
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: item[column.slug],
@@ -1142,7 +1142,7 @@
                                         v-if="column.metadatum == 'row_modification'"
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: parseDateToNavigatorLanguage(item[column.slug]),
@@ -1157,7 +1157,7 @@
                                         v-if="column.metadatum == 'row_creation'"
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: parseDateToNavigatorLanguage(item[column.slug]),
@@ -1317,7 +1317,7 @@
                                 v-if="collectionId != undefined && titleItemMetadatum"
                                 v-tooltip="{
                                     delay: {
-                                        shown: 500,
+                                        show: 500,
                                         hide: 300,
                                     },
                                     content: item.metadata != undefined ? renderMetadata(item.metadata, titleItemMetadatum) : '',
@@ -1333,7 +1333,7 @@
                                 v-if="collectionId == undefined && titleItemMetadatum"
                                 v-tooltip="{
                                     delay: {
-                                        shown: 500,
+                                        show: 500,
                                         hide: 300,
                                     },
                                     content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
@@ -1549,7 +1549,7 @@
                                         v-if="collectionId != undefined && titleItemMetadatum"
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: item.metadata != undefined ? renderMetadata(item.metadata, titleItemMetadatum) : '',
@@ -1563,7 +1563,7 @@
                                         v-if="collectionId == undefined && titleItemMetadatum"
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 300,
                                             },
                                             content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
@@ -1792,7 +1792,7 @@
                                                 v-if="collectionId != undefined && titleItemMetadatum"
                                                 v-tooltip="{
                                                     delay: {
-                                                        shown: 500,
+                                                        show: 500,
                                                         hide: 300,
                                                     },
                                                     content: item.metadata != undefined ? renderMetadata(item.metadata, titleItemMetadatum) : '',
@@ -1808,7 +1808,7 @@
                                                 v-if="collectionId == undefined && titleItemMetadatum"
                                                 v-tooltip="{
                                                     delay: {
-                                                        shown: 500,
+                                                        show: 500,
                                                         hide: 300,
                                                     },
                                                     content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
@@ -1979,6 +1979,178 @@
                     </l-control>
                 </l-map>
             </div>
+
+            <!-- MOSAIC VIEW MODE -->
+            <ul 
+                    v-if="viewMode == 'mosaic'"
+                    :class="{
+                        'hide-items-selection': $adminOptions.hideItemsListSelection
+                    }"
+                    class="tainacan-mosaic-container">
+                <li
+                        v-for="(item, index) of items"
+                        :key="index"
+                        :data-tainacan-item-id="item.id"
+                        :style="{
+                            '--tainacan-mosaic-item-width': getAcceptableWidthBasedOnRatio(item['thumbnail'], 'tainacan-large-full', 300),
+                            '--tainacan-mosaic-item-height': $thumbHelper.getHeight(item['thumbnail'], 'tainacan-large-full', 300)
+                        }">
+                    <div 
+                            :class="{
+                                'selected-mosaic-item': getSelectedItemChecked(item.id) == true
+                            }"
+                            class="tainacan-mosaic-item" 
+                            @click.left="onClickItem($event, item)"
+                            @click.right="onRightClickItem($event, item)">
+
+                        <!-- Thumbnail -->
+                        <blur-hash-image
+                                v-if="item.thumbnail != undefined"
+                                class="tainacan-mosaic-item-thumbnail"
+                                :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-large-full', 320)"
+                                :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-large-full', 320)"
+                                :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-large-full')"
+                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-large-full', item.document_mimetype)"
+                                :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-large-full', item.document_mimetype)"
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                :transition-duration="500"
+                            />
+
+                        <!-- Title -->
+                        <div
+                                class="metadata-title"
+                                :style="{ 'padding-left': collectionId && !$adminOptions.hideItemsListSelection && ($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) ? '1.75em' : '1.0em' }">
+                            <!-- Checkbox -->
+                            <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
+                            <div
+                                    v-if="collectionId && !$adminOptions.hideItemsListSelection && ($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit))"
+                                    :class="{ 'is-selecting': isSelectingItems }"
+                                    class="mosaic-item-checkbox">
+                                <label
+                                        tabindex="0"
+                                        :class="(!$adminOptions.itemsSingleSelectionMode ? 'b-checkbox checkbox' : 'b-radio radio') + ' is-small'">
+                                    <input
+                                            v-if="!$adminOptions.itemsSingleSelectionMode"
+                                            type="checkbox"
+                                            :checked="getSelectedItemChecked(item.id)"
+                                            @input="setSelectedItemChecked(item.id)">
+                                    <input
+                                            v-else
+                                            v-model="singleItemSelection"
+                                            type="radio"
+                                            name="item-single-selection"
+                                            :value="item.id">
+                                    <span class="check" />
+                                    <span class="control-label" />
+                                    <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
+                                </label>
+                            </div>
+                            <p 
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 750,
+                                            hide: 100,
+                                        },
+                                        content: item.title != undefined ? item.title : '',
+                                        html: true,
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
+                                    }">
+                                <span 
+                                        v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
+                                        v-tooltip="{
+                                            content: $i18n.get('status_' + item.status),
+                                            autoHide: true,
+                                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                            placement: 'auto-start'
+                                        }"
+                                        class="icon has-text-gray">
+                                    <i 
+                                            class="tainacan-icon tainacan-icon-1em"
+                                            :class="$statusHelper.getIcon(item.status)"
+                                        />
+                                </span>
+                                {{ item.title != undefined ? item.title : '' }}
+                            </p>
+                        </div>
+
+                        <!-- Actions -->
+                        <div
+                                v-if="item.current_user_can_edit && !$adminOptions.hideItemsListActionAreas"
+                                class="actions-area"
+                                :label="$i18n.get('label_actions')">
+                            <a
+                                    v-if="!isOnTrash"
+                                    id="button-edit"
+                                    :aria-label="$i18n.getFrom('items','edit_item')"
+                                    @click.prevent.stop="goToItemEditPage(item)">
+                                <span
+                                        v-tooltip="{
+                                            content: $i18n.get('edit'),
+                                            autoHide: true,
+                                            placement: 'auto',
+                                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
+                                        }"
+                                        class="icon">
+                                    <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
+                                </span>
+                            </a>
+                            <a
+                                    v-if="isOnTrash"
+                                    :aria-lavel="$i18n.get('label_button_untrash')"
+                                    @click.prevent.stop="untrashOneItem(item.id)">
+                                <span
+                                        v-tooltip="{
+                                            content: $i18n.get('label_recover_from_trash'),
+                                            autoHide: true,
+                                            placement: 'auto',
+                                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
+                                        }"
+                                        class="icon">
+                                    <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo" />
+                                </span>
+                            </a>
+                            <a
+                                    v-if="item.current_user_can_delete"
+                                    id="button-delete" 
+                                    :aria-label="$i18n.get('label_button_delete')" 
+                                    @click.prevent.stop="deleteOneItem(item.id)">
+                                <span
+                                        v-tooltip="{
+                                            content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
+                                            autoHide: true,
+                                            placement: 'auto',
+                                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
+                                        }"
+                                        class="icon">
+                                    <i
+                                            :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
+                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
+                                </span>
+                            </a>
+                            <a 
+                                    v-if="!isOnTrash"
+                                    id="button-open-external" 
+                                    :aria-label="$i18n.getFrom('items','view_item')"
+                                    target="_blank" 
+                                    :href="item.url"
+                                    @click.stop="">                      
+                                <span 
+                                        v-tooltip="{
+                                            content: $i18n.get('label_item_page_on_website'),
+                                            autoHide: true,
+                                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                            placement: 'auto',
+                                            html: true
+                                        }"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
 </template>
@@ -2674,6 +2846,12 @@ export default {
                     duration: 3000
                 });
             }
+        },
+        getAcceptableWidthBasedOnRatio(thumbnail, size, defaultSize) {
+            const width = this.$thumbHelper.getWidth(thumbnail, size, defaultSize);
+            const height = this.$thumbHelper.getHeight(thumbnail, size, defaultSize);
+
+            return (width / height) > 0.7 ? width : ( height * 0.7 );
         }
     }
 }
@@ -2685,6 +2863,7 @@ export default {
     @import "../../scss/_tables.scss";
     @import "../../scss/_view-mode-cards.scss";
     @import "../../scss/_view-mode-masonry.scss";
+    @import "../../scss/_view-mode-mosaic.scss";
     @import "../../scss/_view-mode-grid.scss";
     @import "../../scss/_view-mode-records.scss";
     @import "../../scss/_view-mode-list.scss";

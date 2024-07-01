@@ -6,7 +6,7 @@
                 v-if="!isLoadingOptions"
                 :model-value="selected"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                :placeholder="$i18n.get('label_selectbox_init')"
+                :placeholder="filter.placeholder ? filter.placeholder : $i18n.get('label_selectbox_init')"
                 expanded
                 @update:model-value="($event) => { resetPage(); onSelect($event) }">
             <option value="">

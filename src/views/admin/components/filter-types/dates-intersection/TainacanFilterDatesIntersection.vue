@@ -36,11 +36,13 @@
                 @focus="isTouched = true"
                 @update:model-value="($event) => { resetPage(); validadeValues($event) }" />
         <p 
+                v-if="filterTypeOptions.accept_date_interval === 'yes'"
                 style="font-size: 0.75em; margin-bottom: 0.125em;"
                 class="has-text-centered is-marginless">
             {{ $i18n.get('label_until') }}
         </p>  
         <b-datepicker
+                v-if="filterTypeOptions.accept_date_interval === 'yes'"
                 v-model="dateEnd"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="filter.placeholder ? filter.placeholder : $i18n.get('instruction_select_a_date')"
@@ -120,13 +122,13 @@
             // only validate if the first value is higher than first
             validadeValues: _.debounce( function (){
                
-                if (this.dateInit === undefined)
+                if ( this.dateInit === undefined )
                     this.dateInit = new Date();
 
-                if (this.dateEnd === undefined)
+                if ( this.dateEnd === undefined )
                     this.dateEnd = new Date();
 
-                if (this.dateInit > this.dateEnd) {
+                if ( this.filterTypeOptions.accept_date_interval === 'yes' && this.dateInit > this.dateEnd ) {
                     this.showErrorMessage();
                     return
                 }
@@ -157,12 +159,16 @@
 
                 if (index >= 0) {
                     let metadata = this.query.metaquery[ index ];
-                    
-                    if (metadata.value && metadata.value.length > 0) {
-                        const dateValueInit = new Date(metadata.value[0].replace(/-/g, '/'));
-                        this.dateInit = moment(dateValueInit, moment.ISO_8601).toDate();
-                        const dateValueEnd = new Date(metadata.value[1].replace(/-/g, '/'));
-                        this.dateEnd = moment(dateValueEnd, moment.ISO_8601).toDate();
+                    if (metadata.value ) {
+                        if ( Array.isArray(metadata.value) && metadata.value.length > 0 ) {
+                            const dateValueInit = new Date(metadata.value[0].replace(/-/g, '/'));
+                            this.dateInit = moment(dateValueInit, moment.ISO_8601).toDate();
+                            const dateValueEnd = new Date(metadata.value[1].replace(/-/g, '/'));
+                            this.dateEnd = moment(dateValueEnd, moment.ISO_8601).toDate();
+                        } else {
+                            const dateValueInit = new Date(metadata.value.replace(/-/g, '/'));
+                            this.dateInit = moment(dateValueInit, moment.ISO_8601).toDate();
+                        }
                     }
                 } else {
                     this.dateInit = null;
@@ -172,27 +178,45 @@
             // emit the operation for listeners
             emit() {
                 let values = [];
-
+                
                 if (this.dateInit === null && this.dateEnd === null) {
                     values = [];
                 } else {
                     let dateInit = this.dateInit.getUTCFullYear() + '-' +
                         ('00' + (this.dateInit.getUTCMonth() + 1)).slice(-2) + '-' +
                         ('00' + this.dateInit.getUTCDate()).slice(-2);
-                    let dateEnd = this.dateEnd.getUTCFullYear() + '-' +
-                        ('00' + (this.dateEnd.getUTCMonth() + 1)).slice(-2) + '-' +
-                        ('00' + this.dateEnd.getUTCDate()).slice(-2);
-                    values = [ dateInit, dateEnd ];
+
+                    if ( this.dateEnd !== null ) {
+                        let dateEnd = this.dateEnd.getUTCFullYear() + '-' +
+                            ('00' + (this.dateEnd.getUTCMonth() + 1)).slice(-2) + '-' +
+                            ('00' + this.dateEnd.getUTCDate()).slice(-2);
+                        values = [ dateInit, dateEnd ];
+                    } else {
+                        values = [ dateInit ];
+                    }
                 }
 
-                this.$emit('input', {
-                    filter: 'range',
-                    type: 'DATE',
-                    compare: 'BETWEEN',
-                    metadatum_id: this.metadatumId,
-                    collection_id: this.collectionId,
-                    value: values
-                });
+                if ( this.filterTypeOptions.accept_date_interval !== 'yes' ) {
+                    this.$emit('input', {
+                        filter: 'intersection',
+                        type: 'DATE',
+                        compare: this.filterTypeOptions.first_comparator,
+                        metadatum_id: this.metadatumId,
+                        collection_id: this.collectionId,
+                        value: values[0]
+                    });
+                    this.$emit('input', {
+                        filter: 'intersection',
+                        type: 'DATE',
+                        compare: this.filterTypeOptions.second_comparator,
+                        metadatum_id: this.filterTypeOptions.secondary_filter_metadatum_id,
+                        collection_id: this.collectionId,
+                        value: values[0],
+                        secondary: true
+                    });                             
+                } else {
+                    // Much more complicated logic to be implemented in the future. See #889
+                }
             }
         }
     }

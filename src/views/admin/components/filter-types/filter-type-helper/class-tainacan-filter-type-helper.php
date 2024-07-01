@@ -38,10 +38,12 @@ class Filter_Type_Helper {
 		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Selectbox');
 		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Autocomplete');
 		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Date_Interval');
+		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Dates_Intersection');
 		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numeric_Interval');
 		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomyTaginput');
 		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomyCheckbox');
 		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numeric_List_Interval');
+		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numerics_Intersection');
 
 		// the priority should see less than on function 
 		// `load_admin_page()` of class `Admin` in file /src/views/class-tainacan-admin.php

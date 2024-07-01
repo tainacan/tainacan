@@ -128,7 +128,7 @@ export const addTemporaryFilter = ({ commit }, filter ) => {
 
 export const updateCollectionFiltersOrder = ({ commit }, { collectionId, filtersOrder }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.patch('/collections/' + collectionId + '/filters_order?context=edit', {
+        axios.tainacanApi.put('/collections/' + collectionId + '/filters_order?context=edit', {
             filters_order: filtersOrder
         }).then( res => {
             commit('collection/setCollection', res.data, { root: true });

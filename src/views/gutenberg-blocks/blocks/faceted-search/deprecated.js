@@ -1,6 +1,327 @@
 const { useBlockProps } = wp.blockEditor;
 
 export default [
+    /* Deprecated due to the creation of horizontal questions */
+    {
+        "attributes": {
+            "termId": {
+                "type": "string",
+                "default": null
+            },
+            "taxonomyId": {
+                "type": "string",
+                "default": null
+            },
+            "collectionId": {
+                "type": "string",
+                "default": null
+            },
+            "defaultViewMode": {
+                "type": "string",
+                "default": "masonry"
+            },
+            "enabledViewModes": {
+                "type": "array",
+                "default": []
+            },
+            "collectionDefaultViewMode": {
+                "type": "string",
+                "default": "masonry"
+            },
+            "collectionEnabledViewModes": {
+                "type": "array",
+                "default": []
+            },
+            "hideFilters": {
+                "type": "boolean",
+                "default": false
+            },
+            "hideHideFiltersButton": {
+                "type": "boolean",
+                "default": false
+            },
+            "hideSearch": {
+                "type": "boolean",
+                "default": false
+            },
+            "hideAdvancedSearch": {
+                "type": "boolean",
+                "default": false
+            },
+            "hideDisplayedMetadataButton": {
+                "type": "boolean",
+                "default": false
+            },
+            "hideSortingArea": {
+                "type": "boolean",
+                "default": false
+            },
+            "hideSortByButton": {
+                "type": "boolean",
+                "default": false
+            },
+            "hideItemsThumbnail": {
+                "type": "boolean",
+                "default": false
+            },
+            "hideExposersButton": {
+                "type": "boolean",
+                "default": false
+            },
+            "hideItemsPerPageButton": {
+                "type": "boolean",
+                "default": false
+            },
+            "defaultItemsPerPage": {
+                "type": "number",
+                "default": 12
+            },
+            "hideGoToPageButton": {
+                "type": "boolean",
+                "default": false
+            },
+            "hidePaginationArea": {
+                "type": "boolean",
+                "default": false
+            },
+            "showFiltersButtonInsideSearchControl": {
+                "type": "boolean",
+                "default": false
+            },
+            "startWithFiltersHidden": {
+                "type": "boolean",
+                "default": false
+            },
+            "filtersAsModal": {
+                "type": "boolean",
+                "default": false
+            },
+            "showInlineViewModeOptions": {
+                "type": "boolean",
+                "default": false
+            },
+            "showFullscreenWithViewModes": {
+                "type": "boolean",
+                "default": false
+            },
+            "listType": {
+                "type": "string",
+                "default": ""
+            },
+            "isCollectionModalOpen": {
+                "type": "boolean",
+                "default": false
+            },
+            "isTermModalOpen": {
+                "type": "boolean",
+                "default": false
+            },
+            "backgroundColor": {
+                "type": "string",
+                "default": "#ffffff"
+            },
+            "baseFontSize": {
+                "type": "number",
+                "default": 16
+            },
+            "filtersAreaWidth": {
+                "type": "number",
+                "default": 20
+            },
+            "inputColor": {
+                "type": "string",
+                "default": "#1d1d1d"
+            },
+            "inputBackgroundColor": {
+                "type": "string",
+                "default": "#ffffff"
+            },
+            "inputBorderColor": {
+                "type": "string",
+                "default": "#dbdbdb"
+            },
+            "labelColor": {
+                "type": "string",
+                "default": "#373839"
+            },
+            "infoColor": {
+                "type": "string",
+                "default": "#505253"
+            },
+            "headingColor": {
+                "type": "string",
+                "default": "#000000"
+            },
+            "skeletonColor": {
+                "type": "string",
+                "default": "#eeeeee"
+            },
+            "itemBackgroundColor": {
+                "type": "string",
+                "default": "#ffffff"
+            },
+            "itemHoverBackgroundColor": {
+                "type": "string",
+                "default": "#f2f2f2"
+            },
+            "itemHeadingHoverBackgroundColor": {
+                "type": "string",
+                "default": "#dbdbdb"
+            },
+            "primaryColor": {
+                "type": "string",
+                "default": "#d9eced"
+            },
+            "secondaryColor": {
+                "type": "string",
+                "default": "#187181"
+            },
+            "order": {
+                "type": "string",
+                "default": "ASC"
+            },
+            "orderBy": {
+                "type": "string",
+                "default": "date"
+            },
+            "orderByMeta": {
+                "type": "string",
+                "default": ""
+            },
+            "orderByType": {
+                "type": "string",
+                "default": ""
+            },
+            "collectionOrderBy": {
+                "type": "string",
+                "default": "date"
+            },
+            "collectionOrderByMeta": {
+                "type": "string",
+                "default": ""
+            },
+            "collectionOrderByType": {
+                "type": "string",
+                "default": ""
+            }
+        },
+        save: function({ attributes }) {
+            const {
+                termId,
+                taxonomyId,
+                collectionId,
+                defaultViewMode,
+                enabledViewModes,
+                collectionDefaultViewMode,
+                collectionEnabledViewModes,
+                hideDisplayedMetadataButton,
+                hideSortingArea,
+                hideFilters,
+                hideHideFiltersButton,
+                hideSearch,
+                hideAdvancedSearch,
+                hideSortByButton,
+                hideItemsThumbnail,
+                hidePaginationArea,
+                hideExposersButton,
+                hideItemsPerPageButton,
+                defaultItemsPerPage,
+                hideGoToPageButton,
+                showFiltersButtonInsideSearchControl,
+                startWithFiltersHidden,
+                filtersAsModal,
+                showInlineViewModeOptions,
+                showFullscreenWithViewModes,
+                listType,
+                backgroundColor,
+                baseFontSize,
+                filtersAreaWidth,
+                inputColor,
+                inputBackgroundColor,
+                inputBorderColor,
+                labelColor,
+                infoColor,
+                headingColor,
+                skeletonColor,
+                itemBackgroundColor,
+                itemHoverBackgroundColor,
+                itemHeadingHoverBackgroundColor,
+                primaryColor,
+                secondaryColor,
+                order,
+                orderBy,
+                orderByMeta,
+                orderByType,
+                collectionOrderBy,
+                collectionOrderByMeta,
+                collectionOrderByType
+            } = attributes;
+            
+            let updatedListType = '' + listType;
+        
+            if (updatedListType === '' && collectionId)
+                updatedListType = 'collection';
+            else if (updatedListType === '' && termId && taxonomyId)
+                updatedListType = 'term';
+            
+            // Gets attributes such as style, that are automatically added by the editor hook
+            const blockProps = useBlockProps.save();
+        
+            return <div 
+                    style={{
+                        'font-size': baseFontSize + 'px',
+                        '--tainacan-base-font-size': baseFontSize + 'px',
+                        '--tainacan-background-color': backgroundColor,
+                        '--tainacan-filter-menu-width-theme': filtersAreaWidth + '%',
+                        '--tainacan-input-color': inputColor,
+                        '--tainacan-input-background-color': inputBackgroundColor,
+                        '--tainacan-input-border-color': inputBorderColor,
+                        '--tainacan-label-color': labelColor,
+                        '--tainacan-info-color': infoColor,
+                        '--tainacan-heading-color': headingColor,
+                        '--tainacan-skeleton-color': skeletonColor,
+                        '--tainacan-item-background-color': itemBackgroundColor,
+                        '--tainacan-item-hover-background-color': itemHoverBackgroundColor,
+                        '--tainacan-item-heading-hover-background-color': itemHeadingHoverBackgroundColor,
+                        '--tainacan-primary': primaryColor,
+                        '--tainacan-secondary': secondaryColor
+                    }}
+                    { ...blockProps }>
+                <main 
+                        id="tainacan-items-page"
+                        data-module="faceted-search"
+                        data-term-id={ updatedListType == 'term' ? termId : null }
+                        data-taxonomy={ updatedListType == 'term' ? 'tnc_tax_' + taxonomyId : null  }
+                        data-collection-id={ updatedListType == 'collection' ? collectionId : null }  
+                        data-default-view-mode={ defaultViewMode != 'none' ? defaultViewMode : (updatedListType == 'collection' ? collectionDefaultViewMode : (hideItemsThumbnail ? 'table' : 'masonry') ) }
+                        data-is-forced-view-mode={ defaultViewMode == 'none' ? 'true' : 'false' }
+                        data-enabled-view-modes={ enabledViewModes ? enabledViewModes.toString() : '' }  
+                        data-hide-filters = { hideFilters.toString() }
+                        data-hide-hide-filters-button= { hideHideFiltersButton.toString() }
+                        data-hide-search = { hideSearch.toString() }
+                        data-hide-advanced-search = { hideAdvancedSearch.toString() }
+                        data-hide-displayed-metadata-button = { hideDisplayedMetadataButton.toString() }
+                        data-hide-pagination-area = { hidePaginationArea.toString() }
+                        data-hide-sorting-area = { hideSortingArea.toString() }
+                        data-hide-items-thumbnail = { hideItemsThumbnail ? hideItemsThumbnail.toString() : 'false' }
+                        data-hide-sort-by-button = { hideSortByButton.toString() }
+                        data-hide-exposers-button = { hideExposersButton.toString() }
+                        data-hide-items-per-page-button = { hideItemsPerPageButton.toString() }
+                        data-default-items-per-page = { defaultItemsPerPage }
+                        data-hide-go-to-page-button = { hideGoToPageButton.toString() }
+                        data-show-filters-button-inside-search-control = { showFiltersButtonInsideSearchControl.toString() }
+                        data-start-with-filters-hidden = { startWithFiltersHidden.toString() }
+                        data-filters-as-modal = { filtersAsModal.toString() }
+                        data-show-inline-view-mode-options = { showInlineViewModeOptions.toString() }
+                        data-show-fullscreen-with-view-modes = { showFullscreenWithViewModes.toString() } 
+                        data-default-order = { order ? order : 'ASC' }
+                        data-default-orderby = { updatedListType == 'collection' ? (collectionOrderBy ? collectionOrderBy : 'date') : (orderBy ? orderBy : 'date') }
+                        data-default-orderby-meta = { updatedListType == 'collection' ? (collectionOrderByMeta ? collectionOrderByMeta : '') : (orderByMeta ? orderByMeta : '') }
+                        data-default-orderby-type = { updatedListType == 'collection' ? (collectionOrderByType ? collectionOrderByType : '') : (orderByType ? orderByType : '') } >
+                </main>
+            </div>
+        }
+    },
     /* Deprecated during Vue 3 migration to prepend attributes with data- */
     {
         "attributes": {

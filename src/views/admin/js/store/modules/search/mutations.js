@@ -21,52 +21,39 @@ export const setAdvancedSearchQuery = (state, advancedSearchQuery) => {
 export const addMetaQuery = ( state, filter ) => {
     state.postquery.metaquery = ( ! state.postquery.metaquery  || state.postquery.metaquery.length == undefined ) ? [] : state.postquery.metaquery;
 
-    let index = state.postquery.metaquery.findIndex( item => item.key === filter.metadatum_id);
-    if ( index >= 0 ) {
-        Object.assign(
-            state.postquery.metaquery, 
-            {
-                [index]: {
-                    key: filter.metadatum_id,
-                    value: filter.value,
-                    compare: filter.compare,
-                    type: filter.type
-                } 
-            }
-        );
-    } else {
-        state.postquery.metaquery.push({
-            key: filter.metadatum_id,
-            value: filter.value,
-            compare: filter.compare,
-            type: filter.type
-        });
+    let metaquery = {
+        key: filter.metadatum_id,
+        value: filter.value
     }
+    if ( filter.compare )
+        metaquery.compare = filter.compare;
+    if ( filter.type )
+        metaquery.type = filter.type;
+    if ( filter.secondary )
+        metaquery.secondary = filter.secondary;
+
+    let index = state.postquery.metaquery.findIndex( item => item.key === filter.metadatum_id);
+    if ( index >= 0 )
+        Object.assign( state.postquery.metaquery, { [index]: metaquery } );
+    else
+        state.postquery.metaquery.push(metaquery);
 };
 
 export const addTaxQuery = ( state, filter ) => {
     state.postquery.taxquery = ( ! state.postquery.taxquery || state.postquery.taxquery.length == undefined ) ? [] : state.postquery.taxquery;
 
-    let index = state.postquery.taxquery.findIndex( item => item.taxonomy === filter.taxonomy);
-
-    if ( index >= 0 ) {
-        Object.assign( 
-            state.postquery.taxquery, 
-            {
-                [index]: {
-                    taxonomy: filter.taxonomy,
-                    terms: filter.terms,
-                    compare: filter.compare
-                } 
-            }
-        );
-    } else {
-        state.postquery.taxquery.push({
-            taxonomy: filter.taxonomy,
-            terms: filter.terms,
-            compare: filter.compare
-        });
+    let taxquery = {
+        taxonomy: filter.taxonomy,
+        terms: filter.terms
     }
+    if ( filter.compare )
+        taxquery.compare = filter.compare;
+
+    let index = state.postquery.taxquery.findIndex( item => item.taxonomy === filter.taxonomy);
+    if ( index >= 0 )
+        Object.assign( state.postquery.taxquery, { [index]: taxquery } );
+    else
+        state.postquery.taxquery.push(taxquery);
 };
 
 export const addFetchOnly = ( state, metadatum ) => {
@@ -104,13 +91,27 @@ export const removeMetaQuery = ( state, filter ) => {
 
     let index = state.postquery.metaquery.findIndex( item => item.key == filter.metadatum_id);
 
-    if (index >= 0) {
+    if ( index >= 0 ) {
         if (!filter.isMultiValue && Array.isArray(state.postquery.metaquery[index].value) && state.postquery.metaquery[index].value.length > 1) {
             let otherIndex = state.postquery.metaquery[index].value.findIndex(item => item == filter.value);
-            if (otherIndex >= 0)
+            if ( otherIndex >= 0 )
                 state.postquery.metaquery[index].value.splice(otherIndex, 1)
         } else
             state.postquery.metaquery.splice(index, 1);
+        
+        // Handles removing metaqueries from secondary filter metadata
+        if ( filter.secondaryMetadatumId ) {
+            let secondaryIndex = state.postquery.metaquery.findIndex( item => item.key == filter.secondaryMetadatumId);
+
+            if ( secondaryIndex >= 0 ) {
+                if ( !filter.isMultiValue && Array.isArray(state.postquery.metaquery[secondaryIndex].value) && state.postquery.metaquery[secondaryIndex].value.length > 1 ) {
+                    let otherSecondaryIndex = state.postquery.metaquery[secondaryIndex].value.findIndex(item => item == filter.value);
+                    if ( otherSecondaryIndex >= 0 )
+                        state.postquery.metaquery[secondaryIndex].value.splice(otherSecondaryIndex, 1)
+                } else
+                    state.postquery.metaquery.splice(secondaryIndex, 1);
+            }
+        }
     }
 };
 
@@ -201,7 +202,8 @@ export const setFilterTags = ( state, filterArguments ) => {
                     ) ? aFilterArgument.metadatum.metadata_type_object.options.taxonomy : '',
             argType: aFilterArgument.arg_type ? aFilterArgument.arg_type : '',
             metadatumId: (aFilterArgument.filter && aFilterArgument.metadatum.metadatum_id) ? aFilterArgument.metadatum.metadatum_id : (aFilterArgument.metadatum.id || ''),
-            metadatumName: (aFilterArgument.filter && aFilterArgument.filter.name) ? aFilterArgument.filter.name : (aFilterArgument.metadatum.name || '')
+            metadatumName: (aFilterArgument.filter && aFilterArgument.filter.name) ? aFilterArgument.filter.name : (aFilterArgument.metadatum.name || ''),
+            secondaryMetadatumId: (aFilterArgument.filter && aFilterArgument.filter.filter_type_options && aFilterArgument.filter.filter_type_options.secondary_filter_metadatum_id) ? aFilterArgument.filter.filter_type_options.secondary_filter_metadatum_id : '',
         }
     });
     state.filter_tags = filterTags;

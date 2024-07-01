@@ -136,7 +136,7 @@
                                                 column.metadata_type_object.related_mapped_prop == 'title'"
                                             v-tooltip="{
                                                 delay: {
-                                                    shown: 500,
+                                                    show: 500,
                                                     hide: 300,
                                                 },
                                                 content: item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
@@ -153,7 +153,7 @@
                                                 column.metadata_type_object.related_mapped_prop == 'description'"
                                             v-tooltip="{
                                                 delay: {
-                                                    shown: 500,
+                                                    show: 500,
                                                     hide: 300,
                                                 },
                                                 content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
@@ -173,7 +173,7 @@
                                                 column.metadatum !== 'row_description'"
                                             v-tooltip="{
                                                 delay: {
-                                                    shown: 500,
+                                                    show: 500,
                                                     hide: 300,
                                                 },
                                                 popperClass: [ 'tainacan-tooltip', 'tooltip', column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '' ],
@@ -204,7 +204,7 @@
                                 <span 
                                         v-tooltip="{
                                             delay: {
-                                                shown: 500,
+                                                show: 500,
                                                 hide: 100,
                                             },
                                             content: $i18n.get('label_see_on_fullscreen'),

@@ -28,7 +28,7 @@ export default (element) => {
                 let registeredViewModes =
                     ( tainacan_blocks && tainacan_blocks.registered_view_modes && tainacan_blocks.registered_view_modes.length ) ?
                     tainacan_blocks.registered_view_modes :
-                    [ 'table', 'cards', 'records', 'masonry', 'list', 'map' ];
+                    [ 'table', 'cards', 'records', 'masonry', 'mosaic', 'list', 'map'];
 
                 // At first, we consider that all registered view modes are included.
                 let possibleViewModes = registeredViewModes.filter((aViewMode) => aViewMode === 'slideshow');

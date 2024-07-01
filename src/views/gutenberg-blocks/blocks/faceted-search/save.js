@@ -49,7 +49,11 @@ export default function({ attributes }) {
         orderByType,
         collectionOrderBy,
         collectionOrderByMeta,
-        collectionOrderByType
+        collectionOrderByType,
+        shouldNotHideFiltersOnMobile,
+        displayFiltersHorizontally,
+        hideFilterCollapses,
+        filtersInlineWidth
     } = attributes;
     
     let updatedListType = '' + listType;
@@ -58,16 +62,17 @@ export default function({ attributes }) {
         updatedListType = 'collection';
     else if (updatedListType === '' && termId && taxonomyId)
         updatedListType = 'term';
-    console.log('save', updatedListType, collectionOrderByMeta)
+    
     // Gets attributes such as style, that are automatically added by the editor hook
     const blockProps = useBlockProps.save();
-
+    
     return <div 
             style={{
                 'font-size': baseFontSize + 'px',
                 '--tainacan-base-font-size': baseFontSize + 'px',
                 '--tainacan-background-color': backgroundColor,
                 '--tainacan-filter-menu-width-theme': filtersAreaWidth + '%',
+                '--tainacan-filters-inline-width': filtersInlineWidth + 'px',
                 '--tainacan-input-color': inputColor,
                 '--tainacan-input-background-color': inputBackgroundColor,
                 '--tainacan-input-border-color': inputBorderColor,
@@ -112,7 +117,10 @@ export default function({ attributes }) {
                 data-default-order = { order ? order : 'ASC' }
                 data-default-orderby = { updatedListType == 'collection' ? (collectionOrderBy ? collectionOrderBy : 'date') : (orderBy ? orderBy : 'date') }
                 data-default-orderby-meta = { updatedListType == 'collection' ? (collectionOrderByMeta ? collectionOrderByMeta : '') : (orderByMeta ? orderByMeta : '') }
-                data-default-orderby-type = { updatedListType == 'collection' ? (collectionOrderByType ? collectionOrderByType : '') : (orderByType ? orderByType : '') } >
+                data-default-orderby-type = { updatedListType == 'collection' ? (collectionOrderByType ? collectionOrderByType : '') : (orderByType ? orderByType : '') }
+                data-should-not-hide-filters-on-mobile = { shouldNotHideFiltersOnMobile ? shouldNotHideFiltersOnMobile.toString() : 'false' }
+                data-hide-filter-collapses = { hideFilterCollapses ? hideFilterCollapses.toString() : 'false' }
+                data-display-filters-horizontally = { displayFiltersHorizontally ? displayFiltersHorizontally.toString() : 'false' } >
         </main>
     </div>
 };

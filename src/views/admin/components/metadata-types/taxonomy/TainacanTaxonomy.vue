@@ -234,7 +234,7 @@
                     let val = this.valueComponent;
 
                     if ((!Array.isArray(val) || val.length == 0) && this.itemMetadatum.metadatum.multiple === 'no') {
-                        tainacanApi.patch(`/item/${this.itemMetadatum.item.id}/metadata/${this.itemMetadatum.metadatum.id}`, {
+                        tainacanApi.put(`/item/${this.itemMetadatum.item.id}/metadata/${this.itemMetadatum.metadatum.id}`, {
                             values: term.id,
                         }).then(() => {
                             this.isAddingNewTermVaue = false;
@@ -244,7 +244,7 @@
                     } else {
                         val = val ? val : [];
                         val.push( this.getComponent == ('tainacan-taxonomy-checkbox' || 'tainacan-taxonomy-radio') ? term.id : {'label': term.name, 'value': term.id} );
-                        tainacanApi.patch(`/item/${this.itemMetadatum.item.id}/metadata/${this.itemMetadatum.metadatum.id}`, {
+                        tainacanApi.put(`/item/${this.itemMetadatum.item.id}/metadata/${this.itemMetadatum.metadatum.id}`, {
                             values: val,
                         }).then(() => {
                             this.isAddingNewTermVaue = false;

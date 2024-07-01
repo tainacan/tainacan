@@ -74,6 +74,9 @@
     // Filter Menu Width when not a modal
     --tainacan-filter-menu-width-theme: #{$filter-menu-width-theme};
 
+    // Each filter width when in horizontal panel
+    --tainacan-filters-inline-width: #{$filters-inline-width};
+
     // One column is 1/24% and it is used a lot in the horizontal space distribution
     --tainacan-one-column: #{$one-column};
 

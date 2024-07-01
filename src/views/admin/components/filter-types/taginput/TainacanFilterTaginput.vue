@@ -13,7 +13,7 @@
                 attached
                 :aria-close-label="$i18n.get('remove_value')"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                :placeholder="getInputPlaceholder"
+                :placeholder="filter.placeholder ? filter.placeholder : getInputPlaceholder"
                 check-infinite-scroll
                 @update:model-value="($event) => { resetPage(); onSelect($event) }"
                 @typing="search"
