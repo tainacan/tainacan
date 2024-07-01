@@ -215,13 +215,17 @@
 
 	@media screen and (max-width: 768px) {
 		&.is-filters-menu-open {
-			
+
+			.items-list-area {
+				max-width: 100%;
+			}
 			.filters-menu {
 				float: none;
 				max-width: 100%;
 			}
 			.items-list-area {
 				width: 100%;
+				max-width: 100%;
 			}
 			
 			.filters-menu {

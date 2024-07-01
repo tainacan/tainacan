@@ -1078,6 +1078,12 @@
                 }
             }
 
+            // If any default items per page is set, apply it
+            // 12 is already the default value, se we don't set this value
+            if (this.defaultItemsPerPage != undefined && this.defaultItemsPerPage !== 12 ) {
+                this.$eventBusSearch.setItemsPerPage(this.defaultItemsPerPage, true); 
+            }
+
             for (let key in currentQuery) {
                 if (currentQuery[key] == 'true')
                     currentQuery[key] = true;
@@ -1172,11 +1178,6 @@
                     this.$eventBusSearch.setItemsPerPage(24, true);
                 }
             }
-            
-            // If any default items per page is set, apply it
-            if (this.defaultItemsPerPage)
-                this.$eventBusSearch.setItemsPerPage(this.defaultItemsPerPage, true); 
-
 
             // Watches window resize to adjust filter's top position and compression on mobile
             if ( !this.hideFilters && !this.shouldNotHideFiltersOnMobile ) {            

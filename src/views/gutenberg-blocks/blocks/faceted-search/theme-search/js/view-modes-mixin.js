@@ -82,8 +82,8 @@ export const viewModesMixin = {
                 // Inserts information necessary for item by item navigation on single pages
                 this.queries['pos'] = ((this.queries['paged'] - 1) * this.queries['perpage']) + index;
                 this.queries['source_list'] = this.termId ? 'term' : (!this.collectionId || this.collectionId == 'default' ? 'repository' : 'collection');
-                if ( this.$route && this.$route.path )
-                    this.queries['ref'] = this.$route.path;
+                if ( this.$route && this.$route.href && this.$route.href.split('?') && this.$route.href.split('?').length )
+                    this.queries['ref'] = this.$route.href;
                 return itemUrl + '?' + qs.stringify(this.queries);
             }
             return itemUrl;
