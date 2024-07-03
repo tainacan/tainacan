@@ -411,7 +411,7 @@
                                                     </span>
                                                 </label>
                                                 <help-button
-                                                        v-if="metadataSection.description" 
+                                                        v-if="metadataSection.description && metadataSection.description_bellow_name !== 'yes'" 
                                                         :title="metadataSection.name"
                                                         :message="metadataSection.description" />
                                             </span>
@@ -422,7 +422,7 @@
                                                     class="metadata-section-metadata-list">
                                                 <p
                                                         v-if="metadataSection.description && metadataSection.description_bellow_name == 'yes'"
-                                                        class="metadatum-description-help-info">
+                                                        class="metadata-section-description-help-info metadatum-description-help-info">
                                                     {{ metadataSection.description }}
                                                 </p>
 
@@ -2040,6 +2040,9 @@ export default {
                         padding: 12px 0px 12px 42px;
                         margin-left: 12px;
                     }
+                }
+                .metadata-section-description-help-info {
+                    margin: 0.25em 0 0 1.125rem;
                 }
                 .item-edition-tab-content .tab-item>.field:last-child {
                     margin-bottom: 187px;
