@@ -5,6 +5,7 @@
             :disabled="disabled"
             :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
             :model-value="value === 0 || value ? Number(value) : null"
+            :data-is-danger="!isInputValid"
             lang="en"
             :min="getMin"
             :max="getMax"
@@ -26,6 +27,11 @@
             'blur',
             'mobile-special-focus'
         ],
+        data() {
+            return {
+                isInputValid: true
+            }
+        },
         computed: {
             getStep() {
                 if (this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.step)
@@ -49,8 +55,13 @@
         methods: {
             onInput(value) {
                 const inputRef = this.$refs['tainacan-item-metadatum_id-' + this.itemMetadatum.metadatum.id + (this.itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + this.itemMetadatum.parent_meta_id) : '')];
-                if ( inputRef && !inputRef.checkHtml5Validity())
-                    return;
+                
+                if ( inputRef ) {
+                    this.isInputValid = inputRef.checkHtml5Validity();
+
+                    if ( !this.isInputValid )
+                        return;
+                }
                 
                 // Allowing empty value as a state different of 0
                 if ( value === null || value === undefined || value === '' )
