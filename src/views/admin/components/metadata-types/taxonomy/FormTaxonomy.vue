@@ -113,6 +113,21 @@
                     :title="$i18n.getHelperTitle('tainacan-taxonomy', 'do_not_dispaly_term_as_link')"
                     :message="$i18n.getHelperMessage('tainacan-taxonomy', 'do_not_dispaly_term_as_link')" />
         </b-field>
+        <b-field
+                :addons="false"
+                :label="$i18n.getHelperTitle('tainacan-taxonomy', 'link_filtered_by_current_collection')">
+                &nbsp;
+            <b-switch
+                    v-model="link_filtered_by_current_collection" 
+                    size="is-small"
+                    :disabled="do_not_dispaly_term_as_link == 'yes'"
+                    true-value="yes"
+                    false-value="no"
+                    @update:model-value="emitValues()" />
+            <help-button
+                    :title="$i18n.getHelperTitle('tainacan-taxonomy', 'link_filtered_by_current_collection')"
+                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'link_filtered_by_current_collection')" />
+        </b-field>
         <b-field :addons="false">
             <label class="label">
                 {{ $i18n.getHelperTitle('tainacan-taxonomy', 'link_filtered_by_collections') }}
@@ -127,7 +142,7 @@
                     :data="collections.filter((collection) => !link_filtered_by_collections.includes(collection.id) && (collectionSearchString ? (collection.name.toLowerCase().indexOf(collectionSearchString.toLowerCase()) >= 0) : true) )"
                     field="name"
                     attached
-                    :disabled="do_not_dispaly_term_as_link == 'yes'"
+                    :disabled="link_filtered_by_current_collection === 'yes' || do_not_dispaly_term_as_link == 'yes'"
                     :remove-on-keys="[]"
                     :aria-close-label="$i18n.get('remove_value')"
                     :class="{'has-selected': link_filtered_by_collections != undefined && link_filtered_by_collections != []}"
@@ -194,6 +209,7 @@
                 allow_new_terms: 'yes',
                 hide_hierarchy_path: 'no',
                 do_not_dispaly_term_as_link: 'no',
+                link_filtered_by_current_collection: 'no',
                 link_filtered_by_collections: [],
                 visible_options_list: false, 
                 input_type: 'tainacan-taxonomy-radio',
@@ -265,6 +281,7 @@
                 this.taxonomy_id = this.value.taxonomy_id;
                 this.allow_new_terms = ( this.value.allow_new_terms ) ? this.value.allow_new_terms : 'no';
                 this.hide_hierarchy_path = ( this.value.hide_hierarchy_path ) ? this.value.hide_hierarchy_path : 'no';
+                this.link_filtered_by_current_collection = ( this.value.link_filtered_by_current_collection ) ? this.value.link_filtered_by_current_collection : 'no';
                 this.do_not_dispaly_term_as_link = ( this.value.do_not_dispaly_term_as_link ) ? this.value.do_not_dispaly_term_as_link : 'no';
                 
                 if (this.metadatum && this.metadatum.multiple === 'no') {
@@ -331,6 +348,7 @@
                     input_type: this.input_type,
                     allow_new_terms: this.allow_new_terms,
                     visible_options_list: this.visible_options_list,
+                    link_filtered_by_current_collection: this.link_filtered_by_current_collection,
                     link_filtered_by_collections: this.link_filtered_by_collections,
                     hide_hierarchy_path: this.hide_hierarchy_path,
                     do_not_dispaly_term_as_link: this.do_not_dispaly_term_as_link,

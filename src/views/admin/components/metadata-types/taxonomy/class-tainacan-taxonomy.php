@@ -21,6 +21,7 @@ class Taxonomy extends Metadata_Type {
 		
 		$this->set_default_options([
 			'allow_new_terms' => 'no',
+			'link_filtered_by_current_collection' => 'no',
 			'link_filtered_by_collections' => [],
 			'input_type' => 'tainacan-taxonomy-radio',
 			'hide_hierarchy_path' => 'no',
@@ -100,6 +101,10 @@ class Taxonomy extends Metadata_Type {
 				'title' => __( 'Allow new terms', 'tainacan' ),
 				'description' => __( 'Allows to create new terms directly on the item form.', 'tainacan' ),
 			],
+			'link_filtered_by_current_collection' => [
+				'title' => __( 'Link filtered by current collection', 'tainacan' ),
+				'description' => __( 'Links to term items list filtered by the collection of the current item instead of a repository level term items page.', 'tainacan' ),
+			],
 			'link_filtered_by_collections' => [
 				'title' => __( 'Link filtered by collections', 'tainacan' ),
 				'description' => __( 'Links to term items list filtered by certain collections instead of repository level term items page.', 'tainacan' ),
@@ -173,6 +178,7 @@ class Taxonomy extends Metadata_Type {
 
 						case 'allow_new_terms':
 						case 'do_not_dispaly_term_as_link':
+						case 'link_filtered_by_current_collection':
 							if ($option_value == 'yes')
 								$readable_option_value = __('Yes', 'tainacan');
 							else if ($option_value == 'no')
@@ -374,7 +380,7 @@ class Taxonomy extends Metadata_Type {
 
 				if ( $term instanceof \Tainacan\Entities\Term ) {
 					$return .= $prefix;
-					$return .= $this->get_term_hierarchy_html($term);
+					$return .= $this->get_term_hierarchy_html($term, $item_metadata->get_item());
 					$return .= $suffix;
 
 					if ( $count <= $total ) {
@@ -384,24 +390,24 @@ class Taxonomy extends Metadata_Type {
 			}
 		} else {
 			if ( $value instanceof \Tainacan\Entities\Term ) {
-				$return .= $this->get_term_hierarchy_html($value);
+				$return .= $this->get_term_hierarchy_html($value, $item_metadata->get_item());
 			}
 		}
 
 		return $return;
 	}
 
-	private function get_term_hierarchy_html( \Tainacan\Entities\Term $term ) {
+	private function get_term_hierarchy_html( \Tainacan\Entities\Term $term, \Tainacan\Entities\Item $item = null) {
 
 		if ( $this->get_option('hide_hierarchy_path') == 'yes' )
-			return $this->term_to_html($term);
+			return $this->term_to_html($term, $item);
 
 		$terms = [];
-		$terms[] = $this->term_to_html($term);
+		$terms[] = $this->term_to_html($term, $item);
 
 		while ($term->get_parent() > 0) {
 			$term = \Tainacan\Repositories\Terms::get_instance()->fetch( (int) $term->get_parent(), $term->get_taxonomy() );
-			$terms[] = $this->term_to_html($term);
+			$terms[] = $this->term_to_html($term, $item);
 		}
 
 		$terms = \array_reverse($terms);
@@ -410,8 +416,8 @@ class Taxonomy extends Metadata_Type {
 		return \implode($glue, $terms);
 	}
 
-	private function term_to_html($term) {
-		$collections = $this->get_option( 'link_filtered_by_collections' );
+	private function term_to_html($term, \Tainacan\Entities\Item $item = null) {
+		$collections = ( isset($item) && $this->get_option( 'link_filtered_by_current_collection' ) === 'yes' ) ? [ $item->get_collection_id() ] : $this->get_option( 'link_filtered_by_collections' );
 		$do_not_display_term_as_link = $this->get_option('do_not_dispaly_term_as_link') == 'yes';
 
 		if ( !empty( $collections ) ) {
