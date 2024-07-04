@@ -84,7 +84,7 @@
         ],
         data() {
             return {
-                selectedStatus: !this.$adminOptions.hideItemEditionStatusPublishOption ? 'publish' : 'private'
+                selectedStatus: this.currentUserCanPublish ? ( !this.$adminOptions.hideItemEditionStatusPublishOption ? 'publish' : 'private' ) : 'draft'
             }
         },
         computed: {
