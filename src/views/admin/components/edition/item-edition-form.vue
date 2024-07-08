@@ -1326,9 +1326,16 @@ export default {
                         parentMetaId: 0
                     });
                 }
-
-                if ( this.collection && this.item )
-                    wp.hooks.doAction('tainacan_item_edition_item_loaded', JSON.parse(JSON.stringify(this.collection)), JSON.parse(JSON.stringify(this.item)));
+                /**
+                 * Fires action tainacan_item_edition_item_loaded
+                 * once the existing item is loaded. We cannot reliabilily send collection here since
+                 * it is loaded async outside of the component.
+                 */ 
+                wp.hooks.doAction(
+                    'tainacan_item_edition_item_loaded',
+                    this.collection ? JSON.parse(JSON.stringify(this.collection)) : false,
+                    this.item ? JSON.parse(JSON.stringify(this.item)) : false
+                );
 
                 // Loads metadata and attachments
                 this.loadMetadata();
@@ -1371,8 +1378,17 @@ export default {
                         }
                     }
                     
-                    if ( this.collection && this.item && metadata)
-                        wp.hooks.doAction('tainacan_item_edition_metadata_loaded', JSON.parse(JSON.stringify(this.collection)), JSON.parse(JSON.stringify(this.item)), metadata);
+                    /**
+                     * Fires action tainacan_item_edition_metadata_loaded
+                     * once the metadata is loaded. We cannot reliabilily send collection here since
+                     * it is loaded async outside of the component.
+                    */ 
+                    wp.hooks.doAction(
+                        'tainacan_item_edition_metadata_loaded',
+                        this.colection ? JSON.parse(JSON.stringify(this.collection)) : false,
+                        this.item ? JSON.parse(JSON.stringify(this.item)) : false,
+                        metadata ? metadata : []
+                    );
 
                     this.isLoading = false;
                 });
@@ -1770,9 +1786,17 @@ export default {
                         this.urlIframeWidth = this.form.document_options['forced_iframe_width'];
                     if (this.form.document_options !== undefined && this.form.document_options['forced_iframe_height'] !== undefined)
                         this.urlIframeHeight = this.form.document_options['forced_iframe_height'];
-
-                    if ( this.collection && this.item )
-                        wp.hooks.doAction('tainacan_item_edition_item_loaded', JSON.parse(JSON.stringify(this.collection)), JSON.parse(JSON.stringify(this.item)));
+                    
+                    /**
+                     * Fires action tainacan_item_edition_item_loaded
+                     * once the existing item is loaded. We cannot reliabilily send collection here since
+                     * it is loaded async outside of the component.
+                     */ 
+                    wp.hooks.doAction(
+                        'tainacan_item_edition_item_loaded',
+                        this.collection ? JSON.parse(JSON.stringify(this.collection)) : false,
+                        this.item ? JSON.parse(JSON.stringify(this.item)) : false
+                    );
 
                     this.loadMetadata();
                     this.setLastUpdated(this.item.modification_date);
