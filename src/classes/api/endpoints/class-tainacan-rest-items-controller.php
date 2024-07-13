@@ -933,9 +933,11 @@ class REST_Items_Controller extends REST_Controller {
 			$item = $this->items_repository->trash($item);
 		}
 
-		$prepared_item = $this->prepare_item_for_response($item, $request);
+		$item_deleted = array(
+			'id' => $item_id
+		);
 
-		return new \WP_REST_Response($prepared_item, 200);
+		return new \WP_REST_Response($item_deleted, 200);
 	}
 
 	/**
