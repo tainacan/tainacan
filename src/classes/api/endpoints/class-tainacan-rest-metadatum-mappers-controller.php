@@ -159,7 +159,7 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
         	            } else {
         	                return new \WP_REST_Response([
         	                    'error_message' => __('One or more values are invalid.', 'tainacan'),
-        	                    'errors'        => $prepared->get_errors(),
+        	                    'errors'        => $metadatum->get_errors(),
         	                    'metadatum'         => $this->prepare_item_for_response($prepared, $request),
         	                ], 400);
         	            }
