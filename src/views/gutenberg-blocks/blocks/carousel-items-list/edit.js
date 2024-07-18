@@ -43,7 +43,8 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
         isLoadingCollection,
         collection,
         collectionBackgroundColor,
-        collectionTextColor
+        collectionTextColor,
+        variableItemsWidth
     } = attributes;
 
     // Gets blocks props from hook
@@ -67,6 +68,10 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
         imageSize = 'tainacan-medium';
         setAttributes({ imageSize: imageSize });
     }
+    if (variableItemsWidth === undefined) {
+        variableItemsWidth = false;
+        setAttributes({ variableItemsWidth: variableItemsWidth });
+    }
 
     // Get available image sizes
     const {	imageSizes } = useSelect(
@@ -89,7 +94,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
         return (
             <li 
                 key={ item.id }
-                className={ 'swiper-slide item-list-item ' + (maxItemsPerScreen ? ' max-items-per-screen-' + maxItemsPerScreen : '') + (['tainacan-medium', 'tainacan-small'].indexOf(imageSize) > -1 ? ' is-forced-square' : '') }>   
+                className={ 'swiper-slide item-list-item ' + ( variableItemsWidth ? ' variable-item-width' : '') + (!variableItemsWidth && maxItemsPerScreen ? ' max-items-per-screen-' + maxItemsPerScreen : '') + (['tainacan-medium', 'tainacan-small'].indexOf(imageSize) > -1 ? ' is-forced-square' : '') }>   
                 { loadStrategy == 'selection' ?
                     <Button
                         onClick={ () => removeItemOfId(item.id) }
@@ -105,11 +110,13 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                     href={ item.url }>
                     <div className="items-list-item--image-wrap">
                         <img
+                            height={ thumbHelper.getHeight(item['thumbnail'], imageSize) }
+                            width={ thumbHelper.getWidth(item['thumbnail'], imageSize) }
                             src={ thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype']) }
                             srcSet={ thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype']) }
                             alt={ item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : __( 'Thumbnail', 'tainacan' )) }/>
                     </div>
-                    { !hideTitle ? <span>{ item.title ? item.title : '' }</span> : null }
+                    { !hideTitle ? <span style={{ maxWidth: variableItemsWidth ? thumbHelper.getWidth(item['thumbnail'], imageSize) + 'px' : 'unset' }}>{ item.title ? item.title : '' }</span> : null }
                 </a>
             </li>
         );
@@ -375,8 +382,19 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                             initialOpen={ true }
                         >
                         <div>
+                            <ToggleControl 
+                                    label={__('Variable items width', 'tainacan')}
+                                    help={ !variableItemsWidth ? __('Toggle to define each slide size based on its content natural width.', 'tainacan') : __('Toggle to define a fixed amount of items that should appear per screen size.', 'tainacan')}
+                                    checked={ variableItemsWidth }
+                                    onChange={ ( isChecked ) => {
+                                            variableItemsWidth = isChecked;
+                                            setAttributes({ variableItemsWidth: variableItemsWidth });
+                                            setContent();
+                                        } 
+                                    }
+                                />
                             { 
-                                loadStrategy != 'parent' ?
+                                loadStrategy != 'parent' && variableItemsWidth !== true ?
                                     <RangeControl
                                             label={ __('Maximum items per slide on a wide screen', 'tainacan') }
                                             help={ maxItemsPerScreen <= 4 ? __('Warning: with such a small number of items per slide, the image size is greater, thus the cropped version of the thumbnail won\'t be used.', 'tainacan') : null }

@@ -1084,7 +1084,8 @@ class Theme_Helper {
 				'data-max-items-per-screen' => true,
 				'data-space-between-items' => true,
 				'data-space-around-carousel' => true,
-				'data-tainacan-api-root' => true
+				'data-tainacan-api-root' => true,
+				'data-variable-items-width' => true
 			]
 		];
 
