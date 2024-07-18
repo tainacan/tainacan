@@ -1,6 +1,181 @@
 const { useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 export default [
+    /* Deprecated on version 0.21.7 to add variableItemsWidth feature */
+    {
+        "attributes": {
+            "content": {
+                "type": "array",
+                "source": "children",
+                "selector": "div"
+            },
+            "collectionId": {
+                "type": "string",
+                "default": ""
+            },
+            "items": {
+                "type": "array",
+                "default": []
+            },
+            "isModalOpen": {
+                "type": "boolean",
+                "default": false
+            },
+            "searchURL": {
+                "type": "string",
+                "default": ""
+            },
+            "selectedItems": {
+                "type": "array",
+                "default": []
+            },
+            "itemsRequestSource": {
+                "type": "string",
+                "default": ""
+            },
+            "maxItemsNumber": {
+                "type": "number",
+                "default": 12
+            },
+            "maxItemsPerScreen": {
+                "type": "number",
+                "default": 7
+            },
+            "spaceBetweenItems": {
+                "type": "number",
+                "default": 32
+            },
+            "spaceAroundCarousel": {
+                "type": "number",
+                "default": 50
+            },
+            "isLoading": {
+                "type": "boolean",
+                "default": false
+            },
+            "isLoadingCollection": {
+                "type": "boolean",
+                "default": false
+            },
+            "loadStrategy": {
+                "type": "string",
+                "default": "search"
+            },
+            "arrowsPosition": {
+                "type": "string",
+                "default": "around"
+            },
+            "largeArrows": {
+                "type": "boolean",
+                "default": false
+            },
+            "arrowsStyle": {
+                "type": "string",
+                "default": "type-1"
+            },
+            "autoPlay": {
+                "type": "boolean",
+                "default": false
+            },
+            "autoPlaySpeed": {
+                "type": "number",
+                "default": 3
+            },
+            "loopSlides": {
+                "type": "boolean",
+                "default": false
+            },
+            "hideTitle": {
+                "type": "boolean",
+                "default": true
+            },
+            "showCollectionHeader": {
+                "type": "boolean",
+                "default": false
+            },
+            "showCollectionLabel": {
+                "type": "boolean",
+                "default": false
+            },
+            "imageSize": {
+                "type": "string",
+                "default": "tainacan-medium"
+            },
+            "collection": {
+                "type": "object",
+                "default": {}
+            },
+            "blockId": {
+                "type": "string",
+                "default": ""
+            },
+            "collectionBackgroundColor": {
+                "type": "string",
+                "default": "#373839"
+            },
+            "collectionTextColor": {
+                "type": "string",
+                "default": "#ffffff"
+            }
+        },
+        save: function ({ attributes }) {
+            const {
+                content, 
+                blockId,
+                collectionId,  
+                searchURL,
+                selectedItems,
+                arrowsPosition,
+                largeArrows,
+                arrowsStyle,
+                loadStrategy,
+                maxItemsNumber,
+                maxItemsPerScreen,
+                spaceBetweenItems,
+                spaceAroundCarousel,
+                autoPlay,
+                autoPlaySpeed,
+                loopSlides,
+                hideTitle,
+                imageSize,
+                showCollectionHeader,
+                showCollectionLabel,
+                collectionBackgroundColor,
+                collectionTextColor
+            } = attributes;
+            
+            // Gets attributes such as style, that are automatically added by the editor hook
+            const blockProps = useBlockProps.save();
+        
+            return <div 
+                        { ...blockProps }
+                        data-module="carousel-items-list"
+                        data-search-url={ searchURL }
+                        data-selected-items={ JSON.stringify(selectedItems) }
+                        data-arrows-position={ arrowsPosition }
+                        data-load-strategy={ loadStrategy }
+                        data-collection-id={ collectionId }  
+                        data-auto-play={ '' + autoPlay }
+                        data-auto-play-speed={ autoPlaySpeed }
+                        data-loop-slides={ '' + loopSlides }
+                        data-hide-title={ '' + hideTitle }
+                        data-large-arrows={ '' + largeArrows }
+                        data-arrows-style={ arrowsStyle }
+                        data-image-size={ imageSize }
+                        data-show-collection-header={ '' + showCollectionHeader }
+                        data-show-collection-label={ '' + showCollectionLabel }
+                        data-collection-background-color={ collectionBackgroundColor }
+                        data-collection-text-color={ collectionTextColor }
+                        data-max-items-number={ maxItemsNumber }
+                        data-max-items-per-screen={ maxItemsPerScreen }
+                        data-space-between-items={ spaceBetweenItems }
+                        data-space-around-carousel={ spaceAroundCarousel }
+                        data-tainacan-api-root={ tainacan_blocks.root }
+                        id={ 'wp-block-tainacan-carousel-items-list_' + blockId }>
+                            { content }
+                    </div>
+        }
+    },
     /* Deprecated during Vue 3 migration to prepend attributes with data- */
     {
         "attributes": {

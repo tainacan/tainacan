@@ -44,7 +44,8 @@ export default (element) => {
                             showCollectionLabel: getDataAttribute(block, 'show-collection-label', false) == 'true',
                             collectionBackgroundColor: getDataAttribute(block, 'collection-background-color', '#373839'),
                             collectionTextColor: getDataAttribute(block, 'collection-text-color', '#ffffff'),
-                            tainacanApiRoot: getDataAttribute(block, 'tainacan-api-root')
+                            tainacanApiRoot: getDataAttribute(block, 'tainacan-api-root'),
+                            variableItemsWidth: getDataAttribute(block, 'variable-items-width', false) == 'true',
                         });
                     },
                     mounted() {
