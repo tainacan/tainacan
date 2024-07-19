@@ -643,6 +643,7 @@ class Taxonomies extends TAINACAN_UnitTestCase {
 				'metadata_type_options' => [
 					'taxonomy_id' => $tax->get_id(),
 					'allow_new_terms' => 'no',
+					'link_filtered_by_current_collection' => 'no',
 					'link_filtered_by_collections' => [$collectionOnly->get_id()]
 				]
 			),

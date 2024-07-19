@@ -19,7 +19,9 @@
                         }"
                         class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
             </span>
-            <label class="label">
+            <label 
+                    class="label"
+                    :class="{ 'has-text-danger': errorMessage }">
                 <span
                         v-if="enumerateMetadatum"
                         style="opacity: 0.65;"
@@ -237,7 +239,8 @@
                     (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.placeholder ? ' has-placeholder' : '') +  
                     (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.description ? ' has-description' : '') +  
                     (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.id ? ' tainacan-metadatum-id--' + this.itemMetadatum.metadatum.id : '') +
-                    (this.isFocused ? ' is-focused' : '');  
+                    (this.isFocused ? ' is-focused' : '') +
+                    (this.errorMessage ? ' is-danger' : '');  
             }
         },
         created() {

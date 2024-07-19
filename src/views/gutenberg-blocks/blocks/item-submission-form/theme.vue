@@ -490,7 +490,7 @@
 
                             <p
                                     v-if="metadataSection.description && (!hideHelpButtons && helpInfoBellowLabel)"
-                                    class="metadatum-description-help-info">
+                                    class="metadata-section-description-help-info metadatum-description-help-info">
                                 {{ metadataSection.description }}
                             </p>
                             <template v-if="itemMetadata && Array.isArray(itemMetadata)">
@@ -1496,6 +1496,11 @@ export default {
                 }
             }
         }
+    }
+
+
+    .metadata-section-description-help-info {
+        margin: 0.25em 0 0 1.125rem;
     }
 
     .metadatum-description-help-info {
