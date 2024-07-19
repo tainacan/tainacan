@@ -456,6 +456,14 @@ class REST_Items_Controller extends REST_Controller {
 	 */
 	private function prepare_filters_arguments ( $args, $collection_id = false, $ignore_filter_arguments = [] ) {
 		$filters_arguments = array();
+		
+		if(!empty($collection_id)) {
+			$collection = $this->collections_repository->fetch($collection_id);
+			$order = $collection->get_filters_order();
+			$order = ( is_array( $order ) ) ? $order : unserialize( $order );
+		}
+		
+		
 		$meta_query = isset($args['meta_query']) ? $args['meta_query'] : [];
 		if(isset($meta_query['value'])) $meta_query =  [$meta_query];
 		$tax_query = isset($args['tax_query']) ? $args['tax_query'] : [];
@@ -530,8 +538,10 @@ class REST_Items_Controller extends REST_Controller {
 					)
 					], 'OBJECT'
 				);
-	
-				if ( !empty($filter) ) {
+
+				$filter_id = empty($filter) ? false : $filter[0]->get_id();
+				$filter_order_index = array_search( $filter_id, array_column( $order, 'id' ) );
+				if ( !empty($filter_order_index) && $order[$filter_order_index]['enabled'] == true) {
 					$f = $filter[0]->_toArray();
 					$filter_type_component = $filter[0]->get_filter_type_object()->get_component();
 					$m = $f['metadatum'];
