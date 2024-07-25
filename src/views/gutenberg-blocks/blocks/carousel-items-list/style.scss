@@ -302,10 +302,16 @@
             scroll-snap-align: start;
             scroll-margin: 0 calc(var(--spaceBetweenItems, 32px) / 2 );
 
+            &.variable-item-width {
+                min-width: unset !important;
+                width: auto !important;
+            }
+
             a { 
                 color: inherit;
                 font-weight: bold;
                 line-height: normal;
+                pointer-events: none;
 
                 &>span {
                     color: inherit;

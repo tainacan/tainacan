@@ -62,6 +62,7 @@
                         v-for="index in 18"
                         :key="index"
                         role="listitem"
+                        :style="variableItemsWidth ? 'width: auto;' : ''"
                         class="swiper-slide collection-list-item skeleton">
                     <a>
                         <img>
@@ -80,6 +81,7 @@
                         v-for="(item, index) of items"
                         :key="index"
                         role="listitem"
+                        :style="variableItemsWidth ? 'width: auto;' : ''"
                         class="swiper-slide item-list-item"
                         :class="{ 'is-forced-square': ['tainacan-medium', 'tainacan-small'].indexOf(imageSize) > -1 }">
                     <a 
@@ -93,7 +95,11 @@
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], imageSize)"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : wpI18n( 'Thumbnail', 'tainacan' ))"
                                 :transition-duration="500" />
-                        <span v-if="!hideTitle">{{ item.title ? item.title : '' }}</span>
+                        <span 
+                                v-if="!hideTitle"
+                                :style="variableItemsWidth ? ('max-width: ' + $thumbHelper.getWidth(item['thumbnail'], imageSize) + 'px') : ''">
+                            {{ item.title ? item.title : '' }}
+                        </span>
                     </a>
                 </li>
             </ul>
@@ -179,7 +185,8 @@ export default {
         showCollectionLabel: Boolean,
         collectionBackgroundColor: String,
         collectionTextColor: String,
-        tainacanApiRoot: String
+        tainacanApiRoot: String,
+        variableItemsWidth: Boolean
     },
     data() {
         return {
@@ -334,7 +341,7 @@ export default {
             const self = this;
             const spaceBetween = Number(self.spaceBetweenItems);
             const slidesPerView = Number(self.maxItemsPerScreen);
-            this.swiper = new Swiper('#' + self.blockId + '-carousel', {
+            let swiperOptions = {
                 watchOverflow: true,
                 mousewheel: {
                     forceToAxis: true
@@ -343,7 +350,7 @@ export default {
                 preventInteractionOnTransition: true,
                 allowClick: true,
                 allowTouchMove: true, 
-                slidesPerView: 1,
+                slidesPerView: self.variableItemsWidth ? 'auto' : 1,
                 slidesPerGroup: 1,
                 spaceBetween: spaceBetween,
                 slideToClickedSlide: true,
@@ -351,7 +358,18 @@ export default {
                     nextEl: '#' + self.blockId + '-next',
                     prevEl: '#' + self.blockId + '-prev',
                 }, 
-                breakpoints: (!isNaN(self.maxItemsPerScreen) && self.maxItemsPerScreen != 6) ? {
+                autoplay: self.autoPlay ? { delay: self.autoPlaySpeed*1000 } : false,
+                loop: self.loopSlides ? self.loopSlides : false,
+                a11y: {
+                    prevSlideMessage: wp.i18n.__( 'Previous slide', 'tainacan'),
+                    nextSlideMessage: wp.i18n.__( 'Next slide', 'tainacan'),
+                    firstSlideMessage: wp.i18n.__('This is the first slide', 'tainacan'),
+                    lastSlideMessage: wp.i18n.__('This is the last slide', 'tainacan')
+                },
+                modules: [Autoplay, Navigation, A11y]
+            }
+            if ( !self.variableItemsWidth ) {
+                swiperOptions.breakpoints = (!isNaN(self.maxItemsPerScreen) && self.maxItemsPerScreen != 6) ? {
                     498:  { slidesPerView: slidesPerView - 4 > 0 ? slidesPerView - 4 : 1, spaceBetween: spaceBetween }, 
                     768:  { slidesPerView: slidesPerView - 3 > 0 ? slidesPerView - 3 : 1, spaceBetween: spaceBetween },
                     1024: { slidesPerView: slidesPerView - 2 > 0 ? slidesPerView - 2 : 1, spaceBetween: spaceBetween },
@@ -363,17 +381,9 @@ export default {
                     1024: { slidesPerView: 4, spaceBetween: spaceBetween },
                     1366: { slidesPerView: 5, spaceBetween: spaceBetween },
                     1600: { slidesPerView: 6, spaceBetween: spaceBetween }
-                },
-                autoplay: self.autoPlay ? { delay: self.autoPlaySpeed*1000 } : false,
-                loop: self.loopSlides ? self.loopSlides : false,
-                a11y: {
-                    prevSlideMessage: wp.i18n.__( 'Previous slide', 'tainacan'),
-                    nextSlideMessage: wp.i18n.__( 'Next slide', 'tainacan'),
-                    firstSlideMessage: wp.i18n.__('This is the first slide', 'tainacan'),
-                    lastSlideMessage: wp.i18n.__('This is the last slide', 'tainacan')
-                },
-                modules: [Autoplay, Navigation, A11y]
-            });
+                }
+            }
+            this.swiper = new Swiper('#' + self.blockId + '-carousel', swiperOptions);
         }
     }
 }
