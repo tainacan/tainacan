@@ -1201,12 +1201,10 @@ export default {
             return this.conditionalSections[sectionId] && this.conditionalSections[sectionId].hide;
         },
         getMetadatumOrderInSection(sectionIndex, metadatum) {
-
-            if ( !this.collection || !Array.isArray(this.collection['metadata_section_order']) || !this.collection['metadata_section_order'][sectionIndex] || !Array.isArray(this.collection['metadata_section_order'][sectionIndex]['metadata_order']) )
+            if ( !this.collectionMetadataSectionOrder || !Array.isArray(this.collectionMetadataSectionOrder) || !this.collectionMetadataSectionOrder[sectionIndex] || !Array.isArray(this.collectionMetadataSectionOrder[sectionIndex]['metadata_order']) )
                 return -1;
-
             let enabledMetadataInSection = [];
-            for (let metadatum of this.collection['metadata_section_order'][sectionIndex]['metadata_order']) {
+            for (let metadatum of this.collectionMetadataSectionOrder[sectionIndex]['metadata_order']) {
                 if ( metadatum.enabled )
                     enabledMetadataInSection.push(metadatum.id);
             }
