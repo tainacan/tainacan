@@ -10,10 +10,17 @@
                     :disabled="disabled"
                     :value="value"
                     :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
+                    :maxlength="getMaxlength"
                     @focus="onMobileSpecialFocus"
                     @complete="($event) => getMask ? onInput($event.detail.value) : null"
                     @input="($event) => getMask ? null : onInput($event.target.value)"
                     @blur="onBlur">
+            <small
+                    v-if="getMaxlength"
+                    class="help counter"
+                    :class="{ 'is-invisible': !isInputFocused }" >
+                {{ value.length }} / {{ getMaxlength }}
+            </small>
         </div>
         <b-autocomplete
                 v-else
@@ -26,6 +33,7 @@
                 clearable
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
                 check-infinite-scroll
+                :maxlength="getMaxlength"
                 @blur="onBlur"
                 @update:model-value="($event) => { search($event); }"
                 @select="onSelect"
@@ -81,7 +89,8 @@
                 totalFacets: 0,
                 query: '',
                 currentCollectionId: '',
-                filter: undefined
+                filter: undefined,
+                isInputFocused: false,
             }
         },
         computed: {
@@ -99,6 +108,12 @@
                     };
                 else
                     return false;
+            },
+            getMaxlength() {
+                if ( this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.maxlength !== null && this.itemMetadatum.metadatum.metadata_type_options.maxlength !== undefined && this.itemMetadatum.metadatum.metadata_type_options.maxlength !== '' )
+                    return Number(this.itemMetadatum.metadatum.metadata_type_options.maxlength);
+                else
+                    return undefined;
             }
         },
         created() {
@@ -108,9 +123,14 @@
         },
         methods: {
             onInput(value) {
+                const inputRef = this.$refs['tainacan-item-metadatum_id-' + this.itemMetadatum.metadatum.id + (this.itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + this.itemMetadatum.parent_meta_id) : '')];
+                if ( inputRef && this.getMaxlength && !inputRef.checkHtml5Validity() )
+                    return;
+
                 this.$emit('update:value', value);
             },
             onBlur() {
+                this.isInputFocused = false;
                 this.$emit('blur');
             },
             onSelect(option){
@@ -190,6 +210,7 @@
                 this.search(this.searchQuery);
             }, 250),
             onMobileSpecialFocus() {
+                this.isInputFocused = true;
                 this.$emit('mobile-special-focus');
             }
         }
