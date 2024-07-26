@@ -42,7 +42,11 @@ class Text extends Metadata_Type {
 					__( 'Define a pattern of fixed characters that will be used to mask the input. Learn how to build mask patterns <a target="_blank" href="%1$s">here</a>.', 'tainacan' ),
 					'https://imask.js.org/guide.html#masked-pattern'
 				)
-            ]
+			],
+			'maxlength' => [
+				'title' => __( 'Maximum of characters', 'tainacan' ),
+				'description' => __( 'Limits the character input to a maximum value an displays a counter.', 'tainacan' ),
+			]
         ];
     }
 	
