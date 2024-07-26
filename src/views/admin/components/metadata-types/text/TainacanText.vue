@@ -18,7 +18,7 @@
             <small
                     v-if="getMaxlength"
                     class="help counter"
-                    :class="{ 'is-invisible': !isInputFocused }" >
+                    :class="{ 'is-invisible': !isInputFocused }">
                 {{ value.length }} / {{ getMaxlength }}
             </small>
         </div>
