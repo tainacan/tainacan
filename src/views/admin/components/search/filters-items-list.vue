@@ -51,7 +51,9 @@
                 <template 
                         v-for="(taxonomyFilter, key, index) of taxonomyFilters"
                         :key="index">
-                    <div v-if="key == 'repository-filters'">
+                    <div 
+                            v-if="key == 'repository-filters'"
+                            class="repository-level-filters">
                         <div 
                                 v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined" 
                                 v-tooltip="{
@@ -95,7 +97,10 @@
                 <template 
                         v-for="(taxonomyFilter, key, index) of taxonomyFilters"
                         :key="index">
-                    <div v-if="key != 'repository-filters'">
+                    <div 
+                            v-if="key != 'repository-filters'"
+                            class="collection-level-filters"
+                            :id="'filters-from-collection-id-' + key">
                         <div 
                                 v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined" 
                                 v-tooltip="{
@@ -143,7 +148,9 @@
                 <template 
                         v-for="(repositoryCollectionFilter, key, index) of repositoryCollectionFilters"
                         :key="index">
-                    <div v-if="key == 'repository-filters'">
+                    <div 
+                            v-if="key == 'repository-filters'"
+                            class="repository-level-filters">
                         <div 
                                 v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined" 
                                 v-tooltip="{
@@ -187,7 +194,10 @@
                 <template 
                         v-for="(repositoryCollectionFilter, key, index) of repositoryCollectionFilters"
                         :key="index">
-                    <div v-if="key != 'repository-filters'">
+                    <div 
+                            v-if="key != 'repository-filters'"
+                            class="collection-level-filters"
+                            :id="'filters-from-collection-id-' + key">
                         <div 
                                 v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined" 
                                 v-tooltip="{
