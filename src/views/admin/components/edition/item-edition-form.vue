@@ -1670,7 +1670,6 @@ export default {
                     onSave: () => {
                         // Fetch current existing attachments
                         this.shouldLoadAttachments = !this.shouldLoadAttachments;
-                        console.log('opa')
                     }
                 }
             );
