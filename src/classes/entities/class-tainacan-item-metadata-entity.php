@@ -476,7 +476,8 @@ class Item_Metadata_Entity extends Entity {
 			if ($this->is_required()) {
 				$validation_statuses = ['publish', 'future', 'private'];
 				if (in_array($item->get_status(), apply_filters( 'tainacan-status-require-validation', $validation_statuses) )) {
-					$this->add_error('required', $metadatum->get_name() . ' is required');
+					// translators: %s = metadatum name. ex: Title is required
+					$this->add_error( 'required', sprintf( __('%s is required', 'tainacan'), $metadatum->get_name() ) );
 					return false;
 				} else {
 					return $this->set_as_valid();
@@ -532,7 +533,7 @@ class Item_Metadata_Entity extends Entity {
 						], $item->get_collection());
 
 						if ($test->have_posts()) {
-								// translators: %s = metadatum name. ex: Register ID is a collection key and there is another item with the same value
+							// translators: %s = metadatum name. ex: Register ID is a collection key and there is another item with the same value
 							$this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
 							return false;
 						}
