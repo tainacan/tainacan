@@ -23,7 +23,8 @@ export default function ({ attributes }) {
         showCollectionHeader,
         showCollectionLabel,
         collectionBackgroundColor,
-        collectionTextColor
+        collectionTextColor,
+        variableItemsWidth
     } = attributes;
     
     // Gets attributes such as style, that are automatically added by the editor hook
@@ -53,6 +54,7 @@ export default function ({ attributes }) {
                 data-space-between-items={ spaceBetweenItems }
                 data-space-around-carousel={ spaceAroundCarousel }
                 data-tainacan-api-root={ tainacan_blocks.root }
+                data-variable-items-width={ '' + variableItemsWidth }
                 id={ 'wp-block-tainacan-carousel-items-list_' + blockId }>
                     { content }
             </div>

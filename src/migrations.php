@@ -520,11 +520,12 @@ class Migrations {
 			\deactivate_plugins( 'tainacan-url-metadata-type/tainacan-metadata-type-url.php' );
 	}
 
-	static function alter_table_tnc_bg_process_add_uuid() {
+	static function alter_table_tnc_bg_process_add_uuid_refactor() {
 		global $wpdb;
 		// update default order by "creation_date" to "date"
 		$table_name = $wpdb->prefix . 'tnc_bg_process';
-		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$table_name' AND column_name = 'bg_uuid'"  );
+		$database_name = DB_NAME;
+		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$table_name' AND column_name = 'bg_uuid' AND table_schema = '$database_name'"  );
 
 	    if(empty($column_exists)) {
 			$wpdb->query("

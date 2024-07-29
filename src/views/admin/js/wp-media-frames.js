@@ -2,45 +2,6 @@ export default {
 	// AttachmentControl: requires upload of new files and accepts multiple files
     attachmentControl: wp.customize.MediaControl.extend({
 
-		/**
-		 * Set up gallery toolbar.
-		 *
-		 * @return {void}
-		 */
-		galleryToolbar() {
-			this.toolbar.set(
-				new wp.media.view.Toolbar( {
-					controller: this,
-					items: {
-						insert: {
-							style: 'primary',
-							text: wp.media.view.l10n.update,
-							priority: 80,
-							requires: { library: true },
-
-							/**
-							 * @fires wp.media.controller.State#select
-							 */
-							click() {
-								const controller = this.controller,
-									state = controller.state();
-								
-								controller.close();
-								state.trigger(
-									'select',
-									state.get( 'library' )
-								);
-
-								// Restore and reset the default state.
-								controller.setState( controller.options.state );
-								controller.reset();
-							},
-						},
-					},
-				} )
-			);
-		},
-
         /**
 		 * Create a media modal select frame, and store it so the instance can be reused when needed.
 		 */
@@ -54,6 +15,9 @@ export default {
 			wp.media.model.settings.post.id = parseInt(this.params.relatedPostId);
 			
 			this.frame = wp.media({
+				button: {
+					text: this.params.button_labels.frame_button
+				},
 				states: [
 					new wp.media.controller.Library({
 						title: this.params.button_labels.frame_title,
@@ -64,15 +28,12 @@ export default {
 							posts_per_page: -1,
 							query: true
 						}),
-						toolbar: 'main-gallery',
 						autoSelect: true,
 						sortable: true,
 						filterable: 'unattached',
 					})
 				]
 			}).open();
-
-			this.frame.on( 'toolbar:create:main-gallery', this.galleryToolbar, this.frame );
 
 			this.frame.$el.addClass( 'tainacan-item-attachments-modal' );
 			this.frame.$el['tainacan-document-id'] = this.params.document;

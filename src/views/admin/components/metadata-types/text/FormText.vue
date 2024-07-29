@@ -1,5 +1,19 @@
 <template>
-    <section> 
+    <section>
+        <b-field :addons="false">
+            <label class="label is-inline">
+                {{ $i18n.getHelperTitle('tainacan-text', 'maxlength') }}
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-text', 'maxlength')"
+                        :message="$i18n.getHelperMessage('tainacan-text', 'maxlength')" />
+            </label>
+            <b-numberinput
+                    v-model="maxlength"
+                    name="maxlength"
+                    step="1"
+                    min="0"
+                    @update:model-value="onUpdateMaxlength" />
+        </b-field> 
         <b-field
                 :addons="false"
                 :label="$i18n.getHelperTitle('tainacan-text', 'display_suggestions')">
@@ -39,21 +53,28 @@
         data() {
             return {
                 displaySuggestions: String,
-                mask: String
+                mask: String,
+                maxlength: [Number, null]
             }
         },
         created() {
             this.displaySuggestions = this.value && this.value.display_suggestions ? this.value.display_suggestions : 'no';
             this.mask = this.value && this.value.mask ? this.value.mask : '';
+            this.maxlength = this.value && this.value.maxlength ? Number(this.value.maxlength) : null;
         },
         methods: {
             onUpdateDisplaySuggestions(value) {
                 this.displaySuggestions = value;
-                this.$emit('update:value', { display_suggestions: value, mask: value == 'yes' ? '' : this.mask });
+                this.$emit('update:value', { display_suggestions: value, mask: value == 'yes' ? '' : this.mask, maxlength: this.maxlength });
             },
             onUpdateMask(value) {
                 this.mask = value;
-                this.$emit('update:value', { display_suggestions: this.displaySuggestions, mask: value });
+                this.$emit('update:value', { display_suggestions: this.displaySuggestions, mask: value, maxlength: this.maxlength });
+            },
+            onUpdateMaxlength(value) {
+                if (value == 0) value = null;
+
+                this.$emit('update:value', { maxlength: value, display_suggestions: this.displaySuggestions, mask: this.mask });
             }
         }
     }

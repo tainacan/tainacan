@@ -125,6 +125,10 @@
         "collectionTextColor": {
             "type": "string",
             "default": "#ffffff"
+        },
+        "variableItemsWidth": {
+            "type": "boolean",
+            "default": false
         }
     },
     "supports": {

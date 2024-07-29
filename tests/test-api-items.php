@@ -114,7 +114,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 
 		$data = $response->get_data();
 
-		$this->assertEquals($item1->get_title(), $data['title']);
+		$this->assertEquals($item1->get_id(), $data['id']);
 
 		$post_meta = get_post_meta($item1->get_id(), '_wp_trash_meta_status', true);
 
@@ -147,7 +147,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 
 		$data = $response->get_data();
 
-		$this->assertEquals($item2->get_title(), $data['title']);
+		$this->assertEquals($item2->get_id(), $data['id']);
 
 		$no_post = get_post($item2->get_id());
 

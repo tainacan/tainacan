@@ -10,6 +10,10 @@
     &.has-icons-left {
         .icon {
             height: 100%;
+
+            &:has(+.help) { // Maxlenght count in autocomplete needs this
+                height: 32px;
+            }
             .mdi::before {
                 color: var(--tainacan-info-color);
                 display: inline-block;

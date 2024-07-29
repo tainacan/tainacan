@@ -373,9 +373,28 @@ class REST_Background_Processes_Controller extends REST_Controller {
                 'error_message' => __('guid must be specified', 'tainacan' )
             ], 400);
         }
+        if (!is_user_logged_in() || !current_user_can('read') ) {
+            $error_def = [
+                "code" => "unauthorized",
+                "message" => "Unauthorized",
+                "data" => [ "status" => 403 ],
+            ];
+            return new \WP_REST_Response($error_def, 403, array('content-type' => 'text/html; charset=utf-8'));
+        }
+
         $guid = $request['guid'];
         $upload_url = wp_upload_dir();
         $path = $upload_url['basedir'] . '/tainacan/' . $guid;
+        $real_file_path = realpath($path);
+        if (strpos($real_file_path, $path) !== 0) {
+            $error_def = [
+                "code" => "unauthorized_file_path",
+                "message" => "Unauthorized file path",
+                "data" => [ "status" => 403 ],
+            ];
+            return new \WP_REST_Response($error_def, 403, array('content-type' => 'application/json; charset=utf-8'));
+        }
+
         if ( file_exists( $path ) ) {
             $finfo = @finfo_open(FILEINFO_MIME_TYPE);
             $mime_type = @finfo_file($finfo, $path);

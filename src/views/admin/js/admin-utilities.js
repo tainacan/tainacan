@@ -426,8 +426,15 @@ StatusHelperPlugin.install = function (app, options = {}) {
                     });
                     this.statuses.push({
                         name: tainacan_plugin.i18n['status_trash'],
-                        slug: 'trash'}
-                    );
+                        slug: 'trash'
+                    });
+                    
+                    /**
+                     * Filter the available status in Tainacan admin.
+                     * 
+                     * @param array Array of objects containing slug and name of each status.
+                     */
+                    this.statuses = wp.hooks.applyFilters('tainacan_admin_available_statuses', JSON.parse(JSON.stringify(this.statuses)));
                 })
                 .catch(error => {
                     console.error( error );

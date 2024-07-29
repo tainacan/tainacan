@@ -44,10 +44,27 @@
             color: var(--tainacan-danger);
         }
     }
-    .input, .textarea { 
-        &.is-danger {
-          background-color: var(--tainacan-red1);  
+    .field.is-danger {
+        .input,
+        .textarea,
+        .select,
+        .dropdown,
+        .autocomplete { 
+            --tainacan-input-border-color: var(--tainacan-danger);
+            --tainacan-input-background-color: var(--tainacan-red1);  
         }
+    }
+    .input,
+    .textarea,
+    .select {
+        &.is-danger {
+            --tainacan-input-border-color: var(--tainacan-danger);
+            --tainacan-input-background-color: var(--tainacan-red1);
+        }
+    } 
+    input[data-is-danger="true"] {
+        --tainacan-input-border-color: var(--tainacan-danger);
+        --tainacan-input-background-color: var(--tainacan-red1);
     }
     a[disabled="true"] {
         opacity: 0.5;
