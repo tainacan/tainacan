@@ -1661,7 +1661,7 @@ export default {
                 'my-attachment-media-frame', {
                     button_labels: {
                         frame_title: this.$i18n.get('instruction_select_files_to_attach_to_item'),
-                        frame_button: this.$i18n.get('label_attach_to_item'),
+                        frame_button: this.$i18n.get('finish'),
                     },
                     nonce: this.item.nonces ? this.item.nonces['update-post_' + this.item.id] : null,
                     relatedPostId: this.itemId,
@@ -1670,6 +1670,7 @@ export default {
                     onSave: () => {
                         // Fetch current existing attachments
                         this.shouldLoadAttachments = !this.shouldLoadAttachments;
+                        console.log('opa')
                     }
                 }
             );
