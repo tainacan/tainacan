@@ -99,8 +99,8 @@
                         :key="index">
                     <div 
                             v-if="key != 'repository-filters'"
-                            class="collection-level-filters"
-                            :id="'filters-from-collection-id-' + key">
+                            :id="'filters-from-collection-id-' + key"
+                            class="collection-level-filters">
                         <div 
                                 v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined" 
                                 v-tooltip="{
@@ -196,8 +196,8 @@
                         :key="index">
                     <div 
                             v-if="key != 'repository-filters'"
-                            class="collection-level-filters"
-                            :id="'filters-from-collection-id-' + key">
+                            :id="'filters-from-collection-id-' + key"
+                            class="collection-level-filters">
                         <div 
                                 v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined" 
                                 v-tooltip="{
