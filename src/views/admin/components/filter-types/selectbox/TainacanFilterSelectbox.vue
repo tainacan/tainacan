@@ -1,21 +1,20 @@
 <template>
-    <div 
-            :class="{ 'skeleton': isLoadingOptions }"
-            class="block">
+    <div class="block">
         <b-select
-                v-if="!isLoadingOptions"
+                :loading="isLoadingOptions"
+                :disabled="!isLoadingOptions && options.length <= 0"
                 :model-value="selected"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="filter.placeholder ? filter.placeholder : $i18n.get('label_selectbox_init')"
                 expanded
                 @update:model-value="($event) => { resetPage(); onSelect($event) }">
             <option value="">
-                {{ $i18n.get('label_selectbox_init') }}...
+                {{ filter.placeholder ? filter.placeholder : $i18n.get('label_selectbox_init') }}
             </option>
             <option
                     v-for="(option, index) in options"
                     :key="index"
-                    :label="option.label"
+                    :label="option.label + ( option.total_items ? (' (' + option.total_items + ')') : '' )"
                     :value="option.value">
                 {{ option.label }}
                 <span 
@@ -76,7 +75,9 @@
                 promise = this.getValuesPlainText({
                     metadatumId: this.metadatumId,
                     search: null,
-                    isRepositoryLevel: this.isRepositoryLevel
+                    isRepositoryLevel: this.isRepositoryLevel,
+                    number: this.filter.max_options,
+                    offset: 0
                 });
                 promise.request
                     .then((res) => {

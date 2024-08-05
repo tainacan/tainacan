@@ -107,7 +107,7 @@ class Filters extends Repository {
 				'map'         => 'meta',
 				'title'       => __( 'Max of options', 'tainacan' ),
 				'type'        => ['integer', 'string'],
-				'description' => __( 'The max number of options to be showed in filter sidebar.', 'tainacan' ),
+				'description' => __( 'The maximum number of options to be loaded by default on the filter.', 'tainacan' ),
 				'validation'  => '',
 				'default'     => 4
 			],
