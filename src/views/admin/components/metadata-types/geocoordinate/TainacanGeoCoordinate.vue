@@ -124,6 +124,7 @@
                 latitude: -14.4086569,
                 longitude: -51.31668,
                 selected: [],
+                mapIntersectionObserver: null
             }
         },
         computed: {
@@ -193,24 +194,25 @@
             }
         },
         created() {
-            if (this.value && this.value != "")
+            if ( this.value && this.value != "" )
                 this.selected = Array.isArray(this.value) ? (this.value.length == 1 && this.value[0] == "" ? [] : this.value) : [this.value];
-            
-            // Listens to window resize event to update map bounds
-            // We need to pass mapComponentRef here instead of creating it inside the function
-            // otherwise the listener would conflict when multiple geo metadata are inserted.
-            const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-            this.$emitter.on('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
         },
         mounted() {
             nextTick(() => {
                 const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
                 this.handleWindowResize(mapComponentRef);
+
+                // Intersection Observer to handle map resize
+                if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef]['$el'] ) {
+                    this.mapIntersectionObserver = new IntersectionObserver((entries) => {
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting)
+                                this.handleWindowResize(mapComponentRef);
+                        });
+                    }, { threshold: 0.1 });
+                    this.mapIntersectionObserver.observe(this.$refs[mapComponentRef]['$el']);
+                }
             });
-        },
-        beforeUnmount() {
-            const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-            this.$emitter.off('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
         },
         methods: {
             onUpdateFromLatitudeInput: _.debounce( function(value) {
