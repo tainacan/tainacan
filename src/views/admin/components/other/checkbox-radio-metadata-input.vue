@@ -443,6 +443,7 @@
                     this.initializeValues();
                 }
             });
+            
         },
         beforeUnmount() {
             // Cancels previous Request
@@ -795,6 +796,24 @@
                         this.createColumn(res, key, option ? option.label : null);
 
                         this.isColumnLoading = false;
+
+                        // If this is the first time loading, these will be undefined
+                        if (
+                            option === undefined &&
+                            key === undefined &&
+                            index === undefined
+                        ) {
+                            // Here we already have a value for the hasToDisplaySearchBar. Thus we can decide if we should
+                            // Preset the second tab as active to display selected values
+                            if ( 
+                                ( Array.isArray(this.selected) ? (this.selected.length) : this.selected ) &&
+                                this.metadatum.multiple != 'yes' &&
+                                this.hasToDisplaySearchBar
+                            ) {
+                                this.fetchSelectedLabels();
+                                this.activeTab = 1;
+                            }
+                        }
                     })
                     .catch(error => {
                         this.$console.log(error);
