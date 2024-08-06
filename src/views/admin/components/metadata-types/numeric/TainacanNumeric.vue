@@ -69,8 +69,11 @@
                 else
                     value = Number(value);
 
-                this.$emit('update:value', value);
+                this.changeValue(value);
             },
+            changeValue: _.debounce(function(value) {
+                this.$emit('update:value', value);
+            }, 800),
             onBlur() {
                 this.$emit('blur');
             },

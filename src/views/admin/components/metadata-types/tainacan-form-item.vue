@@ -77,7 +77,7 @@
                         :is-mobile-screen="isMobileScreen"
                         :is-focused="isFocused"
                         :is-metadata-navigation="isMetadataNavigation"
-                        @update:value="changeValue"
+                        @update:value="performValueChange"
                         @blur="performValueChange"
                         @mobile-special-focus="onMobileSpecialFocus" />
                 <template v-if="isMultiple && values.length > 1">
@@ -102,7 +102,7 @@
                                     :is-mobile-screen="isMobileScreen"
                                     :is-focused="isFocused"
                                     :is-metadata-navigation="isMetadataNavigation"
-                                    @update:value="changeValue"
+                                    @update:value="performValueChange"
                                     @blur="performValueChange"
                                     @mobile-special-focus="onMobileSpecialFocus" />
                             <a 
@@ -159,7 +159,7 @@
                         :is-focused="isFocused"
                         :is-metadata-navigation="isMetadataNavigation"
                         :enumerate-metadatum="enumerateMetadatum"
-                        @update:value="changeValue"
+                        @update:value="performValueChange"
                         @blur="performValueChange"
                         @mobile-special-focus="onMobileSpecialFocus" />
             </div>
@@ -285,11 +285,8 @@
                         this.itemMetadatum.value == null || this.itemMetadatum.value == undefined ? this.values = [] : this.values.push(this.itemMetadatum.value);
                 }
             },
-            changeValue: _.debounce(function() {
-                this.performValueChange();
-            }, 800),
             performValueChange() {
-
+                
                 // Compound metadata do not emit values, only their children.
                 if (this.metadatumComponent == 'tainacan-compound')
                     return;
@@ -353,11 +350,11 @@
             },
             addValue(){
                 this.values.push('');
-                this.changeValue();
+                this.performValueChange();
             },
             removeValue(index) {
                 this.values.splice(index, 1);
-                this.changeValue();
+                this.performValueChange();
             },
             onMobileSpecialFocus() {
                 if (this.isMobileScreen)

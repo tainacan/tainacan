@@ -47,8 +47,12 @@ export default {
         onInput(value) {
             this.isPreviewingHtml = false;
             this.singleHTMLPreview = '';
-            this.$emit('update:value', value);
+            
+            this.changeValue(value);
         },
+        changeValue: _.debounce(function(value) {
+            this.$emit('update:value', value);
+        }, 750),
         onBlur() {
             this.$emit('blur');
         },

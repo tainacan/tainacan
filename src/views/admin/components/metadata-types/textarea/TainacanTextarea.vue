@@ -38,8 +38,11 @@
                 if ( inputRef && this.getMaxlength && !inputRef.checkHtml5Validity() )
                     return;
 
-                this.$emit('update:value', value);
+                this.changeValue(value);
             },
+            changeValue: _.debounce(function(value) {
+                this.$emit('update:value', value);
+            }, 750),
             onBlur() {
                 this.$emit('blur');
             },
