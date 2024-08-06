@@ -6,7 +6,7 @@ export const updateItemMetadatum = ({ commit }, { item_id, metadatum_id, values,
 
     if (parent_meta_id != undefined && parent_meta_id != null && parent_meta_id != false)
         body['parent_meta_id'] = parent_meta_id;
-        
+
     return new Promise((resolve, reject) => {
         axios.tainacanApi.put(`/item/${item_id}/metadata/${metadatum_id}`, body)
             .then( res => {
@@ -45,7 +45,7 @@ export const fetchItemMetadata = ({ commit }, item_id) => {
 export const fetchCompoundFirstParentMetaId = ({ commit }, { item_id, metadatum_id }) => {
    
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.put(`/item/${item_id}/metadata/${metadatum_id}`, { value: [] })
+        axios.tainacanApi.put(`/item/${item_id}/metadata/${metadatum_id}`, { values: [] })
             .then( res => {
                 const parentMetaId = res.data.parent_meta_id;
                 resolve(parentMetaId);

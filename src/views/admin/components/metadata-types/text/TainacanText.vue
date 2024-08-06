@@ -16,7 +16,7 @@
                     @input="($event) => getMask ? null : onInput($event.target.value)"
                     @blur="onBlur">
             <small
-                    v-if="getMaxlength"
+                    v-if="value && getMaxlength"
                     class="help counter"
                     :class="{ 'is-invisible': !isInputFocused }">
                 {{ value.length }} / {{ getMaxlength }}

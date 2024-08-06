@@ -179,7 +179,8 @@
                             v-model="form.max_options"
                             name="max_options"
                             type="number"
-                            step="1" />
+                            step="1"
+                            :max="maxOptionsLimit" />
                     <button
                             class="button is-white is-pulled-right"
                             @click.prevent="showEditMaxOptions = false">
@@ -327,7 +328,8 @@ export default {
             closedByForm: false,
             showEditMaxOptions: false,
             entityName: 'filter',
-            isLoading: false
+            isLoading: false,
+            maxOptionsLimit: tainacan_plugin.api_max_items_per_page && !isNaN(tainacan_plugin.api_max_items_per_page) ? Number(tainacan_plugin.api_max_items_per_page) : 96
         }
     },
     created() {

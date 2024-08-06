@@ -416,45 +416,45 @@
                                                         :message="metadataSection.description" />
                                             </span>
                                         </div>
-                                        <transition name="filter-item">
-                                            <div 
-                                                    v-show="(metadataSectionCollapses[sectionIndex] || isMetadataNavigation) && !isSectionHidden(metadataSection.id)"
-                                                    class="metadata-section-metadata-list">
-                                                <p
-                                                        v-if="metadataSection.description && metadataSection.description_bellow_name == 'yes'"
-                                                        class="metadata-section-description-help-info metadatum-description-help-info">
-                                                    {{ metadataSection.description }}
-                                                </p>
+                                        <div 
+                                                v-show="((metadataSectionCollapses[sectionIndex] || isMetadataNavigation) && !isSectionHidden(metadataSection.id))"
+                                                class="metadata-section-metadata-list"
+                                                :class="((metadataSectionCollapses[sectionIndex] || isMetadataNavigation) && !isSectionHidden(metadataSection.id)) ? '' : 'is-section-content-hidden'">
+                                            <p
+                                                    v-if="metadataSection.description && metadataSection.description_bellow_name == 'yes'"
+                                                    class="metadata-section-description-help-info metadatum-description-help-info">
+                                                {{ metadataSection.description }}
+                                            </p>
 
-                                                <template 
-                                                        v-for="(itemMetadatum, index) of itemMetadata"
-                                                        :key="index">
-                                                    <tainacan-form-item
-                                                            v-if="itemMetadatum.metadatum.metadata_section_id == metadataSection.id"
-                                                            v-show="(!showOnlyRequiredMetadata || itemMetadatum.metadatum.required === 'yes') && (metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"
-                                                            :id="'metadatum-index--' + index"      
-                                                            :ref="'tainacan-form-item--' + index"
-                                                            :class="{ 'is-metadata-navigation-active': isMetadataNavigation }"
-                                                            :item-metadatum="itemMetadatum"
-                                                            :metadata-name-filter-string="metadataNameFilterString"
-                                                            :is-collapsed="metadataCollapses[index]"
-                                                            :hide-collapses="$adminOptions.hideItemEditionCollapses || isMetadataNavigation || (collection && collection.item_enable_metadata_collapses === 'no')"
-                                                            :hide-metadata-types="hideMetadataTypes"
-                                                            :hide-help-buttons="false"
-                                                            :help-info-bellow-label="false"
-                                                            :is-mobile-screen="isMobileScreen"
-                                                            :enumerate-metadatum="metadataSections.length > 1 && collection && collection.item_enable_metadata_enumeration === 'yes' ? ( (Number(sectionIndex) + 1) + '.' + (Number(getMetadatumOrderInSection(sectionIndex, itemMetadatum.metadatum)) + 1) ) : false"
-                                                            :is-last-metadatum="index > 2 && (index == itemMetadata.length - 1)"
-                                                            :is-focused="focusedMetadatum === index"
-                                                            :is-metadata-navigation="isMetadataNavigation"
-                                                            @input="updateItemMetadataValue"
-                                                            @change-collapse="onChangeCollapse($event, index)"
-                                                            @touchstart="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }): ''"
-                                                            @mousedown="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }) : ''"
-                                                            @mobile-special-focus="setMetadatumFocus({ index: index, scrollIntoView: true })" />
-                                                </template>
-                                            </div>
-                                        </transition>
+                                            <template 
+                                                    v-for="(itemMetadatum, index) of itemMetadata"
+                                                    :key="index">
+                                                <tainacan-form-item
+                                                        v-if="itemMetadatum.metadatum.metadata_section_id == metadataSection.id"
+                                                        v-show="(!showOnlyRequiredMetadata || itemMetadatum.metadatum.required === 'yes') && (metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"
+                                                        :id="'metadatum-index--' + index"      
+                                                        :ref="'tainacan-form-item--' + index"
+                                                        :class="{ 'is-metadata-navigation-active': isMetadataNavigation }"
+                                                        :item-metadatum="itemMetadatum"
+                                                        :metadata-name-filter-string="metadataNameFilterString"
+                                                        :is-collapsed="metadataCollapses[index]"
+                                                        :hide-collapses="$adminOptions.hideItemEditionCollapses || isMetadataNavigation || (collection && collection.item_enable_metadata_collapses === 'no')"
+                                                        :hide-metadata-types="hideMetadataTypes"
+                                                        :hide-help-buttons="false"
+                                                        :help-info-bellow-label="false"
+                                                        :is-mobile-screen="isMobileScreen"
+                                                        :enumerate-metadatum="metadataSections.length > 1 && collection && collection.item_enable_metadata_enumeration === 'yes' ? ( (Number(sectionIndex) + 1) + '.' + (Number(getMetadatumOrderInSection(sectionIndex, itemMetadatum.metadatum)) + 1) ) : false"
+                                                        :is-last-metadatum="index > 2 && (index == itemMetadata.length - 1)"
+                                                        :is-focused="focusedMetadatum === index"
+                                                        :is-metadata-navigation="isMetadataNavigation"
+                                                        @input="updateItemMetadataValue"
+                                                        @change-collapse="onChangeCollapse($event, index)"
+                                                        @touchstart="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }): ''"
+                                                        @mousedown="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }) : ''"
+                                                        @mobile-special-focus="setMetadatumFocus({ index: index, scrollIntoView: true })" />
+                                            </template>
+                                        </div>
+                                    
                                     </div>
 
                                     <!-- Hook for extra Form options -->
@@ -1696,13 +1696,10 @@ export default {
 
         },
         onChangeCollapse(event, index) {
-            if (event && !this.metadataCollapses[index] && this.itemMetadata[index].metadatum && this.itemMetadata[index].metadatum['metadata_type'] === "Tainacan\\Metadata_Types\\GeoCoordinate")
-                this.$emitter.emit('itemEditionFormResize');
-                
             this.metadataCollapses.splice(index, 1, event);
         },
         toggleMetadataSectionCollapse(sectionIndex) {
-            if (!this.isMetadataNavigation) 
+            if ( !this.isMetadataNavigation ) 
                 Object.assign( this.metadataSectionCollapses, { [sectionIndex]: (this.formErrorMessage ? true : !this.metadataSectionCollapses[sectionIndex]) });
         },
         onDeletePermanently() {
