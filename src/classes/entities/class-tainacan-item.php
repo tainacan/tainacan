@@ -587,6 +587,7 @@ class Item extends Entity {
 			'metadatum_index'		=> null
 		);
 		$args = wp_parse_args($args, $defaults);
+		
 		$item_metadata = array();
 		
 		// If a single metadata is passed, we use it instead of fetching more
@@ -748,6 +749,13 @@ class Item extends Entity {
 			'after_value' 			=> '</p>'
 		);
 		$args = wp_parse_args($args, $defaults);
+
+		/**
+		 * Filter the arguments passed to the get_item_metadatum_as_html function
+		 * @param array $args The arguments passed to the function
+		 * @param object $metadata_section The Item Metadatum object
+		 */
+		$args = apply_filters( 'tainacan-get-item-metadatum-as-html-filter-args', $args, $item_metadatum );
 
 		if ($item_metadatum->has_value() || !$args['hide_empty']) {
 
@@ -1229,6 +1237,13 @@ class Item extends Entity {
 			'metadata_list_args' 			=> []
 		);
 		$args = wp_parse_args($args, $defaults);
+
+		/**
+		 * Filter the arguments passed to the get_metadata_section_as_html function
+		 * @param array $args The arguments passed to the function
+		 * @param object $metadata_section The Metadata Section object
+		 */
+		$args = apply_filters( 'tainacan-get-metadata-section-as-html-filter-args', $args, $metadata_section );
 
 		// Gets the metadata section inner metadata list
 		$metadata_section_metadata_list = $metadata_section->get_metadata_object_list();
