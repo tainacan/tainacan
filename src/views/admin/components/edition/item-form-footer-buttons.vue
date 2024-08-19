@@ -55,7 +55,7 @@
 
                 <!-- Update dropdown with -->
                 <b-dropdown
-                        v-if="!$adminOptions.hideItemEditionStatusOption"
+                        v-if="!$adminOptions.hideItemEditionStatusOption && $adminOptions.itemEditionStatusOptionOnFooterDropdown"
                         ref="item-edition-footer-dropdown"
                         :triggers="['contextmenu']"
                         aria-role="list"
@@ -147,7 +147,7 @@
                             'is-secondary': status == 'draft'
                         }"
                         @click="$emit('on-submit', status)">
-                    {{ $i18n.get('label_update') }}
+                    {{ $i18n.get('finish') }}
                 </button>
 
             </template>

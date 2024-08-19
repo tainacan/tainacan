@@ -34,7 +34,9 @@
         }
         &[disabled=disabled],
         &:disabled {
-            background: var(--tainacan-gray1) !important;
+            opacity: 0.75;
+            border-color: var(--tainacan-input-disabled-color,var(--tainacan-input-border-color));
+            background: var(--tainacan-input-disabled-color,var(--tainacan-input-border-color)) !important;
         }
         &:hover,
         &:focus {

@@ -550,6 +550,21 @@
                                 :style="isMetadataNavigation && !isMobileScreen ? 'max-height: calc(100vh - 142px);' : ''"
                                 class="sticky-container">
 
+                            <item-publication-edition-form
+                                    v-if="!$adminOptions.hideItemEditionPublicationSection"
+                                    :item="item"
+                                    :form="form"
+                                    :collection="collection"
+                                    :is-loading="isLoading"
+                                    :is-updating-slug="isUpdatingSlug"
+                                    :has-some-error="formErrorMessage != undefined && formErrorMessage != ''"
+                                    :current-user-can-delete="item && item.current_user_can_delete"
+                                    :current-user-can-publish="collection && collection.current_user_can_publish_items"
+                                    @on-update-comment-status="updateCommentStatus"
+                                    @on-update-item-author="updateItemAuthor"
+                                    @on-update-item-slug="updateItemSlug"
+                                    @on-submit="onSubmit" />
+
                             <!-- Hook for extra Form options -->
                             <template v-if="hasBeginLeftForm">
                                 <form
@@ -687,28 +702,6 @@
                     </span>
                 </p>
 
-                <!-- Comment Status ------------------------ -->
-                <div 
-                        v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemEditionCommentsToggle"
-                        style="margin-left: 2em;"
-                        class="section-status">
-                    <div class="field has-addons">
-                        <b-switch
-                                id="tainacan-checkbox-comment-status"
-                                v-model="form.comment_status"
-                                size="is-small"
-                                true-value="open"
-                                false-value="closed">
-                            <span class="icon has-text-gray4">
-                                <i class="tainacan-icon tainacan-icon-comment" />
-                            </span>
-                            {{ $i18n.get('label_allow_comments') }}
-                            <help-button
-                                    :title="$i18n.getHelperTitle('items', 'comment_status')"
-                                    :message="$i18n.getHelperMessage('items', 'comment_status')" />
-                        </b-switch>
-                    </div>
-                </div>
             </div>
             
             <item-form-footer-buttons
@@ -737,7 +730,7 @@ import { nextTick, defineAsyncComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 
 import wpMediaFrames from '../../js/wp-media-frames';
-import { formHooks } from '../../js/mixins';
+import { permalinkGetter, formHooks } from '../../js/mixins';
 import { itemMetadataMixin } from '../../js/item-metadata-mixin';
 
 import RelatedItemsList from '../lists/related-items-list.vue';
@@ -745,6 +738,7 @@ import CustomDialog from '../other/custom-dialog.vue';
 import ItemMetadatumErrorsTooltip from '../other/item-metadatum-errors-tooltip.vue';
 import ItemDocumentTextModal from '../modals/item-document-text-modal.vue';
 import ItemDocumentURLModal from '../modals/item-document-url-modal.vue';
+import ItemPublicationEditionForm from '../edition/item-publication-edition-form.vue';
 import ItemDocumentEditionForm from '../edition/item-document-edition-form.vue';
 import ItemThumbnailEditionForm from '../edition/item-thumbnail-edition-form.vue';
 import ItemAttachmentsEditionForm from '../edition/item-attachments-edition-form.vue';
@@ -762,13 +756,14 @@ export default {
     components: {
         RelatedItemsList,
         ItemMetadatumErrorsTooltip,
+        ItemPublicationEditionForm,
         ItemThumbnailEditionForm,
         ItemDocumentEditionForm,
         ItemAttachmentsEditionForm,
         ItemFormFooterButtons,
         TainacanFormItem: defineAsyncComponent(() => import('../metadata-types/tainacan-form-item.vue')),
     },
-    mixins: [ formHooks, itemMetadataMixin ],
+    mixins: [ formHooks, permalinkGetter, itemMetadataMixin ],
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
             this.$buefy.modal.open({
@@ -809,6 +804,7 @@ export default {
             sequenceRightDirection: false,
             isLoading: false,
             isLoadingMetadataSections: false,
+            isUpdatingSlug: false,
             metadataCollapses: [],
             metadataSectionCollapses: [],
             collapseAll: true,
@@ -1164,7 +1160,7 @@ export default {
         ...mapActions('metadata',[
             'fetchMetadataSections'
         ]),
-        onSubmit(status, sequenceDirection) {
+        onSubmit(status, alternativeDestination) {
 
             // Puts loading on Item edition
             this.isLoading = true;
@@ -1188,7 +1184,6 @@ export default {
             this.errors = [];
 
             promise.then(updatedItem => {
-
                 this.item = updatedItem;
 
                 // Fills hook forms with it's real values
@@ -1196,6 +1191,9 @@ export default {
 
                 // Fill this.form data with current data.
                 this.form.status = status == 'trash' ? status : this.item.status;
+                this.form.slug = this.item.slug;
+                this.form.author_id = this.item.author_id;
+                this.form.author_name = this.item.author_name;
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
                 this.form.comment_status = this.item.comment_status;
@@ -1204,9 +1202,12 @@ export default {
                 
                 this.isLoading = false;
 
-                if (!this.$adminOptions.itemEditionMode && !this.$adminOptions.mobileAppMode) {
-
-                    if (!this.isOnSequenceEdit) {
+                if (
+                    !this.$adminOptions.itemEditionMode &&
+                    !this.$adminOptions.mobileAppMode &&
+                    alternativeDestination !== 'current'
+                ) {
+                    if ( !this.isOnSequenceEdit ) {
                         if ( this.hasRedirectHook ) {
                             window.location.replace( this.getRedirectHook );
                         } else {
@@ -1219,12 +1220,11 @@ export default {
                                 this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId));
                         }
                     } else {
-                        if (sequenceDirection == 'next')
+                        if (alternativeDestination == 'next')
                             this.onNextInSequence();
-                        else if (sequenceDirection == 'previous')
+                        else if (alternativeDestination == 'previous')
                             this.onPrevInSequence();
                     }
-
                 }
 
                 // Sends info to iframe containing item edition form and other use cases
@@ -1311,6 +1311,9 @@ export default {
 
                 // Pre-fill status with publish to incentivate it
                 this.form.status = 'auto-draft'
+                this.form.slug = this.item.slug;
+                this.form.author_id = this.item.author_id;
+                this.form.author_name = this.item.author_name;
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
                 this.form.comment_status = this.item.comment_status;
@@ -1392,6 +1395,57 @@ export default {
 
                     this.isLoading = false;
                 });
+        },
+        updateItemAuthor(newAuthorId) {
+            this.isLoading = true;
+            this.form.author_id = newAuthorId;
+            this.updateItem({ id: this.itemId, author_id: '' + newAuthorId })
+                .then((updatedItem) => {
+                    this.item.author_id = updatedItem.author_id;
+                    this.item.author_name = updatedItem.author_name;
+                    this.isLoading = false;
+                    this.setLastUpdated(updatedItem.modification_date);
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                    this.isLoading = false;
+                });
+        },
+        updateItemSlug: _.debounce(function(newSlug) {
+            this.isUpdatingSlug = true;
+            this.getSamplePermalink(this.collectionId, this.item.title, newSlug)
+                .then((res) => {
+                    this.form.slug = res.data.slug;
+                    this.updateItem({ id: this.itemId, slug: res.data.slug })
+                        .then((updatedItem) => {
+                            this.item.slug = updatedItem.slug;
+                            this.item.url = updatedItem.url;
+                            this.setLastUpdated(updatedItem.modification_date);
+                            this.isUpdatingSlug = false;
+                        })
+                        .catch((error) => {
+                            this.$console.error(error);
+                            this.isUpdatingSlug = false;
+                        });
+                })
+                .catch(errors => {
+                    this.$console.error(errors);
+                    this.isUpdatingSlug = false;
+                });
+        }, 1000),
+        updateCommentStatus(newStatus) {
+            this.isLoading = true;
+            this.form.comment_status = newStatus;
+            this.updateItem({ id: this.itemId, comment_status: newStatus })
+                .then((updatedItem) => {
+                    this.item.comment_status = updatedItem.comment_status;
+                    this.isLoading = false;
+                    this.setLastUpdated(updatedItem.modification_date);
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                    this.isLoading = false;
+                })
         },
         setDocument(event, documentType) {
             if (documentType === 'attachment')
@@ -1729,7 +1783,7 @@ export default {
             this.fetchItem({
                 itemId: this.itemId,
                 contextEdit: true,
-                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html,document_options,related_items'
+                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html,document_options,related_items,slug,author_id,author_name'
             })
             .then((resp) => {
                 resp.request.then((res) => {
@@ -1762,6 +1816,9 @@ export default {
                         });
 
                     // Fill this.form data with current data.
+                    this.form.slug = this.item.slug;
+                    this.form.author_id = this.item.author_id;
+                    this.form.author_name = this.item.author_name;
                     this.form.status = this.item.status;
                     this.form.document = this.item.document;
                     this.form.document_type = this.item.document_type;

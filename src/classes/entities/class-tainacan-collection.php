@@ -36,12 +36,15 @@ class Collection extends Entity {
 		$header_image,
 		$comment_status,
 		$allow_comments,
+		$allow_item_author_editing,
+		$allow_item_slug_editing,
 		$allows_submission,
 		$hide_items_thumbnail_on_lists,
 		$submission_anonymous_user,
 		$submission_default_status,
 		$submission_use_recaptcha,
 		$item_enabled_document_types,
+		$item_publication_label,
 		$item_document_label,
 		$item_thumbnail_label,
 		$item_enable_thubmnail,
@@ -571,6 +574,22 @@ class Collection extends Entity {
 	}
 
 	/**
+	 * Checks if changing the item slug is allowed for the current Collection Items.
+	 * @return bool
+	 */
+	public function get_allow_item_slug_editing() {
+		return $this->get_mapped_property('allow_item_slug_editing');
+	}
+	
+	/**
+	 * Checks if changing the item authorship is allowed for the current Collection Items.
+	 * @return bool
+	 */
+	public function get_allow_item_author_editing() {
+		return $this->get_mapped_property('allow_item_author_editing');
+	}
+
+	/**
 	 * Get enable submission with anonymous user
 	 *
 	 * @return string "yes"|"no"
@@ -635,6 +654,15 @@ class Collection extends Entity {
 
 	/**
 	 * Get the label for the section in this collection.
+	 *
+	 * @return string The label for the publishing section.
+	 */
+	function get_item_publication_label() {
+		return $this->get_mapped_property('item_publication_label');
+	}
+
+	/**
+	 * Get the label for the document section in this collection.
 	 *
 	 * @return string The label for the section.
 	 */
@@ -932,6 +960,24 @@ class Collection extends Entity {
 	}
 
 	/**
+	 * Sets if changind the author is allowed for the current Collection Items.
+	 *
+	 * @param $value bool
+	 */
+	public function set_allow_item_author_editing( $value ) {
+		$this->set_mapped_property('allow_item_author_editing', $value );
+	}
+
+	/**
+	 * Sets if changind the item url is allowed for the current Collection Items.
+	 *
+	 * @param $value bool
+	 */
+	public function set_allow_item_slug_editing( $value ) {
+		$this->set_mapped_property('allow_item_slug_editing', $value );
+	}
+
+	/**
 	 * Set enable submission with anonymous user
 	 *
 	 * @param [string] $value
@@ -1006,6 +1052,16 @@ class Collection extends Entity {
 	 */
 	function set_item_enabled_document_types( $value ) {
 		$this->set_mapped_property('item_enabled_document_types', $value);
+	}
+
+	/**
+	 * Set the label for the item publication section in this collection.
+	 *
+	 * @param string $value The label for the publication section.
+	 * @return void
+	 */
+	function set_item_publication_label( $value ) {
+		$this->set_mapped_property('item_publication_label', $value);
 	}
 
 	/**

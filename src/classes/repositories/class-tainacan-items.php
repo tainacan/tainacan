@@ -70,6 +70,13 @@ class Items extends Repository {
 				'type'        => 'string',
 				'description' => __( 'The item author\'s user ID (numeric string)', 'tainacan' )
 			],
+			'slug' => [
+				'map'         => 'post_name',
+				'title'       => __( 'Slug', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'Slug is the editable portion of a page link, located a the end of an URL. Usually presents the title of the item without special characters, separated by hiphen instead of spaces.', 'tainacan' ),
+				//'validation' => v::stringType(),
+			],
 			'creation_date'     => [
 				'map'         => 'post_date',
 				'title'       => __( 'Creation Date', 'tainacan' ),

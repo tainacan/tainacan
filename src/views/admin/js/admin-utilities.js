@@ -400,7 +400,7 @@ StatusHelperPlugin.install = function (app, options = {}) {
             return ['publish', 'private', 'draft', 'trash'].includes(status);
         },
         getStatuses() {
-            return  this.statuses;
+            return this.statuses;
         },
         loadStatuses() {
             axios.wpApi.get('/statuses/')
@@ -723,9 +723,10 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
 
         * hideItemEditionPageTitle
         * hideItemEditionCollectionName
-        * hideItemEditionStatusOptions
+        * hideItemEditionStatusOptions // Deprecated in Version 0.21.10 due to new status system.
             * hideItemEditionStatusPublishOption
         * hideItemEditionCommentsToggle
+        * hideItemEditionPublicationSection
         * hideItemEditionDocument
             * hideItemEditionDocumentFileInput
             * hideItemEditionDocumentTextInput

@@ -77,13 +77,13 @@ button.link-style:active {
         border: none !important;
         cursor: not-allowed !important;
         color: var(--tainacan-info-color) !important;
-        background-color: var(--tainacan-gray2) !important;
+        background-color: var(--tainacan-input-disabled-color,var(--tainacan-input-border-color)) !important;
         text-shadow: none !important;
     }
     &.is-outlined[disabled], &.is-outlined:hover[disabled] {
-        border: 1px solid var(--tainacan-gray2) !important;
+        border: 1px solid var(--tainacan-input-disabled-color,var(--tainacan-input-border-color)) !important;
         color: var(--tainacan-info-color) !important;
-        background-color: var(--tainacan-white) !important;
+        background-color: var(--tainacan-input-disabled-color,var(--tainacan-input-border-color)) !important;
     }
     &.is-white[disabled] {
         background-color: transparent !important;

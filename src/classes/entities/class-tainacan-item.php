@@ -19,6 +19,7 @@ class Item extends Entity {
 		$author_id,
 		$url,
 		$id,
+		$slug,
 		$title,
 		$order,
 		$parent,
@@ -218,6 +219,15 @@ class Item extends Entity {
 	}
 
 	/**
+	 * Get item slug
+	 *
+	 * @return string
+	 */
+	function get_slug() {
+		return $this->get_mapped_property( 'slug' );
+	}
+
+	/**
 	 * Return the item order type
 	 *
 	 * @return string
@@ -324,6 +334,23 @@ class Item extends Entity {
 	}
 
 	/**
+	 * Set the item slug
+	 *
+	 * If you dont set the item slug, it will be set automatically based on the name and
+	 * following WordPress default behavior of creating slugs for posts.
+	 *
+	 * If you set the slug for an existing one, WordPress will append a number at the end of in order
+	 * to make it unique (e.g slug-1, slug-2)
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_slug( $value ) {
+		$this->set_mapped_property( 'slug', $value );
+	}
+
+	/**
 	 * Define the order type
 	 *
 	 * @param [string] $value
@@ -398,6 +425,17 @@ class Item extends Entity {
 	 */
 	function set_description( $value ) {
 		$this->set_mapped_property( 'description', $value );
+	}
+
+	/**
+	 * Define the author id
+	 *
+	 * @param [string, integer] $author_io
+	 *
+	 * @return void
+	 */
+	function set_author_id( $author_io ) {
+		$this->set_mapped_property( 'author_id', $author_io );
 	}
 
 	/**
