@@ -31,7 +31,7 @@ class CSV extends Importer {
 	 */
 	public function get_source_metadata() {
 		if (($handle = fopen($this->tmp_file, "r")) !== false) {
-			if( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ) {
+			if ( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ) {
 				$rawColumns = $this->handle_enclosure( $handle );
 			} else {
 				$rawColumns = fgetcsv($handle, 0, $this->get_option('delimiter'));
@@ -40,23 +40,23 @@ class CSV extends Importer {
 			$columns = [];
 			if ($rawColumns) {
 				foreach( $rawColumns as $index => $rawColumn ) {
-					if( strpos($rawColumn,'special_') === 0 ) {
-						if( $rawColumn === 'special_document' ) {
+					if ( strpos($rawColumn,'special_') === 0 ) {
+						if ( $rawColumn === 'special_document' ) {
 							$this->set_option('document_index', $index);
 						} else if ($rawColumn === 'special_document|REPLACE') {
 							$this->set_option('document_import_mode', 'replace');
 							$this->set_option('document_index', $index);
-						} else if( $rawColumn === 'special_attachments' ||
+						} else if ( $rawColumn === 'special_attachments' ||
 											 $rawColumn === 'special_attachments|APPEND' ||
 											 $rawColumn === 'special_attachments|REPLACE' ) {
 							$this->set_option('attachment_index', $index);
 							$attachment_type = explode('|', $rawColumn);
 							$this->set_option('attachment_operation_type', sizeof($attachment_type)==2?$attachment_type[1]:'APPEND');
-						} else if( $rawColumn === 'special_item_status' ) {
+						} else if ( $rawColumn === 'special_item_status' ) {
 							$this->set_option('item_status_index', $index);
-						} else if( $rawColumn === 'special_item_id' ) {
+						} else if ( $rawColumn === 'special_item_id' ) {
 							$this->set_option('item_id_index', $index);
-						} else if( $rawColumn === 'special_comment_status' ) {
+						} else if ( $rawColumn === 'special_comment_status' ) {
 							$this->set_option('item_comment_status_index', $index);
 						}
 					} else {
@@ -77,7 +77,7 @@ class CSV extends Importer {
 
 	public function get_source_special_fields() {
 		if (($handle = fopen($this->tmp_file, "r")) !== false) {
-			if( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ) {
+			if ( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ) {
 				$rawColumns = $this->handle_enclosure( $handle );
 			} else {
 				$rawColumns = fgetcsv($handle, 0, $this->get_option('delimiter'));
@@ -85,15 +85,15 @@ class CSV extends Importer {
 
 			$columns = [];
 
-			if( $rawColumns ) {
+			if ( $rawColumns ) {
 				foreach( $rawColumns as $index => $rawColumn ) {
-					if( strpos($rawColumn,'special_') === 0 ) {
-						if( in_array( $rawColumn, ['special_document', 'special_attachments', 'special_item_status', 'special_item_id', 'special_comment_status', 'special_attachments|APPEND', 'special_attachments|REPLACE', 'special_document|REPLACE'] ) ) {
+					if ( strpos($rawColumn,'special_') === 0 ) {
+						if ( in_array( $rawColumn, ['special_document', 'special_attachments', 'special_item_status', 'special_item_id', 'special_comment_status', 'special_attachments|APPEND', 'special_attachments|REPLACE', 'special_document|REPLACE'] ) ) {
 							$columns[] = $rawColumn;
 						}
 					}
 				}
-				if( !empty($columns) )
+				if ( !empty($columns) )
 					return $columns;
 			}
 		}
@@ -106,7 +106,7 @@ class CSV extends Importer {
 	 */
 	public function raw_source_metadata() {
 		if (($handle = fopen($this->tmp_file, "r")) !== false) {
-			if( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ){
+			if ( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ){
 				return $this->handle_enclosure( $handle );
 			} else {
 				return fgetcsv($handle, 0, $this->get_option('delimiter'));
@@ -143,20 +143,20 @@ class CSV extends Importer {
 			return false;
 		}
 
-		if( $index === 0 ) {
+		if ( $index === 0 ) {
 			// moves the pointer forward
 			fgetcsv($file, 0, $this->get_option('delimiter'));
 		} else {
 			//get the pointer
 			$csv_pointer= $this->get_transient('csv_pointer');
-			if( $csv_pointer ) {
+			if ( $csv_pointer ) {
 				fseek($file, $csv_pointer);
 			}
 		}
 
 		$this->add_transient('csv_last_pointer', ftell($file)); // add reference to post_process item in after_inserted_item()
 
-		if( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ) {
+		if ( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ) {
 			$values = $this->handle_enclosure( $file );
 		} else {
 			$values = fgetcsv($file, 0, $this->get_option('delimiter'));
@@ -164,7 +164,7 @@ class CSV extends Importer {
 
 		$this->add_transient('csv_pointer', ftell($file)); // add reference for insert
 
-		if( count( $headers ) !== count( $values ) ) {
+		if ( count( $headers ) !== count( $values ) ) {
 			$string = (is_array($values)) ? implode('::', $values ) : $values;
 
 			$this->add_error_log(' Mismatch count headers and row columns ');
@@ -175,29 +175,29 @@ class CSV extends Importer {
 			return false;
 		}
 
-		if( is_numeric($this->get_option('item_id_index')) ) {
+		if ( is_numeric($this->get_option('item_id_index')) ) {
 			$this->handle_item_id( $values );
 		}
 		foreach ( $collection_definition['mapping'] as $metadatum_id => $header) {
 			$column = null;
 			foreach ( $headers as $indexRaw => $headerRaw ) {
-				if( (is_array($header) && $headerRaw === key($header)) || ($headerRaw === $header) ) {
+				if ( (is_array($header) && $headerRaw === key($header)) || ($headerRaw === $header) ) {
 					$column = $indexRaw;
 				}
 			}
 
-			if(is_null($column))
+			if (is_null($column))
 				continue;
 
 			$valueToInsert = $this->handle_encoding( $values[ $column ] );
 
 			$metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
-			if( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Compound' ) {
+			if ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Compound' ) {
 				$valueToInsert = $metadatum->is_multiple()
 					? explode( $this->get_option('multivalued_delimiter'), $valueToInsert)
 					: [$valueToInsert];
 
-				if(!is_array($header)) {
+				if (!is_array($header)) {
 					$this->add_error_log('the compound metadata specification is invalid');
 					continue;
 				}
@@ -226,10 +226,10 @@ class CSV extends Importer {
 					explode( $this->get_option('multivalued_delimiter'), $valueToInsert) : $valueToInsert;
 			}
 		}
-		if( !empty( $this->get_option('document_index') ) ) $processedItem['special_document'] = '';
-		if( !empty( $this->get_option('attachment_index') ) ) $processedItem['special_attachments'] = '';
-		if( !empty( $this->get_option('item_status_index') ) ) $processedItem['special_item_status'] = '';
-		if( !empty( $this->get_option('item_comment_status_index') ) ) $processedItem['special_comment_status'] = '';
+		if ( !empty( $this->get_option('document_index') ) ) $processedItem['special_document'] = '';
+		if ( !empty( $this->get_option('attachment_index') ) ) $processedItem['special_attachments'] = '';
+		if ( !empty( $this->get_option('item_status_index') ) ) $processedItem['special_item_status'] = '';
+		if ( !empty( $this->get_option('item_comment_status_index') ) ) $processedItem['special_comment_status'] = '';
 
 		$this->add_log('Success processing index: ' . $index  );
 		return $processedItem;
@@ -244,7 +244,7 @@ class CSV extends Importer {
 		$column_item_status = $this->get_option('item_status_index');
 		$column_item_comment_status = $this->get_option('item_comment_status_index');
 
-		if( !empty($column_document) || !empty( $column_attachment ) || !empty( $column_item_status ) ){
+		if ( !empty($column_document) || !empty( $column_attachment ) || !empty( $column_item_status ) ){
 
 			if (($handle = fopen($this->tmp_file, "r")) !== false) {
 				$file = $handle;
@@ -256,25 +256,25 @@ class CSV extends Importer {
 			$csv_pointer= $this->get_transient('csv_last_pointer');
 			fseek($file, $csv_pointer);
 
-			if( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ){
+			if ( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ){
 				$values = $this->handle_enclosure( $file );
 			} else {
 				$values = fgetcsv($file, 0, $this->get_option('delimiter'));
 			}
 
-			if( is_array($values) && !empty($column_document) ) {
+			if ( is_array($values) && !empty($column_document) ) {
 				$this->handle_document( $values[$column_document], $inserted_item);
 			}
 
-			if( is_array($values) && !empty($column_attachment) ) {
+			if ( is_array($values) && !empty($column_attachment) ) {
 				$this->handle_attachment( $values[$column_attachment], $inserted_item);
 			}
 
-			if( is_array($values) && !empty($column_item_status) ) {
+			if ( is_array($values) && !empty($column_item_status) ) {
 				$this->handle_item_status( $values[$column_item_status], $inserted_item);
 			}
 
-			if( is_array($values) && !empty($column_item_comment_status) ) {
+			if ( is_array($values) && !empty($column_item_comment_status) ) {
 				$this->handle_item_comment_status( $values[$column_item_comment_status], $inserted_item);
 			}
 		}
@@ -507,23 +507,23 @@ class CSV extends Importer {
 		$TainacanMedia = \Tainacan\Media::get_instance();
 		$this->items_repo->disable_logs();
 
-		if( strpos($column_value,'url:') === 0 ) {
+		if ( strpos($column_value,'url:') === 0 ) {
 			$correct_value = trim(substr($column_value, 4));
 			$item_inserted->set_document( $correct_value );
 			$item_inserted->set_document_type( 'url' );
 
-			if( $item_inserted->validate() ) {
+			if ( $item_inserted->validate() ) {
 				$item_inserted = $this->items_repo->update($item_inserted);
 			}
-		} else if( strpos($column_value,'text:') === 0 ) {
+		} else if ( strpos($column_value,'text:') === 0 ) {
 			$correct_value = trim(substr($column_value, 5));
 			$item_inserted->set_document( $correct_value );
 			$item_inserted->set_document_type( 'text' );
 
-			if( $item_inserted->validate() ) {
+			if ( $item_inserted->validate() ) {
 				$item_inserted = $this->items_repo->update($item_inserted);
 			}
-		} else if( strpos($column_value,'file:') === 0 ) {
+		} else if ( strpos($column_value,'file:') === 0 ) {
 			$correct_value = trim(substr($column_value, 5));
 			//removing the old document attachment
 			if ($this->get_option('document_import_mode') === 'replace' && $item_inserted->get_document_type() == 'attachment' ) {
@@ -535,7 +535,7 @@ class CSV extends Importer {
 			if (isset(parse_url($correct_value)['scheme'] )) {
 				$id = $TainacanMedia->insert_attachment_from_url($correct_value, $item_inserted->get_id());
 
-				if(!$id){
+				if (!$id){
 					$this->add_error_log('Error in Document file imported from URL ' . $correct_value);
 					return false;
 				}
@@ -544,14 +544,14 @@ class CSV extends Importer {
 				$item_inserted->set_document_type( 'attachment' );
 				$this->add_log('Document file URL imported from ' . $correct_value);
 
-				if( $item_inserted->validate() ) {
+				if ( $item_inserted->validate() ) {
 					$item_inserted = $this->items_repo->update($item_inserted);
 				}
 			} else {
 				$server_path_files = trailingslashit($this->get_option('server_path'));
 				$id = $TainacanMedia->insert_attachment_from_file($server_path_files . $correct_value, $item_inserted->get_id());
 
-				if(!$id) {
+				if (!$id) {
 					$this->add_error_log('Error in Document file imported from server ' . $server_path_files . $correct_value);
 					return false;
 				}
@@ -560,7 +560,7 @@ class CSV extends Importer {
 				$item_inserted->set_document_type( 'attachment' );
 				$this->add_log('Document file in Server imported from ' . $correct_value);
 
-				if( $item_inserted->validate() ) {
+				if ( $item_inserted->validate() ) {
 					$item_inserted = $this->items_repo->update($item_inserted);
 				}
 			}
@@ -594,12 +594,12 @@ class CSV extends Importer {
 		}
 
 		$attachments = explode( $this->get_option('multivalued_delimiter'), $column_value);
-		if( $attachments ) {
+		if ( $attachments ) {
 			foreach( $attachments as $attachment ) {
-				if(empty($attachment)) continue;
-				if(isset(parse_url($attachment)['scheme'])) {
+				if (empty($attachment)) continue;
+				if (isset(parse_url($attachment)['scheme'])) {
 					$id = $TainacanMedia->insert_attachment_from_url($attachment, $item_inserted->get_id());
-					if(!$id) {
+					if (!$id) {
 						$this->add_error_log('Error in Attachment file imported from URL ' . $attachment);
 						return false;
 					}
@@ -610,7 +610,7 @@ class CSV extends Importer {
 				$server_path_files = trailingslashit($this->get_option('server_path'));
 				$id = $TainacanMedia->insert_attachment_from_file($server_path_files . $attachment, $item_inserted->get_id());
 
-				if(!$id) {
+				if (!$id) {
 					$this->add_log('Error in Attachment file imported from server ' . $server_path_files . $attachment);
 					continue;
 				}
@@ -629,14 +629,14 @@ class CSV extends Importer {
 		$line = trim(fgets($file));
 		$start = substr($line, 0, strlen($this->get_option('enclosure')));
 
-		if( $this->get_option('enclosure') === $start ) {
+		if ( $this->get_option('enclosure') === $start ) {
 			$cut_start = strlen($this->get_option('enclosure'));
 			$line = substr($line, $cut_start);
 		}
 
 		$end = substr($line, ( strlen($line) - strlen($this->get_option('enclosure')) ) , strlen($this->get_option('enclosure')));
 
-		if( $this->get_option('enclosure') === $end ) {
+		if ( $this->get_option('enclosure') === $end ) {
 			$line = substr($line, 0, ( strlen($line) - strlen($this->get_option('enclosure')) ) );
 		}
 
@@ -653,7 +653,7 @@ class CSV extends Importer {
 
 			$status = ( $status == 'public' ) ? 'publish' : $status;
 			$item_inserted->set_status($status);
-			if( $item_inserted->validate() ) {
+			if ( $item_inserted->validate() ) {
 				$item_inserted = $this->items_repo->update($item_inserted);
 			}
 		//}
@@ -668,7 +668,7 @@ class CSV extends Importer {
 		}
 
 		$item_inserted->set_comment_status($comment_status);
-		if( $item_inserted->validate() ) {
+		if ( $item_inserted->validate() ) {
 			$item_inserted = $this->items_repo->update($item_inserted);
 		}
 	}
@@ -678,7 +678,7 @@ class CSV extends Importer {
 	 */
 	private function handle_item_id( $values ) {
 		$item_id_index = $this->get_option('item_id_index');
-		if( is_numeric($item_id_index ) && isset($values[intval($item_id_index)]) ){
+		if ( is_numeric($item_id_index ) && isset($values[intval($item_id_index)]) ){
 			$this->add_transient( 'item_id',$values[intval($item_id_index)] );
 			$this->add_transient( 'item_action',$this->get_option('repeated_item') );
 		}
@@ -724,7 +724,7 @@ class CSV extends Importer {
 		$Tainacan_Item_Metadata->disable_logs();
 		if ( is_numeric($this->get_transient('item_id')) ) {
 			$item = $Tainacan_Items->fetch( (int) $this->get_transient('item_id') );
-			if($item instanceof Entities\Item && ($item->get_collection() == null || $item->get_collection()->get_id() != $collection->get_id() ) ) {
+			if ($item instanceof Entities\Item && ($item->get_collection() == null || $item->get_collection()->get_id() != $collection->get_id() ) ) {
 				$this->add_log('item with ID ' . $this->get_transient('item_id') . ' not found in collection ' . $collection->get_name() );
 				$item = new Entities\Item();
 			}
@@ -766,7 +766,7 @@ class CSV extends Importer {
 				}
 
 				foreach($collection_definition['mapping'] as $id => $value) {
-					if( (is_array($value) && key($value) == $metadatum_source) || ($value == $metadatum_source) )
+					if ( (is_array($value) && key($value) == $metadatum_source) || ($value == $metadatum_source) )
 						$tainacan_metadatum_id = $id;
 				}
 				$metadatum = $Tainacan_Metadata->fetch( $tainacan_metadatum_id );
@@ -777,8 +777,8 @@ class CSV extends Importer {
 					$singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadatum); // *empty item will be replaced by inserted in the next foreach
 					if ($this->is_clear_value($values)) {
 						$singleItemMetadata->set_value("");
-					} else if( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Taxonomy' ) {
-						if( !is_array( $values ) ) {
+					} else if ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Taxonomy' ) {
+						if ( !is_array( $values ) ) {
 							$tmp = $this->insert_hierarchy( $metadatum, $values);
 							if ($tmp !== false) {
 								$singleItemMetadata->set_value( $tmp );
@@ -793,7 +793,7 @@ class CSV extends Importer {
 							}
 							$singleItemMetadata->set_value( $terms );
 						}
-					} elseif( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Compound' ) {
+					} elseif ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Compound' ) {
 						$children_mapping = $collection_definition['mapping'][$tainacan_metadatum_id][$metadatum_source];
 						$singleItemMetadata = [];
 						foreach($values as $compoundValue) {
@@ -834,7 +834,7 @@ class CSV extends Importer {
 
 		$item->set_collection( $collection );
 		if ( !$updating_item ) {
-			if( $item->validate() ) {
+			if ( $item->validate() ) {
 				$insertedItem = $Tainacan_Items->insert( $item );
 			} else {
 				$this->add_error_log( 'Error inserting Item Title: ' . $item->get_title() );
@@ -849,9 +849,9 @@ class CSV extends Importer {
 		$wpdb->query( 'SET autocommit = 0;' );
 
 		foreach ( $itemMetadataArray as $itemMetadata ) {
-			if($itemMetadata instanceof Entities\Item_Metadata_Entity ) {
+			if ($itemMetadata instanceof Entities\Item_Metadata_Entity ) {
 				$itemMetadata->set_item( $insertedItem );  // *I told you
-				if( $itemMetadata->validate() ) {
+				if ( $itemMetadata->validate() ) {
 					$Tainacan_Item_Metadata->insert( $itemMetadata );
 				} else {
 					$insertedItemId = $updating_item == true ? ' (special_item_id: ' . $insertedItem->get_id() . ')' : '';
@@ -860,14 +860,14 @@ class CSV extends Importer {
 					continue;
 				}
 			} elseif ( is_array($itemMetadata) ) {
-				if($updating_item == true) {
+				if ($updating_item == true) {
 					$this->deleteAllValuesCompoundItemMetadata($insertedItem, $itemMetadata[0][0]->get_metadatum()->get_parent());
 				}
 				foreach($itemMetadata as $compoundItemMetadata) {
 					$parent_meta_id = null;
 					foreach($compoundItemMetadata as $itemChildren) {
 						$itemChildren->set_parent_meta_id($parent_meta_id);
-						if( $itemChildren->validate() ) {
+						if ( $itemChildren->validate() ) {
 							$item_children_metadata = $Tainacan_Item_Metadata->insert($itemChildren);
 							$parent_meta_id = $item_children_metadata->get_parent_meta_id();
 						} else {
@@ -879,7 +879,7 @@ class CSV extends Importer {
 				}
 			}
 
-			//if( $result ){
+			//if ( $result ){
 			//	$values = ( is_array( $itemMetadata->get_value() ) ) ? implode( PHP_EOL, $itemMetadata->get_value() ) : $itemMetadata->get_value();
 			//    $this->add_log( 'Item ' . $insertedItem->get_id() .
 			//        ' has inserted the values: ' . $values . ' on metadata: ' . $itemMetadata->get_metadatum()->get_name() );
@@ -930,7 +930,7 @@ class CSV extends Importer {
 	 * @return bool
 	 */
 	public function is_empty_value( $value ){
-		if( is_array( $value ) ){
+		if ( is_array( $value ) ){
 			return ( empty( array_filter( $value ) ) );
 		} else {
 			return ( trim( $value ) === '' );
@@ -942,7 +942,7 @@ class CSV extends Importer {
 	 * @return bool
 	 */
 	private function is_clear_value($value) {
-		if( !empty($value) && is_array($value) )
+		if ( !empty($value) && is_array($value) )
 			return false;
 		return $this->get_option('escape_empty_value') == $value;
 	}
@@ -971,7 +971,7 @@ class CSV extends Importer {
 			return false;
 		}
 
-		if( is_array($exploded_values) ) {
+		if ( is_array($exploded_values) ) {
 			$parent = 0;
 			foreach ( $exploded_values as $key => $value) {
 				$value = trim($value);
@@ -1062,7 +1062,7 @@ class CSV extends Importer {
 				$this->save_mapping( $collection['id'], $collection['mapping'] );
 
 				$coll = \Tainacan\Repositories\Collections::get_instance()->fetch($collection['id']);
-				if(empty($coll->get_metadata_order())) {
+				if (empty($coll->get_metadata_order())) {
 					$metadata_order = array_map(
 						function($meta) { return ["enabled"=>true, "id"=>$meta]; },
 						array_keys( $collection['mapping'] )
