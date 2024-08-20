@@ -5,7 +5,7 @@
         min-height: 50vh;
     }
 }
-.table-wrapper:has(.tainacan-records-container)
+.table-wrapper:has(.tainacan-records-container),
 .table-wrapper:has(.tainacan-records-container--skeleton) {
     @supports (contain: inline-size) {
         container-type: inline-size;
