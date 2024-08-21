@@ -298,7 +298,7 @@ class CSV extends Importer {
 	public function options_form() {
 		ob_start();
 		?>
-		<div class="columns is-multiline">
+		<div class="columns is-multiline is-align-items-end">
 			<div class="column">
 				<div class="field">
 					<label class="label"><?php _e('CSV Delimiter', 'tainacan'); ?></label>
