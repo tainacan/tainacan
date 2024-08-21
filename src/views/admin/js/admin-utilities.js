@@ -606,6 +606,7 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
             hideItemEditionMetadataTypes: true,
             itemEditionDocumentInsideTabs: true,
             itemEditionAttachmentsInsideTabs: true,
+            itemEditionPublicationSectionInsideTabs: true
         }
     }
     for (let adminSpecialMode in adminSpecialModes) {
@@ -723,10 +724,10 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
 
         * hideItemEditionPageTitle
         * hideItemEditionCollectionName
-        * hideItemEditionStatusOptions // Deprecated in Version 0.21.10 due to new status system.
-            * hideItemEditionStatusPublishOption
-        * hideItemEditionCommentsToggle
         * hideItemEditionPublicationSection
+            * hideItemEditionStatusOptions // Deprecated in Version 0.21.10 due to new status system.
+            * hideItemEditionStatusPublishOption
+            * hideItemEditionCommentsToggle
         * hideItemEditionDocument
             * hideItemEditionDocumentFileInput
             * hideItemEditionDocumentTextInput
@@ -738,6 +739,8 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
         * hideItemEditionRequiredOnlySwitch
         * hideItemEditionMetadataTypes
         * allowItemEditionModalInsideModal // Not recommended!
+        * itemEditionStatusOptionOnFooterDropdown
+        * itemEditionPublicationSectionInsideTabs
         * itemEditionDocumentInsideTabs
         * itemEditionAttachmentsInsideTabs
         

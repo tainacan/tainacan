@@ -30,7 +30,7 @@
                     {{ (item != null && item != undefined) ? item.title : '' }}
                 </span>
                 <span
-                        v-if="(item != null && item != undefined && item.status != undefined && item.status != 'autodraft' && !isLoading)"
+                        v-if="$adminOptions.itemEditionStatusOptionOnFooterDropdown && (item != null && item != undefined && item.status != undefined && item.status != 'autodraft' && !isLoading)"
                         class="icon has-text-gray4"
                         style="margin-left: 0.5em;"
                         @mouseenter="$emit('toggleItemEditionFooterDropdown')">
@@ -177,8 +177,10 @@
                     <div
                             class="column main-column"
                             :class="
-                                (( (shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
-                                    (shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)) ? 'is-7' : 'is-12'">
+                                (
+                                    ( (shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs ) ||
+                                    ( shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs )
+                                ) ? 'is-7' : 'is-12'">
 
                         <!-- Hook for extra Form options -->
                         <template v-if="hasBeginRightForm">
@@ -492,6 +494,29 @@
                                     
                                 </div>
 
+
+                                <!-- Publication section -->
+                                <div    
+                                        v-if="activeTab === 'publication' && !$adminOptions.hideItemEditionPublicationSection && $adminOptions.itemEditionPublicationSectionInsideTabs"
+                                        class="tab-item"
+                                        role="tabpanel"
+                                        aria-labelledby="publication-tab-label"
+                                        tabindex="0"> 
+                                    <item-publication-edition-form
+                                            :item="item"
+                                            :form="form"
+                                            :collection="collection"
+                                            :is-loading="isLoading"
+                                            :is-updating-slug="isUpdatingSlug"
+                                            :has-some-error="formErrorMessage != undefined && formErrorMessage != ''"
+                                            :current-user-can-delete="item && item.current_user_can_delete"
+                                            :current-user-can-publish="collection && collection.current_user_can_publish_items"
+                                            @on-update-comment-status="updateCommentStatus"
+                                            @on-update-item-author="updateItemAuthor"
+                                            @on-update-item-slug="updateItemSlug"
+                                            @on-submit="onSubmit" />
+                                </div>
+
                                 <!-- Document and thumbnail on mobile modal -->
                                 <div    
                                         v-if="activeTab === 'document' && $adminOptions.itemEditionDocumentInsideTabs"
@@ -550,8 +575,9 @@
                                 :style="isMetadataNavigation && !isMobileScreen ? 'max-height: calc(100vh - 142px);' : ''"
                                 class="sticky-container">
 
+                            <!-- Publication section -->
                             <item-publication-edition-form
-                                    v-if="!$adminOptions.hideItemEditionPublicationSection"
+                                    v-if="!$adminOptions.hideItemEditionPublicationSection && !$adminOptions.itemEditionPublicationSectionInsideTabs"
                                     :item="item"
                                     :form="form"
                                     :collection="collection"
@@ -564,6 +590,8 @@
                                     @on-update-item-author="updateItemAuthor"
                                     @on-update-item-slug="updateItemSlug"
                                     @on-submit="onSubmit" />
+
+                            <!-- <hr v-if="!$adminOptions.hideItemEditionPublicationSection && !$adminOptions.itemEditionPublicationSectionInsideTabs"> -->
 
                             <!-- Hook for extra Form options -->
                             <template v-if="hasBeginLeftForm">
@@ -585,7 +613,7 @@
                                     @on-set-text-document="setTextDocument"
                                     @on-set-url-document="setURLDocument" />
 
-                            <hr v-if="shouldDisplayItemEditionDocument && shouldDisplayItemEditionThumbnail">
+                            <hr v-if="shouldDisplayItemEditionDocument && !$adminOptions.itemEditionDocumentInsideTabs">
 
                             <!-- Thumbnail -------------------------------- -->
                             <item-thumbnail-edition-form 
@@ -598,7 +626,7 @@
                                     @on-update-thumbnail-alt="($event) => onUpdateThumbnailAlt($event)"
                                     @open-thumbnail-media-frame="thumbnailMediaFrame.openFrame($event)" />
 
-                            <hr v-if="(shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs) || hasEndLeftForm">
+                            <hr v-if="shouldDisplayItemEditionThumbnail && !$adminOptions.itemEditionDocumentInsideTabs">
 
                             <!-- Attachments -->
                             <item-attachments-edition-form
@@ -612,7 +640,7 @@
                                     @open-attachments-media-frame="($event) => attachmentsMediaFrame.openFrame($event)"
                                     @on-delete-attachment="deleteAttachment($event)" />
 
-                            <hr v-if="hasEndLeftForm">
+                            <hr v-if="(shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs) || hasEndLeftForm">
 
                             <!-- Hook for extra Form options -->
                             <template v-if="hasEndLeftForm">
@@ -897,6 +925,13 @@ export default {
                 name: this.$i18n.get('metadata'),
                 total: this.itemMetadata.length
             }];
+            if ( this.$adminOptions.itemEditionPublicationSectionInsideTabs && !this.$adminOptions.hideItemEditionPublicationSection ) {
+                pageTabs.push({
+                    slug: 'publication',
+                    icon: 'item',
+                    name: this.collection && this.collection.item_publication_label ? this.collection.item_publication_label : this.$i18n.get('label_publication_data')
+                });
+            }
             if ( this.$adminOptions.itemEditionDocumentInsideTabs && (this.shouldDisplayItemEditionDocument || this.shouldDisplayItemEditionThumbnail) ) {
                 pageTabs.push({
                     slug: 'document',

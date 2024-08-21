@@ -1,14 +1,21 @@
 <template>
     <div>
-        <div class="section-label">
+        <div 
+                v-if="!isStatusTheOnlyField && !$adminOptions.itemEditionPublicationSectionInsideTabs"
+                class="section-label">
             <label>
                 <span class="icon has-text-gray4">
                     <i class="tainacan-icon tainacan-icon-item" />
                 </span>
                 {{ collection && collection.item_publication_label ? collection.item_publication_label : $i18n.get('label_publication_data') }}
             </label>
+            <help-button
+                    :title="collection && collection.item_publication_label ? collection.item_publication_label : $i18n.get('label_publication_data')"
+                    :message="$i18n.get('info_publication_data') + (collection && collection.current_user_can_edit ? $i18n.get('info_publication_data_editing') : '')" />
         </div>
-        <div class="section-box publication-field">
+        <div 
+                class="section-box publication-field"
+                :class="{ 'has-only-status-field': isStatusTheOnlyField }">
 
             <!-- Authorship -->
             <div 
@@ -125,8 +132,15 @@
                     v-if="!$adminOptions.hideItemEditionStatusOption && !$adminOptions.itemEditionStatusOptionOnFooterDropdown"
                     class="section-status">
                 <div class="field is-horizontal has-addons">
-                    <div class="field-label">
-                        <label class="label">{{ $i18n.get('label_status') }}</label>
+                    <div :class="isStatusTheOnlyField ? 'section-label' : 'field-label'">
+                        <label class="label">
+                            <span 
+                                    v-if="isStatusTheOnlyField"
+                                    class="icon has-text-gray4">
+                                <i class="tainacan-icon tainacan-icon-item" />
+                            </span>
+                            {{ $i18n.get('label_status') }}
+                        </label>
                     </div>
                     <div
                             v-tooltip="{
@@ -171,7 +185,7 @@
                                     </button>
                                 </template>
                                 <b-dropdown-item 
-                                        v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'trash' && ((status.slug != 'publish' && !$adminOptions.hideItemEditionStatusPublishOption) || currentUserCanPublish) && (status.slug != 'private' || currentUserCanPublish))"
+                                        v-for="(statusOption, index) of getAvailableStatus()"
                                         :key="index"
                                         aria-role="listitem"
                                         @click="$emit(
@@ -218,7 +232,7 @@
                                 {{ $i18n.get('label_allow_comments') }}
                                 <help-button
                                         :title="$i18n.getHelperTitle('items', 'comment_status')"
-                                        :message="$i18n.getHelperMessage('items', 'comment_status')" />
+                                        :message="$i18n.get('info_comment_status')" />
                             </b-switch>
                         </div>
                     </div>
@@ -260,6 +274,14 @@ export default {
             usersTotalPages: 0,
             usersSearch: '',
         };
+    },
+    computed: {
+        isStatusTheOnlyField() {
+            return !this.collection ||
+                ( !this.collection.allow_item_slug_editing || this.collection.allow_item_slug_editing != 'yes' ) &&
+                ( !this.collection.allow_item_author_editing || this.collection.allow_item_author_editing != 'yes' ) &&
+                ( !this.collection.allow_comments || this.collection.allow_comments != 'open' );
+        },
     },
     watch: {
         item: {
@@ -348,6 +370,22 @@ export default {
 
                 this.$emit('on-update-item-slug', $event)
             }, 800),
+            getAvailableStatus() {
+                return this.$statusHelper.getStatuses().filter(
+                        (status) => {
+
+                            if ( status.slug == 'trash' )
+                                return false;
+
+                            if ( status.slug == 'publish' && ( this.$adminOptions.hideItemEditionStatusPublishOption || !this.currentUserCanPublish ) )
+                                return false;
+
+                            if ( status.slug == 'private' && !this.currentUserCanPublish )
+                                return false;
+
+                            return true;
+                        });
+            }
     }
 }
 </script>
@@ -363,9 +401,14 @@ export default {
             text-align: left;
             text-align: start;
             min-width: 9ch;
+            margin-right: 1rem;
+            margin-bottom: 0;
+        }
+        .field.has-addons {
+            align-items: center;
         }
         .tainacan-help-tooltip-trigger {
-            margin-left: 1rem;
+            margin-left: 0.5rem;
         }
         #tainacan-text-slug #url-prefix-indicator {
             pointer-events: initial;
@@ -378,6 +421,14 @@ export default {
             margin-right: -0.35em;
             color: var(--tainacan-info-color);
             cursor: pointer;
+        }
+        &.has-only-status-field {
+            padding-left: 0 !important;
+
+            .dropdown,
+            .field.has-addons {
+                align-items: center;
+            }
         } 
     }
     :deep(.authorship-modal) .dialog .modal-card {

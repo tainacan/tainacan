@@ -1081,6 +1081,9 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: The first string is the current author name and the second is the future author name */
 	'info_change_author_from_%s_to_%s'				 => __( 'Are you sure you want to change the authorship of this item from <em>%1$s</em> to <em>%2$s</em>?', 'tainacan' ),		
 	'info_authorship'								 => __( 'The user who is credited as creator of this item and who generally have capabilities to edit it, besides administrators.', 'tainacan' ),
+	'info_comment_status' 							 => __( 'Allow or disallow users to write comments in the item public page.', 'tainacan' ),
+	'info_publication_data'                          => __( 'This section gathers information related to the item publication on the website.', 'tainacan' ),
+	'info_publication_data_editing'                  => __( 'You may tweak some of the options available here in the collection settings.', 'tainacan' ),
 
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
