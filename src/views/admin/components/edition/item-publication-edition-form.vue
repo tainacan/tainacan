@@ -226,9 +226,6 @@
                                     false-value="closed"
                                     :model-value="form.comment_status"
                                     @update:model-value="$emit('on-update-comment-status', $event)">
-                                <span class="icon has-text-gray4">
-                                    <i class="tainacan-icon tainacan-icon-comment" />
-                                </span>
                                 {{ $i18n.get('label_allow_comments') }}
                                 <help-button
                                         :title="$i18n.getHelperTitle('items', 'comment_status')"
@@ -401,6 +398,7 @@ export default {
             text-align: left;
             text-align: start;
             min-width: 9ch;
+            max-width: 9ch;
             margin-right: 1rem;
             margin-bottom: 0;
         }

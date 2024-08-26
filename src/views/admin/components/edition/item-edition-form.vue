@@ -2261,6 +2261,10 @@ export default {
             justify-content: space-between;
             align-items: center;
             background-color: var(--tainacan-background-color);
+
+            @media screen and (max-width: 1024px) {
+                flex-wrap: wrap;
+            }
             
             .field {
                 padding: 2px 0px 2px 16px !important;

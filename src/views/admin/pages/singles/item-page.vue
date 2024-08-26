@@ -199,7 +199,12 @@
                                     </div>
                                     <div class="field-body">
                                         <div class="field has-addons">
-                                            <div>{{ item.author_name }}</div>
+                                            <div>
+                                                <span class="icon has-text-gray4">
+                                                    <i class="tainacan-icon tainacan-icon-userfill tainacan-icon-1-25em " />
+                                                </span>
+                                                &nbsp;{{ item.author_name }}
+                                                </div>
                                         </div>
                                     </div>
                                 </div>
@@ -216,11 +221,10 @@
                                             <a
                                                     target="_blank"
                                                     :href="item.url">
+                                                <span>.../{{ item.slug }}</span>&nbsp;
                                                 <span class="icon">
                                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl" />
                                                 </span>
-                                                &nbsp;
-                                                <span>.../{{ item.slug }}</span>
                                             </a>
                                         </div>
                                     </div>

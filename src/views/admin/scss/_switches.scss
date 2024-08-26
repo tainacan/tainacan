@@ -12,13 +12,13 @@
             box-shadow: none;
         }
     } 
-    &:hover input[type="checkbox"]:checked + .check {
-        background-color: transparent;
-    }
+    // &:hover input[type="checkbox"]:checked + .check {
+    //     background-color: transparent;
+    // }
 
     input[type="checkbox"]:checked + .check {
         border: 2px solid var(--tainacan-secondary);
-        background-color: transparent;
+        background-color: var(--tainacan-turquoise1);
 
         &::before {
             background-color: var(--tainacan-secondary);
