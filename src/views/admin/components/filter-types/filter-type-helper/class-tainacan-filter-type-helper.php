@@ -42,6 +42,7 @@ class Filter_Type_Helper {
 		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numeric_Interval');
 		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomyTaginput');
 		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomyCheckbox');
+		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomySelectbox');
 		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numeric_List_Interval');
 		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numerics_Intersection');
 

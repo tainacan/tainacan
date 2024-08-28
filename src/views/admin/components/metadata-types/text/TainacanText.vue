@@ -16,7 +16,7 @@
                     @input="($event) => getMask ? null : onInput($event.target.value)"
                     @blur="onBlur">
             <small
-                    v-if="getMaxlength"
+                    v-if="value && getMaxlength"
                     class="help counter"
                     :class="{ 'is-invisible': !isInputFocused }">
                 {{ value.length }} / {{ getMaxlength }}
@@ -127,8 +127,11 @@
                 if ( inputRef && this.getMaxlength && !inputRef.checkHtml5Validity() )
                     return;
 
-                this.$emit('update:value', value);
+                this.changeValue(value);
             },
+            changeValue: _.debounce(function(value) {
+                this.$emit('update:value', value);
+            }, 750),
             onBlur() {
                 this.isInputFocused = false;
                 this.$emit('blur');

@@ -111,7 +111,7 @@ function tainacan_autoload($class_name) {
 		}
 
 		if( in_array('Metadata_Types', $class_path) || in_array('Filter_Types', $class_path) ){
-			$exceptions = ['taxonomytaginput','taxonomycheckbox'];
+			$exceptions = ['taxonomytaginput','taxonomycheckbox','taxonomyselectbox'];
 			if( in_array( strtolower( $class_name ), $exceptions) ){
 				$dir.= 'taxonomy/';
 			}else{

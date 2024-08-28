@@ -258,6 +258,7 @@
                                 });
                             }
 
+                            // Presets second tab as active to display selected items
                             if ( this.itemMetadatum.value.length > 0 && this.itemMetadatum.metadatum.multiple != 'yes' )
                                 this.activeTab = 1;
                         }
