@@ -192,8 +192,8 @@ class REST_Background_Processes_Controller extends REST_Controller {
         $process_type = '';
         if (isset($request['search'])) {
             $name = $request['search'];
-            $process_type = "AND name LIKE '%$name%'";
-            $process_type = $wpdb->prepare($process_type);
+            $search_term_like = '%' . $wpdb->esc_like($name) . '%';
+            $process_type = $wpdb->prepare("AND name LIKE %s", $search_term_like);
         }
 
 		$recent_q = '';
