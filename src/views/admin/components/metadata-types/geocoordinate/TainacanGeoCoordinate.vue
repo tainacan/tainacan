@@ -8,7 +8,7 @@
                 style="height: 320px; width:100%;"
                 :zoom="initialZoom"
                 :max-zoom="maxZoom"
-                :center="[-14.4086569, -51.31668]"
+                :center="[initialLatitude, initialLongitude]"
                 :zoom-animation="true"
                 :options="{
                     name: 'map--' + itemMetadatumIdentifier,
@@ -137,6 +137,12 @@
             maxZoom() {
                 return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.maximum_zoom ? this.itemMetadatum.metadatum.metadata_type_options.maximum_zoom : 12;
             },
+            initialLatitude() {
+                return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.initial_latitude ? Number(this.itemMetadatum.metadatum.metadata_type_options.initial_latitude) : -14.4086569;
+            },
+            initialLongitude() {
+                return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.initial_longitude ? Number(this.itemMetadatum.metadatum.metadata_type_options.initial_longitude) : -51.31668;
+            },
             attribution() {
                 return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.attribution ? this.itemMetadatum.metadatum.metadata_type_options.attribution : '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors';
             },
@@ -146,10 +152,10 @@
             selectedLatLng() {
                 if ( this.selected && Array.isArray(this.selected) ) {
                     return this.selected.filter((aSelected) => {
-                        const coordinates = aSelected.indexOf(',') && aSelected.split(',').length == 2 ? aSelected.split(',') : [-14.4086569, -51.31668];
+                        const coordinates = aSelected.indexOf(',') && aSelected.split(',').length == 2 ? aSelected.split(',') : [this.initialLatitude, this.initialLongitude];
                         return ( !isNaN(Number(coordinates[0])) && !isNaN(Number(coordinates[1])) );
                     }).map((aSelected) => {
-                        const coordinates = aSelected.indexOf(',') && aSelected.split(',').length == 2 ? aSelected.split(',') : [-14.4086569, -51.31668];
+                        const coordinates = aSelected.indexOf(',') && aSelected.split(',').length == 2 ? aSelected.split(',') : [this.initialLatitude, this.initialLongitude];
                         return latLng(Number(coordinates[0]), Number(coordinates[1]));
                     }); 
                 }
@@ -201,6 +207,11 @@
             nextTick(() => {
                 const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
                 this.handleWindowResize(mapComponentRef);
+
+                if ( !this.selected || this.selected.length === 0 ) {
+                    this.latitude = this.initialLatitude;
+                    this.longitude = this.initialLongitude;
+                }
 
                 // Intersection Observer to handle map resize
                 if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef]['$el'] ) {
