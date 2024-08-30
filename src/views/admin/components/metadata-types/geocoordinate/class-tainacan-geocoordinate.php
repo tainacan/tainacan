@@ -27,6 +27,8 @@ class GeoCoordinate extends Metadata_Type {
 			'attribution' => '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
 			'initial_zoom' => 5,
 			'maximum_zoom' => 12,
+			'initial_latitude' => -14.4086569,
+			'initial_longitude' => -51.31668
 		]);
 		$this->set_preview_template('
 			<div>
@@ -57,6 +59,10 @@ class GeoCoordinate extends Metadata_Type {
 			'maximum_zoom' => [
 				'title' => __( 'Maximum zoom', 'tainacan' ),
 				'description' => __( 'Maximum zoom level of the map.', 'tainacan' ),
+			],
+			'initial_position' => [
+				'title' => __( 'Initial center position', 'tainacan' ),
+				'description' => __( 'Define latitude and longitude for the initial center of the map input.', 'tainacan' ),
 			]
 		];
 	}
@@ -195,4 +201,21 @@ class GeoCoordinate extends Metadata_Type {
 	public function get_options_as_html() {
 		return "";
 	}
+
+    /**
+     * @param \Tainacan\Entities\Metadatum $metadatum
+     * @return array|bool true if is validate or array if has error
+     */
+    public function validate_options(\Tainacan\Entities\Metadatum $metadatum) {
+        if ( !in_array($metadatum->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
+            return true;
+
+        if ( !$this->validateLatLong( $this->get_option('initial_latitude'), $this->get_option('initial_longitude') ) ) {
+            return [
+                'initial_position' => sprintf(__('The value (%s) is not a valid geo coordinate', 'tainacan'), ('' . $this->get_option('initial_latitude') . ',' . $this->get_option('initial_longitude')) )
+            ];
+        }
+
+        return true;
+    }
 }
