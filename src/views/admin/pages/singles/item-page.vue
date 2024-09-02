@@ -204,7 +204,7 @@
                                                     <i class="tainacan-icon tainacan-icon-userfill tainacan-icon-1-25em " />
                                                 </span>
                                                 &nbsp;{{ item.author_name }}
-                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
