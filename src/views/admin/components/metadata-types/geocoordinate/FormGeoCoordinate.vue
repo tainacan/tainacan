@@ -86,7 +86,9 @@
                         :placeholder="-14.408656999999"
                         name="initialLatitude"
                         expanded
-                        type="text"
+                        type="number"
+                        :min="-90"
+                        :max="90"
                         :step="0.000000000001"
                         @update:model-value="emitValues()"
                         @focus="clear()" />
@@ -95,7 +97,9 @@
                         :placeholder="-51.316689999999"
                         name="initialLongitude"
                         expanded
-                        type="text"
+                        type="number"
+                        :min="-180"
+                        :max="180"
                         :step="0.000000000001"
                         @update:model-value="emitValues()"
                         @focus="clear()" />
