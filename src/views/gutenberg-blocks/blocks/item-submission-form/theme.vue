@@ -1053,7 +1053,7 @@ export default {
                                     }
                                 }
                                 this.formErrorMessage = errors.error_message;
-
+                                
                                 this.isSubmitting =  false;
                                 this.hasSentForm = false;
                                 this.isUploading = false;
