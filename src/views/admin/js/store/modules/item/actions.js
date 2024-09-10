@@ -407,8 +407,8 @@ export const finishItemSubmission = ({ commit }, { itemSubmission, fakeItemId })
                 resolve( res.data );
             }).catch( error => {
                 reject({
-                    errors: error.response.data.errors,
-                    error_message: error.response.data.error_message
+                    errors: error.error.response.data.errors,
+                    error_message: error.error.response.data.error_message
                 });
             });
     }); 

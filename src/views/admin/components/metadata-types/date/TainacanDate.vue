@@ -72,11 +72,8 @@
                     
                     if (dateISO == false) {
                         
-                        if ( !this.isOnItemSubmissionForm )
-                            this.dateValue = $event.target.value; // Keep wrong version in the input so user can fix it
-                        else
-                            this.$emit('update:value', this.dateValue) // On item submission we send the errored version here to allow the server to return the correct format.
-                            
+                        this.dateValue = $event.target.value; // Keep wrong version in the input so user can fix it
+   
                         this.isInvalidDate = true;
                         
                         return;
