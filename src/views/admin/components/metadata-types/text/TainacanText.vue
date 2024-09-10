@@ -8,7 +8,7 @@
                     v-imask="getMask"
                     class="input"
                     :disabled="disabled"
-                    :value="value"
+                    :value="localValue"
                     :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
                     :maxlength="getMaxlength"
                     @focus="onMobileSpecialFocus"
@@ -16,17 +16,17 @@
                     @input="($event) => getMask ? null : onInput($event.target.value)"
                     @blur="onBlur">
             <small
-                    v-if="value && getMaxlength"
+                    v-if="localValue && getMaxlength"
                     class="help counter"
                     :class="{ 'is-invisible': !isInputFocused }">
-                {{ value.length }} / {{ getMaxlength }}
+                {{ localValue.length }} / {{ getMaxlength }}
             </small>
         </div>
         <b-autocomplete
                 v-else
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 :disabled="disabled"
-                :model-value="value"
+                :model-value="localValue"
                 :data="options"
                 :loading="isLoadingOptions"
                 field="label"
@@ -80,6 +80,7 @@
         ],
         data() {
             return {
+                localValue: '',
                 selected:'',
                 options: [],
                 label: '',
@@ -120,6 +121,7 @@
             // These values are set to allow the usage of the getValuesPlainText function from the DynamicFilterTypeMixin
             this.currentCollectionId = this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.collection_id ? this.itemMetadatum.metadatum.collection_id : null;
             this.filter = { collection_id: this.currentCollectionId };
+            this.localValue = this.value ? JSON.parse(JSON.stringify(this.value)) : '';
         },
         methods: {
             onInput(value) {
@@ -127,6 +129,7 @@
                 if ( inputRef && this.getMaxlength && !inputRef.checkHtml5Validity() )
                     return;
 
+                this.localValue = value;
                 this.changeValue(value);
             },
             changeValue: _.debounce(function(value) {
