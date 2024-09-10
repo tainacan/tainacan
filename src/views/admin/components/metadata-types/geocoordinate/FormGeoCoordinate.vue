@@ -68,13 +68,51 @@
                     @update:model-value="emitValues()" />
         </b-field>
 
+        <b-field
+                :addons="false"
+                :listen="setError"
+                :type="initialPositionType"
+                :message="initialPositionMessage">
+            <label class="label is-inline">
+                {{ $i18n.getHelperTitle('tainacan-geocoordinate', 'initial_position') }}
+                <span>&nbsp;*&nbsp;</span>
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-geocoordinate', 'initial_position')"
+                        :message="$i18n.getHelperMessage('tainacan-geocoordinate', 'initial_position')" />
+            </label>
+            <b-field grouped>
+                <b-input
+                        v-model="initialLatitude"
+                        :placeholder="-14.408656999999"
+                        name="initialLatitude"
+                        expanded
+                        type="number"
+                        :min="-90"
+                        :max="90"
+                        :step="0.000000000001"
+                        @update:model-value="emitValues()"
+                        @focus="clear()" />
+                <b-input
+                        v-model="initialLongitude"
+                        :placeholder="-51.316689999999"
+                        name="initialLongitude"
+                        expanded
+                        type="number"
+                        :min="-180"
+                        :max="180"
+                        :step="0.000000000001"
+                        @update:model-value="emitValues()"
+                        @focus="clear()" />
+            </b-field>
+        </b-field>
     </section>
 </template>
 
 <script>
     export default {
         props: {
-            value: [ String, Object, Array ]
+            value: [ String, Object, Array ],
+            errors: [ String, Object, Array ]
         },
         emits: ['update:value'],
         data() {
@@ -84,6 +122,17 @@
                 attribution: String,
                 initialZoom: Number,
                 maximumZoom: Number,
+                initialLatitude: Number,
+                initialLongitude: Number,
+            }
+        },
+        computed: {
+            setError(){
+                if ( this.errors && this.errors.initial_position !== '' )
+                    this.setErrorsAttributes( 'is-danger', this.errors.initial_position );
+                else
+                    this.setErrorsAttributes( '', '' );
+                return true;
             }
         },
         created() {
@@ -92,15 +141,27 @@
                 this.attribution = this.value.attribution || '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors';
                 this.initialZoom = Number(this.value.initial_zoom) || 5;
                 this.maximumZoom = Number(this.value.maximum_zoom) || 12;
+                this.initialLatitude = Number(this.value.initial_latitude) || -14.4086569;
+                this.initialLongitude = Number(this.value.initial_longitude) || -51.31668;
             }
         },
         methods: {
+            setErrorsAttributes( type, message ){
+                this.initialPositionType = type;
+                this.initialPositionMessage = message;
+            },
+            clear(){
+                this.initialPositionType = '';
+                this.initialPositionMessage = '';
+            },
             emitValues(){
                 this.$emit('update:value',{
                     map_provider: this.mapProvider,
                     attribution: this.attribution,
                     initial_zoom: this.initialZoom,
                     maximum_zoom: this.maximumZoom,
+                    initial_latitude: this.initialLatitude,
+                    initial_longitude: this.initialLongitude,
                 })
             },
         }
