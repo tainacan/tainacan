@@ -1078,12 +1078,6 @@
                 }
             }
 
-            // If any default items per page is set, apply it
-            // 12 is already the default value, se we don't set this value
-            if (this.defaultItemsPerPage != undefined && this.defaultItemsPerPage !== 12 ) {
-                this.$eventBusSearch.setItemsPerPage(this.defaultItemsPerPage, true); 
-            }
-
             for (let key in currentQuery) {
                 if (currentQuery[key] == 'true')
                     currentQuery[key] = true;
@@ -1103,6 +1097,12 @@
                 this.$emitter.on('openAdvancedSearch', (openAdvancedSearch) => {
                     this.openAdvancedSearch = openAdvancedSearch;
                 });
+            }
+
+            // If any default items per page is set, apply it
+            // 12 is already the default value, se we don't set this value
+            if (this.defaultItemsPerPage != undefined && this.defaultItemsPerPage !== 12 ) {
+                this.$eventBusSearch.setItemsPerPage(this.defaultItemsPerPage, true); 
             }
 
             this.$eventBusSearchEmitter.on('isLoadingItems', isLoadingItems => {
