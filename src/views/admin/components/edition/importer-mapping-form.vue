@@ -109,12 +109,7 @@
                                     :key="metadatumIndex"
                                     :value="collectionMetadatum.id"
                                     :disabled="checkIfMetadatumIsAvailable(collectionMetadatum.id) || ( checkIfMetadatumIsCompound(collectionMetadatum) && sourceMetadatum.indexOf('compound|(') < 0 )">
-                                <span class="metadatum-name">
-                                    {{ collectionMetadatum.name }}
-                                </span>
-                                <span class="label-details">  
-                                    ({{ collectionMetadatum.metadata_type_object.name }}) <em>{{ (collectionMetadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
-                                </span>
+                                {{ collectionMetadatum.name }} ({{ collectionMetadatum.metadata_type_object.name }}) {{ (collectionMetadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}
                             </option>
                         </b-select>
                     </template>
@@ -140,12 +135,7 @@
                                     :key="metadatumIndex"
                                     :value="collectionMetadatum.id"
                                     :disabled="!checkIfMetadatumIsCompound(collectionMetadatum) || checkIfMetadatumIsAvailable(collectionMetadatum.id) || typeof sourceMetadatum != 'object' || !Object.entries(sourceMetadatum)[0]">
-                                <span class="metadatum-name">
-                                    {{ collectionMetadatum.name }}
-                                </span>
-                                <span class="label-details">  
-                                    ({{ collectionMetadatum.metadata_type_object.name }}) <em>{{ (collectionMetadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
-                                </span>
+                                {{ collectionMetadatum.name }} ({{ collectionMetadatum.metadata_type_object.name }}) {{ (collectionMetadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}
                             </option>
                         </b-select>
                         <div 
@@ -172,12 +162,7 @@
                                             :key="metadatumIndex"
                                             :value="collectionMetadatum.id"
                                             :disabled="checkIfChildMetadatumIsAvailable(collectionMetadatum.id, checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true), Object.entries(sourceMetadatum)[0][0])">
-                                        <span class="metadatum-name">
-                                            {{ collectionMetadatum.name }}
-                                        </span>
-                                        <span class="label-details">  
-                                            ({{ collectionMetadatum.metadata_type_object.name }}) <em>{{ (collectionMetadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
-                                        </span>
+                                        {{ collectionMetadatum.name }} ({{ collectionMetadatum.metadata_type_object.name }}) {{ (collectionMetadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}
                                     </option>
                                 </b-select>
                             </div>
@@ -327,9 +312,7 @@
                                         v-for="(sourceMetadatum, index) of importerSourceInfo.source_metadata"
                                         :key="index"
                                         :value="index">
-                                    <span class="metadatum-name">
-                                        {{ sourceMetadatum }}
-                                    </span>
+                                    {{ sourceMetadatum }}
                                 </option>
                             </b-select>
                         </b-field>
