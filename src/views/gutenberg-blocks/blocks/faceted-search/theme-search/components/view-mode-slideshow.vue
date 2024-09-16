@@ -136,67 +136,70 @@
                             class="slide-main-content">
 
                         <span 
-                                v-if="isLoadingItem"
+                                v-if="!isSwiperInitialized || isLoading"
                                 class="icon is-large loading-icon">
                             <div class="is-large control has-icons-right is-loading is-clearfix" />
                         </span>
 
-                        <transition 
-                                mode="out-in"
-                                :name="goingRight ? 'slide-right' : 'slide-left'">
-                            
-                            <!-- Empty result placeholder -->
-                            <section
-                                    v-if="!isLoading && !isLoadingItem && items.length <= 0"
-                                    class="section">
-                                <div class="content has-text-gray4 has-text-centered">
-                                    <p>
-                                        <span class="icon is-large">
-                                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-items" />
-                                        </span>
-                                    </p> 
-                                    <p>{{ $i18n.get('info_no_item_found') }}</p>
+                        <template v-else>
+                            <transition 
+                                    mode="out-in"
+                                    :name="goingRight ? 'slide-right' : 'slide-left'">
+                                
+                                <!-- Empty result placeholder -->
+                                <section
+                                        v-if="!isLoadingItem && items.length <= 0"
+                                        class="section">
+                                    <div class="content has-text-gray4 has-text-centered">
+                                        <p>
+                                            <span class="icon is-large">
+                                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-items" />
+                                            </span>
+                                        </p> 
+                                        <p>{{ $i18n.get('info_no_item_found') }}</p>
+                                    </div>
+                                </section>
+
+                            </transition>
+
+                            <transition 
+                                    mode="out-in"
+                                    :name="goingRight ? 'slide-right' : 'slide-left'">
+
+                                <!-- JS-side hook for extra content -->
+                                <div 
+                                        v-if="hasBeforeHook()"
+                                        class="faceted-search-hook faceted-search-hook-item-before"
+                                        v-html="getBeforeHook(item)" />
+                            </transition>
+
+                            <transition 
+                                    mode="out-in"
+                                    :name="goingRight ? 'slide-right' : 'slide-left'">
+                                <div 
+                                        v-if="!isLoadingItem && slideItems.length > 0 && (item.document != undefined && item.document != undefined && item.document != '')"
+                                        v-html="item.document_as_html" />  
+                                <div v-else-if="!isLoadingItem">
+                                    <div class="empty-document">
+                                        <p>{{ $i18n.get('label_document_empty') }}</p>
+                                        <img 
+                                                :alt="$i18n.get('label_document_empty')" 
+                                                :src="$thumbHelper.getEmptyThumbnailPlaceholder(item.document_mimetype)">
+                                    </div>
                                 </div>
-                            </section>
+                            </transition>
 
-                        </transition>
+                            <transition 
+                                    mode="out-in"
+                                    :name="goingRight ? 'slide-right' : 'slide-left'">
+                                <!-- JS-side hook for extra content -->
+                                <div 
+                                        v-if="hasAfterHook()"
+                                        class="faceted-search-hook faceted-search-hook-item-after"
+                                        v-html="getAfterHook(item)" />
+                            </transition>
+                        </template>
 
-                        <transition 
-                                mode="out-in"
-                                :name="goingRight ? 'slide-right' : 'slide-left'">
-
-                            <!-- JS-side hook for extra content -->
-                            <div 
-                                    v-if="hasBeforeHook()"
-                                    class="faceted-search-hook faceted-search-hook-item-before"
-                                    v-html="getBeforeHook(item)" />
-                        </transition>
-
-                        <transition 
-                                mode="out-in"
-                                :name="goingRight ? 'slide-right' : 'slide-left'">
-                            <div 
-                                    v-if="!isLoadingItem && slideItems.length > 0 && (item.document != undefined && item.document != undefined && item.document != '')"
-                                    v-html="item.document_as_html" />  
-                            <div v-else>
-                                <div class="empty-document">
-                                    <p>{{ $i18n.get('label_document_empty') }}</p>
-                                    <img 
-                                            :alt="$i18n.get('label_document_empty')" 
-                                            :src="$thumbHelper.getEmptyThumbnailPlaceholder(item.document_mimetype)">
-                                </div>
-                            </div>
-                        </transition>
-
-                        <transition 
-                                mode="out-in"
-                                :name="goingRight ? 'slide-right' : 'slide-left'">
-                            <!-- JS-side hook for extra content -->
-                            <div 
-                                    v-if="hasAfterHook()"
-                                    class="faceted-search-hook faceted-search-hook-item-after"
-                                    v-html="getAfterHook(item)" />
-                        </transition>
                     </div>
                     
                     <button 
@@ -398,7 +401,8 @@ export default {
             minPage: 1,
             maxPage: 1,
             preloadedItem: {},
-            itemPosition: null
+            itemPosition: null,
+            isSwiperInitialized: false
         }
     },
     computed: {
@@ -431,12 +435,19 @@ export default {
                             }
                         }
                     }
+                    
+                    if ( !this.isSwiperInitialized ) {
+                        this.itemPosition = (this.initialItemPosition != null && this.initialItemPosition != undefined) ? Number(this.initialItemPosition) : 0;
+                        this.isSwiperInitialized = true;
+                        this.moveToClikedSlide(this.itemPosition);
+                    } else {
+                        this.updateSliderBasedOnIndex(updatedSlideIndex);
+                    }
 
                     // Handles pausing auto play when reaches the end of the list.
                     if (updatedSlideIndex == this.slideItems.length - 1 && this.page == this.totalPages)
                         this.isPlaying = false;
                     
-                    this.updateSliderBasedOnIndex(updatedSlideIndex);
                 }
             },
             immediate: true
@@ -455,9 +466,6 @@ export default {
         // Adds keyup and keydown event listeners
         window.addEventListener('keyup', this.handleKeyboardKeys);
 
-        // Passes props to data value of initial position, as we will modify it
-        this.itemPosition = (this.initialItemPosition != null && this.initialItemPosition != undefined) ? this.initialItemPosition : 0;
-
         // Builds Swiper component
         const self = this;
         this.swiper = new Swiper('#tainacan-slide-container', {
@@ -466,9 +474,7 @@ export default {
             preventInteractionOnTransition: true,
             slidesPerView: 24,
             spaceBetween: 12,
-            initialSlide: self.itemPosition,
             centeredSlides: true,
-            centerInsufficientSlides: false,
             slideToClickedSlide: true,
             breakpoints: {
                 320: { slidesPerView: 4 },
@@ -506,14 +512,9 @@ export default {
                 addSlidesAfter: 2
             },
             on: {
-                observerUpdate: function () {
-                    if (self.itemPosition != null && self.itemPosition != undefined) {
-                        this.slideTo(self.itemPosition);
-                        self.itemPosition = null;
-                    }
-                },
                 activeIndexChange: function() {
-                    self.updateSliderBasedOnIndex(this.activeIndex);
+                    if ( self.isSwiperInitialized )
+                        self.updateSliderBasedOnIndex(self.activeIndex);
                 }
             },
             modules: [Navigation, Virtual, Mousewheel]
@@ -541,8 +542,8 @@ export default {
             'replaceItem'
         ]),
         setMaxAndMinPages () {
-            this.minPage = JSON.parse(JSON.stringify(this.getPage() < this.minPage ? this.getPage() : this.minPage));
-            this.maxPage = JSON.parse(JSON.stringify(this.getPage() > this.maxPage ? this.getPage() : this.maxPage));
+            this.minPage = JSON.parse(JSON.stringify(this.page < this.minPage ? this.page : this.minPage));
+            this.maxPage = JSON.parse(JSON.stringify(this.page > this.maxPage ? this.page : this.maxPage));
         },
         onHideControls() {
             this.hideControls = !this.hideControls;
@@ -615,7 +616,7 @@ export default {
             }
         },
         loadCurrentItem() {
-            if ((this.slideItems && this.slideItems[this.swiper.activeIndex] && this.slideItems[this.swiper.activeIndex].id != undefined)) {
+            if (this.slideItems && this.slideItems[this.swiper.activeIndex] && this.slideItems[this.swiper.activeIndex].id != undefined) {
 
                 this.isLoadingItem = true;
 
