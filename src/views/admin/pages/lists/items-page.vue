@@ -1628,6 +1628,7 @@
         }
 
         .search-control-item {
+            max-width: 100%;
             display: inline-block;
             margin-bottom: 12px;
             margin-right: auto;
