@@ -1078,12 +1078,6 @@
                 }
             }
 
-            // If any default items per page is set, apply it
-            // 12 is already the default value, se we don't set this value
-            if (this.defaultItemsPerPage != undefined && this.defaultItemsPerPage !== 12 ) {
-                this.$eventBusSearch.setItemsPerPage(this.defaultItemsPerPage, true); 
-            }
-
             for (let key in currentQuery) {
                 if (currentQuery[key] == 'true')
                     currentQuery[key] = true;
@@ -1103,6 +1097,12 @@
                 this.$emitter.on('openAdvancedSearch', (openAdvancedSearch) => {
                     this.openAdvancedSearch = openAdvancedSearch;
                 });
+            }
+
+            // If any default items per page is set, apply it
+            // 12 is already the default value, se we don't set this value
+            if (this.defaultItemsPerPage != undefined && this.defaultItemsPerPage !== 12 ) {
+                this.$eventBusSearch.setItemsPerPage(this.defaultItemsPerPage, true); 
             }
 
             this.$eventBusSearchEmitter.on('isLoadingItems', isLoadingItems => {
@@ -1959,6 +1959,7 @@
             font-size: 1em;
         }
         .search-control-item {
+            max-width: 100%;
             display: inline-block;
             margin-bottom: 12px;
             margin-right: auto;
@@ -2054,6 +2055,7 @@
                     }
                     .dropdown-item span{
                         vertical-align: middle;
+                        display: inline-block;
                     }      
                     .dropdown-item-apply {
                         width: 100%;
@@ -2124,6 +2126,17 @@
 
             &#tainacanFiltersButton.is-filters-modal-active .gray-icon i::before {
                 color: var(--tainacan-secondary) !important;
+            }
+
+            #tainacanSortByDropdown .dropdown-trigger .button > span {
+                max-width: 120px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+            @media screen and (min-width: 1000px) {
+                #tainacanSortByDropdown .dropdown-trigger .button > span {
+                    max-width: 180px;
+                }
             }
         }
     }
