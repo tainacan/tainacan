@@ -107,10 +107,14 @@ export default {
             this.$emit('blur');
         },
         loadCurrentUsers() {
-            if ((Array.isArray(this.itemMetadatum.value) && this.itemMetadatum.value.length) || (!Array.isArray(this.itemMetadatum.value) && this.itemMetadatum.value)) {
+            if (
+                (Array.isArray(this.itemMetadatum.value) && this.itemMetadatum.value.length) ||
+                (!Array.isArray(this.itemMetadatum.value) && this.itemMetadatum.value)
+            ) {
                 
                 this.isLoading = true;
-                let query = qs.stringify({ include: this.itemMetadatum.value });
+                let perPage = isNaN(this.itemMetadatum.value) ? this.itemMetadatum.value.length + 1 : 100;
+                let query = qs.stringify({ include: this.itemMetadatum.value, per_page: perPage });
                 let endpoint = '/users/';
                 
                 wpApi.get(endpoint + '?' + query)
