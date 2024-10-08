@@ -168,6 +168,10 @@ export default {
 
             label {
                 margin-left: 12px;
+
+                :deep(.control-label) {
+                    white-space: normal;
+                }
             }
         }
         @media screen and (max-width: 1024px) {
