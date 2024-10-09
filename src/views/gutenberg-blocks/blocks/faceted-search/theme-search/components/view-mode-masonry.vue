@@ -102,7 +102,7 @@ export default {
     data () {
         return {
             masonry: false,
-            shouldUseLegacyMasonyCols: false
+            shouldUseLegacyMasonyCols: false,
         }
     },
     watch: {
@@ -121,6 +121,13 @@ export default {
                         });
                     });
                 }
+            },
+            immediate: true
+        },
+        isFiltersMenuCompressed: {
+            handler() {
+                if (this.masonry !== false)
+                    this.masonry.layout();
             },
             immediate: true
         }
