@@ -1385,9 +1385,9 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 				$grandparent = get_term($tainacan_parent_term->get_parent());
 				$tainacan_grandparent_term = new Entities\Term( $grandparent );
 				
-				$content .= '<a href="' . add_query_arg( 'termsparent', $tainacan_parent_term->get_parent() ) . '">' . __('Return to the list of terms children of ', 'tainacan') . '<em>' . $tainacan_grandparent_term->get_name() . '</em>.</a>';
+				$content .= '<a href="' . esc_url( add_query_arg( 'termsparent', $tainacan_parent_term->get_parent() ) ) . '">' . __('Return to the list of terms children of ', 'tainacan') . '<em>' . $tainacan_grandparent_term->get_name() . '</em>.</a>';
 			} else
-				$content .= '<a href="' . remove_query_arg( 'termsparent' ) . '">' . __('Return to the terms list.', 'tainacan') . '</a>';
+				$content .= '<a href="' . esc_url( remove_query_arg( 'termsparent' ) ) . '">' . __('Return to the terms list.', 'tainacan') . '</a>';
 
 			$content .= '</p></div>';
 		}
@@ -1458,7 +1458,7 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 				$total_children = is_array($total_children) && count($total_children) ? count($total_children) : 0;
 
 				if ( $total_children ) {
-					echo $args['before_term_children_link'] . '<a href="' . add_query_arg( 'termsparent', $tainacan_term->get_id() ) . '">';
+					echo $args['before_term_children_link'] . '<a href="' . esc_url( add_query_arg( 'termsparent', $tainacan_term->get_id() ) ) . '">';
 					
 					if ( !$args['hide_term_children_count'] && $args['term_children_count_position'] === 'before' )
 						echo '<span class="term-children-count">' . $total_children . '</span>&nbsp;';
@@ -1548,10 +1548,10 @@ function tainacan_get_taxonomies_orderby($args = []) {
 						id="tainacan-taxonomy-order-select"
 						name="order"
 						onchange="location = this.value;">
-					<option value="<?php echo add_query_arg( 'order', 'ASC' ); ?>" <?php echo $current_args['order'] == 'ASC' ? 'selected' : ''; ?>>
+					<option value="<?php echo esc_url( add_query_arg( 'order', 'ASC' ) ); ?>" <?php echo $current_args['order'] == 'ASC' ? 'selected' : ''; ?>>
 						<?php _e( 'Ascending', 'tainacan' ); ?>
 					</option>
-					<option value="<?php echo add_query_arg( 'order', 'DESC' ); ?>" <?php echo $current_args['order'] == 'DESC' ? 'selected' : ''; ?>>
+					<option value="<?php echo esc_url( add_query_arg( 'order', 'DESC' ) ); ?>" <?php echo $current_args['order'] == 'DESC' ? 'selected' : ''; ?>>
 						<?php _e( 'Descending', 'tainacan' ); ?>
 					</option>
 				</select>
@@ -1567,10 +1567,10 @@ function tainacan_get_taxonomies_orderby($args = []) {
 						id="tainacan-taxonomy-orderby-select"
 						name="orderby"
 						onchange="location = this.value;">
-					<option value="<?php echo add_query_arg( 'orderby', 'name' ); ?>" <?php echo $current_args['orderby'] == 'name' ? 'selected' : ''; ?>>
+					<option value="<?php echo esc_url( add_query_arg( 'orderby', 'name' ) ); ?>" <?php echo $current_args['orderby'] == 'name' ? 'selected' : ''; ?>>
 						<?php _e( 'Name', 'tainacan' ); ?>
 					</option>
-					<option value="<?php echo add_query_arg( 'orderby', 'count' ); ?>" <?php echo $current_args['orderby'] == 'count'? 'selected' : ''; ?>>
+					<option value="<?php echo esc_url( add_query_arg( 'orderby', 'count' ) ); ?>" <?php echo $current_args['orderby'] == 'count'? 'selected' : ''; ?>>
 						<?php _e( 'Amount of items', 'tainacan' ); ?>
 					</option>
 				</select>
