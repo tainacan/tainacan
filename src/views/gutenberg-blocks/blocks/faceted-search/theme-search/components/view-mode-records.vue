@@ -176,6 +176,13 @@ export default {
                 }
             },
             immediate: true
+        },
+        isFiltersMenuCompressed: {
+            handler() {
+                if (this.masonry !== false)
+                    this.masonry.layout();
+            },
+            immediate: true
         }
     },
     beforeUnmount() {
