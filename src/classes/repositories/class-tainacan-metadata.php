@@ -344,7 +344,7 @@ class Metadata extends Repository {
 	 * @return Entities\Metadatum|\WP_Query|Array an instance of wp query OR array of entities;
 	 * @throws \Exception
 	 */
-	public function fetch( $args, $output = null ) {
+	public function fetch( $args = [], $output = null ) {
 
 		if ( is_numeric( $args ) ) {
 			$existing_post = get_post( $args );
