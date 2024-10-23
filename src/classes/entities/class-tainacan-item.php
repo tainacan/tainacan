@@ -84,7 +84,7 @@ class Item extends Entity {
 	function get_attachments($exclude = null){
 		$item_id = $this->get_id();
 
-		if(!$exclude){
+		if (!$exclude) {
 			$to_exclude = [get_post_thumbnail_id( $item_id )];
 			if ($this->get_document_type() == 'attachment') {
 				$to_exclude[] = $this->get_document();
@@ -94,7 +94,7 @@ class Item extends Entity {
 		}
 
 		$attachments_query = [
-			'orderby'			=> 'menu_order',
+			'orderby'			=> 'menu_order title ID',
 			'order' 			=> 'ASC',
 			'post_type'     	=> 'attachment',
 			'posts_per_page' 	=> -1,
