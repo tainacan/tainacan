@@ -30,7 +30,7 @@ export default {
 						}),
 						autoSelect: true,
 						sortable: true,
-						filterable: 'unattached',
+						filterable: false,
 					})
 				]
 			}).open();
