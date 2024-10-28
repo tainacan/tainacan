@@ -138,7 +138,7 @@
                 
                 <!-- In case we do not want to show status, just an update button -->
                 <button 
-                        v-else
+                        v-else-if="!isOnSequenceEdit"
                         :disabled="hasSomeError && (status == 'publish' || status == 'private')"
                         type="button"
                         class="button"
@@ -154,12 +154,12 @@
 
             <!-- Sequence edition Next button if user cannot publish (only goes to next, without changing status) -->
             <button 
-                    v-if="!currentUserCanPublish && isOnSequenceEdit && hasNextItemOnSequenceEdit"
+                    v-if="(!currentUserCanPublish || !$adminOptions.itemEditionStatusOptionOnFooterDropdown) && isOnSequenceEdit && hasNextItemOnSequenceEdit"
                     :disabled="(status == 'publish' || status == 'private') && hasSomeError"
                     type="button"
                     class="button is-success"
                     @click="$emit('on-next-in-sequence')">
-                <span>{{ $i18n.get('label_next') }}</span>
+                <span>{{ $i18n.get('next') }}</span>
                 <span class="icon is-large">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next" />
                 </span>

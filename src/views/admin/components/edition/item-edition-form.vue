@@ -737,7 +737,7 @@
                     :collection-id="form.collectionId"
                     :is-on-sequence-edit="isOnSequenceEdit"
                     :is-current-item-on-sequence-edit="(group != null && group.items_count != undefined && group.items_count == itemPosition)"
-                    :has-next-item-on-sequence-edit="(group != null && group.items_count != undefined && group.items_count < itemPosition)"
+                    :has-next-item-on-sequence-edit="(group != null && group.items_count != undefined && group.items_count > itemPosition)"
                     :has-previous-item-on-sequence-edit="itemPosition > 1"
                     :is-mobile-screen="isMobileScreen"
                     :has-some-error="formErrorMessage != undefined && formErrorMessage != ''"
