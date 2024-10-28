@@ -76,11 +76,11 @@
                                 @click="!$adminOptions.mobileAppMode && !isMobileScreen ? $emit(
                                     'on-submit',
                                     ( currentUserCanPublish && !$adminOptions.hideItemEditionStatusPublishOption ) ? status : 'draft',
-                                    ( (isOnSequenceEdit && !isCurrentItemOnSequenceEdit) ? 'next' : null)
+                                    ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                                 ) : ($refs && $refs['item-edition-footer-dropdown'] && !$refs['item-edition-footer-dropdown'].isActive ? $refs['item-edition-footer-dropdown'].toggle() : null)">
                             {{ $i18n.get('label_update') }}
                             <span 
-                                    v-if="isOnSequenceEdit && !isCurrentItemOnSequenceEdit"
+                                    v-if="isOnSequenceEdit && !isLastItemOnSequenceEdit"
                                     class="icon is-large"
                                     style="margin-left: 0em;">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next" />
@@ -100,7 +100,7 @@
                             @click="$emit(
                                 'on-submit',
                                 'draft',
-                                ( (isOnSequenceEdit && !isCurrentItemOnSequenceEdit) ? 'next' : null)
+                                ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                             )">
                         <span class="icon has-text-gray4">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-draft" />
@@ -114,7 +114,7 @@
                             @click="$emit(
                                 'on-submit',
                                 'private',
-                                ( (isOnSequenceEdit && !isCurrentItemOnSequenceEdit) ? 'next' : null)
+                                ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                             )">
                         <span class="icon has-text-gray4">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-private" />
@@ -127,7 +127,7 @@
                             @click="$emit(
                                 'on-submit',
                                 'publish',
-                                ( (isOnSequenceEdit && !isCurrentItemOnSequenceEdit) ? 'next' : null)
+                                ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                             )">
                         <span class="icon has-text-gray4">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-public" />
@@ -167,9 +167,9 @@
 
             <!-- Sequence edition Finish -->
             <button 
-                    v-if="isOnSequenceEdit && isCurrentItemOnSequenceEdit"
+                    v-if="isOnSequenceEdit && isLastItemOnSequenceEdit"
                     type="button"
-                    class="button sequence-button"
+                    class="button sequence-button is-success"
                     @click="$router.push($routerHelper.getCollectionPath(collectionId))">
                 <span class="icon is-large">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approved" />
@@ -190,7 +190,7 @@ export default {
         status: String,
         collectionId: [Number, String],
         isOnSequenceEdit: Boolean,
-        isCurrentItemOnSequenceEdit: Boolean,
+        isLastItemOnSequenceEdit: Boolean,
         hasNextItemOnSequenceEdit: Boolean,
         hasPreviousItemOnSequenceEdit: Boolean,
         isMobileScreen: Boolean,
