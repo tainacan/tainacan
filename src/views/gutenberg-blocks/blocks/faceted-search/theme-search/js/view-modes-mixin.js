@@ -18,9 +18,9 @@ export const viewModesMixin = {
         },
         isLoading: false,
         totalItems: Number,
-        isFiltersMenuCompressed: Boolean,
         enabledViewModes: Array,
-        containerId: String
+        containerId: String,
+        filtersModalStateHasChanged: false
     },
     computed: {
         queries() {
