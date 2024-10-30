@@ -177,7 +177,7 @@ export default {
             },
             immediate: true
         },
-        isFiltersMenuCompressed: {
+        filtersModalStateHasChanged: {
             handler() {
                 if (this.masonry !== false)
                     this.masonry.layout();
