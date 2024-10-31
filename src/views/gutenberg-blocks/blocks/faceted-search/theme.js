@@ -81,8 +81,12 @@ export default (element) => {
 
             // At first, we consider that all registered view modes are included.
             let possibleViewModes = registeredViewModes;
-            if ( getDataAttribute(blockElement, 'enabled-view-modes') != undefined )
+            if ( getDataAttribute(blockElement, 'enabled-view-modes') != undefined ) {
                 possibleViewModes = getDataAttribute(blockElement, 'enabled-view-modes').split(',');
+
+                // Filter out the view modes that are not registered
+                possibleViewModes = possibleViewModes.filter(viewModeSlug => registeredViewModes.indexOf(viewModeSlug) >= 0);
+            }
 
             // View Mode settings
             let possibleDefaultViewMode = 'masonry';
