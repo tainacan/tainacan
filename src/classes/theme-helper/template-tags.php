@@ -698,7 +698,7 @@ function tainacan_is_view_mode_enabled($view_mode_slug) {
 	 *     @type bool 	$hide_hide_filters_button					Hides the button resonsible for collpasing filters sidebar on desktop
 	 *     @type bool 	$hide_search								Hides the complete search bar, including advanced search link
 	 *     @type bool 	$hide_advanced_search						Hides only the advanced search link
-	 *     @type bool	$hide_displayed_metadata_dropdown			Hides the "Displayed metadata" dropdown even if the current view modes allows it	
+	 *     @type bool	$hide_displayed_metadata_button			Hides the "Displayed metadata" dropdown even if the current view modes allows it	
 	 *     @type bool	$hide_sorting_area							Completely hides all sorting controls	
 	 *     @type bool 	$hide_sort_by_button						Hides the button where user can select the metadata to sort by items (keeps the sort direction)
 	 *     @type bool 	$hide_items_thumbnail						Forces the thumbnail to be hiden on every listing. This setting also disables view modes that contain the 'requires-thumbnail' attr. By default is false or inherited from collection setting
