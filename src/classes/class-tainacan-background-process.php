@@ -454,6 +454,8 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 		
 		$filepath = $logs_folder . '/' . $filename;
 		
+		\ob_clean();
+		\flush();
 		file_put_contents($filepath, $this->recursive_stingify_log_array($log), FILE_APPEND);
 		
 		//$fh = fopen($filepath, 'a');
