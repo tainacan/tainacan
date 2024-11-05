@@ -366,14 +366,14 @@
         </div>
 
         <!-- Theme Full Screen mode, it's just a special view mode -->
-        <div 
-                id="tainacanFullScreenViewMode"
-                class="search-control-item search-control-item--full-screen-view-mode">
-            <template 
-                    v-for="(viewModeOption, index) of enabledViewModes"
-                    :key="index">
+        <template 
+                v-for="(viewModeOption, index) of enabledViewModes"
+                :key="index">
+            <div 
+                    v-if="!showFullscreenWithViewModes && registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == true"
+                    id="tainacanFullScreenViewMode"
+                    class="search-control-item search-control-item--full-screen-view-mode">
                 <button 
-                        v-if="!showFullscreenWithViewModes && registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == true"
                         class="button is-white"
                         :aria-label="$i18n.get('label_slides')"
                         :value="viewModeOption"
@@ -383,8 +383,8 @@
                             v-html="registeredViewModes[viewModeOption].icon" />
                     <span class="is-hidden-tablet-only">{{ registeredViewModes[viewModeOption].label }}</span>
                 </button>
-            </template>
-        </div>
+            </div>
+        </template>
 
         <!-- Exposers or alternative links modal button -->
         <div 
