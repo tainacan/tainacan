@@ -64,14 +64,10 @@ class Media {
 		if (isset($headers['content-disposition'])) {
 			if (preg_match('/filename="([^"]+)"/', $headers['content-disposition'], $matches)) {
 				$fileName = $matches[1];
+				return $fileName;
 			}
 		}
-	
-		if (!$fileName) {
-			$fileName = basename($path);
-		}
-	
-		return $fileName;
+		return basename($path);
 	}
 
 	/**
