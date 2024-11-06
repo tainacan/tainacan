@@ -669,7 +669,7 @@
                 margin-bottom: 1em !important;
             }
             .tainacan-form {
-                margin-bottom: 0.125em !important;
+                margin-bottom: 1.125em !important;
             }
             .column {
                 padding: 0;
