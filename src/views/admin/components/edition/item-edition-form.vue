@@ -1280,17 +1280,7 @@ export default {
             })
             .catch((errors) => {
                 
-                if (errors.errors) {
-                    for (let error of errors.errors) {
-                        for (let metadatum of Object.keys(error)){
-                            this.errors.push({ 
-                                metadatum_id: metadatum,
-                                errors: error[metadatum]
-                            });
-                        }   
-                    }
-                    this.formErrorMessage = errors.error_message;
-                }
+                this.prepareErrors(errors);
                 this.form.status = previousStatus;
                 this.item.status = previousStatus;
 
@@ -1527,16 +1517,7 @@ export default {
                     this.isLoading = false;
                 })
                 .catch((errors) => {
-                    for (let error of errors.errors) {
-                        for (let metadatum of Object.keys(error)){
-                            this.errors.push({ 
-                                metadatum_id: metadatum, 
-                                errors: error[metadatum]
-                            });
-                        }
-                    }
-                    this.formErrorMessage = errors.error_message;
-
+                    this.prepareErrors(errors);
                     this.isLoading = false;
                 });
         },
@@ -1610,16 +1591,7 @@ export default {
                     }
                 })
                 .catch((errors) => {
-                    for (let error of errors.errors) {
-                        for (let metadatum of Object.keys(error)){
-                            this.errors.push({ 
-                                metadatum_id: metadatum, 
-                                errors: error[metadatum]
-                            });
-                        }
-                    }
-                    this.formErrorMessage = errors.error_message;
-
+                    this.prepareErrors(errors);
                     this.isLoading = false;
                 });
         },
@@ -1638,15 +1610,7 @@ export default {
                 this.shouldLoadAttachments = !this.shouldLoadAttachments;
             })
             .catch((errors) => {
-                for (let error of errors.errors) {
-                    for (let metadatum of Object.keys(error)){
-                        this.errors.push({
-                            metadatum_id: metadatum,
-                            errors: error[metadatum]
-                        });
-                    }
-                }
-                this.formErrorMessage = errors.error_message;
+                this.prepareErrors(errors);
             });
         },
         deleteThumbnail() {
@@ -1698,29 +1662,24 @@ export default {
                         this.form.document = file.id + '';
                         
                         this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
-                        .then((item) => {
-                            this.isLoading = false;
-                            this.item.document_as_html = item.document_as_html;
-                            this.item.document_mimetype = item.document_mimetype;
+                            .then((item) => {
+                                this.isLoading = false;
+                                this.item.document_as_html = item.document_as_html;
+                                this.item.document_mimetype = item.document_mimetype;
 
-                            let oldThumbnail = this.item.thumbnail;
-                            if (item.document_type == 'attachment' && oldThumbnail != item.thumbnail ) {
-                                this.item.thumbnail = item.thumbnail;
-                                this.item.thumbnail_id = item.thumbnail_id;
-                            }
-
-                            this.shouldLoadAttachments = !this.shouldLoadAttachments;
-
-                        })
-                        .catch((errors) => {
-                            for (let error of errors.errors) {
-                                for (let metadatum of Object.keys(error)){
-                                    this.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                                let oldThumbnail = this.item.thumbnail;
+                                if (item.document_type == 'attachment' && oldThumbnail != item.thumbnail ) {
+                                    this.item.thumbnail = item.thumbnail;
+                                    this.item.thumbnail_id = item.thumbnail_id;
                                 }
-                            }
-                            this.formErrorMessage = errors.error_message;
-                            this.isLoading = false;
-                        });
+
+                                this.shouldLoadAttachments = !this.shouldLoadAttachments;
+
+                            })
+                            .catch((errors) => {
+                                this.prepareErrors(errors);
+                                this.isLoading = false;
+                            });
                     }
                 }
             );
@@ -2024,6 +1983,39 @@ export default {
             }
 
             return enabledMetadata.indexOf(metadatum.id);
+        },
+        prepareErrors(errors) {
+            if ( errors.errors ) {
+                for (let error of errors.errors) {
+                    for (let metadatumId of Object.keys(error)) {
+
+                        let parentCompoundId = false;
+
+                        for (let itemMetadatum of this.itemMetadata) {
+                            
+                            if (
+                                itemMetadatum.metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Compound' &&
+                                itemMetadatum.metadatum.metadata_type_options &&
+                                itemMetadatum.metadatum.metadata_type_options.children_objects
+                            ) {
+
+                                for (let childMetadatum of itemMetadatum.metadatum.metadata_type_options.children_objects) {
+                                    if ( childMetadatum.id == metadatumId ) {
+                                        parentCompoundId = itemMetadatum.metadatum.id;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        
+                        this.errors.push({
+                            metadatum_id: parentCompoundId ? parentCompoundId : metadatumId,
+                            errors: error[metadatumId]
+                        });
+                    }   
+                }
+                this.formErrorMessage = errors.error_message;
+            }
         }
     }
 }
