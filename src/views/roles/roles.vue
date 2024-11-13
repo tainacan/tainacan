@@ -17,7 +17,6 @@
         overflow-x: hidden;
     }
     #tainacan-roles-app {
-        margin-top: 42px;
         a:hover {
             cursor: pointer;
         }

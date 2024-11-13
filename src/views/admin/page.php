@@ -13,4 +13,4 @@
             'data-options' => true
         ]
     ];
-    echo wp_kses( "<div id='tainacan-admin-app' data-module='admin' data-options='$admin_options'></div>", $allowed_html );
+    echo wp_kses( "<div id='tainacan-admin-app' class='tainacan-page-container-content' data-module='admin' data-options='$admin_options'></div>", $allowed_html );

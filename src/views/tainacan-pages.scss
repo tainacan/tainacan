@@ -131,4 +131,18 @@
             }
         }
     }
+
+    .tainacan-page-container-content {
+        background-color: var(--tainacan-background-color);
+        border-radius: var(--tainacan-page-container-border-radius, 16px) var(--tainacan-page-container-border-radius, 16px) 0 0;
+        margin-top: var(--tainacan-page-container-margin-top, 3rem);
+        margin-left: var(--tainacan-page-container-margin-x, 1rem);
+        margin-right: var(--tainacan-page-container-margin-x, 1rem);
+        padding: var(--tainacan-page-container-padding-y, 1rem) var(--tainacan-page-container-padding-x, 2rem);
+        box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px #01295C33 );
+
+        & > .wrap {
+            margin: 0;
+        }
+    }
 }

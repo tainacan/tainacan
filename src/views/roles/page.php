@@ -7,4 +7,4 @@
             'data-module' => true
         ]
     ];
-    echo wp_kses( "<div id='tainacan-roles-app' data-module='roles'></div>", $allowed_html );
+    echo wp_kses( "<div id='tainacan-roles-app' class='tainacan-page-container-content' data-module='roles'></div>", $allowed_html );

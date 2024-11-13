@@ -25,7 +25,6 @@ class Dashboard extends Pages {
 		global $TAINACAN_BASE_URL;
 		wp_admin_css( 'dashboard' );
 		wp_enqueue_style( 'tainacan-dashboard-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-dashboard.css', [], TAINACAN_VERSION );
-		wp_enqueue_style( 'roboto-fonts', 'https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i', [] );
 	}
 
 	function admin_enqueue_js() {

@@ -53,6 +53,7 @@ abstract class Pages {
 	 */
 	function load_page() {
 		add_filter( 'admin_body_class', array( &$this, 'admin_body_class' ) );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_fonts' ), 90 );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_css' ), 90 );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_js' ), 90 );
 	}
@@ -76,6 +77,15 @@ abstract class Pages {
 	 * @return void
 	 */
 	function admin_enqueue_css() {}
+
+	/**
+	 * admin_enqueue_fonts is called from the 'admin_enqueue_scripts' action only when the page is loaded and should
+	 * enqueue the page's fonts using wp_enqueue_script(). This is a default implementation that enqueues the Roboto
+	 * as most pages will use this typography
+	 */
+	function admin_enqueue_fonts() {
+		wp_enqueue_style( 'roboto-fonts', 'https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i', [] );
+	}
 	
 	/**
 	 * admin_enqueue_js is called from the 'admin_enqueue_scripts' action only when the page is loaded and should
