@@ -6,6 +6,7 @@ namespace Tainacan;
  * Pages is an abstract base class for all Tainacan admin pages.
  */
 abstract class Pages {
+	use \Tainacan\Traits\SVG_Icon;
 
 	/**
 	 * $tainacan_root_menu_slug is the root menu slug for Tainacan admin pages.
@@ -17,7 +18,7 @@ abstract class Pages {
 	 * $tainacan_other_links_slug is menu slug for the "Others" menu collapse
 	 * @var string
 	 */
-	public $other_links_slug = 'tainacan_other_links';
+	public $tainacan_other_links_slug = 'tainacan_other_links';
 	
 	/**
 	 * Class construtor, never called directly but used to invoke the init method.
@@ -292,9 +293,9 @@ abstract class Pages {
 	/**
 	 * render_navigation_menu creates the aside navigation menu for the Tainacan admin pages.
 	 * 
-	 * Internally, it loops through the submenu global variable to render the menu items. All submenu registered with
-	 * the $tainacan_root_menu_slug are considered root links and are rendered as strong tags. They may or may not contain
-	 * links and submenu items of their slug are rendered as ul/li tags.
+	 * Internally, it loops through the submenu global variable to render the menu items.
+	 * All submenu registered with the $tainacan_root_menu_slug are considered root links.
+	 * They may or may not contain links and submenu items of their slug are rendered as ul/li tags.
 	 *
 	 * @return void
 	 */
@@ -324,11 +325,15 @@ abstract class Pages {
 								src="<?php echo plugin_dir_url( __DIR__ ) . '/assets/images/tainacan_logo_header.svg'; ?>" />
 						</a>
 					</h1>
+					<span class="plugin-version">
+						<?php echo TAINACAN_VERSION; ?>
+					</span>
 				</header>
 				<ul id="tainacan-root-menu">
 					<li>
 						<a href="admin.php?page=tainacan_dashboard" <?php echo $current_page_slug === 'toplevel_page_tainacan_dashboard' ? 'aria-current="page"' : ''; ?>>
-							<?php _e('Home', 'tainacan'); ?>
+							<span class="icon"><?php echo $this->get_svg_icon( 'home', 'var(--tainacan-gray5)', 20 ); ?></span>
+							<span class="menu-text"><?php _e('Home', 'tainacan'); ?></span>
 						</a>
 					</li>
 					<?php
@@ -342,7 +347,7 @@ abstract class Pages {
 								if ( isset( $submenu[$tainacan_root_link[2]] ) ) : ?>
 
 									<li class="menu-item-has-children <?php echo $current_page_parent === $tainacan_root_link[2] ? 'is-open' : ''; ?>">
-										<button type="button" aria-expanded="<?php echo $current_page_parent === $tainacan_root_link[2] ?>"><strong><?php echo $tainacan_root_link[0]; ?></strong></button>
+										<button type="button" aria-expanded="<?php echo $current_page_parent === $tainacan_root_link[2] ?>"><?php echo $tainacan_root_link[0]; ?></button>
 										
 										<?php if ( count( $submenu[$tainacan_root_link[2]] ) ) : ?>
 											<ul id="<?php echo $tainacan_root_link[2]; ?>">
@@ -359,7 +364,7 @@ abstract class Pages {
 
 								<?php else : ?>
 									<li>
-										<a href="<?php echo $tainacan_root_link[1]; ?>"  <?php echo $current_page_slug === 'admin_page_' . $tainacan_root_link[1] ? 'aria-current="page"' : ''; ?>><strong><?php echo $tainacan_root_link[0]; ?></strong></a>
+										<a href="<?php echo $tainacan_root_link[1]; ?>"  <?php echo $current_page_slug === 'admin_page_' . $tainacan_root_link[1] ? 'aria-current="page"' : ''; ?>><?php echo $tainacan_root_link[0]; ?></a>
 									</li>
 								<?php endif; 
 							}
