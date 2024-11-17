@@ -67,7 +67,7 @@ class Media {
 				return $fileName;
 			}
 		}
-		return basename($path);
+		return basename($url);
 	}
 
 	/**
