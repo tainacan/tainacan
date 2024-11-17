@@ -203,6 +203,7 @@ class Private_Files {
 			$file_path = \str_replace( '/', $this->dir_separator, str_replace($base_upload_url, '', $requested_uri) );
 
 			$file = urldecode($upload_dir['basedir'] . $file_path);
+			$file = strtok($file, '?'); // clear request parameters, preventing files from not found
 
 			$existing_file = false;
 
