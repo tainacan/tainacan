@@ -563,7 +563,7 @@ class Bulk_Edit_Process extends Generic_Process {
 	private function set_author_id( \Tainacan\Entities\Item $item) {
 		$value = $this->bulk_edit_data['value'];
 
-		$user = get_user_by( 'id', $value )
+		$user = get_user_by( 'id', $value );
 		if ( $user == false ) {
 			$this->add_error_log( __( "Invalid author id. Please verify confirm that the user exists.", 'tainacan' ) );
 			return false;

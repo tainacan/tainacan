@@ -309,6 +309,7 @@ export default {
                     message: this.$i18n.get('info_editing_publication_authorship') + ' <br><br><strong>' + this.$i18n.getWithVariables( 'info_change_author_from_%s_to_%s', [ this.item.author_name,nextAuthor.name ] ) + '<strong>',
                     onConfirm: () => {
                         this.$emit('on-update-item-author', nextAuthor.id);
+                        this.usersSearch = nextAuthor.name;
                     }
                 },
                 trapFocus: true,

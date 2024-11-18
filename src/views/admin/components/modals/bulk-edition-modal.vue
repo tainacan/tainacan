@@ -160,8 +160,9 @@
                                             icon="account"
                                             :disabled="bulkEditionProcedures[criterion].isDone"
                                             check-infinite-scroll
-                                            @update:model-value="($event) => addToBulkEditionProcedures($event, 'newValue', criterion)"
-                                            @focus.once="($event) => fetchUsersForAuthor($event.target.value)"
+                                            @update:model-value="($event) => fetchUsersForAuthor($event)"
+                                            @focus.once="fetchMoreUsersForAuthor"
+                                            @select="($event) => addToBulkEditionProcedures($event.id, 'newValue', criterion)"
                                             @infinite-scroll="fetchMoreUsersForAuthor">
                                         <template #default="props">
                                             <div class="media">
