@@ -58,6 +58,10 @@ class CSV extends Importer {
 							$this->set_option('item_id_index', $index);
 						} else if ( $rawColumn === 'special_comment_status' ) {
 							$this->set_option('item_comment_status_index', $index);
+						} else if ( $rawColumn === 'special_item_author' ) {
+							$this->set_option('item_author_id_index', $index);
+						} else if ( $rawColumn === 'special_item_slug' ) {
+							$this->set_option('special_item_slug_index', $index);
 						}
 					} else {
 						if ( preg_match ('/.*\|compound\(.*\)/', $rawColumn ) ) {
@@ -88,7 +92,12 @@ class CSV extends Importer {
 			if ( $rawColumns ) {
 				foreach( $rawColumns as $index => $rawColumn ) {
 					if ( strpos($rawColumn,'special_') === 0 ) {
-						if ( in_array( $rawColumn, ['special_document', 'special_attachments', 'special_item_status', 'special_item_id', 'special_comment_status', 'special_attachments|APPEND', 'special_attachments|REPLACE', 'special_document|REPLACE'] ) ) {
+						if ( in_array( $rawColumn, [
+							'special_document', 'special_attachments', 'special_item_status',
+							'special_item_id', 'special_comment_status', 'special_attachments|APPEND',
+							'special_attachments|REPLACE', 'special_document|REPLACE',
+							'special_item_author', 'special_item_slug'
+						] ) ) {
 							$columns[] = $rawColumn;
 						}
 					}
@@ -229,6 +238,8 @@ class CSV extends Importer {
 		if ( !empty( $this->get_option('document_index') ) ) $processedItem['special_document'] = '';
 		if ( !empty( $this->get_option('attachment_index') ) ) $processedItem['special_attachments'] = '';
 		if ( !empty( $this->get_option('item_status_index') ) ) $processedItem['special_item_status'] = '';
+		if ( !empty( $this->get_option('item_author_id_index') ) ) $processedItem['special_item_author'] = '';
+		if ( !empty( $this->get_option('special_item_slug_index') ) ) $processedItem['special_item_slug'] = '';
 		if ( !empty( $this->get_option('item_comment_status_index') ) ) $processedItem['special_comment_status'] = '';
 
 		$this->add_log('Success processing index: ' . $index  );
@@ -242,9 +253,14 @@ class CSV extends Importer {
 		$column_document = $this->get_option('document_index');
 		$column_attachment = $this->get_option('attachment_index');
 		$column_item_status = $this->get_option('item_status_index');
+		$column_item_slug = $this->get_option('special_item_slug_index');
+		$column_item_author_id = $this->get_option('item_author_id_index');
 		$column_item_comment_status = $this->get_option('item_comment_status_index');
 
-		if ( !empty($column_document) || !empty( $column_attachment ) || !empty( $column_item_status ) ){
+		if ( !empty($column_document) || !empty( $column_attachment ) || 
+			 !empty( $column_item_status ) || !empty( $column_item_comment_status ) ||
+			 !empty( $column_item_slug ) || !empty( $column_item_author_id )
+			){
 
 			if (($handle = fopen($this->tmp_file, "r")) !== false) {
 				$file = $handle;
@@ -276,6 +292,14 @@ class CSV extends Importer {
 
 			if ( is_array($values) && !empty($column_item_comment_status) ) {
 				$this->handle_item_comment_status( $values[$column_item_comment_status], $inserted_item);
+			}
+
+			if ( is_array($values) && !empty($column_item_author_id) ) {
+				$this->handle_item_author_id( $values[$column_item_author_id], $inserted_item);
+			}
+
+			if ( is_array($values) && !empty($column_item_slug) ) {
+				$this->handle_item_slug( $values[$column_item_slug], $inserted_item);
 			}
 		}
 	}
@@ -668,6 +692,32 @@ class CSV extends Importer {
 		}
 
 		$item_inserted->set_comment_status($comment_status);
+		if ( $item_inserted->validate() ) {
+			$item_inserted = $this->items_repo->update($item_inserted);
+		}
+	}
+
+	/**
+	 * @param $author_id string|integer with item author name or ID
+	 */
+	private function handle_item_author_id( $author, $item_inserted ) {
+		$user = ctype_digit($author) ? get_user_by('id', $author) : get_user_by('login', $author);
+		if ($user) {
+			$author_id = $user->ID;
+			$item_inserted->set_author_id($author_id);
+			if ( $item_inserted->validate() ) {
+				$item_inserted = $this->items_repo->update($item_inserted);
+			}
+		} else {
+			$this->add_error_log("User: $author not found");
+		}
+	}
+
+	/**
+	 * @param $author_id integer wwith item author ID
+	 */
+	private function handle_item_slug( $slug, $item_inserted ) {
+		$item_inserted->set_slug($slug);
 		if ( $item_inserted->validate() ) {
 			$item_inserted = $this->items_repo->update($item_inserted);
 		}

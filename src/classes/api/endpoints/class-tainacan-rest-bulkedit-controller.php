@@ -545,7 +545,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 			break;
 			case 'set_author_id':
 				$endpoint_args['value'] = [
-					'type'        => 'string',
+					'type'        => 'integer',
 					'description' => __( 'The new author id', 'tainacan' ),
 				];
 			break;

@@ -434,8 +434,8 @@ class Item extends Entity {
 	 *
 	 * @return void
 	 */
-	function set_author_id( $author_io ) {
-		$this->set_mapped_property( 'author_id', $author_io );
+	function set_author_id( $author_id ) {
+		$this->set_mapped_property( 'author_id', $author_id );
 	}
 
 	/**
