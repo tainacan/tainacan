@@ -15,7 +15,7 @@ class Item_Submission extends Pages {
 		add_submenu_page(
 			$this->tainacan_root_menu_slug,
 			__('Other', 'tainacan'),
-			'<span class="icon">' . $this->get_svg_icon( 'viewminiature', 'var(--tainacan-gray5)', 20 ) . '</span><span class="menu-text">' .__( 'Other', 'tainacan' ) . '</span>',
+			'<span class="icon">' . $this->get_svg_icon( 'viewminiature' ) . '</span><span class="menu-text">' .__( 'Other', 'tainacan' ) . '</span>',
 			'read',
 			$this->tainacan_other_links_slug,
 			'#'
@@ -24,7 +24,7 @@ class Item_Submission extends Pages {
 		$tainacan_page_suffix = add_submenu_page(
 			$this->tainacan_other_links_slug,
 			__('Item Submission', 'tainacan'),
-			'<span class="icon">' . $this->get_svg_icon( 'upload', 'var(--tainacan-gray5)', 18 ) . '</span><span class="menu-text">' .__( 'Item submission', 'tainacan' ) . '</span>',
+			'<span class="icon">' . $this->get_svg_icon( 'upload' ) . '</span><span class="menu-text">' .__( 'Item submission', 'tainacan' ) . '</span>',
 			'manage_options',
 			'tainacan_item_submission',
 			array( &$this, 'render_page' )

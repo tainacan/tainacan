@@ -24,7 +24,7 @@ class System_Check extends Pages {
 		$roles_page_suffix = add_submenu_page(
 			$this->tainacan_other_links_slug,
 			__('System check', 'tainacan'),
-			'<span class="icon">' . $this->get_svg_icon( 'finish', 'var(--tainacan-gray5)', 18 ) . '</span><span class="menu-text">' .__( 'System check', 'tainacan' ) . '</span>',
+			'<span class="icon">' . $this->get_svg_icon( 'finish' ) . '</span><span class="menu-text">' .__( 'System check', 'tainacan' ) . '</span>',
 			'manage_options',
 			'tainacan_systemcheck',
 			array( &$this, 'render_page' )

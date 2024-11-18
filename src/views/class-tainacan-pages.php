@@ -342,7 +342,7 @@ abstract class Pages {
 				<ul id="tainacan-root-menu">
 					<li>
 						<a href="admin.php?page=tainacan_dashboard" <?php echo $current_page_slug === 'toplevel_page_tainacan_dashboard' ? 'aria-current="page"' : ''; ?>>
-							<span class="icon"><?php echo $this->get_svg_icon( 'home', 'var(--tainacan-gray5)', 20 ); ?></span>
+							<span class="icon"><?php echo $this->get_svg_icon( 'home' ); ?></span>
 							<span class="menu-text"><?php _e('Home', 'tainacan'); ?></span>
 						</a>
 					</li>

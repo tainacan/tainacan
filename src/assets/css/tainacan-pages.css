@@ -838,7 +838,7 @@ a:hover:not([href]) {
   width: 100%;
   font-family: var(--tainacan-font-family);
   font-size: 16px;
-  min-height: calc(100vh - 32px);
+  height: calc(100vh - var(--wp-admin--admin-bar--height, 32px));
   background-color: var(--tainacan-turquoise1); }
   #tainacan-page-container > * {
     flex-grow: 1;
@@ -847,8 +847,11 @@ a:hover:not([href]) {
       #tainacan-page-container > * {
         padding: 0.5rem; } }
   #tainacan-page-container #tainacan-navigation-menu {
-    flex-basis: 228px;
-    max-width: 228px;
+    max-height: 100%;
+    overflow-y: auto;
+    flex-basis: var(--tainacan-admin-navigation-sidebar, 228px);
+    min-width: var(--tainacan-admin-navigation-sidebar, 228px);
+    max-width: var(--tainacan-admin-navigation-sidebar, 228px);
     padding: 1rem;
     background-color: var(--tainacan-turquoise2); }
     #tainacan-page-container #tainacan-navigation-menu header {
@@ -863,8 +866,8 @@ a:hover:not([href]) {
     #tainacan-page-container #tainacan-navigation-menu a,
     #tainacan-page-container #tainacan-navigation-menu button {
       width: 100%;
-      display: inline-block;
-      vertical-align: middle;
+      display: flex;
+      align-items: center;
       text-align: start;
       box-sizing: border-box;
       border-radius: 8px;
@@ -876,10 +879,10 @@ a:hover:not([href]) {
       text-decoration: none !important;
       background-color: transparent;
       color: var(--tainacan-black); }
-      #tainacan-page-container #tainacan-navigation-menu a[aria-current="page"], #tainacan-page-container #tainacan-navigation-menu a:hover, #tainacan-page-container #tainacan-navigation-menu a:focus,
+      #tainacan-page-container #tainacan-navigation-menu a[aria-current="page"], #tainacan-page-container #tainacan-navigation-menu a:hover:not(:disabled), #tainacan-page-container #tainacan-navigation-menu a:focus:not(:disabled),
       #tainacan-page-container #tainacan-navigation-menu button[aria-current="page"],
-      #tainacan-page-container #tainacan-navigation-menu button:hover,
-      #tainacan-page-container #tainacan-navigation-menu button:focus {
+      #tainacan-page-container #tainacan-navigation-menu button:hover:not(:disabled),
+      #tainacan-page-container #tainacan-navigation-menu button:focus:not(:disabled) {
         background-color: var(--tainacan-turquoise3);
         background-color: color-mix(in srgb, var(--tainacan-turquoise3) 50%, transparent); }
       #tainacan-page-container #tainacan-navigation-menu a:focus:not(:disabled),
@@ -896,42 +899,53 @@ a:hover:not([href]) {
         vertical-align: middle; }
       #tainacan-page-container #tainacan-navigation-menu a .icon,
       #tainacan-page-container #tainacan-navigation-menu button .icon {
-        display: inline-block;
-        vertical-align: middle;
+        display: inline-flex;
+        align-items: center;
         width: 1.25em;
         height: 1.25em;
-        margin-right: 0.5rem; }
-    #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children:not(.is-open) > ul {
-      display: none;
-      visibility: hidden; }
-    #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children button::after {
-      content: '';
-      color: var(--tainacan-gray3);
-      font-size: 1rem;
-      float: inline-end;
-      content: '';
-      width: 1.5em;
-      height: 1.5em;
-      margin-right: -0.5rem;
-      background-image: url('data:image/svg+xml,<svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.976713 0H9.01734C9.57359 0 9.85171 0.671875 9.45796 1.06563L5.43921 5.0875C5.19546 5.33125 4.79859 5.33125 4.55484 5.0875L0.536088 1.06563C0.142338 0.671875 0.420463 0 0.976713 0Z" fill="%23505253" fill-opacity="0.5"/></svg>');
-      background-repeat: no-repeat;
-      background-position: center;
-      transition: transform 0.3s; }
-    #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children button[aria-expanded="true"]::after {
-      transform: rotateX(180deg); }
-    #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children button[aria-expanded="false"]::after,
-    #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children button[aria-expanded=""]::after {
-      transform: rotateX(0deg); }
-    #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul {
-      border-left: 1px dashed var(--tainacan-turquoise3);
-      margin: 0.5em 0 1em 0.75rem;
-      padding-left: 0.5rem; }
-      #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul li a,
-      #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul li button {
-        font-size: 0.875em; }
-        #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul li a .menu-text,
-        #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul li button .menu-text {
-          max-width: calc(100% - 0.75rem); }
+        margin-right: 0.5rem;
+        font-size: 1.25rem;
+        color: var(--tainacan-gray5); }
+    #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children {
+      position: relative; }
+      #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children:not(.is-open) > ul {
+        display: none;
+        visibility: hidden; }
+      #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children button::after {
+        position: absolute;
+        right: 0;
+        content: '';
+        color: var(--tainacan-gray3);
+        font-size: 1rem;
+        content: '';
+        width: 1.5em;
+        height: 1.5em;
+        background-image: url('data:image/svg+xml,<svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.976713 0H9.01734C9.57359 0 9.85171 0.671875 9.45796 1.06563L5.43921 5.0875C5.19546 5.33125 4.79859 5.33125 4.55484 5.0875L0.536088 1.06563C0.142338 0.671875 0.420463 0 0.976713 0Z" fill="%23505253" fill-opacity="0.5"/></svg>');
+        background-repeat: no-repeat;
+        background-position: center;
+        transition: transform 0.3s; }
+      #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children button[aria-expanded="true"]::after {
+        transform: rotateX(180deg); }
+      #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children button[aria-expanded="false"]::after,
+      #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children button[aria-expanded=""]::after {
+        transform: rotateX(0deg); }
+      #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul {
+        border-left: 1px dashed var(--tainacan-turquoise3);
+        margin: 0.5em 0 1em 0.75rem;
+        padding-left: 0.5rem; }
+        #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul li a,
+        #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul li button {
+          font-size: 0.875em; }
+          #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul li a .menu-text,
+          #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul li button .menu-text {
+            max-width: calc(100% - 0.75rem); }
+          #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul li a .icon,
+          #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul li button .icon {
+            font-size: 1.125rem; }
+        #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul#tainacan_admin .icon {
+          color: var(--tainacan-blue5); }
+        #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul#tainacan_collection_links .icon {
+          color: var(--tainacan-turquoise5); }
   #tainacan-page-container .tainacan-page-container-content {
     background-color: var(--tainacan-background-color);
     border-radius: var(--tainacan-page-container-border-radius, 16px) var(--tainacan-page-container-border-radius, 16px) 0 0;
@@ -939,7 +953,9 @@ a:hover:not([href]) {
     margin-left: var(--tainacan-page-container-margin-x, 1rem);
     margin-right: var(--tainacan-page-container-margin-x, 1rem);
     padding: var(--tainacan-page-container-padding-y, 1rem) var(--tainacan-page-container-padding-x, 2rem);
-    box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px #01295C33); }
+    box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px #01295C33);
+    max-height: calc(100vh - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 3rem));
+    overflow: auto; }
     #tainacan-page-container .tainacan-page-container-content > .wrap {
       margin: 0; }
 

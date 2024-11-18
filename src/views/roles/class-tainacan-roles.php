@@ -9,7 +9,7 @@ class Roles_Editor extends Pages {
         $roles_page_suffix = add_submenu_page(
 			$this->tainacan_other_links_slug,
 			__('User Roles', 'tainacan'),
-			'<span class="icon">' . $this->get_svg_icon( 'user', 'var(--tainacan-gray5)', 18 ) . '</span><span class="menu-text">' .__( 'User roles', 'tainacan' ) . '</span>',
+			'<span class="icon">' . $this->get_svg_icon( 'user' ) . '</span><span class="menu-text">' .__( 'User roles', 'tainacan' ) . '</span>',
 			'tnc_rep_edit_users',
 			'tainacan_roles',
 			array( &$this, 'render_page' )

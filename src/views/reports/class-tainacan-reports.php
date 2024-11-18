@@ -9,7 +9,7 @@ class Reports extends Pages {
         $reports_page_suffix = add_submenu_page(
 			$this->tainacan_other_links_slug,
 			__('Reports', 'tainacan'),
-			'<span class="icon">' . $this->get_svg_icon( 'reports', 'var(--tainacan-gray5)', 18 ) . '</span><span class="menu-text">' .__( 'Reports', 'tainacan' ) . '</span>',
+			'<span class="icon">' . $this->get_svg_icon( 'reports' ) . '</span><span class="menu-text">' .__( 'Reports', 'tainacan' ) . '</span>',
 			'manage_tainacan',
 			'tainacan_reports',
 			array( &$this, 'render_page' )

@@ -2,6 +2,8 @@
 
 namespace Tainacan;
 
+use phpDocumentor\Reflection\DocBlock\Tags\Var_;
+
 class Dashboard extends Pages {
 	use \Tainacan\Traits\Singleton_Instance;
 
@@ -51,7 +53,8 @@ class Dashboard extends Pages {
 			array(
 				'tainacan-dashboard-repository-card',
 				'tainacan-dashboard-collections-card',
-				'tainacan-dashboard-info-card'
+				'tainacan-dashboard-info-card',
+				'tainacan-dashboard-collection-card-267'
 			)
 		);
 		
@@ -70,35 +73,45 @@ class Dashboard extends Pages {
 				'title' => __( 'Repository', 'tainacan' ),
 				'description' => __('Area responsible for gathering all the structural settings that affect the collections of your repository.', 'tainacan'),
 				'content' => [$this, 'tainacan_repository_dashboard_card'],
-				'icon' => $this->get_svg_icon('repository', 'var(--tainacan-blue1)'),
+				'icon' => $this->get_svg_icon( 'repository' ),
 				'color' => 'blue'
 			);
 		}
 
-		if (
-			current_user_can( 'manage_tainacan' ) ||
-			current_user_can( 'tnc_rep_edit_collections')
-		) {
-			$tainacan_dashboard_cards[] = array(
-				'id' => 'tainacan-dashboard-collections-card',
-				'title' => __( 'Collections', 'tainacan' ),
-				'description' => __('Collections are groups of items in the repository that share the same set of metadata.', 'tainacan'),
-				'content' => [$this, 'tainacan_collections_dashboard_card'],
-				'icon' => $this->get_svg_icon('collections', 'var(--tainacan-turquoise1)'),
-				'color' => 'turquoise',
-				'position' => 'side'
-			);
-		}
+
+		$tainacan_dashboard_cards[] = array(
+			'id' => 'tainacan-dashboard-collections-card',
+			'title' => __( 'Collections', 'tainacan' ),
+			'description' => __('Collections are groups of items in the repository that share the same set of metadata.', 'tainacan'),
+			'content' => [$this, 'tainacan_collections_dashboard_card'],
+			'icon' => $this->get_svg_icon( 'collections' ),
+			'color' => 'turquoise',
+			'position' => 'side'
+		);
 
 		$tainacan_dashboard_cards[] = array(
 			'id' => 'tainacan-dashboard-info-card',
 			'title' => __( 'Help content and tutorials', 'tainacan' ),
 			'description' => __('The Tainacan community provides some help resources. Below we list the main ones for you to clear your doubts.', 'tainacan'),
-			'content' => [$this, 'tainacan_help_dashboard_card'],
-			'icon' => $this->get_svg_icon('info', 'var(--tainacan-gray1)'),
+			'content' => array( $this, 'tainacan_help_dashboard_card' ),
+			'icon' => $this->get_svg_icon( 'info' ),
 			'color' => 'gray',
 			'position' => 'side'
 		);
+
+		$collections = tainacan_collections()->fetch(array(), 'OBJECT');
+		foreach( $collections as $collection ) {
+			$tainacan_dashboard_cards[] = array(
+				'id' => 'tainacan-dashboard-collection-card-' . $collection->get_id(),
+				'title' => $collection->get_name(),
+				'description' => $collection->get_description(),
+				'content' => array( $this, 'tainacan_collection_dashboard_card' ),
+				'content_args' => array( 'collection_id' => $collection->get_id() ),
+				'icon' => $this->get_svg_icon( 'collection' ),
+				'color' => 'turquoise',
+				'position' => 'normal'
+			);
+		}
 
 		/**
 		 * Use this filter to add or remove dashboard cards.
@@ -134,7 +147,8 @@ class Dashboard extends Pages {
 	 * @param array $args {
 	 *    Optional. Array of arguments for adding a dashboard card.
 	 * 		@type string description Summary or small description for the card.
-	 * 		@type string content HTML content inside the card.
+	 * 		@type callable callback function to return HTML content inside the card.
+	 * 		@type array $content_args Arguments to be passed to the content callback.
 	 * 	 	@type string $icon Icon to be displayed on the card.
 	 * 		@type string $color Color of the card. One of 'gray', 'blue', 'turquoise'.
 	 * 		@type string $position Position of the card. One of 'normal', 'side', 'column3', 'column4'.
@@ -145,6 +159,7 @@ class Dashboard extends Pages {
 		$defaults = array(
 			'description' => '',
 			'content' => null,
+			'content_args' => null,
 			'icon' => '',
 			'color' => 'gray',
 			'position' => 'normal'
@@ -156,11 +171,18 @@ class Dashboard extends Pages {
 		$widget_name = $args['icon'] ? ('<span class="icon" style="background-color: var(--tainacan-' . $args['color'] . '5);">' . $args['icon'] . '</span>' . $widget_name) : $widget_name;
 
 		$content_callback = $args['content'];
+		$callback_args = $args['content_args'];
+		$private_callback_args = array( '__widget_basename' => $widget_name );
+
+		if ( is_null( $callback_args ) )
+			$callback_args = $private_callback_args;
+		elseif ( is_array( $callback_args ) )
+			$callback_args = array_merge( $callback_args, $private_callback_args );
 
 		if ( $args['description'] )
-			$content_callback = function () use ($args) {
+			$content_callback = function () use ($args, $callback_args) {
 				echo '<p class="tainacan-dashboard-card-description">' . $args['description'] . '</p><hr>';
-				call_user_func($args['content']);
+				call_user_func($args['content'], $callback_args);
 			};
 		
 		wp_add_dashboard_widget(
@@ -168,7 +190,7 @@ class Dashboard extends Pages {
 			$widget_name,
 			$content_callback,
 			null,
-			null,
+			$callback_args,
 			$args['position']
 		);
 
@@ -179,14 +201,14 @@ class Dashboard extends Pages {
 	/**
 	 * Creates the display code for the repository card
 	 */
-	function tainacan_repository_dashboard_card() {
+	function tainacan_repository_dashboard_card($args = null) {
 		?>
-		<ul class="tainacan-dashboard-card-list">
+		<ul class="tainacan-dashboard-card-list" data-color-scheme="blue">
 			<?php if ( current_user_can( 'manage_tainacan' ) ||	current_user_can( 'tnc_rep_edit_taxonomies') ) : ?>
 				<li>
 					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/taxonomies'); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('taxonomies', 'var(--tainacan-blue4)', 18); ?>
+							<?php echo $this->get_svg_icon('taxonomies'); ?>
 						</span>
 						<span class="text"><?php _e('Taxonomies', 'tainacan'); ?></span>
 					</a>
@@ -196,7 +218,7 @@ class Dashboard extends Pages {
 				<li>
 					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/metadata'); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('metadata', 'var(--tainacan-blue4)', 18); ?>
+							<?php echo $this->get_svg_icon('metadata'); ?>
 						</span>
 						<span class="text"><?php _e('Metadata', 'tainacan'); ?></span>
 					</a>
@@ -206,7 +228,7 @@ class Dashboard extends Pages {
 				<li>
 					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/filters'); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('filters', 'var(--tainacan-blue4)', 18); ?>
+							<?php echo $this->get_svg_icon('filters'); ?>
 						</span>
 						<span class="text"><?php _e('Filters', 'tainacan'); ?></span>
 					</a>
@@ -216,7 +238,7 @@ class Dashboard extends Pages {
 				<li>
 					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/importers'); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('importers', 'var(--tainacan-blue4)', 18); ?>
+							<?php echo $this->get_svg_icon('importers'); ?>
 						</span>
 						<span class="text"><?php _e('Importers', 'tainacan'); ?></span>
 					</a>
@@ -229,13 +251,13 @@ class Dashboard extends Pages {
 	/**
 	 * Creates the display code for the collections card
 	 */
-	function tainacan_collections_dashboard_card() {
+	function tainacan_collections_dashboard_card($args = null) {
 		?>
 		<ul class="tainacan-dashboard-card-list">
 			<li>
 				<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections'); ?>">
 					<span class="icon">
-						<?php echo $this->get_svg_icon('collections', 'var(--tainacan-turquoise4)', 18); ?>
+						<?php echo $this->get_svg_icon('collections'); ?>
 					</span>
 					<span class="text"><?php _e('Collections list', 'tainacan'); ?></span>
 				</a>
@@ -243,27 +265,29 @@ class Dashboard extends Pages {
 			<li>
 				<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/items'); ?>">
 					<span class="icon">
-						<?php echo $this->get_svg_icon('items', 'var(--tainacan-turquoise4)', 18); ?>
+						<?php echo $this->get_svg_icon('items'); ?>
 					</span>
 					<span class="text"><?php _e('Items list', 'tainacan'); ?></span>
 				</a>
 			</li>
-			<li>
-				<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/new'); ?>">
-					<span class="icon">
-						<?php echo $this->get_svg_icon('add', 'var(--tainacan-turquoise4)', 18); ?>
-					</span>
-					<span class="text"><?php _e('New collection', 'tainacan'); ?></span>
-				</a>
-			</li>
-			<li>
+			<?php if ( current_user_can('manage_tainacan') || current_user_can('tnc_rep_edit_collections') ) : ?>
+				<li>
+					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/new'); ?>">
+						<span class="icon">
+							<?php echo $this->get_svg_icon('add'); ?>
+						</span>
+						<span class="text"><?php _e('New collection', 'tainacan'); ?></span>
+					</a>
+				</li>
+			<?php endif; ?>
+			<!-- <li>
 				<a href="<?php echo admin_url('admin.php?page=tainacan_repository_settings'); ?>">
 					<span class="icon">
-						<?php echo $this->get_svg_icon('upload', 'var(--tainacan-turquoise4)', 18 ); ?>
+						<?php echo $this->get_svg_icon('upload' ); ?>
 					</span>
 					<span class="text"><?php _e('Send items', 'tainacan'); ?></span>
 				</a>
-			</li>
+			</li> -->
 		</ul>
 		<?php
 	}
@@ -271,13 +295,13 @@ class Dashboard extends Pages {
 	/**
 	 * Creates the display code for the info and help card
 	 */
-	function tainacan_help_dashboard_card() {
+	function tainacan_help_dashboard_card($args = null) {
 		?>
-		<ul class="tainacan-dashboard-card-list">
+		<ul class="tainacan-dashboard-card-list" data-color-scheme="gray">
 			<li>
 				<a href="https://tainacan.discourse.group" target="_blank">
 					<span class="icon">
-						<?php echo $this->get_svg_icon('discourse', 'var(--tainacan-gray4)', 18); ?>
+						<?php echo $this->get_svg_icon('discourse'); ?>
 					</span>
 					<span class="text"><?php _e('User\'s forum', 'tainacan'); ?></span>
 				</a>
@@ -285,7 +309,7 @@ class Dashboard extends Pages {
 			<li>
 				<a href="<?php _e('https://tainacan.github.io/tainacan-wiki/#/faq', 'tainacan'); ?>" target="_blank">
 					<span class="icon">
-						<?php echo $this->get_svg_icon('help', 'var(--tainacan-gray4)', 18); ?>
+						<?php echo $this->get_svg_icon('help'); ?>
 					</span>
 					<span class="text"><?php _e('F.A.Q.', 'tainacan'); ?></span>
 				</a>
@@ -293,7 +317,7 @@ class Dashboard extends Pages {
 			<li>
 				<a href="https://tainacan.github.io/tainacan-wiki/#/" target="_blank">
 					<span class="icon">
-						<?php echo $this->get_svg_icon('info', 'var(--tainacan-gray4)', 18); ?>
+						<?php echo $this->get_svg_icon('info'); ?>
 					</span>
 					<span class="text"><?php _e('Wiki', 'tainacan'); ?></span>
 				</a>
@@ -301,7 +325,7 @@ class Dashboard extends Pages {
 			<li>
 				<a href="https://github.com/tainacan/tainacan" target="_blank">
 					<span class="icon">
-						<?php echo $this->get_svg_icon('github', 'var(--tainacan-gray4)', 18); ?>
+						<?php echo $this->get_svg_icon('github'); ?>
 					</span>
 					<span class="text"><?php _e('GitHub', 'tainacan'); ?></span>
 				</a>
@@ -313,53 +337,58 @@ class Dashboard extends Pages {
 	/**
 	 * Creates the display code for a collection card
 	 */
-	function tainacan_collection_dashboard_card($collection_id) {
+	function tainacan_collection_dashboard_card($args = null) {
+		$collection_id = isset($args['collection_id']) ? $args['collection_id'] : null;
+
+		if ( is_null($collection_id) )
+			return;
+	
 	?>
 		<ul class="tainacan-dashboard-card-list">
 			<li>
-				<a href="<?php echo admin_url('admin.php?page=tainacan_repository_settings&tab=taxonomy'); ?>">
+				<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/items'); ?>">
 					<span class="icon">
-						<?php echo $this->get_svg_icon('items', 'var(--tainacan-turquoise4)', 18); ?>
+						<?php echo $this->get_svg_icon('items'); ?>
 					</span>
 					<span class="text"><?php _e('Items list', 'tainacan'); ?></span>
 				</a>
 			</li>
 			<li>
-				<a href="<?php echo admin_url('admin.php?page=tainacan_repository_settings&tab=metadata'); ?>">
+				<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/activities'); ?>">
 					<span class="icon">
-						<?php echo $this->get_svg_icon('activities', 'var(--tainacan-turquoise4)', 18); ?>
+						<?php echo $this->get_svg_icon('activities'); ?>
 					</span>
 					<span class="text"><?php _e('Activity', 'tainacan'); ?></span>
 				</a>
 			</li>
 			<li>
-				<a href="<?php echo admin_url('admin.php?page=tainacan_repository_settings&tab=metadata'); ?>">
+				<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/metadata'); ?>">
 					<span class="icon">
-						<?php echo $this->get_svg_icon('metadata', 'var(--tainacan-turquoise4)', 18); ?>
+						<?php echo $this->get_svg_icon('metadata'); ?>
 					</span>
 					<span class="text"><?php _e('Metadata', 'tainacan'); ?></span>
 				</a>
 			</li>
 			<li>
-				<a href="<?php echo admin_url('admin.php?page=tainacan_repository_settings&tab=metadata'); ?>">
+				<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/settings'); ?>">
 					<span class="icon">
-						<?php echo $this->get_svg_icon('importers', 'var(--tainacan-turquoise4)', 18); ?>
+						<?php echo $this->get_svg_icon('settings'); ?>
 					</span>
-					<span class="text"><?php _e('Importers', 'tainacan'); ?></span>
+					<span class="text"><?php _e('Settings', 'tainacan'); ?></span>
 				</a>
 			</li>
 			<li>
-				<a href="<?php echo admin_url('admin.php?page=tainacan_repository_settings&tab=metadata'); ?>">
+				<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/filters'); ?>">
 					<span class="icon">
-						<?php echo $this->get_svg_icon('filters', 'var(--tainacan-turquoise4)', 18); ?>
+						<?php echo $this->get_svg_icon('filters'); ?>
 					</span>
 					<span class="text"><?php _e('Filters', 'tainacan'); ?></span>
 				</a>
 			</li>
 			<li>
-				<a href="<?php echo admin_url('admin.php?page=tainacan_repository_settings&tab=metadata'); ?>">
+				<a href="<?php echo admin_url('admin.php?page=tainacan_reports#/reports?collection=' . $collection_id); ?>">
 					<span class="icon">
-						<?php echo $this->get_svg_icon('reports', 'var(--tainacan-turquoise4)', 18 ); ?>
+						<?php echo $this->get_svg_icon('reports' ); ?>
 					</span>
 					<span class="text"><?php _e('Reports', 'tainacan'); ?></span>
 				</a>
