@@ -119,6 +119,14 @@ class Item extends Entity {
 	}
 
 	/**
+	 * @return string
+	 */
+	function get_author_login() {
+		$name = get_the_author_meta( 'login', $this->get_author_id() );
+		return apply_filters("tainacan-item-get-author-login", $name, $this);
+	}
+
+	/**
 	 * Gets the thumbnail list of files
 	 *
 	 * Each size is represented as an array in the format returned by

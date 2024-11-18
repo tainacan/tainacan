@@ -90,7 +90,7 @@ class CSV extends Exporter {
 		
 		$line[] = $item->get_comment_status();
 
-		$line[] = $item->get_author_name();
+		$line[] = $item->get_author_login();
 		
 		$line[] = $item->get_creation_date();
 		
