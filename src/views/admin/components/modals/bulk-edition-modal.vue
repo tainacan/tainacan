@@ -55,12 +55,17 @@
                                     </template>
                                 </optgroup>
                             </template>
-                            <option :value="{ id: 'status' }">
-                                {{ $i18n.get('label_status') }}
-                            </option>
-                            <option :value="{ id: 'comments' }">
-                                {{ $i18n.get('label_allow_comments') }}
-                            </option>
+                            <optgroup :label="$i18n.get('label_publication_data')">
+                                <option :value="{ id: 'status' }">
+                                    {{ $i18n.get('label_status') }}
+                                </option>
+                                <option :value="{ id: 'author_id' }">
+                                    {{ $i18n.get('label_authorship') }}
+                                </option>
+                                <option :value="{ id: 'comments' }">
+                                    {{ $i18n.get('label_allow_comments') }}
+                                </option>
+                            </optgroup>
                         </b-select>
 
                         <!-- SECOND FIELD - ACTION -------------------------- -->
@@ -73,14 +78,14 @@
                                 @update:model-value="addToBulkEditionProcedures($event, 'action', criterion)">
                             <template v-if="bulkEditionProcedures[criterion].metadatum">
                                 <option
-                                        v-for="(edtAct, key) in getValidEditionActions(bulkEditionProcedures[criterion].metadatum)"
+                                        v-for="(editAction, key) in getValidEditionActions(bulkEditionProcedures[criterion].metadatum)"
                                         :key="key"
-                                        :value="edtAct">
-                                    {{ edtAct }}
+                                        :value="editAction">
+                                    {{ editAction }}
                                 </option>
                             </template>
                         </b-select>
-
+                       
                         <!-- THIRD FIELD - DYNAMIC INPUTS -->
                         <transition name="filter-item">
                             <template v-if="bulkEditionProcedures[criterion] && bulkEditionProcedures[criterion].metadatum && bulkEditionProcedures[criterion].action"> 
@@ -136,6 +141,49 @@
                                             {{ statusOption.name }}
                                         </option>
                                     </b-select>
+                                </template>
+
+                                <template
+                                        v-else-if="bulkEditionProcedures[criterion].metadatum.id == 'author_id'">
+                                    <b-autocomplete
+                                            :class="{ 'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': bulkEditionProcedures[criterion].isDone }"
+                                            :clearable="!bulkEditionProcedures[criterion].isDone"
+                                            :clear-on-select="false"
+                                            :data="users"
+                                            :placeholder="$i18n.get('instruction_type_search_users')"
+                                            class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
+                                            keep-first
+                                            open-on-focus
+                                            :append-to-body="true"
+                                            :loading="isFetchingUsers"
+                                            field="name"
+                                            icon="account"
+                                            :disabled="bulkEditionProcedures[criterion].isDone"
+                                            check-infinite-scroll
+                                            @update:model-value="($event) => fetchUsersForAuthor($event)"
+                                            @focus.once="fetchMoreUsersForAuthor"
+                                            @select="($event) => addToBulkEditionProcedures($event.id, 'newValue', criterion)"
+                                            @infinite-scroll="fetchMoreUsersForAuthor">
+                                        <template #default="props">
+                                            <div class="media">
+                                                <div
+                                                        v-if="props.option.avatar_urls && props.option.avatar_urls['24']"
+                                                        class="media-left">
+                                                    <img
+                                                            width="24"
+                                                            :src="props.option.avatar_urls['24']">
+                                                </div>
+                                                <div class="media-content">
+                                                    {{ props.option.name }}
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template 
+                                                v-if="!isFetchingUsers"
+                                                #empty>
+                                            {{ $i18n.get('info_no_user_found') }}
+                                        </template>
+                                    </b-autocomplete>
                                 </template>
 
                                 <template v-else-if="bulkEditionProcedures[criterion].metadatum.id == 'comments'">
@@ -363,7 +411,15 @@
                 groupId: null,
                 dones: [false],
                 metadataIsLoading: false,
-                metadataSearchCancel: undefined
+                metadataSearchCancel: undefined,
+                selectedUserId: '',
+                users: [],
+                isFetchingUsers: false,
+                usersPage: 1,
+                usersPerPage: 10,
+                usersTotal: 0,
+                usersTotalPages: 0,
+                usersSearch: '',
             }
         },
         computed: {
@@ -371,7 +427,7 @@
                 'metadata': 'getMetadata'
             })
         },
-        created(){
+        created() {
             if (this.collectionId) {
                 this.metadataIsLoading = true;
 
@@ -429,12 +485,16 @@
                 'replaceValueInBulk',
                 'redefineValueInBulk',
                 'setStatusInBulk',
+                'setAuthorIdInBulk',
                 'setCommentStatusInBulk',
                 'removeValueInBulk',
                 'copyValuesInBulk'
             ]),
             ...mapActions('metadata', [
                 'fetchMetadata'
+            ]),
+            ...mapActions('activity', [
+                'fetchUsers'
             ]),
             finalizeProcedure(criterion){
 
@@ -450,7 +510,8 @@
                 if (procedure.action === this.editionActions.redefine) {
                     Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
-                    if (procedure.metadatum.id === 'status'){
+                    if (procedure.metadatum.id === 'status'){ 
+
                         this.setStatusInBulk({
                             collectionId: this.collectionId,
                             groupId: this.groupId,
@@ -458,7 +519,19 @@
                         }).then(() => {
                             this.finalizeProcedure(criterion);
                         });
+
+                    } else if (procedure.metadatum.id === 'author_id') {
+
+                        this.setAuthorIdInBulk({
+                            collectionId: this.collectionId,
+                            groupId: this.groupId,
+                            bodyParams: { value: procedure.newValue }
+                        }).then(() => {
+                            this.finalizeProcedure(criterion);
+                        });
+
                     } else if (procedure.metadatum.id === 'comments') {
+
                         this.setCommentStatusInBulk({
                             collectionId: this.collectionId,
                             groupId: this.groupId,
@@ -466,6 +539,7 @@
                         }).then(() => {
                             this.finalizeProcedure(criterion);
                         });
+                        
                     } else {
                         this.setValueInBulk({
                             collectionId: this.collectionId,
@@ -478,6 +552,7 @@
                             this.finalizeProcedure(criterion);
                         });
                     }
+                    
                 } else if (procedure.action === this.editionActions.add) {
                     Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
@@ -592,7 +667,7 @@
                     }
 
                     // These special metadata are even more limited
-                    if ((metadatum.id == 'status' || metadatum.id == 'comments') && (actionKey == 'clear' || actionKey == 'copy')) {
+                    if ((metadatum.id == 'status' || metadatum.id == 'author_id' || metadatum.id == 'comments') && (actionKey == 'clear' || actionKey == 'copy')) {
                         delete validEditionActions[actionKey];
                         continue;
                     }
@@ -642,7 +717,60 @@
                     value = value[0];
 
                 Object.assign( this.bulkEditionProcedures[criterion], { [`${key}`]: value });
-            }
+
+                // Presets the action in case the selected metadatum only offers one possible option
+                if (
+                    key === 'metadatum' &&
+                    this.bulkEditionProcedures[criterion].metadatum &&
+                    Object.values(this.getValidEditionActions(this.bulkEditionProcedures[criterion].metadatum)).length === 1
+                ) {
+                    Object.assign( this.bulkEditionProcedures[criterion], { 'action': Object.values(this.getValidEditionActions(this.bulkEditionProcedures[criterion].metadatum))[0] });
+                }
+            },
+            fetchUsersForAuthor: _.debounce(function (search) {
+
+                // String update
+                if (search != this.usersSearch) {
+                    this.usersSearch = search;
+                    this.users = [];
+                    this.usersPage = 1;
+                } 
+
+                // String cleared
+                if (!search.length) {
+                    this.usersSearch = search;
+                    this.users = [];
+                    this.usersPage = 1;
+                }
+
+                // No need to load more
+                if (this.usersPage > 1 && this.users.length > this.totalUsers)
+                    return;
+
+                this.isFetchingUsers = true;
+
+                this.fetchUsers({ search: this.usersSearch, page: this.usersPage })
+                    .then((res) => {
+                        if (res.users) {
+                            for (let user of res.users)
+                                this.users.push(user); 
+                        }
+                        
+                        if (res.totalUsers)
+                            this.totalUsers = res.totalUsers;
+
+                        this.usersPage++;
+                        
+                        this.isFetchingUsers = false;
+                    })
+                    .catch((error) => {
+                        this.$console.error(error);
+                        this.isFetchingUsers = false;
+                    });
+                }, 500),
+                fetchMoreUsersForAuthor: _.debounce(function () {
+                    this.fetchUsersForAuthor(this.usersSearch)
+                }, 250),
         }
     }
 </script>

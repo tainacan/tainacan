@@ -142,7 +142,7 @@ export const fetchItemTitle = ({ commit }, id) => {
 
 export const sendItem = ( { commit }, item) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacanApi.post('/collection/'+ item.collection_id + '/items/', item)
+        axios.tainacanApi.post('/collection/'+ item.collection_id + '/items/?context=edit', item)
             .then( res => {
                 commit('setItem', res.data);
                 commit('setLastUpdated');
@@ -157,7 +157,7 @@ export const sendItem = ( { commit }, item) => {
 export const updateItem = ({ commit }, item) => {
 
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.put('/items/' + item.id, item)
+        axios.tainacanApi.put('/items/' + item.id + '?context=edit', item)
             .then( res => {
                 commit('setItem', res.data);
                 commit('setLastUpdated');

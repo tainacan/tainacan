@@ -172,6 +172,17 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				'schema' => array($this, 'get_actions_schema')
 			)
 		);
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/set_author_id',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array($this, 'set_author_id'),
+					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
+					'args'                => $this->get_actions_params('set_author_id')
+				),
+				'schema' => array($this, 'get_actions_schema')
+			)
+		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/sequence/(?P<sequence_index>[\d]+)',
 			array(
 				array(
@@ -281,6 +292,10 @@ class REST_Bulkedit_Controller extends REST_Controller {
 		return $this->generic_action('set_comment_status', $request, []);
 	}
 
+	public function set_author_id($request) {
+		return $this->generic_action('set_author_id', $request, []);
+	}
+
 	public function get_item($request) {
 		$group_id = $request['group_id'];
 
@@ -314,7 +329,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				], 400);
 			}
 
-			if ( !in_array($method, ['set_status', 'set_comment_status', 'copy_value']) && !isset($body['metadatum_id'])) {
+			if ( !in_array($method, ['set_status', 'set_comment_status', 'set_author_id', 'copy_value']) && !isset($body['metadatum_id'])) {
 				return new \WP_REST_Response([
 					'error_message' => __('You must specify a Metadatum ID.', 'tainacan'),
 				], 400);
@@ -526,6 +541,12 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				$endpoint_args['value'] = [
 					'type'        => 'string',
 					'description' => __( 'The new comments status (open or closed)', 'tainacan' ),
+				];
+			break;
+			case 'set_author_id':
+				$endpoint_args['value'] = [
+					'type'        => 'integer',
+					'description' => __( 'The new author id', 'tainacan' ),
 				];
 			break;
 		}

@@ -271,10 +271,10 @@ class Bulk_Edit_Process extends Generic_Process {
 		} else {
 			$this->add_error_log( sprintf( __( 'Please verify, invalid value(s) to edit item ID: "%d"', 'tainacan' ), $item->get_id() ) );
 
-			$serealize_erro = (object) array('err' => array());
+			$serialized_error = (object) array('err' => array());
 			$erro = $item_metadata->get_errors();
-			array_walk_recursive($erro, function($v, $k, $t) {$t->err[] = $v;}, $serealize_erro);
-			$this->add_error_log( __('errors: ', 'tainacan') . implode(", ", $serealize_erro->err) );
+			array_walk_recursive($erro, function($v, $k, $t) {$t->err[] = $v;}, $serialized_error);
+			$this->add_error_log( __('errors: ', 'tainacan') . implode(", ", $serialized_error->err) );
 
 			return false;
 		}
@@ -520,15 +520,15 @@ class Bulk_Edit_Process extends Generic_Process {
 		}
 
 		$this->add_error_log( sprintf( __( 'Please verify, invalid value(s) to edit item ID: "%d"', 'tainacan' ), $item->get_id() ) );
-		$serealize_erro = (object) array('err' => array());
+		$serialized_error = (object) array('err' => array());
 		array_walk_recursive(
 			$item->get_errors(),
 			function (&$v, $k, &$t) {
 				$t->err[] = $v;
 			}, 
-			$serealize_erro
+			$serialized_error
 		);
-		$this->add_error_log( __('errors: ', 'tainacan') . implode(", ", $serealize_erro->err) );
+		$this->add_error_log( __('errors: ', 'tainacan') . implode(", ", $serialized_error->err) );
 
 		return false;
 	}
@@ -548,14 +548,42 @@ class Bulk_Edit_Process extends Generic_Process {
 		}
 
 		$this->add_error_log( sprintf( __( 'Please verify, invalid value(s) to edit item ID: "%d"', 'tainacan' ), $item->get_id() ) );
-		$serealize_erro = (object) array('err' => array());
+		$serialized_error = (object) array('err' => array());
 		array_walk_recursive(
 			$item->get_errors(),
 			function (&$v, $k, &$t) {
 				$t->err[] = $v;
 			},
-			$serealize_erro);
-		$this->add_error_log( __('errors: ', 'tainacan') . implode(", ", $serealize_erro->err) );
+			$serialized_error);
+		$this->add_error_log( __('errors: ', 'tainacan') . implode(", ", $serialized_error->err) );
+
+		return false;
+	}
+
+	private function set_author_id( \Tainacan\Entities\Item $item) {
+		$value = $this->bulk_edit_data['value'];
+
+		$user = get_user_by( 'id', $value );
+		if ( $user == false ) {
+			$this->add_error_log( __( "Invalid author id. Please verify confirm that the user exists.", 'tainacan' ) );
+			return false;
+		}
+
+		$item->set_author_id($value);
+		if ( $item->validate() ) {
+			$this->items_repository->update($item);
+			return true;
+		}
+
+		$this->add_error_log( sprintf( __( 'Please verify, invalid value(s) to edit item ID: "%d"', 'tainacan' ), $item->get_id() ) );
+		$serialized_error = (object) array('err' => array());
+		array_walk_recursive(
+			$item->get_errors(),
+			function (&$v, $k, &$t) {
+				$t->err[] = $v;
+			},
+			$serialized_error);
+		$this->add_error_log( __('errors: ', 'tainacan') . implode(", ", $serialized_error->err) );
 
 		return false;
 	}

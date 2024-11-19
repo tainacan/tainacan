@@ -55,7 +55,7 @@
 
                 <!-- Update dropdown with -->
                 <b-dropdown
-                        v-if="!$adminOptions.hideItemEditionStatusOption"
+                        v-if="!$adminOptions.hideItemEditionStatusOption && $adminOptions.itemEditionStatusOptionOnFooterDropdown"
                         ref="item-edition-footer-dropdown"
                         :triggers="['contextmenu']"
                         aria-role="list"
@@ -76,11 +76,11 @@
                                 @click="!$adminOptions.mobileAppMode && !isMobileScreen ? $emit(
                                     'on-submit',
                                     ( currentUserCanPublish && !$adminOptions.hideItemEditionStatusPublishOption ) ? status : 'draft',
-                                    ( (isOnSequenceEdit && !isCurrentItemOnSequenceEdit) ? 'next' : null)
+                                    ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                                 ) : ($refs && $refs['item-edition-footer-dropdown'] && !$refs['item-edition-footer-dropdown'].isActive ? $refs['item-edition-footer-dropdown'].toggle() : null)">
                             {{ $i18n.get('label_update') }}
                             <span 
-                                    v-if="isOnSequenceEdit && !isCurrentItemOnSequenceEdit"
+                                    v-if="isOnSequenceEdit && !isLastItemOnSequenceEdit"
                                     class="icon is-large"
                                     style="margin-left: 0em;">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next" />
@@ -100,7 +100,7 @@
                             @click="$emit(
                                 'on-submit',
                                 'draft',
-                                ( (isOnSequenceEdit && !isCurrentItemOnSequenceEdit) ? 'next' : null)
+                                ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                             )">
                         <span class="icon has-text-gray4">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-draft" />
@@ -114,7 +114,7 @@
                             @click="$emit(
                                 'on-submit',
                                 'private',
-                                ( (isOnSequenceEdit && !isCurrentItemOnSequenceEdit) ? 'next' : null)
+                                ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                             )">
                         <span class="icon has-text-gray4">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-private" />
@@ -127,7 +127,7 @@
                             @click="$emit(
                                 'on-submit',
                                 'publish',
-                                ( (isOnSequenceEdit && !isCurrentItemOnSequenceEdit) ? 'next' : null)
+                                ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                             )">
                         <span class="icon has-text-gray4">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-public" />
@@ -138,7 +138,7 @@
                 
                 <!-- In case we do not want to show status, just an update button -->
                 <button 
-                        v-else
+                        v-else-if="!isOnSequenceEdit"
                         :disabled="hasSomeError && (status == 'publish' || status == 'private')"
                         type="button"
                         class="button"
@@ -147,19 +147,19 @@
                             'is-secondary': status == 'draft'
                         }"
                         @click="$emit('on-submit', status)">
-                    {{ $i18n.get('label_update') }}
+                    {{ $i18n.get('finish') }}
                 </button>
 
             </template>
 
             <!-- Sequence edition Next button if user cannot publish (only goes to next, without changing status) -->
             <button 
-                    v-if="!currentUserCanPublish && isOnSequenceEdit && hasNextItemOnSequenceEdit"
+                    v-if="(!currentUserCanPublish || !$adminOptions.itemEditionStatusOptionOnFooterDropdown) && isOnSequenceEdit && hasNextItemOnSequenceEdit"
                     :disabled="(status == 'publish' || status == 'private') && hasSomeError"
                     type="button"
                     class="button is-success"
                     @click="$emit('on-next-in-sequence')">
-                <span>{{ $i18n.get('label_next') }}</span>
+                <span>{{ $i18n.get('next') }}</span>
                 <span class="icon is-large">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next" />
                 </span>
@@ -167,9 +167,9 @@
 
             <!-- Sequence edition Finish -->
             <button 
-                    v-if="isOnSequenceEdit && isCurrentItemOnSequenceEdit"
+                    v-if="isOnSequenceEdit && isLastItemOnSequenceEdit"
                     type="button"
-                    class="button sequence-button"
+                    class="button sequence-button is-success"
                     @click="$router.push($routerHelper.getCollectionPath(collectionId))">
                 <span class="icon is-large">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approved" />
@@ -190,7 +190,7 @@ export default {
         status: String,
         collectionId: [Number, String],
         isOnSequenceEdit: Boolean,
-        isCurrentItemOnSequenceEdit: Boolean,
+        isLastItemOnSequenceEdit: Boolean,
         hasNextItemOnSequenceEdit: Boolean,
         hasPreviousItemOnSequenceEdit: Boolean,
         isMobileScreen: Boolean,

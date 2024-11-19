@@ -400,7 +400,7 @@ StatusHelperPlugin.install = function (app, options = {}) {
             return ['publish', 'private', 'draft', 'trash'].includes(status);
         },
         getStatuses() {
-            return  this.statuses;
+            return this.statuses;
         },
         loadStatuses() {
             axios.wpApi.get('/statuses/')
@@ -606,6 +606,7 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
             hideItemEditionMetadataTypes: true,
             itemEditionDocumentInsideTabs: true,
             itemEditionAttachmentsInsideTabs: true,
+            itemEditionPublicationSectionInsideTabs: true
         }
     }
     for (let adminSpecialMode in adminSpecialModes) {
@@ -723,9 +724,10 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
 
         * hideItemEditionPageTitle
         * hideItemEditionCollectionName
-        * hideItemEditionStatusOptions
+        * hideItemEditionPublicationSection
+            * hideItemEditionStatusOptions // Deprecated in Version 0.21.10 due to new status system.
             * hideItemEditionStatusPublishOption
-        * hideItemEditionCommentsToggle
+            * hideItemEditionCommentsToggle
         * hideItemEditionDocument
             * hideItemEditionDocumentFileInput
             * hideItemEditionDocumentTextInput
@@ -737,6 +739,8 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
         * hideItemEditionRequiredOnlySwitch
         * hideItemEditionMetadataTypes
         * allowItemEditionModalInsideModal // Not recommended!
+        * itemEditionStatusOptionOnFooterDropdown
+        * itemEditionPublicationSectionInsideTabs
         * itemEditionDocumentInsideTabs
         * itemEditionAttachmentsInsideTabs
         
