@@ -69,7 +69,7 @@ class Theme_Helper {
 		add_action( 'wp_head', array($this, 'add_social_meta'), 5 );
 
 		// Registers view modes and their placeholders
-		$this->register_tainacan_oficial_view_modes();
+		add_action( 'init' , array($this, 'register_tainacan_oficial_view_modes') );
 	}
 	
 	public function is_post_an_item(\WP_Post $post) {

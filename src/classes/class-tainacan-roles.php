@@ -6,7 +6,7 @@ use Tainacan\Repositories\Repository;
 class Roles {
 
 	private static $instance = null;
-	private $capabilities;
+	private $capabilities = array();
 	private $meta_caps;
 	private $meta_section_caps;
 	private $filters_caps;
@@ -25,10 +25,25 @@ class Roles {
 	*
 	*/
 	private function __construct() {
-
 		$this->meta_caps = (new \Tainacan\Entities\Metadatum())->get_capabilities();
 		$this->meta_section_caps = (new \Tainacan\Entities\Metadata_Section())->get_capabilities();
 		$this->filters_caps = (new \Tainacan\Entities\Filter())->get_capabilities();
+
+		/**
+		 * This needs to be done after 'init' is fired because translated strings are used.
+		 * 
+		 * @see https://make.wordpress.org/core/2024/10/21/i18n-improvements-6-7/
+		 */
+		add_action( 'init', array( $this, 'populate_tainacan_capabilities' ));
+
+		add_filter( 'user_has_cap', [$this, 'user_has_cap_filter'], 10, 4 );
+		add_filter( 'map_meta_cap', [$this, 'map_meta_cap'], 10, 4 );
+
+		add_filter( 'gettext_with_context', array(&$this, 'translate_user_roles'), 10, 4 );
+
+	}
+
+	public function populate_tainacan_capabilities() {
 
 		$this->capabilities = [
 			'manage_tainacan' => [
@@ -419,21 +434,8 @@ class Roles {
 					'tnc_col_all_delete_published_items',
 				]
 			],
-
-
 		];
-
-		add_filter( 'user_has_cap', [$this, 'user_has_cap_filter'], 10, 4 );
-		add_filter( 'map_meta_cap', [$this, 'map_meta_cap'], 10, 4 );
-
-		add_filter( 'gettext_with_context', array(&$this, 'translate_user_roles'), 10, 4 );
-
-		// Dummy calls for translation.
-		_x('Tainacan Administrator', 'User role', 'tainacan');
-		_x('Tainacan Editor', 'User role', 'tainacan');
-		_x('Tainacan Author', 'User role', 'tainacan');
-
-	}
+	} 
 
 	/**
 	 * Tainacan default roles

@@ -49,7 +49,7 @@ function tainacan_blocks_initialize() {
 	// On the admin side, we need the blocks registered and their assets (editor-side)
 	// The reason why we don't use admin_init here is because server side blocks
 	// need to be registered whithin the init
-	add_action('init', 'tainacan_blocks_register_and_enqueue_all_blocks');
+	add_action( 'init', 'tainacan_blocks_register_and_enqueue_all_blocks', 11 );
 }
 
 /** 
@@ -82,21 +82,31 @@ function tainacan_blocks_register_and_enqueue_all_blocks() {
 		tainacan_blocks_get_common_editor_styles();
 		tainacan_blocks_get_variations_script();
 	}
+
+	/**
+	 * Populates js variables here to avoid calling it for each block
+	 */
+	$block_settings = tainacan_blocks_get_plugin_js_settings();
+	$plugin_settings = \Tainacan\Admin::get_instance()->get_admin_js_localization_params();
+
 	// May be needed outside the editor, if server side render is used
 	foreach(TAINACAN_BLOCKS as $block_slug => $block_options) {
-		tainacan_blocks_register_block($block_slug, $block_options);
+		tainacan_blocks_register_block($block_slug, $block_options, $block_settings, $plugin_settings);
 	}
 }
 
 /** 
  * Registers a 'generic' Tainacan Block, according to the TAINACAN_BLOCKs array
  * 
- * * @param array $options {
+ * @param string $block_slug 	The block slug
+ * @param array $options {
  *     Optional. Array of arguments.
  *     @type array		 $extra_editor_script_deps		Array of strings containing script dependencies of the editor side script
  *  }
+ * @param array $block_settings JSON array containing the block settings from the server
+ * @param array $plugin_settings JSON array containing the plugin settings from the server
  */
-function tainacan_blocks_register_block($block_slug, $options = []) {
+function tainacan_blocks_register_block($block_slug, $options = [], $block_settings = [], $plugin_settings = []) {
 	global $TAINACAN_BASE_URL;
 	global $TAINACAN_VERSION;
 
@@ -134,8 +144,6 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 	$register_params['editor_script'] = $block_slug;
 
 	// Passes global variables to the blocks editor side
-	$block_settings = tainacan_blocks_get_plugin_js_settings();
-	$plugin_settings = \Tainacan\Admin::get_instance()->get_admin_js_localization_params();
 	wp_localize_script( $block_slug, 'tainacan_blocks', $block_settings);
 	wp_localize_script( $block_slug, 'tainacan_plugin', $plugin_settings);
 
