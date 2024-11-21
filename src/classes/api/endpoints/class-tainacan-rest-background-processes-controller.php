@@ -396,6 +396,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
         }
 
         if ( file_exists( $path ) ) {
+
             $finfo = @finfo_open(FILEINFO_MIME_TYPE);
             $mime_type = @finfo_file($finfo, $path);
             $file_name = @basename($path);
@@ -404,6 +405,8 @@ class REST_Background_Processes_Controller extends REST_Controller {
             header("Content-Disposition: attachment; filename=$file_name"); 
             header("Content-Type: $mime_type");
             header("Content-Length: " . @filesize( $path ));
+            \ob_clean();
+            \flush();
             \readfile($path);
         } else {
             return new \WP_REST_Response("file not found", 404, array('content-type' => 'text/html; charset=utf-8'));
