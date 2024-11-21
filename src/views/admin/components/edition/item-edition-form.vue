@@ -2175,7 +2175,7 @@ export default {
             }
 
             &.is-metadata-navigation-active {
-                width: calc(58.33333337% - (2 * var(--tainacan-one-column)) - var(--tainacan-sidebar-width, 3.25em));
+                width: calc(58.33333337% - (2 * var(--tainacan-one-column)) );
                 position: fixed;
                 z-index: 99999;
                 bottom: 0;
@@ -2192,7 +2192,7 @@ export default {
                 }
 
                 @media screen and (max-width: 1440px) {
-                    width: calc(58.33333337% - var(--tainacan-sidebar-width, 3.25em) - var(--tainacan-one-column));
+                    width: calc(58.33333337% - var(--tainacan-one-column));
                 }
             }
 
@@ -2399,7 +2399,7 @@ export default {
             right: 0;
             z-index: 9999;
             background-color: var(--tainacan-gray1);
-            width: calc(100% - var(--tainacan-sidebar-width, 3.25em));
+            width: 100%;
             height: 60px;
             display: flex;
             justify-content: flex-end;

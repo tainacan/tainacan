@@ -16,74 +16,105 @@ class Admin extends Pages {
 
 	function add_admin_menu() {
 
-		// Tainacan Admin Vue component. 
-		$tainacan_page_suffix = add_submenu_page(
-			$this->tainacan_root_menu_slug,
-			__( 'Repository', 'tainacan' ),
-			'<span class="icon" style="color: var(--tainacan-blue5)">' . $this->get_svg_icon( 'repository' ) . '</span><span class="menu-text">' .__( 'Repository', 'tainacan' ) . '</span>',
-			'read',
-			$this->repository_links_slug,
-			array( &$this, 'render_page' ),
-		);
-		add_action( 'load-' . $tainacan_page_suffix, array( &$this, 'load_page' ) );
+		if ( !$this->has_admin_ui_option('hidePrimaryMenu') ) {
+
+			// Tainacan Admin Vue component. 
+			$tainacan_page_suffix = add_submenu_page(
+				$this->tainacan_root_menu_slug,
+				__( 'Repository', 'tainacan' ),
+				'<span class="icon" style="color: var(--tainacan-blue5)">' . $this->get_svg_icon( 'repository' ) . '</span><span class="menu-text">' .__( 'Repository', 'tainacan' ) . '</span>',
+				'read',
+				$this->repository_links_slug,
+				array( &$this, 'render_page' ),
+			);
+			add_action( 'load-' . $tainacan_page_suffix, array( &$this, 'load_page' ) );
+		}
 		
 		// Inner links to the admin vue component
-		add_submenu_page(
-			$this->repository_links_slug,
-			__('Metadata', 'tainacan'),
-			'<span class="icon">' . $this->get_svg_icon( 'metadata' ) . '</span><span class="menu-text">' . __('Metadata', 'tainacan') . '</span>',
-			'read',
-			$this->vue_component_page_slug . '#/metadata',
-			array( &$this, 'render_page' )
-		);
-		add_submenu_page(
-			$this->repository_links_slug,
-			__('Filters', 'tainacan'),
-			'<span class="icon">' . $this->get_svg_icon( 'filters' ) . '</span><span class="menu-text">' . __('Filters', 'tainacan') . '</span>',
-			'read',
-			$this->vue_component_page_slug . '#/filters',
-			array( &$this, 'render_page' )
-		);
-		add_submenu_page(
-			$this->repository_links_slug,
-			__('Taxonomies', 'tainacan'),
-			'<span class="icon">' . $this->get_svg_icon( 'taxonomies' ) . '</span><span class="menu-text">' . __('Taxonomies', 'tainacan') . '</span>',
-			'read',
-			$this->vue_component_page_slug . '#/taxonomies',
-			array( &$this, 'render_page' )
-		);
-		add_submenu_page(
-			$this->repository_links_slug,
-			__('Activities', 'tainacan'),
-			'<span class="icon">' . $this->get_svg_icon( 'activities' ) . '</span><span class="menu-text">' . __('Activities', 'tainacan') . '</span>',
-			'read',
-			$this->vue_component_page_slug . '#/activities',
-			array( &$this, 'render_page' )
-		);
-		add_submenu_page(
-			$this->repository_links_slug,
-			__('Capabilities', 'tainacan'),
-			'<span class="icon">' . $this->get_svg_icon( 'capability' ) . '</span><span class="menu-text">' . __('Capabilities', 'tainacan') . '</span>',
-			'read',
-			$this->vue_component_page_slug . '#/capabilities',
-			array( &$this, 'render_page' )
-		);
-		add_submenu_page(
-			$this->repository_links_slug,
-			__('Importers', 'tainacan'),
-			'<span class="icon">' . $this->get_svg_icon( 'importers' ) . '</span><span class="menu-text">' . __('Importers', 'tainacan') . '</span>',
-			'read',
-			$this->vue_component_page_slug . '#/importers',
-			array( &$this, 'render_page' )
-		);
-		add_submenu_page(
-			$this->repository_links_slug,
-			__('Exporters', 'tainacan'),
-			'<span class="icon">' . $this->get_svg_icon( 'export' ) . '</span><span class="menu-text">' . __('Exporters', 'tainacan') . '</span>',
-			'read',
-			$this->vue_component_page_slug . '#/exporters',
-			array( &$this, 'render_page' )
-		);
+		if ( !$this->has_admin_ui_option('hidePrimaryMenuMetadataButton') ) {
+
+			add_submenu_page(
+				$this->repository_links_slug,
+				__('Metadata', 'tainacan'),
+				'<span class="icon">' . $this->get_svg_icon( 'metadata' ) . '</span><span class="menu-text">' . __('Metadata', 'tainacan') . '</span>',
+				'tnc_rep_edit_metadata',
+				$this->vue_component_page_slug . '#/metadata',
+				array( &$this, 'render_page' )
+			);
+		}
+
+		if ( !$this->has_admin_ui_option('hidePrimaryMenuFiltersButton') ) {
+
+			add_submenu_page(
+				$this->repository_links_slug,
+				__('Filters', 'tainacan'),
+				'<span class="icon">' . $this->get_svg_icon( 'filters' ) . '</span><span class="menu-text">' . __('Filters', 'tainacan') . '</span>',
+				'tnc_rep_edit_filters',
+				$this->vue_component_page_slug . '#/filters',
+				array( &$this, 'render_page' )
+			);
+		}
+
+		if ( !$this->has_admin_ui_option('hidePrimaryMenuTaxonomiesButton') ) {
+
+			add_submenu_page(
+				$this->repository_links_slug,
+				__('Taxonomies', 'tainacan'),
+				'<span class="icon">' . $this->get_svg_icon( 'taxonomies' ) . '</span><span class="menu-text">' . __('Taxonomies', 'tainacan') . '</span>',
+				'read',
+				$this->vue_component_page_slug . '#/taxonomies',
+				array( &$this, 'render_page' )
+			);
+		}
+
+		if ( !$this->has_admin_ui_option('hidePrimaryMenuActivitiesButton') ) {
+
+			add_submenu_page(
+				$this->repository_links_slug,
+				__('Activities', 'tainacan'),
+				'<span class="icon">' . $this->get_svg_icon( 'activities' ) . '</span><span class="menu-text">' . __('Activities', 'tainacan') . '</span>',
+				'read',
+				$this->vue_component_page_slug . '#/activities',
+				array( &$this, 'render_page' )
+			);
+		}
+		
+		if ( !$this->has_admin_ui_option('hidePrimaryMenuCapabilitiesButton') ) {
+
+			add_submenu_page(
+				$this->repository_links_slug,
+				__('Capabilities', 'tainacan'),
+				'<span class="icon">' . $this->get_svg_icon( 'capability' ) . '</span><span class="menu-text">' . __('Capabilities', 'tainacan') . '</span>',
+				'tnc_rep_edit_users',
+				$this->vue_component_page_slug . '#/capabilities',
+				array( &$this, 'render_page' )
+			);
+		}
+
+		if ( !$this->has_admin_ui_option('hidePrimaryMenuImportersButton') ) {
+
+			add_submenu_page(
+				$this->repository_links_slug,
+				__('Importers', 'tainacan'),
+				'<span class="icon">' . $this->get_svg_icon( 'importers' ) . '</span><span class="menu-text">' . __('Importers', 'tainacan') . '</span>',
+				'manage_tainacan',
+				$this->vue_component_page_slug . '#/importers',
+				array( &$this, 'render_page' )
+			);
+		}
+
+		if ( !$this->has_admin_ui_option('hidePrimaryMenuExportersButton') ) {
+
+			add_submenu_page(
+				$this->repository_links_slug,
+				__('Exporters', 'tainacan'),
+				'<span class="icon">' . $this->get_svg_icon( 'export' ) . '</span><span class="menu-text">' . __('Exporters', 'tainacan') . '</span>',
+				'manage_tainacan',
+				$this->vue_component_page_slug . '#/exporters',
+				array( &$this, 'render_page' )
+			);
+		}
+
 		add_submenu_page(
 			$this->tainacan_root_menu_slug,
 			__('Collections', 'tainacan'),
@@ -92,22 +123,30 @@ class Admin extends Pages {
 			$this->collections_links_slug,
 			array( &$this, 'render_page' )
 		);
-		add_submenu_page(
-			$this->collections_links_slug,
-			__('Collections list', 'tainacan'),
-			'<span class="icon">' . $this->get_svg_icon( 'collection' ) . '</span><span class="menu-text">' . __('Collections list', 'tainacan') . '</span>',
-			'read',
-			$this->vue_component_page_slug . '#/collections',
-			array( &$this, 'render_page' )
-		);
-		add_submenu_page(
-			$this->collections_links_slug,
-			__('Items', 'tainacan'),
-			'<span class="icon">' . $this->get_svg_icon( 'items' ) . '</span><span class="menu-text">' . __('Items', 'tainacan') . '</span>',
-			'read',
-			'tainacan_admin#/items',
-			array( &$this, 'render_page' )
-		);
+
+		if ( !$this->has_admin_ui_option('hidePrimaryMenuCollectionsButton') ) {
+
+			add_submenu_page(
+				$this->collections_links_slug,
+				__('Collections list', 'tainacan'),
+				'<span class="icon">' . $this->get_svg_icon( 'collection' ) . '</span><span class="menu-text">' . __('Collections list', 'tainacan') . '</span>',
+				'read',
+				$this->vue_component_page_slug . '#/collections',
+				array( &$this, 'render_page' )
+			);
+		}
+
+		if ( !$this->has_admin_ui_option('hidePrimaryMenuItemsButton') ) {
+			
+			add_submenu_page(
+				$this->collections_links_slug,
+				__('Items', 'tainacan'),
+				'<span class="icon">' . $this->get_svg_icon( 'items' ) . '</span><span class="menu-text">' . __('Items', 'tainacan') . '</span>',
+				'read',
+				'tainacan_admin#/items',
+				array( &$this, 'render_page' )
+			);
+		}
 	}
 	
 	function admin_enqueue_css() {

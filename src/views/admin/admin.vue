@@ -11,30 +11,6 @@
                 <router-view />
             </template>
             <template v-else>
-                <primary-menu
-                        v-if="!$adminOptions.hidePrimaryMenu" 
-                        :active-route="activeRoute"
-                        :is-menu-compressed="isMenuCompressed" />
-                <button 
-                        v-if="!$adminOptions.hidePrimaryMenu && !$adminOptions.hidePrimaryMenuCompressButton" 
-                        id="menu-compress-button"
-                        class="is-hidden-mobile"
-                        :style="{ top: menuCompressButtonTop }"
-                        :aria-label="$i18n.get('label_shrink_menu')"      
-                        @click="isMenuCompressed = !isMenuCompressed">    
-                    <span
-                            v-tooltip="{
-                                content: $i18n.get('label_shrink_menu'),
-                                autoHide: true,
-                                placement: 'auto-end',
-                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']     
-                            }"
-                            class="icon">
-                        <i 
-                                :class="{ 'tainacan-icon-arrowleft' : !isMenuCompressed, 'tainacan-icon-arrowright' : isMenuCompressed }"
-                                class="tainacan-icon tainacan-icon-1-25em" />
-                    </span>
-                </button>
                 <tainacan-header v-if="!$adminOptions.hideTainacanHeader" />
                 <tainacan-repository-subheader
                         v-if="!$adminOptions.hideRepositorySubheader" 
@@ -42,8 +18,7 @@
                         :is-menu-compressed="isMenuCompressed" />
                 <div 
                         id="repository-container"
-                        class="column is-main-content"
-                        :style="$adminOptions.hidePrimaryMenu ? '--tainacan-sidebar-width: 0px' : ''">  
+                        class="column is-main-content">  
                     <router-view /> 
                 </div>
             </template>
@@ -52,7 +27,6 @@
 </template>
 
 <script>
-    import PrimaryMenu from './components/navigation/primary-menu.vue';
     import TainacanHeader from './components/navigation/tainacan-header.vue';
     import TainacanRepositorySubheader from './components/navigation/tainacan-repository-subheader.vue';
     import CustomDialog from './components/other/custom-dialog.vue';
@@ -60,7 +34,6 @@
     export default { 
         name: "AdminPage",
         components: {
-            PrimaryMenu,
             TainacanHeader,
             TainacanRepositorySubheader
         },
@@ -74,27 +47,6 @@
                 isRepositoryLevel : true,
                 activeRoute: '/collections',
                 hasPermalinksStructure: false
-            }
-        },
-        computed: {
-            menuCompressButtonTop() {
-                let amountOfElementsAbove = [
-                    this.$adminOptions.hidePrimaryMenuRepositoryButton,
-                    this.$adminOptions.hidePrimaryMenuCollectionsButton,
-                    this.$adminOptions.hidePrimaryMenuItemsButton
-                ].filter(Boolean).length;
-
-                switch (amountOfElementsAbove) {
-                    case 3:
-                        return 'calc(2.05em + 12px)';
-                    case 2:
-                        return 'calc(4.65em + 12px)';
-                    case 1:
-                        return 'calc(7.5em + 12px)';
-                    case 0:
-                    default:
-                        return 'calc(10.125em + 12px)';
-                }
             }
         },
         watch: {
@@ -207,12 +159,6 @@
             margin-left: 0px;
             margin-right: 0px;
         }
-    }
-    #primary-menu.is-compressed~.is-main-content {
-        --tainacan-sidebar-width: 3.0em;
-    }
-    #primary-menu:not(.is-compressed)~.is-main-content {
-        --tainacan-sidebar-width: 11em;
     }
 
     .is-secondary-content {

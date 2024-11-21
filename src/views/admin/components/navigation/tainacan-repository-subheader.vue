@@ -1,8 +1,7 @@
 <template>
     <div
             id="tainacan-repository-subheader" 
-            class="level secondary-page"
-            :class="{'is-menu-compressed': isMenuCompressed, 'is-menu-hidden': $adminOptions.hidePrimaryMenu, 'is-repository-level' : isRepositoryLevel}">
+            class="level secondary-page">
 
         <div 
                 v-if="$adminOptions.hideCollectionSubheader"
@@ -170,7 +169,7 @@ export default {
         padding-top: 10px;
         padding-bottom: 10px;
         padding-right: 0;
-        padding-left: calc((var(--tainacan-one-column) - 6.666666667px) + 11em);
+        padding-left: 0;
         margin: 0px;
         display: flex;
         vertical-align: middle; 
@@ -188,13 +187,6 @@ export default {
             .repository-subheader-icons { 
                 margin-right: -1em !important; 
             }
-        }
-
-        &.is-menu-compressed {     
-            padding-left: calc((var(--tainacan-one-column)  - 2.083333333px)  + 50px);
-        }
-        &.is-menu-hidden {
-            padding-left: calc(var(--tainacan-one-column)  - 2.083333333px) !important; 
         }
 
         h1 {

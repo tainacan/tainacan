@@ -586,7 +586,7 @@
         right: 0;
         z-index: 9999;
         background-color: var(--tainacan-gray1);
-        width: calc(100% - var(--tainacan-sidebar-width, 3.25em));
+        width: 100%;
         height: 60px;
         display: flex;
         justify-content: flex-end;

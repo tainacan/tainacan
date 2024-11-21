@@ -3,24 +3,6 @@
             id="tainacan-header"
             class="level is-mobile">
         <div class="level-left">
-            <div 
-                    v-if="!$adminOptions.hideTainacanHeaderHomeButton"
-                    class="level-item home-area">
-                <router-link
-                        to="/"
-                        :aria-label="$i18n.get('label_plugin_home_page')">
-                    <span
-                            v-tooltip="{
-                                content: $i18n.get('label_plugin_home_page'),
-                                autoHide: true,
-                                placement: 'auto',
-                                popperClass: ['tainacan-tooltip', 'tainacan-repository-header-tooltip', 'tooltip']
-                            }"
-                            class="icon">
-                        <i class="tainacan-icon tainacan-icon-home has-text-blue5" />
-                    </span>
-                </router-link>
-            </div>
             <div class="level-item logo-area">
                 <router-link
                         to="/"
@@ -49,29 +31,6 @@
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search" />
                     </span>
                 </button>
-            </div>
-            <div class="search-area is-hidden-mobile">
-                <b-input
-                        v-if="!$adminOptions.hideTainacanHeaderSearchInput"
-                        type="search"
-                        autocomplete="on"
-                        :aria-label="$i18n.get('instruction_search_in_repository')"
-                        :placeholder="$i18n.get('instruction_search_in_repository')"
-                        class="search-header"
-                        size="is-small"
-                        :model-value="searchQuery"
-                        icon-right="magnify"
-                        icon-right-clickable
-                        @update:model-value="(value) => futureSearchQuery = value"
-                        @keyup.enter="updateSearch"
-                        @icon-right-click="updateSearch" />
-                <router-link
-                        v-if="!$adminOptions.hideTainacanHeaderAdvancedSearch"
-                        class="advanced-search-text"
-                        :to="$routerHelper.getItemsPath({ advancedSearch: true })">
-                    {{ $i18n.get('advanced_search') }}
-                </router-link>
-
             </div>
             <button
                     v-if="!$adminOptions.hideTainacanHeaderProcessesPopup"

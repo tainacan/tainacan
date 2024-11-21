@@ -586,7 +586,6 @@
   --tainacan-filter-menu-width-theme: 20%;
   --tainacan-filters-inline-width: 272px;
   --tainacan-one-column: 4.166666667%;
-  --tainacan-sidebar-width: 3em;
   --tainacan-container-padding: 25px; }
   @media screen and (max-height: 760px) {
     :root {

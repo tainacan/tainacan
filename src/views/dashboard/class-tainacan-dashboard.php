@@ -96,7 +96,7 @@ class Dashboard extends Pages {
 			'content' => array( $this, 'tainacan_help_dashboard_card' ),
 			'icon' => $this->get_svg_icon( 'info' ),
 			'color' => 'gray',
-			'position' => 'side'
+			'position' => 'column3'
 		);
 
 		$collections = tainacan_collections()->fetch(array(), 'OBJECT');

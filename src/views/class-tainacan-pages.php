@@ -7,6 +7,7 @@ namespace Tainacan;
  */
 abstract class Pages {
 	use \Tainacan\Traits\SVG_Icon;
+	use \Tainacan\Traits\Admin_UI_Options;
 
 	/**
 	 * $tainacan_root_menu_slug is the root menu slug for Tainacan admin pages.
@@ -322,7 +323,7 @@ abstract class Pages {
 		$current_screen = get_current_screen();
 		$current_page_slug = $current_screen->id ? $current_screen->id : 'toplevel_page_tainacan_dashboard';
 		$current_page_parent = $current_screen->parent_file;
-		
+
 		?>
 		<aside id="tainacan-navigation-menu">
 			<nav>
@@ -340,12 +341,14 @@ abstract class Pages {
 					</span>
 				</header>
 				<ul id="tainacan-root-menu">
-					<li>
-						<a href="admin.php?page=tainacan_dashboard" <?php echo $current_page_slug === 'toplevel_page_tainacan_dashboard' ? 'aria-current="page"' : ''; ?>>
-							<span class="icon"><?php echo $this->get_svg_icon( 'home' ); ?></span>
-							<span class="menu-text"><?php _e('Home', 'tainacan'); ?></span>
-						</a>
-					</li>
+					<?php if ( !$this->has_admin_ui_option('hideTainacanHeaderHomeButton') ) : ?>
+						<li>
+							<a href="admin.php?page=tainacan_dashboard" <?php echo $current_page_slug === 'toplevel_page_tainacan_dashboard' ? 'aria-current="page"' : ''; ?>>
+								<span class="icon"><?php echo $this->get_svg_icon( 'home' ); ?></span>
+								<span class="menu-text"><?php _e('Home', 'tainacan'); ?></span>
+							</a>
+						</li>
+					<?php endif; ?>
 					<?php
 						$tainacan_root_links = isset( $submenu[$this->tainacan_root_menu_slug] ) ? $submenu[$this->tainacan_root_menu_slug] : [];
 						
