@@ -65,7 +65,7 @@ export default function({ attributes, setAttributes, isSelected }) {
                                     { collectionName ? collectionName : '' }
                                 </h3>
                             </div>
-                            { collectionId && collectionSlug ?
+                            { collectionSlug ?
                                 <div className="tainacan-search-container">
                                     <form
                                             style={{ maxWidth: maxWidth ? maxWidth + '%' : '80%' }}
@@ -204,7 +204,7 @@ export default function({ attributes, setAttributes, isSelected }) {
             <div>
                 <BlockControls>
                     { TainacanBlocksCompatToolbar({ controls: alignmentControls }) }
-                    { collectionId ?
+                    { collectionSlug ?
                         TainacanBlocksCompatToolbar({
                             label:__('Configure search source', 'tainacan'),
                             icon: <svg width="24" height="24" viewBox="-2 -2 20 20">
@@ -388,7 +388,7 @@ export default function({ attributes, setAttributes, isSelected }) {
                 ) : null
             }
 
-            { !collectionId ? (
+            { !collectionSlug ? (
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(
@@ -454,7 +454,7 @@ export default function({ attributes, setAttributes, isSelected }) {
                                     { collectionName ? collectionName : '' }
                                 </h3>
                             </div>
-                            { collectionId && collectionSlug ?
+                            { collectionSlug ?
                                 <div className="tainacan-search-container">
                                     <div
                                             style={{ maxWidth: maxWidth ? maxWidth + '%' : '80%' }}
@@ -500,7 +500,7 @@ export default function({ attributes, setAttributes, isSelected }) {
                 : null
             }
             
-            { collectionId && collectionSlug && !showCollectionHeader ?
+            { collectionSlug && !showCollectionHeader ?
                     <div className="tainacan-search-container">
                         <div
                                 style={{ maxWidth: maxWidth ? maxWidth + '%' : '80%' }}
