@@ -92,6 +92,8 @@ class CSV extends Exporter {
 
 		$line[] = $item->get_author_login();
 		
+		$line[] = $item->get_slug();
+
 		$line[] = $item->get_creation_date();
 		
 		$line[] = $this->get_author_name_last_modification($item->get_id());
@@ -250,6 +252,7 @@ class CSV extends Exporter {
 		$line[] = 'special_attachments';
 		$line[] = 'special_comment_status';
 		$line[] = 'special_item_author';
+		$line[] = 'special_item_slug';
 		$line[] = 'creation_date';
 		$line[] = 'user_last_modified';
 		$line[] = 'modification_date';
