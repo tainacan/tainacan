@@ -29,16 +29,6 @@ const state = {
       title: {
           text: ''
       },
-      responsive: [{
-          breakpoint: 480,
-          options: {
-              legend: {
-                  position: 'bottom',
-                  offsetX: -10,
-                  offsetY: 0
-              }
-          }
-      }],
       plotOptions: {
           bar: {
               borderRadius: 0,
@@ -79,18 +69,7 @@ const state = {
       stroke: {
         width: 0
       },
-      labels: [],
-      responsive: [{
-          breakpoint: 480,
-          options: {
-              chart: {
-                  width: 200
-              },
-              legend: {
-                  position: 'bottom'
-              }
-          }
-      }]
+      labels: []
     },
     horizontalBarChartOptions: {
       chart: {
