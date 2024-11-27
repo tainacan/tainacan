@@ -19,6 +19,7 @@ class Item extends Entity {
 		$author_id,
 		$url,
 		$id,
+		$slug,
 		$title,
 		$order,
 		$parent,
@@ -84,7 +85,7 @@ class Item extends Entity {
 	function get_attachments($exclude = null){
 		$item_id = $this->get_id();
 
-		if(!$exclude){
+		if (!$exclude) {
 			$to_exclude = [get_post_thumbnail_id( $item_id )];
 			if ($this->get_document_type() == 'attachment') {
 				$to_exclude[] = $this->get_document();
@@ -94,7 +95,7 @@ class Item extends Entity {
 		}
 
 		$attachments_query = [
-			'orderby'			=> 'menu_order',
+			'orderby'			=> 'menu_order title ID',
 			'order' 			=> 'ASC',
 			'post_type'     	=> 'attachment',
 			'posts_per_page' 	=> -1,
@@ -115,6 +116,14 @@ class Item extends Entity {
 	function get_author_name() {
 		$name = get_the_author_meta( 'display_name', $this->get_author_id() );
 		return apply_filters("tainacan-item-get-author-name", $name, $this);
+	}
+
+	/**
+	 * @return string
+	 */
+	function get_author_login() {
+		$name = get_the_author_meta( 'login', $this->get_author_id() );
+		return apply_filters("tainacan-item-get-author-login", $name, $this);
 	}
 
 	/**
@@ -215,6 +224,15 @@ class Item extends Entity {
 	 */
 	function get_title() {
 		return $this->get_mapped_property( 'title' );
+	}
+
+	/**
+	 * Get item slug
+	 *
+	 * @return string
+	 */
+	function get_slug() {
+		return $this->get_mapped_property( 'slug' );
 	}
 
 	/**
@@ -324,6 +342,23 @@ class Item extends Entity {
 	}
 
 	/**
+	 * Set the item slug
+	 *
+	 * If you dont set the item slug, it will be set automatically based on the name and
+	 * following WordPress default behavior of creating slugs for posts.
+	 *
+	 * If you set the slug for an existing one, WordPress will append a number at the end of in order
+	 * to make it unique (e.g slug-1, slug-2)
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_slug( $value ) {
+		$this->set_mapped_property( 'slug', $value );
+	}
+
+	/**
 	 * Define the order type
 	 *
 	 * @param [string] $value
@@ -398,6 +433,17 @@ class Item extends Entity {
 	 */
 	function set_description( $value ) {
 		$this->set_mapped_property( 'description', $value );
+	}
+
+	/**
+	 * Define the author id
+	 *
+	 * @param [string, integer] $author_io
+	 *
+	 * @return void
+	 */
+	function set_author_id( $author_id ) {
+		$this->set_mapped_property( 'author_id', $author_id );
 	}
 
 	/**

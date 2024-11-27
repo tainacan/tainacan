@@ -52,6 +52,24 @@ class Media {
 		// flush();
 	}
 
+	private function get_file_name_from_url($url) {
+		$response = wp_remote_head($url);
+		if (is_wp_error($response)) {
+			return basename($url);
+		}
+	
+		$headers = wp_remote_retrieve_headers($response);
+		$fileName = null;
+	
+		if (isset($headers['content-disposition'])) {
+			if (preg_match('/filename="([^"]+)"/', $headers['content-disposition'], $matches)) {
+				$fileName = $matches[1];
+				return $fileName;
+			}
+		}
+		return basename($url);
+	}
+
 	/**
 	 * Insert an attachment from an URL address.
 	 *
@@ -73,7 +91,7 @@ class Media {
 				return false;
 			}
 
-			return $this->insert_attachment_from_blob($file, basename($url), $post_id);
+			return $this->insert_attachment_from_blob($file, $this->get_file_name_from_url($url), $post_id);
 		} catch (\Exception $e) {
 			error_log($e);
 			return false;

@@ -404,7 +404,7 @@ export default {
     
                 this.localMaxItemsNumber = this.selectedItems.length;
 
-                let endpoint = '/collection/' + this.collectionId + '/items?' + qs.stringify({ postin: this.selectedItems, perpage: this.localMaxItemsNumber }) + '&orderby=post__in';
+                let endpoint = '/collection/' + this.collectionId + '/items?' + qs.stringify({ postin: this.selectedItems, perpage: this.localMaxItemsNumber }) + '&order=ASC&orderby=post__in';
 
                 if (
                     this.layout == 'tainacan-view-modes' &&

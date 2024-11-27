@@ -39,3 +39,4 @@ src/assets/css/tainacan-gutenberg-block-dynamic-items-list.css
 src/assets/css/tainacan-gutenberg-block-dynamic-items-list.css.map
 tests/wordpress-test
 tests/wordpress-tests-lib
+.phpunit.result.cache

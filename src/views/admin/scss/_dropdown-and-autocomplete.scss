@@ -22,7 +22,15 @@
             }
         }
         .dropdown.is-disabled {
-            cursor: default;
+            cursor: pointer;
+        }
+    }
+    &.dropdown.is-disabled {
+        cursor: not-allowed;
+        opacity: 1.0;
+
+        &.button {
+            opacity: 0.75;
         }
     }
     .dropdown-menu {

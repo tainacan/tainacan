@@ -10,10 +10,6 @@
 
 #metadata-checkbox-list {
   margin: 8px 12px 18px 12px; }
-  #metadata-checkbox-list .components-base-control__help {
-    margin-left: 33px;
-    font-size: 0.75rem;
-    color: var(--tainacan-block-gray4, #505253); }
 
 .wp-block-tainacan-item-submission-form {
   margin: 2em auto; }

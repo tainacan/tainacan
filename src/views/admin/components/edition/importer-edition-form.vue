@@ -96,6 +96,7 @@
                 <div 
                         v-if="importer.manual_collection"
                         class="column">
+                        
                     <!-- Target collection selection -------------------------------- --> 
                     <b-field
                             :addons="false" 

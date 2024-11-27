@@ -64,7 +64,13 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 		parent::__construct();
 		global $wpdb;
 		$this->table = $wpdb->prefix . 'tnc_bg_process';
-		$this->set_name( __('Background Process', 'tainacan') );
+
+		/**
+		 * The name is defined after 'init' hook due to the loading of translation files.
+		 * 
+		 * @see https://make.wordpress.org/core/2024/10/21/i18n-improvements-6-7/
+		 */
+		add_action( 'init', function() { $this->set_name( __('Background Process', 'tainacan') ); } );
 	}
 
 	public function get_id() {
@@ -454,6 +460,8 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 		
 		$filepath = $logs_folder . '/' . $filename;
 		
+		\ob_clean();
+		\flush();
 		file_put_contents($filepath, $this->recursive_stingify_log_array($log), FILE_APPEND);
 		
 		//$fh = fopen($filepath, 'a');

@@ -47,7 +47,9 @@ input[type="week"].input {
     }  
     &[disabled] {
         color: var(--tainacan-info-color) !important;
-        background-color: var(--tainacan-input-border-color) !important;
+        opacity: 0.75;
+        border-color: var(--tainacan-input-disabled-color,var(--tainacan-input-border-color));
+        background-color: var(--tainacan-input-disabled-color,var(--tainacan-input-border-color)) !important;
     }
     &.readonly, &[readonly] {
         background-color: var(--tainacan-input-background-color) !important;

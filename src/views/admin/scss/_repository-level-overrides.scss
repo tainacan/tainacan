@@ -111,6 +111,7 @@
         }
         input[type="checkbox"]:checked + .check {
             border: 2px solid var(--tainacan-blue5);
+            background-color: var(--tainacan-blue1);
     
             &::before {
                 background-color: var(--tainacan-blue5);

@@ -650,7 +650,7 @@
                     })
                     .catch((error) => {
                         this.$console.error(error);
-                        this.isFetchingPages = false;
+                        this.isFetchingUsers = false;
                     });
             }, 500),
             fetchMoreUsersForFiltering: _.debounce(function () {

@@ -220,7 +220,7 @@ export default {
 
             this.collectionsRequestSource = axios.CancelToken.source();
             
-            let endpoint = '/collections?'+ qs.stringify({ postin: this.selectedCollections, perpage: this.selectedCollections.length, fetch_preview_image_items: this.showCollectionThumbnail ? 0 : 3 }) + '&orderby=post__in&fetch_only=name,url,thumbnail';
+            let endpoint = '/collections?'+ qs.stringify({ postin: this.selectedCollections, perpage: this.selectedCollections.length, fetch_preview_image_items: this.showCollectionThumbnail ? 0 : 3 }) + '&order=ASC&orderby=post__in&fetch_only=name,url,thumbnail';
 
             this.tainacanAxios.get(endpoint, { cancelToken: this.collectionsRequestSource.token })
                 .then(response => {

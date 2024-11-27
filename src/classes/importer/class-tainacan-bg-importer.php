@@ -16,7 +16,13 @@ class Background_Importer extends Background_Process {
 
 	public function __construct() {
 		parent::__construct();
-		$this->set_name( __('Importer', 'tainacan') );
+				
+		/**
+		 * The name is defined after 'init' hook due to the loading of translation files.
+		 * 
+		 * @see https://make.wordpress.org/core/2024/10/21/i18n-improvements-6-7/
+		 */
+		add_action( 'init', function() { $this->set_name( __('Importer', 'tainacan') ); } );
 	}
 
 	/**

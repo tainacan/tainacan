@@ -190,6 +190,26 @@ export const setCommentStatusInBulk = ({commit}, parameters) => {
         });
 };
 
+export const setAuthorIdInBulk = ({commit}, parameters) => {
+    let groupId = parameters.groupId;
+    let collectionId = parameters.collectionId;
+
+    /**
+     * The new status value (draft, publish or private)
+     * @var bodyParams String
+     * */
+    let bodyParams = parameters.bodyParams;
+
+    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/set_author_id`, bodyParams)
+        .then(response => {
+            commit('setLastUpdated');
+            return response;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+};
+
 export const trashItemsInBulk = ({commit}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;

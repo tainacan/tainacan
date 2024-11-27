@@ -69,7 +69,7 @@ class Theme_Helper {
 		add_action( 'wp_head', array($this, 'add_social_meta'), 5 );
 
 		// Registers view modes and their placeholders
-		$this->register_tainacan_oficial_view_modes();
+		add_action( 'init' , array($this, 'register_tainacan_oficial_view_modes') );
 	}
 	
 	public function is_post_an_item(\WP_Post $post) {
@@ -495,7 +495,7 @@ class Theme_Helper {
 		 *     @type bool 	$hide_hide_filters_button					Hides the button resonsible for collpasing filters sidebar on desktop
 		 *     @type bool 	$hide_search								Hides the complete search bar, including advanced search link
 		 *     @type bool 	$hide_advanced_search						Hides only the advanced search link
-		 *     @type bool	$hide_displayed_metadata_dropdown			Hides the "Displayed metadata" dropdown even if the current view modes allows it	
+		 *     @type bool	$hide_displayed_metadata_button			Hides the "Displayed metadata" dropdown even if the current view modes allows it	
 		 *     @type bool	$hide_sorting_area							Completely hides all sorting controls	
 		 *     @type bool 	$hide_sort_by_button						Hides the button where user can select the metadata to sort by items (keeps the sort direction)
 		 *     @type bool 	$hide_items_thumbnail						Forces the thumbnail to be hiden on every listing. This setting also disables view modes that contain the 'requires-thumbnail' attr. By default is false or inherited from collection setting
@@ -590,7 +590,7 @@ class Theme_Helper {
 				$props .= 'data-' . str_replace("_", "-", $key) . "='" . $value . "' ";
 			}
 		}
-
+	
 		$allowed_html = [
 			'div' => [
 				'id' => true,

@@ -399,6 +399,50 @@
                                 </div>
                             </b-field>
 
+                            <!-- Publicationa area label -->
+                            <b-field
+                                    :addons="false" 
+                                    :label="$i18n.getHelperTitle('collections', 'item_publication_label')">
+                                <help-button 
+                                        :title="$i18n.getHelperTitle('collections', 'item_publication_label')" 
+                                        :message="$i18n.getHelperMessage('collections', 'item_publication_label')" />
+                                <b-input
+                                        id="tainacan-text-item-publication-label"
+                                        v-model="form.item_publication_label" />
+                            </b-field>
+
+                            <!-- Author editing ------------------------ --> 
+                            <b-field
+                                    :addons="false" 
+                                    :label="$i18n.getHelperTitle('collections', 'allow_item_author_editing')">
+                                &nbsp;
+                                <b-switch
+                                        id="tainacan-checkbox-item-author-editing" 
+                                        v-model="form.allow_item_author_editing"
+                                        size="is-small" 
+                                        true-value="yes"
+                                        false-value="no" />
+                                <help-button 
+                                        :title="$i18n.getHelperTitle('collections', 'allow_item_author_editing')" 
+                                        :message="$i18n.getHelperMessage('collections', 'allow_item_author_editing')" />
+                            </b-field>
+
+                            <!-- Slug editing ------------------------ --> 
+                            <b-field
+                                    :addons="false" 
+                                    :label="$i18n.getHelperTitle('collections', 'allow_item_slug_editing')">
+                                &nbsp;
+                                <b-switch
+                                        id="tainacan-checkbox-item-slug-editing" 
+                                        v-model="form.allow_item_slug_editing"
+                                        size="is-small" 
+                                        true-value="yes"
+                                        false-value="no" />
+                                <help-button 
+                                        :title="$i18n.getHelperTitle('collections', 'allow_item_slug_editing')" 
+                                        :message="$i18n.getHelperMessage('collections', 'allow_item_slug_editing')" />
+                            </b-field>
+
                             <!-- Comment Status ------------------------ --> 
                             <b-field
                                     :addons="false" 
@@ -928,6 +972,8 @@ export default {
                 default_order: 'ASC',
                 default_orderby: 'date',
                 allow_comments: 'closed',
+                allow_item_author_editing: 'no',
+                allow_item_slug_editing: 'no',
                 allows_submission: 'no',
                 submission_default_status: 'draft',
                 submission_anonymous_user: 'no',
@@ -950,6 +996,7 @@ export default {
                         icon: 'text'
                     }
                 },
+                item_publication_label: this.$i18n.get('label_publication_data'),
                 item_document_label: this.$i18n.get( 'Document', 'tainacan' ),
                 item_thumbnail_label: this.$i18n.get( 'Thumbnail', 'tainacan' ),
                 item_enable_thumbnail: 'yes',
@@ -1078,12 +1125,15 @@ export default {
                 this.form.default_order = this.collection.default_order;
                 this.form.default_orderby = this.collection.default_orderby;
                 this.form.allow_comments = this.collection.allow_comments;
+                this.form.allow_item_slug_editing = this.collection.allow_item_slug_editing;
+                this.form.allow_item_author_editing = this.collection.allow_item_author_editing;
                 this.form.allows_submission = this.collection.allows_submission;
                 this.form.submission_anonymous_user = this.collection.submission_anonymous_user;
                 this.form.submission_default_status = this.collection.submission_default_status;
                 this.form.submission_use_recaptcha = this.collection.submission_use_recaptcha;
                 this.form.hide_items_thumbnail_on_lists = this.collection.hide_items_thumbnail_on_lists;
                 this.form.item_enabled_document_types = this.collection.item_enabled_document_types;
+                this.form.item_publication_label = this.collection.item_publication_label;
                 this.form.item_document_label = this.collection.item_document_label;
                 this.form.item_thumbnail_label = this.collection.item_thumbnail_label;
                 this.form.item_enable_thumbnail = this.collection.item_enable_thumbnail;
@@ -1204,8 +1254,11 @@ export default {
                 submission_default_status: this.form.submission_default_status,
                 submission_use_recaptcha: this.form.submission_use_recaptcha,
                 allow_comments: this.form.allow_comments,
+                allow_item_slug_editing: this.form.allow_item_slug_editing,
+                allow_item_author_editing: this.form.allow_item_author_editing,
                 hide_items_thumbnail_on_lists: this.form.hide_items_thumbnail_on_lists,
                 item_enabled_document_types: this.form.item_enabled_document_types,
+                item_publication_label: this.form.item_publication_label,
                 item_document_label: this.form.item_document_label,
                 item_thumbnail_label: this.form.item_thumbnail_label,
                 item_enable_thumbnail: this.form.item_enable_thumbnail,
@@ -1239,12 +1292,15 @@ export default {
                     this.form.default_order = this.collection.default_order;
                     this.form.default_orderby = this.collection.default_orderby;
                     this.form.allow_comments = this.collection.allow_comments;
+                    this.form.allow_item_slug_editing = this.collection.allow_item_slug_editing;
+                    this.form.allow_item_author_editing = this.collection.allow_item_author_editing;
                     this.form.allows_submission = this.collection.allows_submission;
                     this.form.submission_anonymous_user = this.collection.submission_anonymous_user;
                     this.form.submission_default_status = this.collection.submission_default_status;
                     this.form.submission_use_recaptcha = this.collection.submission_use_recaptcha;
                     this.form.hide_items_thumbnail_on_lists = this.collection.hide_items_thumbnail_on_lists;
                     this.form.item_enabled_document_types = this.collection.item_enabled_document_types;
+                    this.form.item_publication_label = this.collection.item_publication_label;
                     this.form.item_document_label = this.collection.item_document_label;
                     this.form.item_thumbnail_label = this.collection.item_thumbnail_label;
                     this.form.item_enable_thumbnail = this.collection.item_enable_thumbnail;
@@ -1310,12 +1366,15 @@ export default {
                 this.form.default_orderby = this.collection.default_orderby;
                 this.form.enabled_view_modes = this.collection.enabled_view_modes;
                 this.form.allow_comments = this.collection.allow_comments;
+                this.form.allow_item_slug_editing = this.collection.allow_item_slug_editing;
+                this.form.allow_item_author_editing = this.collection.allow_item_author_editing;
                 this.form.allows_submission = this.collection.allows_submission;
                 this.form.submission_anonymous_user = this.collection.submission_anonymous_user;
                 this.form.submission_default_status = this.collection.submission_default_status;
                 this.form.submission_use_recaptcha = this.collection.submission_use_recaptcha;
                 this.form.hide_items_thumbnail_on_lists = this.collection.hide_items_thumbnail_on_lists;
                 this.form.item_enabled_document_types = this.collection.item_enabled_document_types;
+                this.form.item_publication_label = this.collection.item_publication_label;
                 this.form.item_document_label = this.collection.item_document_label;
                 this.form.item_thumbnail_label = this.collection.item_thumbnail_label;
                 this.form.item_enable_thumbnail = this.collection.item_enable_thumbnail;

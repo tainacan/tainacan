@@ -710,7 +710,10 @@ return apply_filters( 'tainacan-i18n', [
 	'label_metadata_related_features'				 => __( 'Metadata related features', 'tainacan' ),
 	'label_preview'									 => __( 'Preview', 'tainacan' ),
 	'label_go_to_permalinks'						 => __( 'Go to permalinks', 'tainacan' ),
-	
+	'label_publication_data'						 => __( 'Publication data', 'tainacan' ),
+	'label_authorship'			 					 => __( 'Authorship', 'tainacan' ),
+	'label_editing_publication_authorship'			 => __( 'Publication authorship editing', 'tainacan' ),
+
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),
@@ -793,6 +796,9 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_multiple_terms_insertion'			 => __( 'Type or paste here a list of names using a separator to create multiple terms at once.', 'tainacan' ),
 	'instruction_select_second_date_to_compare'		 => __( 'Select the second date metadatum', 'tainacan' ),
 	'instruction_select_second_numeric_to_compare'	 => __( 'Select the second numeric metadatum', 'tainacan' ),
+	'instruction_create_item_before_change_author'	 => __( 'Please create the item first before changing its author.', 'tainacan' ),
+	'instruction_create_item_before_change_slug'	 => __( 'Please create the item first before changing its slug.', 'tainacan' ),
+	'instruction_create_item_before_change_status'	 => __( 'Please create the item first to define its status.', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),
@@ -1071,6 +1077,13 @@ return apply_filters( 'tainacan-i18n', [
 	'info_autodraft_updated'						 => __( 'Autodraft updated. Please create the item to keep your changes.', 'tainacan' ),
 	'info_intersection_explainer'			 	 	 => __( 'Will show items if the selected value is:', 'tainacan' ),
 	'info_intersection_rules'				 	 	 => __( 'The value must match both rules to appear in the filter.', 'tainacan' ),
+	'info_editing_publication_authorship'			 => __( 'Warning! By changhing the item author, you may loose access to editing it. Certain types of users can only edit items that are authored by theirselves.', 'tainacan' ),		
+	/* translators: The first string is the current author name and the second is the future author name */
+	'info_change_author_from_%s_to_%s'				 => __( 'Are you sure you want to change the authorship of this item from <em>%1$s</em> to <em>%2$s</em>?', 'tainacan' ),		
+	'info_authorship'								 => __( 'The user who is credited as creator of this item and who generally have capabilities to edit it, besides administrators.', 'tainacan' ),
+	'info_comment_status' 							 => __( 'Allow or disallow users to write comments in the item public page.', 'tainacan' ),
+	'info_publication_data'                          => __( 'This section gathers information related to the item publication on the website.', 'tainacan' ),
+	'info_publication_data_editing'                  => __( 'You may tweak some of the options available here in the collection settings.', 'tainacan' ),
 
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),

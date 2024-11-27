@@ -404,7 +404,7 @@ class REST_Items_Controller extends REST_Controller {
 		$args['post_parent'] = $item_id;
 		$args['post_type'] = 'attachment';
 		$args['post_status'] = 'any';
-
+		$args['orderby'] .= ' title ID';
 		unset($args['perm']);
 
 		$posts_query  = new \WP_Query();
@@ -429,6 +429,7 @@ class REST_Items_Controller extends REST_Controller {
 				'date' => $post->post_date,
 				'date_gmt' => $post->post_date_gmt,
 				'author' => $post->post_author,
+				'menu_order' => $post->menu_order,
 				'url' => wp_get_attachment_url( $post->ID ),
 				'media_type' => wp_attachment_is_image( $post->ID ) ? 'image' : 'file',
 				'alt_text' => get_post_meta( $post->ID, '_wp_attachment_image_alt', true ),

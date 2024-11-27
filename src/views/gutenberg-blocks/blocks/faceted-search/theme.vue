@@ -366,14 +366,14 @@
         </div>
 
         <!-- Theme Full Screen mode, it's just a special view mode -->
-        <div 
-                id="tainacanFullScreenViewMode"
-                class="search-control-item search-control-item--full-screen-view-mode">
-            <template 
-                    v-for="(viewModeOption, index) of enabledViewModes"
-                    :key="index">
+        <template 
+                v-for="(viewModeOption, index) of enabledViewModes"
+                :key="index">
+            <div 
+                    v-if="!showFullscreenWithViewModes && registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == true"
+                    id="tainacanFullScreenViewMode"
+                    class="search-control-item search-control-item--full-screen-view-mode">
                 <button 
-                        v-if="!showFullscreenWithViewModes && registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == true"
                         class="button is-white"
                         :aria-label="$i18n.get('label_slides')"
                         :value="viewModeOption"
@@ -383,8 +383,8 @@
                             v-html="registeredViewModes[viewModeOption].icon" />
                     <span class="is-hidden-tablet-only">{{ registeredViewModes[viewModeOption].label }}</span>
                 </button>
-            </template>
-        </div>
+            </div>
+        </template>
 
         <!-- Exposers or alternative links modal button -->
         <div 
@@ -454,7 +454,7 @@
                 v-else
                 id="filters-modal"
                 ref="filters-modal"     
-                v-model="isFiltersModalActive"       
+                v-model="isFiltersModalActive"
                 role="region"
                 :width="736"
                 :auto-focus="filtersAsModal"
@@ -462,7 +462,9 @@
                 full-screen
                 :custom-class="'tainacan-modal tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '') + (displayFiltersHorizontally ? ' horizontal-filters' : '')"
                 :can-cancel="hideHideFiltersButton || !filtersAsModal ? ['x', 'outside'] : ['x', 'escape', 'outside']"
-                :close-button-aria-label="$i18n.get('close')">
+                :close-button-aria-label="$i18n.get('close')"
+                @after-leave="filtersModalStateHasChanged = !filtersModalStateHasChanged"
+                @after-enter="filtersModalStateHasChanged = !filtersModalStateHasChanged">
                 
             <!-- JS-side hook for extra form content -->
             <div 
@@ -646,7 +648,7 @@
                     :displayed-metadata="displayedMetadata"
                     :should-hide-items-thumbnail="hideItemsThumbnail"
                     :items="items"
-                    :is-filters-menu-compressed="!hideFilters && !isFiltersModalActive"
+                    :filters-modal-state-has-changed="filtersModalStateHasChanged"
                     :total-items="totalItems"
                     :is-loading="showLoading"
                     :enabled-view-modes="enabledViewModes"
@@ -815,7 +817,8 @@
                 itemsListBottomIntersectionObserver: null,
                 latestPerPageAfterViewModeWithoutPagination: 12,
                 latestPageAfterViewModeWithoutPagination: 1,
-                hooks: {}
+                hooks: {},
+                filtersModalStateHasChanged: false
             }
         },
         computed: {
