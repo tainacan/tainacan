@@ -47,30 +47,6 @@
                 isRepositoryLevel : true,
                 activeRoute: '/collections',
                 hasPermalinksStructure: false
-<<<<<<< HEAD
-=======
-            }
-        },
-        computed: {
-            menuCompressButtonTop() {
-                let amountOfElementsAbove = [
-                    this.$adminOptions.hidePrimaryMenuRepositoryButton,
-                    this.$adminOptions.hidePrimaryMenuCollectionsButton,
-                    this.$adminOptions.hidePrimaryMenuItemsButton
-                ].filter(Boolean).length;
-
-                switch (amountOfElementsAbove) {
-                    case 3:
-                        return 'calc(2.05em + 12px)';
-                    case 2:
-                        return 'calc(4.65em + 12px)';
-                    case 1:
-                        return 'calc(7.5em + 12px)';
-                    case 0:
-                    default:
-                        return 'calc(10.125em + 12px)';
-                }
->>>>>>> develop
             }
         },
         watch: {
@@ -89,11 +65,8 @@
         },
         created() {
 
-<<<<<<< HEAD
             wp.hooks.doAction('tainacan_navigation_path_updated', this.$route);
 
-=======
->>>>>>> develop
             this.hasPermalinksStructure = tainacan_plugin.has_permalinks_structure;
 
             if ( this.hasPermalinksStructure ) {

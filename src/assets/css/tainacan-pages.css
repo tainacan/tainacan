@@ -565,6 +565,7 @@
   --tainacan-input-color: #1d1d1d;
   --tainacan-input-background-color: var(--tainacan-white);
   --tainacan-input-border-color: var(--tainacan-gray2);
+  --tainacan-input-disabled-color: var(--tainacan-gray1);
   --tainacan-label-color: var(--tainacan-gray5);
   --tainacan-info-color: var(--tainacan-gray4);
   --tainacan-heading-color: var(--tainacan-black);
