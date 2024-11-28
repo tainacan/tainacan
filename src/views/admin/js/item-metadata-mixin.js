@@ -20,9 +20,10 @@ export const itemMetadataMixin = {
             handler() {
                 this.hasErrorsOnForm( this.errors.length > 0 && this.errors[0].errors && this.errors[0].errors.length );
                 
-                if (this.errors.length > 0 && this.errors[0].errors && this.errors[0].errors.length) {
-                    for (let error of this.errors) 
+                if ( this.errors.length > 0 && this.errors[0].errors && this.errors[0].errors.length ) {
+                    for (let error of this.errors) {
                         this.$emitter.emit('updateErrorMessageOf#' + (error.metadatum_id + (error.parent_meta_id ? '-' + error.parent_meta_id : '')), error);
+                    }
                 }
             },
             deep: true
@@ -36,8 +37,8 @@ export const itemMetadataMixin = {
             'deleteGroupFromItemSubmissionMetadatum'
         ]),
         updateItemMetadataValue({ itemId, metadatumId, values, parentMetaId, parentId }) {
-            
-            if (itemId) {
+
+            if ( itemId ) {
 
                 this.isUpdatingValues = true;
 
@@ -54,15 +55,18 @@ export const itemMetadataMixin = {
                 })
                     .then(() => { 
                         this.isUpdatingValues = false;
-                        let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == metadatumId && (parentMetaId ? errorItem.parent_meta_id == parentMetaId : true ));
-                        if (index >= 0)
+                        let index = this.errors.findIndex( errorItem => ( errorItem.metadatum_id == metadatumId && (parentMetaId ? errorItem.parent_meta_id == parentMetaId : true ) ) || ( errorItem.metadatum_id == parentId ) );
+                        if ( index >= 0 )
                             this.errors.splice( index, 1);
                         
                         this.$emitter.emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[index]);
+
+                        if ( parentId )
+                            this.$emitter.emit('updateErrorMessageOf#' + parentId );
                     })
                     .catch(({ error_message, error, item_metadata }) => {
                         this.isUpdatingValues = false;
-                        let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == metadatumId && (parentMetaId ? errorItem.parent_meta_id == parentMetaId : true ));
+                        let index = this.errors.findIndex( errorItem => ( errorItem.metadatum_id == metadatumId && (parentMetaId ? errorItem.parent_meta_id == parentMetaId : true ) ) || ( errorItem.metadatum_id == parentId ) );
                         let messages = [];
 
                         for (let index in error)
@@ -71,9 +75,15 @@ export const itemMetadataMixin = {
                         if ( index >= 0) {
                             Object.assign( this.errors, { [index]: { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages } });
                             this.$emitter.emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[index]);
+
+                            if ( parentId )
+                                this.$emitter.emit('updateErrorMessageOf#' + parentId );
                         } else {
                             this.errors.push( { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages } );
                             this.$emitter.emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[0]);
+
+                            if ( parentId )
+                                this.$emitter.emit('updateErrorMessageOf#' + parentId );
                         }
                         
                 });

@@ -265,6 +265,24 @@ class Collections extends Repository {
 				'enum'  => [ 'open', 'closed' ],
 				'validation'  => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
 			],
+			'allow_item_slug_editing'  => [
+				'map'         => 'meta',
+				'title'       => __( 'Allow changing the item slug', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'If this option is enabled, users will be able to modify the item original slug, resulting in changes to the item permalink.', 'tainacan' ),
+				'default'     => 'no',
+				'enum'  => [ 'yes', 'no' ],
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+			],
+			'allow_item_author_editing'  => [
+				'map'         => 'meta',
+				'title'       => __( 'Allow changing the item author', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'If this option is enabled, users will be able to modify the item original authorship, resulting in changes to who can edit it and who is credited as creator of it.', 'tainacan' ),
+				'default'     => 'no',
+				'enum'  => [ 'yes', 'no' ],
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+			],
 			'submission_anonymous_user'  => [
 				'map'         => 'meta',
 				'title'       => __( 'Allows submission by anonymous user', 'tainacan' ),
@@ -373,6 +391,14 @@ class Collections extends Repository {
 						'icon' => 'text'
 					]
 				]
+			],
+			'item_publication_label' => [
+				'map'         => 'meta',
+				'title'       => __( 'Publication area label', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'The label for the publication section in the item edition form, where author, status, slug and comments options appear', 'tainacan' ),
+				'default'     => __( 'Publication data', 'tainacan' ),
+				//'validation' => v::stringType(),
 			],
 			'item_document_label' => [
 				'map'         => 'meta',

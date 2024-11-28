@@ -18,6 +18,7 @@
     }
     input[type="checkbox"][disabled=disabled] + .check {
         border-color: var(--tainacan-input-border-color);
+        background: var(--tainacan-input-disabled-color,var(--tainacan-input-border-color));
         cursor: not-allowed;
     }
 

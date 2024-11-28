@@ -16,18 +16,6 @@
                 {{ $i18n.get('title_item_page') + ' ' }}
                 <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}    
                 </span>
-                <span
-                        v-if="(item != null && item != undefined && item.status != undefined && item.status != 'autodraft' && !isLoading)"
-                        class="icon has-text-gray4"
-                        style="margin-left: 0.5em;">
-                    <i 
-                            class="tainacan-icon tainacan-icon-1em"
-                            :class="$statusHelper.getIcon(item.status)"
-                        />
-                    <help-button
-                            :title="$i18n.get('status_' + item.status)"
-                            :message="$i18n.get('info_item_' + item.status) + ' ' + $i18n.get('instruction_edit_item_status')" />
-                </span>
             </h1>
         </tainacan-title>
 
@@ -191,6 +179,110 @@
                                     v-html="getBeginLeftForm" />
                         </template>
 
+                        <!-- Publication area -->
+                        <div class="section-label">
+                            <label>
+                                <span class="icon has-text-gray4">
+                                    <i class="tainacan-icon tainacan-icon-item" />
+                                </span>
+                                {{ collection && collection.item_publication_label ? collection.item_publication_label : $i18n.get('label_publication_data') }}
+                            </label>
+                        </div>
+
+                        <div class="section-box publication-field">
+                            
+                            <!-- Authorship -->
+                            <div class="section-authorship">
+                                <div class="field is-horizontal has-addons">
+                                    <div class="field-label">
+                                        <label class="label">{{ $i18n.get('label_authorship') }}</label>
+                                    </div>
+                                    <div class="field-body">
+                                        <div class="field has-addons">
+                                            <div>
+                                                <span class="icon has-text-gray4">
+                                                    <i class="tainacan-icon tainacan-icon-userfill tainacan-icon-1-25em " />
+                                                </span>
+                                                &nbsp;{{ item.author_name }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Slug -------------------------------- -->
+                            <div class="section-slug">
+                                <div class="field is-horizontal has-addons">
+                                    <div class="field-label">
+                                        <label class="label">{{ $i18n.get('label_slug') }}</label>
+                                    </div>
+                                    <div class="field-body">
+                                        <div class="field has-addons">
+                                            <a
+                                                    target="_blank"
+                                                    :href="item.url">
+                                                <span>.../{{ item.slug }}</span>&nbsp;
+                                                <span class="icon">
+                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl" />
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Item Status -->
+                            <div class="section-status">
+                                <div class="field is-horizontal has-addons">
+                                    <div class="field-label">
+                                        <label class="label">{{ $i18n.get('label_status') }}</label>
+                                    </div>
+                                    <div class="field-body">
+                                        <div class="field has-addons">
+                                            <span class="icon has-text-gray">
+                                                <i 
+                                                        class="tainacan-icon tainacan-icon-18px"
+                                                        :class="$statusHelper.getIcon(item.status)" />
+                                            </span>
+                                            &nbsp;
+                                            <template v-if="item.status !== 'auto-draft' && $statusHelper.getStatuses().find(aStatusObject => aStatusObject.slug == item.status)">
+                                                {{ $statusHelper.getStatuses().find(aStatusObject => aStatusObject.slug == item.status).name }}
+                                            </template>
+                                            <template v-else-if="item.status === 'auto-draft'">
+                                                {{ $i18n.get('status_auto-draft') }}
+                                            </template>
+                                            <help-button
+                                                    :title="$i18n.get('status_' + item.status)"
+                                                    :message="$i18n.get('info_item_' + item.status)" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Comment Status ------------------------ -->
+                            <div 
+                                    v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemSingleCommentsOpen"
+                                    class="section-status">
+                                <div class="field is-horizontal has-addons">
+                                    <div class="field-label">
+                                        <label class="label">{{ $i18n.get('label_comments') }}</label>
+                                    </div>
+                                    <div class="field-body">
+                                        <div class="field has-addons">
+                                            <span class="icon has-text-gray4">
+                                                <i class="tainacan-icon tainacan-icon-comment" />
+                                            </span>
+                                            &nbsp;
+                                            <span>
+                                                {{ item.comment_status == 'open' ? $i18n.get('label_allowed') : $i18n.get('label_not_allowed') }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
                         <!-- Document -------------------------------- -->
                         <div 
                                 v-if="shouldDisplayItemSingleDocument"
@@ -217,6 +309,7 @@
                                 <p>{{ $i18n.get('info_no_document_to_item') }}</p>
                             </div>
                         </div>
+                        
                         <!-- Thumbnail -------------------------------- -->
                         <div 
                                 v-if="shouldDisplayItemSingleThumbnail"
@@ -316,7 +409,7 @@
                     <div class="section-label">
                         <label>{{ $i18n.get('label_visibility') }}</label>
                     </div>
-                    <div class="section-status">
+                    <div class="section-visibility">
                         <div class="field has-addons">
                             <span style="display: flex;">
                                 <span class="icon has-text-gray4">
@@ -357,35 +450,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Comment Status ------------------------ -->
-                <div
-                        v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemSingleCommentsOpen"
-                        class="column is-narrow">
-                    <div class="section-label">
-                        <span class="icon has-text-gray4">
-                            <i class="tainacan-icon tainacan-icon-comment" />
-                        </span>
-                        <label>{{ $i18n.get('label_comments') }}</label>
-                    </div>
-                    <div class="section-status">
-                        <div class="field has-addons">
-                            <span>
-                                <span
-                                        v-if="item.comment_status != 'open'"
-                                        class="icon">
-                                    <i class="tainacan-icon tainacan-icon-close" />
-                                </span>
-                                <span
-                                        v-if="item.comment_status == 'open'"
-                                        class="icon">
-                                    <i class="tainacan-icon tainacan-icon-approved" />
-                                </span>
-                                {{ item.comment_status == 'open' ? $i18n.get('label_allowed') : $i18n.get('label_not_allowed') }}
-                            </span>
-                        </div>
-                    </div>
-                </div>
                     
                 <div class="form-submission-footer">
                     <router-link
@@ -420,15 +484,6 @@
                         </span>
                         <span class="is-hidden-touch">{{ $i18n.get('label_view_as') }}</span>
                     </button>
-                    <a
-                            target="_blank"
-                            class="button sequence-button is-pulled-right"
-                            :href="item.url">
-                        <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl" />
-                        </span>
-                        <span>{{ $i18n.get('label_item_page_on_website') }}</span>
-                    </a>
                     <router-link
                             v-if="item.current_user_can_edit"
                             class="button is-secondary"
@@ -571,7 +626,7 @@
             this.fetchItem({ 
                 itemId: this.itemId,
                 contextEdit: true,    
-                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document_mimetype,document,comment_status,document_as_html,related_items'       
+                fetchOnly: 'title,slug,author_id,author_name,thumbnail,status,modification_date,document_type,document_mimetype,document,comment_status,document_as_html,related_items'       
             })
             .then((resp) => {
                 resp.request.then((item) => {
@@ -859,6 +914,16 @@
     }
 
     .section-status {
+        .field {
+            border-bottom: none;
+            .icon {
+                font-size: 1.125em !important;
+                color: var(--tainacan-info-color);
+            }
+        }
+    }
+
+    .section-visibility {
         font-size: 0.875em;
 
         .field {
@@ -869,6 +934,46 @@
                 color: var(--tainacan-info-color);
             }
         }
+    }
+
+    .publication-field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5em;
+
+        .field-label {
+            white-space: nowrap;
+            text-align: left;
+            text-align: start;
+            margin-right: 1rem;
+            margin-bottom: 0;
+        }
+        .field.has-addons {
+            align-items: center;
+        }
+        .tainacan-help-tooltip-trigger {
+            margin-left: 1rem;
+        }
+        #tainacan-text-slug #url-prefix-indicator {
+            pointer-events: initial;
+        }
+        #tainacan-text-slug #url-prefix-indicator i::before {
+            content: '.../';
+            font-family: var(--tainacan-font-family);
+            font-size: 1.125em;
+            opacity: 0.5;
+            margin-right: -0.35em;
+            color: var(--tainacan-info-color);
+            cursor: pointer;
+        }
+        .field-body {
+            font-size: 0.875em;
+            line-height: 2.0em;
+
+            .tainacan-help-tooltip-trigger {
+                font-size: 1.25em;
+            }
+        } 
     }
 
     .section-thumbnail {

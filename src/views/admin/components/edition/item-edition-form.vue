@@ -30,7 +30,7 @@
                     {{ (item != null && item != undefined) ? item.title : '' }}
                 </span>
                 <span
-                        v-if="(item != null && item != undefined && item.status != undefined && item.status != 'autodraft' && !isLoading)"
+                        v-if="$adminOptions.itemEditionStatusOptionOnFooterDropdown && (item != null && item != undefined && item.status != undefined && item.status != 'autodraft' && !isLoading)"
                         class="icon has-text-gray4"
                         style="margin-left: 0.5em;"
                         @mouseenter="$emit('toggleItemEditionFooterDropdown')">
@@ -177,8 +177,10 @@
                     <div
                             class="column main-column"
                             :class="
-                                (( (shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
-                                    (shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)) ? 'is-7' : 'is-12'">
+                                (
+                                    ( (shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs ) ||
+                                    ( shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs )
+                                ) ? 'is-7' : 'is-12'">
 
                         <!-- Hook for extra Form options -->
                         <template v-if="hasBeginRightForm">
@@ -492,6 +494,29 @@
                                     
                                 </div>
 
+
+                                <!-- Publication section -->
+                                <div    
+                                        v-if="activeTab === 'publication' && !$adminOptions.hideItemEditionPublicationSection && $adminOptions.itemEditionPublicationSectionInsideTabs"
+                                        class="tab-item"
+                                        role="tabpanel"
+                                        aria-labelledby="publication-tab-label"
+                                        tabindex="0"> 
+                                    <item-publication-edition-form
+                                            :item="item"
+                                            :form="form"
+                                            :collection="collection"
+                                            :is-loading="isLoading"
+                                            :is-updating-slug="isUpdatingSlug"
+                                            :has-some-error="formErrorMessage != undefined && formErrorMessage != ''"
+                                            :current-user-can-delete="item && item.current_user_can_delete"
+                                            :current-user-can-publish="collection && collection.current_user_can_publish_items"
+                                            @on-update-comment-status="updateCommentStatus"
+                                            @on-update-item-author="updateItemAuthor"
+                                            @on-update-item-slug="updateItemSlug"
+                                            @on-submit="onSubmit" />
+                                </div>
+
                                 <!-- Document and thumbnail on mobile modal -->
                                 <div    
                                         v-if="activeTab === 'document' && $adminOptions.itemEditionDocumentInsideTabs"
@@ -550,6 +575,24 @@
                                 :style="isMetadataNavigation && !isMobileScreen ? 'max-height: calc(100vh - 142px);' : ''"
                                 class="sticky-container">
 
+                            <!-- Publication section -->
+                            <item-publication-edition-form
+                                    v-if="!$adminOptions.hideItemEditionPublicationSection && !$adminOptions.itemEditionPublicationSectionInsideTabs"
+                                    :item="item"
+                                    :form="form"
+                                    :collection="collection"
+                                    :is-loading="isLoading"
+                                    :is-updating-slug="isUpdatingSlug"
+                                    :has-some-error="formErrorMessage != undefined && formErrorMessage != ''"
+                                    :current-user-can-delete="item && item.current_user_can_delete"
+                                    :current-user-can-publish="collection && collection.current_user_can_publish_items"
+                                    @on-update-comment-status="updateCommentStatus"
+                                    @on-update-item-author="updateItemAuthor"
+                                    @on-update-item-slug="updateItemSlug"
+                                    @on-submit="onSubmit" />
+
+                            <!-- <hr v-if="!$adminOptions.hideItemEditionPublicationSection && !$adminOptions.itemEditionPublicationSectionInsideTabs"> -->
+
                             <!-- Hook for extra Form options -->
                             <template v-if="hasBeginLeftForm">
                                 <form
@@ -570,7 +613,7 @@
                                     @on-set-text-document="setTextDocument"
                                     @on-set-url-document="setURLDocument" />
 
-                            <hr v-if="shouldDisplayItemEditionDocument && shouldDisplayItemEditionThumbnail">
+                            <hr v-if="shouldDisplayItemEditionDocument && !$adminOptions.itemEditionDocumentInsideTabs">
 
                             <!-- Thumbnail -------------------------------- -->
                             <item-thumbnail-edition-form 
@@ -583,7 +626,7 @@
                                     @on-update-thumbnail-alt="($event) => onUpdateThumbnailAlt($event)"
                                     @open-thumbnail-media-frame="thumbnailMediaFrame.openFrame($event)" />
 
-                            <hr v-if="(shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs) || hasEndLeftForm">
+                            <hr v-if="shouldDisplayItemEditionThumbnail && !$adminOptions.itemEditionDocumentInsideTabs">
 
                             <!-- Attachments -->
                             <item-attachments-edition-form
@@ -597,7 +640,7 @@
                                     @open-attachments-media-frame="($event) => attachmentsMediaFrame.openFrame($event)"
                                     @on-delete-attachment="deleteAttachment($event)" />
 
-                            <hr v-if="hasEndLeftForm">
+                            <hr v-if="(shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs) || hasEndLeftForm">
 
                             <!-- Hook for extra Form options -->
                             <template v-if="hasEndLeftForm">
@@ -687,36 +730,14 @@
                     </span>
                 </p>
 
-                <!-- Comment Status ------------------------ -->
-                <div 
-                        v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemEditionCommentsToggle"
-                        style="margin-left: 2em;"
-                        class="section-status">
-                    <div class="field has-addons">
-                        <b-switch
-                                id="tainacan-checkbox-comment-status"
-                                v-model="form.comment_status"
-                                size="is-small"
-                                true-value="open"
-                                false-value="closed">
-                            <span class="icon has-text-gray4">
-                                <i class="tainacan-icon tainacan-icon-comment" />
-                            </span>
-                            {{ $i18n.get('label_allow_comments') }}
-                            <help-button
-                                    :title="$i18n.getHelperTitle('items', 'comment_status')"
-                                    :message="$i18n.getHelperMessage('items', 'comment_status')" />
-                        </b-switch>
-                    </div>
-                </div>
             </div>
             
             <item-form-footer-buttons
                     :status="form.status"
                     :collection-id="form.collectionId"
                     :is-on-sequence-edit="isOnSequenceEdit"
-                    :is-current-item-on-sequence-edit="(group != null && group.items_count != undefined && group.items_count == itemPosition)"
-                    :has-next-item-on-sequence-edit="(group != null && group.items_count != undefined && group.items_count < itemPosition)"
+                    :is-last-item-on-sequence-edit="(group != null && group.items_count != undefined && group.items_count == itemPosition)"
+                    :has-next-item-on-sequence-edit="(group != null && group.items_count != undefined && group.items_count > itemPosition)"
                     :has-previous-item-on-sequence-edit="itemPosition > 1"
                     :is-mobile-screen="isMobileScreen"
                     :has-some-error="formErrorMessage != undefined && formErrorMessage != ''"
@@ -737,7 +758,7 @@ import { nextTick, defineAsyncComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 
 import wpMediaFrames from '../../js/wp-media-frames';
-import { formHooks } from '../../js/mixins';
+import { permalinkGetter, formHooks } from '../../js/mixins';
 import { itemMetadataMixin } from '../../js/item-metadata-mixin';
 
 import RelatedItemsList from '../lists/related-items-list.vue';
@@ -745,6 +766,7 @@ import CustomDialog from '../other/custom-dialog.vue';
 import ItemMetadatumErrorsTooltip from '../other/item-metadatum-errors-tooltip.vue';
 import ItemDocumentTextModal from '../modals/item-document-text-modal.vue';
 import ItemDocumentURLModal from '../modals/item-document-url-modal.vue';
+import ItemPublicationEditionForm from '../edition/item-publication-edition-form.vue';
 import ItemDocumentEditionForm from '../edition/item-document-edition-form.vue';
 import ItemThumbnailEditionForm from '../edition/item-thumbnail-edition-form.vue';
 import ItemAttachmentsEditionForm from '../edition/item-attachments-edition-form.vue';
@@ -762,13 +784,14 @@ export default {
     components: {
         RelatedItemsList,
         ItemMetadatumErrorsTooltip,
+        ItemPublicationEditionForm,
         ItemThumbnailEditionForm,
         ItemDocumentEditionForm,
         ItemAttachmentsEditionForm,
         ItemFormFooterButtons,
         TainacanFormItem: defineAsyncComponent(() => import('../metadata-types/tainacan-form-item.vue')),
     },
-    mixins: [ formHooks, itemMetadataMixin ],
+    mixins: [ formHooks, permalinkGetter, itemMetadataMixin ],
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
             this.$buefy.modal.open({
@@ -809,6 +832,7 @@ export default {
             sequenceRightDirection: false,
             isLoading: false,
             isLoadingMetadataSections: false,
+            isUpdatingSlug: false,
             metadataCollapses: [],
             metadataSectionCollapses: [],
             collapseAll: true,
@@ -901,6 +925,13 @@ export default {
                 name: this.$i18n.get('metadata'),
                 total: this.itemMetadata.length
             }];
+            if ( this.$adminOptions.itemEditionPublicationSectionInsideTabs && !this.$adminOptions.hideItemEditionPublicationSection ) {
+                pageTabs.push({
+                    slug: 'publication',
+                    icon: 'item',
+                    name: this.collection && this.collection.item_publication_label ? this.collection.item_publication_label : this.$i18n.get('label_publication_data')
+                });
+            }
             if ( this.$adminOptions.itemEditionDocumentInsideTabs && (this.shouldDisplayItemEditionDocument || this.shouldDisplayItemEditionThumbnail) ) {
                 pageTabs.push({
                     slug: 'document',
@@ -1164,7 +1195,7 @@ export default {
         ...mapActions('metadata',[
             'fetchMetadataSections'
         ]),
-        onSubmit(status, sequenceDirection) {
+        onSubmit(status, alternativeDestination) {
 
             // Puts loading on Item edition
             this.isLoading = true;
@@ -1188,7 +1219,6 @@ export default {
             this.errors = [];
 
             promise.then(updatedItem => {
-
                 this.item = updatedItem;
 
                 // Fills hook forms with it's real values
@@ -1196,6 +1226,9 @@ export default {
 
                 // Fill this.form data with current data.
                 this.form.status = status == 'trash' ? status : this.item.status;
+                this.form.slug = this.item.slug;
+                this.form.author_id = this.item.author_id;
+                this.form.author_name = this.item.author_name;
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
                 this.form.comment_status = this.item.comment_status;
@@ -1204,9 +1237,12 @@ export default {
                 
                 this.isLoading = false;
 
-                if (!this.$adminOptions.itemEditionMode && !this.$adminOptions.mobileAppMode) {
-
-                    if (!this.isOnSequenceEdit) {
+                if (
+                    !this.$adminOptions.itemEditionMode &&
+                    !this.$adminOptions.mobileAppMode &&
+                    alternativeDestination !== 'current'
+                ) {
+                    if ( !this.isOnSequenceEdit ) {
                         if ( this.hasRedirectHook ) {
                             window.location.replace( this.getRedirectHook );
                         } else {
@@ -1219,12 +1255,11 @@ export default {
                                 this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId));
                         }
                     } else {
-                        if (sequenceDirection == 'next')
+                        if (alternativeDestination == 'next')
                             this.onNextInSequence();
-                        else if (sequenceDirection == 'previous')
+                        else if (alternativeDestination == 'previous')
                             this.onPrevInSequence();
                     }
-
                 }
 
                 // Sends info to iframe containing item edition form and other use cases
@@ -1245,17 +1280,7 @@ export default {
             })
             .catch((errors) => {
                 
-                if (errors.errors) {
-                    for (let error of errors.errors) {
-                        for (let metadatum of Object.keys(error)){
-                            this.errors.push({ 
-                                metadatum_id: metadatum,
-                                errors: error[metadatum]
-                            });
-                        }   
-                    }
-                    this.formErrorMessage = errors.error_message;
-                }
+                this.prepareErrors(errors);
                 this.form.status = previousStatus;
                 this.item.status = previousStatus;
 
@@ -1311,6 +1336,9 @@ export default {
 
                 // Pre-fill status with publish to incentivate it
                 this.form.status = 'auto-draft'
+                this.form.slug = this.item.slug;
+                this.form.author_id = this.item.author_id;
+                this.form.author_name = this.item.author_name;
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
                 this.form.comment_status = this.item.comment_status;
@@ -1393,6 +1421,57 @@ export default {
                     this.isLoading = false;
                 });
         },
+        updateItemAuthor(newAuthorId) {
+            this.isLoading = true;
+            this.form.author_id = newAuthorId;
+            this.updateItem({ id: this.itemId, author_id: '' + newAuthorId })
+                .then((updatedItem) => {
+                    this.item.author_id = updatedItem.author_id;
+                    this.item.author_name = updatedItem.author_name;
+                    this.isLoading = false;
+                    this.setLastUpdated(updatedItem.modification_date);
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                    this.isLoading = false;
+                });
+        },
+        updateItemSlug: _.debounce(function(newSlug) {
+            this.isUpdatingSlug = true;
+            this.getSamplePermalink(this.collectionId, this.item.title, newSlug)
+                .then((res) => {
+                    this.form.slug = res.data.slug;
+                    this.updateItem({ id: this.itemId, slug: res.data.slug })
+                        .then((updatedItem) => {
+                            this.item.slug = updatedItem.slug;
+                            this.item.url = updatedItem.url;
+                            this.setLastUpdated(updatedItem.modification_date);
+                            this.isUpdatingSlug = false;
+                        })
+                        .catch((error) => {
+                            this.$console.error(error);
+                            this.isUpdatingSlug = false;
+                        });
+                })
+                .catch(errors => {
+                    this.$console.error(errors);
+                    this.isUpdatingSlug = false;
+                });
+        }, 1000),
+        updateCommentStatus(newStatus) {
+            this.isLoading = true;
+            this.form.comment_status = newStatus;
+            this.updateItem({ id: this.itemId, comment_status: newStatus })
+                .then((updatedItem) => {
+                    this.item.comment_status = updatedItem.comment_status;
+                    this.isLoading = false;
+                    this.setLastUpdated(updatedItem.modification_date);
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                    this.isLoading = false;
+                })
+        },
         setDocument(event, documentType) {
             if (documentType === 'attachment')
                 this.setFileDocument(event);
@@ -1438,16 +1517,7 @@ export default {
                     this.isLoading = false;
                 })
                 .catch((errors) => {
-                    for (let error of errors.errors) {
-                        for (let metadatum of Object.keys(error)){
-                            this.errors.push({ 
-                                metadatum_id: metadatum, 
-                                errors: error[metadatum]
-                            });
-                        }
-                    }
-                    this.formErrorMessage = errors.error_message;
-
+                    this.prepareErrors(errors);
                     this.isLoading = false;
                 });
         },
@@ -1521,16 +1591,7 @@ export default {
                     }
                 })
                 .catch((errors) => {
-                    for (let error of errors.errors) {
-                        for (let metadatum of Object.keys(error)){
-                            this.errors.push({ 
-                                metadatum_id: metadatum, 
-                                errors: error[metadatum]
-                            });
-                        }
-                    }
-                    this.formErrorMessage = errors.error_message;
-
+                    this.prepareErrors(errors);
                     this.isLoading = false;
                 });
         },
@@ -1549,15 +1610,7 @@ export default {
                 this.shouldLoadAttachments = !this.shouldLoadAttachments;
             })
             .catch((errors) => {
-                for (let error of errors.errors) {
-                    for (let metadatum of Object.keys(error)){
-                        this.errors.push({
-                            metadatum_id: metadatum,
-                            errors: error[metadatum]
-                        });
-                    }
-                }
-                this.formErrorMessage = errors.error_message;
+                this.prepareErrors(errors);
             });
         },
         deleteThumbnail() {
@@ -1609,29 +1662,24 @@ export default {
                         this.form.document = file.id + '';
                         
                         this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
-                        .then((item) => {
-                            this.isLoading = false;
-                            this.item.document_as_html = item.document_as_html;
-                            this.item.document_mimetype = item.document_mimetype;
+                            .then((item) => {
+                                this.isLoading = false;
+                                this.item.document_as_html = item.document_as_html;
+                                this.item.document_mimetype = item.document_mimetype;
 
-                            let oldThumbnail = this.item.thumbnail;
-                            if (item.document_type == 'attachment' && oldThumbnail != item.thumbnail ) {
-                                this.item.thumbnail = item.thumbnail;
-                                this.item.thumbnail_id = item.thumbnail_id;
-                            }
-
-                            this.shouldLoadAttachments = !this.shouldLoadAttachments;
-
-                        })
-                        .catch((errors) => {
-                            for (let error of errors.errors) {
-                                for (let metadatum of Object.keys(error)){
-                                    this.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                                let oldThumbnail = this.item.thumbnail;
+                                if (item.document_type == 'attachment' && oldThumbnail != item.thumbnail ) {
+                                    this.item.thumbnail = item.thumbnail;
+                                    this.item.thumbnail_id = item.thumbnail_id;
                                 }
-                            }
-                            this.formErrorMessage = errors.error_message;
-                            this.isLoading = false;
-                        });
+
+                                this.shouldLoadAttachments = !this.shouldLoadAttachments;
+
+                            })
+                            .catch((errors) => {
+                                this.prepareErrors(errors);
+                                this.isLoading = false;
+                            });
                     }
                 }
             );
@@ -1729,7 +1777,7 @@ export default {
             this.fetchItem({
                 itemId: this.itemId,
                 contextEdit: true,
-                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html,document_options,related_items'
+                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html,document_options,related_items,slug,author_id,author_name'
             })
             .then((resp) => {
                 resp.request.then((res) => {
@@ -1762,6 +1810,9 @@ export default {
                         });
 
                     // Fill this.form data with current data.
+                    this.form.slug = this.item.slug;
+                    this.form.author_id = this.item.author_id;
+                    this.form.author_name = this.item.author_name;
                     this.form.status = this.item.status;
                     this.form.document = this.item.document;
                     this.form.document_type = this.item.document_type;
@@ -1932,6 +1983,39 @@ export default {
             }
 
             return enabledMetadata.indexOf(metadatum.id);
+        },
+        prepareErrors(errors) {
+            if ( errors.errors ) {
+                for (let error of errors.errors) {
+                    for (let metadatumId of Object.keys(error)) {
+
+                        let parentCompoundId = false;
+
+                        for (let itemMetadatum of this.itemMetadata) {
+                            
+                            if (
+                                itemMetadatum.metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Compound' &&
+                                itemMetadatum.metadatum.metadata_type_options &&
+                                itemMetadatum.metadatum.metadata_type_options.children_objects
+                            ) {
+
+                                for (let childMetadatum of itemMetadatum.metadatum.metadata_type_options.children_objects) {
+                                    if ( childMetadatum.id == metadatumId ) {
+                                        parentCompoundId = itemMetadatum.metadatum.id;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        
+                        this.errors.push({
+                            metadatum_id: parentCompoundId ? parentCompoundId : metadatumId,
+                            errors: error[metadatumId]
+                        });
+                    }   
+                }
+                this.formErrorMessage = errors.error_message;
+            }
         }
     }
 }
@@ -2169,6 +2253,10 @@ export default {
             justify-content: space-between;
             align-items: center;
             background-color: var(--tainacan-background-color);
+
+            @media screen and (max-width: 1024px) {
+                flex-wrap: wrap;
+            }
             
             .field {
                 padding: 2px 0px 2px 16px !important;
