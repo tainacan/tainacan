@@ -1,7 +1,7 @@
 <template>
     <div 
             id="tainacan-admin-app" 
-            class="has-mounted columns is-fullheight"
+            class="has-mounted is-fullheight"
             :class="{ 
                 'tainacan-admin-mobile-app-mode': $adminOptions.mobileAppMode
             }">
@@ -15,7 +15,8 @@
                 <tainacan-repository-subheader
                         v-if="!$adminOptions.hideRepositorySubheader" 
                         :is-repository-level="isRepositoryLevel"
-                        :is-menu-compressed="isMenuCompressed" />
+                        :is-menu-compressed="isMenuCompressed"
+                        :active-route="activeRoute" />
                 <div 
                         id="repository-container"
                         class="column is-main-content">  
@@ -27,6 +28,7 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex';
     import TainacanHeader from './components/navigation/tainacan-header.vue';
     import TainacanRepositorySubheader from './components/navigation/tainacan-repository-subheader.vue';
     import CustomDialog from './components/other/custom-dialog.vue';
@@ -49,6 +51,11 @@
                 hasPermalinksStructure: false
             }
         },
+        computed: {
+            ...mapGetters('collection', {
+                'collection': 'getCollection'
+            })
+        },
         watch: {
             '$route': {
                 handler(to, from) {
@@ -56,16 +63,16 @@
                     this.activeRoute = to.name;
                     this.isRepositoryLevel = this.$route.params.collectionId == undefined;
 
-                    if ( to.path !== from.path ) {
-                        wp.hooks.doAction('tainacan_navigation_path_updated', to);
+                    if ( to.path !== from.path && this.isRepositoryLevel ) {
+                        wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: to, adminOptions: this.$adminOptions, collection: this.collection });
                     }
                 },
                 deep: true
             }
         },
         created() {
-
-            wp.hooks.doAction('tainacan_navigation_path_updated', this.$route);
+            
+            wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: this.$route, adminOptions: this.$adminOptions, collection: this.collection });
 
             this.hasPermalinksStructure = tainacan_plugin.has_permalinks_structure;
 
@@ -162,18 +169,6 @@
     }
 
     .is-secondary-content {
-        padding: 0px !important;
-        margin: 5.4em auto 0 auto;
-        position: relative;
-        overflow-y: hidden;
-        overflow-x: hidden;
-        height: calc(100vh - 5.4em);
-
-        @media screen and (max-width: 769px) {
-            overflow-y: visible;
-            margin: 38px auto 0 auto;
-            
-        } 
 
         .columns {
             margin-left: 0px;

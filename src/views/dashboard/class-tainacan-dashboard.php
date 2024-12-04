@@ -2,8 +2,6 @@
 
 namespace Tainacan;
 
-use phpDocumentor\Reflection\DocBlock\Tags\Var_;
-
 class Dashboard extends Pages {
 	use \Tainacan\Traits\Singleton_Instance;
 

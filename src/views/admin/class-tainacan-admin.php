@@ -115,14 +115,17 @@ class Admin extends Pages {
 			);
 		}
 
-		add_submenu_page(
-			$this->tainacan_root_menu_slug,
-			__('Collections', 'tainacan'),
-			'<span class="icon" style="color: var(--tainacan-turquoise5)">' . $this->get_svg_icon( 'collections' ) . '</span><span class="menu-text">' . __('Collections', 'tainacan') . '</span>',
-			'read',
-			$this->collections_links_slug,
-			array( &$this, 'render_page' )
-		);
+		if ( !$this->has_admin_ui_option('hideCollectionSubheader') ) {
+			
+			add_submenu_page(
+				$this->tainacan_root_menu_slug,
+				__('Collections', 'tainacan'),
+				'<span class="icon" style="color: var(--tainacan-turquoise5)">' . $this->get_svg_icon( 'collections' ) . '</span><span class="menu-text">' . __('Collections', 'tainacan') . '</span>',
+				'read',
+				$this->collections_links_slug,
+				array( &$this, 'render_page' )
+			);
+		}
 
 		if ( !$this->has_admin_ui_option('hidePrimaryMenuCollectionsButton') ) {
 

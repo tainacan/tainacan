@@ -10,6 +10,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 trait Admin_UI_Options {
 
+	protected $admin_ui_options = [];
+
 	/**
 	 * 
 	 * @return string option value for the given setting
@@ -17,8 +19,8 @@ trait Admin_UI_Options {
 	public function has_admin_ui_option($option) {
 
 		// Get Admin Options to tweak which components will be displayed
-		$admin_options = apply_filters('tainacan-admin-ui-options', $_GET);
+		$this->admin_ui_options = !empty($this->admin_ui_options) ? $this->admin_ui_options : apply_filters('tainacan-admin-ui-options', $_GET);
 
-		return isset($admin_options[$option]) && ( $admin_options[$option] === 'true' || $admin_options[$option] === true );
+		return isset($this->admin_ui_options[$option]) && ( $this->admin_ui_options[$option] === 'true' || $this->admin_ui_options[$option] === true );
 	}
 }

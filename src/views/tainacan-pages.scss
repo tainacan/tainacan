@@ -151,6 +151,15 @@
                 }
             }
         }
+        .separator-list-item {
+            width: 100%;
+            text-align: start;
+            box-sizing: border-box;
+            font-size: 0.75em;
+            font-weight: 500;
+            color: var(--tainacan-turquoise4);
+            padding: 0.5rem;
+        }
     }
 
     .tainacan-page-container-content {

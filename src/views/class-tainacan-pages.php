@@ -2,6 +2,8 @@
 
 namespace Tainacan;
 
+use phpDocumentor\Reflection\DocBlock\Tags\Var_;
+
 /**
  * Pages is an abstract base class for all Tainacan admin pages.
  */
@@ -295,6 +297,7 @@ abstract class Pages {
 		<div id="tainacan-page-container">
 			<?php 
 				$this->render_navigation_menu();
+				$this->render_breadcrumbs();
 				$this->render_page_content();
 			?>
 		</div>
@@ -368,7 +371,7 @@ abstract class Pages {
 													if ( !current_user_can( $link[1] ) ) continue;
 												?>
 													<li>
-														<a href="admin.php?page=<?php echo $link[2]; ?>" <?php echo $current_page_slug === 'admin_page_' . $link[2] ? 'aria-current="page"' : ''; ?>><?php echo $link[0]; ?></a>
+														<a href="<?php echo add_query_arg( 'page', $link[2] ); ?>" <?php echo $current_page_slug === 'admin_page_' . $link[2] ? 'aria-current="page"' : ''; ?>><?php echo $link[0]; ?></a>
 													</li>
 												<?php endforeach; ?>
 											</ul>
@@ -387,6 +390,82 @@ abstract class Pages {
 			</nav>
 		</aside>
 		<?php
+	}
+
+	/**
+	 * render_breadcrumbs creates the breadrcumbs for the Tainacan admin pages.
+	 *
+	 * @return void
+	 */
+	public function render_breadcrumbs() {
+		global $submenu;
+		
+		$current_screen = get_current_screen(); 
+		$tainacan_root_links = isset( $submenu[$this->tainacan_root_menu_slug] ) ? $submenu[$this->tainacan_root_menu_slug] : [];
+		$tainacan_root_link_submenu = null;
+		
+		$breadcrumbs = [];
+		
+		// Inserts the menu root level link
+		if ( count($tainacan_root_links) ) {
+			foreach( $tainacan_root_links as $tainacan_root_link ) {
+
+				if (
+					(
+						$current_screen->parent_base === $this->tainacan_root_menu_slug &&
+						isset($tainacan_root_link[2]) &&
+						( $current_screen->base === 'admin_page_' . $tainacan_root_link[2] )
+					) || 
+					(
+						$current_screen->parent_base !== $this->tainacan_root_menu_slug &&
+						isset($tainacan_root_link[2]) &&
+						( $current_screen->parent_base === $tainacan_root_link[2] )
+					)
+				) {
+					$breadcrumbs[] = array(
+						'label' => wp_strip_all_tags( $tainacan_root_link[0], true )
+					);
+					$tainacan_root_link_submenu = $tainacan_root_link[2];
+					break;
+				}
+			}
+		}
+
+		// Inserts the current page link, except for the Vue Admin component, which is a SPA.
+		// Its breadcrumbs are handled by the tainacan-admin-navigation-menu.js script.
+		if ( !is_null($tainacan_root_link_submenu) && isset( $submenu[$tainacan_root_link_submenu] ) ) {
+			foreach( $submenu[$tainacan_root_link_submenu] as $submenu_item ) {
+				if ( isset($submenu_item[2]) && $current_screen->base === 'admin_page_' . $submenu_item[2] ) {
+					$breadcrumbs[] = array(
+						'label' => wp_strip_all_tags( $submenu_item[0], true )
+					);
+					break;
+				}
+			}
+		}
+
+		/**
+		 * Allows external plugins to add breadcrumbs to the Tainacan admin pages.
+		 */
+		$breadcrumbs = apply_filters( 'tainacan_admin_breadcrumbs', $breadcrumbs );
+
+		if ( count($breadcrumbs) ) {
+			?>
+			<div id="tainacan-breadcrumbs">
+				<nav>
+					<ul id="tainacan-breadcrumbs-list">
+						<?php foreach( $breadcrumbs as $breadcrumb ) : ?>
+							<?php if ( isset( $breadcrumb['url'] ) ) : ?>
+								<li><a href="<?php echo $breadcrumb['url']; ?>"><?php echo $breadcrumb['label']; ?></a></li>
+							<?php else : ?>
+								<li><?php echo $breadcrumb['label']; ?></li>
+							<?php endif; ?>
+						<?php endforeach; ?>
+					</ul>
+				</nav>
+			</div>
+			<?php
+		}
 	}
     
     /**

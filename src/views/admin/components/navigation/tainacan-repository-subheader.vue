@@ -3,7 +3,7 @@
             id="tainacan-repository-subheader" 
             class="level secondary-page">
 
-        <div 
+        <div
                 v-if="$adminOptions.hideCollectionSubheader"
                 class="back-button is-hidden-mobile">
             <router-link
@@ -26,12 +26,12 @@
 
         <h1 
                 v-if="isRepositoryLevel"
-                :style="$adminOptions.hideCollectionSubheader ? 'margin-right: auto;' : ''">
+                style="margin-right: auto;">
             {{ repositoryName }}
         </h1>
         <h1 
                 v-else
-                :style="$adminOptions.hideCollectionSubheader ? 'margin-right: auto;' : ''">
+                style="margin-right: auto;">
             {{ $i18n.get('collection') + '' }} 
             <router-link 
                     v-if="collection && collection.id"
@@ -120,7 +120,8 @@ export default {
     name: 'TainacanRepositorySubheader',
     props: {
         isMenuCompressed: false,
-        isRepositoryLevel: true
+        isRepositoryLevel: true,
+        activeRoute: ''
     },
     data() {
         return {
@@ -173,10 +174,6 @@ export default {
         margin: 0px;
         display: flex;
         vertical-align: middle; 
-        left: 0;
-        right: 0;
-        top: $header-height;
-        position: absolute;
         z-index: 8;
         transition: padding-left 0.2s linear, background-color 0.2s linear;
 

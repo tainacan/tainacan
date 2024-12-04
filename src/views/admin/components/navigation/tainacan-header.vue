@@ -122,9 +122,6 @@
         padding: 12px;
         margin-bottom: 0px;
         vertical-align: middle;
-        left: 0;
-        right: 0;
-        position: absolute;
         z-index: 9;
         color: var(--tainacan-blue5);
 

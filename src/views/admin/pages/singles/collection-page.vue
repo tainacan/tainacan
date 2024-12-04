@@ -8,13 +8,12 @@
         <section 
                 class="column is-secondary-content"
                 :style="$adminOptions.hideRepositorySubheader ? 'margin-top: 0; height: 100%;' : ''">
-            <tainacan-collection-subheader v-if="!$adminOptions.hideCollectionSubheader" />
             <router-view
                     id="collection-page-container"
                     :collection-id="collectionId" 
                     class="page-container"
                     :class="{
-                        'page-container-small': !$adminOptions.hideRepositorySubheader && !$adminOptions.hideCollectionSubheader,
+                        'page-container-small': !$adminOptions.hideRepositorySubheader,
                         'is-loading-collection-basics': isLoadingCollectionBasics
                     }" />
         </section>
@@ -22,40 +21,46 @@
 </template>
 
 <script>
-import TainacanCollectionSubheader from '../../components/navigation/tainacan-collection-subheader.vue';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'CollectionPage',
-    components: {
-        TainacanCollectionSubheader
-    },
     data() {
         return {
             collectionId: [String, Number],
             isLoadingCollectionBasics: Boolean
         }
     },
+    computed: {
+        ...mapGetters('collection', {
+            'collection': 'getCollection'
+        })
+    },
     watch: {
         '$route': {
             handler(to, from) {
-                if (!this.isRepositoryLevel &&
+                if (
+                    !this.isRepositoryLevel &&
                     (from != undefined) &&
                     (from.path != undefined) &&
-                    (to.path != from.path) &&
-                    (this.collectionId != this.$route.params.collectionId)
+                    (to.path != from.path)
                 ) {
-                    this.isLoadingCollectionBasics = true;
-                    this.collectionId = Number(this.$route.params.collectionId);
-                    this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
-                        .then(() => {
-                            this.isLoadingCollectionBasics = false;
-                        })
-                        .catch((error) => {
-                            this.$console.error(error);
-                            this.isLoadingCollectionBasics = false;
-                        });
-                }
+                    if ( this.collectionId != this.$route.params.collectionId) {
+                        this.isLoadingCollectionBasics = true;
+                        this.collectionId = Number(this.$route.params.collectionId);
+                        this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
+                            .then(() => {
+                                wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: to, adminOptions: this.$adminOptions, collection: this.collection });
+                                this.isLoadingCollectionBasics = false;
+                            })
+                            .catch((error) => {
+                                this.$console.error(error);
+                                this.isLoadingCollectionBasics = false;
+                            });
+                    } else {
+                        wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: to, adminOptions: this.$adminOptions, collection: this.collection });
+                    }
+                } 
             },
             deep: true
         }
@@ -67,6 +72,8 @@ export default {
         // Loads to store basic collection info such as name, url, current_user_can_edit... etc.
         this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
             .then(() => {
+                wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: this.$route, adminOptions: this.$adminOptions, collection: this.collection });
+                
                 this.isLoadingCollectionBasics = false;
             })
             .catch((error) => {

@@ -946,6 +946,14 @@ a:hover:not([href]) {
           color: var(--tainacan-blue5); }
         #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul#tainacan_collection_links .icon {
           color: var(--tainacan-turquoise5); }
+    #tainacan-page-container #tainacan-navigation-menu .separator-list-item {
+      width: 100%;
+      text-align: start;
+      box-sizing: border-box;
+      font-size: 0.75em;
+      font-weight: 500;
+      color: var(--tainacan-turquoise4);
+      padding: 0.5rem; }
   #tainacan-page-container .tainacan-page-container-content {
     background-color: var(--tainacan-background-color);
     border-radius: var(--tainacan-page-container-border-radius, 16px) var(--tainacan-page-container-border-radius, 16px) 0 0;
