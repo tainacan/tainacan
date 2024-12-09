@@ -2,8 +2,6 @@
 
 namespace Tainacan;
 
-use phpDocumentor\Reflection\DocBlock\Tags\Var_;
-
 /**
  * Pages is an abstract base class for all Tainacan admin pages.
  */
@@ -43,6 +41,7 @@ abstract class Pages {
 		add_action( 'init', array( &$this, 'register_user_meta' ) );
 		add_action( 'admin_init',array( $this, 'check_if_admin_menu_is_collapsed' ) );
 		add_action( 'admin_menu', array( &$this, 'add_admin_menu' ) );
+		add_action( 'admin_head', array( &$this, 'remove_admin_notices' ) );
 	}
 	
 	/**
@@ -296,6 +295,7 @@ abstract class Pages {
 		?>
 		<div id="tainacan-page-container">
 			<?php 
+				
 				$this->render_navigation_menu();
 				$this->render_breadcrumbs();
 				$this->render_page_content();
@@ -490,6 +490,17 @@ abstract class Pages {
 				set_user_setting( 'mfold', 'o');
 		}
     }
+
+	/**
+	 * Remove_admin_notices removes all admin notices from the admin_notices and all_admin_notices hooks.
+	 */
+	public function remove_admin_notices() {
+		$current_screen = get_current_screen();
+		if ($current_screen && strpos($current_screen->id, 'tainacan') !== false ) {
+			remove_all_actions('admin_notices');
+        	remove_all_actions('all_admin_notices');
+		}
+	}
 
 }
 

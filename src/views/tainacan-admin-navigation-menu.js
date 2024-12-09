@@ -40,7 +40,7 @@ function handleCollectionLevelDynamicMenu() {
             let originalCollectionLevelLinks = [];
             tainacanCollectionLinks.childNodes.forEach(element => originalCollectionLevelLinks.push(element.cloneNode(true)) );
 
-            wp.hooks.addAction( 'tainacan_navigation_path_updated', 'tainacan_admin_navigation_menu', function( { currentRoute, adminOptions, collection }) {
+            wp.hooks.addAction( 'tainacan_navigation_path_updated', 'tainacan_admin_navigation_menu', function( { currentRoute, adminOptions, collection, item }) {
 
                 const repositoryLinkElements = tainacanRepositoryLinks.querySelectorAll( 'a' );
                 let isSomeRepositoryLinkActive = false;
@@ -183,6 +183,36 @@ function handleCollectionLevelDynamicMenu() {
                     // First, we clear the dynamic collection elements from the breadcrumbs list
                     const dynamicBreadcrumbs = tainacanBreadcrumbsList.querySelectorAll( '.dynamic-breadcrumb' );
                     dynamicBreadcrumbs.forEach( element => tainacanBreadcrumbsList.removeChild( element ) );
+
+                    if ( currentRoute.params.collectionId && collection ) {
+
+                        // Adds collections link
+                        const collectionsLink = document.createElement( 'li' );
+                        collectionsLink.classList.add('dynamic-breadcrumb');
+                        collectionsLink.innerHTML = '<a href="' + document.location.pathname + document.location.search + '#collections">' + wp.i18n.__( 'Collections', 'tainacan') + '</a>';
+                        tainacanBreadcrumbsList.appendChild( collectionsLink );
+
+                        // Adds collection link
+                        const collectionLink = document.createElement( 'li' );
+                        collectionLink.classList.add('dynamic-breadcrumb');
+                        collectionLink.innerHTML = '<a aria-current="page" href="' + document.location.pathname + document.location.search + '#collections/' + currentRoute.params.collectionId + '/items">' + collection.name + '</a>';
+                        tainacanBreadcrumbsList.appendChild( collectionLink );
+                    }
+
+                    if ( currentRoute.params.itemId && item && item.title ) {
+                        
+                        // Adds items link
+                        const itemsLink = document.createElement( 'li' );
+                        itemsLink.classList.add('dynamic-breadcrumb');
+                        itemsLink.innerHTML = '<a href="' + document.location.pathname + document.location.search + '#collections/' + currentRoute.params.collectionId + '/items">' + wp.i18n.__( 'Items', 'tainacan') + '</a>';
+                        tainacanBreadcrumbsList.appendChild( itemsLink );
+
+                        // Adds item link
+                        const itemLink = document.createElement( 'li' );
+                        itemLink.classList.add('dynamic-breadcrumb');
+                        itemLink.innerHTML = '<a aria-current="page" href="' + document.location.pathname + document.location.search + '#collections/' + currentRoute.params.collectionId + '/items/' + currentRoute.params.itemId + '">' + item.title + '</a>';
+                        tainacanBreadcrumbsList.appendChild( itemLink );
+                    }
 
                     // Adds current subpage
                     const breadcrumbItem = document.createElement( 'li' );

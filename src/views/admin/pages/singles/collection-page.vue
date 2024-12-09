@@ -34,6 +34,9 @@ export default {
     computed: {
         ...mapGetters('collection', {
             'collection': 'getCollection'
+        }),
+        ...mapGetters('item', {
+            'item': 'getItem'
         })
     },
     watch: {
@@ -50,7 +53,7 @@ export default {
                         this.collectionId = Number(this.$route.params.collectionId);
                         this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
                             .then(() => {
-                                wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: to, adminOptions: this.$adminOptions, collection: this.collection });
+                                wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: to, adminOptions: this.$adminOptions, collection: this.collection, item: this.item });
                                 this.isLoadingCollectionBasics = false;
                             })
                             .catch((error) => {
@@ -58,7 +61,7 @@ export default {
                                 this.isLoadingCollectionBasics = false;
                             });
                     } else {
-                        wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: to, adminOptions: this.$adminOptions, collection: this.collection });
+                        wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: to, adminOptions: this.$adminOptions, collection: this.collection, item: this.item });
                     }
                 } 
             },
@@ -72,7 +75,7 @@ export default {
         // Loads to store basic collection info such as name, url, current_user_can_edit... etc.
         this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
             .then(() => {
-                wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: this.$route, adminOptions: this.$adminOptions, collection: this.collection });
+                wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: this.$route, adminOptions: this.$adminOptions, collection: this.collection, item: this.item });
                 
                 this.isLoadingCollectionBasics = false;
             })
