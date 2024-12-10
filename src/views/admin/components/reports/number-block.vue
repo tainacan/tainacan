@@ -71,14 +71,10 @@
                     &nbsp;{{ totalByVisibility['restrict'] }}
                 </span>
             </div>
-            <div
-                :style="'background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'private') ? '#acacac' : ';' ) + '; width: ' + visibilityChartPrivateWidth + '%'" />
-            <div
-                :style="'background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'pending') ? '#acacac' : ';' ) + '; width: ' + visibilityChartPendingWidth + '%'" />
-            <div
-                :style="'background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'draft') ? '#acacac' : ';' ) + '; width: ' + visibilityChartDraftWidth + '%'" />
-            <div
-                :style="'background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'trash') ? '#acacac' : ';' ) + '; width: ' + visibilityChartTrashWidth + '%'" />
+            <div :style="'background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'private') ? '#acacac' : ';' ) + '; width: ' + visibilityChartPrivateWidth + '%'" />
+            <div :style="'background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'pending') ? '#acacac' : ';' ) + '; width: ' + visibilityChartPendingWidth + '%'" />
+            <div :style="'background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'draft') ? '#acacac' : ';' ) + '; width: ' + visibilityChartDraftWidth + '%'" />
+            <div :style="'background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'trash') ? '#acacac' : ';' ) + '; width: ' + visibilityChartTrashWidth + '%'" />
         </div>
         <!-- <ul 
                 v-if="entityType == 'items' && (totalByVisibility['not_restrict'] || totalByVisibility['restrict'])"
