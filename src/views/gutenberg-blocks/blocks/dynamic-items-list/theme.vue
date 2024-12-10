@@ -441,7 +441,7 @@ export default {
                     });
             } else {
 
-                let endpoint = '/collection' + this.searchURL.split('#')[1].split('/collections')[1];
+                let endpoint = this.searchURL != undefined && this.searchURL.split('#') && this.searchURL.split('#').length >= 2 ? ( '/collection' + this.searchURL.split('#')[1].split('/collections')[1] ) : '';
                 let query = endpoint.split('?')[1];
                 let queryObject = qs.parse(query);
 

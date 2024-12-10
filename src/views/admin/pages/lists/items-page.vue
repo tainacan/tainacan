@@ -883,11 +883,12 @@
                         }
                     }
                     
+                    // Passes the current URL to store
+                    this.$store.dispatch('search/setPostQuery', JSON.parse(JSON.stringify(this.$route.query)));
+
                     // Advanced Search
                     if (this.$route.query && this.$route.query.advancedSearch)
-                        this.$store.dispatch('search/setAdvancedQuery', JSON.parse(JSON.stringify(this.$route.query)));
-                    else 
-                        this.$store.dispatch('search/setPostQuery', JSON.parse(JSON.stringify(this.$route.query)));
+                        this.$store.dispatch('search/setAdvancedQuery', JSON.parse(JSON.stringify(this.$route.query))); 
                     
                     // Finally, loads items even berfore facets so they won't stuck them 
                     if (to.fullPath != from.fullPath)

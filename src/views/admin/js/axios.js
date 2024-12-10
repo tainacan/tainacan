@@ -22,6 +22,7 @@ export const tainacanErrorHandler = function(error) {
                 case 403:
                 case 404:    
                 case 408:
+                case 413:
                 case 500:
                 case 502:
                 case 503:

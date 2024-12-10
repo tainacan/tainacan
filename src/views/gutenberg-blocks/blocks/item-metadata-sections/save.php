@@ -25,7 +25,7 @@ function tainacan_blocks_render_metadata_sections( $block_attributes, $content, 
                 'class' => 'metadata-section-slug-$slug' . ( $text_align ? (' has-text-align-' . $text_align) : '' ),
             )
         );
-        $args['before'] = '<section id="metadata-section-$id ' . $wrapper_attributes . '>';
+        $args['before'] = '<section id="metadata-section-$id" ' . $wrapper_attributes . '>';
         $args['after'] = '</section>';
 
         // Checks if we are in the edit page or in the published
