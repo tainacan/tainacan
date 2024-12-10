@@ -245,7 +245,7 @@
                             @click="onChangeTab('')">
                         <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
                             {{ `${$i18n.get('label_all_collections')}` }}
-                            <span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalCollections ? `(${Number(repositoryTotalCollections.private) + Number(repositoryTotalCollections.publish)})` : '' }`}` }}</span>
+                            <span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalCollections ? `(${Number(repositoryTotalCollections.pending) + Number(repositoryTotalCollections.private) + Number(repositoryTotalCollections.publish)})` : '' }`}` }}</span>
                         </a>
                     </li>
                     <li 
@@ -258,7 +258,7 @@
                                 popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
                             }"
                             :class="{ 'is-active': status == statusOption.slug}"
-                            :style="{ marginRight: statusOption.slug == 'private' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
+                            :style="{ marginRight: statusOption.slug == 'pending' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
                             @click="onChangeTab(statusOption.slug)">
                         <a>
                             <span 

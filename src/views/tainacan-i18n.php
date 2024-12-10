@@ -107,6 +107,8 @@ return apply_filters( 'tainacan-i18n', [
 	'status_public'                                  => __( 'Public', 'tainacan' ),
 	/* translators: The noun for the draft status, not the verb */
 	'status_draft'                                   => __( 'Draft', 'tainacan' ),
+	/* translators: The noun for the trash pending, not the verb */
+	'status_pending'                                 => __( 'Pending', 'tainacan' ),
 	'status_private'                                 => __( 'Private', 'tainacan' ),
 	/* translators: The noun for the trash status, not the verb */
 	'status_trash'                                   => __( 'Trash', 'tainacan' ),
@@ -379,7 +381,9 @@ return apply_filters( 'tainacan-i18n', [
 	'label_discard'                                  => __( 'Discard', 'tainacan' ),
 	'label_save_as_draft'                            => __( 'Save as draft', 'tainacan' ),
 	'label_update_draft'                             => __( 'Update draft', 'tainacan' ),
-	'label_return_to_draft'                          => __( 'Return to draft', 'tainacan' ),
+	'label_send_to_review'                           => __( 'Send to review', 'tainacan' ),
+	'label_update_pending'                           => __( 'Update as pending', 'tainacan' ),
+	'label_return_to_pending'                        => __( 'Return to pending', 'tainacan' ),
 	/* translators: The verb 'to publish' not the 'publish' status */
 	'label_verb_publish'                             => _x( 'Publish', 'verb', 'tainacan' ),
 	'label_verb_publish_privately'                   => _x( 'Publish privately', 'verb', 'tainacan' ),

@@ -186,6 +186,7 @@ class REST_Collections_Controller extends REST_Controller {
 		$total_collections = wp_count_posts( 'tainacan-collection', 'readable' );
 
 		if (isset($total_collections->publish) ||
+			isset($total_collections->pending) ||
 			isset($total_collections->private) ||
 			isset($total_collections->trash) ||
 			isset($total_collections->draft)) {
@@ -193,6 +194,7 @@ class REST_Collections_Controller extends REST_Controller {
 			$rest_response->header('X-Tainacan-total-collections-trash', $total_collections->trash);
 			$rest_response->header('X-Tainacan-total-collections-publish', $total_collections->publish);
 			$rest_response->header('X-Tainacan-total-collections-draft', $total_collections->draft);
+			$rest_response->header('X-Tainacan-total-collections-pending', $total_collections->pending);
 			$rest_response->header('X-Tainacan-total-collections-private', $total_collections->private);
 		}
 
@@ -319,6 +321,7 @@ class REST_Collections_Controller extends REST_Controller {
 
 			if (isset($total_items->publish) ||
 				isset($total_items->private) ||
+				isset($total_items->pending) ||
 			  	isset($total_items->trash) ||
 			   	isset($total_items->draft)) {
 
@@ -326,6 +329,7 @@ class REST_Collections_Controller extends REST_Controller {
 				$item_arr['total_items']['publish'] = $total_items->publish;
 				$item_arr['total_items']['draft'] = $total_items->draft;
 				$item_arr['total_items']['private'] = $total_items->private;
+				$item_arr['total_items']['pending'] = $total_items->pending;
 			}
 
 			// Clear private metadata from metadata_order

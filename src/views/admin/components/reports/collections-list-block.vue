@@ -60,12 +60,14 @@ export default {
             const orderedCollections = Object.values(this.chartData).sort((a, b) =>  b.items.total - a.items.total);
             let privateItems = [];
             let publicItems = [];
+            let pendingItems = [];
             let trashItems = [];
             let draftItems = [];
             let collectionsLabels = [];
 
             orderedCollections.forEach(collection => {
                 privateItems.push(collection.items.private);
+                pendingItems.push(collection.items.pending);
                 publicItems.push(collection.items.publish);
                 draftItems.push(collection.items.draft);
                 trashItems.push(collection.items.trash);
@@ -80,6 +82,10 @@ export default {
                 {
                     name: 'private',//this.$i18n.get('status_private'),
                     data: privateItems
+                },
+                {
+                    name: 'pending',//this.$i18n.get('status_pending'),
+                    data: pendingItems
                 },
                 {
                     name: 'draft',//this.$i18n.get('status_draft'),
@@ -125,7 +131,7 @@ export default {
                         position: 'right',
                         offsetY: 40,
                         formatter: (seriesName) => {
-                            return ['<span class="icon"><i class="tainacan-icon tainacan-icon-' + (seriesName != 'trash' ? seriesName : 'delete') + '"></i></span>' + this.$i18n.get('status_' + seriesName) ]
+                            return ['<span class="icon"><i class="tainacan-icon tainacan-icon-' + (seriesName === 'trash' ? 'delete' : ( seriesName === 'pending' ? 'waiting' : seriesName ) ) + '"></i></span>' + this.$i18n.get('status_' + seriesName) ]
                         }
                     }
                 }

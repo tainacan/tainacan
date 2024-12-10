@@ -90,6 +90,7 @@
                 </span>
             </div>
             <div :style="'background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'private') ? '#acacac' : ';' ) + '; width: ' + visibilityChartPrivateWidth + '%'" />
+            <div :style="'background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'pending') ? '#acacac' : ';' ) + '; width: ' + visibilityChartPendingWidth + '%'" />
             <div :style="'background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'draft') ? '#acacac' : ';' ) + '; width: ' + visibilityChartDraftWidth + '%'" />
             <div :style="'background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'trash') ? '#acacac' : ';' ) + '; width: ' + visibilityChartTrashWidth + '%'" />
         </div>
@@ -171,6 +172,7 @@ export default {
             visibilityChartOpenWidth: 20,
             visibilityChartRestrictWidth: 20,
             visibilityChartPrivateWidth: 20,
+            visibilityChartPendingWidth: 20,
             visibilityChartDraftWidth: 20,
             visibilityChartTrashWidth: 20,
             currentHoveredStatus: ''
@@ -184,6 +186,7 @@ export default {
             return {
                 'publish': this.summary && this.summary.totals && this.summary.totals[this.entityType] && this.summary.totals[this.entityType].publish ? this.summary.totals[this.entityType].publish : 0,
                 'private': this.summary && this.summary.totals && this.summary.totals[this.entityType] && this.summary.totals[this.entityType].private ? this.summary.totals[this.entityType].private : 0,
+                'pending': this.summary && this.summary.totals && this.summary.totals[this.entityType] && this.summary.totals[this.entityType].pending ? this.summary.totals[this.entityType].pending : 0,
                 'draft': this.summary && this.summary.totals && this.summary.totals[this.entityType] && this.summary.totals[this.entityType].draft ? this.summary.totals[this.entityType].draft : 0,
                 'trash': this.summary && this.summary.totals && this.summary.totals[this.entityType] && this.summary.totals[this.entityType].trash ? this.summary.totals[this.entityType].trash : 0,
             }
@@ -215,6 +218,7 @@ export default {
                 this.visibilityChartOpenWidth = (this.totalByVisibility['not_restrict']*100)/totalVisibility;
                 this.visibilityChartRestrictWidth = ((this.totalByStatus['publish'] - this.totalByVisibility['not_restrict'])*100)/totalVisibility;
                 this.visibilityChartPrivateWidth = (this.totalByStatus['private']*100)/totalVisibility;
+                this.visibilityChartPendingWidth = (this.totalByStatus['pending']*100)/totalVisibility;
                 this.visibilityChartDraftWidth = (this.totalByStatus['draft']*100)/totalVisibility;
                 this.visibilityChartTrashWidth = (this.totalByStatus['trash']*100)/totalVisibility;           
                 this.isBuildingChart = false;

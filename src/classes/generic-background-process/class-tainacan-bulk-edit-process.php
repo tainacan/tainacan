@@ -506,7 +506,7 @@ class Bulk_Edit_Process extends Generic_Process {
 
 	private function set_status(\Tainacan\Entities\Item $item) {
 		$value = $this->bulk_edit_data['value'];
-		$possible_values = ['trash', 'draft', 'publish', 'private'];
+		$possible_values = ['trash', 'draft', 'publish', 'private', 'pending'];
 
 		if (!in_array($value, $possible_values)) {
 			$this->add_error_log( __( 'Invalid status', 'tainacan' ) );
