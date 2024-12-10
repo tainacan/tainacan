@@ -92,7 +92,8 @@
                 return this.$statusHelper.getStatuses().filter((status) => {
                     if (    
                         status.slug != 'trash' &&
-                        ( ( this.currentUserCanPublish && !this.$adminOptions.hideItemEditionStatusPublishOption ) || status.slug != 'publish' )
+                        ( ( this.currentUserCanPublish && !this.$adminOptions.hideItemEditionStatusPublishOption ) || status.slug != 'publish' ) &&
+                        ( ( !this.$adminOptions.hideItemEditionStatusPendingOption ) || status.slug != 'pending' )
                     )
                         return true;
 

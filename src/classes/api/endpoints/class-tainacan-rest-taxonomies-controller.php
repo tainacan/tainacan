@@ -360,6 +360,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 
 		if (isset($total_taxonomies->publish) ||
 		    isset($total_taxonomies->private) ||
+		    isset($total_taxonomies->pending) ||
 		    isset($total_taxonomies->trash) ||
 		    isset($total_taxonomies->draft)) {
 
@@ -367,6 +368,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 			$rest_response->header('X-Tainacan-total-taxonomies-publish', $total_taxonomies->publish);
 			$rest_response->header('X-Tainacan-total-taxonomies-draft', $total_taxonomies->draft);
 			$rest_response->header('X-Tainacan-total-taxonomies-private', $total_taxonomies->private);
+			$rest_response->header('X-Tainacan-total-taxonomies-pending', $total_taxonomies->pending);
 		}
 
 		return $rest_response;

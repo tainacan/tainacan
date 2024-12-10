@@ -384,6 +384,7 @@ StatusHelperPlugin.install = function (app, options = {}) {
         statuses: [
             { name: tainacan_plugin.i18n['status_publish'], slug: 'publish' },
             { name: tainacan_plugin.i18n['status_private'], slug: 'private' },
+            { name: tainacan_plugin.i18n['status_pending'], slug: 'pending' },
             { name: tainacan_plugin.i18n['status_draft'], slug: 'draft' },
             { name: tainacan_plugin.i18n['status_trash'], slug: 'trash' }
         ],
@@ -391,13 +392,14 @@ StatusHelperPlugin.install = function (app, options = {}) {
             switch (status) {
                 case 'publish': return 'tainacan-icon-public';
                 case 'private': return 'tainacan-icon-private';
+                case 'pending': return 'tainacan-icon-waiting';
                 case 'draft': return 'tainacan-icon-draft';
                 case 'trash': return 'tainacan-icon-delete';
                 default: '';
             }
         },
         hasIcon(status) {
-            return ['publish', 'private', 'draft', 'trash'].includes(status);
+            return ['publish', 'pending', 'private', 'draft', 'trash'].includes(status);
         },
         getStatuses() {
             return this.statuses;
@@ -412,13 +414,17 @@ StatusHelperPlugin.install = function (app, options = {}) {
                         this.statuses.push(loadedStatus['publish']);
                     
                     this.statuses.concat(Object.values(loadedStatus).filter((status) => {
-                        return !['publish','private', 'draft', 'trash'].includes(status.slug); 
+                        return !['publish','private', 'pending', 'draft', 'trash'].includes(status.slug); 
                     }));
 
-                    // We always show private, draft and trash
+                    // We always show pending, private, draft and trash
                     this.statuses.push({
                         name: tainacan_plugin.i18n['status_private'],
                         slug: 'private'
+                    });
+                    this.statuses.push({
+                        name: tainacan_plugin.i18n['status_pending'],
+                        slug: 'pending'
                     });
                     this.statuses.push({
                         name: tainacan_plugin.i18n['status_draft'],

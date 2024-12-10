@@ -71,6 +71,7 @@ export const fetch = ({ commit }, { page, taxonomiesPerPage, status, order, orde
                     trash: res.headers['x-tainacan-total-taxonomies-trash'],
                     publish: res.headers['x-tainacan-total-taxonomies-publish'],
                     private: res.headers['x-tainacan-total-taxonomies-private'],
+                    pending: res.headers['x-tainacan-total-taxonomies-pending']
                 });
 
                 resolve({

@@ -474,7 +474,7 @@ class Item_Metadata_Entity extends Entity {
 
 		if (empty($value) && $value !== '0' && $value !== 0) {
 			if ($this->is_required()) {
-				$validation_statuses = ['publish', 'future', 'private'];
+				$validation_statuses = ['publish', 'future', 'private', 'pending'];
 				if (in_array($item->get_status(), apply_filters( 'tainacan-status-require-validation', $validation_statuses) )) {
 					// translators: %s = metadatum name. ex: Title is required
 					$this->add_error( 'required', sprintf( __('%s is required', 'tainacan'), $metadatum->get_name() ) );

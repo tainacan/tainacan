@@ -157,14 +157,14 @@
                                     aria-role="list"
                                     class="item-edition-status-dropdown"
                                     :triggers="[ 'click' ]"
-                                    :disabled="item.status === 'auto-draft' || ( hasSomeError && (form.status == 'publish' || form.status == 'private') )"
+                                    :disabled="item.status === 'auto-draft' || ( hasSomeError && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) )"
                                     style="width: auto;">
                                 <template #trigger>
                                     <button 
-                                            :disabled="item.status === 'auto-draft' || ( hasSomeError && (form.status == 'publish' || form.status == 'private') )"
+                                            :disabled="item.status === 'auto-draft' || ( hasSomeError && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) )"
                                             type="button"
                                             class="button is-outlined"
-                                            :class="{ 'disabled': item.status === 'auto-draft' || ( hasSomeError && (form.status == 'publish' || form.status == 'private') ) }"
+                                            :class="{ 'disabled': item.status === 'auto-draft' || ( hasSomeError && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) ) }"
                                             style="width: auto;">
                                         <span class="icon has-text-gray">
                                             <i 
@@ -373,6 +373,9 @@ export default {
                         (status) => {
 
                             if ( status.slug == 'trash' )
+                                return false;
+
+                            if ( status.slug == 'pending' && ( this.$adminOptions.hideItemEditionPendingOption ) )
                                 return false;
 
                             if ( status.slug == 'publish' && ( this.$adminOptions.hideItemEditionStatusPublishOption || !this.currentUserCanPublish ) )

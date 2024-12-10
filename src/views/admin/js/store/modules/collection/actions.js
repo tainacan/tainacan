@@ -200,6 +200,7 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage, status, 
                     draft: res.headers['x-tainacan-total-collections-draft'],
                     trash: res.headers['x-tainacan-total-collections-trash'],
                     publish: res.headers['x-tainacan-total-collections-publish'],
+                    pending: res.headers['x-tainacan-total-collections-pending'],
                     private: res.headers['x-tainacan-total-collections-private'],
                 });
 

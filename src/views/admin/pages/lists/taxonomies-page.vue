@@ -128,7 +128,7 @@
                                 @click="onChangeTab('')">
                             <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
                                 {{ `${$i18n.get('label_all_taxonomies')}` }}
-                                <span class="has-text-gray">&nbsp;{{ repositoryTotalTaxonomies ? `(${Number(repositoryTotalTaxonomies.private) + Number(repositoryTotalTaxonomies.publish) + Number(repositoryTotalTaxonomies.draft)})` : '' }}</span>
+                                <span class="has-text-gray">&nbsp;{{ repositoryTotalTaxonomies ? `(${Number(repositoryTotalTaxonomies.pending) + Number(repositoryTotalTaxonomies.private) + Number(repositoryTotalTaxonomies.publish) + Number(repositoryTotalTaxonomies.draft)})` : '' }}</span>
                             </a>
                         </li>
                         <li 

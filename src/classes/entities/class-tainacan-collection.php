@@ -1173,7 +1173,8 @@ class Collection extends Entity {
 		if ( ! in_array( $this->get_status(), apply_filters( 'tainacan-status-require-validation', [
 			'publish',
 			'future',
-			'private'
+			'private',
+			'pending'
 		] ) ) ) {
 			return true;
 		}
