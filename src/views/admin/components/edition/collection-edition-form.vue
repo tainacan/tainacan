@@ -2,8 +2,7 @@
     <div 
             class="page-container"
             :class="{'repository-level-page' : isNewCollection }">
-        <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: $i18n.get('collection') }]" />
+        <tainacan-title />
         
         <form 
                 v-if="collection != null && collection != undefined && ((isNewCollection && $userCaps.hasCapability('tnc_rep_edit_collections')) || (!isNewCollection && collection.current_user_can_edit))" 
@@ -1082,8 +1081,6 @@ export default {
         }
     },
     mounted(){
-        this.$emitter.emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('settings') }]);
-
 
         if (this.$route.query.fromImporter != undefined) 
             this.fromImporter = this.$route.query.fromImporter;

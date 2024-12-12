@@ -1,10 +1,6 @@
 <template>
     <div class="repository-level-page page-container">
-        <tainacan-title
-                :bread-crumb-items="[
-                    { path: $routerHelper.getAvailableExportersPath(), label: $i18n.get('exporters') },
-                    { path: '', label: exporterType != undefined ? (exporterName != undefined ? exporterName : exporterType) : $i18n.get('title_exporter_page') }
-                ]" />
+        <tainacan-title />
         <b-loading
                 v-model="isLoading"
                 :can-cancel="false" />

@@ -6,9 +6,7 @@
                     'page-container': isRepositoryLevel,
                     'tainacan-modal-content': isItemLevel
                 }">
-            <tainacan-title
-                    v-if="!isItemLevel"
-                    :bread-crumb-items="[{ path: '', label: $i18n.get('activities') }]" />
+            <tainacan-title v-if="!isItemLevel" />
             <header 
                     v-else
                     class="tainacan-modal-title">
@@ -411,9 +409,7 @@
             this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
             this.isItemLevel = (!this.isRepositoryLevel && this.$route.params.itemId);
         },
-        mounted(){
-            if (!this.isRepositoryLevel)
-                this.$emitter.emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('activities') }]);
+        mounted() {
 
             if (this.$route.query.tab == 'processes' && this.isRepositoryLevel)
                 this.tab = 'processes';

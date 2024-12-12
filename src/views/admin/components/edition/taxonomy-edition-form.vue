@@ -1,11 +1,7 @@
 <template>
     <div>
         <div class="page-container repository-level-page">
-            <tainacan-title 
-                    :bread-crumb-items="[
-                        { path: $routerHelper.getTaxonomiesPath(), label: $i18n.get('taxonomies') },
-                        { path: '', label: (taxonomy != null && taxonomy.name != undefined) ? taxonomy.name : $i18n.get('taxonomy') }
-                    ]" />
+            <tainacan-title />
 
             <form 
                     v-if="taxonomy != null && taxonomy != undefined && (($route.name == 'TaxonomyCreationForm' && $userCaps.hasCapability('tnc_rep_edit_taxonomies')) || ($route.name == 'TaxonomyEditionForm' && taxonomy.current_user_can_edit))"

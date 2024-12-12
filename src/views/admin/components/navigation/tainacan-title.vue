@@ -9,48 +9,6 @@
                 @click="$router.go(-1)">
             {{ $i18n.get('back') }}
         </a>
-        <hr>
-
-        <nav 
-                v-if="isRepositoryLevel"
-                class="breadcrumbs">
-            <router-link :to="$routerHelper.getCollectionsPath()">
-                {{ $i18n.get('repository') }}
-            </router-link>
-            <template 
-                    v-for="(breadCrumbItem, index) of breadCrumbItems"
-                    :key="index">
-                <span>&nbsp;>&nbsp;</span>
-                <router-link    
-                        v-if="breadCrumbItem.path != ''"
-                        :to="breadCrumbItem.path">{{ breadCrumbItem.label }}</router-link>
-                <span v-else>{{ breadCrumbItem.label }}</span>
-            </template>   
-        </nav>
-        <nav 
-                v-else
-                class="breadcrumbs">
-            <router-link 
-                    :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link>
-            &nbsp;>&nbsp; 
-            <router-link  
-                    :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('collections') }}</router-link>
-            &nbsp;>&nbsp; 
-            <router-link  
-                    :to="{ path: collectionBreadCrumbItem.url, query: { fromBreadcrumb: true }}">{{ collectionBreadCrumbItem.name }}</router-link> 
-            <template 
-                    v-for="(childBreadCrumbItem, index) of childrenBreadCrumbItems"
-                    :key="index">
-                <span>&nbsp;>&nbsp;</span>
-                <router-link    
-                        v-if="childBreadCrumbItem.path != ''"
-                        :to="{ path: childBreadCrumbItem.path, query: index === $i18n.get('items') ? { fromBreadcrumb: true } : null }">
-                    {{ childBreadCrumbItem.label }}
-                </router-link>
-                <span v-else>{{ childBreadCrumbItem.label }}</span>
-            </template>
-        </nav>
-
     </div>
 </template>
 
@@ -60,15 +18,11 @@ import { useSlots } from 'vue';
 
 export default {
     name: 'TainacanTitle',
-    props: {
-        breadCrumbItems: Array
-    },
     data() {
         return {
             isRepositoryLevel: true,
             pageTitle: '',
             activeRouteName: '',
-            childrenBreadCrumbItems: []
         }
     },
     computed: {
@@ -79,12 +33,6 @@ export default {
             const slots = useSlots();
             return !!slots['default'];
         },
-        collectionBreadCrumbItem() {
-            return { 
-                url: this.collection && this.collection.id ? this.$routerHelper.getCollectionPath(this.collection.id) : '',
-                name: this.collection && this.collection.name ? this.collection.name : ''
-            };
-        }
     },
     watch: {
         '$route': {
@@ -104,16 +52,6 @@ export default {
 
         document.title = this.$route.meta.title;
         this.pageTitle = document.title;
-
-        this.$emitter.on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
-    },
-    beforeUnmount() {
-        this.$emitter.on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
-    },
-    methods: {
-        collectionBreadCrumbUpdate(breadCrumbItems) {
-            this.childrenBreadCrumbItems = breadCrumbItems;
-        }
     }
 }
 </script>
@@ -141,25 +79,7 @@ export default {
             float: right;
             margin-top: 5px;
         }
-        hr{
-            margin: 3px 0px 4px 0px; 
-            height: 1px;
-            background-color: var(--tainacan-secondary);
-            width: 100%;
-        }
-        .breadcrumbs {
-            font-size: 0.75em;
-            width: 100%;
-            a {
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
-                max-width: 75%;
-                margin: 0 0.1em;
-                display: inline-block;
-                vertical-align: bottom;
-            }
-        }
+      
         .level-left {
             .level-item {
                 display: inline-block;

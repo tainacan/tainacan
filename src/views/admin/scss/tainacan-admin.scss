@@ -31,27 +31,10 @@
 @import "../scss/_repository-level-overrides.scss";
 @import "../scss/_custom_variables.scss";
 
-// Clears wordpress content
-html {
-    overflow-y: hidden;
-}
-// body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter {
-//     display: none;
-// }
-body.tainacan-admin-page #wp-auth-check-wrap {
-    z-index: 9999999;
-}
 #tainacan-admin-app {
     background: var(--tainacan-background-color);
-    // position: fixed;
-    // top: 0;
-    // left: 0;
-    // bottom: 0;
-    // right: 0;
-    width: 100%;
-    z-index: 999999;
     overflow-y: auto;
-    margin: 0px !important; 
+    padding: 0 !important;
     font-family: var(--tainacan-font-family, $family-sans-serif);
     font-size: 1em;
 }

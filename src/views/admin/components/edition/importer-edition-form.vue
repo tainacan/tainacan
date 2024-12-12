@@ -1,11 +1,7 @@
 <template>
     <div 
             class="repository-level-page page-container">
-        <tainacan-title 
-                :bread-crumb-items="[
-                    { path: $routerHelper.getAvailableImportersPath(), label: $i18n.get('importers') },
-                    { path: '', label: importerType != undefined ? (importerName != undefined ? importerName :importerType) : $i18n.get('title_importer_page') }
-                ]" />
+        <tainacan-title />
         <form   
                 v-if="importer != undefined && importer != null"
                 class="tainacan-form" 

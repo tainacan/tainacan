@@ -8,9 +8,7 @@
             aria-live="polite">
 
         <!-- PAGE TITLE --------------------- -->
-        <tainacan-title
-                v-if="!$adminOptions.hideItemsListPageTitle" 
-                :bread-crumb-items="[{ path: '', label: $i18n.get('items') }]" />
+        <tainacan-title v-if="!$adminOptions.hideItemsListPageTitle" />
 
         <!-- SEARCH CONTROL ------------------------- -->
         <div
@@ -993,9 +991,6 @@
             
             this.prepareMetadata();
             this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
-
-            // Updates Collection Header Breadcrumb
-            this.$emitter.emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('items') }]);
 
             // Setting initial view mode
             let prefsAdminViewMode = !this.isRepositoryLevel ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';

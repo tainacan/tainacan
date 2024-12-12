@@ -2,8 +2,7 @@
     <div
             :class="{ 'repository-level-page page-container': isRepositoryLevel }"
             style="padding-bottom: 0;">
-        <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: $i18n.get('metadata') }]" />
+        <tainacan-title />
         
         <template v-if="isRepositoryLevel">
             <p>{{ $i18n.get('info_repository_metadata_inheritance') }}</p>
@@ -109,10 +108,6 @@ export default {
     },
     created() {
         this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
-    },
-    mounted() {
-        if (!this.isRepositoryLevel)
-            this.$emitter.emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('metadata') }]);
     },
     methods: {
         ...mapGetters('metadata',[

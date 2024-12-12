@@ -115,7 +115,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_restrict_access'                          => __( 'Restrict access', 'tainacan' ),
 
 	// Page Titles (used mainly on Router)
-	'title_repository_collections_page'              => __( 'Repository Collections', 'tainacan' ),
+	'title_repository_collections_page'              => __( 'Collections', 'tainacan' ),
 	'title_items_page'                               => __( 'All items from all collections', 'tainacan' ),
 	'title_repository_metadata_page'                 => __( 'Repository Metadata', 'tainacan' ),
 	'title_repository_filters_page'                  => __( 'Repository Filters', 'tainacan' ),

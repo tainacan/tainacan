@@ -218,12 +218,6 @@ export default {
         this.collectionId = this.$route.params.collectionId;
 
         this.cleanFiles();
-
-        // Updates Collection BreadCrumb
-        this.$emitter.emit('onCollectionBreadCrumbUpdate', [
-            { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
-            { path: '', label: this.$i18n.get('add_items_bulk') }
-        ]);
     },
     methods: {
         ...mapActions('collection', [

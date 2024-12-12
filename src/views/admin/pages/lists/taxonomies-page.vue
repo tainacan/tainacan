@@ -1,8 +1,7 @@
 <template>
     <div>
         <div class="repository-level-page page-container">
-            <tainacan-title 
-                    :bread-crumb-items="[{ path: '', label: $i18n.get('taxonomies') }]" />
+            <tainacan-title />
             <div class="sub-header">
 
                 <!-- New Taxonomy Button ----  -->

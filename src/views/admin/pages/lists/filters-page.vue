@@ -1,6 +1,6 @@
 <template>
     <div :class="{ 'repository-level-page page-container': isRepositoryLevel }">
-        <tainacan-title :bread-crumb-items="[{ path: '', label: $i18n.get('filters') }]" />
+        <tainacan-title />
         
         <template v-if="isRepositoryLevel">
             <p>{{ $i18n.get('info_repository_filters_inheritance') }}</p>
@@ -566,10 +566,6 @@ export default {
         this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
     },
     mounted() {
-
-        if (!this.isRepositoryLevel)
-            this.$emitter.emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('filter') }]);
-
         nextTick(() => { 
             this.columnsTopY = this.$refs.filterEditionPageColumns ? this.$refs.filterEditionPageColumns.getBoundingClientRect().top : 0;
         });

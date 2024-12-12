@@ -2,12 +2,7 @@
 // This garantees that any component inside a .repository-level-page
 // will have a blue color instead of a turquoise.
 #tainacan-admin-app .repository-level-page {
-    margin-top: 5.35em; 
     height: $page-height !important;
-
-    @media screen and (max-width: 769px) {
-        margin-top: 42px;
-    }
 
     .is-primary:not(.upload-draggable), .is-primary:hover, .is-primary:focus {
         background-color: var(--tainacan-blue3) !important;

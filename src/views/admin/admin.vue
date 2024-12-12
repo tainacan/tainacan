@@ -40,7 +40,6 @@
             TainacanRepositorySubheader
         },
         emits: [
-            'onCollectionBreadCrumbUpdate',
             'openProcessesPopup'
         ],
         data(){

@@ -8,17 +8,6 @@
                     @click="$router.go(-1)">
                 {{ $i18n.get('back') }}
             </a>
-            <hr>
-            <nav class="breadcrumbs">
-                <router-link 
-                        :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
-                <router-link  
-                        :to="$routerHelper.getAvailableImportersPath()">{{ $i18n.get('importers') }}</router-link> > 
-                <router-link 
-                        :to="$routerHelper.getImporterPath(importerType, sessionId)">{{ importerType != undefined ? (importerName != undefined ? importerName :importerType) : $i18n.get('title_importer_page') }}</router-link> >
-                <router-link 
-                        :to="$routerHelper.getImporterMappingPath(importerType, sessionId, collectionId)">{{ $i18n.get('label_metadata_mapping') }}</router-link> 
-            </nav>
 
         </div>
 
@@ -802,14 +791,7 @@ export default {
             float: right;
             margin-top: 5px;
         }
-        hr{
-            margin: 3px 0px 4px 0px; 
-            height: 1px;
-            background-color: var(--tainacan-secondary);
-        }
-        .breadcrumbs {
-            font-size: 0.75em;
-        }
+
         .level-left {
             .level-item {
                 display: inline-block;

@@ -5,9 +5,7 @@
                 :is-full-page="false"
                 :can-cancel="false" />
 
-        <tainacan-title 
-                v-if="!$adminOptions.hideItemEditionPageTitle || ($adminOptions.hideItemEditionPageTitle && isEditingItemMetadataInsideIframe)"
-                :bread-crumb-items="[{ path: '', label: $i18n.get('item') }]">
+        <tainacan-title v-if="!$adminOptions.hideItemEditionPageTitle || ($adminOptions.hideItemEditionPageTitle && isEditingItemMetadataInsideIframe)">
             <h1 v-if="isCreatingNewItem">
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
@@ -1308,12 +1306,6 @@ export default {
             // Puts loading on Draft Item creation
             this.isLoading = true;
 
-            // Updates Collection BreadCrumb
-            this.$emitter.emit('onCollectionBreadCrumbUpdate', [
-                { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
-                { path: '', label: this.$i18n.get('new') }
-            ]);
-
             // Clear errors so we don't have them duplicated from api
             this.errors = [];
 
@@ -1786,22 +1778,6 @@ export default {
                     // Checks if user has permission to edit
                     if (!this.item.current_user_can_edit)
                         this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
-
-                    // Updates Collection BreadCrumb
-                    if (this.isOnSequenceEdit) {
-                        this.$emitter.emit('onCollectionBreadCrumbUpdate', [
-                            { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
-                            { path: '', label: this.$i18n.get('sequence') },
-                            { path: '', label: this.item.title },
-                            { path: '', label: this.$i18n.get('edit') }
-                        ]);
-                    } else {
-                        this.$emitter.emit('onCollectionBreadCrumbUpdate', [
-                            { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
-                            { path: this.$routerHelper.getItemPath(this.form.collectionId, this.itemId), label: this.item.title },
-                            { path: '', label: this.$i18n.get('edit') }
-                        ]);
-                    }
 
                     // Fills hook forms with it's real values
                     nextTick()

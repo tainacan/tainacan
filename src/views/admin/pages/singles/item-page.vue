@@ -4,9 +4,7 @@
                 v-model="isLoading"
                 :can-cancel="false" />
 
-        <tainacan-title 
-                v-if="!$adminOptions.hideItemSinglePageTitle"
-                :bread-crumb-items="[{ path: '', label: $i18n.get('item') }]">
+        <tainacan-title v-if="!$adminOptions.hideItemSinglePageTitle">
             <h1>
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
@@ -629,14 +627,9 @@
                 fetchOnly: 'title,slug,author_id,author_name,thumbnail,status,modification_date,document_type,document_mimetype,document,comment_status,document_as_html,related_items'       
             })
             .then((resp) => {
-                resp.request.then((item) => {
-                    this.$emitter.emit('onCollectionBreadCrumbUpdate', [
-                        {path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items')},
-                        {path: '', label: item.title}
-                    ]);
-                    this.loadMetadata();
-                })
-                .catch(() => this.isLoading = false);
+                resp.request
+                    .then(() => this.loadMetadata() )
+                    .catch(() => this.isLoading = false);
 
                 // Item resquest token for cancelling
                 this.itemRequestCancel = resp.source;

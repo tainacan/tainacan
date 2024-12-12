@@ -58,6 +58,7 @@ abstract class Pages {
 		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_fonts' ), 90 );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_css' ), 90 );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_js' ), 90 );
+		add_action( 'admin_bar_menu', array($this, 'add_admin_bar_fullscreen_button'), 10 );
 	}
 	
 	/**
@@ -294,12 +295,14 @@ abstract class Pages {
 		
 		?>
 		<div id="tainacan-page-container">
-			<?php 
-				
-				$this->render_navigation_menu();
-				$this->render_breadcrumbs();
-				$this->render_page_content();
-			?>
+			<?php $this->render_navigation_menu(); ?>
+			<main id="tainacan-page-container--inner">
+				<?php
+					$this->render_menu_toggler();
+					$this->render_breadcrumbs();
+					$this->render_page_content();
+				?>
+			</main>
 		</div>
 		<?php
 	}
@@ -333,10 +336,16 @@ abstract class Pages {
 				<header>
 					<h1>
 						<a href="admin.php?page=tainacan_dashboard">
-							<img 
+							<img
+								id="tainacan-menu-logo-full" 
 								alt="<?php _e('Tainacan', 'tainacan'); ?>" 
 								width="140" 
 								src="<?php echo plugin_dir_url( __DIR__ ) . '/assets/images/tainacan_logo_header.svg'; ?>" />
+							<img 
+								id="tainacan-menu-logo-icon"
+								alt="<?php _e('Tainacan', 'tainacan'); ?>" 
+								width="28" 
+								src="<?php echo plugin_dir_url( __DIR__ ) . '/assets/images/tainacan_logo_icon.svg'; ?>" />
 						</a>
 					</h1>
 					<span class="plugin-version">
@@ -466,6 +475,40 @@ abstract class Pages {
 			</div>
 			<?php
 		}
+	}
+
+	/**
+	 * Renders button that minimizes the menu on desktop and opens it on mobile.
+	 */
+	function render_menu_toggler() {
+		?>
+		<button id="tainacan-menu-toggler" aria-label="<?php _e('Toggle menu', 'tainacan'); ?>" title="<?php _e('Toggle menu', 'tainacan'); ?>" onclick="document.getElementById('tainacan-navigation-menu').classList.toggle('is-active')">
+			<span class="icon"><?php echo $this->get_svg_icon( 'menu' ); ?></span>
+		</button>
+		<button id="tainacan-menu-collapser" aria-label="<?php _e('Collapse menu', 'tainacan'); ?>" title="<?php _e('Toggle menu', 'tainacan'); ?>" onclick="document.getElementById('tainacan-navigation-menu').classList.toggle('is-collapsed')">
+			<span class="icon"><?php echo $this->get_svg_icon( 'previous' ); ?></span>
+		</button>
+		<?php
+	}
+
+	/**
+	 * Adds a button on the admin bar to toggle fullscreen mode.
+	 */
+	function add_admin_bar_fullscreen_button(\WP_Admin_Bar $admin_bar ) {
+		$admin_bar->add_node( array(
+			'id'    => 'tainacan-fullscreen-toggle',
+			'parent' => 'top-secondary',
+			'group'  => null,
+			'title' => __( 'Hide WordPress bar and menus', 'tainacan' ),
+			'href' => '',
+			'meta' => [
+				'title' => __( 'Toggle a fullscreen visualization of the Tainacan Admin panel', 'tainacan' ),
+				'rel' => 'alternate',
+				'onclick' => 'document.body.classList.toggle("tainacan-pages-container--fullscreen")',
+				'target' => '_self',
+				'tabindex' => 0
+			]
+		) );
 	}
     
     /**

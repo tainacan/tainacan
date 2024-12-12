@@ -1,8 +1,10 @@
 <template>
     <div class="repository-level-page page-container">
+        
         <b-loading v-model="isLoading" />
-        <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: $i18n.get('collections') }]" />
+        
+        <tainacan-title />
+
         <div class="sub-header">
             
             <!-- New Collection button -->
