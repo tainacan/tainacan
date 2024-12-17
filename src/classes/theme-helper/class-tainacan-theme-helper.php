@@ -1212,7 +1212,8 @@ class Theme_Helper {
          *     @type bool    $loop_slides					Should slides loop when reached the end of the Carousel?
          *     @type bool    $hide_title					Should the title of the items be displayed?
          *     @type string  $image_size					Item image size. Defaults to 'tainacan-medium'
-         *     @type bool    $show_collection_header		Should it display a small version of the collection header?
+		 *     @type bool	 $variable_items_width			Should the carousel items be only as large as their natural width?
+		 *     @type bool    $show_collection_header		Should it display a small version of the collection header?
          *     @type bool    $show_collection_label			Should it displar a 'Collection' label before the collection name on the collection header?
          *     @type string  $collection_background_color	Color of the collection header background
          *     @type string  $collection_text_color			Color of the collection header text
@@ -1237,6 +1238,7 @@ class Theme_Helper {
 			'image_size' => ( isset($args['crop_images_to_square']) && !$args['crop_images_to_square'] )
 				? 'tainacan-medium-full'
 				: 'tainacan-medium',
+			'variable_items_width' => false,
 			'show_collection_header' => false,
 			'show_collection_label' => false,
 			'collection_background_color' => '#373839',
@@ -1340,7 +1342,7 @@ class Theme_Helper {
          *     @type string  $mosaic_grid_columns			
          *     @type string  $mosaic_item_focal_point_x		
          *     @type string  $mosaic_item_focal_point_y		
-	 * @return string  The HTML div to be used for rendering the items carousel vue component
+	 * @return string  The HTML div to be used for rendering the items list vue component
 	 */
 	public function get_tainacan_dynamic_items_list($args = []) {
 		if (!is_array($args))
@@ -1977,7 +1979,8 @@ class Theme_Helper {
          *     @type bool    $loop_slides					Should slides loop when reached the end of the Carousel?
          *     @type bool    $hide_name						Should the name of the terms be displayed?
          *     @type string  $image_size					term image size. Defaults to 'tainacan-medium'
-         *     @type string  $tainacan_api_root				Path of the Tainacan api root (to make the terms request)
+		 *     @type bool	 $variable_terms_width			Should the carousel terms be only as large as their natural width?
+		 *     @type string  $tainacan_api_root				Path of the Tainacan api root (to make the terms request)
          *     @type string  $tainacan_base_url				Path of the Tainacan base URL (to make the links to the terms)
          *     @type string  $class_name					Extra class to add to the wrapper, besides the default wp-block-tainacan-carousel-terms-list
 	 * @return string  The HTML div to be used for rendering the terms carousel vue component
@@ -2000,6 +2003,7 @@ class Theme_Helper {
 			'image_size' => ( isset($args['crop_images_to_square']) && !$args['crop_images_to_square'] )
 				? 'tainacan-medium-full'
 				: 'tainacan-medium',
+			'variable_terms_width' => false,
 			'tainacan_api_root' => '',
 			'tainacan_base_url' => '',
 			'class_name' => ''
@@ -2052,6 +2056,7 @@ class Theme_Helper {
 				'data-large-arrows' => true,
 				'data-arrows-style' => true,
 				'data-image-size' => true,
+				'data-variable-terms-width' => true,
 				'data-max-terms-number' => true,
 				'data-max-terms-per-screen' => true,
 				'data-space-between-terms' => true,
