@@ -18,7 +18,8 @@ export default function({ attributes }) {
         hideName,
         imageSize,
         showTermThumbnail,
-        taxonomyId
+        taxonomyId,
+        variableTermsWidth
     } = attributes;
     
     // Gets attributes such as style, that are automatically added by the editor hook
@@ -42,6 +43,7 @@ export default function({ attributes }) {
                 data-taxonomy-id={ taxonomyId }
                 data-tainacan-api-root={ tainacan_blocks.root }
                 data-show-term-thumbnail={ '' + showTermThumbnail }
+                data-variable-terms-width={ '' + variableTermsWidth }
                 id={ 'wp-block-tainacan-carousel-terms-list_' + blockId }>
                     { content }
             </div>
