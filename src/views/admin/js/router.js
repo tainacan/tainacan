@@ -178,7 +178,7 @@ const routes = [
     { path: '/importers/', name: 'AvailableImportersPage', component: AvailableImportersPage, meta: { title: i18nGet('title_importers_page') } },
     { path: '/importers/:importerSlug', name: 'ImporterEditionForm', component: ImporterEditionForm, meta: { title: i18nGet('title_importer_page') } },
     { path: '/importers/:importerSlug/:sessionId', name: 'ImporterCreationForm', component: ImporterEditionForm, meta: { title: i18nGet('title_importer_page') } },
-    { path: '/importers/:importerType/:sessionId/mapping/:collectionId', name: 'ImporterMappingForm', component: ImporterMappingForm, meta: { title: i18nGet('title_importer_mapping_page') } },
+    { path: '/importers/:importerSlug/:sessionId/mapping/:collectionId', name: 'ImporterMappingForm', component: ImporterMappingForm, meta: { title: i18nGet('title_importer_mapping_page') } },
 
     { path: '/exporters/', name: 'ExportersPage', component: AvailableExportersPage, meta: { title: i18nGet('title_exporters_page') } },
     { path: '/exporters/:exporterSlug', name: 'ExporterEditionForm', component: ExporterEditionForm, meta: { title: i18nGet('title_exporter_page') }},

@@ -87,11 +87,12 @@ function tainacan_blocks_register_and_enqueue_all_blocks() {
 	 * Populates js variables here to avoid calling it for each block
 	 */
 	$block_settings = tainacan_blocks_get_plugin_js_settings();
+	$user_settings = \Tainacan\Admin::get_instance()->get_admin_js_user_data();
 	$plugin_settings = \Tainacan\Admin::get_instance()->get_admin_js_localization_params();
 
 	// May be needed outside the editor, if server side render is used
 	foreach(TAINACAN_BLOCKS as $block_slug => $block_options) {
-		tainacan_blocks_register_block($block_slug, $block_options, $block_settings, $plugin_settings);
+		tainacan_blocks_register_block($block_slug, $block_options, $block_settings, $user_settings, $plugin_settings);
 	}
 }
 
@@ -104,9 +105,10 @@ function tainacan_blocks_register_and_enqueue_all_blocks() {
  *     @type array		 $extra_editor_script_deps		Array of strings containing script dependencies of the editor side script
  *  }
  * @param array $block_settings JSON array containing the block settings from the server
+ * @param array $user_settings JSON array containing the user settings from the server
  * @param array $plugin_settings JSON array containing the plugin settings from the server
  */
-function tainacan_blocks_register_block($block_slug, $options = [], $block_settings = [], $plugin_settings = []) {
+function tainacan_blocks_register_block($block_slug, $options = [], $block_settings = [], $user_settings = [], $plugin_settings = []) {
 	global $TAINACAN_BASE_URL;
 	global $TAINACAN_VERSION;
 
@@ -145,6 +147,7 @@ function tainacan_blocks_register_block($block_slug, $options = [], $block_setti
 
 	// Passes global variables to the blocks editor side
 	wp_localize_script( $block_slug, 'tainacan_blocks', $block_settings);
+	wp_localize_script( $block_slug, 'tainacan_user', $user_settings);
 	wp_localize_script( $block_slug, 'tainacan_plugin', $plugin_settings);
 
 	// Registers style
@@ -255,9 +258,11 @@ function tainacan_blocks_add_common_theme_scripts() {
 	wp_set_script_translations( 'tainacan-blocks-common-scripts', 'tainacan' );
 
 	$block_settings = tainacan_blocks_get_plugin_js_settings();
+	$user_settings = \Tainacan\Admin::get_instance()->get_admin_js_user_data();
 	$plugin_settings = \Tainacan\Admin::get_instance()->get_admin_js_localization_params();
 
 	wp_localize_script( 'tainacan-blocks-common-scripts', 'tainacan_blocks', $block_settings);
+	wp_localize_script( 'tainacan-blocks-common-scripts', 'tainacan_user', $user_settings);
 	wp_localize_script( 'tainacan-blocks-common-scripts', 'tainacan_plugin', $plugin_settings);
 
 	// Necessary do this only when the item submission block is present

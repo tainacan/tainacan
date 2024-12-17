@@ -408,8 +408,8 @@ export default {
             if (pagedLink && (this.itemId == undefined || this.itemId == null))
                 params.paged = pagedLink;
 
-            if (tainacan_plugin.nonce)
-                params._wpnonce = tainacan_plugin.nonce;
+            if (tainacan_user.nonce)
+                params._wpnonce = tainacan_user.nonce;
 
             return this.exposerBaseURL + '&' + qs.stringify(params);
         },

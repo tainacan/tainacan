@@ -161,10 +161,10 @@ UserPrefsPlugin.install = function (app, options = {}) {
             'map_view_mode_selected_geocoordinate_metadatum': 0
         },
         init() {
-            if (tainacan_plugin.user_prefs == undefined || tainacan_plugin.user_prefs == '') {
+            if (tainacan_user.caps == undefined || tainacan_user.caps == '') {
                 let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
 
-                if (tainacan_plugin.nonce) {
+                if (tainacan_user.nonce) {
                     axios.wpApi.post('/users/me/', qs.stringify(data))
                         .then( updatedRes => {
                             let prefs = JSON.parse(updatedRes.data.meta['tainacan_prefs']);
@@ -173,7 +173,7 @@ UserPrefsPlugin.install = function (app, options = {}) {
                         .catch( () => console.log("Request to /users/me failed. Maybe you're not logged in.") );
                 }
             } else {
-                let prefs = JSON.parse(tainacan_plugin.user_prefs);
+                let prefs = JSON.parse(tainacan_user.prefs);
                 this.tainacanPrefs = prefs;
             }
         },
@@ -185,7 +185,7 @@ UserPrefsPlugin.install = function (app, options = {}) {
 
             let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
 
-            if (tainacan_plugin.nonce) {
+            if (tainacan_user.nonce) {
                 return new Promise(( resolve, reject ) => {
                     axios.wpApi.post('/users/me/', qs.stringify(data))
                         .then( res => {
@@ -208,7 +208,7 @@ UserPrefsPlugin.install = function (app, options = {}) {
         },
         clean() {
             let data = {'meta': {'tainacan_prefs': ''} };
-            if (tainacan_plugin.nonce)
+            if (tainacan_user.nonce)
                 axios.wpApi.post('/users/me/', qs.stringify(data));
         }
     }
@@ -371,7 +371,7 @@ UserCapabilitiesPlugin.install = function (app, options = {}) {
     
     app.config.globalProperties.$userCaps = {
         hasCapability(key) {
-            return tainacan_plugin.user_caps[key];
+            return tainacan_user.caps[key];
         }
     }
 };

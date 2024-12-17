@@ -41,11 +41,9 @@
     font-size: 16px;
     background-color: var(--tainacan-turquoise1);
     overflow: hidden;
-
-    #tainacan-menu-toggler,
-    #tainacan-menu-collapser {
-        border-top-right-radius: 8px;
-        border-bottom-right-radius: 8px;
+  
+    .tainacan-ui-tweak-button {
+        border-radius: 8px;
         padding: 0.25rem 0.15rem;
         margin-top: -0.5rem;
         border: none !important;
@@ -78,6 +76,12 @@
         }
     }
 
+    #tainacan-menu-toggler,
+    #tainacan-menu-collapser {
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+    }
+
     #tainacan-menu-toggler {
         display: none;
         visibility: hidden;
@@ -89,6 +93,10 @@
     #tainacan-menu-collapser {
         position: absolute;
         margin-left: calc( -1 * var(--tainacan-page-container--inner-padding-x, 1rem) );
+    }
+    #tainacan-fullscreen-toggler {
+        position: absolute;
+        right: var(--tainacan-page-container--inner-padding-x, 1rem);
     }
 
     #tainacan-page-container--inner {

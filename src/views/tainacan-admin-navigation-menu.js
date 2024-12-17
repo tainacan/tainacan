@@ -28,7 +28,7 @@ function handleMenuCollapses() {
         } );
     }
 }
-function handleCollectionLevelDynamicMenu() {
+function handleDynamicMenusAndBreadcrumbs() {
 
     if ( wp && wp.hooks ) {
         const tainacanRepositoryLinks = document.getElementById( 'tainacan_admin' );
@@ -46,14 +46,23 @@ function handleCollectionLevelDynamicMenu() {
                     currentRoute,
                     adminOptions,
                     collection,
-                    item
+                    item,
+                    taxonomy,
+                    importer
                 }) {
 
                     const repositoryLinkElements = tainacanRepositoryLinks.querySelectorAll( 'a' );
                     let isSomeRepositoryLinkActive = false;
                     repositoryLinkElements.forEach( repositoryLinkElement => {
                         const currentLinkHash = repositoryLinkElement.href.split('#');
-                        if ( currentLinkHash[1] && currentLinkHash[1] == currentRoute.path ) {
+
+                        if (
+                            currentLinkHash[1] &&
+                            !currentRoute.collectionId && 
+                            currentRoute.path != '/collections' &&
+                            currentRoute.path != '/items' &&
+                            currentRoute.path.indexOf( currentLinkHash[1] ) == 0
+                        ) {
                             repositoryLinkElement.setAttribute('aria-current', 'page');
                             isSomeRepositoryLinkActive = true;
                         } else {
@@ -140,7 +149,7 @@ function handleCollectionLevelDynamicMenu() {
                                 label: wp.i18n.__( 'Activities', 'tainacan'),
                                 icon: 'activities',
                                 href: `collections/${currentRoute.params.collectionId}/activities`,
-                                hide: !tainacan_plugin.user_caps['tnc_rep_read_logs']
+                                hide: !tainacan_user.caps['tnc_rep_read_logs']
                             },
                             {
                                 id: 'capabilities',
@@ -185,7 +194,7 @@ function handleCollectionLevelDynamicMenu() {
                     }
 
                     // Updates breadcrumbs
-                    if ( currentRoute.meta && currentRoute.meta.title ) {
+                    if ( tainacanBreadcrumbsList && currentRoute.meta && currentRoute.meta.title ) {
 
                         // First, we clear the dynamic collection elements from the breadcrumbs list
                         const dynamicBreadcrumbs = tainacanBreadcrumbsList.querySelectorAll( '.dynamic-breadcrumb' );
@@ -220,6 +229,44 @@ function handleCollectionLevelDynamicMenu() {
                             itemLink.innerHTML = '<a aria-current="page" href="' + document.location.pathname + document.location.search + '#collections/' + currentRoute.params.collectionId + '/items/' + currentRoute.params.itemId + '">' + item.title + '</a>';
                             tainacanBreadcrumbsList.appendChild( itemLink );
                         }
+                        
+                        if ( currentRoute.params.taxonomyId && taxonomy ) {
+
+                            // Adds taxonomies link
+                            const taxonomiesLink = document.createElement( 'li' );
+                            taxonomiesLink.classList.add('dynamic-breadcrumb');
+                            taxonomiesLink.innerHTML = '<a href="' + document.location.pathname + document.location.search + '#taxonomies">' + wp.i18n.__( 'Taxonomies', 'tainacan') + '</a>';
+                            tainacanBreadcrumbsList.appendChild( taxonomiesLink );
+
+                            // Adds taxonomy link
+                            const taxonomyLink = document.createElement( 'li' );
+                            taxonomyLink.classList.add('dynamic-breadcrumb');
+                            taxonomyLink.innerHTML = '<a aria-current="page" href="' + document.location.pathname + document.location.search + '#taxonomies/' + currentRoute.params.taxonomyId + '/edit">' + taxonomy.name + '</a>';
+                            tainacanBreadcrumbsList.appendChild( taxonomyLink );
+                        }
+                        
+                        if ( currentRoute.params.importerSlug && importer ) {
+
+                            // Adds importers link
+                            const importersLink = document.createElement( 'li' );
+                            importersLink.classList.add('dynamic-breadcrumb');
+                            importersLink.innerHTML = '<a href="' + document.location.pathname + document.location.search + '#importers">' + wp.i18n.__( 'Importers', 'tainacan') + '</a>';
+                            tainacanBreadcrumbsList.appendChild( importersLink );
+
+                            // Adds importer link
+                            const importerLink = document.createElement( 'li' );
+                            importerLink.classList.add('dynamic-breadcrumb');
+                            importerLink.innerHTML = '<a aria-current="page" href="' + document.location.pathname + document.location.search + '#importers/' + currentRoute.params.importerSlug + '">' + importer + '</a>';
+                            tainacanBreadcrumbsList.appendChild( importerLink );
+
+                            // Adds importer mapping link
+                            if ( currentRoute.params.sessionId && currentRoute.params.collectionId ) {
+                                const importerMappingLink = document.createElement( 'li' );
+                                importerMappingLink.classList.add('dynamic-breadcrumb');
+                                importerMappingLink.innerHTML = '<a aria-current="page" href="' + document.location.pathname + document.location.search + '#importers/' + currentRoute.params.importerSlug + '/' + currentRoute.params.sessionId + '/mapping/' + currentRoute.params.collectionId + '">' + currentRoute.params.sessionId + '</a>';
+                                tainacanBreadcrumbsList.appendChild( importerMappingLink );
+                            }
+                        }
 
                         // Adds current subpage
                         const breadcrumbItem = document.createElement( 'li' );
@@ -234,5 +281,75 @@ function handleCollectionLevelDynamicMenu() {
     }
 }
 
+/**
+ * Handle UI Tweak buttons such as menu collapsing and fullscreen mode
+ */
+function handleUITweakButtons() {
+    const tainacanMenuToggler = document.getElementById('tainacan-menu-toggler');
+    const tainacanMenuCollapser = document.getElementById('tainacan-menu-collapser');
+    const tainacanFullscreenToggler = document.getElementById('tainacan-fullscreen-toggler');
+    const tainacanAdminMenu = document.getElementById('tainacan-navigation-menu');
+
+    if ( tainacanMenuToggler && tainacanMenuCollapser && tainacanAdminMenu ) {
+
+        tainacanMenuToggler.addEventListener( 'click', function() {
+
+            const isToggled = tainacanAdminMenu.classList.contains('is-active');
+
+            tainacanAdminMenu.classList.toggle('is-active');
+            tainacanMenuToggler.ariaPressed = '' + isToggled;
+
+        } );
+
+        tainacanMenuCollapser.addEventListener( 'click', function() {
+
+            const isCollapsed = tainacanAdminMenu.classList.contains('is-collapsed');
+
+            tainacanAdminMenu.classList.toggle('is-collapsed');
+            tainacanMenuCollapser.ariaPressed = '' + isCollapsed;
+
+        } );
+    }
+
+    if ( tainacanFullscreenToggler ) {
+
+        tainacanFullscreenToggler.addEventListener( 'click', function() {
+
+            const isFullscreen = !document.body.classList.contains('tainacan-pages-container--fullscreen');
+
+            document.body.classList.toggle('tainacan-pages-container--fullscreen');
+            tainacanFullscreenToggler.ariaPressed = '' + isFullscreen;
+
+            let currentUserPrefs = JSON.parse(tainacan_user.prefs);
+            currentUserPrefs['is_fullscreen'] = isFullscreen;
+
+            let data = { 'meta': { 'tainacan_prefs': JSON.stringify(currentUserPrefs) } };
+
+            if ( tainacan_user.nonce && tainacan_user.wp_api_url ) {
+            
+                fetch(tainacan_user.wp_api_url + 'users/me', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-WP-Nonce': tainacan_user.nonce
+                    },
+                    body: JSON.stringify(data)
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                }).then(data => {
+                    console.log('User preferences updated:', data);
+                }).catch(error => {
+                    console.error('Request to /users/me failed. Maybe you\'re not logged in.', error);
+                });
+            }
+
+        } );
+    }
+}
+
 handleMenuCollapses();
-handleCollectionLevelDynamicMenu();
+handleDynamicMenusAndBreadcrumbs();
+handleUITweakButtons();

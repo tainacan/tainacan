@@ -412,7 +412,7 @@
                     query['status'] = ['publish','private','draft'];
 
                 if ( this.isAcceptingOnlyItemsAuthoredByCurrentUser )
-                    query['authorid'] = tainacan_plugin.user_data.ID;
+                    query['authorid'] = tainacan_user.data.ID;
 
                 if (this.selected.length > 0)
                     query['exclude'] = this.selected.map((item) => item.value);

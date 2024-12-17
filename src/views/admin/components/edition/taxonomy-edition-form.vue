@@ -356,7 +356,9 @@
 
                 this.fetchTaxonomy({ taxonomyId: this.taxonomyId, isContextEdit: true })
                     .then(res => {
-                        this.taxonomy = res.taxonomy;
+                        this.taxonomy = JSON.parse(JSON.stringify(res.taxonomy));
+
+                        wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: this.$route, adminOptions: this.$adminOptions, taxonomy: this.taxonomy });
 
                         // Fills hook forms with it's real values 
                         nextTick()
@@ -412,7 +414,10 @@
                 this.updateTaxonomy(data)
                     .then(updatedTaxonomy => {
 
-                        this.taxonomy = updatedTaxonomy;
+                        this.taxonomy = JSON.parse(JSON.stringify(updatedTaxonomy));
+
+                        wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: this.$route, adminOptions: this.$adminOptions, taxonomy: this.taxonomy });
+
                         // Fills hook forms with it's real values 
                         this.updateExtraFormData(this.taxonomy);
 

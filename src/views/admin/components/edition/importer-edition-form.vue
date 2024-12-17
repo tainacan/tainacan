@@ -238,6 +238,8 @@ export default {
         this.fetchAvailableImporters().then((importerTypes) => {
            if (importerTypes[this.importerType]) 
             this.importerName = importerTypes[this.importerType].name;
+        
+            wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: this.$route, adminOptions: this.$adminOptions, importer: this.importerName });
         });
 
         if (this.sessionId != undefined)

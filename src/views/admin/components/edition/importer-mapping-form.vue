@@ -403,7 +403,7 @@ export default {
         }
     },
     created() {
-        this.importerType = this.$route.params.importerType;
+        this.importerType = this.$route.params.importerSlug;
         this.sessionId = this.$route.params.sessionId;
         this.collectionId = this.$route.params.collectionId;
         this.mappedCollection['id'] = this.collectionId;
@@ -412,6 +412,8 @@ export default {
         this.fetchAvailableImporters().then((importerTypes) => {
            if (importerTypes[this.importerType]) 
             this.importerName = importerTypes[this.importerType].name;
+
+            wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: this.$route, adminOptions: this.$adminOptions, importer: this.importerName });
         });
 
         this.loadImporter();

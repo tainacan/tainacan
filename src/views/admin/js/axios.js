@@ -55,8 +55,8 @@ export const tainacanErrorHandler = function(error) {
 export const tainacanApi = axios.create({
     baseURL: tainacan_plugin.tainacan_api_url
 });
-if (tainacan_plugin.nonce) {
-    tainacanApi.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
+if (tainacan_user.nonce) {
+    tainacanApi.defaults.headers.common['X-WP-Nonce'] = tainacan_user.nonce;
 }
 if (tainacan_plugin.admin_request_options) {
     Object.keys(tainacan_plugin.admin_request_options).forEach(requestOption => {
@@ -72,8 +72,8 @@ tainacanApi.interceptors.response.use(
 export const wpApi= axios.create({
     baseURL: tainacan_plugin.wp_api_url
 });
-if (tainacan_plugin.nonce) {
-    wpApi.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
+if (tainacan_user.nonce) {
+    wpApi.defaults.headers.common['X-WP-Nonce'] = tainacan_user.nonce;
 }
 wpApi.interceptors.response.use(
     (response) => response,
@@ -84,8 +84,8 @@ wpApi.interceptors.response.use(
 export const wpAjax = axios.create({
     baseURL: tainacan_plugin.wp_ajax_url
 });
-if (tainacan_plugin.nonce) {
-    wpAjax.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
+if (tainacan_user.nonce) {
+    wpAjax.defaults.headers.common['X-WP-Nonce'] = tainacan_user.nonce;
 }
 wpAjax.interceptors.response.use(
     (response) => response,

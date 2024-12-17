@@ -33,6 +33,7 @@ module.exports = {
         'wp': true,
         'tainacan_plugin': true,
         'tainacan_blocks': true,
+        'tainacan_user': true,
         '_': true,
         'jQuery': true,
         'tainacan_extra_components': true,

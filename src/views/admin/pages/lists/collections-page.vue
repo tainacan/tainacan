@@ -591,7 +591,7 @@ export default {
                 orderby: this.orderBy,
                 search: this.searchQuery,
                 collectionTaxonomies: this.collectionTaxonomies,
-                authorid: this.authorFilter === 'current-author' && tainacan_plugin.user_data && tainacan_plugin.user_data.ID ? tainacan_plugin.user_data.ID : ''
+                authorid: this.authorFilter === 'current-author' && tainacan_user.data && tainacan_user.data.ID ? tainacan_user.data.ID : ''
             })
             .then((res) => {
                 this.isLoading = false;

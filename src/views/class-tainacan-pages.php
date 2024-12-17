@@ -39,7 +39,6 @@ abstract class Pages {
 	 */
 	public function init() {
 		add_action( 'init', array( &$this, 'register_user_meta' ) );
-		add_action( 'admin_init',array( $this, 'check_if_admin_menu_is_collapsed' ) );
 		add_action( 'admin_menu', array( &$this, 'add_admin_menu' ) );
 		add_action( 'admin_head', array( &$this, 'remove_admin_notices' ) );
 	}
@@ -58,7 +57,6 @@ abstract class Pages {
 		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_fonts' ), 90 );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_css' ), 90 );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_js' ), 90 );
-		add_action( 'admin_bar_menu', array($this, 'add_admin_bar_fullscreen_button'), 10 );
 	}
 	
 	/**
@@ -110,7 +108,59 @@ abstract class Pages {
 	 */
 	function admin_body_class( $classes ) {
 		$classes .= ' tainacan-pages-container';
+
+		$cur_user  = wp_get_current_user();
+
+		if ( $cur_user instanceof \WP_User ) {
+			
+			$user_prefs_as_string = get_user_meta( $cur_user->ID, 'tainacan_prefs', true );
+			$user_prefs = json_decode( $user_prefs_as_string, true );
+			
+			if ( isset($user_prefs['is_fullscreen']) && $user_prefs['is_fullscreen'] )
+				$classes .= ' tainacan-pages-container--fullscreen';
+
+		}	
+
 		return $classes;
+	}
+
+	/**
+	 * get_admin_js_user_data is used to build the user data object that is passed to the JS global object 'tainacan_user'.
+	 * The navigation script, which is enqueued to all admin pages, uses this object to check user capabilities and tweak
+	 * user prefs.
+	 */
+	function get_admin_js_user_data() {
+
+		$cur_user  = wp_get_current_user();
+		$user_caps = array();
+		$prefs     = array();
+		$user_data = array();
+
+		if ( $cur_user instanceof \WP_User ) {
+			$tainacan_caps = \tainacan_roles()->get_repository_caps_slugs();
+			foreach ($tainacan_caps as $tcap) {
+				$user_caps[$tcap] = current_user_can( $tcap );
+			}
+			$prefs = get_user_meta( $cur_user->ID, 'tainacan_prefs', true );
+
+			if ( $cur_user->data && isset($cur_user->data->user_email) && isset($cur_user->data->display_name) ) {
+				$user_data = array(
+					'ID' => $cur_user->ID,
+					'email' => $cur_user->data->user_email,
+					'display_name' => $cur_user->data->display_name
+				);
+			}
+		}
+
+		return array(
+			'caps' => $user_caps,
+			'prefs' => $prefs,
+			'data' => $user_data,
+			'nonce'                  	=> is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : false,
+			'tainacan_api_url'         	=> esc_url_raw( rest_url() ) . 'tainacan/v2',
+			'wp_api_url'            	=> esc_url_raw( rest_url() ) . 'wp/v2/',
+			'wp_ajax_url'            	=> admin_url( 'admin-ajax.php' ),
+		);
 	}
 	
 	/**
@@ -142,36 +192,12 @@ abstract class Pages {
 
 		$tainacan_admin_i18n['entities_labels'] = $entities_labels;
 
-		$cur_user  = wp_get_current_user();
-		$user_caps = array();
-		$prefs     = array();
-		$user_data = array();
-		if ( $cur_user instanceof \WP_User ) {
-			$tainacan_caps = \tainacan_roles()->get_repository_caps_slugs();
-			foreach ($tainacan_caps as $tcap) {
-				$user_caps[$tcap] = current_user_can( $tcap );
-			}
-			$prefs = get_user_meta( $cur_user->ID, 'tainacan_prefs', true );
-
-			if ( $cur_user->data && isset($cur_user->data->user_email) && isset($cur_user->data->display_name) ) {
-				$user_data = array(
-					'ID' => $cur_user->ID,
-					'email' => $cur_user->data->user_email,
-					'display_name' => $cur_user->data->display_name
-				);
-			}
-		}
-
 		$settings = [
 			'tainacan_api_url'         	=> esc_url_raw( rest_url() ) . 'tainacan/v2',
 			'wp_api_url'            	=> esc_url_raw( rest_url() ) . 'wp/v2/',
 			'wp_ajax_url'            	=> admin_url( 'admin-ajax.php' ),
-			'nonce'                  	=> is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : false,
 			'classes'                	=> array(),
 			'i18n'                   	=> $tainacan_admin_i18n,
-			'user_caps'              	=> $user_caps,
-			'user_prefs'             	=> $prefs,
-			'user_data'					=> $user_data,
 			'base_url'               	=> $TAINACAN_BASE_URL,
 			'plugin_dir_url'			=> plugin_dir_url( __DIR__ ),
 			'admin_url'              	=> admin_url('admin.php'),
@@ -298,7 +324,7 @@ abstract class Pages {
 			<?php $this->render_navigation_menu(); ?>
 			<main id="tainacan-page-container--inner">
 				<?php
-					$this->render_menu_toggler();
+					$this->render_ui_tweak_buttons();
 					$this->render_breadcrumbs();
 					$this->render_page_content();
 				?>
@@ -326,6 +352,9 @@ abstract class Pages {
 			[ 'wp-hooks', 'wp-i18n' ],
 			TAINACAN_VERSION
 		);
+		
+		wp_localize_script( 'tainacan-admin-navigation-menu', 'tainacan_user', $this->get_admin_js_user_data() );
+
 		$current_screen = get_current_screen();
 		$current_page_slug = $current_screen->id ? $current_screen->id : 'toplevel_page_tainacan_dashboard';
 		$current_page_parent = $current_screen->parent_file;
@@ -478,61 +507,58 @@ abstract class Pages {
 	}
 
 	/**
-	 * Renders button that minimizes the menu on desktop and opens it on mobile.
+	 * Renders buttons for minimizing and collapseing the menu and toggling fullscreen mode.
 	 */
-	function render_menu_toggler() {
+	function render_ui_tweak_buttons() {
+
+		$is_menu_toggled = false;
+		$is_menu_collapsed = false;
+		$is_fullscreen = false;
+
+		$cur_user  = wp_get_current_user();
+
+		if ( $cur_user instanceof \WP_User ) {
+			
+			$user_prefs_as_string = get_user_meta( $cur_user->ID, 'tainacan_prefs', true );
+			$user_prefs = json_decode( $user_prefs_as_string, true );
+
+			if ( isset($user_prefs['menu_toggled']) ) 
+				$is_menu_toggled = $user_prefs['menu_toggled'];
+
+			if ( isset($user_prefs['menu_collapsed']) )
+				$is_menu_collapsed = $user_prefs['menu_collapsed'];
+
+			if ( isset($user_prefs['is_fullscreen']) )
+				$is_fullscreen = $user_prefs['is_fullscreen'];
+
+		}	
 		?>
-		<button id="tainacan-menu-toggler" aria-label="<?php _e('Toggle menu', 'tainacan'); ?>" title="<?php _e('Toggle menu', 'tainacan'); ?>" onclick="document.getElementById('tainacan-navigation-menu').classList.toggle('is-active')">
+		<button
+				id="tainacan-menu-toggler"
+				class="tainacan-ui-tweak-button"
+				aria-label="<?php _e('Toggle menu', 'tainacan'); ?>"
+				aria-pressed="<?php echo $is_menu_toggled ? 'true' : 'false'; ?>"
+				title="<?php _e('Toggle menu', 'tainacan'); ?>">
 			<span class="icon"><?php echo $this->get_svg_icon( 'menu' ); ?></span>
 		</button>
-		<button id="tainacan-menu-collapser" aria-label="<?php _e('Collapse menu', 'tainacan'); ?>" title="<?php _e('Toggle menu', 'tainacan'); ?>" onclick="document.getElementById('tainacan-navigation-menu').classList.toggle('is-collapsed')">
+		<button
+				id="tainacan-menu-collapser"
+				class="tainacan-ui-tweak-button"
+				aria-label="<?php _e('Collapse menu', 'tainacan'); ?>"
+				aria-pressed="<?php echo $is_menu_collapsed ? 'true' : 'false'; ?>"
+				title="<?php _e('Toggle menu', 'tainacan'); ?>">
 			<span class="icon"><?php echo $this->get_svg_icon( 'previous' ); ?></span>
+		</button>
+		<button
+				id="tainacan-fullscreen-toggler"
+				class="tainacan-ui-tweak-button"
+				aria-label="<?php _e('Toggle fullscreen', 'tainacan'); ?>"
+				aria-pressed="<?php echo $is_fullscreen ? 'true' : 'false'; ?>"
+				title="<?php _e('Toggle fullscreen', 'tainacan'); ?>">
+			<span class="icon"><?php echo $this->get_svg_icon( $is_fullscreen ? 'fullscreen-off' : 'fullscreen-on' ); ?></span>
 		</button>
 		<?php
 	}
-
-	/**
-	 * Adds a button on the admin bar to toggle fullscreen mode.
-	 */
-	function add_admin_bar_fullscreen_button(\WP_Admin_Bar $admin_bar ) {
-		$admin_bar->add_node( array(
-			'id'    => 'tainacan-fullscreen-toggle',
-			'parent' => 'top-secondary',
-			'group'  => null,
-			'title' => __( 'Hide WordPress bar and menus', 'tainacan' ),
-			'href' => '',
-			'meta' => [
-				'title' => __( 'Toggle a fullscreen visualization of the Tainacan Admin panel', 'tainacan' ),
-				'rel' => 'alternate',
-				'onclick' => 'document.body.classList.toggle("tainacan-pages-container--fullscreen")',
-				'target' => '_self',
-				'tabindex' => 0
-			]
-		) );
-	}
-    
-    /**
-     * check_if_admin_menu_is_collapsed is a routine to automatically collapse WordPress admin sidemenu when a
-	 * Tainacan page is entered. It stores the current state of the menu and restores it when the user leaves the
-	 * Tainacan context using the 'tainacan-set-mfold' setting.
-     *
-     * @return void
-     */
-    public function check_if_admin_menu_is_collapsed() {
-        if ( str_contains( $_SERVER['REQUEST_URI'], 'page=tainacan' ) ) {
-			$menu_folding_option = get_user_setting( 'mfold', 'o' );
-			if ( 'o' === $menu_folding_option ) {
-				set_user_setting( 'mfold', 'f');
-				set_user_setting( 'tainacan-set-mfold', 'yes' );
-			} else {
-				set_user_setting( 'tainacan-set-mfold', 'no' );
-			}
-        } else {
-			$menu_folding_option = get_user_setting( 'mfold', 'o' );
-			if ( 'f' === $menu_folding_option && 'yes' === get_user_setting( 'tainacan-set-mfold' ) )
-				set_user_setting( 'mfold', 'o');
-		}
-    }
 
 	/**
 	 * Remove_admin_notices removes all admin notices from the admin_notices and all_admin_notices hooks.

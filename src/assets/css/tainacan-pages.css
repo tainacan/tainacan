@@ -859,37 +859,35 @@ a:hover:not([href]) {
   font-size: 16px;
   background-color: var(--tainacan-turquoise1);
   overflow: hidden; }
-  #tainacan-page-container #tainacan-menu-toggler,
-  #tainacan-page-container #tainacan-menu-collapser {
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
+  #tainacan-page-container .tainacan-ui-tweak-button {
+    border-radius: 8px;
     padding: 0.25rem 0.15rem;
     margin-top: -0.5rem;
     border: none !important;
     color: var(--tainacan-turquoise4);
     background-color: var(--tainacan-turquoise2);
     cursor: pointer; }
-    #tainacan-page-container #tainacan-menu-toggler:hover:not(:disabled),
-    #tainacan-page-container #tainacan-menu-collapser:hover:not(:disabled) {
+    #tainacan-page-container .tainacan-ui-tweak-button:hover:not(:disabled) {
       background-color: var(--tainacan-turquoise3);
       background-color: color-mix(in srgb, var(--tainacan-turquoise3) 50%, transparent); }
-    #tainacan-page-container #tainacan-menu-toggler:focus-visible:not(:disabled),
-    #tainacan-page-container #tainacan-menu-collapser:focus-visible:not(:disabled) {
+    #tainacan-page-container .tainacan-ui-tweak-button:focus-visible:not(:disabled) {
       background-color: var(--tainacan-turquoise3);
       background-color: color-mix(in srgb, var(--tainacan-turquoise3) 50%, transparent);
       box-shadow: 0 0 0 2px var(--tainacan-turquoise5);
       outline: 3px solid #0000; }
-    #tainacan-page-container #tainacan-menu-toggler .icon,
-    #tainacan-page-container #tainacan-menu-collapser .icon {
+    #tainacan-page-container .tainacan-ui-tweak-button .icon {
       align-items: center;
       display: inline-flex;
       justify-content: center;
       height: 1.5em;
       width: 1.5em; }
-      #tainacan-page-container #tainacan-menu-toggler .icon svg,
-      #tainacan-page-container #tainacan-menu-collapser .icon svg {
+      #tainacan-page-container .tainacan-ui-tweak-button .icon svg {
         width: 1em;
         height: 1em; }
+  #tainacan-page-container #tainacan-menu-toggler,
+  #tainacan-page-container #tainacan-menu-collapser {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px; }
   #tainacan-page-container #tainacan-menu-toggler {
     display: none;
     visibility: hidden;
@@ -900,6 +898,9 @@ a:hover:not([href]) {
   #tainacan-page-container #tainacan-menu-collapser {
     position: absolute;
     margin-left: calc( -1 * var(--tainacan-page-container--inner-padding-x, 1rem) ); }
+  #tainacan-page-container #tainacan-fullscreen-toggler {
+    position: absolute;
+    right: var(--tainacan-page-container--inner-padding-x, 1rem); }
   #tainacan-page-container #tainacan-page-container--inner {
     display: flex;
     flex-direction: column;
@@ -918,9 +919,12 @@ a:hover:not([href]) {
       gap: var(--tainacan-breadcumbs-list-gap, 0.5rem);
       margin: 0 calc( var(--tainacan-page-container-margin-x, 1rem) + var(--tainacan-page-container-padding-x, 2rem) );
       font-size: 0.75em;
-      font-weight: 500; }
+      font-weight: 500;
+      flex-wrap: nowrap;
+      overflow-x: auto; }
       #tainacan-page-container #tainacan-breadcrumbs #tainacan-breadcrumbs-list li {
-        margin-bottom: 0; }
+        margin-bottom: 0;
+        white-space: nowrap; }
         #tainacan-page-container #tainacan-breadcrumbs #tainacan-breadcrumbs-list li:not(:last-child)::after {
           content: '>';
           margin: 0 0 0 var(--tainacan-breadcumbs-list-gap, 0.5rem);

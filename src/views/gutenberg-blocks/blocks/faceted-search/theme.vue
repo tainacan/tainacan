@@ -1612,7 +1612,7 @@
                                 this.hasAnOpenModal = false;
                             },
                             hideCancel: true,
-                            showNeverShowAgainOption: offerCheckbox && tainacan_plugin.user_caps != undefined && Object.keys(tainacan_plugin.user_caps).length != undefined && Object.keys(tainacan_plugin.user_caps).length > 0,
+                            showNeverShowAgainOption: offerCheckbox && tainacan_user.caps != undefined && Object.keys(tainacan_user.caps).length != undefined && Object.keys(tainacan_user.caps).length > 0,
                             messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
                         },
                         trapFocus: true,

@@ -1,8 +1,8 @@
 <template>
     <div
             id="tainacan-repository-subheader" 
-            class="level secondary-page">
-
+            class="level secondary-page"
+            :class="{ 'is-repository-level': isRepositoryLevel }">
         <div
                 v-if="$adminOptions.hideCollectionSubheader"
                 class="back-button is-hidden-mobile">
@@ -170,7 +170,7 @@ export default {
         padding-top: 10px;
         padding-bottom: 10px;
         padding-right: 0;
-        padding-left: 0;
+        padding-left: var(--tainacan-one-column);
         margin: 0px;
         display: flex;
         vertical-align: middle; 
@@ -252,11 +252,6 @@ export default {
                     background-color: var(--tainacan-blue4) !important;
                 }
             }
-        }
-
-        @media screen and (max-width: 769px) {
-            top: 96px;
-            padding-left: var(--tainacan-one-column) !important;
         }
     }
 </style>
