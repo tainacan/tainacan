@@ -207,7 +207,7 @@
 
         <!-- Change OrderBy Select and Order Button-->
         <div 
-                v-show="!hideSortingArea"
+                v-if="!hideSortingArea"
                 class="search-control-item search-control-item--sorting-area sorting-area">
             <b-field>
                 <label class="label">{{ $i18n.get('label_sort') }}</label>
