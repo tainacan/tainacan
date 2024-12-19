@@ -284,7 +284,8 @@
                                     role="button"
                                     :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
                                     :value="metadatum"
-                                    aria-role="listitem">
+                                    aria-role="listitem"
+                                    :data-metadatum-slug="metadatum.slug ? metadatum.slug : ''">
                                 {{ metadatum.name }}
                             </b-dropdown-item>
                         </template>
