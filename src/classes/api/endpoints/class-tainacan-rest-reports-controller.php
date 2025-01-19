@@ -704,7 +704,8 @@ class REST_Reports_Controller extends REST_Controller {
 		$start = $interval['start'];
 		$end = $interval['end'];
 		if($collection_id !== false) {
-			$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key='collection_id' AND pm.meta_value='$collection_id')";
+			$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key = %s AND pm.meta_value = %s)";
+			$collection_from = $wpdb->prepare($collection_from, 'collection_id', sanitize_text_field($collection_id));
 		}
 		$sql_statement = $wpdb->prepare(
 			"SELECT count(DISTINCT (unix_timestamp(p.post_date) DIV 60)) as total, DATE(p.post_date) as date
@@ -729,7 +730,8 @@ class REST_Reports_Controller extends REST_Controller {
 		$start = $interval['start'];
 		$end = $interval['end'];
 		if($collection_id !== false) {
-			$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key='collection_id' AND pm.meta_value='$collection_id')";
+			$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key = %s AND pm.meta_value = %s)";
+			$collection_from = $wpdb->prepare($collection_from, 'collection_id', sanitize_text_field($collection_id));
 		}
 		$sql_statement = $wpdb->prepare(
 			"SELECT p.post_author  as user_id, count(DISTINCT (unix_timestamp(p.post_date) DIV 60)) as total, DATE(p.post_date) as date
@@ -773,7 +775,8 @@ class REST_Reports_Controller extends REST_Controller {
 		global $wpdb;
 		$collection_from = "";
 		if($collection_id !== false) {
-			$collection_from = "INNER JOIN $wpdb->postmeta pm_col ON p.id = pm_col.post_id AND (pm_col.meta_key='collection_id' AND pm_col.meta_value='$collection_id')";
+			$collection_from = "INNER JOIN {$wpdb->postmeta} pm_col ON p.id = pm_col.post_id AND (pm_col.meta_key = %s AND pm_col.meta_value = %s)";
+			$collection_from = $wpdb->prepare($collection_from, 'collection_id', sanitize_text_field($collection_id));
 		}
 		$sql_statement = $wpdb->prepare(
 			"SELECT	count(DISTINCT (unix_timestamp(p.post_date) DIV 60)) as total, p.post_author as user, pm.meta_value as action
