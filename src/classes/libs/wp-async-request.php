@@ -127,7 +127,7 @@
 			}
 
 			return array(
-				'timeout'   => 0.01,
+				'timeout'   => 10.00,
 				'blocking'  => false,
 				'body'      => $this->data,
 				'sslverify' => apply_filters( 'https_local_ssl_verify', false ),
