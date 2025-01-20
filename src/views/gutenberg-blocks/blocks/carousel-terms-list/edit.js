@@ -35,7 +35,8 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
         hideName,
         showTermThumbnail,
         taxonomyId,
-        imageSize
+        imageSize,
+        variableTermsWidth
     } = attributes;
 
     // Gets blocks props from hook
@@ -53,6 +54,10 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
     if (imageSize === undefined) {
         imageSize = 'tainacan-medium';
         setAttributes({ imageSize: imageSize });
+    }
+    if (variableTermsWidth === undefined) {
+        variableTermsWidth = false;
+        setAttributes({ variableTermsWidth: variableTermsWidth });
     }
 
     const thumbHelper = ThumbnailHelperFunctions();
@@ -78,7 +83,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
         return (
             <li
                 key={ term.id }
-                className={ 'swiper-slide term-list-item ' + (!showTermThumbnail ? 'term-list-item-grid ' : '') + (maxTermsPerScreen ? ' max-terms-per-screen-' + maxTermsPerScreen : '') }>
+                className={ 'swiper-slide term-list-item ' + ( ( variableTermsWidth && showTermThumbnail ) ? ' variable-term-width' : '') + (!showTermThumbnail ? ' term-list-item-grid ' : '') + (!variableTermsWidth && maxTermsPerScreen ? ' max-terms-per-screen-' + maxTermsPerScreen : '') }>
                 <Button
                     onClick={ () => removeItemOfId(term.id) }
                     icon={ () => (
@@ -114,17 +119,21 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                                     ?
                                 term.thumbnail['thumbnail'][0]
                                     :
-                                `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`)
+                                    ( imageSize === 'full' ? `${tainacan_blocks.base_url}/assets/images/placeholder_square.png` : `${tainacan_blocks.base_url}/assets/images/placeholder_square_medium.png`)
+                                )
                             }
                             alt={ term.thumbnail_alt ? term.thumbnail_alt : (term.name ? term.name : __( 'Thumbnail', 'tainacan' ) ) }/>
                     }
-                    { !hideName ? <span>{ term.name ? term.name : '' }</span> : null }
+                    { !hideName ? <span style={{ maxWidth: variableTermsWidth && showTermThumbnail ? thumbHelper.getWidth(term.thumbnail['thumbnail'], imageSize) + 'px' : 'unset' }}>{ term.name ? term.name : '' }</span> : null }
                 </a>
             </li>
         );
     }
 
     function setContent() {
+        
+        if ( !taxonomyId )
+            return;
 
         isLoading = true;
         setAttributes({
@@ -249,18 +258,36 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                                     </button>
                                 </div>
                             </BaseControl>
-                            <RangeControl
-                                    label={ __('Maximum terms per slide on a wide screen', 'tainacan') }
-                                    help={ (showTermThumbnail && maxTermsPerScreen <= 3) ? __('Warning: with such a small number of terms per slide, the image size is greater and might be pixelated.', 'tainacan') : null }
-                                    value={ maxTermsPerScreen ? maxTermsPerScreen : 6 }
-                                    onChange={ ( aMaxTermsPerScreen ) => {
-                                        maxTermsPerScreen = aMaxTermsPerScreen;
-                                        setAttributes( { maxTermsPerScreen: aMaxTermsPerScreen } );
-                                        setContent();
-                                    }}
-                                    min={ 1 }
-                                    max={ 9 }
-                                />
+                            { 
+                                variableTermsWidth !== true ?
+                                <RangeControl
+                                        label={ __('Maximum terms per slide on a wide screen', 'tainacan') }
+                                        help={ (showTermThumbnail && maxTermsPerScreen <= 3) ? __('Warning: with such a small number of terms per slide, the image size is greater and might be pixelated.', 'tainacan') : null }
+                                        value={ maxTermsPerScreen ? maxTermsPerScreen : 6 }
+                                        onChange={ ( aMaxTermsPerScreen ) => {
+                                            maxTermsPerScreen = aMaxTermsPerScreen;
+                                            setAttributes( { maxTermsPerScreen: aMaxTermsPerScreen } );
+                                            setContent();
+                                        }}
+                                        min={ 1 }
+                                        max={ 9 }
+                                    /> 
+                                    : null
+                            }
+                            { showTermThumbnail == true ?
+                                <ToggleControl 
+                                        label={__('Variable terms width', 'tainacan')}
+                                        help={ !variableTermsWidth ? __('Toggle to define each slide size based on its content natural width.', 'tainacan') : __('Toggle to define a fixed amount of items that should appear per screen size.', 'tainacan')}
+                                        checked={ variableTermsWidth }
+                                        onChange={ ( isChecked ) => {
+                                                variableTermsWidth = isChecked;
+                                                setAttributes({ variableTermsWidth: variableTermsWidth });
+                                                setContent();
+                                            } 
+                                        }
+                                    />
+                                : null
+                            }
                             <SelectControl
                                 label={__('Image size', 'tainacan')}
                                 value={ imageSize }
@@ -403,7 +430,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                 ) : null
             }
 
-            { !terms.length && !isLoading ? (
+            { !taxonomyId && !terms.length && !isLoading ? (
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(

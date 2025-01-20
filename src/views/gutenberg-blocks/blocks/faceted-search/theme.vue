@@ -207,7 +207,7 @@
 
         <!-- Change OrderBy Select and Order Button-->
         <div 
-                v-show="!hideSortingArea"
+                v-if="!hideSortingArea"
                 class="search-control-item search-control-item--sorting-area sorting-area">
             <b-field>
                 <label class="label">{{ $i18n.get('label_sort') }}</label>
@@ -284,7 +284,8 @@
                                     role="button"
                                     :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
                                     :value="metadatum"
-                                    aria-role="listitem">
+                                    aria-role="listitem"
+                                    :data-metadatum-slug="metadatum.slug ? metadatum.slug : ''">
                                 {{ metadatum.name }}
                             </b-dropdown-item>
                         </template>
@@ -958,14 +959,15 @@
                         if (this.$route.query.view_mode != 'slideshow' && this.$route.query['slideshow-from'] !== null && this.$route.query['slideshow-from'] !== undefined && this.$route.query['slideshow-from'] !== false)
                             this.$eventBusSearchEmitter.emit('startSlideshowFromItem', this.$route.query['slideshow-from']);
                         
+                        // Passes the current URL to store
+                        this.$store.dispatch('search/setPostQuery', JSON.parse(JSON.stringify(this.$route.query)));
+
                         // Advanced Search
                         if (this.$route.query && this.$route.query.advancedSearch)
                            this.$store.dispatch('search/setAdvancedQuery', JSON.parse(JSON.stringify(this.$route.query)));
-                        else
-                           this.$store.dispatch('search/setPostQuery', JSON.parse(JSON.stringify(this.$route.query)));
                         
-                         // Finally, loads items even berfore facets so they won't stuck them
-                         if (to.fullPath != from.fullPath)
+                        // Finally, loads items even berfore facets so they won't stuck them
+                        if (to.fullPath != from.fullPath)
                             this.$eventBusSearch.loadItems();
 
                         // Checks current metaqueries and taxqueries to alert filters that should reload
@@ -1057,7 +1059,7 @@
                     this.$eventBusSearch.setOrder(this.defaultOrder);
             }
             if (this.defaultOrderBy != undefined) {
-                
+
                 if (this.defaultOrderByMeta || this.defaultOrderByType) {
                     
                     let orderByObject = { orderby: this.defaultOrderBy }
@@ -1088,10 +1090,12 @@
                     currentQuery[key] = false;
             }
 
+            // Passes the current URL to store
+            this.$store.dispatch('search/setPostQuery', currentQuery )
+
+            // Sets advanced search
             if ( currentQuery.advancedSearch )
                 this.$store.dispatch('search/setAdvancedQuery', currentQuery);
-            else
-                this.$store.dispatch('search/setPostQuery', currentQuery )
 
             if (!this.hideAdvancedSearch) {
                 if (currentQuery && currentQuery.advancedSearch)

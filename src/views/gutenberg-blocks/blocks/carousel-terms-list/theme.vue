@@ -14,6 +14,7 @@
                         v-for="index in 18"
                         :key="index"
                         role="listitem"
+                        :style="variableTermsWidth && showTermThumbnail ? 'width: auto;' : ''"
                         class="swiper-slide term-list-item skeleton">
                     <a>
                         <img>
@@ -29,6 +30,7 @@
                         v-for="(term, index) of terms"
                         :key="index"
                         role="listitem"
+                        :style="variableTermsWidth && showTermThumbnail ? 'width: auto;' : ''"
                         :class="'swiper-slide term-list-item ' + (!showTermThumbnail ? 'term-list-item-grid' : '')">      
                     <a 
                             v-if="showTermThumbnail"
@@ -58,7 +60,11 @@
                                                     $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
                                 "
                                 :alt="term.thumbnail_alt ? term.thumbnail_alt : (term.name ? term.name : wpI18n('Thumbnail', 'tainacan'))">
-                        <span v-if="!hideName">{{ term.name ? term.name : '' }}</span>
+                        <span 
+                                v-if="!hideName"
+                                :style="variableTermsWidth && showTermThumbnail ? ('max-width: ' + $thumbHelper.getWidth(term.thumbnail['thumbnail'], imageSize) + 'px') : ''">
+                            {{ term.name ? term.name : '' }}
+                        </span>
                     </a>
                     <a 
                             v-else
@@ -171,7 +177,8 @@ export default {
         imageSize: String,
         showTermThumbnail: Boolean,
         tainacanApiRoot: String,
-        taxonomyId: String
+        taxonomyId: String,
+        variableTermsWidth: Boolean
     },
     data() {
         return {
@@ -248,35 +255,24 @@ export default {
         },
         mountCarousel() {
             const self = this;
-            
-            this.swiper = new Swiper('#' + self.blockId + '-carousel', {
+            const spaceBetween = Number(self.spaceBetweenTerms);
+            const slidesPerView = Number(self.maxTermsPerScreen);
+            let swiperOptions = {
+                watchOverflow: true,
                 mousewheel: {
                     forceToAxis: true
                 },
                 observer: true,
                 preventInteractionOnTransition: true,
                 allowClick: true,
-                allowTouchMove: true, 
-                slidesPerView: 1,
+                allowTouchMove: true,
+                slidesPerView: self.variableTermsWidth && self.showTermThumbnail ? 'auto' : 1,
                 slidesPerGroup: 1,
-                spaceBetween: self.spaceBetweenTerms,
+                spaceBetween: spaceBetween,
                 slideToClickedSlide: true,
                 navigation: {
                     nextEl: '#' + self.blockId + '-next',
                     prevEl: '#' + self.blockId + '-prev',
-                },
-                breakpoints: !isNaN(self.maxTermsPerScreen) ? {
-                    498:  { slidesPerView: self.maxTermsPerScreen - 4 > 0 ? self.maxTermsPerScreen - 4 : 1, spaceBetween: self.spaceBetweenTerms }, 
-                    768:  { slidesPerView: self.maxTermsPerScreen - 3 > 0 ? self.maxTermsPerScreen - 3 : 1, spaceBetween: self.spaceBetweenTerms },
-                    1024: { slidesPerView: self.maxTermsPerScreen - 2 > 0 ? self.maxTermsPerScreen - 2 : 1, spaceBetween: self.spaceBetweenTerms },
-                    1366: { slidesPerView: self.maxTermsPerScreen - 1 > 0 ? self.maxTermsPerScreen - 1 : 1, spaceBetween: self.spaceBetweenTerms },
-                    1600: { slidesPerView: self.maxTermsPerScreen > 0 ? self.maxTermsPerScreen : 1, spaceBetween: self.spaceBetweenTerms },
-                } : {
-                    498:  { slidesPerView: self.showTermThumbnail ? 1 : 1, spaceBetween: self.spaceBetweenTerms },
-                    768:  { slidesPerView: self.showTermThumbnail ? 2 : 1, spaceBetween: self.spaceBetweenTerms },
-                    1024: { slidesPerView: self.showTermThumbnail ? 3 : 2, spaceBetween: self.spaceBetweenTerms },
-                    1366: { slidesPerView: self.showTermThumbnail ? 4 : 3, spaceBetween: self.spaceBetweenTerms },
-                    1600: { slidesPerView: self.showTermThumbnail ? 5 : 4, spaceBetween: self.spaceBetweenTerms },
                 },
                 autoplay: (self.autoPlay && !self.isLoading) ? { delay: self.autoPlaySpeed*1000 } : false,
                 loop: self.loopSlides && !self.isLoading,
@@ -287,7 +283,25 @@ export default {
                     lastSlideMessage: wp.i18n.__('This is the last slide', 'tainacan')
                 },
                 modules: [Autoplay, Navigation, A11y]
-            });
+            }
+
+            if ( !self.variableTermsWidth ) {
+                swiperOptions.breakpoints = (!isNaN(self.maxTermsPerScreen) && self.maxTermsPerScreen != 6) ? {
+                    498:  { slidesPerView: slidesPerView - 4 > 0 ? slidesPerView - 4 : 1, spaceBetween: spaceBetween }, 
+                    768:  { slidesPerView: slidesPerView - 3 > 0 ? slidesPerView - 3 : 1, spaceBetween: spaceBetween },
+                    1024: { slidesPerView: slidesPerView - 2 > 0 ? slidesPerView - 2 : 1, spaceBetween: spaceBetween },
+                    1366: { slidesPerView: slidesPerView - 1 > 0 ? slidesPerView - 1 : 1, spaceBetween: spaceBetween },
+                    1600: { slidesPerView: slidesPerView > 0 ? slidesPerView : 1, spaceBetween: spaceBetween },
+                } : {
+                    498:  { slidesPerView: self.showTermThumbnail ? 1 : 1, spaceBetween: spaceBetween },
+                    768:  { slidesPerView: self.showTermThumbnail ? 2 : 1, spaceBetween: spaceBetween },
+                    1024: { slidesPerView: self.showTermThumbnail ? 3 : 2, spaceBetween: spaceBetween },
+                    1366: { slidesPerView: self.showTermThumbnail ? 4 : 3, spaceBetween: spaceBetween },
+                    1600: { slidesPerView: self.showTermThumbnail ? 5 : 4, spaceBetween: spaceBetween },
+                }
+            }
+        
+            this.swiper = new Swiper('#' + self.blockId + '-carousel', swiperOptions);
         }
     }
 }

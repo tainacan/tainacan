@@ -40,6 +40,7 @@ export default (element) => {
                             taxonomyId: getDataAttribute(block, 'taxonomy-id', undefined),
                             showTermThumbnail: getDataAttribute(block, 'show-term-thumbnail', 'false') == 'true',
                             tainacanApiRoot: getDataAttribute(block, 'tainacan-api-root', undefined),
+                            variableTermsWidth: getDataAttribute(block, 'variable-terms-width', false) == 'true',
                         });
                     },
                     mounted() {

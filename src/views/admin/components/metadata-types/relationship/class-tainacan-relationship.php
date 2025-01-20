@@ -343,9 +343,31 @@ class Relationship extends Metadata_Type {
 					</div>
 				<?php
 			} else {
+
+				$metadata_wrapper_class = 'tainacan-metadatum';
+
+				$metadatum_object = $meta->get_metadatum();
+
+				if ( $metadatum_object ) {
+					
+					$metadata_type_object = $metadatum_object->get_metadata_type_object();
+
+					if ( $metadata_type_object ) {
+						$metadata_type = $metadata_type_object->get_slug();
+
+						if ( $metadata_type )
+							$metadata_wrapper_class .= ' metadata-type-' . $metadata_type;
+					}
+
+
+					$metadata_slug = $meta->get_metadatum()->get_slug();
+
+					if ( $metadata_slug )
+						$metadata_wrapper_class .= ' metadata-slug-' . $metadata_slug;
+				}
 				?>
-					<div class="tainacan-metadatum">
-						<h5 class="label">
+					<div class="<?php echo $metadata_wrapper_class; ?>">
+						<h5 class="label related-metadadum-label">
 							<?php echo esc_html($meta->get_metadatum()->get_name()); ?>
 						</h5>
 						<p>
