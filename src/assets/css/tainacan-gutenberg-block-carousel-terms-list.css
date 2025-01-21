@@ -589,7 +589,8 @@
         height: auto;
         display: block;
         padding: 0px;
-        margin-bottom: 0.5em; }
+        margin-bottom: 0.5em;
+        max-width: 100%; }
       .wp-block-tainacan-carousel-terms-list ul.terms-list-edit li.term-list-item:hover a {
         color: inherit;
         text-decoration: none; }
