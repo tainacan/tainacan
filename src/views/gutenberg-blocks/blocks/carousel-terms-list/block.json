@@ -113,6 +113,10 @@
         "taxonomyId": {
             "type": "string",
             "default": ""
+        },
+        "variableTermsWidth": {
+            "type": "boolean",
+            "default": false
         }
     },
     "supports": {

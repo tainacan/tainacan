@@ -428,9 +428,11 @@
         line-height: 1.2em;
         word-break: break-word; }
       .wp-block-tainacan-carousel-terms-list .tainacan-carousel .swiper a > img,
-      .wp-block-tainacan-carousel-terms-list .tainacan-carousel .swiper a > canvas {
-        width: 100%;
-        height: auto; }
+      .wp-block-tainacan-carousel-terms-list .tainacan-carousel .swiper canvas {
+        height: auto;
+        width: 100%; }
+      .wp-block-tainacan-carousel-terms-list .tainacan-carousel .swiper .variable-term-width a > img {
+        width: auto; }
       .wp-block-tainacan-carousel-terms-list .tainacan-carousel .swiper a,
       .wp-block-tainacan-carousel-terms-list .tainacan-carousel .swiper a:hover {
         color: inherit;
@@ -562,6 +564,9 @@
       min-width: calc(16.666% - var(--spaceBetweenTerms, 32px));
       scroll-snap-align: start;
       scroll-margin: 0 calc(var(--spaceBetweenTerms, 32px) / 2); }
+      .wp-block-tainacan-carousel-terms-list ul.terms-list-edit li.term-list-item.variable-term-width {
+        min-width: unset !important;
+        width: auto !important; }
       .wp-block-tainacan-carousel-terms-list ul.terms-list-edit li.term-list-item.term-list-item-grid {
         margin: calc(var(--spaceBetweenTerms, 32px) / 2);
         width: calc(25% - var(--spaceBetweenTerms, 32px));
@@ -569,7 +574,8 @@
       .wp-block-tainacan-carousel-terms-list ul.terms-list-edit li.term-list-item a {
         color: inherit;
         font-weight: bold;
-        line-height: normal; }
+        line-height: normal;
+        pointer-events: none; }
         .wp-block-tainacan-carousel-terms-list ul.terms-list-edit li.term-list-item a > span {
           color: inherit;
           font-weight: bold;
@@ -581,10 +587,10 @@
       .wp-block-tainacan-carousel-terms-list ul.terms-list-edit li.term-list-item img,
       .wp-block-tainacan-carousel-terms-list ul.terms-list-edit li.term-list-item canvas {
         height: auto;
+        display: block;
         padding: 0px;
         margin-bottom: 0.5em;
-        display: block;
-        width: 100%; }
+        max-width: 100%; }
       .wp-block-tainacan-carousel-terms-list ul.terms-list-edit li.term-list-item:hover a {
         color: inherit;
         text-decoration: none; }

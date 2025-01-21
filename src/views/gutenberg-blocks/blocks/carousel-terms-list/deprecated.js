@@ -1,6 +1,158 @@
 const { useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 export default [
+    /* Deprecated to add variableTermsWidth feature */
+    {
+        "attributes": {
+            "content": {
+                "type": "array",
+                "source": "children",
+                "selector": "div"
+            },
+            "terms": {
+                "type": "array",
+                "default": []
+            },
+            "isModalOpen": {
+                "type": "boolean",
+                "default": false
+            },
+            "selectedTerms": {
+                "type": "array",
+                "default": []
+            },
+            "itemsRequestSource": {
+                "type": "string",
+                "default": ""
+            },
+            "maxTermsnumber": {
+                "type": "number",
+                "value": 12
+            },
+            "maxTermsPerScreen": {
+                "type": "number",
+                "value": 6
+            },
+            "spaceBetweenTerms": {
+                "type": "number",
+                "value": 32
+            },
+            "spaceAroundCarousel": {
+                "type": "number",
+                "value": 50
+            },
+            "isLoading": {
+                "type": "boolean",
+                "value": false
+            },
+            "isLoadingTerm": {
+                "type": "boolean",
+                "value": false
+            },
+            "arrowsPosition": {
+                "type": "string",
+                "value": "around"
+            },
+            "largeArrows": {
+                "type": "boolean",
+                "value": false
+            },
+            "arrowsStyle": {
+                "type": "string",
+                "value": "type-1"
+            },
+            "autoPlay": {
+                "type": "boolean",
+                "value": false
+            },
+            "autoPlaySpeed": {
+                "type": "number",
+                "value": 3
+            },
+            "loopSlides": {
+                "type": "boolean",
+                "value": false
+            },
+            "hideName": {
+                "type": "boolean",
+                "value": true
+            },
+            "showTermThumbnail": {
+                "type": "boolean",
+                "value": false
+            },
+            "term": {
+                "type": "object",
+                "value": {}
+            },
+            "imageSize": {
+                "type": "string",
+                "default": "tainacan-medium"
+            },
+            "blockId": {
+                "type": "string",
+                "default": ""
+            },
+            "termBackgroundColor": {
+                "type": "string",
+                "default": "#373839"
+            },
+            "termTextColor": {
+                "type": "string",
+                "default": "#ffffff"
+            },
+            "taxonomyId": {
+                "type": "string",
+                "default": ""
+            },
+        },
+        save: function({ attributes }) {
+            const {
+                content, 
+                blockId,
+                selectedTerms,
+                arrowsPosition,
+                largeArrows,
+                arrowsStyle,
+                maxTermsPerScreen,
+                maxTermsNumber,
+                spaceBetweenTerms,
+                spaceAroundCarousel,
+                autoPlay,
+                autoPlaySpeed,
+                loopSlides,
+                hideName,
+                imageSize,
+                showTermThumbnail,
+                taxonomyId
+            } = attributes;
+            
+            // Gets attributes such as style, that are automatically added by the editor hook
+            const blockProps = useBlockProps.save();
+            return <div 
+                        { ...blockProps }
+                        data-module="carousel-terms-list"
+                        data-selected-terms={ JSON.stringify(selectedTerms.map((term) => { return term.id; })) }
+                        data-arrows-position={ arrowsPosition }
+                        data-auto-play={ '' + autoPlay }
+                        data-auto-play-speed={ autoPlaySpeed }
+                        data-loop-slides={ '' + loopSlides }
+                        data-hide-name={ '' + hideName }
+                        data-large-arrows={ '' + largeArrows }
+                        data-arrows-style={ arrowsStyle }
+                        data-image-size={ imageSize }
+                        data-max-terms-number={ maxTermsNumber }
+                        data-max-terms-per-screen={ maxTermsPerScreen }
+                        data-space-between-terms={ spaceBetweenTerms }
+                        data-space-around-carousel={ spaceAroundCarousel }
+                        data-taxonomy-id={ taxonomyId }
+                        data-tainacan-api-root={ tainacan_blocks.root }
+                        data-show-term-thumbnail={ '' + showTermThumbnail }
+                        id={ 'wp-block-tainacan-carousel-terms-list_' + blockId }>
+                            { content }
+                    </div>
+        }
+    },
     /* Deprecated during Vue 3 migration to prepend attributes with data- */
     {
         "attributes": {

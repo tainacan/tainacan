@@ -159,9 +159,12 @@
                 word-break: break-word;
             }
             a>img,
-            a>canvas {
-                width: 100%;
+            canvas {
                 height: auto;
+                width: 100%;
+            }
+            .variable-term-width a>img {
+                width: auto;
             }
             a,
             a:hover {
@@ -324,6 +327,11 @@
             scroll-snap-align: start;
             scroll-margin: 0 calc(var(--spaceBetweenTerms, 32px) / 2);
 
+            &.variable-term-width {
+                min-width: unset !important;
+                width: auto !important;
+            }
+
             &.term-list-item-grid {
                 margin: calc(var(--spaceBetweenTerms, 32px) / 2);
                 width: calc(25% - var(--spaceBetweenTerms, 32px)); 
@@ -334,6 +342,7 @@
                 color: inherit;
                 font-weight: bold;
                 line-height: normal;
+                pointer-events: none;
 
                 &>span {
                     color: inherit;
@@ -349,10 +358,10 @@
             img,
             canvas {
                 height: auto;
+                display: block;
                 padding: 0px;
                 margin-bottom: 0.5em;
-                display: block;
-                width: 100%;
+                max-width: 100%;
             }
 
             &:hover a { 

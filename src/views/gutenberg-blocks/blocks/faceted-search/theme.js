@@ -74,10 +74,12 @@ export default (element) => {
             const possibleHideFilters = isParameterTrue(getDataAttribute(blockElement,'hide-filters'));
 
             // View Modes Logic
-            const registeredViewModes =
-                ( tainacan_plugin && tainacan_plugin.registered_view_modes && tainacan_plugin.registered_view_modes.length ) ?
-                tainacan_plugin.registered_view_modes :
-                [ 'table', 'cards', 'records', 'masonry', 'mosaic', 'slideshow', 'list', 'map'];
+            let registeredViewModes = [ 'table', 'cards', 'records', 'masonry', 'mosaic', 'slideshow', 'list', 'map'];
+            if ( tainacan_plugin && tainacan_plugin.registered_view_modes ) {
+                let registeredViewModesAsArray = Object.keys(tainacan_plugin.registered_view_modes);
+                if ( registeredViewModesAsArray && registeredViewModesAsArray.length )
+                    registeredViewModes = registeredViewModesAsArray;
+            }
 
             // At first, we consider that all registered view modes are included.
             let possibleViewModes = registeredViewModes;

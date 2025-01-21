@@ -56,6 +56,7 @@ class Theme_Helper {
 		add_shortcode( 'tainacan-search', array($this, 'search_shortcode'));
 		add_shortcode( 'tainacan-item-submission', array($this, 'item_submission_shortcode'));
 		add_shortcode( 'tainacan-items-carousel', array($this, 'get_tainacan_items_carousel'));
+		add_shortcode( 'tainacan-terms-carousel', array($this, 'get_tainacan_terms_carousel'));
 		add_shortcode( 'tainacan-dynamic-items-list', array($this, 'get_tainacan_dynamic_items_list'));
 		add_shortcode( 'tainacan-related-items-carousel', array($this, 'get_tainacan_related_items_carousel'));
 
@@ -998,7 +999,8 @@ class Theme_Helper {
          *     @type bool    $loop_slides					Should slides loop when reached the end of the Carousel?
          *     @type bool    $hide_title					Should the title of the items be displayed?
          *     @type string  $image_size					Item image size. Defaults to 'tainacan-medium'
-         *     @type bool    $show_collection_header		Should it display a small version of the collection header?
+		 *     @type bool	 $variable_items_width			Should the carousel items be only as large as their natural width?
+		 *     @type bool    $show_collection_header		Should it display a small version of the collection header?
          *     @type bool    $show_collection_label			Should it displar a 'Collection' label before the collection name on the collection header?
          *     @type string  $collection_background_color	Color of the collection header background
          *     @type string  $collection_text_color			Color of the collection header text
@@ -1023,6 +1025,7 @@ class Theme_Helper {
 			'image_size' => ( isset($args['crop_images_to_square']) && !$args['crop_images_to_square'] )
 				? 'tainacan-medium-full'
 				: 'tainacan-medium',
+			'variable_items_width' => false,
 			'show_collection_header' => false,
 			'show_collection_label' => false,
 			'collection_background_color' => '#373839',
@@ -1038,6 +1041,19 @@ class Theme_Helper {
 		$args['class'] = $args['class_name'] . ' wp-block-tainacan-carousel-items-list';
 		unset($args['class_name']);
 		
+		// Checks if selected_terms was passed as an array of term ids
+		if ( isset($args['selected_items']) ) {
+
+			if ( is_array($args['selected_items']) ) {
+				$args['selected_items'] = json_encode($args['selected_items']);
+			} elseif ( is_string($args['selected_items']) ) {
+				// Checks if we already received a valid JSON array
+				$decoded = json_decode($args['selected_items'], true);
+				if ( json_last_error() !== JSON_ERROR_NONE ) 
+					$args['selected_items'] = json_encode(explode(',', $args['selected_items']));
+			}
+		}
+
 		// Builds parameters to the html div rendered by Vue
 		foreach ($args as $key => $value) {
 			if (is_bool($value))
@@ -1113,7 +1129,7 @@ class Theme_Helper {
          *     @type string  $mosaic_grid_columns			
          *     @type string  $mosaic_item_focal_point_x		
          *     @type string  $mosaic_item_focal_point_y		
-	 * @return string  The HTML div to be used for rendering the items carousel vue component
+	 * @return string  The HTML div to be used for rendering the items list vue component
 	 */
 	public function get_tainacan_dynamic_items_list($args = []) {
 		if (!is_array($args))
@@ -1729,6 +1745,118 @@ class Theme_Helper {
 			)
 		);
 	}
+
+
+	/**
+	 * Returns the div used by Vue to render the Carousel of Terms
+	 *
+	 * @param array $args {
+		 *     Optional. Array of arguments.
+		 *     @type string  $taxonomy_id					The Taxonomy ID
+		 *     @type array   $selected_terms				An array of term IDs to fetch terms from, if load strategy is 'selection' and an array of terms, if the load strategy is 'parent'
+         *     @type integer $max_terms_number				Maximum number of terms to be fetch
+         *     @type integer $max_terms_per_screen			Maximum columns of terms to be displayed on a row of the carousel
+         *     @type bool    $show_term_thumbnail			Show term thumbnail instead of a grid with items terms
+         *     @type string  $arrows_position				How the arrows will be positioned regarding the carousel ('around', 'left', 'right')
+         *     @type bool    $large_arrows					Should large arrows be displayed?
+         *     @type bool    $auto_play						Should the Caroulsel start automatically to slide?
+         *     @type integer $auto_play_speed				The time in s to translate to the next slide automatically 
+         *     @type integer $space_between_terms			The space in px between each term in the carousel 
+         *     @type integer $space_around_carousel			The space in px between around the carousel 
+         *     @type bool    $loop_slides					Should slides loop when reached the end of the Carousel?
+         *     @type bool    $hide_name						Should the name of the terms be displayed?
+         *     @type string  $image_size					term image size. Defaults to 'tainacan-medium'
+		 *     @type bool	 $variable_terms_width			Should the carousel terms be only as large as their natural width?
+		 *     @type string  $tainacan_api_root				Path of the Tainacan api root (to make the terms request)
+         *     @type string  $tainacan_base_url				Path of the Tainacan base URL (to make the links to the terms)
+         *     @type string  $class_name					Extra class to add to the wrapper, besides the default wp-block-tainacan-carousel-terms-list
+	 * @return string  The HTML div to be used for rendering the terms carousel vue component
+	 */
+	public function get_tainacan_terms_carousel($args = []) {
+		if ( !is_array($args) )
+			return __('There are missing parameters for Tainacan Terms Carousel shortcode', 'tainacan');
+
+		$defaults = array(
+			'max_terms_number' => 12,
+			'max_terms_per_screen' => 6,
+			'arrows_position' => 'around',
+			'large_arrows' => false,
+			'auto_play' => false,
+			'auto_play_speed' => 3,
+			'space_between_terms' => 32,
+			'space_around_carousel' => 50,
+			'loop_slides' => false,
+			'hide_name' => false,
+			'image_size' => ( isset($args['crop_images_to_square']) && !$args['crop_images_to_square'] )
+				? 'tainacan-medium-full'
+				: 'tainacan-medium',
+			'variable_terms_width' => false,
+			'tainacan_api_root' => '',
+			'tainacan_base_url' => '',
+			'class_name' => ''
+		);
+		$args = wp_parse_args($args, $defaults);
+		$props = ' ';
+		
+		// Always pass the class needed by Vue to mount the component;
+		$args['class'] = $args['class_name'] . ' wp-block-tainacan-carousel-terms-list';
+		unset($args['class_name']);
+
+		// Checks if selected_terms was passed as an array of term ids
+		if ( isset($args['selected_terms']) ) {
+
+			if ( is_array($args['selected_terms']) ) {
+				$args['selected_terms'] = json_encode($args['selected_terms']);
+			} elseif ( is_string($args['selected_terms']) ) {
+				// Checks if we already received a valid JSON array
+				$decoded = json_decode($args['selected_terms'], true);
+				if ( json_last_error() !== JSON_ERROR_NONE ) 
+					$args['selected_terms'] = json_encode(explode(',', $args['selected_terms']));
+			}
+		}
+		
+		// Builds parameters to the html div rendered by Vue
+		foreach ($args as $key => $value) {
+			if (is_bool($value))
+				$value = $value ? 'true' : 'false';
+			// Changes from PHP '_' notation to HTML '-' notation
+			$key_attr = str_replace('_', '-', $key);
+			if ( $key !== 'class' && $key !== 'style' && $key !== 'id' && strpos($key, 'data-') === false )
+				$key_attr = 'data-' . $key_attr;
+			
+			$props .= sprintf("%s='%s' ", $key_attr, esc_attr($value));
+		}
+
+		$allowed_html = [
+			'div' => [
+				'id' => true,
+				'class' => true,
+				'style' => true,
+				'data-module' => true,
+				'data-selected-terms' => true,
+				'data-arrows-position' => true,
+				'data-taxonomy-id' => true,
+				'data-auto-play' => true,
+				'data-auto-play-speed' => true,
+				'data-loop-slides' => true,
+				'data-hide-name' => true,
+				'data-large-arrows' => true,
+				'data-arrows-style' => true,
+				'data-image-size' => true,
+				'data-variable-terms-width' => true,
+				'data-max-terms-number' => true,
+				'data-max-terms-per-screen' => true,
+				'data-space-between-terms' => true,
+				'data-space-around-carousel' => true,
+				'data-tainacan-api-root' => true,
+				'data-show-term-thumbnail' => true,
+				'data-space-between-terms' => true,
+				'data-space-around-carousel' => true
+			]
+		];
+
+		return wp_kses( "<div data-module='carousel-terms-list' id='tainacan-terms-carousel-shortcode_" . uniqid() . "' $props ></div>", $allowed_html );
+	} 
 
 	/**
 	 * To be used inside Gutenberg editor side preview of template blocks
