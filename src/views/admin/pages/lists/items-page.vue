@@ -561,7 +561,9 @@
                 aria-modal
                 aria-role="dialog"
                 custom-class="tainacan-modal tainacan-form filters-menu"
-                :close-button-aria-label="$i18n.get('close')">
+                :close-button-aria-label="$i18n.get('close')"
+                @after-leave="filtersModalStateHasChanged = !filtersModalStateHasChanged"
+                @after-enter="filtersModalStateHasChanged = !filtersModalStateHasChanged">
             <filters-items-list
                     id="filters-items-list"
                     :is-loading-items="isLoadingItems"
@@ -667,6 +669,7 @@
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"
                         :is-repository-level="isRepositoryLevel"
+                        :filters-modal-state-has-changed="filtersModalStateHasChanged"
                         @update-is-loading="(newIsLoadingState) => isLoadingItems = newIsLoadingState" />
 
                 <!-- Empty Placeholder -->
@@ -785,6 +788,7 @@
                 windowWidth: null,
                 newOrder: 'DESC',
                 newOrderBy: 'date',
+                filtersModalStateHasChanged: false
             }
         },
         computed: {
