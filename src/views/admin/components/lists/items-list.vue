@@ -2194,7 +2194,8 @@ export default {
         isOnTrash: false,
         totalItems: Number,
         viewMode: 'card',
-        isRepositoryLevel: false
+        isRepositoryLevel: false,
+        filtersModalStateHasChanged: false
     },
     emits: [
         'update-is-loading',
@@ -2454,6 +2455,13 @@ export default {
             },
             immediate: true,
             deep: true
+        },
+        filtersModalStateHasChanged: {
+            handler() {
+                if (this.masonry !== false)
+                    this.masonry.layout();
+            },
+            immediate: true
         }
     },
     created() {
