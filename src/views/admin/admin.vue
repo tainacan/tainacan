@@ -168,6 +168,7 @@
     }
 
     .is-secondary-content {
+        max-width: 100%;
 
         .columns {
             margin-left: 0px;
