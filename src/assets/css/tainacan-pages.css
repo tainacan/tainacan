@@ -858,6 +858,7 @@ a:hover:not([href]) {
   font-family: var(--tainacan-font-family);
   font-size: 16px;
   background-color: var(--tainacan-turquoise1);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%), radial-gradient(at 70% 60%, var(--tainacan-turquoise2) 0%, rgba(217, 236, 237, 0) 90%), radial-gradient(at 30% 30%, var(--tainacan-turquoise1) 0%, rgba(230, 246, 248, 0) 60%), radial-gradient(at left bottom, var(--tainacan-turquoise2) 0%, rgba(204, 227, 242, 0) 70%), linear-gradient(135deg, rgba(18, 46, 119, 0) 0%, rgba(18, 46, 119, 0) 75%, var(--tainacan-turquoise1) 100%), linear-gradient(to right, var(--tainacan-gray0) 0%, var(--tainacan-gray1) 35%, var(--tainacan-turquoise2) 65%, var(--tainacan-turquoise1) 100%);
   overflow: hidden; }
   #tainacan-page-container .tainacan-ui-tweak-button {
     border-radius: 8px;
