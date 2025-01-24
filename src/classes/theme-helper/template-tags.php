@@ -264,7 +264,10 @@ function tainacan_get_the_collection_description() {
  * @return void
  */
 function tainacan_the_collection_description() {
-	echo esc_html(tainacan_get_the_collection_description());
+	/**
+	 * Note to code reviewers: This function does not need to be escaped as it is already escaped in tainacan_get_the_collection_description()
+	 */
+	echo tainacan_get_the_collection_description();
 }
 
 /**
