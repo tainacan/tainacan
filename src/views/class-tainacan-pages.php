@@ -115,8 +115,8 @@ abstract class Pages {
 			
 			$user_prefs_as_string = get_user_meta( $cur_user->ID, 'tainacan_prefs', true );
 			$user_prefs = json_decode( $user_prefs_as_string, true );
-			
-			if ( isset($user_prefs['is_fullscreen']) && $user_prefs['is_fullscreen'] )
+
+			if ( isset($user_prefs['is_fullscreen']) && ( $user_prefs['is_fullscreen'] == 'true' || $user_prefs['is_fullscreen'] == true ) )
 				$classes .= ' tainacan-pages-container--fullscreen';
 
 		}	
@@ -516,7 +516,7 @@ abstract class Pages {
 		$is_fullscreen = false;
 
 		$cur_user  = wp_get_current_user();
-
+		
 		if ( $cur_user instanceof \WP_User ) {
 			
 			$user_prefs_as_string = get_user_meta( $cur_user->ID, 'tainacan_prefs', true );
@@ -528,7 +528,7 @@ abstract class Pages {
 			if ( isset($user_prefs['menu_collapsed']) )
 				$is_menu_collapsed = $user_prefs['menu_collapsed'];
 
-			if ( isset($user_prefs['is_fullscreen']) )
+			if ( isset($user_prefs['is_fullscreen']) && ( $user_prefs['is_fullscreen'] == 'true' || $user_prefs['is_fullscreen'] == true ) )
 				$is_fullscreen = $user_prefs['is_fullscreen'];
 
 		}	
@@ -555,7 +555,7 @@ abstract class Pages {
 				aria-label="<?php _e('Toggle fullscreen', 'tainacan'); ?>"
 				aria-pressed="<?php echo $is_fullscreen ? 'true' : 'false'; ?>"
 				title="<?php _e('Toggle fullscreen', 'tainacan'); ?>">
-			<span class="icon"><?php echo $this->get_svg_icon( $is_fullscreen ? 'fullscreen-off' : 'fullscreen-on' ); ?></span>
+			<span class="icon"><?php echo $this->get_svg_icon( 'fullscreen' ); ?></span>
 		</button>
 		<?php
 	}

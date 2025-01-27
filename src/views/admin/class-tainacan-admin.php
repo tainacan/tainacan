@@ -226,12 +226,17 @@ class Admin extends Pages {
 
 	}
 
+	/**
+	 * Add custom classes to the body tag in the admin. Instead of simply overriding we also
+	 * call the parent method to keep the default classes, including the fullscreen class.
+	 */
 	function admin_body_class( $classes ) {
+		$modified_classes = parent::admin_body_class( $classes );
 
 		if ( isset( $_GET['page'] ) && $_GET['page'] == $this->vue_component_page_slug )
-			$classes .= ' tainacan-pages-container tainacan-admin-page';
+			$modified_classes .= ' tainacan-admin-page';
 		
-		return $classes;
+		return $modified_classes;
 	}
 
 	public function render_page_content() {

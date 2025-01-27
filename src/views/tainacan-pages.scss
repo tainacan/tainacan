@@ -51,10 +51,11 @@
         color: var(--tainacan-turquoise4);
         background-color: var(--tainacan-turquoise2);
         cursor: pointer;
+        transition: background 0.25s ease-in;
 
         &:hover:not(:disabled) {
             background-color: var(--tainacan-turquoise3);
-            background-color: color-mix(in srgb, var(--tainacan-turquoise3) 50%, transparent);
+            background-color: color-mix(in srgb, var(--tainacan-turquoise3) 30%, transparent);
         }
         &:focus-visible:not(:disabled) {
             background-color: var(--tainacan-turquoise3);
@@ -98,6 +99,15 @@
     #tainacan-fullscreen-toggler {
         position: absolute;
         right: var(--tainacan-page-container--inner-padding-x, 1rem);
+
+        &[aria-pressed="true"] svg {
+            #fullscreen-on {
+                display: none;
+            }
+            #fullscreen-off {
+                display: block !important;
+            }
+        }
     }
 
     #tainacan-page-container--inner {
@@ -293,6 +303,7 @@
             text-decoration: none !important;
             background-color: transparent;
             color: var(--tainacan-black);
+            transition: background 0.25s ease-in;
 
             &[aria-current="page"],
             &:hover:not(:disabled),

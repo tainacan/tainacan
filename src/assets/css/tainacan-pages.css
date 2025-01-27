@@ -867,10 +867,11 @@ a:hover:not([href]) {
     border: none !important;
     color: var(--tainacan-turquoise4);
     background-color: var(--tainacan-turquoise2);
-    cursor: pointer; }
+    cursor: pointer;
+    transition: background 0.25s ease-in; }
     #tainacan-page-container .tainacan-ui-tweak-button:hover:not(:disabled) {
       background-color: var(--tainacan-turquoise3);
-      background-color: color-mix(in srgb, var(--tainacan-turquoise3) 50%, transparent); }
+      background-color: color-mix(in srgb, var(--tainacan-turquoise3) 30%, transparent); }
     #tainacan-page-container .tainacan-ui-tweak-button:focus-visible:not(:disabled) {
       background-color: var(--tainacan-turquoise3);
       background-color: color-mix(in srgb, var(--tainacan-turquoise3) 50%, transparent);
@@ -902,6 +903,10 @@ a:hover:not([href]) {
   #tainacan-page-container #tainacan-fullscreen-toggler {
     position: absolute;
     right: var(--tainacan-page-container--inner-padding-x, 1rem); }
+    #tainacan-page-container #tainacan-fullscreen-toggler[aria-pressed="true"] svg #fullscreen-on {
+      display: none; }
+    #tainacan-page-container #tainacan-fullscreen-toggler[aria-pressed="true"] svg #fullscreen-off {
+      display: block !important; }
   #tainacan-page-container #tainacan-page-container--inner {
     display: flex;
     flex-direction: column;
@@ -1037,7 +1042,8 @@ a:hover:not([href]) {
       cursor: pointer;
       text-decoration: none !important;
       background-color: transparent;
-      color: var(--tainacan-black); }
+      color: var(--tainacan-black);
+      transition: background 0.25s ease-in; }
       #tainacan-page-container #tainacan-navigation-menu a[aria-current="page"], #tainacan-page-container #tainacan-navigation-menu a:hover:not(:disabled), #tainacan-page-container #tainacan-navigation-menu a:focus:not(:disabled),
       #tainacan-page-container #tainacan-navigation-menu button[aria-current="page"],
       #tainacan-page-container #tainacan-navigation-menu button:hover:not(:disabled),
