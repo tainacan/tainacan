@@ -234,11 +234,17 @@
                 font-size: 0.9375em;
                 white-space: nowrap;
                 padding-right: 20px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                max-width: 40vw;
             }
             .filter-tag-metadatum-value {
                 font-size: 1.0625em;
                 font-weight: 500;
                 white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                max-width: 40vw;
             }
 
             .tag.is-delete {
