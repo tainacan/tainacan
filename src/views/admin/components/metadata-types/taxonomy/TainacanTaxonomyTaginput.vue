@@ -7,7 +7,7 @@
             size="is-small"
             icon="magnify"
             :data="options"
-            :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
+            :maxtags="maxtags != undefined ? Number(maxtags) : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? Number(maxMultipleValues) : null) : 1)"
             field="label"
             :remove-on-keys="[]"            
             :dropdown-position="isLastMetadatum ? 'top' :'auto'"
