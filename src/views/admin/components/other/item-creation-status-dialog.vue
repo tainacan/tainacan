@@ -45,7 +45,9 @@
                                     class="tainacan-icon tainacan-icon-18px"
                                     :class="$statusHelper.getIcon(statusOption.slug)" />
                         </span>
-                        {{ statusOption.name }}
+                        <span style="line-height: 1.5em; margin-left: 0.25em;">
+                            {{ statusOption.name }}
+                        </span>
                     </b-radio>
                 </div>
             </section>
@@ -111,7 +113,7 @@
 <style scoped>
     
     .modal-card {
-        max-width: 600px;
+        max-width: 680px;
     }
 
     .modal-custom-icon i.tainacan-icon,
@@ -130,10 +132,13 @@
     .status-radios {
         margin-top: 1rem;
         display: flex;
+        flex-wrap: wrap;
         font-size: 1.125em;
+        gap: 1em;
     }
     .status-radios :deep(.b-radio) {
         margin-bottom: 0px !important;
+        width: auto;
     }
     .modal-card-foot {
         margin-top: 12px;
@@ -151,9 +156,6 @@
         .modal-card-body {
             padding: 0 1.25rem !important;
         } 
-        .status-radios {
-            flex-wrap: wrap;
-        }  
         .status-radios .b-radio {
             margin-bottom: 0.5rem !important;
             font-size: 1.125rem;
