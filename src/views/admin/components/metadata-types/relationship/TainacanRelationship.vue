@@ -13,7 +13,7 @@
                         icon="magnify"
                         :model-value="JSON.parse(JSON.stringify(selected))"
                         :data="options"
-                        :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
+                        :maxtags="maxtags != undefined ? Number(maxtags) : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? Number(maxMultipleValues) : null) : 1)"
                         autocomplete
                         :remove-on-keys="[]"
                         :dropdown-position="isLastMetadatum ? 'top' :'auto'"
