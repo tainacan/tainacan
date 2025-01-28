@@ -983,26 +983,32 @@ a:hover:not([href]) {
     border-radius: 0;
     border-bottom-right-radius: var(--tainacan-admin-button-border-radius);
     border: none;
-    font-size: 1.125em;
+    font-size: 1em;
     color: #f0f0f1;
     background: #1d2327;
     display: none;
     visibility: hidden;
     padding: 4px;
     width: 2em;
-    height: 1.778em;
+    height: 2em;
     cursor: pointer; }
     #tainacan-page-container #tainacan-wordpress-shortcut:hover {
       background: #2c3338;
       color: #72aee6; }
-    #tainacan-page-container #tainacan-wordpress-shortcut .icon svg {
-      background-color: transparent;
-      fill: currentColor;
-      stroke-width: 0;
-      stroke: currentColor;
-      pointer-events: none;
-      width: 100%;
-      height: 100%; }
+    #tainacan-page-container #tainacan-wordpress-shortcut .icon {
+      align-items: center;
+      display: inline-flex;
+      justify-content: center;
+      height: 1.5em;
+      width: 1.5em; }
+      #tainacan-page-container #tainacan-wordpress-shortcut .icon svg {
+        background-color: transparent;
+        fill: currentColor;
+        stroke-width: 0;
+        stroke: currentColor;
+        pointer-events: none;
+        width: 100%;
+        height: 100%; }
   #tainacan-page-container .tainacan-ui-tweak-button {
     border-radius: var(--tainacan-admin-button-border-radius, 8px);
     min-width: 2em;
