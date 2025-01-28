@@ -288,13 +288,14 @@
             performValueChange() {
                 
                 // Compound metadata do not emit values, only their children.
-                if (this.metadatumComponent == 'tainacan-compound')
+                if ( this.metadatumComponent == 'tainacan-compound' )
                     return;
 
-                if (this.itemMetadatum.value !== null && this.itemMetadatum.value !== false) {
+                if ( this.itemMetadatum.value !== null && this.itemMetadatum.value !== false ) {
 
                     // This routine avoids calling the API if the value did not changed
                     switch(this.itemMetadatum.value.constructor.name) {
+
                         // Multivalored Metadata requires checking the whole array
                         case 'Array': {
                             
@@ -335,10 +336,19 @@
 
                         // Any single metadatum value that is not a term
                         default:
-                            if (!this.errorMessage && this.values.length && this.values[0] == this.itemMetadatum.value)
+                            
+                            if (
+                                !this.errorMessage &&
+                                this.values.length &&
+                                (    // This is needed for allowing numeric 0 values to be compared against empty string values.
+                                    ( !isNaN(this.values[0]) && this.values[0] === this.itemMetadatum.value ) || 
+                                    ( isNaN(this.values[0]) && this.values[0] == this.itemMetadatum.value )
+                                )
+                            )
                                 return;
                     }
                 }
+                
                 // If none is the case, the value is update request is sent to the API
                 this.$emit('input', {
                     itemId: this.itemMetadatum.item.id,
