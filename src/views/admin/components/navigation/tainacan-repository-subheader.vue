@@ -169,7 +169,7 @@ export default {
         overflow-y: hidden;
         padding-top: 10px;
         padding-bottom: 10px;
-        padding-right: 0;
+        padding-right: var(--tainacan-one-column);
         padding-left: var(--tainacan-one-column);
         margin: 0px;
         display: flex;
@@ -179,7 +179,6 @@ export default {
 
         &.is-repository-level {
             background-color: var(--tainacan-blue5);
-            padding-right: var(--tainacan-one-column);
 
             .repository-subheader-icons { 
                 margin-right: -1em !important; 

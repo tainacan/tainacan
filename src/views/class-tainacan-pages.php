@@ -109,16 +109,18 @@ abstract class Pages {
 	function admin_body_class( $classes ) {
 		$classes .= ' tainacan-pages-container';
 
-		$cur_user  = wp_get_current_user();
+		$current_user  = wp_get_current_user();
 
-		if ( $cur_user instanceof \WP_User ) {
+		if ( $current_user instanceof \WP_User ) {
 			
-			$user_prefs_as_string = get_user_meta( $cur_user->ID, 'tainacan_prefs', true );
+			$user_prefs_as_string = get_user_meta( $current_user->ID, 'tainacan_prefs', true );
 			$user_prefs = json_decode( $user_prefs_as_string, true );
 
 			if ( isset($user_prefs['is_fullscreen']) && ( $user_prefs['is_fullscreen'] == 'true' || $user_prefs['is_fullscreen'] == true ) )
 				$classes .= ' tainacan-pages-container--fullscreen';
 
+			if ( isset($user_prefs['admin_style']) )
+				$classes .= ' tainacan-pages-container--admin-' . $user_prefs['tainacan-admin-style'] . '-style';
 		}	
 
 		return $classes;
@@ -131,23 +133,24 @@ abstract class Pages {
 	 */
 	function get_admin_js_user_data() {
 
-		$cur_user  = wp_get_current_user();
+		$current_user  = wp_get_current_user();
 		$user_caps = array();
 		$prefs     = array();
 		$user_data = array();
 
-		if ( $cur_user instanceof \WP_User ) {
+		if ( $current_user instanceof \WP_User ) {
 			$tainacan_caps = \tainacan_roles()->get_repository_caps_slugs();
+
 			foreach ($tainacan_caps as $tcap) {
 				$user_caps[$tcap] = current_user_can( $tcap );
 			}
-			$prefs = get_user_meta( $cur_user->ID, 'tainacan_prefs', true );
+			$prefs = get_user_meta( $current_user->ID, 'tainacan_prefs', true );
 
-			if ( $cur_user->data && isset($cur_user->data->user_email) && isset($cur_user->data->display_name) ) {
+			if ( $current_user->data && isset($current_user->data->user_email) && isset($current_user->data->display_name) ) {
 				$user_data = array(
-					'ID' => $cur_user->ID,
-					'email' => $cur_user->data->user_email,
-					'display_name' => $cur_user->data->display_name
+					'ID' => $current_user->ID,
+					'email' => $current_user->data->user_email,
+					'display_name' => $current_user->data->display_name
 				);
 			}
 		}
@@ -359,8 +362,20 @@ abstract class Pages {
 		$current_page_slug = $current_screen->id ? $current_screen->id : 'toplevel_page_tainacan_dashboard';
 		$current_page_parent = $current_screen->parent_file;
 
+		$is_navigation_sidebar_collapsed = false;
+		$current_user  = wp_get_current_user();
+
+		if ( $current_user instanceof \WP_User ) {
+			
+			$user_prefs_as_string = get_user_meta( $current_user->ID, 'tainacan_prefs', true );
+			$user_prefs = json_decode( $user_prefs_as_string, true );
+
+			if ( isset($user_prefs['is_navigation_sidebar_collapsed']) && ( $user_prefs['is_navigation_sidebar_collapsed'] == 'true' || $user_prefs['is_navigation_sidebar_collapsed'] == true ) )
+				$is_navigation_sidebar_collapsed = true;
+		}	
+
 		?>
-		<aside id="tainacan-navigation-menu">
+		<aside id="tainacan-navigation-menu" <?php echo ( $is_navigation_sidebar_collapsed ? : 'class="is-collapsed"' ) ?>>
 			<nav>
 				<header>
 					<h1>
@@ -401,6 +416,7 @@ abstract class Pages {
 								if ( isset( $submenu[$tainacan_root_link[2]] ) ) : ?>
 
 									<li class="menu-item-has-children <?php echo $current_page_parent === $tainacan_root_link[2] ? 'is-open' : ''; ?>">
+										<div class="menu-backdrop"></div>
 										<button type="button" aria-expanded="<?php echo $current_page_parent === $tainacan_root_link[2] ?>"><?php echo $tainacan_root_link[0]; ?></button>
 										
 										<?php if ( count( $submenu[$tainacan_root_link[2]] ) ) : ?>
@@ -515,11 +531,11 @@ abstract class Pages {
 		$is_menu_collapsed = false;
 		$is_fullscreen = false;
 
-		$cur_user  = wp_get_current_user();
+		$current_user  = wp_get_current_user();
 		
-		if ( $cur_user instanceof \WP_User ) {
+		if ( $current_user instanceof \WP_User ) {
 			
-			$user_prefs_as_string = get_user_meta( $cur_user->ID, 'tainacan_prefs', true );
+			$user_prefs_as_string = get_user_meta( $current_user->ID, 'tainacan_prefs', true );
 			$user_prefs = json_decode( $user_prefs_as_string, true );
 
 			if ( isset($user_prefs['menu_toggled']) ) 
@@ -533,6 +549,12 @@ abstract class Pages {
 
 		}	
 		?>
+		<a
+				id="tainacan-wordpress-shortcut"
+				title="<?php _e('Return to WordPress Admin', 'tainacan'); ?>"
+				href="<?php echo admin_url(); ?>">
+			<span class="icon"><?php echo $this->get_svg_icon( 'wordpress' ); ?></span>
+		</a>
 		<button
 				id="tainacan-menu-toggler"
 				class="tainacan-ui-tweak-button"

@@ -6,6 +6,8 @@ require_once ABSPATH . 'wp-admin/includes/dashboard.php';
 // Register Widgets TO Be Displayed
 $this->register_cards();
 
+$dashboard_logo = apply_filters('tainacan-dashboard-logo', plugin_dir_url( dirname( __FILE__, 2 ) ) . '/assets/images/tainacan_logo_dashboard.svg');
+
 ?>
 
 <div id="tainacan-dashboard-app" class="content-body">
@@ -14,7 +16,7 @@ $this->register_cards();
             <img 
                     alt="<?php _e('Tainacan', 'tainacan'); ?>" 
                     width="300" 
-                    src="<?php echo plugin_dir_url( dirname( __FILE__, 2 ) ) . '/assets/images/tainacan_logo_dashboard.svg'; ?>" />
+                    src="<?php echo esc_attr( $dashboard_logo ); ?>" />
         </h1>
         <p>
         <?php

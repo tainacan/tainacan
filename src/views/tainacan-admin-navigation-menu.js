@@ -2,6 +2,7 @@ function handleMenuCollapses() {
     const tainacanRootMenu = document.getElementById('tainacan-root-menu');
 
     if ( tainacanRootMenu && tainacanRootMenu.childNodes.length ) {
+
         const tainacanRootMenuItems = tainacanRootMenu.childNodes;
 
         tainacanRootMenuItems.forEach( item => {
@@ -25,6 +26,21 @@ function handleMenuCollapses() {
                     }
                 } );
             }
+        } );
+
+        const backdrops = document.querySelectorAll('.menu-backdrop');
+
+        backdrops.forEach( backdrop => {
+            backdrop.addEventListener( 'click', function() {
+                
+                tainacanRootMenuItems.forEach( item => {
+                    if ( item.classList && item.classList.contains('menu-item-has-children') ) {
+                        const itemButton = item.querySelector( 'button' );
+                        item.classList.remove('is-open');
+                        itemButton.setAttribute( 'aria-expanded', false );
+                    }
+                });
+            });
         } );
     }
 }
@@ -308,6 +324,30 @@ function handleUITweakButtons() {
             tainacanAdminMenu.classList.toggle('is-collapsed');
             tainacanMenuCollapser.ariaPressed = '' + isCollapsed;
 
+            let currentUserPrefs = JSON.parse(tainacan_user.prefs);
+            currentUserPrefs['is_navigation_sidebar_collapsed'] = isCollapsed;
+
+            let data = { 'meta': { 'tainacan_prefs': JSON.stringify(currentUserPrefs) } };
+
+            if ( tainacan_user.nonce && tainacan_user.wp_api_url ) {
+            
+                fetch(tainacan_user.wp_api_url + 'users/me', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-WP-Nonce': tainacan_user.nonce
+                    },
+                    body: JSON.stringify(data)
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                }).catch(error => {
+                    console.error('Request to /users/me failed. Maybe you\'re not logged in.', error);
+                });
+            }
+
         } );
     }
 
@@ -339,8 +379,6 @@ function handleUITweakButtons() {
                         throw new Error('Network response was not ok');
                     }
                     return response.json();
-                }).then(data => {
-                    console.log('User preferences updated:', data);
                 }).catch(error => {
                     console.error('Request to /users/me failed. Maybe you\'re not logged in.', error);
                 });

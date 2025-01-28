@@ -1,4 +1,5 @@
 #tainacan-dashboard-app {
+    --tainacan-dashboard-text-color: var(--tainacan-admin-color);
     width: 100%;
     font-family: var(--tainacan-font-family);
     font-size: 16px;
@@ -13,15 +14,20 @@
         p {
             margin-top: 0;
             font-size: 1rem;
-            color: var(--tainacan-blue4);
+            color: var(--tainacan-dashboard-text-color);
         }
     }
 
     #dashboard-widgets-wrap {
-        max-width: 1060px;
+        max-width: 1620px;
         width: 100%;
         margin: 0 auto;
         padding-top: 1.5rem;
+    }
+    @media only screen and (max-width: 1920px) {
+        #dashboard-widgets-wrap {
+            max-width: 1060px;
+        }
     }
 
     .is-dragging-metaboxes & #dashboard-widgets .meta-box-sortables,
@@ -34,7 +40,7 @@
         border-radius: var(--tainacan-dashboard-card-border-radius, 16px);
     }
 
-    @media only screen and (min-width: 1280px) {
+    @media only screen and (min-width: 1280px) and (max-width: 1920px) {
         .postbox-container {
             width: 33% !important;
             float: left !important;

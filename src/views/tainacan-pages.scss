@@ -25,12 +25,151 @@
         }
         #tainacan-page-container {
             --wp-admin--admin-bar--height: 0px;
+
+            #tainacan-navigation-menu header h1 {
+                margin: 1.875rem 0 0.25rem;
+            }
+
+            #tainacan-wordpress-shortcut {
+                display: block;
+                visibility: visible;
+            }
         }
     }
 }
 
+/* Admin styles */
+.tainacan-pages-container.tainacan-pages-container--admin-legacy-style #tainacan-page-container {
+    --tainacan-admin-background-color: var(--tainacan-white);
+    --tainacan-admin-background-image: unset;
+    --tainacan-admin-link-color: var(--tainacan-turquoise5);
+    --tainacan-admin-link-hover-color: var(--tainacan-turquoise6);
+    --tainacan-admin-button-border-radius: 2px;
+    --tainacan-admin-button-background-color: var(--tainacan-turquoise2);
+    --tainacan-admin-button-color: var(--tainacan-white);
+    --tainacan-admin-button-hover-color: var(--tainacan-white);
+    --tainacan-admin-button-active-color: var(--tainacan-white);
+    --tainacan-admin-button-hover-background-color: var(--tainacan-blue3);
+    --tainacan-admin-button-active-background-color: var(--tainacan-blue4);
+    --tainacan-admin-navigation-sidebar-background-color: var(--tainacan-blue5);
+    --tainacan-admin-navigation-sidebar-separator-color: var(--tainacan-blue2);
+    --tainacan-admin-navigation-sidebar-floating-menu-background-color: var(--tainacan-white);
+
+    --tainacan-page-container--inner-padding-x: 0px;
+    --tainacan-page-container-margin-x: 0px;
+
+    --tainacan-page-container-border-radius: 0px;
+    --tainacan-page-container-border: none;
+    --tainacan-page-container-box-shadow: none;
+
+    --tainacan-dashboard-card-border-radius: 0px;
+    --tainacan-dashboard-card-border: none;
+    --tainacan-dashboard-card-box-shadow: none;
+    --tainacan-dashboard-card-background: var(--tainacan-gray1);
+
+    #tainacan-navigation-menu a .icon,
+    #tainacan-navigation-menu button .icon {
+        color: var(--tainacan-white) !important;
+    }
+    #tainacan-navigation-menu a:hover .icon,
+    #tainacan-navigation-menu button:hover .icon {
+        color: var(--tainacan-white) !important;
+    }
+    #tainacan-navigation-menu .menu-item-has-children button::after {
+        filter: invert(1.0);
+    }
+}
+.tainacan-pages-container.tainacan-pages-container--admin-classic-style #tainacan-page-container {
+    --tainacan-admin-background-color: #f0f0f1;
+    --tainacan-admin-background-image: unset;
+    --tainacan-admin-link-color: #2271b1;
+    --tainacan-admin-link-hover-color: #2271b1;
+    --tainacan-admin-button-border-radius: 2px;
+    --tainacan-admin-button-background-color: #f0f6fc;
+    --tainacan-admin-button-color: #949494;
+    --tainacan-admin-button-hover-color: #72aee6;
+    --tainacan-admin-button-active-color: white;
+    --tainacan-admin-button-hover-background-color: #2c3338;
+    --tainacan-admin-button-active-background-color: #2271b1;
+    --tainacan-admin-navigation-sidebar-background-color: #1d2327;
+    --tainacan-admin-navigation-sidebar-separator-color: #949494;
+    --tainacan-admin-navigation-sidebar-floating-menu-background-color: #2c3338;
+
+    --tainacan-page-container-border-radius: 4px;
+    --tainacan-page-container-border: 1px solid #c3c4c7;
+    --tainacan-page-container-box-shadow: 0 1px 1px rgba(0,0,0,.04);
+
+    --tainacan-dashboard-card-border-radius: 2px;
+    --tainacan-dashboard-card-border: 1px solid #c3c4c7;
+    --tainacan-dashboard-card-box-shadow: 0 1px 1px rgba(0,0,0,.04);
+
+    #tainacan-navigation-menu a .icon,
+    #tainacan-navigation-menu button .icon {
+        color: #f6fafd !important;
+    }
+    #tainacan-navigation-menu a:hover .icon,
+    #tainacan-navigation-menu button:hover .icon {
+        color: #72aee6 !important;
+    }
+    #tainacan-navigation-menu .menu-item-has-children button::after {
+        filter: invert(1.0);
+    }
+}
+.tainacan-pages-container.tainacan-pages-container--admin-gutenberg-style #tainacan-page-container {
+    --tainacan-admin-background-color: #1e1e1e;
+    --tainacan-admin-background-image: unset;
+    --tainacan-admin-color: white;
+    --tainacan-admin-link-color: #f0f0f1;
+    --tainacan-admin-link-hover-color: white;
+    --tainacan-admin-button-border-radius: 2px;
+    --tainacan-admin-button-background-color: #1e1e1e;
+    --tainacan-admin-button-color: #949494;
+    --tainacan-admin-button-hover-color: white;
+    --tainacan-admin-button-active-color: white;
+    --tainacan-admin-button-hover-background-color: #2f2f2f;
+    --tainacan-admin-button-active-background-color: #2271b1;
+    --tainacan-admin-navigation-sidebar-background-color: #1e1e1e;
+    --tainacan-admin-navigation-sidebar-separator-color: #949494;
+    --tainacan-admin-navigation-sidebar-floating-menu-background-color: #1e1e1e;
+
+    --tainacan-page-container--inner-padding-x: 0px;
+
+    --tainacan-page-container-border-radius: 8px;
+
+    --tainacan-dashboard-card-border-radius: 4px;
+    --tainacan-dashboard-card-border: 1px solid #e5e5e5;
+    --tainacan-dashboard-card-box-shadow: none;
+
+    #tainacan-navigation-menu a .icon,
+    #tainacan-navigation-menu button .icon {
+        color: var(--tainacan-white) !important;
+    }
+    #tainacan-navigation-menu .menu-item-has-children button::after {
+        filter: invert(1.0);
+    }
+}
+.tainacan-pages-container--fullscreen.tainacan-pages-container.tainacan-pages-container--admin-gutenberg-style #tainacan-page-container {
+    --tainacan-admin-navigation-sidebar-width: 300px;
+}
+
 /* Page container */
 #tainacan-page-container {
+    --tainacan-admin-background-color: var(--tainacan-turquoise1);
+    --tainacan-admin-background-image: radial-gradient(rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%), radial-gradient(at 70% 60%, var(--tainacan-turquoise2) 0%, rgba(217, 236, 237, 0) 90%), radial-gradient(at 30% 30%, var(--tainacan-turquoise1) 0%, rgba(230, 246, 248, 0) 60%), radial-gradient(at left bottom, var(--tainacan-turquoise2) 0%, rgba(204, 227, 242, 0) 70%), linear-gradient(135deg, rgba(18, 46, 119, 0) 0%, rgba(18, 46, 119, 0) 75%, var(--tainacan-turquoise1) 100%), linear-gradient(to right, var(--tainacan-gray0) 0%, var(--tainacan-gray1) 35%, var(--tainacan-turquoise2) 65%, var(--tainacan-turquoise1) 100%);
+    --tainacan-admin-color: var(--tainacan-blue4);
+    --tainacan-admin-link-color: var(--tainacan-turquoise5);
+    --tainacan-admin-link-hover-color: var(--tainacan-turquoise6);
+    --tainacan-admin-button-border-radius: 8px; 
+    --tainacan-admin-button-background-color: var(--tainacan-turquoise2);
+    --tainacan-admin-button-color: var(--tainacan-black); 
+    --tainacan-admin-button-hover-color: var(--tainacan-black);
+    --tainacan-admin-button-active-color: var(--tainacan-black);
+    --tainacan-admin-button-hover-background-color: color-mix(in srgb, var(--tainacan-turquoise3) 30%, transparent);
+    --tainacan-admin-button-active-background-color: color-mix(in srgb, var(--tainacan-turquoise3) 50%, transparent);
+    --tainacan-admin-navigation-sidebar-background-color: var(--tainacan-turquoise2);
+    --tainacan-admin-navigation-sidebar-separator-color: var(--tainacan-turquoise4); 
+    --tainacan-admin-navigation-sidebar-floating-menu-background-color: var(--tainacan-white);
+    --tainacan-admin-navigation-sidebar-width: 228px;
     display: grid;
     grid-template-columns: auto 1fr;
     grid-template-rows: 100%;
@@ -39,27 +178,61 @@
     width: 100%;
     font-family: var(--tainacan-font-family);
     font-size: 16px;
-    background-color: var(--tainacan-turquoise1);
-    background-image: radial-gradient(rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%), radial-gradient(at 70% 60%, var(--tainacan-turquoise2) 0%, rgba(217, 236, 237, 0) 90%), radial-gradient(at 30% 30%, var(--tainacan-turquoise1) 0%, rgba(230, 246, 248, 0) 60%), radial-gradient(at left bottom, var(--tainacan-turquoise2) 0%, rgba(204, 227, 242, 0) 70%), linear-gradient(135deg, rgba(18, 46, 119, 0) 0%, rgba(18, 46, 119, 0) 75%, var(--tainacan-turquoise1) 100%), linear-gradient(to right, var(--tainacan-gray0) 0%, var(--tainacan-gray1) 35%, var(--tainacan-turquoise2) 65%, var(--tainacan-turquoise1) 100%);
+    background-color: var(--tainacan-admin-background-color);
+    background-image: var(--tainacan-admin-background-image);
     overflow: hidden;
+
+    #tainacan-wordpress-shortcut {
+        box-sizing: border-box;
+        position: absolute;
+        left: 0;
+        top: 0;
+        border-radius: 0;
+        border-bottom-right-radius: var(--tainacan-admin-button-border-radius);
+        border: none;
+        font-size: 1.125em;
+        color: #f0f0f1;
+        background: #1d2327;
+        display: none;
+        visibility: hidden;
+        padding: 4px;
+        width: 2em;
+        height: 1.778em;
+        cursor: pointer;
+
+        &:hover {
+            background: #2c3338;
+            color: #72aee6;
+        }
+
+        .icon svg {
+            background-color: transparent;
+            fill: currentColor;
+            stroke-width: 0;
+            stroke: currentColor;
+            pointer-events: none;
+            width: 100%;
+            height: 100%;
+        }
+    }
   
     .tainacan-ui-tweak-button {
-        border-radius: 8px;
+        border-radius: var(--tainacan-admin-button-border-radius, 8px);
+        min-width: 2em;
         padding: 0.25rem 0.15rem;
         margin-top: -0.5rem;
         border: none !important;
-        color: var(--tainacan-turquoise4);
-        background-color: var(--tainacan-turquoise2);
+        color: var(--tainacan-admin-link-color);
+        background-color: var(--tainacan-admin-button-background-color);
         cursor: pointer;
         transition: background 0.25s ease-in;
 
-        &:hover:not(:disabled) {
-            background-color: var(--tainacan-turquoise3);
-            background-color: color-mix(in srgb, var(--tainacan-turquoise3) 30%, transparent);
-        }
+        &:hover:not(:disabled),
         &:focus-visible:not(:disabled) {
             background-color: var(--tainacan-turquoise3);
-            background-color: color-mix(in srgb, var(--tainacan-turquoise3) 50%, transparent);
+            background-color: var(--tainacan-admin-button-hover-background-color);
+        }
+        &:focus-visible:not(:disabled) {
             box-shadow: 0 0 0 2px var(--tainacan-turquoise5);
             outline: 3px solid #0000;
         }
@@ -125,7 +298,17 @@
     }
 
     #tainacan-breadcrumbs {
+        color: var(--tainacan-admin-color);
         height: var(--tainacan-breadcumbs-list-height, 1rem);
+
+        a {
+            color: var(--tainacan-admin-link-color);
+            text-decoration: none;
+
+            &:hover {
+                color: var(--tainacan-admin-link-hover-color);
+            }
+        }
             
         #tainacan-breadcrumbs-list {
             display: flex;
@@ -153,16 +336,16 @@
         height: calc(100vh - var(--wp-admin--admin-bar--height, 32px));
         max-height: calc(100vh - var(--wp-admin--admin-bar--height, 32px));
         overflow-y: auto;
-        flex-basis: var(--tainacan-admin-navigation-sidebar, 228px);
-        min-width: var(--tainacan-admin-navigation-sidebar, 228px);
-        max-width: var(--tainacan-admin-navigation-sidebar, 228px);
+        flex-basis: var(--tainacan-admin-navigation-sidebar-width, 228px);
+        min-width: var(--tainacan-admin-navigation-sidebar-width, 228px);
+        max-width: var(--tainacan-admin-navigation-sidebar-width, 228px);
         padding: 1rem;
-        background-color: var(--tainacan-turquoise2);
+        background-color: var(--tainacan-admin-navigation-sidebar-background-color);
         box-sizing: border-box;
 
         @media (min-width: 769px) {
             &.is-collapsed {
-                --tainacan-admin-navigation-sidebar: 86px;
+                --tainacan-admin-navigation-sidebar-width: 86px;
                 padding: 1rem 0.25rem;
                 overflow: visible;
 
@@ -209,17 +392,30 @@
                         right: -1rem;
                     } 
                     &.is-open {
+
+                        & > .menu-backdrop {
+                            position: fixed;
+                            top: 0;
+                            right: 0;
+                            left: 0;
+                            border: 0;
+                            width: 100%;
+                            height: 100%;
+                            z-index: 9999;
+                        }
+
                         button {
                             background-color: var(--tainacan-turquoise3);
-                            background-color: color-mix(in srgb, var(--tainacan-turquoise3) 50%, transparent);
+                            background-color: var(--tainacan-admin-button-active-background-color);
                             justify-content: start;
 
                             .menu-text {
                                 padding: 0.75rem;
                                 z-index: 99999999;
-                                border-top-left-radius: 8px;
-                                border-top-right-radius: 8px;
-                                border-bottom: 1px solid var(--tainacan-gray1);
+                                border-top-left-radius: var(--tainacan-admin-button-border-radius, 8px);
+                                border-top-right-radius: var(--tainacan-admin-button-border-radius, 8px);
+                                border-bottom: 1px solid var(--tainacan-turquoise3);
+                                border-bottom: 1px solid color-mix(in srgb, var(--tainacan-admin-navigation-sidebar-separator-color) 50%, transparent);;
                             }
                         }
 
@@ -232,15 +428,17 @@
                         ul {
                             padding: 0.5rem 0.75rem;
                             z-index: 99999998;
-                            border-bottom-right-radius: 8px;
-                            border-bottom-left-radius: 8px;
+                            border: none;
+                            border-bottom-right-radius: var(--tainacan-admin-button-border-radius, 8px);
+                            border-bottom-left-radius: var(--tainacan-admin-button-border-radius, 8px);
+                            box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px --tainacan-blue3);
+                            box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px color-mix(in srgb, var(--tainacan-blue3) 20%, transparent) );
                             margin-top: -1px;
-            
-                            a[aria-current="page"],
-                            a:hover:not(:disabled),
-                            a:focus:not(:disabled) {
-                                background-color: var(--tainacan-turquoise2);
-                            }
+                        }
+                        & > button > .menu-text {
+                            border-bottom: 1px solid var(--tainacan-gray2);
+                            box-shadow: var(--tainacan-page-container-box-shadow, 4px -4px 8px -4px --tainacan-blue3);
+                            box-shadow: var(--tainacan-page-container-box-shadow, 4px -4px 8px -4px color-mix(in srgb, var(--tainacan-blue3) 20%, transparent) );
                         }
                         & > button > .menu-text,
                         ul {
@@ -250,10 +448,7 @@
                             max-width: 180px;
                             box-sizing: border-box;
                             margin: 0;
-                            border: none;
-                            background-color: var(--tainacan-white);
-                            box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px --tainacan-blue3);
-                            box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px color-mix(in srgb, var(--tainacan-blue3) 20%, transparent) );
+                            background-color: var(--tainacan-admin-navigation-sidebar-floating-menu-background-color);
                         }
                     } 
                 }
@@ -277,7 +472,7 @@
                 }
             }
             .plugin-version {
-                color: var(--tainacan-turquoise5);
+                color: var(--tainacan-admin-link-color);
                 font-size: 0.625rem;
                 font-weight: normal;
             }
@@ -294,7 +489,7 @@
             align-items: center;
             text-align: start;
             box-sizing: border-box;
-            border-radius: 8px;
+            border-radius: var(--tainacan-admin-button-border-radius, 8px);
             padding: 0.5rem;
             font-size: 1em;
             font-weight: 500;
@@ -302,16 +497,21 @@
             cursor: pointer;
             text-decoration: none !important;
             background-color: transparent;
-            color: var(--tainacan-black);
+            color: var(--tainacan-admin-button-color);
             transition: background 0.25s ease-in;
 
-            &[aria-current="page"],
-            &:hover:not(:disabled),
-            &:focus:not(:disabled) {
+            &[aria-current="page"] {
+                color: var(--tainacan-admin-button-active-color);
                 background-color: var(--tainacan-turquoise3);
-                background-color: color-mix(in srgb, var(--tainacan-turquoise3) 50%, transparent);
+                background-color: var(--tainacan-admin-button-active-background-color);
             }
-            &:focus:not(:disabled) {
+            &:hover:not(:disabled),
+            &:focus-visible:not(:disabled) {
+                color: var(--tainacan-admin-button-hover-color);
+                background-color: var(--tainacan-turquoise3);
+                background-color: var(--tainacan-admin-button-hover-background-color);
+            }
+            &:focus-visible:not(:disabled) {
                 box-shadow: 0 0 0 2px var(--tainacan-turquoise5);
                 outline: 3px solid #0000;
             }
@@ -354,7 +554,6 @@
                 position: absolute;
                 right: 0;
                 content: '';
-                color: var(--tainacan-gray3);
                 font-size: 1rem;
                 content: '';
                 width: 1.5em;
@@ -372,7 +571,7 @@
                 transform: rotateX(0deg);
             }
             ul {
-                border-left: 1px dashed var(--tainacan-turquoise3);
+                border-left: 1px dashed var(--tainacan-admin-navigation-sidebar-separator-color);
                 margin: 0.5em 0 1em 0.75rem;
                 padding-left: 0.5rem;
 
@@ -406,14 +605,19 @@
             box-sizing: border-box;
             font-size: 0.75em;
             font-weight: 500;
-            color: var(--tainacan-turquoise4);
+            color: var(--tainacan-admin-navigation-sidebar-separator-color);
             padding: 0.5rem;
+
+            .icon {
+                color: currentColor !important;
+            }
         }
     }
 
     .tainacan-page-container-content {
         background-color: var(--tainacan-background-color);
         border-radius: var(--tainacan-page-container-border-radius, 16px) var(--tainacan-page-container-border-radius, 16px) 0 0;
+        border: var(--tainacan-page-container-border, none);
         margin-top: var(--tainacan-page-container-margin-top, 1rem);
         margin-left: var(--tainacan-page-container-margin-x, 1rem);
         margin-right: var(--tainacan-page-container-margin-x, 1rem);
@@ -447,12 +651,12 @@
         #tainacan-navigation-menu.is-active {
             display: block;
             position: absolute;
-            width: var(--tainacan-admin-navigation-sidebar, 228px);
+            width: var(--tainacan-admin-navigation-sidebar-width, 228px);
             z-index: 1000;
             box-shadow: 0.5rem 0 2rem -1.5rem var(--tainacan-black);
 
             + #tainacan-page-container--inner #tainacan-menu-toggler {
-                margin-left: calc( var(--tainacan-admin-navigation-sidebar, 228px) - var(--tainacan-page-container--inner-padding-x, 1rem) );
+                margin-left: calc( var(--tainacan-admin-navigation-sidebar-width, 228px) - var(--tainacan-page-container--inner-padding-x, 1rem) );
             }
         }
     }
