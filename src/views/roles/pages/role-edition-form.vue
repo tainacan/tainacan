@@ -610,6 +610,7 @@
                 else
                     return this.$i18n.get('Repository')
             },
+<<<<<<< HEAD
             getAdminUIOptionValue(optionSlug) {
                 return this.localAdminUIOptions[this.roleSlug] && this.localAdminUIOptions[this.roleSlug][optionSlug] ? this.localAdminUIOptions[this.roleSlug][optionSlug] : false;
             },
@@ -625,6 +626,8 @@
                 // Update the specific optionSlug value
                 this.localAdminUIOptions[this.roleSlug][optionSlug] = $event.target.checked;
             },
+=======
+>>>>>>> f71ec08ae (Adds hierarchy and conditionals to items capability checkboxes.)
             isCapabilityChecked(capability, selectedCollection) {
                 const isCapabilityEnabled = this.form.capabilities[capability.replace('%d', selectedCollection)] ;
 
@@ -774,7 +777,10 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
+<<<<<<< HEAD
         font-size: 13px;
+=======
+>>>>>>> f71ec08ae (Adds hierarchy and conditionals to items capability checkboxes.)
         width: 100%;
 
         .capability-group {
