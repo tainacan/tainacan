@@ -394,8 +394,8 @@
                             
                             collectionCapabilities[capabilityKey].deps.add('tnc_col_%d_edit_items');
 
-                            // if ( capabilityKey.includes('published_items') || capabilityKey.includes('private_items') ) 
-                            //     collectionCapabilities[capabilityKey].deps.add('tnc_col_%d_edit_others_items');
+                            if ( capabilityKey.includes('published_items') || capabilityKey.includes('private_items') ) 
+                                collectionCapabilities[capabilityKey].deps.add('tnc_col_%d_edit_others_items');
                         }
 
                         if ( capabilityKey.includes('delete') && capabilityKey.includes('items') && capabilityKey !== 'tnc_col_%d_delete_items') {
@@ -405,8 +405,8 @@
                             
                             collectionCapabilities[capabilityKey].deps.add('tnc_col_%d_delete_items');
 
-                            // if ( capabilityKey.includes('published_items') || capabilityKey.includes('private_items') ) 
-                            //     collectionCapabilities[capabilityKey].deps.add('tnc_col_%d_delete_others_items');
+                            if ( capabilityKey.includes('published_items') || capabilityKey.includes('private_items') ) 
+                                collectionCapabilities[capabilityKey].deps.add('tnc_col_%d_delete_others_items');
                         }
                     }
                 }
