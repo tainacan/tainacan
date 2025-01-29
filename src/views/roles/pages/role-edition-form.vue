@@ -105,15 +105,7 @@
                                 <template 
                                         v-for="(capability, index) of group"
                                         :key="index">
-                                    <li
-                                            :id="'capability-' + capability"
-                                            v-tooltip="{
-                                                content: repositoryCapabilities[capability].description,
-                                                autoHide: true,
-                                                delay: 0,
-                                                placement: 'bottom',
-                                                popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
-                                            }">
+                                    <li :id="'capability-' + capability">
                                         <span class="check-column">
                                             <label
                                                     class="screen-reader-text"
@@ -129,6 +121,14 @@
                                                     @input="onUpdateCapability($event.target.checked, capability)">
                                         </span>
                                         <span 
+                                                v-tooltip="{
+                                                    content: repositoryCapabilities[capability].description,
+                                                    autoHide: true,
+                                                    delay: { show: 500, hide: 0 },
+                                                    placement: 'auto-end',
+                                                    instantMove: true,
+                                                    popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
+                                                }"        
                                                 class="name column-name"
                                                 :data-colname="$i18n.get('Capability name')">
                                             {{ repositoryCapabilities[capability].display_name }}
@@ -190,15 +190,7 @@
                                     <template 
                                             v-for="(capability, index) of group"
                                             :key="index">
-                                        <li
-                                                :id="'capability-' + capability.replace('%d', selectedCollection)"
-                                                v-tooltip="{
-                                                    content: collectionCapabilities[capability].description,
-                                                    autoHide: true,
-                                                    delay: 0,
-                                                    placement: 'bottom',
-                                                    popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
-                                                }">
+                                        <li :id="'capability-' + capability.replace('%d', selectedCollection)">
                                             <span class="check-column">
                                                 <label
                                                         class="screen-reader-text"
@@ -209,11 +201,20 @@
                                                         :id="'capability_'+ capability.replace('%d', selectedCollection)"
                                                         type="checkbox"
                                                         name="roles[]"
-                                                        :disabled="collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.filter((supercap) => supercap.replace('%d', selectedCollection) != capability.replace('%d', selectedCollection)).findIndex((supercap) => form.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0"
-                                                        :checked="form.capabilities[capability.replace('%d', selectedCollection)] || (collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0)"
+                                                        :style="{ 'margin-left': collectionCapabilities[capability].deps && collectionCapabilities[capability].deps.size > 0 ? ( collectionCapabilities[capability].deps.size + 'em') : '0' }"
+                                                        :disabled="isCapabilityDisabled(capability, selectedCollection)"
+                                                        :checked="isCapabilityChecked(capability, selectedCollection)"
                                                         @input="onUpdateCapability($event.target.checked, capability.replace('%d', selectedCollection))">
                                             </span>
                                             <span 
+                                                    v-tooltip="{
+                                                        content: collectionCapabilities[capability].description,
+                                                        autoHide: true,
+                                                        delay: { show: 500, hide: 0 },
+                                                        placement: 'auto-end',
+                                                        instantMove: true,
+                                                        popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
+                                                    }"
                                                     class="name column-name"
                                                     :data-colname="$i18n.get('Capability name')">
                                                 {{ collectionCapabilities[capability].display_name }}
@@ -382,9 +383,33 @@
                 let collectionCapabilities = {}
 
                 for (let [capabilityKey, capability] of Object.entries(this.capabilities)) {
-                    if (capability.scope === 'collection')
+                    if (capability.scope === 'collection') {
                         collectionCapabilities[capabilityKey] = capability;
+                        
+                        if ( ( capabilityKey.includes('edit') && capabilityKey.includes('items') && capabilityKey !== 'tnc_col_%d_edit_items' ) || capabilityKey === 'tnc_col_%d_publish_items' ) {
+                            
+                            if ( !collectionCapabilities[capabilityKey].deps ) 
+                                collectionCapabilities[capabilityKey].deps = new Set();
+                            
+                            collectionCapabilities[capabilityKey].deps.add('tnc_col_%d_edit_items');
+
+                            if ( capabilityKey.includes('published_items') || capabilityKey.includes('private_items') ) 
+                                collectionCapabilities[capabilityKey].deps.add('tnc_col_%d_edit_others_items');
+                        }
+
+                        if ( capabilityKey.includes('delete') && capabilityKey.includes('items') && capabilityKey !== 'tnc_col_%d_delete_items') {
+                            
+                            if ( !collectionCapabilities[capabilityKey].deps ) 
+                                collectionCapabilities[capabilityKey].deps = new Set();
+                            
+                            collectionCapabilities[capabilityKey].deps.add('tnc_col_%d_delete_items');
+
+                            if ( capabilityKey.includes('published_items') || capabilityKey.includes('private_items') ) 
+                                collectionCapabilities[capabilityKey].deps.add('tnc_col_%d_delete_others_items');
+                        }
+                    }
                 }
+                
                 return collectionCapabilities;
             },
             repositoryCapabilities() {
@@ -598,6 +623,63 @@
 
                 // Update the specific optionSlug value
                 this.localAdminUIOptions[this.roleSlug][optionSlug] = $event.target.checked;
+            },
+            isCapabilityChecked(capability, selectedCollection) {
+                const isCapabilityEnabled = this.form.capabilities[capability.replace('%d', selectedCollection)] ;
+
+                if ( isCapabilityEnabled )
+                    return true;
+
+                const supercaps = this.collectionCapabilities[capability].supercaps;
+
+                const hasActiveSupercaps = supercaps.length > 0 && 
+                    supercaps.findIndex((supercap) => 
+                        this.form.capabilities[supercap.replace('%d', selectedCollection)] == true
+                    ) >= 0;
+                
+                if ( hasActiveSupercaps )
+                    return true;
+
+                return false;
+            },
+            isCapabilityDisabled(capability, selectedCollection) {
+                
+                // Check for unmet dependencies.
+                const deps = this.collectionCapabilities[capability].deps;
+                if ( deps && deps.size && Array.from(deps).some((requiredCap) => 
+                    !this.form.capabilities[requiredCap.replace('%d', selectedCollection)] &&
+                    !this.form.capabilities[requiredCap.replace('%d', 'all')] // In order to disable completely, we must also make sure that the all collections version is not enabled as well.
+                ) ) {
+                    return true;
+                }
+
+                // Check for active supercaps
+                const supercaps = this.collectionCapabilities[capability].supercaps;
+                if ( supercaps.length > 0 && supercaps.some((supercap) => 
+                    this.form.capabilities[supercap.replace('%d', selectedCollection)] && 
+                    supercap.replace('%d', selectedCollection) !== capability.replace('%d', selectedCollection)
+                ) ) {
+                    return true;
+                }
+
+                // Check if any dependent capability is checked
+                const isCapabilityEnabled = this.form.capabilities[capability.replace('%d', selectedCollection)];
+                if ( isCapabilityEnabled ) {
+                    for ( let formCapability in this.form.capabilities ) {
+                        if ( this.form.capabilities[formCapability] ) {
+                            const otherCollectionCapability = formCapability.replace(selectedCollection, '%d');
+                            if (
+                                this.collectionCapabilities[otherCollectionCapability] &&
+                                this.collectionCapabilities[otherCollectionCapability].deps &&
+                                this.collectionCapabilities[otherCollectionCapability].deps.has(capability)
+                            ) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                return false;
             }
         }
     }
@@ -691,6 +773,7 @@
         flex-wrap: wrap;
         justify-content: space-between;
         font-size: 13px;
+        width: 100%;
 
         .capability-group {
             padding: 1em 1em 1em 0em;
