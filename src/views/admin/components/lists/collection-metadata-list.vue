@@ -1,7 +1,9 @@
 <template>
     <div class="column">
                            
-        <b-loading v-model="isLoadingMetadataSections" />
+        <b-loading
+                v-model="isLoadingMetadataSections"
+                :is-full-page="false" />
 
         <div class="tainacan-form sub-header">
             <template v-if="activeMetadataSectionsList">
@@ -480,6 +482,7 @@
                                         trap-focus
                                         aria-modal
                                         aria-role="dialog"
+                                        width="900px"
                                         custom-class="tainacan-modal"
                                         :close-button-aria-label="$i18n.get('close')"
                                         @close="onEditionCanceled()">

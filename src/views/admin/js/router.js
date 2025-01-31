@@ -2,7 +2,6 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import qs from 'qs';
 
 // Main Pages
-const HomePage = () => import('../pages/home-page.vue');
 const CollectionsPage = () => import('../pages/lists/collections-page.vue');
 const CollectionPage = () => import('../pages/singles/collection-page.vue');
 const ItemsPage = () => import('../pages/lists/items-page.vue');
@@ -30,9 +29,7 @@ const i18nGet = function (key) {
 };
 
 const routes = [
-    { path: '/', redirect: { name: 'HomePage' } },
-    { path: '/home', name: 'HomePage', component: HomePage, meta: { title: 'Tainacan'} },
-
+    { path: '/', redirect: { name: 'CollectionsPage' } },
     { path: '/collections', name: 'CollectionsPage', component: CollectionsPage, meta: { title: i18nGet('title_repository_collections_page') } },
     { path: '/collections/new', name: 'CollectionCreationForm', component: CollectionEditionForm, meta: { title: i18nGet('title_create_collection') } },
     { path: '/collections/new/:mapper', name: 'MappedCollectionCreationForm', component: CollectionEditionForm, meta: { title: i18nGet('title_create_collection') } },
@@ -183,7 +180,7 @@ const routes = [
     { path: '/exporters/', name: 'ExportersPage', component: AvailableExportersPage, meta: { title: i18nGet('title_exporters_page') } },
     { path: '/exporters/:exporterSlug', name: 'ExporterEditionForm', component: ExporterEditionForm, meta: { title: i18nGet('title_exporter_page') }},
 
-    { path: '/:pathMatch(.*)*', name: 'DefaultRedirect', redirect: { name: 'HomePage' } }
+    { path: '/:pathMatch(.*)*', name: 'DefaultRedirect', redirect: { name: 'CollectionsPage' } }
 ];
 
 export default createRouter({

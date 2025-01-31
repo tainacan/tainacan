@@ -16,12 +16,6 @@
                 <h2 v-else>
                     {{ $i18n.get('instruction_configure_new_metadatum') }}
                 </h2>
-                <!-- <a 
-                    class="back-link" 
-                    @click="onEditionCanceled()">
-                {{ $i18n.get('back') }}
-            </a> -->
-                <hr>
             </div>
             <div 
                     class="tainacan-form" 
@@ -672,7 +666,7 @@
         background-color: var(--tainacan-gray1);
         position: sticky;
         bottom: 0;
-        padding: 16px 4.166666667vw;
+        padding: 16px var(--tainacan-one-column);
         display: flex;
         justify-content: space-between;
         z-index: 2;

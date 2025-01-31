@@ -158,13 +158,11 @@ export default {
 
 <style lang="scss">
 
-    @import "../../scss/_variables.scss";
-
     // Tainacan Header
     #tainacan-repository-subheader {
         background-color: var(--tainacan-turquoise6);
-        height: $subheader-height;
-        max-height: $subheader-height;
+        height: var(--tainacan-admin-header-height, 3.5em);
+        max-height: var(--tainacan-admin-header-height, 3.5em);
         width: 100%;
         overflow-y: hidden;
         padding-top: 10px;
@@ -186,7 +184,7 @@ export default {
         }
 
         h1 {
-            font-size: 1.125em;
+            font-size: 1.25em;
             color: var(--tainacan-white);
             max-width: 100%;
             text-overflow: ellipsis;
@@ -212,7 +210,8 @@ export default {
                 color: var(--tainacan-white);
                 background-color: transparent !important;
                 border: none;
-                height: $subheader-height !important;
+                height: var(--tainacan-admin-header-height, 3.5em) !important;
+
                 .icon {
                     margin-top: -2px;
                     font-size: 1.5em;
@@ -229,8 +228,8 @@ export default {
             #exporter-collection-button {
                 font-size: 0.9375em !important;
                 border: none;
-                border-radius: 0px !important;
-                height: $header-height !important;
+                border-radius: 4px !important;
+                height: 2.5em !important;
                 background-color: transparent;
                 color: var(--tainacan-white);
 
@@ -242,8 +241,8 @@ export default {
             #view-repository-button--taxonomies {
                 font-size: 0.9375em !important;
                 border: none;
-                border-radius: 0px !important;
-                height: $header-height !important;
+                border-radius: 4px !important;
+                height: 2.5em !important;
                 background-color: transparent;
                 color: var(--tainacan-white);
 

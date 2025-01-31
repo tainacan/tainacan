@@ -10,7 +10,6 @@
                 v-if="!isLoadingActivity"
                 class="tainacan-modal-title">
             <h2>{{ activity.title ? activity.title : $i18n.get('activity') }}</h2>
-            <hr>
             <p>{{ activityCreationDate + ', ' + $i18n.get('info_by_inner') }} <strong> {{ activity.user_name }}</strong></p>
         </header>
         <b-loading 

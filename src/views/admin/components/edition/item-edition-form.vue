@@ -817,7 +817,6 @@ export default {
     data(){
         return {
             swiper: {},
-            selected: 'Home',
             pageTitle: '',
             itemId: [String, Number],
             item: {},
@@ -2040,7 +2039,7 @@ export default {
 
     .page-container.item-edition-container,
     .page-container.item-creation-container {
-        padding: 0px 0px 60px 0px;
+        padding: 0px;
         height: calc(100% - 2.35em);
         transition: none;
 

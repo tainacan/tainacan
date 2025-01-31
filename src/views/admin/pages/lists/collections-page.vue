@@ -3,10 +3,11 @@
         
         <b-loading v-model="isLoading" />
         
-        <tainacan-title />
+        <tainacan-title>
+            <h1>
+                {{ $route.meta.title }}
+            </h1>
 
-        <div class="sub-header">
-            
             <!-- New Collection button -->
             <div 
                     v-if="!$adminOptions.hideCollectionsListCreationDropdown && $userCaps.hasCapability('tnc_rep_edit_collections')"
@@ -61,7 +62,10 @@
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
+        </tainacan-title>
 
+        <div class="sub-header">
+          
             <!-- Collection Taxonomies, if available -->
             <template v-if="!isLoadingCollectionTaxonomies && Object.values(collectionTaxonomies) && Object.values(collectionTaxonomies).length >= 0">
                 <b-field 

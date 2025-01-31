@@ -13,7 +13,6 @@
                     @click="$router.go(-1)">
                 {{ $i18n.get('back') }}
             </a>
-            <hr>
         </div>
         <form
                 v-if="!isLoading && collection && collection.current_user_can_bulk_edit"

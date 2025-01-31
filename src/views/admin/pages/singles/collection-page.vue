@@ -13,7 +13,6 @@
                     :collection-id="collectionId" 
                     class="page-container"
                     :class="{
-                        'page-container-small': !$adminOptions.hideRepositorySubheader,
                         'is-loading-collection-basics': isLoadingCollectionBasics
                     }" />
         </section>

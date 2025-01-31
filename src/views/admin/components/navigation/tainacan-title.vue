@@ -4,11 +4,6 @@
         <h1 v-if="!slotPassed">
             {{ pageTitle }} <span class="is-italic has-text-weight-semibold">{{ !isRepositoryLevel && collection && collection.name ? collection.name : '' }}</span>
         </h1>
-        <a 
-                class="back-link has-text-secondary"
-                @click="$router.go(-1)">
-            {{ $i18n.get('back') }}
-        </a>
     </div>
 </template>
 
@@ -59,11 +54,12 @@ export default {
 <style lang="scss" scoped>
 
     .tainacan-page-title {
-        margin-bottom: 28px;
+        margin-bottom: 20px;
         display: flex;
         flex-wrap: wrap;
         align-items: flex-end;
         justify-content: space-between;
+        gap: 1.5em;
 
         :deep(h1),
         :deep(h2) {
@@ -71,13 +67,8 @@ export default {
             font-weight: 500;
             color: var(--tainacan-heading-color);
             display: inline-block;
-            width: 80%;
+            width: auto;
             flex-shrink: 1;
-        }
-        a.back-link{
-            font-weight: 500;
-            float: right;
-            margin-top: 5px;
         }
       
         .level-left {

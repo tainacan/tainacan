@@ -25,7 +25,6 @@
                     @click="selectedExposerMappers = []; selectedExposer = undefined;">
                 {{ $i18n.get('back') }}
             </a>
-            <hr>
         </header>
         <section class="tainacan-form">
             <div 
@@ -518,21 +517,18 @@ export default {
         }
 
         .exposer-types-list {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         
             .exposer-type {
                 border: 1px solid var(--tainacan-input-border-color);
                 padding: 15px;
                 margin: 24px 12px;
                 cursor: pointer;
-                max-width: 50%;
-                flex-grow: 1;
                 font-size: 1em;
                 transition: border 0.3s ease;
 
                 @media screen and (max-width: 768px) {
-                    max-width: 100%;
                     margin: 12px;
                 }
 

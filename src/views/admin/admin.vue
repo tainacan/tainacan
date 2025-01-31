@@ -6,23 +6,17 @@
                 'tainacan-admin-mobile-app-mode': $adminOptions.mobileAppMode
             }">
         <template v-if="hasPermalinksStructure">
-            <template v-if="activeRoute == 'HomePage'">
-                <tainacan-header v-if="!$adminOptions.hideTainacanHeader" />
-                <router-view />
-            </template>
-            <template v-else>
-                <tainacan-header v-if="!$adminOptions.hideTainacanHeader" />
-                <tainacan-repository-subheader
-                        v-if="!$adminOptions.hideRepositorySubheader" 
-                        :is-repository-level="isRepositoryLevel"
-                        :is-menu-compressed="isMenuCompressed"
-                        :active-route="activeRoute" />
-                <div 
-                        id="repository-container"
-                        class="column is-main-content">  
-                    <router-view /> 
-                </div>
-            </template>
+            <tainacan-header v-if="!$adminOptions.hideTainacanHeader" />
+            <tainacan-repository-subheader
+                    v-if="!$adminOptions.hideRepositorySubheader" 
+                    :is-repository-level="isRepositoryLevel"
+                    :is-menu-compressed="isMenuCompressed"
+                    :active-route="activeRoute" />
+            <div 
+                    id="repository-container"
+                    class="column is-main-content">  
+                <router-view /> 
+            </div>
         </template>
     </div>
 </template>
@@ -156,7 +150,7 @@
         margin: 0 auto;
         position: relative;
         overflow-y: auto;
-        height: 100%;
+        height: calc(100% -  var(--tainacan-admin-header-height, 3.5em));
 
         @media screen and (max-width: 769px) {
             overflow-y: visible;
@@ -169,6 +163,7 @@
 
     .is-secondary-content {
         max-width: 100%;
+        padding: 0;
 
         .columns {
             margin-left: 0px;

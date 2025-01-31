@@ -21,7 +21,6 @@
                 </span>
                 <span class="menu-text">{{ $i18n.get('label_term_page_on_website') }}</span>
             </a>
-            <hr>
         </header>
     
         <div class="modal-card-body">

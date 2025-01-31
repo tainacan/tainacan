@@ -8,117 +8,11 @@
             aria-live="polite">
 
         <!-- PAGE TITLE --------------------- -->
-        <tainacan-title v-if="!$adminOptions.hideItemsListPageTitle" />
+        <tainacan-title v-if="!$adminOptions.hideItemsListPageTitle">
 
-        <!-- SEARCH CONTROL ------------------------- -->
-        <div
-                ref="search-control"
-                aria-labelledby="search-control-landmark"
-                role="region"
-                class="search-control"  
-                :style="( $adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || $adminOptions.itemsSearchSelectionMode ) ? '--tainacan-container-padding: 6px;' : ''">
-            <h3 
-                    id="search-control-landmark"
-                    class="sr-only">
-                {{ $i18n.get('label_sort_visualization') }}
-            </h3>
-            <!-- <b-loading
-                    :is-full-page="false"
-                    v-model="isLoadingMetadata"/> -->
-            <!-- Button for hiding filters -->
-            <button 
-                    v-if="!openAdvancedSearch"
-                    id="filter-menu-compress-button"
-                    v-tooltip="{
-                        delay: {
-                            show: 500,
-                            hide: 300,
-                        },
-                        content: !isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
-                        autoHide: false,
-                        placement: 'auto-start',
-                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
-                    }"
-                    aria-controls="filters-modal"
-                    :aria-expanded="isFiltersModalActive"
-                    :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
-                    @click="isFiltersModalActive = !isFiltersModalActive">
-                <span class="icon">
-                    <i 
-                            :class="{ 'tainacan-icon-arrowleft' : isFiltersModalActive, 'tainacan-icon-arrowright' : !isFiltersModalActive }"
-                            class="tainacan-icon tainacan-icon-1-25em" />
-                </span>
-                <span class="text is-hidden-tablet">{{ $i18n.get('filters') }}</span>
-            </button>
-
-            <!-- Text simple search -->
-            <div class="search-control-item">
-                <div 
-                        role="search"
-                        class="search-area">
-                    <b-dropdown
-                            ref="tainacan-textual-search-input"
-                            class="tainacan-textual-search-input"
-                            aria-role="dialog"
-                            :mobile-modal="false"
-                            :disabled="openAdvancedSearch"
-                            :triggers="hasSearchByMoreThanOneWord ? ['click','contextmenu','focus'] : []">
-                        <template #trigger>
-                            <b-input
-                                    size="is-small"
-                                    :placeholder="$i18n.get('instruction_search')"
-                                    type="search"
-                                    :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
-                                    :model-value="searchQuery"
-                                    icon-right="magnify"
-                                    icon-right-clickable
-                                    :disabled="openAdvancedSearch"
-                                    @update:model-value="typeFutureSearch"
-                                    @keyup.enter="updateSearch()"
-                                    @icon-right-click="updateSearch()" />
-                        </template>
-                        <b-dropdown-item 
-                                :focusable="false"
-                                @click="updateSearch()">
-                            <span v-html="$i18n.get('instruction_press_enter_to_search_for')" />&nbsp;
-                            <em>{{ sentenceMode == true ? futureSearchQuery : ('"' + futureSearchQuery + '"') }}.</em>
-                        </b-dropdown-item>
-                        <b-dropdown-item
-                                custom
-                                :focusable="false">
-                            <b-checkbox 
-                                    :model-value="sentenceMode"
-                                    :true-value="false"
-                                    :false-value="true"
-                                    @update:model-value="$eventBusSearch.setSentenceMode($event)">
-                                {{ $i18n.get('label_use_search_separated_words') }}
-                            </b-checkbox>
-                            <small class="is-small help">{{ $i18n.get('info_use_search_separated_words') }}</small>
-                        </b-dropdown-item>
-                        <b-dropdown-item
-                                v-if="!$adminOptions.hideItemsListAdvancedSearch"
-                                :focusable="false"
-                                @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
-                            {{ $i18n.get('info_for_more_metadata_search_options_use') }}&nbsp; 
-                            <a 
-                                    class="has-text-secondary"
-                                    @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
-                                {{ $i18n.get('advanced_search') }}
-                            </a>
-                        </b-dropdown-item>
-                    </b-dropdown>
-                    <a
-                            v-if="!$adminOptions.hideItemsListAdvancedSearch"
-                            class="advanced-search-toggle has-text-secondary"
-                            :class="openAdvancedSearch ? 'is-open' : 'is-closed'"
-                            @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
-                        {{ $i18n.get('advanced_search') }}
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-search" />
-                        </span>
-                    </a>
-                </div>
-            </div>
+            <h1>
+                {{ $route.meta.title }}
+            </h1>
 
             <!-- Item Creation Dropdown (or button, if few options are available) -->
             <div 
@@ -214,503 +108,619 @@
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
+        </tainacan-title>
 
-            <!-- Displayed Metadata Dropdown -->
-            <div class="search-control-item">
-                <b-dropdown
-                        ref="displayedMetadataDropdown" 
+        <!-- Admin Items List Wrapper for proper padding -->
+        <div class="admin-items-list">
+
+            <!-- SEARCH CONTROL ------------------------- -->
+            <div
+                    ref="search-control"
+                    aria-labelledby="search-control-landmark"
+                    role="region"
+                    class="search-control"  
+                    :style="( $adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || $adminOptions.itemsSearchSelectionMode ) ? '--tainacan-container-padding: 6px;' : ''">
+                <h3 
+                        id="search-control-landmark"
+                        class="sr-only">
+                    {{ $i18n.get('label_sort_visualization') }}
+                </h3>
+                <!-- <b-loading
+                        :is-full-page="false"
+                        v-model="isLoadingMetadata"/> -->
+                <!-- Button for hiding filters -->
+                <button 
+                        v-if="!openAdvancedSearch"
+                        id="filter-menu-compress-button"
                         v-tooltip="{
                             delay: {
                                 show: 500,
                                 hide: 300,
                             },
-                            content: (totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry' || adminViewMode == 'mosaic') ? (adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry' || adminViewMode == 'mosaic') ? $i18n.get('info_current_view_mode_metadata_not_allowed') : $i18n.get('info_cant_select_metadata_without_items') : '',
+                            content: !isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
                             autoHide: false,
                             placement: 'auto-start',
                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                         }"
-                        :mobile-modal="true"
-                        :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry' || adminViewMode == 'mosaic'"
-                        class="show metadata-options-dropdown"
-                        aria-role="list"
-                        trap-focus>
-                    <template #trigger>
-                        <button
-                                :aria-label="$i18n.get('label_displayed_metadata')"
-                                class="button is-white">
-                            <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_displayed_metadata') }}</span>
-                            <span class="is-hidden-widescreen">{{ $i18n.get('metadata') }}</span>
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                            </span>
-                        </button>
-                    </template>
-                    <div class="metadata-options-container">
-                        <b-dropdown-item
-                                v-for="(column, index) in localDisplayedMetadata"
-                                :key="index"
-                                class="control"
-                                custom
-                                aria-role="listitem">
-                            <b-checkbox
-                                    v-model="column.display"
-                                    :native-value="column.display">
-                                {{ column.name }}
-                            </b-checkbox>
-                        </b-dropdown-item>   
-                    </div>
-                    <div class="dropdown-item-apply">
-                        <button 
-                                aria-controls="items-list-results"
-                                class="button is-success"
-                                @click="onChangeDisplayedMetadata()">
-                            {{ $i18n.get('label_apply_changes') }}
-                        </button>
-                    </div>  
-                </b-dropdown>
-            </div>
-
-            <!-- Change OrderBy Select and Order Button-->
-            <div class="search-control-item">
-                <b-field>
-                    <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
-                    <b-dropdown
-                            :mobile-modal="true"
-                            :model-value="order"
-                            aria-role="list"
-                            trap-focus
-                            @update:model-value="onChangeOrder">
-                        <template #trigger>
-                            <button
-                                    :aria-label="$i18n.get('label_sorting_direction')"
-                                    class="button is-white"
-                                    style="padding-right: 3px !important;">
-                                <span class="icon is-small gray-icon">
-                                    <i 
-                                            :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
-                                            class="tainacan-icon" />
-                                </span>
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                                </span>
-                            </button>
-                        </template>
-                        <b-dropdown-item
-                                aria-controls="items-list-results"
-                                role="button"
-                                :class="{ 'is-active': order == 'DESC' }"
-                                :value="'DESC'"
-                                aria-role="listitem">
-                            <span class="icon gray-icon">
-                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending" />
-                            </span>
-                            <span>{{ $i18n.get('label_descending') }}</span>
-                        </b-dropdown-item>
-                        <b-dropdown-item
-                                aria-controls="items-list-results"
-                                role="button"
-                                :class="{ 'is-active': order == 'ASC' }"
-                                :value="'ASC'"
-                                aria-role="listitem">
-                            <span class="icon gray-icon">
-                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending" />
-                            </span>
-                            <span>{{ $i18n.get('label_ascending') }}</span>
-                        </b-dropdown-item>
-                    </b-dropdown>
-                    <span
-                            class="label"
-                            style="padding-left: 0.65em;">
-                        {{ $i18n.get('info_by_inner') }}
+                        aria-controls="filters-modal"
+                        :aria-expanded="isFiltersModalActive"
+                        :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
+                        @click="isFiltersModalActive = !isFiltersModalActive">
+                    <span class="icon">
+                        <i 
+                                :class="{ 'tainacan-icon-arrowleft' : isFiltersModalActive, 'tainacan-icon-arrowright' : !isFiltersModalActive }"
+                                class="tainacan-icon tainacan-icon-1-25em" />
                     </span>
+                    <span class="text is-hidden-tablet">{{ $i18n.get('filters') }}</span>
+                </button>
+
+                <!-- Text simple search -->
+                <div class="search-control-item">
+                    <div 
+                            role="search"
+                            class="search-area">
+                        <b-dropdown
+                                ref="tainacan-textual-search-input"
+                                class="tainacan-textual-search-input"
+                                aria-role="dialog"
+                                :mobile-modal="false"
+                                :disabled="openAdvancedSearch"
+                                :triggers="hasSearchByMoreThanOneWord ? ['click','contextmenu','focus'] : []">
+                            <template #trigger>
+                                <b-input
+                                        size="is-small"
+                                        :placeholder="$i18n.get('instruction_search')"
+                                        type="search"
+                                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
+                                        :model-value="searchQuery"
+                                        icon-right="magnify"
+                                        icon-right-clickable
+                                        :disabled="openAdvancedSearch"
+                                        @update:model-value="typeFutureSearch"
+                                        @keyup.enter="updateSearch()"
+                                        @icon-right-click="updateSearch()" />
+                            </template>
+                            <b-dropdown-item 
+                                    :focusable="false"
+                                    @click="updateSearch()">
+                                <span v-html="$i18n.get('instruction_press_enter_to_search_for')" />&nbsp;
+                                <em>{{ sentenceMode == true ? futureSearchQuery : ('"' + futureSearchQuery + '"') }}.</em>
+                            </b-dropdown-item>
+                            <b-dropdown-item
+                                    custom
+                                    :focusable="false">
+                                <b-checkbox 
+                                        :model-value="sentenceMode"
+                                        :true-value="false"
+                                        :false-value="true"
+                                        @update:model-value="$eventBusSearch.setSentenceMode($event)">
+                                    {{ $i18n.get('label_use_search_separated_words') }}
+                                </b-checkbox>
+                                <small class="is-small help">{{ $i18n.get('info_use_search_separated_words') }}</small>
+                            </b-dropdown-item>
+                            <b-dropdown-item
+                                    v-if="!$adminOptions.hideItemsListAdvancedSearch"
+                                    :focusable="false"
+                                    @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
+                                {{ $i18n.get('info_for_more_metadata_search_options_use') }}&nbsp; 
+                                <a 
+                                        class="has-text-secondary"
+                                        @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
+                                    {{ $i18n.get('advanced_search') }}
+                                </a>
+                            </b-dropdown-item>
+                        </b-dropdown>
+                        <a
+                                v-if="!$adminOptions.hideItemsListAdvancedSearch"
+                                class="advanced-search-toggle has-text-secondary"
+                                :class="openAdvancedSearch ? 'is-open' : 'is-closed'"
+                                @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
+                            {{ $i18n.get('advanced_search') }}
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-search" />
+                            </span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Displayed Metadata Dropdown -->
+                <div class="search-control-item">
                     <b-dropdown
+                            ref="displayedMetadataDropdown" 
+                            v-tooltip="{
+                                delay: {
+                                    show: 500,
+                                    hide: 300,
+                                },
+                                content: (totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry' || adminViewMode == 'mosaic') ? (adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry' || adminViewMode == 'mosaic') ? $i18n.get('info_current_view_mode_metadata_not_allowed') : $i18n.get('info_cant_select_metadata_without_items') : '',
+                                autoHide: false,
+                                placement: 'auto-start',
+                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
+                            }"
                             :mobile-modal="true"
+                            :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry' || adminViewMode == 'mosaic'"
+                            class="show metadata-options-dropdown"
                             aria-role="list"
-                            trap-focus
-                            @update:model-value="onChangeOrderBy($event)">
+                            trap-focus>
                         <template #trigger>
                             <button
-                                    :aria-label="$i18n.get('label_sorting')"
+                                    :aria-label="$i18n.get('label_displayed_metadata')"
                                     class="button is-white">
-                                <span>{{ orderByName }}</span>
+                                <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_displayed_metadata') }}</span>
+                                <span class="is-hidden-widescreen">{{ $i18n.get('metadata') }}</span>
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                 </span>
                             </button>
                         </template>
-                        <template 
-                                v-for="metadatum of sortingMetadata"
-                                :key="metadatum.slug">
+                        <div class="metadata-options-container">
                             <b-dropdown-item
-                                    v-if="metadatum != undefined"
+                                    v-for="(column, index) in localDisplayedMetadata"
+                                    :key="index"
+                                    class="control"
+                                    custom
+                                    aria-role="listitem">
+                                <b-checkbox
+                                        v-model="column.display"
+                                        :native-value="column.display">
+                                    {{ column.name }}
+                                </b-checkbox>
+                            </b-dropdown-item>   
+                        </div>
+                        <div class="dropdown-item-apply">
+                            <button 
+                                    aria-controls="items-list-results"
+                                    class="button is-success"
+                                    @click="onChangeDisplayedMetadata()">
+                                {{ $i18n.get('label_apply_changes') }}
+                            </button>
+                        </div>  
+                    </b-dropdown>
+                </div>
+
+                <!-- Change OrderBy Select and Order Button-->
+                <div class="search-control-item">
+                    <b-field>
+                        <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
+                        <b-dropdown
+                                :mobile-modal="true"
+                                :model-value="order"
+                                aria-role="list"
+                                trap-focus
+                                @update:model-value="onChangeOrder">
+                            <template #trigger>
+                                <button
+                                        :aria-label="$i18n.get('label_sorting_direction')"
+                                        class="button is-white"
+                                        style="padding-right: 3px !important;">
+                                    <span class="icon is-small gray-icon">
+                                        <i 
+                                                :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
+                                                class="tainacan-icon" />
+                                    </span>
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                    </span>
+                                </button>
+                            </template>
+                            <b-dropdown-item
                                     aria-controls="items-list-results"
                                     role="button"
-                                    :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
-                                    :value="metadatum"
+                                    :class="{ 'is-active': order == 'DESC' }"
+                                    :value="'DESC'"
                                     aria-role="listitem">
-                                {{ metadatum.name }}
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending" />
+                                </span>
+                                <span>{{ $i18n.get('label_descending') }}</span>
                             </b-dropdown-item>
-                        </template>
-                    </b-dropdown>
-                </b-field>
-            </div>
+                            <b-dropdown-item
+                                    aria-controls="items-list-results"
+                                    role="button"
+                                    :class="{ 'is-active': order == 'ASC' }"
+                                    :value="'ASC'"
+                                    aria-role="listitem">
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending" />
+                                </span>
+                                <span>{{ $i18n.get('label_ascending') }}</span>
+                            </b-dropdown-item>
+                        </b-dropdown>
+                        <span
+                                class="label"
+                                style="padding-left: 0.65em;">
+                            {{ $i18n.get('info_by_inner') }}
+                        </span>
+                        <b-dropdown
+                                :mobile-modal="true"
+                                aria-role="list"
+                                trap-focus
+                                @update:model-value="onChangeOrderBy($event)">
+                            <template #trigger>
+                                <button
+                                        :aria-label="$i18n.get('label_sorting')"
+                                        class="button is-white">
+                                    <span>{{ orderByName }}</span>
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                    </span>
+                                </button>
+                            </template>
+                            <template 
+                                    v-for="metadatum of sortingMetadata"
+                                    :key="metadatum.slug">
+                                <b-dropdown-item
+                                        v-if="metadatum != undefined"
+                                        aria-controls="items-list-results"
+                                        role="button"
+                                        :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
+                                        :value="metadatum"
+                                        aria-role="listitem">
+                                    {{ metadatum.name }}
+                                </b-dropdown-item>
+                            </template>
+                        </b-dropdown>
+                    </b-field>
+                </div>
 
-            <div class="search-control-item">
-                <b-field>
-                    <label 
-                            class="label is-hidden-touch is-hidden-desktop-only"
-                            style="margin-right: -10px;">
-                        {{ $i18n.get('label_visualization') + ':&nbsp; ' }}
-                    </label>
-                    <label 
-                            class="label is-hidden-widescreen is-hidden-mobile"
-                            style="margin-right: -10px;">
-                        {{ $i18n.get('label_view_on') + ':&nbsp; ' }}
-                    </label>
-                    <b-dropdown
-                            :mobile-modal="true"
-                            position="is-bottom-left"
-                            :aria-label="$i18n.get('label_view_mode')"
-                            aria-role="list"
-                            trap-focus
-                            @change="onChangeAdminViewMode($event)">
-                        <template #trigger>
-                            <button
-                                    :aria-label="$i18n.get('label_view_mode')"
-                                    class="button is-white">
-                                <span class="view-mode-icon icon is-small gray-icon">
-                                    <i 
-                                            v-if="adminViewMode !== 'map'"
-                                            :class="{
-                                                'tainacan-icon-viewtable' : ( adminViewMode == 'table' || adminViewMode == undefined),
-                                                'tainacan-icon-viewcards' : adminViewMode == 'cards',
-                                                'tainacan-icon-viewminiature' : adminViewMode == 'grid',
-                                                'tainacan-icon-viewrecords' : adminViewMode == 'records',
-                                                'tainacan-icon-viewlist' : adminViewMode == 'list',
-                                                'tainacan-icon-viewmasonry' : adminViewMode == 'masonry' || adminViewMode == 'mosaic',
-                                                'tainacan-icon-rotate-90' : adminViewMode == 'mosaic'
-                                            }"
-                                            class="tainacan-icon tainacan-icon-1-25em" />
+                <div class="search-control-item">
+                    <b-field>
+                        <label 
+                                class="label is-hidden-touch is-hidden-desktop-only"
+                                style="margin-right: -10px;">
+                            {{ $i18n.get('label_visualization') + ':&nbsp; ' }}
+                        </label>
+                        <label 
+                                class="label is-hidden-widescreen is-hidden-mobile"
+                                style="margin-right: -10px;">
+                            {{ $i18n.get('label_view_on') + ':&nbsp; ' }}
+                        </label>
+                        <b-dropdown
+                                :mobile-modal="true"
+                                position="is-bottom-left"
+                                :aria-label="$i18n.get('label_view_mode')"
+                                aria-role="list"
+                                trap-focus
+                                @change="onChangeAdminViewMode($event)">
+                            <template #trigger>
+                                <button
+                                        :aria-label="$i18n.get('label_view_mode')"
+                                        class="button is-white">
+                                    <span class="view-mode-icon icon is-small gray-icon">
+                                        <i 
+                                                v-if="adminViewMode !== 'map'"
+                                                :class="{
+                                                    'tainacan-icon-viewtable' : ( adminViewMode == 'table' || adminViewMode == undefined),
+                                                    'tainacan-icon-viewcards' : adminViewMode == 'cards',
+                                                    'tainacan-icon-viewminiature' : adminViewMode == 'grid',
+                                                    'tainacan-icon-viewrecords' : adminViewMode == 'records',
+                                                    'tainacan-icon-viewlist' : adminViewMode == 'list',
+                                                    'tainacan-icon-viewmasonry' : adminViewMode == 'masonry' || adminViewMode == 'mosaic',
+                                                    'tainacan-icon-rotate-90' : adminViewMode == 'mosaic'
+                                                }"
+                                                class="tainacan-icon tainacan-icon-1-25em" />
+                                        <svg
+                                                v-else
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                style="fill: var(--tainacan-info-color)">
+                                            <path d="M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z" />
+                                        </svg>
+                                    </span>
+                                    &nbsp;&nbsp;&nbsp;{{ adminViewMode != undefined ? $i18n.get('label_' + adminViewMode) : $i18n.get('label_table') }}
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                    </span>
+                                </button>
+                            </template>
+                            <b-dropdown-item 
+                                    aria-controls="items-list-results"
+                                    role="button"
+                                    :class="{ 'is-active': adminViewMode == 'table' }"
+                                    :value="'table'"
+                                    aria-role="listitem">
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-viewtable" />
+                                </span>
+                                <span>{{ $i18n.get('label_table') }}</span>
+                            </b-dropdown-item>
+                            <b-dropdown-item 
+                                    aria-controls="items-list-results"
+                                    role="button"
+                                    :class="{ 'is-active': adminViewMode == 'cards' }"
+                                    :value="'cards'"
+                                    aria-role="listitem">
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-viewcards" />
+                                </span>
+                                <span>{{ $i18n.get('label_cards') }}</span>
+                            </b-dropdown-item>
+                            <b-dropdown-item 
+                                    aria-controls="items-list-results"
+                                    role="button"
+                                    :class="{ 'is-active': adminViewMode == 'mosaic' }"
+                                    :value="'mosaic'"
+                                    aria-role="listitem">
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-viewmasonry tainacan-icon-rotate-90" />
+                                </span>
+                                <span>{{ $i18n.get('label_mosaic') }}</span>
+                            </b-dropdown-item>
+                            <b-dropdown-item
+                                    v-if="!collection || (collection && collection.hide_items_thumbnail_on_lists != 'yes')" 
+                                    aria-controls="items-list-results"
+                                    role="button"
+                                    :class="{ 'is-active': adminViewMode == 'grid' }"
+                                    :value="'grid'"
+                                    aria-role="listitem">
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-viewminiature" />
+                                </span>
+                                <span>{{ $i18n.get('label_thumbnails') }}</span>
+                            </b-dropdown-item>
+                            <b-dropdown-item 
+                                    aria-controls="items-list-results"
+                                    role="button"
+                                    :class="{ 'is-active': adminViewMode == 'records' }"
+                                    :value="'records'"
+                                    aria-role="listitem">
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-viewrecords" />
+                                </span>
+                                <span>{{ $i18n.get('label_records') }}</span>
+                            </b-dropdown-item>
+                            <b-dropdown-item 
+                                    v-if="!collection || (collection && collection.hide_items_thumbnail_on_lists != 'yes')"
+                                    aria-controls="items-list-results"
+                                    role="button"
+                                    :class="{ 'is-active': adminViewMode == 'masonry' }"
+                                    :value="'masonry'"
+                                    aria-role="listitem">
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-viewmasonry" />
+                                </span>
+                                <span>{{ $i18n.get('label_masonry') }}</span>
+                            </b-dropdown-item>
+                            <b-dropdown-item 
+                                    aria-controls="items-list-results"
+                                    role="button"
+                                    :class="{ 'is-active': adminViewMode == 'list' }"
+                                    :value="'list'"
+                                    aria-role="listitem">
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-viewlist" />
+                                </span>
+                                <span>{{ $i18n.get('label_list') }}</span>
+                            </b-dropdown-item>
+                            <b-dropdown-item 
+                                    aria-controls="items-list-results"
+                                    role="button"
+                                    :class="{ 'is-active': adminViewMode == 'map' }"
+                                    :value="'map'"
+                                    aria-role="listitem">
+                                <span 
+                                        style="width: 2em; margin-left: -0.45em; padding-right: 6px;"
+                                        class="icon gray-icon">
                                     <svg
-                                            v-else
                                             xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 24 24"
                                             style="fill: var(--tainacan-info-color)">
                                         <path d="M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z" />
                                     </svg>
                                 </span>
-                                &nbsp;&nbsp;&nbsp;{{ adminViewMode != undefined ? $i18n.get('label_' + adminViewMode) : $i18n.get('label_table') }}
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                                </span>
-                            </button>
-                        </template>
-                        <b-dropdown-item 
-                                aria-controls="items-list-results"
-                                role="button"
-                                :class="{ 'is-active': adminViewMode == 'table' }"
-                                :value="'table'"
-                                aria-role="listitem">
-                            <span class="icon gray-icon">
-                                <i class="tainacan-icon tainacan-icon-viewtable" />
-                            </span>
-                            <span>{{ $i18n.get('label_table') }}</span>
-                        </b-dropdown-item>
-                        <b-dropdown-item 
-                                aria-controls="items-list-results"
-                                role="button"
-                                :class="{ 'is-active': adminViewMode == 'cards' }"
-                                :value="'cards'"
-                                aria-role="listitem">
-                            <span class="icon gray-icon">
-                                <i class="tainacan-icon tainacan-icon-viewcards" />
-                            </span>
-                            <span>{{ $i18n.get('label_cards') }}</span>
-                        </b-dropdown-item>
-                        <b-dropdown-item 
-                                aria-controls="items-list-results"
-                                role="button"
-                                :class="{ 'is-active': adminViewMode == 'mosaic' }"
-                                :value="'mosaic'"
-                                aria-role="listitem">
-                            <span class="icon gray-icon">
-                                <i class="tainacan-icon tainacan-icon-viewmasonry tainacan-icon-rotate-90" />
-                            </span>
-                            <span>{{ $i18n.get('label_mosaic') }}</span>
-                        </b-dropdown-item>
-                        <b-dropdown-item
-                                v-if="!collection || (collection && collection.hide_items_thumbnail_on_lists != 'yes')" 
-                                aria-controls="items-list-results"
-                                role="button"
-                                :class="{ 'is-active': adminViewMode == 'grid' }"
-                                :value="'grid'"
-                                aria-role="listitem">
-                            <span class="icon gray-icon">
-                                <i class="tainacan-icon tainacan-icon-viewminiature" />
-                            </span>
-                            <span>{{ $i18n.get('label_thumbnails') }}</span>
-                        </b-dropdown-item>
-                        <b-dropdown-item 
-                                aria-controls="items-list-results"
-                                role="button"
-                                :class="{ 'is-active': adminViewMode == 'records' }"
-                                :value="'records'"
-                                aria-role="listitem">
-                            <span class="icon gray-icon">
-                                <i class="tainacan-icon tainacan-icon-viewrecords" />
-                            </span>
-                            <span>{{ $i18n.get('label_records') }}</span>
-                        </b-dropdown-item>
-                        <b-dropdown-item 
-                                v-if="!collection || (collection && collection.hide_items_thumbnail_on_lists != 'yes')"
-                                aria-controls="items-list-results"
-                                role="button"
-                                :class="{ 'is-active': adminViewMode == 'masonry' }"
-                                :value="'masonry'"
-                                aria-role="listitem">
-                            <span class="icon gray-icon">
-                                <i class="tainacan-icon tainacan-icon-viewmasonry" />
-                            </span>
-                            <span>{{ $i18n.get('label_masonry') }}</span>
-                        </b-dropdown-item>
-                        <b-dropdown-item 
-                                aria-controls="items-list-results"
-                                role="button"
-                                :class="{ 'is-active': adminViewMode == 'list' }"
-                                :value="'list'"
-                                aria-role="listitem">
-                            <span class="icon gray-icon">
-                                <i class="tainacan-icon tainacan-icon-viewlist" />
-                            </span>
-                            <span>{{ $i18n.get('label_list') }}</span>
-                        </b-dropdown-item>
-                        <b-dropdown-item 
-                                aria-controls="items-list-results"
-                                role="button"
-                                :class="{ 'is-active': adminViewMode == 'map' }"
-                                :value="'map'"
-                                aria-role="listitem">
-                            <span 
-                                    style="width: 2em; margin-left: -0.45em; padding-right: 6px;"
-                                    class="icon gray-icon">
-                                <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
-                                        style="fill: var(--tainacan-info-color)">
-                                    <path d="M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z" />
-                                </svg>
-                            </span>
-                            <span>{{ $i18n.get('label_map') }}</span>
-                        </b-dropdown-item>
-                    </b-dropdown>
-                </b-field>
-            </div>
-
-            <!-- Exposers or alternative links modal button -->
-            <div 
-                    v-if="!$adminOptions.hideItemsListExposersButton"
-                    class="search-control-item">
-                <button 
-                        class="button is-white"
-                        :aria-label="$i18n.get('label_view_as')"
-                        :disabled="totalItems == undefined || totalItems <= 0"
-                        @click="openExposersModal()">
-                    <span class="gray-icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas" />
-                    </span>
-                    <span class="is-hidden-tablet-only is-hidden-desktop-only">{{ $i18n.get('label_view_as') }}</span>
-                </button>
-            </div>
-
-        </div>
-
-        <!-- SIDEBAR WITH FILTERS -->
-        <b-modal
-                id="filters-modal"
-                ref="filters-modal"     
-                v-model="isFiltersModalActive"       
-                role="region"
-                :width="736"
-                animation="slide-menu"
-                trap-focus
-                aria-modal
-                aria-role="dialog"
-                custom-class="tainacan-modal tainacan-form filters-menu"
-                :close-button-aria-label="$i18n.get('close')">
-            <filters-items-list
-                    id="filters-items-list"
-                    :is-loading-items="isLoadingItems"
-                    autofocus="true"
-                    tabindex="-1"
-                    aria-modal
-                    role="dialog"
-                    :collection-id="collectionId + ''"
-                    :is-repository-level="isRepositoryLevel"
-                    @update-is-loading-items-state="(state) => isLoadingItems = state" />
-        </b-modal>
-
-        <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
-        <div 
-                id="items-list-area"
-                class="items-list-area"
-                @mousemove="handleMouseMoveOverList">
-
-            <!-- ADVANCED SEARCH -->
-            <transition name="filter-item">
-                <div
-                        v-if="openAdvancedSearch"
-                        id="advanced-search-container"
-                        role="search">
-                    
-                    <advanced-search
-                            :collection-id="collectionId"
-                            :is-repository-level="isRepositoryLevel"
-                            @close="openAdvancedSearch = false" />
+                                <span>{{ $i18n.get('label_map') }}</span>
+                            </b-dropdown-item>
+                        </b-dropdown>
+                    </b-field>
                 </div>
-            </transition>
 
-            <!-- STATUS TABS, only on Admin -------- -->
-            <items-status-tabs 
-                    v-if="!$adminOptions.hideItemsListStatusTabs"
-                    :is-repository-level="isRepositoryLevel" />
+                <!-- Exposers or alternative links modal button -->
+                <div 
+                        v-if="!$adminOptions.hideItemsListExposersButton"
+                        class="search-control-item">
+                    <button 
+                            class="button is-white"
+                            :aria-label="$i18n.get('label_view_as')"
+                            :disabled="totalItems == undefined || totalItems <= 0"
+                            @click="openExposersModal()">
+                        <span class="gray-icon">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas" />
+                        </span>
+                        <span class="is-hidden-tablet-only is-hidden-desktop-only">{{ $i18n.get('label_view_as') }}</span>
+                    </button>
+                </div>
 
-            <!-- FILTERS TAG LIST-->
-            <template v-if="hasFiltered && !openAdvancedSearch">
-                <filters-tags-list class="filter-tags-list" />
-            </template>
-            
-            <!-- ITEMS LISTING RESULTS ------------------------- -->
-            <div 
-                    id="items-list-results"
-                    :aria-busy="isLoadingItems"
-                    aria-labelledby="items-list-landmark"
+            </div>
+
+            <!-- SIDEBAR WITH FILTERS -->
+            <b-modal
+                    id="filters-modal"
+                    ref="filters-modal"     
+                    v-model="isFiltersModalActive"       
                     role="region"
-                    class="above-search-control">
-
-                <h3 
-                        id="items-list-landmark"
-                        class="sr-only">
-                    {{ $i18n.get('label_items_list') }}
-                </h3>
-
-                <div 
-                        v-show="showLoading"
-                        class="loading-container">
-
-                    <!--  Default loading, to be used view modes without any skeleton-->
-                    <b-loading 
-                            :is-full-page="false"
-                            :model-value="showLoading" />
-
-                </div>  
-
-                <!-- Alert if custom metada is being used for sorting -->
-                <div 
-                        v-if="hasAnOpenAlert &&
-                            isSortingByCustomMetadata &&
-                            !showLoading"
-                        class="metadata-alert">
-                    <p class="text">
-                        {{ 
-                            totalItems > 0 ? 
-                                $i18n.getWithVariables('info_sorting_by_metadata_value_%s', [orderByName]) :
-                                $i18n.getWithVariables('info_sorting_by_metadata_value_%s_empty_list', [orderByName])
-                        }}
-                    </p> 
-                    <div>
-                        <button
-                                class="button"
-                                @click="openMetatadaSortingWarningDialog({ offerCheckbox: false })">
-                            {{ $i18n.get('label_view_more') }}
-                        </button>
-                        <button 
-                                class="button icon"
-                                @click="hasAnOpenAlert = false">
-                            <i class="tainacan-icon tainacan-icon-close" />
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Admin View Modes-->
-                <items-list
-                        v-if="!showLoading && totalItems > 0"
-                        :collection-id="collectionId"
-                        :displayed-metadata="displayedMetadata"
-                        :items="items"
-                        :total-items="totalItems"
-                        :is-loading="showLoading"
-                        :is-on-trash="status == 'trash'"
-                        :view-mode="adminViewMode"
+                    :width="736"
+                    animation="slide-menu"
+                    trap-focus
+                    aria-modal
+                    aria-role="dialog"
+                    custom-class="tainacan-modal tainacan-form filters-menu"
+                    :close-button-aria-label="$i18n.get('close')">
+                <filters-items-list
+                        id="filters-items-list"
+                        :is-loading-items="isLoadingItems"
+                        autofocus="true"
+                        tabindex="-1"
+                        aria-modal
+                        role="dialog"
+                        :collection-id="collectionId + ''"
                         :is-repository-level="isRepositoryLevel"
-                        @update-is-loading="(newIsLoadingState) => isLoadingItems = newIsLoadingState" />
+                        @update-is-loading-items-state="(state) => isLoadingItems = state" />
+            </b-modal>
 
-                <!-- Empty Placeholder -->
-                <section
-                        v-if="!isLoadingItems && totalItems == 0"
-                        class="section">
-                    <div class="content has-text-grey has-text-centered">
-                        <p>
-                            <span class="icon is-large">
-                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
-                            </span>
-                        </p>
-                        <p v-if="status == undefined || status == '' || status == 'publish,private,draft'">
-                            {{ (hasFiltered || openAdvancedSearch || searchQuery) ? $i18n.get('info_no_item_found_filter') : (isSortingByCustomMetadata ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created')) }}
-                        </p>
-                        <p v-else>
-                            {{ $i18n.get('info_no_items_' + status) }}
-                        </p>
+            <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
+            <div 
+                    id="items-list-area"
+                    class="items-list-area"
+                    @mousemove="handleMouseMoveOverList">
 
-                        <router-link
-                                v-if="!isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$adminOptions.hideItemsListCreationDropdown"
-                                v-slot="{ navigate }"
-                                :to="{ path: $routerHelper.getNewItemPath(collectionId) }"
-                                custom>
-                            <button
-                                    id="button-create-item"
-                                    type="button"
-                                    role="link"
-                                    class="button is-secondary"
-                                    @click="navigate()">
-                                {{ $i18n.getFrom('items', 'add_new') }}
-                            </button>
-                        </router-link> 
-                        <button
-                                v-else-if="isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$adminOptions.hideItemsListCreationDropdown"
-                                id="button-create-item"
-                                class="button is-secondary"
-                                @click="onOpenCollectionsModal">
-                            {{ $i18n.get('add_one_item') }}
-                        </button>
-
-                        <p v-if="searchQuery">
-                            <template v-if="!sentenceMode">
-                                <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_enabling_search_by_word') }}
-                                <br>
-                                {{ $i18n.get('info_details_about_search_by_word') }}
-                            </template>
-                            <template v-else>
-                                <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_disabling_search_by_word') }}
-                            </template>
-                            <br>
-                            <b-checkbox 
-                                    :model-value="sentenceMode"
-                                    :true-value="false"
-                                    :false-value="true"
-                                    @update:model-value="$eventBusSearch.setSentenceMode($event); updateSearch();">
-                                {{ $i18n.get('label_use_search_separated_words') }}
-                            </b-checkbox>
-                        </p>
+                <!-- ADVANCED SEARCH -->
+                <transition name="filter-item">
+                    <div
+                            v-if="openAdvancedSearch"
+                            id="advanced-search-container"
+                            role="search">
+                        
+                        <advanced-search
+                                :collection-id="collectionId"
+                                :is-repository-level="isRepositoryLevel"
+                                @close="openAdvancedSearch = false" />
                     </div>
-                </section>
+                </transition>
 
-                <!-- Pagination -->
-                <div ref="items-pagination">
-                    <items-pagination
-                            v-if="totalItems > 0"
-                            :is-sorting-by-custom-metadata="isSortingByCustomMetadata" />
+                <!-- STATUS TABS, only on Admin -------- -->
+                <items-status-tabs 
+                        v-if="!$adminOptions.hideItemsListStatusTabs"
+                        :is-repository-level="isRepositoryLevel" />
+
+                <!-- FILTERS TAG LIST-->
+                <template v-if="hasFiltered && !openAdvancedSearch">
+                    <filters-tags-list class="filter-tags-list" />
+                </template>
+                
+                <!-- ITEMS LISTING RESULTS ------------------------- -->
+                <div 
+                        id="items-list-results"
+                        :aria-busy="isLoadingItems"
+                        aria-labelledby="items-list-landmark"
+                        role="region"
+                        class="above-search-control">
+
+                    <h3 
+                            id="items-list-landmark"
+                            class="sr-only">
+                        {{ $i18n.get('label_items_list') }}
+                    </h3>
+
+                    <div 
+                            v-show="showLoading"
+                            class="loading-container">
+
+                        <!--  Default loading, to be used view modes without any skeleton-->
+                        <b-loading 
+                                :is-full-page="false"
+                                :model-value="showLoading" />
+
+                    </div>  
+
+                    <!-- Alert if custom metada is being used for sorting -->
+                    <div 
+                            v-if="hasAnOpenAlert &&
+                                isSortingByCustomMetadata &&
+                                !showLoading"
+                            class="metadata-alert">
+                        <p class="text">
+                            {{ 
+                                totalItems > 0 ? 
+                                    $i18n.getWithVariables('info_sorting_by_metadata_value_%s', [orderByName]) :
+                                    $i18n.getWithVariables('info_sorting_by_metadata_value_%s_empty_list', [orderByName])
+                            }}
+                        </p> 
+                        <div>
+                            <button
+                                    class="button"
+                                    @click="openMetatadaSortingWarningDialog({ offerCheckbox: false })">
+                                {{ $i18n.get('label_view_more') }}
+                            </button>
+                            <button 
+                                    class="button icon"
+                                    @click="hasAnOpenAlert = false">
+                                <i class="tainacan-icon tainacan-icon-close" />
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Admin View Modes-->
+                    <items-list
+                            v-if="!showLoading && totalItems > 0"
+                            :collection-id="collectionId"
+                            :displayed-metadata="displayedMetadata"
+                            :items="items"
+                            :total-items="totalItems"
+                            :is-loading="showLoading"
+                            :is-on-trash="status == 'trash'"
+                            :view-mode="adminViewMode"
+                            :is-repository-level="isRepositoryLevel"
+                            @update-is-loading="(newIsLoadingState) => isLoadingItems = newIsLoadingState" />
+
+                    <!-- Empty Placeholder -->
+                    <section
+                            v-if="!isLoadingItems && totalItems == 0"
+                            class="section">
+                        <div class="content has-text-grey has-text-centered">
+                            <p>
+                                <span class="icon is-large">
+                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
+                                </span>
+                            </p>
+                            <p v-if="status == undefined || status == '' || status == 'publish,private,draft'">
+                                {{ (hasFiltered || openAdvancedSearch || searchQuery) ? $i18n.get('info_no_item_found_filter') : (isSortingByCustomMetadata ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created')) }}
+                            </p>
+                            <p v-else>
+                                {{ $i18n.get('info_no_items_' + status) }}
+                            </p>
+
+                            <router-link
+                                    v-if="!isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$adminOptions.hideItemsListCreationDropdown"
+                                    v-slot="{ navigate }"
+                                    :to="{ path: $routerHelper.getNewItemPath(collectionId) }"
+                                    custom>
+                                <button
+                                        id="button-create-item"
+                                        type="button"
+                                        role="link"
+                                        class="button is-secondary"
+                                        @click="navigate()">
+                                    {{ $i18n.getFrom('items', 'add_new') }}
+                                </button>
+                            </router-link> 
+                            <button
+                                    v-else-if="isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$adminOptions.hideItemsListCreationDropdown"
+                                    id="button-create-item"
+                                    class="button is-secondary"
+                                    @click="onOpenCollectionsModal">
+                                {{ $i18n.get('add_one_item') }}
+                            </button>
+
+                            <p v-if="searchQuery">
+                                <template v-if="!sentenceMode">
+                                    <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_enabling_search_by_word') }}
+                                    <br>
+                                    {{ $i18n.get('info_details_about_search_by_word') }}
+                                </template>
+                                <template v-else>
+                                    <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_disabling_search_by_word') }}
+                                </template>
+                                <br>
+                                <b-checkbox 
+                                        :model-value="sentenceMode"
+                                        :true-value="false"
+                                        :false-value="true"
+                                        @update:model-value="$eventBusSearch.setSentenceMode($event); updateSearch();">
+                                    {{ $i18n.get('label_use_search_separated_words') }}
+                                </b-checkbox>
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Pagination -->
+                    <div ref="items-pagination">
+                        <items-pagination
+                                v-if="totalItems > 0"
+                                :is-sorting-by-custom-metadata="isSortingByCustomMetadata" />
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
 </template>
@@ -976,7 +986,7 @@
                     if ((this.$refs['search-control'].classList.contains('floating-search-control')))
                         this.$refs['search-control'].classList.remove('floating-search-control');
                     
-                    this.$refs['items-page-container'].scrollTo({ top: this.$refs['search-control'].offsetTop - (this.isRepositoryLevel ? 94 : 42), behavior: 'smooth'});
+                    this.$refs['items-page-container'].scrollTo({ top: this.$refs['search-control'].offsetTop - (this.isRepositoryLevel ? 76 : 25), behavior: 'smooth'});
                 }
 
                 this.isLoadingItems = isLoadingItems;
@@ -1447,6 +1457,8 @@
                 // Handles search control bar
                 if (this.$refs['search-control']) {
                     const bounding = this.$refs['search-control'].getBoundingClientRect();
+
+                    console.log(bounding.top, bounding.bottom, window.innerHeight, document.documentElement.clientHeight);
                     const isHidden = !(bounding.top >= 0 && bounding.bottom <= ((window.innerHeight || document.documentElement.clientHeight) + 136));
                     
                     if (isHidden && ($event.screenY <= 286)) {
@@ -1509,11 +1521,16 @@
         overflow-y: auto;
     }
 
+    .admin-items-list {
+        padding-left: var(--tainacan-one-column);
+        padding-right: var(--tainacan-one-column);
+    }
+
     .advanced-search-form-submit {
         display: flex;
         justify-content: flex-end;
-        padding-right: var(--tainacan-one-column);
-        padding-left: var(--tainacan-one-column);
+        padding-right: 0;
+        padding-left: 0;
         margin-bottom: 1em;
 
         p { margin-left: 0.75em; }
@@ -1539,7 +1556,6 @@
         min-height: 100%;
         height: auto;
         max-height: calc(100% - 5.875em);
-        max-height: calc(100vh - 5.875em);
         float: left;
         overflow-y: auto;
         overflow-x: hidden;
@@ -1549,25 +1565,27 @@
         :deep(.filters-components-list) {
             margin-left: 3px;
         }
+       
         @media screen and (max-width: 768px) {
             width: 100%;
             padding: 0;
-            
-            #filters-items-list {
-                padding: var(--tainacan-container-padding);
-            }
         }
         @media screen and (min-width: 769px) {
             top: 1px !important;
             position: relative;
             position: sticky;
+            
+            :deep(.modal-content) {
+                padding-left: 0 !important;
+                padding-right: 28px !important;
+            }
         }
     }
     #filter-menu-compress-button {
         position: absolute;
         z-index: 99;
         bottom: 0px;
-        left: 0;
+        left: calc(-1 * var(--tainacan-one-column) - 1px);
         max-width: 1.625em;
         height: 1.625em;
         width: 1.625em;
@@ -1598,7 +1616,7 @@
         min-height: 42px;
         height: auto;
         position: relative;
-        padding: var(--tainacan-container-padding) var(--tainacan-one-column);
+        padding: 2px 0 var(--tainacan-container-padding) 0;
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
@@ -1612,7 +1630,7 @@
             animation: appear-from-top 0.2s;
             opacity: 0.85;
             border-bottom: 1px solid var(--tainacan-gray2);
-            padding: 20px var(--tainacan-one-column) 2px var(--tainacan-one-column);
+            padding: 20px 0 2px 0;
 
             &:hover {
                 opacity: 1;
@@ -1789,8 +1807,8 @@
     .tabs {
         padding-top: 6px;
         margin-bottom: 20px;
-        padding-left: var(--tainacan-one-column);
-        padding-right: var(--tainacan-one-column);
+        padding-left: 0;
+        padding-right: 0;
 
         @media screen and (min-width: 1024px) {
             overflow: visible;
@@ -1842,14 +1860,14 @@
     }
 
     .table-container {
-        padding-left: var(--tainacan-one-column);
-        padding-right: var(--tainacan-one-column);
+        padding-left: 0;
+        padding-right: 0;
         min-height: 50vh;
     }
 
     .pagination-area {
-        margin-left: var(--tainacan-one-column);
-        margin-right: var(--tainacan-one-column);
+        margin-left: 0;
+        margin-right: 0;
     }
 
     .floating-pagination {

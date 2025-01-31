@@ -10,7 +10,6 @@
         <div style="width: auto">
             <header class="tainacan-modal-title">
                 <h2>{{ $i18n.get('importers') }}</h2>
-                <hr>
             </header>
             <section class="tainacan-form">
                 <p>{{ $i18n.get('instruction_select_an_importer_type') }}</p>

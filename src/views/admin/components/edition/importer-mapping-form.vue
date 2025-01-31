@@ -3,12 +3,6 @@
             class="repository-level-page page-container">
         <div class="tainacan-page-title">
             <h1>{{ $i18n.get('label_metadata_mapping') }} </h1>
-            <a 
-                    class="back-link has-text-secondary"
-                    @click="$router.go(-1)">
-                {{ $i18n.get('back') }}
-            </a>
-
         </div>
 
         <b-loading 
@@ -787,11 +781,6 @@ export default {
             font-weight: 500;
             color: var(--tainacan-blue5);
             display: inline-block;
-        }
-        a.back-link{
-            font-weight: 500;
-            float: right;
-            margin-top: 5px;
         }
 
         .level-left {

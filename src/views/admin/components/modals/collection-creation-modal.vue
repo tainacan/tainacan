@@ -30,7 +30,6 @@
                     @click="selectedEstrategy = hasPresetsHook ? undefined : 'mappers'">
                 {{ $i18n.get('back') }}
             </a>
-            <hr>
         </header>
         <section class="tainacan-form">
             <div 
@@ -219,10 +218,6 @@ export default {
 
         h2 {
             margin-bottom: 0;
-        }
-        .back-link {
-            color: var(--tainacan-secondary);
-            cursor: pointer;
         }
     }
 

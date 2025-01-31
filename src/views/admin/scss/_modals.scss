@@ -18,7 +18,7 @@
     max-height: 87%;
     max-height: 87vh;
     overflow: auto;
-    border-radius: 0;
+    border-radius: var(--tainacan-modal-border-radius, 8px);
 
     @media screen and (max-width: 769px) {
         max-height: 95%;
@@ -34,10 +34,10 @@
 
 .tainacan-modal .modal-close {
     z-index: 99999;
-    @media only screen and (max-width: 768px) {
-        background-color: var(--tainacan-background-color, #ffffff);
-        &:before, &:after { background-color: var(--tainacan-secondary, #187181); }
-    }
+    background-color: var(--tainacan-background-color, #ffffff);
+        
+    &:before, &:after { background-color: var(--tainacan-secondary, #187181); }
+    
 }
 
 .tainacan-modal-title {
@@ -77,10 +77,13 @@
     border-radius: var(--tainacan-dropdownmenu-border-radius, 0px);
     background-color: var(--tainacan-background-color);
     padding: 40px var(--tainacan-one-column);
-    padding: 40px 4.166666667vw;
     position: relative;
     overflow-y: auto;
     overflow-x: hidden;
+
+    &:not(:has(.tainacan-dialog)) {
+        box-shadow: var(--tainacan-modal-box-shadow, 0 5px 15px #00000014,0 15px 27px #00000012,0 30px 36px #0000000a,0 50px 43px #00000005);
+    }
 
     .modal-card-body {
         background-color: var(--tainacan-background-color);
@@ -121,7 +124,7 @@
 .tainacan-dialog {
 
     .modal-background {
-        background-color: rgba(0, 0, 0, 0.70);
+        background-color: rgba(0, 0, 0, 0.35);
     }
     .modal-card {
         background-color: var(--tainacan-background-color);
@@ -131,6 +134,7 @@
         flex-direction: row;
         padding: 35px;
         margin: 0 auto !important;
+        box-shadow: var(--tainacan-modal-box-shadow, 0 5px 15px #00000014,0 15px 27px #00000012,0 30px 36px #0000000a,0 50px 43px #00000005);
 
         .modal-card-title {
             max-width: 100%;

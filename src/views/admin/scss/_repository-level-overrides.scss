@@ -2,7 +2,7 @@
 // This garantees that any component inside a .repository-level-page
 // will have a blue color instead of a turquoise.
 #tainacan-admin-app .repository-level-page {
-    height: $page-height !important;
+    height: 100% !important;
 
     .is-primary:not(.upload-draggable), .is-primary:hover, .is-primary:focus {
         background-color: var(--tainacan-blue3) !important;
@@ -29,7 +29,7 @@
     a.button.is-secondary:hover  {
         color: var(--tainacan-white) !important;
     }
-    .tainacan-page-title hr{
+    .tainacan-page-title hr {
         background-color: var(--tainacan-blue3) !important;
     }
     button.link-style, button.link-style:focus button.link-style:active {

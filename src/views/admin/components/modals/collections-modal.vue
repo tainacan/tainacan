@@ -12,7 +12,6 @@
                 style="width: auto">
             <header class="tainacan-modal-title">
                 <h2>{{ $i18n.get('collections') }}</h2>
-                <hr>
             </header>
             <section class="tainacan-form">
                 <p>{{ $i18n.get('instruction_select_a_target_collection') }}</p>

@@ -150,17 +150,6 @@ export default {
                 flex-shrink: 1;
                 flex-grow: 1;
             }
-            a.back-link {
-                font-weight: 500;
-                float: right;
-                margin-top: 5px;
-            }
-            hr {
-                margin: 3px 0px 4px 0px; 
-                height: 1px;
-                background-color: var(--tainacan-secondary);
-                width: 100%;
-            }
         }
                   
         .b-tabs .tab-content {

@@ -16,7 +16,6 @@
                 <h2 v-else>
                     {{ $i18n.get('instruction_configure_new_metadata_section') }}
                 </h2>
-                <hr>
             </div>
             <div class="tainacan-form">
                 <div class="options-columns">
@@ -507,7 +506,7 @@
         background-color: var(--tainacan-gray1);
         position: sticky;
         bottom: 0;
-        padding: 16px 4.166666667vw;
+        padding: 16px var(--tainacan-one-column);
         display: flex;
         justify-content: space-between;
         z-index: 2;

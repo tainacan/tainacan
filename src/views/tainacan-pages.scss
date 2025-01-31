@@ -8,6 +8,9 @@
 .tainacan-pages-container #wpbody-content {
     padding-bottom: 0;
 }
+.tainacan-pages-container #wpfooter {
+    display: none;
+}
 
 /* Fullscreen mode */
 @media (min-width: 782px) {

@@ -1,8 +1,10 @@
 <template>
     <div>
         <div class="repository-level-page page-container">
-            <tainacan-title />
-            <div class="sub-header">
+            <tainacan-title>
+                <h1>
+                    {{ $route.meta.title }}
+                </h1>
 
                 <!-- New Taxonomy Button ----  -->
                 <div 
@@ -22,6 +24,10 @@
                         </button>
                     </router-link>
                 </div>
+
+            </tainacan-title>
+            
+            <div class="sub-header">
 
                 <!-- Sorting options ----  -->
                 <b-field class="header-item">

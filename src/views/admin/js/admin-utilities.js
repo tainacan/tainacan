@@ -622,7 +622,6 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
                 adminSpecialMode === 'itemsSearchSelectionMode' ||
                 adminSpecialMode === 'itemEditionMode'
             ) {
-                app.config.globalProperties.$router.removeRoute('HomePage');
                 app.config.globalProperties.$router.removeRoute('CollectionsPage');
                 app.config.globalProperties.$router.removeRoute('CollectionCreationForm');
                 app.config.globalProperties.$router.removeRoute('CollectionItemBulkAddPage');

@@ -10,7 +10,6 @@
         <div style="width: auto">
             <header class="tainacan-modal-title">
                 <h2>{{ $i18n.get('exporters') }}</h2>
-                <hr>
             </header>
             
             <section class="tainacan-form">

@@ -8,12 +8,14 @@
         </template>
                         
         <div class="filters-list-page">
-            <b-loading v-model="isLoadingMetadatumTypes" />
+            <b-loading
+                    v-model="isLoadingMetadatumTypes"
+                    :is-full-page="false" />
             
             <div
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || (!isRepositoryLevel && collection && collection.current_user_can_edit_filters))"
                     ref="filterEditionPageColumns"
-                    :style="{ height: activeFiltersList.length <= 0 && !isLoadingFilters ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
+                    :style="{ height: activeFiltersList.length <= 0 && !isLoadingFilters ? 'auto' : 'calc(100% - 6px - ' + columnsTopY + 'px)'}"
                     class="columns">
                 <div class="column">
 
@@ -401,7 +403,6 @@
                         style="width: auto">
                     <header class="tainacan-modal-title">
                         <h2>{{ $i18n.get('label_available_filter_types') }}</h2>
-                        <hr>
                     </header>
                     <section class="tainacan-form">
                         <form class="tainacan-form">
@@ -949,17 +950,6 @@ export default {
                 flex-shrink: 1;
                 flex-grow: 1;
             }
-            a.back-link{
-                font-weight: 500;
-                float: right;
-                margin-top: 5px;
-            }
-            hr{
-                margin: 3px 0px 4px 0px; 
-                height: 1px;
-                background-color: var(--tainacan-secondary);
-                width: 100%;
-            }
         }
                     
         .column {
@@ -1497,6 +1487,14 @@ export default {
 
             }
 
+        }
+    }
+    .repository-level-page {
+        .tainacan-form.sub-header {
+            padding-left: 0 !important;
+        }
+        .filters-list-page .active-filters-area {
+            margin-left: 0 !important;
         }
     }
 </style>

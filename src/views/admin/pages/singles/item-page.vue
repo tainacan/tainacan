@@ -700,7 +700,7 @@
 <style lang="scss" scoped>
 
     .page-container {
-        padding: 0px 0px 60px 0px;
+        padding: 0px;
 
         & > .tainacan-form {
             margin-bottom: 60px;

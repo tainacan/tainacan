@@ -13,7 +13,6 @@
                     {{ `(${totalItems} ${objectType})` }}
                 </small>
             </h2>
-            <hr>
         </header>
         <div class="tainacan-form">
             <div class="modal-card-body no-overflow-modal-card-body">

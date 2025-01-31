@@ -9,7 +9,6 @@
             <h2 v-if="file.title != undefined">
                 {{ $i18n.get('label_attachment') + ': ' + file.title }}
             </h2>
-            <hr>
         </header>
         <div    
                 class="is-flex rendered-content"

@@ -11,7 +11,6 @@
                     v-else
                     class="tainacan-modal-title">
                 <h2>{{ $i18n.get('label_item_activities') }}</h2>
-                <hr>
             </header>
 
             <div :class="{ 'above-subheader': isRepositoryLevel }">

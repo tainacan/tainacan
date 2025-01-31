@@ -2,7 +2,6 @@
     <div class="tainacan-modal-content">
         <header class="tainacan-modal-title">
             <h2>{{ $i18n.get('title_slides-help-modal') }}</h2>
-            <hr>
         </header>
         <div class="slides-help-modal-content">
             <p>{{ $i18n.get('info_slides_help_introduction') }}:</p>
