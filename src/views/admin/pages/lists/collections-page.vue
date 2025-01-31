@@ -119,7 +119,14 @@
             <b-field   
                     id="collections-page-author-filter"
                     class="header-item">
-                <label class="label">{{ $i18n.get('label_show_only_created_by_me') }}&nbsp;</label>
+                <label 
+                        v-tooltip="{
+                            content: $i18n.get('label_show_only_created_by_me'),
+                            autoHide: true,
+                            placement: 'auto',
+                            popperClass: ['tainacan-tooltip', 'tooltip']
+                        }"
+                        class="label">{{ $i18n.get('label_mine') }}&nbsp;</label>
                 <b-switch
                         v-model="authorFilter"
                         size="is-small"
@@ -127,7 +134,7 @@
                         :disabled="collections.length <= 0 && isLoading"
                         :true-value="'current-author'"
                         :false-value="''"
-                        :label="$i18n.get('label_show_only_created_by_me')"
+                        :label="$i18n.get('label_mine')"
                         @update:model-value="onChangeAuthorFilter" />
                 
             </b-field>

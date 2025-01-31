@@ -11,7 +11,7 @@
         <tainacan-title v-if="!$adminOptions.hideItemsListPageTitle">
 
             <h1>
-                {{ $route.meta.title }}
+                {{ $route.meta.title }} <span class="is-italic has-text-weight-semibold">{{ !isRepositoryLevel && collection && collection.name ? collection.name : '' }}</span>
             </h1>
 
             <!-- Item Creation Dropdown (or button, if few options are available) -->
@@ -1458,7 +1458,6 @@
                 if (this.$refs['search-control']) {
                     const bounding = this.$refs['search-control'].getBoundingClientRect();
 
-                    console.log(bounding.top, bounding.bottom, window.innerHeight, document.documentElement.clientHeight);
                     const isHidden = !(bounding.top >= 0 && bounding.bottom <= ((window.innerHeight || document.documentElement.clientHeight) + 136));
                     
                     if (isHidden && ($event.screenY <= 286)) {

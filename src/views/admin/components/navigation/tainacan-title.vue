@@ -57,13 +57,13 @@ export default {
         margin-bottom: 20px;
         display: flex;
         flex-wrap: wrap;
-        align-items: flex-end;
-        justify-content: space-between;
-        gap: 1.5em;
+        align-items: center;
+        gap: 0.75em 1.5em;
 
         :deep(h1),
         :deep(h2) {
             font-size: 1.25em;
+            line-height: 1.25;
             font-weight: 500;
             color: var(--tainacan-heading-color);
             display: inline-block;

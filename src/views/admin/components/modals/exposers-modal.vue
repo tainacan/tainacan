@@ -519,11 +519,14 @@ export default {
         .exposer-types-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-gap: 1rem;
+            padding: 1.125em;
         
             .exposer-type {
                 border: 1px solid var(--tainacan-input-border-color);
+                border-radius: 4px;
                 padding: 15px;
-                margin: 24px 12px;
+                margin: 0;
                 cursor: pointer;
                 font-size: 1em;
                 transition: border 0.3s ease;

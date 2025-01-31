@@ -58,13 +58,15 @@
 <style lang="scss" scoped>
 
     .exporter-types-container {
-        display: flex;
-        flex-wrap: wrap;
-
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        grid-gap: 1rem;
+        padding: 1.125em 0.75rem;
+        
         .exporter-type {
             border: 1px solid var(--tainacan-gray2);
+            border-radius: 4px;
             padding: 15px;
-            margin: 20px;
             cursor: pointer;
             transition: border 0.3s ease;
 

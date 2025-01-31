@@ -165,8 +165,8 @@ export default {
         max-height: var(--tainacan-admin-header-height, 3.5em);
         width: 100%;
         overflow-y: hidden;
-        padding-top: 10px;
-        padding-bottom: 10px;
+        padding-top: 8px;
+        padding-bottom: 8px;
         padding-right: var(--tainacan-one-column);
         padding-left: var(--tainacan-one-column);
         margin: 0px;
@@ -177,10 +177,6 @@ export default {
 
         &.is-repository-level {
             background-color: var(--tainacan-blue5);
-
-            .repository-subheader-icons { 
-                margin-right: -1em !important; 
-            }
         }
 
         h1 {
@@ -222,14 +218,13 @@ export default {
         .repository-subheader-icons {
             display: flex;
             flex-wrap: nowrap;
-            margin-right: calc(var(--tainacan-one-column) - 2.083333333px);
 
             #view-collection-button,
             #exporter-collection-button {
                 font-size: 0.9375em !important;
                 border: none;
                 border-radius: 4px !important;
-                height: 2.5em !important;
+                height: 2.65em !important;
                 background-color: transparent;
                 color: var(--tainacan-white);
 
@@ -248,6 +243,12 @@ export default {
 
                 &:hover {
                     background-color: var(--tainacan-blue4) !important;
+                }
+            }
+
+            @media screen and  (max-width: 768px) {
+                .icon {
+                    margin-right: 0;
                 }
             }
         }

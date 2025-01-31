@@ -58,17 +58,16 @@ export default {
 <style lang="scss" scoped>
 
     .importer-types-container {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        grid-gap: 1rem;
+        padding: 1.125em 0.75rem;
 
         .importer-type {
             border: 1px solid var(--tainacan-gray2);
             padding: 15px;
-            margin: 20px;
             cursor: pointer;
-            max-width: 20%;
-            flex-grow: 1;
-            flex-basis: 20%;
+            border-radius: 4px;
             transition: border 0.3s ease;
 
             &:hover {

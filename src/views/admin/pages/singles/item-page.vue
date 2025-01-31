@@ -219,7 +219,7 @@
                                             <a
                                                     target="_blank"
                                                     :href="item.url">
-                                                <span>.../{{ item.slug }}</span>&nbsp;
+                                                <strong>.../{{ item.slug }}</strong>&nbsp;
                                                 <span class="icon">
                                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl" />
                                                 </span>
@@ -701,12 +701,13 @@
 
     .page-container {
         padding: 0px;
+        transition: none;
 
         & > .tainacan-form {
             margin-bottom: 60px;
 
             .field:not(:last-child) {
-                margin-bottom: 0.5em;
+                margin-bottom: 0em;
             }
         }
 
@@ -733,13 +734,12 @@
         }
 
         .tainacan-form > .columns {
-            margin-left: var(--tainacan-one-column);
-            margin-right: var(--tainacan-one-column);
+            margin: 0 var(--tainacan-one-column);
 
             .column.is-5 {
                 padding-top: 0;
                 padding-left: var(--tainacan-one-column);
-                padding-right: var(--tainacan-one-column);
+                padding-right: 0;
 
                 @media screen and (min-width: 770px) {
                     .sticky-container {
@@ -755,7 +755,7 @@
             }
             .column.is-7 {
                 padding-top: 0;
-                padding-left: var(--tainacan-one-column);
+                padding-left: 0;
                 padding-right: 0;
 
                 .columns {
@@ -763,7 +763,7 @@
                     justify-content: space-between;
 
                     .column {
-                        padding: 1em 12px 0 12px;
+                        padding: 0.75em 12px 0 12px;
                     }
                 }
                 .field { 
@@ -778,12 +778,12 @@
             }
 
             @media screen and (max-width: 1440px) {
-                 &>.column.is-7 {
-                     padding-left: 0.75em;
-                 }
-                 &>.column.is-5 {
-                     padding-right: 0.75em;
-                 }
+                &>.column.is-7 {
+                    padding-left: 0.75em;
+                }
+                &>.column.is-5 {
+                    padding-right: 0.75em;
+                }
             }
 
             @media screen and (max-width: 769px) {
@@ -846,7 +846,7 @@
     
         .b-tabs {
             overflow: hidden !important;
-            margin-top: -7px;
+            margin-top: 0px;
         }
 
         @media screen and (max-width: 769px) {
@@ -1086,7 +1086,7 @@
 
     .footer {
         padding: 14px var(--tainacan-one-column);
-        position: fixed;
+        position: absolute;
         bottom: 0;
         right: 0;
         z-index: 9999;

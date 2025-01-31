@@ -155,7 +155,7 @@
                                 v-if="!$adminOptions.hideItemEditionRequiredOnlySwitch && (collection && collection.item_enable_metadata_required_filter === 'yes')"
                                 @click="showOnlyRequiredMetadata = true; isMobileSubheaderOpen = false;">
                             <span><i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata" /></span>
-                            <span>{{ $i18n.get('label_only_required_metadata') }}</span>
+                            <span>{{ $i18n.get('label_required_metadata') }}</span>
                         </button>
                     </div>
                 </div>
@@ -267,19 +267,6 @@
                                                 :style="{ width: ((focusedMetadatum + 1)/itemMetadata.length)*100 + '%' }"
                                                 class="sequence-progress" />
 
-                                        <a
-                                                v-if="!isMetadataNavigation && !$adminOptions.hideItemEditionCollapses"
-                                                class="collapse-all"
-                                                @click="toggleCollapseAll()">
-                                            <span class="icon">
-                                                <i
-                                                        :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
-                                                        class="tainacan-icon tainacan-icon-1-25em" />
-                                            </span>
-                                            <template v-if="isMobileScreen">{{ collapseAll ? $i18n.get('label_collapse') : $i18n.get('label_expand') }}</template>
-                                            <template v-else>{{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}</template>
-                                        </a>
-
                                         <b-field 
                                                 v-if="itemMetadata && itemMetadata.length > 3"
                                                 class="header-item metadata-navigation"
@@ -341,9 +328,14 @@
                                                 v-if="!isMetadataNavigation && !$adminOptions.hideItemEditionRequiredOnlySwitch && (collection && collection.item_enable_metadata_required_filter === 'yes')"
                                                 id="tainacan-switch-required-metadata"
                                                 v-model="showOnlyRequiredMetadata"
-                                                :style="'font-size: 0.625em;' + (isMobileScreen ? 'margin-right: 2rem;' : '')"
-                                                size="is-small">
-                                            {{ isMobileScreen ? $i18n.get('label_required') : $i18n.get('label_only_required') }} *
+                                                v-tooltip="{
+                                                    content: $i18n.get('label_only_required'),
+                                                    autoHide: true,
+                                                    placement: 'auto',
+                                                    popperClass: ['tainacan-tooltip', 'tooltip']
+                                                }"
+                                                :style="'font-size: 0.625em;' + (isMobileScreen ? 'margin-right: 2rem;' : '')">
+                                            {{ $i18n.get('label_required') }} *
                                         </b-switch>
 
                                         <b-field 
@@ -366,6 +358,19 @@
                                             </span>
                                         </b-field>
                                     </div>
+
+                                    <a
+                                            v-if="!isMetadataNavigation && !$adminOptions.hideItemEditionCollapses"
+                                            class="collapse-all"
+                                            @click="toggleCollapseAll()">
+                                        <span class="icon">
+                                            <i
+                                                    :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
+                                                    class="tainacan-icon tainacan-icon-1-25em" />
+                                        </span>
+                                        <template v-if="isMobileScreen">{{ collapseAll ? $i18n.get('label_collapse') : $i18n.get('label_expand') }}</template>
+                                        <template v-else>{{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}</template>
+                                    </a>
 
                                     <div 
                                             v-for="(metadataSection, sectionIndex) of metadataSections"
@@ -2040,10 +2045,9 @@ export default {
     .page-container.item-edition-container,
     .page-container.item-creation-container {
         padding: 0px;
-        height: calc(100% - 2.35em);
         transition: none;
 
-        &>.tainacan-form {
+        & > .tainacan-form {
             margin-bottom: 60px;
 
             .field:not(:last-child) {
@@ -2058,8 +2062,8 @@ export default {
         }
 
         .tainacan-page-title {
-            padding: 0 var(--tainacan-one-column);
             margin-top: var(--tainacan-container-padding);
+            padding: 0 var(--tainacan-one-column);
         
             .status-tag {
                 color: var(--tainacan-white);
@@ -2079,13 +2083,13 @@ export default {
             }
         }
         .tainacan-form > .columns {
-            margin-left: var(--tainacan-one-column);
-            margin-right: var(--tainacan-one-column);
-
+            margin: 0 var(--tainacan-one-column);
+            
             .column.is-5 {
                 padding-top: 0;
                 padding-left: var(--tainacan-one-column);
-                padding-right: var(--tainacan-one-column);
+                padding-right: 0;
+                padding-bottom: 0;
 
                 @media screen and (min-width: 770px) {
                     .sticky-container {
@@ -2093,15 +2097,19 @@ export default {
                         position: sticky;
                         top: 0px;
                         margin: 0;
-                        max-height: calc(100vh - 184px);
+                        max-height: calc(100vh - 194px);
                         overflow-y: auto;
                         overflow-x: hidden;
+
+                        .tainacan-pages-container--fullscreen & {
+                            max-height: calc(100vh - 164px);
+                        }
                     }
                 }
             }
             .column.main-column {
                 padding-top: 0;
-                padding-left: var(--tainacan-one-column);
+                padding-left: 0;
                 padding-right: 0;
 
                 .columns {
@@ -2227,14 +2235,11 @@ export default {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 1rem;
             background-color: var(--tainacan-background-color);
-
-            @media screen and (max-width: 1024px) {
-                flex-wrap: wrap;
-            }
             
             .field {
-                padding: 2px 0px 2px 16px !important;
+                padding: 2px 0px !important;
             }
 
             &.is-metadata-navigation-active {
@@ -2251,7 +2256,7 @@ export default {
 
                 .metadata-name-search {
                     top: 0.5em;
-                    max-width: 220px;
+                    max-width: 210px;
                 }
 
                 @media screen and (max-width: 1440px) {
@@ -2419,7 +2424,6 @@ export default {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-left: 1.5em;
             margin-top: 10px;
             margin-bottom: var(--tainacan-container-padding);
             p {
@@ -2457,7 +2461,7 @@ export default {
 
         .footer {
             padding: 14px var(--tainacan-one-column);
-            position: fixed;
+            position: absolute;
             bottom: 0;
             right: 0;
             z-index: 9999;

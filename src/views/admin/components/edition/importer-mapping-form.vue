@@ -1,9 +1,10 @@
 <template>
     <div 
             class="repository-level-page page-container">
-        <div class="tainacan-page-title">
+        <!-- <div class="tainacan-page-title">
             <h1>{{ $i18n.get('label_metadata_mapping') }} </h1>
-        </div>
+        </div> -->
+        <tainacan-title />
 
         <b-loading 
                 v-model="isLoading" 
@@ -772,38 +773,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-    .tainacan-page-title {
-        margin-bottom: 38px;
-
-        h1, h2 {
-            font-size: 1.25em;
-            font-weight: 500;
-            color: var(--tainacan-blue5);
-            display: inline-block;
-        }
-
-        .level-left {
-            .level-item {
-                display: inline-block;
-                margin-left: 268px;
-            }  
-        }
-        @media screen and (max-width: 769px) {
-            .level-left {
-                margin-left: 0px !important;
-                .level-item {
-                    margin-left: 30px;
-                }
-            }
-            .level-right {
-                display: none;
-            }
-
-            top: 206px;
-            margin-bottom: 0px !important;
-        }
-    }
 
     .page-container {
         padding-bottom: 0;

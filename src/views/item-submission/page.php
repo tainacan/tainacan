@@ -1,5 +1,5 @@
 <div class="wrap tainacan-page-container-content">
-	<h1>
+	<h1 class="wp-heading-inline">
 		<?php _e('Item submission', 'tainacan'); ?>
 	</h1>
 	<?php settings_errors(); ?>

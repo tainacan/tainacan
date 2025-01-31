@@ -6,6 +6,7 @@
                         content: $i18n.get('info_items_tab_all'),
                         autoHide: true,
                         placement: 'auto',
+                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                     }"
                     :class="{ 'is-active': status == undefined || status == '' || status == 'publish,private,draft' }"
                     @click="onChangeTab('')">

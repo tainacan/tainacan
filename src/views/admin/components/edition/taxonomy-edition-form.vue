@@ -582,7 +582,7 @@
 
     .footer {
         padding: 14px var(--tainacan-one-column);
-        position: fixed;
+        position: absolute;
         bottom: 0;
         right: 0;
         z-index: 9999;

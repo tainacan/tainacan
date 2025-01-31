@@ -22,7 +22,7 @@
 </style>
 
 <div class="wrap tainacan-page-container-content">
-	<h1><?php _e('Tainacan System Check', 'tainacan'); ?></h1>
+	<h1 class="wp-heading-inline"><?php _e('Tainacan System Check', 'tainacan'); ?></h1>
 	
 	<p><?php _e('This page checks your system against the Tainacan requirements. It helps you to find out whether your server is properly configured.', 'tainacan'); ?></p>
 	

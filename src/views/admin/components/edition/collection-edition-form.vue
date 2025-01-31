@@ -9,8 +9,8 @@
                 class="tainacan-form" 
                 label-width="120px">
         
-            <div class="columns">
-                <div class="column">
+            <div class="columns is-multiline">
+                <div class="column is-half-widescreen is-full-desktop">
 
                     <!-- Name -------------------------------- --> 
                     <b-field 
@@ -590,7 +590,7 @@
                     </template>
 
                 </div>
-                <div class="column">
+                <div class="column is-half-widescreen is-full-desktop">
 
                     <!-- Status -------------------------------- --> 
                     <b-field
@@ -1726,7 +1726,6 @@ export default {
             -webkit-column-gap: 0;
             -webkit-column-rule: 1px solid var(--tainacan-gray1);
             column-count: 2;
-            column-gap: 4em;
             column-rule: 1px solid var(--tainacan-gray1);
             margin-bottom: 1.125rem;
         }
@@ -1737,9 +1736,9 @@ export default {
 
         .image-placeholder {
             position: absolute;
-            left: 10%;
+            left: unset;
             right: 10%;
-            top: 35%;
+            top: 38%;
             font-size: 1em;
             font-weight: bold;
             z-index: 99;
@@ -1869,6 +1868,7 @@ export default {
     }
     .items-view-mode-options {
         display: flex;
+        column-gap: 1em !important;
 
         &>.field:first-child {
             width: 66.66%;
