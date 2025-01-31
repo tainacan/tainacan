@@ -8,10 +8,9 @@
                 @update:model-value="($event) => onInput($event)"
                 @blur="onBlur" />
         <div
-                v-if="itemMetadatum.item.id"
+                v-if="localValue && itemMetadatum.item && itemMetadatum.item.id"
                 class="add-new-term">
             <a
-                    v-if="localValue"
                     class="add-link"
                     @click="previewHtml">
                 <span class="icon">
