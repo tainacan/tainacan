@@ -334,7 +334,8 @@
                                                     placement: 'auto',
                                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                                 }"
-                                                :style="'font-size: 0.625em;' + (isMobileScreen ? 'margin-right: 2rem;' : '')">
+                                                :style="'font-size: 0.625em;' + (isMobileScreen ? 'margin-right: 2rem;' : '')"
+                                                size="is-small">
                                             {{ $i18n.get('label_required') }} *
                                         </b-switch>
 

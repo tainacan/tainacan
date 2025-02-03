@@ -569,9 +569,9 @@
   --tainacan-label-color: var(--tainacan-gray5);
   --tainacan-info-color: var(--tainacan-gray4);
   --tainacan-heading-color: var(--tainacan-black);
-  --tainacan-input-border-radius: 1px;
+  --tainacan-input-border-radius: 2px;
   --tainacan-button-border-radius: 4px;
-  --tainacan-dropdownmenu-border-radius: 0px;
+  --tainacan-dropdownmenu-border-radius: 4px;
   --tainacan-skeleton-color: #eeeeee;
   --tainacan-item-background-color: var(--tainacan-background-color);
   --tainacan-item-hover-background-color: var(--tainacan-gray1);
@@ -855,6 +855,24 @@ a:hover:not([href]) {
       .tainacan-pages-container.tainacan-pages-container--fullscreen #tainacan-page-container #tainacan-wordpress-shortcut {
         display: block;
         visibility: visible; } }
+/* Iframe Mode (is used with fullscreen) */
+.tainacan-pages-container.tainacan-pages-container--iframe-mode #wpadminbar,
+.tainacan-pages-container.tainacan-pages-container--iframe-mode #adminmenumain {
+  display: none; }
+.tainacan-pages-container.tainacan-pages-container--iframe-mode #wpbody {
+  padding-top: 0px; }
+.tainacan-pages-container.tainacan-pages-container--iframe-mode #tainacan-page-container {
+  --wp-admin--admin-bar--height: 0px;
+  --tainacan-breadcumbs-list-height: 0px;
+  --tainacan-page-container-margin-top: 0px;
+  --tainacan-page-container--inner-padding-x: 0px;
+  --tainacan-page-container--inner-padding-y: 0px;
+  --tainacan-page-container-margin-x: 0px;
+  --tainacan-page-container-border-radius: 0px;
+  --tainacan-admin-header-height: 0px;
+  --tainacan-admin-navigation-sidebar-width: 0px;
+  grid-template-columns: 1fr; }
+
 /* Admin styles */
 .tainacan-pages-container.tainacan-pages-container--admin-legacy-style #tainacan-page-container {
   --tainacan-admin-background-color: var(--tainacan-white);

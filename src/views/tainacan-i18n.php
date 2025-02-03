@@ -1085,7 +1085,9 @@ return apply_filters( 'tainacan-i18n', [
 	'info_comment_status' 							 => __( 'Allow or disallow users to write comments in the item public page.', 'tainacan' ),
 	'info_publication_data'                          => __( 'This section gathers information related to the item publication on the website.', 'tainacan' ),
 	'info_publication_data_editing'                  => __( 'You may tweak some of the options available here in the collection settings.', 'tainacan' ),
-
+	/* translators: The first string is the sorting direction (order) and will be an noun such as 'ascending'. The second one will be the metadata name (orderby). */
+	'info_sorting_%s_by_%s'				 			 => __( 'Sorting <em>%1$s</em> by <em>%2$s</em>.', 'tainacan' ),		
+	
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
 	'action_update'					=> __( 'General Updates', 'tainacan'),

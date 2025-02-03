@@ -121,7 +121,20 @@ abstract class Pages {
 
 			if ( isset($user_prefs['admin_style']) )
 				$classes .= ' tainacan-pages-container--admin-' . $user_prefs['tainacan-admin-style'] . '-style';
-		}	
+		}
+		if (
+			( isset($_GET[ 'itemEditionMode' ]) && $_GET[ 'itemEditionMode' ] ) ||
+			( isset($_GET[ 'itemCreationMode' ]) && $_GET[ 'itemCreationMode' ] ) ||
+			( isset($_GET[ 'itemsSingleSelectionMode' ]) && $_GET[ 'itemsSingleSelectionMode' ] ) ||
+			( isset($_GET[ 'itemsMultipleSelectionMode' ]) && $_GET[ 'itemsMultipleSelectionMode' ] ) ||
+			( isset($_GET[ 'itemsSearchSelectionMode' ]) && $_GET[ 'itemsSearchSelectionMode' ] ) ||
+			( isset($_GET[ 'mobileAppMode' ]) && $_GET[ 'mobileAppMode' ] ) 
+		) {
+			$classes .= ' tainacan-pages-container--iframe-mode';
+
+			if ( !str_contains($classes, 'tainacan-pages-container--fullscreen') ) 
+				$classes .= ' tainacan-pages-container--fullscreen';
+		}
 
 		return $classes;
 	}
@@ -322,18 +335,32 @@ abstract class Pages {
 			TAINACAN_VERSION
 		);
 		
+		if (
+			( isset($_GET[ 'itemEditionMode' ]) && $_GET[ 'itemEditionMode' ] ) ||
+			( isset($_GET[ 'itemCreationMode' ]) && $_GET[ 'itemCreationMode' ] ) ||
+			( isset($_GET[ 'itemsSingleSelectionMode' ]) && $_GET[ 'itemsSingleSelectionMode' ] ) ||
+			( isset($_GET[ 'itemsMultipleSelectionMode' ]) && $_GET[ 'itemsMultipleSelectionMode' ] ) ||
+			( isset($_GET[ 'itemsSearchSelectionMode' ]) && $_GET[ 'itemsSearchSelectionMode' ] ) ||
+			( isset($_GET[ 'mobileAppMode' ]) && $_GET[ 'mobileAppMode' ] ) 
+		) : 
 		?>
-		<div id="tainacan-page-container">
-			<?php $this->render_navigation_menu(); ?>
-			<main id="tainacan-page-container--inner">
-				<?php
-					$this->render_ui_tweak_buttons();
-					$this->render_breadcrumbs();
-					$this->render_page_content();
-				?>
-			</main>
-		</div>
-		<?php
+			<div id="tainacan-page-container">
+				<main id="tainacan-page-container--inner">
+					<?php $this->render_page_content(); ?>
+				</main>
+			</div>
+		<?php else : ?>
+			<div id="tainacan-page-container">
+				<?php $this->render_navigation_menu(); ?>
+				<main id="tainacan-page-container--inner">
+					<?php
+						$this->render_ui_tweak_buttons();
+						$this->render_breadcrumbs();
+						$this->render_page_content();
+					?>
+				</main>
+			</div>
+		<?php endif;
 	}
 	
 	/**

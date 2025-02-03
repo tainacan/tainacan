@@ -64,9 +64,9 @@ $tainacan-input-color: #1d1d1d;
 $tainacan-input-color-invert: findColorInvert($tainacan-input-color);
 
 // Input border radius
-$tainacan-input-border-radius: 1px;
+$tainacan-input-border-radius: 2px;
 $tainacan-button-border-radius: 4px;
-$tainacan-dropdownmenu-border-radius: 0px;
+$tainacan-dropdownmenu-border-radius: 4px;
 
 // Skeleton colors
 $skeleton-color: #eeeeee;

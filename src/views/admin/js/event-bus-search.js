@@ -125,6 +125,28 @@ export default {
                 app.config.globalProperties.$store.dispatch('search/setOrder', order);
                 this.updateURLQueries();
             },
+            setOrderAndOrderBy(order, orderBy) {
+                let prefsOrderBy = this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by';
+
+                if (orderBy.metakey) {
+                    if (!app.config.globalProperties.$userPrefs.get(prefsOrderBy) || orderBy.metakey != app.config.globalProperties.$userPrefs.get(prefsOrderBy).metakey)
+                        app.config.globalProperties.$userPrefs.set(prefsOrderBy, orderBy).catch(() => {});
+                } else {
+                    if (orderBy != app.config.globalProperties.$userPrefs.get(prefsOrderBy))
+                        app.config.globalProperties.$userPrefs.set(prefsOrderBy, orderBy).catch(() => {});
+                }
+                
+                let prefsOrder = this.collectionId != undefined ? 'order_' + this.collectionId : 'order';
+                if (app.config.globalProperties.$userPrefs.get(prefsOrder) != order) {
+                    app.config.globalProperties.$userPrefs.set(prefsOrder, order)
+                        .catch(() => {});
+                }
+
+                app.config.globalProperties.$store.dispatch('search/setOrderBy', orderBy);
+                app.config.globalProperties.$store.dispatch('search/setOrder', order);
+                
+                this.updateURLQueries();
+            },
             setStatus(status) {
                 app.config.globalProperties.$store.dispatch('search/setStatus', status);
                 this.updateURLQueries();

@@ -232,7 +232,7 @@
                                     show: 500,
                                     hide: 300,
                                 },
-                                content: (totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry' || adminViewMode == 'mosaic') ? (adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry' || adminViewMode == 'mosaic') ? $i18n.get('info_current_view_mode_metadata_not_allowed') : $i18n.get('info_cant_select_metadata_without_items') : '',
+                                content: (totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry' || adminViewMode == 'mosaic') ? (adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry' || adminViewMode == 'mosaic') ? $i18n.get('info_current_view_mode_metadata_not_allowed') : $i18n.get('info_cant_select_metadata_without_items') : $i18n.get('label_displayed_metadata'),
                                 autoHide: false,
                                 placement: 'auto-start',
                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
@@ -246,8 +246,11 @@
                             <button
                                     :aria-label="$i18n.get('label_displayed_metadata')"
                                     class="button is-white">
-                                <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_displayed_metadata') }}</span>
-                                <span class="is-hidden-widescreen">{{ $i18n.get('metadata') }}</span>
+                                <span class="gray-icon is-small">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata" />
+                                </span>
+                                &nbsp;&nbsp;
+                                <span>{{ $i18n.get('metadata') }}</span>
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                 </span>
@@ -258,6 +261,7 @@
                                     v-for="(column, index) in localDisplayedMetadata"
                                     :key="index"
                                     class="control"
+                                    :class="{ 'is-active': column.display }"
                                     custom
                                     aria-role="listitem">
                                 <b-checkbox
@@ -277,104 +281,102 @@
                         </div>  
                     </b-dropdown>
                 </div>
-
-                <!-- Change OrderBy Select and Order Button-->
+                
+                <!-- New style for Order and OrderBy Dropdown -->
                 <div class="search-control-item">
-                    <b-field>
-                        <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
-                        <b-dropdown
-                                :mobile-modal="true"
-                                :model-value="order"
-                                aria-role="list"
-                                trap-focus
-                                @update:model-value="onChangeOrder">
-                            <template #trigger>
-                                <button
-                                        :aria-label="$i18n.get('label_sorting_direction')"
-                                        class="button is-white"
-                                        style="padding-right: 3px !important;">
-                                    <span class="icon is-small gray-icon">
-                                        <i 
-                                                :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
-                                                class="tainacan-icon" />
-                                    </span>
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                                    </span>
-                                </button>
-                            </template>
-                            <b-dropdown-item
-                                    aria-controls="items-list-results"
-                                    role="button"
-                                    :class="{ 'is-active': order == 'DESC' }"
-                                    :value="'DESC'"
-                                    aria-role="listitem">
-                                <span class="icon gray-icon">
-                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending" />
+                    <b-dropdown
+                            ref="sortingDropdown" 
+                            :mobile-modal="true"
+                            class="show sorting-options-dropdown"
+                            aria-role="list"
+                            trap-focus
+                            :close-on-click="false"
+                            @active-change="() => { newOrder = order; newOrderBy = orderBy; }">
+                        <template #trigger>
+                            <button
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
+                                        content: $i18n.getWithVariables('info_sorting_%s_by_%s', [order == 'ASC' ? $i18n.get('label_ascending') : $i18n.get('label_descending'), orderByName]),
+                                        autoHide: false,
+                                        html: true,
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
+                                    }"
+                                    :aria-label="$i18n.get('label_sorting')"
+                                    class="button is-white">
+                                <span class="is-small gray-icon">
+                                    <i 
+                                            :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
+                                            class="tainacan-icon" />
                                 </span>
-                                <span>{{ $i18n.get('label_descending') }}</span>
-                            </b-dropdown-item>
-                            <b-dropdown-item
-                                    aria-controls="items-list-results"
-                                    role="button"
-                                    :class="{ 'is-active': order == 'ASC' }"
-                                    :value="'ASC'"
-                                    aria-role="listitem">
-                                <span class="icon gray-icon">
-                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending" />
+                                &nbsp;
+                                <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_sorting') }}</span>
+                                <span class="is-hidden-widescreen">{{ $i18n.get('label_sort') }}</span>
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                 </span>
-                                <span>{{ $i18n.get('label_ascending') }}</span>
-                            </b-dropdown-item>
-                        </b-dropdown>
-                        <span
-                                class="label"
-                                style="padding-left: 0.65em;">
-                            {{ $i18n.get('info_by_inner') }}
-                        </span>
-                        <b-dropdown
-                                :mobile-modal="true"
-                                aria-role="list"
-                                trap-focus
-                                @update:model-value="onChangeOrderBy($event)">
-                            <template #trigger>
-                                <button
-                                        :aria-label="$i18n.get('label_sorting')"
-                                        class="button is-white">
-                                    <span>{{ orderByName }}</span>
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                                    </span>
-                                </button>
-                            </template>
-                            <template 
-                                    v-for="metadatum of sortingMetadata"
-                                    :key="metadatum.slug">
+                            </button>
+                        </template>
+                        <div class="sorting-options-container">
+                            <div class="sorting-options-container-direction">
                                 <b-dropdown-item
-                                        v-if="metadatum != undefined"
                                         aria-controls="items-list-results"
                                         role="button"
-                                        :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
-                                        :value="metadatum"
-                                        aria-role="listitem">
-                                    {{ metadatum.name }}
+                                        :class="{ 'is-active': newOrder == 'DESC' }"
+                                        :value="'DESC'"
+                                        aria-role="listitem"
+                                        @click="newOrder = 'DESC'">
+                                    <span class="icon gray-icon">
+                                        <i class="tainacan-icon tainacan-icon-sortdescending" />
+                                    </span>
+                                    <span>{{ $i18n.get('label_descending') }}</span>
                                 </b-dropdown-item>
-                            </template>
-                        </b-dropdown>
-                    </b-field>
+                                <b-dropdown-item
+                                        aria-controls="items-list-results"
+                                        role="button"
+                                        :class="{ 'is-active': newOrder == 'ASC' }"
+                                        :value="'ASC'"
+                                        aria-role="listitem"
+                                        @click="newOrder = 'ASC'">
+                                    <span class="icon gray-icon">
+                                        <i class="tainacan-icon tainacan-icon-sortascending" />
+                                    </span>
+                                    <span>{{ $i18n.get('label_ascending') }}</span>
+                                </b-dropdown-item>
+                            </div>
+                            <div class="sorting-options-container-orderby">
+                                <template 
+                                        v-for="metadatum of sortingMetadata"
+                                        :key="metadatum.slug">
+                                    <b-dropdown-item
+                                            v-if="metadatum != undefined"
+                                            aria-controls="items-list-results"
+                                            role="button"
+                                            :class="{ 'is-active': (newOrderBy != 'meta_value' && newOrderBy != 'meta_value_num' && (newOrderBy == metadatum.slug || newOrderBy === 'date' && metadatum.slug == 'creation_date')) || ((newOrderBy == 'meta_value' || newOrderBy == 'meta_value_num') && metaKey == metadatum.id) }"
+                                            :value="metadatum"
+                                            aria-role="listitem"
+                                            @click="newOrderBy = $orderByHelper.getOrderByForMetadatum(metadatum)">
+                                        {{ metadatum.name }}
+                                    </b-dropdown-item>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-apply">
+                            <button 
+                                    aria-controls="items-list-results"
+                                    class="button is-success"
+                                    @click="onChangeOrderAndOrderBy(newOrder, newOrderBy)">
+                                {{ $i18n.get('label_apply_changes') }}
+                            </button>
+                        </div>  
+                    </b-dropdown>
                 </div>
 
-                <div class="search-control-item">
+                <div class="search-control-item search-control-item-visualization">
                     <b-field>
-                        <label 
-                                class="label is-hidden-touch is-hidden-desktop-only"
-                                style="margin-right: -10px;">
-                            {{ $i18n.get('label_visualization') + ':&nbsp; ' }}
-                        </label>
-                        <label 
-                                class="label is-hidden-widescreen is-hidden-mobile"
-                                style="margin-right: -10px;">
-                            {{ $i18n.get('label_view_on') + ':&nbsp; ' }}
-                        </label>
                         <b-dropdown
                                 :mobile-modal="true"
                                 position="is-bottom-left"
@@ -384,9 +386,19 @@
                                 @change="onChangeAdminViewMode($event)">
                             <template #trigger>
                                 <button
+                                        v-tooltip="{
+                                            content: adminViewMode != undefined ? $i18n.get('label_' + adminViewMode) : $i18n.get('label_table'),
+                                            delay: {
+                                                show: 500,
+                                                hide: 300,
+                                            },
+                                            autoHide: false,
+                                            placement: 'auto-start',
+                                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
+                                        }"
                                         :aria-label="$i18n.get('label_view_mode')"
                                         class="button is-white">
-                                    <span class="view-mode-icon icon is-small gray-icon">
+                                    <span class="view-mode-icon is-small gray-icon">
                                         <i 
                                                 v-if="adminViewMode !== 'map'"
                                                 :class="{
@@ -407,7 +419,13 @@
                                             <path d="M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z" />
                                         </svg>
                                     </span>
-                                    &nbsp;&nbsp;&nbsp;{{ adminViewMode != undefined ? $i18n.get('label_' + adminViewMode) : $i18n.get('label_table') }}
+                                    &nbsp;&nbsp;
+                                    <span class="is-hidden-touch is-hidden-desktop-only">
+                                        {{ $i18n.get('label_visualization') }}
+                                    </span>
+                                    <span class="is-hidden-widescreen">
+                                        {{ $i18n.get('label_view_on') }}
+                                    </span>
                                     <span class="icon">
                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                     </span>
@@ -526,7 +544,7 @@
                         <span class="gray-icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas" />
                         </span>
-                        <span class="is-hidden-tablet-only is-hidden-desktop-only">{{ $i18n.get('label_view_as') }}</span>
+                        <span>{{ $i18n.get('label_view_as') }}</span>
                     </button>
                 </div>
 
@@ -766,7 +784,9 @@
                 hasAnOpenAlert: true,
                 metadataSearchCancel: undefined,
                 isMobileScreen: false,
-                windowWidth: null
+                windowWidth: null,
+                newOrder: 'DESC',
+                newOrderBy: 'date',
             }
         },
         computed: {
@@ -1090,14 +1110,12 @@
             },
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
-            },  
-            onChangeOrderBy(metadatum) {
-                this.$eventBusSearch.setOrderBy(this.$orderByHelper.getOrderByForMetadatum(metadatum));
-                this.showItemsHiddingDueSortingDialog();
             },
-            onChangeOrder(newOrder) {
-                if (newOrder != this.order)
-                    this.$eventBusSearch.setOrder(newOrder);
+            onChangeOrderAndOrderBy(newOrder, newOrderBy) {
+                if (newOrder != this.order || newOrderBy != this.orderBy) {
+                    this.$eventBusSearch.setOrderAndOrderBy(newOrder, newOrderBy);
+                    this.showItemsHiddingDueSortingDialog();
+                }
             },
             onChangeAdminViewMode(adminViewMode) {
                  // We need to load metadata again as fetch_only might change from view mode
@@ -1616,10 +1634,18 @@
         height: auto;
         position: relative;
         padding: 2px 0 var(--tainacan-container-padding) 0;
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(144px, 1fr));
         justify-content: space-between;
-        flex-wrap: wrap;
+        grid-template-rows: auto;
+        justify-items: center;
+        grid-gap: 0 1rem;
         transition: top 0.3s, opacity 0.3s, padding 0.3s, height 0.3s, position 0.3s;
+
+        @supports (contain: inline-size) {
+            container-type: inline-size;
+            container-name: searchcontrol; 
+        }
 
         &.floating-search-control {
             position: sticky;
@@ -1644,24 +1670,51 @@
             max-width: 100%;
             display: inline-block;
             margin-bottom: 12px;
-            margin-right: auto;
             padding-right: 10px;
 
-            @media screen and (max-width: 769px) {            
+            &:first-of-type {
+                grid-row: 1/5;
+            }
+            @container searchcontrol (max-width: 769px) {
                 margin-right: 0;
                 padding-right: 0;
 
                 &:first-of-type {
                     min-width: 100%;
+                    grid-column: 1/-1;
+                    grid-row: 1/1;
 
                     .search-area {
                         padding-right: 0;
+                        margin-bottom: 24px;
                         max-width: 100% !important;
                     }
                 }
                 .label {
                     display: flex;
                     align-items: center;
+                }
+            }
+            @supports not (contain: inline-size) {
+                @media screen and (max-width: 769px) {            
+                    margin-right: 0;
+                    padding-right: 0;
+
+                    &:first-of-type {
+                        min-width: 100%;
+                        grid-column: 1/-1;
+                        grid-row: 1/1;
+
+                        .search-area {
+                            padding-right: 0;
+                            margin-bottom: 24px;
+                            max-width: 100% !important;
+                        }
+                    }
+                    .label {
+                        display: flex;
+                        align-items: center;
+                    }
                 }
             }
 
@@ -1698,13 +1751,6 @@
                 color: var(--tainacan-info-color) !important;
                 max-width: 1.25em;
             }
-            
-            .view-mode-icon {
-                margin-right: 0px !important;
-                margin-top: -2px;
-                margin-left: 4px !important;
-                width: 1.25em;
-            }
 
             .dropdown-menu {
                 display: block;
@@ -1712,9 +1758,19 @@
                 div.dropdown-content {
                     padding: 0;
 
+                    .sorting-options-container,
                     .metadata-options-container {
                         max-height: 288px;
                         overflow: auto;
+                    }
+                    .sorting-options-container-direction {
+                        position: sticky;
+                        top: 0;
+                        display: flex;
+                        background-color: var(--tainacan-background-color);
+                        border-bottom: 1px solid var(--tainacan-input-border-color);
+                        padding: 8px 12px;
+                        z-index: 1;
                     }
                     .dropdown-item {
                         padding: 0.25em 1.0em 0.25em 0.75em; 
@@ -1724,7 +1780,7 @@
                     }      
                     .dropdown-item-apply {
                         width: 100%;
-                        border-top: 1px solid var(--tainacan-skeleton-color);
+                        border-top: 1px solid var(--tainacan-input-border-color);
                         padding: 8px 12px;
                         text-align: right;
                     }
@@ -1740,7 +1796,6 @@
                 align-items: center;
                 width: 100%;
                 min-width: 120px;
-                max-width: calc(16.66667vw - 60px);
                 padding-right: 15px;
 
                 .tainacan-textual-search-input {

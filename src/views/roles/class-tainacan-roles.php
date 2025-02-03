@@ -36,6 +36,7 @@ class Roles_Editor extends Pages {
 		wp_set_script_translations('tainacan-pages-common-scripts', 'tainacan');
 
 		$settings = $this->get_admin_js_localization_params();
+		wp_localize_script( 'tainacan-pages-common-scripts', 'tainacan_user', $this->get_admin_js_user_data() );
 		wp_localize_script( 'tainacan-pages-common-scripts', 'tainacan_plugin', $settings );
 		wp_enqueue_script('underscore');
 		wp_enqueue_script('wp-i18n');

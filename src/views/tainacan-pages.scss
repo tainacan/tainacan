@@ -41,6 +41,29 @@
     }
 }
 
+/* Iframe Mode (is used with fullscreen) */
+.tainacan-pages-container.tainacan-pages-container--iframe-mode {
+    #wpadminbar,
+    #adminmenumain {
+        display: none;
+    }
+    #wpbody {
+        padding-top: 0px;
+    }
+    #tainacan-page-container {
+        --wp-admin--admin-bar--height: 0px;
+        --tainacan-breadcumbs-list-height: 0px;
+        --tainacan-page-container-margin-top: 0px;
+        --tainacan-page-container--inner-padding-x: 0px;
+        --tainacan-page-container--inner-padding-y: 0px;
+        --tainacan-page-container-margin-x: 0px;
+        --tainacan-page-container-border-radius: 0px;
+        --tainacan-admin-header-height: 0px;
+        --tainacan-admin-navigation-sidebar-width: 0px;
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Admin styles */
 .tainacan-pages-container.tainacan-pages-container--admin-legacy-style #tainacan-page-container {
     --tainacan-admin-background-color: var(--tainacan-white);

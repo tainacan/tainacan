@@ -214,6 +214,7 @@ class Admin extends Pages {
 		);
 		$settings = $this->get_admin_js_localization_params();
 
+		wp_localize_script( 'tainacan-pages-common-scripts', 'tainacan_user', $this->get_admin_js_user_data() );
 		wp_localize_script( 'tainacan-pages-common-scripts', 'tainacan_plugin', $settings );
 		wp_enqueue_media(
 			 //[ 'post' => 131528 ]
