@@ -58,7 +58,7 @@ class Admin_Bar_Items {
                     // Is it a taxonomy-post-type post?
                     if ( property_exists($post, 'post_type') && $post->post_type == Entities\Taxonomy::$post_type && current_user_can('edit_posts', $post->ID) ) {
 
-                        $url = admin_url( '?page=tainacan_admin#/taxonomies/' . $post->ID );
+                        $url = admin_url( 'admin.php?page=tainacan_admin#/taxonomies/' . $post->ID );
 
                         $admin_bar->add_menu( array(
                             'id'    => 'tainacan-taxonomy-edition-link',
@@ -86,7 +86,7 @@ class Admin_Bar_Items {
                         $tax_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($term->taxonomy);
 
                         if ( $tax_id && current_user_can( 'edit_posts', $tax_id ) ) {
-                            $url = admin_url( '?page=tainacan_admin#/taxonomies/'  . $tax_id);
+                            $url = admin_url( 'admin.php?page=tainacan_admin#/taxonomies/'  . $tax_id);
 
                             $admin_bar->add_menu( array(
                                 'id'    => 'tainacan-taxonomy-edition-link',
@@ -110,7 +110,7 @@ class Admin_Bar_Items {
                 // There should exist a Tainacan collection and the user should have permission for edit it
                 if ( $collection && $collection->can_edit() ) {
 
-                    $url = admin_url( '?page=tainacan_admin#/collections/' . $collection->get_ID() . '/settings' );
+                    $url = admin_url( 'admin.php?page=tainacan_admin#/collections/' . $collection->get_ID() . '/settings' );
 
                     $admin_bar->add_menu( array(
                         'id'    => 'tainacan-collection-edition-link',
@@ -126,7 +126,7 @@ class Admin_Bar_Items {
                 // If no single collection is found, we may be in a collections list
                 } else if ( is_post_type_archive('tainacan-collection') ) {
 
-                    $url = admin_url( '?page=tainacan_admin#/collections/' );
+                    $url = admin_url( 'admin.php?page=tainacan_admin#/collections/' );
 
                     $admin_bar->add_menu( array(
                         'id'    => 'tainacan-collections-edition-link',
@@ -141,7 +141,7 @@ class Admin_Bar_Items {
 
                 } else if ( is_post_type_archive('tainacan-taxonomy') ) {
                     
-                    $url = admin_url( '?page=tainacan_admin#/taxonomies/' );
+                    $url = admin_url( 'admin.php?page=tainacan_admin#/taxonomies/' );
 
                     $admin_bar->add_menu( array(
                         'id'    => 'tainacan-taxonomies-edition-link',
@@ -158,7 +158,7 @@ class Admin_Bar_Items {
                     global $wp_query;
                     if ( $wp_query->get( 'tainacan_repository_archive' ) == 1 ) {
                         
-                        $url = admin_url( '?page=tainacan_admin#/items/' );
+                        $url = admin_url( 'admin.php?page=tainacan_admin#/items/' );
 
                         $admin_bar->add_menu( array(
                             'id'    => 'tainacan-repository-items-edition-link',

@@ -987,7 +987,7 @@ class Item extends Entity {
 	public function get_edit_url() {
 		$collection_id = $this->get_collection_id();
 		$id = $this->get_id();
-		return admin_url("?page=tainacan_admin#/collections/$collection_id/items/$id/edit");
+		return admin_url("admin.php?page=tainacan_admin#/collections/$collection_id/items/$id/edit");
 	}
 
 	/**
