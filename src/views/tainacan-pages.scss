@@ -13,26 +13,31 @@
 }
 
 /* Fullscreen mode */
-@media (min-width: 782px) {
-    .tainacan-pages-container.tainacan-pages-container--fullscreen {
-        height: calc(100% + var(--wp-admin--admin-bar--height, 32px));
-        margin-top: calc( -1 * var(--wp-admin--admin-bar--height, 32px));
+.tainacan-pages-container.tainacan-pages-container--fullscreen {
+    height: calc(100% + var(--wp-admin--admin-bar--height, 32px));
+    margin-top: calc( -1 * var(--wp-admin--admin-bar--height, 32px));
 
-        #wpcontent,
-        #wpfooter {
-            margin-left: 0;
+    #wpcontent,
+    #wpfooter {
+        margin-left: 0;
+    }
+    #wpadminbar,
+    #adminmenumain {
+        display: none;
+    }
+    #tainacan-page-container {
+        position: relative;
+        --wp-admin--admin-bar--height: 0px;
+
+        #tainacan-navigation-menu header h1 {
+            margin: 1.875rem 0 0.25rem;
         }
-        #wpadminbar,
-        #adminmenumain {
-            display: none;
+        #tainacan-navigation-menu.is-active + #tainacan-page-container--inner #tainacan-wordpress-shortcut {
+            display: block;
+            visibility: visible;
+            z-index: 1005;
         }
-        #tainacan-page-container {
-            --wp-admin--admin-bar--height: 0px;
-
-            #tainacan-navigation-menu header h1 {
-                margin: 1.875rem 0 0.25rem;
-            }
-
+        @media screen and (min-width: 769px) {
             #tainacan-wordpress-shortcut {
                 display: block;
                 visibility: visible;
@@ -40,6 +45,7 @@
         }
     }
 }
+
 
 /* Iframe Mode (is used with fullscreen) */
 .tainacan-pages-container.tainacan-pages-container--iframe-mode {
@@ -693,7 +699,7 @@
             display: block;
             position: absolute;
             width: var(--tainacan-admin-navigation-sidebar-width, 228px);
-            z-index: 1000;
+            z-index: 1002;
             box-shadow: 0.5rem 0 2rem -1.5rem var(--tainacan-black);
 
             + #tainacan-page-container--inner #tainacan-menu-toggler {

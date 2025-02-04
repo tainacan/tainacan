@@ -132,6 +132,29 @@ export default {
     .thumbnail-field {
         display: flex;
 
+        @supports (contain: inline-size) {
+            container-type: inline-size;
+            container-name: thumbnailfield; 
+        }
+
+        @container thumbnailfield (max-width: 300px) {
+            :deep(img),
+            :deep(.image-wrapper) {
+                height: 58px !important;
+                width: 58px !important;
+                min-width: 58px !important;
+            }
+            :deep(.image-placeholder) {
+                top: 12px !important;
+                font-size: 0.75em !important;
+                margin-left: 3px !important;
+                margin-right: 3px !important;
+            }
+            .thumbnail-buttons-row {
+                bottom: 42px !important;
+            }
+        }
+
         .field {
             margin-left: 1em;
             width: 100%;

@@ -394,6 +394,11 @@ export default {
         flex-direction: column;
         gap: 0.5em;
 
+        @supports (contain: inline-size) {
+            container-type: inline-size;
+            container-name: publicationfield; 
+        }
+
         .field-label {
             white-space: nowrap;
             text-align: left;
@@ -405,6 +410,17 @@ export default {
         }
         .field.has-addons {
             align-items: center;
+
+            @container publicationfield (max-width: 220px) {
+                align-items: start;
+                flex-wrap: wrap;
+
+                .field-label {
+                    max-width: 100%;
+                    width: 100%;
+                    min-width: 100%;
+                }
+            }
         }
         .tainacan-help-tooltip-trigger {
             margin-left: 0.5rem;

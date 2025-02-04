@@ -355,7 +355,7 @@
                                             v-if="metadatum != undefined"
                                             aria-controls="items-list-results"
                                             role="button"
-                                            :class="{ 'is-active': (newOrderBy != 'meta_value' && newOrderBy != 'meta_value_num' && (newOrderBy == metadatum.slug || newOrderBy === 'date' && metadatum.slug == 'creation_date')) || ((newOrderBy == 'meta_value' || newOrderBy == 'meta_value_num') && metaKey == metadatum.id) }"
+                                            :class="{ 'is-active': (newOrderBy != 'meta_value' && newOrderBy != 'meta_value_num' && (newOrderBy == $orderByHelper.getOrderByForMetadatum(metadatum))) || ((newOrderBy == 'meta_value' || newOrderBy == 'meta_value_num') && metaKey == metadatum.id) }"
                                             :value="metadatum"
                                             aria-role="listitem"
                                             @click="newOrderBy = $orderByHelper.getOrderByForMetadatum(metadatum)">

@@ -18,11 +18,11 @@
         </tainacan-title>
 
         <div class="tainacan-form">
-            <div class="columns">
+            <div class="columns is-multiline">
 
                 <div
                         class="column"
-                        :class="shouldDisplayItemSingleDocument || shouldDisplayItemSingleThumbnail ? 'is-7' : 'is-12'">
+                        :class="shouldDisplayItemSingleDocument || shouldDisplayItemSingleThumbnail ? 'is-7 is-12-touch' : 'is-12'">
 
                     <!-- Hook for extra Form options -->
                     <template v-if="hasBeginRightForm">
@@ -166,7 +166,7 @@
 
                 <div 
                         v-if="shouldDisplayItemSingleDocument || shouldDisplayItemSingleThumbnail"
-                        class="column is-5">
+                        class="column is-5 is-12-touch">
                     <div class="sticky-container">
 
                         <!-- Hook for extra Form options -->
@@ -777,15 +777,6 @@
                 }
             }
 
-            @media screen and (max-width: 1440px) {
-                &>.column.is-7 {
-                    padding-left: 0.75em;
-                }
-                &>.column.is-5 {
-                    padding-right: 0.75em;
-                }
-            }
-
             @media screen and (max-width: 769px) {
                 margin-left: 0;
                 margin-right: 0;
@@ -900,7 +891,7 @@
     }
 
     .section-box {
-        padding: 0 1em 0 1.875em;
+        padding: 0 0.75em 0 1.875em;
         margin-top: 10px;
         margin-bottom: 16px;
         position: relative;
@@ -1089,7 +1080,7 @@
         position: absolute;
         bottom: 0;
         right: 0;
-        z-index: 9999;
+        z-index: 1001;
         background-color: var(--tainacan-gray1);
         width: 100%;
         height: 60px;

@@ -170,7 +170,7 @@
                     v-show="!isLoading && ((isCreatingNewItem && collection && collection.current_user_can_edit_items) || (!isCreatingNewItem && item && item.current_user_can_edit))"
                     class="tainacan-form"
                     label-width="120px">
-                <div class="columns">
+                <div class="columns is-multiline">
 
                     <div
                             class="column main-column"
@@ -178,7 +178,7 @@
                                 (
                                     ( (shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs ) ||
                                     ( shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs )
-                                ) ? 'is-7' : 'is-12'">
+                                ) ? 'is-7 is-12-touch' : 'is-12'">
 
                         <!-- Hook for extra Form options -->
                         <template v-if="hasBeginRightForm">
@@ -573,7 +573,7 @@
                     <div 
                             v-if="( (shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
                                 (shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)"
-                            class="column is-5">
+                            class="column is-5 is-12-touch">
                 
                         <div 
                                 :style="isMetadataNavigation && !isMobileScreen ? 'max-height: calc(100vh - 142px);' : ''"
@@ -2152,15 +2152,6 @@ export default {
                 }
             }
 
-            @media screen and (max-width: 1440px) {
-                &>.column.main-column {
-                    padding-left: 0.75em;
-                }
-                &>.column:not(.main-column) {
-                    padding-right: 0.75em;
-                }
-            }
-
             @media screen and (max-width: 769px) {
                 margin-left: 0;
                 margin-right: 0;
@@ -2236,7 +2227,8 @@ export default {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 1rem;
+            gap: 0.25rem 1rem;
+            flex-wrap: wrap;
             background-color: var(--tainacan-background-color);
             
             .field {
@@ -2288,11 +2280,20 @@ export default {
                 color: var(--tainacan-blue5);
             }
 
+            @supports (contain: inline-size) {
+                container-type: inline-size;
+                container-name: itemeditionsubheader; 
+            }
+            @container itemeditionsubheader (max-width: 620px) {
+                .metadata-name-search {
+                    max-width: 160px;
+                }
+            }
             @media screen and (max-width: 769px) {
                 .metadata-name-search {
                     position: absolute;
                     right: 0.5em;
-                    z-index: 9999;
+                    z-index: 999;
                     padding-left: 0 !important;
                 }
                 &.is-metadata-navigation-active {
@@ -2390,7 +2391,7 @@ export default {
 
         .section-box {
             position: relative;
-            padding: 0 1.75em 0 1.75em;
+            padding: 0 0.75em 0 1.75em;
             margin-bottom: 16px;
         }
 
@@ -2465,7 +2466,7 @@ export default {
             position: absolute;
             bottom: 0;
             right: 0;
-            z-index: 9999;
+            z-index: 1001;
             background-color: var(--tainacan-gray1);
             width: 100%;
             height: 60px;
