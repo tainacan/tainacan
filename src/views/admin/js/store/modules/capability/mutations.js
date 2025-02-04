@@ -3,22 +3,34 @@
 // Roles
 export const addCapabilityToRole = (state, {capabilityKey, role}) => {
     if (state.capabilities[capabilityKey] && state.capabilities[capabilityKey].roles[role.slug] == undefined) {
-        let updateRoles = state.capabilities[capabilityKey].roles.length ? state.capabilities[capabilityKey].roles : {};
+        let updateRoles = state.capabilities[capabilityKey].roles ? state.capabilities[capabilityKey].roles : {};
         updateRoles[role.slug] = role;
-        Object.assign(state.capabilities[capabilityKey], { 'roles': updateRoles })
+        const updatedCapability = state.capabilities[capabilityKey];
+        Object.assign(updatedCapability, { 'roles': updateRoles });
+        Object.assign(state.capabilities, { [capabilityKey]: updatedCapability } );
     }
-    if (state.role && state.role.slug && state.role.slug == role.slug)
+    if (state.role && state.role.slug && state.role.slug == role.slug) {
         state.role = role;
+    }
+    if ( state.roles[role.slug] ) {
+        Object.assign(state.roles[role.slug], { 'capabilities': role.capabilities });
+    }
 };
 
 export const removeCapabilityFromRole = (state, {capabilityKey, role}) => {
     if (state.capabilities[capabilityKey]) {
         let updateRoles = state.capabilities[capabilityKey].roles;
         delete updateRoles[role.slug];
-        Object.assign(state.capabilities[capabilityKey], { 'roles': updateRoles })
+        const updatedCapability = state.capabilities[capabilityKey];
+        Object.assign(updatedCapability, { 'roles': updateRoles });
+        Object.assign(state.capabilities, { [capabilityKey]: updatedCapability } );
     }
-    if (state.role && state.role.slug && state.role.slug == role.slug)
+    if (state.role && state.role.slug && state.role.slug == role.slug) {
         state.role = role;
+    }
+    if ( state.roles[role.slug] ) {
+        Object.assign(state.roles[role.slug], { 'capabilities': role.capabilities });
+    }
 };
 
 export const setRoles = (state, roles) => {
