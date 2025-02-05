@@ -186,7 +186,8 @@
                             :key="index"
                             class="control"
                             custom
-                            aria-role="listitem">
+                            aria-role="listitem"
+                            :class="{ 'is-active': column.display }">
                         <b-checkbox
                                 v-model="column.display"
                                 :native-value="column.display">

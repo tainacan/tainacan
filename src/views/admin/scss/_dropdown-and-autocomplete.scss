@@ -167,7 +167,7 @@
     padding: 0px !important;
     background-color: var(--tainacan-input-background-color);
     border: 1px solid var(--tainacan-input-border-color) !important;
-    border-radius: var(--tainacan-input-border-radius, 1px) !important;
+    border-radius: var(--tainacan-input-border-radius, 2px) !important;
 
     &:focus, &:active, &.is-focused {
         border: 1px solid var(--tainacan-secondary) !important;

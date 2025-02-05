@@ -145,9 +145,9 @@ $filter-menu-width-theme: 20%;
 $filters-inline-width: 272px;
 
 // Overall Pages padding:
-$one-column: 4.166666667%;
-$container-padding: 25px;
-$container-narrow-padding: 18px;
+$one-column: unquote('min(4.166666667%, 2rem)');
+$container-padding: 1.5rem;
+$container-narrow-padding: 1rem;
 
 // Links
 $link: $secondary;

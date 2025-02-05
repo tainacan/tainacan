@@ -252,7 +252,7 @@
 
                     <!-- Actions -->
                     <div
-                            v-if="item.current_user_can_edit && !$adminOptions.hideItemsListActionAreas"
+                            v-if="item.current_user_can_edit && !$adminOptions.hideItemsListActionAreas && !isSelectingItems"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -416,7 +416,7 @@
 
                         <!-- Actions -->
                         <div
-                                v-if="item.current_user_can_edit && !$adminOptions.hideItemsListActionAreas"
+                                v-if="item.current_user_can_edit && !$adminOptions.hideItemsListActionAreas && !isSelectingItems"
                                 class="actions-area"
                                 :label="$i18n.get('label_actions')">
                             <a
@@ -566,7 +566,7 @@
                     </div>
                     <!-- Actions -->
                     <div
-                            v-if="item.current_user_can_edit && !$adminOptions.hideItemsListActionAreas"
+                            v-if="item.current_user_can_edit && !$adminOptions.hideItemsListActionAreas && !isSelectingItems"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -808,7 +808,7 @@
                         </div>
                         <!-- Actions -->
                         <div
-                                v-if="item.current_user_can_edit && !$adminOptions.hideItemsListActionAreas"
+                                v-if="item.current_user_can_edit && !$adminOptions.hideItemsListActionAreas && !isSelectingItems"
                                 class="actions-area"
                                 :label="$i18n.get('label_actions')">
                             <a
@@ -1179,7 +1179,9 @@
                                 v-if="(item.current_user_can_edit || item.current_user_can_delete) && !$adminOptions.hideItemsListActionAreas"
                                 class="actions-cell"
                                 :label="$i18n.get('label_actions')">
-                            <div class="actions-container">
+                            <div 
+                                    v-if="!isSelectingItems"
+                                    class="actions-container">
                                 <a
                                         v-if="!isOnTrash"
                                         id="button-edit"
@@ -1351,7 +1353,7 @@
 
                     <!-- Actions -->
                     <div
-                            v-if="item.current_user_can_edit && !$adminOptions.hideItemsListActionAreas"
+                            v-if="item.current_user_can_edit && !$adminOptions.hideItemsListActionAreas && !isSelectingItems"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -1591,7 +1593,7 @@
                             </div>
                             <!-- Actions -->
                             <div
-                                    v-if="!$adminOptions.hideItemsListActionAreas"
+                                    v-if="!$adminOptions.hideItemsListActionAreas && !isSelectingItems"
                                     class="actions-area"
                                     :label="$i18n.get('label_actions')">
                                 <a
@@ -1826,7 +1828,7 @@
 
                                     <!-- Actions -->
                                     <div
-                                            v-if="!$adminOptions.hideItemsListActionAreas"
+                                            v-if="!$adminOptions.hideItemsListActionAreas && !isSelectingItems"
                                             class="actions-area"
                                             :label="$i18n.get('label_actions')">
                                         <a
@@ -2078,7 +2080,7 @@
 
                         <!-- Actions -->
                         <div
-                                v-if="item.current_user_can_edit && !$adminOptions.hideItemsListActionAreas"
+                                v-if="item.current_user_can_edit && !$adminOptions.hideItemsListActionAreas && !isSelectingItems"
                                 class="actions-area"
                                 :label="$i18n.get('label_actions')">
                             <a
@@ -2897,7 +2899,7 @@ export default {
         margin-bottom: 6px;
         padding: 6px 0px 0px 12px;
         background: var(--tainacan-background-color);
-        height: 40px;
+        height: 42px;
         display: flex;
         align-items: center;
         justify-content: space-between;

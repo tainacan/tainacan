@@ -131,6 +131,7 @@ export default {
     }
     .thumbnail-field {
         display: flex;
+        min-height: 120px;
 
         @supports (contain: inline-size) {
             container-type: inline-size;

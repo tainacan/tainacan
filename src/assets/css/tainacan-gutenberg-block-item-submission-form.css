@@ -135,14 +135,14 @@
       height: 1.5em;
       width: 18%;
       border: 2px solid var(--tainacan-input-border-color, rgba(200, 200, 200, 0.3));
-      border-radius: var(--tainacan-input-border-radius, 1px);
+      border-radius: var(--tainacan-input-border-radius, 2px);
       display: inline-block; }
     .wp-block-tainacan-item-submission-form .item-submission-form-placeholder .fake-textarea {
       background-color: var(--tainacan-input-background-color, rgba(200, 200, 200, 0.3));
       height: 2.5em;
       width: 100%;
       border: 2px solid var(--tainacan-input-border-color, rgba(200, 200, 200, 0.3));
-      border-radius: var(--tainacan-input-border-radius, 1px);
+      border-radius: var(--tainacan-input-border-radius, 2px);
       display: inline-block; }
     .wp-block-tainacan-item-submission-form .item-submission-form-placeholder .fake-button {
       background-color: var(--tainacan-secondary, rgba(200, 200, 200, 0.3));

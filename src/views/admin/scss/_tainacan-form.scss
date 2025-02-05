@@ -190,7 +190,7 @@
             justify-content: space-between;
             width: 100%;
             border: 1px solid var(--tainacan-input-border-color) !important;
-            border-radius: var(--tainacan-input-border-radius, 1px) !important;
+            border-radius: var(--tainacan-input-border-radius, 2px) !important;
             padding: 2px 14px 2px 18px !important
         }
     }
@@ -227,7 +227,8 @@
 
     .form-hook-region {
         margin-top: 0.75em;
-        background-color: var(--tainacan-gray1);
+        background-color: var(--tainacan-gray0);
+        border-radius: var(--tainacan-input-border-radius);
         padding: 1em 1.5em 2em 1.5em;
         margin-bottom: 0.75em;
         break-inside: avoid;

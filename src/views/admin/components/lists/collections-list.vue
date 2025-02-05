@@ -323,12 +323,14 @@
                         </td>
                         <!-- Actions -->
                         <td  
-                                v-if="collection.current_user_can_edit || collection.current_user_can_delete"
+                                v-if="( collection.current_user_can_edit || collection.current_user_can_delete )"
                                 class="column-default-width"
                                 :class="{ 'actions-cell': collection.current_user_can_edit || collection.current_user_can_delete }"
                                 :label="$i18n.get('label_actions')"  
                                 @click="onClickCollection($event, collection.id, index)">
-                            <div class="actions-container">
+                            <div 
+                                    v-if="!isSelectingCollections"
+                                    class="actions-container">
                                 <a 
                                         v-if="collection.current_user_can_edit" 
                                         id="button-edit"

@@ -70,8 +70,8 @@
                     justify-content: center;
                     transition: background-color 0.15s ease;
                 }
-                .b-checkbox.checkbox .control-label,
-                .b-radio.radio .control-label {
+                .b-checkbox.checkbox :deep(.control-label),
+                .b-radio.radio :deep(.control-label) {
                     display: none;
                 }
                 &.is-selecting {

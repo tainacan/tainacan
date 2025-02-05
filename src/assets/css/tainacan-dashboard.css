@@ -12,6 +12,8 @@
       margin-top: 0;
       font-size: 1rem;
       color: var(--tainacan-dashboard-text-color); }
+  #tainacan-dashboard-app > .wrap {
+    margin: 0px; }
   #tainacan-dashboard-app #dashboard-widgets-wrap {
     max-width: 1620px;
     width: 100%;
@@ -56,14 +58,14 @@
       gap: 1em; }
     #tainacan-dashboard-app .postbox h2.hndle,
     #tainacan-dashboard-app .postbox h3.hndle {
-      padding: var(--tainacan-dashboard-card-padding-y, 1rem) var(--tainacan-dashboard-card-padding-x, 2rem);
+      padding: var(--tainacan-dashboard-card-padding-y, 1rem) var(--tainacan-dashboard-card-padding-x, 1.5rem);
       transition: padding 0.2s ease; }
     #tainacan-dashboard-app .postbox h2.hndle.sortable-handle,
     #tainacan-dashboard-app .postbox h3.hndle.sortable-handle {
       padding-right: 0.25rem; }
     #tainacan-dashboard-app .postbox .inside {
       margin-top: 0;
-      padding: 0 var(--tainacan-dashboard-card-padding-x, 2rem) var(--tainacan-dashboard-card-padding, 1rem);
+      padding: 0 var(--tainacan-dashboard-card-padding-x, 1.5rem) var(--tainacan-dashboard-card-padding, 1rem);
       font-size: 1em; }
     #tainacan-dashboard-app .postbox hr {
       margin: 1.25rem 0; }
@@ -132,6 +134,7 @@
         gap: 0.125rem;
         font-size: 0.875em;
         font-weight: bold;
+        line-height: 1.25em;
         color: var(--tainacan-gray5); }
         #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li > a:hover, #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li > a:focus {
           background-color: var(--tainacan-turquoise2); }

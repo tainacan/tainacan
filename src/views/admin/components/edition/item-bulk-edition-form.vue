@@ -495,17 +495,18 @@ export default {
         }
 
         .footer {
-            padding: 14px var(--tainacan-one-column);
+            padding: 10px var(--tainacan-one-column);
             position: absolute;
             bottom: 0;
             z-index: 999999;
             background-color: var(--tainacan-gray1);
             width: 100%;
-            height: 60px;
+            height: 52px;
             display: flex;
             justify-content: flex-end;
             align-items: center;
             left: 0;
+            box-shadow: 0px 0px 12px -8px var(--tainacan-black);
 
             .form-submission-footer {    
                 .button {

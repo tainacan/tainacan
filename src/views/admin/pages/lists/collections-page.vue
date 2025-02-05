@@ -66,6 +66,23 @@
 
         <div class="sub-header">
           
+            <!-- Textual Search -------------->
+            <b-field 
+                    id="collection-page-search"
+                    class="header-item">
+                <b-input 
+                        v-model="searchQuery"
+                        :placeholder="$i18n.get('instruction_search')"
+                        type="search"
+                        size="is-small"
+                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('collections')"
+                        autocomplete="on"
+                        icon-right="magnify"
+                        icon-right-clickable
+                        @keyup.enter="searchCollections()"
+                        @icon-right-click="searchCollections()" />
+            </b-field>
+
             <!-- Collection Taxonomies, if available -->
             <template v-if="!isLoadingCollectionTaxonomies && Object.values(collectionTaxonomies) && Object.values(collectionTaxonomies).length >= 0">
                 <b-field 
@@ -95,7 +112,8 @@
                                     :key="index"
                                     class="control"
                                     custom
-                                    aria-role="listitem">
+                                    aria-role="listitem"
+                                    :class="{ 'is-active': collectionTaxonomyTerm.enabled }">
                                 <b-checkbox
                                         v-model="collectionTaxonomyTerm.enabled"
                                         :native-value="collectionTaxonomyTerm.enabled">
@@ -211,22 +229,6 @@
                 </b-select>
             </b-field>
 
-            <!-- Textual Search -------------->
-            <b-field 
-                    id="collection-page-search"
-                    class="header-item">
-                <b-input 
-                        v-model="searchQuery"
-                        :placeholder="$i18n.get('instruction_search')"
-                        type="search"
-                        size="is-small"
-                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('collections')"
-                        autocomplete="on"
-                        icon-right="magnify"
-                        icon-right-clickable
-                        @keyup.enter="searchCollections()"
-                        @icon-right-click="searchCollections()" />
-            </b-field>
         </div>
 
         <div class="above-subheader">

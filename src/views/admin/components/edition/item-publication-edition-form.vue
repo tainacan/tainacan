@@ -410,8 +410,9 @@ export default {
         }
         .field.has-addons {
             align-items: center;
-
-            @container publicationfield (max-width: 220px) {
+        }
+        .field.is-horizontal {
+            @container publicationfield (max-width: 280px) {
                 align-items: start;
                 flex-wrap: wrap;
 

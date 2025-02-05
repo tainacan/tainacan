@@ -37,6 +37,59 @@
                         v-if="tab != 'processes'"
                         class="sub-header">
 
+                    <b-field 
+                            class="header-item"
+                            style="margin-right: auto; margin-left: 0;">
+                        <b-input 
+                                v-model="searchQuery"
+                                :placeholder="$i18n.get('instruction_search')"
+                                type="search"
+                                size="is-small"
+                                :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
+                                autocomplete="on"
+                                icon-right="magnify"
+                                icon-right-clickable
+                                @keyup.enter="searchActivities()"
+                                @icon-right-click="searchActivities()" />
+                    </b-field>
+
+                    <b-field class="header-item">
+                        <b-autocomplete
+                                clearable
+                                :data="users"
+                                :placeholder="$i18n.get('instruction_type_search_users_filter')"
+                                keep-first
+                                open-on-focus
+                                :loading="isFetchingUsers"
+                                field="name"
+                                icon="account"
+                                check-infinite-scroll
+                                @update:model-value="fetchUsersForFiltering"
+                                @focus.once="($event) => fetchUsersForFiltering($event.target.value)"
+                                @select="filterActivitiesByUser"
+                                @infinite-scroll="fetchMoreUsersForFiltering">
+                            <template #default="props">
+                                <div class="media">
+                                    <div
+                                            v-if="props.option.avatar_urls && props.option.avatar_urls['24']"
+                                            class="media-left">
+                                        <img
+                                                width="24"
+                                                :src="props.option.avatar_urls['24']">
+                                    </div>
+                                    <div class="media-content">
+                                        {{ props.option.name }}
+                                    </div>
+                                </div>
+                            </template>
+                            <template 
+                                    v-if="!isFetchingUsers"
+                                    #empty>
+                                {{ $i18n.get('info_no_user_found') }}
+                            </template>
+                        </b-autocomplete>
+                    </b-field>
+
                     <b-field class="header-item">
                         <b-datepicker
                                 ref="datepicker"
@@ -83,47 +136,16 @@
                         </p>
                     </b-field>
 
-                    <b-field 
-                            style="margin-left: auto"
-                            class="header-item">
-                        <b-autocomplete
-                                clearable
-                                :data="users"
-                                :placeholder="$i18n.get('instruction_type_search_users_filter')"
-                                keep-first
-                                open-on-focus
-                                :loading="isFetchingUsers"
-                                field="name"
-                                icon="account"
-                                check-infinite-scroll
-                                @update:model-value="fetchUsersForFiltering"
-                                @focus.once="($event) => fetchUsersForFiltering($event.target.value)"
-                                @select="filterActivitiesByUser"
-                                @infinite-scroll="fetchMoreUsersForFiltering">
-                            <template #default="props">
-                                <div class="media">
-                                    <div
-                                            v-if="props.option.avatar_urls && props.option.avatar_urls['24']"
-                                            class="media-left">
-                                        <img
-                                                width="24"
-                                                :src="props.option.avatar_urls['24']">
-                                    </div>
-                                    <div class="media-content">
-                                        {{ props.option.name }}
-                                    </div>
-                                </div>
-                            </template>
-                            <template 
-                                    v-if="!isFetchingUsers"
-                                    #empty>
-                                {{ $i18n.get('info_no_user_found') }}
-                            </template>
-                        </b-autocomplete>
-                    </b-field>
+                </div>
 
-                    <b-field class="header-item">
-                        <b-input 
+                <div 
+                        v-if="tab == 'processes'"
+                        class="sub-header">
+
+                    <b-field 
+                            class="header-item"
+                            style="margin-right: auto; margin-left: 0;">
+                        <b-input
                                 v-model="searchQuery"
                                 :placeholder="$i18n.get('instruction_search')"
                                 type="search"
@@ -132,14 +154,10 @@
                                 autocomplete="on"
                                 icon-right="magnify"
                                 icon-right-clickable
-                                @keyup.enter="searchActivities()"
-                                @icon-right-click="searchActivities()" />
+                                @keyup.enter="searchProcesses()"
+                                @icon-right-click="searchProcesses" />
                     </b-field>
-                </div>
 
-                <div 
-                        v-if="tab == 'processes'"
-                        class="sub-header">
                     <b-field class="header-item">
                         <b-datepicker
                                 ref="datepicker"
@@ -186,19 +204,6 @@
                         </p>
                     </b-field>
 
-                    <b-field class="header-item">
-                        <b-input
-                                v-model="searchQuery"
-                                :placeholder="$i18n.get('instruction_search')"
-                                type="search"
-                                size="is-small"
-                                :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
-                                autocomplete="on"
-                                icon-right="magnify"
-                                icon-right-clickable
-                                @keyup.enter="searchProcesses()"
-                                @icon-right-click="searchProcesses" />
-                    </b-field>
                 </div>
 
                 <activities-list

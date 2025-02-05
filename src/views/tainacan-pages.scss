@@ -62,7 +62,6 @@
         --tainacan-page-container-margin-top: 0px;
         --tainacan-page-container--inner-padding-x: 0px;
         --tainacan-page-container--inner-padding-y: 0px;
-        --tainacan-page-container-margin-x: 0px;
         --tainacan-page-container-border-radius: 0px;
         --tainacan-admin-header-height: 0px;
         --tainacan-admin-navigation-sidebar-width: 0px;
@@ -88,7 +87,6 @@
     --tainacan-admin-navigation-sidebar-floating-menu-background-color: var(--tainacan-white);
 
     --tainacan-page-container--inner-padding-x: 0px;
-    --tainacan-page-container-margin-x: 0px;
 
     --tainacan-page-container-border-radius: 0px;
     --tainacan-page-container-border: none;
@@ -201,7 +199,7 @@
     --tainacan-admin-navigation-sidebar-background-color: var(--tainacan-turquoise2);
     --tainacan-admin-navigation-sidebar-separator-color: var(--tainacan-turquoise4); 
     --tainacan-admin-navigation-sidebar-floating-menu-background-color: var(--tainacan-white);
-    --tainacan-admin-navigation-sidebar-width: 228px;
+    --tainacan-admin-navigation-sidebar-width: 215px;
     display: grid;
     grid-template-columns: auto 1fr;
     grid-template-rows: 100%;
@@ -352,7 +350,7 @@
         #tainacan-breadcrumbs-list {
             display: flex;
             gap: var(--tainacan-breadcumbs-list-gap, 0.5rem);
-            margin: 0 calc( var(--tainacan-page-container-margin-x, 1rem) + var(--tainacan-page-container-padding-x, 2rem) );
+            margin: 0 calc( 2 * var(--tainacan-page-container-padding-x, 1rem) );
             font-size: 0.75em;
             font-weight: 500;
             flex-wrap: nowrap;
@@ -375,16 +373,16 @@
         height: calc(100vh - var(--wp-admin--admin-bar--height, 32px));
         max-height: calc(100vh - var(--wp-admin--admin-bar--height, 32px));
         overflow-y: auto;
-        flex-basis: var(--tainacan-admin-navigation-sidebar-width, 228px);
-        min-width: var(--tainacan-admin-navigation-sidebar-width, 228px);
-        max-width: var(--tainacan-admin-navigation-sidebar-width, 228px);
-        padding: 1rem;
+        flex-basis: var(--tainacan-admin-navigation-sidebar-width, 215px);
+        min-width: var(--tainacan-admin-navigation-sidebar-width, 215px);
+        max-width: var(--tainacan-admin-navigation-sidebar-width, 215px);
+        padding: 1rem 0.75rem;
         background-color: var(--tainacan-admin-navigation-sidebar-background-color);
         box-sizing: border-box;
 
         @media (min-width: 769px) {
             &.is-collapsed {
-                --tainacan-admin-navigation-sidebar-width: 86px;
+                --tainacan-admin-navigation-sidebar-width: 65px;
                 padding: 1rem 0.25rem;
                 overflow: visible;
 
@@ -408,7 +406,7 @@
                     }
                 }
                 #tainacan-root-menu > li {
-                    margin: 0 1rem;
+                    margin: 0 0.5rem;
 
                     &:not(.menu-item-has-children.is-open) > * > .menu-text {
                         display: none;
@@ -459,8 +457,8 @@
                         }
 
                         button::after {
-                            transform: rotate(90deg) !important;
-                            right: -0.5rem;
+                            transform: skewY(90deg) !important;
+                            right: -0.875rem;
                             background-image: url('data:image/svg+xml,<svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.976713 0H9.01734C9.57359 0 9.85171 0.671875 9.45796 1.06563L5.43921 5.0875C5.19546 5.33125 4.79859 5.33125 4.55484 5.0875L0.536088 1.06563C0.142338 0.671875 0.420463 0 0.976713 0Z" fill="white" fill-opacity="1.0"/></svg>');
                         }
 
@@ -595,7 +593,7 @@
                 content: '';
                 font-size: 1rem;
                 content: '';
-                width: 1.5em;
+                width: 2em;
                 height: 1.5em;
                 background-image: url('data:image/svg+xml,<svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.976713 0H9.01734C9.57359 0 9.85171 0.671875 9.45796 1.06563L5.43921 5.0875C5.19546 5.33125 4.79859 5.33125 4.55484 5.0875L0.536088 1.06563C0.142338 0.671875 0.420463 0 0.976713 0Z" fill="currentColor" fill-opacity="0.5"/></svg>');
                 background-repeat: no-repeat;
@@ -616,6 +614,7 @@
 
                 li a,
                 li button {
+                    line-height: 1.25em;
                     font-size: 0.875em;
 
                     .menu-text {
@@ -665,8 +664,8 @@
         border-radius: var(--tainacan-page-container-border-radius, 16px) var(--tainacan-page-container-border-radius, 16px) 0 0;
         border: var(--tainacan-page-container-border, none);
         margin-top: var(--tainacan-page-container-margin-top, 1rem);
-        margin-left: var(--tainacan-page-container-margin-x, 1rem);
-        margin-right: var(--tainacan-page-container-margin-x, 1rem);
+        margin-left: var(--tainacan-page-container-margin-x, 0rem);
+        margin-right: var(--tainacan-page-container-margin-x, 0rem);
         padding: var(--tainacan-page-container-padding-y, 1rem) var(--tainacan-page-container-padding-x, var(--tainacan-one-column));
         box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px --tainacan-blue3);
         box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px color-mix(in srgb, var(--tainacan-blue3) 20%, transparent) );
@@ -682,7 +681,6 @@
     @media (max-width: 768px) {
         & {
             grid-template-columns: 1fr; /* Oculta sidebar */
-            --tainacan-page-container-margin-x: 0px;
         }
         #tainacan-menu-toggler {
             display: block;
@@ -698,12 +696,12 @@
         #tainacan-navigation-menu.is-active {
             display: block;
             position: absolute;
-            width: var(--tainacan-admin-navigation-sidebar-width, 228px);
+            width: var(--tainacan-admin-navigation-sidebar-width, 215px);
             z-index: 1002;
             box-shadow: 0.5rem 0 2rem -1.5rem var(--tainacan-black);
 
             + #tainacan-page-container--inner #tainacan-menu-toggler {
-                margin-left: calc( var(--tainacan-admin-navigation-sidebar-width, 228px) - var(--tainacan-page-container--inner-padding-x, 1rem) );
+                margin-left: calc( var(--tainacan-admin-navigation-sidebar-width, 215px) - var(--tainacan-page-container--inner-padding-x, 1rem) );
             }
         }
     }

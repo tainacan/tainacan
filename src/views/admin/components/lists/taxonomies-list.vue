@@ -209,7 +209,9 @@
                                 :class="{ 'actions-cell': taxonomy.current_user_can_edit || taxonomy.current_user_can_delete }"
                                 :label="$i18n.get('label_actions')" 
                                 @click="onClickTaxonomy($event, taxonomy.id, index)">
-                            <div class="actions-container">
+                            <div 
+                                    v-if="!isSelecting"
+                                    class="actions-container">
                                 <a 
                                         v-if="taxonomy.current_user_can_edit" 
                                         id="button-edit"

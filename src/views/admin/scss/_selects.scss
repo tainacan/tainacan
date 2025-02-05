@@ -1,6 +1,6 @@
 .select {
     padding-top: 0px !important;
-    border-radius: var(--tainacan-input-border-radius, 1px);
+    border-radius: var(--tainacan-input-border-radius, 2px);
     
     &, 
     &:not(.is-multiple) {
@@ -12,7 +12,7 @@
     select {
         background: transparent; // WordPress 5.3 adds arrows here
         border: none;
-        border-radius: var(--tainacan-input-border-radius, 1px) !important;
+        border-radius: var(--tainacan-input-border-radius, 2px) !important;
         font-weight: normal;
         font-size: 0.875em !important;
         font-family: var(--tainacan-font-family, inherit);

@@ -161,10 +161,9 @@ export default {
     // Tainacan Header
     #tainacan-repository-subheader {
         background-color: var(--tainacan-turquoise6);
-        height: var(--tainacan-admin-header-height, 3.5em);
-        max-height: var(--tainacan-admin-header-height, 3.5em);
+        height: var(--tainacan-admin-header-height, 3.0em);
+        max-height: var(--tainacan-admin-header-height, 3.0em);
         width: 100%;
-        overflow-y: hidden;
         padding-top: 8px;
         padding-bottom: 8px;
         padding-right: var(--tainacan-one-column);
@@ -206,7 +205,7 @@ export default {
                 color: var(--tainacan-white);
                 background-color: transparent !important;
                 border: none;
-                height: var(--tainacan-admin-header-height, 3.5em) !important;
+                height: var(--tainacan-admin-header-height, 3.0em) !important;
 
                 .icon {
                     margin-top: -2px;
@@ -224,7 +223,7 @@ export default {
                 font-size: 0.9375em !important;
                 border: none;
                 border-radius: 4px !important;
-                height: 2.65em !important;
+                height: 2.25em !important;
                 background-color: transparent;
                 color: var(--tainacan-white);
 
@@ -237,7 +236,7 @@ export default {
                 font-size: 0.9375em !important;
                 border: none;
                 border-radius: 4px !important;
-                height: 2.5em !important;
+                height: 2.25em !important;
                 background-color: transparent;
                 color: var(--tainacan-white);
 

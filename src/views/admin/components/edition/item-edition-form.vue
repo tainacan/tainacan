@@ -178,7 +178,7 @@
                                 (
                                     ( (shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs ) ||
                                     ( shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs )
-                                ) ? 'is-7 is-12-touch' : 'is-12'">
+                                ) ? 'is-12 is-6-desktop is-7-widescreen' : 'is-12'">
 
                         <!-- Hook for extra Form options -->
                         <template v-if="hasBeginRightForm">
@@ -573,7 +573,7 @@
                     <div 
                             v-if="( (shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
                                 (shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)"
-                            class="column is-5 is-12-touch">
+                            class="column is-12 is-6-desktop is-5-widescreen">
                 
                         <div 
                                 :style="isMetadataNavigation && !isMobileScreen ? 'max-height: calc(100vh - 142px);' : ''"
@@ -2049,7 +2049,7 @@ export default {
         transition: none;
 
         & > .tainacan-form {
-            margin-bottom: 60px;
+            margin-bottom: 52px;
 
             .field:not(:last-child) {
                 margin-bottom: 0em;
@@ -2462,18 +2462,19 @@ export default {
         }
 
         .footer {
-            padding: 14px var(--tainacan-one-column);
+            padding: 10px var(--tainacan-one-column);
             position: absolute;
             bottom: 0;
             right: 0;
             z-index: 1001;
             background-color: var(--tainacan-gray1);
             width: 100%;
-            height: 60px;
+            height: 52px;
             display: flex;
             justify-content: flex-end;
             align-items: center;
             transition: bottom 0.5s ease, width 0.2s linear;
+            box-shadow: 0px 0px 12px -8px var(--tainacan-black);
 
             @keyframes blink {
                 from { color: var(--tainacan-blue5); }
@@ -2516,6 +2517,7 @@ export default {
                 &:focus,
                 &:active {
                     background-color: transparent !important;
+                    background-color: color-mix(in srgb, var(--tainacan-white) 60%, transparent) !important;
                     color: var(--tainacan-secondary) !important;
                 }
             }

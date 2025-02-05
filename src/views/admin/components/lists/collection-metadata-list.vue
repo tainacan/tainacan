@@ -33,7 +33,7 @@
                             <button
                                     :aria-label="$i18n.get('label_filter_by_metadata_type')"
                                     class="button is-white">
-                                <span>{{ $i18n.get('label_filter_by_metadata_type') }}</span>
+                                <span>{{ $i18n.get('label_filter_by_type') }}</span>
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                 </span>
@@ -45,7 +45,8 @@
                                     :key="index"
                                     class="control"
                                     custom
-                                    aria-role="listitem">
+                                    aria-role="listitem"
+                                    :class="{ 'is-active': metadataType.enabled }">
                                 <b-checkbox
                                         v-model="metadataType.enabled"
                                         :native-value="metadataType.enabled">

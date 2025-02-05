@@ -8,7 +8,7 @@
 
         <div class="sub-header">
             <b-field 
-                    style="margin-left: auto; margin-right: 0;"
+                    style="margin-left: 0; margin-right: auto;"
                     class="header-item">
                 <div class="control has-icons-right  is-small is-clearfix">
                     <b-autocomplete

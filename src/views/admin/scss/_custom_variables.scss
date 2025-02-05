@@ -87,6 +87,9 @@
     @media screen and (max-height: 760px) {
         --tainacan-container-padding: #{$container-narrow-padding};
     }
+    @media screen and (max-width: 768px) {
+        --tainacan-container-padding: #{$container-narrow-padding};
+    }
 }
 
 #tainacan-admin-app,

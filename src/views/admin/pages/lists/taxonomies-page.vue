@@ -28,6 +28,21 @@
         
         <div class="sub-header">
 
+            <!-- Textual Search -------------->
+            <b-field class="header-item">
+                <b-input 
+                        v-model="searchQuery"
+                        :placeholder="$i18n.get('instruction_search')"
+                        type="search"
+                        size="is-small"
+                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('taxonomies')"
+                        autocomplete="on"
+                        icon-right="magnify"
+                        icon-right-clickable
+                        @keyup.enter="searchTaxonomies()"
+                        @icon-right-click="searchTaxonomies()" />
+            </b-field>
+
             <!-- Sorting options ----  -->
             <b-field class="header-item">
                 <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
@@ -98,20 +113,6 @@
                 </b-select>
             </b-field>
 
-            <!-- Textual Search -------------->
-            <b-field class="header-item">
-                <b-input 
-                        v-model="searchQuery"
-                        :placeholder="$i18n.get('instruction_search')"
-                        type="search"
-                        size="is-small"
-                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('taxonomies')"
-                        autocomplete="on"
-                        icon-right="magnify"
-                        icon-right-clickable
-                        @keyup.enter="searchTaxonomies()"
-                        @icon-right-click="searchTaxonomies()" />
-            </b-field>
         </div>
 
         <div class="above-subheader">

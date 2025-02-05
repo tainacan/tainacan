@@ -150,7 +150,7 @@
         margin: 0 auto;
         position: relative;
         overflow-y: auto;
-        height: calc(100% -  var(--tainacan-admin-header-height, 3.5em));
+        height: calc(100% -  var(--tainacan-admin-header-height, 3.0em));
 
         @media screen and (max-width: 769px) {
             overflow-y: visible;
@@ -197,6 +197,8 @@
 
     @media screen and (min-width: 769px) {
         .filters-menu {
+            z-index: inherit;
+
             .modal-background,
             .modal-close {
                 display: none;
