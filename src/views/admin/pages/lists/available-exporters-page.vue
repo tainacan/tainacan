@@ -61,7 +61,7 @@
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         grid-gap: 1rem;
-        padding: 1.125em 0.75rem;
+        padding: var(--tainacan-container-padding) var(--tainacan-one-column);
         
         .exporter-type {
             border: 1px solid var(--tainacan-gray2);

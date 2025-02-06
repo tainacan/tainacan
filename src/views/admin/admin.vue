@@ -150,7 +150,7 @@
         margin: 0 auto;
         position: relative;
         overflow-y: auto;
-        height: calc(100% -  var(--tainacan-admin-header-height, 3.0em));
+        height: calc(100% -  var(--tainacan-admin-header-height, 3.25em));
 
         @media screen and (max-width: 769px) {
             overflow-y: visible;

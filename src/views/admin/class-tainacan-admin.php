@@ -78,6 +78,18 @@ class Admin extends Pages {
 				array( &$this, 'render_page' )
 			);
 		}
+
+		if ( !$this->has_admin_ui_option('hidePrimaryMenuProcessesButton') ) {
+
+			add_submenu_page(
+				$this->repository_links_slug,
+				__('Processes', 'tainacan'),
+				'<span class="icon">' . $this->get_svg_icon( 'processes' ) . '</span><span class="menu-text">' . __('Processes', 'tainacan') . '</span>',
+				'read',
+				$this->vue_component_page_slug . '#/processes',
+				array( &$this, 'render_page' )
+			);
+		}
 		
 		if ( !$this->has_admin_ui_option('hidePrimaryMenuCapabilitiesButton') ) {
 

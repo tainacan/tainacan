@@ -1,6 +1,10 @@
 
 <style>
 
+	.tainacan-system-check {
+		max-width: 1024px;
+	}
+
 	.tainacan-system-check .error {
 		border-left: 5px solid red;
 		margin-right: 10px;

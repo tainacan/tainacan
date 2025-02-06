@@ -10,6 +10,7 @@ const MetadataPage = () => import('../pages/lists/metadata-page.vue');
 const FiltersPage = () => import('../pages/lists/filters-page.vue');
 const TaxonomyPage = () => import('../pages/lists/taxonomies-page.vue');
 const ActivitiesPage = () => import('../pages/lists/activities-page.vue');
+const ProcessesPage = () => import('../pages/lists/processes-page.vue');
 const AvailableExportersPage = () => import('../pages/lists/available-exporters-page.vue');
 const AvailableImportersPage = () => import('../pages/lists/available-importers-page.vue');
 const CapabilitiesPage = () => import('../pages/lists/capabilities-page.vue');
@@ -169,6 +170,8 @@ const routes = [
     { path: '/taxonomies/:taxonomyId', redirect: { name: 'TaxonomyEditionForm' } },
 
     { path: '/activities',  name: 'ActivitiesPage', component: ActivitiesPage, meta: { title: i18nGet('title_repository_activities_page') } },
+
+    { path: '/processes',  name: 'ProcessesPage', component: ProcessesPage, meta: { title: i18nGet('title_processes_page') } },
 
     { path: '/capabilities', component: CapabilitiesPage, name: 'CapabilitiesPage', meta: { title: i18nGet('title_repository_capabilities') } },
 

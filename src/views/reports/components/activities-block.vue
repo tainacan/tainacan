@@ -42,7 +42,7 @@
                     </span>
                 </div>
                 <div class="box-header__item">
-                    <label>{{ $i18n.get('instruction_filter_activities_date') + ': ' }}</label>
+                    <label>{{ $i18n.get('label_range_of_dates') + ': ' }}</label>
                     <span class="paging-input">
                         {{ currentStart.toDateString() }} - {{ currentEnd.toDateString() }}
                     </span>

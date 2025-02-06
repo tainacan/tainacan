@@ -21,8 +21,8 @@
             <div class="columns is-multiline">
 
                 <div
-                        class="column"
-                        :class="shouldDisplayItemSingleDocument || shouldDisplayItemSingleThumbnail ? 'is-7 is-12-touch' : 'is-12'">
+                        class="column main-column"
+                        :class="shouldDisplayItemSingleDocument || shouldDisplayItemSingleThumbnail ? 'is-12 is-6-desktop is-7-widescreen' : 'is-12'">
 
                     <!-- Hook for extra Form options -->
                     <template v-if="hasBeginRightForm">
@@ -166,7 +166,7 @@
 
                 <div 
                         v-if="shouldDisplayItemSingleDocument || shouldDisplayItemSingleThumbnail"
-                        class="column is-5 is-12-touch">
+                        class="column secondary-column is-12 is-6-desktop is-5-widescreen">
                     <div class="sticky-container">
 
                         <!-- Hook for extra Form options -->
@@ -734,7 +734,7 @@
         .tainacan-form > .columns {
             margin: 0 var(--tainacan-one-column);
 
-            .column.is-5 {
+            .column.secondary-column {
                 padding-top: 0;
                 padding-left: var(--tainacan-one-column);
                 padding-right: 0;
@@ -751,7 +751,7 @@
                     }
                 }
             }
-            .column.is-7 {
+            .column.main-column {
                 padding-top: 0;
                 padding-left: 0;
                 padding-right: 0;
@@ -781,7 +781,7 @@
                 display: flex;
                 flex-direction: column-reverse;
 
-                &>.column.is-7 {
+                &>.column.main-column {
                     padding-left: 0;
                     padding-right: 0;
                     max-width: 100%;
@@ -824,7 +824,7 @@
                         display: flex;
                     }
                 }
-                &>.column.is-5 {
+                &>.column.secondary-column {
                     max-width: 100%;
                     width: 100%;
                     padding-left: 0.5em;

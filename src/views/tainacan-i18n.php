@@ -715,7 +715,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_publication_data'						 => __( 'Publication data', 'tainacan' ),
 	'label_authorship'			 					 => __( 'Authorship', 'tainacan' ),
 	'label_editing_publication_authorship'			 => __( 'Publication authorship editing', 'tainacan' ),
-
+	'label_range_of_dates'				             => __( 'Range of dates', 'tainacan'),
+	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),
@@ -771,7 +772,6 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_drag_and_drop_filter_sort'	     	 => __( 'Drag and drop to change filter order', 'tainacan' ),
 	'instruction_drag_and_drop_metadatum_sort'     	 => __( 'Drag and drop to change metadatum order', 'tainacan' ),
 	'instruction_drag_and_drop_metadata_sections_sort' => __( 'Drag and drop to change metadata sections order', 'tainacan' ),
-	'instruction_filter_activities_date'             => __( 'Range of dates', 'tainacan'),
 	'instruction_select_a_date' 				     => __( 'Select a date', 'tainacan' ),
 	'instruction_select_a_month' 				     => __( 'Select a month', 'tainacan' ),
 	'instruction_type_value_year' 				     => __( 'Type year value', 'tainacan' ),
@@ -801,7 +801,8 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_create_item_before_change_author'	 => __( 'Please create the item first before changing its author.', 'tainacan' ),
 	'instruction_create_item_before_change_slug'	 => __( 'Please create the item first before changing its slug.', 'tainacan' ),
 	'instruction_create_item_before_change_status'	 => __( 'Please create the item first to define its status.', 'tainacan' ),
-
+	'instruction_filter_processes_date'				 => __( 'Select the date range for the processes', 'tainacan' ),
+	
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),
 	'info_items_tab_publish'                         => __( 'Only items that are visible to everyone.', 'tainacan' ),

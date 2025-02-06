@@ -573,7 +573,7 @@
                     <div 
                             v-if="( (shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
                                 (shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)"
-                            class="column is-12 is-6-desktop is-5-widescreen">
+                            class="column secondary-column is-12 is-6-desktop is-5-widescreen">
                 
                         <div 
                                 :style="isMetadataNavigation && !isMobileScreen ? 'max-height: calc(100vh - 142px);' : ''"
@@ -2086,7 +2086,7 @@ export default {
         .tainacan-form > .columns {
             margin: 0 var(--tainacan-one-column);
             
-            .column.is-5 {
+            .column.secondary-column {
                 padding-top: 0;
                 padding-left: var(--tainacan-one-column);
                 padding-right: 0;
