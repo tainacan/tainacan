@@ -1326,9 +1326,17 @@ a:hover:not([href]) {
         color: currentColor !important; }
   #tainacan-page-container h1.wp-heading-inline {
     font-size: 1.25em;
-    line-height: 1.25;
+    line-height: 1.5em;
     font-weight: 500;
     color: var(--tainacan-heading-color); }
+  #tainacan-page-container .tainacan-fixed-subheader {
+    width: calc(100% + (2 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column))));
+    margin-left: calc( -1 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column)));
+    margin-top: calc(-1 * var(--tainacan-page-container-padding-y, 1rem));
+    padding: var(--tainacan-page-container-padding-y, 1rem) var(--tainacan-page-container-padding-x, var(--tainacan-one-column));
+    background: var(--tainacan-background-color);
+    position: sticky;
+    top: calc(-1 * var(--tainacan-page-container-padding-y, 1rem)); }
   #tainacan-page-container .tainacan-page-container-content {
     background-color: var(--tainacan-background-color);
     border-radius: var(--tainacan-page-container-border-radius, 16px) var(--tainacan-page-container-border-radius, 16px) 0 0;

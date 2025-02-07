@@ -1,0 +1,14 @@
+.tainacan-settings h2 {
+  font-size: 1.125em;
+  padding: 0.5em 0;
+  border-bottom: 1px solid var(--tainacan-gray2);
+  background-color: var(--tainacan-background-color);
+  position: sticky;
+  top: calc(1.5em - 1rem + var(--tainacan-page-container-padding-y, 1rem) + var(--tainacan-page-container-padding-y, 1rem));
+  margin-top: 2rem; }
+.tainacan-settings .settings-section-descrition {
+  font-size: 0.875em; }
+.tainacan-settings td .description {
+  font-size: 0.875em; }
+
+/*# sourceMappingURL=tainacan-settings.css.map */

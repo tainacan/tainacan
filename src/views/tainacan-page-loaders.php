@@ -8,8 +8,8 @@ $Tainacan_Dashboard_Page = \Tainacan\Dashboard::get_instance();
 require_once(__DIR__ . '/admin/class-tainacan-admin.php');
 $Tainacan_Admin_Page = \Tainacan\Admin::get_instance();
 
-require_once(__DIR__ . '/item-submission/class-tainacan-item-submission.php');
-$Tainacan_Item_Submission_Page = \Tainacan\Item_Submission::get_instance();
+require_once(__DIR__ . '/settings/class-tainacan-settings.php');
+$Tainacan_Settings_Page = \Tainacan\Settings::get_instance();
 
 require_once(__DIR__ . '/roles/class-tainacan-roles.php');
 $Tainacan_Roles_Page = \Tainacan\Roles_Editor::get_instance();

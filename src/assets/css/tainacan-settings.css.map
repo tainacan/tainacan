@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAEI,qBAAG;EACC,SAAS,EAAE,OAAO;EAClB,OAAO,EAAE,OAAO;EAChB,aAAa,EAAE,+BAA+B;EAC9C,gBAAgB,EAAE,gCAAgC;EAClD,QAAQ,EAAE,MAAM;EAChB,GAAG,EAAE,oHAAoH;EACzH,UAAU,EAAE,IAAI;AAEpB,+CAA6B;EACzB,SAAS,EAAE,OAAO;AAEtB,kCAAgB;EACZ,SAAS,EAAE,OAAO",
+"sources": ["../../views/settings/tainacan-settings.scss"],
+"names": [],
+"file": "tainacan-settings.css"
+}
