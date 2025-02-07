@@ -1,30 +1,28 @@
 <template>
-    <div>
-        <div 
-                v-if="!isFetchingData && chartData.totals && chartData.totals.by_user && !isBuildingChart"
-                :style="{
-                    maxHeight: ((120 + (chartData.totals.by_user.length * 58)) <= 800 ? (120 + (chartData.totals.by_user.length * 58)) : 800) + 'px'
-                }"
-                class="postbox activities-per-user-box">
-            <template v-if="chartData.totals && chartData.totals.by_user">
-                <apexchart
-                        ref="activities-per-user-chart"
-                        :height="120 + (chartData.totals.by_user.length * 58)"
-                        :series="chartSeries"
-                        :options="chartOptions" />
-            </template>
-        </div>
-        <div 
-                v-else
-                class="skeleton postbox activities-per-user-box" />
+    <div 
+            v-if="!isFetchingData && chartData.totals && chartData.totals.by_user && !isBuildingChart"
+            :style="{
+                maxHeight: ((120 + (chartData.totals.by_user.length * 58)) <= 800 ? (120 + (chartData.totals.by_user.length * 58)) : 800) + 'px'
+            }"
+            class="report-card activities-per-user-box">
+        <template v-if="chartData.totals && chartData.totals.by_user">
+            <apexchart
+                    ref="activities-per-user-chart"
+                    :height="120 + (chartData.totals.by_user.length * 58)"
+                    :series="chartSeries"
+                    :options="chartOptions" />
+        </template>
         <slot />
     </div>
+    <div 
+            v-else
+            class="skeleton report-card activities-per-user-box" />
 </template>
 
 <script>
 import { nextTick } from 'vue';
 import { mapGetters } from 'vuex';
-import { reportsChartMixin } from '../js/reports-mixin';
+import { reportsChartMixin } from '../../js/mixins';
 
 export default {
     mixins: [ reportsChartMixin ],
@@ -163,8 +161,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.postbox.activities-per-user-box {
-    margin: 0.75rem !important;  
+.report-card.activities-per-user-box {
     overflow-y: auto;
 }
 </style>

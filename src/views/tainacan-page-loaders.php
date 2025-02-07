@@ -11,9 +11,6 @@ $Tainacan_Admin_Page = \Tainacan\Admin::get_instance();
 require_once(__DIR__ . '/item-submission/class-tainacan-item-submission.php');
 $Tainacan_Item_Submission_Page = \Tainacan\Item_Submission::get_instance();
 
-require_once(__DIR__ . '/reports/class-tainacan-reports.php');
-$Tainacan_Reports_Page = \Tainacan\Reports::get_instance();
-
 require_once(__DIR__ . '/roles/class-tainacan-roles.php');
 $Tainacan_Roles_Page = \Tainacan\Roles_Editor::get_instance();
 

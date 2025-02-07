@@ -103,6 +103,18 @@ class Admin extends Pages {
 			);
 		}
 
+		if ( !$this->has_admin_ui_option('hidePrimaryMenuReportsButton') ) {
+
+			add_submenu_page(
+				$this->repository_links_slug,
+				__('Reports', 'tainacan'),
+				'<span class="icon">' . $this->get_svg_icon( 'reports' ) . '</span><span class="menu-text">' . __('Reports', 'tainacan') . '</span>',
+				'manage_tainacan',
+				$this->vue_component_page_slug . '#/reports',
+				array( &$this, 'render_page' )
+			);
+		}
+
 		if ( !$this->has_admin_ui_option('hidePrimaryMenuImportersButton') ) {
 
 			add_submenu_page(

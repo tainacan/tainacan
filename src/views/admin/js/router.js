@@ -14,6 +14,7 @@ const ProcessesPage = () => import('../pages/lists/processes-page.vue');
 const AvailableExportersPage = () => import('../pages/lists/available-exporters-page.vue');
 const AvailableImportersPage = () => import('../pages/lists/available-importers-page.vue');
 const CapabilitiesPage = () => import('../pages/lists/capabilities-page.vue');
+const ReportsPage = () => import('../pages/lists/reports-page.vue');
 
 // Edit Form Components
 const CollectionEditionForm = () => import('../components/edition/collection-edition-form.vue');
@@ -137,6 +138,15 @@ const routes = [
                 }
             },
             {
+                path: 'reports',
+                component: ReportsPage,
+                name: 'CollectionReportsPage',
+                meta: {
+                    title: i18nGet('title_reports'),
+                    menuLink: 'reports'
+                }
+            },
+            {
                 path: 'sequence/:sequenceId',
                 name: 'SavedSequenceEditionForm',
                 component: ItemEditionForm,
@@ -174,6 +184,8 @@ const routes = [
     { path: '/processes',  name: 'ProcessesPage', component: ProcessesPage, meta: { title: i18nGet('title_processes_page') } },
 
     { path: '/capabilities', component: CapabilitiesPage, name: 'CapabilitiesPage', meta: { title: i18nGet('title_repository_capabilities') } },
+
+    { path: '/reports', component: ReportsPage, name: 'ReportsPage', meta: { title: i18nGet('title_repository_reports_page') } },
 
     { path: '/importers/', name: 'AvailableImportersPage', component: AvailableImportersPage, meta: { title: i18nGet('title_importers_page') } },
     { path: '/importers/:importerSlug', name: 'ImporterEditionForm', component: ImporterEditionForm, meta: { title: i18nGet('title_importer_page') } },

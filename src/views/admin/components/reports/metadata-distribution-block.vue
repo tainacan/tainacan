@@ -1,27 +1,25 @@
 <template>
-    <div>
-        <div 
-                v-if="!isFetchingData && chartData.totals && chartData.totals.metadata && !isBuildingChart"
-                :style="{
-                    maxHeight: ((170 + (chartData.totals.metadata.total * 36)) <= 690 ? (170 + (chartData.totals.metadata.total * 36)) : 690) + 'px'
-                }"
-                class="postbox metadata-distribution-box">
-            <apexchart
-                    :height="100 + (chartData.totals.metadata.total * 36) > 630 ? 100 + (chartData.totals.metadata.total * 36) : 630"
-                    :series="chartSeries"
-                    :options="chartOptions" />
-        </div>
-        <div 
-                v-else
-                style="min-height:740px"
-                class="skeleton postbox metadata-distribution-box" />
+    <div 
+            v-if="!isFetchingData && chartData.totals && chartData.totals.metadata && !isBuildingChart"
+            :style="{
+                maxHeight: ((170 + (chartData.totals.metadata.total * 36)) <= 660 ? (170 + (chartData.totals.metadata.total * 36)) : 660) + 'px'
+            }"
+            class="report-card metadata-distribution-box">
+        <apexchart
+                :height="100 + (chartData.totals.metadata.total * 36) > 630 ? 100 + (chartData.totals.metadata.total * 36) : 630"
+                :series="chartSeries"
+                :options="chartOptions" />
         <slot />
     </div>
+    <div 
+            v-else
+            style="min-height:740px"
+            class="skeleton report-card metadata-distribution-box" />
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
-import { reportsChartMixin } from '../js/reports-mixin';
+import { reportsChartMixin } from '../../js/mixins';
 
 export default {
     mixins: [ reportsChartMixin ],
@@ -89,7 +87,7 @@ export default {
                             }
                         },
                         title: {
-                            text: this.$i18n.get('label_metadata_fill_distribution')
+                            text: this.$i18n.get('label_fill_distribution')
                         },
                         labels: metadataDistributionLabels,
                         tooltip: {
@@ -143,10 +141,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.postbox.metadata-distribution-box {
-    margin: 0px 0px 0.75rem 1.5rem !important;
+.report-card.metadata-distribution-box {
+    grid-row: span 2;
     padding-bottom: 2rem;
     overflow-y: auto;
-    min-height: 690px !important;
+    min-height: 660px !important;
 }
 </style>

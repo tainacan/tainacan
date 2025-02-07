@@ -32,6 +32,7 @@ import {
 import FloatingVue from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
 import VueBlurHash from 'another-vue3-blurhash';
+import VueApexCharts from 'vue3-apexcharts';
 
 // Remaining imports
 import AdminPage from '../admin.vue'
@@ -57,6 +58,12 @@ import {
     OrderByHelperPlugin
 } from './utilities';
 import mitt from 'mitt';
+
+/* Sets some locale configs for Reports ApexChart */
+import enLocaleConfig from 'apexcharts/dist/locales/en.json';
+import esLocaleConfig from 'apexcharts/dist/locales/es.json';
+import frLocaleConfig from 'apexcharts/dist/locales/fr.json';
+import ptBrLocaleConfig from 'apexcharts/dist/locales/pt-br.json';
 
 // import { configureCompat } from 'vue';
 // configureCompat({
@@ -181,6 +188,40 @@ export default (element) => {
             app.use(CommentsStatusHelperPlugin);
             app.use(AxiosErrorHandlerPlugin);
             app.use(AdminOptionsHelperPlugin, pageElement.dataset['options']);
+
+            /* Reports-related */
+            Apex.colors = [
+                '#187181', // Tainacan Turquoise
+                '#062a57', // Tainacan Blue
+                '#1a745c', // Tainacan Green
+                '#a06522', // Tainacan Yellow
+                '#9b3636', // Tainacan Red
+                '#592570', // Tainacan Purple
+                '#ed4f63', // Tainacan Pink
+                '#b46659',  // Tainacan Brown
+                '#e5721c',  // Tainacan Orange
+                '#04a5ff',  // Tainacan Other Blue
+                '#373839'  // Tainacan Dark Gray
+            ];
+            const availableLocales = ['en', 'es', 'fr', 'pt-br'];
+            const browserLanguage = navigator.language.toLocaleLowerCase();
+
+            if (availableLocales.indexOf(browserLanguage) >= 0) {
+                let localeConfig = {};
+
+                switch(browserLanguage) {
+                    case 'es': localeConfig = esLocaleConfig; break;
+                    case 'fr': localeConfig = frLocaleConfig; break;
+                    case 'pt-br': localeConfig = ptBrLocaleConfig; break;
+                    case 'en': default: localeConfig = enLocaleConfig; break;
+                }
+                Apex.chart = {
+                    defaultLocale: browserLanguage,
+                    locales: [ localeConfig ]
+                }
+            }
+
+            app.use(VueApexCharts);
 
 
             /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */

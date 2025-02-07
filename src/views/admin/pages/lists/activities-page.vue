@@ -1,200 +1,198 @@
 <template>
-    <div>
-        <div
-                :class="{
-                    'repository-level-page': isRepositoryLevel,
-                    'page-container': isRepositoryLevel,
-                    'tainacan-modal-content': isItemLevel
-                }">
-            <tainacan-title v-if="!isItemLevel" />
-            <header 
-                    v-else
-                    class="tainacan-modal-title">
-                <h2>{{ $i18n.get('label_item_activities') }}</h2>
-            </header>
+    <div
+            :class="{
+                'repository-level-page': isRepositoryLevel,
+                'page-container': isRepositoryLevel,
+                'tainacan-modal-content': isItemLevel
+            }">
+        <tainacan-title v-if="!isItemLevel" />
+        <header 
+                v-else
+                class="tainacan-modal-title">
+            <h2>{{ $i18n.get('label_item_activities') }}</h2>
+        </header>
 
-            <div class="sub-header">
+        <div class="sub-header">
 
-                <b-field 
-                        class="header-item"
-                        style="margin-right: auto; margin-left: 0;">
-                    <b-input 
-                            v-model="searchQuery"
-                            :placeholder="$i18n.get('instruction_search')"
-                            type="search"
-                            size="is-small"
-                            :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
-                            autocomplete="on"
-                            icon-right="magnify"
-                            icon-right-clickable
-                            @keyup.enter="searchActivities()"
-                            @icon-right-click="searchActivities()" />
-                </b-field>
+            <b-field 
+                    class="header-item"
+                    style="margin-right: auto; margin-left: 0;">
+                <b-input 
+                        v-model="searchQuery"
+                        :placeholder="$i18n.get('instruction_search')"
+                        type="search"
+                        size="is-small"
+                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
+                        autocomplete="on"
+                        icon-right="magnify"
+                        icon-right-clickable
+                        @keyup.enter="searchActivities()"
+                        @icon-right-click="searchActivities()" />
+            </b-field>
 
-                <b-field class="header-item">
-                    <b-autocomplete
-                            clearable
-                            :data="users"
-                            :placeholder="$i18n.get('instruction_type_search_users_filter')"
-                            keep-first
-                            open-on-focus
-                            :loading="isFetchingUsers"
-                            field="name"
-                            icon="account"
-                            check-infinite-scroll
-                            @update:model-value="fetchUsersForFiltering"
-                            @focus.once="($event) => fetchUsersForFiltering($event.target.value)"
-                            @select="filterActivitiesByUser"
-                            @infinite-scroll="fetchMoreUsersForFiltering">
-                        <template #default="props">
-                            <div class="media">
-                                <div
-                                        v-if="props.option.avatar_urls && props.option.avatar_urls['24']"
-                                        class="media-left">
-                                    <img
-                                            width="24"
-                                            :src="props.option.avatar_urls['24']">
-                                </div>
-                                <div class="media-content">
-                                    {{ props.option.name }}
-                                </div>
+            <b-field class="header-item">
+                <b-autocomplete
+                        clearable
+                        :data="users"
+                        :placeholder="$i18n.get('instruction_type_search_users_filter')"
+                        keep-first
+                        open-on-focus
+                        :loading="isFetchingUsers"
+                        field="name"
+                        icon="account"
+                        check-infinite-scroll
+                        @update:model-value="fetchUsersForFiltering"
+                        @focus.once="($event) => fetchUsersForFiltering($event.target.value)"
+                        @select="filterActivitiesByUser"
+                        @infinite-scroll="fetchMoreUsersForFiltering">
+                    <template #default="props">
+                        <div class="media">
+                            <div
+                                    v-if="props.option.avatar_urls && props.option.avatar_urls['24']"
+                                    class="media-left">
+                                <img
+                                        width="24"
+                                        :src="props.option.avatar_urls['24']">
                             </div>
-                        </template>
-                        <template 
-                                v-if="!isFetchingUsers"
-                                #empty>
-                            {{ $i18n.get('info_no_user_found') }}
-                        </template>
-                    </b-autocomplete>
-                </b-field>
-
-                <b-field class="header-item">
-                    <b-datepicker
-                            ref="datepicker"
-                            v-model="searchDates"
-                            :placeholder="$i18n.get('label_range_of_dates')"
-                            range
-                            :trap-focus="false"
-                            :date-formatter="(date) => dateFormatter(date)"
-                            :date-parser="(date) => dateParser(date)"
-                            icon="calendar-today"
-                            :years-range="[-50, 3]"
-                            :day-names="[
-                                $i18n.get('datepicker_short_sunday'),
-                                $i18n.get('datepicker_short_monday'),
-                                $i18n.get('datepicker_short_tuesday'),
-                                $i18n.get('datepicker_short_wednesday'),
-                                $i18n.get('datepicker_short_thursday'),
-                                $i18n.get('datepicker_short_friday'),
-                                $i18n.get('datepicker_short_saturday')
-                            ]"
-                            :month-names="[
-                                $i18n.get('datepicker_month_january'),
-                                $i18n.get('datepicker_month_february'),
-                                $i18n.get('datepicker_month_march'),
-                                $i18n.get('datepicker_month_april'),
-                                $i18n.get('datepicker_month_may'),
-                                $i18n.get('datepicker_month_june'),
-                                $i18n.get('datepicker_month_july'),
-                                $i18n.get('datepicker_month_august'),
-                                $i18n.get('datepicker_month_september'),
-                                $i18n.get('datepicker_month_october'),
-                                $i18n.get('datepicker_month_november'),
-                                $i18n.get('datepicker_month_december')
-                            ]"
-                            @update:model-value="searchActivities()" />
-                    <p
-                            v-if="searchDates && searchDates.length != 0"
-                            class="control">
-                        <button 
-                                class="button"
-                                @click="clearSearchDates()">
-                            <span class="icon"><i class="tainacan-icon tainacan-icon-close" /></span>
-                        </button>
-                    </p>
-                </b-field>
-
-            </div>
-
-            <div :class="{ 'above-subheader': isRepositoryLevel }">
-
-                <b-loading
-                        v-model="isLoading"
-                        :is-full-page="false" 
-                        :can-cancel="false" />
-
-                <activities-list
-                        v-if="$userCaps.hasCapability('tnc_rep_read_logs')"
-                        :is-loading="isLoading"
-                        :total-activities="totalActivities"
-                        :page="activitiesPage"
-                        :activities-per-page="activitiesPerPage"
-                        :activities="activities" />
-                <template v-if="!$userCaps.hasCapability('tnc_rep_read_logs')">
-                    <section class="section">
-                        <div class="content has-text-grey has-text-centered">
-                            <p>
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities" />
-                                </span>
-                            </p>
-                            <p>{{ $i18n.get('info_can_not_read_activities') }}</p>
+                            <div class="media-content">
+                                {{ props.option.name }}
+                            </div>
                         </div>
-                    </section>
-                </template>
+                    </template>
+                    <template 
+                            v-if="!isFetchingUsers"
+                            #empty>
+                        {{ $i18n.get('info_no_user_found') }}
+                    </template>
+                </b-autocomplete>
+            </b-field>
 
-                <!-- Footer -->
-                <div
-                        v-if="totalActivities > 0"
-                        class="pagination-area">
-                    <div class="shown-items">
-                        {{
-                            $i18n.get('info_showing_activities') + ' ' +
-                                (activitiesPerPage * (activitiesPage - 1) + 1) +
-                                $i18n.get('info_to') +
-                                getLastActivityNumber() +
-                                $i18n.get('info_of') + totalActivities + '.'
-                        }}
+            <b-field class="header-item">
+                <b-datepicker
+                        ref="datepicker"
+                        v-model="searchDates"
+                        :placeholder="$i18n.get('label_range_of_dates')"
+                        range
+                        :trap-focus="false"
+                        :date-formatter="(date) => dateFormatter(date)"
+                        :date-parser="(date) => dateParser(date)"
+                        icon="calendar-today"
+                        :years-range="[-50, 3]"
+                        :day-names="[
+                            $i18n.get('datepicker_short_sunday'),
+                            $i18n.get('datepicker_short_monday'),
+                            $i18n.get('datepicker_short_tuesday'),
+                            $i18n.get('datepicker_short_wednesday'),
+                            $i18n.get('datepicker_short_thursday'),
+                            $i18n.get('datepicker_short_friday'),
+                            $i18n.get('datepicker_short_saturday')
+                        ]"
+                        :month-names="[
+                            $i18n.get('datepicker_month_january'),
+                            $i18n.get('datepicker_month_february'),
+                            $i18n.get('datepicker_month_march'),
+                            $i18n.get('datepicker_month_april'),
+                            $i18n.get('datepicker_month_may'),
+                            $i18n.get('datepicker_month_june'),
+                            $i18n.get('datepicker_month_july'),
+                            $i18n.get('datepicker_month_august'),
+                            $i18n.get('datepicker_month_september'),
+                            $i18n.get('datepicker_month_october'),
+                            $i18n.get('datepicker_month_november'),
+                            $i18n.get('datepicker_month_december')
+                        ]"
+                        @update:model-value="searchActivities()" />
+                <p
+                        v-if="searchDates && searchDates.length != 0"
+                        class="control">
+                    <button 
+                            class="button"
+                            @click="clearSearchDates()">
+                        <span class="icon"><i class="tainacan-icon tainacan-icon-close" /></span>
+                    </button>
+                </p>
+            </b-field>
+
+        </div>
+
+        <div :class="{ 'above-subheader': isRepositoryLevel }">
+
+            <b-loading
+                    v-model="isLoading"
+                    :is-full-page="false" 
+                    :can-cancel="false" />
+
+            <activities-list
+                    v-if="$userCaps.hasCapability('tnc_rep_read_logs')"
+                    :is-loading="isLoading"
+                    :total-activities="totalActivities"
+                    :page="activitiesPage"
+                    :activities-per-page="activitiesPerPage"
+                    :activities="activities" />
+            <template v-if="!$userCaps.hasCapability('tnc_rep_read_logs')">
+                <section class="section">
+                    <div class="content has-text-grey has-text-centered">
+                        <p>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities" />
+                            </span>
+                        </p>
+                        <p>{{ $i18n.get('info_can_not_read_activities') }}</p>
                     </div>
-                    <div class="items-per-page">
-                        <b-field
-                                horizontal
-                                :label="$i18n.get('label_activities_per_page')">
-                            <b-select
-                                    :model-value="activitiesPerPage"
-                                    :disabled="activities.length <= 0"
-                                    @update:model-value="onChangeActivitiesPerPage">
-                                <option value="12">
-                                    12
-                                </option>
-                                <option value="24">
-                                    24
-                                </option>
-                                <option value="48">
-                                    48
-                                </option>
-                                <option :value="maxActivitiesPerPage">
-                                    {{ maxActivitiesPerPage }}
-                                </option>
-                            </b-select>
-                        </b-field>
-                    </div>
-                    <div class="pagination">
-                        <b-pagination
-                                v-model="activitiesPage"
-                                :total="totalActivities"
-                                order="is-centered"
-                                size="is-small"
-                                :per-page="activitiesPerPage"
-                                :aria-next-label="$i18n.get('label_next_page')"
-                                :aria-previous-label="$i18n.get('label_previous_page')"
-                                :aria-page-label="$i18n.get('label_page')"
-                                :aria-current-label="$i18n.get('label_current_page')"
-                                @change="onPageChange" />
-                    </div>
+                </section>
+            </template>
+
+            <!-- Footer -->
+            <div
+                    v-if="totalActivities > 0"
+                    class="pagination-area">
+                <div class="shown-items">
+                    {{
+                        $i18n.get('info_showing_activities') + ' ' +
+                            (activitiesPerPage * (activitiesPage - 1) + 1) +
+                            $i18n.get('info_to') +
+                            getLastActivityNumber() +
+                            $i18n.get('info_of') + totalActivities + '.'
+                    }}
                 </div>
-
+                <div class="items-per-page">
+                    <b-field
+                            horizontal
+                            :label="$i18n.get('label_activities_per_page')">
+                        <b-select
+                                :model-value="activitiesPerPage"
+                                :disabled="activities.length <= 0"
+                                @update:model-value="onChangeActivitiesPerPage">
+                            <option value="12">
+                                12
+                            </option>
+                            <option value="24">
+                                24
+                            </option>
+                            <option value="48">
+                                48
+                            </option>
+                            <option :value="maxActivitiesPerPage">
+                                {{ maxActivitiesPerPage }}
+                            </option>
+                        </b-select>
+                    </b-field>
+                </div>
+                <div class="pagination">
+                    <b-pagination
+                            v-model="activitiesPage"
+                            :total="totalActivities"
+                            order="is-centered"
+                            size="is-small"
+                            :per-page="activitiesPerPage"
+                            :aria-next-label="$i18n.get('label_next_page')"
+                            :aria-previous-label="$i18n.get('label_previous_page')"
+                            :aria-page-label="$i18n.get('label_page')"
+                            :aria-current-label="$i18n.get('label_current_page')"
+                            @change="onPageChange" />
+                </div>
             </div>
+
         </div>
     </div>
 </template>

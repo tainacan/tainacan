@@ -1,47 +1,45 @@
 <template>
-    <div>
-        <div 
-                v-if="!isFetchingData && chartData && chartData.totals && chartData.totals.metadata_per_type && !isBuildingChart"
-                class="postbox">
-            <label>{{ $i18n.get('metadata_types') }}&nbsp;</label>
-            <div class="graph-mode-switch">
-                <button 
-                        :class="{ 'current': metadataTypeChartMode == 'bar' }"
-                        @click="metadataTypeChartMode = 'bar'">
-                    <span class="screen-reader-text">
-                        {{ $i18n.get('label_bar_chart') }}
-                    </span>
-                    <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text tainacan-icon-rotate-270" />
-                    </span>
-                </button>
-                <button 
-                        :class="{ 'current': metadataTypeChartMode == 'circle' }"
-                        @click="metadataTypeChartMode = 'circle'">
-                    <span class="screen-reader-text">
-                        {{ $i18n.get('label_pie_chart') }}
-                    </span>
-                    <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting tainacan-icon-rotate-270" />
-                    </span>
-                </button>
-            </div>
-            <apexchart
-                    height="380px"
-                    :series="chartSeries"
-                    :options="chartOptions" />
+    <div 
+            v-if="!isFetchingData && chartData && chartData.totals && chartData.totals.metadata_per_type && !isBuildingChart"
+            class="report-card is-medium">
+        <label>{{ $i18n.get('metadata_types') }}&nbsp;</label>
+        <div class="graph-mode-switch">
+            <button 
+                    :class="{ 'current': metadataTypeChartMode == 'bar' }"
+                    @click="metadataTypeChartMode = 'bar'">
+                <span class="screen-reader-text">
+                    {{ $i18n.get('label_bar_chart') }}
+                </span>
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text tainacan-icon-rotate-270" />
+                </span>
+            </button>
+            <button 
+                    :class="{ 'current': metadataTypeChartMode == 'circle' }"
+                    @click="metadataTypeChartMode = 'circle'">
+                <span class="screen-reader-text">
+                    {{ $i18n.get('label_pie_chart') }}
+                </span>
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting tainacan-icon-rotate-270" />
+                </span>
+            </button>
         </div>
-        <div 
-                v-else
-                style="min-height: 390px"
-                class="skeleton postbox" />
+        <apexchart
+                height="380px"
+                :series="chartSeries"
+                :options="chartOptions" />
         <slot />
     </div>
+    <div 
+            v-else
+            style="min-height: 390px"
+            class="skeleton report-card is-medium" />
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
-import { reportsChartMixin } from '../js/reports-mixin';
+import { reportsChartMixin } from '../../js/mixins';
 
 export default {
     mixins: [ reportsChartMixin ],

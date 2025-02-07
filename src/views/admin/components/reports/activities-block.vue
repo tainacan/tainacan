@@ -1,23 +1,23 @@
 <template>
-    <div>
+    <div 
+            :class="{ 'skeleton': isFetchingData || !chartData || isBuildingChart }"
+            class="report-card is-medium">
         <div 
-                :class="{ 'skeleton': isFetchingData || !chartData || isBuildingChart }"
-                class="postbox">
-            <div 
-                    v-if="currentStart && currentEnd"
-                    class="box-header">
-                <div class="box-header__item tablenav-pages">
-                    <label for="start_year">
-                        {{ $i18n.get('label_activities_during_year') }}&nbsp;
-                    </label>
-                    <span class="pagination-links">
-                        <span
-                                :class="{'tablenav-pages-navspan disabled' : isBuildingChart || currentStart.getFullYear() <= (minYear + 1) }"
-                                class="prev-page button"
-                                aria-hidden="true"
-                                @click="(!isBuildingChart && currentStart.getFullYear() > (minYear + 1)) ? decreaseYear() : null">
-                            ‹
-                        </span>
+                v-if="currentStart && currentEnd"
+                class="report-card-header">
+            <div class="report-card-header__item tablenav-pages">
+                <label for="start_year">
+                    {{ $i18n.get('label_activities_during_year') }}&nbsp;
+                </label>
+                <span class="pagination-links">
+                    <span
+                            :class="{'tablenav-pages-navspan disabled' : isBuildingChart || currentStart.getFullYear() <= (minYear + 1) }"
+                            class="icon prev-page button is-outlined"
+                            aria-hidden="true"
+                            @click="(!isBuildingChart && currentStart.getFullYear() > (minYear + 1)) ? decreaseYear() : null">
+                        <i class="tainacan-icon tainacan-icon-previous tainacan-icon-1-25em" />
+                    </span>
+                    <span class="select">
                         <select
                                 id="start_year"
                                 name="start_year"
@@ -32,68 +32,68 @@
                                 {{ index + minYear }}
                             </option>
                         </select>
-                        <span 
-                                :class="{ 'tablenav-pages-navspan disabled': isBuildingChart || currentStart.getFullYear() > (maxYear - 1) }"
-                                aria-hidden="true"
-                                class="next-page button"
-                                @click="(!isBuildingChart && currentStart.getFullYear() <= (maxYear - 1)) ? increaseYear() : null">
-                            ›
-                        </span>
                     </span>
-                </div>
-                <div class="box-header__item">
-                    <label>{{ $i18n.get('label_range_of_dates') + ': ' }}</label>
-                    <span class="paging-input">
-                        {{ currentStart.toDateString() }} - {{ currentEnd.toDateString() }}
+                    <span 
+                            :class="{ 'tablenav-pages-navspan disabled': isBuildingChart || currentStart.getFullYear() > (maxYear - 1) }"
+                            aria-hidden="true"
+                            class="icon next-page button is-outlined"
+                            @click="(!isBuildingChart && currentStart.getFullYear() <= (maxYear - 1)) ? increaseYear() : null">
+                        <i class="tainacan-icon tainacan-icon-next tainacan-icon-1-25em" />
                     </span>
+                </span>
+            </div>
+            <div class="report-card-header__item">
+                <label>{{ $i18n.get('label_range_of_dates') + ': ' }}</label>
+                <span class="paging-input">
+                    {{ currentStart.toDateString() }} - {{ currentEnd.toDateString() }}
+                </span>
+            </div>
+        </div>
+        <template v-if="!isFetchingData && chartData && !isBuildingChart">
+            <div class="users-charts columns is-multiline">
+                <div 
+                        v-for="(chartSeries, index) of chartSeriesByUser"
+                        :key="index"
+                        class="users-charts__card column is-full">
+                    <div 
+                            v-if="chartSeries[0].userId == 0"
+                            class="users-charts__card--header">
+                        <div class="anonymous-user-avatar" />
+                        <div class="users-charts__card--header-text">
+                            <p>{{ $i18n.get('label_anonymous_user') }}</p>
+                            <span>{{ chartSeries[0].total }}</span>
+                        </div>
+                    </div>
+                    <div 
+                            v-if="chartSeries[0].userId != 0 && chartSeries[0].userId"
+                            class="users-charts__card--header">
+                        <img :src="chartSeries[0].userImg">
+                        <div class="users-charts__card--header-text">
+                            <p>{{ chartSeries[0].userName }}</p>
+                            <span>{{ chartSeries[0].total }}</span>
+                        </div>
+                    </div>
+                    <apexchart
+                            type="area"
+                            height="140"
+                            :series="chartSeries"
+                            :options="chartOptionsByUser[index]" />
                 </div>
             </div>
-            <template v-if="!isFetchingData && chartData && !isBuildingChart">
-                <div class="users-charts columns is-multiline">
-                    <div 
-                            v-for="(chartSeries, index) of chartSeriesByUser"
-                            :key="index"
-                            class="users-charts__card column is-full">
-                        <div 
-                                v-if="chartSeries[0].userId == 0"
-                                class="users-charts__card--header">
-                            <div class="anonymous-user-avatar" />
-                            <div class="users-charts__card--header-text">
-                                <p>{{ $i18n.get('label_anonymous_user') }}</p>
-                                <span>{{ chartSeries[0].total }}</span>
-                            </div>
-                        </div>
-                        <div 
-                                v-if="chartSeries[0].userId != 0 && chartSeries[0].userId"
-                                class="users-charts__card--header">
-                            <img :src="chartSeries[0].userImg">
-                            <div class="users-charts__card--header-text">
-                                <p>{{ chartSeries[0].userName }}</p>
-                                <span>{{ chartSeries[0].total }}</span>
-                            </div>
-                        </div>
-                        <apexchart
-                                type="area"
-                                height="140"
-                                :series="chartSeries"
-                                :options="chartOptionsByUser[index]" />
-                    </div>
-                </div>
-                <apexchart
-                        type="area"
-                        height="200"
-                        :series="chartSeries"
-                        :options="chartOptions" />
-            
-            </template>
-        </div>
+            <apexchart
+                    type="area"
+                    height="200"
+                    :series="chartSeries"
+                    :options="chartOptions" />
+        
+        </template>
         <slot />
     </div>
 </template>
 
 <script>
 import { mapGetters, mapMutations } from 'vuex';
-import { reportsChartMixin } from '../js/reports-mixin';
+import { reportsChartMixin } from '../../js/mixins';
 
 export default {
     mixins: [ reportsChartMixin ],
@@ -287,7 +287,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.postbox {
+.report-card {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -300,6 +300,9 @@ export default {
 .users-charts {
     order: 3;
     padding: 12px;
+    max-width: 100%;
+    align-items: flex-start;
+    justify-content: center;
 
     @media only screen {
         :deep(.apexcharts-title-text) {
@@ -309,6 +312,11 @@ export default {
     }
 
     .users-charts__card {
+        position: relative;
+        max-width: 100%;
+        padding: 0;
+        position: relative;
+        box-sizing: content-box;
         padding: 20px !important;
 
         .users-charts__card--header {
@@ -318,6 +326,7 @@ export default {
             position: absolute;
             top: 2px;
             left: 26px;
+            font-size: 0.813rem;
 
             img,
             .anonymous-user-avatar {

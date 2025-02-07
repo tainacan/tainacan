@@ -21,7 +21,7 @@
                                 class="has-text-secondary tainacan-icon tainacan-icon-1-125em" />
                     </span>
                     <span class="collapse-all__text">
-                        {{ collapseAll ? $i18n.get('label_show_less_details') : $i18n.get('label_show_more_details') }}
+                        {{ collapseAll ? $i18n.get('label_hide_details') : $i18n.get('label_show_details') }}
                     </span>
                 </button>
                 <b-field class="header-item">

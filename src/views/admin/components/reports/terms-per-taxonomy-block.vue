@@ -1,40 +1,39 @@
 <template>
-    <div v-if="chartData != undefined">
+    <div class="report-card is-full">
         <apexchart
-                v-if="!isFetchingData && taxonomiesListArray && taxonomiesListArray.length && !isBuildingChart"
+                v-if="chartData != undefined && !isFetchingData && taxonomiesListArray && taxonomiesListArray.length && !isBuildingChart"
                 height="380px"
-                class="postbox"
                 :series="chartSeries"
                 :options="chartOptions" />
-        <div 
-                v-if="!isFetchingData && !isBuildingChart && (!taxonomiesListArray || !taxonomiesListArray.length)"
-                style="min-height:380px"
-                class="postbox">
-            <div class="empty-postbox-placeholder">
-                <p class="title is-4">
-                    <span class="icon has-text-gray">
-                        <i class="tainacan-icon tainacan-icon-taxonomies tainacan-icon-1-125em" />
-                    </span>
-                    &nbsp;{{ $i18n.get('taxonomies') }}
-                </p>
-                <br>
-                <p class="subtitle is-6">
-                    {{ $i18n.get('info_no_taxonomy_created') }}
-                </p>
-            </div>
-        </div>
-        <div 
-                v-if="isBuildingChart || isFetchingData"
-                style="min-height:380px"
-                class="skeleton postbox" />
         <slot />
     </div>
+    <div 
+            v-if="chartData != undefined && !isFetchingData && !isBuildingChart && (!taxonomiesListArray || !taxonomiesListArray.length)"
+            style="min-height: 380px"
+            class="report-card is-full">
+        <div class="empty-report-card-placeholder">
+            <p class="title is-4">
+                <span class="icon has-text-gray">
+                    <i class="tainacan-icon tainacan-icon-taxonomies tainacan-icon-1-125em" />
+                </span>
+                &nbsp;{{ $i18n.get('taxonomies') }}
+            </p>
+            <br>
+            <p class="subtitle is-6">
+                {{ $i18n.get('info_no_taxonomy_created') }}
+            </p>
+        </div>
+    </div>
+    <div 
+            v-if="chartData != undefined && isBuildingChart || isFetchingData"
+            style="min-height: 380px"
+            class="skeleton report-card is-full" />
 </template>
 
 
 <script>
 import { mapGetters } from 'vuex';
-import { reportsChartMixin } from '../js/reports-mixin';
+import { reportsChartMixin } from '../../js/mixins';
 
 export default {
     mixins: [ reportsChartMixin ],
