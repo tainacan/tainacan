@@ -62,7 +62,7 @@
                             style="display: flex; align-items: baseline;">
                         
                         <b-button
-                                 outlined
+                                outlined
                                 @click="backToParentTerm">
                             {{ $i18n.get('label_parent_term') }}
                         </b-button>&nbsp;

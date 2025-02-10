@@ -555,6 +555,7 @@
             &>iframe:not(.wp-embedded-content) {
                 width: 90vw;
                 height: calc(100vh - 120px);
+                height: calc(100dvh - 120px);
                 border: none;
                 margin: 60px;
                 display: block;
@@ -567,6 +568,7 @@
         .pswp__zoom-wrap>iframe#iframePDF {
             width: 90vw;
             height: calc(100vh - 120px);
+            height: calc(100dvh - 120px);
             border: none;
             margin: 60px auto;
             display: block;

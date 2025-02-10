@@ -2099,11 +2099,13 @@ export default {
                         top: 0px;
                         margin: 0;
                         max-height: calc(100vh - 194px);
+                        max-height: calc(100dvh - 194px);
                         overflow-y: auto;
                         overflow-x: hidden;
 
                         .tainacan-pages-container--fullscreen & {
                             max-height: calc(100vh - 164px);
+                            max-height: calc(100dvh - 164px);
                         }
                     }
                 }

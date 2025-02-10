@@ -31,6 +31,7 @@ body.admin_page_tainacan_mobile_app {
     justify-content: space-between;
     align-items: center;
     height: calc(100vh - 2em);
+    height: calc(100dvh - 2em);
     width: calc(100vw - 4em);
     text-align: center;
     background-image: url("../../assets/images/tainacan_loading.gif");

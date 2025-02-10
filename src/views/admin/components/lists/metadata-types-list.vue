@@ -220,6 +220,7 @@ export default {
         max-width: 380px;
         min-width: 20.8333333%;
         max-height: calc(100vh - 7.75em);
+        max-height: calc(100dvh - 7.75em);
         top: -28px;
         position: sticky;
         font-size: 0.875em;

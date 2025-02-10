@@ -26,8 +26,6 @@
                 <p>{{ errorMessage }}</p>
             </div>
         </transition>
-        <hr class="wp-header-end">
-        <br>
         <template v-if="!isLoadingRole">
             <div class="name-edition-box">
                 <label for="role-name-input">{{ $i18n.get('Role name') + ':' }}</label>
@@ -39,7 +37,7 @@
                         :placeholder="$i18n.get('Insert the role name...')" 
                         @input="showNotice = false">
             </div>
-            <br>
+
             <!-- Hook for extra Form options -->
             <template v-if="hasBeginLeftForm">  
                 <form
@@ -249,7 +247,6 @@
                                 v-html="getEndRightForm" />
                     </template>
                     
-                    <br>
                 </div><!-- End of the Extra Tab -->
 
             </div> <!-- End of Tabs-->
@@ -497,6 +494,10 @@
 <style lang="scss">
 
 .tainacan-role-edition-form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: var(--tainacan-container-padding);
 
     @keyframes appear-from-right {
         from {
@@ -522,10 +523,21 @@
         min-width: 200px;
     }
     .form-submit {
+        gap: var(--tainacan-container-padding);
+        position: sticky;
+        bottom: 0;
+        right: 0;
+        z-index: 9999;
+        background-color: var(--tainacan-gray1);
+        width: 100%;
         display: flex;
         justify-content: space-between;
-        align-content: center;
-        margin: 2em 0 1em 0;
+        align-items: center;
+        transition: bottom 0.5s ease, width 0.2s linear;
+        box-shadow: 0px 0px 12px -8px var(--tainacan-black);
+        margin-left: calc( -1 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column)));
+        margin-top: auto;
+        padding: var(--tainacan-page-container-padding-y, 1rem) var(--tainacan-page-container-padding-x, var(--tainacan-one-column));
 
         p {
             margin: 0;
@@ -542,24 +554,31 @@
         font-weight: bold;
     }
     .nav-tab {
-        background-color: #faf9f9;
-        border-bottom-color: #faf9f9;
         padding: 5px 24px;
+        margin: 0;
+        background-color: transparent;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        border-bottom: 3px solid transparent;
+
+        &.nav-tab-active {
+            border-bottom: 3px solid #2271b1;
+        }
     }
     .tabs-content {
-        background-color: #faf9f9;
-        border: 1px solid #ccc;
         border-top: none;
         padding: 1em 2em;
     }
     .dashicons-info {
-        color: #a06522;
+        color: var(--tainacan-warning);
     }
     .capabilities-list {
         padding: 1em 0;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
+        font-size: 13px;
 
         .capability-group {
             padding: 1em 1em 1em 0em;
@@ -571,7 +590,7 @@
                 margin-bottom: 1em;
                 font-size: 1em;
                 font-weight: bold;
-                color: #0073aa;
+                color: #2271b1;
             }
             ul {
                 li {

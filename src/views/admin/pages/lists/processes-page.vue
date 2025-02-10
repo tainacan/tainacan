@@ -337,6 +337,7 @@
 
     .tainacan-modal-content .table-container {
         max-height: calc(100vh - 412px);
+        max-height: calc(100dvh - 412px);
         overflow-y: scroll;
         margin-bottom: 0;
         padding-bottom: 1.5rem;

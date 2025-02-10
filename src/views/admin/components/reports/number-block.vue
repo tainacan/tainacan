@@ -246,7 +246,7 @@ export default {
         padding-left: 0;
         padding-right: 0;
         margin: 0 auto;
-        font-size: unquote('clamp(1.125rem, 2vw, 1.875rem)');
+        font-size: unquote('clamp(1.125rem, 1vw + 1rem, 1.875rem)');
         max-width: fit-content;
         white-space: nowrap;
         display: flex;

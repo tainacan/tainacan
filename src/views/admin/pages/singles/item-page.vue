@@ -746,6 +746,7 @@
                         top: 0;
                         margin: 0;
                         max-height: calc(100vh - 202px);
+                        max-height: calc(100dvh - 202px);
                         overflow-y: auto;
                         overflow-x: hidden;
                     }

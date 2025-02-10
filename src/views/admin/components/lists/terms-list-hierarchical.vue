@@ -1103,6 +1103,7 @@ export default {
 
         .tainacan-hierarchical-list-columns-container {
             max-height: calc(100vh - 184px - 56px);
+            max-height: calc(100dvh - 184px - 56px);
 
             .tainacan-hierarchical-list-column,
             .tainacan-hierarchical-list-column ul {

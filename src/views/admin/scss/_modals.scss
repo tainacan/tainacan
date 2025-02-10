@@ -27,6 +27,7 @@
     @media only screen and (max-width: 498px) {
         max-height: 100%;
         max-height: 100vh;
+        max-height: 100dvh;
         width: 100%;
         width: 100vw;
     }
@@ -112,6 +113,7 @@
         padding: 20px;
         max-height: 100%;
         max-height: 100vh;
+        max-height: 100dvh;
         display: block;
 
         .modal-card-body {

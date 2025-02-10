@@ -103,20 +103,20 @@
                 height="380px"
                 :series="chartSeries"
                 :options="chartOptions" />
-            <div 
-                    v-if="taxonomiesList != undefined && taxonomyTermsLatestCachedOn"
-                    class="report-last-cached-on">
-                <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(taxonomyTermsLatestCachedOn).toLocaleString() }}</span>
-                <button 
-                        @click="loadTaxonomyTerms(true)">
-                    <span class="screen-reader-text">
-                        {{ $i18n.get('label_get_latest_report') }}
-                    </span>
-                    <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
-                    </span>
-                </button>
-            </div>
+        <div 
+                v-if="taxonomiesList != undefined && taxonomyTermsLatestCachedOn"
+                class="report-last-cached-on">
+            <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(taxonomyTermsLatestCachedOn).toLocaleString() }}</span>
+            <button 
+                    @click="loadTaxonomyTerms(true)">
+                <span class="screen-reader-text">
+                    {{ $i18n.get('label_get_latest_report') }}
+                </span>
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                </span>
+            </button>
+        </div>
     </div>
    
     <div 

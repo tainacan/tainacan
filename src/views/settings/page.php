@@ -9,7 +9,9 @@
 		<?php
 			settings_fields( 'tainacan_item_submission_recaptcha' );
 			do_settings_sections( 'tainacan_settings' );
-			submit_button();
 		?>
+		<footer class="form-footer">
+			<?php submit_button( __( 'Save Changes', 'tainacan' ), 'primary', 'submit', true ); ?>
+		</footer>
 	</form>
 </div>

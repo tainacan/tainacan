@@ -123,6 +123,7 @@
             .dropdown-content {
                 font-size: 1.125em;
                 max-height: 100vh;
+                max-height: 100dvh;
             }
             .dropdown-menu {
                 border-radius: var(-tainacan-dropdownmenu-border-radius, 4px);

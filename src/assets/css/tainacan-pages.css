@@ -997,6 +997,8 @@ a:hover:not([href]) {
   grid-template-rows: 100%;
   height: calc(100vh - var(--wp-admin--admin-bar--height, 32px));
   max-height: calc(100vh - var(--wp-admin--admin-bar--height, 32px));
+  height: calc(100dvh - var(--wp-admin--admin-bar--height, 32px));
+  max-height: calc(100dvh - var(--wp-admin--admin-bar--height, 32px));
   width: 100%;
   font-family: var(--tainacan-font-family);
   font-size: 16px;
@@ -1090,7 +1092,9 @@ a:hover:not([href]) {
     overflow-y: auto;
     padding: var(--tainacan-page-container--inner-padding-y, 1rem) var(--tainacan-page-container--inner-padding-x, 1rem) 0 var(--tainacan-page-container--inner-padding-x, 1rem);
     height: calc(100vh - var(--wp-admin--admin-bar--height, 32px));
-    max-height: calc(100vh - var(--wp-admin--admin-bar--height, 32px)); }
+    max-height: calc(100vh - var(--wp-admin--admin-bar--height, 32px));
+    height: calc(100dvh - var(--wp-admin--admin-bar--height, 32px));
+    max-height: calc(100dvh - var(--wp-admin--admin-bar--height, 32px)); }
     @media screen and (max-width: 1024px) {
       #tainacan-page-container #tainacan-page-container--inner {
         --tainacan-page-container--inner-padding-x: 0.25rem; } }
@@ -1120,6 +1124,8 @@ a:hover:not([href]) {
   #tainacan-page-container #tainacan-navigation-menu {
     height: calc(100vh - var(--wp-admin--admin-bar--height, 32px));
     max-height: calc(100vh - var(--wp-admin--admin-bar--height, 32px));
+    height: calc(100dvh - var(--wp-admin--admin-bar--height, 32px));
+    max-height: calc(100dvh - var(--wp-admin--admin-bar--height, 32px));
     overflow-y: auto;
     flex-basis: var(--tainacan-admin-navigation-sidebar-width, 215px);
     min-width: var(--tainacan-admin-navigation-sidebar-width, 215px);
@@ -1349,9 +1355,12 @@ a:hover:not([href]) {
     box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px color-mix(in srgb, var(--tainacan-blue3) 20%, transparent));
     height: calc(100vh - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem) );
     max-height: calc(100vh - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem) );
+    height: calc(100dvh - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem) );
+    max-height: calc(100dvh - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem) );
     overflow: auto; }
     #tainacan-page-container .tainacan-page-container-content > .wrap {
-      margin: 0; }
+      margin: 0;
+      height: 100%; }
   @media (max-width: 768px) {
     #tainacan-page-container {
       grid-template-columns: 1fr;

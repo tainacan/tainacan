@@ -1355,6 +1355,7 @@
         }
         .tainacan-finder-columns-container {
             max-height: calc(100vh - 184px - 56px);
+            max-height: calc(100dvh - 184px - 56px);
 
             .tainacan-finder-column,
             .tainacan-finder-column ul {
