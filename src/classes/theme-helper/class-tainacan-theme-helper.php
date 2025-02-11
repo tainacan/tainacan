@@ -1725,24 +1725,31 @@ class Theme_Helper {
 			) : []
 		);
 		
-		return tainacan_get_the_media_component(
-			'tainacan-item-gallery-block_id-' . $block_id,
-			$layout_elements['thumbnails'] ? $media_items_thumbnails : null,
-			$layout_elements['main'] ? $media_items_main : null,
-			array(
-				'wrapper_attributes' => $wrapper_attributes,
-				'class_main_div' => '',
-				'class_thumbs_div' => '',
-				'class_thumbs_li' => $thumbs_have_fixed_height ? 'has-fixed-height' : '',
-				'swiper_main_options' => $swiper_main_options,
-				'swiper_thumbs_options' => $swiper_thumbs_options,
-				'swiper_arrows_as_svg' => $show_arrows_as_svg,
-				'disable_lightbox' => !$open_lightbox_on_click,
-				'hide_media_name' => $hide_file_name_lightbox,
-				'hide_media_caption' => $hide_file_caption_lightbox,
-				'hide_media_description' => $hide_file_description_lightbox,
-				'lightbox_has_light_background' => $lightbox_has_light_background
-			)
+		/**
+		 * Filters the Media Component HTML
+		 */
+		return apply_filters(
+			'get_tainacan_item_gallery',
+			tainacan_get_the_media_component(
+				'tainacan-item-gallery-block_id-' . $block_id,
+				$layout_elements['thumbnails'] ? $media_items_thumbnails : null,
+				$layout_elements['main'] ? $media_items_main : null,
+				array(
+					'wrapper_attributes' => $wrapper_attributes,
+					'class_main_div' => '',
+					'class_thumbs_div' => '',
+					'class_thumbs_li' => $thumbs_have_fixed_height ? 'has-fixed-height' : '',
+					'swiper_main_options' => $swiper_main_options,
+					'swiper_thumbs_options' => $swiper_thumbs_options,
+					'swiper_arrows_as_svg' => $show_arrows_as_svg,
+					'disable_lightbox' => !$open_lightbox_on_click,
+					'hide_media_name' => $hide_file_name_lightbox,
+					'hide_media_caption' => $hide_file_caption_lightbox,
+					'hide_media_description' => $hide_file_description_lightbox,
+					'lightbox_has_light_background' => $lightbox_has_light_background
+				)
+			),
+			$args,
 		);
 	}
 
