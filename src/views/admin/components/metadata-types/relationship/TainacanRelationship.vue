@@ -4,7 +4,7 @@
                 v-model="activeTab"
                 size="is-small"
                 animated>
-            <b-tab-item :label="( itemMetadatum.value.length == 1 || itemMetadatum.metadatum.multiple != 'yes' ) ? $i18n.get('label_select_item') : $i18n.get('label_insert_items')">
+            <b-tab-item :label="( itemMetadatum.value && itemMetadatum.value.length == 1 || itemMetadatum.metadatum.multiple != 'yes' ) ? $i18n.get('label_select_item') : $i18n.get('label_insert_items')">
                 <b-taginput
                         :id="relationshipInputId"
                         expanded
