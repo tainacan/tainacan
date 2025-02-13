@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 class="wp-heading-inline">
+        <h1 class="tainacan-page-title">
             {{ $route.meta.title }}
         </h1>
         <div class="dropdown-new-role">

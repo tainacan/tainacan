@@ -1330,7 +1330,7 @@ a:hover:not([href]) {
       padding: 0.5rem; }
       #tainacan-page-container #tainacan-navigation-menu .separator-list-item .icon {
         color: currentColor !important; }
-  #tainacan-page-container h1.wp-heading-inline {
+  #tainacan-page-container h1.tainacan-page-title {
     font-size: 1.25em;
     line-height: 1.5em;
     font-weight: 500;

@@ -28,5 +28,8 @@
   .tainacan-settings .form-footer p {
     margin: 0;
     padding: 0; }
+@media screen and (max-width: 782px) {
+  .tainacan-settings .form-table td {
+    line-height: 1.9; } }
 
 /*# sourceMappingURL=tainacan-settings.css.map */

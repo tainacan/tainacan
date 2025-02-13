@@ -5,7 +5,7 @@
                 'repository-level-page': isRepositoryLevel
             }">
         <div class="tainacan-reports-header">
-            <h1 class="wp-heading-inline">
+            <h1 class="tainacan-page-title">
                 {{ $route.meta.title }}
             </h1>
         </div>
@@ -402,7 +402,7 @@ export default {
             align-items: center;
             margin: 0px 24px 12px 0px;
 
-            .wp-heading-inline {
+            .tainacan-page-title {
                 margin: 0rem; 
             }
 

@@ -37,4 +37,10 @@
             padding: 0;
         }
     }
+
+    @media screen and (max-width: 782px) {
+        .form-table td {
+            line-height: 1.9;
+        }
+    }
 }

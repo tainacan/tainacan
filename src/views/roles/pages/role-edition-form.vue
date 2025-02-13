@@ -4,12 +4,12 @@
             @submit="onSubmit">
         <h1 
                 v-if="roleSlug !== 'new'"
-                class="wp-heading-inline">
+                class="tainacan-page-title">
             {{ $route.meta.title }}&nbsp;<strong>{{ form.name ? form.name : '' }}</strong>
         </h1>
         <h1 
                 v-else
-                class="wp-heading-inline">
+                class="tainacan-page-title">
             {{ $i18n.get('Add new role') }}
         </h1>
         <transition name="appear-from-right">
