@@ -173,8 +173,7 @@ UserPrefsPlugin.install = function (app, options = {}) {
                         .catch( () => console.log("Request to /users/me failed. Maybe you're not logged in.") );
                 }
             } else {
-                let prefs = JSON.parse(tainacan_user.prefs);
-                this.tainacanPrefs = prefs;
+                this.tainacanPrefs = tainacan_user.prefs ? JSON.parse(tainacan_user.prefs) : {};
             }
         },
         get(key) {
