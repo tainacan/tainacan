@@ -766,7 +766,7 @@ class Theme_Helper {
 			$default_order = $args['default_order'];
 			unset($args['default_order']);
 		}
-		
+
 		$default_orderby = 'date';
 		if ( isset($args['default_orderby']) ) {
 			$default_orderby = $args['default_orderby'];
@@ -972,6 +972,14 @@ class Theme_Helper {
 		return isset($this->registered_view_modes[$slug]) ? $this->registered_view_modes[$slug] : false;
 	}
 	
+	/**
+	 * Get the default view mode which can be tweaked in the settings page.
+	 * 
+	 * @return string The default view mode slug
+	 */
+	public function get_default_view_mode() {
+		return apply_filters( 'tainacan-default-view-mode-for-themes', get_option( 'tainacan_option_default_view_mode' , 'masonry' ) );
+	}
 
 	/**
 	 * When visiting a collection archive or single, returns the current collection id

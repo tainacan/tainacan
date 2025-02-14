@@ -650,7 +650,7 @@ function tainacan_the_collection_url() {
  * @return array ['default_view_mode'=> '', '$enabled_view_modes'=> [], , '$registered_view_modes'=> [] ]
  */
 function tainacan_get_the_view_modes() {
-	$default_view_mode = apply_filters( 'tainacan-default-view-mode-for-themes', get_option( 'tainacan_option_default_view_mode' , 'masonry' ) );
+	$default_view_mode = \Tainacan\Theme_Helper::get_instance()->get_default_view_mode();
 	$registered_view_modes = \Tainacan\Theme_Helper::get_instance()->get_registered_view_modes();
 	$registered_view_modes_slugs = [];
 	foreach ($registered_view_modes as $key => $value) {

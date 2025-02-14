@@ -91,10 +91,10 @@ export default (element) => {
             }
 
             // View Mode settings
-            let possibleDefaultViewMode = 'masonry';
+            let possibleDefaultViewMode = tainacan_plugin.default_view_mode ? tainacan_plugin.default_view_mode : 'masonry';
             if ( getDataAttribute(blockElement, 'default-view-mode') != undefined )
                 possibleDefaultViewMode = getDataAttribute(blockElement, 'default-view-mode');
-        
+
             if ( possibleViewModes.indexOf(possibleDefaultViewMode) < 0 )
                 possibleViewModes.push(possibleDefaultViewMode);
 

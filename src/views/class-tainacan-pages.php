@@ -222,6 +222,7 @@ abstract class Pages {
 			'theme_taxonomy_list_url' 	=> get_post_type_archive_link( 'tainacan-taxonomy' ),
 			'custom_header_support'  	=> get_theme_support('custom-header'),
 			'registered_view_modes'  	=> \Tainacan\Theme_Helper::get_instance()->get_registered_view_modes(),
+			'default_view_mode'		  	=> \Tainacan\Theme_Helper::get_instance()->get_default_view_mode(),
 			'exposer_mapper_param'   	=> \Tainacan\Mappers_Handler::MAPPER_PARAM,
 			'exposer_type_param'     	=> \Tainacan\Exposers_Handler::TYPE_PARAM,
 			'repository_name'	 		=> get_bloginfo('name'),
