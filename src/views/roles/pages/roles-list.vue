@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="tainacan-fixed-subheader">
         <h1 class="tainacan-page-title">
             {{ $route.meta.title }}
         </h1>
@@ -46,11 +46,6 @@
                 </ul>
             </div>
         </div>
-        <hr class="wp-header-end">
-
-        <h2 class="screen-reader-text">
-            {{ $i18n.get('Roles list') }}
-        </h2>
 
         <p class="search-box">
             <label
@@ -64,159 +59,161 @@
                     type="search"
                     :placeholder="$i18n.get('Type to search by Role Name')">
         </p>
-        <div 
-                v-if="roles"         
-                class="tablenav top">
-            <div class="align-left actions">
-                <p>{{ $i18n.get('Create and edit roles for users') }}</p>
-            </div>
-            <div class="tablenav-pages one-page">
-                <span class="displaying-num">{{ Object.keys(roles).length + ' ' + $i18n.getWithNumber('item', 'items', Object.keys(roles).length) }}</span>
-            </div>
+    </div>
+    <div 
+            v-if="roles"         
+            class="tablenav top">
+        <h2 class="screen-reader-text">
+            {{ $i18n.get('Roles list') }}
+        </h2>
+        <div class="align-left actions">
+            <p>{{ $i18n.get('Create and edit roles for users') }}</p>
         </div>
+        <div class="tablenav-pages one-page">
+            <span class="displaying-num">{{ Object.keys(roles).length + ' ' + $i18n.getWithNumber('item', 'items', Object.keys(roles).length) }}</span>
+        </div>
+    </div>
 
-        <table 
-                v-if="!isLoadingRoles"
-                class="wp-list-table widefat fixed striped roles">
-            <thead>
-                <tr>
-                    <!-- <td class="manage-column column-cb check-column">
-                        <label
-                                class="screen-reader-text"
-                                for="cb-select-all">
-                            {{ $i18n.get('Selecionar Todos') }}
-                        </label>
-                        <input
-                                id="cb-select-all"
-                                type="checkbox">
-                    </td> -->
-                    <th
-                            id="name"
-                            scope="col"
-                            class="manage-column column-name">
-                        {{ $i18n.get('Role\'s Name') }}
-                    </th>
-                    <!-- <th
-                            scope="col"
-                            id="role"
-                            class="manage-column column-slug">
-                        {{ $i18n.get('Slug') }}
-                    </th> -->
-                    <th
-                            id="capabilities-number"
-                            scope="col"
-                            class="manage-column column-capabilities num">
-                        {{ $i18n.get('Number of Capabilities') }}
-                    </th>
-                </tr>
-            </thead>
+    <table 
+            v-if="!isLoadingRoles"
+            class="wp-list-table widefat fixed striped roles">
+        <thead>
+            <tr>
+                <!-- <td class="manage-column column-cb check-column">
+                    <label
+                            class="screen-reader-text"
+                            for="cb-select-all">
+                        {{ $i18n.get('Selecionar Todos') }}
+                    </label>
+                    <input
+                            id="cb-select-all"
+                            type="checkbox">
+                </td> -->
+                <th
+                        id="name"
+                        scope="col"
+                        class="manage-column column-name">
+                    {{ $i18n.get('Role\'s Name') }}
+                </th>
+                <!-- <th
+                        scope="col"
+                        id="role"
+                        class="manage-column column-slug">
+                    {{ $i18n.get('Slug') }}
+                </th> -->
+                <th
+                        id="capabilities-number"
+                        scope="col"
+                        class="manage-column column-capabilities num">
+                    {{ $i18n.get('Number of Capabilities') }}
+                </th>
+            </tr>
+        </thead>
 
-            <tbody data-wp-lists="list:roles">
-                <tr
-                        v-for="role of roles"
-                        :id="role.slug"
-                        :key="role.slug">
-                    <!-- <th
-                            scope="row"
-                            class="check-column">
-                        <label
-                                class="screen-reader-text"
-                                :for="'role_' + role.slug">
-                            {{ $i18n.get('Selecionar') + ' ' + role.name }}
-                        </label>
-                        <input
-                            type="checkbox"
-                            name="roles[]"
-                            :id="'role_'+ role.slug"
-                            :value="role.slug">
-                    </th> -->
-                    <td 
-                            class="name column-name has-row-actions column-primary"
-                            :data-colname="$i18n.get('Role name')">
-                        <strong>
-                            <router-link 
-                                    :to="'/roles/' + role.slug"
-                                    class="submitdelete">
-                                {{ role.name }}
+        <tbody data-wp-lists="list:roles">
+            <tr
+                    v-for="role of roles"
+                    :id="role.slug"
+                    :key="role.slug">
+                <!-- <th
+                        scope="row"
+                        class="check-column">
+                    <label
+                            class="screen-reader-text"
+                            :for="'role_' + role.slug">
+                        {{ $i18n.get('Selecionar') + ' ' + role.name }}
+                    </label>
+                    <input
+                        type="checkbox"
+                        name="roles[]"
+                        :id="'role_'+ role.slug"
+                        :value="role.slug">
+                </th> -->
+                <td 
+                        class="name column-name has-row-actions column-primary"
+                        :data-colname="$i18n.get('Role name')">
+                    <strong>
+                        <router-link 
+                                :to="'/roles/' + role.slug"
+                                class="submitdelete">
+                            {{ role.name }}
+                        </router-link>
+                    </strong>
+                    <br>
+                    <div class="row-actions">
+                        <span class="edit">
+                            <router-link :to="'/roles/' + role.slug">
+                                {{ $i18n.get('Edit') }}
                             </router-link>
-                        </strong>
-                        <br>
-                        <div class="row-actions">
-                            <span class="edit">
-                                <router-link :to="'/roles/' + role.slug">
-                                    {{ $i18n.get('Edit') }}
-                                </router-link>
-                            </span>
-                            <span 
-                                    v-if="role.slug.match('tainacan')"
-                                    class="delete">
-                                &nbsp;|&nbsp;
-                                <a 
-                                        class="submitdelete"
-                                        @click="removeRole(role.slug)">
-                                    {{ $i18n.get('Delete') }}
-                                </a>
-                            </span>
-                        </div>
-                    </td>
-                    <!-- <td
-                            class="slug column-slug"
-                            :data-colname="$i18n.get('Slug')">
-                        {{ role.slug }}
-                    </td> -->
-                    <td
-                            class="capabilities column-capabilities num  column-primary"
-                            :data-colname="$i18n.get('Number of capabilities')">
-                        {{ Object.values(role.capabilities).filter((capability) => capability == true).length }}
-                    </td>
-                </tr>
-            </tbody>
+                        </span>
+                        <span 
+                                v-if="role.slug.match('tainacan')"
+                                class="delete">
+                            &nbsp;|&nbsp;
+                            <a 
+                                    class="submitdelete"
+                                    @click="removeRole(role.slug)">
+                                {{ $i18n.get('Delete') }}
+                            </a>
+                        </span>
+                    </div>
+                </td>
+                <!-- <td
+                        class="slug column-slug"
+                        :data-colname="$i18n.get('Slug')">
+                    {{ role.slug }}
+                </td> -->
+                <td
+                        class="capabilities column-capabilities num  column-primary"
+                        :data-colname="$i18n.get('Number of capabilities')">
+                    {{ Object.values(role.capabilities).filter((capability) => capability == true).length }}
+                </td>
+            </tr>
+        </tbody>
 
-            <tfoot>
-                <tr>
-                    <!-- <td class="manage-column column-cb check-column">
-                        <label
-                                class="screen-reader-text"
-                                for="cb-select-all-2">
-                            {{ $i18n.get('Selecionar Todos') }}
-                        </label>
-                        <input
-                                id="cb-select-all-2"
-                                type="checkbox">
-                    </td> -->
-                    <th
-                            id="name"
-                            scope="col"
-                            class="manage-column column-name column-primary">
-                        {{ $i18n.get('Role\'s Name') }}
-                    </th>
-                    <!-- <th
-                            scope="col"
-                            id="role"
-                            class="manage-column column-slug">
-                        {{ $i18n.get('Slug') }}
-                    </th> -->
-                    <th
-                            id="capabilities-number"
-                            scope="col"
-                            class="manage-column column-capabilities num">
-                        {{ $i18n.get('Number of Capabilities') }}
-                    </th>
-                </tr>
-            </tfoot>
-        </table>
+        <tfoot>
+            <tr>
+                <!-- <td class="manage-column column-cb check-column">
+                    <label
+                            class="screen-reader-text"
+                            for="cb-select-all-2">
+                        {{ $i18n.get('Selecionar Todos') }}
+                    </label>
+                    <input
+                            id="cb-select-all-2"
+                            type="checkbox">
+                </td> -->
+                <th
+                        id="name"
+                        scope="col"
+                        class="manage-column column-name column-primary">
+                    {{ $i18n.get('Role\'s Name') }}
+                </th>
+                <!-- <th
+                        scope="col"
+                        id="role"
+                        class="manage-column column-slug">
+                    {{ $i18n.get('Slug') }}
+                </th> -->
+                <th
+                        id="capabilities-number"
+                        scope="col"
+                        class="manage-column column-capabilities num">
+                    {{ $i18n.get('Number of Capabilities') }}
+                </th>
+            </tr>
+        </tfoot>
+    </table>
 
-        <div class="tablenav bottom">
-            <div 
-                    v-if="roles"        
-                    style="margin-left: auto;"
-                    class="tablenav-pages one-page">
-                <span class="displaying-num">
-                    {{ Object.keys(roles).length + ' ' + $i18n.getWithNumber('item', 'items', Object.keys(roles).length) }}
-                </span>
-            </div>
+    <div class="tablenav bottom">
+        <div 
+                v-if="roles"        
+                style="margin-left: auto;"
+                class="tablenav-pages one-page">
+            <span class="displaying-num">
+                {{ Object.keys(roles).length + ' ' + $i18n.getWithNumber('item', 'items', Object.keys(roles).length) }}
+            </span>
         </div>
-
     </div>
 </template>
 
@@ -323,14 +320,14 @@
         align-items: flex-end;
         height: auto;
     }
-    .search-box {
-        margin-top: -34px;
+    .search-box {        
         #roles-search-input {
             min-width: 300px;
         }
     }
 
     .dropdown-new-role {
+        margin-right: auto;
         display: inline-flex;
         align-items: center;
         position: relative;
@@ -435,7 +432,8 @@
             .button {
                 padding: 1.24em 0.5em;  
                 top: -1px;  
-                font-size: 1em;
+                font-size: 1.25em;
+                
                 .dashicons {
                     margin-top: -0.5em;
                 }
@@ -465,6 +463,7 @@
 
         &.widefat td,
         &.widefat th {
+            display: table-cell !important;
             padding: 8px 18px;
         }
     }

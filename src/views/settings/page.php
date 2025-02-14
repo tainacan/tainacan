@@ -3,10 +3,10 @@
 		<h1 class="tainacan-page-title">
 			<?php _e('Settings', 'tainacan'); ?>
 		</h1>
+		<?php settings_errors(); ?>
 	</div>
 	<form method="post" action="options.php" class="tainacan-settings">
 		<?php
-			settings_errors();
 			settings_fields( 'tainacan_settings' );
 			do_settings_sections( 'tainacan_settings' );
 		?>

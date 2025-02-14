@@ -1,9 +1,13 @@
+.admin_page_tainacan_settings .notice {
+  margin-top: 2px; }
+
 .tainacan-settings h2 {
   font-size: 1.125em;
   padding: 0.5em 0;
   border-bottom: 1px solid var(--tainacan-gray2);
   background-color: var(--tainacan-background-color);
   position: sticky;
+  z-index: 1;
   top: calc(1.5em - 1rem + var(--tainacan-page-container-padding-y, 1rem) + var(--tainacan-page-container-padding-y, 1rem));
   margin-top: 2rem; }
 .tainacan-settings .settings-section-descrition {

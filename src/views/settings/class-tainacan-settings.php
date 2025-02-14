@@ -171,8 +171,10 @@ class Settings extends Pages {
 			'description' => __( 'Enable this option to override the WordPress default blog-list-like template and display the faceted search in the collection items page, incluiding filters and custom view modes.', 'tainacan' ),
 			'type' => 'boolean',
 			'input_type' => 'checkbox',
+			'input_disabled' => defined( 'TAINACAN_ENABLE_COLLECTION_THE_CONTENT_FILTER' ),
 			'sanitize_callback' => 'rest_sanitize_boolean',
-			'default' => false
+			'default' => defined( 'TAINACAN_ENABLE_COLLECTION_THE_CONTENT_FILTER' ) ? TAINACAN_ENABLE_COLLECTION_THE_CONTENT_FILTER : false,
+			'forced_value' => defined( 'TAINACAN_ENABLE_COLLECTION_THE_CONTENT_FILTER' ) ? TAINACAN_ENABLE_COLLECTION_THE_CONTENT_FILTER : null
 		) );
 
 		$this->create_tainacan_setting( array(
@@ -183,16 +185,18 @@ class Settings extends Pages {
 			'description' => __( 'Enable this option to override the WordPress default blog-list-like template and display the faceted search in the repository items page, incluiding filters and custom view modes.', 'tainacan' ),
 			'type' => 'boolean',
 			'input_type' => 'checkbox',
+			'input_disabled' => defined( 'TAINACAN_ENABLE_REPOSITORY_THE_CONTENT_FILTER' ),
 			'sanitize_callback' => 'rest_sanitize_boolean',
-			'default' => false
+			'default' => defined( 'TAINACAN_ENABLE_REPOSITORY_THE_CONTENT_FILTER' ) ? TAINACAN_ENABLE_REPOSITORY_THE_CONTENT_FILTER : false,
+			'forced_value' => defined( 'TAINACAN_ENABLE_REPOSITORY_THE_CONTENT_FILTER' ) ? TAINACAN_ENABLE_REPOSITORY_THE_CONTENT_FILTER : null
 		) );
 
 		$this->create_tainacan_setting( array(
-			'id' => 'override_taxonomy_archive_template',
+			'id' => 'override_taxonomy_single_template',
 			'section' => 'tainacan_settings_theme_templates',
 			'title' => __( 'Taxonomy terms page', 'tainacan' ),
-			'label' => __( 'Replace WordPress blog-like template with a basic terms list', 'tainacan' ),
-			'description' => __( 'Enable this option to override the WordPress default blog-list-like template and display taxonomy terms list with links to child terms and its items, besides having basic sorting an search options.', 'tainacan' ),
+			'label' => __( 'Replace WordPress post-like template with a basic terms list', 'tainacan' ),
+			'description' => __( 'Enable this option to override the WordPress default post-like template and display taxonomy terms list with links to child terms and its items, besides having basic sorting an search options.', 'tainacan' ),
 			'type' => 'boolean',
 			'input_type' => 'checkbox',
 			'input_disabled' => defined( 'TAINACAN_DISABLE_TAXONOMY_THE_CONTENT_FILTER' ),
@@ -373,7 +377,7 @@ class Settings extends Pages {
 				'label' => is_array($args['label']) ? implode(', ', $args['label']) : $args['label'],
 				'description' => $args['description'],
 				'sanitize_callback' => $args['sanitize_callback'],
-				'show_in_rest' => true,
+				'show_in_rest' => $args['type'] !== 'array', // Array settings need a complicated schema, so they are not shown in the REST API.
 				'default' => $args['default']
 			)
 		);
@@ -465,7 +469,7 @@ class Settings extends Pages {
 	public function items_list_defaults_section_description() {
 	?>
 		<p class="settings-section-descrition">
-			<?php echo _e('Options that will be used as default for items list in the collection and repository pages. They might be override by collection settings or theme options.', 'tainacan');?>
+			<?php echo _e('Options that will be used as default for items list in the collection and repository pages. They might be overridden by collection settings or theme options.', 'tainacan');?>
 		</p>
 	<?php
 	}

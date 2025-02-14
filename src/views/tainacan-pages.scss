@@ -667,12 +667,19 @@
 
     .tainacan-fixed-subheader {
         width: calc(100% + (2 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column))));
+        max-width: 100%;
         margin-left: calc( -1 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column)));
         margin-top: calc(-1 * var(--tainacan-page-container-padding-y, 1rem));
         padding: var(--tainacan-page-container-padding-y, 1rem) var(--tainacan-page-container-padding-x, var(--tainacan-one-column));
         background: var(--tainacan-background-color);
         position: sticky;
         top: calc(-1 * var(--tainacan-page-container-padding-y, 1rem));
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
     }
 
     .tainacan-page-container-content {
