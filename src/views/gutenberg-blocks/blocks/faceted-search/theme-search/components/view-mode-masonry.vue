@@ -118,6 +118,7 @@ export default {
                             columnWidth: '.tainacan-masonry-grid-sizer',
                             gutter: 25,
                             percentPosition: true,
+                            transitionDuration: '0.2s'
                         });
                     });
                 }

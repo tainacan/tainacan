@@ -170,7 +170,8 @@ export default {
                             itemSelector: 'li',
                             columnWidth: '.tainacan-records-grid-sizer',
                             gutter: 30,
-                            percentPosition: true
+                            percentPosition: true,
+                            transitionDuration: '0.2s'
                         });
                     });
                 }

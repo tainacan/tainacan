@@ -2417,7 +2417,8 @@ export default {
                                 itemSelector: 'li',
                                 columnWidth: '.tainacan-' + this.viewMode + '-grid-sizer',
                                 gutter: this.viewMode == 'masonry' ? 25 : 30,
-                                percentPosition: true
+                                percentPosition: true,
+                                transitionDuration: '0.2s'
                             });
                         }
                     });
