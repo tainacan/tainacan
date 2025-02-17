@@ -73,6 +73,12 @@
                             @click="capabilitiesTab = 'collections'">
                         {{ $i18n.get('Collections') }}
                     </a>
+                    <a 
+                            class="nav-tab"
+                            :class="{ 'nav-tab-active': capabilitiesTab == 'admin-ui'}"
+                            @click="capabilitiesTab = 'admin-ui'">
+                        {{ $i18n.get('Admin Appearence') }}
+                    </a>
 
                     <a        
                             v-if="hasBeginRightForm || hasEndRightForm"
@@ -224,6 +230,44 @@
                 </div> <!-- End of Collections Tab -->
 
                 <div
+                        v-else-if="capabilitiesTab === 'admin-ui'"
+                        id="tab-admin-ui"
+                        class="tabs-content">
+                    <p>{{ $i18n.get('The following capabilities are related to the admin interface appearence.') }}</p>
+                   
+                    <div class="capabilities-list">
+                        <div
+                                v-for="(group, groupIndex) of groupedAdminUIOptions"
+                                :key="groupIndex"
+                                class="capability-group">
+                            <h3>{{ groupIndex }}</h3>
+                            <ul>
+								<li 
+                                        v-for="(optionLabel, optionValue) of group"
+                                        :key="optionValue"
+                                        style="width: 100%">
+									<span class="check-column">
+										<label 
+                                                :for="optionValue"
+                                                class="screen-reader-text">
+											{{ optionLabel}}
+										</label>
+										<input 
+                                                type="checkbox"
+                                                name="tainacan_admin_options_by_role"
+                                                :id="optionValue"
+                                                :value="optionValue">
+									</span>
+									<span class="name column-name">
+										{{ optionLabel}}
+									</span>
+								</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div><!-- End of PluginUI tab -->
+
+                <div
                         v-show="capabilitiesTab === 'extra'"
                         id="tab-extra"
                         class="tabs-content">
@@ -316,7 +360,8 @@
                 capabilitiesTab: 'repository',
                 showNotice: false,
                 showErrorNotice: false,
-                errorMessage: ''
+                errorMessage: '',
+                groupedAdminUIOptions: tainacan_plugin && tainacan_plugin.admin_ui_options ? tainacan_plugin.admin_ui_options : {}
             }
         },
         computed: {
