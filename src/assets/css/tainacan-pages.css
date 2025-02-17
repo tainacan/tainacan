@@ -1350,6 +1350,8 @@ a:hover:not([href]) {
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 1rem; }
+    #tainacan-page-container .tainacan-fixed-subheader .notice:only-of-type {
+      margin: 0px; }
   #tainacan-page-container .tainacan-page-container-content {
     background-color: var(--tainacan-background-color);
     border-radius: var(--tainacan-page-container-border-radius, 16px) var(--tainacan-page-container-border-radius, 16px) 0 0;

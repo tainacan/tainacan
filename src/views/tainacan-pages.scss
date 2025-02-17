@@ -162,8 +162,6 @@
     --tainacan-admin-navigation-sidebar-separator-color: #949494;
     --tainacan-admin-navigation-sidebar-floating-menu-background-color: #1e1e1e;
 
-    --tainacan-page-container--inner-padding-x: 0px;
-
     --tainacan-page-container-border-radius: 8px;
 
     --tainacan-dashboard-card-border-radius: 4px;
@@ -680,6 +678,10 @@
         justify-content: space-between;
         flex-wrap: wrap;
         gap: 1rem;
+
+        .notice:only-of-type {
+            margin: 0px;
+        }
     }
 
     .tainacan-page-container-content {

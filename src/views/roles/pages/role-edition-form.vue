@@ -2,30 +2,33 @@
     <form 
             class="tainacan-role-edition-form"
             @submit="onSubmit">
-        <h1 
-                v-if="roleSlug !== 'new'"
-                class="tainacan-page-title">
-            {{ $route.meta.title }}&nbsp;<strong>{{ form.name ? form.name : '' }}</strong>
-        </h1>
-        <h1 
-                v-else
-                class="tainacan-page-title">
-            {{ $i18n.get('Add new role') }}
-        </h1>
-        <transition name="appear-from-right">
-            <div 
-                    v-if="showNotice"
-                    class="notice notice-success notice-alt">
-                <p>{{ $i18n.get('User Role Saved') }}</p>
-            </div>
-        </transition>
-        <transition name="appear-from-right">
-            <div 
-                    v-if="showErrorNotice"
-                    class="notice notice-error notice-alt">
-                <p>{{ errorMessage }}</p>
-            </div>
-        </transition>
+        <div class="tainacan-fixed-subheader">
+            <h1 
+                    v-if="roleSlug !== 'new'"
+                    class="tainacan-page-title">
+                {{ $route.meta.title }}&nbsp;<strong>{{ form.name ? form.name : '' }}</strong>
+            </h1>
+            <h1 
+                    v-else
+                    class="tainacan-page-title">
+                {{ $i18n.get('Add new role') }}
+            </h1>
+            <transition name="appear-from-right">
+                <div 
+                        v-if="showNotice"
+                        class="notice notice-success notice-alt">
+                    <p>{{ $i18n.get('User Role Saved') }}</p>
+                </div>
+            </transition>
+            <transition name="appear-from-right">
+                <div 
+                        v-if="showErrorNotice"
+                        class="notice notice-error notice-alt">
+                    <p>{{ errorMessage }}</p>
+                </div>
+            </transition>
+        </div>
+
         <template v-if="!isLoadingRole">
             <div class="name-edition-box">
                 <label for="role-name-input">{{ $i18n.get('Role name') + ':' }}</label>
@@ -48,7 +51,7 @@
                 <br>
             </template>
         </template>
-
+        
         <span 
                 v-if="isLoadingRole || isLoadingCapabilities"
                 class="spinner is-active"
