@@ -460,9 +460,9 @@ abstract class Pages {
 										<?php endif; ?>
 									</li>
 
-								<?php else : ?>
+								<?php elseif ( isset( $tainacan_root_link[2] ) && $tainacan_root_link[2] !== $this->tainacan_other_links_slug ) : ?>
 									<li>
-										<a href="<?php echo $tainacan_root_link[1]; ?>"  <?php echo $current_page_slug === 'admin_page_' . $tainacan_root_link[1] ? 'aria-current="page"' : ''; ?>><?php echo $tainacan_root_link[0]; ?></a>
+										<a href="<?php echo add_query_arg( 'page', $tainacan_root_link[2] ); ?>"  <?php echo $current_page_slug === 'admin_page_' . $tainacan_root_link[1] ? 'aria-current="page"' : ''; ?>><?php echo $tainacan_root_link[0]; ?></a>
 									</li>
 								<?php endif; 
 							}
