@@ -114,10 +114,14 @@ class Theme_Helper {
 		add_action( 'init' , array($this, 'register_tainacan_oficial_view_modes') );
 	}
 	
-	public function is_post_an_item(\WP_Post $post) {
-		$post_type = $post->post_type;
+	public function is_post_type_a_collection($post_type) {
 		$prefix = substr( $post_type, 0, strlen( Entities\Collection::$db_identifier_prefix ) );
 		return $prefix == Entities\Collection::$db_identifier_prefix;
+	}
+
+	public function is_post_an_item(\WP_Post $post) {
+		$post_type = $post->post_type;
+		return $this->is_post_type_a_collection($post_type);
 	}
 
 	public function is_post_a_tainacan_taxonomy_postype(\WP_Post $post) {
@@ -136,13 +140,10 @@ class Theme_Helper {
 	
 	public function filter_archive_title($title) {
 		if (is_post_type_archive()) {
-			
-			$collections_post_types = \Tainacan\Repositories\Repository::get_collections_db_identifiers();
-			$current_post_type = get_post_type();
-			
-			if (in_array($current_post_type, $collections_post_types)) {
+	
+			if ( $this->is_post_type_a_collection( get_post_type() ) )
 				$title = sprintf( __( 'Collection: %s' ), post_type_archive_title( '', false ) );
-			}
+			
 		} elseif ( is_archive() && get_query_var('tainacan_repository_archive') == 1 ) {
 			$title = __( 'All items in repository', 'tainacan' );
 		}
@@ -214,29 +215,15 @@ class Theme_Helper {
 		if ( !wp_is_block_theme() ) {
 
 			add_action('loop_start', function( $query ) {
-				if ( $query->is_main_query() && is_post_type_archive() ) {
-
-					$collections_post_types = \Tainacan\Repositories\Repository::get_collections_db_identifiers();
-					$current_post_type = get_post_type();
-					
-					if ( in_array($current_post_type, $collections_post_types) ) {
-						ob_start();
-					}
-				}
+				if ( $query->is_main_query() && is_post_type_archive() && $this->is_post_type_a_collection( get_post_type() ) )
+					ob_start();	
 			});
 
 			add_action('loop_end', function( $query ) {
-				
-				if ( $query->is_main_query() && is_post_type_archive() ) {
-
-					$collections_post_types = \Tainacan\Repositories\Repository::get_collections_db_identifiers();
-					$current_post_type = get_post_type();
-
-					if ( in_array($current_post_type, $collections_post_types) ) {
-						$theme_archive_content = ob_get_clean();
-						$tainacan_archive_content = \Tainacan\Theme_Helper::get_tainacan_items_list(array());
-						echo $tainacan_archive_content;
-					}
+				if ( $query->is_main_query() && is_post_type_archive() && $this->is_post_type_a_collection( get_post_type() ) ) {
+					$theme_archive_content = ob_get_clean();
+					$tainacan_archive_content = \Tainacan\Theme_Helper::get_tainacan_items_list(array());
+					echo $tainacan_archive_content;
 				}
 			});
 
@@ -244,17 +231,10 @@ class Theme_Helper {
 		} else {
 
 			add_filter('render_block', function($block_content, $block) {
+				if ( $block['blockName'] === 'core/query' && is_post_type_archive() && $this->is_post_type_a_collection( get_post_type() ) )
+					return \Tainacan\Theme_Helper::get_tainacan_items_list(array());
 				
-				if ( $block['blockName'] === 'core/query' && is_post_type_archive() ) {
-					$collections_post_types = \Tainacan\Repositories\Repository::get_collections_db_identifiers();
-					$current_post_type = get_post_type();
-					
-					if ( in_array($current_post_type, $collections_post_types) ) {
-						return \Tainacan\Theme_Helper::get_tainacan_items_list(array());
-					}
-				}
 				return $block_content;
-
 			}, 10, 2);
 		}
 	}
@@ -507,10 +487,7 @@ class Theme_Helper {
 		if ( !is_single() )
 			return $templates;
 
-		$collections_post_types = \Tainacan\Repositories\Repository::get_collections_db_identifiers();
-		$current_post_type = get_post_type();
-		
-		if ( in_array($current_post_type, $collections_post_types) ) {
+		if ( $this->is_post_type_a_collection( get_post_type() ) ) {
 			
 			$last_template = array_pop($templates);
 			
@@ -531,11 +508,8 @@ class Theme_Helper {
 		
 		if ( !is_post_type_archive() )
 			return $templates;
-
-		$collections_post_types = \Tainacan\Repositories\Repository::get_collections_db_identifiers();
-		$current_post_type = get_post_type();
 		
-		if ( in_array($current_post_type, $collections_post_types) ) {
+		if ( $this->is_post_type_a_collection( get_post_type() )  ) {
 			
 			$last_template = array_pop($templates);
 
