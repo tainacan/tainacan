@@ -16,19 +16,16 @@ class Admin extends Pages {
 
 	function add_admin_menu() {
 
-		if ( !$this->has_admin_ui_option('hidePrimaryMenu') ) {
-
-			// Tainacan Admin Vue component. 
-			$tainacan_page_suffix = add_submenu_page(
-				$this->tainacan_root_menu_slug,
-				__( 'Repository', 'tainacan' ),
-				'<span class="icon" style="color: var(--tainacan-blue5)">' . $this->get_svg_icon( 'repository' ) . '</span><span class="menu-text">' .__( 'Repository', 'tainacan' ) . '</span>',
-				'read',
-				$this->repository_links_slug,
-				array( &$this, 'render_page' ),
-			);
-			add_action( 'load-' . $tainacan_page_suffix, array( &$this, 'load_page' ) );
-		}
+		// Tainacan Admin Vue component. 
+		$tainacan_page_suffix = add_submenu_page(
+			$this->tainacan_root_menu_slug,
+			__( 'Repository', 'tainacan' ),
+			'<span class="icon" style="color: var(--tainacan-blue5)">' . $this->get_svg_icon( 'repository' ) . '</span><span class="menu-text">' .__( 'Repository', 'tainacan' ) . '</span>',
+			'read',
+			$this->repository_links_slug,
+			array( &$this, 'render_page' ),
+		);
+		add_action( 'load-' . $tainacan_page_suffix, array( &$this, 'load_page' ) );
 		
 		// Inner links to the admin vue component
 		if ( !$this->has_admin_ui_option('hidePrimaryMenuMetadataButton') ) {
