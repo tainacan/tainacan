@@ -223,6 +223,7 @@ abstract class Pages {
 			'custom_header_support'  	=> get_theme_support('custom-header'),
 			'registered_view_modes'  	=> \Tainacan\Theme_Helper::get_instance()->get_registered_view_modes(),
 			'default_view_mode'		  	=> \Tainacan\Theme_Helper::get_instance()->get_default_view_mode(),
+			'admin_ui_options'       	=> $this->get_available_admin_ui_options(),
 			'exposer_mapper_param'   	=> \Tainacan\Mappers_Handler::MAPPER_PARAM,
 			'exposer_type_param'     	=> \Tainacan\Exposers_Handler::TYPE_PARAM,
 			'repository_name'	 		=> get_bloginfo('name'),
