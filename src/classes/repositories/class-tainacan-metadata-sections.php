@@ -12,21 +12,13 @@ use \Respect\Validation\Validator as v;
  * Class Metadata
  */
 class Metadata_Sections extends Repository {
+	use \Tainacan\Traits\Singleton_Instance;
 
 	public $entities_type = '\Tainacan\Entities\Metadata_Section';
-	private static $instance = null;
 
-	protected function __construct() {
+	protected function init() {
 		parent::__construct();
 	}
-
-	public static function get_instance() {
-		if ( ! isset( self::$instance ) ) {
-			self::$instance = new self();
-		}
-		return self::$instance;
-	}
-
 
 	/**
 	 * {@inheritDoc}

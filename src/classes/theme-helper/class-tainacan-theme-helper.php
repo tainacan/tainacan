@@ -3,10 +3,8 @@
 namespace Tainacan;
 use Tainacan\Entities;
 
-
 class Theme_Helper {
-
-	private static $instance = null;
+	use \Tainacan\Traits\Singleton_Instance;
 	
 	public $visiting_collection_cover = false;
 
@@ -16,15 +14,7 @@ class Theme_Helper {
 	private $registered_view_modes = [];
 	protected $default_placeholder_template = '';
 
-	public static function get_instance() {
-		if ( ! isset( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
-
-	private function __construct() {
+	private function init() {
 
 		// Add support for Tainacan templates, in case a theme does not support it
 		if ( 

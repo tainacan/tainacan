@@ -10,19 +10,15 @@ use \Respect\Validation\Validator as v;
 use Tainacan\Entities\Collection;
 
 class Collections extends Repository {
-	public $entities_type = '\Tainacan\Entities\Collection';
+	use \Tainacan\Traits\Singleton_Instance;
 
-	private static $instance = null;
+	public $entities_type = '\Tainacan\Entities\Collection';
 	private $old_collection;
 	private $old_core_title;
 	private $old_core_description;
 
-	public static function get_instance() {
-		if ( ! isset( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
+	protected function init() {
+		parent::__construct();
 	}
 
 	/**

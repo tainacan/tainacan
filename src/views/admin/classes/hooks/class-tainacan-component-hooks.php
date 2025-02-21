@@ -8,27 +8,16 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Class Components_Hooks
  */
 class Component_Hooks {
+	use \Tainacan\Traits\Singleton_Instance;
 
-	private static $instance = null;
 	/**
 	 * Stores external component type available to be used in Tainacan
 	 */
 	private $registered_component;
 
-	public static function get_instance() {
-		if ( ! isset( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
-
-	private function __construct() {
-		$this->registered_component = [];
-		$this->init();
-	}
-
 	private function init() {
+		$this->registered_component = [];
+
 		// the priority should see less than on function
 		// `load_admin_page()` of class `Admin` in file /src/views/class-tainacan-admin.php
 		add_action( 'init', array( &$this, 'register_component' ), 80 );

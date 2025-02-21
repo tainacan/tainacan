@@ -4,27 +4,14 @@ namespace Tainacan;
 use Tainacan\Repositories\Repository;
 
 class Roles {
+	use \Tainacan\Traits\Singleton_Instance;
 
-	private static $instance = null;
 	private $capabilities = array();
 	private $meta_caps;
 	private $meta_section_caps;
 	private $filters_caps;
 
-	public static function get_instance()
-	{
-		if(!isset(self::$instance))
-		{
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
-
-	/**
-	*
-	*/
-	private function __construct() {
+	private function init() {
 		$this->meta_caps = (new \Tainacan\Entities\Metadatum())->get_capabilities();
 		$this->meta_section_caps = (new \Tainacan\Entities\Metadata_Section())->get_capabilities();
 		$this->filters_caps = (new \Tainacan\Entities\Filter())->get_capabilities();

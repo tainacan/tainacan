@@ -14,22 +14,14 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  *
  */
 class Logs extends Repository {
+	use \Tainacan\Traits\Singleton_Instance;
+
 	public $entities_type = '\Tainacan\Entities\Log';
-	private static $instance = null;
 	private $current_diff = null;
 	private $current_deleting_entity;
 	private $current_action;
 
-	public static function get_instance() {
-		if ( ! isset( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
-
-
-	protected function __construct() {
+	protected function init() {
 		parent::__construct();
 
 		add_action( 'tainacan-pre-insert', array( $this, 'pre_insert_entity' ) );

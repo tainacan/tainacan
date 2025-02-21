@@ -8,20 +8,11 @@ use Tainacan\Entities;
  * Class withe helpful methods to handle media in Tainacan
  */
 class Private_Files {
-
-	private static $instance = null;
+	use \Tainacan\Traits\Singleton_Instance;
 
 	public $dir_separator;
 
-	public static function get_instance() {
-		if(!isset(self::$instance)) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
-
-	protected function __construct() {
+	protected function init() {
 
 		// Once upon a time I thought I had to worry about Windows and use DIRECTORY_SEPARATOR
 		// but this only gave me frustration and bugs.

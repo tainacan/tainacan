@@ -12,20 +12,11 @@ use \Respect\Validation\Validator as v;
  * Class Tainacan_Terms
  */
 class Terms extends Repository {
+	use \Tainacan\Traits\Singleton_Instance;
 
 	public $entities_type = '\Tainacan\Entities\Term';
 
-	private static $instance = null;
-
-	public static function get_instance() {
-		if ( ! isset( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
-
-	protected function __construct() {
+	protected function init() {
 		parent::__construct();
 	}
 
