@@ -356,7 +356,7 @@
             collectionId: [Number, String],
             metadatumId: Number,
             metadatum: Object,
-            selected: [Array,Number],
+            selected: [Array,String,Number],
             allowNew: Boolean,
             isTaxonomy: {
                 type: Boolean,
@@ -441,6 +441,11 @@
                     this.isSearching = false;
                     this.searchResults = [];
                     this.initializeValues();
+
+                    if ( !this.shouldBeginWithListExpanded || this.hasToDisplaySearchBar ) {
+                        this.fetchSelectedLabels();
+                        this.activeTab = 1;
+                    }
                 }
             });
             

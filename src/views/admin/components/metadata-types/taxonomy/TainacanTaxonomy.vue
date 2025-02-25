@@ -239,7 +239,7 @@
                         }).then(() => {
                             this.isAddingNewTermVaue = false;
                             this.valueComponent = term.id;
-                            this.$emit('updateTaxonomyInputs', { taxonomyId: this.taxonomyId, metadatumId: this.itemMetadatum.metadatum.id });
+                            this.$emitter.emit('updateTaxonomyInputs', { taxonomyId: this.taxonomyId, metadatumId: this.itemMetadatum.metadatum.id });
                         })
                     } else {
                         val = val ? val : [];
@@ -249,7 +249,7 @@
                         }).then(() => {
                             this.isAddingNewTermVaue = false;
                             this.valueComponent = val;
-                            this.$emit('updateTaxonomyInputs', { taxonomyId: this.taxonomyId, metadatumId: this.itemMetadatum.metadatum.id });
+                            this.$emitter.emit('updateTaxonomyInputs', { taxonomyId: this.taxonomyId, metadatumId: this.itemMetadatum.metadatum.id });
                         })
                     }
                 }
@@ -261,6 +261,8 @@
                     this.valueComponent = term.parent ? (term.parent + '>>' + term.name) : term.name;
                 else
                     this.valueComponent.push(term.parent ? (term.parent + '>>' + term.name) : term.name);
+
+                this.$emitter.emit('updateTaxonomyInputs', { taxonomyId: this.taxonomyId, metadatumId: this.itemMetadatum.metadatum.id });
             },
             openTermCreationModal(newTerm) {
                 this.newTermName = newTerm.name;

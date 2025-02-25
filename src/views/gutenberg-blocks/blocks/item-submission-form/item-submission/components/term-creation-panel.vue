@@ -275,6 +275,8 @@
 
         .field {
             break-inside: avoid;
+            padding-left: 0;
+            margin-left: 0;
         }
         .form-submit {
             padding-top: 1rem;
