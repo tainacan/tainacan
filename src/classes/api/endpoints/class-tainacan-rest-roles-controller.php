@@ -21,7 +21,6 @@ class REST_Roles_Controller extends REST_Controller {
 			'contributor',
 			'subscriber'
 		];
-
 	}
 
 	public function register_routes() {
@@ -60,6 +59,26 @@ class REST_Roles_Controller extends REST_Controller {
 				'args'                => $this->get_endpoint_args(\WP_REST_Server::READABLE)
 			),
 			'schema'                  => [$this, 'get_schema']
+		));
+		register_rest_route($this->namespace, '/admin-ui-options', array(
+			array(
+				'methods'             => \WP_REST_Server::EDITABLE,
+				'callback'            => array($this, 'update_admin_ui_options'),
+				'permission_callback' => array($this, 'update_admin_ui_options_permissions_check'),
+				'args'				  => [
+					'admin_ui_options' => [
+						'description' => __( 'Admin appearence options Capabilities for each user role.', 'tainacan' ),
+						'type' => 'object',
+						'required' => true,
+					]
+				]
+			),
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array($this, 'get_admin_ui_options'),
+				'permission_callback' => array($this, 'get_admin_ui_options_permissions_check')
+			),
+			'schema'                  => [$this, 'get_admin_ui_options_schema']
 		));
 		register_rest_route(
 			$this->namespace, '/collection/(?P<collection_id>[\d]+)/capabilities',
@@ -575,6 +594,56 @@ class REST_Roles_Controller extends REST_Controller {
 
 	}
 
+	/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 * @throws \Exception
+	 */
+	public function get_admin_ui_options( $request ) {
+
+		$response = array(
+			'admin_ui_options' => get_option('tainacan_admin_ui_options', [])
+		);
+
+		return new \WP_REST_Response($response, 200);
+	}
+
+	/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 * @throws \Exception
+	 */
+	public function update_admin_ui_options( $request ) {
+
+		update_option('tainacan_admin_ui_options', $request['admin_ui_options']);
+
+		$response = array(
+			'admin_ui_options' => get_option('tainacan_admin_ui_options', [])
+		);
+
+		return new \WP_REST_Response($response, 200);
+	}
+
+	/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return bool|\WP_Error
+	 */
+	public function get_admin_ui_options_permissions_check( $request ) {
+		return current_user_can('tnc_rep_edit_users');
+	}
+
+	/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return bool|\WP_Error
+	 */
+	public function update_admin_ui_options_permissions_check( $request ) {
+		return current_user_can('tnc_rep_edit_users');
+	}
+
 	function get_capabilities_schema() {
 		$schema = [
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
@@ -679,6 +748,35 @@ class REST_Roles_Controller extends REST_Controller {
 						]
 					]
 				],
+			]
+		];
+
+		return $schema;
+	}
+
+	function get_admin_ui_options_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => "$this->rest_base-admin-ui-options",
+			'type' => 'object',
+			'tags' => [ $this->rest_base ],
+			'properties' => [
+				'admin_ui_options' => [
+					'description' => __( 'Admin appearence options Capabilities for each user role.', 'tainacan' ),
+					'type'        => 'object',
+					'properties' 	 => [
+						'[role]:string' => [
+							'type' => 'object',
+							'description' => __( 'Enabled admin appearence options object', 'tainacan' ),
+							'patternProperties' => [
+								'^[a-zA-Z0-9_-]+$' => [
+									'type'        => 'object',
+									'description' => __('Some admin appearence option.', 'tainacan'),
+								]
+							],
+						]
+					]
+				]
 			]
 		];
 

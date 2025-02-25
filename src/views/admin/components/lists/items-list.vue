@@ -2469,6 +2469,10 @@ export default {
     },
     created() {
         this.shouldUseLegacyMasonyCols = wp !== undefined && wp.hooks !== undefined && wp.hooks.hasFilter('tainacan_use_legacy_masonry_view_mode_cols') && wp.hooks.applyFilters('tainacan_use_legacy_masonry_view_mode_cols', false);
+        document.addEventListener('tainacan_fullscreen_mode_change', this.onFullscreenModeChange);
+    },
+    beforeUnmount() {
+        document.removeEventListener('tainacan_fullscreen_mode_change', this.onFullscreenModeChange);
     },
     methods: {
         ...mapActions('collection', [
@@ -2881,6 +2885,10 @@ export default {
             const height = this.$thumbHelper.getHeight(thumbnail, size, defaultSize);
 
             return (width / height) > 0.7 ? width : ( height * 0.7 );
+        },
+        onFullscreenModeChange() {
+            if (this.masonry !== false)
+                this.masonry.layout();
         }
     }
 }

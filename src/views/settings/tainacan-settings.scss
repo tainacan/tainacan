@@ -6,7 +6,7 @@
         background-color: var(--tainacan-background-color);
         position: sticky;
         z-index: 1;
-        top: calc(1.5em - 1rem + var(--tainacan-page-container-padding-y, 1rem) + var(--tainacan-page-container-padding-y, 1rem));
+        top: calc(1.5em - 0.5rem + var(--tainacan-page-container-padding-y, 1rem) + var(--tainacan-page-container-padding-y, 1rem));
         margin-top: 2rem;
     }
     .settings-section-descrition {

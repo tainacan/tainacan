@@ -10,6 +10,11 @@ abstract class Pages {
 	use \Tainacan\Traits\Admin_UI_Options;
 
 	/**
+	 * This method must be implemented, providing a page_slug (page's ID or Slug), used to identify the page in the admin menu.
+	 */
+	abstract protected function get_page_slug(): string;
+
+	/**
 	 * $tainacan_root_menu_slug is the root menu slug for Tainacan admin pages.
 	 * @var string
 	 */
@@ -39,6 +44,7 @@ abstract class Pages {
 	 */
 	public function init() {
 		add_action( 'init', array( &$this, 'register_user_meta' ) );
+		add_action( 'admin_menu', array( &$this, 'admin_init_ui_options' ), 0 );
 		add_action( 'admin_menu', array( &$this, 'add_admin_menu' ) );
 		add_action( 'admin_head', array( &$this, 'remove_admin_notices' ) );
 	}
@@ -116,25 +122,19 @@ abstract class Pages {
 			$user_prefs_as_string = get_user_meta( $current_user->ID, 'tainacan_prefs', true );
 			$user_prefs = json_decode( $user_prefs_as_string, true );
 
-			if ( isset($user_prefs['is_fullscreen']) && ( $user_prefs['is_fullscreen'] == 'true' || $user_prefs['is_fullscreen'] == true ) )
+			if ( $this->has_admin_ui_option('forceFullscreenAdminMode') || ( isset($user_prefs['is_fullscreen']) && ( $user_prefs['is_fullscreen'] == 'true' || $user_prefs['is_fullscreen'] == true ) ) )
 				$classes .= ' tainacan-pages-container--fullscreen';
 
 			if ( isset($user_prefs['admin_style']) )
 				$classes .= ' tainacan-pages-container--admin-' . $user_prefs['tainacan-admin-style'] . '-style';
 		}
-		if (
-			( isset($_GET[ 'itemEditionMode' ]) && $_GET[ 'itemEditionMode' ] ) ||
-			( isset($_GET[ 'itemCreationMode' ]) && $_GET[ 'itemCreationMode' ] ) ||
-			( isset($_GET[ 'itemsSingleSelectionMode' ]) && $_GET[ 'itemsSingleSelectionMode' ] ) ||
-			( isset($_GET[ 'itemsMultipleSelectionMode' ]) && $_GET[ 'itemsMultipleSelectionMode' ] ) ||
-			( isset($_GET[ 'itemsSearchSelectionMode' ]) && $_GET[ 'itemsSearchSelectionMode' ] ) ||
-			( isset($_GET[ 'mobileAppMode' ]) && $_GET[ 'mobileAppMode' ] ) 
-		) {
+		if ( 
+			$this->has_admin_ui_option( 'hidePrimaryMenu' ) &&
+			$this->has_admin_ui_option( 'hideBreadcrumbs' ) &&
+			$this->has_admin_ui_option( 'forceFullscreenAdminMode') &&
+			$this->has_admin_ui_option( 'hideWordPressShorcutButton' )
+		)
 			$classes .= ' tainacan-pages-container--iframe-mode';
-
-			if ( !str_contains($classes, 'tainacan-pages-container--fullscreen') ) 
-				$classes .= ' tainacan-pages-container--fullscreen';
-		}
 
 		return $classes;
 	}
@@ -222,6 +222,7 @@ abstract class Pages {
 			'theme_taxonomy_list_url' 	=> get_post_type_archive_link( 'tainacan-taxonomy' ),
 			'custom_header_support'  	=> get_theme_support('custom-header'),
 			'registered_view_modes'  	=> \Tainacan\Theme_Helper::get_instance()->get_registered_view_modes(),
+			'enabled_view_modes'  		=> \Tainacan\Theme_Helper::get_instance()->get_enabled_view_modes(),
 			'default_view_mode'		  	=> \Tainacan\Theme_Helper::get_instance()->get_default_view_mode(),
 			'admin_ui_options'       	=> $this->get_available_admin_ui_options(),
 			'exposer_mapper_param'   	=> \Tainacan\Mappers_Handler::MAPPER_PARAM,
@@ -302,7 +303,6 @@ abstract class Pages {
 	 * @return void
 	 */
 	function register_user_meta() {
-		wp_insert_term( 'e', 'category', array( 'alias_of' => 'a' ) );
 		$args = array(
 			//'sanitize_callback' => array(&$this, 'santize_user_tainacan_prefs'),
 			//'auth_callback' => 'authorize_my_meta_key',
@@ -337,32 +337,34 @@ abstract class Pages {
 			TAINACAN_VERSION
 		);
 		
-		if (
-			( isset($_GET[ 'itemEditionMode' ]) && $_GET[ 'itemEditionMode' ] ) ||
-			( isset($_GET[ 'itemCreationMode' ]) && $_GET[ 'itemCreationMode' ] ) ||
-			( isset($_GET[ 'itemsSingleSelectionMode' ]) && $_GET[ 'itemsSingleSelectionMode' ] ) ||
-			( isset($_GET[ 'itemsMultipleSelectionMode' ]) && $_GET[ 'itemsMultipleSelectionMode' ] ) ||
-			( isset($_GET[ 'itemsSearchSelectionMode' ]) && $_GET[ 'itemsSearchSelectionMode' ] ) ||
-			( isset($_GET[ 'mobileAppMode' ]) && $_GET[ 'mobileAppMode' ] ) 
-		) : 
+		wp_enqueue_script(
+			'tainacan-admin-navigation-menu',
+			$TAINACAN_BASE_URL . '/assets/js/tainacan_admin_navigation_menu.js',
+			[ 'wp-hooks', 'wp-i18n' ],
+			TAINACAN_VERSION
+		);
+		wp_localize_script( 'tainacan-admin-navigation-menu', 'tainacan_user', $this->get_admin_js_user_data() );
+		
 		?>
-			<div id="tainacan-page-container">
-				<main id="tainacan-page-container--inner">
-					<?php $this->render_page_content(); ?>
-				</main>
-			</div>
-		<?php else : ?>
-			<div id="tainacan-page-container">
-				<?php $this->render_navigation_menu(); ?>
-				<main id="tainacan-page-container--inner">
-					<?php
-						$this->render_ui_tweak_buttons();
+		<div id="tainacan-page-container">
+			<?php 
+				if ( !$this->has_admin_ui_option('hidePrimaryMenu') )
+					$this->render_navigation_menu();
+			?>
+			<main id="tainacan-page-container--inner">
+				<?php
+				
+					$this->render_ui_tweak_buttons();
+
+					if ( !$this->has_admin_ui_option('hideBreadcrumbs') )
 						$this->render_breadcrumbs();
-						$this->render_page_content();
-					?>
-				</main>
-			</div>
-		<?php endif;
+
+					$this->render_page_content();
+				?>
+			</main>
+		</div>
+
+		<?php
 	}
 	
 	/**
@@ -375,17 +377,7 @@ abstract class Pages {
 	 * @return void
 	 */
 	public function render_navigation_menu() {
-		global $TAINACAN_BASE_URL;
 		global $submenu;
-
-		wp_enqueue_script(
-			'tainacan-admin-navigation-menu',
-			$TAINACAN_BASE_URL . '/assets/js/tainacan_admin_navigation_menu.js',
-			[ 'wp-hooks', 'wp-i18n' ],
-			TAINACAN_VERSION
-		);
-		
-		wp_localize_script( 'tainacan-admin-navigation-menu', 'tainacan_user', $this->get_admin_js_user_data() );
 
 		$current_screen = get_current_screen();
 		$current_page_slug = $current_screen->id ? $current_screen->id : 'toplevel_page_tainacan_dashboard';
@@ -398,13 +390,13 @@ abstract class Pages {
 			
 			$user_prefs_as_string = get_user_meta( $current_user->ID, 'tainacan_prefs', true );
 			$user_prefs = json_decode( $user_prefs_as_string, true );
-
+			
 			if ( isset($user_prefs['is_navigation_sidebar_collapsed']) && ( $user_prefs['is_navigation_sidebar_collapsed'] == 'true' || $user_prefs['is_navigation_sidebar_collapsed'] == true ) )
 				$is_navigation_sidebar_collapsed = true;
 		}	
 
 		?>
-		<aside id="tainacan-navigation-menu" <?php echo ( $is_navigation_sidebar_collapsed ? : 'class="is-collapsed"' ) ?>>
+		<aside id="tainacan-navigation-menu" <?php echo ( $is_navigation_sidebar_collapsed ? 'class="is-collapsed"' : '') ?>>
 			<nav>
 				<header>
 					<h1>
@@ -463,7 +455,7 @@ abstract class Pages {
 
 								<?php elseif ( isset( $tainacan_root_link[2] ) && $tainacan_root_link[2] !== $this->tainacan_other_links_slug ) : ?>
 									<li>
-										<a href="<?php echo add_query_arg( 'page', $tainacan_root_link[2] ); ?>"  <?php echo $current_page_slug === 'admin_page_' . $tainacan_root_link[1] ? 'aria-current="page"' : ''; ?>><?php echo $tainacan_root_link[0]; ?></a>
+										<a href="<?php echo add_query_arg( 'page', $tainacan_root_link[2] ); ?>"  <?php echo $current_page_slug === 'admin_page_' . $tainacan_root_link[2] ? 'aria-current="page"' : ''; ?>><?php echo $tainacan_root_link[0]; ?></a>
 									</li>
 								<?php endif; 
 							}
@@ -577,48 +569,140 @@ abstract class Pages {
 				$is_fullscreen = $user_prefs['is_fullscreen'];
 
 		}	
-		?>
-		<a
-				id="tainacan-wordpress-shortcut"
-				title="<?php _e('Return to WordPress Admin', 'tainacan'); ?>"
-				href="<?php echo admin_url(); ?>">
-			<span class="icon"><?php echo $this->get_svg_icon( 'wordpress' ); ?></span>
-		</a>
-		<button
-				id="tainacan-menu-toggler"
-				class="tainacan-ui-tweak-button"
-				aria-label="<?php _e('Toggle menu', 'tainacan'); ?>"
-				aria-pressed="<?php echo $is_menu_toggled ? 'true' : 'false'; ?>"
-				title="<?php _e('Toggle menu', 'tainacan'); ?>">
-			<span class="icon"><?php echo $this->get_svg_icon( 'menu' ); ?></span>
-		</button>
-		<button
-				id="tainacan-menu-collapser"
-				class="tainacan-ui-tweak-button"
-				aria-label="<?php _e('Collapse menu', 'tainacan'); ?>"
-				aria-pressed="<?php echo $is_menu_collapsed ? 'true' : 'false'; ?>"
-				title="<?php _e('Toggle menu', 'tainacan'); ?>">
-			<span class="icon"><?php echo $this->get_svg_icon( 'previous' ); ?></span>
-		</button>
-		<button
-				id="tainacan-fullscreen-toggler"
-				class="tainacan-ui-tweak-button"
-				aria-label="<?php _e('Toggle fullscreen', 'tainacan'); ?>"
-				aria-pressed="<?php echo $is_fullscreen ? 'true' : 'false'; ?>"
-				title="<?php _e('Toggle fullscreen', 'tainacan'); ?>">
-			<span class="icon"><?php echo $this->get_svg_icon( 'fullscreen' ); ?></span>
-		</button>
-		<?php
+		
+		if ( !$this->has_admin_ui_option('hideWordPressShorcutButton') ): ?>
+			<a
+					id="tainacan-wordpress-shortcut"
+					title="<?php _e('Return to WordPress Admin', 'tainacan'); ?>"
+					href="<?php echo admin_url(); ?>">
+				<span class="icon"><?php echo $this->get_svg_icon( 'wordpress' ); ?></span>
+			</a>
+		<?php endif; ?>
+		<?php if ( !$this->has_admin_ui_option('hidePrimaryMenu') ) : ?>
+			<button
+					id="tainacan-menu-toggler"
+					class="tainacan-ui-tweak-button"
+					aria-label="<?php _e('Toggle menu', 'tainacan'); ?>"
+					aria-pressed="<?php echo $is_menu_toggled ? 'true' : 'false'; ?>"
+					title="<?php _e('Toggle menu', 'tainacan'); ?>">
+				<span class="icon"><?php echo $this->get_svg_icon( 'menu' ); ?></span>
+			</button>
+			<?php if ( !$this->has_admin_ui_option('hideMenuCollapserButton') ) : ?>
+				<button
+						id="tainacan-menu-collapser"
+						class="tainacan-ui-tweak-button"
+						aria-label="<?php _e('Collapse menu', 'tainacan'); ?>"
+						aria-pressed="<?php echo $is_menu_collapsed ? 'true' : 'false'; ?>"
+						title="<?php _e('Toggle menu', 'tainacan'); ?>">
+					<span class="icon"><?php echo $this->get_svg_icon( 'previous' ); ?></span>
+				</button>
+			<?php endif; ?>
+		<?php endif; ?>
+		<?php if ( !$this->has_admin_ui_option('forceFullscreenAdminMode') && !$this->has_admin_ui_option('hideFullscreenTogglerButton') ) : ?>
+			<button
+					id="tainacan-fullscreen-toggler"
+					class="tainacan-ui-tweak-button"
+					aria-label="<?php _e('Toggle fullscreen', 'tainacan'); ?>"
+					aria-pressed="<?php echo $is_fullscreen ? 'true' : 'false'; ?>"
+					title="<?php _e('Toggle fullscreen', 'tainacan'); ?>">
+				<span class="icon"><?php echo $this->get_svg_icon( 'fullscreen' ); ?></span>
+			</button>
+		<?php endif;
 	}
 
 	/**
-	 * Remove_admin_notices removes all admin notices from the admin_notices and all_admin_notices hooks.
+	 * remove_admin_notices removes all admin notices from the admin_notices and all_admin_notices hooks.
 	 */
 	public function remove_admin_notices() {
 		$current_screen = get_current_screen();
 		if ($current_screen && strpos($current_screen->id, 'tainacan') !== false ) {
 			remove_all_actions('admin_notices');
         	remove_all_actions('all_admin_notices');
+		}
+	}
+
+	/**
+	 * admin_init_ui_options is a filter that sets the admin UI options for the current user,
+	 * based on his/her role.
+	 */
+	function admin_init_ui_options() {
+		
+		if ( !is_admin() && !$this->get_page_slug() || !isset($_GET['page']) || ( isset($_GET['page']) && $_GET['page'] !== $this->get_page_slug() ) )
+			return;
+		
+		/**
+		 * Presets the current admin_ui_options with user role options stored on the database
+		 */
+		if ( is_user_logged_in() ) {
+			$user = wp_get_current_user();
+			$roles = ( array ) $user->roles;
+			$per_role_admin_ui_options = get_option('tainacan_admin_ui_options', []);
+	
+			foreach( $roles as $role ) {
+				if ( isset($per_role_admin_ui_options[$role]) ) {
+					foreach( $per_role_admin_ui_options[$role] as $option => $value ) {
+						if ( isset($option) ) {
+							self::$admin_ui_options[$option] = $value;
+						}
+					}
+				}
+			}
+		}
+		
+		// Gets filtered options, offering a chance to define them via URL parameters
+		self::$admin_ui_options = apply_filters('tainacan-admin-ui-options', array_merge( self::$admin_ui_options, $_GET ));
+
+		/** 
+		 * Preset common 'modes', which group certain admin options
+		 */
+
+		// For all this special modes, we want to render a shell-like, contained version inside the iframe, where navigation is hidden 
+		if (
+			( isset($_GET[ 'itemEditionMode' ]) && $_GET[ 'itemEditionMode' ] ) ||
+			( isset($_GET[ 'itemCreationMode' ]) && $_GET[ 'itemCreationMode' ] ) ||
+			( isset($_GET[ 'itemsSingleSelectionMode' ]) && $_GET[ 'itemsSingleSelectionMode' ] ) ||
+			( isset($_GET[ 'itemsMultipleSelectionMode' ]) && $_GET[ 'itemsMultipleSelectionMode' ] ) ||
+			( isset($_GET[ 'itemsSearchSelectionMode' ]) && $_GET[ 'itemsSearchSelectionMode' ] ) ||
+			( isset($_GET[ 'mobileAppMode' ]) && $_GET[ 'mobileAppMode' ] )
+		) {
+			self::$admin_ui_options['hideTainacanHeader'] = true;
+			self::$admin_ui_options['hidePrimaryMenu'] = true;
+			self::$admin_ui_options['hideBreadcrumbs'] = true;
+			self::$admin_ui_options['forceFullscreenAdminMode'] = true;
+			self::$admin_ui_options['hideWordPressShorcutButton'] = true;
+			self::$admin_ui_options['hideRepositorySubheader'] = true;
+			self::$admin_ui_options['hideCollectionSubheader'] = true;
+			self::$admin_ui_options['hideItemsListMultipleSelection'] = true;
+			self::$admin_ui_options['hideItemsListBulkActionsButton'] = true;
+			self::$admin_ui_options['hideItemsListActionAreas'] = true;
+			self::$admin_ui_options['hideItemsListPageTitle'] = true;
+			self::$admin_ui_options['hideItemsListCreationDropdown'] = true;
+			self::$admin_ui_options['hideItemsListExposersButton'] = true;
+			self::$admin_ui_options['hideItemsListStatusTabs'] = true;
+			self::$admin_ui_options['hideItemsListFilterCreationButton'] = true;
+			self::$admin_ui_options['hideItemsListContextMenuOpenItemOption'] = true;
+			self::$admin_ui_options['hideItemsListContextMenuOpenItemOnNewTabOption'] = true;
+			self::$admin_ui_options['hideItemsListContextMenuEditItemOption'] = true;
+			self::$admin_ui_options['hideItemsListContextMenuCopyItemOption'] = true;
+			self::$admin_ui_options['hideItemsListContextMenuDeleteItemOption'] = true;
+		}
+
+		// When selecting a search-like query, we want to hide the context menu and the selection area
+		if (isset($_GET['itemsSearchSelectionMode']) && $_GET['itemsSearchSelectionMode']) {
+			self::$admin_ui_options['hideItemsListContextMenu'] = true;
+			self::$admin_ui_options['hideItemsListSelection'] = true;
+		}
+
+		// In mobile app mode, we change a portion of the item edtion page
+		if ( isset($_GET[ 'mobileAppMode' ]) && $_GET[ 'mobileAppMode' ] ) {
+			self::$admin_ui_options['hideItemEditionPageTitle'] = true;
+			self::$admin_ui_options['hideBulkEditionPageTitle'] = true;
+			self::$admin_ui_options['hideItemSingleCollectionName'] = true;
+			self::$admin_ui_options['hideItemEditionCollapses'] = true;
+			self::$admin_ui_options['hideItemEditionMetadataTypes'] = true;
+			self::$admin_ui_options['itemEditionDocumentInsideTabs'] = true;
+			self::$admin_ui_options['itemEditionAttachmentsInsideTabs'] = true;
+			self::$admin_ui_options['itemEditionPublicationSectionInsideTabs'] = true;
 		}
 	}
 

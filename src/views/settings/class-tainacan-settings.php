@@ -2,10 +2,12 @@
 
 namespace Tainacan;
 
-use phpDocumentor\Reflection\DocBlock\Tags\Var_;
-
 class Settings extends Pages {
 	use \Tainacan\Traits\Singleton_Instance;
+
+	protected function get_page_slug() : string {
+        return 'tainacan_settings';
+    }
 
 	public function init() {
 		parent::init();
@@ -28,7 +30,7 @@ class Settings extends Pages {
 			__('Settings', 'tainacan'),
 			'<span class="icon">' . $this->get_svg_icon( 'settings' ) . '</span><span class="menu-text">' .__( 'Settings', 'tainacan' ) . '</span>',
 			'manage_options',
-			'tainacan_settings',
+			$this->get_page_slug(),
 			array( &$this, 'render_page' )
 		);
 		add_action( 'load-' . $tainacan_page_suffix, array( &$this, 'load_page' ) );
@@ -217,14 +219,15 @@ class Settings extends Pages {
 
 		$view_modes = tainacan_get_the_view_modes();
 		$enabled_view_modes = isset($view_modes['enabled_view_modes']) ? $view_modes['enabled_view_modes'] : [];
+		$registered_view_modes = isset($view_modes['registered_view_modes']) ? $view_modes['registered_view_modes'] : [];
 
 		if ( count($enabled_view_modes) > 1 ) {
 
 			$enabled_view_modes_options = '';
 
 			foreach( $enabled_view_modes as $view_mode_key ) {
-				if ( isset($view_modes['registered_view_modes'][$view_mode_key]) &&  !$view_modes['registered_view_modes'][$view_mode_key]['full_screen'] )
-					$enabled_view_modes_options .= '<option value="' . esc_attr( $view_mode_key ) . '">' . esc_html( $view_modes['registered_view_modes'][$view_mode_key]['label'] ) . '</option>';
+				if ( isset($registered_view_modes[$view_mode_key]) &&  !$registered_view_modes[$view_mode_key]['full_screen'] )
+					$enabled_view_modes_options .= '<option value="' . esc_attr( $view_mode_key ) . '">' . esc_html( $registered_view_modes[$view_mode_key]['label'] ) . '</option>';
 			}
 
 			$this->create_tainacan_setting( array(
@@ -238,23 +241,22 @@ class Settings extends Pages {
 				'default' => isset($view_modes['default_view_mode']) ? $view_modes['default_view_mode'] : 'masonry'
 			) );
 
-			$enabled_view_modes_labels = [];
-			foreach( $enabled_view_modes as $view_mode_key ) {
-				if ( isset($view_modes['registered_view_modes'][$view_mode_key]) )
-					$enabled_view_modes_labels[$view_mode_key] = $view_modes['registered_view_modes'][$view_mode_key]['label'];
+			$registered_view_modes_labels = [];
+			foreach( $registered_view_modes as $view_mode_key => $view_mode ) {
+				$registered_view_modes_labels[$view_mode_key] = $registered_view_modes[$view_mode_key]['label'];
 			}
-
+			
 			$this->create_tainacan_setting( array(
 				'id' => 'enabled_view_modes',
 				'section' => 'tainacan_settings_items_list_defaults',
 				'title' => __( 'Enabled view modes', 'tainacan' ),
-				'label' => $enabled_view_modes_labels,
+				'label' => $registered_view_modes_labels,
 				'type' => 'array',
 				'input_type' => 'checkbox',
 				'sanitize_callback' => function( $input ) {
 					return is_array( $input ) ? array_map( 'sanitize_text_field', $input ) : [];
 				},
-				'default' => false
+				'default' => $enabled_view_modes
 			) );
 		}
 

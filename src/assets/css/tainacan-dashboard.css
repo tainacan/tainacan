@@ -126,21 +126,23 @@
       list-style: none;
       padding: 0;
       margin: 0; }
-      #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li > a {
-        border-radius: 8px;
-        padding: 0.35rem;
-        display: flex;
-        align-items: center;
-        gap: 0.125rem;
-        font-size: 0.875em;
-        font-weight: bold;
-        line-height: 1.25em;
-        color: var(--tainacan-gray5); }
-        #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li > a:hover, #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li > a:focus {
-          background-color: var(--tainacan-turquoise2); }
-        #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li > a:focus {
-          box-shadow: 0 0 0 2px var(--tainacan-turquoise5);
-          outline: 3px solid #0000; }
+      #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li {
+        margin: 0; }
+        #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li a {
+          border-radius: 8px;
+          padding: 0.35rem;
+          display: flex;
+          align-items: center;
+          gap: 0.125rem;
+          font-size: 0.875em;
+          font-weight: bold;
+          line-height: 1.25em;
+          color: var(--tainacan-gray5); }
+          #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li a:hover, #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li a:focus {
+            background-color: var(--tainacan-turquoise2); }
+          #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li a:focus {
+            box-shadow: 0 0 0 2px var(--tainacan-turquoise5);
+            outline: 3px solid #0000; }
       #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list .icon {
         display: flex;
         align-items: center;

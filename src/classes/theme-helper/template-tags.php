@@ -645,18 +645,14 @@ function tainacan_the_collection_url() {
 
 
 /**
- * Get related to view modes
+ * Get view modes already filtered by hooks, user preferences and collection settings
  *
  * @return array ['default_view_mode'=> '', '$enabled_view_modes'=> [], , '$registered_view_modes'=> [] ]
  */
 function tainacan_get_the_view_modes() {
 	$default_view_mode = \Tainacan\Theme_Helper::get_instance()->get_default_view_mode();
 	$registered_view_modes = \Tainacan\Theme_Helper::get_instance()->get_registered_view_modes();
-	$registered_view_modes_slugs = [];
-	foreach ($registered_view_modes as $key => $value) {
-		array_push($registered_view_modes_slugs, $key);
-	}
-	$enabled_view_modes = apply_filters( 'tainacan-enabled-view-modes-for-themes', $registered_view_modes_slugs );
+	$enabled_view_modes = \Tainacan\Theme_Helper::get_instance()->get_enabled_view_modes();
 
 	// If in a collection page
 	$collection = tainacan_get_collection();

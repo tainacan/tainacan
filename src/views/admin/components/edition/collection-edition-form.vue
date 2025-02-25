@@ -154,7 +154,7 @@
                                                 ref="enabledViewModesDropdown"
                                                 class="enabled-view-modes-dropdown"
                                                 :mobile-modal="true"
-                                                :disabled="Object.keys(registeredViewModes).length < 0"
+                                                :disabled="Object.keys(registeredAndNotDisabledViewModes).length < 0"
                                                 aria-role="list"
                                                 trap-focus
                                                 position="is-top-right">
@@ -170,14 +170,14 @@
                                                 </button>
                                             </template>
                                             <b-dropdown-item
-                                                    v-for="(viewMode, index) in Object.keys(registeredViewModes)"
+                                                    v-for="(viewMode, index) in Object.keys(registeredAndNotDisabledViewModes)"
                                                     :key="index"
                                                     custom
                                                     aria-role="listitem">
                                                 <b-checkbox
-                                                        v-if="registeredViewModes[viewMode] != undefined"
+                                                        v-if="registeredAndNotDisabledViewModes[viewMode] != undefined"
                                                         :model-value="checkIfViewModeEnabled(viewMode)"
-                                                        :disabled="checkIfViewModeEnabled(viewMode) && form.enabled_view_modes.filter((aViewMode) => (registeredViewModes[aViewMode] && registeredViewModes[aViewMode].full_screen != true)).length <= 1"
+                                                        :disabled="checkIfViewModeEnabled(viewMode) && form.enabled_view_modes.filter((aViewMode) => (registeredAndNotDisabledViewModes[aViewMode] && registeredAndNotDisabledViewModes[aViewMode].full_screen != true)).length <= 1"
                                                         @update:model-value="updateViewModeslist(viewMode)">
                                                     <p>
                                                         <strong>
@@ -187,12 +187,12 @@
                                                                         'has-text-secondary' : checkIfViewModeEnabled(viewMode),
                                                                         'has-text-gray4' : !checkIfViewModeEnabled(viewMode)  
                                                                     }"
-                                                                    v-html="registeredViewModes[viewMode].icon" />
-                                                            &nbsp;{{ registeredViewModes[viewMode].label }}
+                                                                    v-html="registeredAndNotDisabledViewModes[viewMode].icon" />
+                                                            &nbsp;{{ registeredAndNotDisabledViewModes[viewMode].label }}
                                                         </strong>
                                                     </p>
-                                                    <p v-if="registeredViewModes[viewMode].description">
-                                                        {{ registeredViewModes[viewMode].description }}
+                                                    <p v-if="registeredAndNotDisabledViewModes[viewMode].description">
+                                                        {{ registeredAndNotDisabledViewModes[viewMode].description }}
                                                     </p>
                                                 </b-checkbox>
                                             </b-dropdown-item>   
@@ -219,7 +219,7 @@
                                                 v-for="(viewMode, index) of validDefaultViewModes"
                                                 :key="index"
                                                 :value="viewMode">
-                                            {{ registeredViewModes[viewMode].label }}
+                                            {{ registeredAndNotDisabledViewModes[viewMode].label }}
                                         </option>
                                     </b-select>
                                 </b-field>
@@ -1028,7 +1028,7 @@ export default {
             headerImageMediaFrame: undefined,
             viewModesList: [],
             fromImporter: '',
-            registeredViewModes: tainacan_plugin.registered_view_modes,
+            repositoryEnabledViewModes: tainacan_plugin.enabled_view_modes,
             reCAPTCHASettingsPagePath: tainacan_plugin.admin_url + '?page=tainacan_item_submission',
             newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page',
             isUpdatingSlug: false,
@@ -1047,7 +1047,15 @@ export default {
             'metadata': 'getMetadata'
         }),
         validDefaultViewModes() {
-            return Array.isArray(this.form.enabled_view_modes) ? this.form.enabled_view_modes.filter((aViewMode) => this.registeredViewModes[aViewMode] != undefined && this.registeredViewModes[aViewMode].full_screen == false ) : [];
+            return Array.isArray(this.form.enabled_view_modes) ? this.form.enabled_view_modes.filter((aViewMode) => this.registeredAndNotDisabledViewModes[aViewMode] != undefined && this.registeredAndNotDisabledViewModes[aViewMode].full_screen == false ) : [];
+        },
+        registeredAndNotDisabledViewModes() {
+            let registered = tainacan_plugin.registered_view_modes;
+            for (let key in registered) {
+                if ( tainacan_plugin.enabled_view_modes.indexOf(key) == -1 )
+                    delete registered[key];
+            }
+            return registered;
         }
     },
     watch: {
@@ -1058,9 +1066,9 @@ export default {
                     if (!tainacan_plugin.registered_view_modes[viewModeKey]['requires_thumbnail']) 
                         validViewModes[viewModeKey] = tainacan_plugin.registered_view_modes[viewModeKey];
                 });
-                this.registeredViewModes = validViewModes;
+                this.registeredAndNotDisabledViewModes = validViewModes;
                 
-                this.form.enabled_view_modes = this.form.enabled_view_modes.filter((aViewMode) => this.registeredViewModes[aViewMode] != undefined );
+                this.form.enabled_view_modes = this.form.enabled_view_modes.filter((aViewMode) => this.registeredAndNotDisabledViewModes[aViewMode] != undefined );
 
                 this.updateDefaultViewModeBasedOnEnabled();           
                 
@@ -1069,7 +1077,7 @@ export default {
                     this.$userPrefs.set('admin_view_mode_' + this.collectionId, 'table');
 
             } else {
-                this.registeredViewModes = tainacan_plugin.registered_view_modes;
+                this.registeredAndNotDisabledViewModes = tainacan_plugin.registered_view_modes;
             }
         },
         localDefaultOrderBy(newValue) {
@@ -1438,7 +1446,7 @@ export default {
         updateDefaultViewModeBasedOnEnabled() {
             // Puts a valid view mode as default if the current one is not in the list anymore.
             if (!this.checkIfViewModeEnabled(this.form.default_view_mode)) {
-                const validViewModeIndex = this.form.enabled_view_modes.findIndex((aViewMode) => (this.registeredViewModes[aViewMode] && !this.registeredViewModes[aViewMode].full_screen));
+                const validViewModeIndex = this.form.enabled_view_modes.findIndex((aViewMode) => (this.registeredAndNotDisabledViewModes[aViewMode] && !this.registeredAndNotDisabledViewModes[aViewMode].full_screen));
                 if (validViewModeIndex >= 0)
                     this.form.default_view_mode = this.form.enabled_view_modes[validViewModeIndex];
             }

@@ -16,6 +16,11 @@
 .tainacan-pages-container.tainacan-pages-container--fullscreen {
     height: calc(100% + var(--wp-admin--admin-bar--height, 32px));
     margin-top: calc( -1 * var(--wp-admin--admin-bar--height, 32px));
+    position: fixed;
+    top:0;
+    left: 0;
+    height: 100dvh;
+    width: 100vw;
 
     #wpcontent,
     #wpfooter {
@@ -26,7 +31,11 @@
         display: none;
     }
     #tainacan-page-container {
-        position: relative;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100dvh;
+        width: 100vw;
         --wp-admin--admin-bar--height: 0px;
 
         #tainacan-navigation-menu header h1 {
@@ -333,6 +342,10 @@
 
         @media screen and (max-width: 1024px) {
             --tainacan-page-container--inner-padding-x: 0.25rem;
+        }
+
+        &:only-child {
+            grid-column: span 2;
         }
     }
 
@@ -672,7 +685,7 @@
         background: var(--tainacan-background-color);
         position: sticky;
         top: calc(-1 * var(--tainacan-page-container-padding-y, 1rem));
-        z-index: 1;
+        z-index: 2;
         display: flex;
         align-items: center;
         justify-content: space-between;

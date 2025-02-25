@@ -13,3 +13,7 @@ export const getCapability = state => {
 export const getCapabilities = state => {
   return state.capabilities;
 };
+
+export const getAdminUIOptions = state => {
+  return state.adminUIOptions;
+}

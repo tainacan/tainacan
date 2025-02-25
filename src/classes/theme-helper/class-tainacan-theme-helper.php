@@ -956,6 +956,22 @@ class Theme_Helper {
 	}
 
 	/**
+	 * Get the enabled view modes which can be tweaked in the settings page.
+	 * 
+	 * @return string[] The list of enabled view mode slugs
+	 */
+	public function get_enabled_view_modes() {
+		$registered_view_modes = $this->get_registered_view_modes();
+
+		$registered_view_modes_slugs = [];
+		foreach ($registered_view_modes as $key => $value) {
+			array_push($registered_view_modes_slugs, $key);
+		}
+		
+		return apply_filters( 'tainacan-enabled-view-modes-for-themes', get_option( 'tainacan_option_enabled_view_modes' , $registered_view_modes_slugs ) );
+	}
+
+	/**
 	 * When visiting a collection archive or single, returns the current collection id
 	 *
 	 * @uses get_post_type() WordPress function, which looks for the global $wp_query variable

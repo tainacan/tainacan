@@ -317,6 +317,7 @@ function handleDynamicMenusAndBreadcrumbs() {
  * Handle UI Tweak buttons such as menu collapsing and fullscreen mode
  */
 function handleUITweakButtons() {
+
     const tainacanMenuToggler = document.getElementById('tainacan-menu-toggler');
     const tainacanMenuCollapser = document.getElementById('tainacan-menu-collapser');
     const tainacanFullscreenToggler = document.getElementById('tainacan-fullscreen-toggler');
@@ -335,7 +336,7 @@ function handleUITweakButtons() {
 
         tainacanMenuCollapser.addEventListener( 'click', function() {
 
-            const isCollapsed = tainacanAdminMenu.classList.contains('is-collapsed');
+            const isCollapsed = !tainacanAdminMenu.classList.contains('is-collapsed');
 
             tainacanAdminMenu.classList.toggle('is-collapsed');
             tainacanMenuCollapser.ariaPressed = '' + isCollapsed;
@@ -375,6 +376,12 @@ function handleUITweakButtons() {
 
             document.body.classList.toggle('tainacan-pages-container--fullscreen');
             tainacanFullscreenToggler.ariaPressed = '' + isFullscreen;
+
+            // Emits fullscreen mode change event so that inner components such as Masonry can react to layout change
+            const fullscreenEvent = new CustomEvent('tainacan_fullscreen_mode_change', {
+                detail: { isFullscreen: isFullscreen }
+            });
+            document.dispatchEvent(fullscreenEvent);
 
             let currentUserPrefs = JSON.parse(tainacan_user.prefs);
             currentUserPrefs['is_fullscreen'] = isFullscreen;

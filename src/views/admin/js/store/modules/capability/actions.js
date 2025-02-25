@@ -142,3 +142,32 @@ export const fetchCapability = ({ commit }, capabilityId) => {
            })
     });
 };
+
+// ADMIN UI OPTIONS
+export const fetchAdminUIOptions = ({ commit }) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacanApi.get('/admin-ui-options')
+            .then(res => {
+                let adminUIOptions = res.data && res.data['admin_ui_options'] ? res.data['admin_ui_options'] : {};
+                commit('setAdminUIOptions', adminUIOptions);
+                resolve(adminUIOptions);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+};
+
+export const updateAdminUIOptions = ({ commit }, adminUIOptions ) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacanApi.put('/admin-ui-options/', { 'admin_ui_options': adminUIOptions })
+            .then(res => {
+                let adminUIOptions = res.data && res.data['admin_ui_options'] ? res.data['admin_ui_options'] : {};
+                commit('setAdminUIOptions', adminUIOptions);
+                resolve(adminUIOptions);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+};

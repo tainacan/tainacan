@@ -5,13 +5,17 @@ namespace Tainacan;
 class Roles_Editor extends Pages {
 	use \Tainacan\Traits\Singleton_Instance;
 
+	protected function get_page_slug() : string {
+        return 'tainacan_roles';
+    }
+
     public function add_admin_menu() {
         $roles_page_suffix = add_submenu_page(
 			$this->tainacan_other_links_slug,
 			__('User Roles', 'tainacan'),
 			'<span class="icon">' . $this->get_svg_icon( 'user' ) . '</span><span class="menu-text">' .__( 'User roles', 'tainacan' ) . '</span>',
 			'tnc_rep_edit_users',
-			'tainacan_roles',
+			$this->get_page_slug(),
 			array( &$this, 'render_page' )
 		);
 		add_action( 'load-' . $roles_page_suffix, array( &$this, 'load_page' ) );

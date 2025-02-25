@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 trait Admin_UI_Options {
 
-	protected $admin_ui_options = [];
+	protected static $admin_ui_options = [];
 
 	/**
 	 * Lists a translatable and grouped version of the available admin ui options
@@ -18,10 +18,11 @@ trait Admin_UI_Options {
 	 * @return array of available admin ui options
 	 */
 	public function get_available_admin_ui_options() {
+		
 		return apply_filters(
 			'tainacan-available-admin-ui-options',
-			[
-				__( 'Browsing', 'tainacan' ) => [
+			array(
+				__( 'Browsing', 'tainacan' ) => array(
 					'hideTainacanHeaderSearchInput' => __('Hide search field in Tainacan header', 'tainacan'),
 					'hideTainacanHeaderAdvancedSearch' => __('Hide advanced search in Tainacan header', 'tainacan'),
 					'hideTainacanHeaderProcessesPopup' => __('Hide processes popup in Tainacan header', 'tainacan'),
@@ -30,6 +31,11 @@ trait Admin_UI_Options {
 					'hideRepositorySubheaderViewCollectionButton' => __('Hide view collection button in repository header', 'tainacan'),
 					'hideRepositorySubheaderExportButton' => __('Hide export button in repository header', 'tainacan'),
 					'hideCollectionSubheader' => __('Hide collection header', 'tainacan'),
+					'forceFullscreenAdminMode' => __('Force Tainacan to always overlap WordPress admin menu and sidebar', 'tainacan'),
+					'hideBreadcrumbs' => __('Hide breadcrumbs', 'tainacan'),
+					'hideWordPressShorcutButton' => __('Hide WordPress shortcut button', 'tainacan'),
+					'hideFullscreenTogglerButton' => __('Hide fullscreen toggler button', 'tainacan'),
+					'hideMenuCollapserButton' => __('Hide menu collapser button', 'tainacan'),
 					'hidePrimaryMenu' => __('Hide entire side menu', 'tainacan'),
 					'hidePrimaryMenuCompressButton' => __('Hide side menu compress button', 'tainacan'),
 					'hidePrimaryMenuRepositoryButton' => __('Hide repository button in side menu', 'tainacan'),
@@ -42,8 +48,8 @@ trait Admin_UI_Options {
 					'hidePrimaryMenuExportersButton' => __('Hide exporters button in side menu', 'tainacan'),
 					'hidePrimaryMenuActivitiesButton' => __('Hide activities button in side menu', 'tainacan'),
 					'hidePrimaryMenuCapabilitiesButton' => __('Hide permissions button in side menu', 'tainacan')
-				],
-				__( 'Dashboard', 'tainacan' ) => [
+				),
+				__( 'Dashboard', 'tainacan' ) => array(
 					'hideHomeRepositorySection' => __('Hide repository section', 'tainacan'),
 					'hideHomeThemeCollectionsButton' => __('Hide collections button in theme', 'tainacan'),
 					'hideHomeThemeItemsButton' => __('Hide items button in theme', 'tainacan'),
@@ -60,8 +66,8 @@ trait Admin_UI_Options {
 					'hideHomeCollectionActivitiesButton' => __('Hide activities button in collections section', 'tainacan'),
 					'hideHomeCollectionThemeCollectionButton' => __('Hide "view in theme" button in collections section', 'tainacan'),
 					'showHomeCollectionCreateItemButton' => __('Show create item button in collections section', 'tainacan')
-				],
-				__( 'Items list', 'tainacan' ) => [
+				),
+				__( 'Items list', 'tainacan' ) => array(
 					'hideItemsListBulkActionsButton' => __('Hide bulk actions button', 'tainacan'),
 					'hideItemsListMultipleSelection' => __('Hide multiple item selection', 'tainacan'),
 					'hideItemsListSelection' => __('Hide individual item selection', 'tainacan'),
@@ -72,8 +78,8 @@ trait Admin_UI_Options {
 					'hideItemsListCreationDropdownImport' => __('Hide import button in creation dropdown', 'tainacan'),
 					'hideItemsListContextMenu' => __('Hide right-click context menu', 'tainacan'),
 					'hideItemsListFilterCreationButton' => __('Hide create filters button', 'tainacan')
-				],
-				__( 'Item editing page', 'tainacan' ) => [
+				),
+				__( 'Item editing page', 'tainacan' ) => array(
 					'hideItemEditionCollectionName' => __('Hide collection name', 'tainacan'),
 					'hideItemEditionStatusOptions' => __('Hide status options', 'tainacan'),
 					'hideItemEditionStatusPublishOption' => __('Hide public status option', 'tainacan'),
@@ -84,8 +90,8 @@ trait Admin_UI_Options {
 					'hideItemEditionDocumentUrlInput' => __('Hide URL type document entry', 'tainacan'),
 					'hideItemEditionThumbnail' => __('Hide thumbnail', 'tainacan'),
 					'allowItemEditionModalInsideModal' => __('Allow item creation modal inside another modal', 'tainacan')
-				],
-				__( 'Item page', 'tainacan' ) => [
+				),
+				__( 'Item page', 'tainacan' ) => array(
 					'hideItemSingleCollectionName' => __('Hide collection name', 'tainacan'),
 					'hideItemSingleCurrentStatus' => __('Hide status', 'tainacan'),
 					'hideItemSingleCurrentVisibility' => __('Hide visibility', 'tainacan'),
@@ -94,8 +100,8 @@ trait Admin_UI_Options {
 					'hideItemSingleThumbnail' => __('Hide thumbnail', 'tainacan'),
 					'hideItemSingleActivities' => __('Hide activities', 'tainacan'),
 					'hideItemSingleExposers' => __('Hide "View as..." button', 'tainacan')
-				]
-			]
+				)
+			)
 		);
 	}
 
@@ -104,10 +110,7 @@ trait Admin_UI_Options {
 	 * @return string option value for the given setting
 	 */
 	public function has_admin_ui_option($option) {
-
 		// Get Admin Options to tweak which components will be displayed
-		$this->admin_ui_options = !empty($this->admin_ui_options) ? $this->admin_ui_options : apply_filters('tainacan-admin-ui-options', $_GET);
-
-		return isset($this->admin_ui_options[$option]) && ( $this->admin_ui_options[$option] === 'true' || $this->admin_ui_options[$option] === true );
+		return isset(self::$admin_ui_options[$option]) && ( self::$admin_ui_options[$option] === 'true' || self::$admin_ui_options[$option] === true || self::$admin_ui_options[$option] === 1 || self::$admin_ui_options[$option] === '1' );
 	}
 }

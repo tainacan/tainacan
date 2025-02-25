@@ -5,8 +5,10 @@ namespace Tainacan;
 class Admin extends Pages {
 	use \Tainacan\Traits\Singleton_Instance;
 
-	private $vue_component_page_slug = 'tainacan_admin';
-	private $repository_links_slug = 'tainacan_admin'; // Same as vue_component_page_slug, because it is used in add_submenu_page() to create the root menu and the page has to exist
+	protected function get_page_slug() : string {
+        return 'tainacan_admin';
+    }
+	private $repository_links_slug = 'tainacan_admin'; // Same as page_slug, because it is used in add_submenu_page() to create the root menu and the page has to exist
 	private $collections_links_slug = 'tainacan_collection_links';
 
 	public function init() {
@@ -35,7 +37,7 @@ class Admin extends Pages {
 				__('Metadata', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'metadata' ) . '</span><span class="menu-text">' . __('Metadata', 'tainacan') . '</span>',
 				'tnc_rep_edit_metadata',
-				$this->vue_component_page_slug . '#/metadata',
+				$this->get_page_slug() . '#/metadata',
 				array( &$this, 'render_page' )
 			);
 		}
@@ -47,7 +49,7 @@ class Admin extends Pages {
 				__('Filters', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'filters' ) . '</span><span class="menu-text">' . __('Filters', 'tainacan') . '</span>',
 				'tnc_rep_edit_filters',
-				$this->vue_component_page_slug . '#/filters',
+				$this->get_page_slug() . '#/filters',
 				array( &$this, 'render_page' )
 			);
 		}
@@ -59,7 +61,7 @@ class Admin extends Pages {
 				__('Taxonomies', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'taxonomies' ) . '</span><span class="menu-text">' . __('Taxonomies', 'tainacan') . '</span>',
 				'read',
-				$this->vue_component_page_slug . '#/taxonomies',
+				$this->get_page_slug() . '#/taxonomies',
 				array( &$this, 'render_page' )
 			);
 		}
@@ -71,7 +73,7 @@ class Admin extends Pages {
 				__('Activities', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'activities' ) . '</span><span class="menu-text">' . __('Activities', 'tainacan') . '</span>',
 				'read',
-				$this->vue_component_page_slug . '#/activities',
+				$this->get_page_slug() . '#/activities',
 				array( &$this, 'render_page' )
 			);
 		}
@@ -83,7 +85,7 @@ class Admin extends Pages {
 				__('Processes', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'processes' ) . '</span><span class="menu-text">' . __('Processes', 'tainacan') . '</span>',
 				'read',
-				$this->vue_component_page_slug . '#/processes',
+				$this->get_page_slug() . '#/processes',
 				array( &$this, 'render_page' )
 			);
 		}
@@ -95,7 +97,7 @@ class Admin extends Pages {
 				__('Capabilities', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'capability' ) . '</span><span class="menu-text">' . __('Capabilities', 'tainacan') . '</span>',
 				'tnc_rep_edit_users',
-				$this->vue_component_page_slug . '#/capabilities',
+				$this->get_page_slug() . '#/capabilities',
 				array( &$this, 'render_page' )
 			);
 		}
@@ -107,7 +109,7 @@ class Admin extends Pages {
 				__('Reports', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'reports' ) . '</span><span class="menu-text">' . __('Reports', 'tainacan') . '</span>',
 				'manage_tainacan',
-				$this->vue_component_page_slug . '#/reports',
+				$this->get_page_slug() . '#/reports',
 				array( &$this, 'render_page' )
 			);
 		}
@@ -119,7 +121,7 @@ class Admin extends Pages {
 				__('Importers', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'importers' ) . '</span><span class="menu-text">' . __('Importers', 'tainacan') . '</span>',
 				'manage_tainacan',
-				$this->vue_component_page_slug . '#/importers',
+				$this->get_page_slug() . '#/importers',
 				array( &$this, 'render_page' )
 			);
 		}
@@ -131,7 +133,7 @@ class Admin extends Pages {
 				__('Exporters', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'export' ) . '</span><span class="menu-text">' . __('Exporters', 'tainacan') . '</span>',
 				'manage_tainacan',
-				$this->vue_component_page_slug . '#/exporters',
+				$this->get_page_slug() . '#/exporters',
 				array( &$this, 'render_page' )
 			);
 		}
@@ -155,7 +157,7 @@ class Admin extends Pages {
 				__('Collections list', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'collection' ) . '</span><span class="menu-text">' . __('Collections list', 'tainacan') . '</span>',
 				'read',
-				$this->vue_component_page_slug . '#/collections',
+				$this->get_page_slug() . '#/collections',
 				array( &$this, 'render_page' )
 			);
 		}
@@ -255,7 +257,7 @@ class Admin extends Pages {
 	function admin_body_class( $classes ) {
 		$modified_classes = parent::admin_body_class( $classes );
 
-		if ( isset( $_GET['page'] ) && $_GET['page'] == $this->vue_component_page_slug )
+		if ( isset( $_GET['page'] ) && $_GET['page'] == $this->get_page_slug() )
 			$modified_classes .= ' tainacan-admin-page';
 		
 		return $modified_classes;

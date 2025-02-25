@@ -5,6 +5,10 @@ namespace Tainacan;
 class System_Check extends Pages {
 	use \Tainacan\Traits\Singleton_Instance;
 
+	protected function get_page_slug() : string {
+        return 'tainacan_systemcheck';
+    }
+
 	private $min_php_version = '7.0';
 
 	private $mysql_min_version_check;
@@ -21,15 +25,15 @@ class System_Check extends Pages {
 	}
 
 	public function add_admin_menu() {
-		$roles_page_suffix = add_submenu_page(
+		$system_check_page_suffix = add_submenu_page(
 			$this->tainacan_other_links_slug,
 			__('System check', 'tainacan'),
 			'<span class="icon">' . $this->get_svg_icon( 'finish' ) . '</span><span class="menu-text">' .__( 'System check', 'tainacan' ) . '</span>',
 			'manage_options',
-			'tainacan_systemcheck',
+			$this->get_page_slug(),
 			array( &$this, 'render_page' )
 		);
-		add_action( 'load-' . $roles_page_suffix, array( &$this, 'load_page' ) );
+		add_action( 'load-' . $system_check_page_suffix, array( &$this, 'load_page' ) );
 	}
 
 	public function render_page_content() {

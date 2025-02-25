@@ -53,3 +53,9 @@ export const setCapabilities = (state, capabilities) => {
 export const setCapability = (state, capability) => {
     state.capability = capability;
 };
+
+
+// ADMIN UI OPTIONS
+export const setAdminUIOptions = (state, adminUIOptions) => {
+    state.adminUIOptions = adminUIOptions;
+};

@@ -234,6 +234,10 @@
                         id="tab-admin-ui"
                         class="tabs-content">
                     <p>{{ $i18n.get('The following capabilities are related to the admin interface appearence.') }}</p>
+
+                    <p v-if="roleSlug === 'new'">
+                        <span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('You must first create the slug before defining apperaence options for it.') }}
+                    </p>
                    
                     <div class="capabilities-list">
                         <div
@@ -242,26 +246,28 @@
                                 class="capability-group">
                             <h3>{{ groupIndex }}</h3>
                             <ul>
-								<li 
-                                        v-for="(optionLabel, optionValue) of group"
-                                        :key="optionValue"
-                                        style="width: 100%">
-									<span class="check-column">
-										<label 
-                                                :for="optionValue"
-                                                class="screen-reader-text">
-											{{ optionLabel}}
-										</label>
-										<input 
-                                                type="checkbox"
-                                                name="tainacan_admin_options_by_role"
-                                                :id="optionValue"
-                                                :value="optionValue">
-									</span>
-									<span class="name column-name">
-										{{ optionLabel}}
-									</span>
-								</li>
+                                <template
+                                        v-for="(optionLabel, optionSlug) of group"
+                                        :key="optionSlug">
+                                    <li>
+                                        <span class="check-column">
+                                            <label 
+                                                    :for="optionSlug"
+                                                    class="screen-reader-text">
+                                                {{ optionLabel }}
+                                            </label>
+                                            <input 
+                                                    :id="optionSlug"
+                                                    type="checkbox"
+                                                    name="tainacan_admin_options_by_role"
+                                                    :disabled="roleSlug === 'new'"
+                                                    :checked="getAdminUIOptionValue(optionSlug)"
+                                                    @input="($event) => setAdminUIOptionValue($event, optionSlug)">
+                                        </span>
+                                        <span class="name column-name">{{ optionLabel }}</span>
+                                    </li>
+                                    <br>
+                                </template>
                             </ul>
                         </div>
                     </div>
@@ -361,13 +367,16 @@
                 showNotice: false,
                 showErrorNotice: false,
                 errorMessage: '',
-                groupedAdminUIOptions: tainacan_plugin && tainacan_plugin.admin_ui_options ? tainacan_plugin.admin_ui_options : {}
+                groupedAdminUIOptions: tainacan_plugin && tainacan_plugin.admin_ui_options ? tainacan_plugin.admin_ui_options : {},
+                isLoadingAdminUIOptions: false,
+                localAdminUIOptions: {},
             }
         },
         computed: {
             ...mapGetters('capability', {
                 'originalRole': 'getRole',
-                'capabilities': 'getCapabilities'
+                'capabilities': 'getCapabilities',
+                'adminUIOptions': 'getAdminUIOptions'
             }),
             collectionCapabilities() {
                 let collectionCapabilities = {}
@@ -456,6 +465,19 @@
                 .catch(() => {
                     this.isLoadingCollections = false;
                 }); 
+
+            this.isLoadingAdminUIOptions = true;
+            this.fetchAdminUIOptions()
+                .then(() => {
+                    if ( Array.isArray(this.adminUIOptions) && this.adminUIOptions.length === 0 )
+                        this.localAdminUIOptions = {};
+                    else
+                        this.localAdminUIOptions = JSON.parse(JSON.stringify(this.adminUIOptions));
+                    
+                    this.isLoadingAdminUIOptions = false;
+                }).catch(() => {
+                    this.isLoadingAdminUIOptions = false;
+                });
         },
         methods: {
             ...mapActions('collection', [
@@ -465,7 +487,9 @@
                 'createRole',
                 'updateRole',
                 'fetchRole',
-                'fetchCapabilities'
+                'fetchCapabilities',
+                'fetchAdminUIOptions',
+                'updateAdminUIOptions'
             ]),
             onUpdateCapability(value, capabilityKey) {
                 this.showNotice = false;
@@ -484,16 +508,29 @@
                 }
                 this.fillExtraFormData(data);
 
-                if (this.roleSlug === 'new') {
+                if ( this.roleSlug === 'new' ) {
                     this.createRole(data)
                         .then((createdRole) => {
                             this.roleSlug = createdRole.slug;
                             this.form = createdRole;
                             this.$router.push('/roles/' + this.roleSlug);
                             this.isUpdatingRole = false;
-                            this.showNotice = true;
-                            this.showErrorNotice = false;
-                            this.errorMessage = '';
+                           
+                            this.isLoadingAdminUIOptions = true;
+                            this.updateAdminUIOptions(this.localAdminUIOptions)
+                                .then(() => {
+                                    this.isLoadingAdminUIOptions = false;
+                                    
+                                    this.showNotice = true;
+                                    this.showErrorNotice = false;
+                                    this.errorMessage = '';
+                                }).catch((error) => {
+                                    this.isLoadingAdminUIOptions = false;
+
+                                    this.errorMessage = error.error_message;
+                                    this.showErrorNotice = true;
+                                });
+                            
                         })
                         .catch((error) => {
                             this.isUpdatingRole = false;
@@ -504,9 +541,21 @@
                     this.updateRole(data)
                         .then(() => {
                             this.isUpdatingRole = false;
-                            this.showNotice = true;
-                            this.showErrorNotice = false;
-                            this.errorMessage = '';
+                           
+                            this.isLoadingAdminUIOptions = true;
+                            
+                            this.updateAdminUIOptions(JSON.parse(JSON.stringify(this.localAdminUIOptions)))
+                                .then(() => {
+                                    this.isLoadingAdminUIOptions = false;
+
+                                    this.showNotice = true;
+                                    this.showErrorNotice = false;
+                                    this.errorMessage = '';
+                                }).catch((error) => {
+                                    this.isLoadingAdminUIOptions = false;
+                                    this.errorMessage = error.error_message;
+                                    this.showErrorNotice = true;
+                                });
                         })
                         .catch((error) => {
                             this.isUpdatingRole = false;
@@ -534,6 +583,21 @@
                     return this.$i18n.get('Collection')
                 else
                     return this.$i18n.get('Repository')
+            },
+            getAdminUIOptionValue(optionSlug) {
+                return this.localAdminUIOptions[this.roleSlug] && this.localAdminUIOptions[this.roleSlug][optionSlug] ? this.localAdminUIOptions[this.roleSlug][optionSlug] : false;
+            },
+            setAdminUIOptionValue($event, optionSlug) {
+
+                this.showNotice = false;
+                    
+                // Ensure the localAdminUIOptions object is initialized for the current roleSlug
+                if (!this.localAdminUIOptions[this.roleSlug]) {
+                    this.localAdminUIOptions[this.roleSlug] = {};
+                }
+
+                // Update the specific optionSlug value
+                this.localAdminUIOptions[this.roleSlug][optionSlug] = $event.target.checked;
             }
         }
     }
