@@ -735,13 +735,13 @@ class Theme_Helper {
 		}
 
 		// Loads info related to sorting
-		$default_order = 'ASC';
+		$default_order = $this->get_default_order();
 		if ( isset($args['default_order']) ) {
 			$default_order = $args['default_order'];
 			unset($args['default_order']);
 		}
 
-		$default_orderby = 'date';
+		$default_orderby = $this->get_default_orderby();
 		if ( isset($args['default_orderby']) ) {
 			$default_orderby = $args['default_orderby'];
 			unset($args['default_orderby']);
@@ -968,7 +968,30 @@ class Theme_Helper {
 			array_push($registered_view_modes_slugs, $key);
 		}
 		
-		return apply_filters( 'tainacan-enabled-view-modes-for-themes', get_option( 'tainacan_option_enabled_view_modes' , $registered_view_modes_slugs ) );
+		// If the user somehow disabled all view modes, we force keeping at least one, the default.
+		$enabled_view_modes = get_option( 'tainacan_option_enabled_view_modes' , $registered_view_modes_slugs );
+		if ( count ( $enabled_view_modes ) === 0 )
+			$enabled_view_modes[] = $this->get_default_view_mode();
+		
+		return apply_filters( 'tainacan-enabled-view-modes-for-themes', $enabled_view_modes );
+	}
+
+	/**
+	 * Get the default order for items lists, which can be tweaked in the settings page.
+	 * 
+	 * @return string The default order slug
+	 */
+	public function get_default_order() {
+		return apply_filters( 'tainacan-default-order-for-themes', get_option( 'tainacan_option_default_order' , 'DESC' ) );
+	}
+
+	/**
+	 * Get the default order by for items lists, which can be tweaked in the settings page.
+	 * 
+	 * @return string The default orderby slug
+	 */
+	public function get_default_orderby() {
+		return apply_filters( 'tainacan-default-orderby-for-themes', get_option( 'tainacan_option_default_orderby' , 'date' ) );
 	}
 
 	/**

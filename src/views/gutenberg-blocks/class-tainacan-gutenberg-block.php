@@ -235,7 +235,9 @@ function tainacan_blocks_get_plugin_js_settings(){
 		'collections_post_types' => $cpts,
 		'registered_view_modes' => \Tainacan\Theme_Helper::get_instance()->get_registered_view_modes(),
 		'enabled_view_modes' => \Tainacan\Theme_Helper::get_instance()->get_enabled_view_modes(),
-		'default_view_mode' => \Tainacan\Theme_Helper::get_instance()->get_default_view_mode()
+		'default_view_mode' => \Tainacan\Theme_Helper::get_instance()->get_default_view_mode(),
+		'default_order' => \Tainacan\Theme_Helper::get_instance()->get_default_order(),
+		'default_orderby' => \Tainacan\Theme_Helper::get_instance()->get_default_orderby()
 	];
 	
 	return $settings;

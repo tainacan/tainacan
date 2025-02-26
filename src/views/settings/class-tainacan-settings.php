@@ -240,25 +240,65 @@ class Settings extends Pages {
 				'sanitize_callback' => 'sanitize_text_field',
 				'default' => isset($view_modes['default_view_mode']) ? $view_modes['default_view_mode'] : 'masonry'
 			) );
-
-			$registered_view_modes_labels = [];
-			foreach( $registered_view_modes as $view_mode_key => $view_mode ) {
-				$registered_view_modes_labels[$view_mode_key] = $registered_view_modes[$view_mode_key]['label'];
-			}
-			
-			$this->create_tainacan_setting( array(
-				'id' => 'enabled_view_modes',
-				'section' => 'tainacan_settings_items_list_defaults',
-				'title' => __( 'Enabled view modes', 'tainacan' ),
-				'label' => $registered_view_modes_labels,
-				'type' => 'array',
-				'input_type' => 'checkbox',
-				'sanitize_callback' => function( $input ) {
-					return is_array( $input ) ? array_map( 'sanitize_text_field', $input ) : [];
-				},
-				'default' => $enabled_view_modes
-			) );
 		}
+
+		$registered_view_modes_labels = [];
+		foreach( $registered_view_modes as $view_mode_key => $view_mode ) {
+			$registered_view_modes_labels[$view_mode_key] = $registered_view_modes[$view_mode_key]['label'];
+		}
+		
+		$this->create_tainacan_setting( array(
+			'id' => 'enabled_view_modes',
+			'section' => 'tainacan_settings_items_list_defaults',
+			'title' => __( 'Enabled view modes', 'tainacan' ),
+			'label' => $registered_view_modes_labels,
+			'type' => 'array',
+			'input_type' => 'checkbox',
+			'sanitize_callback' => function( $input ) {
+				return is_array( $input ) ? array_map( 'sanitize_text_field', $input ) : [];
+			},
+			'default' => $enabled_view_modes
+		) );
+
+		$orderby_options = array(
+			'title' => __( 'Title', 'tainacan' ),
+			'date' => __( 'Creation date', 'tainacan' ),
+		);
+		$orderby_options_html = '';
+		foreach( $orderby_options as $key => $label ) {
+			$orderby_options_html .= '<option value="' . esc_attr( $key ) . '">' . esc_html( $label ) . '</option>';
+		}
+		$this->create_tainacan_setting( array(
+			'id' => 'default_orderby',
+			'section' => 'tainacan_settings_items_list_defaults',
+			'title' => __( 'Order by', 'tainacan' ),
+			'type' => 'string',
+			'input_type' => 'select',
+			'input_inner_html' => $orderby_options_html,
+			'sanitize_callback' => 'sanitize_text_field',
+			'default' => isset($view_modes['default_orderby']) ? $view_modes['default_orderby'] : 'date'
+		) );
+
+		$order_options = array(
+			/* translators: The sorting/order option 'asc'. A noun, not a verb */
+			'ASC' => __( 'Ascending', 'tainacan' ),
+			/* translators: The sorting/order option 'desc'. A noun, not a verb */
+			'DESC' => __( 'Descending', 'tainacan' ),
+		);
+		$order_options_html = '';
+		foreach( $order_options as $key => $label ) {
+			$order_options_html .= '<option value="' . esc_attr( $key ) . '">' . esc_html( $label ) . '</option>';
+		}
+		$this->create_tainacan_setting( array(
+			'id' => 'default_order',
+			'section' => 'tainacan_settings_items_list_defaults',
+			'title' => __( 'Order', 'tainacan' ),
+			'type' => 'string',
+			'input_type' => 'select',
+			'input_inner_html' => $order_options_html,
+			'sanitize_callback' => 'sanitize_text_field',
+			'default' => isset($view_modes['default_order']) ? $view_modes['default_order'] : 'DESC'
+		) );
 
 		/**
 		 * Google reCAPTCHA -----------------------------------------------------

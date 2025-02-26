@@ -110,9 +110,9 @@ export default (element) => {
                     collectionId: getDataAttribute(blockElement, 'collection-id'),
                     termId: getDataAttribute(blockElement, 'term-id'),
                     taxonomy: getDataAttribute(blockElement, 'taxonomy'),
-                    defaultOrder: getDataAttribute(blockElement, 'default-order', 'ASC'),
+                    defaultOrder: getDataAttribute(blockElement, 'default-order', tainacan_plugin.default_order),
                     defaultOrderBy: (() => {
-                        const defaultOrderByValue = maybeConvertFromJSON(getDataAttribute(blockElement, 'default-orderby', 'date'));
+                        const defaultOrderByValue = maybeConvertFromJSON(getDataAttribute(blockElement, 'default-orderby', tainacan_plugin.default_orderby));
                         return defaultOrderByValue === 'creation_date' ? 'date' : defaultOrderByValue;
                     })(),
                     defaultOrderByMeta: getDataAttribute(blockElement, 'default-orderby-meta'),
