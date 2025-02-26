@@ -1396,7 +1396,7 @@ export default {
 
 .tainacan-item-submission-form {
 
-    .tainacan-form {
+    form.tainacan-form {
         background-color: var(--tainacan-background-color);
         padding-left: var(--tainacan-one-column);
         padding-right: var(--tainacan-one-column);
@@ -1628,21 +1628,22 @@ export default {
         border-radius: 2px;
         margin-top: 1em;
 
-        :deep(.steps) {
+        .step-items {
+            margin-top: -1em;
+            padding-right: 0px;
+            margin-right: 0px;
+            padding-left: 0px;
+            margin-left: 0px;
 
-            .step-items {
-                margin-top: -1em;
-                padding-right: 0px;
-                margin-right: 0px;
-                padding-left: 0px;
-                margin-left: 0px;
-
-                .step-item.is-active .step-title {
-                    color: var(--tainacan-secondary);
-                }
-                .step-item:not(.is-active) .step-title {
-                    color: var(--tainacan-label-color);
-                }
+            .step-item.is-active .step-title {
+                color: var(--tainacan-secondary);
+            }
+            .step-item:not(.is-active) .step-title {
+                color: var(--tainacan-label-color);
+            }
+            .step-link,
+            .step-link:hover {
+                text-decoration: none;
             }
         }
     }
