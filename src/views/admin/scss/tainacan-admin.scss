@@ -307,3 +307,54 @@ html.is-clipped .page-container:not(.is-filters-menu-open) {
 audio, video {
     width: 100%;
 }
+
+/* Items list style used in multiple places */
+.tainacan-compact-items-list {
+    list-style: none;
+    padding: 0px;
+    margin-bottom: 1rem;
+    column-width: 26ch;
+
+    @media screen and (max-width: 768px) {
+        -moz-column-count: 1;
+        -webkit-column-count: 1;
+        column-count: 1;
+    }
+
+    li {
+        display: flex;
+        align-items: center;
+        padding: 8px 32px 8px 6px;
+        width: 100%;
+        position: relative;
+        overflow-x: hidden;
+        
+        &:hover {
+            cursor: pointer;
+            background-color: var(--tainacan-item-hover-background-color);
+
+            .actions-area {
+                opacity: 1;
+                visibility: 1;
+                right: 0;
+            }
+        }
+    }
+    .actions-area {
+        position: absolute;
+        right: -32px;
+        padding: 0 6px;
+        min-height: 28px;
+        min-width: 28px;
+        opacity: 0;
+        visibility: 0;
+        transition: right 0.3s ease;
+    }
+    .item-thumb {
+        display: flex;
+        min-height: 28px;
+        min-width: 28px;
+        margin-left: 2px;
+        margin-right: 8px;
+    }
+}

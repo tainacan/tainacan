@@ -52,7 +52,7 @@
                             </div>
                         </div>
 
-                        <ul class="related-item-group__items-list">
+                        <ul class="related-item-group__items-list tainacan-compact-items-list">
                             <li
                                     v-for="(relatedItem, itemIndex) of relatedItemGroup.items"
                                     :key="itemIndex">
@@ -76,7 +76,7 @@
                                     </span>
                                 </div>
                                 <div @click="openItemOnNewTab(relatedItem)">
-                                    <span class="table-thumb">
+                                    <span class="item-thumb">
                                         <blur-hash-image
                                                 :width="$thumbHelper.getWidth(relatedItem['thumbnail'], 'tainacan-small', 40)"
                                                 :height="$thumbHelper.getHeight(relatedItem['thumbnail'], 'tainacan-small', 40)"
@@ -106,7 +106,7 @@
                                 </div>
                                 <div 
                                         v-if="isEditable && relatedItem.current_user_can_edit"
-                                        class="actions-cell"
+                                        class="actions-area"
                                         :label="$i18n.get('label_actions')">
                                     <div class="actions-container">
                                         <a
@@ -252,57 +252,6 @@
             &:not(:last-child) {
                 border-bottom: 1px dashed var(--tainacan-gray3);
                 margin-bottom: 2rem;
-            }
-            
-            .related-item-group__items-list {
-                list-style: none;
-                padding: 0px;
-                margin-bottom: 1rem;
-                 -moz-column-count: 2;
-                -webkit-column-count: 2;
-                column-count: 2;
-
-                @media screen and (max-width: 768px) {
-                    -moz-column-count: 1;
-                    -webkit-column-count: 1;
-                    column-count: 1;
-                }
-
-                li {
-                    display: flex;
-                    align-items: center;
-                    padding: 8px 32px 8px 6px;
-                    width: 100%;
-                    position: relative;
-                    overflow-x: hidden;
-                    
-                    &:hover {
-                        cursor: pointer;
-                        background-color: var(--tainacan-item-hover-background-color);
-                        .actions-cell {
-                            opacity: 1;
-                            visibility: 1;
-                            right: 0;
-                        }
-                    }
-                }
-                .actions-cell {
-                    position: absolute;
-                    right: -32px;
-                    padding: 0 6px;
-                    min-height: 28px;
-                    min-width: 28px;
-                    opacity: 0;
-                    visibility: 0;
-                    transition: right 0.3s ease;
-                }
-                .table-thumb {
-                    display: block;
-                    min-height: 28px;
-                    min-width: 28px;
-                    margin-left: 2px;
-                    margin-right: 8px;
-                }
             }
         }
     }
