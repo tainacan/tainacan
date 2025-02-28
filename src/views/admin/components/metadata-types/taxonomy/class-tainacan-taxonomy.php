@@ -320,7 +320,7 @@ class Taxonomy extends Metadata_Type {
 
 		$item = $item_metadata->get_item();
 
-		// if ( !in_array($item->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
+		// if ( !in_array($item->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','pending','private'])) )
 		// 	return true;
 
 		$valid = true;

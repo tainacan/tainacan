@@ -1,7 +1,7 @@
 import { createApp } from 'vue';
 import store from '../../admin/js/store/store';
 import router from './roles-router';
-import FloatingVue from 'floating-vue';
+import VTooltip from 'floating-vue';
 import { Snackbar, Modal } from '@ntohq/buefy-next';
 
 import { I18NPlugin } from './wp-i18n-plugin';
@@ -28,12 +28,13 @@ export default (element) => {
             const VueRoles = createApp(RolesPage);
 
             VueRoles.use(I18NPlugin);
-            VueRoles.use(FloatingVue, {
+            VueRoles.use(VTooltip, {
                 popperTriggers: ['hover'],
                 themes: {
                     'tainacan-tooltip': {
                         $extend: 'tooltip',
                         triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
                         html: true,
                     }
                 }

@@ -1181,7 +1181,7 @@
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
                                 <a
-                                        v-if="!isOnTrash"
+                                        v-if="!isOnTrash && item.current_user_can_edit"
                                         id="button-edit"
                                         :aria-label="$i18n.getFrom('items','edit_item')"
                                         @click.prevent.stop="goToItemEditPage(item)">

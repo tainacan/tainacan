@@ -14,7 +14,7 @@
                     <span 
                             v-if="!$adminOptions.hideItemsListStatusTabsTotalItems"
                             class="has-text-gray">
-                        &nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.publish + repositoryTotalItems.draft })` : (collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish) + Number(collection.total_items.draft)})` : '') }}
+                        &nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.pending + repositoryTotalItems.publish + repositoryTotalItems.draft })` : (collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.pending) + Number(collection.total_items.publish) + Number(collection.total_items.draft)})` : '') }}
                     </span>
                 </a>
             </li>
@@ -85,6 +85,7 @@ export default {
                     total_items.draft += Number(collection.total_items.draft);
                     total_items.publish += Number(collection.total_items.publish);
                     total_items.private += Number(collection.total_items.private);
+                    total_items.pending += Number(collection.total_items.pending);
                 }
 
                 return total_items;

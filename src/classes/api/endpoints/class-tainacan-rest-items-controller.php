@@ -153,7 +153,7 @@ class REST_Items_Controller extends REST_Controller {
 						'status' => array(
 							'description' => __('Try to assign the specified status to the duplicates if they validate. By default it will save them as drafts.', 'tainacan'),
 							'type'        => 'string',
-							'enum'        => array('draft', 'publish', 'private', 'trash'),
+							'enum'        => array('draft', 'publish', 'private', 'pending', 'trash'),
 							'default'     => 'draft'
 						),
 					)
