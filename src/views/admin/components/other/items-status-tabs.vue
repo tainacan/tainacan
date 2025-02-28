@@ -77,7 +77,8 @@ export default {
                     trash: 0,
                     publish: 0,
                     draft: 0,
-                    private: 0
+                    private: 0,
+                    pending: 0
                 };
 
                 for(let collection of collections){
