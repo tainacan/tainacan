@@ -264,9 +264,9 @@ RouterHelperPlugin.install = function (app, options = {}) {
         },
         getProcessesPage(highlightedProcess) {
             if (highlightedProcess)
-                return '/activities?tab=processes&highlight=' + highlightedProcess;
+                return '/processes?highlight=' + highlightedProcess;
             else 
-                return '/activities?tab=processes';
+                return '/processes';
         },
         // Singles
         getCollectionPath(id) {

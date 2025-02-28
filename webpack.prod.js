@@ -1,5 +1,5 @@
 const { merge } = require('webpack-merge');
-const common = require('./webpack.common.js');
+const { TainacanPluginConfig, TainacanModulesConfig } = require('./webpack.common.js');
 const TerserPlugin = require('terser-webpack-plugin');
 
 const terserPlugin = new TerserPlugin({
@@ -15,7 +15,7 @@ const terserPlugin = new TerserPlugin({
     },
 });
 
-module.exports = merge(common, {
+module.exports = [ merge(TainacanPluginConfig, {
     mode: 'production',
     devtool: undefined,
     optimization: {
@@ -28,4 +28,4 @@ module.exports = merge(common, {
             'Swiper$': 'swiper/js/swiper.min.js'
         }
     }
-});
+}), TainacanModulesConfig ];

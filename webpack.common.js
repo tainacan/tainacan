@@ -4,7 +4,7 @@ const ESLintPlugin = require('eslint-webpack-plugin');
 const { VueLoaderPlugin } = require('vue-loader');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
-module.exports = {
+const TainacanPluginConfig = {
     entry: {
         tainacan_pages_common_scripts: './src/views/tainacan-pages-common-scripts.js',
         tainacan_admin_navigation_menu: './src/views/tainacan-admin-navigation-menu.js',
@@ -123,3 +123,37 @@ module.exports = {
         children: true
     }
 };
+
+const TainacanModulesConfig = {
+    entry: {
+        'tainacan_multiple_item_selection_modal': './src/views/gutenberg-blocks/js/selection/tainacan-multiple-item-selection-modal.js',
+        'tainacan_single_item_selection_modal': './src/views/gutenberg-blocks/js/selection/tainacan-single-item-selection-modal.js',
+        'tainacan_single_item_metadatum_selection_modal': './src/views/gutenberg-blocks/js/selection/tainacan-single-item-metadatum-selection-modal.js',
+        'tainacan_single_item_metadata_section_selection_modal': './src/views/gutenberg-blocks/js/selection/tainacan-single-item-metadata-section-selection-modal.js',
+    },
+    output: {
+        path: path.resolve(__dirname, './src/assets/js/'),
+        publicPath: './wp-content/plugins/tainacan/assets/js/',
+        filename: '[name].js',
+        chunkFilename: `[name].js?ver=[contenthash]`,
+        library: ['TainacanModules', '[name]'],
+        libraryTarget: 'umd', // Allows usage in different environments
+        globalObject: 'this'
+    },
+    externals: {
+        react: 'React',
+        'react-dom': 'ReactDOM',
+        '@wordpress/element': 'wp.element'
+    },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                loader: 'babel-loader',
+            }
+        ]
+    }
+};
+
+module.exports = { TainacanPluginConfig, TainacanModulesConfig };

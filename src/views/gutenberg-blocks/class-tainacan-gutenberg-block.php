@@ -50,6 +50,12 @@ function tainacan_blocks_initialize() {
 	// The reason why we don't use admin_init here is because server side blocks
 	// need to be registered whithin the init
 	add_action( 'init', 'tainacan_blocks_register_and_enqueue_all_blocks', 11 );
+
+	// Adicionally, we also register the Tainacan react components that may be used by
+	// block editor scripts and plugin extenders
+	if ( is_admin() ) {
+		add_action( 'init', 'tainacan_blocks_register_react_components', 12 );
+	}
 }
 
 /** 
@@ -347,3 +353,42 @@ function tainacan_blocks_get_variations_script() {
 	wp_localize_script( 'tainacan-blocks-query-variations', 'tainacan_blocks', $block_settings );
 }
 
+/**
+ * Registers Tainacan react components that may be used by either block editor
+ * scripts or plugin extenders.
+ */
+function tainacan_blocks_register_react_components() {
+	global $TAINACAN_BASE_URL;
+	global $TAINACAN_VERSION;
+
+	$dependencies = array( 'wp-element', 'wp-components', 'wp-i18n' );
+
+	wp_register_script(
+        'tainacan-multiple-item-selection-modal',
+        $TAINACAN_BASE_URL . '/assets/js/tainacan_multiple_item_selection_modal.js',
+        $dependencies,
+        $TAINACAN_VERSION,
+        true
+    );
+	wp_register_script(
+        'tainacan-single-item-selection-modal',
+        $TAINACAN_BASE_URL . '/assets/js/tainacan_single_item_selection_modal.js',
+        $dependencies,
+        $TAINACAN_VERSION,
+        true
+    );
+	wp_register_script(
+        'tainacan-single-item-metadatum-selection-modal',
+        $TAINACAN_BASE_URL . '/assets/js/tainacan_single_item_metadatum_selection_modal.js',
+        $dependencies,
+        $TAINACAN_VERSION,
+        true
+    );
+	wp_register_script(
+        'tainacan-single-item-metadata-section-selection-modal',
+        $TAINACAN_BASE_URL . '/assets/js/tainacan_single_item_metadata_section_selection_modal.js',
+        $dependencies,
+        $TAINACAN_VERSION,
+        true
+    );
+}

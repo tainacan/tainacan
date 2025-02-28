@@ -677,6 +677,7 @@
     }
 
     .tainacan-fixed-subheader {
+        box-sizing: content-box;
         width: calc(100% + (2 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column))));
         max-width: 100%;
         margin-left: calc( -1 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column)));

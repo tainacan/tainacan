@@ -10,7 +10,7 @@ const { useSelect } = wp.data;
 
 import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
 import pick from 'lodash/pick';
-import DynamicItemsModal from '../carousel-items-list/dynamic-and-carousel-items-modal.js';
+import TainacanMultipleItemSelectionModal from '../../js/selection/tainacan-multiple-item-selection-modal.js';
 import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
@@ -134,7 +134,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
             >
                 { loadStrategy == 'selection' ?
                     <Button
-                        tabindex="-1"
+                        tabIndex="-1"
                         onClick={ () => removeItemOfId(item.id) }
                         icon={ () => (
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M12 13.06l3.712 3.713 1.061-1.06L13.061 12l3.712-3.712-1.06-1.06L12 10.938 8.288 7.227l-1.061 1.06L10.939 12l-3.712 3.712 1.06 1.061L12 13.061z"></path></svg>
@@ -443,7 +443,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
         )
     }
 
-    function openDynamicItemsModal(aLoadStrategy) {
+    function openTainacanMultipleItemSelectionModal(aLoadStrategy) {
         loadStrategy = aLoadStrategy;
         isModalOpen = true;
         setAttributes( { 
@@ -584,7 +584,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                             width="24px">
                                         <path d="M14,2V4H7v7.24A5.33,5.33,0,0,0,5.5,11a4.07,4.07,0,0,0-.5,0V4A2,2,0,0,1,7,2Zm7,10v8a2,2,0,0,1-2,2H12l1-1-2.41-2.41A5.56,5.56,0,0,0,11,16.53a5.48,5.48,0,0,0-2-4.24V8a2,2,0,0,1,2-2h4Zm-2.52,0L14,7.5V12ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1-.5-7,2.74,2.74,0,0,1,.5,0,3.41,3.41,0,0,1,1.5.34,3.5,3.5,0,0,1,2,3.16,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,0,0,5.5,15a1.39,1.39,0,0,0-.5.09A1.5,1.5,0,0,0,5.5,18a1.48,1.48,0,0,0,1.42-1A1.5,1.5,0,0,0,7,16.53Z"/>
                                     </svg>,
-                                onClick: openDynamicItemsModal,
+                                onClick: openTainacanMultipleItemSelectionModal,
                                 onClickParams: 'selection'
                             })
                             :
@@ -597,7 +597,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                             width="24px">
                                         <path d="M14,2V4H7v7.24A5.33,5.33,0,0,0,5.5,11a4.07,4.07,0,0,0-.5,0V4A2,2,0,0,1,7,2Zm7,10v8a2,2,0,0,1-2,2H12l1-1-2.41-2.41A5.56,5.56,0,0,0,11,16.53a5.48,5.48,0,0,0-2-4.24V8a2,2,0,0,1,2-2h4Zm-2.52,0L14,7.5V12ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1-.5-7,2.74,2.74,0,0,1,.5,0,3.41,3.41,0,0,1,1.5.34,3.5,3.5,0,0,1,2,3.16,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,0,0,5.5,15a1.39,1.39,0,0,0-.5.09A1.5,1.5,0,0,0,5.5,18a1.48,1.48,0,0,0,1.42-1A1.5,1.5,0,0,0,7,16.53Z"/>
                                     </svg>,
-                                onClick: openDynamicItemsModal,
+                                onClick: openTainacanMultipleItemSelectionModal,
                                 onClickParams: 'search'
                             })
                         ) : null
@@ -882,7 +882,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                 (
                 <div>
                     { isModalOpen ? 
-                        <DynamicItemsModal
+                        <TainacanMultipleItemSelectionModal
                             loadStrategy={ loadStrategy }
                             existingCollectionId={ collectionId } 
                             existingSearchURL={ searchURL } 
@@ -1089,14 +1089,14 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                 <Button
                                     isPrimary
                                     type="button"
-                                    onClick={ () => openDynamicItemsModal('selection') }>
+                                    onClick={ () => openTainacanMultipleItemSelectionModal('selection') }>
                                     {__('Select Items', 'tainacan')}
                                 </Button> 
                                 <p style={{ margin: '0 12px' }}>{__('or', 'tainacan')}</p>
                                 <Button
                                     isPrimary
                                     type="button"
-                                    onClick={ () => openDynamicItemsModal('search') }>
+                                    onClick={ () => openTainacanMultipleItemSelectionModal('search') }>
                                     {__('Configure a search', 'tainacan')}
                                 </Button>
                             </div>

@@ -10,7 +10,7 @@ const { useSelect } = wp.data;
 import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
 import pick from 'lodash/pick';
 
-import SingleItemModal from '../../js/selection/single-item-modal.js';
+import TainacanSingleItemSelectionModal from '../../js/selection/tainacan-single-item-selection-modal.js';
 import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
 
 export default function ({ attributes, setAttributes, isSelected, clientId }) {
@@ -362,7 +362,7 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                 ( 
                 <div>
                     { isModalOpen ?
-                        <SingleItemModal
+                        <TainacanSingleItemSelectionModal
                             modalTitle={ __('Select one item to create its media gallery', 'tainacan') }
                             applyButtonLabel={ __('Create gallery from this item', 'tainacan') }
                             existingCollectionId={ collectionId }

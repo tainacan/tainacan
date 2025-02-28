@@ -7,7 +7,7 @@ const { Button, Spinner, ToggleControl, Placeholder, PanelBody } = wp.components
 const ServerSideRender = wp.serverSideRender;
 const { useBlockProps, InnerBlocks, BlockControls, AlignmentControl, InspectorControls } = wp.blockEditor;
 
-import SingleItemModal from '../../js/selection/single-item-modal.js';
+import TainacanSingleItemSelectionModal from '../../js/selection/tainacan-single-item-selection-modal.js';
 import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
 import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
@@ -230,7 +230,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
                 ( 
                 <div>
                     { isModalOpen ?
-                        <SingleItemModal
+                        <TainacanSingleItemSelectionModal
                             modalTitle={ __('Select one item to render its metadata', 'tainacan') }
                             applyButtonLabel={ __('List metadata for this item', 'tainacan') }
                             existingCollectionId={ collectionId }

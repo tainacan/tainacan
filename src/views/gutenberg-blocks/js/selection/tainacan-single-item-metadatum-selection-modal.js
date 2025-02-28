@@ -6,7 +6,7 @@ const { __ } = wp.i18n;
 const { TextControl, Button, Modal, RadioControl, SelectControl, Spinner } = wp.components;
 const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
 
-export default class SingleItemModal extends React.Component {
+export default class TainacanSingleItemMetadatumSelectionModal extends React.Component {
     constructor(props) {
         super(props);
 

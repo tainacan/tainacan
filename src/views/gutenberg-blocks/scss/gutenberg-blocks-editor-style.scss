@@ -91,6 +91,7 @@
             }
             .components-modal__header+div {
                 height: 100%;
+                line-height: 0;
             }
         }
     }
@@ -134,7 +135,7 @@
         margin-bottom: 6px;
 
         .components-base-control {
-            width: 60%;
+            width: 75%;
 
             @media only screen and (max-width: 1024px) {  width: 95% }
             &:nth-child(2) {
@@ -147,16 +148,6 @@
                 .components-select-control {
                     width: 100%;
                 }
-            }
-            label.components-base-control__label {
-                font-weight: 500;
-                color: var(--tainacan-block-gray5, $gray5);
-                font-size: 1em;
-                text-align: center;
-            }
-            input.components-text-control__input {
-                padding: 5px 8px;
-                height: 28px;
             }
         }
     }
@@ -220,8 +211,7 @@
         
         p {
             color: var(--tainacan-block-gray4, $gray4);
-            margin-right: 12px;
-            margin-top: 2px;
+            margin: 4px 11px;
         }
     }
     .modal-footer-area {

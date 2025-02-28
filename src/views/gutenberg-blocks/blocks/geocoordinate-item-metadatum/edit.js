@@ -4,7 +4,7 @@ const { Button, Placeholder, ToolbarDropdownMenu, SVG, Path } = wp.components;
 const ServerSideRender = wp.serverSideRender;
 const { useBlockProps, BlockControls, AlignmentControl } = wp.blockEditor;
 
-import SingleItemMetadatumModal from '../../js/selection/single-item-metadatum-modal.js';
+import TainacanSingleItemMetadatumSelectionModal from '../../js/selection/tainacan-single-item-metadatum-selection-modal.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
 
@@ -71,7 +71,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
                 ( 
                 <div>
                     { isModalOpen ?
-                        <SingleItemMetadatumModal
+                        <TainacanSingleItemMetadatumSelectionModal
                             modalTitle={ templateMode ? __('Select one metadatum', 'tainacan') : __('Select one item to render its metadata', 'tainacan') }
                             existingCollectionId={ collectionId }
                             existingItemId={ itemId }

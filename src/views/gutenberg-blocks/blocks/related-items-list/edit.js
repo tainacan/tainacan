@@ -4,7 +4,7 @@ const { Spinner, Button, Placeholder } = wp.components;
 
 const { InnerBlocks, useBlockProps } = wp.blockEditor;
 
-import SingleItemModal from '../../js/selection/single-item-modal.js';
+import TainacanSingleItemSelectionModal from '../../js/selection/tainacan-single-item-selection-modal.js';
 import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 
@@ -148,7 +148,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
                 ( 
                 <div>
                     { isModalOpen ?   
-                        <SingleItemModal
+                        <TainacanSingleItemSelectionModal
                             modalTitle={ __('Select one item that has relations', 'tainacan') }
                             applyButtonLabel={ __('Get relations of this item', 'tainacan') }
                             existingCollectionId={ collectionId }
