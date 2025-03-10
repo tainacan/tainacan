@@ -17,13 +17,13 @@
                             to="/roles/new"
                             custom>
                         <button 
+                                id="button-create-role"
                                 v-tooltip="{
                                     content: $i18n.get('Create a role based on: '),
                                     autoHide: true,
                                     placement: 'top',
                                     popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
                                 }"
-                                id="button-create-role"
                                 type="button"
                                 role="link" 
                                 class="button is-secondary">
@@ -45,8 +45,7 @@
                         {{ $i18n.get('Blank') }}
                     </router-link>
                 </b-dropdown-item>
-                <b-dropdown-item separator>
-                </b-dropdown-item>
+                <b-dropdown-item separator />
                 <b-dropdown-item 
                         class="dropdown-item-secstion-separator"
                         aria-role="listitem"
@@ -74,8 +73,8 @@
 
     <div class="sub-header">
         <b-field 
-                    id="roles-page-search"
-                    class="header-item">
+                id="roles-page-search"
+                class="header-item">
             <b-input 
                     v-model="searchString"
                     :placeholder="$i18n.get('Type to search by Role Name')"

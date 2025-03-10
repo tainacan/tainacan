@@ -321,26 +321,25 @@
         <div class="form-submit">
             <div class="control">
                 <input 
-                    id="cancel"
-                    type="button"
-                    name="cancel"
-                    class="button is-outlined" 
-                    :value="$i18n.get('Cancel')"
-                    @click="$router.go(-1)">
+                        id="cancel"
+                        type="button"
+                        name="cancel"
+                        class="button is-outlined" 
+                        :value="$i18n.get('Cancel')"
+                        @click="$router.go(-1)">
             </div>
             <div class="control">
                 <span 
-                    v-if="isUpdatingRole"
-                    class="spinner is-active"
-                    style="float: none;" />
-            <input 
-                    id="submit"
-                    type="submit"
-                    name="submit"
-                    :disabled="!form.name || showNotice" 
-                    class="is-success button"
-                    :value="roleSlug === 'new' ? $i18n.get('Create Role') : $i18n.get('Save Changes')">
-
+                        v-if="isUpdatingRole"
+                        class="spinner is-active"
+                        style="float: none;" />
+                <input 
+                        id="submit"
+                        type="submit"
+                        name="submit"
+                        :disabled="!form.name || showNotice" 
+                        class="is-success button"
+                        :value="roleSlug === 'new' ? $i18n.get('Create Role') : $i18n.get('Save Changes')">
             </div>
         </div>
     </form>
