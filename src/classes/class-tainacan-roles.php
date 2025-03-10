@@ -335,8 +335,8 @@ class Roles {
 				]
 			],
 			'tnc_col_%d_read_private_items' => [
-				'display_name' => __('View private items', 'tainacan'),
-				'description' => __('Access to view private items in this collection', 'tainacan'),
+				'display_name' => __('View others private items', 'tainacan'),
+				'description' => __('Access to view private items in this collection, even if created by other users.', 'tainacan'),
 				'scope' => 'collection',
 				'supercaps' => [
 					'manage_tainacan',
@@ -347,7 +347,7 @@ class Roles {
 			],
 			'tnc_col_%d_edit_items' => [
 				'display_name' => __('Edit items', 'tainacan'),
-				'description' => __('Create and edit items in this collection', 'tainacan'),
+				'description' => __('Create and edit items that you own in this collection.', 'tainacan'),
 				'dependencies' => [
 					'upload_files'
 				],
@@ -361,7 +361,7 @@ class Roles {
 			],
 			'tnc_col_%d_publish_items' => [
 				'display_name' => __('Publish items', 'tainacan'),
-				'description' => __('Publish items in this collection', 'tainacan'),
+				'description' => __('Publish items in this collection.', 'tainacan'),
 				'dependencies' => [
 					'upload_files'
 				],
@@ -375,7 +375,7 @@ class Roles {
 			],
 			'tnc_col_%d_edit_others_items' => [
 				'display_name' => __('Edit others items', 'tainacan'),
-				'description' => __('Edit items created by other users in this collection', 'tainacan'),
+				'description' => __('Edit items created by other users in this collection.', 'tainacan'),
 				'dependencies' => [
 					'upload_files'
 				],
@@ -389,7 +389,7 @@ class Roles {
 			],
 			'tnc_col_%d_edit_published_items' => [
 				'display_name' => __('Edit published items', 'tainacan'),
-				'description' => __('Edit items in this collection after they are published', 'tainacan'),
+				'description' => __('Edit items in this collection after they are published.', 'tainacan'),
 				'dependencies' => [
 					'upload_files'
 				],

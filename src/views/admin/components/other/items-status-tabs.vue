@@ -8,7 +8,7 @@
                         placement: 'auto',
                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                     }"
-                    :class="{ 'is-active': status == undefined || status == '' || status == 'publish,private,draft' }"
+                    :class="{ 'is-active': status == undefined || status == '' || status == 'publish,private,pending,draft' }"
                     @click="onChangeTab('')">
                 <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
                     {{ $i18n.get('label_all_items') }}
@@ -23,7 +23,6 @@
                     v-for="(statusOption, index) of $statusHelper.getStatuses()"
                     :key="index">
                 <li 
-                        v-if="(isRepositoryLevel || statusOption.slug != 'private') || (statusOption.slug == 'private' && collection && collection.current_user_can_read_private_items)"
                         v-tooltip="{
                             content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('items')]),
                             autoHide: true,
