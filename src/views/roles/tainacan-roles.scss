@@ -1,3 +1,29 @@
+// TAINACAN ICON FONT
+@import "../../assets/css/tainacanicons.css";
+
+// Tainacan custom colors and bulma's core
+@import "../admin/scss/_variables.scss";
+
+
+// Import Bulma and Buefy styles
+@import "../../assets/css/materialdesignicons.css";
+@import "../../../node_modules/bulma/bulma.sass";
+@import "../../../node_modules/@ntohq/buefy-next/src/scss/buefy.scss";
+
+// Import Tainacan custom styles
+@import "../admin/scss/_tainacan-form.scss";
+@import "../admin/scss/_tables.scss";
+@import "../admin/scss/_control.scss";
+@import "../admin/scss/_buttons.scss";
+@import "../admin/scss/_inputs.scss";
+@import "../admin/scss/_selects.scss";
+@import "../admin/scss/_dropdown-and-autocomplete.scss";
+@import "../admin/scss/_tabs.scss";
+@import "../admin/scss/_modals.scss";
+@import "../admin/scss/_tooltips.scss";
+@import "../admin/scss/_repository-level-overrides.scss";
+@import "../admin/scss/_custom_variables.scss";
+
 #tainacan-roles-app {
-    
+    padding-bottom: 0 !important;
 }

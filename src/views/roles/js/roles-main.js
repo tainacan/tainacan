@@ -2,7 +2,17 @@ import { createApp } from 'vue';
 import store from '../../admin/js/store/store';
 import router from './roles-router';
 import VTooltip from 'floating-vue';
-import { Snackbar, Modal } from '@ntohq/buefy-next';
+import {
+    Snackbar,
+    Modal,
+    Field,
+    Input,
+    Icon,
+    Button,
+    Dropdown,
+    Dialog,
+    Checkbox,
+} from '@ntohq/buefy-next';
 
 import { I18NPlugin } from './wp-i18n-plugin';
 
@@ -41,6 +51,13 @@ export default (element) => {
             });
             VueRoles.use(Snackbar);
             VueRoles.use(Modal);
+            VueRoles.use(Field);
+            VueRoles.use(Input);
+            VueRoles.use(Icon);
+            VueRoles.use(Button);
+            VueRoles.use(Dropdown);
+            VueRoles.use(Checkbox);
+            VueRoles.use(Dialog);
             
             // Changing title of pages
             router.beforeEach((to, from, next) => {

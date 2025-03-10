@@ -14,7 +14,6 @@
 }
 .tainacan-records-container {
     list-style: none;
-    margin-left: 30px;
     padding: 0;
     display: flex;
     flex-wrap: wrap;
@@ -293,6 +292,8 @@
         }
     }
 }
-
-
-
+@media screen and (min-width: 768px) {
+    .is-filters-menu-open #filters-modal+#items-list-area .tainacan-records-container {
+        margin-left: 30px;
+    }
+}

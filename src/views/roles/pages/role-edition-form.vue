@@ -1,6 +1,6 @@
 <template>
     <form 
-            class="tainacan-role-edition-form"
+            class="tainacan-role-edition-form tainacan-form"
             @submit="onSubmit">
         <div class="tainacan-fixed-subheader">
             <h1 
@@ -30,16 +30,17 @@
         </div>
 
         <template v-if="!isLoadingRole">
-            <div class="name-edition-box">
-                <label for="role-name-input">{{ $i18n.get('Role name') + ':' }}</label>
-                <input
-                        id="role-name-input" 
+            <b-field
+                    class="name-edition-input"
+                    :addons="false"
+                    :label="$i18n.get('Role name')">
+                <b-input
                         v-model="form.name" 
                         type="text"
-                        name="name" 
+                        name="name"
                         :placeholder="$i18n.get('Insert the role name...')" 
-                        @input="showNotice = false">
-            </div>
+                        @update:model-value="showNotice = false" />
+            </b-field>
 
             <!-- Hook for extra Form options -->
             <template v-if="hasBeginLeftForm">  
@@ -60,34 +61,32 @@
         <template v-if="!isLoadingRole">
 
             <div id="capabilities-tabs">
-                <h2 class="nav-tab-wrapper">
-                    <a 
-                            class="nav-tab"
-                            :class="{ 'nav-tab-active': capabilitiesTab == 'repository'}"
-                            @click="capabilitiesTab = 'repository'">
-                        {{ $i18n.get('Repository') }}
-                    </a>
-                    <a 
-                            class="nav-tab"
-                            :class="{ 'nav-tab-active': capabilitiesTab == 'collections'}"
-                            @click="capabilitiesTab = 'collections'">
-                        {{ $i18n.get('Collections') }}
-                    </a>
-                    <a 
-                            class="nav-tab"
-                            :class="{ 'nav-tab-active': capabilitiesTab == 'admin-ui'}"
-                            @click="capabilitiesTab = 'admin-ui'">
-                        {{ $i18n.get('Admin Appearence') }}
-                    </a>
-
-                    <a        
-                            v-if="hasBeginRightForm || hasEndRightForm"
-                            class="nav-tab"
-                            :class="{ 'nav-tab-active': capabilitiesTab == 'extra'}"
-                            @click="capabilitiesTab = 'extra'">
-                        {{ $i18n.get('Others') }}
-                    </a>
-                </h2>
+                <div class="tabs">
+                    <ul>
+                        <li :class="{ 'is-active': capabilitiesTab == 'repository'}">
+                            <a @click="capabilitiesTab = 'repository'">
+                                {{ $i18n.get('Repository') }}
+                            </a>
+                        </li>
+                        <li :class="{ 'is-active': capabilitiesTab == 'collections'}">
+                            <a @click="capabilitiesTab = 'collections'">
+                                {{ $i18n.get('Collections') }}
+                            </a>
+                        </li>
+                        <li :class="{ 'is-active': capabilitiesTab == 'admin-ui'}">
+                            <a @click="capabilitiesTab = 'admin-ui'">
+                                {{ $i18n.get('Admin Appearence') }}
+                            </a>
+                        </li>
+                        <li 
+                                v-if="hasBeginRightForm || hasEndRightForm"
+                                :class="{ 'is-active': capabilitiesTab == 'extra'}">
+                            <a @click="capabilitiesTab = 'extra'">
+                                {{ $i18n.get('Others') }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
                 <div 
                         v-if="capabilitiesTab === 'repository'"
                         id="tab-repository"
@@ -159,21 +158,23 @@
                                         class="screen-reader-text">
                                     {{ $i18n.get('Select the collection to change capabilities') }}
                                 </label>
-                                <select 
-                                        id="collection-select" 
-                                        name="collection"
-                                        :value="selectedCollection"
-                                        @input="selectedCollection = $event.target.value">
-                                    <option value="all">
-                                        {{ $i18n.get('All Collections') }}
-                                    </option>
-                                    <option 
-                                            v-for="(collection, index) of collections"
-                                            :key="index"
-                                            :value="collection.id">
-                                        {{ collection.name }}
-                                    </option>
-                                </select>    
+                                <span class="select">
+                                    <select 
+                                            id="collection-select" 
+                                            name="collection"
+                                            :value="selectedCollection"
+                                            @input="selectedCollection = $event.target.value">
+                                        <option value="all">
+                                            {{ $i18n.get('All Collections') }}
+                                        </option>
+                                        <option 
+                                                v-for="(collection, index) of collections"
+                                                :key="index"
+                                                :value="collection.id">
+                                            {{ collection.name }}
+                                        </option>
+                                    </select>
+                                </span>
                             </div>
                             <br class="clear">
                         </div>
@@ -318,28 +319,29 @@
         </template>
 
         <div class="form-submit">
-            <p class="cancel">
+            <div class="control">
                 <input 
-                        id="cancel"
-                        type="button"
-                        name="cancel"
-                        class="button" 
-                        :value="$i18n.get('Cancel')"
-                        @click="$router.go(-1)">
-            </p>
-            <p class="submit">
+                    id="cancel"
+                    type="button"
+                    name="cancel"
+                    class="button is-outlined" 
+                    :value="$i18n.get('Cancel')"
+                    @click="$router.go(-1)">
+            </div>
+            <div class="control">
                 <span 
-                        v-if="isUpdatingRole"
-                        class="spinner is-active"
-                        style="float: none;" />
-                <input 
-                        id="submit"
-                        type="submit"
-                        name="submit"
-                        :disabled="!form.name || showNotice" 
-                        class="button button-primary"
-                        :value="roleSlug === 'new' ? $i18n.get('Create Role') : $i18n.get('Save Changes')">
-            </p>
+                    v-if="isUpdatingRole"
+                    class="spinner is-active"
+                    style="float: none;" />
+            <input 
+                    id="submit"
+                    type="submit"
+                    name="submit"
+                    :disabled="!form.name || showNotice" 
+                    class="is-success button"
+                    :value="roleSlug === 'new' ? $i18n.get('Create Role') : $i18n.get('Save Changes')">
+
+            </div>
         </div>
     </form>
 </template>
@@ -713,19 +715,20 @@
         position: relative;
         float: right;
     }
-    #role-name-input {
-        min-width: 200px;
+    .name-edition-input {
+        max-width: 280px;
     }
     .form-submit {
+        display: flex;
+        justify-content: space-between;
         gap: var(--tainacan-container-padding);
         position: sticky;
         bottom: 0;
         right: 0;
+        left: 0;
         z-index: 9999;
         background-color: var(--tainacan-gray1);
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
+        width: calc( 100% + ( 2 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column)) ) );
         align-items: center;
         transition: bottom 0.5s ease, width 0.2s linear;
         box-shadow: 0px 0px 12px -8px var(--tainacan-black);
@@ -757,7 +760,7 @@
         border-bottom: 3px solid transparent;
 
         &.nav-tab-active {
-            border-bottom: 3px solid #2271b1;
+            border-bottom: 3px solid var(--tainacan-secondary);
         }
     }
     .tabs-content {
@@ -785,7 +788,7 @@
                 margin-bottom: 1em;
                 font-size: 1em;
                 font-weight: bold;
-                color: #2271b1;
+                color: var(--taincan-label-color);
             }
             ul {
                 li {
@@ -804,7 +807,7 @@
             width: 100%;
         }
         .nav-tab-wrapper {
-            border-bottom: 1px solid #ccc;
+            border-bottom: 1px solid var(--tainacan-gray2);
         }
     }
 }

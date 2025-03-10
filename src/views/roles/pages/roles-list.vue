@@ -3,222 +3,208 @@
         <h1 class="tainacan-page-title">
             {{ $route.meta.title }}
         </h1>
-        <div class="dropdown-new-role">
-            <router-link
-                    to="/roles/new"
-                    class="page-title-action">
-                {{ $i18n.get('New role') }}
-            </router-link>
-            <button 
-                    v-tooltip="{
-                        content: $i18n.get('Create a role based on: '),
-                        autoHide: true,
-                        placement: 'top',
-                        popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
-                    }"
-                    class="button button-secondary"
-                    aria-haspopup="true"
-                    aria-controls="dropdown-menu"
-                    :aria-expanded="showDropdownMenu"
-                    @click="showDropdownMenu = !showDropdownMenu">
-                <span class="dashicons dashicons-arrow-down-alt2" />
-            </button>
 
-            <div 
-                    id="dropdown-menu"
-                    :class="{ 'show': showDropdownMenu }"
-                    class="dropdown-menu"
-                    :aria-hidden="showDropdownMenu">
-                <!-- <p class="dropdown-menu-intro">{{ $i18n.get('Create a new role based on: ') }}</p> -->
-                <ul>
-                    <template 
-                            v-for="role of roles"
-                            :key="role.slug">
-                        <li v-if="role.slug.match('tainacan')">
-                            <router-link :to="'/roles/new?template=' + role.slug">
-                                {{ role.name }}
-                            </router-link>
-                        </li>
-                    </template>
-                    <li><router-link to="/roles/new">
-                        <em>{{ $i18n.get('Blank') }}</em>
-                    </router-link></li>
-                </ul>
-            </div>
-        </div>
-
-        <p class="search-box">
-            <label
-                    class="screen-reader-text"
-                    for="roles-search-input">
-                {{ $i18n.get('Type to search by Role Name') }}
-            </label>
-            <input
-                    id="roles-search-input" 
-                    v-model="searchString" 
-                    type="search"
-                    :placeholder="$i18n.get('Type to search by Role Name')">
-        </p>
-    </div>
-    <div 
-            v-if="roles"         
-            class="tablenav top">
-        <h2 class="screen-reader-text">
-            {{ $i18n.get('Roles list') }}
-        </h2>
-        <div class="align-left actions">
-            <p>{{ $i18n.get('Create and edit roles for users') }}</p>
-        </div>
-        <div class="tablenav-pages one-page">
-            <span class="displaying-num">{{ Object.keys(roles).length + ' ' + $i18n.getWithNumber('item', 'items', Object.keys(roles).length) }}</span>
-        </div>
-    </div>
-
-    <table 
-            v-if="!isLoadingRoles"
-            class="wp-list-table widefat fixed striped roles">
-        <thead>
-            <tr>
-                <!-- <td class="manage-column column-cb check-column">
-                    <label
-                            class="screen-reader-text"
-                            for="cb-select-all">
-                        {{ $i18n.get('Selecionar Todos') }}
-                    </label>
-                    <input
-                            id="cb-select-all"
-                            type="checkbox">
-                </td> -->
-                <th
-                        id="name"
-                        scope="col"
-                        class="manage-column column-name">
-                    {{ $i18n.get('Role\'s Name') }}
-                </th>
-                <!-- <th
-                        scope="col"
-                        id="role"
-                        class="manage-column column-slug">
-                    {{ $i18n.get('Slug') }}
-                </th> -->
-                <th
-                        id="capabilities-number"
-                        scope="col"
-                        class="manage-column column-capabilities num">
-                    {{ $i18n.get('Number of Capabilities') }}
-                </th>
-            </tr>
-        </thead>
-
-        <tbody data-wp-lists="list:roles">
-            <tr
-                    v-for="role of roles"
-                    :id="role.slug"
-                    :key="role.slug">
-                <!-- <th
-                        scope="row"
-                        class="check-column">
-                    <label
-                            class="screen-reader-text"
-                            :for="'role_' + role.slug">
-                        {{ $i18n.get('Selecionar') + ' ' + role.name }}
-                    </label>
-                    <input
-                        type="checkbox"
-                        name="roles[]"
-                        :id="'role_'+ role.slug"
-                        :value="role.slug">
-                </th> -->
-                <td 
-                        class="name column-name has-row-actions column-primary"
-                        :data-colname="$i18n.get('Role name')">
-                    <strong>
+        <!-- New Role Button -->
+        <div 
+                class="header-item"
+                style="margin-right: auto; margin-left: 0;">
+            <b-dropdown
+                    id="roles-page-add-new"
+                    aria-role="list"
+                    trap-focus>
+                <template #trigger>
+                    <router-link
+                            to="/roles/new"
+                            custom>
+                        <button 
+                                v-tooltip="{
+                                    content: $i18n.get('Create a role based on: '),
+                                    autoHide: true,
+                                    placement: 'top',
+                                    popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
+                                }"
+                                id="button-create-role"
+                                type="button"
+                                role="link" 
+                                class="button is-secondary">
+                            <span>
+                                {{ $i18n.get('New role') }}
+                            </span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                            </span>
+                        </button>
+                    </router-link>
+                </template>
+                <b-dropdown-item 
+                        aria-role="listitem"
+                        has-link>
+                    <router-link
+                            to="/roles/new"
+                            style="min-height: unset;">
+                        {{ $i18n.get('Blank') }}
+                    </router-link>
+                </b-dropdown-item>
+                <b-dropdown-item separator>
+                </b-dropdown-item>
+                <b-dropdown-item 
+                        class="dropdown-item-secstion-separator"
+                        aria-role="listitem"
+                        custom>
+                    <em>{{ $i18n.get('Create a role based on: ') }}</em>
+                </b-dropdown-item>
+                <template 
+                        v-for="role of roles"
+                        :key="role.slug">
+                    <b-dropdown-item 
+                            v-if="role.slug.match('tainacan')"
+                            aria-role="listitem"
+                            has-link>
                         <router-link 
-                                :to="'/roles/' + role.slug"
-                                class="submitdelete">
+                                :to="'/roles/new?template=' + role.slug"
+                                style="min-height: unset;">
                             {{ role.name }}
                         </router-link>
-                    </strong>
-                    <br>
-                    <div class="row-actions">
-                        <span class="edit">
-                            <router-link :to="'/roles/' + role.slug">
-                                {{ $i18n.get('Edit') }}
-                            </router-link>
-                        </span>
-                        <span 
-                                v-if="role.slug.match('tainacan')"
-                                class="delete">
-                            &nbsp;|&nbsp;
-                            <a 
-                                    class="submitdelete"
-                                    @click="removeRole(role.slug)">
-                                {{ $i18n.get('Delete') }}
-                            </a>
-                        </span>
-                    </div>
-                </td>
-                <!-- <td
-                        class="slug column-slug"
-                        :data-colname="$i18n.get('Slug')">
-                    {{ role.slug }}
-                </td> -->
-                <td
-                        class="capabilities column-capabilities num  column-primary"
-                        :data-colname="$i18n.get('Number of capabilities')">
-                    {{ Object.values(role.capabilities).filter((capability) => capability == true).length }}
-                </td>
-            </tr>
-        </tbody>
+                    </b-dropdown-item>
+                </template>
+                
+            </b-dropdown>
+        </div>
+    </div>
 
-        <tfoot>
-            <tr>
-                <!-- <td class="manage-column column-cb check-column">
-                    <label
-                            class="screen-reader-text"
-                            for="cb-select-all-2">
-                        {{ $i18n.get('Selecionar Todos') }}
-                    </label>
-                    <input
-                            id="cb-select-all-2"
-                            type="checkbox">
-                </td> -->
-                <th
-                        id="name"
-                        scope="col"
-                        class="manage-column column-name column-primary">
-                    {{ $i18n.get('Role\'s Name') }}
-                </th>
-                <!-- <th
-                        scope="col"
-                        id="role"
-                        class="manage-column column-slug">
-                    {{ $i18n.get('Slug') }}
-                </th> -->
-                <th
-                        id="capabilities-number"
-                        scope="col"
-                        class="manage-column column-capabilities num">
-                    {{ $i18n.get('Number of Capabilities') }}
-                </th>
-            </tr>
-        </tfoot>
-    </table>
+    <div class="sub-header">
+        <b-field 
+                    id="roles-page-search"
+                    class="header-item">
+            <b-input 
+                    v-model="searchString"
+                    :placeholder="$i18n.get('Type to search by Role Name')"
+                    type="search"
+                    size="is-small"
+                    icon-right="magnify"
+                    icon-right-clickable />
+        </b-field>
+    </div>
 
-    <div class="tablenav bottom">
-        <div 
-                v-if="roles"        
-                style="margin-left: auto;"
-                class="tablenav-pages one-page">
-            <span class="displaying-num">
-                {{ Object.keys(roles).length + ' ' + $i18n.getWithNumber('item', 'items', Object.keys(roles).length) }}
-            </span>
+    <div class="above-subheader">
+        <div class="table-container">
+            <div class="table-wrapper">
+                <table 
+                        v-if="!isLoadingRoles"
+                        class="tainacan-table is-narrow roles">
+                    <thead>
+                        <tr>
+                            <th
+                                    id="name"
+                                    scope="col">
+                                <div class="th-wrap">
+                                    {{ $i18n.get('Role\'s Name') }}
+                                </div>
+                            </th>
+                            <!-- <th
+                                        scope="col"
+                                        id="role">
+                                    <div class="th-wrap">
+                                        {{ $i18n.get('Slug') }}
+                                    </div>
+                            </th> -->
+                            <th
+                                    id="capabilities-number"
+                                    scope="col"
+                                    class="column-capabilities">
+                                <div class="th-wrap">
+                                    {{ $i18n.get('Number of Capabilities') }}
+                                </div>
+                            </th>
+                            <!-- Actions -->
+                            <th class="actions-header">
+                                &nbsp;
+                            <!-- nothing to show on header for actions cell-->
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody data-wp-lists="list:roles">
+                        <tr
+                                v-for="role of roles"
+                                :id="role.slug"
+                                :key="role.slug">
+                            <!-- <th
+                                    scope="row"
+                                    class="check-column">
+                                <label
+                                        class="screen-reader-text"
+                                        :for="'role_' + role.slug">
+                                    {{ $i18n.get('Selecionar') + ' ' + role.name }}
+                                </label>
+                                <input
+                                    type="checkbox"
+                                    name="roles[]"
+                                    :id="'role_'+ role.slug"
+                                    :value="role.slug">
+                            </th> -->
+                            <td 
+                                    class="column-default-width column-main-content"
+                                    :data-colname="$i18n.get('Role name')">
+                                <p>
+                                    <router-link :to="'/roles/' + role.slug">
+                                        {{ role.name }}
+                                    </router-link>
+                                </p>
+                            </td>
+                            <!-- <td
+                                    class="slug column-slug"
+                                    :data-colname="$i18n.get('Slug')">
+                                {{ role.slug }}
+                            </td> -->
+                            <td
+                                    class="column-small-width column-align-right"
+                                    :data-colname="$i18n.get('Number of capabilities')">
+                                <p>
+                                    {{ Object.values(role.capabilities).filter((capability) => capability == true).length }}
+                                </p>
+                            </td>
+                            <td class="column-default-width actions-cell">
+                                <div class="actions-container">
+                                    <router-link :to="'/roles/' + role.slug">
+                                        <span
+                                                v-tooltip="{
+                                                    content: $i18n.get('Edit'),
+                                                    autoHide: true,
+                                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'], 
+                                                    placement: 'bottom'
+                                                }"
+                                                class="icon">
+                                            <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
+                                        </span>
+                                    </router-link>
+                                    <a 
+                                            v-if="role.slug.match('tainacan')"
+                                            @click.prevent.stop="removeRole(role.slug)">
+                                        <span
+                                                v-tooltip="{
+                                                    content: $i18n.get('Delete'),
+                                                    autoHide: true,
+                                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                                    placement: 'bottom'
+                                                }"
+                                                class="icon">
+                                            <i class="tainacan-icon-delete has-text-secondary tainacan-icon tainacan-icon-1-25em" />
+                                        </span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
     import { mapActions, mapGetters } from 'vuex';
+    import CustomDialog from '../../admin/components/other/custom-dialog.vue';
      
     export default { 
         name: "RolesList",
@@ -235,7 +221,7 @@
             roles() {
                 let roles = this.getRoles();
 
-                if (this.searchString && roles) {
+                if ( this.searchString && roles ) {
                     let searchedRoles = {}
                     for (let [roleKey, role] of Object.entries(roles)) {
                         if (role.name.toLowerCase().match(this.searchString))
@@ -244,7 +230,7 @@
                     roles = searchedRoles;
                 }
 
-                if (this.relatedEntities.length && roles) {
+                if ( this.relatedEntities.length && roles ) {
                     let filteredRoles = {};
                     for (let [roleKey, role] of Object.entries(roles)) {
                         for (let entity of this.relatedEntities) {
@@ -304,172 +290,78 @@
                 }
             },
             removeRole(roleSlug) {
-                this.deleteRole(roleSlug)
-                    .then(() => {
-                        this.$forceUpdate();
-                    })
+                this.$buefy.modal.open({
+                    parent: this,
+                    component: CustomDialog,
+                    props: {
+                        icon: 'alert',
+                        confirmText: this.$i18n.get('Delete'),
+                        title: this.$i18n.get('Warning'),
+                        message: this.$i18n.get('Do you really want to permanently delete this user role?'),
+                        onConfirm: () => {
+                            this.deleteRole(roleSlug)
+                                .then(() => {
+                                    this.$forceUpdate();
+                                })
+                        }
+                    },
+                    trapFocus: true,
+                    customClass: 'tainacan-modal',
+                    closeButtonAriaLabel: this.$i18n.get('Close')
+                });
             }
         }
     }
 </script>
 
 <style lang="scss" scoped>
-    .tablenav {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
+
+    .above-subheader {
+        margin-bottom: 0;
+        margin-top: 0;
         height: auto;
     }
-    .search-box {        
-        #roles-search-input {
-            min-width: 300px;
-        }
-    }
-
-    .dropdown-new-role {
-        margin-right: auto;
+    .sub-header {
+        min-height: 2.5em;
+        padding: 0.5em 0;
+        height: auto;
+        border-bottom: 1px solid var(--tainacan-gray2);
         display: inline-flex;
+        justify-content: space-between;
         align-items: center;
-        position: relative;
-        padding: 5px 8px;
+        flex-wrap: wrap;
+        width: 100%;
+        gap: 4px;
+    }
+    #roles-page-search {
+        max-width: 300px;
 
-        a:first-child {
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
-            margin-right: -1px;
-            font-weight: normal;
-        }
-        .button {
-            top: -3px;
-            position: relative;
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-            border-top-right-radius: 2px;
-            border-bottom-right-radius: 2px;
-            padding: 0px 6px;
-            line-height: 1em;
-            height: 15px;
-            font-size: 16px;
-        }
-
-        .dropdown-menu {
-            display: none;
-            opacity: 0;
-            visibility: hidden;
-            position: absolute;
-            top: 50%;
-            left: calc(100% - 42px);
-            background:white;
-            border: 1px solid#ccc;
-            z-index: 9;
-            transition: top 0.3s ease, opacity 0.3s ease, display 0.3s ease;
-            text-align: center;
-
-            &:after {
-                content: "";
-                display: block;
-                position: absolute;
-                right: calc(100% - 32px);
-                width: 0;
-                height: 0;
-                border-style: solid;
-                border-color: transparent transparent #ccc transparent;
-                border-right-width: 8px;
-                border-bottom-width: 8px;
-                border-left-width: 8px;
-                top: -12px;
-            }
-            &:before {
-                content: "";
-                display: block;
-                position: absolute;
-                right: calc(100% - 32px);
-                width: 0;
-                height: 0;
-                border-style: solid;
-                border-color: transparent transparent white transparent;
-                border-right-width: 8px;
-                border-bottom-width: 8px;
-                border-left-width: 8px;
-                top: -11px;
-                z-index: 9;
-            }
-
-            &.show {
-                display: block;
-                opacity: 1;
-                visibility: visible;
-                top: calc(100% + 6px);
-            }
-
-            .dropdown-menu-intro {
-                color: #898d8f;
-                font-size: 0.75em;
-                font-style: italic;
-                padding: 0.75em 1em 0 0.75em;
-                white-space: nowrap;
-                margin: 0;
-            }
-            ul {
-                margin: 0.5em 0;
-            }
-            li>a {
-                display: block;
-                margin: 0;
-                padding: 0.25em 0.75em;
-                white-space: nowrap;
-                cursor: pointer;
-                color: #32373c;
-                text-decoration: none;
-
-                &:hover {
-                    background-color: #0073aa;
-                    color: white;
-                }
-            }
-        }
-        @media only screen and (max-width: 782px) {
-            .button {
-                padding: 1.24em 0.5em;  
-                top: -1px;  
-                font-size: 1.25em;
-                
-                .dashicons {
-                    margin-top: -0.5em;
-                }
-            }
-            .dropdown-menu {
-                left: -50%;
-
-                &::before,
-                &::after {
-                    right: 16px;
-                }
-            }
+        .control {
+            z-index: 0;
         }
     }
+    #roles-page-add-new .dropdown-menu .has-link a,
+    #roles-page-add-new .dropdown-menu .dropdown-item {
+        box-sizing: border-box;
+    }
+    #roles-page-add-new .dropdown-menu .dropdown-item-secstion-separator,
+    #roles-page-add-new .dropdown-menu .dropdown-item-secstion-separator:hover,
+    #roles-page-add-new .dropdown-menu .dropdown-item-secstion-separator:focus {
+        background-color: transparent;
+    }
 
-    .selected-entity { 
-        margin-top: -4px;
-        padding: 2px 0;
+    .tainacan-table.roles {
+        margin-bottom: 2rem;
+
+        .column-small-width {
+            width: 80px;
+        }
+        .column-main-content a {
+            width: 100%;
+            display: block;
+        }
         a {
-            font-weight: bold;
-            color: black;
+            color: var(--tainacan-label-color);
         }
-    }
-
-    table {
-        table-layout: auto;
-
-        &.widefat td,
-        &.widefat th {
-            display: table-cell !important;
-            padding: 8px 18px;
-        }
-    }
-
-    .column-capabilities {
-        width: 1px;
-        white-space: nowrap;
     }
 </style>

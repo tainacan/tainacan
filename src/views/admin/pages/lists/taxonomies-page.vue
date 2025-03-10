@@ -411,7 +411,7 @@
         height: auto;
         min-height: 2.5em;
         padding: 0.5em 0;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid var(--tainacan-gray2);
         display: inline-flex;
         justify-content: space-between;
         align-items: center;
