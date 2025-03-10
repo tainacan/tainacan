@@ -166,6 +166,43 @@ class URL extends Metadata_Type {
 	}
 
 	/**
+	 * Get the value as a HTML string with links
+	 * @return string
+	 */
+	public function get_value_as_string(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+		$value = $item_metadata->get_value();
+		$return = '';
+
+		if ( is_array($value) && $item_metadata->is_multiple() ) {
+			$total = sizeof($value);
+			$count = 0;
+			$prefix = $item_metadata->get_multivalue_prefix();
+			$suffix = $item_metadata->get_multivalue_suffix();
+			$separator = $item_metadata->get_multivalue_separator();
+
+			foreach ( $value as $el ) {
+				if ( !empty($el) ) {
+					$return .= $prefix;
+					
+					$return .= $el;
+
+					$return .= $suffix;
+					
+					$count ++;
+
+					if ($count < $total)
+						$return .= $separator;
+				}
+			}
+			
+		} else {			
+			$return .= $value;	
+		}
+
+		return strip_tags($return);
+	}
+
+	/**
 	 * Checks if the value passed is a valid URL or markdown link
 	 * @return boolean
 	 */
