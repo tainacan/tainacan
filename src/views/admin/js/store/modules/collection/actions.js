@@ -349,9 +349,11 @@ export const updateCollection = ({ commit }, {
         collection
     }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.put('/collections/' + collection_id + '?context=edit', collection).then( res => {
+        axios.tainacanApi.put('/collections/' + collection_id + '?context=edit', collection)
+        .then( res => {
+            let collection = res.data
             commit('setCollection', collection);
-            resolve( res.data );
+            resolve( collection );
         }).catch( error => { 
             reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
         });
