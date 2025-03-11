@@ -626,7 +626,7 @@ export default {
                 hasModalCard: true,
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             });
         },
         onOpenCollectionCreationModal() {
@@ -636,7 +636,7 @@ export default {
                 hasModalCard: true,
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             });
         },
         searchCollections() {

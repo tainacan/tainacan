@@ -284,7 +284,7 @@
                     width: 'max(768px, calc(100% - (4 * var(--tainacan-one-column))))',
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
+                    canCancel: ['escape', 'outside']
                 });
             },
             prepareOptionsForTaxonomy(items) {

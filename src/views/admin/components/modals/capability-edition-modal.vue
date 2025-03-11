@@ -4,6 +4,14 @@
             <h2 v-if="capability.display_name != undefined">
                 {{ $i18n.get('label_editing_capability') + ' ' }} <span class="has-text-bold">{{ capability.display_name }}</span>
             </h2>
+            <button         
+                    class="button is-medium is-white is-align-self-flex-start"
+                    :aria-label="$i18n.get('close')"
+                    @click="$emit('close')">
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-25em" />
+                </span>
+            </button>
         </header>
         <div 
                 v-if="!isLoading"

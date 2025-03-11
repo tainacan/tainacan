@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import FilePreview from './file-preview.vue';
+import FilePreviewModal from '../modals/file-preview-modal.vue';
 
 export default {
     name: 'FileItem',
@@ -79,7 +79,7 @@ export default {
         openPreviewModal() {
             this.$buefy.modal.open({
                 parent: this,
-                component: FilePreview,
+                component: FilePreviewModal,
                 props: {
                     file: this.file
                 },
@@ -89,7 +89,7 @@ export default {
                 trapFocus: true,
                 ariaRole: 'dialog',
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             });
         }
     }

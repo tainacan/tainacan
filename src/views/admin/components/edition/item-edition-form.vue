@@ -811,7 +811,7 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             });
         } else {
             next()
@@ -1492,7 +1492,6 @@ export default {
                 ariaModal: true,
                 ariaRole: 'dialog',
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close'),
                 props: {
                     textContent: this.textContent
                 },
@@ -1530,7 +1529,6 @@ export default {
                 ariaModal: true,
                 ariaRole: 'dialog',
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close'),
                 props: {
                     urlLink: this.urlLink,
                     urlForcedIframe: this.urlForcedIframe,
@@ -1640,7 +1638,7 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             });
 
         },
@@ -1762,7 +1760,7 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             });
         },
         loadExistingItem() {

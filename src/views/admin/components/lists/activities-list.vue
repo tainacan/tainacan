@@ -143,9 +143,6 @@
                 'approve',
                 'notApprove'
             ]),
-            // getThis(){
-            //     return this;
-            // },
             approveActivity(activity) {
                 this.approve(activity.id)
                     .then(data => {
@@ -167,9 +164,10 @@
                         approveActivity: (activityId) => this.approveActivity(activityId),
                         notApproveActivity: (activityId) => this.notApproveActivity(activityId)
                     },
+                    width: 900,
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
+                    canCancel: ['escape', 'outside']
                 });
             },
         }

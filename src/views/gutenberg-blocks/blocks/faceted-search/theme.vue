@@ -1328,7 +1328,7 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
+                    canCancel: ['escape', 'outside']
                 });
             },
             updateSearch() {
@@ -1619,7 +1619,7 @@
                         },
                         trapFocus: true,
                         customClass: 'tainacan-modal',
-                        closeButtonAriaLabel: this.$i18n.get('close')
+                        canCancel: ['escape', 'outside']
                     });
             },
             hideFiltersOnMobile: _.debounce( function() {

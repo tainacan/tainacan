@@ -8,11 +8,6 @@
                 v-if="!$adminOptions.hideBulkEditionPageTitle"
                 class="tainacan-page-title">
             <h1>{{ $i18n.get('add_items_bulk') }}</h1>
-            <a 
-                    class="back-link has-text-secondary"
-                    @click="$router.go(-1)">
-                {{ $i18n.get('back') }}
-            </a>
         </div>
         <form
                 v-if="!isLoading && collection && collection.current_user_can_bulk_edit"
@@ -325,7 +320,7 @@ export default {
                 width: 'calc(100% - (2 * var(--tainacan-one-column)))',
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             });
         },
         deleteOneItem(itemId, index) {
@@ -348,7 +343,7 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             });
         },
     }
@@ -379,17 +374,6 @@ export default {
                 display: inline-block;
                 flex-shrink: 1;
                 flex-grow: 1;
-            }
-            a.back-link{
-                font-weight: 500;
-                float: right;
-                margin-top: 5px;
-            }
-            hr{
-                margin: 3px 0px 4px 0px; 
-                height: 1px;
-                background-color: var(--tainacan-secondary);
-                width: 100%;
             }
         }
         .source-file-upload {

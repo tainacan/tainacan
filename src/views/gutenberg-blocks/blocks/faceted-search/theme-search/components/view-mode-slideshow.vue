@@ -666,7 +666,8 @@ export default {
                 closeButtonAriaLabel: this.$i18n.get('close'),
                 onCancel: () => {
                     setTimeout(() => document.documentElement.classList.add('is-clipped'), 500); 
-                }
+                },
+                canCancel: ['escape', 'outside']
             });
         }
     }

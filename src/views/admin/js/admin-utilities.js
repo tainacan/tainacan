@@ -488,7 +488,7 @@ AxiosErrorHandlerPlugin.install = function (app, options = {}) {
                         ariaRole: 'alertdialog',
                         ariaModal: true,
                         customClass: 'tainacan-modal',
-                        closeButtonAriaLabel: i18nGet('close')
+                        canCancel: ['escape', 'outside']
                     });
                 }
             });

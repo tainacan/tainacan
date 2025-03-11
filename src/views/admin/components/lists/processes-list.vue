@@ -431,7 +431,7 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
+                    canCancel: ['escape', 'outside']
                 });
             },
             deleteSelected() {
@@ -472,7 +472,7 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
+                    canCancel: ['escape', 'outside']
                 });
             },
             getDate(rawDate) {
@@ -498,7 +498,8 @@
                         },
                     },
                     trapFocus: true,
-                    customClass: 'tainacan-modal'
+                    customClass: 'tainacan-modal',
+                    canCancel: ['escape', 'outside']
                 });
             },
             onHeartBitTickList(event, data) {

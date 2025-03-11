@@ -24,12 +24,14 @@
                     id="collection-creation-title">
                 {{ $i18n.get('label_create_collection') }}
             </h2>
-            <a 
-                    v-if="(hasPresetsHook && selectedEstrategy != undefined) || (!hasPresetsHook && selectedEstrategy == 'mappers')"
-                    class="back-link"
-                    @click="selectedEstrategy = hasPresetsHook ? undefined : 'mappers'">
-                {{ $i18n.get('back') }}
-            </a>
+            <button         
+                    class="button is-medium is-white is-align-self-flex-start"
+                    :aria-label="$i18n.get('close')"
+                    @click="$emit('close')">
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-25em" />
+                </span>
+            </button>
         </header>
         <section class="tainacan-form">
             <div 

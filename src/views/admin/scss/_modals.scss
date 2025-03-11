@@ -46,7 +46,7 @@
     flex-wrap: wrap;
     margin-bottom: 30px;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
 
     h1, h2 {
         font-size: 1.25em !important;
@@ -54,15 +54,10 @@
         font-weight: 500;
         color: var(--tainacan-heading-color);
         display: inline-block;
-        width: 90%;
+        width: calc(90% - 2rem);
         margin-right: auto;
         margin-bottom: 0px;
         margin: 0 auto 0 0;
-    }
-    a.back-link {
-        font-weight: 500;
-        float: right;
-        margin-top: 5px;
     }
     hr {
         margin: 3px 0 4px 0;
@@ -77,7 +72,7 @@
     font-size: var(--tainacan-base-font-size, 1em);
     border-radius: var(--tainacan-dropdownmenu-border-radius, 0px);
     background-color: var(--tainacan-background-color);
-    padding: 40px var(--tainacan-one-column);
+    padding: 24px var(--tainacan-one-column) 32px;
     position: relative;
     overflow-y: auto;
     overflow-x: hidden;

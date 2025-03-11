@@ -314,7 +314,7 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal authorship-modal',
-                closeButtonAriaLabel: this.$i18n.get('close'),
+                canCancel: ['escape', 'outside'],
                 width: 620,
             });   
         },

@@ -18,11 +18,14 @@
             <!-- Item Creation Dropdown (or button, if few options are available) -->
             <div 
                     v-if="!$adminOptions.hideItemsListCreationDropdown &&
-                        collection && 
-                        collection.current_user_can_edit_items"
+                        ( 
+                            ( collection && collection.current_user_can_edit_items ) ||
+                            isRepositoryLevel
+                        )"
                     class="search-control-item">
                 <router-link
                         v-if="$adminOptions.hideItemsListCreationDropdownBulkAdd && $adminOptions.hideItemsListCreationDropdownImport"
+                        v-show="!isRepositoryLevel"
                         v-slot="{ navigate }"
                         :to="{ path: $routerHelper.getNewItemPath(collectionId) }"
                         custom>
@@ -1082,7 +1085,7 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
+                    canCancel: ['escape', 'outside']
                 });
             },
             openExposersModal(selectedItems) {
@@ -1097,7 +1100,7 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
+                    canCancel: ['escape', 'outside']
                 })
             },
             onOpenCollectionsModal() {
@@ -1107,7 +1110,7 @@
                     hasModalCard: true,
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
+                    canCancel: ['escape', 'outside']
                 });
             },
             updateSearch() {
@@ -1445,7 +1448,7 @@
                         },
                         trapFocus: true,
                         customClass: 'tainacan-modal',
-                        closeButtonAriaLabel: this.$i18n.get('close')
+                        canCancel: ['escape', 'outside']
                     });
             },
             hideFiltersOnMobile: _.debounce( function() {

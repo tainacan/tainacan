@@ -192,7 +192,7 @@
                     width: 'calc(100% - (2 * var(--tainacan-one-column)))',
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
+                    canCancel: ['escape', 'outside']
                 }); 
 
                 this.$emit('close');

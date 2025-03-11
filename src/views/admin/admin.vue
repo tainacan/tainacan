@@ -120,7 +120,7 @@
                                 ariaRole: 'alertdialog',
                                 ariaModal: true,
                                 customClass: 'tainacan-modal',
-                                closeButtonAriaLabel: this.$i18n.get('close')
+                                canCancel: ['escape', 'outside']
                             });
                         }
                     });

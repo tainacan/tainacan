@@ -10,6 +10,15 @@
                 v-else
                 class="tainacan-modal-title">
             <h2>{{ $i18n.get('label_item_activities') }}</h2>
+            <button 
+                    v-if="isItemLevel"        
+                    class="button is-medium is-white is-align-self-flex-start"
+                    :aria-label="$i18n.get('close')"
+                    @click="$emit('close')">
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-25em" />
+                </span>
+            </button>
         </header>
 
         <div class="sub-header">
@@ -73,6 +82,7 @@
                         v-model="searchDates"
                         :placeholder="$i18n.get('label_range_of_dates')"
                         range
+                        position="is-bottom-left"
                         :trap-focus="false"
                         :date-formatter="(date) => dateFormatter(date)"
                         :date-parser="(date) => dateParser(date)"
@@ -209,6 +219,7 @@
             ActivitiesList,
         },
         mixins: [ dateInter ],
+        emits: [ 'close' ],
         data() {
             return {
                 isLoading: false,
@@ -483,6 +494,7 @@
     .tainacan-modal-content .table-container {
         max-height: calc(100vh - 412px);
         max-height: calc(100dvh - 412px);
+        min-height: 320px;
         overflow-y: scroll;
         margin-bottom: 0;
         padding-bottom: 1.5rem;

@@ -19,12 +19,14 @@
                     id="exposers-modal-title">
                 {{ (itemId ? $i18n.get('label_urls_for_item_page') : $i18n.get('label_urls_for_items_list')) + " - " + selectedExposer.name }}
             </h2>
-            <a 
-                    v-if="selectedExposer != undefined"
-                    class="back-link"
-                    @click="selectedExposerMappers = []; selectedExposer = undefined;">
-                {{ $i18n.get('back') }}
-            </a>
+            <button         
+                    class="button is-medium is-white is-align-self-flex-start"
+                    :aria-label="$i18n.get('close')"
+                    @click="$emit('close')">
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-25em" />
+                </span>
+            </button>
         </header>
         <section class="tainacan-form">
             <div 
@@ -492,10 +494,6 @@ export default {
 
         h2 {
             margin-bottom: 0;
-        }
-        .back-link {
-            color: var(--tainacan-secondary);
-            cursor: pointer;
         }
     }
 

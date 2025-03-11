@@ -10,6 +10,14 @@
                 v-if="!isLoadingActivity"
                 class="tainacan-modal-title">
             <h2>{{ activity.title ? activity.title : $i18n.get('activity') }}</h2>
+            <button 
+                    class="button is-medium is-white is-align-self-flex-start"
+                    :aria-label="$i18n.get('close')"
+                    @click="$emit('close')">
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-25em" />
+                </span>
+            </button>
             <p>{{ activityCreationDate + ', ' + $i18n.get('info_by_inner') }} <strong> {{ activity.user_name }}</strong></p>
         </header>
         <b-loading 
@@ -688,11 +696,6 @@
 <style lang="scss" scoped>
 
     .tainacan-modal-title {
-        align-self: baseline;
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-
         p {
             margin-right: auto;
         }
@@ -700,7 +703,7 @@
 
     .tainacan-modal-content {
         width: auto;
-        min-height: 500px;
+        min-height: 300px;
         
         p {
             font-size: 0.875em;
