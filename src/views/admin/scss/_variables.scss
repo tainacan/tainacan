@@ -63,6 +63,10 @@ $yellow2-invert: findColorInvert($yellow2);
 $tainacan-input-color: #1d1d1d;
 $tainacan-input-color-invert: findColorInvert($tainacan-input-color);
 
+// Dropdown and Modal variables
+$tainacan-dropdownmenu-item-background-hover: $gray0;
+$tainacan-backdrop-background-color: rgba(0, 0, 0, 0.35);
+
 // Input border radius
 $tainacan-input-border-radius: 2px;
 $tainacan-button-border-radius: 4px;
@@ -172,7 +176,7 @@ $base-font-size: 1em;
  
 // Bulma's modal (needs to be greather than tainacan-admin-app)
 $modal-z: 9999999;
-$modal-background-background-color: rgba(0, 0, 0, 0.35);
+$modal-background-background-color: $tainacan-backdrop-background-color;
 
 // Bulma sizing variabled
 $spacing-values: ('0': 0rem, '1': 0.25rem, '2': 0.5rem, '3': 1rem, '4': 1.5rem, '5': 3rem, 'auto': auto);

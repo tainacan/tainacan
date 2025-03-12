@@ -1,7 +1,7 @@
 <template>
     <div
             :class="{
-                'repository-level-page': isRepositoryLevel,
+                'tainacan-repository-level-colors': isRepositoryLevel,
                 'page-container': isRepositoryLevel,
                 'tainacan-modal-content': isItemLevel
             }">
@@ -16,7 +16,7 @@
                     :aria-label="$i18n.get('close')"
                     @click="$emit('close')">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-25em" />
+                    <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-125em" />
                 </span>
             </button>
         </header>

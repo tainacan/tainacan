@@ -5,7 +5,7 @@
             aria-modal
             autofocus
             role="alertdialog"
-            class="tainacan-form tainacan-dialog dialog">
+            class="tainacan-form tainacan-dialog dialog tainacan-repository-level-colors">
         <div    
                 class="modal-card" 
                 style="width: auto">

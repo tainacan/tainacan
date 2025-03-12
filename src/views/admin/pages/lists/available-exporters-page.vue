@@ -1,19 +1,21 @@
 <template>
-    <div class="repository-level-page page-container">
+    <div class="tainacan-repository-level-colors page-container">
         <tainacan-title />
 
         <h3>{{ $i18n.get('label_available_exporters') }}</h3>
         <p>{{ $i18n.get('instruction_select_an_exporter_type') }}</p>
-        <div class="exporter-types-container">
-            <div
+        <div
+                role="list"
+                class="exporter-types-container tainacan-clickable-cards">
+            <router-link
                     v-for="exporterType in availableExporters"
                     :key="exporterType.slug"
-                    class="exporter-type"
-                    @click="onSelectExporter(exporterType)">
+                    class="exporter-type tainacan-clickable-card"
+                    :to="$routerHelper.getExporterEditionPath(exporterType.slug)"
+                    role="listitem">
                 <h4>{{ exporterType.name }}</h4>
                 <p>{{ exporterType.description }}</p>
-            </div>
-
+            </router-link>
         </div>
 
         <b-loading
@@ -48,34 +50,12 @@
             ...mapActions('exporter', [
                 'fetchAvailableExporters'
             ]),
-            onSelectExporter(exporterType) {
-                this.$router.push(this.$routerHelper.getExporterEditionPath(exporterType.slug));
-            }
         }
     }
 </script>
 
 <style lang="scss" scoped>
 
-    .exporter-types-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        grid-gap: 1rem;
-        padding: var(--tainacan-container-padding) var(--tainacan-one-column);
-        
-        .exporter-type {
-            border: 1px solid var(--tainacan-gray2);
-            border-radius: 4px;
-            padding: 15px;
-            cursor: pointer;
-            transition: border 0.3s ease;
-
-            &:hover {
-                border: 1px solid var(--tainacan-gray3);
-            }
-        }
-    }
+    @import '../../scss/_cards.scss';
 
 </style>
-
-

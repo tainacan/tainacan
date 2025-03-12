@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="page-container repository-level-page">
+        <div class="page-container tainacan-repository-level-colors">
             <tainacan-title />
 
             <form 

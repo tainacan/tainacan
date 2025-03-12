@@ -848,7 +848,8 @@
                     'is-filters-menu-open': !this.hideFilters && this.isFiltersModalActive && !this.openAdvancedSearch,
                     'is-filters-menu-fixed-at-top': this.isFiltersListFixedAtTop,
                     'is-filters-menu-fixed-at-bottom': this.isFiltersListFixedAtBottom,
-                    'repository-level-page': this.isRepositoryLevel,
+                    'repository-level-page': this.isRepositoryLevel, // Keeping this for compatibility with versions previous to 1.0, where tainacan-repository-level-colors was implemented
+                    'tainacan-repository-level-colors': this.isRepositoryLevel,
                     'is-fullscreen': this.registeredViewModes[this.viewMode] != undefined && this.registeredViewModes[this.viewMode].full_screen   
                 }
             },
@@ -1328,7 +1329,8 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    canCancel: ['escape', 'outside']
+                    canCancel: ['escape', 'outside'],
+                    width: 786
                 });
             },
             updateSearch() {

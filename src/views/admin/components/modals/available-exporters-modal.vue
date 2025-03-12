@@ -5,6 +5,7 @@
             autofocus
             role="dialog"
             class="tainacan-modal-content"
+            :class="{ 'tainacan-repository-level-colors': isNaN(sourceCollection) || !sourceCollection }"
             tabindex="-1"
             aria-modal>
         <div style="width: auto">
@@ -15,7 +16,7 @@
                         :aria-label="$i18n.get('close')"
                         @click="$emit('close')">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-25em" />
+                        <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-125em" />
                     </span>
                 </button>
             </header>
@@ -24,18 +25,19 @@
                 <p>{{ $i18n.get('instruction_select_an_exporter_type') }}</p>
                 <div 
                         role="list"
-                        class="exporter-types-container">
+                        class="exporter-types-container tainacan-clickable-cards">
                     <template 
                             v-for="exporterType in availableExporters"
                             :key="exporterType.slug">
-                        <div
+                        <router-link
                                 v-if="!(hideWhenManualCollection && !exporterType.manual_collection)"
                                 role="listitem"
-                                class="exporter-type"
-                                @click="onSelectExporter(exporterType)">
+                                class="exporter-type tainacan-clickable-card"
+                                :to="{ path: $routerHelper.getExporterEditionPath(exporterType.slug), query: { sourceCollection: sourceCollection } }"
+                                @click="$emit('close')">
                             <h4>{{ exporterType.name }}</h4>
                             <p>{{ exporterType.description }}</p>
-                        </div>
+                        </router-link>
                     </template>
                 </div>
                 <footer class="field is-grouped form-submit">
@@ -92,35 +94,13 @@
         methods: {
             ...mapActions('exporter', [
                 'fetchAvailableExporters'
-            ]),
-            onSelectExporter(exporterType) {
-                this.$router.push({ path: this.$routerHelper.getExporterEditionPath(exporterType.slug), query: { sourceCollection: this.sourceCollection } });
-                this.$emit('close');
-            }
+            ])
         }
     }
 </script>
 
 <style lang="scss" scoped>
 
-    .exporter-types-container {
-
-        .exporter-type {
-            border-bottom: 1px solid var(--tainacan-gray2);
-            padding: 15px calc(2 * var(--tainacan-one-column));
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-
-            &:first-child {
-                margin-top: 15px;
-            }
-            &:last-child {
-                border-bottom: none;
-            }
-            &:hover {
-                background-color: var(--tainacan-gray2);
-            }
-        }
-    }
+    @import '../../scss/_cards.scss';
 
 </style>

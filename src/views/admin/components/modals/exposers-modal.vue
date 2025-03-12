@@ -7,6 +7,7 @@
             tabindex="-1"
             aria-modal 
             class="tainacan-modal-content"
+            :class="{ 'tainacan-repository-level-colors': isNaN(collectionId) || !collectionId }"
             style="width: auto">
         <header class="tainacan-modal-title">
             <h2 
@@ -24,7 +25,7 @@
                     :aria-label="$i18n.get('close')"
                     @click="$emit('close')">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-25em" />
+                    <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-125em" />
                 </span>
             </button>
         </header>
@@ -92,14 +93,14 @@
                         </a>
                     </span>
                 </div>
-                <p>{{ itemId ? $i18n.get('info_other_options') : $i18n.get('info_other_item_listing_options') }}</p>
+                <p style="font-size: 1em; padding: 0em 1.25em; margin-top: 0.75em;">{{ itemId ? $i18n.get('info_other_options') : $i18n.get('info_other_item_listing_options') }}</p>
                 <div 
                         role="list"
-                        class="exposer-types-list">
+                        class="exposer-types-list tainacan-clickable-cards">
                     <div
                             v-for="(exposerType, index ) in availableExposers"
                             :key="index"
-                            class="exposer-type"
+                            class="exposer-type tainacan-clickable-card"
                             role="listitem"
                             @click="siteLinkCopied = false; selectExposer(exposerType)">
                         <h4>{{ exposerType.name }}</h4>
@@ -381,7 +382,7 @@ export default {
             this.selectedExposerMappers = [];
             this.selectedExposerMappers.push({
                 name: undefined,
-                collapsed: true,
+                collapsed: false,
                 linkCopied: false
             });
 
@@ -489,6 +490,8 @@ export default {
 
 <style lang="scss" scoped>
 
+    @import '../../scss/_cards.scss';
+
     .tainacan-modal-title {
         margin-bottom: 24px;
 
@@ -501,55 +504,9 @@ export default {
 
         .exposer-item-link {
             padding-left: 0em;
+            
             p {
                 padding-left: 0.5em;
-            }
-        }
-        
-        p {
-            font-size: 1em;
-            color: var(--tainacan-label-color);
-            padding: 0em 1.25em;
-            margin-top: 0.75em;
-            margin-bottom: 0;
-        }
-
-        .exposer-types-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            grid-gap: 1rem;
-            padding: 1.125em;
-        
-            .exposer-type {
-                border: 1px solid var(--tainacan-input-border-color);
-                border-radius: 4px;
-                padding: 15px;
-                margin: 0;
-                cursor: pointer;
-                font-size: 1em;
-                transition: border 0.3s ease;
-
-                @media screen and (max-width: 768px) {
-                    margin: 12px;
-                }
-
-                h4 {
-                    color: var(--tainacan-heading-color);
-                    font-size: 1em !important;
-                    font-weight: 500;
-                    padding: 0em 0.5em;
-                    margin: 0;
-                }
-                p {
-                    font-size: 0.75em;
-                    color: var(--tainacan-label-color);
-                    padding: 0em 0.5em;
-                    margin-bottom: 0;
-                }
-
-                &:hover {
-                    border: 1px solid var(--tainacan-item-hover-background-color);
-                }
             }
         }
     }
@@ -611,6 +568,7 @@ export default {
         align-items: center;
         padding-left: 0.125em;
         height: 42px;
+        border-bottom: 1px solid var(--tainacan-lists-separator-color, var(--tainacan-item-hover-background-color));            
 
         &:first-of-type {
             margin-top: 0.5em;

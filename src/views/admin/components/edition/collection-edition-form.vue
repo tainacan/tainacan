@@ -1,7 +1,7 @@
 <template>
     <div 
             class="page-container"
-            :class="{'repository-level-page' : isNewCollection }">
+            :class="{'tainacan-repository-level-colors' : isNewCollection }">
         <tainacan-title />
         
         <form 

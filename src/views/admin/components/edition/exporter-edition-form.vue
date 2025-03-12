@@ -1,5 +1,5 @@
 <template>
-    <div class="repository-level-page page-container">
+    <div class="tainacan-repository-level-colors page-container">
         <tainacan-title />
         <b-loading
                 v-model="isLoading"

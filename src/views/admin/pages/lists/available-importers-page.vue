@@ -1,18 +1,21 @@
 <template>
-    <div class="repository-level-page page-container">
+    <div class="tainacan-repository-level-colors page-container">
         <tainacan-title />
 
         <h3>{{ $i18n.get('label_available_importers') }}</h3>
         <p>{{ $i18n.get('instruction_select_an_importer_type') }}</p>
-        <div class="importer-types-container">
-            <div
+        <div 
+                role="list"
+                class="importer-types-container tainacan-clickable-cards">
+            <router-link
                     v-for="importerType in availableImporters"
                     :key="importerType.slug"
-                    class="importer-type"
-                    @click="onSelectImporter(importerType)">
+                    class="importer-type tainacan-clickable-card"
+                    role="listitem"
+                    :to="$routerHelper.getImporterEditionPath(importerType.slug)">
                 <h4>{{ importerType.name }}</h4>
                 <p>{{ importerType.description }}</p>            
-            </div>
+            </router-link>
 
         </div>
         
@@ -47,35 +50,13 @@ export default {
     methods: {
         ...mapActions('importer', [
             'fetchAvailableImporters'
-        ]),
-        onSelectImporter(importerType) {
-            this.$router.push(this.$routerHelper.getImporterEditionPath(importerType.slug));
-        }
+        ])
     }
 }
 </script>
 
 <style lang="scss" scoped>
 
-    .importer-types-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        grid-gap: 1rem;
-        padding: var(--tainacan-container-padding) var(--tainacan-one-column);
-
-        .importer-type {
-            border: 1px solid var(--tainacan-gray2);
-            padding: 15px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: border 0.3s ease;
-
-            &:hover {
-                border: 1px solid var(--tainacan-gray3);
-            }
-        }
-    }
+    @import '../../scss/_cards.scss';
 
 </style>
-
-

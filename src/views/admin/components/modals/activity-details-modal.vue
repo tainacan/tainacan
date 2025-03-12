@@ -15,7 +15,7 @@
                     :aria-label="$i18n.get('close')"
                     @click="$emit('close')">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-25em" />
+                    <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-125em" />
                 </span>
             </button>
             <p>{{ activityCreationDate + ', ' + $i18n.get('info_by_inner') }} <strong> {{ activity.user_name }}</strong></p>

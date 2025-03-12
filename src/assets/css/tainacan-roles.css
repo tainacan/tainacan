@@ -19632,7 +19632,7 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
       animation-name: appear;
       animation-duration: 0.5s;
       width: 100%;
-      border-collapse: separate;
+      border-collapse: collapse;
       border-spacing: 0;
       border-color: transparent; }
       .table-container .table-wrapper table.tainacan-table.is-narrow tbody td {
@@ -19647,7 +19647,7 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
         .table-container .table-wrapper table.tainacan-table .checkbox-cell label.checkbox,
         .table-container .table-wrapper table.tainacan-table .checkbox-cell label.radio {
           border-radius: 0px;
-          background-color: var(--tainacan-white);
+          background-color: var(--tainacan-item-background-color);
           padding: 0;
           width: 100%;
           height: 100%;
@@ -19726,13 +19726,15 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
           white-space: nowrap; }
       .table-container .table-wrapper table.tainacan-table tbody tr {
         cursor: pointer;
+        border-bottom: 1px solid var(--tainacan-lists-separator-color, var(--tainacan-item-hover-background-color));
         background-color: var(--tainacan-item-background-color);
         transition: background-color 0.15s ease; }
         .table-container .table-wrapper table.tainacan-table tbody tr.selected-row {
-          background-color: var(--tainacan-turquoise1); }
-          .table-container .table-wrapper table.tainacan-table tbody tr.selected-row .checkbox-cell .checkbox,
-          .table-container .table-wrapper table.tainacan-table tbody tr.selected-row .actions-cell .actions-container {
-            transition: background-color 0.15s ease; }
+          --tainacan-item-background-color: var(--tainacan-primary);
+          --tainacan-item-heading-hover-background-color: var(--tainacan-turquoise2);
+          --tainacan-item-heading-hover-background-color: color-mix(in srgb, var(--tainacan-secondary) 5%, transparent);
+          --tainacan-item-hover-background-color: var(--tainacan-primary);
+          --tainacan-item-hover-background-color: color-mix(in srgb, var(--tainacan-secondary) 20%, transparent); }
         .table-container .table-wrapper table.tainacan-table tbody tr td {
           height: 60px;
           max-height: 60px;
@@ -19840,7 +19842,7 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
             height: 100%;
             width: 100px;
             z-index: 9;
-            background-color: var(--tainacan-white);
+            background-color: var(--tainacan-item-background-color);
             float: right;
             justify-content: center;
             align-items: center;
@@ -19859,8 +19861,10 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
               background-color: var(--tainacan-item-heading-hover-background-color) !important; }
             .table-container .table-wrapper table.tainacan-table tbody tr:hover .checkbox-cell .radio {
               background-color: var(--tainacan-item-heading-hover-background-color) !important; }
-          .table-container .table-wrapper table.tainacan-table tbody tr:hover .actions-cell .actions-container {
-            background: var(--tainacan-item-heading-hover-background-color) !important; }
+          .table-container .table-wrapper table.tainacan-table tbody tr:hover .actions-cell {
+            transition: background-color 0.15s ease; }
+            .table-container .table-wrapper table.tainacan-table tbody tr:hover .actions-cell .actions-container {
+              background: var(--tainacan-item-heading-hover-background-color) !important; }
       .table-container .table-wrapper table.tainacan-table.hide-items-selection tr:hover {
         background-color: transparent !important;
         cursor: default; }
@@ -20464,7 +20468,7 @@ textarea.textarea,
   cursor: pointer; }
 @media screen and (max-width: 1023px) {
   .dropdown.is-mobile-modal.is-mobile-modal.is-touch-enabled .background, .dropdown.is-mobile-modal:not(.is-hoverable) .background, .autocomplete.is-mobile-modal.is-mobile-modal.is-touch-enabled .background, .autocomplete.is-mobile-modal:not(.is-hoverable) .background {
-    background-color: rgba(0, 0, 0, 0.35); } }
+    background-color: var(--tainacan-backdrop-background-color, rgba(0, 0, 0, 0.35)); } }
 .dropdown.dropdown.is-disabled, .autocomplete.dropdown.is-disabled {
   cursor: not-allowed;
   opacity: 1.0; }
@@ -20504,7 +20508,7 @@ textarea.textarea,
       .dropdown .dropdown-menu .dropdown-content .dropdown-item.dropdown-header, .dropdown .dropdown-menu .dropdown-content .has-link a.dropdown-header, .dropdown .dropdown-menu .has-link .dropdown-content a.dropdown-header, .autocomplete .dropdown-menu .dropdown-content .dropdown-item.dropdown-header, .autocomplete .dropdown .dropdown-menu .dropdown-content .has-link a.dropdown-header, .dropdown .autocomplete .dropdown-menu .dropdown-content .has-link a.dropdown-header, .autocomplete .dropdown .dropdown-menu .has-link .dropdown-content a.dropdown-header, .dropdown .autocomplete .dropdown-menu .has-link .dropdown-content a.dropdown-header {
         color: var(--tainacan-info-color) !important; }
       .dropdown .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):hover, .dropdown .dropdown-menu .dropdown-content .has-link a:not(.dropdown-header):hover, .dropdown .dropdown-menu .has-link .dropdown-content a:not(.dropdown-header):hover, .autocomplete .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):hover, .autocomplete .dropdown .dropdown-menu .dropdown-content .has-link a:not(.dropdown-header):hover, .dropdown .autocomplete .dropdown-menu .dropdown-content .has-link a:not(.dropdown-header):hover, .autocomplete .dropdown .dropdown-menu .has-link .dropdown-content a:not(.dropdown-header):hover, .dropdown .autocomplete .dropdown-menu .has-link .dropdown-content a:not(.dropdown-header):hover {
-        background-color: var(--tainacan-input-border-color); }
+        background-color: var(--tainacan-dropdownmenu-item-background-hover, var(--tainacan-input-border-color)); }
       .dropdown .dropdown-menu .dropdown-content .dropdown-item .b-checkbox, .dropdown .dropdown-menu .dropdown-content .has-link a .b-checkbox, .dropdown .dropdown-menu .has-link .dropdown-content a .b-checkbox, .autocomplete .dropdown-menu .dropdown-content .dropdown-item .b-checkbox, .autocomplete .dropdown .dropdown-menu .dropdown-content .has-link a .b-checkbox, .dropdown .autocomplete .dropdown-menu .dropdown-content .has-link a .b-checkbox, .autocomplete .dropdown .dropdown-menu .has-link .dropdown-content a .b-checkbox, .dropdown .autocomplete .dropdown-menu .has-link .dropdown-content a .b-checkbox {
         width: 100%; }
       .dropdown .dropdown-menu .dropdown-content .dropdown-item label, .dropdown .dropdown-menu .dropdown-content .has-link a label, .dropdown .dropdown-menu .has-link .dropdown-content a label, .autocomplete .dropdown-menu .dropdown-content .dropdown-item label, .autocomplete .dropdown .dropdown-menu .dropdown-content .has-link a label, .dropdown .autocomplete .dropdown-menu .dropdown-content .has-link a label, .autocomplete .dropdown .dropdown-menu .has-link .dropdown-content a label, .dropdown .autocomplete .dropdown-menu .has-link .dropdown-content a label {
@@ -20788,8 +20792,11 @@ body.tainacan-admin-page > .control.autocomplete {
     cursor: pointer !important; }
     .tabs a:hover {
       border-bottom-color: transparent;
-      text-decoration: none; }
-  .tabs li.is-active a {
+      text-decoration: none;
+      color: var(--tainacan-secondary) !important; }
+  .tabs li.is-active a,
+  .tabs li.is-active a:hover,
+  .tabs li.is-active a:focus {
     border-bottom-color: var(--tainacan-secondary);
     color: var(--tainacan-heading-color) !important; }
   .tabs .icon:first-child {
@@ -20902,7 +20909,7 @@ body.tainacan-admin-page > .control.autocomplete {
         padding: 18px 16px 10px 16px; } }
 
 .tainacan-dialog .modal-background {
-  background-color: rgba(0, 0, 0, 0.35); }
+  background-color: var(--tainacan-backdrop-background-color, rgba(0, 0, 0, 0.35)); }
 .tainacan-dialog .modal-card {
   background-color: var(--tainacan-background-color);
   color: var(--tainacan-secondary);
@@ -20964,7 +20971,7 @@ body.tainacan-admin-page > .control.autocomplete {
 
 .media-modal-backdrop {
   z-index: 9999999 !important;
-  background: rgba(0, 0, 0, 0.35);
+  background: var(--tainacan-backdrop-background-color, rgba(0, 0, 0, 0.35));
   opacity: 1; }
 
 .media-modal {
@@ -21313,84 +21320,9 @@ body.tainacan-admin-page > .control.autocomplete {
         line-height: normal;
         color: var(--tainacan-info-color); }
 
-#tainacan-admin-app .repository-level-page {
-  height: 100% !important; }
-  #tainacan-admin-app .repository-level-page .is-primary:not(.upload-draggable), #tainacan-admin-app .repository-level-page .is-primary:hover, #tainacan-admin-app .repository-level-page .is-primary:focus {
-    background-color: var(--tainacan-blue3) !important;
-    color: var(--tainacan-white) !important; }
-  #tainacan-admin-app .repository-level-page .is-secondary, #tainacan-admin-app .repository-level-page .is-secondary:hover, #tainacan-admin-app .repository-level-page .is-secondary:focus {
-    background-color: var(--tainacan-blue5) !important;
-    color: var(--tainacan-white) !important; }
-  #tainacan-admin-app .repository-level-page .dropdown .dropdown-menu .dropdown-content a.dropdown-item:hover, #tainacan-admin-app .repository-level-page .dropdown .dropdown-menu .dropdown-content .has-link a:hover, #tainacan-admin-app .repository-level-page .dropdown .dropdown-menu .has-link .dropdown-content a:hover {
-    color: var(--tainacan-black) !important; }
-  #tainacan-admin-app .repository-level-page .has-text-primary,
-  #tainacan-admin-app .repository-level-page .has-text-primary:hover,
-  #tainacan-admin-app .repository-level-page .has-text-primary:focus,
-  #tainacan-admin-app .repository-level-page a:not(.has-text-danger):not(.disabled),
-  #tainacan-admin-app .repository-level-page a:hover:not(.has-text-danger):not(.disabled),
-  #tainacan-admin-app .repository-level-page .has-text-secondary,
-  #tainacan-admin-app .repository-level-page .has-text-secondary:hover,
-  #tainacan-admin-app .repository-level-page .has-text-secondary:focus {
-    color: var(--tainacan-blue4) !important; }
-  #tainacan-admin-app .repository-level-page a.button.is-secondary,
-  #tainacan-admin-app .repository-level-page a.button.is-secondary:hover {
-    color: var(--tainacan-white) !important; }
-  #tainacan-admin-app .repository-level-page .tainacan-page-title hr {
-    background-color: var(--tainacan-blue3) !important; }
-  #tainacan-admin-app .repository-level-page button.link-style, #tainacan-admin-app .repository-level-page button.link-style:focus button.link-style:active {
-    color: var(--tainacan-blue4) !important; }
-  #tainacan-admin-app .repository-level-page .button[disabled]:not(.is-white), #tainacan-admin-app .repository-level-page .button:hover[disabled]:not(.is-white) {
-    border: none !important;
-    cursor: not-allowed !important;
-    color: var(--tainacan-info-color) !important;
-    background-color: var(--tainacan-input-border-color) !important; }
-  #tainacan-admin-app .repository-level-page .button.is-outlined {
-    color: var(--tainacan-blue5) !important; }
-  #tainacan-admin-app .repository-level-page .b-numberinput button.is-primary,
-  #tainacan-admin-app .repository-level-page .b-numberinput button.is-primary:hover,
-  #tainacan-admin-app .repository-level-page .b-numberinput button.is-primary:focus,
-  #tainacan-admin-app .repository-level-page .b-numberinput button.is-primary:active {
-    color: var(--tainacan-blue5) !important;
-    background-color: var(--tainacan-blue2) !important; }
-  #tainacan-admin-app .repository-level-page .tabs li.is-active a {
-    border-bottom-color: var(--tainacan-blue5); }
-  #tainacan-admin-app .repository-level-page .tabs a {
-    color: var(--tainacan-black) !important; }
-  #tainacan-admin-app .repository-level-page .select:not(.is-multiple)::after {
-    color: var(--tainacan-blue3) !important; }
-    #tainacan-admin-app .repository-level-page .select:not(.is-multiple)::after option:checked, #tainacan-admin-app .repository-level-page .select:not(.is-multiple)::after option:hover {
-      background-color: var(--tainacan-input-border-color) !important; }
-  #tainacan-admin-app .repository-level-page .tainacan-table tr.selected-row {
-    background-color: var(--tainacan-blue1) !important; }
-    #tainacan-admin-app .repository-level-page .tainacan-table tr.selected-row .checkbox-cell .checkbox, #tainacan-admin-app .repository-level-page .tainacan-table tr.selected-row .actions-cell .actions-container,
-    #tainacan-admin-app .repository-level-page .tainacan-table tr.selected-row .checkbox-cell .radio, #tainacan-admin-app .repository-level-page .tainacan-table tr.selected-row .actions-cell .actions-container {
-      background-color: var(--tainacan-blue2) !important; }
-  #tainacan-admin-app .repository-level-page .dropdown-trigger .button:not(.is-secondary) .icon {
-    color: var(--tainacan-blue5); }
-  #tainacan-admin-app .repository-level-page .dropdown-menu .dropdown-content .dropdown-item.is-active, #tainacan-admin-app .repository-level-page .dropdown .dropdown-menu .dropdown-content .has-link a.is-active, .dropdown #tainacan-admin-app .repository-level-page .dropdown-menu .dropdown-content .has-link a.is-active, #tainacan-admin-app .repository-level-page .dropdown .dropdown-menu .has-link .dropdown-content a.is-active, .dropdown #tainacan-admin-app .repository-level-page .dropdown-menu .has-link .dropdown-content a.is-active {
-    background-color: var(--tainacan-blue2); }
-  #tainacan-admin-app .repository-level-page .datepicker .datepicker-header a > span > i:before {
-    color: var(--tainacan-blue5) !important; }
-  #tainacan-admin-app .repository-level-page .datepicker .datepicker-table .datepicker-cell.is-today,
-  #tainacan-admin-app .repository-level-page .datepicker .datepicker-table .datepicker-cell.is-today:hover {
-    background-color: var(--tainacan-blue1) !important; }
-  #tainacan-admin-app .repository-level-page .datepicker .datepicker-table .datepicker-cell.is-selected,
-  #tainacan-admin-app .repository-level-page .datepicker .datepicker-table .datepicker-cell.is-selected:hover {
-    background-color: var(--tainacan-blue2) !important; }
-  #tainacan-admin-app .repository-level-page .switch:hover input[type="checkbox"]:checked + .check {
-    background-color: var(--tainacan-blue2); }
-  #tainacan-admin-app .repository-level-page .switch input[type="checkbox"]:checked + .check {
-    border: 2px solid var(--tainacan-blue5);
-    background-color: var(--tainacan-blue1); }
-    #tainacan-admin-app .repository-level-page .switch input[type="checkbox"]:checked + .check::before {
-      background-color: var(--tainacan-blue5); }
-  #tainacan-admin-app .repository-level-page .switch.is-small input[type="checkbox"]:checked + .check {
-    border: 1.5px solid var(--tainacan-blue5); }
-  #tainacan-admin-app .repository-level-page #filter-menu-compress-button {
-    background-color: var(--tainacan-blue1) !important;
-    color: var(--tainacan-blue5) !important; }
-  #tainacan-admin-app .repository-level-page .active-metadatum-item.not-focusable-item > .handle > .metadatum-name {
-    color: var(--tainacan-blue3) !important; }
+.tainacan-repository-level-colors {
+  --tainacan-secondary: var(--tainacan-blue4);
+  --tainacan-primary: var(--tainacan-blue1); }
 
 .v-popper--theme-tooltip.tainacan-repository-tooltip {
   --tainacan-primary: var(--tainacan-blue1);
@@ -21442,7 +21374,9 @@ body.tainacan-admin-page > .control.autocomplete {
   --tainacan-input-border-radius: 2px;
   --tainacan-button-border-radius: 4px;
   --tainacan-dropdownmenu-border-radius: 4px;
+  --tainacan-dropdownmenu-item-background-hover: #f6f6f6;
   --tainacan-modal-border-radius: 4px;
+  --tainacan-backdrop-background-color: rgba(0, 0, 0, 0.35);
   --tainacan-skeleton-color: #eeeeee;
   --tainacan-item-background-color: var(--tainacan-background-color);
   --tainacan-item-hover-background-color: var(--tainacan-gray1);

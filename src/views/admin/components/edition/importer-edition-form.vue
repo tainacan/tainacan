@@ -1,6 +1,6 @@
 <template>
     <div 
-            class="repository-level-page page-container">
+            class="tainacan-repository-level-colors page-container">
         <tainacan-title />
         <form   
                 v-if="importer != undefined && importer != null"

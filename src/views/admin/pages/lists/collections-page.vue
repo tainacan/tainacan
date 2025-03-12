@@ -1,5 +1,5 @@
 <template>
-    <div class="repository-level-page page-container">
+    <div class="tainacan-repository-level-colors page-container">
         
         <b-loading v-model="isLoading" />
         
@@ -243,7 +243,7 @@
                             }"
                             :class="{ 'is-active': status == undefined || status == ''}"
                             @click="onChangeTab('')">
-                        <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
+                        <a style="font-weight: bold;">
                             {{ `${$i18n.get('label_all_collections')}` }}
                             <span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalCollections ? `(${Number(repositoryTotalCollections.pending) + Number(repositoryTotalCollections.private) + Number(repositoryTotalCollections.publish)})` : '' }`}` }}</span>
                         </a>

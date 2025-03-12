@@ -28,7 +28,7 @@
     @media screen and (max-width: 1023px) {
         &.is-mobile-modal.is-mobile-modal.is-touch-enabled .background,
         &.is-mobile-modal:not(.is-hoverable) .background {
-            background-color: rgba(0, 0, 0, 0.35);
+            background-color: var(--tainacan-backdrop-background-color, rgba(0, 0, 0, 0.35));
         }
     }
     &.dropdown.is-disabled {
@@ -72,7 +72,7 @@
                 &.is-active { background-color: var(--tainacan-primary); }
                 &.control { font-size: 0.8125em !important; }
                 &.dropdown-header { color: var(--tainacan-info-color) !important; }
-                &:not(.dropdown-header):hover { background-color: var(--tainacan-input-border-color); }
+                &:not(.dropdown-header):hover { background-color: var(--tainacan-dropdownmenu-item-background-hover, var(--tainacan-input-border-color)); }
                 
                 .b-checkbox { width: 100% };
                 label { margin-bottom: 0; }

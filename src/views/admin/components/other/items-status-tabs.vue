@@ -10,7 +10,7 @@
                     }"
                     :class="{ 'is-active': status == undefined || status == '' || status == 'publish,private,pending,draft' }"
                     @click="onChangeTab('')">
-                <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
+                <a style="font-weight: bold;">
                     {{ $i18n.get('label_all_items') }}
                     <span 
                             v-if="!$adminOptions.hideItemsListStatusTabsTotalItems"

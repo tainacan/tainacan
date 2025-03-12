@@ -121,7 +121,7 @@
 .tainacan-dialog {
 
     .modal-background {
-        background-color: rgba(0, 0, 0, 0.35);
+        background-color: var(--tainacan-backdrop-background-color, rgba(0, 0, 0, 0.35));
     }
     .modal-card {
         background-color: var(--tainacan-background-color);
@@ -200,7 +200,7 @@
 // WordPress Media Modal customization
 .media-modal-backdrop {
     z-index: 9999999 !important;
-    background: rgba(0, 0, 0, 0.35);
+    background: var(--tainacan-backdrop-background-color, rgba(0, 0, 0, 0.35));
     opacity: 1;
 }
 .media-modal {

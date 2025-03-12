@@ -1,5 +1,5 @@
 <template>
-    <div class="repository-level-page page-container">
+    <div class="tainacan-repository-level-colors page-container">
         <tainacan-title>
             <h1>
                 {{ $route.meta.title }}
@@ -131,7 +131,7 @@
                             }"
                             :class="{ 'is-active': status == undefined || status == ''|| status == 'publish,private,draft'}"
                             @click="onChangeTab('')">
-                        <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
+                        <a style="font-weight: bold;">
                             {{ `${$i18n.get('label_all_taxonomies')}` }}
                             <span class="has-text-gray">&nbsp;{{ repositoryTotalTaxonomies ? `(${Number(repositoryTotalTaxonomies.private) + Number(repositoryTotalTaxonomies.publish) + Number(repositoryTotalTaxonomies.draft)})` : '' }}</span>
                         </a>

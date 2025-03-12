@@ -1,6 +1,6 @@
 <template>
     <div
-            :class="{ 'repository-level-page page-container': isRepositoryLevel }"
+            :class="{ 'tainacan-repository-level-colors page-container': isRepositoryLevel }"
             style="padding-bottom: 0;">
         <tainacan-title />
         
@@ -483,7 +483,7 @@ export default {
         }
     }
 
-    .repository-level-page {
+    .tainacan-repository-level-colors {
         .tainacan-form.sub-header {
             padding-left: 2.75em !important;
         }

@@ -14,7 +14,7 @@
                     :aria-label="$i18n.get('close')"
                     @click="$emit('close')">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-25em" />
+                    <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-125em" />
                 </span>
             </button>
         </header>
@@ -22,17 +22,20 @@
             <p>{{ $i18n.get('instruction_select_a_target_collection') }}</p>
             <div 
                     v-if="!isLoading" 
-                    class="collection-types-container">
+                    class="collection-types-container tainacan-clickable-cards"
+                    role="list">
                 <template
                         v-for="(collection, index) in collections"
                         :key="index">
-                    <div
+                    <router-link
                             v-if="collection && collection.current_user_can_edit_items"
-                            class="collection-type"
-                            @click="onSelectCollection(collection)">
+                            role="listitem"
+                            class="collection-type tainacan-clickable-card"
+                            :to="$routerHelper.getNewItemPath(collection.id)"
+                            @click="$emit('close')">
                         <h4>{{ collection.name }}</h4>
                         <p>{{ collection.description.length > 200 ? (collection.description.substring(0,197) + '...') : collection.description }}</p>            
-                    </div>
+                    </router-link>
                 </template>
                 <div 
                         v-if="collections.length <= 0"
@@ -95,39 +98,14 @@ export default {
     methods: {
         ...mapActions('collection', [
             'fetchCollections'
-        ]),
-        onSelectCollection(collection) {
-            this.$router.push(this.$routerHelper.getNewItemPath(collection.id));
-            this.$emit('close');
-        }
+        ])
     }
 }
 </script>
 
 <style lang="scss" scoped>
 
-    .collection-types-container {
-        position: relative;
-        max-height: 60vh;
-        max-height: 60dvh;
-        overflow-y: auto;
-
-        .collection-type {
-            border-bottom: 1px solid var(--tainacan-gray2);
-            padding: 15px calc(2 * var(--tainacan-one-column));
-            cursor: pointer;
-        
-            &:first-child {
-                margin-top: 15px;
-            }
-            &:last-child {
-                border-bottom: none;
-            }
-            &:hover {
-                background-color: var(--tainacan-gray2);
-            }
-        }
-    }
+    @import '../../scss/_cards.scss';
 
 </style>
 

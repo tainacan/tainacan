@@ -2,7 +2,7 @@
     <div 
             class="page-container tainacan-reports-page"
             :class="{
-                'repository-level-page': isRepositoryLevel
+                'tainacan-repository-level-colors': isRepositoryLevel
             }">
         <div class="tainacan-reports-header">
             <h1 class="tainacan-page-title">

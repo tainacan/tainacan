@@ -2,7 +2,7 @@
     <div 
             ref="items-page-container"
             :class="{ 
-                'repository-level-page': isRepositoryLevel,
+                'tainacan-repository-level-colors': isRepositoryLevel,
                 'is-filters-menu-open': isFiltersModalActive && !openAdvancedSearch
             }"
             class="admin-items-list page-container"
@@ -1100,7 +1100,8 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    canCancel: ['escape', 'outside']
+                    canCancel: ['escape', 'outside'],
+                    width: 786
                 })
             },
             onOpenCollectionsModal() {
@@ -1544,7 +1545,7 @@
         margin: 0;
     }
 
-    .repository-level-page {
+    .tainacan-repository-level-colors {
         overflow-y: auto;
     }
 

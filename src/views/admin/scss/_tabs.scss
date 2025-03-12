@@ -23,9 +23,12 @@
         &:hover{
             border-bottom-color: transparent;
             text-decoration: none;
+            color: var(--tainacan-secondary) !important;
         }
     }
-    li.is-active a {
+    li.is-active a,
+    li.is-active a:hover,
+    li.is-active a:focus {
         border-bottom-color: var(--tainacan-secondary);
         color: var(--tainacan-heading-color) !important;
     }

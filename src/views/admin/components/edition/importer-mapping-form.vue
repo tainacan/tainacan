@@ -1,6 +1,6 @@
 <template>
     <div 
-            class="repository-level-page page-container">
+            class="tainacan-repository-level-colors page-container">
         <!-- <div class="tainacan-page-title">
             <h1>{{ $i18n.get('label_metadata_mapping') }} </h1>
         </div> -->
@@ -824,7 +824,7 @@ export default {
             height: 1px;
             width: 100%;
             background-color: var(--tainacan-gray2);
-            z-index: -1;
+            z-index: 0;
         }
         &>p {
             font-weight: normal;
@@ -833,6 +833,7 @@ export default {
             overflow: hidden;
             word-wrap: break-word;
             background-color: var(--tainacan-background-color, white);
+            z-index: 1;
         }
         .control {
             max-width: 60%;

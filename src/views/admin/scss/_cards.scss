@@ -1,0 +1,47 @@
+.tainacan-clickable-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-gap: 1rem;
+    padding: var(--tainacan-container-padding) var(--tainacan-one-column);
+    list-style: none;
+    
+    .tainacan-clickable-card {
+        background-color: var(--tainacan-clickable-card-background-color, var(--tainacan-white));
+        border: 1px solid var(--tainacan-clickable-card-border-color, var(--tainacan-input-border-color, var(--tainacan-gray2)));
+        border-radius: var(--tainacan-clickable-card-border-radius, var(--tainacan-button-border-radius, 4px));
+        color: var(--tainacan-clickable-card-color, var(--tainacan-gray4));
+        padding: 15px;
+        cursor: pointer;
+        transition: border 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25em;
+
+        &:hover,
+        &:focus {
+            background-color: var(--tainacan-clickable-card-background-color-hover, var(--tainacan-item-hover-background-color, (--tainacan-gray1)));
+            border: 1px solid var(--tainacan-clickable-card-border-color-hover, var(--tainacan-secondary));
+            
+            h3,h4 {
+                color: var(--tainacan-clickable-card-title-color-hover, var(--tainacan-secondary));
+            }
+        }
+        h3,h4 {
+            font-weight: 500;
+            font-size: 1em !important;
+            margin: 0;
+            color: var(--tainacan-clickable-card-title-color, var(--tainacan-gray5));
+        }
+        p {
+            font-size: 0.75em;
+            margin: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: var(--tainacan-clickable-card-color, var(--tainacan-gray4));
+        }
+    }
+}

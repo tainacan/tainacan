@@ -38,7 +38,7 @@
                   </div>
               </div>
       -->
-
+              
             <div class="processes-list">
                 <div
                         v-for="(bgProcess, index) of processes"
@@ -566,7 +566,16 @@
         }  
     }
 
+    .table-container {
+        padding: 0 var(--tainacan-one-column);
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 40px;
+    }
+
     .processes-list-item {
+        border-bottom: 1px solid var(--tainacan-lists-separator-color, var(--tainacan-item-hover-background-color));
+                    
         &.opened-process {
             background-color: var(--tainacan-gray0);
         }

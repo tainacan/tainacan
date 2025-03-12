@@ -572,7 +572,9 @@
   --tainacan-input-border-radius: 2px;
   --tainacan-button-border-radius: 4px;
   --tainacan-dropdownmenu-border-radius: 4px;
+  --tainacan-dropdownmenu-item-background-hover: #f6f6f6;
   --tainacan-modal-border-radius: 4px;
+  --tainacan-backdrop-background-color: rgba(0, 0, 0, 0.35);
   --tainacan-skeleton-color: #eeeeee;
   --tainacan-item-background-color: var(--tainacan-background-color);
   --tainacan-item-hover-background-color: var(--tainacan-gray1);

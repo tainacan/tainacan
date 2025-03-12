@@ -537,20 +537,6 @@
             display: flex;
             flex-wrap: wrap;
             align-items: baseline;
-
-            h2 {
-                font-size: 1.25em;
-                font-weight: 500;
-                color: var(--tainacan-blue5);
-                display: inline-block;
-                margin-right: auto;
-            }
-            hr {
-                margin: 3px 0px 4px 0px; 
-                width: 100%;
-                height: 1px;
-                background-color: var(--tainacan-secondary);
-            }
         }
 
         .image-and-description-area {

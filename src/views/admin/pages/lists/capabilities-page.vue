@@ -1,7 +1,7 @@
 <template>
     <div 
             :class="{
-                'repository-level-page': isRepositoryLevel,
+                'tainacan-repository-level-colors': isRepositoryLevel,
                 'page-container': isRepositoryLevel
             }">
         <tainacan-title />

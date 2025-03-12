@@ -41,7 +41,7 @@
             animation-name: appear;
             animation-duration: 0.5s;
             width: 100%;
-            border-collapse: separate;
+            border-collapse: collapse;
             border-spacing: 0;
             border-color: transparent;
 
@@ -62,7 +62,7 @@
                 label.checkbox,
                 label.radio {  
                     border-radius: 0px;
-                    background-color: var(--tainacan-white);
+                    background-color: var(--tainacan-item-background-color);
                     padding: 0;
                     width: 100%;
                     height: 100%; 
@@ -93,6 +93,7 @@
                 width: 2rem;
                 padding-left: 1px;
                 padding-right: 1px;
+                text-align: center;
             }
             .column-small-width {
                 min-width: 80px;
@@ -168,15 +169,16 @@
             tbody {
                 tr {
                     cursor: pointer;
+                    border-bottom: 1px solid var(--tainacan-lists-separator-color, var(--tainacan-item-hover-background-color));
                     background-color: var(--tainacan-item-background-color);
                     transition: background-color 0.15s ease;
     
                     &.selected-row { 
-                        background-color: var(--tainacan-turquoise1); 
-                        .checkbox-cell .checkbox, 
-                        .actions-cell .actions-container {
-                            transition: background-color 0.15s ease;
-                        }
+                        --tainacan-item-background-color: var(--tainacan-primary);
+                        --tainacan-item-heading-hover-background-color: var(--tainacan-turquoise2);
+                        --tainacan-item-heading-hover-background-color: color-mix(in srgb, var(--tainacan-secondary) 5%, transparent);
+                        --tainacan-item-hover-background-color: var(--tainacan-primary); 
+                        --tainacan-item-hover-background-color: color-mix(in srgb, var(--tainacan-secondary) 20%, transparent);
                     }
                     td {
                         height: 60px;
@@ -313,7 +315,7 @@
                             height: 100%;
                             width: 100px;
                             z-index: 9;
-                            background-color: var(--tainacan-white); 
+                            background-color: var(--tainacan-item-background-color); 
                             float: right;
                             justify-content: center;
                             align-items: center;
@@ -344,6 +346,8 @@
                             }
                         }
                         .actions-cell {
+                            transition: background-color 0.15s ease;
+
                             .actions-container {
                                 background: var(--tainacan-item-heading-hover-background-color) !important;
                             }

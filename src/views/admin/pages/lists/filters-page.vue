@@ -1,5 +1,5 @@
 <template>
-    <div :class="{ 'repository-level-page page-container': isRepositoryLevel }">
+    <div :class="{ 'tainacan-repository-level-colors page-container': isRepositoryLevel }">
         <tainacan-title />
         
         <template v-if="isRepositoryLevel">
@@ -1489,7 +1489,7 @@ export default {
 
         }
     }
-    .repository-level-page {
+    .tainacan-repository-level-colors {
         .tainacan-form.sub-header {
             padding-left: 0 !important;
         }
