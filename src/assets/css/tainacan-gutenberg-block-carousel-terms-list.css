@@ -492,6 +492,9 @@
   }
   100% {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 564e39b9b (fix: update SASS version)
     opacity: 1;
   }
 }
@@ -858,6 +861,7 @@
   min-width: calc(100% - var(--spaceBetweenTerms, 32px));
 }
 @media only screen and (max-width: 1452px) {
+<<<<<<< HEAD
 =======
     opacity: 1.0; } }
   .wp-block-tainacan-carousel-terms-list .skeleton {
@@ -1133,6 +1137,8 @@
           object-fit: cover;
           object-position: center; }
 >>>>>>> 15a9e3dba (Small css fix to editor size of the terms carousel.)
+=======
+>>>>>>> 564e39b9b (fix: update SASS version)
   .wp-block-tainacan-carousel-terms-list ul.terms-list-edit li.terms-list-item {
     width: calc(25% - var(--spaceBetweenTerms, 32px));
     min-width: calc(25% - var(--spaceBetweenTerms, 32px));
