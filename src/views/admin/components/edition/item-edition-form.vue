@@ -2348,10 +2348,10 @@ export default {
         .metadata-section-hidden {
             opacity: 0.5;
             filter: grayscale(1.0);
+        }
 
-            & > {
-                pointer-events: none;
-            }
+        .metadata-section-hidden > * {
+            pointer-events: none;
         }
 
         .item-edition-tab-content {
