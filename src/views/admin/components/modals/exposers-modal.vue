@@ -93,7 +93,9 @@
                         </a>
                     </span>
                 </div>
-                <p style="font-size: 1em; padding: 0em 1.25em; margin-top: 0.75em;">{{ itemId ? $i18n.get('info_other_options') : $i18n.get('info_other_item_listing_options') }}</p>
+                <p style="font-size: 1em; padding: 0em 1.25em; margin-top: 0.75em;">
+                    {{ itemId ? $i18n.get('info_other_options') : $i18n.get('info_other_item_listing_options') }}
+                </p>
                 <div 
                         role="list"
                         class="exposer-types-list tainacan-clickable-cards">

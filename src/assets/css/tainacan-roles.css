@@ -19668,7 +19668,8 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
       .table-container .table-wrapper table.tainacan-table .status-cell {
         width: 2rem;
         padding-left: 1px;
-        padding-right: 1px; }
+        padding-right: 1px;
+        text-align: center; }
       .table-container .table-wrapper table.tainacan-table .column-small-width {
         min-width: 80px;
         max-width: 80px; }

@@ -69,7 +69,9 @@
                             role="listitem"
                             @click="$router.push($routerHelper.getNewMappedCollectionPath(metadatumMapper.slug)); $emit('close');">
                         <h3>{{ metadatumMapper.name }}</h3>
-                        <p v-if="metadatumMapper.description">{{ metadatumMapper.description }}</p>
+                        <p v-if="metadatumMapper.description">
+                            {{ metadatumMapper.description }}
+                        </p>
                     </button>
                 </template>
             </div>
@@ -85,7 +87,9 @@
                         role="listitem"
                         @click="onNewCollectionPreset(collectionPreset)">
                     <h3>{{ collectionPreset.name }}</h3>
-                    <p v-if="collectionPreset.description">{{ collectionPreset.description }}</p>
+                    <p v-if="collectionPreset.description">
+                        {{ collectionPreset.description }}
+                    </p>
                 </button>
             </div>
 

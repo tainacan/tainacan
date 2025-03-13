@@ -475,8 +475,6 @@
 
 <style lang="scss" scoped>
 
-    @import '../../../admin/scss/_variables.scss';
-
     .child-metadata-inputs {
         margin-left: -30px;
         padding-left: 38px;
