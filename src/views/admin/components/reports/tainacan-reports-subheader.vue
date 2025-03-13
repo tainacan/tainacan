@@ -46,6 +46,7 @@
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="24px"
                                     height="24px"
+                                    style="width: 22px; height: 22px;"
                                     viewBox="-2 -1 8 9">
                                 <g
                                         id="layer1"
@@ -228,11 +229,15 @@ export default { }
   .tainacan-reports-subheader {
         display: flex;
         align-items: start;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         gap: 0.5rem;
         margin: 6px 0px 36px 0px;
         font-size: 0.75em;
         color: var(--tainacan-gray4, #505253);
+
+        @media screen and (max-width: 1200px) {
+            flex-wrap: wrap;
+        }
 
         .tainacan-reports-subheader-box {
             padding-left: 14px;
@@ -249,6 +254,7 @@ export default { }
             align-items: center;
             margin: 0px 14px 0px 0px;
             flex-wrap: wrap;
+            gap: 0.25em 0;
 
             &.tainacan-reports-subheader-box__content--two-columns li {
                 flex-basis: calc(50% - 8px);
@@ -274,6 +280,10 @@ export default { }
             align-items: center;
             margin: 0px 8px 0px 0px;
             flex-basis: 100%;
+
+            span {
+                line-height: 1em;
+            }
         }
         .icon svg {
             fill: var(--tainacan-gray4, #505253);
