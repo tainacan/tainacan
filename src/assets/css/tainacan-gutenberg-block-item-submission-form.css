@@ -6,10 +6,12 @@
   margin: -1px;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
-  border: 0; }
+  border: 0;
+}
 
 #metadata-checkbox-list {
-  margin: 8px 12px 18px 12px; }
+  margin: 8px 12px 18px 12px;
+}
 
 .wp-block-tainacan-item-submission-form {
   margin: 2em auto; }

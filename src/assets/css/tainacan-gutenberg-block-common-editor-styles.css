@@ -6,7 +6,8 @@
   margin: -1px;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
-  border: 0; }
+  border: 0;
+}
 
 :root {
   --tainacan-block-gray0: #f6f6f6;
@@ -15,35 +16,42 @@
   --tainacan-block-gray3: #a5a5a5;
   --tainacan-block-gray4: #505253;
   --tainacan-block-gray5: #373839;
-  --tainacan-block-primary: #187181; }
+  --tainacan-block-primary: #187181;
+}
 
 .tainacan-block-placeholder.components-placeholder {
   align-items: center !important;
   margin-bottom: 0 !important;
-  background: var(--tainacan-block-gray0, #f6f6f6) !important; }
-  .tainacan-block-placeholder.components-placeholder .components-placeholder__label {
-    margin-bottom: 0; }
-  .tainacan-block-placeholder.components-placeholder .components-placeholder__fieldset {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: baseline;
-    width: 100%;
-    max-width: 85%;
-    flex-wrap: wrap;
-    z-index: 1; }
-    .tainacan-block-placeholder.components-placeholder .components-placeholder__fieldset p {
-      font-size: 1em !important;
-      margin: 12px;
-      color: var(--tainacan-block-gray5, #373839);
-      fill: var(--tainacan-block-gray4, #505253); }
-      .tainacan-block-placeholder.components-placeholder .components-placeholder__fieldset p svg {
-        margin-right: 1em;
-        top: 4px;
-        position: relative;
-        fill: var(--tainacan-block-gray4, #505253); }
-    .tainacan-block-placeholder.components-placeholder .components-placeholder__fieldset .components-button {
-      margin: 0; }
+  background: var(--tainacan-block-gray0, #f6f6f6) !important;
+}
+.tainacan-block-placeholder.components-placeholder .components-placeholder__label {
+  margin-bottom: 0;
+}
+.tainacan-block-placeholder.components-placeholder .components-placeholder__fieldset {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: baseline;
+  width: 100%;
+  max-width: 85%;
+  flex-wrap: wrap;
+  z-index: 1;
+}
+.tainacan-block-placeholder.components-placeholder .components-placeholder__fieldset p {
+  font-size: 1em !important;
+  margin: 12px;
+  color: var(--tainacan-block-gray5, #373839);
+  fill: var(--tainacan-block-gray4, #505253);
+}
+.tainacan-block-placeholder.components-placeholder .components-placeholder__fieldset p svg {
+  margin-right: 1em;
+  top: 4px;
+  position: relative;
+  fill: var(--tainacan-block-gray4, #505253);
+}
+.tainacan-block-placeholder.components-placeholder .components-placeholder__fieldset .components-button {
+  margin: 0;
+}
 
 .wp-block-tainacan-modal {
   width: 50% !important; }

@@ -6,56 +6,78 @@
   margin: -1px;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
-  border: 0; }
+  border: 0;
+}
 
 .wp-block-tainacan-related-items {
   margin: 0.5em auto;
-  width: 100%; }
-  .wp-block-tainacan-related-items .spinner-container {
-    min-height: 56px;
-    padding: 1em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--tainacan-block-gray4, #505253); }
+  width: 100%;
+}
+.wp-block-tainacan-related-items .spinner-container {
+  min-height: 56px;
+  padding: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--tainacan-block-gray4, #505253);
+}
 @-webkit-keyframes skeleton-animation {
   0% {
-    opacity: 1.0; }
+    opacity: 1;
+  }
   50% {
-    opacity: 0.2; }
+    opacity: 0.2;
+  }
   100% {
-    opacity: 1.0; } }
+    opacity: 1;
+  }
+}
 @-moz-keyframes skeleton-animation {
   0% {
-    opacity: 1.0; }
+    opacity: 1;
+  }
   50% {
-    opacity: 0.2; }
+    opacity: 0.2;
+  }
   100% {
-    opacity: 1.0; } }
+    opacity: 1;
+  }
+}
 @-o-keyframes skeleton-animation {
   0% {
-    opacity: 1.0; }
+    opacity: 1;
+  }
   50% {
-    opacity: 0.2; }
+    opacity: 0.2;
+  }
   100% {
-    opacity: 1.0; } }
+    opacity: 1;
+  }
+}
 @keyframes skeleton-animation {
   0% {
-    opacity: 1.0; }
+    opacity: 1;
+  }
   50% {
-    opacity: 0.2; }
+    opacity: 0.2;
+  }
   100% {
-    opacity: 1.0; } }
-  .wp-block-tainacan-related-items .skeleton {
-    border-radius: 2px;
-    background: var(--tainacan-block-gray1, #f2f2f2);
-    -webkit-animation: skeleton-animation 1.8s ease infinite;
-    -moz-animation: skeleton-animation 1.8s ease infinite;
-    -o-animation: skeleton-animation 1.8s ease infinite;
-    animation: skeleton-animation 1.8s ease infinite; }
-  .wp-block-tainacan-related-items .related-items-edit-container {
-    position: relative; }
-    .wp-block-tainacan-related-items .related-items-edit-container .skeleton {
-      min-height: 150px; }
+    opacity: 1;
+  }
+}
+.wp-block-tainacan-related-items .skeleton {
+  border-radius: 2px;
+  background: var(--tainacan-block-gray1, #f2f2f2);
+  -webkit-animation: skeleton-animation 1.8s ease infinite;
+  -moz-animation: skeleton-animation 1.8s ease infinite;
+  -o-animation: skeleton-animation 1.8s ease infinite;
+  animation: skeleton-animation 1.8s ease infinite;
+}
+.wp-block-tainacan-related-items .related-items-edit-container {
+  position: relative;
+}
+.wp-block-tainacan-related-items .related-items-edit-container .skeleton {
+  min-height: 150px;
+}
 
 /*# sourceMappingURL=tainacan-gutenberg-block-related-items-list.css.map */
