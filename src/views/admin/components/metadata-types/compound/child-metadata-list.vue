@@ -175,7 +175,9 @@
                                     :style="{ visibility: 
                                         metadatum.collection_id != collectionId
                                             ? 'hidden' : 'visible'
-                                    }" 
+                                    }"
+                                    role="button"
+                                    :aria-label="$i18n.get('edit')" 
                                     @click.prevent="toggleMetadatumEdition(metadatum.id)">
                                 <span 
                                         v-tooltip="{
@@ -196,6 +198,8 @@
                                         metadatum.metadata_type_object.related_mapped_prop == 'description'
                                             ? 'hidden' : 'visible'
                                     }" 
+                                    role="button"
+                                    :aria-label="$i18n.get('delete')"
                                     @click.prevent="removeMetadatum(metadatum)">
                                 <span
                                         v-tooltip="{
@@ -221,7 +225,7 @@
                             aria-modal
                             aria-role="dialog"
                             custom-class="tainacan-modal"
-                            :close-button-aria-label="$i18n.get('close')"
+                            :can-cancel="['escape', 'outside']"
                             @close="onEditionCanceled()">
                         <metadatum-edition-form
                                 :collection-id="collectionId"

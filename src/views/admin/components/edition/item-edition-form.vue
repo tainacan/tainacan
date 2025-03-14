@@ -987,7 +987,7 @@ export default {
             return false;
         },
         getRedirectHook() {
-            const itemViewURL = tainacan_plugin.admin_url + '?page=tainacan_admin#' + this.$routerHelper.getItemPath(this.form.collectionId, this.itemId);
+            const itemViewURL = this.$routerHelper.getAbsoluteAdminPath() + this.$routerHelper.getItemPath(this.form.collectionId, this.itemId);
             if (wp !== undefined && wp.hooks !== undefined)
                 return wp.hooks.applyFilters(`tainacan_item_edition_after_update_redirect`, itemViewURL, this.form, this.itemId);
 

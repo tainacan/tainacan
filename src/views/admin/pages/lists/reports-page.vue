@@ -5,9 +5,9 @@
                 'tainacan-repository-level-colors': isRepositoryLevel
             }">
         <div class="tainacan-reports-header">
-            <h1 class="tainacan-page-title">
+            <h2 class="tainacan-page-title">
                 {{ $route.meta.title }}
-            </h1>
+            </h2>
         </div>
         <tainacan-reports-subheader />
 
@@ -26,7 +26,7 @@
                     <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(summaryLatestCachedOn).toLocaleString() }}</span>
                     <button 
                             @click="loadSummary(true)">
-                        <span class="screen-reader-text">
+                        <span class="sr-only">
                             {{ $i18n.get('label_get_latest_report') }}
                         </span>
                         <span class="icon">
@@ -47,7 +47,7 @@
                     <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(summaryLatestCachedOn).toLocaleString() }}</span>
                     <button 
                             @click="loadSummary(true)">
-                        <span class="screen-reader-text">
+                        <span class="sr-only">
                             {{ $i18n.get('label_get_latest_report') }}
                         </span>
                         <span class="icon">
@@ -69,7 +69,7 @@
                     <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(summaryLatestCachedOn).toLocaleString() }}</span>
                     <button 
                             @click="loadSummary(true)">
-                        <span class="screen-reader-text">
+                        <span class="sr-only">
                             {{ $i18n.get('label_get_latest_report') }}
                         </span>
                         <span class="icon">
@@ -90,7 +90,7 @@
                     <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(summaryLatestCachedOn).toLocaleString() }}</span>
                     <button 
                             @click="loadSummary(true)">
-                        <span class="screen-reader-text">
+                        <span class="sr-only">
                             {{ $i18n.get('label_get_latest_report') }}
                         </span>
                         <span class="icon">
@@ -110,7 +110,7 @@
                     <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(collectionsLatestCachedOn).toLocaleString() }}</span>
                     <button 
                             @click="loadCollectionsList(true)">
-                        <span class="screen-reader-text">
+                        <span class="sr-only">
                             {{ $i18n.get('label_get_latest_report') }}
                         </span>
                         <span class="icon">
@@ -130,7 +130,7 @@
                     <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(metadataLatestCachedOn).toLocaleString() }}</span>
                     <button 
                             @click="loadMetadata(true)">
-                        <span class="screen-reader-text">
+                        <span class="sr-only">
                             {{ $i18n.get('label_get_latest_report') }}
                         </span>
                         <span class="icon">
@@ -150,7 +150,7 @@
                     <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(metadataLatestCachedOn).toLocaleString() }}</span>
                     <button 
                             @click="loadMetadata(true)">
-                        <span class="screen-reader-text">
+                        <span class="sr-only">
                             {{ $i18n.get('label_get_latest_report') }}
                         </span>
                         <span class="icon">
@@ -170,7 +170,7 @@
                     <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(taxonomiesLatestCachedOn).toLocaleString() }}</span>
                     <button 
                             @click="loadTaxonomiesList(true)">
-                        <span class="screen-reader-text">
+                        <span class="sr-only">
                             {{ $i18n.get('label_get_latest_report') }}
                         </span>
                         <span class="icon">
@@ -199,7 +199,7 @@
                     <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(activitiesLatestCachedOn).toLocaleString() }}</span>
                     <button 
                             @click="loadActivities(null, true)">
-                        <span class="screen-reader-text">
+                        <span class="sr-only">
                             {{ $i18n.get('label_get_latest_report') }}
                         </span>
                         <span class="icon">
@@ -219,7 +219,7 @@
                     <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(activitiesLatestCachedOn).toLocaleString() }}</span>
                     <button 
                             @click="loadActivities(null, true)">
-                        <span class="screen-reader-text">
+                        <span class="sr-only">
                             {{ $i18n.get('label_get_latest_report') }}
                         </span>
                         <span class="icon">
@@ -288,9 +288,6 @@ export default {
             reportsLatestCachedOn: 'getReportsLatestCachedOn',
             startDate: 'getStartDate'
         }),
-        collectionEditionPage() {
-            return (this.selectedCollection && this.selectedCollection != 'default') ? (tainacan_plugin.admin_url + '?page=tainacan_admin#/collections/' + this.selectedCollection) : '';
-        },
         summaryLatestCachedOn() {
             return this.reportsLatestCachedOn['summary-' + (this.selectedCollection ? this.selectedCollection : 'default')];
         },

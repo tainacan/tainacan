@@ -160,7 +160,7 @@
                 aria-modal
                 aria-role="dialog"
                 custom-class="tainacan-modal"
-                :close-button-aria-label="$i18n.get('close')"
+                :can-cancel="['escape', 'outside']"
                 @close="onCancelNewMetadataMapperMetadata">
             <div 
                     autofocus

@@ -65,4 +65,4 @@ To contribute to our project, you can report bugs and other issues, or suggest n
 
 ### Acknowledgements
 
-Tainacan is the results of continuous efforts from developers, researchers, policy makers and GLAMs in Brazil. We are eternally grateful for all of [our amazing contributors](https://github.com/tainacan/tainacan/graphs/contributors)!
+Tainacan is the results of continuous efforts from developers, researchers, policy makers and GLAMs in Brazil. We are externally grateful for all of [our amazing contributors](https://github.com/tainacan/tainacan/graphs/contributors)!

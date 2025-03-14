@@ -139,7 +139,7 @@
                         v-model="editItemModal"
                         :width="1200"
                         custom-class="tainacan-modal"
-                        :close-button-aria-label="$i18n.get('close')"
+                        :can-cancel="['escape', 'outside']"
                         @after-leave="reloadRelatedItems">
                     <iframe 
                             width="100%"

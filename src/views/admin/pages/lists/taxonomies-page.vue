@@ -1,9 +1,9 @@
 <template>
     <div class="tainacan-repository-level-colors page-container">
         <tainacan-title>
-            <h1>
+            <h2>
                 {{ $route.meta.title }}
-            </h1>
+            </h2>
 
             <!-- New Taxonomy Button ----  -->
             <div 
@@ -102,7 +102,7 @@
                         class="sorting-select"
                         :disabled="taxonomies.length <= 0"
                         :model-value="orderBy"
-                        :label="$i18n.get('label_sorting')"
+                        :aria-label="$i18n.get('label_sorting')"
                         @update:model-value="onChangeOrderBy($event)">
                     <option
                             v-for="(option, index) in sortingOptions"
@@ -222,6 +222,7 @@
                                 horizontal 
                                 :label="$i18n.get('label_taxonomies_per_page')">
                             <b-select
+                                    :aria-label="$i18n.get('label_taxonomies_per_page')"
                                     :model-value="taxonomiesPerPage"
                                     :disabled="taxonomies.length <= 0"
                                     @update:model-value="onChangePerPage">

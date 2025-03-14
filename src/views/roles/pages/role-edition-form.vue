@@ -107,7 +107,7 @@
                                     <li :id="'capability-' + capability">
                                         <span class="check-column">
                                             <label
-                                                    class="screen-reader-text"
+                                                    class="sr-only"
                                                     :for="'capability_' + capability">
                                                 {{ $i18n.get('Selecionar') + ' ' + repositoryCapabilities[capability].display_name }}
                                             </label>
@@ -155,7 +155,7 @@
                             <div class="alignleft collection-selector">
                                 <label 
                                         for="bulk-action-selector-top" 
-                                        class="screen-reader-text">
+                                        class="sr-only">
                                     {{ $i18n.get('Select the collection to change capabilities') }}
                                 </label>
                                 <span class="select">
@@ -194,7 +194,7 @@
                                         <li :id="'capability-' + capability.replace('%d', selectedCollection)">
                                             <span class="check-column">
                                                 <label
-                                                        class="screen-reader-text"
+                                                        class="sr-only"
                                                         :for="'capability_' + capability.replace('%d', selectedCollection)">
                                                     {{ $i18n.get('Selecionar') + ' ' + collectionCapabilities[capability].display_name }}
                                                 </label>
@@ -255,7 +255,7 @@
                                         <span class="check-column">
                                             <label 
                                                     :for="optionSlug"
-                                                    class="screen-reader-text">
+                                                    class="sr-only">
                                                 {{ optionLabel }}
                                             </label>
                                             <input 

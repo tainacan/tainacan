@@ -38,6 +38,7 @@
                         <a
                                 v-if="filterTag.filterId || filterTag.argType == 'postin'"
                                 role="button"
+                                :aria-label="$i18n.get('remove_filter')"
                                 tabindex="0"
                                 class="tag is-delete"
                                 @click="removeMetaQuery(filterTag)" />
@@ -45,7 +46,8 @@
                 </ul>
                 <button 
                         id="tainacan-filter-tags-prev" 
-                        class="swiper-button-prev">
+                        class="swiper-button-prev"
+                        :aria-label="$i18n.get('previous')">
                     <svg
                             width="24"
                             height="24"
@@ -58,7 +60,8 @@
                 </button>
                 <button 
                         id="tainacan-filter-tags-next" 
-                        class="swiper-button-next">
+                        class="swiper-button-next"
+                        :aria-label="$i18n.get('next')">
                     <svg
                             width="24"
                             height="24"

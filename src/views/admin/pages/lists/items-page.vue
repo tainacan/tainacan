@@ -11,9 +11,9 @@
         <!-- PAGE TITLE --------------------- -->
         <tainacan-title v-if="!$adminOptions.hideItemsListPageTitle">
 
-            <h1>
+            <h2>
                 {{ $route.meta.title }} <span class="is-italic has-text-weight-semibold">{{ !isRepositoryLevel && collection && collection.name ? collection.name : '' }}</span>
-            </h1>
+            </h2>
 
             <!-- Item Creation Dropdown (or button, if few options are available) -->
             <div 
@@ -557,12 +557,13 @@
                 id="filters-modal"
                 ref="filters-modal"     
                 v-model="isFiltersModalActive"       
-                role="region"
+                role="dialog"
                 :width="736"
                 animation="slide-menu"
                 trap-focus
                 aria-modal
                 aria-role="dialog"
+                aria-labelledby="filters-label-landmark"
                 custom-class="tainacan-modal tainacan-form filters-menu"
                 :close-button-aria-label="$i18n.get('close')"
                 @after-leave="filtersModalStateHasChanged = !filtersModalStateHasChanged"
@@ -571,9 +572,6 @@
                     id="filters-items-list"
                     :is-loading-items="isLoadingItems"
                     autofocus="true"
-                    tabindex="-1"
-                    aria-modal
-                    role="dialog"
                     :collection-id="collectionId + ''"
                     :is-repository-level="isRepositoryLevel"
                     @update-is-loading-items-state="(state) => isLoadingItems = state" />

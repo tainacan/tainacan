@@ -184,18 +184,15 @@
                             class="grid-item-checkbox">
                         <b-checkbox
                                 v-if="!$adminOptions.itemsSingleSelectionMode"
+                                :aria-label="$i18n.get('label_select_item')"
                                 :model-value="getSelectedItemChecked(item.id)"
-                                @update:model-value="setSelectedItemChecked(item.id)">
-                            <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
-                        </b-checkbox>
+                                @update:model-value="setSelectedItemChecked(item.id)" />
                         <b-radio
                                 v-else
                                 v-model="singleItemSelection"
                                 name="item-single-selection"
                                 :native-value="item.id"
-                                :aria-label="$i18n.get('label_select_item')">
-                            <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
-                        </b-radio>
+                                :aria-label="$i18n.get('label_select_item')" />
                     </div>
 
                     <!-- Title -->
@@ -256,9 +253,11 @@
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
-                                v-if="!isOnTrash"
-                                id="button-edit"
+                                v-if="!isOnTrash && item.current_user_can_edit"
+                                :id="'button-edit-' + item.id"
+                                class="button-edit"
                                 :aria-label="$i18n.getFrom('items','edit_item')"
+                                :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getItemEditPath(item.collection_id, item.id)"
                                 @click.prevent.stop="goToItemEditPage(item)">
                             <span
                                     v-tooltip="{
@@ -272,8 +271,11 @@
                             </span>
                         </a>
                         <a
-                                v-if="isOnTrash"
-                                :aria-lavel="$i18n.get('label_button_untrash')"
+                                v-if="isOnTrash && item.current_user_can_edit"
+                                :id="'button-untrash-' + item.id"
+                                class="button-untrash" 
+                                role="button"
+                                :aria-label="$i18n.get('label_button_untrash')"
                                 @click.prevent.stop="untrashOneItem(item.id)">
                             <span
                                     v-tooltip="{
@@ -287,8 +289,10 @@
                             </span>
                         </a>
                         <a
-                                v-if="item.current_user_can_delete"
-                                id="button-delete" 
+                                v-if="item.current_user_can_delete && item.current_user_can_edit"
+                                :id="'button-delete-' + item.id"
+                                class="button-delete" 
+                                role="button"
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
                             <span
@@ -306,7 +310,8 @@
                         </a>
                         <a 
                                 v-if="!isOnTrash"
-                                id="button-open-external" 
+                                :id="'button-open-external-' + item.id"
+                                class="button-open-external" 
                                 :aria-label="$i18n.getFrom('items','view_item')"
                                 target="_blank" 
                                 :href="item.url"
@@ -420,9 +425,11 @@
                                 class="actions-area"
                                 :label="$i18n.get('label_actions')">
                             <a
-                                    v-if="!isOnTrash"
-                                    id="button-edit"
+                                    v-if="!isOnTrash && item.current_user_can_edit"
+                                    :id="'button-edit-' + item.id"
+                                    class="button-edit"
                                     :aria-label="$i18n.getFrom('items','edit_item')"
+                                    :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getItemEditPath(item.collection_id, item.id)"
                                     @click.prevent.stop="goToItemEditPage(item)">
                                 <span
                                         v-tooltip="{
@@ -436,8 +443,11 @@
                                 </span>
                             </a>
                             <a
-                                    v-if="isOnTrash"
-                                    :aria-lavel="$i18n.get('label_button_untrash')"
+                                    v-if="isOnTrash && item.current_user_can_edit"
+                                    :id="'button-untrash-' + item.id"
+                                    class="button-untrash" 
+                                    role="button"
+                                    :aria-label="$i18n.get('label_button_untrash')"
                                     @click.prevent.stop="untrashOneItem(item.id)">
                                 <span
                                         v-tooltip="{
@@ -451,8 +461,10 @@
                                 </span>
                             </a>
                             <a
-                                    v-if="item.current_user_can_delete"
-                                    id="button-delete" 
+                                    v-if="item.current_user_can_delete && item.current_user_can_edit"
+                                    :id="'button-delete-' + item.id"
+                                    class="button-delete" 
+                                    role="button"
                                     :aria-label="$i18n.get('label_button_delete')" 
                                     @click.prevent.stop="deleteOneItem(item.id)">
                                 <span
@@ -470,7 +482,8 @@
                             </a>
                             <a 
                                     v-if="!isOnTrash"
-                                    id="button-open-external" 
+                                    :id="'button-open-external-' + item.id"
+                                    class="button-open-external" 
                                     :aria-label="$i18n.getFrom('items','view_item')"
                                     target="_blank" 
                                     :href="item.url"
@@ -514,17 +527,15 @@
                             class="card-checkbox">
                         <b-checkbox
                                 v-if="!$adminOptions.itemsSingleSelectionMode"
+                                :aria-label="$i18n.get('label_select_item')"
                                 :model-value="getSelectedItemChecked(item.id)"
-                                @update:model-value="setSelectedItemChecked(item.id)">
-                            <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
-                        </b-checkbox>
+                                @update:model-value="setSelectedItemChecked(item.id)" />
                         <b-radio
                                 v-else
                                 v-model="singleItemSelection"
                                 name="item-single-selection"
-                                :native-value="item.id">
-                            <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
-                        </b-radio>
+                                :native-value="item.id"
+                                :aria-label="$i18n.get('label_select_item')" />
                     </div>
 
                     <!-- Title -->
@@ -570,9 +581,11 @@
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
-                                v-if="!isOnTrash"
-                                id="button-edit"
+                                v-if="!isOnTrash && item.current_user_can_edit"
+                                :id="'button-edit-' + item.id"
+                                class="button-edit"
                                 :aria-label="$i18n.getFrom('items','edit_item')"
+                                :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getItemEditPath(item.collection_id, item.id)"
                                 @click.prevent.stop="goToItemEditPage(item)">
                             <span
                                     v-tooltip="{
@@ -586,8 +599,11 @@
                             </span>
                         </a>
                         <a
-                                v-if="isOnTrash"
-                                :aria-lavel="$i18n.get('label_button_untrash')"
+                                v-if="isOnTrash && item.current_user_can_edit"
+                                :id="'button-untrash-' + item.id"
+                                class="button-untrash" 
+                                role="button"
+                                :aria-label="$i18n.get('label_button_untrash')"
                                 @click.prevent.stop="untrashOneItem(item.id)">
                             <span
                                     v-tooltip="{
@@ -601,8 +617,10 @@
                             </span>
                         </a>
                         <a
-                                v-if="item.current_user_can_delete"
-                                id="button-delete" 
+                                v-if="item.current_user_can_delete && item.current_user_can_edit"
+                                :id="'button-delete-' + item.id"
+                                class="button-delete" 
+                                role="button"
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
                             <span
@@ -620,7 +638,8 @@
                         </a>
                         <a 
                                 v-if="!isOnTrash"
-                                id="button-open-external" 
+                                :id="'button-open-external-' + item.id"
+                                class="button-open-external" 
                                 :aria-label="$i18n.getFrom('items','view_item')"
                                 target="_blank" 
                                 :href="item.url"
@@ -812,9 +831,11 @@
                                 class="actions-area"
                                 :label="$i18n.get('label_actions')">
                             <a
-                                    v-if="!isOnTrash"
-                                    id="button-edit"
+                                    v-if="!isOnTrash && item.current_user_can_edit"
+                                    :id="'button-edit-' + item.id"
+                                    class="button-edit"
                                     :aria-label="$i18n.getFrom('items','edit_item')"
+                                    :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getItemEditPath(item.collection_id, item.id)"
                                     @click.prevent.stop="goToItemEditPage(item)">
                                 <span
                                         v-tooltip="{
@@ -828,8 +849,11 @@
                                 </span>
                             </a>
                             <a
-                                    v-if="isOnTrash"
-                                    :aria-lavel="$i18n.get('label_button_untrash')"
+                                    v-if="isOnTrash && item.current_user_can_edit"
+                                    :id="'button-untrash-' + item.id"
+                                    class="button-untrash" 
+                                    role="button"
+                                    :aria-label="$i18n.get('label_button_untrash')"
                                     @click.prevent.stop="untrashOneItem(item.id)">
                                 <span
                                         v-tooltip="{
@@ -843,8 +867,10 @@
                                 </span>
                             </a>
                             <a
-                                    v-if="item.current_user_can_delete"
-                                    id="button-delete" 
+                                    v-if="item.current_user_can_delete && item.current_user_can_edit"
+                                    :id="'button-delete-' + item.id"
+                                    class="button-delete" 
+                                    role="button"
                                     :aria-label="$i18n.get('label_button_delete')" 
                                     @click.prevent.stop="deleteOneItem(item.id)">
                                 <span
@@ -862,7 +888,8 @@
                             </a>
                             <a 
                                     v-if="!isOnTrash"
-                                    id="button-open-external" 
+                                    :id="'button-open-external-' + item.id"
+                                    class="button-open-external" 
                                     :aria-label="$i18n.getFrom('items','view_item')"
                                     target="_blank" 
                                     :href="item.url"
@@ -945,13 +972,17 @@
                         <!-- Checking list -->
                         <th
                                 v-if="collectionId && !$adminOptions.hideItemsListSelection && ($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit))">
-                            &nbsp;
+                            <span class="sr-only">
+                                {{ $i18n.get('label_select_item') }}
+                            </span>
                         <!-- nothing to show on header for checkboxes -->
                         </th>
 
                         <!-- Status -->
                         <th v-if="isOnAllItemsTabs">
-                            &nbsp;
+                            <span class="sr-only">
+                                {{ $i18n.get('label_status') }}
+                            </span>
                         </th>
 
                         <!-- Displayed Metadata -->
@@ -982,7 +1013,9 @@
                         <th
                                 v-if="items.findIndex((item) => item.current_user_can_edit || item.current_user_can_delete) >= 0"
                                 class="actions-header">
-                            &nbsp;
+                            <span class="sr-only">
+                                {{ $i18n.get('label_actions') }}
+                            </span>
                         <!-- nothing to show on header for actions cell-->
                         </th>
                     </tr>
@@ -1005,17 +1038,15 @@
                                 class="checkbox-cell">
                             <b-checkbox
                                     v-if="!$adminOptions.itemsSingleSelectionMode"
+                                    :aria-label="$i18n.get('label_select_item')"
                                     :model-value="getSelectedItemChecked(item.id)"
-                                    @update:model-value="setSelectedItemChecked(item.id)">
-                                <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
-                            </b-checkbox>
+                                    @update:model-value="setSelectedItemChecked(item.id)" />
                             <b-radio
                                     v-else
                                     v-model="singleItemSelection"
                                     name="item-single-selection"
-                                    :native-value="item.id">
-                                <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
-                            </b-radio>
+                                    :native-value="item.id"
+                                    :aria-label="$i18n.get('label_select_item')" />
                         </td>
                         <td 
                                 v-if="isOnAllItemsTabs"
@@ -1184,8 +1215,10 @@
                                     class="actions-container">
                                 <a
                                         v-if="!isOnTrash && item.current_user_can_edit"
-                                        id="button-edit"
+                                        :id="'button-edit-' + item.id"
+                                        class="button-edit"
                                         :aria-label="$i18n.getFrom('items','edit_item')"
+                                        :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getItemEditPath(item.collection_id, item.id)"
                                         @click.prevent.stop="goToItemEditPage(item)">
                                     <span
                                             v-tooltip="{
@@ -1199,8 +1232,11 @@
                                     </span>
                                 </a>
                                 <a
-                                        v-if="isOnTrash"
-                                        :aria-lavel="$i18n.get('label_button_untrash')"
+                                        v-if="isOnTrash && item.current_user_can_edit"
+                                        :id="'button-untrash-' + item.id"
+                                        class="button-untrash" 
+                                        role="button"
+                                        :aria-label="$i18n.get('label_button_untrash')"
                                         @click.prevent.stop="untrashOneItem(item.id)">
                                     <span
                                             v-tooltip="{
@@ -1214,8 +1250,10 @@
                                     </span>
                                 </a>
                                 <a
-                                        v-if="item.current_user_can_delete"
-                                        id="button-delete" 
+                                        v-if="item.current_user_can_delete && item.current_user_can_edit"
+                                        :id="'button-delete-' + item.id"
+                                        class="button-delete" 
+                                        role="button"
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneItem(item.id)">
                                     <span
@@ -1233,7 +1271,8 @@
                                 </a>
                                 <a 
                                         v-if="!isOnTrash"
-                                        id="button-open-external" 
+                                        :id="'button-open-external-' + item.id"
+                                        class="button-open-external" 
                                         :aria-label="$i18n.getFrom('items','view_item')"
                                         target="_blank" 
                                         :href="item.url"
@@ -1358,8 +1397,10 @@
                             :label="$i18n.get('label_actions')">
                         <a
                                 v-if="!isOnTrash"
-                                id="button-edit"
+                                :id="'button-edit-' + item.id"
+                                class="button-edit"
                                 :aria-label="$i18n.getFrom('items','edit_item')"
+                                :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getItemEditPath(item.collection_id, item.id)"
                                 @click.prevent.stop="goToItemEditPage(item)">
                             <span
                                     v-tooltip="{
@@ -1374,7 +1415,10 @@
                         </a>
                         <a
                                 v-if="isOnTrash"
-                                :aria-lavel="$i18n.get('label_button_untrash')"
+                                :id="'button-untrash-' + item.id"
+                                class="button-untrash" 
+                                role="button"
+                                :aria-label="$i18n.get('label_button_untrash')"
                                 @click.prevent.stop="untrashOneItem(item.id)">
                             <span
                                     v-tooltip="{
@@ -1389,7 +1433,9 @@
                         </a>
                         <a
                                 v-if="item.current_user_can_delete"
-                                id="button-delete" 
+                                :id="'button-delete-' + item.id"
+                                class="button-delete" 
+                                role="button"
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
                             <span
@@ -1407,7 +1453,8 @@
                         </a>
                         <a 
                                 v-if="!isOnTrash"
-                                id="button-open-external" 
+                                :id="'button-open-external-' + item.id"
+                                class="button-open-external" 
                                 :aria-label="$i18n.getFrom('items','view_item')"
                                 target="_blank" 
                                 :href="item.url"
@@ -1598,8 +1645,10 @@
                                     :label="$i18n.get('label_actions')">
                                 <a
                                         v-if="!isOnTrash && item.current_user_can_edit"
-                                        id="button-edit"
+                                        :id="'button-edit-' + item.id"
+                                        class="button-edit"
                                         :aria-label="$i18n.getFrom('items','edit_item')"
+                                        :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getItemEditPath(item.collection_id, item.id)"
                                         @click.prevent.stop="goToItemEditPage(item)">
                                     <span
                                             v-tooltip="{
@@ -1614,7 +1663,10 @@
                                 </a>
                                 <a
                                         v-if="isOnTrash && item.current_user_can_edit"
-                                        :aria-lavel="$i18n.get('label_button_untrash')"
+                                        :id="'button-untrash-' + item.id"
+                                        class="button-untrash" 
+                                        role="button"
+                                        :aria-label="$i18n.get('label_button_untrash')"
                                         @click.prevent.stop="untrashOneItem(item.id)">
                                     <span
                                             v-tooltip="{
@@ -1628,8 +1680,10 @@
                                     </span>
                                 </a>
                                 <a
-                                        v-if="item.current_user_can_delete && item.current_user_can_edit"
-                                        id="button-delete" 
+                                        v-if="item.current_user_can_delete"
+                                        :id="'button-delete-' + item.id"
+                                        class="button-delete" 
+                                        role="button"
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneItem(item.id)">
                                     <span
@@ -1703,13 +1757,14 @@
                             <div 
                                     v-if="Object.keys(geocoordinateMetadata).length"
                                     class="geocoordinate-panel--input">
-                                <label>{{ $i18n.get('label_showing_locations_for') }}&nbsp;</label>
+                                <label id="tainacan-select-geocoordinate-metatum-label">{{ $i18n.get('label_showing_locations_for') }}&nbsp;</label>
                                 <div 
                                         id="tainacan-select-geocoordinate-metatum"
                                         class="control">
                                     <span class="select">
                                         <select
                                                 v-model="selectedGeocoordinateMetadatumId"
+                                                aria-label="tainacan-select-geocoordinate-metatum-label"
                                                 :placeholder="$i18n.get('instruction_select_geocoordinate_metadatum')">
                                             <option
                                                     v-for="(geocoordinateMetadatum, geocoordinateMetadatumId) in geocoordinateMetadata"
@@ -1833,7 +1888,9 @@
                                             :label="$i18n.get('label_actions')">
                                         <a
                                                 v-if="itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id)"
-                                                id="button-show-location"
+                                                :id="'button-show-location-' + item.id"
+                                                class="button-show-location"
+                                                role="button"
                                                 :aria-label="$i18n.get('label_show_item_location_on_map')"
                                                 @click.prevent.stop="showLocationsByItem(item)">
                                             <span
@@ -1856,8 +1913,10 @@
                                         </a>
                                         <a
                                                 v-if="!isOnTrash && item.current_user_can_edit"
-                                                id="button-edit"
+                                                :id="'button-edit-' + item.id"
+                                                class="button-edit"
                                                 :aria-label="$i18n.getFrom('items','edit_item')"
+                                                :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getItemEditPath(item.collection_id, item.id)"
                                                 @click.prevent.stop="goToItemEditPage(item)">
                                             <span
                                                     v-tooltip="{
@@ -1872,7 +1931,10 @@
                                         </a>
                                         <a
                                                 v-if="isOnTrash && item.current_user_can_edit"
-                                                :aria-lavel="$i18n.get('label_button_untrash')"
+                                                :id="'button-untrash-' + item.id"
+                                                class="button-untrash" 
+                                                role="button"
+                                                :aria-label="$i18n.get('label_button_untrash')"
                                                 @click.prevent.stop="untrashOneItem(item.id)">
                                             <span
                                                     v-tooltip="{
@@ -1887,7 +1949,9 @@
                                         </a>
                                         <a
                                                 v-if="item.current_user_can_delete && item.current_user_can_edit"
-                                                id="button-delete" 
+                                                :id="'button-delete-' + item.id"
+                                                class="button-delete" 
+                                                role="button"
                                                 :aria-label="$i18n.get('label_button_delete')" 
                                                 @click.prevent.stop="deleteOneItem(item.id)">
                                             <span
@@ -1905,7 +1969,8 @@
                                         </a>
                                         <a 
                                                 v-if="!isOnTrash"
-                                                id="button-open-external" 
+                                                :id="'button-open-external-' + item.id"
+                                                class="button-open-external" 
                                                 :aria-label="$i18n.getFrom('items','view_item')"
                                                 target="_blank" 
                                                 :href="item.url"
@@ -2084,9 +2149,11 @@
                                 class="actions-area"
                                 :label="$i18n.get('label_actions')">
                             <a
-                                    v-if="!isOnTrash"
-                                    id="button-edit"
+                                    v-if="!isOnTrash && item.current_user_can_edit"
+                                    :id="'button-edit-' + item.id"
+                                    class="button-edit"
                                     :aria-label="$i18n.getFrom('items','edit_item')"
+                                    :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getItemEditPath(item.collection_id, item.id)"
                                     @click.prevent.stop="goToItemEditPage(item)">
                                 <span
                                         v-tooltip="{
@@ -2100,8 +2167,11 @@
                                 </span>
                             </a>
                             <a
-                                    v-if="isOnTrash"
-                                    :aria-lavel="$i18n.get('label_button_untrash')"
+                                    v-if="isOnTrash && item.current_user_can_edit"
+                                    :id="'button-untrash-' + item.id"
+                                    class="button-untrash" 
+                                    role="button"
+                                    :aria-label="$i18n.get('label_button_untrash')"
                                     @click.prevent.stop="untrashOneItem(item.id)">
                                 <span
                                         v-tooltip="{
@@ -2115,8 +2185,10 @@
                                 </span>
                             </a>
                             <a
-                                    v-if="item.current_user_can_delete"
-                                    id="button-delete" 
+                                    v-if="item.current_user_can_delete && item.current_user_can_edit"
+                                    :id="'button-delete-' + item.id"
+                                    class="button-delete" 
+                                    role="button"
                                     :aria-label="$i18n.get('label_button_delete')" 
                                     @click.prevent.stop="deleteOneItem(item.id)">
                                 <span
@@ -2134,7 +2206,8 @@
                             </a>
                             <a 
                                     v-if="!isOnTrash"
-                                    id="button-open-external" 
+                                    :id="'button-open-external-' + item.id"
+                                    class="button-open-external" 
                                     :aria-label="$i18n.getFrom('items','view_item')"
                                     target="_blank" 
                                     :href="item.url"

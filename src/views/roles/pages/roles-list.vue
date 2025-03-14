@@ -132,7 +132,7 @@
                                     scope="row"
                                     class="check-column">
                                 <label
-                                        class="screen-reader-text"
+                                        class="sr-only"
                                         :for="'role_' + role.slug">
                                     {{ $i18n.get('Selecionar') + ' ' + role.name }}
                                 </label>

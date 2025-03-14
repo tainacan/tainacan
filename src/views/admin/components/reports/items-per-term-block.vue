@@ -64,7 +64,7 @@
                     <span class="paging-input">
                         <label
                                 for="current-page-selector"
-                                class="screen-reader-text">
+                                class="sr-only">
                             {{ $i18n.get('label_current_page') }}
                         </label>
                         <input
@@ -109,7 +109,7 @@
             <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(taxonomyTermsLatestCachedOn).toLocaleString() }}</span>
             <button 
                     @click="loadTaxonomyTerms(true)">
-                <span class="screen-reader-text">
+                <span class="sr-only">
                     {{ $i18n.get('label_get_latest_report') }}
                 </span>
                 <span class="icon">

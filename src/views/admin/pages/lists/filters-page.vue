@@ -393,6 +393,7 @@
                     aria-modal
                     aria-role="dialog"
                     custom-class="tainacan-modal"
+                    can-cancel="['escape', 'outside']"
                     :close-button-aria-label="$i18n.get('close')">
                 <div 
                         autofocus

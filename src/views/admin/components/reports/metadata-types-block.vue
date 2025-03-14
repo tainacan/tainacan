@@ -7,7 +7,7 @@
             <button 
                     :class="{ 'current': metadataTypeChartMode == 'bar' }"
                     @click="metadataTypeChartMode = 'bar'">
-                <span class="screen-reader-text">
+                <span class="sr-only">
                     {{ $i18n.get('label_bar_chart') }}
                 </span>
                 <span class="icon">
@@ -17,7 +17,7 @@
             <button 
                     :class="{ 'current': metadataTypeChartMode == 'circle' }"
                     @click="metadataTypeChartMode = 'circle'">
-                <span class="screen-reader-text">
+                <span class="sr-only">
                     {{ $i18n.get('label_pie_chart') }}
                 </span>
                 <span class="icon">

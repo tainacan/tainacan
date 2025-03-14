@@ -9,7 +9,6 @@
             <template v-if="activeMetadataSectionsList">
                 <button
                         v-if="activeMetadataSectionsList.length > 0"
-                        aria-controls="filters-items-list"
                         :aria-expanded="!collapseAll"
                         class="link-style collapse-all"
                         @click="collapseAll = !collapseAll">
@@ -205,13 +204,17 @@
                                         :disabled="isUpdatingMetadataSectionsOrder"
                                         size="is-small" 
                                         :model-value="metadataSection.enabled"
-                                        @update:model-value="onChangeEnableSection($event, sectionIndex)" />
+                                        @update:model-value="onChangeEnableSection($event, sectionIndex)">
+                                    <span class="sr-only">{{ metadataSection.enabled ? $i18n.get('label_enabled') : $i18n.get('label_disabled') }}</span>
+                                </b-switch>
                                 <a 
                                         v-if="metadataSection.current_user_can_edit"
                                         :style="{ visibility: 
                                             metadataSection.collection_id != collectionId
                                                 ? 'hidden' : 'visible'
                                         }" 
+                                        role="button"
+                                        :aria-label="$i18n.get('edit')"
                                         @click.prevent="toggleMetadataSectionEdition(metadataSection)">
                                     <span 
                                             v-tooltip="{
@@ -228,6 +231,8 @@
                                         v-if="metadataSection.current_user_can_delete"
                                         :disabled="metadataSection.metadata_object_list.length > 0"
                                         :style="{ visibility: metadataSection.collection_id != collectionId || metadataSection.id === 'default_section' || metadataSection.metadata_object_list.length ? 'hidden' : 'visible' }"
+                                        role="button"
+                                        :aria-label="$i18n.get('delete')"
                                         @click.prevent="removeMetadataSection(metadataSection)">
                                     <span
                                             v-tooltip="{
@@ -309,6 +314,7 @@
                                                     :disabled="index == 0"
                                                     class="link-button"
                                                     :aria-label="$i18n.get('label_move_up')"
+                                                    role="button"
                                                     @click="moveMetadatumUpViaButton(index, sectionIndex)">
                                                 <span class="icon">
                                                     <i class="tainacan-icon tainacan-icon-previous tainacan-icon-rotate-90" />
@@ -318,6 +324,7 @@
                                                     :disabled="index == metadataSection.metadata_object_list.filter((meta) => meta != undefined && meta.parent == 0).length - 1"
                                                     class="link-button"
                                                     :aria-label="$i18n.get('label_move_down')"
+                                                    role="button"
                                                     @click="moveMetadatumDownViaButton(index, sectionIndex)">
                                                 <span class="icon">
                                                     <i class="tainacan-icon tainacan-icon-next tainacan-icon-rotate-90" />
@@ -422,13 +429,17 @@
                                                     :disabled="isUpdatingMetadataOrder || !metadataSection.enabled"
                                                     size="is-small" 
                                                     :model-value="metadatum.enabled"
-                                                    @update:model-value="onChangeEnable($event, index, sectionIndex)" />
+                                                    @update:model-value="onChangeEnable($event, index, sectionIndex)">
+                                                <span class="sr-only">{{ metadatum.enabled ? $i18n.get('label_enabled') : $i18n.get('label_disabled') }}</span>
+                                            </b-switch>
                                             <a 
                                                     v-if="metadatum.current_user_can_edit"
                                                     :style="{ visibility: 
                                                         metadatum.collection_id != collectionId
                                                             ? 'hidden' : 'visible'
-                                                    }" 
+                                                    }"
+                                                    role="button"
+                                                    :aria-label="$i18n.get('edit')" 
                                                     @click.prevent="toggleMetadatumEdition(metadatum)">
                                                 <span 
                                                         v-tooltip="{
@@ -444,6 +455,8 @@
                                             <a 
                                                     v-if="metadatum.current_user_can_delete"
                                                     :style="{ visibility: metadatum.collection_id != collectionId || metadatum.metadata_type_object.core ? 'hidden' : 'visible' }"
+                                                    role="button"
+                                                    :aria-label="$i18n.get('delete')"
                                                     @click.prevent="removeMetadatum(metadatum, sectionIndex)">
                                                 <span
                                                         v-tooltip="{
@@ -485,7 +498,7 @@
                                         aria-role="dialog"
                                         width="900px"
                                         custom-class="tainacan-modal"
-                                        :close-button-aria-label="$i18n.get('close')"
+                                        :can-cancel="['escape', 'outside']"
                                         @close="onEditionCanceled()">
                                     <metadatum-edition-form
                                             :collection-id="collectionId"
@@ -507,7 +520,7 @@
                             aria-modal
                             aria-role="dialog"
                             custom-class="tainacan-modal"
-                            :close-button-aria-label="$i18n.get('close')"
+                            :can-cancel="['escape', 'outside']"
                             @close="onSectionEditionCanceled()">
                         <metadata-section-edition-form
                                 :collection-id="collectionId"

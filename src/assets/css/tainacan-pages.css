@@ -1109,7 +1109,7 @@
   --tainacan-admin-button-hover-background-color: color-mix(in srgb, var(--tainacan-turquoise3) 30%, transparent);
   --tainacan-admin-button-active-background-color: color-mix(in srgb, var(--tainacan-turquoise3) 50%, transparent);
   --tainacan-admin-navigation-sidebar-background-color: var(--tainacan-turquoise2);
-  --tainacan-admin-navigation-sidebar-separator-color: var(--tainacan-turquoise4);
+  --tainacan-admin-navigation-sidebar-separator-color: var(--tainacan-turquoise5);
   --tainacan-admin-navigation-sidebar-floating-menu-background-color: var(--tainacan-white);
   --tainacan-admin-navigation-sidebar-width: 215px;
   display: grid;

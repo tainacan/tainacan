@@ -50,12 +50,16 @@
                     <tr>
                         <!-- Checking list -->
                         <th v-if="$userCaps.hasCapability('tnc_rep_delete_taxonomies')">
-                            &nbsp;
+                            <span class="sr-only">
+                                {{ $i18n.get('label_select_taxonomy') }}
+                            </span>
                         <!-- nothing to show on header -->
                         </th>
                         <!-- Status icon -->
                         <th v-if="isOnAllTaxonomiesTab">
-                            &nbsp;
+                            <span class="sr-only">
+                                {{ $i18n.get('label_status') }}
+                            </span>
                         </th>
                         <!-- Name -->
                         <th>
@@ -85,7 +89,9 @@
                         <th 
                                 v-if="taxonomies.findIndex((taxonomy) => taxonomy.current_user_can_edit || taxonomy.current_user_can_delete) >= 0"
                                 class="actions-header">
-                            &nbsp;
+                            <span class="sr-only">
+                                {{ $i18n.get('label_actions') }}
+                            </span>
                         <!-- nothing to show on header for actions cell-->
                         </th>
                     </tr>
@@ -101,7 +107,8 @@
                                 :class="{ 'is-selecting': isSelecting }"
                                 class="checkbox-cell">
                             <b-checkbox 
-                                    v-model="selected[index]" /> 
+                                    v-model="selected[index]"
+                                    :aria-label="$i18n.get('label_select_taxonomy') + ': ' + taxonomy.name" /> 
                         </td>
                         <!-- Status icon -->
                         <td 
@@ -214,9 +221,11 @@
                                     class="actions-container">
                                 <a 
                                         v-if="taxonomy.current_user_can_edit" 
-                                        id="button-edit"
+                                        :id="'button-edit-' + taxonomy.id"
+                                        class="button-edit"
                                         :aria-label="$i18n.getFrom('taxonomies','edit_item')" 
-                                        @click="onClickTaxonomy($event, taxonomy.id, index)">
+                                        :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getTaxonomyEditPath(taxonomy.id)"
+                                        @click.prevent.stop="onClickTaxonomy($event, taxonomy.id, index)">
                                     <span
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
@@ -230,7 +239,9 @@
                                 </a>
                                 <a 
                                         v-if="taxonomy.current_user_can_delete" 
-                                        id="button-delete"
+                                        :id="'button-delete-' + taxonomy.id"
+                                        class="button-delete"
+                                        role="button"
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneTaxonomy(taxonomy.id)">
                                     <span
@@ -248,7 +259,8 @@
                                 </a>
                                 <a 
                                         v-if="!isOnTrash"
-                                        id="button-open-external" 
+                                        :id="'button-open-external-' + taxonomy.id"
+                                        class="button-open-external" 
                                         :aria-label="$i18n.getFrom('taxonomies','view_item')"
                                         target="_blank" 
                                         :href="themeTaxonomiesURL + taxonomy.slug"
@@ -293,7 +305,6 @@
                 selected: [],
                 allOnPageSelected: false,
                 isSelecting: false,
-                adminUrl: tainacan_plugin.admin_url,
                 themeTaxonomiesURL: tainacan_plugin.theme_taxonomy_list_url
             }
         },
@@ -431,7 +442,7 @@
                 let htmlList = '';
 
                 for (let i = 0; i < collections.length; i++) {
-                    htmlList += `<a target="_blank" href=${ this.adminUrl + '?page=tainacan_admin#' + this.$routerHelper.getCollectionPath(collections[i].id)}>${collections[i].name} (${metadata[collections[i].id].name})</a>`;
+                    htmlList += `<a target="_blank" href=${ this.$routerHelper.getAbsoluteAdminPath() + this.$routerHelper.getCollectionPath(collections[i].id)}>${collections[i].name} (${metadata[collections[i].id].name})</a>`;
                     if (collections.length > 2 && i < collections.length - 1) {
                         if (i < collections.length - 2)
                             htmlList += ', '

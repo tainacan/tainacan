@@ -129,6 +129,7 @@
             <b-modal 
                     v-model="editItemModalOpen"
                     :width="1200"
+                    :can-cancel="['escape', 'outside']"
                     :custom-class="'tainacan-modal' + (collection && collection.id ? ' tainacan-modal-item-edition--collection-' + collection.id : '')"
                     :close-button-aria-label="$i18n.get('close')">
                 <iframe 

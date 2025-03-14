@@ -91,12 +91,16 @@
                     <tr>
                         <!-- Checking list -->
                         <th v-if="$userCaps.hasCapability('tnc_rep_delete_collections')">
-                            &nbsp;
+                            <span class="sr-only">
+                                {{ $i18n.get('label_select_collection') }}
+                            </span>
                         <!-- nothing to show on header -->
                         </th>
                         <!-- Status icon -->
                         <th v-if="isOnAllCollectionsTab">
-                            &nbsp;
+                            <span class="sr-only">
+                                {{ $i18n.get('label_status') }}
+                            </span>
                         </th>
                         <!-- Thumbnail -->
                         <th class="thumbnail-cell">
@@ -143,7 +147,9 @@
                         <th 
                                 v-if="collections.findIndex((collection) => collection.current_user_can_edit || collection.current_user_can_delete) >= 0"
                                 class="actions-header">
-                            &nbsp;
+                            <span class="sr-only">
+                                {{ $i18n.get('label_actions') }}
+                            </span>
                         <!-- nothing to show on header for actions cell-->
                         </th>
                     </tr>
@@ -158,7 +164,9 @@
                                 v-if="$userCaps.hasCapability('tnc_rep_delete_collections')"
                                 :class="{ 'is-selecting': isSelectingCollections }"
                                 class="checkbox-cell">
-                            <b-checkbox v-model="selectedCollections[index]" /> 
+                            <b-checkbox
+                                    v-model="selectedCollections[index]"
+                                    :aria-label="$i18n.get('label_select_collection') + ': ' + collection.name" /> 
                         </td>
                         <!-- Status icon -->
                         <td 
@@ -333,8 +341,10 @@
                                     class="actions-container">
                                 <a 
                                         v-if="collection.current_user_can_edit" 
-                                        id="button-edit"
+                                        :id="'button-edit-' + collection.id"
+                                        class="button-edit"
                                         :aria-label="$i18n.getFrom('collections','edit_item')" 
+                                        :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getCollectionEditPath(collection.id)"
                                         @click.prevent.stop="goToCollectionEditPage(collection.id)">                      
                                     <span 
                                             v-tooltip="{
@@ -350,7 +360,9 @@
                                 </a>
                                 <a 
                                         v-if="collection.current_user_can_delete"
-                                        id="button-delete"
+                                        :id="'button-delete-' + collection.id"
+                                        class="button-delete"
+                                        role="button"
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneCollection(collection.id)">
                                     <span 
@@ -367,7 +379,8 @@
                                     </span>
                                 </a>
                                 <a 
-                                        id="button-open-external" 
+                                        :id="'button-open-external-' + collection.id"
+                                        class="button-open-external" 
                                         :aria-label="$i18n.getFrom('collections','view_item')"
                                         target="_blank" 
                                         :href="collection.url"
@@ -415,7 +428,7 @@ export default {
             cursorPosX: -1,
             cursorPosY: -1,
             contextMenuIndex: null,
-            contextMenuCollection: null
+            contextMenuCollection: null,
         }
     },
     computed: {

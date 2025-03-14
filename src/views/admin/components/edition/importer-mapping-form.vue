@@ -180,7 +180,7 @@
                         trap-focus
                         aria-modal
                         aria-role="dialog"
-                        :close-button-aria-label="$i18n.get('close')"
+                        :can-cancel="['escape', 'outside']"
                         custom-class="tainacan-modal"
                         @close="onMetadatumEditionCanceled()">
                     <div 
@@ -271,7 +271,6 @@
                 :width="820"
                 scroll="keep"
                 trap-focus
-                :close-button-aria-label="$i18n.get('close')"
                 autofocus
                 role="dialog"
                 tabindex="-1"

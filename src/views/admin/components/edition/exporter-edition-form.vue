@@ -72,7 +72,7 @@
                             :label="$i18n.get('label_send_email')">
                         <help-button
                                 :title="$i18n.get('label_send_email')"
-                                :message="'<span>' + $i18n.get('info_send_email') + `&nbsp;<a href='` + adminFullURL + $routerHelper.getProcessesPage() + `'>` + $i18n.get('activities') + ` ` + $i18n.get('label_page') + '</a></span>'"
+                                :message="'<span>' + $i18n.get('info_send_email') + `&nbsp;<a href='` + $routerHelper.getAbsoluteAdminPath() + $routerHelper.getProcessesPage() + `'>` + $i18n.get('activities') + ` ` + $i18n.get('label_page') + '</a></span>'"
                                 extra-classes="tainacan-repository-tooltip" />
                         <b-checkbox
                                 v-model="sendEmail"
@@ -119,7 +119,6 @@
                 exporterType: '',
                 exporterName: '',
                 collections: [],
-                adminFullURL: tainacan_plugin.admin_url + '?page=tainacan_admin#', 
                 isFetchingCollections: false,
                 selectedMapping: undefined,
                 selectedCollection: undefined,

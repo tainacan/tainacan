@@ -37,7 +37,7 @@
                             <button 
                                     :class="{ 'current': itemsPerTermChartMode == 'bar' }"
                                     @click="itemsPerTermChartMode = 'bar'">
-                                <span class="screen-reader-text">
+                                <span class="sr-only">
                                     {{ $i18n.get('label_bar_chart') }}
                                 </span>
                                 <span class="icon">
@@ -47,7 +47,7 @@
                             <button 
                                     :class="{ 'current': itemsPerTermChartMode == 'treemap' }"
                                     @click="itemsPerTermChartMode = 'treemap'">
-                                <span class="screen-reader-text">
+                                <span class="sr-only">
                                     {{ $i18n.get('label_tree_map') }}
                                 </span>
                                 <span class="icon">
@@ -109,7 +109,7 @@
                             <span class="paging-input">
                                 <label
                                         for="current-page-selector"
-                                        class="screen-reader-text">
+                                        class="sr-only">
                                     {{ $i18n.get('label_current_page') }}
                                 </label>
                                 <input
@@ -210,7 +210,7 @@
                                 <span class="paging-input">
                                     <label
                                             for="current-page-selector"
-                                            class="screen-reader-text">
+                                            class="sr-only">
                                         {{ $i18n.get('label_current_page') }}
                                     </label>
                                     <input
@@ -273,7 +273,7 @@
                 class="report-last-cached-on">
             <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(metadatumTermsLatestCachedOn).toLocaleString() }}</span>
             <button @click="loadMetadatumTerms(true)">
-                <span class="screen-reader-text">
+                <span class="sr-only">
                     {{ $i18n.get('label_get_latest_report') }}
                 </span>
                 <span class="icon">
@@ -287,7 +287,7 @@
             <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(metadatumChildTermsLatestCachedOn).toLocaleString() }}</span>
             <button 
                     @click="loadMetadatumChildTerms(true)">
-                <span class="screen-reader-text">
+                <span class="sr-only">
                     {{ $i18n.get('label_get_latest_report') }}
                 </span>
                 <span class="icon">

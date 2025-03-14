@@ -1,7 +1,5 @@
 <template>
-    <aside 
-            aria-labelledby="filters-label-landmark"
-            :aria-busy="isLoadingFilters">
+    <aside :aria-busy="isLoadingFilters">
         <b-loading
                 v-model="isLoadingFilters"
                 :is-full-page="false" />

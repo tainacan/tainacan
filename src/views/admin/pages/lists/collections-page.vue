@@ -4,9 +4,9 @@
         <b-loading v-model="isLoading" />
         
         <tainacan-title>
-            <h1>
+            <h2>
                 {{ $route.meta.title }}
-            </h1>
+            </h2>
 
             <!-- New Collection button -->
             <div 
@@ -138,6 +138,7 @@
                     id="collections-page-author-filter"
                     class="header-item">
                 <label 
+                        id="author-filter-switch-label"
                         v-tooltip="{
                             content: $i18n.get('label_show_only_created_by_me'),
                             autoHide: true,
@@ -149,6 +150,7 @@
                         v-model="authorFilter"
                         size="is-small"
                         class="author-filter-switch"
+                        aria-labelledby="author-filter-switch-label"
                         :disabled="collections.length <= 0 && isLoading"
                         :true-value="'current-author'"
                         :false-value="''"
@@ -218,7 +220,7 @@
                         class="sorting-select"
                         :disabled="collections.length <= 0"
                         :model-value="orderBy"
-                        :label="$i18n.get('label_sorting')"
+                        :aria-label="$i18n.get('label_sorting')"
                         @update:model-value="onChangeOrderBy($event)">
                     <option
                             v-for="(option, index) in sortingOptions"
@@ -377,7 +379,8 @@
                         <b-field 
                                 horizontal 
                                 :label="$i18n.get('label_collections_per_page')"> 
-                            <b-select 
+                            <b-select
+                                    :aria-label="$i18n.get('label_collections_per_page')"
                                     :model-value="collectionsPerPage"
                                     :disabled="collections.length <= 0" 
                                     @update:model-value="onChangeCollectionsPerPage">

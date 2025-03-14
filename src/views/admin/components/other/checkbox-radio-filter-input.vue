@@ -50,6 +50,7 @@
                         <a
                                 v-if="isUsingElasticSearch ? previousLastTerms.length && previousLastTerms[0] != checkboxListOffset : checkboxListOffset"
                                 role="button"
+                                :aria-label="$i18n.get('previous')"
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="previousSearchPage">
                             <span class="icon">
@@ -94,6 +95,7 @@
                         <a
                                 v-if="!noMoreSearchPage"
                                 role="button"
+                                :aria-label="$i18n.get('next')"
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="nextSearchPage">
                             <span class="icon">
@@ -109,6 +111,7 @@
                         <a
                                 v-if="isUsingElasticSearch ? previousLastTerms.length && previousLastTerms[0] != checkboxListOffset : checkboxListOffset"
                                 role="button"
+                                :aria-label="$i18n.get('previous')"
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="previousPage">
                             <span class="icon">
@@ -157,6 +160,7 @@
                         <a
                                 v-if="!noMorePage"
                                 role="button"
+                                :aria-label="$i18n.get('next')"
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="nextPage">
                             <span class="icon">

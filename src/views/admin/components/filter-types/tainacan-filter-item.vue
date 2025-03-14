@@ -61,7 +61,6 @@
             <div class="collapse-trigger">
                 <button
                         :for="'filter-input-id-' + filter.id"
-                        :aria-controls="'filter-input-id-' + filter.id"
                         class="label"
                         @click="displayFilter = true">
                     <span class="icon">

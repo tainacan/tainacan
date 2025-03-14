@@ -219,6 +219,9 @@ export const RouterHelperPlugin = {};
 RouterHelperPlugin.install = function (app, options = {}) {
     
     app.config.globalProperties.$routerHelper = {
+        getAbsoluteAdminPath() {
+            return tainacan_plugin.admin_url + '?page=tainacan_admin#';
+        },
         // Lists
         getCollectionsPath(query) {
             return '/collections/?' + qs.stringify(query);

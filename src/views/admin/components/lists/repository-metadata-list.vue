@@ -11,7 +11,6 @@
             <template v-if="activeMetadatumList && !isLoadingMetadata">
                 <button
                         v-if="activeMetadatumList.length > 0"
-                        aria-controls="filters-items-list"
                         :aria-expanded="!collapseAll"
                         class="link-style collapse-all"
                         @click="collapseAll = !collapseAll">
@@ -210,7 +209,9 @@
                                             :style="{ visibility: 
                                                 metadatum.collection_id != collectionId
                                                     ? 'hidden' : 'visible'
-                                            }" 
+                                            }"
+                                            role="button"
+                                            :aria-label="$i18n.get('edit')" 
                                             @click.prevent="toggleMetadatumEdition(metadatum)">
                                         <span 
                                                 v-tooltip="{
@@ -226,6 +227,8 @@
                                     <a 
                                             v-if="metadatum.current_user_can_delete"
                                             :style="{ visibility: metadatum.collection_id != collectionId || metadatum.metadata_type_object.core ? 'hidden' : 'visible' }"
+                                            role="button"
+                                            :aria-label="$i18n.get('delete')"
                                             @click.prevent="removeMetadatum(metadatum)">
                                         <span
                                                 v-tooltip="{
@@ -265,7 +268,7 @@
                                 aria-modal
                                 aria-role="dialog"
                                 custom-class="tainacan-modal"
-                                :close-button-aria-label="$i18n.get('close')"
+                                :can-cancel="['escape', 'outside']"
                                 @close="onEditionCanceled()">
                             <metadatum-edition-form
                                     :collection-id="collectionId"
