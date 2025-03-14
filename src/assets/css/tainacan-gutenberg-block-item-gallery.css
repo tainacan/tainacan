@@ -948,155 +948,188 @@ button.swiper-pagination-bullet {
   --pswp-error-text-color: var(--tainacan-lightbox-text-color, #fafafa);
   --pswp-icon-color: var(--tainacan-lightbox-text-color, #fafafa);
   --pswp-icon-color-secondary: var(--tainacan-lightbox-background-contrast, #4f4f4f);
-  --pswp-icon-stroke-color: var(--tainacan-lightbox-background-contrast, #4f4f4f); }
-  .pswp.tainacan-photoswipe-layer.has-light-color-scheme {
-    --tainacan-lightbox-background: #fafafa;
-    --tainacan-lightbox-text-color: #202020;
-    --tainacan-lightbox-background-contrast: #dbdbdb; }
-  .pswp.tainacan-photoswipe-layer .pswp__counter {
-    min-width: 50px; }
-  .pswp.tainacan-photoswipe-layer .pswp__name {
-    display: block;
-    height: 30px;
-    line-height: 30px;
-    margin: 15px auto;
-    color: var(--pswp-icon-color);
-    text-shadow: 1px 1px 3px var(--pswp-icon-color-secondary);
-    max-width: calc(100% - 220px);
-    width: 100%;
-    padding: 0 12px;
-    text-align: center;
-    font-size: 0.875em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    transition: opacity 0.1s ease; }
-    .pswp.tainacan-photoswipe-layer .pswp__name:hover {
-      opacity: 1.0; }
-  .pswp.tainacan-photoswipe-layer .pswp__caption {
-    position: fixed;
-    padding: 8px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    bottom: 0;
-    opacity: 0.75;
-    transition: opacity 0.4s ease, bottom 0.2s ease; }
-    .pswp.tainacan-photoswipe-layer .pswp__caption:hover {
-      opacity: 1.0; }
-    .pswp.tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner {
-      background-color: var(--pswp-bg);
-      color: var(--pswp-icon-color);
-      text-shadow: 1px 1px 3px var(--pswp-icon-color-secondary);
-      max-width: 920px;
-      padding: 12px;
-      line-height: 20px;
-      text-align: center;
-      font-size: 1em;
-      border-radius: 4px; }
-      .pswp.tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner .pswp__figure_caption {
-        font-size: 0.875em;
-        font-style: italic;
-        display: block; }
-      .pswp.tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner .pswp__figure_caption + .pswp__description {
-        margin-bottom: 1.5em; }
-      .pswp.tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner .pswp__description {
-        font-size: 0.9375em;
-        display: block; }
-  .pswp.tainacan-photoswipe-layer.pswp--zoomed-in .pswp__name {
-    opacity: 0.0; }
-  .pswp.tainacan-photoswipe-layer.pswp--zoomed-in .pswp__caption {
-    bottom: -40px;
-    opacity: 0.0; }
-  .pswp.tainacan-photoswipe-layer .pswp__button--arrow--left::before,
-  .pswp.tainacan-photoswipe-layer .pswp__button--arrow--right::before {
-    background-color: transparent; }
-  .pswp.tainacan-photoswipe-layer .pswp__container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center; }
-    .pswp.tainacan-photoswipe-layer .pswp__container .attachment-without-image {
-      width: 100%;
-      height: calc(100% - 60px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 60px;
-      margin-top: 30px;
-      margin-bottom: 30px; }
-      .pswp.tainacan-photoswipe-layer .pswp__container .attachment-without-image > iframe:not(.wp-embedded-content) {
-        width: 90vw;
-        height: calc(100vh - 120px);
-        height: calc(100dvh - 120px);
-        border: none;
-        margin: 60px;
-        display: block;
-        background-image: url("../images/preloader.gif");
-        background-repeat: no-repeat;
-        background-position: center; }
-    .pswp.tainacan-photoswipe-layer .pswp__container .pswp__zoom-wrap > iframe#iframePDF {
-      width: 90vw;
-      height: calc(100vh - 120px);
-      height: calc(100dvh - 120px);
-      border: none;
-      margin: 60px auto;
-      display: block;
-      background-image: url("../images/preloader.gif");
-      background-repeat: no-repeat;
-      background-position: center; }
-    .pswp.tainacan-photoswipe-layer .pswp__container .pswp__zoom-wrap {
-      display: flex;
-      justify-content: center;
-      align-items: center; }
-    .pswp.tainacan-photoswipe-layer .pswp__container .tainacan-content-embed {
-      width: 100%;
-      height: auto; }
-      .pswp.tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-has-aspect-ratio {
-        max-width: calc((90vh * 2) / 1);
-        /* Default to 2:1 aspect ratio. */
-        margin-left: auto;
-        margin-right: auto; }
-      .pswp.tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-21-9 {
-        max-width: calc((90vh * 21) / 9); }
-      .pswp.tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-18-9 {
-        max-width: calc((90vh * 18) / 9); }
-      .pswp.tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-16-9 {
-        max-width: calc((90vh * 16) / 9); }
-      .pswp.tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-4-3 {
-        max-width: calc((90vh * 4) / 3); }
-      .pswp.tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-1-1 {
-        max-width: 90vh; }
-      .pswp.tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-9-16 {
-        max-width: calc((90vh * 9) / 16); }
-      .pswp.tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-1-2 {
-        max-width: calc((90vh * 1) / 2); }
-    .pswp.tainacan-photoswipe-layer .pswp__container .pswp__content {
-      display: flex;
-      justify-content: center;
-      align-content: center; }
-    .pswp.tainacan-photoswipe-layer .pswp__container .pswp__content > .tainacan-content-embed:not(.attachment-without-image) {
-      margin-top: 60px; }
-    .pswp.tainacan-photoswipe-layer .pswp__container a:first-of-type,
-    .pswp.tainacan-photoswipe-layer .pswp__container p:first-of-type,
-    .pswp.tainacan-photoswipe-layer .pswp__container article:first-of-type {
-      z-index: 99;
-      padding: 1rem 4.33337vw;
-      background: var(--tainacan-media-background, #ffffff);
-      border-radius: 3px;
-      word-wrap: break-word; }
-    .pswp.tainacan-photoswipe-layer .pswp__container audio {
-      background: black;
-      min-height: 38px;
-      border-radius: 20px;
-      min-width: 80%;
-      max-width: 80%; }
-    .pswp.tainacan-photoswipe-layer .pswp__container video {
-      min-height: 56px;
-      max-width: 80%; }
-    .pswp.tainacan-photoswipe-layer .pswp__container iframe {
-      border: none; }
+  --pswp-icon-stroke-color: var(--tainacan-lightbox-background-contrast, #4f4f4f);
+}
+.pswp.tainacan-photoswipe-layer.has-light-color-scheme {
+  --tainacan-lightbox-background: #fafafa;
+  --tainacan-lightbox-text-color: #202020;
+  --tainacan-lightbox-background-contrast: #dbdbdb;
+}
+.pswp.tainacan-photoswipe-layer .pswp__counter {
+  min-width: 50px;
+}
+.pswp.tainacan-photoswipe-layer .pswp__name {
+  display: block;
+  height: 30px;
+  line-height: 30px;
+  margin: 15px auto;
+  color: var(--pswp-icon-color);
+  text-shadow: 1px 1px 3px var(--pswp-icon-color-secondary);
+  max-width: calc(100% - 220px);
+  width: 100%;
+  padding: 0 12px;
+  text-align: center;
+  font-size: 0.875em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: opacity 0.1s ease;
+}
+.pswp.tainacan-photoswipe-layer .pswp__name:hover {
+  opacity: 1;
+}
+.pswp.tainacan-photoswipe-layer .pswp__caption {
+  position: fixed;
+  padding: 8px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  bottom: 0;
+  opacity: 0.75;
+  transition: opacity 0.4s ease, bottom 0.2s ease;
+}
+.pswp.tainacan-photoswipe-layer .pswp__caption:hover {
+  opacity: 1;
+}
+.pswp.tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner {
+  background-color: var(--pswp-bg);
+  color: var(--pswp-icon-color);
+  text-shadow: 1px 1px 3px var(--pswp-icon-color-secondary);
+  max-width: 920px;
+  padding: 12px;
+  line-height: 20px;
+  text-align: center;
+  font-size: 1em;
+  border-radius: 4px;
+}
+.pswp.tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner .pswp__figure_caption {
+  font-size: 0.875em;
+  font-style: italic;
+  display: block;
+}
+.pswp.tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner .pswp__figure_caption + .pswp__description {
+  margin-bottom: 1.5em;
+}
+.pswp.tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner .pswp__description {
+  font-size: 0.9375em;
+  display: block;
+}
+.pswp.tainacan-photoswipe-layer.pswp--zoomed-in .pswp__name {
+  opacity: 0;
+}
+.pswp.tainacan-photoswipe-layer.pswp--zoomed-in .pswp__caption {
+  bottom: -40px;
+  opacity: 0;
+}
+.pswp.tainacan-photoswipe-layer .pswp__button--arrow--left::before,
+.pswp.tainacan-photoswipe-layer .pswp__button--arrow--right::before {
+  background-color: transparent;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container .attachment-without-image {
+  width: 100%;
+  height: calc(100% - 60px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 60px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container .attachment-without-image > iframe:not(.wp-embedded-content) {
+  width: 90vw;
+  height: calc(100vh - 120px);
+  height: calc(100dvh - 120px);
+  border: none;
+  margin: 60px;
+  display: block;
+  background-image: url("../images/preloader.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container .pswp__zoom-wrap > iframe#iframePDF {
+  width: 90vw;
+  height: calc(100vh - 120px);
+  height: calc(100dvh - 120px);
+  border: none;
+  margin: 60px auto;
+  display: block;
+  background-image: url("../images/preloader.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container .pswp__zoom-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container .tainacan-content-embed {
+  width: 100%;
+  height: auto;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-has-aspect-ratio {
+  max-width: 180vh; /* Default to 2:1 aspect ratio. */
+  margin-left: auto;
+  margin-right: auto;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-21-9 {
+  max-width: 210vh;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-18-9 {
+  max-width: 180vh;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-16-9 {
+  max-width: 160vh;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-4-3 {
+  max-width: 120vh;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-1-1 {
+  max-width: 90vh;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-9-16 {
+  max-width: 50.625vh;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-1-2 {
+  max-width: 45vh;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container .pswp__content {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container .pswp__content > .tainacan-content-embed:not(.attachment-without-image) {
+  margin-top: 60px;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container a:first-of-type,
+.pswp.tainacan-photoswipe-layer .pswp__container p:first-of-type,
+.pswp.tainacan-photoswipe-layer .pswp__container article:first-of-type {
+  z-index: 99;
+  padding: 1rem 4.33337vw;
+  background: var(--tainacan-media-background, #ffffff);
+  border-radius: 3px;
+  word-wrap: break-word;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container audio {
+  background: black;
+  min-height: 38px;
+  border-radius: 20px;
+  min-width: 80%;
+  max-width: 80%;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container video {
+  min-height: 56px;
+  max-width: 80%;
+}
+.pswp.tainacan-photoswipe-layer .pswp__container iframe {
+  border: none;
+}
 
 /*# sourceMappingURL=tainacan-gutenberg-block-item-gallery.css.map */

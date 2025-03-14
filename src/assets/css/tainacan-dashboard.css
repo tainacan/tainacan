@@ -2,162 +2,203 @@
   --tainacan-dashboard-text-color: var(--tainacan-admin-color);
   width: 100%;
   font-family: var(--tainacan-font-family);
-  font-size: 16px; }
-  #tainacan-dashboard-app .tainacan-dashboard-header {
-    text-align: center;
-    padding: 1rem 0; }
-    #tainacan-dashboard-app .tainacan-dashboard-header h1 {
-      margin-bottom: 0; }
-    #tainacan-dashboard-app .tainacan-dashboard-header p {
-      margin-top: 0;
-      font-size: 1rem;
-      color: var(--tainacan-dashboard-text-color); }
-  #tainacan-dashboard-app > .wrap {
-    margin: 0px; }
+  font-size: 16px;
+}
+#tainacan-dashboard-app .tainacan-dashboard-header {
+  text-align: center;
+  padding: 1rem 0;
+}
+#tainacan-dashboard-app .tainacan-dashboard-header h1 {
+  margin-bottom: 0;
+}
+#tainacan-dashboard-app .tainacan-dashboard-header p {
+  margin-top: 0;
+  font-size: 1rem;
+  color: var(--tainacan-dashboard-text-color);
+}
+#tainacan-dashboard-app > .wrap {
+  margin: 0px;
+}
+#tainacan-dashboard-app #dashboard-widgets-wrap {
+  max-width: 1620px;
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 1.5rem;
+}
+@media only screen and (max-width: 1920px) {
   #tainacan-dashboard-app #dashboard-widgets-wrap {
-    max-width: 1620px;
-    width: 100%;
-    margin: 0 auto;
-    padding-top: 1.5rem; }
-  @media only screen and (max-width: 1920px) {
-    #tainacan-dashboard-app #dashboard-widgets-wrap {
-      max-width: 1060px; } }
-  .is-dragging-metaboxes #tainacan-dashboard-app #dashboard-widgets .meta-box-sortables,
-  #tainacan-dashboard-app #dashboard-widgets .postbox-container .empty-container {
-    outline-color: var(--tainacan-turquoise3); }
-  #tainacan-dashboard-app .meta-box-sortables {
-    transition: outline 0.2s ease;
-    border-radius: var(--tainacan-dashboard-card-border-radius, 16px); }
-  @media only screen and (min-width: 1280px) and (max-width: 1920px) {
-    #tainacan-dashboard-app .postbox-container {
-      width: 33% !important;
-      float: left !important; } }
-  @media only screen and (min-width: 800px) and (max-width: 1280px) {
-    #tainacan-dashboard-app .postbox-container#postbox-container-2,
-    #tainacan-dashboard-app .postbox-container#postbox-container-3,
-    #tainacan-dashboard-app .postbox-container#postbox-container-4 {
-      float: right;
-      width: 50%; } }
-  #tainacan-dashboard-app .postbox {
-    background-color: var(--tainacan-dashboard-card-background, var(--tainacan-white));
-    border-radius: var(--tainacan-dashboard-card-border-radius, 16px);
-    box-shadow: var(--tainacan-dashboard-card-box-shadow, 0px 0px 8px 0px #1A2D5B33);
-    border: var(--tainacan-dashboard-card-border, none);
-    margin-bottom: 2.5rem; }
-    #tainacan-dashboard-app .postbox h1,
-    #tainacan-dashboard-app .postbox h2,
-    #tainacan-dashboard-app .postbox h3,
-    #tainacan-dashboard-app .postbox h3,
-    #tainacan-dashboard-app .postbox h4,
-    #tainacan-dashboard-app .postbox h5,
-    #tainacan-dashboard-app .postbox h6 {
-      color: var(--tainacan-gray5); }
-    #tainacan-dashboard-app .postbox h2.hndle {
-      font-size: 1.25em;
-      justify-content: start;
-      gap: 1em; }
-    #tainacan-dashboard-app .postbox h2.hndle,
-    #tainacan-dashboard-app .postbox h3.hndle {
-      padding: var(--tainacan-dashboard-card-padding-y, 1rem) var(--tainacan-dashboard-card-padding-x, 1.5rem);
-      transition: padding 0.2s ease; }
-    #tainacan-dashboard-app .postbox h2.hndle.sortable-handle,
-    #tainacan-dashboard-app .postbox h3.hndle.sortable-handle {
-      padding-right: 0.25rem; }
-    #tainacan-dashboard-app .postbox .inside {
-      margin-top: 0;
-      padding: 0 var(--tainacan-dashboard-card-padding-x, 1.5rem) var(--tainacan-dashboard-card-padding, 1rem);
-      font-size: 1em; }
-    #tainacan-dashboard-app .postbox hr {
-      margin: 1.25rem 0; }
-      #tainacan-dashboard-app .postbox hr:last-child {
-        display: none;
-        visibility: hidden; }
-    #tainacan-dashboard-app .postbox .postbox-header {
-      border-bottom: none;
-      justify-content: start;
-      gap: 1rem;
-      position: relative; }
-      #tainacan-dashboard-app .postbox .postbox-header .handle-actions {
-        position: absolute;
-        top: 0;
-        right: 0;
-        padding: 4px;
-        border-radius: 0 var(--tainacan-dashboard-card-border-radius, 16px) 0 var(--tainacan-dashboard-card-border-radius, 16px);
-        background-color: var(--tainacan-gray1);
-        border-top: none;
-        border-right: none; }
-      #tainacan-dashboard-app .postbox .postbox-header:not(:hover):not(:focus) .handle-actions {
-        visibility: hidden;
-        opacity: 0;
-        z-index: 1; }
-      #tainacan-dashboard-app .postbox .postbox-header h2.hndle:has(.icon) {
-        padding-top: calc(2.75 * var(--tainacan-dashboard-card-padding-y, 1rem)); }
-      #tainacan-dashboard-app .postbox .postbox-header .icon {
-        position: absolute;
-        top: -1.75rem;
-        z-index: 9;
-        border-radius: 100%;
-        background-color: var(--tainacan-blue4);
-        height: 3.5rem;
-        width: 3.5rem;
-        font-size: 1.5rem;
-        flex-shrink: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: white; }
-    #tainacan-dashboard-app .postbox.closed .postbox-header h2.hndle:has(.icon) {
-      padding: 0.75rem; }
-    #tainacan-dashboard-app .postbox.closed .postbox-header .icon {
-      position: initial; }
-    #tainacan-dashboard-app .postbox .tainacan-dashboard-card-description {
-      color: var(--tainacan-gray4);
-      font-size: 0.875em;
-      font-weight: 500;
-      margin-top: 0;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden; }
-    #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.125rem 0.5rem;
-      list-style: none;
-      padding: 0;
-      margin: 0; }
-      #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li {
-        margin: 0; }
-        #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li a {
-          border-radius: 8px;
-          padding: 0.35rem;
-          display: flex;
-          align-items: center;
-          gap: 0.125rem;
-          font-size: 0.875em;
-          font-weight: bold;
-          line-height: 1.25em;
-          color: var(--tainacan-gray5); }
-          #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li a:hover, #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li a:focus {
-            background-color: var(--tainacan-turquoise2); }
-          #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li a:focus {
-            box-shadow: 0 0 0 2px var(--tainacan-turquoise5);
-            outline: 3px solid #0000; }
-      #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list .icon {
-        display: flex;
-        align-items: center;
-        font-size: 1rem;
-        color: var(--tainacan-turquoise5); }
-      #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list[data-color-scheme="gray"] li > a {
-        color: var(--tainacan-gray5); }
-      #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list[data-color-scheme="gray"] .icon {
-        color: var(--tainacan-gray5); }
-      #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list[data-color-scheme="blue"] li > a {
-        color: var(--tainacan-blue5); }
-      #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list[data-color-scheme="blue"] .icon {
-        color: var(--tainacan-blue5); }
-  #tainacan-dashboard-app .postbox-container:has(.empty-container) + .postbox-container:has(.empty-container) {
-    display: none;
-    visibility: hidden; }
+    max-width: 1060px;
+  }
+}
+.is-dragging-metaboxes #tainacan-dashboard-app #dashboard-widgets .meta-box-sortables,
+#tainacan-dashboard-app #dashboard-widgets .postbox-container .empty-container {
+  outline-color: var(--tainacan-turquoise3);
+}
+#tainacan-dashboard-app .meta-box-sortables {
+  transition: outline 0.2s ease;
+  border-radius: var(--tainacan-dashboard-card-border-radius, 16px);
+}
+@media only screen and (min-width: 1280px) and (max-width: 1920px) {
+  #tainacan-dashboard-app .postbox-container {
+    width: 33% !important;
+    float: left !important;
+  }
+}
+@media only screen and (min-width: 800px) and (max-width: 1280px) {
+  #tainacan-dashboard-app .postbox-container#postbox-container-2,
+  #tainacan-dashboard-app .postbox-container#postbox-container-3,
+  #tainacan-dashboard-app .postbox-container#postbox-container-4 {
+    float: right;
+    width: 50%;
+  }
+}
+#tainacan-dashboard-app .postbox {
+  background-color: var(--tainacan-dashboard-card-background, var(--tainacan-white));
+  border-radius: var(--tainacan-dashboard-card-border-radius, 16px);
+  box-shadow: var(--tainacan-dashboard-card-box-shadow, 0px 0px 8px 0px rgba(26, 45, 91, 0.2));
+  border: var(--tainacan-dashboard-card-border, none);
+  margin-bottom: 2.5rem;
+}
+#tainacan-dashboard-app .postbox h1,
+#tainacan-dashboard-app .postbox h2,
+#tainacan-dashboard-app .postbox h3,
+#tainacan-dashboard-app .postbox h3,
+#tainacan-dashboard-app .postbox h4,
+#tainacan-dashboard-app .postbox h5,
+#tainacan-dashboard-app .postbox h6 {
+  color: var(--tainacan-gray5);
+}
+#tainacan-dashboard-app .postbox h2.hndle {
+  font-size: 1.25em;
+  justify-content: start;
+  gap: 1em;
+}
+#tainacan-dashboard-app .postbox h2.hndle,
+#tainacan-dashboard-app .postbox h3.hndle {
+  padding: var(--tainacan-dashboard-card-padding-y, 1rem) var(--tainacan-dashboard-card-padding-x, 1.5rem);
+  transition: padding 0.2s ease;
+}
+#tainacan-dashboard-app .postbox h2.hndle.sortable-handle,
+#tainacan-dashboard-app .postbox h3.hndle.sortable-handle {
+  padding-right: 0.25rem;
+}
+#tainacan-dashboard-app .postbox .inside {
+  margin-top: 0;
+  padding: 0 var(--tainacan-dashboard-card-padding-x, 1.5rem) var(--tainacan-dashboard-card-padding, 1rem);
+  font-size: 1em;
+}
+#tainacan-dashboard-app .postbox hr {
+  margin: 1.25rem 0;
+}
+#tainacan-dashboard-app .postbox hr:last-child {
+  display: none;
+  visibility: hidden;
+}
+#tainacan-dashboard-app .postbox .postbox-header {
+  border-bottom: none;
+  justify-content: start;
+  gap: 1rem;
+  position: relative;
+}
+#tainacan-dashboard-app .postbox .postbox-header .handle-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 4px;
+  border-radius: 0 var(--tainacan-dashboard-card-border-radius, 16px) 0 var(--tainacan-dashboard-card-border-radius, 16px);
+  background-color: var(--tainacan-gray1);
+  border-top: none;
+  border-right: none;
+}
+#tainacan-dashboard-app .postbox .postbox-header:not(:hover):not(:focus) .handle-actions {
+  visibility: hidden;
+  opacity: 0;
+  z-index: 1;
+}
+#tainacan-dashboard-app .postbox .postbox-header h2.hndle:has(.icon) {
+  padding-top: calc(2.75 * var(--tainacan-dashboard-card-padding-y, 1rem));
+}
+#tainacan-dashboard-app .postbox .postbox-header .icon {
+  position: absolute;
+  top: -1.75rem;
+  z-index: 9;
+  border-radius: 100%;
+  background-color: var(--tainacan-blue4);
+  height: 3.5rem;
+  width: 3.5rem;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+#tainacan-dashboard-app .postbox.closed .postbox-header h2.hndle:has(.icon) {
+  padding: 0.75rem;
+}
+#tainacan-dashboard-app .postbox.closed .postbox-header .icon {
+  position: initial;
+}
+#tainacan-dashboard-app .postbox .tainacan-dashboard-card-description {
+  color: var(--tainacan-gray4);
+  font-size: 0.875em;
+  font-weight: 500;
+  margin-top: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+#tainacan-dashboard-app .postbox .tainacan-dashboard-card-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.125rem 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+#tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li {
+  margin: 0;
+}
+#tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li a {
+  border-radius: 8px;
+  padding: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  font-size: 0.875em;
+  font-weight: bold;
+  line-height: 1.25em;
+  color: var(--tainacan-gray5);
+}
+#tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li a:hover, #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li a:focus {
+  background-color: var(--tainacan-turquoise2);
+}
+#tainacan-dashboard-app .postbox .tainacan-dashboard-card-list li a:focus {
+  box-shadow: 0 0 0 2px var(--tainacan-turquoise5);
+  outline: 3px solid rgba(0, 0, 0, 0);
+}
+#tainacan-dashboard-app .postbox .tainacan-dashboard-card-list .icon {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  color: var(--tainacan-turquoise5);
+}
+#tainacan-dashboard-app .postbox .tainacan-dashboard-card-list[data-color-scheme=gray] li > a {
+  color: var(--tainacan-gray5);
+}
+#tainacan-dashboard-app .postbox .tainacan-dashboard-card-list[data-color-scheme=gray] .icon {
+  color: var(--tainacan-gray5);
+}
+#tainacan-dashboard-app .postbox .tainacan-dashboard-card-list[data-color-scheme=blue] li > a {
+  color: var(--tainacan-blue5);
+}
+#tainacan-dashboard-app .postbox .tainacan-dashboard-card-list[data-color-scheme=blue] .icon {
+  color: var(--tainacan-blue5);
+}
+#tainacan-dashboard-app .postbox-container:has(.empty-container) + .postbox-container:has(.empty-container) {
+  display: none;
+  visibility: hidden;
+}
 
 /*# sourceMappingURL=tainacan-dashboard.css.map */

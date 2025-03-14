@@ -1,48 +1,67 @@
 <template>
-    <div :class="isRepositoryLevel ? 'number-block--' + entityType : ''" class="report-card number-block">
+    <div
+            :class="isRepositoryLevel ? 'number-block--' + entityType : ''" 
+            class="report-card number-block">
         <p class="title is-2">
-            <i-count-up :delay="750" :end-val="total" :options="{ separator: ' ' }" />
+            <i-count-up 
+                    :delay="750" 
+                    :end-val="total" 
+                    :options="{ separator: ' ' }" />
         </p>
         <p class="subtitle is-3">
             <span class="icon has-text-gray">
-                <i class="tainacan-icon tainacan-icon-1-125em" :class="'tainacan-icon-' + entityType" />
+                <i
+                        class="tainacan-icon tainacan-icon-1-125em"
+                        :class="'tainacan-icon-' + entityType" />
             </span>
             &nbsp;{{ $i18n.get(entityType) }}
         </p>
         <ul class="has-text-gray status-list">
-            <template v-for="(statusOption, index) of $statusHelper.getStatuses()" :key="index">
-                <li v-if="(statusOption.slug != 'draft' || entityType != 'collections') && totalByStatus[statusOption.slug]"
-                    @mouseenter="currentHoveredStatus = statusOption.slug" @mouseleave="currentHoveredStatus = ''">
+            <template 
+                    v-for="(statusOption, index) of $statusHelper.getStatuses()"
+                    :key="index">
+                <li 
+                        v-if="(statusOption.slug != 'draft' || entityType != 'collections') && totalByStatus[statusOption.slug]"
+                        @mouseenter="currentHoveredStatus = statusOption.slug"
+                        @mouseleave="currentHoveredStatus = ''">
                     <span class="value">
-                        <i-count-up :delay="750" :end-val="totalByStatus[statusOption.slug]"
-                            :options="{ separator: ' ' }" />
+                        <i-count-up
+                                :delay="750" 
+                                :end-val="totalByStatus[statusOption.slug]"
+                                :options="{ separator: ' ' }" />
                         &nbsp;
                     </span>
-                    <span v-if="$statusHelper.hasIcon(statusOption.slug)" class="icon has-text-gray">
-                        <i :style="(isRepositoryLevel && entityType === 'items') ? 'color: var(--tainacan-secondary, #187181);' : ''"
-                            class="tainacan-icon tainacan-icon-1-125em"
-                            :class="$statusHelper.getIcon(statusOption.slug)" />
+                    <span 
+                            v-if="$statusHelper.hasIcon(statusOption.slug)"
+                            class="icon has-text-gray">
+                        <i 
+                                :style="(isRepositoryLevel && entityType === 'items') ? 'color: var(--tainacan-secondary, #187181);' : ''"
+                                class="tainacan-icon tainacan-icon-1-125em"
+                                :class="$statusHelper.getIcon(statusOption.slug)" />
                     </span>
                     <!-- {{ statusOption.name }} -->
                 </li>
             </template>
         </ul>
-        <p v-if="summary.totals && summary.totals[entityType] && entityType == 'taxonomies'" class="terms-used-info">
-            {{ $i18n.get('label_used') + ': ' + summary.totals[entityType].used + ' | ' + $i18n.get('label_not_used') +
-            ': ' + summary.totals[entityType].not_used }}
+        <p 
+                v-if="summary.totals && summary.totals[entityType] && entityType == 'taxonomies'"
+                class="terms-used-info">
+            {{ $i18n.get('label_used') + ': ' + summary.totals[entityType].used + ' | ' + $i18n.get('label_not_used') + ': ' + summary.totals[entityType].not_used }}
         </p>
-        <div v-if="entityType === 'items' && !isBuildingChart && isRepositoryLevel" class="visibility-charts">
-            <div
-                :style="'margin-right: 6px; background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'publish') ? '#acacac' : ';' ) + '; width: ' + visibilityChartOpenWidth + '%'">
+        <div 
+                v-if="entityType === 'items' && !isBuildingChart && isRepositoryLevel"
+                class="visibility-charts">
+            <div :style="'margin-right: 6px; background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'publish') ? '#acacac' : ';' ) + '; width: ' + visibilityChartOpenWidth + '%'">
                 <span class="icon has-text-gray">
                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-see" />
                     &nbsp;{{ totalByVisibility['not_restrict'] }}
                 </span>
             </div>
-            <div
-                :style="'background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'publish') ? '#acacac' : ';' ) + '; width: ' + visibilityChartRestrictWidth + '%'">
+            <div :style="'background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'publish') ? '#acacac' : ';' ) + '; width: ' + visibilityChartRestrictWidth + '%'">
                 <span class="icon has-text-gray">
-                    <i class="tainacan-icon tainacan-icon-svg" style="display: flex;">
+                    <i 
+                            class="tainacan-icon tainacan-icon-svg"
+                            style="display: flex;">
                         <svg 
                                 xmlns:svg="http://www.w3.org/2000/svg"
                                 xmlns="http://www.w3.org/2000/svg"
