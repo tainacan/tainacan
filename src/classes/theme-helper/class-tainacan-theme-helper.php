@@ -1160,10 +1160,31 @@ class Theme_Helper {
 		
 		// Defines where are we getting items from
 		$entity = [];
-		if (isset($args['source_list']) && $args['source_list'] == 'collection' && $collection_id = tainacan_get_collection_id()) {
-			$entity = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_id);
+		if ( isset($args['source_list'] ) ) {
+
+			if ( $args['source_list'] == 'collection' ) { 
+				$collection_id = isset($args['source_entity_id']) && is_numeric($args['source_entity_id']) ? $args['source_entity_id'] : tainacan_get_collection_id();
+				
+				if ( $collection_id )
+					$entity = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_id);
+
+			} else if ( $args['source_list'] == 'term' ) {
+				$term_id =  isset($args['source_entity_id']) && is_numeric($args['source_entity_id']) ? $args['source_entity_id'] : false;
+				$term = $term_id ? tainacan_get_term(['term_id' => $term_id]) : tainacan_get_term();
+				
+				if ( $term ) {
+					$args['taxquery'] = [
+						[
+							'taxonomy' => $term->taxonomy,
+							'terms' => $term->term_id
+						]
+					];
+				}
+			}
 		}
+		
 		unset($args['source_list']);
+		unset($args['source_entity_id']);
 
 		if (isset($args['pos'])) {
 
