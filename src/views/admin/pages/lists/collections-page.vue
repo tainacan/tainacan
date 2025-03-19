@@ -740,7 +740,7 @@ export default {
                     .dropdown-item-apply {
                         width: 100%;
                         border-top: 1px solid var(--tainacan-skeleton-color);
-                        padding: 8px 12px;
+                        padding: 8px;
                         text-align: right;
                     }
                     .dropdown-item-apply .button {

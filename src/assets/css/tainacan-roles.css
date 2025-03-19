@@ -28207,7 +28207,7 @@ body.tainacan-admin-page > .control.autocomplete {
   font-size: 1.125em;
 }
 .help-wrapper a.help-button .icon i, .help-wrapper a.help-button .icon i::before {
-  font-size: 0.875em !important;
+  font-size: 0.875rem !important;
 }
 .help-wrapper:hover .help-tooltip {
   margin-bottom: 10px;

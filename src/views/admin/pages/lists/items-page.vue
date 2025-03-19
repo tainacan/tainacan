@@ -1775,6 +1775,19 @@
                         border-bottom: 1px solid var(--tainacan-input-border-color);
                         padding: 8px 12px;
                         z-index: 1;
+
+                        & > .dropdown-item {
+                            border: 1px solid var(--tainacan-primary);
+
+                            &:first-child {
+                                border-top-left-radius: var(--tainacan-button-border-radius);
+                                border-bottom-left-radius: var(--tainacan-button-border-radius);
+                            }
+                            &:last-child {
+                                border-top-right-radius: var(--tainacan-button-border-radius);
+                                border-bottom-right-radius: var(--tainacan-button-border-radius);
+                            }
+                        }
                     }
                     .dropdown-item {
                         padding: 0.25em 1.0em 0.25em 0.75em; 
@@ -1785,7 +1798,7 @@
                     .dropdown-item-apply {
                         width: 100%;
                         border-top: 1px solid var(--tainacan-input-border-color);
-                        padding: 8px 12px;
+                        padding: 8px;
                         text-align: right;
                     }
                     .dropdown-item-apply .button {
