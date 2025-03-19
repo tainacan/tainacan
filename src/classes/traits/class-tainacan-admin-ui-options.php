@@ -23,14 +23,6 @@ trait Admin_UI_Options {
 			'tainacan-available-admin-ui-options',
 			array(
 				__( 'Browsing', 'tainacan' ) => array(
-					'hideTainacanHeaderSearchInput' => __('Hide search field in Tainacan header', 'tainacan'),
-					'hideTainacanHeaderAdvancedSearch' => __('Hide advanced search in Tainacan header', 'tainacan'),
-					'hideTainacanHeaderProcessesPopup' => __('Hide processes popup in Tainacan header', 'tainacan'),
-					'hideRepositorySubheaderExportButton' => __('Hide repository header', 'tainacan'),
-					'hideRepositorySubheaderViewCollectionsButton' => __('Hide view collections button in repository header', 'tainacan'),
-					'hideRepositorySubheaderViewCollectionButton' => __('Hide view collection button in repository header', 'tainacan'),
-					'hideRepositorySubheaderExportButton' => __('Hide export button in repository header', 'tainacan'),
-					'hideCollectionSubheader' => __('Hide collection header', 'tainacan'),
 					'forceFullscreenAdminMode' => __('Force Tainacan to always overlap WordPress admin menu and sidebar', 'tainacan'),
 					'hideBreadcrumbs' => __('Hide breadcrumbs', 'tainacan'),
 					'hideWordPressShorcutButton' => __('Hide WordPress shortcut button', 'tainacan'),
@@ -47,7 +39,13 @@ trait Admin_UI_Options {
 					'hidePrimaryMenuImportersButton' => __('Hide importers button in side menu', 'tainacan'),
 					'hidePrimaryMenuExportersButton' => __('Hide exporters button in side menu', 'tainacan'),
 					'hidePrimaryMenuActivitiesButton' => __('Hide activities button in side menu', 'tainacan'),
-					'hidePrimaryMenuCapabilitiesButton' => __('Hide permissions button in side menu', 'tainacan')
+					'hidePrimaryMenuCapabilitiesButton' => __('Hide permissions button in side menu', 'tainacan'),
+					'hideRepositorySubheader' => __('Hide repository header', 'tainacan'),
+					'hideRepositorySubheaderViewCollectionsButton' => __('Hide view collections button in repository header', 'tainacan'),
+					'hideRepositorySubheaderViewTaxonomiesButton' => __('Hide view taxonomies button in repository header', 'tainacan'),
+					'hideCollectionSubheader' => __('Hide collection header', 'tainacan'),
+					'hideRepositorySubheaderViewCollectionButton' => __('Hide view collection button in collection header', 'tainacan'),
+					'hideRepositorySubheaderExportButton' => __('Hide export button in collection header', 'tainacan')
 				),
 				__( 'Dashboard', 'tainacan' ) => array(
 					'hideHomeRepositorySection' => __('Hide repository section', 'tainacan'),
