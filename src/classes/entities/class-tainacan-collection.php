@@ -181,18 +181,18 @@ class Collection extends Entity {
 			'delete_post' => "tnc_col_{$id}_delete_item",
 
 			// primitive
-			'edit_posts' => "tnc_col_{$id}_edit_items",
-			'edit_others_posts' => "tnc_col_{$id}_edit_others_items",
+			'read' => "read",
 			'publish_posts' => "tnc_col_{$id}_publish_items",
 			'read_private_posts' => "tnc_col_{$id}_read_private_items",
-			'read' => "read",
-			'delete_posts' => "tnc_col_{$id}_delete_items",
-			'delete_private_posts' => "tnc_col_{$id}_delete_items",
-			'delete_published_posts' => "tnc_col_{$id}_delete_published_items",
-			'delete_others_posts' => "tnc_col_{$id}_delete_others_items",
-			'edit_private_posts' => "tnc_col_{$id}_edit_others_items",
+			'create_posts' => "tnc_col_{$id}_edit_items",
+			'edit_private_posts' => "tnc_col_{$id}_edit_private_items",
 			'edit_published_posts' => "tnc_col_{$id}_edit_published_items",
-			'create_posts' => "tnc_col_{$id}_edit_items"
+			'edit_posts' => "tnc_col_{$id}_edit_items",
+			'edit_others_posts' => "tnc_col_{$id}_edit_others_items",
+			'delete_posts' => "tnc_col_{$id}_delete_items",
+			'delete_private_posts' => "tnc_col_{$id}_delete_private_items",
+			'delete_published_posts' => "tnc_col_{$id}_delete_published_items",
+			'delete_others_posts' => "tnc_col_{$id}_delete_others_items"
 		];
 	}
 
