@@ -75,7 +75,7 @@
                                 }"
                                 @click="!$adminOptions.mobileAppMode && !isMobileScreen ? $emit(
                                     'on-submit',
-                                    ( currentUserCanPublish && !$adminOptions.hideItemEditionStatusPublishOption ) ? status : 'draft',
+                                    ( !$adminOptions.hideItemEditionStatusPublishOption ) ? status : 'draft',
                                     ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                                 ) : ($refs && $refs['item-edition-footer-dropdown'] && !$refs['item-edition-footer-dropdown'].isActive ? $refs['item-edition-footer-dropdown'].toggle() : null)">
                             {{ $i18n.get('label_update') }}
