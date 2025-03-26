@@ -155,12 +155,6 @@ export default (element) => {
                         autoHide: true,
                         html: true,
                     },
-                    'tainacan-header-tooltip': {
-                        '$extend': 'tainacan-tooltip',
-                        triggers: ['hover', 'focus', 'touch'],
-                        autoHide: true,
-                        html: true,
-                    },
                     'tainacan-repository-header-tooltip': {
                         '$extend': 'tainacan-repository-tooltip',
                         triggers: ['hover', 'focus', 'touch'],

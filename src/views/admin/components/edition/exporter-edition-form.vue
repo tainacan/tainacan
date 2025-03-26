@@ -72,7 +72,7 @@
                             :label="$i18n.get('label_send_email')">
                         <help-button
                                 :title="$i18n.get('label_send_email')"
-                                :message="'<span>' + $i18n.get('info_send_email') + `&nbsp;<a href='` + $routerHelper.getAbsoluteAdminPath() + $routerHelper.getProcessesPage() + `'>` + $i18n.get('activities') + ` ` + $i18n.get('label_page') + '</a></span>'"
+                                :message="'<span>' + $i18n.get('info_send_email') + `&nbsp;<a href='` + $routerHelper.getAbsoluteAdminPath() + $routerHelper.getProcessesPath() + `'>` + $i18n.get('activities') + ` ` + $i18n.get('label_page') + '</a></span>'"
                                 extra-classes="tainacan-repository-tooltip" />
                         <b-checkbox
                                 v-model="sendEmail"
@@ -205,7 +205,7 @@
                             this.runExporterSession(this.exporterSession.id)
                                 .then((bgp) => {
                                     this.runButtonLoading = false;
-                                    this.$router.push(this.$routerHelper.getProcessesPage(bgp.bg_process_id));
+                                    this.$router.push(this.$routerHelper.getProcessesPath(bgp.bg_process_id));
                                 })
                                 .catch((error) => {
                                     this.formErrorMessage = error.error_message;

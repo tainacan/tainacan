@@ -149,7 +149,6 @@ export default {
         min-height: 120px;
         vertical-align: top;
         display: flex;
-        padding-top: 24px;
 
         &>div {
             padding: 24px;
@@ -160,6 +159,10 @@ export default {
             &:last-of-type {
                 background-color: var(--tainacan-yellow1);
                 color: var(--tainacan-yellow1);
+
+                &:has(.roles-list:empty) {
+                    display: none;
+                }
 
                 .label,
                 .control-label,
@@ -185,6 +188,9 @@ export default {
             .roles-list {
                 column-count: 1;
             }
+        }
+        @media screen and (max-width: 768px) {
+            flex-wrap: wrap;
         }
     }
 </style>

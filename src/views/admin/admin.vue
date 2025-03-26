@@ -6,7 +6,6 @@
                 'tainacan-admin-mobile-app-mode': $adminOptions.mobileAppMode
             }">
         <template v-if="hasPermalinksStructure">
-            <tainacan-header v-if="!$adminOptions.hideTainacanHeader" />
             <tainacan-repository-subheader
                     v-if="!$adminOptions.hideRepositorySubheader" 
                     :is-repository-level="isRepositoryLevel"
@@ -23,19 +22,14 @@
 
 <script>
     import { mapGetters } from 'vuex';
-    import TainacanHeader from './components/navigation/tainacan-header.vue';
     import TainacanRepositorySubheader from './components/navigation/tainacan-repository-subheader.vue';
     import CustomDialog from './components/other/custom-dialog.vue';
 
     export default { 
         name: "AdminPage",
         components: {
-            TainacanHeader,
             TainacanRepositorySubheader
         },
-        emits: [
-            'openProcessesPopup'
-        ],
         data(){
             return {
                 isMenuCompressed: false,

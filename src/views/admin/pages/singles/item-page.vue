@@ -1019,7 +1019,13 @@
                 max-height: 32vh;
                 width: 100%;
                 margin: 0;
+            }
+            :deep(iframe):only-child,
+            :deep(blockquote):only-child {
                 min-height: 150px;
+            }
+            :deep(blockquote+iframe) {
+                max-height: calc(32vh - 150px);
             }
             :deep(audio) {
                 min-height: 80px;

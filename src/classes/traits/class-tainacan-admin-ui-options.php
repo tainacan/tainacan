@@ -29,6 +29,7 @@ trait Admin_UI_Options {
 					'hideFullscreenTogglerButton' => __('Hide fullscreen toggler button', 'tainacan'),
 					'hideMenuCollapserButton' => __('Hide menu collapser button', 'tainacan'),
 					'hidePrimaryMenu' => __('Hide entire side menu', 'tainacan'),
+					'hidePrimaryMenuHomeButton' => __('Hide home button in side menu', 'tainacan'),
 					'hidePrimaryMenuCompressButton' => __('Hide side menu compress button', 'tainacan'),
 					'hidePrimaryMenuRepositoryButton' => __('Hide repository button in side menu', 'tainacan'),
 					'hidePrimaryMenuCollectionsButton' => __('Hide collections button in side menu', 'tainacan'),

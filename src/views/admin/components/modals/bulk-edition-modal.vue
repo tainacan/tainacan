@@ -358,7 +358,7 @@
                             :disabled="dones.every((item) => item === true) === false"
                             class="button is-success"
                             type="button"
-                            @click="$emitter.emit('openProcessesPopup'); $eventBusSearch.loadItems(); $emit('close');">
+                            @click="onFinish">
                         {{ $i18n.get('finish') }}
                     </button>
                 </p>
@@ -774,10 +774,23 @@
                         this.$console.error(error);
                         this.isFetchingUsers = false;
                     });
-                }, 500),
-                fetchMoreUsersForAuthor: _.debounce(function () {
-                    this.fetchUsersForAuthor(this.usersSearch)
-                }, 250),
+            }, 500),
+            fetchMoreUsersForAuthor: _.debounce(function () {
+                this.fetchUsersForAuthor(this.usersSearch)
+            }, 250),
+            onFinish() {
+                this.$buefy.snackbar.open({
+                    message: this.$i18n.get('info_bulk_edit_process_added'),
+                    type: 'is-primary',
+                    duration: 4000,
+                    actionText: this.$i18n.get('label_view_processes'),
+                    onAction: () => {
+                        this.$router.push(this.$routerHelper.getProcessesPath());
+                    }
+                });
+                this.$eventBusSearch.loadItems();
+                this.$emit('close');
+            }
         }
     }
 </script>

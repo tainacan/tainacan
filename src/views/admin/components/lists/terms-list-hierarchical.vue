@@ -746,7 +746,7 @@ export default {
 
                             this.$buefy.snackbar.open({
                                 message: this.$i18n.getWithVariables('info_%s_terms_created', [ createdTerms.length ]),
-                                type: 'is-warning',
+                                type: 'is-success',
                                 position: 'is-bottom-right',
                                 pauseOnHover: true,
                                 queue: false

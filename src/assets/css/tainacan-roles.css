@@ -27968,13 +27968,6 @@ body.tainacan-admin-page > .control.autocomplete {
 .v-popper--theme-tooltip.tainacan-tooltip .v-popper__arrow-outer {
   border-color: var(--tainacan-primary);
 }
-.v-popper--theme-tooltip.tainacan-tooltip.tainacan-header-tooltip .v-popper__inner {
-  background: var(--tainacan-turquoise4);
-  color: var(--tainacan-white);
-}
-.v-popper--theme-tooltip.tainacan-tooltip.tainacan-header-tooltip .v-popper__arrow-outer {
-  border-color: var(--tainacan-turquoise4);
-}
 .v-popper--theme-tooltip.tainacan-tooltip.v-popper__popper--show-from .v-popper__wrapper {
   transform: scale(0.5);
 }

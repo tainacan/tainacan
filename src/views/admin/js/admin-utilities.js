@@ -26,7 +26,7 @@ ConsolePlugin.install = function (app, options = { visual: false }) {
             if (options.visual) {
                 app.config.globalProperties.$buefy.snackbar.open({
                     message: tainacanSanitize(something),
-                    type: 'is-secondary',
+                    type: 'is-primary',
                     position: 'is-bottom-right',
                     indefinite: true,
                     queue: false
@@ -39,7 +39,7 @@ ConsolePlugin.install = function (app, options = { visual: false }) {
             if (options.visual) {
                 app.config.globalProperties.$buefy.snackbar.open({
                     message: tainacanSanitize(someInfo),
-                    type: 'is-primary',
+                    type: 'is-dark',
                     position: 'is-bottom-right',
                     duration: 5000,
                     queue: false
@@ -265,7 +265,7 @@ RouterHelperPlugin.install = function (app, options = {}) {
         getAvailableImportersPath() {
             return '/importers';
         },
-        getProcessesPage(highlightedProcess) {
+        getProcessesPath(highlightedProcess) {
             if (highlightedProcess)
                 return '/processes?highlight=' + highlightedProcess;
             else 
@@ -592,12 +592,6 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
             * homeCollectionsPerPage // Default is 9
             * homeCollectionsOrderBy // Default is 'modified'
             * homeCollectionsOrder // Default is 'desc'
-        * hideTainacanHeader
-            * tainacanHeaderExtraLabel // Adds a textual label aside the Tainacan Logo. 
-            * hideTainacanHeaderHomeButton
-            * hideTainacanHeaderSearchInput
-            * hideTainacanHeaderAdvancedSearch
-            * hideTainacanHeaderProcessesPopup
         * hidePrimaryMenu
             * hidePrimaryMenuCompressButton
             * hidePrimaryMenuRepositoryButton

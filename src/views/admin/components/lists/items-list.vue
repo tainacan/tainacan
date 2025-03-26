@@ -2274,7 +2274,6 @@ export default {
     },
     emits: [
         'update-is-loading',
-        'openProcessesPopup'
     ],
     data(){
         return {
@@ -2709,7 +2708,15 @@ export default {
                                 groupId: this.groupId
                             }).then(() => {
                                 this.$eventBusSearch.loadItems();
-                                this.$emitter.emit('openProcessesPopup');
+                                this.$buefy.snackbar.open({
+                                    message: this.$i18n.get('info_bulk_edit_process_added'),
+                                    type: 'is-primary',
+                                    duration: 4000,
+                                    actionText: this.$i18n.get('label_view_processes'),
+                                    onAction: () => {
+                                        this.$router.push(this.$routerHelper.getProcessesPath());
+                                    }
+                                });
                             });
                         });
                     }
@@ -2740,7 +2747,15 @@ export default {
                                     groupId: this.groupId
                                 }).then(() => {
                                     this.$eventBusSearch.loadItems();
-                                    this.$emitter.emit('openProcessesPopup');
+                                    this.$buefy.snackbar.open({
+                                        message: this.$i18n.get('info_bulk_edit_process_added'),
+                                        type: 'is-primary',
+                                        duration: 4000,
+                                        actionText: this.$i18n.get('label_view_processes'),
+                                        onAction: () => {
+                                            this.$router.push(this.$routerHelper.getProcessesPath());
+                                        }
+                                    });
                                 });
                             } else {
                                 this.trashItemsInBulk({
@@ -2748,7 +2763,15 @@ export default {
                                     groupId: this.groupId
                                 }).then(() => {
                                     this.$eventBusSearch.loadItems();
-                                    this.$emitter.emit('openProcessesPopup');
+                                    this.$buefy.snackbar.open({
+                                        message: this.$i18n.get('info_bulk_edit_process_added'),
+                                        type: 'is-primary',
+                                        duration: 4000,
+                                        actionText: this.$i18n.get('label_view_processes'),
+                                        onAction: () => {
+                                            this.$router.push(this.$routerHelper.getProcessesPath());
+                                        }
+                                    });
                                 });
                             }
                         });

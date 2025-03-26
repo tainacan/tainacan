@@ -164,7 +164,7 @@
                         approveActivity: (activityId) => this.approveActivity(activityId),
                         notApproveActivity: (activityId) => this.notApproveActivity(activityId)
                     },
-                    width: 900,
+                    width: 840,
                     trapFocus: true,
                     customClass: 'tainacan-modal',
                     canCancel: ['escape', 'outside']

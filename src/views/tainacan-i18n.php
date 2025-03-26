@@ -722,6 +722,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_authorship'			 					 => __( 'Authorship', 'tainacan' ),
 	'label_editing_publication_authorship'			 => __( 'Publication authorship editing', 'tainacan' ),
 	'label_range_of_dates'				             => __( 'Range of dates', 'tainacan'),
+	'label_view_processes'				             => __( 'View processes', 'tainacan'),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -981,7 +982,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_bulk_add_items'                            => __( 'Bulk add documents from your computer as items.', 'tainacan' ),
 	'info_editing_items_in_bulk'                     => __( 'Bulk edit items', 'tainacan' ),
 	'info_by_inner'                                  => __( 'by', 'tainacan' ),
-	'info_bulk_edit_process_added'				 => __( 'Bulk edit added to process queue.', 'tainacan' ),
+	'info_bulk_edit_process_added'				 	 => __( 'Bulk edit added to process queue.', 'tainacan' ),
 	'info_no_parent_term_found'                      => __( 'No valid parent term was found with this name.', 'tainacan' ),
 	'info_warning_changing_parent_term'              => __( 'Warning! Changing parent term will reload the terms list, thus unchecking any selection.', 'tainacan' ),
 	'info_warning_selected_items_remove_from_trash'  => __( 'Do you really want to remove from trash the selected items?', 'tainacan' ),

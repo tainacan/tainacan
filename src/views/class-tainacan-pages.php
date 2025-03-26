@@ -420,7 +420,7 @@ abstract class Pages {
 					</span>
 				</header>
 				<ul id="tainacan-root-menu">
-					<?php if ( !$this->has_admin_ui_option('hideTainacanHeaderHomeButton') ) : ?>
+					<?php if ( !$this->has_admin_ui_option('hidePrimaryMenuHomeButton') ) : ?>
 						<li>
 							<a href="admin.php?page=tainacan_dashboard" <?php echo $current_page_slug === 'toplevel_page_tainacan_dashboard' ? 'aria-current="page"' : ''; ?>>
 								<span class="icon"><?php echo $this->get_svg_icon( 'home' ); ?></span>
@@ -667,7 +667,6 @@ abstract class Pages {
 			( isset($_GET[ 'itemsSearchSelectionMode' ]) && $_GET[ 'itemsSearchSelectionMode' ] ) ||
 			( isset($_GET[ 'mobileAppMode' ]) && $_GET[ 'mobileAppMode' ] )
 		) {
-			self::$admin_ui_options['hideTainacanHeader'] = true;
 			self::$admin_ui_options['hidePrimaryMenu'] = true;
 			self::$admin_ui_options['hideBreadcrumbs'] = true;
 			self::$admin_ui_options['forceFullscreenAdminMode'] = true;

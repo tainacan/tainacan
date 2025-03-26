@@ -24,16 +24,6 @@
         border-color: var(--tainacan-primary);
     }
 
-    &.tainacan-header-tooltip {
-        .v-popper__inner {
-            background: var(--tainacan-turquoise4);
-            color: var(--tainacan-white);
-        }
-        .v-popper__arrow-outer {
-            border-color: var(--tainacan-turquoise4);
-        }
-    }
-
     &.v-popper__popper--show-from .v-popper__wrapper {
         transform: scale(.5);
     }

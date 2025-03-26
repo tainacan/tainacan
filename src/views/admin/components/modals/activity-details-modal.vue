@@ -702,7 +702,7 @@
 
     .tainacan-modal-content {
         width: auto;
-        min-height: 300px;
+        min-height: 100px;
         
         p {
             font-size: 0.875em;
@@ -710,7 +710,7 @@
     }
 
     .modal-card-body {
-        min-height: 300px;
+        min-height: 42px;
         padding: 0;
         .columns {
             margin: 6px var(--tainacan-one-column) 0 var(--tainacan-one-column);

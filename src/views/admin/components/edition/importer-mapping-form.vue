@@ -617,7 +617,7 @@ export default {
                 .then(backgroundProcess => {
                     this.backgroundProcess = backgroundProcess;
                     this.isLoadingRun = false;
-                    this.$router.push(this.$routerHelper.getProcessesPage());
+                    this.$router.push(this.$routerHelper.getProcessesPath());
                 })
                 .catch((errors) => {
                     this.isLoadingRun = false;

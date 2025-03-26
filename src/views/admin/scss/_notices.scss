@@ -35,5 +35,12 @@
             color: var(--tainacan-success) !important;
             font-size: 0.875em;
         }
+        &.is-primary,
+        &.is-primary .button,
+        &.is-primary .button:hover {
+            background-color: var(--tainacan-primary) !important;
+            color: var(--tainacan-secondary) !important;
+            font-size: 0.875em;
+        }
     }
 }
