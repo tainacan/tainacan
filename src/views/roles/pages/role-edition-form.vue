@@ -725,7 +725,7 @@
         bottom: 0;
         right: 0;
         left: 0;
-        z-index: 9999;
+        z-index: 1001;
         background-color: var(--tainacan-gray1);
         width: calc( 100% + ( 2 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column)) ) );
         align-items: center;

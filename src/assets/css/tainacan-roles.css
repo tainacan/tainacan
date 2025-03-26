@@ -27220,7 +27220,7 @@ textarea.textarea,
   border-radius: var(--tainacan-dropdownmenu-border-radius, 0px) !important;
   max-height: 240px;
   overflow-y: auto;
-  box-shadow: none;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.0392156863), 0 12px 12px rgba(0, 0, 0, 0.031372549), 0 16px 16px rgba(0, 0, 0, 0.0196078431);
   background-color: var(--tainacan-background-color);
   border: 1px solid var(--tainacan-input-border-color);
 }
