@@ -1178,6 +1178,13 @@
   background-color: var(--tainacan-admin-navigation-sidebar-background-color);
   box-sizing: border-box;
 }
+#tainacan-page-container #tainacan-navigation-menu ul {
+  list-style: none;
+  margin: 0px;
+}
+#tainacan-page-container #tainacan-navigation-menu ul li {
+  margin: 0px 0px 6px 0px;
+}
 @media (min-width: 769px) {
   #tainacan-page-container #tainacan-navigation-menu.is-collapsed {
     --tainacan-admin-navigation-sidebar-width: 65px;
@@ -1345,6 +1352,7 @@
 #tainacan-page-container #tainacan-navigation-menu button .icon {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   width: 1.25em;
   height: 1.25em;
   margin-right: 0.5rem;
