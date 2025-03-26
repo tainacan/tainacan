@@ -105,12 +105,7 @@
                                         v-for="(capability, index) of group"
                                         :key="index">
                                     <li :id="'capability-' + capability">
-                                        <span class="check-column">
-                                            <label
-                                                    class="sr-only"
-                                                    :for="'capability_' + capability">
-                                                {{ $i18n.get('Selecionar') + ' ' + repositoryCapabilities[capability].display_name }}
-                                            </label>
+                                        <label>
                                             <input
                                                     :id="'capability_'+ capability"
                                                     type="checkbox"
@@ -118,20 +113,20 @@
                                                     :disabled="repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap] == true) >= 0"
                                                     :checked="form.capabilities[capability] || (repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap] == true) >= 0)"
                                                     @input="onUpdateCapability($event.target.checked, capability)">
-                                        </span>
-                                        <span 
-                                                v-tooltip="{
-                                                    content: repositoryCapabilities[capability].description,
-                                                    autoHide: true,
-                                                    delay: { show: 500, hide: 0 },
-                                                    placement: 'auto-end',
-                                                    instantMove: true,
-                                                    popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
-                                                }"        
-                                                class="name column-name"
-                                                :data-colname="$i18n.get('Capability name')">
-                                            {{ repositoryCapabilities[capability].display_name }}
-                                        </span>
+                                            <span 
+                                                    v-tooltip="{
+                                                        content: repositoryCapabilities[capability].description,
+                                                        autoHide: true,
+                                                        delay: { show: 500, hide: 0 },
+                                                        placement: 'auto-end',
+                                                        instantMove: true,
+                                                        popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
+                                                    }"        
+                                                    class="name column-name"
+                                                    :data-colname="$i18n.get('Capability name')">
+                                                {{ repositoryCapabilities[capability].display_name }}
+                                            </span>
+                                        </label>
                                     </li>
                                     <br>
                                 </template>
@@ -192,34 +187,29 @@
                                             v-for="(capability, index) of group"
                                             :key="index">
                                         <li :id="'capability-' + capability.replace('%d', selectedCollection)">
-                                            <span class="check-column">
-                                                <label
-                                                        class="sr-only"
-                                                        :for="'capability_' + capability.replace('%d', selectedCollection)">
-                                                    {{ $i18n.get('Selecionar') + ' ' + collectionCapabilities[capability].display_name }}
-                                                </label>
+                                            <label>
                                                 <input
-                                                        :id="'capability_'+ capability.replace('%d', selectedCollection)"
+                                                        :id="'capability_' + capability.replace('%d', selectedCollection)"
                                                         type="checkbox"
                                                         name="roles[]"
                                                         :style="{ 'margin-left': collectionCapabilities[capability].deps && collectionCapabilities[capability].deps.size > 0 ? ( collectionCapabilities[capability].deps.size + 'em') : '0' }"
                                                         :disabled="isCapabilityDisabled(capability, selectedCollection)"
                                                         :checked="isCapabilityChecked(capability, selectedCollection)"
                                                         @input="onUpdateCapability($event.target.checked, capability.replace('%d', selectedCollection))">
-                                            </span>
-                                            <span 
-                                                    v-tooltip="{
-                                                        content: collectionCapabilities[capability].description,
-                                                        autoHide: true,
-                                                        delay: { show: 500, hide: 0 },
-                                                        placement: 'auto-end',
-                                                        instantMove: true,
-                                                        popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
-                                                    }"
-                                                    class="name column-name"
-                                                    :data-colname="$i18n.get('Capability name')">
-                                                {{ collectionCapabilities[capability].display_name }}
-                                            </span>
+                                                <span 
+                                                        v-tooltip="{
+                                                            content: collectionCapabilities[capability].description,
+                                                            autoHide: true,
+                                                            delay: { show: 500, hide: 0 },
+                                                            placement: 'auto-end',
+                                                            instantMove: true,
+                                                            popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
+                                                        }"
+                                                        class="name column-name"
+                                                        :data-colname="$i18n.get('Capability name')">
+                                                    {{ collectionCapabilities[capability].display_name }}
+                                                </span>
+                                            </label>
                                         </li>
                                         <br>
                                     </template>
@@ -252,12 +242,7 @@
                                         v-for="(optionLabel, optionSlug) of group"
                                         :key="optionSlug">
                                     <li>
-                                        <span class="check-column">
-                                            <label 
-                                                    :for="optionSlug"
-                                                    class="sr-only">
-                                                {{ optionLabel }}
-                                            </label>
+                                        <label>
                                             <input 
                                                     :id="optionSlug"
                                                     type="checkbox"
@@ -265,8 +250,8 @@
                                                     :disabled="roleSlug === 'new'"
                                                     :checked="getAdminUIOptionValue(optionSlug)"
                                                     @input="($event) => setAdminUIOptionValue($event, optionSlug)">
-                                        </span>
-                                        <span class="name column-name">{{ optionLabel }}</span>
+                                            <span class="name column-name">{{ optionLabel }}</span>
+                                        </label>
                                     </li>
                                     <br>
                                 </template>
@@ -764,7 +749,7 @@
     }
     .tabs-content {
         border-top: none;
-        padding: 1em 2em;
+        padding: 0.25em 2em;
     }
     .dashicons-info {
         color: var(--tainacan-warning);
@@ -793,9 +778,10 @@
                 li {
                     margin: 0 0.5em 0.5em;
                     display: inline-block;
-                    white-space: nowrap;
-                    .column-name {
-                        white-space: nowrap;
+
+                    label {
+                        display: flex;
+                        align-items: center;
                     }
                 }
             }

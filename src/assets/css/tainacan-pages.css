@@ -109,7 +109,6 @@
   --tainacan-filters-inline-width: 272px;
   --tainacan-one-column: min(4.166666667%, 2rem);
   --tainacan-container-padding: 1.5rem;
-  /* Basic styles to checkboxes that won't affect Bulma components but will work for WordPress default ones */
 }
 @media screen and (max-height: 760px) {
   :root {
@@ -121,16 +120,14 @@
     --tainacan-container-padding: 1rem;
   }
 }
-:root input[type=checkbox]:checked::before {
-  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Cpath style='fill:rgb(69,70,71)' d='M 0.04038059,0.6267767 0.14644661,0.52071068 0.42928932,0.80355339 0.3232233,0.90961941 z M 0.21715729,0.80355339 0.85355339,0.16715729 0.95961941,0.2732233 0.3232233,0.90961941 z'%3E%3C/path%3E%3C/svg%3E");
-  width: 1em;
-  height: 1em;
-  margin: 0;
-}
-:root input[type=checkbox] {
-  border-radius: 2px;
-}
 
+.tainacan-pages-container,
+#tainacan-admin-app,
+.theme-items-list,
+.tainacan-item-submission-form,
+.tainacan-modal-content {
+  /* Basic styles to checkboxes that won't affect Bulma components but will work for WordPress default ones */
+}
 .tainacan-pages-container .has-text-primary,
 .tainacan-pages-container .has-text-primary:hover,
 .tainacan-pages-container .has-text-primary:focus,
@@ -429,6 +426,34 @@
   border-bottom: none;
   border-right: none;
   box-shadow: none;
+}
+.tainacan-pages-container input[type=checkbox]:checked::before,
+#tainacan-admin-app input[type=checkbox]:checked::before,
+.theme-items-list input[type=checkbox]:checked::before,
+.tainacan-item-submission-form input[type=checkbox]:checked::before,
+.tainacan-modal-content input[type=checkbox]:checked::before {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Cpath style='fill:rgb(69,70,71)' d='M 0.04038059,0.6267767 0.14644661,0.52071068 0.42928932,0.80355339 0.3232233,0.90961941 z M 0.21715729,0.80355339 0.85355339,0.16715729 0.95961941,0.2732233 0.3232233,0.90961941 z'%3E%3C/path%3E%3C/svg%3E");
+  width: 1em;
+  height: 1em;
+  margin: 0;
+}
+.tainacan-pages-container input[type=checkbox],
+#tainacan-admin-app input[type=checkbox],
+.theme-items-list input[type=checkbox],
+.tainacan-item-submission-form input[type=checkbox],
+.tainacan-modal-content input[type=checkbox] {
+  border-radius: 2px;
+}
+@media screen and (max-width: 782px) {
+  .tainacan-pages-container input[type=checkbox]:checked::before,
+  #tainacan-admin-app input[type=checkbox]:checked::before,
+  .theme-items-list input[type=checkbox]:checked::before,
+  .tainacan-item-submission-form input[type=checkbox]:checked::before,
+  .tainacan-modal-content input[type=checkbox]:checked::before {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0.125rem;
+  }
 }
 
 /* Removal of some padding that would conflict on how we color the page background */
