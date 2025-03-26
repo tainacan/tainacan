@@ -652,8 +652,6 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import '../../scss/_variables.scss';
-
     .sub-header {
         min-height: 2.5em;
         padding: 0.5em 0;

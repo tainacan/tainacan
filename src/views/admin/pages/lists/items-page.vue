@@ -1532,8 +1532,6 @@
 
 <style lang="scss" scoped>
 
-    @import '../../scss/_variables.scss';
-
     .page-container.admin-items-list {
         padding: 0 var(--tainacan-one-column);
     }
@@ -1572,7 +1570,7 @@
     }
 
     .filters-menu {
-        width: $filter-menu-width;
+        width: var(--tainacan-filter-menu-width-theme, 16.66667%);
         min-width: 180px;
         min-height: 100%;
         height: auto;

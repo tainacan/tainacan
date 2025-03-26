@@ -300,7 +300,10 @@
     ul.items-list-edit.items-layout-grid {
         padding: 0;
         margin: 0;
-        @include display-grid;
+        flex-wrap: wrap;
+        display: flex;
+        display: -ms-grid;
+        display: grid;
         grid-gap: 24px;
         gap: 24px;
         justify-content: space-evenly;
@@ -476,7 +479,10 @@
         padding-left: 0;
         margin: 0;
         margin-left: 0;
-        @include display-grid;
+        flex-wrap: wrap;
+        display: flex;
+        display: -ms-grid;
+        display: grid;
         align-items: self-start;
         list-style-type: none;
 
@@ -586,7 +592,10 @@
         .mosaic-container {
             padding: 0;
             justify-content: stretch; // For flex fallback compatibility
-            @include display-grid;
+            flex-wrap: wrap;
+            display: flex;
+            display: -ms-grid;
+            display: grid;
             -ms-grid-columns: 150px 150px 150px;
             grid-template-columns: repeat(3, 150px);
             grid-auto-flow: dense;

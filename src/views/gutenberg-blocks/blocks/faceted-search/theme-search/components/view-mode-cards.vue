@@ -143,15 +143,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-    // Grid mixin for display: grid compatibility
-    @mixin display-grid {
-        flex-wrap: wrap;
-        display: flex;
-        display: -ms-grid;
-        display: grid;
-    }
-
     @import "../../../../../admin/scss/_view-mode-cards.scss";
     
     .tainacan-cards-container .tainacan-card .metadata-title {

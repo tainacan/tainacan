@@ -5,7 +5,7 @@
             <tainacan-title />
 
 
-            <div class="sub-header">
+            <div class="sub-header tainacan-sticky-content-subheader">
 
                 <b-field 
                         class="header-item"
@@ -269,10 +269,8 @@
 </script>
 
 <style lang="scss" scoped>
-    @import '../../scss/_variables.scss';
 
     .sub-header {
-        @include logs-container();
 
         .header-item {
             margin-bottom: 0 !important;

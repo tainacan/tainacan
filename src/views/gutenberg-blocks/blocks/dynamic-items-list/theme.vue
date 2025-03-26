@@ -584,12 +584,15 @@ export default {
 
     @import './style.scss';
 
-    @import '../../../admin/scss/_variables';
-    @import '../../../admin/scss/_custom_variables';
+    @import '../../../tainacan-basics.scss';
+    @import '../../../tainacan-variables.scss';
     
     // Tooltips
     @import url('floating-vue/dist/style.css');
     @import '../../../admin/scss/_tooltips.scss';
+
+    // Animations
+    @import '../../../admin/scss/_animations.scss';
 
     // Vue Blurhash transtition effect
     @import '../../../../../node_modules/another-vue3-blurhash/dist/style.css';

@@ -1,9 +1,8 @@
 // TAINACAN ICON FONT
 @import "../../assets/css/tainacanicons.css";
 
-// Tainacan custom colors and bulma's core
-@import "./_variables.scss";
-
+// // Tainacan custom colors and bulma's core
+@import "../../tainacan-basics.scss";
 
 // Import Bulma and Buefy styles
 @import "../../assets/css/materialdesignicons.css";
@@ -11,6 +10,7 @@
 @import "../../../../node_modules/@ntohq/buefy-next/src/scss/buefy.scss";
 
 // Import Tainacan custom styles
+@import "../scss/_animations.scss";
 @import "../scss/_tainacan-form.scss";
 @import "../scss/_control.scss";
 @import "../scss/_buttons.scss";
@@ -29,7 +29,6 @@
 @import "../scss/_notices.scss";
 @import "../scss/_filters-menu-modal.scss";
 @import "../scss/_repository-level-overrides.scss";
-@import "../scss/_custom_variables.scss";
 
 #tainacan-admin-app {
     background: var(--tainacan-background-color);
@@ -357,4 +356,20 @@ audio, video {
         margin-left: 2px;
         margin-right: 8px;
     }
+}
+
+.tainacan-sticky-content-subheader {
+    position: sticky;
+    top: calc(-1 * var(--tainacan-container-padding));
+    z-index: 2;
+    background: var(--tainacan-background-color);
+    height: auto;
+    min-height: 2.5em;
+    padding: 0.5em 0;
+    border-bottom: 1px solid #ddd;
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 4px;
 }

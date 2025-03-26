@@ -88,7 +88,7 @@ const TainacanPluginConfig = {
                         options: {
                             sassOptions: {
                                 implementation: require('sass'),
-                                includePaths: [path.resolve(__dirname, './src/views/admin/scss/_variables.scss')]
+                                includePaths: [path.resolve(__dirname, './src/views/tainacan-basics.scss')]
                             }
                         }
                     },

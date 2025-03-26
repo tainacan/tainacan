@@ -6,7 +6,10 @@
     list-style: none;
     height: auto !important;
     padding: 0;
-    @include display-grid;
+    flex-wrap: wrap;
+    display: flex;
+    display: -ms-grid;
+    display: grid;
     grid-template-columns: repeat(auto-fill, 285px);
     grid-gap: 0px;
     justify-content: space-evenly;

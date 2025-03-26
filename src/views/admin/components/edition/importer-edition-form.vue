@@ -458,8 +458,6 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_variables.scss";
-
     .field {
         position: relative;
     }
@@ -508,7 +506,10 @@ export default {
 
     .source-file-upload {
         width: 100%;
-        @include display-grid;
+        flex-wrap: wrap;
+        display: flex;
+        display: -ms-grid;
+        display: grid;
     }
 
     .selected-source-file {

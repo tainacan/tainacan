@@ -517,15 +517,6 @@
 </script>
 
 <style lang="scss" scoped>
-    @import '../../scss/_variables.scss';
-
-    .sub-header {
-      @include logs-container();
-
-      .header-item {
-        min-height: 1.875em;
-      }
-    }
 
     .selection-control {
         

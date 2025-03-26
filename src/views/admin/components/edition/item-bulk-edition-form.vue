@@ -352,8 +352,6 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_variables.scss";
-
     .page-container {
 
         &>.tainacan-form {
@@ -379,7 +377,10 @@ export default {
         .source-file-upload {
             width: 100%;
             padding: 0.75em var(--tainacan-one-column);
-            @include display-grid;
+            flex-wrap: wrap;
+            display: flex;
+            display: -ms-grid;
+            display: grid;
         }
         .document-list {
             display: inline-block;

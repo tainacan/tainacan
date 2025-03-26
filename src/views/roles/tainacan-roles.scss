@@ -2,7 +2,7 @@
 @import "../../assets/css/tainacanicons.css";
 
 // Tainacan custom colors and bulma's core
-@import "../admin/scss/_variables.scss";
+
 
 
 // Import Bulma and Buefy styles
@@ -22,7 +22,6 @@
 @import "../admin/scss/_modals.scss";
 @import "../admin/scss/_tooltips.scss";
 @import "../admin/scss/_repository-level-overrides.scss";
-@import "../admin/scss/_custom_variables.scss";
 
 #tainacan-roles-app {
     padding-bottom: 0 !important;

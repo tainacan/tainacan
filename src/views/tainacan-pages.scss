@@ -1,5 +1,11 @@
-@import "./admin/scss/_variables.scss";
-@import "./admin/scss/_custom_variables.scss";
+/**
+ * Tainacan Pages
+ * 
+ * This file contains the styles for the Tainacan Admin Pages.
+ * 
+ */
+@import "./tainacan-basics.scss";
+@import "./tainacan-variables.scss";
 
 /* Removal of some padding that would conflict on how we color the page background */
 .tainacan-pages-container #wpcontent {

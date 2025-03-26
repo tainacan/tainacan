@@ -1,6 +1,17 @@
+/**
+ * Tainacan Basics
+ * 
+ * This file contains the SASS styles and variables 
+ * that are needed by Tainacan build of Bulma components.
+ * In the future, when migrating to Bulma 1.0.0, this might 
+ * be replaced by simpler css variables as those present in 
+ * 'tainacan-variables.scss'.
+ * 
+ */
+
 // Import Bulma's core and variables
-@import "../../../../node_modules/bulma/sass/utilities/initial-variables";
-@import "../../../../node_modules/bulma/sass/utilities/functions";
+@import "../../node_modules/bulma/sass/utilities/initial-variables";
+@import "../../node_modules/bulma/sass/utilities/functions";
 
 // NEW TAINACAN CUSTOM COLORS ------------------
 // Blue, used mainly for repository
@@ -99,7 +110,7 @@ $black-invert: findColorInvert($black);
 $foreground-color: $black;
 $background-color: $white;
 
-@import "../../../../node_modules/bulma/sass/utilities/derived-variables.sass";
+@import "../../node_modules/bulma/sass/utilities/derived-variables.sass";
 
 // Setup $colors to use as bulma classes
 $colors: (
@@ -187,29 +198,6 @@ $radio-size: 0.9375em;
 $checkbox-size: 0.875em;
 $checkbox-border-width: 1px;
 
-// Grid mixin for display: grid compatibility
-@mixin display-grid {
-    flex-wrap: wrap;
-    display: flex;
-    display: -ms-grid;
-    display: grid;
-}
-@mixin logs-container {
-    position: sticky;
-    top: calc(-1 * var(--tainacan-container-padding));
-    z-index: 2;
-    background: var(--tainacan-background-color);
-    height: auto;
-    min-height: 2.5em;
-    padding: 0.5em 0;
-    border-bottom: 1px solid #ddd;
-    display: inline-flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    gap: 4px;
-}
-
 // A copy of bootstrap's screen reader only class to be used for accessibility.
 .sr-only {
     position: absolute;
@@ -239,5 +227,3 @@ $checkbox-border-width: 1px;
     height: 3em;
     width: 3em;
 }
-
-@import './animations.scss';

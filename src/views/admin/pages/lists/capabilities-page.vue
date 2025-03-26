@@ -188,7 +188,6 @@
 </script>
 
 <style lang="scss" scoped>
-    @import '../../scss/_variables.scss';
 
     .sub-header {
         position: sticky;

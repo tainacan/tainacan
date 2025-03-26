@@ -1669,7 +1669,7 @@
 <style lang="scss">
 
     // TAINACAN Variables
-    @import "../../../admin/scss/_variables.scss";
+    @import '../../../tainacan-basics.scss';
 
     //Vue Tooltip
     @import "../../../../../node_modules/floating-vue/dist/style.css";
@@ -1692,10 +1692,11 @@
     @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_numberinput.scss";
 
     // Block level custom variables
-    @import "../../../admin/scss/_custom_variables.scss";
+    @import "../../../tainacan-variables.scss";
 
     // These have to be outside of the scoped context
     @import "./theme-search/scss/_layout.scss";
+    @import '../../../admin/scss/_animations.scss';
     @import "../../../admin/scss/_tooltips.scss";
     @import "../../../admin/scss/_notices.scss";
     @import "../../../admin/scss/_modals.scss";

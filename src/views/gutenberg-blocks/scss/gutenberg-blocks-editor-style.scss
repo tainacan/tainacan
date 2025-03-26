@@ -161,7 +161,10 @@
     &.wp-version-smaller-than-6-1 .modal-radio-list .components-base-control__field,
     &:not(.wp-version-smaller-than-6-1) .modal-radio-list .components-flex.components-h-stack.components-v-stack {
         padding: 0;
-        @include display-grid;
+        flex-wrap: wrap;
+        display: flex;
+        display: -ms-grid;
+        display: grid;
         -ms-grid-columns: 250px 250px;
         grid-template-columns: repeat(auto-fill, 250px);
         grid-gap: 0px;

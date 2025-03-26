@@ -1,3 +1,19 @@
+/**
+ * Tainacan Pages
+ * 
+ * This file contains the styles for the Tainacan Admin Pages.
+ * 
+ */
+/**
+ * Tainacan Basics
+ * 
+ * This file contains the SASS styles and variables 
+ * that are needed by Tainacan build of Bulma components.
+ * In the future, when migrating to Bulma 1.0.0, this might 
+ * be replaced by simpler css variables as those present in 
+ * 'tainacan-variables.scss'.
+ * 
+ */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -29,579 +45,15 @@
   width: 3em;
 }
 
-@keyframes slide-menu-in {
-  from {
-    -ms-transform: translate(-100%, 0); /* IE 9 */
-    -webkit-transform: translate(-100%, 0); /* Safari */
-    transform: translate(-100%, 0);
-  }
-  to {
-    -ms-transform: translate(0, 0); /* IE 9 */
-    -webkit-transform: translate(0, 0); /* Safari */
-    transform: translate(0, 0);
-  }
-}
-@keyframes slide-menu-out {
-  from {
-    -ms-transform: translate(0, 0); /* IE 9 */
-    -webkit-transform: translate(0, 0); /* Safari */
-    transform: translate(0, 0);
-  }
-  to {
-    -ms-transform: translate(-100%, 0); /* IE 9 */
-    -webkit-transform: translate(-100%, 0); /* Safari */
-    transform: translate(-100%, 0);
-  }
-}
-@keyframes appear {
-  from {
-    opacity: 0;
-    visibility: hidden;
-  }
-  to {
-    opacity: 1;
-    visibility: visible;
-  }
-}
-@keyframes disappear {
-  from {
-    opacity: 0.3;
-    visibility: visible;
-  }
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
-.slide-menu-enter-active {
-  animation-name: slide-menu-in;
-  animation-duration: 0.3s;
-  animation-timing-function: ease-out;
-}
-.slide-menu-enter-active .modal-background {
-  animation-name: appear;
-  animation-duration: 0.6s;
-  animation-timing-function: ease-out;
-}
-
-.slide-menu-leave-active {
-  animation-name: slide-menu-out;
-  animation-duration: 0.3s;
-  animation-timing-function: ease-in;
-}
-.slide-menu-leave-active .modal-background {
-  opacity: 0;
-  animation-name: disappear;
-  animation-duration: 0.2s;
-  animation-timing-function: ease-in;
-}
-
-@keyframes appear-from-top-tooltip {
-  from {
-    top: 24px;
-    opacity: 0;
-  }
-  to {
-    top: 48px;
-    opacity: 1;
-  }
-}
-@keyframes appear-from-top {
-  from {
-    top: -48px;
-  }
-  to {
-    top: 0px;
-  }
-}
-@keyframes appear-from-bottom {
-  from {
-    bottom: -48px;
-  }
-  to {
-    bottom: -12px;
-  }
-}
-@keyframes expand {
-  from {
-    max-height: 0;
-  }
-  to {
-    max-height: 222px;
-  }
-}
-@keyframes item-appear {
-  from {
-    opacity: 0;
-    visibility: hidden;
-    transform: translate(0, 12px);
-  }
-  to {
-    opacity: 1;
-    visibility: visible;
-    transform: translate(0, 0px);
-  }
-}
-.item-appear-enter-active {
-  animation-name: item-appear;
-  animation-duration: 0.2s;
-  animation-timing-function: ease-out;
-}
-
-.item-appear-leave-active {
-  animation-name: item-appear;
-  animation-duration: 0.2s;
-  animation-timing-function: ease-in;
-  animation-direction: reverse;
-}
-
-@keyframes filter-item-in {
-  from {
-    opacity: 0;
-    height: 0px;
-    max-height: 0px;
-    min-height: 0px;
-    -ms-transform: translate(0%, -30%); /* IE 9 */
-    -webkit-transform: translate(0%, -30%); /* Safari */
-    transform: translate(0%, -30%);
-  }
-  to {
-    height: 35px;
-    max-height: 35px;
-    min-height: 35px;
-    opacity: 1;
-    -ms-transform: translate(0, 0); /* IE 9 */
-    -webkit-transform: translate(0, 0); /* Safari */
-    transform: translate(0, 0);
-  }
-}
-@keyframes filter-item-out {
-  from {
-    height: 35px;
-    max-height: 35px;
-    min-height: 35px;
-    opacity: 1;
-    -ms-transform: translate(0, 0); /* IE 9 */
-    -webkit-transform: translate(0, 0); /* Safari */
-    transform: translate(0, 0);
-  }
-  to {
-    height: 0px;
-    max-height: 0px;
-    min-height: 0px;
-    opacity: 0;
-    -ms-transform: translate(0%, -30%); /* IE 9 */
-    -webkit-transform: translate(0%, -30%); /* Safari */
-    transform: translate(0%, -30%);
-  }
-}
-.filter-item-enter-active {
-  overflow: hidden;
-  animation-name: filter-item-in;
-  animation-duration: 0.1s;
-  animation-timing-function: ease;
-}
-
-.filter-item-leave-active {
-  overflow: hidden;
-  animation-name: filter-item-out;
-  animation-duration: 0.1s;
-  animation-timing-function: ease;
-}
-
-@keyframes form-collapse-in {
-  from {
-    opacity: 0;
-    height: 0px;
-    max-height: 0px;
-    min-height: 0px;
-  }
-  to {
-    height: 300px;
-    max-height: 300px;
-    min-height: 300px;
-    opacity: 1;
-  }
-}
-@keyframes form-collapse-out {
-  from {
-    height: 300px;
-    max-height: 300px;
-    min-height: 300px;
-  }
-  to {
-    height: 0px;
-    max-height: 0px;
-    min-height: 0px;
-  }
-}
-.form-collapse-enter-active {
-  overflow: hidden;
-  animation-name: form-collapse-in;
-  animation-duration: 0.2s;
-  animation-timing-function: ease;
-}
-
-.form-collapse-leave-active {
-  overflow: hidden;
-  animation-name: form-collapse-out;
-  animation-duration: 0.15s;
-  animation-timing-function: ease;
-}
-
-@keyframes form-capabilities-in {
-  from {
-    opacity: 0;
-    height: 0px;
-    max-height: 0px;
-    min-height: 0px;
-  }
-  to {
-    height: 120px;
-    max-height: 120px;
-    min-height: 120px;
-    opacity: 1;
-  }
-}
-@keyframes form-capabilities-out {
-  from {
-    height: 120px;
-    max-height: 120px;
-    min-height: 120px;
-  }
-  to {
-    height: 0px;
-    max-height: 0px;
-    min-height: 0px;
-  }
-}
-.form-capabilities-enter-active {
-  overflow: hidden;
-  animation-name: form-capabilities-in;
-  animation-duration: 0.2s;
-  animation-timing-function: ease;
-}
-
-.form-capabilities-leave-active {
-  overflow: hidden;
-  animation-name: form-capabilities-out;
-  animation-duration: 0.15s;
-  animation-timing-function: ease;
-}
-
-@keyframes filters-menu-in {
-  from {
-    opacity: 0;
-    width: 0px;
-    max-width: 0px;
-    min-width: 0px;
-    -ms-transform: translate(-30%, 0%); /* IE 9 */
-    -webkit-transform: translate(-30%, 0%); /* Safari */
-    transform: translate(-30%, 0%);
-  }
-  to {
-    height: 180px;
-    max-width: 180px;
-    min-width: 180px;
-    opacity: 1;
-    -ms-transform: translate(0, 0); /* IE 9 */
-    -webkit-transform: translate(0, 0); /* Safari */
-    transform: translate(0, 0);
-  }
-}
-@keyframes filters-menu-out {
-  from {
-    width: 180px;
-    max-width: 180px;
-    min-width: 180px;
-    opacity: 1;
-    -ms-transform: translate(0, 0); /* IE 9 */
-    -webkit-transform: translate(0, 0); /* Safari */
-    transform: translate(0, 0);
-  }
-  to {
-    width: 0px;
-    max-width: 0px;
-    min-width: 0px;
-    opacity: 0;
-    -ms-transform: translate(-30%, 0%); /* IE 9 */
-    -webkit-transform: translate(-30%, 0%); /* Safari */
-    transform: translate(-30%, 0%);
-  }
-}
-.filters-menu-enter-active {
-  animation-name: filters-menu-in;
-  animation-duration: 0.2s;
-  animation-timing-function: ease;
-}
-
-.filters-menu-leave-active {
-  animation-name: filters-menu-out;
-  animation-duration: 0.2s;
-  animation-timing-function: ease;
-}
-
-@keyframes panel-from-top-in {
-  from {
-    opacity: 0.8;
-    -ms-transform: translate(0%, -75%); /* IE 9 */
-    -webkit-transform: translate(0%, -75%); /* Safari */
-    transform: translate(0%, -75%);
-  }
-  to {
-    opacity: 1;
-    -ms-transform: translate(0, 0); /* IE 9 */
-    -webkit-transform: translate(0, 0); /* Safari */
-    transform: translate(0, 0);
-  }
-}
-@keyframes panel-from-top-out {
-  from {
-    opacity: 1;
-    -ms-transform: translate(0, 0); /* IE 9 */
-    -webkit-transform: translate(0, 0); /* Safari */
-    transform: translate(0, 0);
-  }
-  to {
-    opacity: 0.8;
-    -ms-transform: translate(0%, -80%); /* IE 9 */
-    -webkit-transform: translate(0%, -80%); /* Safari */
-    transform: translate(0%, -80%);
-  }
-}
-.panel-from-top-enter-active {
-  animation-name: panel-from-top-in;
-  animation-duration: 0.3s;
-  animation-timing-function: ease-in;
-}
-
-.panel-from-top-leave-active {
-  animation-name: panel-from-top-out;
-  animation-duration: 0.2s;
-  animation-timing-function: ease-out;
-}
-
-@keyframes slide-left-in {
-  from {
-    opacity: 0;
-    -ms-transform: translate(-5%, 0%) scale(0.95); /* IE 9 */
-    -webkit-transform: translate(-5%, 0%) scale(0.95); /* Safari */
-    transform: translate(-5%, 0%) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    -ms-transform: translate(0, 0) scale(1); /* IE 9 */
-    -webkit-transform: translate(0, 0) scale(1); /* Safari */
-    transform: translate(0, 0) scale(1);
-  }
-}
-@keyframes slide-left-out {
-  from {
-    opacity: 1;
-    -ms-transform: translate(0, 0) scale(1); /* IE 9 */
-    -webkit-transform: translate(0, 0) scale(1); /* Safari */
-    transform: translate(0, 0) scale(1);
-  }
-  to {
-    opacity: 0;
-    -ms-transform: translate(10%, 0%) scale(0.95); /* IE 9 */
-    -webkit-transform: translate(10%, 0%) scale(0.95); /* Safari */
-    transform: translate(10%, 0%) scale(0.95);
-  }
-}
-.slide-left-enter-active {
-  animation-name: slide-left-in;
-  animation-duration: 0.4s;
-  animation-timing-function: ease;
-}
-
-.slide-left-leave-active {
-  animation-name: slide-left-out;
-  animation-duration: 0.4s;
-  animation-timing-function: ease;
-}
-
-@keyframes slide-right-in {
-  from {
-    opacity: 0;
-    -ms-transform: translate(10%, 0%) scale(0.95); /* IE 9 */
-    -webkit-transform: translate(10%, 0%) scale(0.95); /* Safari */
-    transform: translate(10%, 0%) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    -ms-transform: translate(0, 0) scale(1); /* IE 9 */
-    -webkit-transform: translate(0, 0) scale(1); /* Safari */
-    transform: translate(0, 0) scale(1);
-  }
-}
-@keyframes slide-right-out {
-  from {
-    opacity: 1;
-    -ms-transform: translate(0, 0) scale(1); /* IE 9 */
-    -webkit-transform: translate(0, 0) scale(1); /* Safari */
-    transform: translate(0, 0) scale(1);
-  }
-  to {
-    opacity: 0;
-    -ms-transform: translate(-5%, 0%) scale(0.95); /* IE 9 */
-    -webkit-transform: translate(-5%, 0%) scale(0.95); /* Safari */
-    transform: translate(-5%, 0%) scale(0.95);
-  }
-}
-.slide-right-enter-active {
-  animation-name: slide-right-in;
-  animation-duration: 0.3s;
-  animation-timing-function: ease;
-}
-
-.slide-right-leave-active {
-  animation-name: slide-right-out;
-  animation-duration: 0.3s;
-  animation-timing-function: ease;
-}
-
-@keyframes page-left-in {
-  from {
-    opacity: 0;
-    -ms-transform: translate(-5%, 0%); /* IE 9 */
-    -webkit-transform: translate(-5%, 0%); /* Safari */
-    transform: translate(-5%, 0%);
-  }
-  to {
-    opacity: 1;
-    -ms-transform: translate(0, 0); /* IE 9 */
-    -webkit-transform: translate(0, 0); /* Safari */
-    transform: translate(0, 0);
-  }
-}
-@keyframes page-left-out {
-  from {
-    opacity: 1;
-    -ms-transform: translate(0, 0); /* IE 9 */
-    -webkit-transform: translate(0, 0); /* Safari */
-    transform: translate(0, 0);
-  }
-  to {
-    opacity: 0;
-    -ms-transform: translate(10%, 0%); /* IE 9 */
-    -webkit-transform: translate(10%, 0%); /* Safari */
-    transform: translate(10%, 0%);
-  }
-}
-.page-left-enter-active {
-  animation-name: page-left-in;
-  animation-duration: 0.4s;
-  animation-timing-function: ease;
-}
-
-.page-left-leave-active {
-  animation-name: page-left-out;
-  animation-duration: 0.4s;
-  animation-timing-function: ease;
-}
-
-@keyframes page-right-in {
-  from {
-    opacity: 0;
-    -ms-transform: translate(10%, 0%); /* IE 9 */
-    -webkit-transform: translate(10%, 0%); /* Safari */
-    transform: translate(10%, 0%);
-  }
-  to {
-    opacity: 1;
-    -ms-transform: translate(0, 0); /* IE 9 */
-    -webkit-transform: translate(0, 0); /* Safari */
-    transform: translate(0, 0);
-  }
-}
-@keyframes page-right-out {
-  from {
-    opacity: 1;
-    -ms-transform: translate(0, 0); /* IE 9 */
-    -webkit-transform: translate(0, 0); /* Safari */
-    transform: translate(0, 0);
-  }
-  to {
-    opacity: 0;
-    -ms-transform: translate(-5%, 0%); /* IE 9 */
-    -webkit-transform: translate(-5%, 0%); /* Safari */
-    transform: translate(-5%, 0%);
-  }
-}
-.page-right-enter-active {
-  animation-name: page-right-in;
-  animation-duration: 0.3s;
-  animation-timing-function: ease;
-}
-
-.page-right-leave-active {
-  animation-name: page-right-out;
-  animation-duration: 0.3s;
-  animation-timing-function: ease;
-}
-
-@-webkit-keyframes skeleton-animation {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.2;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@-moz-keyframes skeleton-animation {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.2;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@-o-keyframes skeleton-animation {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.2;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@keyframes skeleton-animation {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.2;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-.skeleton {
-  border-radius: 2px;
-  background: var(--tainacan-skeleton-color);
-  -webkit-animation: skeleton-animation 1.8s ease infinite;
-  -moz-animation: skeleton-animation 1.8s ease infinite;
-  -o-animation: skeleton-animation 1.8s ease infinite;
-  animation: skeleton-animation 1.8s ease infinite;
-}
-
-@keyframes metadatum-highlight {
-  from {
-    background-color: var(--tainacan-primary1);
-  }
-  to {
-    background-color: var(--tainacan-white);
-  }
-}
+/**
+ * Tainacan Variables
+ * 
+ * This file contains css variables used by many Tainacan
+ * components. It uses SASS variables defined in 'tainacan-basics.scss'.
+ * In the future, when migrating to Bulma 1.0.0, this might
+ * be replaced by simpler css variables.
+ * 
+ */
 :root {
   --tainacan-blue1: #e6f4ff;
   --tainacan-blue2: #cce3f2;
@@ -657,6 +109,7 @@
   --tainacan-filters-inline-width: 272px;
   --tainacan-one-column: min(4.166666667%, 2rem);
   --tainacan-container-padding: 1.5rem;
+  /* Basic styles to checkboxes that won't affect Bulma components but will work for WordPress default ones */
 }
 @media screen and (max-height: 760px) {
   :root {
@@ -668,7 +121,22 @@
     --tainacan-container-padding: 1rem;
   }
 }
+:root input[type=checkbox]:checked::before {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Cpath style='fill:rgb(69,70,71)' d='M 0.04038059,0.6267767 0.14644661,0.52071068 0.42928932,0.80355339 0.3232233,0.90961941 z M 0.21715729,0.80355339 0.85355339,0.16715729 0.95961941,0.2732233 0.3232233,0.90961941 z'%3E%3C/path%3E%3C/svg%3E");
+  width: 1em;
+  height: 1em;
+  margin: 0;
+}
+:root input[type=checkbox] {
+  border-radius: 2px;
+}
 
+.tainacan-pages-container .has-text-primary,
+.tainacan-pages-container .has-text-primary:hover,
+.tainacan-pages-container .has-text-primary:focus,
+.tainacan-pages-container .has-text-secondary,
+.tainacan-pages-container .has-text-secondary:hover,
+.tainacan-pages-container .has-text-secondary:focus,
 #tainacan-admin-app .has-text-primary,
 #tainacan-admin-app .has-text-primary:hover,
 #tainacan-admin-app .has-text-primary:focus,
@@ -695,6 +163,9 @@
 .tainacan-modal-content .has-text-secondary:focus {
   color: var(--tainacan-secondary) !important;
 }
+.tainacan-pages-container .has-text-turquoise5,
+.tainacan-pages-container .has-text-turquoise5:hover,
+.tainacan-pages-container .has-text-turquoise5:focus,
 #tainacan-admin-app .has-text-turquoise5,
 #tainacan-admin-app .has-text-turquoise5:hover,
 #tainacan-admin-app .has-text-turquoise5:focus,
@@ -709,6 +180,9 @@
 .tainacan-modal-content .has-text-turquoise5:focus {
   color: var(--tainacan-turquoise5) !important;
 }
+.tainacan-pages-container .has-text-blue5,
+.tainacan-pages-container .has-text-blue5:hover,
+.tainacan-pages-container .has-text-blue5:focus,
 #tainacan-admin-app .has-text-blue5,
 #tainacan-admin-app .has-text-blue5:hover,
 #tainacan-admin-app .has-text-blue5:focus,
@@ -723,6 +197,9 @@
 .tainacan-modal-content .has-text-blue5:focus {
   color: var(--tainacan-blue5) !important;
 }
+.tainacan-pages-container .has-text-blue4,
+.tainacan-pages-container .has-text-blue4:hover,
+.tainacan-pages-container .has-text-blue4:focus,
 #tainacan-admin-app .has-text-blue4,
 #tainacan-admin-app .has-text-blue4:hover,
 #tainacan-admin-app .has-text-blue4:focus,
@@ -737,6 +214,9 @@
 .tainacan-modal-content .has-text-blue4:focus {
   color: var(--tainacan-blue4) !important;
 }
+.tainacan-pages-container .has-text-gray,
+.tainacan-pages-container .has-text-gray:hover,
+.tainacan-pages-container .has-text-gray:focus,
 #tainacan-admin-app .has-text-gray,
 #tainacan-admin-app .has-text-gray:hover,
 #tainacan-admin-app .has-text-gray:focus,
@@ -751,6 +231,9 @@
 .tainacan-modal-content .has-text-gray:focus {
   color: var(--tainacan-info-color) !important;
 }
+.tainacan-pages-container .has-text-gray3,
+.tainacan-pages-container .has-text-gray3:hover,
+.tainacan-pages-container .has-text-gray3:focus,
 #tainacan-admin-app .has-text-gray3,
 #tainacan-admin-app .has-text-gray3:hover,
 #tainacan-admin-app .has-text-gray3:focus,
@@ -765,6 +248,9 @@
 .tainacan-modal-content .has-text-gray3:focus {
   color: var(--tainacan-gray3) !important;
 }
+.tainacan-pages-container .has-text-gray4,
+.tainacan-pages-container .has-text-gray4:hover,
+.tainacan-pages-container .has-text-gray4:focus,
 #tainacan-admin-app .has-text-gray4,
 #tainacan-admin-app .has-text-gray4:hover,
 #tainacan-admin-app .has-text-gray4:focus,
@@ -779,6 +265,9 @@
 .tainacan-modal-content .has-text-gray4:focus {
   color: var(--tainacan-gray4) !important;
 }
+.tainacan-pages-container .has-text-gray5,
+.tainacan-pages-container .has-text-gray5:hover,
+.tainacan-pages-container .has-text-gray5:focus,
 #tainacan-admin-app .has-text-gray5,
 #tainacan-admin-app .has-text-gray5:hover,
 #tainacan-admin-app .has-text-gray5:focus,
@@ -793,6 +282,9 @@
 .tainacan-modal-content .has-text-gray5:focus {
   color: var(--tainacan-gray4) !important;
 }
+.tainacan-pages-container .has-text-danger,
+.tainacan-pages-container .has-text-danger:hover,
+.tainacan-pages-container .has-text-danger:focus,
 #tainacan-admin-app .has-text-danger,
 #tainacan-admin-app .has-text-danger:hover,
 #tainacan-admin-app .has-text-danger:focus,
@@ -807,6 +299,9 @@
 .tainacan-modal-content .has-text-danger:focus {
   color: var(--tainacan-danger) !important;
 }
+.tainacan-pages-container .has-text-success,
+.tainacan-pages-container .has-text-success:hover,
+.tainacan-pages-container .has-text-success:focus,
 #tainacan-admin-app .has-text-success,
 #tainacan-admin-app .has-text-success:hover,
 #tainacan-admin-app .has-text-success:focus,
@@ -821,6 +316,9 @@
 .tainacan-modal-content .has-text-success:focus {
   color: var(--tainacan-success) !important;
 }
+.tainacan-pages-container .is-success,
+.tainacan-pages-container .is-success:hover,
+.tainacan-pages-container .is-success:focus,
 #tainacan-admin-app .is-success,
 #tainacan-admin-app .is-success:hover,
 #tainacan-admin-app .is-success:focus,
@@ -836,6 +334,7 @@
   background-color: var(--tainacan-success) !important;
   color: var(--tainacan-white) !important;
 }
+.tainacan-pages-container .is-white,
 #tainacan-admin-app .is-white,
 .theme-items-list .is-white,
 .tainacan-item-submission-form .is-white,
@@ -844,6 +343,8 @@
   transition: background-color 0.2s ease-out;
   background-color: rgba(125, 125, 125, 0) !important;
 }
+.tainacan-pages-container .is-white:hover,
+.tainacan-pages-container .is-white:focus,
 #tainacan-admin-app .is-white:hover,
 #tainacan-admin-app .is-white:focus,
 .theme-items-list .is-white:hover,
@@ -855,9 +356,18 @@
   background-color: rgba(125, 125, 125, 0.05) !important;
   color: var(--tainacan-black) !important;
 }
-#tainacan-admin-app .button.is-loading, #tainacan-admin-app .button.is-loading:hover, #tainacan-admin-app .button.is-loading:focus,
-#tainacan-admin-app .button.is-loading.is-success, #tainacan-admin-app .button.is-loading.is-success:hover, #tainacan-admin-app .button.is-loading.is-success:focus,
-#tainacan-admin-app .button.is-loading.is-secondary, #tainacan-admin-app .button.is-loading.is-secondary:hover, #tainacan-admin-app .button.is-loading.is-secondary:focus,
+.tainacan-pages-container .button.is-loading, .tainacan-pages-container .button.is-loading:hover, .tainacan-pages-container .button.is-loading:focus,
+.tainacan-pages-container .button.is-loading.is-success, .tainacan-pages-container .button.is-loading.is-success:hover, .tainacan-pages-container .button.is-loading.is-success:focus,
+.tainacan-pages-container .button.is-loading.is-secondary, .tainacan-pages-container .button.is-loading.is-secondary:hover, .tainacan-pages-container .button.is-loading.is-secondary:focus,
+#tainacan-admin-app .button.is-loading,
+#tainacan-admin-app .button.is-loading:hover,
+#tainacan-admin-app .button.is-loading:focus,
+#tainacan-admin-app .button.is-loading.is-success,
+#tainacan-admin-app .button.is-loading.is-success:hover,
+#tainacan-admin-app .button.is-loading.is-success:focus,
+#tainacan-admin-app .button.is-loading.is-secondary,
+#tainacan-admin-app .button.is-loading.is-secondary:hover,
+#tainacan-admin-app .button.is-loading.is-secondary:focus,
 .theme-items-list .button.is-loading,
 .theme-items-list .button.is-loading:hover,
 .theme-items-list .button.is-loading:focus,
@@ -887,6 +397,10 @@
 .tainacan-modal-content .button.is-loading.is-secondary:focus {
   color: transparent !important;
 }
+.tainacan-pages-container a:not(.wp-element-button),
+.tainacan-pages-container a:not(.wp-element-button):hover,
+.tainacan-pages-container a:not(.wp-element-button):focus,
+.tainacan-pages-container a:not(.wp-element-button):hover:not([href]),
 #tainacan-admin-app a:not(.wp-element-button),
 #tainacan-admin-app a:not(.wp-element-button):hover,
 #tainacan-admin-app a:not(.wp-element-button):focus,
@@ -905,6 +419,7 @@
 .tainacan-modal-content a:not(.wp-element-button):hover:not([href]) {
   color: var(--tainacan-secondary);
 }
+.tainacan-pages-container a:not([href]) a:hover:not([href]),
 #tainacan-admin-app a:not([href]) a:hover:not([href]),
 .theme-items-list a:not([href]) a:hover:not([href]),
 .tainacan-item-submission-form a:not([href]) a:hover:not([href]),
