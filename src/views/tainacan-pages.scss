@@ -100,6 +100,7 @@
     --tainacan-admin-button-hover-background-color: color-mix(in srgb, var(--tainacan-turquoise3) 30%, transparent);
     --tainacan-admin-button-active-background-color: color-mix(in srgb, var(--tainacan-turquoise3) 50%, transparent);
     --tainacan-admin-navigation-sidebar-background-color: var(--tainacan-turquoise2);
+    --tainacan-admin-navigation-sidebar-background-image: radial-gradient(100% 100% at 32% 64%, var(--tainacan-admin-background-color) 58%, var(--tainacan-admin-navigation-sidebar-background-color) 100%);
     --tainacan-admin-navigation-sidebar-separator-color: var(--tainacan-turquoise5); 
     --tainacan-admin-navigation-sidebar-floating-menu-background-color: var(--tainacan-white);
     --tainacan-admin-navigation-sidebar-width: 215px;
@@ -291,6 +292,7 @@
         max-width: var(--tainacan-admin-navigation-sidebar-width, 215px);
         padding: 1rem 0.75rem;
         background-color: var(--tainacan-admin-navigation-sidebar-background-color);
+        background-image: var(--tainacan-admin-navigation-sidebar-background-image);
         box-sizing: border-box;
 
         ul {
@@ -503,9 +505,30 @@
         .menu-item-has-children {
             position: relative;
 
+            @media (prefers-reduced-motion: no-preference) {
+                & > ul {
+                    transition-property: display, opacity, max-height;
+                    transition-duration: 0.5s;
+                    transition-timing-function: ease-in-out;
+                }
+            }
+
+            &.is-open ul {
+                display: block;
+                visibility: visible;
+                max-height: 100vh;
+                opacity: 1.0;
+                @starting-style {
+                    max-height: 0;
+                    opacity: 0.75;
+                }
+            }
+
             &:not(.is-open) > ul {
                 display: none;
                 visibility: hidden;
+                max-height: 0;
+                overflow: clip;
             }
             button {
                 padding-right: 1.5rem;
@@ -669,6 +692,7 @@
     --tainacan-admin-button-hover-background-color: var(--tainacan-blue3);
     --tainacan-admin-button-active-background-color: var(--tainacan-blue4);
     --tainacan-admin-navigation-sidebar-background-color: var(--tainacan-blue5);
+    --tainacan-admin-navigation-sidebar-background-image: none;
     --tainacan-admin-navigation-sidebar-separator-color: var(--tainacan-blue2);
     --tainacan-admin-navigation-sidebar-floating-menu-background-color: var(--tainacan-white);
 
@@ -708,6 +732,7 @@
     --tainacan-admin-button-hover-background-color: #2c3338;
     --tainacan-admin-button-active-background-color: #2271b1;
     --tainacan-admin-navigation-sidebar-background-color: #1d2327;
+    --tainacan-admin-navigation-sidebar-background-image: none;
     --tainacan-admin-navigation-sidebar-separator-color: #949494;
     --tainacan-admin-navigation-sidebar-floating-menu-background-color: #2c3338;
 
@@ -745,6 +770,7 @@
     --tainacan-admin-button-hover-background-color: #2f2f2f;
     --tainacan-admin-button-active-background-color: #2271b1;
     --tainacan-admin-navigation-sidebar-background-color: #1e1e1e;
+    --tainacan-admin-navigation-sidebar-background-image: none;
     --tainacan-admin-navigation-sidebar-separator-color: #949494;
     --tainacan-admin-navigation-sidebar-floating-menu-background-color: #1e1e1e;
 
@@ -771,5 +797,5 @@
     --tainacan-admin-button-background-color: var(--tainacan-gray0);
     --tainacan-admin-button-hover-background-color: color-mix(in srgb, var(--tainacan-gray2) 30%, transparent);
     --tainacan-admin-button-active-background-color: color-mix(in srgb, var(--tainacan-gray2) 50%, transparent);
-    --tainacan-admin-navigation-sidebar-background-color: var(--tainacan-gray0);
+    --tainacan-admin-navigation-sidebar-background-color: var(--tainacan-white);
 }
