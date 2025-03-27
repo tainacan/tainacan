@@ -387,7 +387,7 @@ class Dashboard extends Pages {
 				</a>
 			</li>
 			<li>
-				<a href="<?php echo admin_url('admin.php?page=tainacan_reports#/reports?collection=' . $collection_id); ?>">
+				<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/reports'); ?>">
 					<span class="icon">
 						<?php echo $this->get_svg_icon('reports' ); ?>
 					</span>
