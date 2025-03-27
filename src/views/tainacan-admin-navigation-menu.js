@@ -77,6 +77,7 @@ function handleDynamicMenusAndBreadcrumbs() {
                             !currentRoute.collectionId && 
                             currentRoute.path != '/collections' &&
                             currentRoute.path != '/items' &&
+                            currentRoute.path != '/my-items' &&
                             currentRoute.path.indexOf( currentLinkHash[1] ) == 0
                         ) {
                             repositoryLinkElement.setAttribute('aria-current', 'page');
@@ -104,7 +105,7 @@ function handleDynamicMenusAndBreadcrumbs() {
                             ) ||
                             (
                                 currentLinkHash[1] &&
-                                currentLinkHash[1] == currentRoute.path
+                                currentLinkHash[1].split('?')[0] == currentRoute.path
                             )
                         ) {
                             collectionLinkElement.setAttribute('aria-current', 'page');
@@ -137,6 +138,13 @@ function handleDynamicMenusAndBreadcrumbs() {
                                 label: wp.i18n.__( 'Collection items', 'tainacan'),
                                 icon: 'items',
                                 href: `collections/${currentRoute.params.collectionId}/items`,
+                                hide: adminOptions.hidePrimaryMenuItemsButton === 'true' || adminOptions.hidePrimaryMenuItemsButton === true
+                            },
+                            {
+                                id: 'my-items',
+                                label: wp.i18n.__( 'My items', 'tainacan'),
+                                icon: 'item',
+                                href: `collections/${currentRoute.params.collectionId}/my-items?authorid=` + tainacan_user.data.ID,
                                 hide: adminOptions.hidePrimaryMenuItemsButton === 'true' || adminOptions.hidePrimaryMenuItemsButton === true
                             },
                             {

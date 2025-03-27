@@ -14,7 +14,7 @@
             <div 
                     id="repository-container"
                     class="column is-main-content">  
-                <router-view /> 
+                <router-view :key="$route.query.authorid" /> 
             </div>
         </template>
     </div>
@@ -143,7 +143,7 @@
         padding: 0px !important;
         margin: 0 auto;
         position: relative;
-        overflow-y: auto;
+        overflow: hidden;
         height: calc(100% -  var(--tainacan-admin-header-height, 3.25em));
 
         @media screen and (max-width: 769px) {

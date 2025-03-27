@@ -56,7 +56,18 @@ const routes = [
                     title: i18nGet('title_collection_page'),
                     menuLink: 'items'
                 },
-                props: { isOnTheme: false } },
+                props: { isOnTheme: false }
+            },
+            {
+                path: 'my-items',
+                component: ItemsPage,
+                name: 'CollectionMyItemsPage',
+                meta: {
+                    title: i18nGet('title_my_items_collection_page'),
+                    menuLink: 'my-items'
+                },
+                props: { isOnTheme: false }
+            },
             {
                 path: 'items/:itemId/edit',
                 name: 'ItemEditionForm',
@@ -142,7 +153,7 @@ const routes = [
                 component: ReportsPage,
                 name: 'CollectionReportsPage',
                 meta: {
-                    title: i18nGet('title_reports'),
+                    title: i18nGet('title_collection_reports'),
                     menuLink: 'reports'
                 }
             },
@@ -168,6 +179,7 @@ const routes = [
     },
 
     { path: '/items', name: 'RepositoryItemsPage', component: ItemsPage, meta: { title: i18nGet('title_items_page') } },
+    { path: '/my-items', name: 'RepositoryMyItemsPage', component: ItemsPage, meta: { title: i18nGet('title_my_items_page'), menuLink: 'my-items' } },
     { path: '/items/new', name: 'ItemCreationForm', component: ItemEditionForm, meta: { title: i18nGet('title_create_item') } },
 
     { path: '/filters', name: 'FiltersPage', component: FiltersPage, meta: { title: i18nGet('title_repository_filters_page') } },

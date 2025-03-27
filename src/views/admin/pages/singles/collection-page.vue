@@ -14,7 +14,8 @@
                     class="page-container"
                     :class="{
                         'is-loading-collection-basics': isLoadingCollectionBasics
-                    }" />
+                    }"
+                    :key="$route.query.authorid" />
         </section>
     </div>
 </template>

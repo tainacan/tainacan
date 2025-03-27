@@ -4,11 +4,8 @@
             :class="{
                 'tainacan-repository-level-colors': isRepositoryLevel
             }">
-        <div class="tainacan-reports-header">
-            <h2 class="tainacan-page-title">
-                {{ $route.meta.title }}
-            </h2>
-        </div>
+        <tainacan-title />
+        
         <tainacan-reports-subheader />
 
         <div 
@@ -390,22 +387,6 @@ export default {
 
         a:hover {
             cursor: pointer;
-        }
-
-        .tainacan-reports-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 0px 24px 12px 0px;
-
-            .tainacan-page-title {
-                margin: 0rem; 
-            }
-
-            select {
-                margin-right: auto;
-                margin-left: 6px;
-            }
         }
 
         .records-cards-container {

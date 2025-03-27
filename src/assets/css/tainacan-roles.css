@@ -16982,6 +16982,7 @@ textarea.textarea,
 }
 .dropdown .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):hover, .dropdown .dropdown-menu .dropdown-content .has-link a:not(.dropdown-header):hover, .dropdown .dropdown-menu .has-link .dropdown-content a:not(.dropdown-header):hover, .autocomplete .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):hover {
   background-color: var(--tainacan-dropdownmenu-item-background-hover, var(--tainacan-input-border-color));
+  color: var(--tainacan-secondary) !important;
 }
 .dropdown .dropdown-menu .dropdown-content .dropdown-item .b-checkbox, .dropdown .dropdown-menu .dropdown-content .has-link a .b-checkbox, .dropdown .dropdown-menu .has-link .dropdown-content a .b-checkbox, .autocomplete .dropdown-menu .dropdown-content .dropdown-item .b-checkbox {
   width: 100%;

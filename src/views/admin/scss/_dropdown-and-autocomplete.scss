@@ -72,7 +72,10 @@
                 &.is-active { background-color: var(--tainacan-primary); }
                 &.control { font-size: 0.8125em !important; }
                 &.dropdown-header { color: var(--tainacan-info-color) !important; }
-                &:not(.dropdown-header):hover { background-color: var(--tainacan-dropdownmenu-item-background-hover, var(--tainacan-input-border-color)); }
+                &:not(.dropdown-header):hover {
+                    background-color: var(--tainacan-dropdownmenu-item-background-hover, var(--tainacan-input-border-color));
+                    color: var(--tainacan-secondary) !important;
+                }
                 
                 .b-checkbox { width: 100% };
                 label { margin-bottom: 0; }

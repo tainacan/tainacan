@@ -211,6 +211,9 @@
     input[type="checkbox"] {
         border-radius: 2px;
     }
+    input[type="checkbox"]:checked {
+        border-color: var(--tainacan-secondary);
+    }
     @media screen and (max-width: 782px) {
         input[type="checkbox"]:checked::before {
             width: 1.25rem;

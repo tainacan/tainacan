@@ -444,6 +444,13 @@
 .tainacan-modal-content input[type=checkbox] {
   border-radius: 2px;
 }
+.tainacan-pages-container input[type=checkbox]:checked,
+#tainacan-admin-app input[type=checkbox]:checked,
+.theme-items-list input[type=checkbox]:checked,
+.tainacan-item-submission-form input[type=checkbox]:checked,
+.tainacan-modal-content input[type=checkbox]:checked {
+  border-color: var(--tainacan-secondary);
+}
 @media screen and (max-width: 782px) {
   .tainacan-pages-container input[type=checkbox]:checked::before,
   #tainacan-admin-app input[type=checkbox]:checked::before,

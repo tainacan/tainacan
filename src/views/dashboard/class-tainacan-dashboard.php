@@ -281,14 +281,14 @@ class Dashboard extends Pages {
 					</a>
 				</li>
 			<?php endif; ?>
-			<!-- <li>
-				<a href="<?php echo admin_url('admin.php?page=tainacan_repository_settings'); ?>">
+			<li>
+				<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/my-items?' . http_build_query(['authorid' => get_current_user_id()])  ); ?>">
 					<span class="icon">
-						<?php echo $this->get_svg_icon('upload' ); ?>
+						<?php echo $this->get_svg_icon('item'); ?>
 					</span>
-					<span class="text"><?php _e('Send items', 'tainacan'); ?></span>
+					<span class="text"><?php _e('My Items list', 'tainacan'); ?></span>
 				</a>
-			</li> -->
+			</li>
 		</ul>
 		<?php
 	}
@@ -355,11 +355,11 @@ class Dashboard extends Pages {
 				</a>
 			</li>
 			<li>
-				<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/activities'); ?>">
+				<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/my-items?' . http_build_query(['authorid' => get_current_user_id()]) ); ?>">
 					<span class="icon">
-						<?php echo $this->get_svg_icon('activities'); ?>
+						<?php echo $this->get_svg_icon('item'); ?>
 					</span>
-					<span class="text"><?php _e('Activity', 'tainacan'); ?></span>
+					<span class="text"><?php _e('My Items list', 'tainacan'); ?></span>
 				</a>
 			</li>
 			<li>

@@ -4,6 +4,7 @@
             autofocus
             role="dialog"
             class="tainacan-modal-content"
+            :class="{ 'tainacan-repository-level-colors': isRepositoryLevel }"
             tabindex="-1"
             aria-modal>
         <header 
@@ -596,6 +597,7 @@
                 dateFormat: '',
                 activityCreationDate: '',
                 isLoadingActivity: false,
+                isRepositoryLevel: false
             }
         },
         computed: {
@@ -648,6 +650,7 @@
         },
         created() {
             this.loadActivity();
+            this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
         },
         mounted() {
             if (this.$refs.activityDetailsModal)

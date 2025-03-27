@@ -836,7 +836,7 @@
                 handler(to, from) {
                     
                     // Should set Collection ID from URL only when in admin.
-                    if (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage')
+                    if (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'CollectionMyItemsPage' || this.$route.name == 'RepositoryItemsPage' || this.$route.name == 'RepositoryMyItemsPage')
                         this.$eventBusSearch.setCollectionId( !this.$route.params.collectionId ? this.$route.params.collectionId : parseInt(this.$route.params.collectionId) );
                     
                     // Items Per Page
@@ -900,7 +900,7 @@
                     
                     // Admin View Modes
                     if (this.$route.name != null && this.$route.name != undefined  && 
-                        (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') &&
+                        (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'CollectionMyItemsPage' || this.$route.name == 'RepositoryMyItemsPage' || this.$route.name == 'RepositoryItemsPage') &&
                         (this.$route.query.admin_view_mode == undefined || to.params.collectionId != from.params.collectionId)
                     ) {
                         let adminViewModeKey = (this.collectionId != undefined ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode');
@@ -920,7 +920,7 @@
                     // Advanced Search
                     if (this.$route.query && this.$route.query.advancedSearch)
                         this.$store.dispatch('search/setAdvancedQuery', JSON.parse(JSON.stringify(this.$route.query))); 
-                    
+
                     // Finally, loads items even berfore facets so they won't stuck them 
                     if (to.fullPath != from.fullPath)
                         this.$eventBusSearch.loadItems();
@@ -941,7 +941,7 @@
                     const newStatusArray    = newQueryArray.filter(queryItem => queryItem.startsWith('status'));
                     const oldSearchQuery    = oldQueryArray.filter(queryItem => queryItem.startsWith('search'));
                     const newSearchQuery    = newQueryArray.filter(queryItem => queryItem.startsWith('search'));
-
+                    
                     if (
                         JSON.stringify(oldMetaQueryArray) != JSON.stringify(newMetaQueryArray) ||
                         JSON.stringify(oldTaxQueryArray)  != JSON.stringify(newTaxQueryArray) ||
@@ -1020,8 +1020,7 @@
             });
 
         },
-        mounted() {
-            
+        mounted() {            
             this.prepareMetadata();
             this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
 
