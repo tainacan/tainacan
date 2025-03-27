@@ -2096,15 +2096,10 @@ export default {
                         position: sticky;
                         top: 0px;
                         margin: 0;
-                        max-height: calc(100vh - 194px);
-                        max-height: calc(100dvh - 194px);
+                        max-height: calc(100vh - 52px - var(--tainacan-admin-header-height, 3.25em) - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
+                        max-height: calc(100dvh - 52px - var(--tainacan-admin-header-height, 3.25em) - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
                         overflow-y: auto;
                         overflow-x: hidden;
-
-                        .tainacan-pages-container--fullscreen & {
-                            max-height: calc(100vh - 164px);
-                            max-height: calc(100dvh - 164px);
-                        }
                     }
                 }
             }

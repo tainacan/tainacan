@@ -120,6 +120,7 @@ export default {
             .image {
                 height: 100%;
                 width: 100%;
+                border-radius: 3px;
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
@@ -132,6 +133,7 @@ export default {
             .file-placeholder {
                 height: 100%;
                 width: 100%;
+                border-radius: 3px;
                 text-align: center;
                 display: flex;
                 justify-content: center;
@@ -152,6 +154,8 @@ export default {
             overflow: hidden;
             white-space: nowrap;
             text-align: center;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
         }
     }
     .tainacan-modal-title {
