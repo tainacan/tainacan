@@ -356,7 +356,7 @@
             collectionId: [Number, String],
             metadatumId: Number,
             metadatum: Object,
-            selected: [Array,Number],
+            selected: [Array,String,Number],
             allowNew: Boolean,
             isTaxonomy: {
                 type: Boolean,
@@ -441,6 +441,11 @@
                     this.isSearching = false;
                     this.searchResults = [];
                     this.initializeValues();
+
+                    if ( !this.shouldBeginWithListExpanded || this.hasToDisplaySearchBar ) {
+                        this.fetchSelectedLabels();
+                        this.activeTab = 1;
+                    }
                 }
             });
             
@@ -1061,7 +1066,7 @@
     }
 
     .tainacan-finder-columns-container {
-        background-color: var(--tainacan-white);
+        background-color: var(--tainacan-background-color, var(--tainacan-white));
         border: 1px solid var(--tainacan-gray1);
         border-bottom-left-radius: var(--tainacan-dropdownmenu-border-radius);
         border-bottom-right-radius: var(--tainacan-dropdownmenu-border-radius);

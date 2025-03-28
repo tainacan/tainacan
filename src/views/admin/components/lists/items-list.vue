@@ -1181,7 +1181,7 @@
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
                                 <a
-                                        v-if="!isOnTrash"
+                                        v-if="!isOnTrash && item.current_user_can_edit"
                                         id="button-edit"
                                         :aria-label="$i18n.getFrom('items','edit_item')"
                                         @click.prevent.stop="goToItemEditPage(item)">
@@ -2194,7 +2194,8 @@ export default {
         isOnTrash: false,
         totalItems: Number,
         viewMode: 'card',
-        isRepositoryLevel: false
+        isRepositoryLevel: false,
+        filtersModalStateHasChanged: false
     },
     emits: [
         'update-is-loading',
@@ -2454,6 +2455,13 @@ export default {
             },
             immediate: true,
             deep: true
+        },
+        filtersModalStateHasChanged: {
+            handler() {
+                if (this.masonry !== false)
+                    this.masonry.layout();
+            },
+            immediate: true
         }
     },
     created() {

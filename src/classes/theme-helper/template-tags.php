@@ -239,7 +239,7 @@ function tainacan_the_collection_name() {
 }
 
 /**
- * When visiting a collection archive or single, returns the collection description
+ * When visiting a collection archive or single, returns the collection description with clickable links
  *
  * @return string
  */
@@ -247,9 +247,13 @@ function tainacan_get_the_collection_description() {
 	$collection = tainacan_get_collection();
 	$description = '';
 	if ( $collection ) {
-		$description = $collection->get_description();
+		/**
+		 * Reuses the Trait Formatter_Text method that is used in the Textarea metadata type class
+		 * to generate links. Might be a good idea to move this to a helper function in the future.
+		 */
+		$description = nl2br(\Tainacan\Metadata_Types\Textarea::make_clickable_links($collection->get_description()));
 	}
-	return apply_filters('tainacan-get-collection-description', esc_html($description), $collection);
+	return apply_filters('tainacan-get-collection-description', wp_kses_post( $description ), $collection);
 }
 
 /**
@@ -258,7 +262,10 @@ function tainacan_get_the_collection_description() {
  * @return void
  */
 function tainacan_the_collection_description() {
-	echo esc_html(tainacan_get_the_collection_description());
+	/**
+	 * Note to code reviewers: This function does not need to be escaped as it is already escaped in tainacan_get_the_collection_description()
+	 */
+	echo tainacan_get_the_collection_description();
 }
 
 /**
@@ -778,9 +785,14 @@ function tainacan_get_the_term_description() {
 	$term = tainacan_get_term();
 	$description = '';
 	if ( $term ) {
-		$description = $term->description;
+		
+		/**
+		 * Reuses the Trait Formatter_Text method that is used in the Textarea metadata type class
+		 * to generate links. Might be a good idea to move this to a helper function in the future.
+		 */
+		$description = nl2br(\Tainacan\Metadata_Types\Textarea::make_clickable_links($term->description));
 	}
-	return apply_filters('tainacan-get-term-description', esc_html($description), $term);
+	return apply_filters('tainacan-get-term-description', wp_kses_post( $description ), $term);
 }
 
 /**
@@ -789,7 +801,10 @@ function tainacan_get_the_term_description() {
  * @return void
  */
 function tainacan_the_term_description() {
-	echo esc_html(tainacan_get_the_term_description());
+	/**
+	 * Note to code reviewers: This function does not need to be escaped as it is already escaped in tainacan_get_the_term_description()'
+	 */
+	echo tainacan_get_the_term_description();
 }
 
 /**
@@ -1474,6 +1489,12 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 				if ( !empty($term_description) ) {
 					if ($args['trim_description_words'] > -1)
 						$term_description = wp_trim_words( $term_description, $args['trim_description_words'], '[...]' );
+
+					/**
+					 * Reuses the Trait Formatter_Text method that is used in the Textarea metadata type class
+					 * to generate links. Might be a good idea to move this to a helper function in the future.
+					 */
+					$term_description = \Tainacan\Metadata_Types\Textarea::make_clickable_links($term_description);
 
 					echo $args['before_term_description'] . $term_description . $args['after_term_description'];
 				} else if ( empty($term_description) && !$args['hide_term_empty_description'] ) {

@@ -207,7 +207,8 @@ class Items extends Repository {
 				'auto-draft',
 				'draft',
 				'publish',
-				'private'
+				'private',
+				'pending'
 			]
 		], 'OBJECT' );
 
@@ -451,6 +452,13 @@ class Items extends Repository {
 					// private statuses
 					$private_states = get_post_stati( array( 'private' => true ) );
 					foreach ( (array) $private_states as $state ) {
+						if( empty($post_status) || in_array($state, $post_status) )
+						$status_clause[] = current_user_can( $read_private_cap ) ? " {$wpdb->posts}.post_status = '$state'" : " {$wpdb->posts}.post_author = $user_id AND {$wpdb->posts}.post_status = '$state'";
+					}
+
+					// pending statuses
+					$pending_states = get_post_stati( array( 'pending' => true ) );
+					foreach ( (array) $pending_states as $state ) {
 						if( empty($post_status) || in_array($state, $post_status) )
 						$status_clause[] = current_user_can( $read_private_cap ) ? " {$wpdb->posts}.post_status = '$state'" : " {$wpdb->posts}.post_author = $user_id AND {$wpdb->posts}.post_status = '$state'";
 					}

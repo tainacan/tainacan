@@ -459,10 +459,13 @@ export default {
                 this.selectedCollections.splice(i, 1, !this.allCollectionsOnPageSelected);
         },
         getTotalItems(total_items) {
-            return Number(total_items['publish']) + Number(total_items['private']) + Number(total_items['draft']);
+            return Number(total_items['publish']) + Number(total_items['private']) + Number(total_items['pending']) + Number(total_items['draft']);
         },
         getTotalItemsDetailed(total_items) {
-            return this.$i18n.get('status_public') + ': ' + total_items['publish'] + '<br> ' + this.$i18n.get('status_private') + ': ' + total_items['private'] + '<br> ' + this.$i18n.get('status_draft') + ': ' + total_items['draft'];
+            return this.$i18n.get('status_public') + ': ' + total_items['publish'] + '<br> ' +
+                   this.$i18n.get('status_private') + ': ' + total_items['private'] + '<br> ' +
+                   this.$i18n.get('status_pending') + ': ' + total_items['pending'] + '<br> ' +
+                   this.$i18n.get('status_draft') + ': ' + total_items['draft'];
         },
         deleteOneCollection(collectionId) {
             this.$buefy.modal.open({

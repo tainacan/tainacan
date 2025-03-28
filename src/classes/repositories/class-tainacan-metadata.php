@@ -1750,7 +1750,7 @@ class Metadata extends Repository {
 				$metadata = $this->fetch($args, 'OBJECT');
 
 				foreach ($metadata as $meta) {
-					$meta->set_status( $taxonomy->get_status() );
+					$meta->set_status( $taxonomy->get_status() == 'publish' ? 'publish' : 'private' );
 					if ( $meta->validate() ) {
 						$this->insert($meta);
 					}

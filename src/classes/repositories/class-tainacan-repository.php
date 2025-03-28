@@ -123,7 +123,7 @@ abstract class Repository {
 	public function insert( $obj ) {
 		$obj_post_type = $obj->get_post_type();
 		// validate
-		$required_validation_statuses = ['publish', 'future', 'private'];
+		$required_validation_statuses = ['publish', 'future', 'private', 'pending'];
 		if (in_array( $obj->get_status(), apply_filters( 'tainacan-status-require-validation', $required_validation_statuses) ) && ! $obj->get_validated() ) {
 			throw new \Exception( 'Entities must be validated before you can save them' );
 			// TODO: Throw Warning saying you must validate object before insert()

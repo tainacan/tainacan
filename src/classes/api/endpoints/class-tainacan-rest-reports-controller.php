@@ -235,7 +235,7 @@ class REST_Reports_Controller extends REST_Controller {
 				$collection = new Entities\Collection($collections->post);
 				$total_items = wp_count_posts( $collection->get_db_identifier(), 'readable' );
 
-				if (isset($total_items->publish) || isset($total_items->private) ||
+				if (isset($total_items->publish) || isset($total_items->private) || isset($total_items->pending) ||
 					isset($total_items->trash) || isset($total_items->draft)) {
 					$response['list'][$collection->get_db_identifier()] = array(
 						'id' => $collection->get_id(),
@@ -245,7 +245,8 @@ class REST_Reports_Controller extends REST_Controller {
 							'draft'   => intval($total_items->draft),
 							'publish' => intval($total_items->publish),
 							'private' => intval($total_items->private),
-							'total' => $total_items->trash + $total_items->draft + $total_items->publish + $total_items->private
+							'pending' => intval($total_items->pending),
+							'total' => $total_items->trash + $total_items->draft + $total_items->publish + $total_items->private + $total_items->pending
 						)
 					);
 				}
@@ -265,6 +266,7 @@ class REST_Reports_Controller extends REST_Controller {
 					'draft'   => 0,
 					'publish' => 0,
 					'private' => 0,
+					'pending' => 0,
 					'restrict' => 0,
 					'not_restrict' => 0
 				)
@@ -288,6 +290,7 @@ class REST_Reports_Controller extends REST_Controller {
 				$response['totals']['items']['draft']   = intval($total_items->draft);
 				$response['totals']['items']['publish'] = intval($total_items->publish);
 				$response['totals']['items']['private'] = intval($total_items->private);
+				$response['totals']['items']['pending'] = intval($total_items->pending);
 
 				if ( \is_post_status_viewable( $collection->get_status() ) === true ) {
 					$response['totals']['items']['not_restrict'] += isset($total_items->publish) ? intval($total_items->publish) : 0;
@@ -296,6 +299,7 @@ class REST_Reports_Controller extends REST_Controller {
 						//(isset($total_items->trash) ? intval($total_items->trash) : 0) +
 						(isset($total_items->draft) ? intval($total_items->draft) : 0) +
 						(isset($total_items->publish) ? intval($total_items->publish) : 0) +
+						(isset($total_items->pending) ? intval($total_items->pending) : 0) +
 						(isset($total_items->private) ? intval($total_items->private) : 0)
 					);
 				}
@@ -305,12 +309,13 @@ class REST_Reports_Controller extends REST_Controller {
 			$cached_object = $this->get_cache_object($key_cache_object, $request);
 			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
 
-			$collections = $this->collections_repository->fetch(['status'=> ['publish', 'private', 'trash']]);
+			$collections = $this->collections_repository->fetch(['status'=> ['publish', 'private', 'pending', 'trash']]);
 			$response['totals']['collections'] = array(
 				'total' => 0,
 				'trash'   => 0,
 				'publish' => 0,
-				'private' => 0
+				'private' => 0,
+				'pending' => 0
 			);
 			if($collections->have_posts()) {
 				while ($collections->have_posts()) {
@@ -324,6 +329,7 @@ class REST_Reports_Controller extends REST_Controller {
 					$response['totals']['items']['draft']   += isset($total_items->draft)  ? intval($total_items->draft)   : 0;
 					$response['totals']['items']['publish'] += isset($total_items->publish)? intval($total_items->publish) : 0;
 					$response['totals']['items']['private'] += isset($total_items->private)? intval($total_items->private) : 0;
+					$response['totals']['items']['pending'] += isset($total_items->pending)? intval($total_items->pending) : 0;
 					
 					if ( \is_post_status_viewable( $collection->get_status() ) === true ) {
 						$response['totals']['items']['not_restrict'] += isset($total_items->publish) ? intval($total_items->publish) : 0;
@@ -332,7 +338,8 @@ class REST_Reports_Controller extends REST_Controller {
 							//(isset($total_items->trash) ? intval($total_items->trash) : 0) +
 							(isset($total_items->draft) ? intval($total_items->draft) : 0) +
 							(isset($total_items->publish) ? intval($total_items->publish) : 0) +
-							(isset($total_items->private) ? intval($total_items->private) : 0)
+							(isset($total_items->private) ? intval($total_items->private) : 0) +
+							(isset($total_items->pending) ? intval($total_items->pending) : 0)
 						);
 					}
 				}
@@ -345,6 +352,7 @@ class REST_Reports_Controller extends REST_Controller {
 				'publish' => 0,
 				'draft'   => 0,
 				'private' => 0,
+				'pending' => 0,
 				'used'    => 0,
 				'not_used'=> 0
 			);
@@ -354,11 +362,12 @@ class REST_Reports_Controller extends REST_Controller {
 			$response['totals']['taxonomies']['draft']   = isset($total_taxonomies->draft)  ? intval($total_taxonomies->draft)   : 0;
 			$response['totals']['taxonomies']['publish'] = isset($total_taxonomies->publish)? intval($total_taxonomies->publish) : 0;
 			$response['totals']['taxonomies']['private'] = isset($total_taxonomies->private)? intval($total_taxonomies->private) : 0;
-			$response['totals']['taxonomies']['total'] = $response['totals']['taxonomies']['trash'] + $response['totals']['taxonomies']['publish'] + $response['totals']['taxonomies']['draft'] + $response['totals']['taxonomies']['private'];
+			$response['totals']['taxonomies']['pending'] = isset($total_taxonomies->pending)? intval($total_taxonomies->pending) : 0;
+			$response['totals']['taxonomies']['total'] = $response['totals']['taxonomies']['trash'] + $response['totals']['taxonomies']['publish'] + $response['totals']['taxonomies']['draft'] + $response['totals']['taxonomies']['private'] + $response['totals']['taxonomies']['pending'];
 			$response['totals']['taxonomies']['used'] = $this->query_count_used_taxononomies();
 			$response['totals']['taxonomies']['not_used'] = $response['totals']['taxonomies']['total'] - $response['totals']['taxonomies']['used'];
 		}
-		$response['totals']['items']['total'] = ($response['totals']['items']['trash'] + $response['totals']['items']['draft'] + $response['totals']['items']['publish'] + $response['totals']['items']['private']);
+		$response['totals']['items']['total'] = ($response['totals']['items']['trash'] + $response['totals']['items']['draft'] + $response['totals']['items']['publish'] + $response['totals']['items']['private'] + $response['totals']['items']['pending']);
 		$this->set_cache_object($key_cache_object, $response);
 		return new \WP_REST_Response($response, 200);
 	}
@@ -488,7 +497,7 @@ class REST_Reports_Controller extends REST_Controller {
 				'metadata' => array(
 					'total' => 0,
 					'publish' => 0,
-					'private' => 0
+					'private' => 0,
 				),
 				'metadata_per_type' => array()
 			),
@@ -584,7 +593,7 @@ class REST_Reports_Controller extends REST_Controller {
 	private function query_item_metadata_distribution($meta_ids, $collection_post_type) {
 		$count_posts = wp_count_posts( $collection_post_type, 'readable' );
 		$total_items =  intval($count_posts->trash) + intval($count_posts->draft) +
-				intval($count_posts->publish) + intval($count_posts->private);
+				intval($count_posts->publish) + intval($count_posts->private) + intval($count_posts->pending);
 
 		global $wpdb;
 		$string_meta_ids = "'".implode("','", $meta_ids)."'";
@@ -979,6 +988,10 @@ class REST_Reports_Controller extends REST_Controller {
 								'private' => [
 									'type' => 'integer',
 									'description' => __( 'Total of private items', 'tainacan' )
+								],
+								'pending' => [
+									'type' => 'integer',
+									'description' => __( 'Total of pending items', 'tainacan' )
 								]
 							]
 						]
@@ -1058,6 +1071,10 @@ class REST_Reports_Controller extends REST_Controller {
 						'private' => [
 							'type' => 'integer',
 							'description' => __( 'Total of private items', 'tainacan' )
+						],
+						'pending' => [
+							'type' => 'integer',
+							'description' => __( 'Total of pending items', 'tainacan' )
 						],
 						'restrict' => [
 							'type' => 'integer',
@@ -1177,6 +1194,10 @@ class REST_Reports_Controller extends REST_Controller {
 							'type' => 'integer',
 							'description' => __( 'Total of private items', 'tainacan' )
 						],
+						'pending' => [
+							'type' => 'integer',
+							'description' => __( 'Total of pending items', 'tainacan' )
+						],
 						'restrict' => [
 							'type' => 'integer',
 							'description' => __( 'Total of items with restrict access', 'tainacan' )
@@ -1206,6 +1227,10 @@ class REST_Reports_Controller extends REST_Controller {
 						'private' => [
 							'type' => 'integer',
 							'description' => __( 'Total of private collections', 'tainacan' )
+						],
+						'pending' => [
+							'type' => 'integer',
+							'description' => __( 'Total of pending collections', 'tainacan' )
 						]
 					]
 				],
@@ -1228,6 +1253,10 @@ class REST_Reports_Controller extends REST_Controller {
 						'private' => [
 							'type' => 'integer',
 							'description' => __( 'Total of private taxonomies', 'tainacan' )
+						],
+						'pending' => [
+							'type' => 'integer',
+							'description' => __( 'Total of pending taxonomies', 'tainacan' )
 						],
 						'used' => [
 							'type' => 'integer',

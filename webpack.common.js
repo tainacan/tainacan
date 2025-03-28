@@ -86,6 +86,7 @@ module.exports = {
                         loader: 'sass-loader',
                         options: {
                             sassOptions: {
+                                implementation: require('sass'),
                                 includePaths: [path.resolve(__dirname, './src/views/admin/scss/_variables.scss')]
                             }
                         }

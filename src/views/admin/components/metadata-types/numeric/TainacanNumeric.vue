@@ -68,7 +68,7 @@
                     value = '';
                 else
                     value = Number(value);
-
+                
                 this.changeValue(value);
             },
             changeValue: _.debounce(function(value) {

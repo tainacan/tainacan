@@ -4,7 +4,7 @@
                 v-if="getComponent == 'tainacan-taxonomy-tag-input'"
                 v-model:value="valueComponent"
                 :disabled="disabled || isFetchingTerms"
-                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
+                :maxtags="maxtags != undefined ? Number(maxtags) : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? Number(maxMultipleValues) : null) : 1)"
                 :allow-new="allowNewFromOptions"
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : $i18n.get('instruction_type_existing_term')"
                 :taxonomy-id="taxonomyId"
@@ -239,7 +239,7 @@
                         }).then(() => {
                             this.isAddingNewTermVaue = false;
                             this.valueComponent = term.id;
-                            this.$emit('updateTaxonomyInputs', { taxonomyId: this.taxonomyId, metadatumId: this.itemMetadatum.metadatum.id });
+                            this.$emitter.emit('updateTaxonomyInputs', { taxonomyId: this.taxonomyId, metadatumId: this.itemMetadatum.metadatum.id });
                         })
                     } else {
                         val = val ? val : [];
@@ -249,7 +249,7 @@
                         }).then(() => {
                             this.isAddingNewTermVaue = false;
                             this.valueComponent = val;
-                            this.$emit('updateTaxonomyInputs', { taxonomyId: this.taxonomyId, metadatumId: this.itemMetadatum.metadatum.id });
+                            this.$emitter.emit('updateTaxonomyInputs', { taxonomyId: this.taxonomyId, metadatumId: this.itemMetadatum.metadatum.id });
                         })
                     }
                 }
@@ -261,6 +261,8 @@
                     this.valueComponent = term.parent ? (term.parent + '>>' + term.name) : term.name;
                 else
                     this.valueComponent.push(term.parent ? (term.parent + '>>' + term.name) : term.name);
+
+                this.$emitter.emit('updateTaxonomyInputs', { taxonomyId: this.taxonomyId, metadatumId: this.itemMetadatum.metadatum.id });
             },
             openTermCreationModal(newTerm) {
                 this.newTermName = newTerm.name;

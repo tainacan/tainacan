@@ -66,16 +66,16 @@
                         :style="{ marginLeft: $adminOptions.mobileAppMode ? 'auto' : '0.5em' }">
                     <template #trigger>
                         <button 
-                                :disabled="hasSomeError && (status == 'publish' || status == 'private')"
+                                :disabled="hasSomeError && (status == 'publish' || status == 'private' || status == 'pending')"
                                 type="button"
                                 class="button"
                                 :class="{ 
-                                    'is-success': status == 'publish' || status == 'private',
+                                    'is-success': status == 'publish' || status == 'private' || status == 'pending',
                                     'is-secondary': status == 'draft'
                                 }"
                                 @click="!$adminOptions.mobileAppMode && !isMobileScreen ? $emit(
                                     'on-submit',
-                                    ( currentUserCanPublish && !$adminOptions.hideItemEditionStatusPublishOption ) ? status : 'draft',
+                                    ( !$adminOptions.hideItemEditionStatusPublishOption ) ? status : 'draft',
                                     ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                                 ) : ($refs && $refs['item-edition-footer-dropdown'] && !$refs['item-edition-footer-dropdown'].isActive ? $refs['item-edition-footer-dropdown'].toggle() : null)">
                             {{ $i18n.get('label_update') }}
@@ -106,6 +106,20 @@
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-draft" />
                         </span>
                         {{ status == 'draft' ? $i18n.get('label_update_draft') : $i18n.get('label_change_to_draft') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item
+                            v-if="!$adminOptions.hideItemEditionStatusPendingOption"
+                            :class="{ 'is-forced-last-option': status == 'pending' }"
+                            aria-role="listitem"
+                            @click="$emit(
+                                'on-submit',
+                                'pending',
+                                ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
+                            )">
+                        <span class="icon has-text-gray4">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting" />
+                        </span>
+                        {{ status == 'pending' ? $i18n.get('label_update_pending') : $i18n.get('label_send_to_review') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="currentUserCanPublish"
@@ -139,11 +153,11 @@
                 <!-- In case we do not want to show status, just an update button -->
                 <button 
                         v-else-if="!isOnSequenceEdit"
-                        :disabled="hasSomeError && (status == 'publish' || status == 'private')"
+                        :disabled="hasSomeError && (status == 'publish' || status == 'private' || status == 'pending')"
                         type="button"
                         class="button"
                         :class="{ 
-                            'is-success': status == 'publish' || status == 'private',
+                            'is-success': status == 'publish' || status == 'private' || status == 'pending',
                             'is-secondary': status == 'draft'
                         }"
                         @click="$emit('on-submit', status)">
@@ -155,7 +169,7 @@
             <!-- Sequence edition Next button if user cannot publish (only goes to next, without changing status) -->
             <button 
                     v-if="(!currentUserCanPublish || !$adminOptions.itemEditionStatusOptionOnFooterDropdown) && isOnSequenceEdit && hasNextItemOnSequenceEdit"
-                    :disabled="(status == 'publish' || status == 'private') && hasSomeError"
+                    :disabled="(status == 'publish' || status == 'private' || status == 'pending') && hasSomeError"
                     type="button"
                     class="button is-success"
                     @click="$emit('on-next-in-sequence')">

@@ -494,7 +494,6 @@
                                     
                                 </div>
 
-
                                 <!-- Publication section -->
                                 <div    
                                         v-if="activeTab === 'publication' && !$adminOptions.hideItemEditionPublicationSection && $adminOptions.itemEditionPublicationSectionInsideTabs"
@@ -1277,6 +1276,11 @@ export default {
                     webkit.messageHandlers.cordova_iab
                 )
                     webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify({ 'type': 'item_updated', 'item': JSON.parse(JSON.stringify(this.item)) }));
+            
+                
+                // Checks if user has permission to edit
+                if ( !this.item.current_user_can_edit )
+                    this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
             })
             .catch((errors) => {
                 
@@ -2348,10 +2352,10 @@ export default {
         .metadata-section-hidden {
             opacity: 0.5;
             filter: grayscale(1.0);
+        }
 
-            & > {
-                pointer-events: none;
-            }
+        .metadata-section-hidden > * {
+            pointer-events: none;
         }
 
         .item-edition-tab-content {

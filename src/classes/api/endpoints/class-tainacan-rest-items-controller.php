@@ -153,7 +153,7 @@ class REST_Items_Controller extends REST_Controller {
 						'status' => array(
 							'description' => __('Try to assign the specified status to the duplicates if they validate. By default it will save them as drafts.', 'tainacan'),
 							'type'        => 'string',
-							'enum'        => array('draft', 'publish', 'private', 'trash'),
+							'enum'        => array('draft', 'publish', 'private', 'pending', 'trash'),
 							'default'     => 'draft'
 						),
 					)
@@ -541,7 +541,7 @@ class REST_Items_Controller extends REST_Controller {
 				);
 
 				$filter_id = empty($filter) ? false : $filter[0]->get_id();
-				$filter_order_index = $order ? array_search( $filter_id, array_column( $order, 'id' ) ) :  false;
+				$filter_order_index = isset($order) && $order ? array_search( $filter_id, array_column( $order, 'id' ) ) :  false;
 				if ( !empty($filter_order_index) && $order[$filter_order_index]['enabled'] == true) {
 					$f = $filter[0]->_toArray();
 					$filter_type_component = $filter[0]->get_filter_type_object()->get_component();

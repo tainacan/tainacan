@@ -7,14 +7,14 @@
                         autoHide: true,
                         placement: 'auto',
                     }"
-                    :class="{ 'is-active': status == undefined || status == '' || status == 'publish,private,draft' }"
+                    :class="{ 'is-active': status == undefined || status == '' || status == 'publish,private,pending,draft' }"
                     @click="onChangeTab('')">
                 <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
                     {{ $i18n.get('label_all_items') }}
                     <span 
                             v-if="!$adminOptions.hideItemsListStatusTabsTotalItems"
                             class="has-text-gray">
-                        &nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.publish + repositoryTotalItems.draft })` : (collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish) + Number(collection.total_items.draft)})` : '') }}
+                        &nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.pending + repositoryTotalItems.publish + repositoryTotalItems.draft })` : (collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.pending) + Number(collection.total_items.publish) + Number(collection.total_items.draft)})` : '') }}
                     </span>
                 </a>
             </li>
@@ -22,7 +22,6 @@
                     v-for="(statusOption, index) of $statusHelper.getStatuses()"
                     :key="index">
                 <li 
-                        v-if="(isRepositoryLevel || statusOption.slug != 'private') || (statusOption.slug == 'private' && collection && collection.current_user_can_read_private_items)"
                         v-tooltip="{
                             content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('items')]),
                             autoHide: true,
@@ -77,7 +76,8 @@ export default {
                     trash: 0,
                     publish: 0,
                     draft: 0,
-                    private: 0
+                    private: 0,
+                    pending: 0
                 };
 
                 for(let collection of collections){
@@ -85,6 +85,7 @@ export default {
                     total_items.draft += Number(collection.total_items.draft);
                     total_items.publish += Number(collection.total_items.publish);
                     total_items.private += Number(collection.total_items.private);
+                    total_items.pending += Number(collection.total_items.pending);
                 }
 
                 return total_items;

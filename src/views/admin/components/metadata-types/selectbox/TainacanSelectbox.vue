@@ -11,7 +11,7 @@
                 expanded
                 :disabled="disabled"
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : $i18n.get('label_selectbox_init')"
-                :model-value="value"
+                :model-value="getUnescapedLabel(value)"
                 :class="{ 'has-placeholder-selected': value === '' }"
                 @update:model-value="onSelected($event)">
             <option value="">
@@ -22,7 +22,7 @@
                     :key="index"
                     :label="option"
                     :value="option">
-                {{ option }}
+                {{ getUnescapedLabel(option) }}
             </option>
         </b-select>
     </div>
@@ -49,6 +49,9 @@
             }
         },
         methods: {
+            getUnescapedLabel(label) {
+                return typeof _.unescape === 'function' ? _.unescape(label) : label;
+            },
             onSelected(value) {
                 this.$emit('update:value', value);
             },

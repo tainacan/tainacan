@@ -107,6 +107,8 @@ return apply_filters( 'tainacan-i18n', [
 	'status_public'                                  => __( 'Public', 'tainacan' ),
 	/* translators: The noun for the draft status, not the verb */
 	'status_draft'                                   => __( 'Draft', 'tainacan' ),
+	/* translators: The noun for the trash pending, not the verb */
+	'status_pending'                                 => __( 'Pending', 'tainacan' ),
 	'status_private'                                 => __( 'Private', 'tainacan' ),
 	/* translators: The noun for the trash status, not the verb */
 	'status_trash'                                   => __( 'Trash', 'tainacan' ),
@@ -376,7 +378,9 @@ return apply_filters( 'tainacan-i18n', [
 	'label_discard'                                  => __( 'Discard', 'tainacan' ),
 	'label_save_as_draft'                            => __( 'Save as draft', 'tainacan' ),
 	'label_update_draft'                             => __( 'Update draft', 'tainacan' ),
-	'label_return_to_draft'                          => __( 'Return to draft', 'tainacan' ),
+	'label_send_to_review'                           => __( 'Send to review', 'tainacan' ),
+	'label_update_pending'                           => __( 'Update as pending', 'tainacan' ),
+	'label_return_to_pending'                        => __( 'Return to pending', 'tainacan' ),
 	/* translators: The verb 'to publish' not the 'publish' status */
 	'label_verb_publish'                             => _x( 'Publish', 'verb', 'tainacan' ),
 	'label_verb_publish_privately'                   => _x( 'Publish privately', 'verb', 'tainacan' ),
@@ -805,18 +809,21 @@ return apply_filters( 'tainacan-i18n', [
 	'info_items_tab_publish'                         => __( 'Only items that are visible to everyone.', 'tainacan' ),
 	'info_items_tab_private'                         => __( 'Items visible only to editors.', 'tainacan' ),
 	'info_items_tab_draft'                           => __( 'Draft items, not published.', 'tainacan' ),
+	'info_items_tab_pending'                         => __( 'Pending items, not published.', 'tainacan' ),
 	'info_items_tab_trash'                         	 => __( 'Items that were sent to trash.', 'tainacan' ),
 
 	'info_collections_tab_all'                		 => __( 'Every published collection, including those visible only to editors.', 'tainacan' ),
 	'info_collections_tab_publish'                   => __( 'Only collections that are visible to everyone.', 'tainacan' ),
 	'info_collections_tab_private'                   => __( 'Collections visible only to editors.', 'tainacan' ),
 	'info_collections_tab_draft'                     => __( 'Draft collections, not published.', 'tainacan' ),
+	'info_collections_tab_pending'                   => __( 'Pending collections, not published.', 'tainacan' ),
 	'info_collections_tab_trash'                     => __( 'Collections that were sent to trash.', 'tainacan' ),
 
 	'info_taxonomies_tab_all'                	     => __( 'Every taxonomy, except by those sent to trash.', 'tainacan' ),
 	'info_taxonomies_tab_publish'                    => __( 'Only taxonomies that are visible to everyone.', 'tainacan' ),
 	'info_taxonomies_tab_private'                    => __( 'Taxonomies visible only to editors.', 'tainacan' ),
 	'info_taxonomies_tab_draft'                      => __( 'Draft taxonomies, not published.', 'tainacan' ),
+	'info_taxonomies_tab_pending'                    => __( 'Pending taxonomies, not published.', 'tainacan' ),
 	'info_taxonomies_tab_trash'                      => __( 'Taxonomies that were sent to trash.', 'tainacan' ),
 
 	'info_error_invalid_date'                        => __( 'Invalid date', 'tainacan' ),
@@ -829,19 +836,23 @@ return apply_filters( 'tainacan-i18n', [
 	'info_no_items_private'			                 => __( 'No private items found.', 'tainacan' ),
 	'info_no_items_draft'			                 => __( 'No draft items found.', 'tainacan' ),
 	'info_no_items_trash'			                 => __( 'No items found on trash.', 'tainacan' ),
+	'info_no_items_pending'			                 => __( 'No pending items found.', 'tainacan' ),
 
 	'info_no_collections_publish'			         => __( 'No public collections found.', 'tainacan' ),
 	'info_no_collections_private'			         => __( 'No private collections found.', 'tainacan' ),
 	'info_no_collections_draft'			             => __( 'No draft collections found.', 'tainacan' ),
+	'info_no_collections_pending'			         => __( 'No pending collections found.', 'tainacan' ),
 	'info_no_collections_trash'			             => __( 'No collections found on trash.', 'tainacan' ),
 
 	'info_no_taxonomies_publish'			         => __( 'No public taxonomies found.', 'tainacan' ),
 	'info_no_taxonomies_private'			         => __( 'No private taxonomies found.', 'tainacan' ),
 	'info_no_taxonomies_draft'			             => __( 'No draft taxonomies found.', 'tainacan' ),
+	'info_no_taxonomies_pending'			         => __( 'No pending taxonomies found.', 'tainacan' ),
 	'info_no_taxonomies_trash'			             => __( 'No taxonomies found on trash.', 'tainacan' ),
 
 	'info_item_publish'			         			=> __( 'This item is published as public and will be visible to any visitor on the website, as long as its collection is also public.', 'tainacan' ),
 	'info_item_private'			         			=> __( 'This item is published as private and will be visible only for editors with the required capabilities.', 'tainacan' ),
+	'info_item_pending'			             		=> __( 'This item is pending review and will be published only for editors with the required capabilities.', 'tainacan' ),
 	'info_item_draft'			             		=> __( 'This item is a draft and will be visible only for editors with the required capabilities. Also, in this state, no validation for required metadata is performed.', 'tainacan' ),
 	'info_item_trash'			             		=> __( 'This item is on trash and will not be visible outside of the admin panel.', 'tainacan' ),
 

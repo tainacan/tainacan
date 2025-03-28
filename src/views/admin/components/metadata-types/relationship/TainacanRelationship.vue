@@ -4,7 +4,7 @@
                 v-model="activeTab"
                 size="is-small"
                 animated>
-            <b-tab-item :label="( itemMetadatum.value.length == 1 || itemMetadatum.metadatum.multiple != 'yes' ) ? $i18n.get('label_select_item') : $i18n.get('label_insert_items')">
+            <b-tab-item :label="( itemMetadatum.value && itemMetadatum.value.length == 1 || itemMetadatum.metadatum.multiple != 'yes' ) ? $i18n.get('label_select_item') : $i18n.get('label_insert_items')">
                 <b-taginput
                         :id="relationshipInputId"
                         expanded
@@ -13,7 +13,7 @@
                         icon="magnify"
                         :model-value="JSON.parse(JSON.stringify(selected))"
                         :data="options"
-                        :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
+                        :maxtags="maxtags != undefined ? Number(maxtags) : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? Number(maxMultipleValues) : null) : 1)"
                         autocomplete
                         :remove-on-keys="[]"
                         :dropdown-position="isLastMetadatum ? 'top' :'auto'"
@@ -244,7 +244,7 @@
                 query['fetch_only_meta'] = this.isDisplayingRelatedItemMetadata ? (this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.filter(metadatumId => metadatumId !== 'thumbnail') + '') : (this.itemMetadatum.metadatum.metadata_type_options.search ? this.itemMetadatum.metadatum.metadata_type_options.search : '');
                 
                 if ( this.isAcceptingDraftItems )
-                    query['status'] = ['publish','private','draft'];
+                    query['status'] = ['publish','private','pending','draft'];
 
                 tainacanApi.get('/collection/' + this.collectionId + '/items?' + qs.stringify(query) )
                     .then( res => {
@@ -409,7 +409,7 @@
                 query['order'] = 'asc';
 
                 if (this.isAcceptingDraftItems)
-                    query['status'] = ['publish','private','draft'];
+                    query['status'] = ['publish','private','pending','draft'];
 
                 if ( this.isAcceptingOnlyItemsAuthoredByCurrentUser )
                     query['authorid'] = tainacan_plugin.user_data.ID;

@@ -40,10 +40,10 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
             )
                 hasFiltered = true;
 
-            // Admin default tab should load publish, private and draft statuses
+            // Admin default tab should load publish, private, pending and draft statuses
             if (!isOnTheme && !postQueries.status) {
-                postQueries.status = 'publish,private,draft';
-                dispatch('search/setStatus', 'publish,private,draft', { root: true });
+                postQueries.status = 'publish,private,pending,draft';
+                dispatch('search/setStatus', 'publish,private,pending,draft', { root: true });
             }
 
             // Guarantees at least status is passed in case none is found
@@ -200,6 +200,7 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage, status, 
                     draft: res.headers['x-tainacan-total-collections-draft'],
                     trash: res.headers['x-tainacan-total-collections-trash'],
                     publish: res.headers['x-tainacan-total-collections-publish'],
+                    pending: res.headers['x-tainacan-total-collections-pending'],
                     private: res.headers['x-tainacan-total-collections-private'],
                 });
 
@@ -348,9 +349,11 @@ export const updateCollection = ({ commit }, {
         collection
     }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.put('/collections/' + collection_id + '?context=edit', collection).then( res => {
+        axios.tainacanApi.put('/collections/' + collection_id + '?context=edit', collection)
+        .then( res => {
+            let collection = res.data
             commit('setCollection', collection);
-            resolve( res.data );
+            resolve( collection );
         }).catch( error => { 
             reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
         });
