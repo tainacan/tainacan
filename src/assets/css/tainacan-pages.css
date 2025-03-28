@@ -935,11 +935,6 @@
     opacity: 0.75;
   }
 }
-#tainacan-page-container #tainacan-navigation-menu .menu-item-has-children.collapse-closed {
-  display: block;
-  visibility: visible;
-  max-height: 100vh;
-}
 #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children:not(.is-open) > ul {
   display: none;
   visibility: hidden;
