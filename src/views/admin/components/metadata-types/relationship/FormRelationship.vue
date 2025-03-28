@@ -218,7 +218,7 @@
                 this.collectionType = message;
             },
             async fetchCollections(){
-                return await tainacanApi.get('/collections?nopaging=1')
+                return await tainacanApi.get('/collections?nopaging=1&status=any')
                     .then(res => {
                         const collections = res.data;
 

@@ -325,7 +325,7 @@
             fetchTaxonomies(){
                 this.loading = true;
 
-                return tainacanApi.get('/taxonomies?nopaging=1&order=asc&orderby=title')
+                return tainacanApi.get('/taxonomies?nopaging=1&order=asc&orderby=title&status=any')
                     .then(res => {
                         this.taxonomies = res.data ? res.data : [];
                         this.loading = false;
