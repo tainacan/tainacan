@@ -387,6 +387,20 @@ class Roles {
 					'tnc_col_all_edit_others_items',
 				]
 			],
+			'tnc_col_%d_edit_private_items' => [
+				'display_name' => __('Edit private items', 'tainacan'),
+				'description' => __('Edit items in this collection that are private.', 'tainacan'),
+				'dependencies' => [
+					'upload_files'
+				],
+				'scope' => 'collection',
+				'supercaps' => [
+					'manage_tainacan',
+					'manage_tainacan_collection_all',
+					'manage_tainacan_collection_%d',
+					'tnc_col_all_edit_private_items',
+				]
+			],
 			'tnc_col_%d_edit_published_items' => [
 				'display_name' => __('Edit published items', 'tainacan'),
 				'description' => __('Edit items in this collection after they are published.', 'tainacan'),
@@ -421,6 +435,17 @@ class Roles {
 					'manage_tainacan_collection_all',
 					'manage_tainacan_collection_%d',
 					'tnc_col_all_delete_others_items',
+				]
+			],
+			'tnc_col_%d_delete_private_items' => [
+				'display_name' => __('Delete private items', 'tainacan'),
+				'description' => __('Delete items in this collection after they are private', 'tainacan'),
+				'scope' => 'collection',
+				'supercaps' => [
+					'manage_tainacan',
+					'manage_tainacan_collection_all',
+					'manage_tainacan_collection_%d',
+					'tnc_col_all_delete_private_items',
 				]
 			],
 			'tnc_col_%d_delete_published_items' => [
