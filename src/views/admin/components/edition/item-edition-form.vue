@@ -2065,8 +2065,8 @@ export default {
             padding: 0 var(--tainacan-one-column);
         
             .status-tag {
-                color: var(--tainacan-white);
-                background: var(--tainacan-secondary);
+                color: var(--tainacan-secondary);
+                background: var(--tainacan-primary);
                 padding: 0.15em 0.5em;
                 font-size: 0.75em;
                 margin: 0 1em 0 0;

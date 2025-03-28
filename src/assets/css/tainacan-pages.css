@@ -553,7 +553,7 @@
   --tainacan-admin-button-active-background-color: color-mix(in srgb, var(--tainacan-turquoise3) 50%, transparent);
   --tainacan-admin-navigation-sidebar-background-color: var(--tainacan-turquoise2);
   --tainacan-admin-navigation-sidebar-background-image: radial-gradient(100% 100% at 32% 64%, var(--tainacan-admin-background-color) 58%, var(--tainacan-admin-navigation-sidebar-background-color) 100%);
-  --tainacan-admin-navigation-sidebar-separator-color: var(--tainacan-turquoise5);
+  --tainacan-admin-navigation-sidebar-separator-color: var(--tainacan-gray5);
   --tainacan-admin-navigation-sidebar-floating-menu-background-color: var(--tainacan-white);
   --tainacan-admin-navigation-sidebar-width: 215px;
   display: grid;
@@ -935,6 +935,11 @@
     opacity: 0.75;
   }
 }
+#tainacan-page-container #tainacan-navigation-menu .menu-item-has-children.collapse-closed {
+  display: block;
+  visibility: visible;
+  max-height: 100vh;
+}
 #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children:not(.is-open) > ul {
   display: none;
   visibility: hidden;
@@ -966,6 +971,7 @@
 }
 #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul {
   border-left: 1px dashed var(--tainacan-admin-navigation-sidebar-separator-color);
+  border-left: 1px dashed color-mix(in srgb, var(--tainacan-admin-navigation-sidebar-separator-color) 50%, transparent);
   margin: 0.5em 0 1em 0.75rem;
   padding-left: 0.5rem;
 }
@@ -999,6 +1005,7 @@
 }
 #tainacan-page-container #tainacan-navigation-menu .separator-list-item .icon {
   color: currentColor !important;
+  margin-right: 0.5em;
 }
 #tainacan-page-container h1.tainacan-page-title {
   font-size: 1.25em;
