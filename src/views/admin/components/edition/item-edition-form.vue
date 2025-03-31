@@ -1796,7 +1796,7 @@ export default {
                             collection: this.collection,
                             parentEntity: {
                                 rootLink: 'collections',
-                                name: this.collection.name,
+                                name: this.collection ? this.collection.name : '',
                                 defaultLink: `collections/${this.collectionId}/items`,
                                 label: this.$i18n.get('collections')
                             },
