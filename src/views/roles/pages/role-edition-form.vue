@@ -425,6 +425,18 @@
 
                         this.isLoadingRole = false;
 
+                        wp.hooks.doAction(
+                            'tainacan_navigation_path_updated', 
+                            { 
+                                currentRoute: this.$route,
+                                adminOptions: this.$adminOptions,
+                                parentEntity: {
+                                    rootLink: 'roles',
+                                    label: this.$i18n.get('Tainacan User Roles')
+                                }
+                            }
+                        );
+
                         // Fills hook forms with it's real values 
                         nextTick(() => this.updateExtraFormData(this.form) );
                         
@@ -440,6 +452,18 @@
                         this.form.slug = undefined;
 
                         this.isLoadingRole = false;
+
+                        wp.hooks.doAction(
+                            'tainacan_navigation_path_updated', 
+                            { 
+                                currentRoute: this.$route,
+                                adminOptions: this.$adminOptions,
+                                parentEntity: {
+                                    rootLink: 'roles',
+                                    label: this.$i18n.get('Tainacan User Roles')
+                                }
+                            }
+                        );
 
                         // Fills hook forms with it's real values 
                         nextTick(() => this.updateExtraFormData(this.form) );

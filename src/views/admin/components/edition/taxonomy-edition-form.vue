@@ -445,7 +445,7 @@
                                 currentRoute: this.$route,
                                 adminOptions: this.$adminOptions,
                                 parentEntity: {
-                                    rootLinks: 'taxonomies',
+                                    rootLink: 'taxonomies',
                                     name: this.taxonomy.name,
                                     defaultLink: `taxonomies/${this.taxonomyId}/edit`,
                                     label: this.$i18n.get('taxonomies')

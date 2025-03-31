@@ -251,14 +251,18 @@ function handleDynamicMenusAndBreadcrumbs() {
 
                         // Add parent entity breadcrumb
                         if (parentEntity) {
-                            addBreadcrumb(parentEntity.label, parentEntity.rootLink);
-                            addBreadcrumb(parentEntity.name, parentEntity.defaultLink);
+                            if ( parentEntity.label && parentEntity.rootLink )
+                                addBreadcrumb(parentEntity.label, parentEntity.rootLink);
+                            if ( parentEntity.name && parentEntity.defaultLink )
+                                addBreadcrumb(parentEntity.name, parentEntity.defaultLink);
                         }
 
                         // Add child entity breadcrumb (if applicable)
                         if (childEntity) {
-                            addBreadcrumb(childEntity.label, childEntity.rootLink);
-                            addBreadcrumb(childEntity.name, childEntity.defaultLink);
+                            if ( childEntity.label && childEntity.rootLink )
+                                addBreadcrumb(childEntity.label, childEntity.rootLink);
+                            if ( childEntity.name && childEntity.defaultLink )
+                                addBreadcrumb(childEntity.name, childEntity.defaultLink);
                         }
 
                         // Add current subpage breadcrumb
