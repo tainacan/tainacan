@@ -1880,9 +1880,10 @@ class Theme_Helper {
 
 			if ( $media_sources['attachments'] ) {
 				foreach ( $attachments as $attachment ) {
+					$attachment_thumbnail = get_the_post_thumbnail($attachment->ID, $thumbnails_size);
 					$media_items_thumbnails[] = 
 						tainacan_get_the_media_component_slide(array(
-							'media_content' => wp_get_attachment_image( $attachment->ID, $thumbnails_size, false ),
+							'media_content' => $attachment_thumbnail ? $attachment_thumbnail : wp_get_attachment_image( $attachment->ID, $thumbnails_size, false ),
 							'media_content_full' => ( $open_lightbox_on_click && !$layout_elements['main'] ) ? ( wp_attachment_is('image', $attachment->ID) ? wp_get_attachment_image( $attachment->ID, 'full', false) : sprintf('<div class="attachment-without-image tainacan-embed-container"><iframe id="tainacan-attachment-iframe--%s" src="%s"></iframe></div>', $block_id, tainacan_get_attachment_html_url($attachment->ID)) ) : '',
 							'media_title' => $attachment->post_title,
 							'media_description' => $attachment->post_content,
