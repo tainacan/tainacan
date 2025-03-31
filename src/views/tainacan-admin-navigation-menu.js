@@ -61,10 +61,9 @@ function handleDynamicMenusAndBreadcrumbs() {
                 function( {
                     currentRoute,
                     adminOptions,
-                    collection,
-                    item,
-                    taxonomy,
-                    importer
+                    parentEntity,
+                    childEntity,
+                    collection
                 }) {
 
                     const repositoryLinkElements = tainacanRepositoryLinks.querySelectorAll( 'a' );
@@ -240,80 +239,32 @@ function handleDynamicMenusAndBreadcrumbs() {
                         const dynamicBreadcrumbs = tainacanBreadcrumbsList.querySelectorAll( '.dynamic-breadcrumb' );
                         dynamicBreadcrumbs.forEach( element => tainacanBreadcrumbsList.removeChild( element ) );
 
-                        if ( currentRoute.params.collectionId && collection ) {
+                        // Helper function to add a breadcrumb
+                        const addBreadcrumb = (label, link, isCurrent = false) => {
+                            const breadcrumb = document.createElement('li');
+                            breadcrumb.classList.add('dynamic-breadcrumb');
+                            breadcrumb.innerHTML = isCurrent
+                                ? `<span class="menu-text">${label}</span>`
+                                : `<a href="${document.location.pathname + document.location.search}#${link}">${label}</a>`;
+                            tainacanBreadcrumbsList.appendChild(breadcrumb);
+                        };
 
-                            // Adds collections link
-                            const collectionsLink = document.createElement( 'li' );
-                            collectionsLink.classList.add('dynamic-breadcrumb');
-                            collectionsLink.innerHTML = '<a href="' + document.location.pathname + document.location.search + '#collections">' + wp.i18n.__( 'Collections', 'tainacan') + '</a>';
-                            tainacanBreadcrumbsList.appendChild( collectionsLink );
-
-                            // Adds collection link
-                            const collectionLink = document.createElement( 'li' );
-                            collectionLink.classList.add('dynamic-breadcrumb');
-                            collectionLink.innerHTML = '<a aria-current="page" href="' + document.location.pathname + document.location.search + '#collections/' + currentRoute.params.collectionId + '/items">' + collection.name + '</a>';
-                            tainacanBreadcrumbsList.appendChild( collectionLink );
+                        // Add parent entity breadcrumb
+                        if (parentEntity) {
+                            addBreadcrumb(parentEntity.label, parentEntity.rootLink);
+                            addBreadcrumb(parentEntity.name, parentEntity.defaultLink);
                         }
 
-                        if ( currentRoute.params.itemId && item && item.title ) {
-                            
-                            // Adds items link
-                            const itemsLink = document.createElement( 'li' );
-                            itemsLink.classList.add('dynamic-breadcrumb');
-                            itemsLink.innerHTML = '<a href="' + document.location.pathname + document.location.search + '#collections/' + currentRoute.params.collectionId + '/items">' + wp.i18n.__( 'Items', 'tainacan') + '</a>';
-                            tainacanBreadcrumbsList.appendChild( itemsLink );
-
-                            // Adds item link
-                            const itemLink = document.createElement( 'li' );
-                            itemLink.classList.add('dynamic-breadcrumb');
-                            itemLink.innerHTML = '<a aria-current="page" href="' + document.location.pathname + document.location.search + '#collections/' + currentRoute.params.collectionId + '/items/' + currentRoute.params.itemId + '">' + item.title + '</a>';
-                            tainacanBreadcrumbsList.appendChild( itemLink );
-                        }
-                        
-                        if ( currentRoute.params.taxonomyId && taxonomy ) {
-
-                            // Adds taxonomies link
-                            const taxonomiesLink = document.createElement( 'li' );
-                            taxonomiesLink.classList.add('dynamic-breadcrumb');
-                            taxonomiesLink.innerHTML = '<a href="' + document.location.pathname + document.location.search + '#taxonomies">' + wp.i18n.__( 'Taxonomies', 'tainacan') + '</a>';
-                            tainacanBreadcrumbsList.appendChild( taxonomiesLink );
-
-                            // Adds taxonomy link
-                            const taxonomyLink = document.createElement( 'li' );
-                            taxonomyLink.classList.add('dynamic-breadcrumb');
-                            taxonomyLink.innerHTML = '<a aria-current="page" href="' + document.location.pathname + document.location.search + '#taxonomies/' + currentRoute.params.taxonomyId + '/edit">' + taxonomy.name + '</a>';
-                            tainacanBreadcrumbsList.appendChild( taxonomyLink );
-                        }
-                        
-                        if ( currentRoute.params.importerSlug && importer ) {
-
-                            // Adds importers link
-                            const importersLink = document.createElement( 'li' );
-                            importersLink.classList.add('dynamic-breadcrumb');
-                            importersLink.innerHTML = '<a href="' + document.location.pathname + document.location.search + '#importers">' + wp.i18n.__( 'Importers', 'tainacan') + '</a>';
-                            tainacanBreadcrumbsList.appendChild( importersLink );
-
-                            // Adds importer link
-                            const importerLink = document.createElement( 'li' );
-                            importerLink.classList.add('dynamic-breadcrumb');
-                            importerLink.innerHTML = '<a aria-current="page" href="' + document.location.pathname + document.location.search + '#importers/' + currentRoute.params.importerSlug + '">' + importer + '</a>';
-                            tainacanBreadcrumbsList.appendChild( importerLink );
-
-                            // Adds importer mapping link
-                            if ( currentRoute.params.sessionId && currentRoute.params.collectionId ) {
-                                const importerMappingLink = document.createElement( 'li' );
-                                importerMappingLink.classList.add('dynamic-breadcrumb');
-                                importerMappingLink.innerHTML = '<a aria-current="page" href="' + document.location.pathname + document.location.search + '#importers/' + currentRoute.params.importerSlug + '/' + currentRoute.params.sessionId + '/mapping/' + currentRoute.params.collectionId + '">' + currentRoute.params.sessionId + '</a>';
-                                tainacanBreadcrumbsList.appendChild( importerMappingLink );
-                            }
+                        // Add child entity breadcrumb (if applicable)
+                        if (childEntity) {
+                            addBreadcrumb(childEntity.label, childEntity.rootLink);
+                            addBreadcrumb(childEntity.name, childEntity.defaultLink);
                         }
 
-                        // Adds current subpage
-                        const breadcrumbItem = document.createElement( 'li' );
-                        breadcrumbItem.classList.add('dynamic-breadcrumb');
-                        breadcrumbItem.innerHTML = '<span class="menu-text">' + currentRoute.meta.title + '</span>';
+                        // Add current subpage breadcrumb
+                        const currentSubpageLabel = currentRoute.meta.title + (parentEntity && parentEntity.name && !childEntity ? ` ${parentEntity.name}` : '');
+                        addBreadcrumb(currentSubpageLabel, '', true);
 
-                        tainacanBreadcrumbsList.appendChild( breadcrumbItem );
                     }
                 }
             );

@@ -1236,6 +1236,10 @@ export default {
                 this.form.comment_status = this.item.comment_status;
                 this.form.thumbnail_id = this.item.thumbnail_id;
                 this.form.thumbnail_alt = this.item.thumbnail_alt;
+
+
+                // Updater route document title
+                this.$routerHelper.updatePageTitle( this.$i18n.get('title_edit_item') + ' ' + this.item.title);
                 
                 this.isLoading = false;
 
@@ -1781,6 +1785,29 @@ export default {
             .then((resp) => {
                 resp.request.then((res) => {
                     this.item = res;
+
+                    // Updater route document title
+                    this.$routerHelper.updatePageTitle( this.$i18n.get('title_edit_item') + ' ' + this.item.title);
+                    wp.hooks.doAction(
+                        'tainacan_navigation_path_updated', 
+                        { 
+                            currentRoute: this.$route,
+                            adminOptions: this.$adminOptions,
+                            collection: this.collection,
+                            parentEntity: {
+                                rootLink: 'collections',
+                                name: this.collection.name,
+                                defaultLink: `collections/${this.collectionId}/items`,
+                                label: this.$i18n.get('collections')
+                            },
+                            childEntity: {
+                                rootLink: `collections/${this.collectionId}/items/`,
+                                name: this.item.title,
+                                defaultLink: `collections/${this.collectionId}/items/${this.item.id}/edit`,
+                                label: this.$i18n.get('items')
+                            }
+                        }
+                    );
 
                     // Checks if user has permission to edit
                     if (!this.item.current_user_can_edit)

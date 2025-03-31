@@ -393,7 +393,7 @@
                     aria-modal
                     aria-role="dialog"
                     custom-class="tainacan-modal"
-                    can-cancel="['escape', 'outside']"
+                    :can-cancel="['escape', 'outside']"
                     :close-button-aria-label="$i18n.get('close')">
                 <div 
                         autofocus
@@ -574,8 +574,9 @@ export default {
 
         if (this.isRepositoryLevel)
             this.collectionId = 'default';
-        else
+        else {
             this.collectionId = this.$route.params.collectionId;
+        }
 
         this.isLoadingFilterTypes = true;
 

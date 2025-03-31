@@ -219,6 +219,13 @@ export const RouterHelperPlugin = {};
 RouterHelperPlugin.install = function (app, options = {}) {
     
     app.config.globalProperties.$routerHelper = {
+        updatePageTitle(title) {
+            document.title = title;
+        },
+        appendToPageTitle(titleSuffix) {
+            const title = app.config.globalProperties.$route.meta.title + ' ' + titleSuffix;
+            this.updatePageTitle(title);
+        },
         getAbsoluteAdminPath() {
             return tainacan_plugin.admin_url + '?page=tainacan_admin#';
         },

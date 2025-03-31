@@ -1,6 +1,15 @@
 <template>
     <div class="tainacan-repository-level-colors page-container">
-        <tainacan-title />
+        <tainacan-title>
+            <h1>
+                {{ $i18n.get('title_exporter_page') }} 
+                <span 
+                        v-if="exporterName"
+                        class="is-italic has-text-weight-semibold">
+                    {{ exporterName }}
+                </span>
+            </h1>
+        </tainacan-title>
         <b-loading
                 v-model="isLoading"
                 :can-cancel="false" />
@@ -158,8 +167,22 @@
 
             // Set exporter's name
             this.fetchAvailableExporters().then((exporterTypes) => {
-            if (exporterTypes[this.exporterType]) 
-                    this.exporterName = exporterTypes[this.exporterType].name;
+            if ( exporterTypes[this.exporterType] ) 
+                this.exporterName = exporterTypes[this.exporterType].name;
+                this.$routerHelper.appendToPageTitle(this.importerName);
+                wp.hooks.doAction(
+                'tainacan_navigation_path_updated', 
+                    { 
+                        currentRoute: this.$route,
+                        adminOptions: this.$adminOptions,
+                        parentEntity: {
+                            rootLink: 'exporters',
+                            name: this.exporterName,
+                            defaultLink: `exporters/${this.exporterType}/edit`,
+                            label: this.$i18n.get('exporters')
+                        }
+                    }
+                );
             });
         },
         methods: {

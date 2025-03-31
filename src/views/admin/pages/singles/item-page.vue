@@ -626,7 +626,33 @@
             })
             .then((resp) => {
                 resp.request
-                    .then(() => this.loadMetadata() )
+                    .then(() => {
+
+                        // Updater route document title
+                        this.$routerHelper.updatePageTitle( this.$i18n.get('title_item_page') + ' ' + this.item.title);
+                        wp.hooks.doAction(
+                            'tainacan_navigation_path_updated', 
+                            { 
+                                currentRoute: this.$route,
+                                adminOptions: this.$adminOptions,
+                                collection: this.collection,
+                                parentEntity: {
+                                    rootLink: 'collections',
+                                    name: this.collection.name,
+                                    defaultLink: `collections/${this.collectionId}/items`,
+                                    label: this.$i18n.get('collections')
+                                },
+                                childEntity: {
+                                    rootLink: `collections/${this.collectionId}/items/`,
+                                    name: this.item.title,
+                                    defaultLink: `collections/${this.collectionId}/items/${this.item.id}`,
+                                    label: this.$i18n.get('items')
+                                }
+                            }
+                        );
+
+                        this.loadMetadata();
+                    })
                     .catch(() => this.isLoading = false);
 
                 // Item resquest token for cancelling

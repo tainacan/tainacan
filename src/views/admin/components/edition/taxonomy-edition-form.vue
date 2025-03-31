@@ -1,7 +1,16 @@
 <template>
     <div>
         <div class="page-container tainacan-repository-level-colors">
-            <tainacan-title />
+            <tainacan-title>
+                <h1>
+                    <template v-if="$route.name == 'TaxonomyCreationForm'">
+                        {{ $i18n.get('title_create_taxonomy_page') }}
+                    </template>
+                    <template v-else-if="$route.name == 'TaxonomyEditionForm'">
+                        {{ $i18n.get('title_taxonomy_edit_page') }} <span class="is-italic has-text-weight-semibold">{{ taxonomy ? taxonomy.name : '' }}</span>
+                    </template>
+                </h1>
+            </tainacan-title>
 
             <form 
                     v-if="taxonomy != null && taxonomy != undefined && (($route.name == 'TaxonomyCreationForm' && $userCaps.hasCapability('tnc_rep_edit_taxonomies')) || ($route.name == 'TaxonomyEditionForm' && taxonomy.current_user_can_edit))"
@@ -358,7 +367,21 @@
                     .then(res => {
                         this.taxonomy = JSON.parse(JSON.stringify(res.taxonomy));
 
-                        wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: this.$route, adminOptions: this.$adminOptions, taxonomy: this.taxonomy });
+                        this.$routerHelper.appendToPageTitle(this.taxonomy.name);
+
+                        wp.hooks.doAction(
+                            'tainacan_navigation_path_updated', 
+                            { 
+                                currentRoute: this.$route,
+                                adminOptions: this.$adminOptions,
+                                parentEntity: {
+                                    rootLink: 'taxonomies',
+                                    name: this.taxonomy.name,
+                                    defaultLink: `taxonomies/${this.taxonomyId}/edit`,
+                                    label: this.$i18n.get('taxonomies')
+                                }
+                            }
+                        );
 
                         // Fills hook forms with it's real values 
                         nextTick()
@@ -416,7 +439,19 @@
 
                         this.taxonomy = JSON.parse(JSON.stringify(updatedTaxonomy));
 
-                        wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: this.$route, adminOptions: this.$adminOptions, taxonomy: this.taxonomy });
+                        wp.hooks.doAction(
+                            'tainacan_navigation_path_updated', 
+                            { 
+                                currentRoute: this.$route,
+                                adminOptions: this.$adminOptions,
+                                parentEntity: {
+                                    rootLinks: 'taxonomies',
+                                    name: this.taxonomy.name,
+                                    defaultLink: `taxonomies/${this.taxonomyId}/edit`,
+                                    label: this.$i18n.get('taxonomies')
+                                }
+                            }
+                        );
 
                         // Fills hook forms with it's real values 
                         this.updateExtraFormData(this.taxonomy);

@@ -1,10 +1,15 @@
 <template>
-    <div 
-            class="tainacan-repository-level-colors page-container">
-        <!-- <div class="tainacan-page-title">
-            <h1>{{ $i18n.get('label_metadata_mapping') }} </h1>
-        </div> -->
-        <tainacan-title />
+    <div class="tainacan-repository-level-colors page-container">
+        <tainacan-title>
+            <h1>
+                {{ $i18n.get('title_importer_mapping_page') }} 
+                <span 
+                        v-if="importerName"
+                        class="is-italic has-text-weight-semibold">
+                    {{ importerName }}
+                </span>
+            </h1>
+        </tainacan-title>
 
         <b-loading 
                 v-model="isLoading" 
@@ -406,8 +411,20 @@ export default {
         this.fetchAvailableImporters().then((importerTypes) => {
            if (importerTypes[this.importerType]) 
             this.importerName = importerTypes[this.importerType].name;
-
-            wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: this.$route, adminOptions: this.$adminOptions, importer: this.importerName });
+            this.$routerHelper.appendToPageTitle(this.importerName);
+            wp.hooks.doAction(
+                'tainacan_navigation_path_updated', 
+                { 
+                    currentRoute: this.$route,
+                    adminOptions: this.$adminOptions,
+                    parentEntity: {
+                        rootLink: 'importers',
+                        name: this.importerName,
+                        defaultLink: `importers/${this.importerType}/edit`,
+                        label: this.$i18n.get('importers')
+                    }
+                }
+            );
         });
 
         this.loadImporter();

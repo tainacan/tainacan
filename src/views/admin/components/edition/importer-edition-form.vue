@@ -1,7 +1,16 @@
 <template>
     <div 
             class="tainacan-repository-level-colors page-container">
-        <tainacan-title />
+        <tainacan-title>
+            <h1>
+                {{ $i18n.get('title_importer_page') }} 
+                <span 
+                        v-if="importerName"
+                        class="is-italic has-text-weight-semibold">
+                    {{ importerName }}
+                </span>
+            </h1>
+        </tainacan-title>
         <form   
                 v-if="importer != undefined && importer != null"
                 class="tainacan-form" 
@@ -238,8 +247,20 @@ export default {
         this.fetchAvailableImporters().then((importerTypes) => {
            if (importerTypes[this.importerType]) 
             this.importerName = importerTypes[this.importerType].name;
-        
-            wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: this.$route, adminOptions: this.$adminOptions, importer: this.importerName });
+            this.$routerHelper.appendToPageTitle(this.importerName);
+            wp.hooks.doAction(
+                'tainacan_navigation_path_updated', 
+                { 
+                    currentRoute: this.$route,
+                    adminOptions: this.$adminOptions,
+                    parentEntity: {
+                        rootLink: 'importers',
+                        name: this.importerName,
+                        defaultLink: `importers/${this.importerType}/edit`,
+                        label: this.$i18n.get('importers')
+                    }
+                }
+            );
         });
 
         if (this.sessionId != undefined)

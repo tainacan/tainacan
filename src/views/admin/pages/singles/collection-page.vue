@@ -10,12 +10,12 @@
                 :style="$adminOptions.hideRepositorySubheader ? 'margin-top: 0; height: 100%;' : ''">
             <router-view
                     id="collection-page-container"
+                    :key="$route.query.authorid"
                     :collection-id="collectionId" 
                     class="page-container"
                     :class="{
                         'is-loading-collection-basics': isLoadingCollectionBasics
-                    }"
-                    :key="$route.query.authorid" />
+                    }" />
         </section>
     </div>
 </template>
@@ -34,9 +34,6 @@ export default {
     computed: {
         ...mapGetters('collection', {
             'collection': 'getCollection'
-        }),
-        ...mapGetters('item', {
-            'item': 'getItem'
         })
     },
     watch: {
@@ -53,15 +50,43 @@ export default {
                         this.collectionId = Number(this.$route.params.collectionId);
                         this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
                             .then(() => {
-                                wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: to, adminOptions: this.$adminOptions, collection: this.collection, item: this.item });
-                                this.isLoadingCollectionBasics = false;
+                                wp.hooks.doAction(
+                                    'tainacan_navigation_path_updated', 
+                                    { 
+                                        currentRoute: to,
+                                        adminOptions: this.$adminOptions,
+                                        collection: this.collection,
+                                        parentEntity: {
+                                            rootLink: 'collections',
+                                            name: this.collection.name,
+                                            defaultLink: `collections/${this.collectionId}/items`,
+                                            label: this.$i18n.get('collections')
+                                        }
+                                    }
+                                );
+                                this.isLoadingCollectionBasics = false;     
+                                this.$routerHelper.appendToPageTitle(this.collection.name);           
                             })
                             .catch((error) => {
                                 this.$console.error(error);
                                 this.isLoadingCollectionBasics = false;
                             });
                     } else {
-                        wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: to, adminOptions: this.$adminOptions, collection: this.collection, item: this.item });
+                        this.$routerHelper.appendToPageTitle(this.collection.name);
+                        wp.hooks.doAction(
+                            'tainacan_navigation_path_updated', 
+                            { 
+                                currentRoute: to,
+                                adminOptions: this.$adminOptions,
+                                collection: this.collection,
+                                parentEntity: {
+                                    rootLink: 'collections',
+                                    name: this.collection.name,
+                                    defaultLink: `collections/${this.collectionId}/items`,
+                                    label: this.$i18n.get('collections')
+                                }
+                            }
+                        );
                     }
                 } 
             },
@@ -75,9 +100,22 @@ export default {
         // Loads to store basic collection info such as name, url, current_user_can_edit... etc.
         this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
             .then(() => {
-                wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: this.$route, adminOptions: this.$adminOptions, collection: this.collection, item: this.item });
-                
+                wp.hooks.doAction(
+                    'tainacan_navigation_path_updated', 
+                    { 
+                        currentRoute: this.$route,
+                        adminOptions: this.$adminOptions,
+                        collection: this.collection,
+                        parentEntity: {
+                            rootLink: 'collections',
+                            name: this.collection.name,
+                            defaultLink: `collections/${this.collectionId}/items`,
+                            label: this.$i18n.get('collections')
+                        }
+                    }
+                );
                 this.isLoadingCollectionBasics = false;
+                this.$routerHelper.appendToPageTitle(this.collection.name);
             })
             .catch((error) => {
                 this.$console.error(error);

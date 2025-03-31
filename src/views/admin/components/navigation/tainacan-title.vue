@@ -17,7 +17,6 @@ export default {
         return {
             isRepositoryLevel: true,
             pageTitle: '',
-            activeRouteName: '',
         }
     },
     computed: {
@@ -32,22 +31,33 @@ export default {
     watch: {
         '$route': {
             handler(to, from) {
-                if (to.path != from.path) {
+                if (!from || to.path != from.path) {
                     this.isRepositoryLevel = (to.params.collectionId == undefined);
+                    this.pageTitle = to.meta.title;
 
-                    this.activeRoute = to.name;
-                    this.pageTitle = this.$route.meta.title;
+                    if ( !this.isRepositoryLevel && this.collection && this.collection.name )
+                        this.$routerHelper.appendToPageTitle(this.collection.name);
                 }
             },
+            immediate: true,
             deep: true
+        },
+        'collection': {
+            handler() {
+                if ( !this.isRepositoryLevel && this.collection && this.collection.name )
+                    this.$routerHelper.appendToPageTitle(this.collection.name);
+            },
+            deep: true,
+            immediate: true,
         }
     },
-    created() {
-        this.isRepositoryLevel = (this.$route.params.collectionId == undefined);
+    mounted() {
+        // Set the initial title
+        this.pageTitle = this.$route.meta.title;
 
-        document.title = this.$route.meta.title;
-        this.pageTitle = document.title;
-    }
+        if ( !this.isRepositoryLevel && this.collection && this.collection.name )
+            this.$routerHelper.appendToPageTitle(this.collection.name);
+    },
 }
 </script>
 

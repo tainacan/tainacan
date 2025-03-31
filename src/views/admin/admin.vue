@@ -51,7 +51,7 @@
                     this.isRepositoryLevel = this.$route.params.collectionId == undefined;
 
                     if ( to.path !== from.path && this.isRepositoryLevel ) {
-                        wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: to, adminOptions: this.$adminOptions, collection: this.collection });
+                        wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: to, adminOptions: this.$adminOptions });
                     }
                 },
                 deep: true
@@ -59,7 +59,7 @@
         },
         created() {
             
-            wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: this.$route, adminOptions: this.$adminOptions, collection: this.collection });
+            wp.hooks.doAction('tainacan_navigation_path_updated', { currentRoute: this.$route, adminOptions: this.$adminOptions });
 
             this.hasPermalinksStructure = tainacan_plugin.has_permalinks_structure;
 
