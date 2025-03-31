@@ -41,11 +41,9 @@ class OAIPMH_Get_Record extends OAIPMH_Expose {
         $id = str_replace('oai:'.$this->repositoryIdentifier.':','', $params['identifier']);
         $item = new Entities\Item( $id );
 
-        if( !$item->get_id() ){
+        if ( !$item->get_id() )
             return false;
-        }
 
-        $item->collection = $item->get_collection();
         return $item;
     }
 
@@ -77,7 +75,7 @@ class OAIPMH_Get_Record extends OAIPMH_Expose {
 
         $this->xml_creater = new Xml_Response($data);
 
-        $collection = $item->collection;
+        $collection = $item->get_collection();
         $identifier = 'oai:'.$this->repositoryIdentifier.':'. $item->get_id();
         $datestamp = $this->formatDatestamp($item->get_creation_date());
         $setspec = $collection->get_id();
@@ -127,17 +125,21 @@ class OAIPMH_Get_Record extends OAIPMH_Expose {
         $this->working_node->setAttribute('xsi:schemaLocation', 'http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd');
         $maps = $this->map_item_metadata($item);
 
-        try{
-            if ($maps) {
-                foreach ($maps as $key => $val) {
-                    
-                    if( $val && is_object($val) )
-                        $this->xml_creater->addChild($this->working_node, $key, html_entity_decode($val->get_value()));
-                    else
-                        $this->xml_creater->addChild($this->working_node, $key, '');
+        try {
+            if ( $maps ) {
+                foreach ( $maps as $key => $val ) {
+                    if ( $val && is_object($val) ) {
+                        $item_metadatum_value = $val->get_value();
+                        $item_metadatum_value = is_array($item_metadatum_value) ? $item_metadatum_value : [$item_metadatum_value];
+ 
+                        array_map( function($value) use ($key) {
+                            $this->xml_creater->addChild($this->working_node, $key, html_entity_decode($value));
+                        }, $item_metadatum_value);
+                     
+                    }
                 }
             }
-        }catch(Exception $e){
+        } catch(Exception $e) {
             var_dump($e,$this->working_node,'dc:' . $key);
         }
     }
