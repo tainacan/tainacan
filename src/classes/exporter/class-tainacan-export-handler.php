@@ -22,14 +22,14 @@ class Export_Handler {
 	public function init() {
 
 		$this->register_exporter([
-			'name' => 'CSV',
+			'name' => __('CSV', 'tainacan'),
 			'description' => __('Allows you to export one collection to a CSV file', 'tainacan'),
 			'slug' => 'csv',
 			'class_name' => '\Tainacan\Exporter\CSV'
 		]);
 
 		$this->register_exporter([
-			'name' => 'Vocabulary CSV',
+			'name' => __('Vocabulary CSV', 'tainacan'),
 			'description' => __('Allows you to export a taxonomy to a CSV file', 'tainacan'),
 			'slug' => 'vocabularycsv',
 			'class_name' => '\Tainacan\Exporter\Term_Exporter',

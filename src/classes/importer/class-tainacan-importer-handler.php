@@ -24,7 +24,7 @@ class Importer_Handler {
 	public function init() {
 
 		$this->register_importer([
-			'name' => 'CSV',
+			'name' => __('CSV', 'tainacan'),
 			'description' => __('Import items from a CSV file to a chosen collection', 'tainacan'),
 			'slug' => 'csv',
 			'class_name' => '\Tainacan\Importer\CSV',
@@ -33,7 +33,7 @@ class Importer_Handler {
 		]);
 
 		$this->register_importer([
-			'name' => 'Test',
+			'name' => __('Test', 'tainacan'),
 			'description' => __('Create 2 test colletions with random items', 'tainacan'),
 			'slug' => 'test',
 			'class_name' => '\Tainacan\Importer\Test_Importer',
@@ -42,7 +42,7 @@ class Importer_Handler {
 		]);
 
 		$this->register_importer([
-			'name' => 'Tainacan Legacy',
+			'name' => __('Tainacan Legacy', 'tainacan'),
 			'description' => __('Import structure from legacy version of Tainacan', 'tainacan'),
 			'slug' => 'tainacan_old',
 			'class_name' => '\Tainacan\Importer\Old_Tainacan',
@@ -51,7 +51,7 @@ class Importer_Handler {
 		]);
 
 		$this->register_importer([
-			'name' => 'Vocabulary CSV',
+			'name' => __('Vocabulary CSV', 'tainacan'),
 			'description' => __('Import a vocabulary from a CSV file into a taxonomy', 'tainacan'),
 			'slug' => 'terms',
 			'class_name' => '\Tainacan\Importer\Term_Importer',
@@ -60,7 +60,7 @@ class Importer_Handler {
 		]);
 
         $this->register_importer([
-            'name' => 'OAI-PMH (Experimental)',
+            'name' => __('OAI-PMH (Experimental)', 'tainacan'),
             'description' => __('Import items from an OAI-PMH data source', 'tainacan'),
             'slug' => 'oaipmh_importer',
             'class_name' => '\Tainacan\Importer\Oaipmh_Importer',
@@ -69,7 +69,7 @@ class Importer_Handler {
         ]);
 
         $this->register_importer([
-            'name' => 'YouTube (Experimental)',
+            'name' => __('YouTube (Experimental)', 'tainacan'),
             'description' => __('Import items from an YouTube URL', 'tainacan'),
             'slug' => 'youtube_importer',
             'class_name' => '\Tainacan\Importer\Youtube_Importer',
@@ -78,7 +78,7 @@ class Importer_Handler {
         ]);
 
         $this->register_importer([
-            'name' => 'Flickr (Experimental)',
+            'name' => __('Flickr (Experimental)', 'tainacan'),
             'description' => __('Import items from a Flickr URL', 'tainacan'),
             'slug' => 'flickr_importer',
             'class_name' => '\Tainacan\Importer\Flickr_Importer',
