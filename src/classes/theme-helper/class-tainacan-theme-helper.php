@@ -906,7 +906,7 @@ class Theme_Helper {
 			/**
 			 * Adds Dublin Core meta tags to the header 
 			 */
-			if ( in_singular() && $this->is_post_an_item($post) ) {
+			if ( is_singular() && $this->is_post_an_item($post) ) {
 				$metadatum_mapper = \Tainacan\Mappers_Handler::get_instance()->get_mapper('dublin-core');
 				
 				if ( $metadatum_mapper ) {
