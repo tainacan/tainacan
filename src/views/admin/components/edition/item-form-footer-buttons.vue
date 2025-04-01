@@ -106,6 +106,12 @@
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-draft" />
                         </span>
                         {{ status == 'draft' ? $i18n.get('label_update_draft') : $i18n.get('label_change_to_draft') }}
+                        <br>
+                        <small 
+                                v-if="$statusHelper.hasDescription('draft')"
+                                class="is-small">
+                            {{ $statusHelper.getDescription('draft') }}
+                        </small>
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="!$adminOptions.hideItemEditionStatusPendingOption"
@@ -120,6 +126,12 @@
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting" />
                         </span>
                         {{ status == 'pending' ? $i18n.get('label_update_pending') : $i18n.get('label_send_to_review') }}
+                        <br>
+                        <small 
+                                v-if="$statusHelper.hasDescription('pending')"
+                                class="is-small">
+                            {{ $statusHelper.getDescription('pending') }}
+                        </small>
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="currentUserCanPublish"
@@ -134,6 +146,12 @@
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-private" />
                         </span>
                         {{ status == 'private' ? $i18n.get('label_update_as_private') : ( status == 'draft' ? $i18n.get('label_verb_publish_privately') : $i18n.get('label_change_to_private') ) }}
+                        <br>
+                        <small 
+                                v-if="$statusHelper.hasDescription('private')"
+                                class="is-small">
+                            {{ $statusHelper.getDescription('private') }}
+                        </small>
                     </b-dropdown-item>
                     <b-dropdown-item 
                             v-if="currentUserCanPublish && !$adminOptions.hideItemEditionStatusPublishOption"
@@ -147,6 +165,12 @@
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-public" />
                         </span>
                         {{ status == 'publish' ? $i18n.get('label_update_as_public') : $i18n.get('label_verb_publish') }}
+                        <br>
+                        <small 
+                                v-if="$statusHelper.hasDescription('publish')"
+                                class="is-small">
+                            {{ $statusHelper.getDescription('publish') }}
+                        </small>
                     </b-dropdown-item>
                 </b-dropdown>
                 

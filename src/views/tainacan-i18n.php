@@ -103,15 +103,20 @@ return apply_filters( 'tainacan-i18n', [
 	// Wordpress Status
 	/* translators: The noun for the public/published status */
 	'status_publish'                                 => __( 'Publish', 'tainacan' ),
+	'status_publish_description'                     => __( 'Everyone can see it.', 'tainacan' ),
 	/* translators: Also the noun for the public/published status */
 	'status_public'                                  => __( 'Public', 'tainacan' ),
 	/* translators: The noun for the draft status, not the verb */
 	'status_draft'                                   => __( 'Draft', 'tainacan' ),
+	'status_draft_description'                       => __( 'Not ready to be published.', 'tainacan' ),
 	/* translators: The noun for the trash pending, not the verb */
 	'status_pending'                                 => __( 'Pending', 'tainacan' ),
+	'status_pending_description'                     => __( 'Pending review before pulishing.', 'tainacan' ),
 	'status_private'                                 => __( 'Private', 'tainacan' ),
+	'status_private_description'                     => __( 'Only you and those with permission can see it.', 'tainacan' ),
 	/* translators: The noun for the trash status, not the verb */
 	'status_trash'                                   => __( 'Trash', 'tainacan' ),
+	'status_trash_description'                       => __( 'Deleted, but not permanently.', 'tainacan' ),
 	'status_auto-draft'                              => __( 'Automatic draft', 'tainacan' ),
 	'label_open_access'                              => __( 'Open access', 'tainacan' ),
 	'label_restrict_access'                          => __( 'Restrict access', 'tainacan' ),

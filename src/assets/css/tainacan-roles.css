@@ -16954,7 +16954,7 @@ textarea.textarea,
 .dropdown .dropdown-menu .dropdown-content, .autocomplete .dropdown-menu .dropdown-content {
   padding: 0px 0px 1px 0px;
   border-radius: var(--tainacan-dropdownmenu-border-radius, 0px) !important;
-  max-height: 240px;
+  max-height: 280px;
   overflow-y: auto;
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.0392156863), 0 12px 12px rgba(0, 0, 0, 0.031372549), 0 16px 16px rgba(0, 0, 0, 0.0196078431);
   background-color: var(--tainacan-background-color);

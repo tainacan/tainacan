@@ -158,7 +158,8 @@
                                     class="item-edition-status-dropdown"
                                     :triggers="[ 'click' ]"
                                     :disabled="item.status === 'auto-draft' || ( hasSomeError && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) )"
-                                    style="width: auto;">
+                                    style="width: auto;"
+                                    max-height="300px">
                                 <template #trigger>
                                     <button 
                                             :disabled="item.status === 'auto-draft' || ( hasSomeError && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) )"
@@ -199,6 +200,12 @@
                                                 :class="$statusHelper.getIcon(statusOption.slug)" />
                                     </span>
                                     {{ statusOption.name }}
+                                    <br>
+                                    <small 
+                                            v-if="$statusHelper.hasDescription(statusOption.slug)"
+                                            class="is-small">
+                                        {{ $statusHelper.getDescription(statusOption.slug) }}
+                                    </small>
                                 </b-dropdown-item>
                             </b-dropdown>
                             <help-button

@@ -352,6 +352,7 @@
 .tainacan-leaflet-map-container .leaflet-container {
     border: 1px solid var(--tainacan-input-border-color);
     border-radius: 3px;
+    z-index: 0;
 
     .leaflet-marker-pane {
         filter: hue-rotate(-22deg);

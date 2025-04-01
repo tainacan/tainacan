@@ -391,11 +391,26 @@ StatusHelperPlugin.install = function (app, options = {}) {
     
     app.config.globalProperties.$statusHelper = {
         statuses: [
-            { name: tainacan_plugin.i18n['status_publish'], slug: 'publish' },
-            { name: tainacan_plugin.i18n['status_private'], slug: 'private' },
-            { name: tainacan_plugin.i18n['status_pending'], slug: 'pending' },
-            { name: tainacan_plugin.i18n['status_draft'], slug: 'draft' },
-            { name: tainacan_plugin.i18n['status_trash'], slug: 'trash' }
+            {
+                name: tainacan_plugin.i18n['status_publish'],
+                slug: 'publish'
+            },
+            {
+                name: tainacan_plugin.i18n['status_private'],
+                slug: 'private'
+            },
+            {
+                name: tainacan_plugin.i18n['status_pending'],
+                slug: 'pending'
+            },
+            {
+                name: tainacan_plugin.i18n['status_draft'],
+                slug: 'draft'
+            },
+            {
+                name: tainacan_plugin.i18n['status_trash'],
+                slug: 'trash'
+            }
         ],
         getIcon(status) {
             switch (status) {
@@ -410,6 +425,18 @@ StatusHelperPlugin.install = function (app, options = {}) {
         hasIcon(status) {
             return ['publish', 'pending', 'private', 'draft', 'trash'].includes(status);
         },
+        getDescription(status) {
+            switch (status) {
+                case 'publish': return tainacan_plugin.i18n['status_publish_description'];
+                case 'private': return tainacan_plugin.i18n['status_private_description'];      
+                case 'pending': return tainacan_plugin.i18n['status_pending_description'];
+                case 'draft': return tainacan_plugin.i18n['status_draft_description'];
+                case 'trash': return tainacan_plugin.i18n['status_trash_description'];
+            }
+        },
+        hasDescription(status) {
+            return ['publish', 'pending', 'private', 'draft', 'trash'].includes(status);
+        },
         getStatuses() {
             return this.statuses;
         },
@@ -422,8 +449,8 @@ StatusHelperPlugin.install = function (app, options = {}) {
                     if (loadedStatus['publish'] != undefined)
                         this.statuses.push(loadedStatus['publish']);
                     
-                    this.statuses.concat(Object.values(loadedStatus).filter((status) => {
-                        return !['publish','private', 'pending', 'draft', 'trash'].includes(status.slug); 
+                    this.statuses = this.statuses.concat(Object.values(loadedStatus).filter((status) => {
+                        return !['publish','private', 'pending', 'draft', 'trash', 'future'].includes(status.slug); 
                     }));
 
                     // We always show pending, private, draft and trash
