@@ -65,6 +65,87 @@
                                     @focus="clearErrors('description')" />
                         </b-field>
 
+                         <!-- Slug -------------------------------- -->
+                         <b-field
+                                :addons="false"
+                                :label="$i18n.get('label_slug')"
+                                :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''"
+                                :message="editFormErrors['slug'] != undefined ? editFormErrors['slug'] : ''">
+                            <help-button 
+                                    :title="$i18n.getHelperTitle('taxonomies', 'slug')" 
+                                    :message="$i18n.getHelperMessage('taxonomies', 'slug')"
+                                    extra-classes="tainacan-repository-tooltip" />
+                            <b-input
+                                    id="tainacan-text-slug"
+                                    v-model="form.slug"
+                                    :disabled="isUpdatingSlug"
+                                    @update:model-value="updateSlug()"
+                                    @focus="clearErrors('slug')" />
+                        </b-field>
+
+                            <!-- Status -------------------------------- --> 
+                        <b-field
+                                :addons="false" 
+                                :label="$i18n.get('label_status')"
+                                :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
+                                :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
+                            <help-button
+                                    :title="$i18n.getHelperTitle('taxonomies', 'status')"
+                                    :message="$i18n.getHelperMessage('taxonomies', 'status')" />
+                            <b-dropdown
+                                    ref="item-edition-status-dropdown"
+                                    aria-role="list"
+                                    class="item-edition-status-dropdown"
+                                    :triggers="[ 'click' ]"
+                                    :disabled="taxonomy.status === 'auto-draft' || ( editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) )"
+                                    max-height="300px">
+                                <template #trigger>
+                                    <button 
+                                            :disabled="taxonomy.status === 'auto-draft' || ( editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) )"
+                                            type="button"
+                                            class="button is-outlined"
+                                            :class="{ 'disabled': taxonomy.status === 'auto-draft' || ( editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) ) }"
+                                            style="width: auto">
+                                        <span class="icon has-text-gray">
+                                            <i 
+                                                    class="tainacan-icon tainacan-icon-18px"
+                                                    :class="$statusHelper.getIcon(form.status)" />
+                                        </span>
+                                        <template v-if="form.status !== 'auto-draft' && $statusHelper.getStatuses().find(aStatusObject => aStatusObject.slug == form.status)">
+                                            {{ $statusHelper.getStatuses().find(aStatusObject => aStatusObject.slug == form.status).name }}
+                                        </template>
+                                        <template v-else-if="form.status === 'auto-draft'">
+                                            {{ $i18n.get('status_auto-draft') }}
+                                        </template>
+                                        <span 
+                                                style="margin-left: 0.5em;"
+                                                class="icon is-small">
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                        </span>
+                                    </button>
+                                </template>
+                                <b-dropdown-item 
+                                        v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
+                                        :key="index"
+                                        aria-role="listitem"
+                                        @click="form.status = statusOption.slug">
+                                    <span class="icon has-text-gray">
+                                        <i 
+                                                class="tainacan-icon tainacan-icon-18px"
+                                                :class="$statusHelper.getIcon(statusOption.slug)" />
+                                    </span>
+                                    {{ statusOption.name }}
+                                    <br>
+                                    <small 
+                                            v-if="$statusHelper.hasDescription(statusOption.slug)"
+                                            class="is-small"
+                                            style="margin-left: 2px;">
+                                        {{ $statusHelper.getDescription(statusOption.slug) }}
+                                    </small>
+                                </b-dropdown-item>
+                            </b-dropdown>
+                        </b-field>
+
                         <!-- Allow Insert -->
                         <b-field :addons="false">
                             <label class="label is-inline">
@@ -98,24 +179,6 @@
                                         extra-classes="tainacan-repository-tooltip" />
                             </label>
                         </b-field>
-                        
-                        <!-- Slug -------------------------------- -->
-                        <b-field
-                                :addons="false"
-                                :label="$i18n.get('label_slug')"
-                                :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''"
-                                :message="editFormErrors['slug'] != undefined ? editFormErrors['slug'] : ''">
-                            <help-button 
-                                    :title="$i18n.getHelperTitle('taxonomies', 'slug')" 
-                                    :message="$i18n.getHelperMessage('taxonomies', 'slug')"
-                                    extra-classes="tainacan-repository-tooltip" />
-                            <b-input
-                                    id="tainacan-text-slug"
-                                    v-model="form.slug"
-                                    :disabled="isUpdatingSlug"
-                                    @update:model-value="updateSlug()"
-                                    @focus="clearErrors('slug')" />
-                        </b-field>
 
                         <!-- Activate for other post types -->
                         <b-field
@@ -148,32 +211,6 @@
                     </div>
 
                     <div class="column is-9">
-
-                        <!-- Status -------------------------------- --> 
-                        <b-field
-                                :addons="false" 
-                                :label="$i18n.get('label_status')"
-                                :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
-                                :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
-                            <help-button 
-                                    :title="$i18n.getHelperTitle('taxonomies', 'status')" 
-                                    :message="$i18n.getHelperMessage('taxonomies', 'status')"
-                                    extra-classes="tainacan-repository-tooltip" />
-                            <div class="status-radios">
-                                <b-radio
-                                        v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
-                                        :key="index"
-                                        v-model="form.status"
-                                        :native-value="statusOption.slug">
-                                    <span class="icon has-text-gray">
-                                        <i 
-                                                class="tainacan-icon tainacan-icon-18px"
-                                                :class="$statusHelper.getIcon(statusOption.slug)" />
-                                    </span>
-                                    {{ statusOption.name }}
-                                </b-radio>
-                            </div>
-                        </b-field>
 
                         <!-- Terms List -->                        
                         <b-field
@@ -614,7 +651,35 @@
         color: var(--tainacan-info-color);
         font-style: italic;
     }
+    .two-thirds-layout-options {
+        display: flex;
+        column-gap: 1em !important;
 
+        & > .field:first-child {
+            flex-basis: 75%;
+        }
+        & > .field:last-child {
+            flex-basis: 25%;
+        }
+
+        .dropdown-trigger>.button {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        @media screen and (max-width: 782px) {
+            flex-wrap: wrap;
+            margin-bottom: 1em;
+
+            & > .field {
+                flex-basis: 100% !important;
+            }
+            .dropdown-trigger>.button {
+                min-height: 40px;
+            }
+        }
+    }
     .footer {
         padding: 10px var(--tainacan-one-column);
         position: absolute;
@@ -629,6 +694,28 @@
         align-items: center;
         transition: bottom 0.5s ease, width 0.2s linear;
         box-shadow: 0px 0px 12px -8px var(--tainacan-black);
+
+        &::after,
+        &::before {
+            height: 18px;
+            width: 18px;
+            background: transparent;
+            display: block;
+            content: '';
+            position: absolute;
+        }
+        &::before {
+            left: 0;
+            top: -18px;
+            border-bottom-left-radius: 9px;
+            box-shadow: -9px 0px 0 0 var(--tainacan-gray1), inset 2px -2px 5px -3px var(--tainacan-gray2)
+        }
+        &::after {
+            right: 0;
+            top: -18px;
+            border-bottom-right-radius: 9px;
+            box-shadow: 9px 0px 0 0 var(--tainacan-gray1), inset -2px -2px 5px -3px var(--tainacan-gray2)
+        }
 
         .footer-message {
             display: flex;

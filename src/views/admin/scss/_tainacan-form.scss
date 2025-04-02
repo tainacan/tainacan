@@ -191,7 +191,9 @@
             width: 100%;
             border: 1px solid var(--tainacan-input-border-color) !important;
             border-radius: var(--tainacan-input-border-radius, 2px) !important;
-            padding: 2px 14px 2px 18px !important
+            padding: calc(0.375em - 1px) 14px calc(0.375em - 1px) 18px !important;
+            height: auto !important;
+            line-height: 1.75em !important;
         }
     }
     .two-columns-dropdown {
@@ -208,7 +210,6 @@
     .upload-draggable {
         color: var(--tainacan-info-color);
         transition: color 0.2s background-color 0.2s;
-        border-radius: 0 !important;
         border-color: var(--tainacan-input-border-color);
         padding: 1.25em;
 

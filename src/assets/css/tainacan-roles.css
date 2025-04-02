@@ -15894,7 +15894,9 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
   width: 100%;
   border: 1px solid var(--tainacan-input-border-color) !important;
   border-radius: var(--tainacan-input-border-radius, 2px) !important;
-  padding: 2px 14px 2px 18px !important;
+  padding: calc(0.375em - 1px) 14px calc(0.375em - 1px) 18px !important;
+  height: auto !important;
+  line-height: 1.75em !important;
 }
 .tainacan-form .two-columns-dropdown > .dropdown-menu > .dropdown-content {
   display: flex;
@@ -15907,7 +15909,6 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
 .tainacan-form .upload-draggable {
   color: var(--tainacan-info-color);
   transition: color 0.2s background-color 0.2s;
-  border-radius: 0 !important;
   border-color: var(--tainacan-input-border-color);
   padding: 1.25em;
 }
@@ -16413,9 +16414,9 @@ button.link-style:focus button.link-style:active:hover {
   border-color: var(--tainacan-gray2) !important;
 }
 .button:not(.is-small):not(.is-medium):not(.is-large) {
-  height: 2.286em !important;
+  min-height: 2.286em !important;
   font-size: 0.875em !important;
-  line-height: 1.5em;
+  line-height: 1.75em;
 }
 
 kbd {
@@ -16828,6 +16829,48 @@ input[type=week].input[type=search]::-webkit-search-results-decoration {
 textarea.textarea,
 .textarea {
   line-height: 1.35em;
+  field-sizing: content;
+  transition: height 0.1s ease, max-height 0.2s ease;
+}
+textarea.textarea:focus, textarea.textarea:active,
+.textarea:focus,
+.textarea:active {
+  max-height: unset !important;
+}
+textarea.textarea[rows="1"],
+.textarea[rows="1"] {
+  min-height: 2lh;
+  max-height: 2lh;
+}
+textarea.textarea[rows="2"],
+.textarea[rows="2"] {
+  min-height: 3lh;
+  max-height: 3lh;
+}
+textarea.textarea[rows="3"],
+.textarea[rows="3"] {
+  min-height: 4lh;
+  max-height: 4lh;
+}
+textarea.textarea[rows="4"],
+.textarea[rows="4"] {
+  min-height: 5lh;
+  max-height: 5lh;
+}
+textarea.textarea[rows="5"],
+.textarea[rows="5"] {
+  min-height: 6lh;
+  max-height: 6lh;
+}
+textarea.textarea[rows="6"],
+.textarea[rows="6"] {
+  min-height: 7lh;
+  max-height: 7lh;
+}
+textarea.textarea[rows="7"],
+.textarea[rows="7"] {
+  min-height: 8lh;
+  max-height: 8lh;
 }
 
 .select {

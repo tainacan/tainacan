@@ -82,4 +82,40 @@ input[type="week"].input {
 textarea.textarea, 
 .textarea {
     line-height: 1.35em;
+    field-sizing: content;
+    transition: height 0.1s ease, max-height 0.2s ease;
+
+    &:focus,
+    &:active {
+        max-height: unset !important;
+    }
+
+    &[rows="1"] {
+        min-height: 2lh;
+        max-height: 2lh;
+    }
+    &[rows="2"] {
+        min-height: 3lh;
+        max-height: 3lh;
+    }
+    &[rows="3"] {
+        min-height: 4lh;
+        max-height: 4lh;
+    }
+    &[rows="4"] {
+        min-height: 5lh;
+        max-height: 5lh;
+    }
+    &[rows="5"] {
+        min-height: 6lh;
+        max-height: 6lh;
+    }
+    &[rows="6"] {
+        min-height: 7lh;
+        max-height: 7lh;
+    }
+    &[rows="7"] {
+        min-height: 8lh;
+        max-height: 8lh;
+    }
 }

@@ -99,9 +99,9 @@ button.link-style:active {
         border-color: var(--tainacan-gray2) !important;
     }
     &:not(.is-small):not(.is-medium):not(.is-large) {
-        height: 2.286em !important;
+        min-height: 2.286em !important;
         font-size: 0.875em !important;
-        line-height: 1.5em;
+        line-height: 1.75em;
     }
 }
 kbd {

@@ -26,7 +26,7 @@
     top:0;
     left: 0;
     height: 100dvh;
-    width: 100vw;
+    width: 100%;
 
     #wpcontent,
     #wpfooter {
@@ -41,7 +41,7 @@
         top: 0;
         left: 0;
         height: 100dvh;
-        width: 100vw;
+        width: 100%;
         --wp-admin--admin-bar--height: 0px;
 
         #tainacan-navigation-menu header h1 {
@@ -636,7 +636,7 @@
         margin-top: var(--tainacan-page-container-margin-top, 1rem);
         margin-left: var(--tainacan-page-container-margin-x, 0rem);
         margin-right: var(--tainacan-page-container-margin-x, 0rem);
-        padding: var(--tainacan-page-container-padding-y, 1rem) var(--tainacan-page-container-padding-x, var(--tainacan-one-column));
+        padding: var(--tainacan-page-container-padding-y, 1rem) var(--tainacan-page-container-padding-x, var(--tainacan-one-column)) 0 var(--tainacan-page-container-padding-x, var(--tainacan-one-column));
         box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px --tainacan-blue3);
         box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px color-mix(in srgb, var(--tainacan-blue3) 20%, transparent) );
         height: calc(100vh - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem) );

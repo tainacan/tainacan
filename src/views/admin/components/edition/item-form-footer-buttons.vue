@@ -109,7 +109,8 @@
                         <br>
                         <small 
                                 v-if="$statusHelper.hasDescription('draft')"
-                                class="is-small">
+                                class="is-small"
+                                style="margin-left: 2px;">
                             {{ $statusHelper.getDescription('draft') }}
                         </small>
                     </b-dropdown-item>
@@ -129,7 +130,8 @@
                         <br>
                         <small 
                                 v-if="$statusHelper.hasDescription('pending')"
-                                class="is-small">
+                                class="is-small"
+                                style="margin-left: 2px;">
                             {{ $statusHelper.getDescription('pending') }}
                         </small>
                     </b-dropdown-item>
@@ -149,7 +151,8 @@
                         <br>
                         <small 
                                 v-if="$statusHelper.hasDescription('private')"
-                                class="is-small">
+                                class="is-small"
+                                style="margin-left: 2px;">
                             {{ $statusHelper.getDescription('private') }}
                         </small>
                     </b-dropdown-item>
@@ -168,7 +171,8 @@
                         <br>
                         <small 
                                 v-if="$statusHelper.hasDescription('publish')"
-                                class="is-small">
+                                class="is-small"
+                                style="margin-left: 2px;">
                             {{ $statusHelper.getDescription('publish') }}
                         </small>
                     </b-dropdown-item>

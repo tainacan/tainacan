@@ -197,6 +197,8 @@ $radio-active-background-color: $black;
 $radio-size: 0.9375em;
 $checkbox-size: 0.875em;
 $checkbox-border-width: 1px;
+$textarea-max-height: 6lh;
+$textarea-min-height: 4lh;
 
 // A copy of bootstrap's screen reader only class to be used for accessibility.
 .sr-only {
@@ -226,4 +228,12 @@ $checkbox-border-width: 1px;
 .icon.is-large {
     height: 3em;
     width: 3em;
+}
+
+// Basic reset-like rule that appears in Bulma and must exist on other pages
+*, ::before, ::after {
+    box-sizing: inherit;
+}
+html {
+    overflow: hidden;
 }

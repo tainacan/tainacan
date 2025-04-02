@@ -2502,6 +2502,28 @@ export default {
             transition: bottom 0.5s ease, width 0.2s linear;
             box-shadow: 0px 0px 12px -8px var(--tainacan-black);
 
+            &::after,
+            &::before {
+                height: 18px;
+                width: 18px;
+                background: transparent;
+                display: block;
+                content: '';
+                position: absolute;
+            }
+            &::before {
+                left: 0;
+                top: -18px;
+                border-bottom-left-radius: 9px;
+                box-shadow: -9px 0px 0 0 var(--tainacan-gray1), inset 2px -2px 5px -3px var(--tainacan-gray2)
+            }
+            &::after {
+                right: 0;
+                top: -18px;
+                border-bottom-right-radius: 9px;
+                box-shadow: 9px 0px 0 0 var(--tainacan-gray1), inset -2px -2px 5px -3px var(--tainacan-gray2)
+            }
+
             @keyframes blink {
                 from { color: var(--tainacan-blue5); }
                 to { color: var(--tainacan-info-color); }

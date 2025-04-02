@@ -10,7 +10,7 @@
                 label-width="120px">
         
             <div class="columns is-multiline">
-                <div class="column is-half-widescreen is-full-desktop">
+                <div class="column is-7-widescreen is-full-desktop">
 
                     <!-- Name -------------------------------- --> 
                     <b-field 
@@ -54,24 +54,6 @@
                                 rows="4"
                                 :placeholder="$i18n.get('instruction_collection_description')"
                                 @focus="clearErrors('description')" />
-                    </b-field>
-
-                    <!-- Slug -------------------------------- --> 
-                    <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_slug')"
-                            :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''" 
-                            :message="isUpdatingSlug ? $i18n.get('info_validating_slug') : (editFormErrors['slug'] != undefined ? editFormErrors['slug'] : '')">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'slug')" 
-                                :message="$i18n.getHelperMessage('collections', 'slug')" />
-                        <b-input
-                                id="tainacan-text-slug"
-                                v-model="form.slug"
-                                :disabled="isUpdatingSlug"
-                                :loading="isUpdatingSlug"
-                                @update:model-value="updateSlug"
-                                @focus="clearErrors('slug')" />
                     </b-field>
 
                     <!-- Items list options ------------------------ -->
@@ -141,7 +123,7 @@
 
 
                             <label class="label">{{ $i18n.get('label_view_modes_public_list') }}</label>
-                            <div class="items-view-mode-options">
+                            <div class="two-thirds-layout-options items-view-mode-options">
 
                                 <!-- Enabled View Modes ------------------------------- --> 
                                 <div class="field">
@@ -410,6 +392,22 @@
                                         v-model="form.item_publication_label" />
                             </b-field>
 
+                             <!-- Slug editing ------------------------ --> 
+                             <b-field
+                                    :addons="false" 
+                                    :label="$i18n.getHelperTitle('collections', 'allow_item_slug_editing')">
+                                &nbsp;
+                                <b-switch
+                                        id="tainacan-checkbox-item-slug-editing" 
+                                        v-model="form.allow_item_slug_editing"
+                                        size="is-small" 
+                                        true-value="yes"
+                                        false-value="no" />
+                                <help-button 
+                                        :title="$i18n.getHelperTitle('collections', 'allow_item_slug_editing')" 
+                                        :message="$i18n.getHelperMessage('collections', 'allow_item_slug_editing')" />
+                            </b-field>
+
                             <!-- Author editing ------------------------ --> 
                             <b-field
                                     :addons="false" 
@@ -424,22 +422,6 @@
                                 <help-button 
                                         :title="$i18n.getHelperTitle('collections', 'allow_item_author_editing')" 
                                         :message="$i18n.getHelperMessage('collections', 'allow_item_author_editing')" />
-                            </b-field>
-
-                            <!-- Slug editing ------------------------ --> 
-                            <b-field
-                                    :addons="false" 
-                                    :label="$i18n.getHelperTitle('collections', 'allow_item_slug_editing')">
-                                &nbsp;
-                                <b-switch
-                                        id="tainacan-checkbox-item-slug-editing" 
-                                        v-model="form.allow_item_slug_editing"
-                                        size="is-small" 
-                                        true-value="yes"
-                                        false-value="no" />
-                                <help-button 
-                                        :title="$i18n.getHelperTitle('collections', 'allow_item_slug_editing')" 
-                                        :message="$i18n.getHelperMessage('collections', 'allow_item_slug_editing')" />
                             </b-field>
 
                             <!-- Comment Status ------------------------ --> 
@@ -590,32 +572,93 @@
                     </template>
 
                 </div>
-                <div class="column is-half-widescreen is-full-desktop">
+                <div class="column is-5-widescreen is-full-desktop">
 
-                    <!-- Status -------------------------------- --> 
-                    <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_status')"
-                            :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
-                            :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'status')" 
-                                :message="$i18n.getHelperMessage('collections', 'status')" />
-                        <div class="status-radios">
-                            <b-radio
-                                    v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
-                                    :key="index"
-                                    v-model="form.status"
-                                    :native-value="statusOption.slug">
-                                <span class="icon has-text-gray">
-                                    <i 
-                                            class="tainacan-icon tainacan-icon-18px"
-                                            :class="$statusHelper.getIcon(statusOption.slug)" />
-                                </span>
-                                {{ statusOption.name }}
-                            </b-radio>
-                        </div>
-                    </b-field>
+                    <div class="two-thirds-layout-options">
+
+                        <!-- Slug -------------------------------- --> 
+                        <b-field
+                                :addons="false" 
+                                :label="$i18n.get('label_slug')"
+                                :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''" 
+                                :message="isUpdatingSlug ? $i18n.get('info_validating_slug') : (editFormErrors['slug'] != undefined ? editFormErrors['slug'] : '')">
+                            <help-button 
+                                    :title="$i18n.getHelperTitle('collections', 'slug')" 
+                                    :message="$i18n.getHelperMessage('collections', 'slug')" />
+                            <b-input
+                                    id="tainacan-text-slug"
+                                    v-model="form.slug"
+                                    :disabled="isUpdatingSlug"
+                                    :loading="isUpdatingSlug"
+                                    @update:model-value="updateSlug"
+                                    @focus="clearErrors('slug')" />
+                        </b-field>
+
+                        <!-- Status -------------------------------- --> 
+                        <b-field
+                                :addons="false" 
+                                :label="$i18n.get('label_status')"
+                                :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
+                                :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
+                            <help-button
+                                    :title="$i18n.getHelperTitle('collections', 'status')"
+                                    :message="$i18n.getHelperMessage('collections', 'status')" />
+                            <b-dropdown
+                                    ref="item-edition-status-dropdown"
+                                    aria-role="list"
+                                    class="item-edition-status-dropdown"
+                                    position="is-bottom-left"
+                                    :triggers="[ 'click' ]"
+                                    :disabled="collection.status === 'auto-draft' || ( editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) )"
+                                    max-height="300px">
+                                <template #trigger>
+                                    <button 
+                                            :disabled="collection.status === 'auto-draft' || ( editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) )"
+                                            type="button"
+                                            class="button is-outlined"
+                                            :class="{ 'disabled': collection.status === 'auto-draft' || ( editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) ) }"
+                                            style="width: auto">
+                                        <span class="icon has-text-gray">
+                                            <i 
+                                                    class="tainacan-icon tainacan-icon-18px"
+                                                    :class="$statusHelper.getIcon(form.status)" />
+                                        </span>
+                                        <template v-if="form.status !== 'auto-draft' && $statusHelper.getStatuses().find(aStatusObject => aStatusObject.slug == form.status)">
+                                            {{ $statusHelper.getStatuses().find(aStatusObject => aStatusObject.slug == form.status).name }}
+                                        </template>
+                                        <template v-else-if="form.status === 'auto-draft'">
+                                            {{ $i18n.get('status_auto-draft') }}
+                                        </template>
+                                        <span 
+                                                style="margin-left: 0.5em;"
+                                                class="icon is-small">
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                        </span>
+                                    </button>
+                                </template>
+                                <b-dropdown-item 
+                                        v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
+                                        :key="index"
+                                        aria-role="listitem"
+                                        @click="form.status = statusOption.slug">
+                                    <span class="icon has-text-gray">
+                                        <i 
+                                                class="tainacan-icon tainacan-icon-18px"
+                                                :class="$statusHelper.getIcon(statusOption.slug)" />
+                                    </span>
+                                    {{ statusOption.name }}
+                                    <br>
+                                    <small 
+                                            v-if="$statusHelper.hasDescription(statusOption.slug)"
+                                            class="is-small"
+                                            style="margin-left: 2px;">
+                                        {{ $statusHelper.getDescription(statusOption.slug) }}
+                                    </small>
+                                </b-dropdown-item>
+                            </b-dropdown>
+                        </b-field>
+
+                    </div>  
 
                     <!-- Hook for extra Form options -->
                     <template v-if="hasBeginRightForm">  
@@ -626,7 +669,9 @@
                     </template>
 
                     <!-- Image thumbnail & Header Image -------------------------------- --> 
-                    <b-field :addons="false">
+                    <b-field 
+                            :addons="false"
+                            id="header-and-thumbnail-container">
                         <label class="label">
                             {{ $i18n.get('label_thumbnail') }} & {{ $i18n.get('label_header_image') }}
                             <help-button 
@@ -897,14 +942,14 @@
                 </p>
                 <div 
                         style="margin-left: auto;"
-                        class="control">
+                        class="control is-hidden-mobile">
                     <button
                             v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata') && !fromImporter"
                             id="button-submit-goto-metadata"
                             class="button is-secondary"
                             @click.prevent="onSubmit('metadata')">{{ $i18n.get('label_save_goto_metadata') }}</button>
                 </div>
-                <div class="control">
+                <div class="control is-hidden-mobile">
                     <button
                             v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata') && !fromImporter"
                             id="button-submit-goto-filter"
@@ -1728,14 +1773,41 @@ export default {
 
         &>div:not(.field) {
             -moz-column-count: 2;
-            -moz-column-gap: 0;
+            -moz-column-gap: 1.5em;
             -moz-column-rule: 1px solid var(--tainacan-gray1);
             -webkit-column-count: 2;
-            -webkit-column-gap: 0;
+            -webkit-column-gap: 1.5em;
             -webkit-column-rule: 1px solid var(--tainacan-gray1);
             column-count: 2;
             column-rule: 1px solid var(--tainacan-gray1);
             margin-bottom: 1.125rem;
+        }
+    }
+
+    #header-and-thumbnail-container {
+        @supports (contain: inline-size) {
+            container-type: inline-size;
+            container-name: headerandthumbnailfield; 
+        }
+
+        @container headerandthumbnailfield (max-width: 395px) {
+            .header-field .image-placeholder {
+                right: 18%;
+                top: 34%;
+            }
+            .thumbnail-field {
+                margin: 0px;
+                padding: 0px;
+
+                img,
+                :deep(.image-wrapper) {
+                    border: none;
+                }
+                .thumbnail-buttons-row {
+                    left: 61px;
+                    bottom: calc(1em + 0px);
+                }
+            }
         }
     }
 
@@ -1747,23 +1819,21 @@ export default {
             left: unset;
             right: 10%;
             top: 38%;
-            font-size: 1em;
+            font-size: 0.875em;
             font-weight: bold;
             z-index: 99;
             text-align: center;
             color: var(--tainacan-info-color);
-            
-            @media screen and (max-width: 1024px) {
-                font-size: 1.2em;
-            }
-            
         }
         .header-buttons-row {
             text-align: right;
             top: -15px;
             position: relative;
         }
-
+        .image,
+        img {
+            border-radius: 3px;
+        }
         &+.thumbnail-field {
             opacity: 1.0;
             transition: opacity 0.2s ease;
@@ -1785,10 +1855,14 @@ export default {
             padding: 10px;
             font-size: 0.8em;
         }
+        .image {
+            border-radius: 3px;
+        }
         img,
         :deep(.image-wrapper) {
             height: 146px;
             width: 146px;
+            border-radius: 3px;
             border: 6px solid var(--tainacan-background-color);
         }
         .image-placeholder {
@@ -1816,8 +1890,15 @@ export default {
     }
     .selected-cover-page {
         border: 1px solid var(--tainacan-gray2);
-        padding: 3px 8px;
+        padding: calc(0.57em - 1px) 8px;
         font-size: .875em;
+        height: auto;
+        line-height: 1em;
+        min-height: 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
         .span { vertical-align: middle;}
 
         .selected-cover-page-control {
@@ -1851,49 +1932,60 @@ export default {
         opacity: 0.7;
     }
     .status-radios {
+        flex-wrap: wrap;
         display: flex;
         margin: 5px 0;
 
+        .checkbox {
+            width: auto;
+        }
         .control-label {
             display: flex;
             align-items: center;
         }
     }
     .options-checkboxes {
-        display: flex;
-        margin: 5px 0;
-        flex-wrap: wrap;
+        display: grid;
+        margin: 5px 1px;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
         gap: 0.5rem;
         justify-content: space-between;
+        
         :deep(.b-checkbox.checkbox),
         :deep(.b-radio.radio) {
-            width: auto
-        }
-        .control-label {
-            display: flex;
-            align-items: center;
+            width: auto;
+
+            .control-label {
+                display: flex;
+                align-items: center;
+                white-space: normal;
+            }
         }
     }
-    .items-view-mode-options {
+    .two-thirds-layout-options {
         display: flex;
         column-gap: 1em !important;
 
-        &>.field:first-child {
-            width: 66.66%;
-            margin-right: 12px;
+        & > .field:first-child {
+            flex-basis: 75%;
+        }
+        & > .field:last-child {
+            flex-basis: 25%;
+        }
 
-            .dropdown-trigger>.button {
-                min-height: 35px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+        .dropdown-trigger>.button {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        @media screen and (max-width: 782px) {
+            flex-wrap: wrap;
+            margin-bottom: 1em;
+
+            & > .field {
+                flex-basis: 100% !important;
             }
-        }
-        &>.field:last-child {
-            width: 33.33%;
-        }
-
-        @media screen and (min-width: 1024px) {
             .dropdown-trigger>.button {
                 min-height: 40px;
             }
@@ -1940,6 +2032,28 @@ export default {
         align-items: center;
         transition: bottom 0.5s ease, width 0.2s linear;
         box-shadow: 0px 0px 12px -8px var(--tainacan-black);
+
+        &::after,
+        &::before {
+            height: 18px;
+            width: 18px;
+            background: transparent;
+            display: block;
+            content: '';
+            position: absolute;
+        }
+        &::before {
+            left: 0;
+            top: -18px;
+            border-bottom-left-radius: 9px;
+            box-shadow: -9px 0px 0 0 var(--tainacan-gray1), inset 2px -2px 5px -3px var(--tainacan-gray2)
+        }
+        &::after {
+            right: 0;
+            top: -18px;
+            border-bottom-right-radius: 9px;
+            box-shadow: 9px 0px 0 0 var(--tainacan-gray1), inset -2px -2px 5px -3px var(--tainacan-gray2)
+        }
 
         .footer-message {
             display: flex;

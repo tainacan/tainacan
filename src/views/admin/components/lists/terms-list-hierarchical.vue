@@ -939,7 +939,7 @@ export default {
         }
 
         ul {
-            max-height: calc(42vh - 20px - 0.7em);
+            max-height: calc(50vh - 20px - 0.7em);
             min-height: inherit;
             overflow-y: auto;
             overflow-x: hidden;

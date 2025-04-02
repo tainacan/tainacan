@@ -157,6 +157,7 @@
                                     aria-role="list"
                                     class="item-edition-status-dropdown"
                                     :triggers="[ 'click' ]"
+                                    :append-to-body="true"
                                     :disabled="item.status === 'auto-draft' || ( hasSomeError && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) )"
                                     style="width: auto;"
                                     max-height="300px">
@@ -203,7 +204,8 @@
                                     <br>
                                     <small 
                                             v-if="$statusHelper.hasDescription(statusOption.slug)"
-                                            class="is-small">
+                                            class="is-small"
+                                            style="margin-left: 2px;">
                                         {{ $statusHelper.getDescription(statusOption.slug) }}
                                     </small>
                                 </b-dropdown-item>

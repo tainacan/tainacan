@@ -185,7 +185,7 @@ export default {
 <style lang="scss" scoped>
 
     .search-and-selection-control {
-        margin: 0.25em 0 0.5em 0;
+        margin: 0 0 0.5em 0;
         padding: 0px;
         display: flex;
         align-items: center;
@@ -197,9 +197,6 @@ export default {
 
             .control {
                 margin: 0;
-            }
-            :deep(.input) {
-                height: 0.875em;
             }
             .input .icon .mdi::before {
                 color: var(--tainacan-input-color);
@@ -425,7 +422,7 @@ export default {
         }
 
         ul {
-            max-height: calc(42vh - 20px - 0.7em);
+            max-height: calc(50vh - 20px - 0.7em);
             min-height: inherit;
             overflow-y: auto;
             overflow-x: hidden;
