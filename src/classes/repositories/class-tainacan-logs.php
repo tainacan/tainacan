@@ -557,10 +557,20 @@ class Logs extends Repository {
 					$log->set_title( sprintf( __( 'Filter "%1$s" was added to the repository', 'tainacan'), $entity->get_name() ) );
 				}
 			} elseif ( is_numeric($collection_id) ) {
-				if ($this->current_action == 'update') {
-					$log->set_title( sprintf( __( 'Filter "%1$s" was updated in Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
-				} elseif ($this->current_action == 'create') {
-					$log->set_title( sprintf( __( 'Filter "%1$s" was added to Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				$collection = $entity->get_collection();
+
+				if ( $collection instanceof Entities\Collection ) {
+					if ($this->current_action == 'update') {
+						$log->set_title( sprintf( __( 'Filter "%1$s" was updated in Collection "%2$s"', 'tainacan'), $entity->get_name(), $collection->get_name() ) );
+					} elseif ($this->current_action == 'create') {
+						$log->set_title( sprintf( __( 'Filter "%1$s" was added to Collection "%2$s"', 'tainacan'), $entity->get_name(), $collection->get_name() ) );
+					}
+				} else {
+					if ($this->current_action == 'update') {
+						$log->set_title( sprintf( __( 'Filter "%1$s" was updated in unknown collection', 'tainacan'), $entity->get_name() ) );
+					} elseif ($this->current_action == 'create') {
+						$log->set_title( sprintf( __( 'Filter "%1$s" was added to unknown collection', 'tainacan'), $entity->get_name() ) );
+					}
 				}
 			}
 
@@ -573,10 +583,20 @@ class Logs extends Repository {
 					$log->set_title( sprintf( __( 'Metadatum "%1$s" was added to the repository', 'tainacan'), $entity->get_name() ) );
 				}
 			} elseif ( is_numeric($collection_id) ) {
-				if ($this->current_action == 'update') {
-					$log->set_title( sprintf( __( 'Metadatum "%s" was updated in Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
-				} elseif ($this->current_action == 'create') {
-					$log->set_title( sprintf( __( 'Metadatum "%1$s" was added to Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				$collection = $entity->get_collection();
+
+				if ( $collection instanceof Entities\Collection ) {
+					if ($this->current_action == 'update') {
+						$log->set_title( sprintf( __( 'Metadatum "%1$s" was updated in Collection "%2$s"', 'tainacan'), $entity->get_name(), $collection->get_name() ) );
+					} elseif ($this->current_action == 'create') {
+						$log->set_title( sprintf( __( 'Metadatum "%1$s" was added to Collection "%2$s"', 'tainacan'), $entity->get_name(), $collection->get_name() ) );
+					}
+				} else {
+					if ($this->current_action == 'update') {
+						$log->set_title( sprintf( __( 'Metadatum "%s" was updated in unknown collection', 'tainacan'), $entity->get_name() ) );
+					} elseif ($this->current_action == 'create') {
+						$log->set_title( sprintf( __( 'Metadatum "%1$s" was added to unknown collection', 'tainacan'), $entity->get_name() ) );
+					}
 				}
 			}
 
@@ -679,10 +699,20 @@ class Logs extends Repository {
 					$log->set_title( sprintf( __( 'Repository Filter "%1$s" was moved to trash', 'tainacan'), $entity->get_name() ) );
 				}
 			} elseif ( is_numeric($collection_id) ) {
-				if ($this->current_action == 'delete') {
-					$log->set_title( sprintf( __( 'Filter "%1$s" was permanently deleted from Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
-				} elseif ($this->current_action == 'trash') {
-					$log->set_title( sprintf( __( 'Filter "%1$s" was moved to trash in Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				$collection = $entity->get_collection();
+
+				if ( $collection instanceof Entities\Collection ) {
+					if ($this->current_action == 'delete') {
+						$log->set_title( sprintf( __( 'Filter "%1$s" was permanently deleted from Collection "%2$s"', 'tainacan'), $entity->get_name(), $collection->get_name() ) );
+					} elseif ($this->current_action == 'trash') {
+						$log->set_title( sprintf( __( 'Filter "%1$s" was moved to trash in Collection "%2$s"', 'tainacan'), $entity->get_name(), $collection->get_name() ) );
+					}
+				} else {
+					if ($this->current_action == 'delete') {
+						$log->set_title( sprintf( __( 'Filter "%1$s" was permanently deleted from unknown collection', 'tainacan'), $entity->get_name() ) );
+					} elseif ($this->current_action == 'trash') {
+						$log->set_title( sprintf( __( 'Filter "%1$s" was moved to trash in unknown collection', 'tainacan'), $entity->get_name() ) );
+					}
 				}
 			}
 
@@ -695,10 +725,20 @@ class Logs extends Repository {
 					$log->set_title( sprintf( __( 'Repository Metadatum "%1$s" was moved to trash', 'tainacan'), $entity->get_name() ) );
 				}
 			} elseif ( is_numeric($collection_id) ) {
-				if ($this->current_action == 'delete') {
-					$log->set_title( sprintf( __( 'Metadatum "%1$s" was permanently deleted from Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
-				} elseif ($this->current_action == 'trash') {
-					$log->set_title( sprintf( __( 'Metadatum "%1$s" was moved to trash in Collection "%2$s"', 'tainacan'), $entity->get_name(), $entity->get_collection()->get_name() ) );
+				$collection = $entity->get_collection();
+
+				if ( $collection instanceof Entities\Collection ) {
+					if ($this->current_action == 'delete') {
+						$log->set_title( sprintf( __( 'Metadatum "%1$s" was permanently deleted from Collection "%2$s"', 'tainacan'), $entity->get_name(), $collection->get_name() ) );
+					} elseif ($this->current_action == 'trash') {
+						$log->set_title( sprintf( __( 'Metadatum "%1$s" was moved to trash in Collection "%2$s"', 'tainacan'), $entity->get_name(), $collection->get_name() ) );
+					}
+				} else {
+					if ($this->current_action == 'delete') {
+						$log->set_title( sprintf( __( 'Metadatum "%1$s" was permanently deleted from unknown collection', 'tainacan'), $entity->get_name() ) );
+					} elseif ($this->current_action == 'trash') {
+						$log->set_title( sprintf( __( 'Metadatum "%1$s" was moved to trash in unknown collection', 'tainacan'), $entity->get_name() ) );
+					}
 				}
 			}
 
