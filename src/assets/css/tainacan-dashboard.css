@@ -59,6 +59,9 @@
   border: var(--tainacan-dashboard-card-border, none);
   margin-bottom: 2.5rem;
 }
+#tainacan-dashboard-app .postbox:has(+ .postbox.closed), #tainacan-dashboard-app .postbox:last-child {
+  margin-bottom: 1rem;
+}
 #tainacan-dashboard-app .postbox h1,
 #tainacan-dashboard-app .postbox h2,
 #tainacan-dashboard-app .postbox h3,

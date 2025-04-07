@@ -229,11 +229,3 @@ $textarea-min-height: 4lh;
     height: 3em;
     width: 3em;
 }
-
-// Basic reset-like rule that appears in Bulma and must exist on other pages
-*, ::before, ::after {
-    box-sizing: inherit;
-}
-html {
-    overflow: hidden;
-}

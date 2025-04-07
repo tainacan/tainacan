@@ -66,6 +66,11 @@
         border: var(--tainacan-dashboard-card-border, none);
         margin-bottom: 2.5rem;
 
+        &:has(+ .postbox.closed),
+        &:last-child {
+            margin-bottom: 1rem;
+        }
+
         h1,
         h2,
         h3,

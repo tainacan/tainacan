@@ -511,6 +511,28 @@
         justify-content: space-between;
         z-index: 2;
         font-size: 1.125em;
+
+        &::after,
+        &::before {
+            height: calc(2 * (var(--tainacan-modal-border-radius, 8px) + 2px ));
+            width: calc(2 * (var(--tainacan-modal-border-radius, 8px) + 2px ));
+            background: transparent;
+            display: block;
+            content: '';
+            position: absolute;
+        }
+        &::before {
+            left: 0;
+            top: calc(-2 * (var(--tainacan-modal-border-radius, 8px) + 2px ));
+            border-bottom-left-radius: calc(var(--tainacan-modal-border-radius, 8px) + 2px);
+            box-shadow: calc(-1 * (var(--tainacan-modal-border-radius, 8px) + 2px)) 0px 0 0 var(--tainacan-gray1);
+        }
+        &::after {
+            right: 0;
+            top: calc(-2 * (var(--tainacan-modal-border-radius, 8px) + 2px ));
+            border-bottom-right-radius: calc(var(--tainacan-modal-border-radius, 8px) + 2px);
+            box-shadow: calc(var(--tainacan-modal-border-radius, 8px) + 2px) 0px 0 0 var(--tainacan-gray1);
+        }
     }
 
 </style>

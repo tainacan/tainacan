@@ -45,14 +45,6 @@
   width: 3em;
 }
 
-*, ::before, ::after {
-  box-sizing: inherit;
-}
-
-html {
-  overflow: hidden;
-}
-
 /**
  * Tainacan Variables
  * 
@@ -471,6 +463,14 @@ html {
   }
 }
 
+*, ::before, ::after {
+  box-sizing: inherit;
+}
+
+html {
+  overflow: hidden;
+}
+
 /* Removal of some padding that would conflict on how we color the page background */
 .tainacan-pages-container #wpcontent {
   padding-left: 0;
@@ -576,6 +576,9 @@ html {
   font-size: 16px;
   background-color: var(--tainacan-admin-background-color);
   background-image: var(--tainacan-admin-background-image);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
   overflow: hidden;
 }
 #tainacan-page-container #tainacan-wordpress-shortcut {
@@ -733,6 +736,9 @@ html {
   padding: 1rem 0.75rem;
   background-color: var(--tainacan-admin-navigation-sidebar-background-color);
   background-image: var(--tainacan-admin-navigation-sidebar-background-image);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
   box-sizing: border-box;
 }
 #tainacan-page-container #tainacan-navigation-menu ul {
@@ -741,6 +747,15 @@ html {
 }
 #tainacan-page-container #tainacan-navigation-menu ul li {
   margin: 0px 0px 6px 0px;
+}
+#tainacan-page-container #tainacan-navigation-menu ul li:not(:has(.icon)) {
+  margin-left: 0.75rem;
+  padding-left: 1.125rem;
+  border-left: 1px dashed var(--tainacan-admin-navigation-sidebar-separator-color);
+  border-left: 1px dashed color-mix(in srgb, var(--tainacan-admin-navigation-sidebar-separator-color) 50%, transparent);
+}
+#tainacan-page-container #tainacan-navigation-menu ul li:not(:has(.icon)) a {
+  font-weight: 400;
 }
 @media (min-width: 769px) {
   #tainacan-page-container #tainacan-navigation-menu.is-collapsed {
