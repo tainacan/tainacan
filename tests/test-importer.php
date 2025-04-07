@@ -438,20 +438,21 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		$file = fopen($file_name, 'w');
 
 		// save the column headers
-		fputcsv($file, array('Column 1', 'special_ID', 'Column 3', 'special_attachments', 'special_document'));
+		fputcsv($file, array('Column 1', 'special_ID', 'Column 3', 'special_attachments', 'special_document', 'special_thumbnail'));
 
 		// Sample data
 		$data = array(
-			array('Data 11', '456', 'Data 13||TESTE', 'https://www.w3schools.com/w3css/img_lights.jpg', 'text:Vou dormir mais tarde'),
-			array('Data 21', '457', 'Data 23', 'photos/unnamed.jpg', 'url:https://www.youtube.com/watch?v=V8dpmD4HG5s&start_radio=1&list=RDEMZS6OrHEAut8dOA38mVtVpg'),
+			array('Data 11', '456', 'Data 13||TESTE', 'https://www.w3schools.com/w3css/img_lights.jpg', 'text:Vou dormir mais tarde', 'https://www.w3schools.com/w3css/img_lights.jpg'),
+			array('Data 21', '457', 'Data 23', 'photos/unnamed.jpg', 'url:https://www.youtube.com/watch?v=V8dpmD4HG5s&start_radio=1&list=RDEMZS6OrHEAut8dOA38mVtVpg', ''),
 			array(
 				'Data 31', 
 				'458', 
 				mb_convert_encoding( 'Data 33||Rééço', 'ISO-8859-1', 'UTF-8' ), 
 				'https://www.codeproject.com/KB/GDI-plus/ImageProcessing2/img.jpg||https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/58f72418-b5ee-4765-8e80-e463623a921d/01-httparchive-opt-small.png', 
-				'file:https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg'),
-			array('Data 41', '459', 'Data 43||limbbo', 'photos/SamplePNGImage_100kbmb.png||audios/SampleAudio_0.4mb.mp3', 'url:http://www.pdf995.com/samples/pdf.pdf'),
-			array('Data 51', '500', 'Data 53', 'https://upload.wikimedia.org/wikipedia/commons/7/7b/Space_station_Penyulap.ogv', '')
+				'file:https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg',
+				'https://images.pexels.com/photos/15074398/pexels-photo-15074398.jpeg?cs=srgb&dl=pexels-stijn-dijkstra-1306815-15074398.jpg&fm=jpg&w=640&h=960&_gl=1*1q91sx8*_ga*MTc3MjYzMTQ3Mi4xNzQ0MDM4NjQ4*_ga_8JE65Q40S6*MTc0NDAzODY0OC4xLjEuMTc0NDAzODY1OC4wLjAuMA..'),
+			array('Data 41', '459', 'Data 43||limbbo', 'photos/SamplePNGImage_100kbmb.png||audios/SampleAudio_0.4mb.mp3', 'url:http://www.pdf995.com/samples/pdf.pdf','photos/unnamed.jpg'),
+			array('Data 51', '500', 'Data 53', 'https://upload.wikimedia.org/wikipedia/commons/7/7b/Space_station_Penyulap.ogv', '', '')
 		);
 
 		// save each row of the data
@@ -476,6 +477,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
 		$this->assertEquals( $importer_instance->get_option('attachment_index'), 3 );
 		$this->assertEquals( $importer_instance->get_option('document_index'), 4 );
+		$this->assertEquals( $importer_instance->get_option('thumbnail_index'), 5 );
 
 		// inserting the collection
 		$collection = $this->tainacan_entity_factory->create_entity(
@@ -548,6 +550,9 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		$document_id = $items[0]->get_document();
 		$this->assertFalse( is_numeric($document_id) );
 
+		$thumbnail_id = $items[0]->get__thumbnail_id();
+		$this->assertFalse( is_numeric($thumbnail_id) );
+
 		$attachments = $items[0]->get_attachments();
 
 		if(@file_get_contents ( 'https://www.w3schools.com/w3css/img_lights.jpg' ))
@@ -558,6 +563,11 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		if(@file_get_contents ( 'https://www.codeproject.com/KB/GDI-plus/ImageProcessing2/img.jpg' ))
 			$this->assertTrue( is_numeric($document_id) );
 
+		$thumbnail_id = $items[2]->get__thumbnail_id();
+
+		if (@file_get_contents ( 'https://images.pexels.com/photos/15074398/pexels-photo-15074398.jpeg?cs=srgb&dl=pexels-stijn-dijkstra-1306815-15074398.jpg&fm=jpg&w=640&h=960&_gl=1*1q91sx8*_ga*MTc3MjYzMTQ3Mi4xNzQ0MDM4NjQ4*_ga_8JE65Q40S6*MTc0NDAzODY0OC4xLjEuMTc0NDAzODY1OC4wLjAuMA..' ))
+			$this->assertTrue( is_numeric($thumbnail_id) );
+		
 		$document = $items[3]->get_document();
 		$this->assertTrue( wp_http_validate_url($document) !== false );
 

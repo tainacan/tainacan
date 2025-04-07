@@ -46,9 +46,16 @@ class CSV extends Importer {
 						} else if ($rawColumn === 'special_document|REPLACE') {
 							$this->set_option('document_import_mode', 'replace');
 							$this->set_option('document_index', $index);
-						} else if ( $rawColumn === 'special_attachments' ||
-											 $rawColumn === 'special_attachments|APPEND' ||
-											 $rawColumn === 'special_attachments|REPLACE' ) {
+						} else if ( $rawColumn === 'special_thumbnail' ) {
+							$this->set_option('thumbnail_index', $index);
+						} else if ($rawColumn === 'special_thumbnail|REPLACE') {
+							$this->set_option('thumbnail_import_mode', 'replace');
+							$this->set_option('thumbnail_index', $index);
+						} else if (
+							$rawColumn === 'special_attachments' ||
+							$rawColumn === 'special_attachments|APPEND' ||
+							$rawColumn === 'special_attachments|REPLACE'
+						) {
 							$this->set_option('attachment_index', $index);
 							$attachment_type = explode('|', $rawColumn);
 							$this->set_option('attachment_operation_type', sizeof($attachment_type)==2?$attachment_type[1]:'APPEND');
@@ -93,9 +100,9 @@ class CSV extends Importer {
 				foreach( $rawColumns as $index => $rawColumn ) {
 					if ( strpos($rawColumn,'special_') === 0 ) {
 						if ( in_array( $rawColumn, [
-							'special_document', 'special_attachments', 'special_item_status',
+							'special_document', 'special_thumbnail', 'special_attachments', 'special_item_status',
 							'special_item_id', 'special_comment_status', 'special_attachments|APPEND',
-							'special_attachments|REPLACE', 'special_document|REPLACE',
+							'special_attachments|REPLACE', 'special_document|REPLACE', 'special_thumbnail|REPLACE',
 							'special_item_author', 'special_item_slug'
 						] ) ) {
 							$columns[] = $rawColumn;
@@ -236,6 +243,7 @@ class CSV extends Importer {
 			}
 		}
 		if ( !empty( $this->get_option('document_index') ) ) $processedItem['special_document'] = '';
+		if ( !empty( $this->get_option('thumbnail_index') ) ) $processedItem['special_thumbnail'] = '';
 		if ( !empty( $this->get_option('attachment_index') ) ) $processedItem['special_attachments'] = '';
 		if ( !empty( $this->get_option('item_status_index') ) ) $processedItem['special_item_status'] = '';
 		if ( !empty( $this->get_option('item_author_id_index') ) ) $processedItem['special_item_author'] = '';
@@ -251,13 +259,14 @@ class CSV extends Importer {
 	 */
 	public function after_inserted_item( $inserted_item, $collection_index ) {
 		$column_document = $this->get_option('document_index');
+		$column_thumbnail = $this->get_option('thumbnail_index');
 		$column_attachment = $this->get_option('attachment_index');
 		$column_item_status = $this->get_option('item_status_index');
 		$column_item_slug = $this->get_option('special_item_slug_index');
 		$column_item_author_id = $this->get_option('item_author_id_index');
 		$column_item_comment_status = $this->get_option('item_comment_status_index');
 
-		if ( !empty($column_document) || !empty( $column_attachment ) || 
+		if ( !empty($column_document) || !empty($column_thumbnail) || !empty( $column_attachment ) || 
 			 !empty( $column_item_status ) || !empty( $column_item_comment_status ) ||
 			 !empty( $column_item_slug ) || !empty( $column_item_author_id )
 			){
@@ -276,6 +285,10 @@ class CSV extends Importer {
 				$values = $this->handle_enclosure( $file );
 			} else {
 				$values = fgetcsv($file, 0, $this->get_option('delimiter'));
+			}
+
+			if ( is_array($values) && !empty($column_thumbnail) ) {
+				$this->handle_thumbnail( $values[$column_thumbnail], $inserted_item);
 			}
 
 			if ( is_array($values) && !empty($column_document) ) {
@@ -525,7 +538,7 @@ class CSV extends Importer {
 	}
 
 	/**
-	 * method responsible to insert the item document
+	 * Method responsible to insert the item document
 	 */
 	private function handle_document($column_value, $item_inserted) {
 		$TainacanMedia = \Tainacan\Media::get_instance();
@@ -601,7 +614,56 @@ class CSV extends Importer {
 	}
 
 	/**
-	 * method responsible to insert the item document
+	 * Method responsible to insert the item thumbnail
+	 */
+	private function handle_thumbnail($column_value, $item_inserted) {
+		$TainacanMedia = \Tainacan\Media::get_instance();
+		$this->items_repo->disable_logs();
+
+		//removing the old item thumbnail
+		if ( $this->get_option('thumbnail_import_mode') === 'replace' ) {
+			$this->add_log('Item Thumbnail will be replaced ... ');
+			wp_delete_attachment($item_inserted->get__thumbnail_id(), true);
+			$this->add_log('Deleted previous Item Thumbnail ... ');
+		}
+
+		if (isset(parse_url($column_value)['scheme'] )) {
+			$id = $TainacanMedia->insert_attachment_from_url($column_value);
+
+			if (!$id){
+				$this->add_error_log('Error in Thumbnail file imported from URL ' . $column_value);
+				return false;
+			}
+
+			$item_inserted->set__thumbnail_id( $id );
+			$this->add_log('Thumbnail file URL imported from ' . $column_value);
+
+			if ( $item_inserted->validate() ) {
+				$item_inserted = $this->items_repo->update($item_inserted);
+			}
+		} else {
+			$server_path_files = trailingslashit($this->get_option('server_path'));
+			$id = $TainacanMedia->insert_attachment_from_file($server_path_files . $column_value);
+
+			if (!$id) {
+				$this->add_error_log('Error in Thumbnail file imported from server ' . $server_path_files . $column_value);
+				return false;
+			}
+
+			$item_inserted->set__thumbnail_id( $id );
+			$this->add_log('Thumbnail file in Server imported from ' . $column_value);
+
+			if ( $item_inserted->validate() ) {
+				$item_inserted = $this->items_repo->update($item_inserted);
+			}
+		}
+
+		$this->items_repo->enable_logs();
+		return true;
+	}
+
+	/**
+	 * Method responsible to insert the item attachments
 	 */
 	private function handle_attachment( $column_value, $item_inserted) {
 		$TainacanMedia = \Tainacan\Media::get_instance();
@@ -807,10 +869,13 @@ class CSV extends Importer {
 		if ( is_array( $processed_item ) ) {
 			foreach ( $processed_item as $metadatum_source => $values ) {
 
-				if ($metadatum_source == 'special_document' ||
-					 $metadatum_source == 'special_attachments' ||
-					 $metadatum_source == 'special_item_status' ||
-					 $metadatum_source == 'special_comment_status') {
+				if (
+					$metadatum_source == 'special_document' ||
+					$metadatum_source == 'special_thumbnail' ||
+					$metadatum_source == 'special_attachments' ||
+					$metadatum_source == 'special_item_status' ||
+					$metadatum_source == 'special_comment_status'
+				) {
 					$special_columns = true;
 					continue;
 				}
