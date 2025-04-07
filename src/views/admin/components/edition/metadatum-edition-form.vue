@@ -569,6 +569,7 @@
 <style lang="scss" scoped>
 
     form#metadatumEditForm {
+        font-size: 1.125em;
 
         .options-columns>section {
             -moz-column-count: 2;
@@ -670,7 +671,6 @@
         display: flex;
         justify-content: space-between;
         z-index: 2;
-        font-size: 1.125em;
 
         &::after,
         &::before {

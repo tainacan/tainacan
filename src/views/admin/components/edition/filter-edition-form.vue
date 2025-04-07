@@ -464,7 +464,7 @@ export default {
         border-top: 1px solid var(--tainacan-gray2);
         border-bottom: 1px solid var(--tainacan-gray2);
         margin-top: 1.0em;
-        font-size: 1.1em;
+        font-size: 1.125em;
 
         .options-columns {
             -moz-column-count: 2;

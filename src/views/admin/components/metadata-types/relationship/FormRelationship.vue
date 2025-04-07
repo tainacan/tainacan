@@ -26,6 +26,10 @@
                     {{ option.name }}
                 </option>
             </b-select>
+            <p 
+                    v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
+                    class="help" 
+                    v-html="$i18n.getWithVariables( 'info_manage_collections', [ $routerHelper.getAbsoluteAdminPath() + $routerHelper.getCollectionsPath() ] )" />
         </b-field>
 
         <transition name="fade">

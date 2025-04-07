@@ -1111,7 +1111,9 @@ return apply_filters( 'tainacan-i18n', [
 	'info_publication_data_editing'                  => __( 'You may tweak some of the options available here in the collection settings.', 'tainacan' ),
 	/* translators: The first string is the sorting direction (order) and will be an noun such as 'ascending'. The second one will be the metadata name (orderby). */
 	'info_sorting_%s_by_%s'				 			 => __( 'Sorting <em>%1$s</em> by <em>%2$s</em>.', 'tainacan' ),		
-	
+	'info_manage_collections'						 => __( 'Manage which are available in the <a href="%s">collections list</a> page.', 'tainacan' ),
+	'info_manage_taxonomies'						 => __( 'Manage which are available in the <a href="%s">taxonomies list</a> page.', 'tainacan' ),
+
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
 	'action_update'					=> __( 'General Updates', 'tainacan'),

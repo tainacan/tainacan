@@ -47,6 +47,7 @@ function handleMenuCollapses() {
 function handleDynamicMenusAndBreadcrumbs() {
 
     if ( wp && wp.hooks ) {
+        const tainacanNavigationMenu = document.getElementById('tainacan-navigation-menu');
         const tainacanRepositoryLinks = document.getElementById( 'tainacan_admin' );
         const tainacanCollectionLinks = document.getElementById( 'tainacan_collection_links' );
         const tainacanBreadcrumbsList = document.getElementById( 'tainacan-breadcrumbs-list' );
@@ -87,8 +88,10 @@ function handleDynamicMenusAndBreadcrumbs() {
                     });
 
                     if ( isSomeRepositoryLinkActive ) {
-                        tainacanRepositoryLinks.parentNode.classList.add('is-open');
                         tainacanCollectionLinks.parentNode.classList.remove('is-open');
+
+                        if ( !tainacanNavigationMenu.classList.contains('is-collapsed') )
+                            tainacanRepositoryLinks.parentNode.classList.add('is-open');
                     }
 
                     const collectionLinkElements = tainacanCollectionLinks.querySelectorAll( 'a' );
@@ -116,7 +119,9 @@ function handleDynamicMenusAndBreadcrumbs() {
                     
                     if ( isSomeCollectionLinkActive ) {
                         tainacanRepositoryLinks.parentNode.classList.remove('is-open');
-                        tainacanCollectionLinks.parentNode.classList.add('is-open');
+
+                        if ( !tainacanNavigationMenu.classList.contains('is-collapsed') )
+                            tainacanCollectionLinks.parentNode.classList.add('is-open');
                     }
                     
                     if ( currentRoute.params.collectionId && collection ) {
@@ -283,24 +288,24 @@ function handleUITweakButtons() {
     const tainacanMenuToggler = document.getElementById('tainacan-menu-toggler');
     const tainacanMenuCollapser = document.getElementById('tainacan-menu-collapser');
     const tainacanFullscreenToggler = document.getElementById('tainacan-fullscreen-toggler');
-    const tainacanAdminMenu = document.getElementById('tainacan-navigation-menu');
+    const tainacanNavigationMenu = document.getElementById('tainacan-navigation-menu');
 
-    if ( tainacanMenuToggler && tainacanMenuCollapser && tainacanAdminMenu ) {
+    if ( tainacanMenuToggler && tainacanMenuCollapser && tainacanNavigationMenu ) {
 
         tainacanMenuToggler.addEventListener( 'click', function() {
 
-            const isToggled = tainacanAdminMenu.classList.contains('is-active');
+            const isToggled = tainacanNavigationMenu.classList.contains('is-active');
 
-            tainacanAdminMenu.classList.toggle('is-active');
+            tainacanNavigationMenu.classList.toggle('is-active');
             tainacanMenuToggler.ariaPressed = '' + isToggled;
 
         } );
 
         tainacanMenuCollapser.addEventListener( 'click', function() {
 
-            const isCollapsed = !tainacanAdminMenu.classList.contains('is-collapsed');
+            const isCollapsed = !tainacanNavigationMenu.classList.contains('is-collapsed');
 
-            tainacanAdminMenu.classList.toggle('is-collapsed');
+            tainacanNavigationMenu.classList.toggle('is-collapsed');
             tainacanMenuCollapser.ariaPressed = '' + isCollapsed;
 
             let currentUserPrefs = JSON.parse(tainacan_user.prefs);

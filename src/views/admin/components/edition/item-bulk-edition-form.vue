@@ -493,12 +493,34 @@ export default {
             left: 0;
             box-shadow: 0px 0px 12px -8px var(--tainacan-black);
 
-            .form-submission-footer {    
-                .button {
-                    margin-left: 16px;
-                    margin-right: 6px;
-                }
+            &::after,
+            &::before {
+                height: 18px;
+                width: 18px;
+                background: transparent;
+                display: block;
+                content: '';
+                position: absolute;
             }
+            &::before {
+                left: 0;
+                top: -18px;
+                border-bottom-left-radius: 9px;
+                box-shadow: -9px 0px 0 0 var(--tainacan-gray1), inset 2px -2px 5px -3px var(--tainacan-gray2)
+            }
+            &::after {
+                right: 0;
+                top: -18px;
+                border-bottom-right-radius: 9px;
+                box-shadow: 9px 0px 0 0 var(--tainacan-gray1), inset -2px -2px 5px -3px var(--tainacan-gray2)
+            }
+
+            // .form-submission-footer {    
+            //     .button {
+            //         margin-left: 16px;
+            //         margin-right: 6px;
+            //     }
+            // }
         }
     }
 

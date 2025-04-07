@@ -939,29 +939,16 @@ html {
 #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children {
   position: relative;
 }
-@media (prefers-reduced-motion: no-preference) {
-  #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children > ul {
-    transition-property: display, opacity, max-height;
-    transition-duration: 0.5s;
-    transition-timing-function: ease-in-out;
-  }
-}
 #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children.is-open ul {
-  display: block;
   visibility: visible;
   max-height: 100vh;
   opacity: 1;
 }
-@starting-style {
-  #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children.is-open ul {
-    max-height: 0;
-    opacity: 0.75;
-  }
-}
 #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children:not(.is-open) > ul {
-  display: none;
+  margin: 0;
   visibility: hidden;
-  max-height: 0;
+  opacity: 0;
+  max-height: 0px;
   overflow: clip;
 }
 #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children button {
@@ -988,6 +975,9 @@ html {
   transform: rotateX(0deg);
 }
 #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul {
+  transition-property: opacity, max-height;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in-out;
   border-left: 1px dashed var(--tainacan-admin-navigation-sidebar-separator-color);
   border-left: 1px dashed color-mix(in srgb, var(--tainacan-admin-navigation-sidebar-separator-color) 50%, transparent);
   margin: 0.5em 0 1em 0.75rem;

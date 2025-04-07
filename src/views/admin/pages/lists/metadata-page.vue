@@ -360,6 +360,7 @@ export default {
                         bottom: 1px;
                     }
                     .icon {
+                        width: 1.75em;
                         bottom: 1px;   
                         position: relative;
                         i, i:before { font-size: 1.25em; }
