@@ -1,6 +1,17 @@
 const { __ } = wp.i18n;
 
-const { Button, ButtonGroup, BaseControl, Placeholder, SelectControl, RangeControl, ToggleControl, PanelBody } = wp.components;
+const { 
+    Button, 
+    ButtonGroup,
+    __experimentalToggleGroupControl: ToggleGroupControl,
+	__experimentalToggleGroupControlOption: ToggleGroupControlOption,
+    BaseControl,
+    Placeholder,
+    SelectControl,
+    RangeControl,
+    ToggleControl,
+    PanelBody
+} = wp.components;
 
 const ServerSideRender = wp.serverSideRender;
 const { InspectorControls, useBlockProps, store } = wp.blockEditor;
@@ -306,26 +317,48 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                         <BaseControl
                                 id="lightbox-color-scheme"
                                 label={ __('Background color scheme', 'tainacan') }>
-                            <ButtonGroup id="lightbox-color-scheme">   
-                                <Button 
-                                        onClick={ () => {
-                                                lightboxHasLightBackground = false;
-                                                setAttributes({ lightboxHasLightBackground: lightboxHasLightBackground });
+                            { tainacan_blocks.wp_version >= '6.8' ?
+                                <ToggleGroupControl
+                                        __next40pxDefaultSize
+                                        __nextHasNoMarginBottom
+                                        isBlock
+                                        id="lightbox-color-scheme"
+                                        onChange={ ( newLightboxHasLightBackground ) => {
+                                            setAttributes({ lightboxHasLightBackground: newLightboxHasLightBackground === 'true' });
+                                        } }
+                                        value={ lightboxHasLightBackground ? 'true' : 'false' }
+                                >
+                                    <ToggleGroupControlOption
+                                        label={ __('Dark', 'tainacan') }
+                                        value="false"
+                                    />
+                                    <ToggleGroupControlOption
+                                        label={ __('Light', 'tainacan') }
+                                        value="true"
+                                    />
+                                </ToggleGroupControl>
+                                :
+                                <ButtonGroup id="lightbox-color-scheme">   
+                                    <Button 
+                                            onClick={ () => {
+                                                    lightboxHasLightBackground = false;
+                                                    setAttributes({ lightboxHasLightBackground: lightboxHasLightBackground });
+                                                }
                                             }
-                                        }
-                                        variant={ lightboxHasLightBackground ? 'secondary' : 'primary' }>
-                                    { __('Dark', 'tainacan') }
-                                </Button>
-                                <Button 
-                                        onClick={ () => {
-                                                lightboxHasLightBackground = true;
-                                                setAttributes({ lightboxHasLightBackground: lightboxHasLightBackground });
+                                            variant={ lightboxHasLightBackground ? 'secondary' : 'primary' }>
+                                        { __('Dark', 'tainacan') }
+                                    </Button>
+                                    <Button 
+                                            onClick={ () => {
+                                                    lightboxHasLightBackground = true;
+                                                    setAttributes({ lightboxHasLightBackground: lightboxHasLightBackground });
+                                                }
                                             }
-                                        }
-                                        variant={ lightboxHasLightBackground ? 'primary' : 'secondary' }>
-                                    { __('Light', 'tainacan') }
-                                </Button>
-                            </ButtonGroup>
+                                            variant={ lightboxHasLightBackground ? 'primary' : 'secondary' }>
+                                        { __('Light', 'tainacan') }
+                                    </Button>
+                                </ButtonGroup>
+                            }
                         </BaseControl>
                         <ToggleControl
                             label={__('Hide file name', 'tainacan')}
