@@ -59,12 +59,32 @@
         }
     }
 
+    @keyframes tainacanDashboardCardAppear {
+        0% {
+            transform: translateY(32px);
+            opacity: 0;
+        }
+        100% {
+            transform: translateY(0);
+            opacity: 1;
+        }   
+    }
+
+    @for $i from 1 through 4 {
+        @for $j from 1 through 4 {
+            .postbox-container:nth-child(#{$i}) .postbox:nth-child(#{$j}) {
+                animation-duration: (($i * 0.1) + $j * .1s);
+            }
+        }
+    }
+
     .postbox {
         background-color: var(--tainacan-dashboard-card-background, var(--tainacan-white));
         border-radius: var(--tainacan-dashboard-card-border-radius, 16px);
         box-shadow:  var(--tainacan-dashboard-card-box-shadow, 0px 0px 8px 0px #1A2D5B33);
         border: var(--tainacan-dashboard-card-border, none);
         margin-bottom: 2.5rem;
+        animation: tainacanDashboardCardAppear 0.2s ease-in;
 
         &:has(+ .postbox.closed),
         &:last-child {
@@ -233,7 +253,7 @@
         }
     }
 
-    .postbox-container:has(.empty-container) + .postbox-container:has(.empty-container) {
+    .postbox-container:has(.empty-container) + .postbox-container:has(.meta-box-sortables:empty) {
         display: none;
         visibility: hidden;
     }

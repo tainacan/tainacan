@@ -3,11 +3,10 @@
 .table-container {
     padding: 0 var(--tainacan-one-column);
     position: relative;
-    margin-bottom: 40px;
 
     .table-wrapper {
         width: 100%;
-        height: calc(100% - 40px);
+        height: 100%;
         border-collapse: separate;
         overflow-x: auto;
         overflow-y: hidden;
