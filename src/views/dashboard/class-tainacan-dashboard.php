@@ -55,7 +55,7 @@ class Dashboard extends Pages {
 				'tainacan-dashboard-repository-card',
 				'tainacan-dashboard-collections-card',
 				'tainacan-dashboard-info-card',
-				'tainacan-dashboard-collection-card-267'
+				// 'tainacan-dashboard-collection-card-267' // Temporary example of collection card
 			)
 		);
 		

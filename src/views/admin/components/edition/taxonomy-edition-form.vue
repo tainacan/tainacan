@@ -65,8 +65,8 @@
                                     @focus="clearErrors('description')" />
                         </b-field>
 
-                         <!-- Slug -------------------------------- -->
-                         <b-field
+                        <!-- Slug -------------------------------- -->
+                        <b-field
                                 :addons="false"
                                 :label="$i18n.get('label_slug')"
                                 :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''"
@@ -83,7 +83,7 @@
                                     @focus="clearErrors('slug')" />
                         </b-field>
 
-                            <!-- Status -------------------------------- --> 
+                        <!-- Status -------------------------------- --> 
                         <b-field
                                 :addons="false" 
                                 :label="$i18n.get('label_status')"

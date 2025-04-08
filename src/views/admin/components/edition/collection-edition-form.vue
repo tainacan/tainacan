@@ -392,8 +392,8 @@
                                         v-model="form.item_publication_label" />
                             </b-field>
 
-                             <!-- Slug editing ------------------------ --> 
-                             <b-field
+                            <!-- Slug editing ------------------------ --> 
+                            <b-field
                                     :addons="false" 
                                     :label="$i18n.getHelperTitle('collections', 'allow_item_slug_editing')">
                                 &nbsp;
@@ -670,8 +670,8 @@
 
                     <!-- Image thumbnail & Header Image -------------------------------- --> 
                     <b-field 
-                            :addons="false"
-                            id="header-and-thumbnail-container">
+                            id="header-and-thumbnail-container"
+                            :addons="false">
                         <label class="label">
                             {{ $i18n.get('label_thumbnail') }} & {{ $i18n.get('label_header_image') }}
                             <help-button 
