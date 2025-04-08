@@ -37,7 +37,8 @@
                         <td
                                 class="column-default-width column-main-content"
                                 :label="$i18n.get('label_name')"
-                                :aria-label="$i18n.get('label_name') + ': ' + capability.display_name">
+                                :aria-label="$i18n.get('label_name') + ': ' + capability.display_name"
+                                @click="openCapabilitiyEditModal(index)">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -56,7 +57,8 @@
                         <td
                                 class="table-creation column-large-width"
                                 :label="$i18n.get('label_description')"
-                                :aria-label="$i18n.get('label_description') + ': ' + capability.description">
+                                :aria-label="$i18n.get('label_description') + ': ' + capability.description"
+                                @click="openCapabilitiyEditModal(index)">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -78,7 +80,8 @@
                                 <td
                                         class="table-creation column-small-width"
                                         :label="$i18n.get('label_associated_roles')"
-                                        :aria-label="$i18n.get('label_associated_roles') + ': ' + props['complete-roles-list']">
+                                        :aria-label="$i18n.get('label_associated_roles') + ': ' + props['complete-roles-list']"
+                                        @click="openCapabilitiyEditModal(index)">
                                     <p
                                             v-tooltip="{
                                                 delay: {

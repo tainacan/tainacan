@@ -1078,13 +1078,6 @@
         padding-right: 0;
     }
 
-    .uploaded-files {
-        display: flex;
-        flex-flow: wrap;
-        margin-left: -15px;
-        margin-right: -15px;
-    }
-
     .thumbnail-field {
 
         .content {

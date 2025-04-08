@@ -559,6 +559,11 @@
             img {
                 position: relative;
             }
+            .image,
+            img,
+            .image-placeholder {
+                border-radius: 3px;
+            }
             .image-placeholder {
                 position: absolute;
                 margin-left: auto;

@@ -183,14 +183,15 @@
 
     .table-container {
         width: 100%;
+        padding: 0 0.75em 0 1.875em;
     }
     .uploaded-files {
         display: flex;
         flex-wrap: wrap;
+        gap: 10px 12px;
 
         .file-item-container {
             display: inline-block;
-            margin: 10px 12px;
             position: relative;
 
             &:hover .file-item-control {
