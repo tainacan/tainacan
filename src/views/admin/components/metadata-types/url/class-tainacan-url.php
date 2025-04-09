@@ -98,7 +98,16 @@ class URL extends Metadata_Type {
 		}
 		$return .= $link_as_button ? '</div>' : '';
 
-		return $return;
+		return 
+			/**
+			 * Filter the HTML representation of the value of a url metadatum
+			 * 
+			 * @param string $return The HTML representation of the value
+			 * @param \Tainacan\Entities\Item_Metadata_Entity $item_metadata The Item_Metadata_Entity object
+			 * 
+			 * @return string The HTML representation of the item metadatum value
+			 */
+			apply_filters( 'tainacan-item-metadata-get-value-as-html--type-url', $return, $item_metadata );
 	}
 
 	/**
@@ -199,7 +208,16 @@ class URL extends Metadata_Type {
 			$return .= $value;	
 		}
 
-		return strip_tags($return);
+		return 
+			/**
+			 * Filter the STRING representation of the value of a url metadatum
+			 * 
+			 * @param string $return The STRING representation of the value
+			 * @param \Tainacan\Entities\Item_Metadata_Entity $item_metadata The Item_Metadata_Entity object
+			 * 
+			 * @return string The STRING representation of the item metadatum value
+			 */
+			apply_filters( 'tainacan-item-metadata-get-value-as-string--type-url', strip_tags($return), $item_metadata );
 	}
 
 	/**

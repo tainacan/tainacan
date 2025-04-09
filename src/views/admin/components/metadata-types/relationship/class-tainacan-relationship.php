@@ -203,7 +203,9 @@ class Relationship extends Metadata_Type {
 
 	/**
 	 * Return the value of an Item_Metadata_Entity using a metadatum of this metadatum type as an html string
-	 * @param  Item_Metadata_Entity $item_metadata 
+	 * 
+	 * @param Item_Metadata_Entity $item_metadata 
+	 * 
 	 * @return string The HTML representation of the value, containing one or multiple items names, linked to the item page
 	 */
 	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
@@ -212,6 +214,7 @@ class Relationship extends Metadata_Type {
 		$display_metas = $this->get_option('display_related_item_metadata');
 		
 		$return = '';
+
 		if ( $item_metadata->is_multiple() ) {
 			$prefix = $item_metadata->get_multivalue_prefix();
 			$suffix = $item_metadata->get_multivalue_suffix();
@@ -240,10 +243,20 @@ class Relationship extends Metadata_Type {
 				// item not found 
 			}
 		}
-		if(!empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 && $return !== '') {
-			return "<div class='tainacan-relationship-group'>{$return}</div>";
+		if ( !empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 && $return !== '' ) {
+			$return = "<div class='tainacan-relationship-group'>{$return}</div>";
 		}
-		return $return;
+
+		return 
+			/**
+			 * Filter the HTML representation of the value of a relationship metadatum
+			 * 
+			 * @param string $return The HTML representation of the value
+			 * @param \Tainacan\Entities\Item_Metadata_Entity $item_metadata The Item_Metadata_Entity object
+			 * 
+			 * @return string The HTML representation of the item metadatum value
+			 */
+			apply_filters( 'tainacan-item-metadata-get-value-as-html--type-relationship', $return, $item_metadata );
 	}
 
 	private function can_display_item($item) {
@@ -315,11 +328,23 @@ class Relationship extends Metadata_Type {
 	}
 
 	private function get_item_thumbnail($thumbnail_id, $item) {
-		if($thumbnail_id !== false && !empty($thumbnail_id)){
-			return \wp_get_attachment_image($thumbnail_id, 'tainacan-small');
+
+		$thumbnail_image_size = 
+			/**
+			 * Filter the image size of the thumbnail to be displayed
+			 * 
+			 * @param string $thumbnail_image_size The image size to be used
+			 * 
+			 * @return string The image size to be used
+			 */
+			apply_filters('tainacan-item-metadata-relationship-get-item-thumbnail', 'tainacan-small');
+
+		if ( $thumbnail_id !== false && !empty($thumbnail_id) ) {
+			return \wp_get_attachment_image($thumbnail_id, $thumbnail_image_size);
 		}
 		$media_type = $item->get_document_mimetype();
-		$placeholder_image = '<img src="' . \tainacan_get_the_mime_type_icon($media_type, 'tainacan-small') . '" />';
+		$placeholder_image = '<img src="' . \tainacan_get_the_mime_type_icon($media_type, $thumbnail_image_size) . '" />';
+		
 		return $placeholder_image;
 	}
 

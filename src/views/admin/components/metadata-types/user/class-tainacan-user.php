@@ -152,16 +152,31 @@ class User extends Metadata_Type {
 	 */
 	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
 		$values = $item_metadata->get_value();
-		if (empty($values))
-			return "";
-		$values = is_array($values) ? $values: [$values];
-		$response = [];
-		$multivalue_separator = $item_metadata->get_multivalue_separator();
-		foreach($values as $value) {
-			$name = get_the_author_meta( 'display_name', $value );
-			$response[] = apply_filters("tainacan-item-get-author-name", $name, $this);
+		
+		$return = '';
+
+		if ( !empty($values) ) {
+			$values = is_array($values) ? $values: [$values];
+			$response = [];
+			$multivalue_separator = $item_metadata->get_multivalue_separator();
+			
+			foreach($values as $value) {
+				$name = get_the_author_meta( 'display_name', $value );
+				$response[] = apply_filters("tainacan-item-get-author-name", $name, $this);
+			}
+			$return = implode($multivalue_separator, $response);
 		}
-		return implode($multivalue_separator, $response);
+
+		return 
+			/**
+			 * Filter the HTML representation of the value of a user metadatum
+			 * 
+			 * @param string $return The HTML representation of the value
+			 * @param \Tainacan\Entities\Item_Metadata_Entity $item_metadata The Item_Metadata_Entity object
+			 * 
+			 * @return string The HTML representation of the item metadatum value
+			 */
+			apply_filters( 'tainacan-item-metadata-get-value-as-html--type-user', $return, $item_metadata );
 	}
 	
 }

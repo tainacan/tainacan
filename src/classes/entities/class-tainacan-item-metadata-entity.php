@@ -174,7 +174,16 @@ class Item_Metadata_Entity extends Entity {
 			$return = (string) $value;
 		}
 
-		return $return;
+		return 
+			/**
+			 * Filter the item metadatum value as HTML
+			 * 
+			 * @param string $return the item metadatum value HTML string 
+			 * @param Item_Metadata_Entity $this the item metadatum entity
+			 * 
+			 * @return string the item metadatum value HTML string 
+			 */
+			apply_filters( 'tainacan-item-metadata-get-value-as-html', $return, $this );
 	}
 
 	/**
@@ -191,7 +200,17 @@ class Item_Metadata_Entity extends Entity {
 				}
 			}
 		}
-		return strip_tags($this->get_value_as_html());
+		
+		return 
+			/**
+			 * Filter the item metadatum value as string
+			 * 
+			 * @param string $return the item metadatum value string 
+			 * @param Item_Metadata_Entity $this the item metadatum entity
+			 * 
+			 * @return string the item metadatum value string 
+			 */
+			apply_filters( 'tainacan-item-metadata-get-value-as-string', strip_tags($this->get_value_as_html()), $this );
 	}
 	
 	/**
