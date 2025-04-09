@@ -1095,6 +1095,8 @@ return apply_filters( 'tainacan-i18n', [
 	'info_comment_status' 							 => __( 'Allow or disallow users to write comments in the item public page.', 'tainacan' ),
 	'info_publication_data'                          => __( 'This section gathers information related to the item publication on the website.', 'tainacan' ),
 	'info_publication_data_editing'                  => __( 'You may tweak some of the options available here in the collection settings.', 'tainacan' ),
+	'info_error_date_smaller_than_min_%s'			 => __( 'Date should be after %s.', 'tainacan' ),
+	'info_error_date_greater_than_max_%s'			 => __( 'Date should be before %s.', 'tainacan' ),
 
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
