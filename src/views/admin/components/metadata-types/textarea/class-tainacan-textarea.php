@@ -55,23 +55,36 @@ class Textarea extends Metadata_Type {
 	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
 		$value = $item_metadata->get_value();
 		$return = '';
+
 		if ( $item_metadata->is_multiple() ) {
 			$total = sizeof($value);
 			$count = 0;
 			$prefix = $item_metadata->get_multivalue_prefix();
 			$suffix = $item_metadata->get_multivalue_suffix();
 			$separator = $item_metadata->get_multivalue_separator();
+
 			foreach ( $value as $el ) {
 				$return .= $prefix;
 				$return .= nl2br($this->make_clickable_links($el));
 				$return .= $suffix;
 				$count ++;
+
 				if ($count < $total)
 					$return .= $separator;
 			}
 		} else {
 			$return = nl2br($this->make_clickable_links($value));
 		}
-		return force_balance_tags($return);
+
+		return 
+			/**
+			 * Filter the HTML representation of the value of a textarea metadatum
+			 * 
+			 * @param string $return The HTML representation of the value
+			 * @param \Tainacan\Entities\Item_Metadata_Entity $item_metadata The Item_Metadata_Entity object
+			 * 
+			 * @return string The HTML representation of the item metadatum value
+			 */
+			apply_filters( 'tainacan-item-metadata-get-value-as-html--type-textarea', force_balance_tags($return), $item_metadata );
 	}
 }

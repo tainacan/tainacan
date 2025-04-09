@@ -354,47 +354,58 @@ class Taxonomy extends Metadata_Type {
 	
 	/**
 	 * Return the value of an Item_Metadata_Entity using a metadatum of this metadatum type as an html string
-	 * @param  Item_Metadata_Entity $item_metadata
+	 * 
+	 * @param Item_Metadata_Entity $item_metadata
 	 * @return string The HTML representation of the value, containing one or multiple terms, separated by comma, linked to term page
 	 */
 	public function get_value_as_html(Item_Metadata_Entity $item_metadata) {
 		$value = $item_metadata->get_value();
+		
 		$return = '';
 
-		if ( !isset($value) )
-			return $return;
-		
-		if ( $item_metadata->is_multiple() ) {
-			$count = 1;
-			$total = sizeof($value);
-			$prefix = $item_metadata->get_multivalue_prefix();
-			$suffix = $item_metadata->get_multivalue_suffix();
-			$separator = $item_metadata->get_multivalue_separator();
+		if ( isset($value) ) {
 
-			foreach ( $value as $term ) {
-				$count++;
+			if ( $item_metadata->is_multiple() ) {
+				$count = 1;
+				$total = sizeof($value);
+				$prefix = $item_metadata->get_multivalue_prefix();
+				$suffix = $item_metadata->get_multivalue_suffix();
+				$separator = $item_metadata->get_multivalue_separator();
 
-				if ( is_integer($term) ) {
-					$term = \Tainacan\Repositories\Terms::get_instance()->fetch($term, $this->get_option('taxonomy_id'));
-				}
+				foreach ( $value as $term ) {
+					$count++;
 
-				if ( $term instanceof \Tainacan\Entities\Term ) {
-					$return .= $prefix;
-					$return .= $this->get_term_hierarchy_html($term, $item_metadata->get_item());
-					$return .= $suffix;
+					if ( is_integer($term) ) {
+						$term = \Tainacan\Repositories\Terms::get_instance()->fetch($term, $this->get_option('taxonomy_id'));
+					}
 
-					if ( $count <= $total ) {
-						$return .= $separator;
+					if ( $term instanceof \Tainacan\Entities\Term ) {
+						$return .= $prefix;
+						$return .= $this->get_term_hierarchy_html($term, $item_metadata->get_item());
+						$return .= $suffix;
+
+						if ( $count <= $total ) {
+							$return .= $separator;
+						}
 					}
 				}
-			}
-		} else {
-			if ( $value instanceof \Tainacan\Entities\Term ) {
-				$return .= $this->get_term_hierarchy_html($value, $item_metadata->get_item());
+			} else {
+				if ( $value instanceof \Tainacan\Entities\Term ) {
+					$return .= $this->get_term_hierarchy_html($value, $item_metadata->get_item());
+				}
 			}
 		}
 
-		return $return;
+		return 
+			/**
+			 * Filter the HTML representation of the value of a taxonomy metadatum
+			 * 
+			 * @param string $return The HTML representation of the value
+			 * @param \Tainacan\Entities\Item_Metadata_Entity $item_metadata The Item_Metadata_Entity object
+			 * 
+			 * @return string The HTML representation of the item metadatum value
+			 */
+			apply_filters( 'tainacan-item-metadata-get-value-as-html--type-taxonomy', $return, $item_metadata );
 	}
 
 	private function get_term_hierarchy_html( \Tainacan\Entities\Term $term, \Tainacan\Entities\Item $item = null) {

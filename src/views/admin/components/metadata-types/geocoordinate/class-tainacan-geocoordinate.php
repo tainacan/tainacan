@@ -98,31 +98,45 @@ class GeoCoordinate extends Metadata_Type {
 
 	/**
 	 * Return the value of an Item_Metadata_Entity using a metadatum of this metadatum type as a string
-	 * @param  Item_Metadata_Entity $item_metadata 
+	 * 
+	 * @param Item_Metadata_Entity $item_metadata 
 	 * @return string The String representation of the value, containing one or multiple items names, linked to the item page
 	 */
 	public function get_value_as_string(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
 		$value = $item_metadata->get_value();
 
 		$return = '';
+
 		if ( $item_metadata->is_multiple() ) {
 			$prefix = $item_metadata->get_multivalue_prefix();
 			$suffix = $item_metadata->get_multivalue_suffix();
 			$separator = $item_metadata->get_multivalue_separator();
 			$total = count($value);
 			$count = 0;
+
 			foreach ($value as $v) {
 				$return .= $prefix;
 				$return .= (string) $v;
 				$return .= $suffix;
 				$count ++;
+			
 				if ($count < $total)
 					$return .= $separator;
 			}
 		} else {
 			$return = (string) $value;
 		}
-		return $return;
+
+		return 
+		/**
+		 * Filter the STRING representation of the value of a geocoordinate metadatum
+		 * 
+		 * @param string $return The STRING representation of the value
+		 * @param \Tainacan\Entities\Item_Metadata_Entity $item_metadata The Item_Metadata_Entity object
+		 * 
+		 * @return string The STRING representation of the item metadatum value
+		 */
+		apply_filters( 'tainacan-item-metadata-get-value-as-string--type-geocoordinate', $return, $item_metadata );
 	}
 
 	
@@ -135,67 +149,77 @@ class GeoCoordinate extends Metadata_Type {
 		$value = $item_metadata->get_value();
 		$options = $this->get_options();
 
-		if ( 
-			( is_string( $value ) && empty( $value ) ) ||
-			( is_array( $value ) && !count( $value ) )
-		)
-			return '';
-
-		$metadatum = $item_metadata->get_metadatum();
-		$item_metadatum_id = $metadatum->get_id();
-		$item_metadatum_id .= ( $metadatum->get_parent() && $item_metadata->get_parent_meta_id() ) ? ( '_parent_meta_id-' . $item_metadata->get_parent_meta_id() ) : '';
-		$zoom_geo_query = isset($options['initial_zoom']) ? ('z=' . $options['initial_zoom'] ) : '' ;
-
 		$return = '';
 
-		if ( $item_metadata->is_multiple() ) {
-			$prefix = $item_metadata->get_multivalue_prefix();
-			$suffix = $item_metadata->get_multivalue_suffix();
-			$separator = $item_metadata->get_multivalue_separator();
-			
-			foreach ( $value as $coordinate ) {
+		if ( 
+			!( is_string( $value ) && empty( $value ) ) &&
+			!( is_array( $value ) && !count( $value ) )
+		) {
+			$metadatum = $item_metadata->get_metadatum();
+			$item_metadatum_id = $metadatum->get_id();
+			$item_metadatum_id .= ( $metadatum->get_parent() && $item_metadata->get_parent_meta_id() ) ? ( '_parent_meta_id-' . $item_metadata->get_parent_meta_id() ) : '';
+			$zoom_geo_query = isset($options['initial_zoom']) ? ('z=' . $options['initial_zoom'] ) : '' ;
 
-				$coordinate_as_array = explode(",", $coordinate);
+			if ( $item_metadata->is_multiple() ) {
+				$prefix = $item_metadata->get_multivalue_prefix();
+				$suffix = $item_metadata->get_multivalue_suffix();
+				$separator = $item_metadata->get_multivalue_separator();
+				
+				foreach ( $value as $coordinate ) {
+
+					$coordinate_as_array = explode(",", $coordinate);
+					$latitude = isset($coordinate_as_array[0]) ? $coordinate_as_array[0] : '';
+					$longitude = isset($coordinate_as_array[1]) ? $coordinate_as_array[1] : '';
+
+					$single_value = "<a class='tainacan-coordinates' data-latitude='{$latitude}' data-longitude='{$longitude}' href='geo:{$latitude},{$longitude}?q={$latitude},{$longitude}&{$zoom_geo_query}'>
+										<span>{$latitude}</span>
+										<span class='coordinates-separator'>,</span>
+										<span>{$longitude}</span>
+									</a>";
+					$return .= empty($return)
+						? $prefix . $single_value . $suffix
+						: $separator . $prefix . $single_value . $suffix;
+				}
+
+			} else {
+				$coordinate_as_array = explode(",", $value);
 				$latitude = isset($coordinate_as_array[0]) ? $coordinate_as_array[0] : '';
 				$longitude = isset($coordinate_as_array[1]) ? $coordinate_as_array[1] : '';
 
-				$single_value = "<a class='tainacan-coordinates' data-latitude='{$latitude}' data-longitude='{$longitude}' href='geo:{$latitude},{$longitude}?q={$latitude},{$longitude}&{$zoom_geo_query}'>
-									<span>{$latitude}</span>
-									<span class='coordinates-separator'>,</span>
-									<span>{$longitude}</span>
-								</a>";
-				$return .= empty($return)
-					? $prefix . $single_value . $suffix
-					: $separator . $prefix . $single_value . $suffix;
+				$return .= "<a class='tainacan-coordinates' data-latitude='{$latitude}' data-longitude='{$longitude}' href='geo:{$latitude},{$longitude}?q={$latitude},{$longitude}&{$zoom_geo_query}'>
+								<span>{$latitude}</span>
+								<span class='coordinates-separator'>,</span>
+								<span>{$longitude}</span>
+							</a>";
 			}
+			
+			wp_enqueue_style( 'tainacan-geocoordinate-item-metadatum', $TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-geocoordinate-item-metadatum.css', array(), TAINACAN_VERSION);
 
-		} else {
-			$coordinate_as_array = explode(",", $value);
-			$latitude = isset($coordinate_as_array[0]) ? $coordinate_as_array[0] : '';
-			$longitude = isset($coordinate_as_array[1]) ? $coordinate_as_array[1] : '';
+			$options_as_strings = '';
+			foreach ( $options as $option_key => $option ) {
+				if ( is_array($option) )
+					$options_as_strings .= 'data-' . $option_key . '="' . json_encode($option) . '" ';
+				else if ( $option_key == 'attribution' )
+					$options_as_strings .= 'data-' . $option_key . '="' . htmlentities($option) . '" ';
+				else
+					$options_as_strings .= 'data-' . $option_key . '="' . $option . '" ';
+			};
 
-			$return .= "<a class='tainacan-coordinates' data-latitude='{$latitude}' data-longitude='{$longitude}' href='geo:{$latitude},{$longitude}?q={$latitude},{$longitude}&{$zoom_geo_query}'>
-							<span>{$latitude}</span>
-							<span class='coordinates-separator'>,</span>
-							<span>{$longitude}</span>
-						</a>";
+			$return = '<span id="tainacan-geocoordinatemetadatum--' . $item_metadatum_id . '" data-module="geocoordinate-item-metadatum" ' . $options_as_strings . '>
+				' . $return . '
+			</span>';
 		}
-		
-		wp_enqueue_style( 'tainacan-geocoordinate-item-metadatum', $TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-geocoordinate-item-metadatum.css', array(), TAINACAN_VERSION);
 
-		$options_as_strings = '';
-		foreach ( $options as $option_key => $option ) {
-			if ( is_array($option) )
-				$options_as_strings .= 'data-' . $option_key . '="' . json_encode($option) . '" ';
-			else if ( $option_key == 'attribution' )
-				$options_as_strings .= 'data-' . $option_key . '="' . htmlentities($option) . '" ';
-			else
-				$options_as_strings .= 'data-' . $option_key . '="' . $option . '" ';
-		};
-
-		return '<span id="tainacan-geocoordinatemetadatum--' . $item_metadatum_id . '" data-module="geocoordinate-item-metadatum" ' . $options_as_strings . '>
-					' . $return . '
-				</span>';
+		return 
+			/**
+			 * Filter the HTML representation of the value of a geocoordinate metadatum
+			 * 
+			 * @param string $return The HTML representation of the value
+			 * @param \Tainacan\Entities\Item_Metadata_Entity $item_metadata The Item_Metadata_Entity object
+			 * 
+			 * @return string The HTML representation of the item metadatum value
+			 */
+			apply_filters( 'tainacan-item-metadata-get-value-as-html--type-geocoordinate', $return, $item_metadata );
 	}
 
 	public function get_options_as_html() {
