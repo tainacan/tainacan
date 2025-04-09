@@ -399,6 +399,7 @@
     import FormTaxonomy from '../metadata-types/taxonomy/FormTaxonomy.vue';
     import FormSelectbox from '../metadata-types/selectbox/FormSelectbox.vue';
     import FormNumeric from '../metadata-types/numeric/FormNumeric.vue';
+    import FormDate from '../metadata-types/date/FormDate.vue';
     import FormUser from '../metadata-types/user/FormUser.vue';
     import FormGeoCoordinate from '../metadata-types/geocoordinate/FormGeoCoordinate.vue';
     import FormUrl from '../metadata-types/url/FormUrl.vue';
@@ -412,6 +413,7 @@
             'tainacan-form-taxonomy': FormTaxonomy,
             'tainacan-form-selectbox': FormSelectbox,
             'tainacan-form-numeric': FormNumeric,
+            'tainacan-form-date': FormDate,
             'tainacan-form-user': FormUser,
             'tainacan-form-geocoordinate': FormGeoCoordinate,
             'tainacan-form-url': FormUrl
