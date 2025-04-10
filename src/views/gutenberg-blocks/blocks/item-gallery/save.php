@@ -6,7 +6,7 @@
  * a Swiper.js carousel and slider, with a PhotoSwipe.js 
  * lightbox
  */
-function tainacan_blocks_render_items_gallery( $block_attributes, $content ) {
+function tainacan_blocks_render_item_gallery( $block_attributes, $content ) {
 	$block_attributes['isBlock'] = true;
 	$template_mode = isset($block_attributes['templateMode']) ? $block_attributes['templateMode'] : false;
 	$collection_id = isset($block_attributes['collectionId']) ? $block_attributes['collectionId'] : false;
