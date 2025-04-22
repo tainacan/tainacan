@@ -10,6 +10,7 @@ class Dashboard extends Pages {
     }
 	private $vue_component_page_slug = 'tainacan_admin';
 	private $tainacan_dashboard_cards = [];
+	private $disabled_cards = [];
 
 	function add_admin_menu() {
 		// Main Page, Dashboard
@@ -19,7 +20,7 @@ class Dashboard extends Pages {
 			'read',
 			$this->get_page_slug(),
 			array( &$this, 'render_page' ),
-			'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iNC40bW0iIGhlaWdodD0iNC4zbW0iIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDE3LjUxIDE3LjU1NCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CjxtZXRhZGF0YT4KPHJkZjpSREY+CjxjYzpXb3JrIHJkZjphYm91dD0iIj4KPGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+CjxkYzp0eXBlIHJkZjpyZXNvdXJjZT0iaHR0cDovL3B1cmwub3JnL2RjL2RjbWl0eXBlL1N0aWxsSW1hZ2UiLz4KPC9jYzpXb3JrPgo8L3JkZjpSREY+CjwvbWV0YWRhdGE+CjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC03NS45MTEgLTExOC44OSkiPgo8ZyB0cmFuc2Zvcm09Im1hdHJpeCguMzUyNzggMCAwIC0uMzUyNzggOTIuMjg3IDEzMy45NCkiIGZpbGw9IiNmZmYiPgo8cGF0aCBkPSJtMCAwYy0xZS0zIC0xZS0zIC0yZS0zIC0yZS0zIC0yZS0zIC0zZS0zIC0xZS0zIC0xZS0zIC0xZS0zIC0yZS0zIC0yZS0zIC00ZS0zIC0yLjQwNi01LjEyNC04Ljk4NC02LjAzOC0xOC4xNjgtMS43MzggMC41NjIgMi43MDcgMS4xNzMgNi4zMTggMS4yNzEgOC44NjUgMWUtMyA2ZS0zIDAgMC4wMSAwIDAuMDE2IDIuODE0IDEuODE5IDUuNzI0IDQuMDk2IDguNjM4IDYuOTQzLTAuMTI2IDAuMDY5LTAuMTA0IDAuMDU4IDAgMCA3LjY3Mi00LjE2OCAxMC40ODYtOS4zNDYgOC4yNjMtMTQuMDc5bS0xMC44MTMgMTUuMzQ2cy0xZS0zIDAtMWUtMyAxZS0zYy0yLjA2NS0xLjk5Mi00LjEwNi0zLjY3My02LjA4NS01LjA5Mi0wLjA3OSAyLjM3Mi0wLjM1IDQuOTY5LTAuOTExIDcuNzU5IDIuMjE0LTAuNjczIDQuNTUxLTEuNTQ3IDYuOTk2LTIuNjY3IDAuMDUxIDAuMDQ5IDAuMDM2IDAuMDM1IDAgMCAwLTFlLTMgMWUtMyAtMWUtMyAxZS0zIC0xZS0zbS0xMS4xNCAxNS4xMWM2LjcxIDYuMjA0IDEyLjczMSA3LjI0MiAxNi41MjYgMy40NTkgMWUtMyAwIDJlLTMgLTFlLTMgM2UtMyAtMmUtM3MxZS0zIC0yZS0zIDJlLTMgLTNlLTNjMy44MDktMy43OTUgMi43NzMtOS44NDctMy40NjMtMTYuNjA0LTAuMDMtMC4wMzMtMC4wMzctMC4wMzkgMCAwLTAuMDM4IDAuMDE4LTMuNjM2IDEuODg4LTkuNTc3IDMuNTMzLTAuNDQ2IDIuNDY1LTMuMDY3IDguOTk0LTMuNDkxIDkuNjE3bTIuNjEyLTIxLjg0NmMtMy4yMzktMi4wNC02LjI1OS0zLjM5NS04Ljg3Ni00LjI5Ny0wLjkzNiAwLjcyMS0xLjgwNCAxLjQ0NS0yLjYxIDIuMTY1djFlLTNjLTEuMzQxIDEuMzEtMi43MiAyLjgzNC00LjA5IDQuNjA0IDAuOTA1IDIuNjQzIDIuMjcgNS42OTEgNC4zMjcgOC45NjIgMi44MjYgMC4yMjEgMTAuMDA3LTEuMTM5IDEwLjAyNi0xLjI3OCAwLjIwOS0wLjAzMSAxLjM2Ni03LjI3OSAxLjIyMy0xMC4xNTdtLTEuMTQ3LTkuMjA3Yy0wLjMwNC0wLjAyNS00LjA1IDIuMDcxLTUuMzUgMy4xODl2MWUtM2MyLjAxIDAuNzYxIDYuMzczIDIuOTkyIDYuMzczIDIuOTkyczdlLTMgNGUtMyAwLjAxIDZlLTNjMC01ZS0zIC0wLjYwNy00LjIxMS0xLjAzMy02LjE4OG0tMTYuMjA1IDMuMTMzYzAuMDU5IDEuMDU2IDAuMjQgMi45MTkgMC44MzYgNS4zNTIgMC42MzktMC43NzUgMy43MDQtMy44MjYgNC40OTYtNC41MDUtMi40MTMtMC41OTctNC4yNjctMC43ODItNS4zMzItMC44NDdtLTMuMjEyIDE2LjM4M2MyLjAyOCAwLjQzNSA0LjU2OCAwLjkwOCA2LjMwOCAxLjAzMiAwIDFlLTMgMWUtMyAyZS0zIDFlLTMgM2UtMyAwLTFlLTMgLTFlLTMgLTJlLTMgLTFlLTMgLTNlLTMgLTEuMjkyLTIuMjQ2LTIuMjk4LTQuNDEtMy4wODEtNi40NDEtMS4xIDEuNjE2LTMuMjIxIDUuMzk4LTMuMjI3IDUuNDA5bTAuNTkgMjAuNTg0IDJlLTMgMmUtMyAzZS0zIDFlLTNjNC43ODggMi4yMzQgMTAuMDE1LTAuNjc0IDE0LjE4NS04LjUzMy0yLjgyOC0yLjg2Ny01LjEtNS43My02LjkyMS04LjUwMSAwLTFlLTMgMC0yZS0zIC0xZS0zIC0yZS0zIDFlLTMgMCAxZS0zIDFlLTMgMWUtMyAyZS0zIC0yLjU4MS0wLjA3OC01LjgyNy0wLjc0My04Ljk5Mi0xLjI2NS00LjQ0MSA5LjM5Ni0zLjQxNyAxNS44OTkgMS43MjMgMTguMjk2bTE4LjAxNy0xNy45OTNjLTIuNzU1IDAuNTY3LTUuMzIyIDAuODUzLTcuNjcyIDAuOTQ2IDEuNDA5IDEuOTcgMy4wNzUgNCA1LjA0NiA2LjA1My00ZS0zIDhlLTMgMS45NjYtNC43ODUgMi42MjYtNi45OTltMTQuOTA5LTUuNDkzYzYuOTY2IDcuODI1IDcuNjYyIDE0Ljc1OCAyLjg1NSAxOS41OTJsLTZlLTMgNmUtM2MtNC44MTIgNC44MzgtMTEuOTY5IDQuMDkyLTE5LjYyOS0yLjc2NnYtMWUtMyAxZS0zYy00Ljc2NSA4LjYwOC0xMS4wNiAxMS41ODItMTcuMTA4IDguNzgxbC00ZS0zIC0yZS0zYy0xZS0zIDAtM2UtMyAtMWUtMyAtNGUtMyAtMmUtMyAtOC4xNTItMy40MTgtOC45OTYtMTQuODI2IDIuNDgzLTMxLjQxNmgxZS0zYy0xZS0zIDAtMWUtMyAtMWUtMyAtMWUtMyAtMWUtMyAtMS40MDMtNC43NDctMS41OTItOC40NDgtMS41OTYtMTAuMjY1IDEuNzk0LTVlLTMgNS41MDUgMC4xNjUgMTAuMjggMS41NTEgMTguNzA5LTEyLjcyNCAyOC40MjgtOS4zNDMgMzEuMzI1LTIuNTkyIDAgMWUtMyAxZS0zIDJlLTMgMmUtMyA0ZS0zIDAgMWUtMyAxZS0zIDNlLTMgMmUtMyA0ZS0zIDIuODIyIDYuMDExLTAuMzY2IDEyLjY3OC04LjYgMTcuMTA2IiBmaWxsPSIjZmZmIi8+CjwvZz4KPC9nPgo8L3N2Zz4K'
+			'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iNC40bW0iIGhlaWdodD0iNC4zbW0iIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDE3LjUxIDE3LjU1NCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxucz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KPG1ldGFkYXRhPgo8cmRmOlJERj4KPGNjOldvcmsgcmRmOmFib3V0PSIiPgo8ZGM6Zm9ybWF0PmltYWdlL3N2Zyt4bWw8L2RjOmZvcm1hdD4KPGRjOnR5cGUgcmRmOnJlc291cmNlPSJodHRwOi8vcHVybC5vcmcvZGMvZGNtaXR5cGUvU3RpbGxJbWFnZSIvPgo8L2NjOldvcms+CjwvcmRmOlJERj4KPC9tZXRhZGF0YT4KPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTc1LjkxMSAtMTE4Ljg5KSI+CjxnIHRyYW5zZm9ybT0ibWF0cml4KC4zNTI3OCAwIDAgLS4zNTI3OCA5Mi4yODcgMTMzLjk0KSIgZmlsbD0iI2ZmZiI+CjxwYXRoIGQ9Im0wIDBjLTFlLTMgLTFlLTMgLTJlLTMgLTJlLTMgLTJlLTMgLTNlLTMgLTFlLTMgLTFlLTMgLTFlLTMgLTJlLTMgLTJlLTMgLTRlLTMgLTIuNDA2LTUuMTI0LTguOTg0LTYuMDM4LTE4LjE2OC0xLjczOCAwLjU2MiAyLjcwNyAxLjE3MyA2LjMxOCAxLjI3MSA4Ljg2NSAxZS0zIDZlLTMgMCAwLjAxIDAgMC4wMTYgMi44MTQgMS44MTkgNS43MjQgNC4wOTYgOC42Mzg2Ljk0My0wLjEyNiAwLjA2OS0wLjEwNCAwLjA1OCAwIDAgNy42NzItNC4xNjggMTAuNDg2LTkuMzQ2IDguMjYzLTE0LjA3OW0tMTAuODEzIDE1LjM0NnMtMWUtMyAwLTFlLTMgMWUtM2MtMi4wNjUtMS45OTItNC4xMDYtMy42NzMtNi4wODUtNS4wOTItMC4wNzkgMi4zNzItMC4zNSA0Ljk2OS0wLjkxMSA3Ljc1OSAyLjIxNC0wLjY3MyA0LjU1MS0xLjU0NyA2Ljk5Ni0yLjY2NyAwLjA1MSAwLjA0OSAwLjAzNiAwLjAzNSAwIDAgMC0xZS0zIDFlLTMgLTFlLTMgMWUtMyAtMWUtM20tMTEuMTQgMTUuMTFjNi43MSA2LjIwNCAxMi43MzEgNy4yNDIgMTYuNTI2IDMuNDU5IDFlLTMgMCAyZS0zIC0xZS0zIDNlLTMgLTJlLTMgLTJlLTMgM2UtMyAtMmUtM2MzLjgwOS0zLjc5NSAyLjc3My05Ljg0Ny0zLjQ2My0xNi42MDQtMC4wMy0wLjAzMy0wLjAzNy0wLjAzOSAwIDAtMC4wMzggMC4wMTgtMy42MzYgMS44ODgtOS41NzcgMy41MzMtMC40NDYgMi40NjUtMy4wNjcgOC45OTQtMy40OTEgOS42MTdtMi42MTItMjEuODQ2Yy0zLjIzOS0yLjA0LTYuMjU5LTMuMzk1LTguODc2LTQuMjk3LTAuOTM2IDAuNzIxLTEuODA0IDEuNDQ1LTIuNjEgMi4xNjV2MWUtM2MtMS4zNDEgMS4zMS0yLjcyIDIuODM0LTQuMDkgNC42MDQgMC45MDUgMi42NDMgMi4yNyA1LjY5MSA0LjMyNyA4Ljk2MiAyLjgyNiAwLjIyMSAxMC4wMDctMS4xMzkgMTAuMDI2LTEuMjc4IDAuMjA5LTAuMDMxIDEuMzY2LTcuMjc5IDEuMjIzLTEwLjE1N20tMS4xNDctOS4yMDdjLTAuMzA0LTAuMDI1LTQuMDUyIDIuMDcxLTUuMzUgMy4xODl2MWUtM2MyLjAxIDAuNzYxIDYuMzczIDIuOTkyIDYuMzczIDIuOTkyczdlLTMgNGUtMyAwLjAxIDZlLTNjMC01ZS0zIC0wLjYwNy00LjIxMS0xLjAzMy02LjE4OG0tMTYuMjA1IDMuMTMzYzAuMDU5IDEuMDU2IDAuMjQgMi45MTkgMC44MzYgNS4zNTIgMC42MzktMC43NzUgMy43MDQtMy44MjYgNC40OTYtNC41MDUtMi40MTMtMC41OTctNC4yNjctMC43ODItNS4zMzItMC44NDdtLTMuMjEyIDE2LjM4M2MyLjAyOCAwLjQzNSA0LjU2OCAwLjkwOCA2LjMwOCAxLjAzMiAwIDFlLTMgMWUtMyAyZS0zIDFlLTMgM2UtMyAwLTFlLTMgLTFlLTMgLTJlLTMgLTFlLTMgLTNlLTMgLTEuMjkyLTIuMjQ2LTIuMjk4LTQuNDEtMy4wODEtNi40NDEtMS4xIDEuNjE2LTMuMjIxIDUuMzk4LTMuMjI3IDUuNDA5bTAuNTkgMjAuNTg0IDJlLTMgMmUtMyAzZS0zIDFlLTNjNC43ODggMi4yMzQgMTAuMDE1LTAuNjc0IDE0LjE4NS04LjUzMy0yLjgyOC0yLjg2Ny01LjEtNS43My02LjkyMS04LjUwMSAwLTFlLTMgMC0yZS0zIC0xZS0zIC0yZS0zIDFlLTMgMCAxZS0zIDFlLTMgMWUtMyAyZS0zIC0yLjU4MS0wLjA3OC01LjgyNy0wLjc0My04Ljk5Mi0xLjI2NS00LjQ0MSA5LjM5Ni0zLjQxNyAxNS44OTkgMS43MjMgMTguMjk2bTE4LjAxNy0xNy45OTNjLTIuNzU1IDAuNTY3LTUuMzIyIDAuODUzLTcuNjcyIDAuOTQ2IDEuNDA5IDEuOTcgMy4wNzUgNCA1LjA0NiA2LjA1My00ZS0zIDhlLTMgMS45NjYtNC43ODUgMi42MjYtNi45OTltMTQuOTA5LTUuNDkzYzYuOTY2IDcuODI1IDcuNjYyIDE0Ljc1OCAyLjg1NSAxOS41OTJsLTZlLTMgNmUtM2MtNC44MTIgNC44MzgtMTEuOTY5IDQuMDkyLTE5LjYyOS0yLjc2NnYtMWUtMyAxZS0zYy00Ljc2NSA4LjYwOC0xMS4wNiAxMS41ODItMTcuMTA4IDguNzgxbC00ZS0zIC0yZS0zYy0xZS0zIDAtM2UtMyAtMWUtMyAtNGUtMyAtMmUtMyAtOC4xNTItMy40MTgtOC45OTYtMTQuODI2IDIuNDgzLTMxLjQxNmgxZS0zYy0xZS0zIDAtMWUtMyAtMWUtMyAtMWUtMyAtMWUtMyAtMS40MDMtNC43NDctMS41OTItOC40NDgtMS41OTYtMTAuMjY1IDEuNzk0LTVlLTMgNS41MDUgMC4xNjUgMTAuMjggMS41NTEgMTguNzA5LTEyLjcyNCAyOC40MjgtOS4zNDMgMzEuMzI1LTIuNTkyIDAgMWUtMyAxZS0zIDJlLTMgMmUtMyA0ZS0zIDAgMWUtMyAxZS0zIDNlLTMgMmUtMyA0ZS0zIDIuODIyIDYuMDExLTAuMzY2IDEyLjY3OC04LjYgMTcuMTA2IiBmaWxsPSIjZmZmIi8+CjwvZz4KPC9nPgo8L3N2Zz4K'
 		);
 		add_action( 'load-' . $dashboard_page_suffix, array( &$this, 'load_page' ) );
 	}
@@ -30,11 +31,32 @@ class Dashboard extends Pages {
 		wp_enqueue_style( 'tainacan-dashboard-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-dashboard.css', [], TAINACAN_VERSION );
 	}
 
+	/**
+	 * Enqueue the scripts for the dashboard page, using WordPress existing 'dashboard' and 'postbox' scripts
+	 */
 	function admin_enqueue_js() {
-		global $TAINACAN_BASE_URL;
+		 wp_enqueue_script('dashboard');
+		 wp_enqueue_script('postbox');
+	}
 
-		wp_enqueue_script( 'dashboard' );
+	function load_page() {
+		parent::load_page();
 
+		$screen = get_current_screen();
+    
+		// Safety check
+		if (!$screen)
+			return;
+
+		// Load the admin dashboard code from core
+		require_once ABSPATH . 'wp-admin/includes/dashboard.php';
+
+		// Register Tainacan Cards using WordPress Widgets API
+		$this->register_cards();
+
+		// After Cards are registered, we can setup screen options such as columns count
+		$this->tainacan_dashboard_setup_screen_options();
+	
 	}
 
 	public function render_page_content() {
@@ -47,16 +69,11 @@ class Dashboard extends Pages {
 	function register_cards() {
 
 		/**
-		 * Option that stores the user enabled cards
+		 * Option that stores the user disabled cards
 		 */
-		$enabled_cards = get_option(
-			'tainacan_dashboard_enabled_cards',
-			array(
-				'tainacan-dashboard-repository-card',
-				'tainacan-dashboard-collections-card',
-				'tainacan-dashboard-info-card',
-				// 'tainacan-dashboard-collection-card-267' // Temporary example of collection card
-			)
+		$this->disabled_cards = get_option(
+			'tainacan_dashboard_disabled_cards',
+			array()
 		);
 		
 		/**
@@ -79,7 +96,6 @@ class Dashboard extends Pages {
 			);
 		}
 
-
 		$tainacan_dashboard_cards[] = array(
 			'id' => 'tainacan-dashboard-collections-card',
 			'title' => __( 'Collections', 'tainacan' ),
@@ -101,7 +117,7 @@ class Dashboard extends Pages {
 		);
 
 		$collections = tainacan_collections()->fetch(array(), 'OBJECT');
-		foreach( $collections as $collection ) {
+		foreach( $collections as $index => $collection ) {
 			$tainacan_dashboard_cards[] = array(
 				'id' => 'tainacan-dashboard-collection-card-' . $collection->get_id(),
 				'title' => $collection->get_name(),
@@ -110,7 +126,7 @@ class Dashboard extends Pages {
 				'content_args' => array( 'collection_id' => $collection->get_id() ),
 				'icon' => $this->get_svg_icon( 'collection' ),
 				'color' => 'turquoise',
-				'position' => 'normal'
+				'position' => ['normal', 'side', 'column3'][$index % 3]
 			);
 		}
 
@@ -122,13 +138,13 @@ class Dashboard extends Pages {
 		 * (one of gray, blue and turoquoise) and position (normal, side, column3, column4)
 		 * 
 		 * If you remove any card from the array, users won't be able to add it anyway.
-		 * If you just remove its id from the 'tainacan_dashboard_enabled_cards' wp option, 
+		 * If you just remove its id from the 'tainacan_dashboard_disabled_cards' wp option, 
 		 * users will be able to add it again.
 		 */
 		$tainacan_dashboard_cards = apply_filters( 'tainacan-dashboard-cards', $tainacan_dashboard_cards );
 
 		foreach ($tainacan_dashboard_cards as $card) {
-			if ( !in_array( $card['id'], $enabled_cards ) )
+			if ( in_array( $card['id'], $this->disabled_cards ) )
 				continue;
 			
 			$this->add_dashboard_card(
@@ -340,7 +356,7 @@ class Dashboard extends Pages {
 	 */
 	function tainacan_collection_dashboard_card($args = null) {
 		$collection_id = isset($args['collection_id']) ? $args['collection_id'] : null;
-
+		
 		if ( is_null($collection_id) )
 			return;
 	
@@ -396,6 +412,29 @@ class Dashboard extends Pages {
 			</li>
 		</ul>
 	<?php
+	}
+
+
+	/**
+	 * Setup the screen options for the dashboard page
+	 */
+	function tainacan_dashboard_setup_screen_options() {
+	
+		// Add screen options to tweak the layout columns
+		add_screen_option('layout_columns', array('max' => 4, 'default' => 3));
+
+		$screen = get_current_screen();
+    
+		// Safety check
+		if (!$screen)
+			return;
+ 
+		// // Add help tabs if needed
+		// $screen->add_help_tab(array(
+		// 	'id' => 'tainacan_dashboard_help_tab',
+		// 	'title' => __('Dashboard Options', 'your-textdomain'),
+		// 	'content' => '<p>' . __('You can customize which widgets appear on this dashboard.', 'your-textdomain') . '</p>',
+		// ));
 	}
 
 }

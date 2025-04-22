@@ -484,6 +484,25 @@ html {
   display: none;
 }
 
+.tainacan-pages-container #screen-meta,
+.tainacan-pages-container #screen-meta-links {
+  position: absolute;
+  z-index: 10;
+}
+
+.tainacan-pages-container #screen-meta {
+  left: calc(var(--tainacan-admin-navigation-sidebar-width, 215px) + var(--tainacan-page-container--inner-padding-x, 1rem));
+  width: calc(100% - var(--tainacan-admin-navigation-sidebar-width, 215px) - 2 * var(--tainacan-page-container--inner-padding-x, 1rem));
+}
+.tainacan-pages-container #screen-meta .icon {
+  display: none;
+  visibility: hidden;
+}
+
+.tainacan-pages-container #screen-meta-links {
+  right: calc(2em + var(--tainacan-page-container--inner-padding-x, 1rem));
+}
+
 /* Fullscreen mode */
 .tainacan-pages-container {
   transition: all 0.3s ease-in-out;

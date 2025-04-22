@@ -1,18 +1,10 @@
-<?php
-
-// Load the admin dashboard code from core
-require_once ABSPATH . 'wp-admin/includes/dashboard.php';
-
-// Register Widgets TO Be Displayed
-$this->register_cards();
-
-$dashboard_logo = apply_filters('tainacan-dashboard-logo', plugin_dir_url( dirname( __FILE__, 2 ) ) . '/assets/images/tainacan_logo_dashboard.svg');
-
-?>
 
 <div id="tainacan-dashboard-app" class="content-body">
     <div class="tainacan-dashboard-header">
         <h1>
+            <?php
+                $dashboard_logo = apply_filters('tainacan-dashboard-logo', plugin_dir_url( dirname( __FILE__, 2 ) ) . '/assets/images/tainacan_logo_dashboard.svg');
+            ?>
             <img 
                     alt="<?php _e('Tainacan', 'tainacan'); ?>" 
                     width="300" 
@@ -33,6 +25,7 @@ $dashboard_logo = apply_filters('tainacan-dashboard-logo', plugin_dir_url( dirna
         <div id="dashboard-widgets-wrap">
 
             <?php
+
             // Display Widgets
             wp_dashboard();
             ?>
