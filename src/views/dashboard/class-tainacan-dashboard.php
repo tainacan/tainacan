@@ -196,11 +196,13 @@ class Dashboard extends Pages {
 		elseif ( is_array( $callback_args ) )
 			$callback_args = array_merge( $callback_args, $private_callback_args );
 
-		if ( $args['description'] )
-			$content_callback = function () use ($args, $callback_args) {
-				echo '<p class="tainacan-dashboard-card-description">' . $args['description'] . '</p><hr>';
-				call_user_func($args['content'], $callback_args);
-			};
+		$content_callback = function () use ($args, $callback_args) {
+			if ( $args['description'] )
+				echo '<p class="tainacan-dashboard-card-description">' . $args['description'] . '</p>';
+
+			echo '<hr>';
+			call_user_func($args['content'], $callback_args);
+		};
 		
 		wp_add_dashboard_widget(
 			$id,
@@ -356,7 +358,7 @@ class Dashboard extends Pages {
 	 */
 	function tainacan_collection_dashboard_card($args = null) {
 		$collection_id = isset($args['collection_id']) ? $args['collection_id'] : null;
-		
+
 		if ( is_null($collection_id) )
 			return;
 	

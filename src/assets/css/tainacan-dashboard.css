@@ -150,7 +150,7 @@
   font-size: 1em;
 }
 #tainacan-dashboard-app .postbox hr {
-  margin: 1.25rem 0;
+  margin: 1rem 0 1.25rem 0;
 }
 #tainacan-dashboard-app .postbox hr:last-child {
   display: none;
