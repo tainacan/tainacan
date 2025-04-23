@@ -571,9 +571,6 @@ button.swiper-pagination-bullet {
   flex-basis: var(--tainacan-media-thumbs-carousel-item-size, 136px);
   position: relative;
 }
-.item-gallery-edit-container .tainacan-media-component__swiper-thumbs li.swiper-slide.has-fixed-height {
-  margin-right: 12px;
-}
 
 .tainacan-media-component {
   --swiper-theme-color: var(--tainacan-secondary, #187181);
@@ -836,7 +833,6 @@ button.swiper-pagination-bullet {
   max-width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
   object-fit: cover;
   object-position: center;
-  height: auto;
 }
 .tainacan-media-component__swiper-thumbs li.swiper-slide.has-fixed-height {
   width: auto;
@@ -1134,4 +1130,4 @@ button.swiper-pagination-bullet {
   border: none;
 }
 
-/*# sourceMappingURL=tainacan-gutenberg-block-item-gallery.css.map */
+/*# sourceMappingURL=tainacan-gutenberg-block-items-gallery.css.map */

@@ -8,6 +8,6 @@
  */
 function tainacan_blocks_render_items_gallery( $block_attributes, $content ) {
 	$block_attributes['isBlock'] = true;
-	return json_encode( $block_attributes );
-	return \Tainacan\Theme_Helper::get_instance()->get_tainacan_item_gallery($block_attributes);
+	
+	return \Tainacan\Theme_Helper::get_instance()->get_tainacan_items_gallery($block_attributes);
 }

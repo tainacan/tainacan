@@ -11,17 +11,25 @@ import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; 
 import pick from 'lodash/pick';
 
 import DynamicItemsModal from '../carousel-items-list/dynamic-and-carousel-items-modal.js';
+import tainacanApi from '../../js/axios.js';
+import axios from 'axios';
+import qs from 'qs';
+import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 
 export default function ({ attributes, setAttributes, isSelected, clientId }) {
     
     let {
+        items,
         collectionId,
         searchURL,
+        searchParams,
         selectedItems,
         loadStrategy,
         maxItemsNumber,
         isModalOpen,
+        isLoading,
+        itemsRequestSource,
         layoutElements,
         hideFileNameMain,
         hideFileCaptionMain,
@@ -48,6 +56,7 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
 
     // Obtains block's client id to render it on save function
     setAttributes({ blockId: clientId });
+    const thumbHelper = ThumbnailHelperFunctions();
 
     // Get available image sizes
     const {	imageSizes } = useSelect(
@@ -75,6 +84,165 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
         } );
     }
 
+    function prepareItem(item) {
+        return (
+            <li 
+                key={ item.id }
+                className="item-list-item"
+            >
+                { loadStrategy == 'selection' ?
+                    <Button
+                        tabIndex="-1"
+                        onClick={ () => removeItemOfId(item.id) }
+                        icon={ () => (
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M12 13.06l3.712 3.713 1.061-1.06L13.061 12l3.712-3.712-1.06-1.06L12 10.938 8.288 7.227l-1.061 1.06L10.939 12l-3.712 3.712 1.06 1.061L12 13.061z"></path></svg>
+                        ) }
+                        label={__('Remove', 'tainacan')}
+                        title={__('Remove', 'tainacan')} />
+                    : null
+                }
+                <a 
+                        id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
+                        href={ item.url } 
+                        onClick={ (event) => event.preventDefault() }>
+                    <img
+                        src={ thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item['document_mimetype']) }
+                        srcSet={ thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-small', item['document_mimetype']) }
+                        alt={ item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : __( 'Thumbnail', 'tainacan' )) }/>
+                    { item.title ?
+                        <span>{ item.title }</span>
+                    : null }
+                </a>
+            </li>
+        );
+    }
+
+    function removeItemOfId(itemId) {
+        
+        let existingItemIndex = -1;
+
+        let existingSelectedItemIndex = selectedItems.findIndex((existingSelectedItem) => existingSelectedItem == itemId);
+        if (existingSelectedItemIndex >= 0)
+            selectedItems.splice(existingSelectedItemIndex, 1);
+
+        existingItemIndex = items.findIndex((existingItem) => existingItem.key == itemId);
+
+        if (existingItemIndex >= 0)
+            items.splice(existingItemIndex, 1);
+        
+        setAttributes({ 
+            selectedItems: selectedItems,
+            items: items
+        });
+        setItems();
+    }
+
+    function setItems() {
+        isLoading = true;
+
+        setAttributes({
+            isLoading: isLoading
+        });
+
+        const preparedItems = [];
+        
+        if (loadStrategy == 'parent') {
+
+            for (let item of selectedItems)
+                preparedItems.push(item);
+
+            setAttributes({
+                items: preparedItems,
+                isLoading: false
+            });
+
+        } else if (loadStrategy == 'selection') {
+
+            if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
+                itemsRequestSource.cancel('Previous items search canceled.');
+
+            itemsRequestSource = axios.CancelToken.source();
+            
+            let endpoint = '/collection/' + collectionId + '/items?'+ qs.stringify({ postin: selectedItems, perpage: selectedItems.length }) + '&order=ASC&orderby=post__in&fetch_only=title,url,thumbnail';
+            
+            tainacanApi.get(endpoint, { cancelToken: itemsRequestSource.token })
+                .then(response => {
+
+                    for (let item of response.data.items)
+                        preparedItems.push(item);
+
+                    setAttributes({
+                        items: preparedItems,
+                        isLoading: false,
+                        itemsRequestSource: itemsRequestSource
+                    });
+                });
+        } else if (loadStrategy == 'search' && searchURL && searchParams) {
+
+            if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
+                itemsRequestSource.cancel('Previous items search canceled.');
+
+            itemsRequestSource = axios.CancelToken.source();
+            
+            let endpoint = '/collection' + collectionId + '/items'
+            let queryObject = searchParams;
+
+            // Set up max items to be shown
+            if (maxItemsNumber != undefined && maxItemsNumber > 0)
+                queryObject.perpage = maxItemsNumber;
+            else if (queryObject.perpage != undefined && queryObject.perpage > 0)
+                setAttributes({ maxItemsNumber: Number(queryObject.perpage) });
+            else {
+                queryObject.perpage = 12;
+                setAttributes({ maxItemsNumber: 12 });
+            }
+
+            // Remove unecessary queries
+            delete queryObject.admin_view_mode;
+            delete queryObject.fetch_only_meta;
+            
+            endpoint = '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
+            
+            tainacanApi.get(endpoint, { cancelToken: itemsRequestSource.token })
+                .then(response => {
+                        
+                    for (let item of response.data.items)
+                        preparedItems.push(item);
+
+                    setAttributes({
+                        items: preparedItems,
+                        isLoading: false,
+                        itemsRequestSource: itemsRequestSource
+                    });
+
+                });
+        }
+
+        // Update the `items` attribute with the prepared items
+        setAttributes({
+            items: preparedItems
+        });
+    }
+
+    function getSearchQueryParams(url) {
+        // Extract the part after the hash symbol
+        const hashPart = url.split('#')[1];
+        
+        if (!hashPart) return {};
+        
+        // Find the query part in the hash (everything after '?')
+        const queryString = hashPart.split('?')[1];
+        
+        if (!queryString) return {};
+        
+        // Use the qs library to parse the query string
+        // This will handle the nested notation correctly
+        return qs.parse(queryString);
+    }
+
+    if( items == undefined || items == null )
+        setItems();
+    
     return <div { ...blockProps }>
 
         {  (
@@ -130,13 +298,23 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                                 onChange={ ( aMaxItemsNumber ) => {
                                     maxItemsNumber = Number(aMaxItemsNumber);
                                     setAttributes( { maxItemsNumber: aMaxItemsNumber } ) 
+                                    setItems();
                                 }}
                                 min={ 1 }
                                 max={ tainacan_blocks.api_max_items_per_page ? Number(tainacan_blocks.api_max_items_per_page) : 96 }
                             />
                         <hr></hr>
                     </div>
-                        : null }
+                    : null }
+                    { loadStrategy == 'selection' && items && Array.isArray(items) && items.length ?
+                        <BaseControl
+                                label={ __( 'Items that will be displayed', 'tainacan' ) }
+                                className={ 'items-layout-tainacan-view-modes-preview-area' }>
+                            <ul className="items-list-edit items-layout-list items-layout-tainacan-view-modes">
+                                { items.map(prepareItem) }
+                            </ul>
+                        </BaseControl>
+                    : null }
                 </PanelBody>
                 
                 <PanelBody
@@ -379,22 +557,27 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                                 existingSearchURL={ searchURL } 
                                 onSelectCollection={ (selectedCollectionId) => {
                                     if (collectionId != selectedCollectionId) {
+                                        items = [];
                                         selectedItems = [];
                                     }
                                     collectionId = selectedCollectionId;
                                     setAttributes({ 
                                         collectionId: collectionId,
+                                        items: items,
                                         selectedItems: selectedItems
                                     });
-                                    fetchCollectionForHeader();
                                 }}
                                 onApplySearchURL={ (aSearchURL) =>{
                                     searchURL = aSearchURL;
+                                    searchParams = getSearchQueryParams(searchURL);
                                     loadStrategy = 'search';
+                                    
                                     setAttributes({
+                                        searchParams: searchParams,
                                         searchURL: searchURL,
                                         isModalOpen: false
                                     });
+                                    setItems();
                                 }}
                                 onApplySelectedItems={ (aSelectionOfItems) => {
                                     selectedItems = selectedItems.concat(aSelectionOfItems); 
@@ -404,6 +587,7 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                                         loadStrategy: loadStrategy,
                                         isModalOpen: false
                                     });
+                                    setItems();
                                 }}
                                 onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/> 
                             : null
@@ -463,9 +647,9 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
             
             {  (
                     ( loadStrategy == 'selection' && selectedItems.length ) ||
-                    ( loadStrategy == 'search' && searchURL )
+                    ( loadStrategy == 'search' && searchURL && searchParams )
                 ) ? (
-                <div className={ 'items-gallery-edit-container' }>
+                <div className={ 'item-gallery-edit-container' }>
                     <div className="preview-warning">{__('Warning: this is just a demonstration. To see the gallery in action, either preview or publish your post.', 'tainacan') }</div>
                     <ServerSideRender
                         block="tainacan/items-gallery"

@@ -47,6 +47,9 @@
             position: relative;
         }
     }
+    .tainacan-media-component__swiper-thumbs li.swiper-slide.has-fixed-height {
+        margin-right: 12px;
+    }
 }
 .tainacan-media-component {
     --swiper-theme-color: var(--tainacan-secondary, #187181);
@@ -320,7 +323,8 @@
                 width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
                 max-width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
                 object-fit: cover;
-                object-position: center
+                object-position: center;
+                height: auto;
             }
         }
         &.has-fixed-height {

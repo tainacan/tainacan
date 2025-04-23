@@ -17,6 +17,10 @@
             "type": "string",
             "default": ""
         },
+        "items": {
+            "type": "array",
+            "default": []
+        },
         "collectionId": {
             "type": "string",
             "default": ""
@@ -24,6 +28,10 @@
         "searchURL": {
             "type": "string",
             "default": ""
+        },
+        "searchParams": {
+            "type": "object",
+            "default": {}
         },
         "selectedItems": {
             "type": "array",
@@ -138,5 +146,5 @@
         }
     },
     "editorScript": "items-gallery",
-	"editorStyle": ["items-gallery", "tainacan-blocks-common-editor-styles" ]
+	"editorStyle": ["item-gallery", "tainacan-blocks-common-editor-styles" ]
 }
