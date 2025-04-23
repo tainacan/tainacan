@@ -228,6 +228,13 @@ class OAIPMH_Expose {
      * Read a saved ResumToken
      */
     function readResumToken($resumptionToken) {
+        $upload_dir = wp_upload_dir();
+        $upload_dir = trailingslashit( $upload_dir['basedir'] );
+        $logs_folder = $upload_dir . 'tainacan/tokens/';
+        $real_file_path = realpath($resumptionToken);
+        if ( strpos($real_file_path, $resumptionToken) !== 0 && strpos($real_file_path, $logs_folder) !== 0 ) {
+            return false;
+        }
         $rtVal = false;
         $fp = fopen($resumptionToken, 'r');
         if ($fp != false) {
