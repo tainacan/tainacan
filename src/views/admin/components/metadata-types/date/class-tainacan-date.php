@@ -20,6 +20,7 @@ class Date extends Metadata_Type {
 		$this->set_primitive_type('date');
 		$this->set_component('tainacan-date');
 		$this->set_name( __('Date', 'tainacan') );
+		$this->set_form_component('tainacan-form-date');
 		$this->set_description( __('Exact date type, with day, month and year.', 'tainacan') );
 		$this->set_preview_template('
 			<div>
@@ -32,26 +33,34 @@ class Date extends Metadata_Type {
 		$this->format = 'Y-m-d';
 	}
 
+	/**
+	 * @inheritdoc
+	 */
+	public function get_form_labels(){
+		return [
+			'min' => [
+				'title' => __( 'Minimum', 'tainacan' ),
+				'description' => __( 'The minimum value that the input will accept.', 'tainacan' ),
+			],
+			'max' => [
+				'title' => __( 'Maximum', 'tainacan' ),
+				'description' => __( 'The maximum value that the input will accept.', 'tainacan' ),
+			]
+		];
+	}
+
 	public function validate( Item_Metadata_Entity $item_metadata) {
 		$value = $item_metadata->get_value();
+		$value = is_array($value) ? $value : [$value];
 
-		if (is_array($value)) {
-			foreach ($value as $date_value) {
-				if(!empty($date_value)) {
-					$d = \DateTime::createFromFormat($this->format, $date_value);
-					if (!$d || $d->format($this->format) !== $date_value) {
-						$this->add_error($this->format_error_msg($date_value));
-						return false;
-					}
+		foreach ($value as $date_value) {
+			if ( !empty($date_value) ) {
+				$d = \DateTime::createFromFormat($this->format, $date_value);
+				if ( !$d || $d->format($this->format) !== $date_value ) {
+					$this->add_error($this->format_error_msg($date_value));
+					return false;
 				}
 			}
-			return true;
-		}
-
-		$d = \DateTime::createFromFormat($this->format, $value);
-		if (!$d || $d->format($this->format) !== $value) {
-			$this->add_error($this->format_error_msg($value));
-			return false;
 		}
 		return true;
 	}
