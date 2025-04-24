@@ -108,7 +108,7 @@ class Media {
 	 */
 	public function insert_attachment_from_file($filename, $post_id = null) {
 
-		if( !file_exists($filename) ) {
+		if( !file_exists($filename) || !is_file($filename) ) {
 			return false;
 		}
 		$this->flush_buffers();

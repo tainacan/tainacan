@@ -449,8 +449,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 				'458', 
 				mb_convert_encoding( 'Data 33||Rééço', 'ISO-8859-1', 'UTF-8' ), 
 				'https://www.codeproject.com/KB/GDI-plus/ImageProcessing2/img.jpg||https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/58f72418-b5ee-4765-8e80-e463623a921d/01-httparchive-opt-small.png', 
-				'file:https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg',
-				'https://images.pexels.com/photos/15074398/pexels-photo-15074398.jpeg?cs=srgb&dl=pexels-stijn-dijkstra-1306815-15074398.jpg&fm=jpg&w=640&h=960&_gl=1*1q91sx8*_ga*MTc3MjYzMTQ3Mi4xNzQ0MDM4NjQ4*_ga_8JE65Q40S6*MTc0NDAzODY0OC4xLjEuMTc0NDAzODY1OC4wLjAuMA..'),
+				'file:https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg', 'https://images.pexels.com/photos/15074398/pexels-photo-15074398.jpeg'),
 			array('Data 41', '459', 'Data 43||limbbo', 'photos/SamplePNGImage_100kbmb.png||audios/SampleAudio_0.4mb.mp3', 'url:http://www.pdf995.com/samples/pdf.pdf','photos/unnamed.jpg'),
 			array('Data 51', '500', 'Data 53', 'https://upload.wikimedia.org/wikipedia/commons/7/7b/Space_station_Penyulap.ogv', '', '')
 		);
@@ -565,7 +564,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
 		$thumbnail_id = $items[2]->get__thumbnail_id();
 
-		if (@file_get_contents ( 'https://images.pexels.com/photos/15074398/pexels-photo-15074398.jpeg?cs=srgb&dl=pexels-stijn-dijkstra-1306815-15074398.jpg&fm=jpg&w=640&h=960&_gl=1*1q91sx8*_ga*MTc3MjYzMTQ3Mi4xNzQ0MDM4NjQ4*_ga_8JE65Q40S6*MTc0NDAzODY0OC4xLjEuMTc0NDAzODY1OC4wLjAuMA..' ))
+		if (@file_get_contents ( 'https://images.pexels.com/photos/15074398/pexels-photo-15074398.jpeg' ))
 			$this->assertTrue( is_numeric($thumbnail_id) );
 		
 		$document = $items[3]->get_document();
