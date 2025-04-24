@@ -237,7 +237,27 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
         
         // Use the qs library to parse the query string
         // This will handle the nested notation correctly
-        return qs.parse(queryString);
+        const queryObject = qs.parse(queryString);
+
+        // Converts some keys from our API rest notation to the backend api notation
+        if ( queryObject['metaquery'] ) {
+            queryObject['meta_query'] = queryObject['metaquery'];
+            delete queryObject['metaquery'];
+        }
+        if ( queryObject['taxquery'] ) {
+            queryObject['tax_query'] = queryObject['taxquery'];
+            delete queryObject['taxquery'];
+        }
+        if ( queryObject['datequery'] ) {
+            queryObject['date_query'] = queryObject['datequery'];
+            delete queryObject['datequery'];
+        }
+        if ( queryObject['geoquery'] ) {
+            queryObject['geo_query'] = queryObject['geoquery'];
+            delete queryObject['geoquery'];
+        }
+
+        return queryObject;
     }
 
     if( items == undefined || items == null )

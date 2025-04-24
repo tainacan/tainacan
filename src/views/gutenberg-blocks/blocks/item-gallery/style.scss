@@ -446,6 +446,9 @@
         cursor: pointer;
     }
 }
+.tainacan-media-component+.wp-block-buttons {
+    margin-top: 1rem;
+}
 
 // Photoswip zoom ---------------------------------
 .pswp.tainacan-photoswipe-layer {

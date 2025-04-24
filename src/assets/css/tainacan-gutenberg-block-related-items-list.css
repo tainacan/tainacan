@@ -79,5 +79,14 @@
 .wp-block-tainacan-related-items .related-items-edit-container .skeleton {
   min-height: 150px;
 }
+.wp-block-tainacan-related-items .has-view-more-link--bottom-right .wp-block-buttons {
+  text-align: right;
+}
+@media screen and (min-width: 768px) {
+  .wp-block-tainacan-related-items .has-view-more-link--top-right .wp-block-buttons {
+    float: right;
+    margin-left: 1em;
+  }
+}
 
 /*# sourceMappingURL=tainacan-gutenberg-block-related-items-list.css.map */
