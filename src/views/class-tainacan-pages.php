@@ -577,6 +577,15 @@ abstract class Pages {
 				<span class="icon"><?php echo $this->get_svg_icon( 'wordpress' ); ?></span>
 			</a>
 		<?php endif; ?>
+		<?php if ( !$this->has_admin_ui_option('hideSiteShorcutButton') ): ?>
+			<a
+					id="tainacan-site-shortcut"
+					title="<?php _e('Visit the site', 'tainacan'); ?>"
+					href="<?php echo site_url(); ?>"
+					target="_blank">
+				<span class="menu-text"><?php echo get_bloginfo( 'name' ); ?> </span><span class="icon">↗</span>
+			</a>
+		<?php endif; ?>
 		<?php if ( !$this->has_admin_ui_option('hidePrimaryMenu') ) : ?>
 			<button
 					id="tainacan-menu-toggler"

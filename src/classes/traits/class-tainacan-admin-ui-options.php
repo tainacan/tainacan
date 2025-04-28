@@ -26,6 +26,7 @@ trait Admin_UI_Options {
 					'forceFullscreenAdminMode' => __('Force Tainacan to always overlap WordPress admin menu and sidebar', 'tainacan'),
 					'hideBreadcrumbs' => __('Hide breadcrumbs', 'tainacan'),
 					'hideWordPressShorcutButton' => __('Hide WordPress shortcut button', 'tainacan'),
+					'hideSiteShorcutButton' => __('Hide site shortcut button', 'tainacan'),
 					'hideFullscreenTogglerButton' => __('Hide fullscreen toggler button', 'tainacan'),
 					'hideMenuCollapserButton' => __('Hide menu collapser button', 'tainacan'),
 					'hidePrimaryMenu' => __('Hide entire side menu', 'tainacan'),

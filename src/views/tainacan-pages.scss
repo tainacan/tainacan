@@ -104,14 +104,18 @@ html {
         #tainacan-navigation-menu header h1 {
             margin: 1.875rem 0 0.25rem;
         }
-        #tainacan-navigation-menu.is-active + #tainacan-page-container--inner #tainacan-wordpress-shortcut {
+        #tainacan-navigation-menu.is-active + #tainacan-page-container--inner #tainacan-wordpress-shortcut,
+        #tainacan-navigation-menu.is-active + #tainacan-page-container--inner #tainacan-site-shortcut {
             display: block;
             visibility: visible;
             z-index: 1005;
         }
         @media screen and (min-width: 769px) {
-            #tainacan-wordpress-shortcut {
+            #tainacan-wordpress-shortcut,
+            #tainacan-site-shortcut {
                 display: block;
+                display: inline-flex;
+                align-items: center;
                 visibility: visible;
             }
         }
@@ -222,6 +226,36 @@ html {
                 width: 100%;
                 height: 100%;
             }
+        }
+    }
+
+    #tainacan-site-shortcut {
+        box-sizing: border-box;
+        position: absolute;
+        left: 3.5em;
+        top: 0.5em;
+        font-size: 0.875em;
+        text-decoration: none;
+        font-weight: 500;
+        max-width: calc(var(--tainacan-admin-navigation-sidebar-width, 215px) - 3.5em);
+        display: none;
+        visibility: hidden;
+        gap: 0.5em;
+
+        .menu-text {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            display: inline-block;
+            max-width: calc(var(--tainacan-admin-navigation-sidebar-width, 215px) - 5em);
+        }
+
+        .icon {
+            opacity: 0;
+        }
+        &:hover .icon,
+        &:focus .icon {
+            opacity: 1;
         }
     }
   
@@ -408,7 +442,8 @@ html {
                 & + #tainacan-page-container--inner #tainacan-menu-collapser .icon {
                     transform: rotate(180deg);
                 }
-                & + #tainacan-page-container--inner #tainacan-menu-collapser .menu-text {
+                & + #tainacan-page-container--inner #tainacan-menu-collapser .menu-text,
+                & + #tainacan-page-container--inner #tainacan-site-shortcut {
                     font-size: 0;
                     opacity: 0;
                 }

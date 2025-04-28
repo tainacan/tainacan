@@ -562,14 +562,18 @@ html {
 .tainacan-pages-container.tainacan-pages-container--fullscreen #tainacan-page-container #tainacan-navigation-menu header h1 {
   margin: 1.875rem 0 0.25rem;
 }
-.tainacan-pages-container.tainacan-pages-container--fullscreen #tainacan-page-container #tainacan-navigation-menu.is-active + #tainacan-page-container--inner #tainacan-wordpress-shortcut {
+.tainacan-pages-container.tainacan-pages-container--fullscreen #tainacan-page-container #tainacan-navigation-menu.is-active + #tainacan-page-container--inner #tainacan-wordpress-shortcut,
+.tainacan-pages-container.tainacan-pages-container--fullscreen #tainacan-page-container #tainacan-navigation-menu.is-active + #tainacan-page-container--inner #tainacan-site-shortcut {
   display: block;
   visibility: visible;
   z-index: 1005;
 }
 @media screen and (min-width: 769px) {
-  .tainacan-pages-container.tainacan-pages-container--fullscreen #tainacan-page-container #tainacan-wordpress-shortcut {
+  .tainacan-pages-container.tainacan-pages-container--fullscreen #tainacan-page-container #tainacan-wordpress-shortcut,
+  .tainacan-pages-container.tainacan-pages-container--fullscreen #tainacan-page-container #tainacan-site-shortcut {
     display: block;
+    display: inline-flex;
+    align-items: center;
     visibility: visible;
   }
 }
@@ -673,6 +677,32 @@ html {
   pointer-events: none;
   width: 100%;
   height: 100%;
+}
+#tainacan-page-container #tainacan-site-shortcut {
+  box-sizing: border-box;
+  position: absolute;
+  left: 3.5em;
+  top: 0.5em;
+  font-size: 0.875em;
+  text-decoration: none;
+  font-weight: 500;
+  max-width: calc(var(--tainacan-admin-navigation-sidebar-width, 215px) - 3.5em);
+  display: none;
+  visibility: hidden;
+  gap: 0.5em;
+}
+#tainacan-page-container #tainacan-site-shortcut .menu-text {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  max-width: calc(var(--tainacan-admin-navigation-sidebar-width, 215px) - 5em);
+}
+#tainacan-page-container #tainacan-site-shortcut .icon {
+  opacity: 0;
+}
+#tainacan-page-container #tainacan-site-shortcut:hover .icon, #tainacan-page-container #tainacan-site-shortcut:focus .icon {
+  opacity: 1;
 }
 #tainacan-page-container .tainacan-ui-tweak-button {
   border-radius: var(--tainacan-admin-button-border-radius, 8px);
@@ -837,7 +867,7 @@ html {
   #tainacan-page-container #tainacan-navigation-menu.is-collapsed + #tainacan-page-container--inner #tainacan-menu-collapser .icon {
     transform: rotate(180deg);
   }
-  #tainacan-page-container #tainacan-navigation-menu.is-collapsed + #tainacan-page-container--inner #tainacan-menu-collapser .menu-text {
+  #tainacan-page-container #tainacan-navigation-menu.is-collapsed + #tainacan-page-container--inner #tainacan-menu-collapser .menu-text, #tainacan-page-container #tainacan-navigation-menu.is-collapsed + #tainacan-page-container--inner #tainacan-site-shortcut {
     font-size: 0;
     opacity: 0;
   }
