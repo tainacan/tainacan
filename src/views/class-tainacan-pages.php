@@ -63,6 +63,7 @@ abstract class Pages {
 		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_fonts' ), 90 );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_css' ), 90 );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_js' ), 90 );
+		add_filter( 'screen_settings', array( &$this, 'admin_add_screen_options' ), 10, 2 );
 	}
 	
 	/**
@@ -552,7 +553,6 @@ abstract class Pages {
 
 		$is_menu_toggled = false;
 		$is_menu_collapsed = false;
-		$is_fullscreen = false;
 
 		$current_user  = wp_get_current_user();
 		
@@ -566,9 +566,6 @@ abstract class Pages {
 
 			if ( isset($user_prefs['menu_collapsed']) )
 				$is_menu_collapsed = $user_prefs['menu_collapsed'];
-
-			if ( isset($user_prefs['is_fullscreen']) && ( $user_prefs['is_fullscreen'] == 'true' || $user_prefs['is_fullscreen'] == true ) )
-				$is_fullscreen = $user_prefs['is_fullscreen'];
 
 		}	
 		
@@ -593,23 +590,15 @@ abstract class Pages {
 				<button
 						id="tainacan-menu-collapser"
 						class="tainacan-ui-tweak-button"
-						aria-label="<?php _e('Collapse menu', 'tainacan'); ?>"
+						aria-label=""
 						aria-pressed="<?php echo $is_menu_collapsed ? 'true' : 'false'; ?>"
 						title="<?php _e('Toggle menu', 'tainacan'); ?>">
-					<span class="icon"><?php echo $this->get_svg_icon( 'previous' ); ?></span>
+					<span class="icon"><?php echo $this->get_svg_icon( 'arrowleft' ); ?></span>
+					<span class="menu-text"><?php _e('Collapse menu', 'tainacan'); ?></span>
 				</button>
 			<?php endif; ?>
-		<?php endif; ?>
-		<?php if ( !$this->has_admin_ui_option('forceFullscreenAdminMode') && !$this->has_admin_ui_option('hideFullscreenTogglerButton') ) : ?>
-			<button
-					id="tainacan-fullscreen-toggler"
-					class="tainacan-ui-tweak-button"
-					aria-label="<?php _e('Toggle fullscreen', 'tainacan'); ?>"
-					aria-pressed="<?php echo $is_fullscreen ? 'true' : 'false'; ?>"
-					title="<?php _e('Toggle fullscreen', 'tainacan'); ?>">
-				<span class="icon"><?php echo $this->get_svg_icon( 'fullscreen' ); ?></span>
-			</button>
 		<?php endif;
+
 	}
 
 	/**
@@ -705,6 +694,62 @@ abstract class Pages {
 			self::$admin_ui_options['itemEditionAttachmentsInsideTabs'] = true;
 			self::$admin_ui_options['itemEditionPublicationSectionInsideTabs'] = true;
 		}
+	}
+
+	/**
+	 * Hooks into WordPress Admin Screen Options to add option
+	 * to insert fullscreen mode toggle button.
+	 */
+	function admin_add_screen_options($current, $screen) {
+
+		if ( !is_admin() && !$this->get_page_slug() || !isset($_GET['page']) || ( isset($_GET['page']) && $_GET['page'] !== $this->get_page_slug() ) )
+			return $current;
+
+		$is_fullscreen = false;
+
+		$current_user  = wp_get_current_user();
+		
+		if ( $current_user instanceof \WP_User ) {
+			
+			$user_prefs_as_string = get_user_meta( $current_user->ID, 'tainacan_prefs', true );
+			$user_prefs = json_decode( $user_prefs_as_string, true );
+
+			if ( isset($user_prefs['is_fullscreen']) && ( $user_prefs['is_fullscreen'] == 'true' || $user_prefs['is_fullscreen'] == true ) )
+				$is_fullscreen = $user_prefs['is_fullscreen'];
+
+		}	
+
+		ob_start();
+
+		if ( !$this->has_admin_ui_option('forceFullscreenAdminMode') && !$this->has_admin_ui_option('hideFullscreenTogglerButton') ) {
+			?>
+			<div class="metabox-prefs custom-options-wrap">
+				<h5><?php _e('Integration with WordPress Admin UI', 'tainacan'); ?></h5>
+				<label for="tainacan-fullscreen-toggler">
+					<fieldset>
+						<legend class="screen-reader-text"><?php _e('Fullscreen mode options', 'tainacan'); ?></legend>
+						<label>
+							<input type="radio" name="tainacan-fullscreen-state" value="1" <?php checked($is_fullscreen, true); ?>>
+							<?php _e('Hide WordPress navigation', 'tainacan'); ?>
+						</label>
+						<label>
+							<input type="radio" name="tainacan-fullscreen-state" value="0" <?php checked(!$is_fullscreen, true); ?>>
+							<?php _e('Show WorPress navigation', 'tainacan'); ?>
+						</label>
+					</fieldset>
+				</label>
+				<p class="submit">
+					<button type="button" class="button-primary" id="tainacan-fullscreen-toggler">
+						<?php _e('Apply', 'tainacan'); ?>
+					</button>
+				</p>
+			</div>
+			<?php
+		}
+
+		$extra_screen_options_html = ob_get_clean();
+
+		return $current . $extra_screen_options_html;
 	}
 
 }

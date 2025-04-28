@@ -339,16 +339,18 @@ function handleUITweakButtons() {
 
         tainacanFullscreenToggler.addEventListener( 'click', function() {
 
+            const extraOptionsForm = document.getElementById('adv-settings');
+            const showSettingsLink = document.getElementById('show-settings-link');
+
+            if ( !extraOptionsForm || !extraOptionsForm['tainacan-fullscreen-state'] || !showSettingsLink )
+               return;
+
             const isFullscreen = !document.body.classList.contains('tainacan-pages-container--fullscreen');
 
-            document.body.classList.toggle('tainacan-pages-container--fullscreen');
-            tainacanFullscreenToggler.ariaPressed = '' + isFullscreen;
-
-            // Emits fullscreen mode change event so that inner components such as Masonry can react to layout change
-            const fullscreenEvent = new CustomEvent('tainacan_fullscreen_mode_change', {
-                detail: { isFullscreen: isFullscreen }
-            });
-            document.dispatchEvent(fullscreenEvent);
+            if ( extraOptionsForm['tainacan-fullscreen-state'].value != isFullscreen ) {
+                showSettingsLink.click();
+                return; 
+            }
 
             let currentUserPrefs = JSON.parse(tainacan_user.prefs);
             currentUserPrefs['is_fullscreen'] = isFullscreen;
@@ -365,10 +367,23 @@ function handleUITweakButtons() {
                     },
                     body: JSON.stringify(data)
                 }).then(response => {
+                    
+                    document.body.classList.toggle('tainacan-pages-container--fullscreen');
+                    tainacanFullscreenToggler.ariaPressed = '' + isFullscreen;
+        
+                    // Emits fullscreen mode change event so that inner components such as Masonry can react to layout change
+                    const fullscreenEvent = new CustomEvent('tainacan_fullscreen_mode_change', {
+                        detail: { isFullscreen: isFullscreen }
+                    });
+                    document.dispatchEvent(fullscreenEvent);
+
+                    showSettingsLink.click();
+
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
                     return response.json();
+                    
                 }).catch(error => {
                     console.error('Request to /users/me failed. Maybe you\'re not logged in.', error);
                 });

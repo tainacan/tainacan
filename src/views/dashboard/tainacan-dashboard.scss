@@ -51,11 +51,12 @@
         }
     }
     @media only screen and (min-width: 800px) and (max-width: 1280px) {
+        .postbox-container#postbox-container-1,
         .postbox-container#postbox-container-2,
         .postbox-container#postbox-container-3,
         .postbox-container#postbox-container-4 {
             float: right;
-            width: 50%;
+            width: 49.5%;
         }
     }
 

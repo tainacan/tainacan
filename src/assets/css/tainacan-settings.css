@@ -20,7 +20,7 @@
   right: 0;
   z-index: 9999;
   background-color: var(--tainacan-gray1);
-  width: 100%;
+  width: calc(100% + 2 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column)));
   display: flex;
   justify-content: flex-end;
   align-items: center;

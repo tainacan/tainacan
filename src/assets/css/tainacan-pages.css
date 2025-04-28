@@ -486,21 +486,48 @@ html {
 
 .tainacan-pages-container #screen-meta,
 .tainacan-pages-container #screen-meta-links {
-  position: absolute;
   z-index: 10;
+  font-size: 13px;
 }
 
-.tainacan-pages-container #screen-meta {
-  left: calc(var(--tainacan-admin-navigation-sidebar-width, 215px) + var(--tainacan-page-container--inner-padding-x, 1rem));
-  width: calc(100% - var(--tainacan-admin-navigation-sidebar-width, 215px) - 2 * var(--tainacan-page-container--inner-padding-x, 1rem));
+.tainacan-pages-container #screen-meta-links:has(+ #tainacan-page-container > #tainacan-navigation-menu.is-open) {
+  z-index: 0;
+}
+
+@media screen and (min-width: 769px) {
+  .tainacan-pages-container #screen-meta {
+    left: 0;
+    width: 100%;
+  }
 }
 .tainacan-pages-container #screen-meta .icon {
   display: none;
   visibility: hidden;
 }
+.tainacan-pages-container #screen-meta .metabox-prefs label:has(.tainacan-dashboard-card-title) {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 300px;
+}
+.tainacan-pages-container #screen-meta input[type=checkbox],
+.tainacan-pages-container #screen-meta input[type=radio] {
+  vertical-align: inherit;
+}
 
 .tainacan-pages-container #screen-meta-links {
-  right: calc(2em + var(--tainacan-page-container--inner-padding-x, 1rem));
+  position: absolute;
+  right: 0;
+}
+
+.tainacan-pages-container #screen-meta-links .button {
+  height: auto !important;
+  margin-bottom: 0 !important;
+  padding: 3px 6px 3px 16px !important;
+  border-radius: 0 0 4px 4px !important;
+  box-shadow: 0 0 0 transparent !important;
+  font-size: 13px !important;
+  display: inline-block !important;
 }
 
 /* Fullscreen mode */
@@ -510,7 +537,6 @@ html {
 
 .tainacan-pages-container.tainacan-pages-container--fullscreen {
   height: calc(100% + var(--wp-admin--admin-bar--height, 32px));
-  margin-top: calc(-1 * var(--wp-admin--admin-bar--height, 32px));
   position: fixed;
   top: 0;
   left: 0;
@@ -545,6 +571,11 @@ html {
   .tainacan-pages-container.tainacan-pages-container--fullscreen #tainacan-page-container #tainacan-wordpress-shortcut {
     display: block;
     visibility: visible;
+  }
+}
+@media screen and (max-width: 600px) {
+  .tainacan-pages-container.tainacan-pages-container--fullscreen #wpbody {
+    padding-top: 0;
   }
 }
 
@@ -649,13 +680,13 @@ html {
   padding: 0.25rem 0.15rem;
   margin-top: -0.5rem;
   border: none !important;
-  color: var(--tainacan-admin-link-color);
+  color: var(--tainacan-admin-button-color);
   background-color: var(--tainacan-admin-button-background-color);
   cursor: pointer;
   transition: background 0.25s ease-in;
 }
 #tainacan-page-container .tainacan-ui-tweak-button:hover:not(:disabled), #tainacan-page-container .tainacan-ui-tweak-button:focus-visible:not(:disabled) {
-  background-color: var(--tainacan-turquoise3);
+  background-color: var(--tainacan-admin-button-hover-color);
   background-color: var(--tainacan-admin-button-hover-background-color);
 }
 #tainacan-page-container .tainacan-ui-tweak-button:focus-visible:not(:disabled) {
@@ -666,19 +697,22 @@ html {
   align-items: center;
   display: inline-flex;
   justify-content: center;
-  height: 1.5em;
-  width: 1.5em;
+  height: 1.75em;
+  width: 1.75em;
 }
 #tainacan-page-container .tainacan-ui-tweak-button .icon svg {
-  width: 1em;
-  height: 1em;
+  width: 1.25em;
+  height: 1.25em;
 }
-#tainacan-page-container #tainacan-menu-toggler,
-#tainacan-page-container #tainacan-menu-collapser {
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
+#tainacan-page-container .tainacan-ui-tweak-button .menu-text {
+  font-size: 0.813em;
+  transition: font-size 0.25s ease-in-out, opacity 0.25s ease-in-out;
+  margin-right: 1em;
+  opacity: 0.9;
 }
 #tainacan-page-container #tainacan-menu-toggler {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
   display: none;
   visibility: hidden;
   position: absolute;
@@ -688,7 +722,15 @@ html {
 }
 #tainacan-page-container #tainacan-menu-collapser {
   position: absolute;
-  margin-left: calc(-1 * var(--tainacan-page-container--inner-padding-x, 1rem));
+  max-width: var(--tainacan-admin-navigation-sidebar-width, 215px);
+  left: 0;
+  bottom: 0;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0;
 }
 #tainacan-page-container #tainacan-fullscreen-toggler {
   position: absolute;
@@ -722,6 +764,7 @@ html {
 #tainacan-page-container #tainacan-breadcrumbs {
   color: var(--tainacan-admin-color);
   height: var(--tainacan-breadcumbs-list-height, 1rem);
+  max-width: calc(100% - 280px);
 }
 #tainacan-page-container #tainacan-breadcrumbs a {
   color: var(--tainacan-admin-link-color);
@@ -742,6 +785,9 @@ html {
 #tainacan-page-container #tainacan-breadcrumbs #tainacan-breadcrumbs-list li {
   margin-bottom: 0;
   white-space: nowrap;
+  overflow: hidden;
+  max-width: 280px;
+  white-space: nowrap;
 }
 #tainacan-page-container #tainacan-breadcrumbs #tainacan-breadcrumbs-list li:not(:last-child)::after {
   content: ">";
@@ -757,7 +803,7 @@ html {
   flex-basis: var(--tainacan-admin-navigation-sidebar-width, 215px);
   min-width: var(--tainacan-admin-navigation-sidebar-width, 215px);
   max-width: var(--tainacan-admin-navigation-sidebar-width, 215px);
-  padding: 1rem 0.75rem;
+  padding: 1rem 0.75rem 2.5rem;
   background-color: var(--tainacan-admin-navigation-sidebar-background-color);
   background-image: var(--tainacan-admin-navigation-sidebar-background-image);
   background-repeat: no-repeat;
@@ -790,6 +836,10 @@ html {
   }
   #tainacan-page-container #tainacan-navigation-menu.is-collapsed + #tainacan-page-container--inner #tainacan-menu-collapser .icon {
     transform: rotate(180deg);
+  }
+  #tainacan-page-container #tainacan-navigation-menu.is-collapsed + #tainacan-page-container--inner #tainacan-menu-collapser .menu-text {
+    font-size: 0;
+    opacity: 0;
   }
   #tainacan-page-container #tainacan-navigation-menu.is-collapsed header {
     justify-content: center;
@@ -851,6 +901,10 @@ html {
     right: -0.875rem;
     background-image: url('data:image/svg+xml,<svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.976713 0H9.01734C9.57359 0 9.85171 0.671875 9.45796 1.06563L5.43921 5.0875C5.19546 5.33125 4.79859 5.33125 4.55484 5.0875L0.536088 1.06563C0.142338 0.671875 0.420463 0 0.976713 0Z" fill="white" fill-opacity="1.0"/></svg>');
   }
+  #tainacan-page-container #tainacan-navigation-menu.is-collapsed .menu-item-has-children.is-open button {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
   #tainacan-page-container #tainacan-navigation-menu.is-collapsed .menu-item-has-children.is-open ul {
     padding: 0.5rem 0.75rem;
     z-index: 99999998;
@@ -872,6 +926,9 @@ html {
     left: 100%;
     min-width: 180px;
     max-width: 180px;
+    max-height: 390px;
+    overflow-y: auto;
+    border-top-left-radius: 0;
     box-sizing: border-box;
     margin: 0;
     background-color: var(--tainacan-admin-navigation-sidebar-floating-menu-background-color);
@@ -1120,7 +1177,7 @@ html {
   --tainacan-admin-link-color: var(--tainacan-turquoise5);
   --tainacan-admin-link-hover-color: var(--tainacan-turquoise6);
   --tainacan-admin-button-border-radius: 2px;
-  --tainacan-admin-button-background-color: var(--tainacan-turquoise2);
+  --tainacan-admin-button-background-color: var(--tainacan-blue5);
   --tainacan-admin-button-color: var(--tainacan-white);
   --tainacan-admin-button-hover-color: var(--tainacan-white);
   --tainacan-admin-button-active-color: var(--tainacan-white);
@@ -1129,7 +1186,7 @@ html {
   --tainacan-admin-navigation-sidebar-background-color: var(--tainacan-blue5);
   --tainacan-admin-navigation-sidebar-background-image: none;
   --tainacan-admin-navigation-sidebar-separator-color: var(--tainacan-blue2);
-  --tainacan-admin-navigation-sidebar-floating-menu-background-color: var(--tainacan-white);
+  --tainacan-admin-navigation-sidebar-floating-menu-background-color: var(--tainacan-blue4);
   --tainacan-page-container--inner-padding-x: 0px;
   --tainacan-page-container-border-radius: 0px;
   --tainacan-page-container-border: none;
@@ -1157,8 +1214,8 @@ html {
   --tainacan-admin-link-color: #2271b1;
   --tainacan-admin-link-hover-color: #2271b1;
   --tainacan-admin-button-border-radius: 2px;
-  --tainacan-admin-button-background-color: #f0f6fc;
-  --tainacan-admin-button-color: #949494;
+  --tainacan-admin-button-background-color: #2c3338;
+  --tainacan-admin-button-color: #f0f0f1;
   --tainacan-admin-button-hover-color: #72aee6;
   --tainacan-admin-button-active-color: white;
   --tainacan-admin-button-hover-background-color: #2c3338;
@@ -1221,9 +1278,9 @@ html {
 }
 
 .tainacan-pages-container.tainacan-pages-container--admin-light-style #tainacan-page-container {
-  --tainacan-admin-background-color: var(--tainacan-gray1);
+  --tainacan-admin-background-color: var(--tainacan-gray0);
   --tainacan-admin-background-image: unset;
-  --tainacan-admin-button-background-color: var(--tainacan-gray0);
+  --tainacan-admin-button-background-color: var(--tainacan-gray1);
   --tainacan-admin-button-hover-background-color: color-mix(in srgb, var(--tainacan-gray2) 30%, transparent);
   --tainacan-admin-button-active-background-color: color-mix(in srgb, var(--tainacan-gray2) 50%, transparent);
   --tainacan-admin-navigation-sidebar-background-color: var(--tainacan-white);
