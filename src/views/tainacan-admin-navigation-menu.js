@@ -367,6 +367,14 @@ function handleUITweakButtons() {
                     },
                     body: JSON.stringify(data)
                 }).then(response => {
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    return response.json();
+                    
+                }).then((data) => {
                     
                     document.body.classList.toggle('tainacan-pages-container--fullscreen');
                     tainacanFullscreenToggler.ariaPressed = '' + isFullscreen;
@@ -377,13 +385,11 @@ function handleUITweakButtons() {
                     });
                     document.dispatchEvent(fullscreenEvent);
 
+                    if ( data.meta && data.meta.tainacan_prefs)
+                        tainacan_user.prefs = data.meta.tainacan_prefs;
+
                     showSettingsLink.click();
 
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                    
                 }).catch(error => {
                     console.error('Request to /users/me failed. Maybe you\'re not logged in.', error);
                 });

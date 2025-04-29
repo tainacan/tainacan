@@ -102,17 +102,17 @@ html {
         --wp-admin--admin-bar--height: 0px;
 
         #tainacan-navigation-menu header h1 {
-            margin: 1.875rem 0 0.25rem;
+            margin: 0.25rem 0;
         }
-        #tainacan-navigation-menu.is-active + #tainacan-page-container--inner #tainacan-wordpress-shortcut,
-        #tainacan-navigation-menu.is-active + #tainacan-page-container--inner #tainacan-site-shortcut {
+        #tainacan-navigation-menu.is-active #tainacan-wordpress-shortcut,
+        #tainacan-navigation-menu.is-active #tainacan-site-shortcut {
             display: block;
             visibility: visible;
             z-index: 1005;
         }
         @media screen and (min-width: 769px) {
-            #tainacan-wordpress-shortcut,
-            #tainacan-site-shortcut {
+            #tainacan-navigation-menu #tainacan-wordpress-shortcut,
+            #tainacan-navigation-menu #tainacan-site-shortcut {
                 display: block;
                 display: inline-flex;
                 align-items: center;
@@ -187,77 +187,6 @@ html {
     background-position: center;
     overflow: hidden;
     transition: all 0.3s ease-in-out;
-
-    #tainacan-wordpress-shortcut {
-        box-sizing: border-box;
-        position: absolute;
-        left: 0;
-        top: 0;
-        border-radius: 0;
-        border-bottom-right-radius: var(--tainacan-admin-button-border-radius);
-        border: none;
-        font-size: 1em;
-        color: #f0f0f1;
-        background: #1d2327;
-        display: none;
-        visibility: hidden;
-        padding: 4px;
-        width: 2em;
-        height: 2em;
-        cursor: pointer;
-
-        &:hover {
-            background: #2c3338;
-            color: #72aee6;
-        }
-        .icon {
-            align-items: center;
-            display: inline-flex;
-            justify-content: center;
-            height: 1.5em;
-            width: 1.5em;
-
-            svg {
-                background-color: transparent;
-                fill: currentColor;
-                stroke-width: 0;
-                stroke: currentColor;
-                pointer-events: none;
-                width: 100%;
-                height: 100%;
-            }
-        }
-    }
-
-    #tainacan-site-shortcut {
-        box-sizing: border-box;
-        position: absolute;
-        left: 3.5em;
-        top: 0.5em;
-        font-size: 0.875em;
-        text-decoration: none;
-        font-weight: 500;
-        max-width: calc(var(--tainacan-admin-navigation-sidebar-width, 215px) - 3.5em);
-        display: none;
-        visibility: hidden;
-        gap: 0.5em;
-
-        .menu-text {
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
-            display: inline-block;
-            max-width: calc(var(--tainacan-admin-navigation-sidebar-width, 215px) - 5em);
-        }
-
-        .icon {
-            opacity: 0;
-        }
-        &:hover .icon,
-        &:focus .icon {
-            opacity: 1;
-        }
-    }
   
     .tainacan-ui-tweak-button {
         border-radius: var(--tainacan-admin-button-border-radius, 8px);
@@ -442,14 +371,18 @@ html {
                 & + #tainacan-page-container--inner #tainacan-menu-collapser .icon {
                     transform: rotate(180deg);
                 }
-                & + #tainacan-page-container--inner #tainacan-menu-collapser .menu-text,
-                & + #tainacan-page-container--inner #tainacan-site-shortcut {
+                & + #tainacan-page-container--inner #tainacan-menu-collapser .menu-text {
                     font-size: 0;
                     opacity: 0;
                 }
 
                 header {
                     justify-content: center;
+
+                    #tainacan-site-shortcut {
+                        font-size: 0;
+                        opacity: 0;
+                    }
 
                     #tainacan-menu-logo-full {
                         display: none;
@@ -484,7 +417,7 @@ html {
                 .menu-item-has-children {
                     button::after {
                         transform: rotate(-90deg) !important;
-                        right: -1rem;
+                        right: -1rem !important;
                     } 
                     &.is-open {
 
@@ -559,9 +492,13 @@ html {
         header {
             display: flex;
             align-items: baseline;
+            flex-wrap: wrap;
+            gap: 0.5em;
 
             h1 {
                 margin: 1rem 0;
+                font-size: 2rem;
+                line-height: 1;
 
                 a {
                     background-color: transparent !important;
@@ -583,150 +520,224 @@ html {
             margin: 0.75rem 0;
         }
 
-        a,
-        button {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            text-align: start;
-            box-sizing: border-box;
-            border-radius: var(--tainacan-admin-button-border-radius, 8px);
-            padding: 0.5rem;
-            font-size: 1em;
-            font-weight: 500;
-            border: none;
-            cursor: pointer;
-            text-decoration: none !important;
-            background-color: transparent;
-            color: var(--tainacan-admin-button-color);
-            transition: background 0.25s ease-in;
-
-            &[aria-current="page"] {
-                color: var(--tainacan-admin-button-active-color);
-                background-color: var(--tainacan-turquoise3);
-                background-color: var(--tainacan-admin-button-active-background-color);
-            }
-            &:hover:not(:disabled),
-            &:focus-visible:not(:disabled) {
-                color: var(--tainacan-admin-button-hover-color);
-                background-color: var(--tainacan-turquoise3);
-                background-color: var(--tainacan-admin-button-hover-background-color);
-            }
-            &:focus-visible:not(:disabled) {
-                box-shadow: 0 0 0 2px var(--tainacan-turquoise5);
-                outline: 3px solid #0000;
-            }
-
-            &:has(.icon) {
-                white-space: nowrap;
-            }
-            .menu-text {
-                white-space: normal;
-                display: inline-block;
-                vertical-align: middle;
-            }
-            .icon {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                width: 1.25em;
-                height: 1.25em;
-                margin-right: 0.5rem;
-                font-size: 1.25rem;
-                color: var(--tainacan-gray5);
-
-                svg {
-                    width: 1em;
-                    height: 1em;
-                }
-            }
-        }
-        
-        .menu-item-has-children {
-            position: relative;
-
-            &.is-open ul {
-                visibility: visible;
-                max-height: 100vh;
-                opacity: 1.0;
-            }
-
-            &:not(.is-open) > ul {
-                margin: 0;
-                visibility: hidden;
-                opacity: 0;
-                max-height: 0px;
-                overflow: clip;
-            }
+        #tainacan-root-menu {
+            a,
             button {
-                padding-right: 1.5rem;
-            }
-            button::after {
-                position: absolute;
-                right: 0;
-                content: '';
-                font-size: 1rem;
-                content: '';
-                width: 2em;
-                height: 1.5em;
-                background-image: url('data:image/svg+xml,<svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.976713 0H9.01734C9.57359 0 9.85171 0.671875 9.45796 1.06563L5.43921 5.0875C5.19546 5.33125 4.79859 5.33125 4.55484 5.0875L0.536088 1.06563C0.142338 0.671875 0.420463 0 0.976713 0Z" fill="currentColor" fill-opacity="0.5"/></svg>');
-                background-repeat: no-repeat;
-                background-position: center;
-                transition: transform 0.3s;
-            }
-            button[aria-expanded="true"]::after {
-                transform: rotateX(180deg);
-            }
-            button[aria-expanded="false"]::after,
-            button[aria-expanded=""]::after {
-                transform: rotateX(0deg);
-            }
-            ul {
-                transition-property: opacity, max-height;
-                transition-duration: 0.3s;
-                transition-timing-function: ease-in-out;
-                border-left: 1px dashed var(--tainacan-admin-navigation-sidebar-separator-color);
-                border-left: 1px dashed color-mix(in srgb, var(--tainacan-admin-navigation-sidebar-separator-color) 50%, transparent);
-                margin: 0.5em 0 1em 0.75rem;
-                padding-left: 0.5rem;
+                width: 100%;
+                display: flex;
+                align-items: center;
+                text-align: start;
+                box-sizing: border-box;
+                border-radius: var(--tainacan-admin-button-border-radius, 8px);
+                padding: 0.5rem;
+                font-size: 1em;
+                font-weight: 500;
+                border: none;
+                cursor: pointer;
+                text-decoration: none !important;
+                background-color: transparent;
+                color: var(--tainacan-admin-button-color);
+                transition: background 0.25s ease-in;
 
-                li a,
-                li button {
-                    line-height: 1.25em;
-                    font-size: 0.875em;
-
-                    .menu-text {
-                        max-width: calc(100% - 0.75rem);
-                    }
-                    .icon {
-                        font-size: 1.125rem;
-                    }
+                &[aria-current="page"] {
+                    color: var(--tainacan-admin-button-active-color);
+                    background-color: var(--tainacan-turquoise3);
+                    background-color: var(--tainacan-admin-button-active-background-color);
+                }
+                &:hover:not(:disabled),
+                &:focus-visible:not(:disabled) {
+                    color: var(--tainacan-admin-button-hover-color);
+                    background-color: var(--tainacan-turquoise3);
+                    background-color: var(--tainacan-admin-button-hover-background-color);
+                }
+                &:focus-visible:not(:disabled) {
+                    box-shadow: 0 0 0 2px var(--tainacan-turquoise5);
+                    outline: 3px solid #0000;
                 }
 
-                &#tainacan_admin {
-                    .icon {
-                        color: var(--tainacan-blue5);
-                    }
+                &:has(.icon) {
+                    white-space: nowrap;
                 }
-                &#tainacan_collection_links {
-                    .icon {
-                        color: var(--tainacan-turquoise5);
+                .menu-text {
+                    white-space: normal;
+                    display: inline-block;
+                    vertical-align: middle;
+                }
+                .icon {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 1.25em;
+                    height: 1.25em;
+                    margin-right: 0.5rem;
+                    font-size: 1.25rem;
+                    color: var(--tainacan-gray5);
+
+                    svg {
+                        width: 1em;
+                        height: 1em;
                     }
                 }
             }
         }
-        .separator-list-item {
-            width: 100%;
-            text-align: start;
-            box-sizing: border-box;
-            font-size: 0.75em;
-            font-weight: 500;
-            color: var(--tainacan-admin-navigation-sidebar-separator-color);
-            padding: 0.5rem;
 
+         .menu-item-has-children {
+                position: relative;
+    
+                &.is-open ul {
+                    visibility: visible;
+                    max-height: 100vh;
+                    opacity: 1.0;
+                }
+    
+                &:not(.is-open) > ul {
+                    margin: 0;
+                    visibility: hidden;
+                    opacity: 0;
+                    max-height: 0px;
+                    overflow: clip;
+                }
+                button {
+                    padding-right: 1.5rem;
+                }
+                button::after {
+                    position: absolute;
+                    right: 0;
+                    content: '';
+                    font-size: 1rem;
+                    content: '';
+                    width: 2em;
+                    height: 1.5em;
+                    background-image: url('data:image/svg+xml,<svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.976713 0H9.01734C9.57359 0 9.85171 0.671875 9.45796 1.06563L5.43921 5.0875C5.19546 5.33125 4.79859 5.33125 4.55484 5.0875L0.536088 1.06563C0.142338 0.671875 0.420463 0 0.976713 0Z" fill="currentColor" fill-opacity="0.5"/></svg>');
+                    background-repeat: no-repeat;
+                    background-position: center;
+                    transition: transform 0.3s;
+                }
+                button[aria-expanded="true"]::after {
+                    transform: rotateX(180deg);
+                }
+                button[aria-expanded="false"]::after,
+                button[aria-expanded=""]::after {
+                    transform: rotateX(0deg);
+                }
+                ul {
+                    transition-property: opacity, max-height;
+                    transition-duration: 0.3s;
+                    transition-timing-function: ease-in-out;
+                    border-left: 1px dashed var(--tainacan-admin-navigation-sidebar-separator-color);
+                    border-left: 1px dashed color-mix(in srgb, var(--tainacan-admin-navigation-sidebar-separator-color) 50%, transparent);
+                    margin: 0.5em 0 1em 0.75rem;
+                    padding-left: 0.5rem;
+    
+                    li a,
+                    li button {
+                        line-height: 1.25em;
+                        font-size: 0.875em;
+    
+                        .menu-text {
+                            max-width: calc(100% - 0.75rem);
+                        }
+                        .icon {
+                            font-size: 1.125rem;
+                        }
+                    }
+    
+                    &#tainacan_admin {
+                        .icon {
+                            color: var(--tainacan-blue5);
+                        }
+                    }
+                    &#tainacan_collection_links {
+                        .icon {
+                            color: var(--tainacan-turquoise5);
+                        }
+                    }
+                }
+            }
+            .separator-list-item {
+                width: 100%;
+                text-align: start;
+                box-sizing: border-box;
+                font-size: 0.75em;
+                font-weight: 500;
+                color: var(--tainacan-admin-navigation-sidebar-separator-color);
+                padding: 0.5rem;
+    
+                .icon {
+                    color: currentColor !important;
+                    margin-right: 0.5em;
+                }
+            }
+
+        #tainacan-wordpress-shortcut {
+            box-sizing: border-box;
+            position: relative;
+            left: -0.75rem;
+            top: -1rem;
+            border-radius: 0;
+            border-bottom-right-radius: var(--tainacan-admin-button-border-radius);
+            border: none;
+            font-size: 1em;
+            color: #f0f0f1;
+            background: #1d2327;
+            display: none;
+            visibility: hidden;
+            padding: 4px;
+            width: 2em;
+            height: 2em;
+            cursor: pointer;
+    
+            &:hover {
+                background: #2c3338;
+                color: #72aee6;
+            }
             .icon {
-                color: currentColor !important;
-                margin-right: 0.5em;
+                align-items: center;
+                display: inline-flex;
+                justify-content: center;
+                height: 1.5em;
+                width: 1.5em;
+    
+                svg {
+                    background-color: transparent;
+                    fill: currentColor;
+                    stroke-width: 0;
+                    stroke: currentColor;
+                    pointer-events: none;
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
+    
+        #tainacan-site-shortcut {
+            box-sizing: border-box;
+            position: relative;
+            left: -0.5rem;
+            top: -0.875rem;
+            align-self: center;
+            font-size: 0.875em;
+            text-decoration: none;
+            font-weight: 500;
+            max-width: calc(var(--tainacan-admin-navigation-sidebar-width, 215px) - 4.75em);
+            display: none;
+            visibility: hidden;
+            gap: 0.5em;
+    
+            .menu-text {
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                display: inline-block;
+                max-width: calc(var(--tainacan-admin-navigation-sidebar-width, 215px) - 5em);
+            }
+    
+            .icon {
+                opacity: 0;
+            }
+            &:hover .icon,
+            &:focus .icon {
+                opacity: 1;
             }
         }
     }
@@ -804,7 +815,7 @@ html {
             z-index: 1002;
             box-shadow: 0.5rem 0 2rem -1.5rem var(--tainacan-black);
 
-            + #tainacan-page-container--inner #tainacan-menu-toggler {
+            #tainacan-menu-toggler {
                 margin-left: calc( var(--tainacan-admin-navigation-sidebar-width, 215px) - var(--tainacan-page-container--inner-padding-x, 1rem) );
             }
         }

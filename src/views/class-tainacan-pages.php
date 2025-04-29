@@ -402,6 +402,23 @@ abstract class Pages {
 		<aside id="tainacan-navigation-menu" <?php echo ( $is_navigation_sidebar_collapsed ? 'class="is-collapsed"' : '') ?>>
 			<nav>
 				<header>
+						<?php if ( !$this->has_admin_ui_option('hideWordPressShorcutButton') ): ?>
+							<a
+									id="tainacan-wordpress-shortcut"
+									title="<?php _e('Return to WordPress Admin', 'tainacan'); ?>"
+									href="<?php echo admin_url(); ?>">
+								<span class="icon"><?php echo $this->get_svg_icon( 'wordpress' ); ?></span>
+							</a>
+						<?php endif; ?>
+						<?php if ( !$this->has_admin_ui_option('hideSiteShorcutButton') ): ?>
+							<a
+									id="tainacan-site-shortcut"
+									title="<?php _e('Visit the site', 'tainacan'); ?>"
+									href="<?php echo site_url(); ?>"
+									target="_blank">
+								<span class="menu-text"><?php echo get_bloginfo( 'name' ); ?> </span><span class="icon">↗</span>
+							</a>
+						<?php endif; ?>
 					<h1>
 						<a href="admin.php?page=tainacan_dashboard">
 							<img
@@ -569,24 +586,7 @@ abstract class Pages {
 
 		}	
 		
-		if ( !$this->has_admin_ui_option('hideWordPressShorcutButton') ): ?>
-			<a
-					id="tainacan-wordpress-shortcut"
-					title="<?php _e('Return to WordPress Admin', 'tainacan'); ?>"
-					href="<?php echo admin_url(); ?>">
-				<span class="icon"><?php echo $this->get_svg_icon( 'wordpress' ); ?></span>
-			</a>
-		<?php endif; ?>
-		<?php if ( !$this->has_admin_ui_option('hideSiteShorcutButton') ): ?>
-			<a
-					id="tainacan-site-shortcut"
-					title="<?php _e('Visit the site', 'tainacan'); ?>"
-					href="<?php echo site_url(); ?>"
-					target="_blank">
-				<span class="menu-text"><?php echo get_bloginfo( 'name' ); ?> </span><span class="icon">↗</span>
-			</a>
-		<?php endif; ?>
-		<?php if ( !$this->has_admin_ui_option('hidePrimaryMenu') ) : ?>
+		if ( !$this->has_admin_ui_option('hidePrimaryMenu') ) : ?>
 			<button
 					id="tainacan-menu-toggler"
 					class="tainacan-ui-tweak-button"
