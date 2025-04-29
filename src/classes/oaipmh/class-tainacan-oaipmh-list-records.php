@@ -61,7 +61,6 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
      */
     public function get_items() {
 
-        $items = array();
         $args = [
             'posts_per_page' => $this->MAXRECORDS,
             'paged' => $this->deliveredrecords == 0 ? 1 : ( $this->deliveredrecords / 100 ) + 1,
@@ -70,31 +69,22 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
             'post_status' => array( 'trash', 'publish' )
         ];
 
-        if( !empty($this->sets) ){
-            $collections = $this->list_collections();
-            $collections_list = [];
+        if ( empty($this->sets) )
+            return $this->item_repository->fetch($args, [], 'OBJECT');
+    
+        $collections = $this->list_collections();
+        $collections_list = [];
 
-            foreach ( $collections as $collection ) {
-                if( !empty($this->sets) && !in_array($collection->get_id(), $this->sets)){
-                    continue;
-                }
-
-                $collections_list[] = $collection;
+        foreach ( $collections as $collection ) {
+            if( !empty($this->sets) && !in_array($collection->get_id(), $this->sets)){
+                continue;
             }
 
-            $result = $this->item_repository->fetch($args, $collections_list, 'OBJECT');
-        } else {
-            $result = $this->item_repository->fetch($args, [], 'OBJECT');
+            $collections_list[] = $collection;
         }
 
-        if($result){
-            foreach ($result as $item) {
-                $item->collection = $item->get_collection();
-                $items[] = $item;
-            }
-        }
-
-        return $items;
+        return $this->item_repository->fetch($args, $collections_list, 'OBJECT');
+        
     }
 
 
@@ -124,7 +114,7 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
         $this->xml_creater = new Xml_Response($data);
 
         foreach ( $items as $item ) {
-            $collection = $item->collection;
+            $collection = $item->get_collection();
             $identifier = 'oai:'.$this->repositoryIdentifier.':'. $item->get_id();
             $datestamp = $this->formatDatestamp($item->get_creation_date());
             $setspec = $collection->get_id();

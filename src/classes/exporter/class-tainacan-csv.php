@@ -85,6 +85,8 @@ class CSV extends Exporter {
 		$line[] = $item->get_status();
 		
 		$line[] = $this->get_document_cell($item);
+
+		$line[] = $this->get_thumbnail_cell($item);
 		
 		$line[] = $this->get_attachments_cell($item);
 		
@@ -148,6 +150,15 @@ class CSV extends Exporter {
 		
 		return $type . ':' . $document;
 		
+	}
+
+	function get_thumbnail_cell($item) {
+		$thumbnail = $item->get__thumbnail_id();
+		
+		$url = wp_get_attachment_image_url($thumbnail, 'full');
+		if ($url) $thumbnail = $url;
+		
+		return $thumbnail;
 	}
 	
 	function get_attachments_cell($item) {
@@ -249,6 +260,7 @@ class CSV extends Exporter {
 		
 		$line[] = 'special_item_status';
 		$line[] = 'special_document';
+		$line[] = 'special_thumbnail';
 		$line[] = 'special_attachments';
 		$line[] = 'special_comment_status';
 		$line[] = 'special_item_author';

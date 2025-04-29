@@ -175,7 +175,8 @@ class Compound extends Metadata_Type {
 		
 	/**
 	 * Return the value of an Item_Metadata_Entity using a metadatum of this metadatum type as an html string
-	 * @param  Item_Metadata_Entity $item_metadata 
+	 * 
+	 * @param Item_Metadata_Entity $item_metadata 
 	 * @return string The HTML representation of the value, each HTML representation of the value of each metadatum composing this metadata
 	 */
 	public function get_value_as_html(Item_Metadata_Entity $item_metadata) {
@@ -183,79 +184,114 @@ class Compound extends Metadata_Type {
 		$separator = $item_metadata->get_multivalue_separator();
 		$options = $item_metadata->get_metadatum()->get_metadata_type_options();
 		$order = $options['children_order'];
+		
 		$return = '';
 
-		if ( empty($value) )
-			return $return;
+		if ( !empty($value) ) { 
 		
-		if ( $item_metadata->is_multiple() ) {
-			$elements = [];
-			foreach ( $value as $compound_element ) {
-				if ( !empty($compound_element) ) {
-					$metadata_value =  array_fill(0, count($compound_element), null);
-					$metadata_value_not_ordinate = [];
-					foreach ( $compound_element as $meta_id => $meta ) {
-						$index = array_search( $meta_id, array_column( $order, 'id' ) );
-						if ( $meta instanceof Item_Metadata_Entity && $meta->get_value_as_html() != '' ) {
-							$html = $this->get_meta_html($meta);
-							if ( $index !== false ) {
-								$metadata_value[$index] = $html;
-							} else {
-								$metadata_value_not_ordinate[] = $html;
+			if ( $item_metadata->is_multiple() ) {
+				$elements = [];
+				
+				foreach ( $value as $compound_element ) {
+					
+					if ( !empty($compound_element) ) {
+						$metadata_value =  array_fill(0, count($compound_element), null);
+						$metadata_value_not_ordinate = [];
+						
+						foreach ( $compound_element as $meta_id => $meta ) {
+							$index = array_search( $meta_id, array_column( $order, 'id' ) );
+							
+							if ( $meta instanceof Item_Metadata_Entity && $meta->get_value_as_html() != '' ) {
+								$html = $this->get_meta_html($meta);
+								
+								if ( $index !== false )
+									$metadata_value[$index] = $html;
+								else
+									$metadata_value_not_ordinate[] = $html;
 							}
 						}
-					}
-					$elements[] = '<div class="tainacan-compound-metadatum">' . implode("\n", array_merge($metadata_value, $metadata_value_not_ordinate)) . "</div> \n" ;
-				}
-			}
-			$return = implode($separator, $elements);
-		} else {
-			$metadata_value = array_fill(0, count($value), null);
-			$metadata_value_not_ordinate = [];
-			foreach ( $value as $meta_id => $meta ) {
-				$index = array_search( $meta_id, array_column( $order, 'id' ) );
-				if ( $meta instanceof Item_Metadata_Entity && $meta->get_value_as_html() != '' ) {
-					$html = $this->get_meta_html($meta);
-					if ( $index !== false ) {
-						$metadata_value[intval($index)] = $html;
-					} else {
-						$metadata_value_not_ordinate[] = $html;
+						$elements[] = '<div class="tainacan-compound-metadatum">' . implode("\n", array_merge($metadata_value, $metadata_value_not_ordinate)) . "</div> \n" ;
 					}
 				}
+
+				$return = implode($separator, $elements);
+
+			} else {
+				$metadata_value = array_fill(0, count($value), null);
+				$metadata_value_not_ordinate = [];
+
+				foreach ( $value as $meta_id => $meta ) {
+					$index = array_search( $meta_id, array_column( $order, 'id' ) );
+					
+					if ( $meta instanceof Item_Metadata_Entity && $meta->get_value_as_html() != '' ) {
+						$html = $this->get_meta_html($meta);
+						
+						if ( $index !== false )
+							$metadata_value[intval($index)] = $html;
+						else
+							$metadata_value_not_ordinate[] = $html;
+					}
+				}
+
+				$return = implode("\n", array_merge($metadata_value, $metadata_value_not_ordinate));
 			}
-			$return = implode("\n", array_merge($metadata_value, $metadata_value_not_ordinate));
+			
+			$return = "<div class='tainacan-compound-group'> {$return} </div>";
 		}
-		
-		return "<div class='tainacan-compound-group'> {$return} </div>";
+
+		return 
+			/**
+			 * Filter the HTML representation of the value of a compound metadatum
+			 * 
+			 * @param string $return The HTML representation of the value
+			 * @param \Tainacan\Entities\Item_Metadata_Entity $item_metadata The Item_Metadata_Entity object
+			 * 
+			 * @return string The HTML representation of the item metadatum value
+			 */
+			apply_filters( 'tainacan-item-metadata-get-value-as-html--type-compound', $return, $item_metadata );
 	}
 
-	// /**
-	//  * Return the value of an Item_Metadata_Entity using a metadatum of this metadatum type as a string
-	//  * @param  Item_Metadata_Entity $item_metadata 
-	//  * @return string The String representation of the value, containing one or multiple items names, linked to the item page
-	//  */
+	/**
+	 * Return the value of an Item_Metadata_Entity using a metadatum of this metadatum type as a string
+	 * 
+	 * @param Item_Metadata_Entity $item_metadata 
+	 * @return string The String representation of the value, containing one or multiple items names, linked to the item page
+	 */
 	public function get_value_as_string(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
 		$value = $item_metadata->get_value();
+		
 		$return = '';
 
-		if ( empty($value) )
-			return $return;
+		if ( !empty($value) ) {
 
-		if ( $item_metadata->is_multiple() ) {
-			foreach ( $value as $compound_element ) {
-				if ( !empty($compound_element) ) {
-					foreach ( $compound_element as $meta_id => $meta ) {
-						$return .= $meta->get_value_as_string() . " ";
+			if ( $item_metadata->is_multiple() ) {
+
+				foreach ( $value as $compound_element ) {
+					if ( !empty($compound_element) ) {
+
+						foreach ( $compound_element as $meta_id => $meta ) {
+							$return .= $meta->get_value_as_string() . " ";
+						}
 					}
+					$return .= "\n";
 				}
-				$return .= "\n";
-			}
-		} else {
-			foreach ( $value as $meta_id => $meta ) {
-				$return .= $meta->get_value_as_string() . " ";
+			} else {
+				foreach ( $value as $meta_id => $meta ) {
+					$return .= $meta->get_value_as_string() . " ";
+				}
 			}
 		}
-		return $return;
+
+		return 
+			/**
+			 * Filter the STRING representation of the value of a compound metadatum
+			 * 
+			 * @param string $return The STRING representation of the value
+			 * @param \Tainacan\Entities\Item_Metadata_Entity $item_metadata The Item_Metadata_Entity object
+			 * 
+			 * @return string The STRING representation of the item metadatum value
+			 */
+			apply_filters( 'tainacan-item-metadata-get-value-as-string--type-compound', $return, $item_metadata );
 	}
 
 	private function get_meta_html(Item_Metadata_Entity $meta) {

@@ -824,6 +824,7 @@ class Theme_Helper {
 			$excerpt = get_bloginfo( 'description' );
 			$url_src = esc_url((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
 			global $wp;
+			global $post;
 				
 			if ( is_post_type_archive() ) {
 				$collection_id = tainacan_get_collection_id();
@@ -840,7 +841,6 @@ class Theme_Helper {
 					$title = get_the_archive_title();
 				}
 			} elseif ( is_singular() ) {
-				global $post;
 
 				if ( !is_object($post) ) { return; }
 
@@ -892,17 +892,55 @@ class Theme_Helper {
 			);
 
 			?>
-			<meta property="og:type" content="article"/>
-			<meta property="og:title" content="<?php echo esc_attr($title); ?>"/>
-			<meta property="og:site_name" content="<?php echo esc_attr(get_bloginfo()); ?>"/>
-			<meta property="og:description" content="<?php echo esc_html($excerpt); ?>"/>
-			<meta property="og:url" content="<?php echo esc_url($url_src); ?>"/>
-			<meta property="og:image" content="<?php echo esc_url($image['url']); ?>"/>
-			<meta property="og:image:width" content="<?php echo esc_attr($image['width']); ?>"/>
-			<meta property="og:image:height" content="<?php echo esc_attr($image['height']); ?>"/>
+				<meta property="og:type" content="article"/>
+				<meta property="og:title" content="<?php echo esc_attr($title); ?>"/>
+				<meta property="og:site_name" content="<?php echo esc_attr(get_bloginfo()); ?>"/>
+				<meta property="og:description" content="<?php echo esc_html($excerpt); ?>"/>
+				<meta property="og:url" content="<?php echo esc_url($url_src); ?>"/>
+				<meta property="og:image" content="<?php echo esc_url($image['url']); ?>"/>
+				<meta property="og:image:width" content="<?php echo esc_attr($image['width']); ?>"/>
+				<meta property="og:image:height" content="<?php echo esc_attr($image['height']); ?>"/>
 
+			<?php
 
-		<?php } else { return; } // End if().
+			/**
+			 * Adds Dublin Core meta tags to the header 
+			 */
+			if ( is_singular() && $this->is_post_an_item($post) ) {
+				$metadatum_mapper = \Tainacan\Mappers_Handler::get_instance()->get_mapper('dublin-core');
+				
+				if ( $metadatum_mapper ) {
+					$item = $this->tainacan_get_item($post->ID);
+					$item_metadata = $item->get_metadata();
+					
+					foreach ($item_metadata as $item_metadatum) {
+						$metadatum = $item_metadatum->get_metadatum();
+						$meta_mappings = $metadatum->get_exposer_mapping();
+
+						if ( array_key_exists('dublin-core', $meta_mappings) && $item_metadatum->has_value() ) {
+							$values = $item_metadatum->get_value();
+							$values = is_array($values) ? $values : [$values];
+
+							$values = array_map(function($value) use ($meta_mappings) {
+								echo '<meta name="' . str_replace('dc:' , 'dc.', $meta_mappings['dublin-core']) . '" content="' . esc_attr($value) . '" />';
+							}, $values);
+						}
+					}
+				}
+			} else if ( is_post_type_archive() ){
+		
+				$collections_post_types = \Tainacan\Repositories\Repository::get_collections_db_identifiers();
+				$current_post_type = get_post_type();
+				
+				if ( in_array($current_post_type, $collections_post_types) ) : ?>
+					<meta name="dc.title" content="<?php echo esc_attr($title); ?>"/>
+					<meta name="dc.description" content="<?php echo esc_html($excerpt); ?>"/>
+					<meta name="dc.type" content="Collection">
+				<?php endif;
+			}
+
+				
+		} else { return; } // End if().
 	}
 
 
@@ -1646,9 +1684,10 @@ class Theme_Helper {
 
 			if ( $media_sources['attachments'] ) {
 				foreach ( $attachments as $attachment ) {
+					$attachment_thumbnail = get_the_post_thumbnail($attachment->ID, $thumbnails_size);
 					$media_items_thumbnails[] = 
 						tainacan_get_the_media_component_slide(array(
-							'media_content' => wp_get_attachment_image( $attachment->ID, $thumbnails_size, false ),
+							'media_content' => $attachment_thumbnail ? $attachment_thumbnail : wp_get_attachment_image( $attachment->ID, $thumbnails_size, false ),
 							'media_content_full' => ( $open_lightbox_on_click && !$layout_elements['main'] ) ? ( wp_attachment_is('image', $attachment->ID) ? wp_get_attachment_image( $attachment->ID, 'full', false) : sprintf('<div class="attachment-without-image tainacan-embed-container"><iframe id="tainacan-attachment-iframe--%s" src="%s"></iframe></div>', $block_id, tainacan_get_attachment_html_url($attachment->ID)) ) : '',
 							'media_title' => $attachment->post_title,
 							'media_description' => $attachment->post_content,

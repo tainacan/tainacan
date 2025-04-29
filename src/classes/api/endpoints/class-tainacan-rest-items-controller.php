@@ -417,8 +417,11 @@ class REST_Items_Controller extends REST_Controller {
 			$sizes = get_intermediate_image_sizes();
 			$thumbs = [];
 
+			// Gets ID of a potential image that is set as the thumbnail for the attachment post
+			$thumbnail_id = get_post_thumbnail_id($post->ID);
+
 			foreach ( $sizes as $size ) {
-				$thumbs[$size] = wp_get_attachment_image_src( $post->ID, $size );
+				$thumbs[$size] = wp_get_attachment_image_src( $thumbnail_id ? $thumbnail_id : $post->ID, $size );
 			}
 
 			$attachments[] = [

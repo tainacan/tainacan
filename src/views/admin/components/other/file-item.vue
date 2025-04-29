@@ -17,7 +17,7 @@
                     :style="{ 'width': size != undefined ? size + 'px' : '94px', 'height': size != undefined ? size + 'px' : '94px' }"
                     class="image-wrapper">
                 <div
-                        v-if="file.media_type == 'image'" 
+                        v-if="(file.thumbnails['tainacan-medium'] && file.thumbnails['tainacan-medium'][0]) || (file.thumbnails['medium'] && file.thumbnails['medium'][0])" 
                         class="image"
                         :style="{ 'background-image': 'url(' + (file.thumbnails['tainacan-medium'] ? file.thumbnails['tainacan-medium'][0] : file.thumbnails['medium'][0]) + ')' }" />
                 <div
