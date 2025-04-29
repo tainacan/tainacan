@@ -311,9 +311,6 @@ html {
             li {
                 margin-bottom: 0;
                 white-space: nowrap;
-                overflow: hidden;
-                max-width: 280px;
-                white-space: nowrap;
 
                 &:not(:last-child)::after {
                     content: '>';
@@ -632,13 +629,13 @@ html {
                     li a,
                     li button {
                         line-height: 1.25em;
-                        font-size: 0.875em;
+                        font-size: 0.875em !important;
     
                         .menu-text {
                             max-width: calc(100% - 0.75rem);
                         }
                         .icon {
-                            font-size: 1.125rem;
+                            font-size: 1.125rem !important;
                         }
                     }
     

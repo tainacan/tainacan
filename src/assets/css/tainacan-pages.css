@@ -751,9 +751,6 @@ html {
 #tainacan-page-container #tainacan-breadcrumbs #tainacan-breadcrumbs-list li {
   margin-bottom: 0;
   white-space: nowrap;
-  overflow: hidden;
-  max-width: 280px;
-  white-space: nowrap;
 }
 #tainacan-page-container #tainacan-breadcrumbs #tainacan-breadcrumbs-list li:not(:last-child)::after {
   content: ">";
@@ -1042,7 +1039,7 @@ html {
 #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul li a,
 #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul li button {
   line-height: 1.25em;
-  font-size: 0.875em;
+  font-size: 0.875em !important;
 }
 #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul li a .menu-text,
 #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul li button .menu-text {
@@ -1050,7 +1047,7 @@ html {
 }
 #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul li a .icon,
 #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul li button .icon {
-  font-size: 1.125rem;
+  font-size: 1.125rem !important;
 }
 #tainacan-page-container #tainacan-navigation-menu .menu-item-has-children ul#tainacan_admin .icon {
   color: var(--tainacan-blue5);
