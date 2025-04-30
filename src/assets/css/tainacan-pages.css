@@ -1173,7 +1173,8 @@ html {
   max-height: calc(100vh - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
   height: calc(100dvh - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
   max-height: calc(100dvh - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 #tainacan-page-container .tainacan-page-container-content > .wrap {
   margin: 0;
@@ -1204,6 +1205,25 @@ html {
   #tainacan-page-container #tainacan-navigation-menu.is-active #tainacan-menu-toggler {
     margin-left: calc(var(--tainacan-admin-navigation-sidebar-width, 215px) - var(--tainacan-page-container--inner-padding-x, 1rem));
   }
+}
+
+/* Admin UI Options that need to tweak the CSS */
+.tainacan-pages-container.tainacan-pages-container--hide-breadcrumbs {
+  --tainacan-breadcumbs-list-height: 0px;
+}
+
+.tainacan-pages-container.tainacan-pages-container--hide-wordpress-shortcut #tainacan-wordpress-shortcut {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+.tainacan-pages-container.tainacan-pages-container--hide-wordpress-shortcut #tainacan-page-container #tainacan-navigation-menu #tainacan-site-shortcut {
+  left: calc(-2em - 0.75rem);
+  max-width: var(--tainacan-admin-navigation-sidebar-width, 215px);
+}
+
+.tainacan-pages-container.tainacan-pages-container--hide-site-shortcut #tainacan-site-shortcut {
+  visibility: hidden !important;
+  opacity: 0 !important;
 }
 
 /* Admin style samples (experimental) */

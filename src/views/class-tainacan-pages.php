@@ -15,19 +15,19 @@ abstract class Pages {
 	abstract protected function get_page_slug(): string;
 
 	/**
-	 * $tainacan_root_menu_slug is the root menu slug for Tainacan admin pages.
+	 * $tainacan_root_menu_slug is the root menu slug for all Tainacan admin pages.
 	 * @var string
 	 */
 	public $tainacan_root_menu_slug = 'tainacan-root-menu';
 	
 	/**
-	 * $tainacan_other_links_slug is menu slug for the "Others" menu collapse
+	 * $tainacan_other_links_slug is the menu slug for the "Others" menu collapse
 	 * @var string
 	 */
 	public $tainacan_other_links_slug = 'tainacan_other_links';
 	
 	/**
-	 * Class construtor, never called directly but used to invoke the init method.
+	 * Class constructor, never called directly but used to invoke the init method.
 	 *
 	 * @return void
 	 */
@@ -53,7 +53,7 @@ abstract class Pages {
 	 * load_page is called from the 'load-$page_suffix' action and should trigger the load of page's assets.
 	 * 
 	 * In a child class, when registering a page with add_submenu_page, the $page_suffix is returned and can be 
-	 * used to load the page's assets. This garantees that the body class and the assets are only loaded when the
+	 * used to load the page's assets. This guarantees that the body class and the assets are only loaded when the
 	 * user visits the respective page.
 	 *
 	 * @return void
@@ -67,7 +67,7 @@ abstract class Pages {
 	}
 	
 	/**
-	 * add_admin_menu is called from the 'admin_menu' action and should register whiever menu links the page has.
+	 * add_admin_menu is called from the 'admin_menu' action and should register whatever menu links the page has.
 	 * 
 	 * If a page or group of pages is to be listed in the root level of the Tainacan admin, the parent should be
 	 * $this->tainacan_root_menu_slug. A child slug then should be defined so that child submenus are added to it
@@ -136,6 +136,15 @@ abstract class Pages {
 			$this->has_admin_ui_option( 'hideWordPressShorcutButton' )
 		)
 			$classes .= ' tainacan-pages-container--iframe-mode';
+
+		if ( $this->has_admin_ui_option( 'hideBreadcrumbs' ) )
+			$classes .= ' tainacan-pages-container--hide-breadcrumbs';
+
+		if ( $this->has_admin_ui_option( 'hideWordPressShorcutButton' ) )
+			$classes .= ' tainacan-pages-container--hide-wordpress-shortcut';
+
+		if ( $this->has_admin_ui_option( 'hideSiteShorcutButton' ) )
+			$classes .= ' tainacan-pages-container--hide-site-shortcut';
 
 		return $classes;
 	}
@@ -327,7 +336,7 @@ abstract class Pages {
 	/**
 	 * render_page creates the canvas/container where the admin pages will be rendered, adding the navigation menu aside.
 	 * 
-	 * Tipically this function is to be passed as a callback to the add_submenu_page function, in each child class.
+	 * Usually this function is to be passed as a callback to the add_submenu_page function, in each child class.
 	 *
 	 * @return void
 	 */
@@ -356,8 +365,8 @@ abstract class Pages {
 			?>
 			<main id="tainacan-page-container--inner">
 				<?php
-				
-					$this->render_ui_tweak_buttons();
+					if ( !$this->has_admin_ui_option('hidePrimaryMenu') )
+						$this->render_navigation_menu_toggler_buttons();
 
 					if ( !$this->has_admin_ui_option('hideBreadcrumbs') )
 						$this->render_breadcrumbs();
@@ -402,23 +411,22 @@ abstract class Pages {
 		<aside id="tainacan-navigation-menu" <?php echo ( $is_navigation_sidebar_collapsed ? 'class="is-collapsed"' : '') ?>>
 			<nav>
 				<header>
-						<?php if ( !$this->has_admin_ui_option('hideWordPressShorcutButton') ): ?>
-							<a
-									id="tainacan-wordpress-shortcut"
-									title="<?php _e('Return to WordPress Admin', 'tainacan'); ?>"
-									href="<?php echo admin_url(); ?>">
-								<span class="icon"><?php echo $this->get_svg_icon( 'wordpress' ); ?></span>
-							</a>
-						<?php endif; ?>
-						<?php if ( !$this->has_admin_ui_option('hideSiteShorcutButton') ): ?>
-							<a
-									id="tainacan-site-shortcut"
-									title="<?php _e('Visit the site', 'tainacan'); ?>"
-									href="<?php echo site_url(); ?>"
-									target="_blank">
-								<span class="menu-text"><?php echo get_bloginfo( 'name' ); ?> </span><span class="icon">↗</span>
-							</a>
-						<?php endif; ?>
+					<?php if ( !$this->has_admin_ui_option( 'hideWordPressShorcutButton' ) || !$this->has_admin_ui_option( 'hideSiteShorcutButton' ) ) : ?>
+						<a
+								id="tainacan-wordpress-shortcut"
+								title="<?php _e('Return to WordPress Admin', 'tainacan'); ?>"
+								href="<?php echo admin_url(); ?>">
+							<span class="icon"><?php echo $this->get_svg_icon( 'wordpress' ); ?></span>
+						</a>
+
+						<a
+								id="tainacan-site-shortcut"
+								title="<?php _e('Visit the site', 'tainacan'); ?>"
+								href="<?php echo site_url(); ?>"
+								target="_blank">
+							<span class="menu-text"><?php echo get_bloginfo( 'name' ); ?> </span><span class="icon">↗</span>
+						</a>
+					<?php endif; ?>
 					<h1>
 						<a href="admin.php?page=tainacan_dashboard">
 							<img
@@ -564,9 +572,9 @@ abstract class Pages {
 	}
 
 	/**
-	 * Renders buttons for minimizing and collapseing the menu and toggling fullscreen mode.
+	 * Renders buttons for minimizing and collapsing the menu.
 	 */
-	function render_ui_tweak_buttons() {
+	function render_navigation_menu_toggler_buttons() {
 
 		$is_menu_toggled = false;
 		$is_menu_collapsed = false;

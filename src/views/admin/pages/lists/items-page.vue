@@ -1878,10 +1878,6 @@
         padding-left: 0;
         padding-right: 0;
 
-        @media screen and (min-width: 1024px) {
-            overflow: visible;
-        }
-
         li {
             cursor: pointer;
         }

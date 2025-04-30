@@ -10,6 +10,8 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
     constructor(props) {
         super(props);
 
+        this.hasMounted = false;
+
         // Initialize state
         this.state = {
             collectionsPerPage: 24,
@@ -41,6 +43,8 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
 
     componentDidMount() {
         
+        this.hasMounted = true;
+
         this.setState({ 
             collectionId: this.props.existingCollectionId
         });
@@ -53,12 +57,17 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
             });
         } else {
             this.setState({ collectionPage: 1 });
-            this.fetchModalCollections();
+
+            if ( !this.hasMounted )
+                this.fetchModalCollections();
         }
     }
 
     // COLLECTIONS RELATED --------------------------------------------------
     fetchModalCollections() {
+
+        if (this.state.collectionsRequestSource != undefined)
+            this.state.collectionsRequestSource.cancel('Previous collections search canceled.');
 
         let someModalCollections = this.state.modalCollections;
         if (this.state.collectionPage <= 1)
@@ -75,13 +84,16 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
         else if (this.state.collectionOrderBy == 'title-desc')
             endpoint += '&orderby=title&order=desc';
 
+        let aCollectionRequestSource = axios.CancelToken.source();
+
         this.setState({ 
+            collectionsRequestSource: aCollectionRequestSource,
             isLoadingCollections: true,
             collectionPage: this.state.collectionPage + 1, 
             modalCollections: someModalCollections
         });
 
-        tainacanApi.get(endpoint)
+        tainacanApi.get(endpoint,  { cancelToken: aCollectionRequestSource.token })
             .then(response => {
 
                 let otherModalCollections = this.state.modalCollections;
