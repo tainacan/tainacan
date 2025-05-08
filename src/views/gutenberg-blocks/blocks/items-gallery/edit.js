@@ -31,15 +31,13 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
         isLoading,
         itemsRequestSource,
         layoutElements,
-        hideFileNameMain,
-        hideFileCaptionMain,
-        hideFileDescriptionMain,
-        hideFileNameThumbnails,
-        hideFileCaptionThumbnails,
-        hideFileDescriptionThumbnails,
-        hideFileNameLightbox,
-        hideFileCaptionLightbox,
-        hideFileDescriptionLightbox,
+        hideItemTitleMain,
+        hideItemLinkMain,
+        hideItemDescriptionMain,
+        hideItemTitleThumbnails,
+        hideItemTitleLightbox,
+        hideItemLinkLightbox,
+        hideItemDescriptionLightbox,
         openLightboxOnClick,
         arrowsSize,
         mainSliderHeight,
@@ -407,29 +405,29 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                             max={ 150 }
                         />
                         <ToggleControl
-                            label={__('Hide file name', 'tainacan')}
-                            checked={ hideFileNameMain }
+                            label={__('Hide item name', 'tainacan')}
+                            checked={ hideItemTitleMain }
                             onChange={ ( isChecked ) => {
-                                    hideFileNameMain = isChecked;
-                                    setAttributes({ hideFileNameMain: hideFileNameMain });
+                                    hideItemTitleMain = isChecked;
+                                    setAttributes({ hideItemTitleMain: hideItemTitleMain });
                                 } 
                             }
                         />
                        <ToggleControl
-                            label={__('Hide file caption', 'tainacan')}
-                            checked={ hideFileCaptionMain }
+                            label={__('Hide item caption', 'tainacan')}
+                            checked={ hideItemLinkMain }
                             onChange={ ( isChecked ) => {
-                                    hideFileCaptionMain = isChecked;
-                                    setAttributes({ hideFileCaptionMain: hideFileCaptionMain });
+                                    hideItemLinkMain = isChecked;
+                                    setAttributes({ hideItemLinkMain: hideItemLinkMain });
                                 } 
                             }
                         />
                         <ToggleControl
-                            label={__('Hide file description', 'tainacan')}
-                            checked={ hideFileDescriptionMain }
+                            label={__('Hide item description', 'tainacan')}
+                            checked={ hideItemDescriptionMain }
                             onChange={ ( isChecked ) => {
-                                    hideFileDescriptionMain = isChecked;
-                                    setAttributes({ hideFileDescriptionMain: hideFileDescriptionMain });
+                                    hideItemDescriptionMain = isChecked;
+                                    setAttributes({ hideItemDescriptionMain: hideItemDescriptionMain });
                                 } 
                             }
                         />
@@ -479,29 +477,11 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                             }}
                         />
                         <ToggleControl
-                            label={__('Hide file name', 'tainacan')}
-                            checked={ hideFileNameThumbnails }
+                            label={__('Hide item name', 'tainacan')}
+                            checked={ hideItemTitleThumbnails }
                             onChange={ ( isChecked ) => {
-                                    hideFileNameThumbnails = isChecked;
-                                    setAttributes({ hideFileNameThumbnails: hideFileNameThumbnails });
-                                } 
-                            }
-                        />
-                       <ToggleControl
-                            label={__('Hide file caption', 'tainacan')}
-                            checked={ hideFileCaptionThumbnails }
-                            onChange={ ( isChecked ) => {
-                                    hideFileCaptionThumbnails = isChecked;
-                                    setAttributes({ hideFileCaptionThumbnails: hideFileCaptionThumbnails });
-                                } 
-                            }
-                        />
-                        <ToggleControl
-                            label={__('Hide file description', 'tainacan')}
-                            checked={ hideFileDescriptionThumbnails }
-                            onChange={ ( isChecked ) => {
-                                    hideFileDescriptionThumbnails = isChecked;
-                                    setAttributes({ hideFileDescriptionThumbnails: hideFileDescriptionThumbnails });
+                                    hideItemTitleThumbnails = isChecked;
+                                    setAttributes({ hideItemTitleThumbnails: hideItemTitleThumbnails });
                                 } 
                             }
                         />
@@ -537,29 +517,29 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                             </ButtonGroup>
                         </BaseControl>
                         <ToggleControl
-                            label={__('Hide file name', 'tainacan')}
-                            checked={ hideFileNameLightbox }
+                            label={__('Hide item name', 'tainacan')}
+                            checked={ hideItemTitleLightbox }
                             onChange={ ( isChecked ) => {
-                                    hideFileNameLightbox = isChecked;
-                                    setAttributes({ hideFileNameLightbox: hideFileNameLightbox });
+                                    hideItemTitleLightbox = isChecked;
+                                    setAttributes({ hideItemTitleLightbox: hideItemTitleLightbox });
                                 } 
                             }
                         />
                        <ToggleControl
-                            label={__('Hide file caption', 'tainacan')}
-                            checked={ hideFileCaptionLightbox }
+                            label={__('Hide item caption', 'tainacan')}
+                            checked={ hideItemLinkLightbox }
                             onChange={ ( isChecked ) => {
-                                    hideFileCaptionLightbox = isChecked;
-                                    setAttributes({ hideFileCaptionLightbox: hideFileCaptionLightbox });
+                                    hideItemLinkLightbox = isChecked;
+                                    setAttributes({ hideItemLinkLightbox: hideItemLinkLightbox });
                                 } 
                             }
                         />
                         <ToggleControl
-                            label={__('Hide file description', 'tainacan')}
-                            checked={ hideFileDescriptionLightbox }
+                            label={__('Hide item description', 'tainacan')}
+                            checked={ hideItemDescriptionLightbox }
                             onChange={ ( isChecked ) => {
-                                    hideFileDescriptionLightbox = isChecked;
-                                    setAttributes({ hideFileDescriptionLightbox: hideFileDescriptionLightbox });
+                                    hideItemDescriptionLightbox = isChecked;
+                                    setAttributes({ hideItemDescriptionLightbox: hideItemDescriptionLightbox });
                                 } 
                             }
                         />

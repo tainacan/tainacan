@@ -133,7 +133,8 @@
             a {
                 cursor: zoom-in !important;
             }
-            .tainacan-item-file-download a {
+            .tainacan-item-file-download a,
+            .swiper-slide-metadata a {
                 cursor: pointer !important;
             }
         }

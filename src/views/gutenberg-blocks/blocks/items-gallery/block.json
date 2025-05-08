@@ -56,39 +56,31 @@
                 "thumbnails": true
             }
         },
-        "hideFileNameMain": {
+        "hideItemTitleMain": {
             "type": "boolean",
             "default": true
         },
-        "hideFileCaptionMain": {
+        "hideItemLinkMain": {
             "type": "boolean",
             "default": false
         },
-        "hideFileDescriptionMain": {
+        "hideItemDescriptionMain": {
             "type": "boolean",
             "default": true
         },
-        "hideFileNameThumbnails": {
+        "hideItemTitleThumbnails": {
             "type": "boolean",
             "default": true
         },
-        "hideFileCaptionThumbnails": {
-            "type": "boolean",
-            "default": true
-        },
-        "hideFileDescriptionThumbnails": {
-            "type": "boolean",
-            "default": true
-        },
-        "hideFileNameLightbox": {
+        "hideItemTitleLightbox": {
             "type": "boolean",
             "default": false
         },
-        "hideFileCaptionLightbox": {
+        "hideItemLinkLightbox": {
             "type": "boolean",
             "default": false
         },
-        "hideFileDescriptionLightbox": {
+        "hideItemDescriptionLightbox": {
             "type": "boolean",
             "default": false
         },

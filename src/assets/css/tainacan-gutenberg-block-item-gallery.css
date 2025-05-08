@@ -661,7 +661,8 @@ button.swiper-pagination-bullet {
 .tainacan-media-component__swiper-main ul.swiper-wrapper[data-pswp-uid]:not([data-pswp-uid=""]) li.swiper-slide .swiper-slide-content a {
   cursor: zoom-in !important;
 }
-.tainacan-media-component__swiper-main ul.swiper-wrapper[data-pswp-uid]:not([data-pswp-uid=""]) li.swiper-slide .swiper-slide-content .tainacan-item-file-download a {
+.tainacan-media-component__swiper-main ul.swiper-wrapper[data-pswp-uid]:not([data-pswp-uid=""]) li.swiper-slide .swiper-slide-content .tainacan-item-file-download a,
+.tainacan-media-component__swiper-main ul.swiper-wrapper[data-pswp-uid]:not([data-pswp-uid=""]) li.swiper-slide .swiper-slide-content .swiper-slide-metadata a {
   cursor: pointer !important;
 }
 .tainacan-media-component__swiper-main li.swiper-slide {

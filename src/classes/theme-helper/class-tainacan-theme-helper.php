@@ -25,7 +25,6 @@ class Theme_Helper {
 	}
 
 	private function __construct() {
-
 		if ( !defined('TAINACAN_DISABLE_ITEM_THE_CONTENT_FILTER') || true !== TAINACAN_DISABLE_ITEM_THE_CONTENT_FILTER ) {
 			add_filter( 'the_content', [$this, 'the_content_filter_item'] );
 		}
@@ -1855,15 +1854,13 @@ class Theme_Helper {
         *	  @type string	 $blockId 						  A unique identifier for the gallery, will be generated automatically if not provided,
 		*	  @type bool     $isBlock						  An identifier if we're comming from a block renderer, to avois using functions not available outside of the gutenberg scope;
 		* 	  @type array 	 $layoutElements 				  Array of elements present in the gallery. Possible values are 'main' and 'carousel'
-		* 	  @type bool 	 $hideFileNameMain 				  Hides the Main slider file name
-		* 	  @type bool 	 $hideFileCaptionMain 			  Hides the Main slider file caption
-		* 	  @type bool 	 $hideFileDescriptionMain		  Hides the Main slider file description
-		* 	  @type bool 	 $hideFileNameThumbnails 		  Hides the Thumbnails carousel file name
-		* 	  @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption
-		* 	  @type bool 	 $hideFileDescriptionThumbnails   Hides the Thumbnails carousel file description
-		* 	  @type bool 	 $hideFileNameLightbox 			  Hides the Lightbox file name
-		* 	  @type bool 	 $hideFileCaptionLightbox 		  Hides the Lightbox file caption
-		* 	  @type bool 	 $hideFileDescriptionLightbox	  Hides the Lightbox file description
+		* 	  @type bool 	 $hideItemTitleMain 			  Hides the Main slider item title
+		* 	  @type bool 	 $hideItemLinkMain 			  	  Hides the Main slider item link
+		* 	  @type bool 	 $hideItemDescriptionMain		  Hides the Main slider item description
+		* 	  @type bool 	 $hideItemTitleThumbnails 		  Hides the Thumbnails carousel item title
+		* 	  @type bool 	 $hideItemTitleLightbox 		  Hides the Lightbox item title
+		* 	  @type bool 	 $hideItemLinkLightbox 		  	  Hides the Lightbox item link
+		* 	  @type bool 	 $hideItemDescriptionLightbox	  Hides the Lightbox file description
 		* 	  @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item
 		*	  @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
 		*	  @type bool     $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon
@@ -1888,15 +1885,13 @@ class Theme_Helper {
 			'loadStrategy' => 				    'selection',	
 			'maxItemsNumber' => 				12,
 			'isBlock' =>						false,
-			'hideFileNameMain' => 				true, 
-			'hideFileCaptionMain' => 			false,
-			'hideFileDescriptionMain' =>		true,
-			'hideFileNameThumbnails' => 		true, 
-			'hideFileCaptionThumbnails' => 		true,
-			'hideFileDescriptionThumbnails' =>  true,
-			'hideFileNameLightbox' =>	 		false, 
-			'hideFileCaptionLightbox' => 		false,
-			'hideFileDescriptionLightbox' =>	false,
+			'hideItemTitleMain' => 				true, 
+			'hideItemLinkMain' => 				false,
+			'hideItemDescriptionMain' =>		true,
+			'hideItemTitleThumbnails' => 		true, 
+			'hideItemTitleLightbox' =>	 		false, 
+			'hideItemLinkLightbox' => 			false,
+			'hideItemDescriptionLightbox' =>	false,
 			'openLightboxOnClick' => 			true,
 			'lightboxHasLightBackground' => 	false,
 			'showArrowsAsSVG' =>				true,
@@ -1914,15 +1909,13 @@ class Theme_Helper {
 		$load_strategy = $args['loadStrategy'];
 		$max_items_number = $args['maxItemsNumber'];
 		$layout_elements = $args['layoutElements'];
-		$hide_file_name_main = $args['hideFileNameMain'];
-		$hide_file_caption_main = $args['hideFileCaptionMain'];
-		$hide_file_description_main = $args['hideFileDescriptionMain'];
-		$hide_file_name_thumbnails = $args['hideFileNameThumbnails'];
-		$hide_file_caption_thumbnails = $args['hideFileCaptionThumbnails'];
-		$hide_file_description_thumbnails = $args['hideFileDescriptionThumbnails'];
-		$hide_file_name_lightbox = $args['hideFileNameLightbox'];
-		$hide_file_caption_lightbox = $args['hideFileCaptionLightbox'];
-		$hide_file_description_lightbox = $args['hideFileDescriptionLightbox'];
+		$hide_item_title_main = $args['hideItemTitleMain'];
+		$hide_item_link_main = $args['hideItemLinkMain'];
+		$hide_item_description_main = $args['hideItemDescriptionMain'];
+		$hide_item_title_thumbnails = $args['hideItemTitleThumbnails'];
+		$hide_item_title_lightbox = $args['hideItemTitleLightbox'];
+		$hide_item_link_lightbox = $args['hideItemLinkLightbox'];
+		$hide_item_description_lightbox = $args['hideItemDescriptionLightbox'];
 		$open_lightbox_on_click = $args['openLightboxOnClick'];
 		$lightbox_has_light_background = $args['lightboxHasLightBackground'];
 		$show_arrows_as_svg = $args['showArrowsAsSVG'];
@@ -1961,11 +1954,11 @@ class Theme_Helper {
 		if ( $layout_elements['main'] ) {
 
 			$class_slide_metadata = '';
-			if ($hide_file_name_main)
+			if ($hide_item_title_main)
 				$class_slide_metadata .= ' hide-name';
-			if ($hide_file_description_main)
+			if ($hide_item_description_main)
 				$class_slide_metadata .= ' hide-description';
-			if ($hide_file_caption_main)
+			if ($hide_item_link_main)
 				$class_slide_metadata .= ' hide-caption';
 
 			// Checks if there is at least one image alongside the media sources
@@ -1996,16 +1989,9 @@ class Theme_Helper {
 
 			// Adds Item's documents as main slider content
 			foreach( $items_ids as $item_id ) {
+				$item = tainacan_get_item($item_id);
 
-				$document_type = tainacan_get_the_document_type($item_id);
-				
-				// Document description is a bit more tricky
-				if ($document_type === 'attachment')  {
-					$attachment = get_post(tainacan_get_the_document_raw($item_id));
-					$document_description = ($attachment instanceof WP_Post) ? $attachment->post_content : '';
-				}
-
-				$media_items_main[] =
+				$media_items_main[] = 
 					tainacan_get_the_media_component_slide(array(
 						'media_content' => tainacan_get_the_document($item_id),
 						'media_content_full' => $open_lightbox_on_click ?
@@ -2014,9 +2000,9 @@ class Theme_Helper {
 													tainacan_get_the_document($item_id, 'full') :
 													sprintf('<div class="attachment-without-image">%s</div>', tainacan_get_the_document($item_id, 'full'))
 												) : '',
-						'media_title' => $document_type === 'attachment' ? get_the_title(tainacan_get_the_document_raw($item_id)) : '',
-						'media_description' => $document_type === 'attachment' ? $document_description : '',
-						'media_caption' => $document_type === 'attachment' ? wp_get_attachment_caption(tainacan_get_the_document_raw($item_id)) : '',
+						'media_title' => $item ? $item->get_title() : '',
+						'media_description' =>  $item ? $item->get_description() : '',
+						'media_caption' => '<a href="' . esc_url(get_permalink($item_id)) . '" target="_blank" rel="noopener noreferrer">' . __( 'Visit the page', 'tainacan' ) . '</a>',
 						'media_type' => tainacan_get_the_document_type($item_id),
 						'class_slide_metadata' => $class_slide_metadata
 					));
@@ -2032,26 +2018,22 @@ class Theme_Helper {
 		// Prepares the thumbnails carousel
 		if ( $layout_elements['thumbnails'] ) {
 
-			$class_slide_metadata = '';
-			if ($hide_file_name_thumbnails)
+			$class_slide_metadata = ' hide-caption hide-description';
+			if ($hide_item_title_thumbnails)
 				$class_slide_metadata .= ' hide-name';
-			if ($hide_file_description_thumbnails)
-				$class_slide_metadata .= ' hide-description';
-			if ($hide_file_caption_thumbnails)
-				$class_slide_metadata .= ' hide-caption';
 
 			// Adds the items thumbnails as carousel
 			foreach( $items_ids as $item_id ) {
-
+				$item = tainacan_get_item($item_id);
 				$is_document_type_attachment = tainacan_get_the_document_type($item_id) === 'attachment';
 				
 				$media_items_thumbnails[] =
 					tainacan_get_the_media_component_slide(array(
 						'media_content' => get_the_post_thumbnail($item_id, $thumbnails_size),
 						'media_content_full' => $open_lightbox_on_click ? ($is_document_type_attachment ? tainacan_get_the_document($item_id, 'full') : sprintf('<div class="attachment-without-image">%s</div>', tainacan_get_the_document($item_id, 'full')) ) : '',
-						'media_title' => $is_document_type_attachment ? get_the_title(tainacan_get_the_document_raw($item_id)) : '',
-						'media_description' => $is_document_type_attachment ? get_the_content(null, false, tainacan_get_the_document_raw($item_id)) : '',
-						'media_caption' => $is_document_type_attachment ? wp_get_attachment_caption(tainacan_get_the_document_raw($item_id)) : '',
+						'media_title' => $item ? $item->get_title() : '',
+						'media_description' => $item ? $item->get_description() : '',
+						'media_caption' => '<a href="' . esc_url(get_permalink($item_id)) . '" target="_blank" rel="noopener noreferrer">' . __( 'Visit the page', 'tainacan' ) . '</a>',
 						'media_type' => tainacan_get_the_document_type($item_id),
 						'class_slide_metadata' => $class_slide_metadata
 					));			
@@ -2162,9 +2144,9 @@ class Theme_Helper {
 					'swiper_thumbs_options' => $swiper_thumbs_options,
 					'swiper_arrows_as_svg' => $show_arrows_as_svg,
 					'disable_lightbox' => !$open_lightbox_on_click,
-					'hide_media_name' => $hide_file_name_lightbox,
-					'hide_media_caption' => $hide_file_caption_lightbox,
-					'hide_media_description' => $hide_file_description_lightbox,
+					'hide_media_name' => $hide_item_title_lightbox,
+					'hide_media_caption' => $hide_item_link_lightbox,
+					'hide_media_description' => $hide_item_description_lightbox,
 					'lightbox_has_light_background' => $lightbox_has_light_background
 				)
 			),
