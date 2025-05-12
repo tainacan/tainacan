@@ -1131,10 +1131,18 @@ html {
   max-width: calc(var(--tainacan-admin-navigation-sidebar-width, 215px) - 5em);
 }
 #tainacan-page-container #tainacan-navigation-menu #tainacan-site-shortcut .icon {
+  text-decoration: none;
+  visibility: hidden;
   opacity: 0;
+  position: relative;
+  left: -0.5em;
+  transition: left 0.3s ease, opacity 0.3s ease;
 }
 #tainacan-page-container #tainacan-navigation-menu #tainacan-site-shortcut:hover .icon, #tainacan-page-container #tainacan-navigation-menu #tainacan-site-shortcut:focus .icon {
+  text-decoration: none;
+  visibility: visible;
   opacity: 1;
+  left: 0;
 }
 #tainacan-page-container h1.tainacan-page-title {
   font-size: 1.25em;
