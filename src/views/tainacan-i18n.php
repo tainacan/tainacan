@@ -803,7 +803,8 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_create_item_before_change_author'	 => __( 'Please create the item first before changing its author.', 'tainacan' ),
 	'instruction_create_item_before_change_slug'	 => __( 'Please create the item first before changing its slug.', 'tainacan' ),
 	'instruction_create_item_before_change_status'	 => __( 'Please create the item first to define its status.', 'tainacan' ),
-
+	'instruction_go_to_metadata_mapping_%s'		     => __( 'To use a mapping standard, you must first configure it in the <a href="%s" target="_blank">collection metadata mapping screen</a>.', 'tainacan' ),
+	
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),
 	'info_items_tab_publish'                         => __( 'Only items that are visible to everyone.', 'tainacan' ),
