@@ -12,7 +12,15 @@ class Dashboard extends Pages {
 	private $tainacan_dashboard_cards = [];
 	private $disabled_cards = [];
 
+	private $default_news_feed_options = array(
+		'feed_url' => 'https://tainacan.org/feed/',
+		'title' => 'tainacan.org',
+		'link' => 'https://tainacan.org/blog/',
+		'posts_per_feed' => 3,
+	);
+
 	function add_admin_menu() {
+
 		// Main Page, Dashboard
 		$dashboard_page_suffix = add_menu_page(
 			__( 'Tainacan', 'tainacan' ),
@@ -66,7 +74,9 @@ class Dashboard extends Pages {
 			'<p>' . __('For more information:', 'your-textdomain') . '</p>' .
 			'<p><a href="https://tainacan.org/docs/" target="_blank">' . __('Tainacan Documentation', 'your-textdomain') . '</a></p>'
 		);
-			
+		
+		// Makes sure dashboard news card is updated after plugins update
+		add_action( 'upgrader_process_complete', 'tainacan_dashboard_news_clear_feeds_cache', 10, 0 );
 	}
 
 	public function render_page_content() {
@@ -126,7 +136,19 @@ class Dashboard extends Pages {
 			'position' => 'column3'
 		);
 
+		$tainacan_dashboard_cards[] = array(
+			'id' => 'tainacan-dashboard-news-card',
+			'title' => __( 'News and events', 'tainacan' ),
+			'description' => __('Keep an eye on oficial Tainacan community news and upcoming events.', 'tainacan'),
+			'content' => array( $this, 'tainacan_news_dashboard_card' ),
+			'constrol' => array( $this, 'tainacan_news_dashboard_card_control' ),
+			'icon' => $this->get_svg_icon( 'openurl' ),
+			'color' => 'gray',
+			'position' => 'column4'
+		);
+
 		$collections = tainacan_collections()->fetch(array(), 'OBJECT');
+
 		foreach( $collections as $index => $collection ) {
 			$tainacan_dashboard_cards[] = array(
 				'id' => 'tainacan-dashboard-collection-card-' . $collection->get_id(),
@@ -189,7 +211,8 @@ class Dashboard extends Pages {
 			'content_args' => null,
 			'icon' => '',
 			'color' => 'gray',
-			'position' => 'normal'
+			'position' => 'normal',
+			'control' => null
 		);
 
 		$args = wp_parse_args( $args, $defaults );
@@ -198,6 +221,7 @@ class Dashboard extends Pages {
 		$widget_name = $args['icon'] ? ('<span class="icon" style="background-color: var(--tainacan-' . $args['color'] . '5);">' . $args['icon'] . '</span>' . $widget_name) : $widget_name;
 
 		$content_callback = $args['content'];
+		$control_callback = $args['control'];
 		$callback_args = $args['content_args'];
 		$private_callback_args = array( '__widget_basename' => $widget_name );
 
@@ -218,7 +242,7 @@ class Dashboard extends Pages {
 			$id,
 			$widget_name,
 			$content_callback,
-			null,
+			$control_callback,
 			$callback_args,
 			$args['position']
 		);
@@ -332,7 +356,11 @@ class Dashboard extends Pages {
 					<span class="icon">
 						<?php echo $this->get_svg_icon('discourse'); ?>
 					</span>
-					<span class="text"><?php _e('User\'s forum', 'tainacan'); ?></span>
+					<span class="text">
+						<?php _e('User\'s forum', 'tainacan'); ?>
+						<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span> 
+						<span class="external-link-icon">↗</span>
+					</span>
 				</a>
 			</li>
 			<li>
@@ -340,7 +368,12 @@ class Dashboard extends Pages {
 					<span class="icon">
 						<?php echo $this->get_svg_icon('help'); ?>
 					</span>
-					<span class="text"><?php _e('F.A.Q.', 'tainacan'); ?></span>
+					<span class="text">
+						<?php _e('F.A.Q.', 'tainacan'); ?>
+						<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span> 
+						<span class="external-link-icon">↗</span>
+					</span>
+				</span>
 				</a>
 			</li>
 			<li>
@@ -348,7 +381,11 @@ class Dashboard extends Pages {
 					<span class="icon">
 						<?php echo $this->get_svg_icon('info'); ?>
 					</span>
-					<span class="text"><?php _e('Wiki', 'tainacan'); ?></span>
+					<span class="text">
+						<?php _e('Wiki', 'tainacan'); ?>
+						<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span> 
+						<span class="external-link-icon">↗</span></span>
+					</span>
 				</a>
 			</li>
 			<li>
@@ -356,13 +393,126 @@ class Dashboard extends Pages {
 					<span class="icon">
 						<?php echo $this->get_svg_icon('github'); ?>
 					</span>
-					<span class="text"><?php _e('GitHub', 'tainacan'); ?></span>
+					<span class="text">
+						<?php _e('GitHub', 'tainacan'); ?>
+						<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span> 
+						<span class="external-link-icon">↗</span></span>
+					</span>
 				</a>
 			</li>
 		</ul>
 		<?php
 	}
-	
+
+	/**
+	 * Creates the display code for the news card,
+	 * featuring RSS feed from Tainacan website
+	 */
+	function tainacan_news_dashboard_card($args = null) {
+
+		$feed_options = get_option('tainacan_dashboard_news_feed', $this->default_news_feed_options);
+
+		// Apply filters to allow customization
+		$feed_options = apply_filters('tainacan_dashboard_news_feed', $feed_options);
+		
+		// Key for transient cache
+		$transient_key = 'tainacan_dashboard_news_feed_' . md5($feed_options['feed_url'] );
+		$cache_duration = 12 * HOUR_IN_SECONDS;
+		
+		// Checks if there is a transient cache
+		$feed_data = get_transient($transient_key);
+		
+		if ( false === $feed_data ) {
+			
+			// Includes required library for fetching rss
+			include_once(ABSPATH . WPINC . '/feed.php');
+        			
+			// Actually fetches the feed
+			$rss = fetch_feed($feed_options['feed_url']);
+			
+			// Checks if there was an error fetching the feed
+			if ( is_wp_error($rss) ) { 
+				?>
+					<ul class="tainacan-dashboard-links-list">
+						<li>
+							<?php 
+								printf(
+									__('The feed "%s" could not be loaded at the moment. <a href="%s" target="_blank" rel="noopener">Visit the website</a> to check its content.', 'tainacan'),
+									esc_html($feed_options['title']),
+									esc_url($feed_options['link'])
+								);
+							?>
+						</li>
+					</ul>
+				<?php
+
+				return;
+			}
+			
+			// Fetches the items from the feed
+			$max_items = $rss->get_item_quantity($feed_options['posts_per_feed']);
+			$rss_items = $rss->get_items(0, $max_items);
+			
+			// Stores the items in an array to save the transient cache
+			$feed_data = array();
+
+			foreach ($rss_items as $item) {
+				$feed_data[] = array(
+					'title' => $item->get_title(),
+					'link' => $item->get_permalink(),
+					'date' => $item->get_date('U')
+				);
+			}
+
+			// Saves the cache for 12 hours
+			// (or the time set in the cache_duration variable)
+			set_transient($transient_key, $feed_data, $cache_duration);
+		}
+    
+		if ( empty($feed_data) ) : ?>
+			<p><?php echo __( 'No news available at the moment.', 'tainacan' ); ?></p>
+		<?php else : ?>
+			<ul class="tainacan-dashboard-links-list">
+				<?php foreach ($feed_data as $feed_item) : ?>
+					<li>
+						<a href="<?php echo esc_url($feed_item['link']); ?>" target="_blank" rel="noopener noreferrer">
+							<?php echo esc_html( $feed_item['title'] ); ?>
+							<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span>
+							<span class="external-link-icon">↗</span>
+						</a>
+						<?php
+							$date = $feed_item['date'];
+							if ( $date ) {
+								$date = sprintf(
+									_x('%s ago', '%s = homan readable time period', 'tainacan'),
+									human_time_diff($date, current_time('timestamp'))
+								);
+							}
+						if ( $date ) : ?>
+							<small class="link-subtitle"><?php echo esc_html($date); ?></small>
+						<?php endif; ?>
+					</li>
+				<?php endforeach; ?>
+
+				<li style="margin-left: auto;">
+					<a href="https://tainacan.org/feed" target="_blank" rel="noopener noreferrer">
+						<?php echo __('See all news', 'tainacan'); ?>
+						<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span>
+						<span class="external-link-icon">↗</span>
+					</a>
+				</li>
+			</ul>
+		<?php endif;
+	}
+
+	/**
+	 * Adds action to clear the cache when necessary
+	 */
+	function tainacan_dashboard_news_clear_feeds_cache() {
+		$feed_options = get_option('tainacan_dashboard_news_feed', $this->default_news_feed_options);
+		delete_transient( 'tainacan_dashboard_news_feed_' . md5($feed_options['feed_url'] ) );
+	}
+		
 	/**
 	 * Creates the display code for a collection card
 	 */

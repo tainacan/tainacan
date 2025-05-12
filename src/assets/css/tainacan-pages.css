@@ -543,6 +543,9 @@ html {
   height: 100dvh;
   width: 100%;
 }
+.tainacan-pages-container.tainacan-pages-container--fullscreen #wpwrap {
+  z-index: 1;
+}
 .tainacan-pages-container.tainacan-pages-container--fullscreen #wpcontent,
 .tainacan-pages-container.tainacan-pages-container--fullscreen #wpfooter {
   margin-left: 0;

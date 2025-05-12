@@ -85,6 +85,9 @@ html {
     height: 100dvh;
     width: 100%;
 
+    #wpwrap {
+        z-index: 1;
+    }
     #wpcontent,
     #wpfooter {
         margin-left: 0;

@@ -11,7 +11,7 @@
     "@ntohq/buefy-next": "^0.1.4",
     "@vue-leaflet/vue-leaflet": "^0.10.1",
     "another-vue3-blurhash": "^0.0.1",
-    "apexcharts": "^4.5.0",
+    "apexcharts": "^4.7.0",
     "axios": "^1.8.4",
     "blurhash": "^2.0.5",
     "bulma": "^0.9.4",
@@ -34,7 +34,7 @@
     "vue": "^3.5.13",
     "vue-countup-v3": "^1.4.2",
     "vue-imask": "^7.6.1",
-    "vue-router": "^4.5.0",
+    "vue-router": "^4.5.1",
     "vue3-apexcharts": "^1.8.0",
     "vuex": "^4.1.0"
   },
