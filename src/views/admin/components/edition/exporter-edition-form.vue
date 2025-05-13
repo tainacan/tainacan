@@ -34,8 +34,8 @@
                                 expanded
                                 :loading="isFetchingCollections"
                                 :placeholder="$i18n.get('instruction_select_a_collection')"
-                                @update:model-value="formErrorMessage = null"
-                                :required="true">
+                                :required="true"
+                                @update:model-value="formErrorMessage = null">
                             <option
                                     v-for="collection in collections"
                                     :key="collection.id"
