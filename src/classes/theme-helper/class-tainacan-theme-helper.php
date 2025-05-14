@@ -1305,10 +1305,10 @@ class Theme_Helper {
 	public function get_tainacan_related_items_list($args = []) {
 		$defaults = array(
 			'class_name' => '',
-			'collection_heading_class_name' => '',
+			'collection_heading_class_name' => 'related-items-collection-name',
 			'collection_heading_tag' => 'h2', 
 			'hide_collection_heading' => false,
-			'metadata_label_class_name' => '',
+			'metadata_label_class_name' => 'related-items-metadata-label',
 			'metadata_label_tag' => 'p',
 			'hide_metadata_label' => false,
 			'carousel_args' => [],
@@ -1438,13 +1438,13 @@ class Theme_Helper {
 				}
 				
 				$view_more_link = $args['view_more_link_style'] === 'button' ?
-					'<div class="wp-block-buttons">
+					'<div class="wp-block-buttons related-items-view-more-link">
 						<div class="wp-block-button">
 							<a class="wp-block-button__link" href="' . esc_url( get_permalink( $related_group['collection_id'] ) ) . '?metaquery[0][key]=' . esc_attr($related_group['metadata_id']) . '&metaquery[0][value][0]=' . esc_attr($item->get_ID()) . '&metaquery[0][compare]=IN">
 								' . esc_html(sprintf( $args['view_more_link_text'], $related_group['total_items'] )) . '
 							</a>
 						</div>
-					</div>' : '<a href="' . esc_url( get_permalink( $related_group['collection_id'] ) ) . '?metaquery[0][key]=' . esc_attr($related_group['metadata_id']) . '&metaquery[0][value][0]=' . esc_attr($item->get_ID()) . '&metaquery[0][compare]=IN">
+					</div>' : '<a class="related-items-view-more-link" href="' . esc_url( get_permalink( $related_group['collection_id'] ) ) . '?metaquery[0][key]=' . esc_attr($related_group['metadata_id']) . '&metaquery[0][value][0]=' . esc_attr($item->get_ID()) . '&metaquery[0][compare]=IN">
 						' . esc_html(sprintf( $args['view_more_link_text'], $related_group['total_items'] )) . '
 					</a>';
 
@@ -1454,11 +1454,11 @@ class Theme_Helper {
 						 * Note to code reviewers: These lines doesn't need to be escaped.
 						 * Functions get_tainacan_items_carousel() and get_tainacan_dynamic_items_list used here escape the return value.
 						 */
-						( $args['view_more_link_position'] === 'top-right' && $related_group['total_items'] > 1 ? $view_more_link : '' ) .
 						$collection_heading .
+						( $args['view_more_link_position'] === 'top-right' && $related_group['total_items'] > 1 ? $view_more_link : '' ) .
 						$metadata_label .
 						$items_list_div .
-						( $args['view_more_link_position'] === 'bottom-left' && $related_group['total_items'] > 1 ? $view_more_link : '' ) .
+						( ( $args['view_more_link_position'] === 'bottom-left' || $args['view_more_link_position'] === 'bottom-right' ) && $related_group['total_items'] > 1 ? $view_more_link : '' ) .
 						'<div style="height:30px" aria-hidden="true" class="wp-block-spacer">
 						</div>
 					</div>

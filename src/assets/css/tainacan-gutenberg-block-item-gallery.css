@@ -677,6 +677,11 @@ button.swiper-pagination-bullet {
   opacity: 0.75;
 }
 .tainacan-media-component__swiper-main li.swiper-slide .swiper-slide-metadata {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
   text-align: center;
   font-size: 0.875em;
   margin-bottom: 1em;
@@ -1022,6 +1027,11 @@ button.swiper-pagination-bullet {
 .pswp.tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner .pswp__description {
   font-size: 0.9375em;
   display: block;
+}
+.pswp.tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner a,
+.pswp.tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner a:hover,
+.pswp.tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner a:focus {
+  color: var(--pswp-icon-color);
 }
 .pswp.tainacan-photoswipe-layer.pswp--zoomed-in .pswp__name {
   opacity: 0;

@@ -581,7 +581,6 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 				<?php if ( !empty($args['media_caption']) ) :?>
 					<span class="swiper-slide-metadata__caption">
 						<?php echo wp_kses_post($args['media_caption']); ?>
-						<br>
 					</span>
 				<?php endif; ?>	
 				<?php if ( !empty($args['media_title']) ) :?>
@@ -589,7 +588,6 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 						<?php echo wp_kses_post($args['media_title']); ?>
 					</span>
 				<?php endif; ?>
-				<br>
 				<?php if ( !empty($args['media_description']) ) :?>
 					<span class="swiper-slide-metadata__description">
 						<?php echo wp_kses_post($args['media_description']); ?>

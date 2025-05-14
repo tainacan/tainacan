@@ -153,6 +153,11 @@
         }
 
         .swiper-slide-metadata {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5em;
             text-align: center;
             font-size: 0.875em;
             margin-bottom: 1em;
@@ -525,6 +530,12 @@
             .pswp__description {
                 font-size: 0.9375em;
                 display: block;
+            }
+
+            a,
+            a:hover,
+            a:focus {
+                color: var(--pswp-icon-color);
             }
         }
     }
