@@ -18,6 +18,8 @@ sass src/views/mobile-app/tainacan-mobile-app.scss:src/assets/css/tainacan-mobil
 
 sass src/views/gutenberg-blocks/blocks/item-gallery/style.scss:src/assets/css/tainacan-gutenberg-block-item-gallery.css
 
+sass src/views/gutenberg-blocks/blocks/items-gallery/style.scss:src/assets/css/tainacan-gutenberg-block-items-gallery.css
+
 sass src/views/gutenberg-blocks/blocks/collections-list/style.scss:src/assets/css/tainacan-gutenberg-block-collections-list.css
 
 sass src/views/gutenberg-blocks/blocks/carousel-collections-list/style.scss:src/assets/css/tainacan-gutenberg-block-carousel-collections-list.css

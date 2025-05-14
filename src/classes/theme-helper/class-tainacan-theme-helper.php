@@ -25,7 +25,6 @@ class Theme_Helper {
 	}
 
 	private function __construct() {
-
 		if ( !defined('TAINACAN_DISABLE_ITEM_THE_CONTENT_FILTER') || true !== TAINACAN_DISABLE_ITEM_THE_CONTENT_FILTER ) {
 			add_filter( 'the_content', [$this, 'the_content_filter_item'] );
 		}
@@ -56,6 +55,7 @@ class Theme_Helper {
 		add_shortcode( 'tainacan-search', array($this, 'search_shortcode'));
 		add_shortcode( 'tainacan-item-submission', array($this, 'item_submission_shortcode'));
 		add_shortcode( 'tainacan-items-carousel', array($this, 'get_tainacan_items_carousel'));
+		add_shortcode( 'tainacan-items-gallery', array($this, 'get_tainacan_items_gallery'));
 		add_shortcode( 'tainacan-terms-carousel', array($this, 'get_tainacan_terms_carousel'));
 		add_shortcode( 'tainacan-dynamic-items-list', array($this, 'get_tainacan_dynamic_items_list'));
 		add_shortcode( 'tainacan-related-items-carousel', array($this, 'get_tainacan_related_items_carousel'));
@@ -1284,7 +1284,7 @@ class Theme_Helper {
 	 * @param array $args {
 		 *     Optional. Array of arguments.
 		 *     @type string  $item_id							The Item ID
-		 *     @type string  $items_list_layout					The type of list to be rendered. Accepts 'grid', 'list', 'mosaic', 'carousel' and 'tainacan-view-mode. 
+		 *     @type string  $items_list_layout					The type of list to be rendered. Accepts 'grid', 'list', 'mosaic', 'carousel', 'gallery' and 'tainacan-view-mode. 
 		 * 	   @type string  $order								Sorting direction to the related items query. Either 'desc' or 'asc'. 
 		 * 	   @type string  $orderby							Sortby metadata. By now we're accepting only 'title' and 'date'.
 		 *     @type string  $class_name						Extra class to add to the wrapper, besides the default wp-block-tainacan-carousel-related-items
@@ -1295,20 +1295,28 @@ class Theme_Helper {
 		 * 	   @type string  $metadata_label_tag				Tag to be used as wrapper of the metadata label. Defaults to p
 		 * 	   @type boolean $hide_metadata_label				Whether to hide the metadata label or not. Defaults to false
 		 *     @type array   $carousel_args						Array of arguments to be passed to the get_tainacan_items_carousel function if $items_list_layout == carousel
-		 *     @type array   $dynamic_items_args				Array of arguments to be passed to the get_tainacan_dynamic_items function if $items_list_layout != carousel
+		 *     @type array   $dynamic_items_args				Array of arguments to be passed to the get_tainacan_dynamic_items function if $items_list_layout != carousel && layout != gallery
+		 *     @type array   $items_gallery_args				Array of arguments to be passed to the get_tainacan_items_gallery function if $items_list_layout == gallery
+		 * 	   @type string  $view_more_link_style				Appearence of the "View all %s related items" link. Either 'button' or 'link'. Defaults to 'button'
+		 * 	   @type string  $view_more_link_position			Placement of the "View all %s related items" link. Either 'top-right', 'bottom-left' or 'bottom-right'. Defaults to 'bottom-left'
+		 *	   @type string  $view_more_link_text				Inner text content of the "View all %s related items" link. Defaults to 'View all %s related items'.
 		 * @return string  The HTML div to be used for rendering the related items vue component
 	 */
 	public function get_tainacan_related_items_list($args = []) {
 		$defaults = array(
 			'class_name' => '',
-			'collection_heading_class_name' => '',
+			'collection_heading_class_name' => 'related-items-collection-name',
 			'collection_heading_tag' => 'h2', 
 			'hide_collection_heading' => false,
-			'metadata_label_class_name' => '',
+			'metadata_label_class_name' => 'related-items-metadata-label',
 			'metadata_label_tag' => 'p',
 			'hide_metadata_label' => false,
 			'carousel_args' => [],
-			'dynamic_items_args' => []
+			'dynamic_items_args' => [],
+			'items_gallery_args' => [],
+			'view_more_link_style' => 'button',
+			'view_more_link_position' => 'bottom-left',
+			'view_more_link_text' => __('View all %s related items', 'tainacan'),
 		);
 		$args = wp_parse_args($args, $defaults);
 		
@@ -1356,9 +1364,12 @@ class Theme_Helper {
 				$items_list_div = '';
 				if ( isset($related_group['collection_id']) ) {
 
-					$block_args = (isset($args['items_list_layout']) && $args['items_list_layout'] !== 'carousel' )
-						? $args['dynamic_items_args']
-						: $args['carousel_args'];
+					$block_args = ( isset($args['items_list_layout']) && $args['items_list_layout'] === 'carousel' )
+						? $args['carousel_args'] : ( 
+							( isset($args['items_gallery_args']) && $args['items_list_layout'] === 'gallery' )
+							? $args['items_gallery_args']
+							: $args['dynamic_items_args']
+						);
 
 					$no_crop_images_to_square = isset($block_args['crop_images_to_square']) && !$block_args['crop_images_to_square'];
 					$image_size = isset($block_args['image_size']) 
@@ -1369,13 +1380,14 @@ class Theme_Helper {
 					$related_group['items'] = array_map(
 						function($el) use ($args) {
 
-							// In Tainacan View Modes, we fetch items from api so we only need ID
+							// In Tainacan View Modes and Item gallery, we fetch items from api so we only need ID
 							if ( $args['items_list_layout'] === 'tainacan-view-modes' )
 								return $el['id'];
 
 							// For other layouts, we simply remove attribute description
 							unset($el['description']);
 							return $el;
+
 						}, $related_group['items']
 					);
 					
@@ -1389,6 +1401,16 @@ class Theme_Helper {
 
 						$items_list_div = $this->get_tainacan_items_carousel($items_list_args);
 
+					} else if ( isset($args['items_list_layout']) && $args['items_list_layout'] === 'gallery' ) {
+						$items_list_args = wp_parse_args([
+							'collection_id' => $related_group['collection_id'],
+							'load_strategy' => 'parent',
+							'selected_items' => $related_group['items'],
+							'image_size' => $image_size
+						], $block_args);
+
+						$items_list_div = $this->get_tainacan_items_gallery($items_list_args);
+
 					} else if ( isset($args['items_list_layout']) && $args['items_list_layout'] === 'tainacan-view-modes' ) {
 						$items_list_args = wp_parse_args([
 							'collection_id' => $related_group['collection_id'],
@@ -1396,7 +1418,6 @@ class Theme_Helper {
 							'selected_items' => json_encode($related_group['items']),
 							'layout' => $args['items_list_layout'],
 							'displayed_metadata' => json_encode(isset( $block_args['displayed_metadata'] ) ? $block_args['displayed_metadata'] : []),
-							'selected_items' => json_encode($related_group['items']),
 							'tainacan_view_mode' => $block_args['tainacan_view_mode']
 						], $block_args);
 
@@ -1416,27 +1437,29 @@ class Theme_Helper {
 					} 
 				}
 				
-				$output .= '<div class="wp-block-group" data-related-collection-id="' . $related_group['collection_id'] . '" data-related-metadata-id="' . $related_group['metadata_id'] . '">
+				$view_more_link = $args['view_more_link_style'] === 'button' ?
+					'<div class="wp-block-buttons related-items-view-more-link">
+						<div class="wp-block-button">
+							<a class="wp-block-button__link" href="' . esc_url( get_permalink( $related_group['collection_id'] ) ) . '?metaquery[0][key]=' . esc_attr($related_group['metadata_id']) . '&metaquery[0][value][0]=' . esc_attr($item->get_ID()) . '&metaquery[0][compare]=IN">
+								' . esc_html(sprintf( $args['view_more_link_text'], $related_group['total_items'] )) . '
+							</a>
+						</div>
+					</div>' : '<a class="related-items-view-more-link" href="' . esc_url( get_permalink( $related_group['collection_id'] ) ) . '?metaquery[0][key]=' . esc_attr($related_group['metadata_id']) . '&metaquery[0][value][0]=' . esc_attr($item->get_ID()) . '&metaquery[0][compare]=IN">
+						' . esc_html(sprintf( $args['view_more_link_text'], $related_group['total_items'] )) . '
+					</a>';
+
+				$output .= '<div class="wp-block-group has-view-more-link--' . esc_attr($args['view_more_link_position']) . '" data-related-collection-id="' . $related_group['collection_id'] . '" data-related-metadata-id="' . $related_group['metadata_id'] . '">
 					<div class="wp-block-group__inner-container">' .
 						/**
-						 * Note to code reviewers: This lines doesn't need to be escaped.
+						 * Note to code reviewers: These lines doesn't need to be escaped.
 						 * Functions get_tainacan_items_carousel() and get_tainacan_dynamic_items_list used here escape the return value.
 						 */
 						$collection_heading .
+						( $args['view_more_link_position'] === 'top-right' && $related_group['total_items'] > 1 ? $view_more_link : '' ) .
 						$metadata_label .
 						$items_list_div .
-							( 
-							$related_group['total_items'] > 1 ?
-								'<div class="wp-block-buttons">
-									<div class="wp-block-button">
-										<a class="wp-block-button__link" href="' . esc_url( get_permalink( $related_group['collection_id'] ) ) . '?metaquery[0][key]=' . esc_attr($related_group['metadata_id']) . '&metaquery[0][value][0]=' . esc_attr($item->get_ID()) . '&metaquery[0][compare]=IN">
-											' . sprintf( __('View all %s related items', 'tainacan'), $related_group['total_items'] ) . '
-										</a>
-									</div>
-								</div>'
-							: ''
-							)
-						. '<div style="height:30px" aria-hidden="true" class="wp-block-spacer">
+						( ( $args['view_more_link_position'] === 'bottom-left' || $args['view_more_link_position'] === 'bottom-right' ) && $related_group['total_items'] > 1 ? $view_more_link : '' ) .
+						'<div style="height:30px" aria-hidden="true" class="wp-block-spacer">
 						</div>
 					</div>
 				</div>';
@@ -1488,6 +1511,10 @@ class Theme_Helper {
 		* @return string  The HTML div to be used for rendering the item galery component
 	 */
 	public function get_tainacan_item_gallery($args = []) {
+
+		// Accepts both camelCase and snake_case
+		// This is to make it easier to use in the block editor
+		$args = $this->convert_params_to_camel_case($args);
 
 		$defaults = array(
 			'blockId' => 						uniqid(),
@@ -1806,6 +1833,320 @@ class Theme_Helper {
 					'hide_media_name' => $hide_file_name_lightbox,
 					'hide_media_caption' => $hide_file_caption_lightbox,
 					'hide_media_description' => $hide_file_description_lightbox,
+					'lightbox_has_light_background' => $lightbox_has_light_background
+				)
+			),
+			$args,
+		);
+	}
+
+	/**
+	 * Returns an items gallery, displaying a list of items in a slider, carousel and lightbox
+	 *
+	 * @param array $args {
+		*     Optional. Array of arguments.
+		*	  @type string   $collectionId					  The Collection ID
+		*	  @type string   $searchURL						  A query string to fetch items from, if load strategy is 'search'
+		*	  @type array    $searchParams					  An array of query params to fetch items from, if load strategy is 'search'
+        *	  @type array    $selectedItems					  An array of item IDs to fetch items from, if load strategy is 'selection' and an array of items, if the load strategy is 'parent'
+        *	  @type string   $loadStrategy					  Either 'search' or 'selection', to determine how items will be fetch
+        *	  @type integer  $maxItemsNumber				  Maximum number of items to be fetch
+        *	  @type string	 $blockId 						  A unique identifier for the gallery, will be generated automatically if not provided,
+		*	  @type bool     $isBlock						  An identifier if we're comming from a block renderer, to avois using functions not available outside of the gutenberg scope;
+		* 	  @type array 	 $layoutElements 				  Array of elements present in the gallery. Possible values are 'main' and 'carousel'
+		* 	  @type bool 	 $hideItemTitleMain 			  Hides the Main slider item title
+		* 	  @type bool 	 $hideItemLinkMain 			  	  Hides the Main slider item link
+		* 	  @type bool 	 $hideItemDescriptionMain		  Hides the Main slider item description
+		* 	  @type bool 	 $hideItemTitleThumbnails 		  Hides the Thumbnails carousel item title
+		* 	  @type bool 	 $hideItemTitleLightbox 		  Hides the Lightbox item title
+		* 	  @type bool 	 $hideItemLinkLightbox 		  	  Hides the Lightbox item link
+		* 	  @type bool 	 $hideItemDescriptionLightbox	  Hides the Lightbox file description
+		* 	  @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item
+		*	  @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
+		*	  @type bool     $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon
+		*	  @type string   $thumbnailsSize				  Media size for the thumbnail images. Defaults to 'tainacan-medium'
+		*	  @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.
+		* }		
+		* @return string  The HTML div to be used for rendering the items galery component
+	 */
+	public function get_tainacan_items_gallery($args = []) {
+		
+		// Accepts both camelCase and snake_case
+		// This is to make it easier to use in the block editor
+		$args = $this->convert_params_to_camel_case($args);
+
+		$defaults = array(
+			'blockId' => 						uniqid(),
+			'layoutElements' => 				array( 'main' => true, 'thumbnails' => true ),
+			'collectionId' => 				    '',
+			'searchURL' => 					    '',	
+			'searchParams' => 					array(),
+			'selectedItems' => 				    array(),
+			'loadStrategy' => 				    'selection',	
+			'maxItemsNumber' => 				12,
+			'isBlock' =>						false,
+			'hideItemTitleMain' => 				true, 
+			'hideItemLinkMain' => 				false,
+			'hideItemDescriptionMain' =>		true,
+			'hideItemTitleThumbnails' => 		true, 
+			'hideItemTitleLightbox' =>	 		false, 
+			'hideItemLinkLightbox' => 			false,
+			'hideItemDescriptionLightbox' =>	false,
+			'openLightboxOnClick' => 			true,
+			'lightboxHasLightBackground' => 	false,
+			'showArrowsAsSVG' =>				true,
+			'thumbnailsSize' =>					'tainacan-medium',
+			'thumbsHaveFixedHeight'	=>			false	
+		);
+		$args = wp_parse_args($args, $defaults);
+
+		// Gets options from block attributes
+		$block_id = $args['blockId'];
+		$selected_items = $args['selectedItems'];
+		$search_URL = $args['searchURL']; // Not used here since the request is made via searchParams
+		$search_params = $args['searchParams'];
+		$collection_id = $args['collectionId'];
+		$load_strategy = $args['loadStrategy'];
+		$max_items_number = $args['maxItemsNumber'];
+		$layout_elements = $args['layoutElements'];
+		$hide_item_title_main = $args['hideItemTitleMain'];
+		$hide_item_link_main = $args['hideItemLinkMain'];
+		$hide_item_description_main = $args['hideItemDescriptionMain'];
+		$hide_item_title_thumbnails = $args['hideItemTitleThumbnails'];
+		$hide_item_title_lightbox = $args['hideItemTitleLightbox'];
+		$hide_item_link_lightbox = $args['hideItemLinkLightbox'];
+		$hide_item_description_lightbox = $args['hideItemDescriptionLightbox'];
+		$open_lightbox_on_click = $args['openLightboxOnClick'];
+		$lightbox_has_light_background = $args['lightboxHasLightBackground'];
+		$show_arrows_as_svg = $args['showArrowsAsSVG'];
+		$thumbnails_size = $args['thumbnailsSize'];
+		$thumbs_have_fixed_height = $args['thumbsHaveFixedHeight'];
+
+		// Prefils arrays with proper values to avoid messsy IFs
+		$layout_elements = array(
+			'main' => (isset($layout_elements['main']) && ($layout_elements['main'] === true || $layout_elements['main'] == 'true')) ? true : false,
+			'thumbnails' => (isset($layout_elements['thumbnails']) && ($layout_elements['thumbnails'] === true || $layout_elements['thumbnails'] == 'true')) ? true : false
+		);
+
+		$media_items_main = array();
+		$media_items_thumbnails = array();
+
+		$items_ids = [];
+		$entity = [];
+
+		if ( $collection_id )
+			$entity = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_id);
+
+		if ( $load_strategy === 'selection' && !empty($selected_items) ) {
+			$items_ids = $selected_items;
+		} else if ( $load_strategy === 'search' && !empty($search_params) ) {
+			$search_params['posts_per_page'] = $max_items_number;
+			$items = \Tainacan\Repositories\Items::get_instance()->fetch($search_params, $entity, 'OBJECT');
+
+			if ( $items )
+				$items_ids = array_map(function($item) { return $item->get_id(); }, $items);
+
+		} else if ( $load_strategy === 'parent' && !empty($selected_items) ) {
+			$items_ids = array_map(function($item) { return $item['id']; }, $selected_items);
+		}
+
+		// Prepares the main slider
+		if ( $layout_elements['main'] ) {
+
+			$class_slide_metadata = '';
+			if ($hide_item_title_main)
+				$class_slide_metadata .= ' hide-name';
+			if ($hide_item_description_main)
+				$class_slide_metadata .= ' hide-description';
+			if ($hide_item_link_main)
+				$class_slide_metadata .= ' hide-caption';
+
+			// Checks if there is at least one image alongside the media sources
+			// to decide if loading the lighbox is worthy on the main slider
+			if ($open_lightbox_on_click) {
+				$media_includes_images = false;
+
+				foreach( $items_ids as $item_id ) {
+
+					if ( !empty(tainacan_get_the_document($item_id)) ) {
+						$document_type = tainacan_get_the_document_type($item_id);
+						
+						if ($document_type === 'attachment')  {
+							// Uses this moment to also see if we have an image
+							$attachment = get_post(tainacan_get_the_document_raw($item_id));
+							$media_includes_images = wp_attachment_is('image', $attachment->ID);
+						} else if ($document_type === 'url') {
+							$item = tainacan_get_item($item_id);
+							$document_options = $item->get_document_options();
+							$media_includes_images = isset($document_options['is_image']) && $document_options['is_image'];
+						}
+					}
+				}
+				
+				if ( !$media_includes_images )
+					$open_lightbox_on_click = false;
+			}
+
+			// Adds Item's documents as main slider content
+			foreach( $items_ids as $item_id ) {
+				$item = tainacan_get_item($item_id);
+
+				$media_items_main[] = 
+					tainacan_get_the_media_component_slide(array(
+						'media_content' => tainacan_get_the_document($item_id),
+						'media_content_full' => $open_lightbox_on_click ?
+												(
+													$document_type === 'attachment' ?
+													tainacan_get_the_document($item_id, 'full') :
+													sprintf('<div class="attachment-without-image">%s</div>', tainacan_get_the_document($item_id, 'full'))
+												) : '',
+						'media_title' => $item ? $item->get_title() : '',
+						'media_description' =>  $item ? $item->get_description() : '',
+						'media_caption' => '<a href="' . esc_url(get_permalink($item_id)) . '" target="_blank" rel="noopener noreferrer">' . __( 'Visit the page', 'tainacan' ) . '</a>',
+						'media_type' => tainacan_get_the_document_type($item_id),
+						'class_slide_metadata' => $class_slide_metadata
+					));
+			
+			}
+		}
+		
+		// Make sure we have more than one media item otherwise 
+		// we don't need to show thumbnails if the main carousel exists
+		if ( $layout_elements['main'] && count($media_items_main) <= 1 )
+			$layout_elements['thumbnails'] = false;
+
+		// Prepares the thumbnails carousel
+		if ( $layout_elements['thumbnails'] ) {
+
+			$class_slide_metadata = ' hide-caption hide-description';
+			if ($hide_item_title_thumbnails)
+				$class_slide_metadata .= ' hide-name';
+
+			// Adds the items thumbnails as carousel
+			foreach( $items_ids as $item_id ) {
+				$item = tainacan_get_item($item_id);
+				$is_document_type_attachment = tainacan_get_the_document_type($item_id) === 'attachment';
+				
+				$media_items_thumbnails[] =
+					tainacan_get_the_media_component_slide(array(
+						'media_content' => get_the_post_thumbnail($item_id, $thumbnails_size),
+						'media_content_full' => $open_lightbox_on_click ? ($is_document_type_attachment ? tainacan_get_the_document($item_id, 'full') : sprintf('<div class="attachment-without-image">%s</div>', tainacan_get_the_document($item_id, 'full')) ) : '',
+						'media_title' => $item ? $item->get_title() : '',
+						'media_description' => $item ? $item->get_description() : '',
+						'media_caption' => '<a href="' . esc_url(get_permalink($item_id)) . '" target="_blank" rel="noopener noreferrer">' . __( 'Visit the page', 'tainacan' ) . '</a>',
+						'media_type' => tainacan_get_the_document_type($item_id),
+						'class_slide_metadata' => $class_slide_metadata
+					));			
+			}
+		}
+		
+		$block_custom_css = '';
+		
+		// Text color. First we check for custom preset colors, then actual values
+		$block_custom_css .= isset($args['textColor']) ? sprintf('--tainacan-media-metadata-color: var(--wp--preset--color--%s);', $args['textColor']) : '';
+		$block_custom_css .= isset($args['style']['color']['text']) ? sprintf('--tainacan-media-metadata-color: %s;', $args['style']['color']['text']) : '';
+		
+		// Background color. First we check for custom preset colors, then actual values
+		$block_custom_css .= isset($args['backgroundColor']) ? sprintf('--tainacan-media-background: var(--wp--preset--color--%s);', $args['backgroundColor']) : '';
+		$block_custom_css .= isset($args['style']['color']['background']) ? sprintf('--tainacan-media-background: %s;', $args['style']['color']['background']) : '';
+
+		// Link color, if enabled. Firts we check for custom preset colors, then actual values.
+		$block_custom_css .= isset($args['linkColor']) ? sprintf('--swiper-theme-color: var(--wp--preset--color--%s);', $args['linkColor']) : '';
+		if ( isset($args['style']['elements']['link']['color']['text']) ) {
+			$link_color = $args['style']['elements']['link']['color']['text'];
+			if ( strpos( $link_color, 'var:' ) !== false ) {
+				$link_color = str_replace('|', '--', $link_color);
+				$link_color = str_replace('var:', 'var(--wp--', $link_color) . ')';
+			}
+			$block_custom_css .= sprintf('--swiper-theme-color: %s;', $link_color);
+		}
+			
+		// Other values are obtained directly from the attributes
+		$block_custom_css .= (isset($args['arrowsSize']) && is_numeric($args['arrowsSize'])) ? sprintf('--swiper-navigation-size: %spx;', $args['arrowsSize']) : '';
+		$block_custom_css .= (isset($args['mainSliderHeight']) && is_numeric($args['mainSliderHeight'])) ? sprintf('--tainacan-media-main-carousel-height: %svh;', $args['mainSliderHeight']) : '';
+		$block_custom_css .= (isset($args['mainSliderWidth']) && is_numeric($args['mainSliderWidth'])) ? sprintf('--tainacan-media-main-carousel-width: %s%%;', $args['mainSliderWidth']) : '';
+		$block_custom_css .= (isset($args['thumbnailsCarouselWidth']) && is_numeric($args['thumbnailsCarouselWidth'])) ? sprintf('--tainacan-media-thumbs-carousel-width: %s%%;', $args['thumbnailsCarouselWidth']) : '';
+		$block_custom_css .= (isset($args['thumbnailsCarouselItemSize']) && is_numeric($args['thumbnailsCarouselItemSize'])) ? sprintf('--tainacan-media-thumbs-carousel-item-size: %spx;', $args['thumbnailsCarouselItemSize']) : '';
+
+		// Checks if we're inside a block, otherwise we have to build this manually.
+		if ( isset($args['isBlock']) && $args['isBlock'] ) {
+			$wrapper_attributes = get_block_wrapper_attributes(
+				array(
+					'style' => $block_custom_css,
+					'class' => 'tainacan-media-component'
+				)
+			);
+		}  else {
+			$wrapper_attributes = '';
+			if ( !empty($block_custom_css) )
+				$wrapper_attributes .= 'style="' . $block_custom_css . '" ';
+			
+			$wrapper_attributes .=	'class="tainacan-media-component"';
+		}
+
+		/**
+		 * Filters the Swiper options for the main slider
+		 * 
+		 * @param Object items_ids The array of item ids
+		 * @param Object args Arguments passed to the get_tainacan_items_gallery function
+		 */
+		$extra_swiper_main_options = [];
+		$extra_swiper_main_options = apply_filters( 'tainacan-swiper-main-options', $extra_swiper_main_options, $items_ids, $args );
+
+		$swiper_main_options = array_merge(
+			$extra_swiper_main_options,
+			$layout_elements['main'] ? array(
+				'navigation' => array(
+					'nextEl' => sprintf('.swiper-navigation-next_tainacan-items-gallery-block_id-%s-main', $block_id),
+					'prevEl' => sprintf('.swiper-navigation-prev_tainacan-items-gallery-block_id-%s-main', $block_id),
+					'preloadImages' => false,
+					'lazy' => true
+				)
+			) : []
+		);
+
+		/**
+		 * Filters the Swiper options for the thumbnails slider
+		 * 
+		 * @param Object items_ids The array of item ids
+		 * @param Object args Arguments passed to the get_tainacan_items_gallery function
+		 */
+		$extra_swiper_thumbs_options = [];
+		$extra_swiper_thumbs_options = apply_filters( 'tainacan-swiper-thumbs-options', $extra_swiper_thumbs_options, $items_ids, $args );
+
+		$swiper_thumbs_options = array_merge(
+			$extra_swiper_thumbs_options,
+			( $layout_elements['thumbnails'] && !$layout_elements['main'] ) ? array(
+				'navigation' => array(
+					'nextEl' => sprintf('.swiper-navigation-next_tainacan-items-gallery-block_id-%s-thumbs', $block_id),
+					'prevEl' => sprintf('.swiper-navigation-prev_tainacan-items-gallery-block_id-%s-thumbs', $block_id),
+					'preloadImages' => false,
+					'lazy' => true
+				)
+			) : []
+		);
+		
+		/**
+		 * Filters the Media Component HTML
+		 */
+		return apply_filters(
+			'get_tainacan_items_gallery',
+			tainacan_get_the_media_component(
+				'tainacan-items-gallery-block_id-' . $block_id,
+				$layout_elements['thumbnails'] ? $media_items_thumbnails : null,
+				$layout_elements['main'] ? $media_items_main : null,
+				array(
+					'wrapper_attributes' => $wrapper_attributes,
+					'class_main_div' => '',
+					'class_thumbs_div' => '',
+					'class_thumbs_li' => $thumbs_have_fixed_height ? 'has-fixed-height' : '',
+					'swiper_main_options' => $swiper_main_options,
+					'swiper_thumbs_options' => $swiper_thumbs_options,
+					'swiper_arrows_as_svg' => $show_arrows_as_svg,
+					'disable_lightbox' => !$open_lightbox_on_click,
+					'hide_media_name' => $hide_item_title_lightbox,
+					'hide_media_caption' => $hide_item_link_lightbox,
+					'hide_media_description' => $hide_item_description_lightbox,
 					'lightbox_has_light_background' => $lightbox_has_light_background
 				)
 			),
@@ -2360,6 +2701,10 @@ class Theme_Helper {
 	 */
 	public function get_tainacan_item_gallery_template($args = []) {
 
+		// Accepts both camelCase and snake_case
+		// This is to make it easier to use in the block editor
+		$args = $this->convert_params_to_camel_case($args);
+
 		$defaults = array(
 			'blockId' => 						uniqid(),
 			'layoutElements' => 				array( 'main' => true, 'thumbnails' => true ),
@@ -2699,5 +3044,17 @@ class Theme_Helper {
 				}) .
 			'</ul>'
 		]);
+	}
+
+	/**
+	 * Converts snake_case keys to camelCase
+	 */
+	private function convert_params_to_camel_case($params) {
+		$converted_params = [];
+		foreach ($params as $key => $value) {
+			$camel_case_key = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $key))));
+			$converted_params[$camel_case_key] = $value;
+		}
+		return $converted_params;
 	}
 }

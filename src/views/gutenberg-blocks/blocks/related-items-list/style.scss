@@ -53,4 +53,19 @@
             min-height: 150px;
         }
     }
+    .has-view-more-link--bottom-right .related-items-view-more-link {
+        text-align: right;
+    }
+    @media screen and (min-width: 768px) {
+        .has-view-more-link--top-right h2,
+        .has-view-more-link--top-right h3,
+        .has-view-more-link--top-right h4 {
+            display: inline-block;
+        }
+        .has-view-more-link--top-right .related-items-view-more-link,
+        .has-view-more-link--bottom-right .related-items-view-more-link {
+            float: right;
+            margin-left: 1em;
+        }
+    }
 }
