@@ -3,7 +3,7 @@
 namespace Tainacan\Mappers;
 
 class Inbcm_Museological extends Mapper {
-	public $slug = 'inbcm-museológico';
+	public $slug = 'inbcm-museologico';
 	public $name = 'INBCM: Museológico';
 	public $allow_extra_metadata = true;
 
@@ -24,7 +24,8 @@ class Inbcm_Museological extends Mapper {
 				'label' => __( 'Denomination', 'tainacan' )
 			],
 			'inbcm:titulo' => [
-				'label' => __( 'Title', 'tainacan' )
+				'label' => __( 'Title', 'tainacan' ),
+                'core_metadatum' => 'title'
 			],
 			'inbcm:autor' => [
 				'label' => __( 'Author', 'tainacan' )

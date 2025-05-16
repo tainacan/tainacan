@@ -4,7 +4,7 @@ namespace Tainacan\Mappers;
 
 
 class Inbcm_Archive extends Mapper {
-	public $slug = 'inbcm-arquivístico';
+	public $slug = 'inbcm-arquivistico';
 	public $name = 'INBCM: Arquivístico';
 	public $allow_extra_metadata = true;
 	
@@ -17,7 +17,8 @@ class Inbcm_Archive extends Mapper {
 				'label' => __( 'Reference Code', 'tainacan')
 			],
 			'inbcm:titulo' => [
-				'label' => __( 'Title', 'tainacan')
+				'label' => __( 'Title', 'tainacan'),
+                'core_metadatum' => 'title'
 			],
 			'inbcm:data' => [
 				'label' => __( 'Date', 'tainacan'),

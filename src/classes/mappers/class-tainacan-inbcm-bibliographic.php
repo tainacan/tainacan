@@ -4,7 +4,7 @@ namespace Tainacan\Mappers;
 
 
 class Inbcm_Bibliographic extends Mapper {
-	public $slug = 'inbcm-bibliográfico';
+	public $slug = 'inbcm-bibliografico';
 	public $name = 'INBCM: Bibliográfico';
 	public $allow_extra_metadata = true;
 	
@@ -23,7 +23,8 @@ class Inbcm_Bibliographic extends Mapper {
 				'label' => __( 'Condition/Status', 'tainacan'),
 			],
 			'inbcm:titulo' => [
-				'label' => __( 'Title', 'tainacan')
+				'label' => __( 'Title', 'tainacan'),
+                'core_metadatum' => 'title'
 			],
 			'inbcm:tipo' => [
 				'label' => __( 'Type', 'tainacan'),
