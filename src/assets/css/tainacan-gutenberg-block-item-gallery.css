@@ -681,7 +681,7 @@ button.swiper-pagination-bullet {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 1em;
+  gap: 0.5em;
   text-align: center;
   font-size: 0.875em;
   margin-bottom: 1em;
