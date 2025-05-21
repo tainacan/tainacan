@@ -15,7 +15,7 @@ class Dashboard extends Pages {
 	private $default_news_feed_options = array(
 		'feed_url' => 'https://tainacan.org/feed/',
 		'title' => 'tainacan.org',
-		'link' => 'https://tainacan.org/blog/',
+		'view_all_link' => 'https://tainacan.org/blog/',
 		'posts_per_feed' => 3,
 	);
 
@@ -74,9 +74,6 @@ class Dashboard extends Pages {
 			'<p>' . __('For more information:', 'your-textdomain') . '</p>' .
 			'<p><a href="https://tainacan.org/docs/" target="_blank">' . __('Tainacan Documentation', 'your-textdomain') . '</a></p>'
 		);
-		
-		// Makes sure dashboard news card is updated after plugins update
-		add_action( 'upgrader_process_complete', 'tainacan_dashboard_news_clear_feeds_cache', 10, 0 );
 	}
 
 	public function render_page_content() {
@@ -144,7 +141,7 @@ class Dashboard extends Pages {
 			'constrol' => array( $this, 'tainacan_news_dashboard_card_control' ),
 			'icon' => $this->get_svg_icon( 'openurl' ),
 			'color' => 'gray',
-			'position' => 'column4'
+			'position' => 'column3'
 		);
 
 		$collections = tainacan_collections()->fetch(array(), 'OBJECT');
@@ -410,63 +407,47 @@ class Dashboard extends Pages {
 	 */
 	function tainacan_news_dashboard_card($args = null) {
 
-		$feed_options = get_option('tainacan_dashboard_news_feed', $this->default_news_feed_options);
-
 		// Apply filters to allow customization
-		$feed_options = apply_filters('tainacan_dashboard_news_feed', $feed_options);
+		$feed_options = apply_filters('tainacan_dashboard_news_feed', $this->default_news_feed_options);
 		
-		// Key for transient cache
-		$transient_key = 'tainacan_dashboard_news_feed_' . md5($feed_options['feed_url'] );
-		$cache_duration = 12 * HOUR_IN_SECONDS;
+		// Includes required library for fetching rss
+		include_once(ABSPATH . WPINC . '/feed.php');
+				
+		// Actually fetches the feed  (this function already caches the feed every 12 hours using wp transient)
+		$rss = fetch_feed($feed_options['feed_url']);
 		
-		// Checks if there is a transient cache
-		$feed_data = get_transient($transient_key);
+		// Checks if there was an error fetching the feed
+		if ( is_wp_error($rss) ) { 
+			?>
+				<ul class="tainacan-dashboard-links-list">
+					<li>
+						<p>
+						<?php 
+							printf(
+								__('The feed "%s" could not be loaded at the moment. <a href="%s" target="_blank" rel="noopener">Visit the website</a> to check its content.', 'tainacan'),
+								esc_html($feed_options['title']),
+								esc_url($feed_options['view_all_link'])
+							);
+						?>
+						</p>
+					</li>
+				</ul>
+			<?php
+
+			return;
+		}
 		
-		if ( false === $feed_data ) {
-			
-			// Includes required library for fetching rss
-			include_once(ABSPATH . WPINC . '/feed.php');
-        			
-			// Actually fetches the feed
-			$rss = fetch_feed($feed_options['feed_url']);
-			
-			// Checks if there was an error fetching the feed
-			if ( is_wp_error($rss) ) { 
-				?>
-					<ul class="tainacan-dashboard-links-list">
-						<li>
-							<?php 
-								printf(
-									__('The feed "%s" could not be loaded at the moment. <a href="%s" target="_blank" rel="noopener">Visit the website</a> to check its content.', 'tainacan'),
-									esc_html($feed_options['title']),
-									esc_url($feed_options['link'])
-								);
-							?>
-						</li>
-					</ul>
-				<?php
+		// Fetches the items from the feed
+		$max_items = $rss->get_item_quantity($feed_options['posts_per_feed']);
+		$rss_items = $rss->get_items(0, $max_items);
+		$feed_data = array();
 
-				return;
-			}
-			
-			// Fetches the items from the feed
-			$max_items = $rss->get_item_quantity($feed_options['posts_per_feed']);
-			$rss_items = $rss->get_items(0, $max_items);
-			
-			// Stores the items in an array to save the transient cache
-			$feed_data = array();
-
-			foreach ($rss_items as $item) {
-				$feed_data[] = array(
-					'title' => $item->get_title(),
-					'link' => $item->get_permalink(),
-					'date' => $item->get_date('U')
-				);
-			}
-
-			// Saves the cache for 12 hours
-			// (or the time set in the cache_duration variable)
-			set_transient($transient_key, $feed_data, $cache_duration);
+		foreach ($rss_items as $item) {
+			$feed_data[] = array(
+				'title' => $item->get_title(),
+				'link' => $item->get_permalink(),
+				'date' => $item->get_date('U')
+			);
 		}
     
 		if ( empty($feed_data) ) : ?>
@@ -495,7 +476,7 @@ class Dashboard extends Pages {
 				<?php endforeach; ?>
 
 				<li style="margin-left: auto;">
-					<a href="https://tainacan.org/feed" target="_blank" rel="noopener noreferrer">
+					<a href="<?php echo $feed_options['view_all_link'];?>" target="_blank" rel="noopener noreferrer">
 						<?php echo __('See all news', 'tainacan'); ?>
 						<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span>
 						<span class="external-link-icon">↗</span>
@@ -503,14 +484,6 @@ class Dashboard extends Pages {
 				</li>
 			</ul>
 		<?php endif;
-	}
-
-	/**
-	 * Adds action to clear the cache when necessary
-	 */
-	function tainacan_dashboard_news_clear_feeds_cache() {
-		$feed_options = get_option('tainacan_dashboard_news_feed', $this->default_news_feed_options);
-		delete_transient( 'tainacan_dashboard_news_feed_' . md5($feed_options['feed_url'] ) );
 	}
 		
 	/**
