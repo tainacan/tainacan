@@ -79,6 +79,7 @@ export default (element) => {
         element.style.setProperty('height', '320px');
         element.style.setProperty('width', '100%');
         element.style.setProperty('display', 'block'); 
+        element.style.setProperty('z-index', '0');
 
         var tainacanMap = TainacanLeaflet.map(element.id).setView([-14.4086569, -51.31668], 5);
         
