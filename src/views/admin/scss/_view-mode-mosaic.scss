@@ -22,6 +22,7 @@
     
     & > li,
     & > .skeleton {
+        list-style: none;
         flex-grow: calc(var(--tainacan-mosaic-item-width, 300) * (100000 / var(--tainacan-mosaic-item-height, 300)));
         flex-basis: calc(var(--tainacan-mosaic-view-mode-min-height, 180) * (var(--tainacan-mosaic-item-width, 300) / var(--tainacan-mosaic-item-height, 300)));
         aspect-ratio: var(--tainacan-mosaic-item-width, 300) / var(--tainacan-mosaic-item-height, 300);
