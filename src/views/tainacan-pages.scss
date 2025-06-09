@@ -618,7 +618,7 @@ html {
                     background-image: url('data:image/svg+xml,<svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.976713 0H9.01734C9.57359 0 9.85171 0.671875 9.45796 1.06563L5.43921 5.0875C5.19546 5.33125 4.79859 5.33125 4.55484 5.0875L0.536088 1.06563C0.142338 0.671875 0.420463 0 0.976713 0Z" fill="currentColor" fill-opacity="0.5"/></svg>');
                     background-repeat: no-repeat;
                     background-position: center;
-                    transition: transform 0.3s;
+                    // transition: transform 0.3s ease; // Removed because it causes flickering in Chrome when side menu is collapsed
                 }
                 button[aria-expanded="true"]::after {
                     transform: rotateX(180deg);
@@ -745,7 +745,7 @@ html {
                 opacity: 0;
                 position: relative;
                 left: -0.5em;
-                transition: left 0.3s ease,opacity 0.3s ease;
+                transition: left 0.3s ease, opacity 0.3s ease;
             }
             &:hover .icon,
             &:focus .icon {
