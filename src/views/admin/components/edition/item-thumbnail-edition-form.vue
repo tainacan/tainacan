@@ -168,6 +168,7 @@ export default {
             height: 120px;
             width: 120px;
             min-width: 120px;
+            border-radius: 3px;
         }
         .image-placeholder {
             position: absolute;

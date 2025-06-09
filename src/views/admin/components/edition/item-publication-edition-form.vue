@@ -298,9 +298,6 @@ export default {
             imediate: true
         }
     },
-    beforeUnmount() {
-        this.$emitter.off('toggleItemEditionFooterDropdown');
-    },
     methods: {
         ...mapActions('activity', [
             'fetchUsers'

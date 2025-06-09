@@ -1,7 +1,9 @@
 <template>
     <div class="tainacan-repository-level-colors page-container">
         
-        <b-loading v-model="isLoading" />
+        <b-loading 
+                v-model="isLoading"
+                :is-full-page="false" />
         
         <tainacan-title>
             <h2>

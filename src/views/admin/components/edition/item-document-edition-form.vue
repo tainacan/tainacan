@@ -179,11 +179,11 @@ export default {
 
         .document-field-placeholder {
             display: flex;
-            gap: 0.125rem;
+            gap: 0.25rem;
             justify-content: space-evenly;
             align-items: center;
             padding: 0.5rem;
-            min-height: 130px;
+            min-height: 120px;
             border: 1px solid var(--tainacan-input-border-color);
             border-radius: var(--tainacan-input-border-radius, 2px);
 
@@ -211,6 +211,7 @@ export default {
             }
 
             li {
+                min-width: 28%;
                 button {
                     text-align: center;
                     display: flex;
@@ -219,7 +220,8 @@ export default {
                     align-items: center;
                     border-radius: var(--tainacan-button-border-radius, 4px);
                     height: 92px;
-                    width: 92px;
+                    min-width: 92px;
+                    width: 100%;
                     padding: 4px;
                     border: none;
                     background-color: var(--tainacan-background-color);

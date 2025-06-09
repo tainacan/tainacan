@@ -1,6 +1,5 @@
 <template>
     <div 
-            id="tainacan-admin-app" 
             class="has-mounted is-fullheight"
             :class="{ 
                 'tainacan-admin-mobile-app-mode': $adminOptions.mobileAppMode

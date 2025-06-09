@@ -359,6 +359,7 @@ export default {
         // Cancels previous Request
         if (this.metadataSearchCancel != undefined)
             this.metadataSearchCancel.cancel('Metadata search Canceled.');
+        this.$emitter.off('addMetadatumViaButton', this.addMetadatumViaButton);
     },
     methods: {
         ...mapActions('metadata', [

@@ -465,6 +465,8 @@ html {
                             box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px --tainacan-blue3);
                             box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px color-mix(in srgb, var(--tainacan-blue3) 20%, transparent) );
                             margin-top: -1px;
+                            transform-origin: top left;
+                            transform: scaleY(1.0) translateY(0px);
                         }
                         & > button > .menu-text {
                             border-bottom: 1px solid var(--tainacan-gray2);
@@ -477,13 +479,18 @@ html {
                             left: 100%;
                             min-width: 180px;
                             max-width: 180px;
-                            max-height: 390px;
+                            max-height: calc(100vh - var(--wp-admin--admin-bar--height, 32px) - 280px);
                             overflow-y: auto;
                             border-top-left-radius: 0;
                             box-sizing: border-box;
                             margin: 0;
                             background-color: var(--tainacan-admin-navigation-sidebar-floating-menu-background-color);
                         }
+                    }
+                    ul {
+                        transform-origin: top left;
+                        transform: scaleY(0.5) translateY(-30px);
+                        transition: transform 0.2s ease;
                     } 
                 }
             }
@@ -621,9 +628,9 @@ html {
                     transform: rotateX(0deg);
                 }
                 ul {
-                    transition-property: opacity, max-height;
-                    transition-duration: 0.3s;
-                    transition-timing-function: ease-in-out;
+                    // transition-property: opacity, max-height;
+                    // transition-duration: 0.3s;
+                    // transition-timing-function: ease-in-out;
                     border-left: 1px dashed var(--tainacan-admin-navigation-sidebar-separator-color);
                     border-left: 1px dashed color-mix(in srgb, var(--tainacan-admin-navigation-sidebar-separator-color) 50%, transparent);
                     margin: 0.5em 0 1em 0.75rem;

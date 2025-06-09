@@ -684,7 +684,7 @@
                             </span>
                         </p>
                         <p v-if="status == undefined || status == '' || status == 'publish,private,pending,draft'">
-                            {{ (hasFiltered || openAdvancedSearch || searchQuery) ? $i18n.get('info_no_item_found_filter') : (isSortingByCustomMetadata ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created')) }}
+                            {{ (hasFiltered || openAdvancedSearch || searchQuery) ? $i18n.get('info_no_item_found_filter') : (isSortingByCustomMetadata ? $i18n.get('info_no_item_found') : ( ($route.name == 'CollectionMyItemsPage' || $route.name == 'RepositoryMyItemsPage') ? $i18n.get('info_no_item_found_by_you') : $i18n.get('info_no_item_created') )) }}
                         </p>
                         <p v-else>
                             {{ $i18n.get('info_no_items_' + status) }}
@@ -1924,8 +1924,8 @@
     }
 
     .table-container {
-        padding-left: 0;
-        padding-right: 0;
+        padding-left: 6px;
+        padding-right: 6px;
         min-height: 50vh;
     }
 

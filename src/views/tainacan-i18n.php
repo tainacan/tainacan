@@ -875,6 +875,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_no_terms_found'				 			 => __( 'No term was found here', 'tainacan' ),
 	'info_no_more_terms_found'				 		 => __( 'No more terms found', 'tainacan' ),
 	'info_no_item_created'                           => __( 'No item was created so far.', 'tainacan' ),
+	'info_no_item_found_by_you'                      => __( 'No items authored by you were found.', 'tainacan' ),
 	'info_no_page_found'                             => __( 'No page was found with this name.', 'tainacan' ),
 	'info_no_user_found'                             => __( 'No user was found with this name.', 'tainacan' ),
 	'info_no_item_found_filter'                      => __( 'No item was found here with these filters.', 'tainacan' ),

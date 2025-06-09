@@ -2153,7 +2153,7 @@ export default {
                     
                     .field {
                         padding: 12px 0px 12px 42px;
-                        margin-left: 12px;
+                        margin-left: 10px;
                     }
                 }
                 .metadata-section-description-help-info {
@@ -2167,11 +2167,6 @@ export default {
                     padding-right: var(--tainacan-one-column);
                     max-width: 100%;
 
-                    .metadata-section-metadata-list {
-                        .field {
-                            margin-left: 0px;
-                        }
-                    }
                     #tainacanTabsSwiper.tabs a {
                         padding: 0.75em 1.45em;
                     }

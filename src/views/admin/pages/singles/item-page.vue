@@ -882,7 +882,7 @@
         .field {
             border-bottom: 1px solid var(--tainacan-gray1);
             padding: 10px var(--tainacan-container-padding) !important;
-            margin-left: 1em !important;
+            margin-left:0.25em !important;
 
             .label {
                 font-size: 0.875em;
