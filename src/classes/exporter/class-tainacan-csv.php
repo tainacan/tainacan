@@ -35,7 +35,7 @@ class CSV extends Exporter {
 	}
 
 	public function process_item( $item, $metadata ) {
-		
+		$mapper = $this->get_current_mapper();
 		$line = [];
 		
 		$line[] = $item->get_id();
@@ -44,7 +44,6 @@ class CSV extends Exporter {
 		add_filter('tainacan-terms-hierarchy-html-separator', [$this, 'filter_hierarchy_separator'], 20);
 		
 		foreach ($metadata as $meta_key => $meta) {
-			
 			// if (!$meta) means this metadata is not mapped in the collection so there is no value for it 
 			// an empty value must be returned so the number of columns matches the header 
 			if (!$meta || empty($meta->get_value()) ) {
@@ -76,33 +75,25 @@ class CSV extends Exporter {
 			} else {
 				$line[] = $meta->get_value_as_string();
 			}
-			
 		}
 		
 		remove_filter('tainacan-item-metadata-get-multivalue-separator', [$this, 'filter_multivalue_separator']);
 		remove_filter('tainacan-terms-hierarchy-html-separator', [$this, 'filter_hierarchy_separator']);
 		
-		$line[] = $item->get_status();
 		
-		$line[] = $this->get_document_cell($item);
-
-		$line[] = $this->get_thumbnail_cell($item);
-		
-		$line[] = $this->get_attachments_cell($item);
-		
-		$line[] = $item->get_comment_status();
-
-		$line[] = $item->get_author_login();
-		
-		$line[] = $item->get_slug();
-
-		$line[] = $item->get_creation_date();
-		
-		$line[] = $this->get_author_name_last_modification($item->get_id());
-
-		$line[] = $item->get_modification_date();
-
-		$line[] = get_permalink( $item->get_id() );
+		if( !isset($mapper) ) {
+			$line[] = $item->get_status(); // special_item_status
+			$line[] = $this->get_document_cell($item); // special_document
+			$line[] = $this->get_thumbnail_cell($item); // special_thumbnail
+			$line[] = $this->get_attachments_cell($item); // special_attachments
+			$line[] = $item->get_comment_status(); // special_comment_status
+			$line[] = $item->get_author_login(); // special_item_author
+			$line[] = $item->get_slug(); // special_item_slug
+			$line[] = $item->get_creation_date(); // creation_date
+			$line[] = $this->get_author_name_last_modification($item->get_id()); // user_last_modified
+			$line[] = $item->get_modification_date(); // modification_date
+			$line[] = get_permalink( $item->get_id() ); // public_url
+		}
 		
 		$line_string = $this->str_putcsv($line, $this->get_option('delimiter'), $this->get_option('enclosure'));
 
@@ -242,11 +233,9 @@ class CSV extends Exporter {
 		$line = ['special_item_id'];
 		
 		if ($mapper) {
-			
 			foreach ($mapper->metadata as $meta_slug => $meta) {
 				$line[] = $meta_slug;
 			}
-			
 		} else {
 			if ( $collection = $this->get_current_collection_object() ) {
 				
@@ -256,19 +245,19 @@ class CSV extends Exporter {
 					$line[] = $desc_title_meta;
 				}
 			}
+
+			$line[] = 'special_item_status';
+			$line[] = 'special_document';
+			$line[] = 'special_thumbnail';
+			$line[] = 'special_attachments';
+			$line[] = 'special_comment_status';
+			$line[] = 'special_item_author';
+			$line[] = 'special_item_slug';
+			$line[] = 'creation_date';
+			$line[] = 'user_last_modified';
+			$line[] = 'modification_date';
+			$line[] = 'public_url';
 		}
-		
-		$line[] = 'special_item_status';
-		$line[] = 'special_document';
-		$line[] = 'special_thumbnail';
-		$line[] = 'special_attachments';
-		$line[] = 'special_comment_status';
-		$line[] = 'special_item_author';
-		$line[] = 'special_item_slug';
-		$line[] = 'creation_date';
-		$line[] = 'user_last_modified';
-		$line[] = 'modification_date';
-		$line[] = 'public_url';
 		
 		$line_string = $this->str_putcsv($line, $this->get_option('delimiter'), $this->get_option('enclosure'));
 		
