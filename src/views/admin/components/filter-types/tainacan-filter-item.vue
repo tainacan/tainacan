@@ -363,13 +363,13 @@
 
         .datepicker {
             .dropdown-menu {
-                left: -18px;
                 right: 0;
+                min-width: calc(100% + 18px) !important;
             }
             @media screen and (min-width: 768px) {
                 .dropdown-trigger input {
                     font-size: 0.75em !important;
-                    line-height: 1.75em;
+                    line-height: 1.875em;
                 }
                 .datepicker-header {
 

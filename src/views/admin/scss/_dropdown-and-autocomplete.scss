@@ -66,7 +66,7 @@
                 color: var(--tainacan-input-color) !important;
                 border: none;
                 transition: background-color 0.3s ease;
-                min-height: 2.286em !important;
+                min-height: 2.571em !important;
                 line-height: 1.75em;
 
                 &.is-active { background-color: var(--tainacan-primary); }
@@ -167,7 +167,7 @@
 .select select.is-active {
     box-shadow: none;
 }
-.taginput-container {
+.taginput .taginput-container {
     padding: 0px !important;
     background-color: var(--tainacan-input-background-color);
     border: 1px solid var(--tainacan-input-border-color) !important;
@@ -216,6 +216,9 @@
     }
     .autocomplete .icon {
         height: 100% !important;
+    }
+    .autocomplete input {
+        height: calc(3em - 1px);
     }
 }
 .selected-list-box {

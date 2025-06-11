@@ -297,6 +297,7 @@ export default {
                 
                 .handle {
                     padding: 0.7em 6.9em 0.7em 0.9em;
+                    border-radius: var(--tainacan-button-border-radius, 0px);
                     white-space: nowrap;
                     display: flex;
                 }
@@ -374,8 +375,8 @@ export default {
                     overflow: hidden;
                     border-top-right-radius: 0;
                     border-bottom-right-radius: 0;
-                    border-top-left-radius: 3px;
-                    border-bottom-left-radius: 3px;
+                    border-top-left-radius: var(--tainacan-button-border-radius, 3px);
+                    border-bottom-left-radius: var(--tainacan-button-border-radius, 3px);
                     font-size: 0.875em;
                     left: 0em; 
                     top: 0px;

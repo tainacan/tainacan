@@ -15784,16 +15784,28 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
 }
 .tainacan-form .b-numberinput p.control:first-child .button {
   border-right-width: 0px;
+  border-left-width: 0px;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
 }
 .tainacan-form .b-numberinput p.control:last-child .button {
   border-left-width: 0px;
+  border-top-right-radius: var(--tainacan-input-border-radius) !important;
+  border-bottom-right-radius: var(--tainacan-input-border-radius) !important;
 }
-.tainacan-form .b-numberinput button,
-.tainacan-form .b-numberinput input {
-  height: auto !important;
+.tainacan-form .b-numberinput p.control button.is-primary {
+  min-height: 100% !important;
+}
+.tainacan-form .b-numberinput input.input {
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
   text-align: start;
+  height: 100%;
 }
-.tainacan-form .b-numberinput p.cont button.is-primary:disabled,
+.tainacan-form .b-numberinput button {
+  height: auto !important;
+}
+.tainacan-form .b-numberinput button.is-primary:disabled,
 .tainacan-form .b-numberinput button.is-primary:disabled:hover,
 .tainacan-form .b-numberinput button.is-primary:disabled:focus,
 .tainacan-form .b-numberinput button.is-primary:disabled:active {
@@ -15815,7 +15827,6 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
   color: var(--tainacan-secondary) !important;
   padding: 0.25em 0.6em !important;
   border-radius: 0 !important;
-  min-height: 100%;
 }
 .tainacan-form .b-numberinput button.is-primary:hover,
 .tainacan-form .b-numberinput button.is-primary:hover:hover,
@@ -16413,7 +16424,7 @@ button.link-style:focus button.link-style:active:hover {
   border-color: var(--tainacan-gray2) !important;
 }
 .button:not(.is-small):not(.is-medium):not(.is-large) {
-  min-height: 2.286em !important;
+  min-height: 2.571em !important;
   font-size: 0.875em !important;
   line-height: 1.75em;
 }
@@ -16463,7 +16474,7 @@ input[type=time].input,
 input[type=url].input,
 input[type=week].input {
   height: auto;
-  line-height: 1em;
+  line-height: 1.5em;
   font-size: 0.875em;
   font-family: var(--tainacan-font-family, inherit);
   border-radius: var(--tainacan-input-border-radius, 2px) !important;
@@ -16889,7 +16900,7 @@ textarea.textarea[rows="7"],
   font-weight: normal;
   font-size: 0.875em !important;
   font-family: var(--tainacan-font-family, inherit);
-  line-height: 1.75em !important;
+  line-height: 1.938em !important;
   height: auto !important;
   padding: calc(0.375em - 1px) 24px calc(0.375em - 1px) 10px !important;
   margin-top: 0px !important;
@@ -17010,7 +17021,7 @@ textarea.textarea[rows="7"],
   color: var(--tainacan-input-color) !important;
   border: none;
   transition: background-color 0.3s ease;
-  min-height: 2.286em !important;
+  min-height: 2.571em !important;
   line-height: 1.75em;
 }
 .dropdown .dropdown-menu .dropdown-content .dropdown-item.is-active, .dropdown .dropdown-menu .dropdown-content .has-link a.is-active, .dropdown .dropdown-menu .has-link .dropdown-content a.is-active, .autocomplete .dropdown-menu .dropdown-content .dropdown-item.is-active {
@@ -17109,54 +17120,57 @@ textarea.textarea[rows="7"],
   box-shadow: none;
 }
 
-.taginput-container {
+.taginput .taginput-container {
   padding: 0px !important;
   background-color: var(--tainacan-input-background-color);
   border: 1px solid var(--tainacan-input-border-color) !important;
   border-radius: var(--tainacan-input-border-radius, 2px) !important;
 }
-.taginput-container:focus, .taginput-container:active, .taginput-container.is-focused {
+.taginput .taginput-container:focus, .taginput .taginput-container:active, .taginput .taginput-container.is-focused {
   border: 1px solid var(--tainacan-secondary) !important;
 }
-.taginput-container input[type=text].input:not(.is-danger) {
+.taginput .taginput-container input[type=text].input:not(.is-danger) {
   margin-bottom: 0px !important;
   text-overflow: ellipsis;
   background-color: none;
   border: none !important;
 }
-.taginput-container input[type=text].input:not(.is-danger).has-selected,
-.taginput-container input[type=text].input:not(.is-danger):focus,
-.taginput-container input[type=text].input:not(.is-danger):focus-visible,
-.taginput-container input[type=text].input:not(.is-danger):active {
+.taginput .taginput-container input[type=text].input:not(.is-danger).has-selected,
+.taginput .taginput-container input[type=text].input:not(.is-danger):focus,
+.taginput .taginput-container input[type=text].input:not(.is-danger):focus-visible,
+.taginput .taginput-container input[type=text].input:not(.is-danger):active {
   background-color: var(--tainacan-input-background-color);
   border: none !important;
 }
-.taginput-container .tags {
+.taginput .taginput-container .tags {
   margin: 0.17em 0.25em 0.08em 0.25em !important;
   display: inline-flex;
 }
-.taginput-container .tag {
+.taginput .taginput-container .tag {
   background: var(--tainacan-background-color);
   padding-right: 0;
   padding-left: 0.6em;
 }
-.taginput-container .tag.is-delete {
+.taginput .taginput-container .tag.is-delete {
   color: var(--tainacan-info-color);
 }
-.taginput-container .tag.is-delete::after {
+.taginput .taginput-container .tag.is-delete::after {
   height: 47% !important;
   width: 1px !important;
 }
-.taginput-container .tag.is-delete::before {
+.taginput .taginput-container .tag.is-delete::before {
   width: 47% !important;
   height: 1px !important;
 }
-.taginput-container .tag.is-delete:hover, .taginput-container .tag.is-delete:focus {
+.taginput .taginput-container .tag.is-delete:hover, .taginput .taginput-container .tag.is-delete:focus {
   background-color: var(--tainacan-background-color);
   color: var(--tainacan-label-color);
 }
-.taginput-container .autocomplete .icon {
+.taginput .taginput-container .autocomplete .icon {
   height: 100% !important;
+}
+.taginput .taginput-container .autocomplete input {
+  height: calc(3em - 1px);
 }
 
 .selected-list-box {

@@ -147,6 +147,7 @@ function handleDynamicMenusAndBreadcrumbs() {
                             {
                                 id: 'my-items',
                                 label: wp.i18n.__( 'My items', 'tainacan'),
+                                icon: 'userfill',
                                 href: `collections/${currentRoute.params.collectionId}/my-items?authorid=` + tainacan_user.data.ID,
                                 hide: adminOptions.hidePrimaryMenuItemsButton === 'true' || adminOptions.hidePrimaryMenuItemsButton === true
                             },

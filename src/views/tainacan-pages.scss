@@ -347,18 +347,18 @@ html {
             margin: 0px;
 
             li {
-                margin: 0px 0px 6px 0px;
+                margin: 0px 0px 8px 0px;
 
-                &:not(:has(.icon)) {
-                    margin-left: 0.75rem;
-                    padding-left: 1.125rem;
-                    border-left: 1px dashed var(--tainacan-admin-navigation-sidebar-separator-color);
-                    border-left: 1px dashed color-mix(in srgb, var(--tainacan-admin-navigation-sidebar-separator-color) 50%, transparent);
+                // &:not(:has(.icon)) {
+                //     margin-left: 0.75rem;
+                //     padding-left: 1.125rem;
+                //     border-left: 1px dashed var(--tainacan-admin-navigation-sidebar-separator-color);
+                //     border-left: 1px dashed color-mix(in srgb, var(--tainacan-admin-navigation-sidebar-separator-color) 50%, transparent);
 
-                    a {
-                        font-weight: 400;
-                    }
-                }
+                //     a {
+                //         font-weight: 400;
+                //     }
+                // }
             }
         }
 
@@ -636,16 +636,20 @@ html {
                     margin: 0.5em 0 1em 0.75rem;
                     padding-left: 0.5rem;
     
-                    li a,
-                    li button {
-                        line-height: 1.25em;
-                        font-size: 0.875em !important;
-    
-                        .menu-text {
-                            max-width: calc(100% - 0.75rem);
-                        }
-                        .icon {
-                            font-size: 1.125rem !important;
+                    li {
+                        margin-bottom: 4px;
+                        
+                        a,
+                        button {
+                            line-height: 1.25em;
+                            font-size: 0.875em !important;
+        
+                            .menu-text {
+                                max-width: calc(100% - 0.75rem);
+                            }
+                            .icon {
+                                font-size: 1.125rem !important;
+                            }
                         }
                     }
     

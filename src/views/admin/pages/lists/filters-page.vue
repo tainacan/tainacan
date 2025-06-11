@@ -1037,6 +1037,7 @@ export default {
                 display: block; 
                 transition: top 0.1s ease;
                 cursor: grab;
+                border-radius: var(--tainacan-button-border-radius, 3px);
 
                 form.tainacan-form {
                     padding: 1.0em 2.0em;
@@ -1056,8 +1057,8 @@ export default {
                     overflow: hidden;
                     border-top-right-radius: 0;
                     border-bottom-right-radius: 0;
-                    border-top-left-radius: 3px;
-                    border-bottom-left-radius: 3px;
+                    border-top-left-radius: var(--tainacan-button-border-radius, 3px);
+                    border-bottom-left-radius: var(--tainacan-button-border-radius, 3px);
                     font-size: 0.875em;
                     left: 0em; 
                     top: 0px;
@@ -1082,6 +1083,7 @@ export default {
                 }
                 .handle {
                     padding-right: 6em;
+                    border-radius: var(--tainacan-button-border-radius, 0px);
                     white-space: nowrap;
                     display: flex;
                 }
@@ -1231,7 +1233,7 @@ export default {
                 height: 2.8571em;
                 position: relative;
                 border: 1px solid var(--tainacan-gray2);
-                border-radius: 1px;
+                border-radius: var(--tainacan-button-border-radius, 0px);
                 transition: left 0.2s ease;
                 
                 .grip-icon { 
@@ -1261,6 +1263,7 @@ export default {
                     width: 0;
                     height: 0;
                     border-style: solid;
+                    border-radius: var(--tainacan-button-border-radius, 0px);
                 }
                 &:after {
                     top: -1px;
@@ -1268,7 +1271,7 @@ export default {
                     border-right-width: 16px;
                     border-top-width: 1.4286em;
                     border-bottom-width: 1.4286em;
-                    left: -19px;
+                    left: calc( -19px + (var(--tainacan-button-border-radius, 0px) / 2));
                 }
                 &:before {
                     top: -1px;
@@ -1276,7 +1279,7 @@ export default {
                     border-right-width: 16px;
                     border-top-width: 1.4286em;
                     border-bottom-width: 1.4286em;
-                    left: -20px;
+                    left: calc( -20px + (var(--tainacan-button-border-radius, 0px) / 2));
                 }
                 .label-details {
                     font-weight: normal;

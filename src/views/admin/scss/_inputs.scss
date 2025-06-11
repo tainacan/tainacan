@@ -17,7 +17,7 @@ input[type="time"].input,
 input[type="url"].input,
 input[type="week"].input {
     height: auto;
-    line-height: 1em;
+    line-height: 1.5em;
     font-size: 0.875em;
     font-family: var(--tainacan-font-family, inherit);
     border-radius: var(--tainacan-input-border-radius, 2px) !important;

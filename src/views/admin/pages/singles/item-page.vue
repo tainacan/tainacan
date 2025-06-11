@@ -728,7 +728,7 @@
         transition: none;
 
         & > .tainacan-form {
-            margin-bottom: 52px;
+            margin-bottom: 3.5rem;
 
             .field:not(:last-child) {
                 margin-bottom: 0em;
@@ -772,8 +772,8 @@
                         position: sticky;
                         top: 0;
                         margin: 0;
-                        max-height: calc(100vh - 52px - var(--tainacan-admin-header-height, 3.25em) - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
-                        max-height: calc(100dvh - 52px - var(--tainacan-admin-header-height, 3.25em) - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
+                        max-height: calc(100vh - 3.5rem - var(--tainacan-admin-header-height, 3.25em) - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
+                        max-height: calc(100dvh - 3.5rem - var(--tainacan-admin-header-height, 3.25em) - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
                         overflow-y: auto;
                         overflow-x: hidden;
                     }
@@ -1085,8 +1085,9 @@
             font-size: 0.8em;
         }
         img {
-            height: 125px;
-            width: 125px;
+            height: 110px;
+            width: 110px;
+            border-radius: 3px;
         }
         .image-placeholder {
             position: absolute;
@@ -1099,6 +1100,11 @@
             color: var(--tainacan-info-color);
             top: 45px;
             max-width: 84px;
+
+            & + img {
+                opacity: 0.5;
+                border: 1px dashed var(--tainacan-info-color);
+            }
         }
     }
 
@@ -1125,7 +1131,7 @@
         z-index: 1001;
         background-color: var(--tainacan-gray1);
         width: 100%;
-        height: 52px;
+        height: 3.5rem;
         display: flex;
         justify-content: space-between;
         align-items: center;

@@ -131,7 +131,7 @@ export default {
     }
     .thumbnail-field {
         display: flex;
-        min-height: 120px;
+        min-height: 110px;
 
         @supports (contain: inline-size) {
             container-type: inline-size;
@@ -165,9 +165,9 @@ export default {
             font-size: 0.8em;
         }
         img {
-            height: 120px;
-            width: 120px;
-            min-width: 120px;
+            height: 110px;
+            width: 110px;
+            min-width: 110px;
             border-radius: 3px;
         }
         .image-placeholder {
@@ -181,6 +181,11 @@ export default {
             color: var(--tainacan-info-color);
             top: 34px;
             max-width: 84px;
+
+            & + img {
+                opacity: 0.5;
+                border: 1px dashed var(--tainacan-info-color);
+            }
         }
 
         .thumbnail-alt-input {

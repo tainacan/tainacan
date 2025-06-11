@@ -39,7 +39,6 @@
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
                 :date-parser="(date) => dateParser(date)"
-                icon="calendar-today"
                 :years-range="[-200, 50]"
                 :day-names="[
                     $i18n.get('datepicker_short_sunday'),
@@ -216,6 +215,34 @@
         display: flex;
         height: auto;
         align-items: stretch;
+        
+        .dropdown {
+            width: auto;
+            flex-grow: 2;
+
+            .dropdown-trigger button {
+                padding: 2px 0.5em !important;
+                height: 2.571em !important;
+                min-height: 100% !important;
+                border-top-right-radius: 0 !important;
+                border-bottom-right-radius: 0 !important;
+                border-right-width: 0px !important;
+
+                i:not(.tainacan-icon-arrowdown) {
+                    margin-top: -3px;
+                    font-size: 1.25em;
+                    font-style: normal;
+                    color: var(--tainacan-info-color);
+                }
+            }
+        }
+        .datepicker {
+            
+            :deep(input.input) {
+                border-top-left-radius: 0 !important;
+                border-bottom-left-radius: 0 !important;
+            }
+        }
 
         @supports not (contain: inline-size) {
             @media screen and (min-width: 769px) and (max-width: 1500px) {
@@ -227,23 +254,10 @@
         @container filterscomponentslist (max-width: 170px) {
             flex-wrap: wrap;
             height: 60px;
-        }
-        
-        .dropdown {
-            width: auto;
-            flex-grow: 2;
 
-            .dropdown-trigger button {
-                padding: 2px 0.5em !important;
-                height: auto !important;
-                font-size: 1em !important;
-                min-height: 100%;
-
-                i:not(.tainacan-icon-arrowdown) {
-                    margin-top: -3px;
-                    font-size: 1.25em;
-                    font-style: normal;
-                    color: var(--tainacan-info-color);
+            :deep(.dropdown) {
+                .dropdown-trigger button {
+                    border-right-width: 1px !important;
                 }
             }
         }

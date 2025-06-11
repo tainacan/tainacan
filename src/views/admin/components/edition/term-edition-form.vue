@@ -577,6 +577,11 @@
                 text-align: center;
                 color: var(--tainacan-info-color);
                 background-color: transparent;
+
+                & + img {
+                    opacity: 0.5;
+                    border: 1px dashed var(--tainacan-info-color);
+                }
             }
             #button-delete-header,
             #button-edit-header {

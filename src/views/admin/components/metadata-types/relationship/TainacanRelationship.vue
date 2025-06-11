@@ -545,6 +545,8 @@
     }
     :deep(.tainacan-relationship-results-container) {
         border: 1px solid var(--tainacan-gray1);
+        border-bottom-right-radius: var(--tainacan-input-border-radius);
+        border-bottom-left-radius: var(--tainacan-input-border-radius);
         background-color: var(--tainacan-background-color);
         margin-top: calc(-1 * (0.5em + 1px));
         margin-bottom: calc(-1 * (0.5em + 1px));

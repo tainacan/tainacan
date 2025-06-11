@@ -2078,7 +2078,7 @@ export default {
         transition: none;
 
         & > .tainacan-form {
-            margin-bottom: 52px;
+            margin-bottom: 3.5rem;
 
             .field:not(:last-child) {
                 margin-bottom: 0em;
@@ -2127,8 +2127,8 @@ export default {
                         position: sticky;
                         top: 0px;
                         margin: 0;
-                        max-height: calc(100vh - 52px - var(--tainacan-admin-header-height, 3.25em) - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
-                        max-height: calc(100dvh - 52px - var(--tainacan-admin-header-height, 3.25em) - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
+                        max-height: calc(100vh - 3.5rem - var(--tainacan-admin-header-height, 3.25em) - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
+                        max-height: calc(100dvh - 3.5rem - var(--tainacan-admin-header-height, 3.25em) - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
                         overflow-y: auto;
                         overflow-x: hidden;
                     }
@@ -2490,7 +2490,7 @@ export default {
             z-index: 1001;
             background-color: var(--tainacan-gray1);
             width: 100%;
-            height: 52px;
+            height: 3.5rem;
             display: flex;
             justify-content: flex-end;
             align-items: center;

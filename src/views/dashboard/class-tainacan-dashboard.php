@@ -333,7 +333,7 @@ class Dashboard extends Pages {
 			<li>
 				<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/my-items?' . http_build_query(['authorid' => get_current_user_id()])  ); ?>">
 					<span class="icon">
-						<?php echo $this->get_svg_icon('item'); ?>
+						<?php echo $this->get_svg_icon('userfill'); ?>
 					</span>
 					<span class="text"><?php _e('My Items list', 'tainacan'); ?></span>
 				</a>
@@ -508,7 +508,7 @@ class Dashboard extends Pages {
 			<li>
 				<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/my-items?' . http_build_query(['authorid' => get_current_user_id()]) ); ?>">
 					<span class="icon">
-						<?php echo $this->get_svg_icon('item'); ?>
+						<?php echo $this->get_svg_icon('userfill'); ?>
 					</span>
 					<span class="text"><?php _e('My Items list', 'tainacan'); ?></span>
 				</a>

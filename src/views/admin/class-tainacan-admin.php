@@ -179,7 +179,7 @@ class Admin extends Pages {
 			add_submenu_page(
 				$this->collections_links_slug,
 				__('My Items', 'tainacan'),
-				'<span class="menu-text">' . __('My Items', 'tainacan') . '</span>',
+				'<span class="icon">' . $this->get_svg_icon( 'userfill' ) . '</span><span class="menu-text">' . __('My Items', 'tainacan') . '</span>',
 				'read',
 				'tainacan_admin#/my-items?' . http_build_query(['authorid' => get_current_user_id()]),
 				array( &$this, 'render_page' )

@@ -862,7 +862,6 @@
         }
 
         .taginput-container {
-            height: 32px !important;
 
             .tags {
                 margin-bottom: calc(0.275em - 1px) !important;

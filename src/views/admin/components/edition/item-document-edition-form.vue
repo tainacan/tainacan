@@ -183,11 +183,12 @@ export default {
             justify-content: space-evenly;
             align-items: center;
             padding: 0.5rem;
-            min-height: 120px;
+            min-height: 136px;
             border: 1px solid var(--tainacan-input-border-color);
-            border-radius: var(--tainacan-input-border-radius, 2px);
+            border-radius: 3px;
+            background-color: var(--tainacan-input-disabled-color);
 
-            @container documentfield (max-width: 300px) {
+            @container documentfield (max-width: 322px) {
                 & {
                     flex-direction: column;
                     align-items: start;
@@ -219,17 +220,18 @@ export default {
                     flex-direction: column;
                     align-items: center;
                     border-radius: var(--tainacan-button-border-radius, 4px);
-                    height: 92px;
-                    min-width: 92px;
+                    height: 100px;
+                    min-width: 100px;
                     width: 100%;
                     padding: 4px;
-                    border: none;
+                    border: 1px solid var(--tainacan-input-border-color);
                     background-color: var(--tainacan-background-color);
                     color: var(--tainacan-secondary);
                     transition: background-color 0.3s ease;
                     
                     &:hover {
                         background-color: var(--tainacan-primary);
+                        border-color: var(--tainacan-secondary);
                         cursor: pointer;
                     }
                     .icon {

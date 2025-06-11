@@ -291,11 +291,11 @@
     .tainacan-multiple-term-insertion--taginput :deep(.tag),
     .tainacan-multiple-term-insertion--taginput :deep(.tags) {
         white-space: normal !important;
-        min-height: calc(2em - 1px) !important;
+        min-height: calc(3em - 2px) !important;
         height: auto !important;
     }
     .tainacan-multiple-term-insertion--taginput :deep(.tag.is-delete) {
-        min-width: calc(2em - 1px) !important;
+        min-width: calc(3em - 2px) !important;
     }
 
     @media screen and (max-width: 768px) {

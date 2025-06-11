@@ -1824,6 +1824,11 @@ export default {
             z-index: 99;
             text-align: center;
             color: var(--tainacan-info-color);
+
+            & + img {
+                opacity: 0.5;
+                border: 1px dashed var(--tainacan-info-color);
+            }
         }
         .header-buttons-row {
             text-align: right;
@@ -1857,6 +1862,15 @@ export default {
         }
         .image {
             border-radius: 3px;
+
+            &:has(.image-placeholder) img {
+                opacity: 0.5;
+                border: 1px dashed var(--tainacan-info-color);
+            }
+            &:has(.image-placeholder) {
+                border: 6px solid var(--tainacan-background-color);
+                background: var(--tainacan-background-color);
+            }
         }
         img,
         :deep(.image-wrapper) {
@@ -2026,7 +2040,7 @@ export default {
         z-index: 9999;
         background-color: var(--tainacan-gray1);
         width: 100%;
-        height: 52px;
+        height: 3.5rem;
         display: flex;
         justify-content: flex-end;
         align-items: center;

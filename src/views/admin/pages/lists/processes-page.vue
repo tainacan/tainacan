@@ -28,6 +28,7 @@
                         v-model="searchDates"
                         :placeholder="$i18n.get('label_range_of_dates')"
                         range
+                        position="is-bottom-left"
                         icon="calendar-today"
                         :date-formatter="(date) => dateFormatter(date)"
                         :date-parser="(date) => dateParser(date)"

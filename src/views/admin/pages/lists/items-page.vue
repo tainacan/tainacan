@@ -1787,7 +1787,7 @@
                         }
                     }
                     .dropdown-item {
-                        padding: 0.25em 1.0em 0.25em 0.75em; 
+                        padding: 0.25em 1.25em 0.25em 1em;
                     }
                     .dropdown-item span{
                         vertical-align: middle;
