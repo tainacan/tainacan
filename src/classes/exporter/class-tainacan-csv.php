@@ -38,7 +38,9 @@ class CSV extends Exporter {
 		$mapper = $this->get_current_mapper();
 		$line = [];
 		
-		$line[] = $item->get_id();
+		if(!$mapper) {
+			$line[] = $item->get_id();
+		}
 		
 		add_filter('tainacan-item-metadata-get-multivalue-separator', [$this, 'filter_multivalue_separator'], 20);
 		add_filter('tainacan-terms-hierarchy-html-separator', [$this, 'filter_hierarchy_separator'], 20);
@@ -81,7 +83,7 @@ class CSV extends Exporter {
 		remove_filter('tainacan-terms-hierarchy-html-separator', [$this, 'filter_hierarchy_separator']);
 		
 		
-		if( !isset($mapper) ) {
+		if(!$mapper) {
 			$line[] = $item->get_status(); // special_item_status
 			$line[] = $this->get_document_cell($item); // special_document
 			$line[] = $this->get_thumbnail_cell($item); // special_thumbnail
@@ -230,15 +232,14 @@ class CSV extends Exporter {
 		
 		$mapper = $this->get_current_mapper();
 		
-		$line = ['special_item_id'];
-		
+		$line = [];
 		if ($mapper) {
 			foreach ($mapper->metadata as $meta_slug => $meta) {
 				$line[] = $meta_slug;
 			}
 		} else {
+			$line = ['special_item_id'];
 			if ( $collection = $this->get_current_collection_object() ) {
-				
 				$metadata = $collection->get_metadata();
 				foreach ($metadata as $meta) {
 					$desc_title_meta = $this->get_description_title_meta($meta);
