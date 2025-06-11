@@ -192,13 +192,13 @@ class CSV extends Exporter {
 			if($meta->is_repository_level()) {
 				foreach($meta_section_id as $section_id ) {
 					if($collection_id == get_post_meta($section_id, 'collection_id', true)) {
-						$meta_section_name = '(' . get_the_title($section_id) . ')';
+						$meta_section_name = get_the_title($section_id) . ': ';
 						continue;
 					}
 				}
 			} else {
 				if($meta_section_id != \Tainacan\Entities\Metadata_Section::$default_section_slug) {
-					$meta_section_name = '(' . get_the_title($meta_section_id) . ')';
+					$meta_section_name = get_the_title($meta_section_id) . ': ';
 				}
 			}
 		}
