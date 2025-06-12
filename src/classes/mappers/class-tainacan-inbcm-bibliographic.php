@@ -14,62 +14,62 @@ class Inbcm_Bibliographic extends Mapper {
 		/* Metadata should be set here to allow translable labels */ 
 		$this->metadata = [
 			'inbcm:numRegistro' => [
-				'label' => __( 'Reference Number', 'tainacan')
+				'label' => ('Nº de Registro')
 			],
 			'inbcm:outrosNum' => [
-				'label' => __( 'Other Numbers', 'tainacan')
+				'label' => ('Outros Números')
 			],
 			'inbcm:situacao' => [
-				'label' => __( 'Condition/Status', 'tainacan'),
+				'label' => ('Situação'),
 			],
 			'inbcm:titulo' => [
-				'label' => __( 'Title', 'tainacan'),
+				'label' => ('Título'),
                 'core_metadatum' => 'title'
 			],
 			'inbcm:tipo' => [
-				'label' => __( 'Type', 'tainacan'),
+				'label' => ('Tipo'),
 			],
 			'inbcm:idenResponsabilidade' => [
-				'label' => __( 'Statement of Responsibility', 'tainacan')
+				'label' => ('Identificação de responsabilidade')
 			],
 			'inbcm:localProd' => [
-				'label' => __( 'Place of Production', 'tainacan')
+				'label' => ('Local de produção')
 			],
 			'inbcm:editora' => [
-				'label' => __( 'Publisher', 'tainacan')
+				'label' => ('Editora')
 			],
 			'inbcm:dataProd' => [
-				'label' => __( 'Date of Production', 'tainacan')
+				'label' => ('Data de Produção')
 			],
 			'inbcm:dimFisica' => [
-				'label' => __( 'Physical Dimensions', 'tainacan')
+				'label' => ('Dimensão física')
 			],
 			'inbcm:matTecnica' => [
-				'label' => __( 'Material / Technique', 'tainacan')
+				'label' => ('Material / Técnica')
 			],
 			'inbcm:encadernacao' => [
-				'label' => __( 'Binding', 'tainacan')
+				'label' => ('Encadernação')
 			],
 			'inbcm:resumoDes' => [
-				'label' => __( 'Descriptive Summary', 'tainacan')
+				'label' => ('Resumo Descritivo')
 			],
 			'inbcm:conservacao' => [
-				'label' => __( 'Conservation Status', 'tainacan')
+				'label' => ('Estado de Conservação')
 			],
 			'inbcm:assuntoPrincipal' => [
-				'label' => __( 'Main Subject', 'tainacan')
+				'label' => ('Assunto Principal')
 			],
 			'inbcm:assuntoCronologico' => [
-				'label' => __( 'Chronological Subject', 'tainacan')
+				'label' => ('Assunto Cronológico')
 			],
 			'inbcm:assuntoGeo' => [
-				'label' => __( 'Geographical Subject', 'tainacan')
+				'label' => ('Assunto Geográfico')
 			],
 			'inbcm:condReproducao' => [
-				'label' => __( 'Reproduction Conditions', 'tainacan')
+				'label' => ('Condições de Reprodução')
 			],
 			'inbcm:midias' => [
-				'label' => __( 'Related Media', 'tainacan')
+				'label' => ('Mídias Relacionadas')
 			]
 		];
 	}

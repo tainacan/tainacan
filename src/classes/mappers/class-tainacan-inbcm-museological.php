@@ -12,50 +12,50 @@ class Inbcm_Museological extends Mapper {
 
 		$this->metadata = [
 			'inbcm:numRegistro' => [
-				'label' => __( 'Registration Number', 'tainacan' )
+				'label' => ('Nº de Registro')
 			],
 			'inbcm:outrosNum' => [
-				'label' => __( 'Other Numbers', 'tainacan' )
+				'label' => ('Outros Números')
 			],
 			'inbcm:situacao' => [
-				'label' => __( 'Condition/Status', 'tainacan' )
+				'label' => ('Situação')
 			],
 			'inbcm:denominacao' => [
-				'label' => __( 'Denomination', 'tainacan' )
+				'label' => ('Denominação')
 			],
 			'inbcm:titulo' => [
-				'label' => __( 'Title', 'tainacan' ),
+				'label' => ('Título'),
                 'core_metadatum' => 'title'
 			],
 			'inbcm:autor' => [
-				'label' => __( 'Author', 'tainacan' )
+				'label' => ('Autor')
 			],
 			'inbcm:classificacao' => [
-				'label' => __( 'Classification', 'tainacan' )
+				'label' => ('Classificação')
 			],
 			'inbcm:resumoDes' => [
-				'label' => __( 'Descriptive Summary', 'tainacan' )
+				'label' => ('Resumo Descritivo')
 			],
 			'inbcm:dimensoes' => [
-				'label' => __( 'Dimensions', 'tainacan' )
+				'label' => ('Dimensões')
 			],
 			'inbcm:matTecnica' => [
-				'label' => __( 'Material/Technique', 'tainacan' )
+				'label' => ('Material/Técnica')
 			],
 			'inbcm:conservacao' => [
-				'label' => __( 'Conservation Status', 'tainacan' )
+				'label' => ('Estado de Conservação')
 			],
 			'inbcm:localProd' => [
-				'label' => __( 'Place of Production', 'tainacan' )
+				'label' => ('Local de Produção')
 			],
 			'inbcm:dataProd' => [
-				'label' => __( 'Date of Production', 'tainacan' )
+				'label' => ('Data de Produção')
 			],
 			'inbcm:condReproducao' => [
-				'label' => __( 'Reproduction Conditions', 'tainacan' )
+				'label' => ('Condições de Reprodução')
 			],
 			'inbcm:midias' => [
-				'label' => __( 'Related Media', 'tainacan' )
+				'label' => ('Mídias Relacionadas')
 			]
 		];
 	}
