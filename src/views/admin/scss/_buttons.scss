@@ -39,7 +39,7 @@ button.link-style:active {
     }
     &.is-primary, &.is-primary:hover, &.is-primary:focus {
         background: var(--tainacan-primary) !important;
-        color: var(--tainacan-white) !important;
+        color: var(--tainacan-secondary) !important;
     }
     &.is-success, &.is-success:hover, &.is-success:focus {
         background: var(--tainacan-success) !important;
@@ -99,7 +99,7 @@ button.link-style:active {
         border-color: var(--tainacan-gray2) !important;
     }
     &:not(.is-small):not(.is-medium):not(.is-large) {
-        min-height: 2.571em !important;
+        min-height: var(--tainacan-button-min-height, 2.571em) !important;
         font-size: 0.875em !important;
         line-height: 1.75em;
     }

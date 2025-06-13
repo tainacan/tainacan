@@ -1,6 +1,6 @@
 <template>
     <div class="tainacan-repository-level-colors page-container">
-        <tainacan-title />
+        <tainacan-title :is-sticky="true" />
 
         <h3>{{ $i18n.get('label_available_importers') }}</h3>
         <p>{{ $i18n.get('instruction_select_an_importer_type') }}</p>

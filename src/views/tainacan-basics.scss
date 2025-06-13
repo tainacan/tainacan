@@ -80,9 +80,12 @@ $tainacan-backdrop-background-color: rgba(0, 0, 0, 0.35);
 
 // Input border radius
 $tainacan-input-border-radius: 6px;
-$tainacan-button-border-radius: 4px;
-$tainacan-dropdownmenu-border-radius: 4px;
+$tainacan-button-border-radius: 6px;
+$tainacan-dropdownmenu-border-radius: 6px;
 $tainacan-modal-border-radius: 8px;
+
+// Button sizing
+$tainacan-button-min-height: 2.571em;
 
 // Skeleton colors
 $skeleton-color: #eeeeee;

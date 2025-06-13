@@ -5,7 +5,9 @@
                 'page-container': isRepositoryLevel,
                 'tainacan-modal-content': isItemLevel
             }">
-        <tainacan-title v-if="!isItemLevel" />
+        <tainacan-title 
+                v-if="!isItemLevel"
+                :is-sticky="true" />
         <header 
                 v-else
                 class="tainacan-modal-title">
@@ -21,7 +23,7 @@
             </button>
         </header>
 
-        <div class="sub-header tainacan-sticky-content-subheader">
+        <div class="sub-header tainacan-sub-header--sticky">
 
             <b-field 
                     class="header-item"

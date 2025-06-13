@@ -42,8 +42,6 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
     }
 
     componentDidMount() {
-        
-        this.hasMounted = true;
 
         this.setState({ 
             collectionId: this.props.existingCollectionId
@@ -61,6 +59,8 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
             if ( !this.hasMounted )
                 this.fetchModalCollections();
         }
+
+        this.hasMounted = true;
     }
 
     // COLLECTIONS RELATED --------------------------------------------------

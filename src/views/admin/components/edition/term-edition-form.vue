@@ -5,221 +5,221 @@
             role="dialog"
             tabindex="-1"
             aria-modal
-            class="tainacan-form tainacan-modal-content"
             @submit.prevent="saveEdition(form)">
-        <header
-                class="tainacan-page-title tainacan-modal-title">
-            <h2 style="width: 60%">
-                {{ form & form.id && form.id != 'new' ? $i18n.get("title_term_edit") : $i18n.get("title_term_creation") }}
-            </h2>
-            <a
+        <div class="tainacan-form tainacan-modal-content">
+            <header
+                    class="tainacan-page-title tainacan-modal-title">
+                <h2 style="width: 60%">
+                    {{ form & form.id && form.id != 'new' ? $i18n.get("title_term_edit") : $i18n.get("title_term_creation") }}
+                </h2>
+                <tainacan-external-link
                     v-if="form && form.url != undefined && form.url!= ''"
-                    target="_blank"
-                    :href="form.url">
-                <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl" />
-                </span>
-                <span class="menu-text">{{ $i18n.get('label_term_page_on_website') }}</span>
-            </a>
-        </header>
-    
-        <div class="modal-card-body">
-            <b-loading
-                    v-model="isLoading"
-                    :is-full-page="false" />
+                    :link-label="$i18n.get('label_term_page_on_website')"
+                    :link-url="form.url"
+                    style="position: absolute; top: 0; right: 0;" />
+            </header>
+        
+            <div class="modal-card-body">
+                <b-loading
+                        v-model="isLoading"
+                        :is-full-page="false" />
 
-            <!-- Name -------------- -->
-            <b-field
-                    :addons="false"
-                    :type="((formErrors.name !== '' || formErrors.repeated !== '') && (formErrors.name !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
-                    :message="formErrors.name ? formErrors.name : formErrors.repeated">
-                <label class="label is-inline">
-                    {{ $i18n.get('label_name') }}
-                    <span class="required-term-asterisk">*</span>
-                    <help-button
-                            :title="$i18n.get('label_name')"
-                            :message="$i18n.get('info_help_term_name')"
-                            extra-classes="tainacan-repository-tooltip" /> 
-                </label>
-                <b-input
-                        v-model="form.name"
-                        :placeholder="$i18n.get('label_term_without_name')"
-                        name="name"
-                        @focus="clearErrors({ name: 'name', repeated: 'repeated' })" />
-            </b-field>
+                <!-- Name -------------- -->
+                <b-field
+                        :addons="false"
+                        :type="((formErrors.name !== '' || formErrors.repeated !== '') && (formErrors.name !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
+                        :message="formErrors.name ? formErrors.name : formErrors.repeated">
+                    <label class="label is-inline">
+                        {{ $i18n.get('label_name') }}
+                        <span class="required-term-asterisk">*</span>
+                        <help-button
+                                :title="$i18n.get('label_name')"
+                                :message="$i18n.get('info_help_term_name')"
+                                extra-classes="tainacan-repository-tooltip" /> 
+                    </label>
+                    <b-input
+                            v-model="form.name"
+                            :placeholder="$i18n.get('label_term_without_name')"
+                            name="name"
+                            @focus="clearErrors({ name: 'name', repeated: 'repeated' })" />
+                </b-field>
 
-            <!-- Hook for extra Form options -->
-            <template 
-                    v-if="hasBeginLeftForm">  
-                <form 
-                        id="form-term-begin-left"
-                        class="form-hook-region"
-                        v-html="getBeginLeftForm" />
-            </template>
+                <!-- Hook for extra Form options -->
+                <template 
+                        v-if="hasBeginLeftForm">  
+                    <form 
+                            id="form-term-begin-left"
+                            class="form-hook-region"
+                            v-html="getBeginLeftForm" />
+                </template>
 
-            <div class="columns is-gapless image-and-description-area">
-                <div class="column">
+                <div class="columns is-gapless image-and-description-area">
+                    <div class="column">
 
-                    <!-- Header Image -------------------------------- -->
-                    <b-field
-                            :addons="false"
-                            :label="$i18n.get('label_image')">
-                        <div class="thumbnail-field">
-                            <figure class="image">
-                                <span
-                                        v-if="form.header_image === undefined || form.header_image === false"
-                                        class="image-placeholder">{{ $i18n.get('label_empty_term_image') }}</span>
-                                <img
-                                        :alt="$i18n.get('label_image')"
-                                        :src="(form.header_image === undefined || form.header_image === false) ? $thumbHelper.getEmptyThumbnailPlaceholder() : form.header_image">
-                            </figure>
-                            <div class="thumbnail-buttons-row">
-                                <a
-                                        id="button-edit-header"
-                                        class="button is-rounded is-secondary"
-                                        :aria-label="$i18n.get('label_button_edit_header_image')"
-                                        @click="headerImageMediaFrame.openFrame($event)">
-                                    <span 
-                                            v-tooltip="{
-                                                content: $i18n.get('edit'),
-                                                autoHide: true,
-                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
-                                                placement: 'bottom'
-                                            }"
-                                            class="icon is-small">
-                                        <i class="tainacan-icon tainacan-icon-edit" />
-                                    </span>
-                                </a>
-                                <a
-                                        id="button-delete-header"
-                                        class="button is-rounded is-secondary"
-                                        :aria-label="$i18n.get('label_button_delete_thumb')"
-                                        @click="deleteHeaderImage()">
-                                    <span 
-                                            v-tooltip="{
-                                                content: $i18n.get('delete'),
-                                                autoHide: true,
-                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
-                                                placement: 'bottom'
-                                            }"
-                                            class="icon is-small">
-                                        <i class="tainacan-icon tainacan-icon-delete" />
-                                    </span>
-                                </a>
+                        <!-- Header Image -------------------------------- -->
+                        <b-field
+                                :addons="false"
+                                :label="$i18n.get('label_image')">
+                            <div class="thumbnail-field">
+                                <figure class="image">
+                                    <span
+                                            v-if="form.header_image === undefined || form.header_image === false"
+                                            class="image-placeholder">{{ $i18n.get('label_empty_term_image') }}</span>
+                                    <img
+                                            :alt="$i18n.get('label_image')"
+                                            :src="(form.header_image === undefined || form.header_image === false) ? $thumbHelper.getEmptyThumbnailPlaceholder() : form.header_image">
+                                </figure>
+                                <div class="thumbnail-buttons-row">
+                                    <a
+                                            id="button-edit-header"
+                                            class="button is-rounded is-secondary"
+                                            :aria-label="$i18n.get('label_button_edit_header_image')"
+                                            @click="headerImageMediaFrame.openFrame($event)">
+                                        <span 
+                                                v-tooltip="{
+                                                    content: $i18n.get('edit'),
+                                                    autoHide: true,
+                                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                                    placement: 'bottom'
+                                                }"
+                                                class="icon is-small">
+                                            <i class="tainacan-icon tainacan-icon-edit" />
+                                        </span>
+                                    </a>
+                                    <a
+                                            id="button-delete-header"
+                                            class="button is-rounded is-secondary"
+                                            :aria-label="$i18n.get('label_button_delete_thumb')"
+                                            @click="deleteHeaderImage()">
+                                        <span 
+                                                v-tooltip="{
+                                                    content: $i18n.get('delete'),
+                                                    autoHide: true,
+                                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                                    placement: 'bottom'
+                                                }"
+                                                class="icon is-small">
+                                            <i class="tainacan-icon tainacan-icon-delete" />
+                                        </span>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                    </b-field>
+                        </b-field>
+                    </div>
+
+                    <div class="column">
+                        <!-- Description -------------- -->
+                        <b-field
+                                :addons="false"
+                                :type="formErrors['description'] !== '' && formErrors['description'] !== undefined ? 'is-danger' : ''"
+                                :message="formErrors['description']">
+                            <label class="label">
+                                {{ $i18n.get('label_description') }}
+                                <help-button
+                                        :title="$i18n.get('label_description')"
+                                        :message="$i18n.get('info_help_term_description')"
+                                        extra-classes="tainacan-repository-tooltip" />
+                            </label>
+                            <b-input
+                                    v-model="form.description"
+                                    type="textarea"
+                                    name="description"
+                                    @focus="clearErrors('description')" />
+                        </b-field>
+                    </div>
                 </div>
 
-                <div class="column">
-                    <!-- Description -------------- -->
-                    <b-field
-                            :addons="false"
-                            :type="formErrors['description'] !== '' && formErrors['description'] !== undefined ? 'is-danger' : ''"
-                            :message="formErrors['description']">
-                        <label class="label">
-                            {{ $i18n.get('label_description') }}
-                            <help-button
-                                    :title="$i18n.get('label_description')"
-                                    :message="$i18n.get('info_help_term_description')"
-                                    extra-classes="tainacan-repository-tooltip" />
-                        </label>
-                        <b-input
-                                v-model="form.description"
-                                type="textarea"
-                                name="description"
-                                @focus="clearErrors('description')" />
-                    </b-field>
-                </div>
+                <!-- Parent -------------- -->
+                <b-field
+                        v-if="isHierarchical"
+                        :addons="false"
+                        :type="((formErrors.parent !== '' || formErrors.repeated !== '') && (formErrors.parent !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
+                        :message="formErrors.parent ? formErrors : formErrors.repeated">
+                    <label class="label is-inline">
+                        {{ $i18n.get('label_parent_term') }}
+                        <b-switch
+                                id="tainacan-checkbox-has-parent"
+                                v-model="hasParent" 
+                                size="is-small"
+                                @update:model-value="onToggleSwitch()" />
+                        <help-button
+                                :title="$i18n.get('label_parent_term')"
+                                :message="$i18n.get('info_help_parent_term')"
+                                extra-classes="tainacan-repository-tooltip" />
+                    </label>
+                    <b-autocomplete
+                            id="tainacan-add-parent-field"
+                            v-model="parentTermName"
+                            :placeholder="$i18n.get('instruction_parent_term')"
+                            :data="parentTerms"
+                            field="name"
+                            clearable
+                            :loading="isFetchingParentTerms"
+                            :disabled="!hasParent"
+                            :append-to-body="true"
+                            check-infinite-scroll
+                            @select="onSelectParentTerm($event)"
+                            @update:model-value="fetchParentTerms"
+                            @focus="clearErrors('parent');"
+                            @infinite-scroll="fetchMoreParentTerms">
+                        <template #default="props">
+                            <div class="media">
+                                <div 
+                                        v-if="props.option.header_image"
+                                        class="media-left">
+                                    <img 
+                                            width="28"
+                                            :src="props.option.header_image">
+                                </div>
+                                <div class="media-content">
+                                    {{ props.option.name }}
+                                </div>
+                            </div>
+                        </template>
+                        <template #empty>
+                            {{ $i18n.get('info_no_parent_term_found') }}
+                        </template>
+                    </b-autocomplete>
+                    <transition name="fade">
+                        <p
+                                v-show="isTermInsertionFlow != true && showCheckboxesWarning == true"
+                                class="checkboxes-warning">
+                            {{ $i18n.get('info_warning_changing_parent_term') }}
+                        </p>
+                    </transition>
+                </b-field>
+
+                <!-- Hook for extra Form options -->
+                <template v-if="hasEndLeftForm">  
+                    <form 
+                            id="form-term-end-left"
+                            class="form-hook-region"
+                            v-html="getEndLeftForm" />
+                </template>
+
             </div>
 
-            <!-- Parent -------------- -->
-            <b-field
-                    v-if="isHierarchical"
-                    :addons="false"
-                    :type="((formErrors.parent !== '' || formErrors.repeated !== '') && (formErrors.parent !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
-                    :message="formErrors.parent ? formErrors : formErrors.repeated">
-                <label class="label is-inline">
-                    {{ $i18n.get('label_parent_term') }}
-                    <b-switch
-                            id="tainacan-checkbox-has-parent"
-                            v-model="hasParent" 
-                            size="is-small"
-                            @update:model-value="onToggleSwitch()" />
-                    <help-button
-                            :title="$i18n.get('label_parent_term')"
-                            :message="$i18n.get('info_help_parent_term')"
-                            extra-classes="tainacan-repository-tooltip" />
-                </label>
-                <b-autocomplete
-                        id="tainacan-add-parent-field"
-                        v-model="parentTermName"
-                        :placeholder="$i18n.get('instruction_parent_term')"
-                        :data="parentTerms"
-                        field="name"
-                        clearable
-                        :loading="isFetchingParentTerms"
-                        :disabled="!hasParent"
-                        :append-to-body="true"
-                        check-infinite-scroll
-                        @select="onSelectParentTerm($event)"
-                        @update:model-value="fetchParentTerms"
-                        @focus="clearErrors('parent');"
-                        @infinite-scroll="fetchMoreParentTerms">
-                    <template #default="props">
-                        <div class="media">
-                            <div 
-                                    v-if="props.option.header_image"
-                                    class="media-left">
-                                <img 
-                                        width="28"
-                                        :src="props.option.header_image">
-                            </div>
-                            <div class="media-content">
-                                {{ props.option.name }}
-                            </div>
-                        </div>
-                    </template>
-                    <template #empty>
-                        {{ $i18n.get('info_no_parent_term_found') }}
-                    </template>
-                </b-autocomplete>
-                <transition name="fade">
-                    <p
-                            v-show="isTermInsertionFlow != true && showCheckboxesWarning == true"
-                            class="checkboxes-warning">
-                        {{ $i18n.get('info_warning_changing_parent_term') }}
-                    </p>
-                </transition>
-            </b-field>
+        </div>
 
-            <!-- Hook for extra Form options -->
-            <template v-if="hasEndLeftForm">  
-                <form 
-                        id="form-term-end-left"
-                        class="form-hook-region"
-                        v-html="getEndLeftForm" />
-            </template>
-
-            <!-- Submit buttons -------------- -->
-            <div class="field is-grouped form-submit">
-                <div class="control">
-                    <button
-                            type="button"
-                            class="button is-outlined"
-                            @click.prevent="cancelEdition()">
-                        {{ $i18n.get('cancel') }}
-                    </button>
-                </div>
-                <div class="control">
-                    <button
-                            class="button is-success"
-                            type="submit">
-                        {{ isTermInsertionFlow ? $i18n.get('label_create_and_select') : $i18n.get('save') }}
-                    </button>
-                </div>
+        <!-- Submit buttons -------------- -->
+        <div class="field is-grouped form-submit">
+            <div class="control">
+                <button
+                        type="button"
+                        class="button is-outlined"
+                        @click.prevent="cancelEdition()">
+                    {{ $i18n.get('cancel') }}
+                </button>
+            </div>
+            <div class="control">
+                <button
+                        class="button is-success"
+                        type="submit">
+                    {{ isTermInsertionFlow ? $i18n.get('label_create_and_select') : $i18n.get('save') }}
+                </button>
             </div>
         </div>
+
     </form>
 </template>
 
@@ -504,16 +504,7 @@
 
     form#termEditForm {
 
-        &:not(.tainacan-modal-content) {
-            padding: 1.7em 0 1.5em 1.5em;
-            border-left: 1px solid var(--tainacan-gray2);
-            margin-left: 0.75em;
-            position: relative;
-            animation-name: enter;
-            animation-duration: 0.5s;
-        }
-        &.tainacan-modal-content {
-            overflow: hidden;
+        .tainacan-modal-content {
 
             .field {
                 padding-left: 0;
@@ -521,7 +512,6 @@
             }
 
             .tainacan-modal-title {
-                margin: 0;
                 padding: 0 12px;
             }
             .thumbnail-field {
@@ -530,13 +520,48 @@
             .image-placeholder {
                 left: 2px;
             }
+            .modal-card-body {
+                padding-bottom: 0px;
+            }
+        }
+
+        .tainacan-modal-content + .form-submit {
+            background-color: var(--tainacan-gray1);
+            position: sticky;
+            bottom: 0;
+            padding: 16px var(--tainacan-one-column);
+            display: flex;
+            justify-content: space-between;
+            z-index: 2;
+
+            &::after,
+            &::before {
+                height: calc(2 * (var(--tainacan-modal-border-radius, 8px) + 2px ));
+                width: calc(2 * (var(--tainacan-modal-border-radius, 8px) + 2px ));
+                background: transparent;
+                display: block;
+                content: '';
+                position: absolute;
+            }
+            &::before {
+                left: 0;
+                top: calc(-2 * (var(--tainacan-modal-border-radius, 8px) + 2px ));
+                border-bottom-left-radius: calc(var(--tainacan-modal-border-radius, 8px) + 2px);
+                box-shadow: calc(-1 * (var(--tainacan-modal-border-radius, 8px) + 2px)) 0px 0 0 var(--tainacan-gray1);
+            }
+            &::after {
+                right: 0;
+                top: calc(-2 * (var(--tainacan-modal-border-radius, 8px) + 2px ));
+                border-bottom-right-radius: calc(var(--tainacan-modal-border-radius, 8px) + 2px);
+                box-shadow: calc(var(--tainacan-modal-border-radius, 8px) + 2px) 0px 0 0 var(--tainacan-gray1);
+            }
         }
 
         .tainacan-page-title {
-            margin-bottom: 28px;
             display: flex;
             flex-wrap: wrap;
             align-items: baseline;
+            margin-bottom: 0;
         }
 
         .image-and-description-area {
@@ -546,7 +571,7 @@
                 margin-right: 24px;
             }
             .column:last-of-type {
-                flex-grow: 2;
+                flex-grow: 3;
             }
         }
 

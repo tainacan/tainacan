@@ -15952,6 +15952,7 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
 }
 
 .table-container {
+  overflow-x: hidden;
   padding: 0 var(--tainacan-one-column);
   position: relative;
 }
@@ -16104,9 +16105,11 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
 }
 .table-container .table-wrapper table.tainacan-table tbody tr {
   cursor: pointer;
-  border-bottom: 1px solid var(--tainacan-lists-separator-color, var(--tainacan-item-hover-background-color));
   background-color: var(--tainacan-item-background-color);
   transition: background-color 0.15s ease;
+}
+.table-container .table-wrapper table.tainacan-table tbody tr:not(:last-child) {
+  border-bottom: 1px solid var(--tainacan-lists-separator-color, var(--tainacan-item-hover-background-color));
 }
 .table-container .table-wrapper table.tainacan-table tbody tr.selected-row {
   --tainacan-item-background-color: var(--tainacan-primary);
@@ -16367,7 +16370,7 @@ button.link-style:focus button.link-style:active:hover {
 }
 .button.is-primary, .button.is-primary:hover, .button.is-primary:focus {
   background: var(--tainacan-primary) !important;
-  color: var(--tainacan-white) !important;
+  color: var(--tainacan-secondary) !important;
 }
 .button.is-success, .button.is-success:hover, .button.is-success:focus {
   background: var(--tainacan-success) !important;
@@ -16424,7 +16427,7 @@ button.link-style:focus button.link-style:active:hover {
   border-color: var(--tainacan-gray2) !important;
 }
 .button:not(.is-small):not(.is-medium):not(.is-large) {
-  min-height: 2.571em !important;
+  min-height: var(--tainacan-button-min-height, 2.571em) !important;
   font-size: 0.875em !important;
   line-height: 1.75em;
 }
@@ -17021,7 +17024,7 @@ textarea.textarea[rows="7"],
   color: var(--tainacan-input-color) !important;
   border: none;
   transition: background-color 0.3s ease;
-  min-height: 2.571em !important;
+  min-height: var(--tainacan-button-min-height, 2.571em) !important;
   line-height: 1.75em;
 }
 .dropdown .dropdown-menu .dropdown-content .dropdown-item.is-active, .dropdown .dropdown-menu .dropdown-content .has-link a.is-active, .dropdown .dropdown-menu .has-link .dropdown-content a.is-active, .autocomplete .dropdown-menu .dropdown-content .dropdown-item.is-active {
@@ -17436,6 +17439,7 @@ body.tainacan-admin-page > .control.autocomplete {
   .tainacan-modal.is-active {
     justify-content: flex-end;
   }
+  .tainacan-modal.is-active .animation-content,
   .tainacan-modal.is-active .tainacan-modal-content {
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;

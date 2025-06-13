@@ -2,7 +2,13 @@
     <div 
             class="page-container"
             :class="{'tainacan-repository-level-colors' : isNewCollection }">
-        <tainacan-title />
+
+        <tainacan-external-link
+                v-if="collection && collection.slug && collection.url"
+                :link-label="$i18n.get('label_view_collection_on_website')"
+                :link-url="collection.url" />
+
+        <tainacan-title :is-sticky="true" />
         
         <form 
                 v-if="collection != null && collection != undefined && ((isNewCollection && $userCaps.hasCapability('tnc_rep_edit_collections')) || (!isNewCollection && collection.current_user_can_edit))" 
@@ -1781,6 +1787,12 @@ export default {
             column-count: 2;
             column-rule: 1px solid var(--tainacan-gray1);
             margin-bottom: 1.125rem;
+
+            @media screen and (max-width: 600px) {
+                -moz-column-count: 1;
+                -webkit-column-count: 1;
+                column-count: 1;
+            }
         }
     }
 
@@ -1865,7 +1877,7 @@ export default {
 
             &:has(.image-placeholder) img {
                 opacity: 0.5;
-                border: 1px dashed var(--tainacan-info-color);
+                border: 1px dashed var(--tainacan-info-color) !important;
             }
             &:has(.image-placeholder) {
                 border: 6px solid var(--tainacan-background-color);
@@ -2028,18 +2040,14 @@ export default {
         }
     }
 
-    .tainacan-form {
-        padding-bottom: 48px;
-    }
-
     .footer {
         padding: 10px var(--tainacan-one-column);
-        position: absolute;
+        position: sticky;
         bottom: 0;
-        right: 0;
         z-index: 9999;
         background-color: var(--tainacan-gray1);
-        width: 100%;
+        width: calc(100% + (2 * var(--tainacan-one-column)));
+        margin-left: calc(-1 * var(--tainacan-one-column));
         height: 3.5rem;
         display: flex;
         justify-content: flex-end;
@@ -2096,16 +2104,22 @@ export default {
             background-color: transparent;
             border: none;
         }
-
-        @media screen and (max-width: 769px) {
+    }
+    @media screen and (max-width: 769px) {
+        .tainacan-form {
+            padding-bottom: 3rem;
+        }
+        .footer {
             padding: 13px 0.5em;
+            margin-left: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
             width: 100%;
             flex-wrap: wrap;
             height: auto;
             position: fixed;
 
             .update-info-section {
-                margin-left: auto;margin-bottom: 0.75em;
+                margin-left: auto;
+                margin-bottom: 0.75em;
                 margin-top: -0.25em;
             }
         }

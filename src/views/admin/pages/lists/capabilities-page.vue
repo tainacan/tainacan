@@ -4,9 +4,9 @@
                 'tainacan-repository-level-colors': isRepositoryLevel,
                 'page-container': isRepositoryLevel
             }">
-        <tainacan-title />
+        <tainacan-title :is-sticky="true" />
 
-        <div class="sub-header">
+        <div class="sub-header tainacan-sub-header--sticky">
             <b-field 
                     style="margin-left: 0; margin-right: auto;"
                     class="header-item">
@@ -190,19 +190,6 @@
 <style lang="scss" scoped>
 
     .sub-header {
-        position: sticky;
-        top: calc(-1 * var(--tainacan-container-padding));
-        z-index: 2;
-        background: var(--tainacan-background-color);
-        min-height: 2.5em;
-        padding: 0.5em 0;
-        height: auto;
-        border-bottom: 1px solid var(--tainacan-gray2);
-        display: inline-flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        width: 100%;
 
         .header-item {
             margin-bottom: 0 !important;

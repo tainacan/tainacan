@@ -565,7 +565,11 @@
     }
 
     .processes-list-item {
-        border-bottom: 1px solid var(--tainacan-lists-separator-color, var(--tainacan-item-hover-background-color));
+        border-radius: var(--tainacan-button-border-radius);
+
+        &:not(:last-child) {
+            border-bottom: 1px solid var(--tainacan-lists-separator-color, var(--tainacan-item-hover-background-color));
+        }
                     
         &.opened-process {
             background-color: var(--tainacan-gray0);

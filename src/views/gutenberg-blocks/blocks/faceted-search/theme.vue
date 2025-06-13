@@ -1907,10 +1907,6 @@
 
         p { margin-left: 0.75em; }
     }
-
-    .page-container {
-        padding: 0;
-    }
     
     #filter-menu-compress-button {
         position: absolute;

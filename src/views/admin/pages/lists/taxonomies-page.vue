@@ -1,9 +1,14 @@
 <template>
     <div class="tainacan-repository-level-colors page-container">
-        <tainacan-title>
-            <h2>
+
+        <tainacan-external-link 
+                :link-label="$i18n.get('label_view_taxonomies_on_website')"
+                :link-url="repositoryTaxonomiesURL" />
+
+        <tainacan-title :is-sticky="true">
+            <h1>
                 {{ $route.meta.title }}
-            </h2>
+            </h1>
 
             <!-- New Taxonomy Button ----  -->
             <div 
@@ -26,7 +31,7 @@
 
         </tainacan-title>
         
-        <div class="sub-header">
+        <div class="sub-header tainacan-sub-header--sticky">
 
             <!-- Textual Search -------------->
             <b-field class="header-item">
@@ -284,7 +289,8 @@
                     { label: this.$i18n.get('label_title'), value: 'title' },
                     { label: this.$i18n.get('label_creation_date'), value: 'date' },
                 ],
-                maxTaxonomiesPerPage: tainacan_plugin.api_max_items_per_page ? Number(tainacan_plugin.api_max_items_per_page) : 96
+                maxTaxonomiesPerPage: tainacan_plugin.api_max_items_per_page ? Number(tainacan_plugin.api_max_items_per_page) : 96,
+                repositoryTaxonomiesURL: tainacan_plugin.theme_taxonomy_list_url
             }
         },
         computed: {
@@ -408,15 +414,6 @@
 <style lang="scss" scoped>
 
     .sub-header {
-        height: auto;
-        min-height: 2.5em;
-        padding: 0.5em 0;
-        border-bottom: 1px solid var(--tainacan-gray2);
-        display: inline-flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        width: 100%;
 
         .header-item {
             margin-bottom: 0 !important;

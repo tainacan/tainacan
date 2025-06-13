@@ -1,5 +1,7 @@
 <template>
-    <div class="tainacan-page-title">
+    <div 
+            class="tainacan-page-title"
+            :class="{ 'tainacan-page-title--sticky': isSticky }">
         <slot />
         <h1 v-if="!slotPassed">
             {{ pageTitle }} <span class="is-italic has-text-weight-semibold">{{ !isRepositoryLevel && collection && collection.name ? collection.name : '' }}</span>
@@ -13,10 +15,13 @@ import { useSlots } from 'vue';
 
 export default {
     name: 'TainacanTitle',
+    props: {
+        isSticky: true
+    },
     data() {
         return {
             isRepositoryLevel: true,
-            pageTitle: '',
+            pageTitle: ''
         }
     },
     computed: {
@@ -64,16 +69,39 @@ export default {
 <style lang="scss" scoped>
 
     .tainacan-page-title {
-        margin-bottom: 20px;
+        padding-top: calc(0.125rem + var(--tainacan-container-padding));
+        padding-bottom: 0.5rem;
+        margin-bottom: var(--tainacan-container-padding);
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         gap: 0.75em 1.5em;
+        min-height: calc( 0.125rem + var(--tainacan-container-padding) + 0.5rem + var(--tainacan-button-min-height, 2.571em) );
+
+        &.tainacan-page-title--sticky {
+            margin-bottom: 0px;
+            z-index: 999;
+            position: sticky;
+            top: 0;
+            background-color: var(--tainacan-background-color);
+            container-type: scroll-state;
+
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background-color: var(--tainacan-input-border-color);
+                transition: background 0.2s ease;
+            }
+        }
 
         :deep(h1),
         :deep(h2) {
             font-size: 1.25em;
-            line-height: 1.25;
+            line-height: 1.25em;
             font-weight: 500;
             color: var(--tainacan-heading-color);
             display: inline-block;
@@ -102,6 +130,24 @@ export default {
             margin-bottom: 0px !important;
         }
     }
+
+    @media screen and (min-width: 769px) {
+        .tainacan-external-link + .tainacan-page-title--sticky {
+            padding-right: 200px;
+        }
+    }
+
+    @container scroll-state(stuck: top) {
+        .tainacan-page-title.tainacan-page-title--sticky::after {
+            background: var(--tainacan-input-border-color) !important;
+        }
+    }
+    @supports (container-type: scroll-state) {
+        .tainacan-page-title.tainacan-page-title--sticky::after {
+                background-color: var(--tainacan-background-color);
+        }
+    }
+
 </style>
 
 

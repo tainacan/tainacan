@@ -1,21 +1,23 @@
 <template>
     <div class="tainacan-repository-level-colors page-container">
-        <tainacan-title />
+        <tainacan-title :is-sticky="true" />
 
         <h3>{{ $i18n.get('label_available_exporters') }}</h3>
         <p>{{ $i18n.get('instruction_select_an_exporter_type') }}</p>
         <div
                 role="list"
                 class="exporter-types-container tainacan-clickable-cards">
-            <router-link
-                    v-for="exporterType in availableExporters"
-                    :key="exporterType.slug"
-                    class="exporter-type tainacan-clickable-card"
-                    :to="$routerHelper.getExporterEditionPath(exporterType.slug)"
-                    role="listitem">
-                <h4>{{ exporterType.name }}</h4>
-                <p>{{ exporterType.description }}</p>
-            </router-link>
+            <template v-for="exporterType in availableExporters">
+                <router-link
+                        v-if="exporterType.manual_collection"
+                        :key="exporterType.slug"
+                        class="exporter-type tainacan-clickable-card"
+                        :to="$routerHelper.getExporterEditionPath(exporterType.slug) + ( selectedCollection ? ('?sourceCollection=' + selectedCollection) : '' )"
+                        role="listitem">
+                    <h4>{{ exporterType.name }}</h4>
+                    <p>{{ exporterType.description }}</p>
+                </router-link>
+            </template>
         </div>
 
         <b-loading
@@ -32,14 +34,19 @@
         data(){
             return {
                 availableExporters: [],
-                isLoading: false
+                isLoading: false,
+                selectedCollection: false
             }
         },
         created() {
             this.isLoading = true;
+
+            this.selectedCollection = this.$route.query.sourceCollection;
+
             this.fetchAvailableExporters()
                 .then((res) => {
                     this.availableExporters = res;
+   
                     this.isLoading = false;
                 }).catch((error) => {
                     this.$console.log(error);

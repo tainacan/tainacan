@@ -15,6 +15,27 @@ html {
     overflow: hidden;
 }
 
+// Scrollbars
+.tainacan-pages-container * {
+    // For Firefox
+    scrollbar-color: var(--tainacan-gray3) transparent;
+
+    // For Chromium and related
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--tainacan-gray3);
+    }
+
+    @media screen and (min-width: 770px) {
+        // For Firefox
+        scrollbar-width: thin;
+
+        // For Chromium and related
+        &::-webkit-scrollbar {
+            width: 0.4em;
+        }
+    }
+}
+
 /* Removal of some padding that would conflict on how we color the page background */
 .tainacan-pages-container #wpcontent {
     padding-left: 0;
@@ -30,8 +51,18 @@ html {
     z-index: 10;
     font-size: 13px;
 }
-.tainacan-pages-container #screen-meta-links:has(+#tainacan-page-container>#tainacan-navigation-menu.is-open) {
-    z-index: 0;
+.tainacan-pages-container #screen-meta-links{
+    
+    &:has(+#tainacan-page-container > #tainacan-navigation-menu.is-active) {
+        z-index: 0;
+    }
+
+    @media screen and (max-width: 768px) {
+        .tainacan-pages-container #screen-meta-links:has(+#tainacan-page-container > #tainacan-navigation-menu.is-active) {
+            display: none;
+            visibility: hidden;
+        }
+    }
 }
 .tainacan-pages-container #screen-meta {
 
@@ -144,12 +175,14 @@ html {
         --wp-admin--admin-bar--height: 0px;
         --tainacan-breadcumbs-list-height: 0px;
         --tainacan-page-container-margin-top: 0px;
-        --tainacan-page-container--inner-padding-x: 0px;
-        --tainacan-page-container--inner-padding-y: 0px;
         --tainacan-page-container-border-radius: 0px;
-        --tainacan-admin-header-height: 0px;
         --tainacan-admin-navigation-sidebar-width: 0px;
         grid-template-columns: 1fr;
+
+        #tainacan-page-container--inner {
+            --tainacan-page-container--inner-padding-x: 0px;
+            --tainacan-page-container--inner-padding-y: 0px;
+        }
     }
 }
 
@@ -282,6 +315,9 @@ html {
         @media screen and (max-width: 1024px) {
             --tainacan-page-container--inner-padding-x: 0.25rem;
         }
+        @media screen and (max-width: 768px) {
+            --tainacan-page-container--inner-padding-x: 0rem;
+        }
 
         &:only-child {
             grid-column: span 2;
@@ -363,6 +399,8 @@ html {
         }
 
         @media (min-width: 769px) {
+            transform: none;
+
             &.is-collapsed {
                 --tainacan-admin-navigation-sidebar-width: 65px;
                 padding: 1rem 0.25rem;
@@ -792,7 +830,7 @@ html {
 
     .tainacan-page-container-content {
         background-color: var(--tainacan-background-color);
-        border-radius: var(--tainacan-page-container-border-radius, 16px) var(--tainacan-page-container-border-radius, 16px) 0 0;
+        border-radius: var(--tainacan-page-container-border-radius, 12px) var(--tainacan-page-container-border-radius, 12px) 0 0;
         border: var(--tainacan-page-container-border, none);
         margin-top: var(--tainacan-page-container-margin-top, 1rem);
         margin-left: var(--tainacan-page-container-margin-x, 0rem);
@@ -820,23 +858,27 @@ html {
         #tainacan-menu-toggler {
             display: block;
             visibility: visible;
+            left: 0;
+            transition: left 0.2s ease-in-out;
         }
         #tainacan-menu-collapser {
             display: none;
             visibility: hidden;
         }
         #tainacan-navigation-menu {
-            display: none; /* Esconde a sidebar no mobile */
+            position: absolute; /* Esconde a sidebar no mobile */
+            visibility: hidden;
+            transform: translateX(-100%);
         }
         #tainacan-navigation-menu.is-active {
-            display: block;
-            position: absolute;
+            transform: translateX(0%);
+            visibility: visible;
             width: var(--tainacan-admin-navigation-sidebar-width, 215px);
             z-index: 1002;
             box-shadow: 0.5rem 0 2rem -1.5rem var(--tainacan-black);
 
-            #tainacan-menu-toggler {
-                margin-left: calc( var(--tainacan-admin-navigation-sidebar-width, 215px) - var(--tainacan-page-container--inner-padding-x, 1rem) );
+            & + #tainacan-page-container--inner #tainacan-menu-toggler {
+                left: calc( var(--tainacan-admin-navigation-sidebar-width, 215px) - var(--tainacan-page-container--inner-padding-x, 1rem) );
             }
         }
     }

@@ -813,7 +813,7 @@
     }
 
     .this-tainacan-modal-content {
-        min-height: 300px;
+        min-height: 276px;
         
         .button.is-white.is-loading {
             cursor: inherit;
@@ -826,7 +826,7 @@
             font-size: 0.875em;
         }
         .form-submit {
-            padding: 42px 0 0.4em 0 !important;
+            padding: 42px 0 0 0 !important;
         }
     }
 

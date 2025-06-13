@@ -4,15 +4,24 @@
                 v-model="isLoading"
                 :can-cancel="false" />
 
-        <tainacan-title v-if="!$adminOptions.hideItemSinglePageTitle">
+        <tainacan-external-link
+                v-if="item && item.url && item.slug"
+                :link-label="$i18n.get('label_item_page_on_website')"
+                :link-url="item.url" />
+
+        <tainacan-title 
+                v-if="!$adminOptions.hideItemSinglePageTitle"
+                :is-sticky="true">
             <h1>
+               
+                {{ $i18n.get('title_item_page') + ' ' }}
+                <span style="font-weight: 600;">
+                    {{ (item != null && item != undefined) ? item.title : '' }}
+                </span>
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
                         class="status-tag">
                     {{ $i18n.get('status_' + item.status) }}
-                </span>
-                {{ $i18n.get('title_item_page') + ' ' }}
-                <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}    
                 </span>
             </h1>
         </tainacan-title>
@@ -724,7 +733,6 @@
 <style lang="scss" scoped>
 
     .page-container {
-        padding: 0px;
         transition: none;
 
         & > .tainacan-form {
@@ -736,29 +744,21 @@
         }
 
         .tainacan-page-title {
-            margin-top: var(--tainacan-container-padding);
-            padding: 0 var(--tainacan-one-column);
 
             .status-tag {
                 color: var(--tainacan-secondary);
                 background: var(--tainacan-primary);
                 padding: 0.15em 0.5em;
                 font-size: 0.75em;
-                margin: 0 1em 0 0;
+                margin: 0 0 0 1em;
                 font-weight: 600;
                 position: relative;
                 top: -2px;
                 border-radius: 2px;
             }
-
-            @media screen and (max-width: 769px) {
-                padding: 0 0.5em;
-                margin-bottom: 1.25rem !important;
-            }
         }
 
         .tainacan-form > .columns {
-            margin: 0 var(--tainacan-one-column);
 
             .column.secondary-column {
                 padding-top: 0;
@@ -772,8 +772,8 @@
                         position: sticky;
                         top: 0;
                         margin: 0;
-                        max-height: calc(100vh - 3.5rem - var(--tainacan-admin-header-height, 3.25em) - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
-                        max-height: calc(100dvh - 3.5rem - var(--tainacan-admin-header-height, 3.25em) - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
+                        max-height: calc(100vh - 3.5rem - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
+                        max-height: calc(100dvh - 3.5rem - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
                         overflow-y: auto;
                         overflow-x: hidden;
                     }
@@ -1137,6 +1137,28 @@
         align-items: center;
         box-shadow: 0px 0px 12px -8px var(--tainacan-black);
 
+        &::after,
+        &::before {
+            height: 18px;
+            width: 18px;
+            background: transparent;
+            display: block;
+            content: '';
+            position: absolute;
+        }
+        &::before {
+            left: 0;
+            top: -18px;
+            border-bottom-left-radius: 9px;
+            box-shadow: -9px 0px 0 0 var(--tainacan-gray1), inset 2px -2px 5px -3px var(--tainacan-gray2)
+        }
+        &::after {
+            right: 0;
+            top: -18px;
+            border-bottom-right-radius: 9px;
+            box-shadow: 9px 0px 0 0 var(--tainacan-gray1), inset -2px -2px 5px -3px var(--tainacan-gray2)
+        }
+
         .form-submission-footer {
             width: 100%;
             display: flex;
@@ -1170,9 +1192,14 @@
                 color: var(--tainacan-turquoise5) !important;
             }
         }
-
-        @media screen and (max-width: 769px) {
+    }
+    @media screen and (max-width: 769px) {
+        .tainacan-form {
+            padding-bottom: 6rem;
+        }
+        .footer {
             padding: 13px 0.5em;
+            margin-left: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
             width: 100%;
             flex-wrap: wrap;
             height: auto;

@@ -424,6 +424,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_semantic_uri'                             => __( 'Semantic Uri', 'tainacan' ),
 	'label_view_collection_on_website'               => __( 'View collection on website', 'tainacan' ),
 	'label_view_collections_on_website'              => __( 'View collections on website', 'tainacan' ),
+	'label_view_items_on_website' 		             => __( 'View items on website', 'tainacan' ),
 	'label_view_taxonomies_on_website'               => __( 'View taxonomies on website', 'tainacan' ),
 	'label_view_more'                                => __( 'View more', 'tainacan' ),
 	'label_log_file'                                 => __( 'Log file', 'tainacan' ),

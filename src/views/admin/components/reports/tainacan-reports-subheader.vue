@@ -231,9 +231,9 @@ export default { }
         align-items: start;
         flex-wrap: nowrap;
         gap: 0.5rem;
-        margin: 6px 0px 36px 0px;
+        margin: var(--tainacan-container-padding) 0px;
         font-size: 0.75em;
-        color: var(--tainacan-gray4, #505253);
+        color: var(--tainacan-label-color, #505253);
 
         @media screen and (max-width: 1200px) {
             flex-wrap: wrap;
@@ -241,7 +241,7 @@ export default { }
 
         .tainacan-reports-subheader-box {
             padding-left: 14px;
-            border-left: 1px solid var(--tainacan-gray3, #a5a5a5);
+            border-left: 1px solid var(--tainacan-input-border-color, #a5a5a5);
         }
 
         .tainacan-reports-subheader-box__title {

@@ -38,6 +38,7 @@ import VueApexCharts from 'vue3-apexcharts';
 import AdminPage from '../admin.vue'
 import HelpButton from '../components/other/help-button.vue';
 import TainacanTitle from '../components/navigation/tainacan-title.vue';
+import TainacanExternalLink from '../components/navigation/tainacan-external-link.vue';
 import store from './store/store';
 import router from './router';
 import eventBusSearch from './event-bus-search';
@@ -229,6 +230,7 @@ export default (element) => {
             /* Others */
             app.component('help-button', HelpButton);
             app.component('tainacan-title', TainacanTitle);
+            app.component('tainacan-external-link', TainacanExternalLink)
             
             // Event bus are needed to facilate comunication between child-parent-child components
             app.use(eventBusSearch);

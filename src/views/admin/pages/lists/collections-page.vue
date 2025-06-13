@@ -5,10 +5,14 @@
                 v-model="isLoading"
                 :is-full-page="false" />
         
-        <tainacan-title>
-            <h2>
+        <tainacan-external-link 
+                :link-label="$i18n.get('label_view_collections_on_website')"
+                :link-url="repositoryCollectionsURL" />
+
+        <tainacan-title :is-sticky="true">
+            <h1>
                 {{ $route.meta.title }}
-            </h2>
+            </h1>
 
             <!-- New Collection button -->
             <div 
@@ -17,7 +21,8 @@
                 <b-dropdown
                         id="collection-creation-options-dropdown"
                         aria-role="list"
-                        trap-focus>
+                        trap-focus
+                        append-to-body>
                     <template #trigger>
                         <button class="button is-secondary">
                             <div>{{ $i18n.getFrom('collections', 'new_item') }}</div>
@@ -66,7 +71,7 @@
             </div>
         </tainacan-title>
 
-        <div class="sub-header">
+        <div class="sub-header tainacan-sub-header--sticky">
           
             <!-- Textual Search -------------->
             <b-field 
@@ -449,7 +454,8 @@ export default {
                 { label: this.$i18n.get('label_creation_date'), value: 'date' },
                 { label: this.$i18n.get('label_modification_date'), value: 'modified' }
             ],
-            maxCollectionsPerPage: tainacan_plugin.api_max_items_per_page ? Number(tainacan_plugin.api_max_items_per_page) : 96
+            maxCollectionsPerPage: tainacan_plugin.api_max_items_per_page ? Number(tainacan_plugin.api_max_items_per_page) : 96,
+            repositoryCollectionsURL: tainacan_plugin.theme_collection_list_url
         }
     },
     computed: {

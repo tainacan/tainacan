@@ -391,6 +391,7 @@
 <style lang="scss" scoped>
 
     form#metadataSectionEditForm {
+        font-size: 1.125em;
 
         .options-columns {
             -moz-column-count: 2;
@@ -428,6 +429,12 @@
             }
             .tainacan-help-tooltip-trigger {
                 font-size: 1.25em;
+            }
+
+            @media screen and (max-width: 600px) {
+                -moz-column-count: 1;
+                -webkit-column-count: 1;
+                column-count: 1;
             }
         }
         .tainacan-form .field:not(:last-child) {
@@ -510,7 +517,6 @@
         display: flex;
         justify-content: space-between;
         z-index: 2;
-        font-size: 1.125em;
 
         &::after,
         &::before {

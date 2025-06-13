@@ -521,7 +521,8 @@
                             aria-role="dialog"
                             custom-class="tainacan-modal"
                             :can-cancel="['escape', 'outside']"
-                            @close="onSectionEditionCanceled()">
+                            @close="onSectionEditionCanceled()"
+                            :append-to-body="true">
                         <metadata-section-edition-form
                                 :collection-id="collectionId"
                                 :original-metadata-section="metadataSection"

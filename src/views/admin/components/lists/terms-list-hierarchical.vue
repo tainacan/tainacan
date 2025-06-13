@@ -1114,7 +1114,7 @@ export default {
                 min-width: calc(99vw - 0.75em - 0.75em - 24px);
             }
             .tainacan-hierarchical-list-column .column-header+ul {
-                max-height: calc(100% - 0.75em - 0.45em - 0.45em - 3px);
+                max-height: calc(100% - 0.75em - 0.45em - 0.45em - 5px);
             }
             .tainacan-hierarchical-list-column a {
                 width: 3.5em;

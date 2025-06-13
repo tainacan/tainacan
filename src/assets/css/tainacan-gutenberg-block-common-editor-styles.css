@@ -85,7 +85,7 @@
 .wp-block-tainacan-modal.dynamic-modal .modal-footer-area {
   height: 68px;
   width: 100%;
-  border-top: 1px solid var(--tainacan-block-gray3, #a5a5a5);
+  border-top: 1px solid var(--tainacan-block-gray2, #dbdbdb);
   padding: 15px 32px;
 }
 .wp-block-tainacan-modal.dynamic-modal .components-modal__content {

@@ -5,27 +5,34 @@
                 :is-full-page="false"
                 :can-cancel="false" />
 
-        <tainacan-title v-if="!$adminOptions.hideItemEditionPageTitle || ($adminOptions.hideItemEditionPageTitle && isEditingItemMetadataInsideIframe)">
+        <tainacan-external-link
+                v-if="item && item.url && item.slug"
+                :link-label="$i18n.get('label_item_page_on_website')"
+                :link-url="item.url" />
+
+        <tainacan-title 
+                v-if="!$adminOptions.hideItemEditionPageTitle || ($adminOptions.hideItemEditionPageTitle && isEditingItemMetadataInsideIframe)"
+                :is-sticky="true">
             <h1 v-if="isCreatingNewItem">
-                <span
-                        v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
-                        class="status-tag"
-                        @mouseenter="$emit('toggleItemEditionFooterDropdown')">
-                    {{ $i18n.get('status_' + item.status) }}
-                </span>
                 {{ $i18n.get('title_create_item_collection') + ' ' }}
                 <span style="font-weight: 600;">{{ collection && collection.name ? collection.name : '' }}</span>
-            </h1>
-            <h1 v-else>
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
                         class="status-tag"
                         @mouseenter="$emit('toggleItemEditionFooterDropdown')">
                     {{ $i18n.get('status_' + item.status) }}
                 </span>
+            </h1>
+            <h1 v-else>
                 {{ $i18n.get('title_edit_item') + ' ' }}
                 <span style="font-weight: 600;">
                     {{ (item != null && item != undefined) ? item.title : '' }}
+                </span>
+                <span
+                        v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
+                        class="status-tag"
+                        @mouseenter="$emit('toggleItemEditionFooterDropdown')">
+                    {{ $i18n.get('status_' + item.status) }}
                 </span>
                 <span
                         v-if="$adminOptions.itemEditionStatusOptionOnFooterDropdown && (item != null && item != undefined && item.status != undefined && item.status != 'autodraft' && !isLoading)"
@@ -155,7 +162,7 @@
                                 v-if="!$adminOptions.hideItemEditionRequiredOnlySwitch && (collection && collection.item_enable_metadata_required_filter === 'yes')"
                                 @click="showOnlyRequiredMetadata = true; isMobileSubheaderOpen = false;">
                             <span><i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata" /></span>
-                            <span>{{ $i18n.get('label_required_metadata') }}</span>
+                            <span>{{ $i18n.get('label_only_required_metadata') }}</span>
                         </button>
                     </div>
                 </div>
@@ -2034,10 +2041,10 @@ export default {
 <style lang="scss">
 
     .tainacan-admin-collection-mobile-app-mode {
-        .page-container.item-edition-container,
-        .page-container.item-creation-container {
-            padding-top: 0px;
+        &.page-container.item-edition-container,
+        &.page-container.item-creation-container {
             height: 100%;
+            padding: 0;
 
             .tainacan-form > .columns {
                 margin-left: 0px;
@@ -2045,7 +2052,7 @@ export default {
             }
         }
         .column.main-column {
-            padding-top: 0.75em !important;
+            padding-top: 0 !important;
             padding-right: 0px !important;
             padding-left: 0px !important;
         }
@@ -2058,23 +2065,10 @@ export default {
                 margin-top: 0px;
             }
         }
-        .footer {
-            background-color: transparent !important;
-            pointer-events: none;
-
-            .item-edition-footer-dropdown {
-                pointer-events: all;
-            }
-            .button {
-                pointer-events: all;
-                box-shadow: 2px 2px 12px -8px var(--tainacan-gray5) !important;
-            }
-        }
     }
 
     .page-container.item-edition-container,
     .page-container.item-creation-container {
-        padding: 0px;
         transition: none;
 
         & > .tainacan-form {
@@ -2092,28 +2086,20 @@ export default {
         }
 
         .tainacan-page-title {
-            margin-top: var(--tainacan-container-padding);
-            padding: 0 var(--tainacan-one-column);
         
             .status-tag {
                 color: var(--tainacan-secondary);
                 background: var(--tainacan-primary);
                 padding: 0.15em 0.5em;
                 font-size: 0.75em;
-                margin: 0 1em 0 0;
+                margin: 0 0 0 1em;
                 font-weight: 600;
                 position: relative;
                 top: -2px;
                 border-radius: 2px;
             }
-
-            @media screen and (max-width: 769px) {
-                padding: 0 0.5em;
-                margin-bottom: 1.25rem !important;
-            }
         }
         .tainacan-form > .columns {
-            margin: 0 var(--tainacan-one-column);
             
             .column.secondary-column {
                 padding-top: 0;
@@ -2127,8 +2113,8 @@ export default {
                         position: sticky;
                         top: 0px;
                         margin: 0;
-                        max-height: calc(100vh - 3.5rem - var(--tainacan-admin-header-height, 3.25em) - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
-                        max-height: calc(100dvh - 3.5rem - var(--tainacan-admin-header-height, 3.25em) - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
+                        max-height: calc(100vh - 3.5rem - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
+                        max-height: calc(100dvh - 3.5rem - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
                         overflow-y: auto;
                         overflow-x: hidden;
                     }
@@ -2180,7 +2166,6 @@ export default {
                 &>.column.main-column {
                     padding-left: 0;
                     padding-right: 0;
-                    padding-top: 1.75em;
                     max-width: 100%;
                     width: 100%;
 
@@ -2568,18 +2553,14 @@ export default {
             &.has-some-metadatum-focused {
                 bottom: -300px;
             }
-
-            @media screen and (max-width: 769px) {
-                padding: 13px 0.5em;
-                width: 100%;
-                flex-wrap: wrap;
-                height: auto;
-                position: fixed;
-
-                .update-info-section {
-                    margin-left: auto;margin-bottom: 0.75em;
-                    margin-top: -0.25em;
-                }
+        }
+         @media screen and (max-width: 769px) {
+            .tainacan-form {
+                padding-bottom: 3rem;
+            }
+            .update-info-section {
+                margin-left: auto;margin-bottom: 0.75em;
+                margin-top: -0.25em;
             }
         }
 
@@ -2593,6 +2574,7 @@ export default {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            width: 100vw;
             position: sticky;
             top: 0px;
             z-index: 99999;
@@ -2666,7 +2648,7 @@ export default {
                     align-items: center;
                     justify-content: space-evenly;
                     flex-direction: column;
-                    border-radius: 1px;
+                    border-radius: var(--tainacan-button-border-radius, 2px);
 
                     &:hover,
                     &:focus,

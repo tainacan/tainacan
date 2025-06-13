@@ -187,6 +187,13 @@ function handleDynamicMenusAndBreadcrumbs() {
                                 hide: !collection.current_user_can_edit_users
                             },
                             {
+                                id: 'exporters',
+                                label: wp.i18n.__( 'Exporters', 'tainacan'),
+                                icon: 'export',
+                                href: `exporters?sourceCollection=${currentRoute.params.collectionId}`,
+                                hide: adminOptions.hideCollectionsExporterButton === 'true' || !collection.current_user_can_edit_users
+                            },
+                            {
                                 id: 'reports',
                                 label: wp.i18n.__( 'Reports', 'tainacan'),
                                 svgIcon: `<svg fill="currentColor" width="1em" height="1em" viewBox="0 0 16 16" version="1.1" xmlns:svg="http://www.w3.org/2000/svg">

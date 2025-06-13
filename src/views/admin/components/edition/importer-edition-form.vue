@@ -1,7 +1,7 @@
 <template>
     <div 
             class="tainacan-repository-level-colors page-container">
-        <tainacan-title>
+        <tainacan-title :is-sticky="true">
             <h1>
                 {{ $i18n.get('title_importer_page') }} 
                 <span 

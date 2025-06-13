@@ -1375,7 +1375,7 @@
                 min-width: calc(99vw - 0.75em - 0.75em - 24px);
             }
             .tainacan-finder-column .column-label+ul {
-                max-height: calc(100% - 0.75em - 0.45em - 0.45em - 3px);
+                max-height: calc(100% - 0.75em - 0.45em - 0.45em - 5px);
             }
             .tainacan-finder-column a {
                 width: 3.5em;

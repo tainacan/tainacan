@@ -8,12 +8,23 @@
             class="admin-items-list page-container"
             aria-live="polite">
 
-        <!-- PAGE TITLE --------------------- -->
-        <tainacan-title v-if="!$adminOptions.hideItemsListPageTitle">
+        <tainacan-external-link
+                v-if="isRepositoryLevel" 
+                :link-label="$i18n.get('label_view_items_on_website')"
+                :link-url="repositoryItemsURL" />
+        <tainacan-external-link
+                v-else
+                :link-label="$i18n.get('label_view_collection_on_website')"
+                :link-url="collection && collection.url ? collection.url : ''" />
 
-            <h2>
+        <!-- PAGE TITLE --------------------- -->
+        <tainacan-title 
+                v-if="!$adminOptions.hideItemsListPageTitle"
+                :is-sticky="true">
+
+            <h1>
                 {{ $route.meta.title }} <span class="is-italic has-text-weight-semibold">{{ !isRepositoryLevel && collection && collection.name ? collection.name : '' }}</span>
-            </h2>
+            </h1>
 
             <!-- Item Creation Dropdown (or button, if few options are available) -->
             <div 
@@ -120,40 +131,12 @@
                 aria-labelledby="search-control-landmark"
                 role="region"
                 class="search-control"  
-                :style="( $adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || $adminOptions.itemsSearchSelectionMode ) ? '--tainacan-container-padding: 6px;' : ''">
-            <h3 
+                :style="isAdminIframeMode ? '--tainacan-container-padding: 6px; position: unset; top: unset;' : ''">
+            <h2 
                     id="search-control-landmark"
                     class="sr-only">
                 {{ $i18n.get('label_sort_visualization') }}
-            </h3>
-            <!-- <b-loading
-                    :is-full-page="false"
-                    v-model="isLoadingMetadata"/> -->
-            <!-- Button for hiding filters -->
-            <button 
-                    v-if="!openAdvancedSearch"
-                    id="filter-menu-compress-button"
-                    v-tooltip="{
-                        delay: {
-                            show: 500,
-                            hide: 300,
-                        },
-                        content: !isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
-                        autoHide: false,
-                        placement: 'auto-start',
-                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
-                    }"
-                    aria-controls="filters-modal"
-                    :aria-expanded="isFiltersModalActive"
-                    :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
-                    @click="isFiltersModalActive = !isFiltersModalActive">
-                <span class="icon">
-                    <i 
-                            :class="{ 'tainacan-icon-arrowleft' : isFiltersModalActive, 'tainacan-icon-arrowright' : !isFiltersModalActive }"
-                            class="tainacan-icon tainacan-icon-1-25em" />
-                </span>
-                <span class="text is-hidden-tablet">{{ $i18n.get('filters') }}</span>
-            </button>
+            </h2>
 
             <!-- Text simple search -->
             <div class="search-control-item search-control-item--search">
@@ -552,6 +535,33 @@
 
         </div>
 
+        <!-- Button for hiding filters -->
+        <button 
+                v-if="!openAdvancedSearch"
+                id="filter-menu-compress-button"
+                v-tooltip="{
+                        delay: {
+                            show: 500,
+                            hide: 300,
+                        },
+                        content: !isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
+                        autoHide: false,
+                        placement: 'auto-start',
+                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
+                    }"
+                    aria-controls="filters-modal"
+                    :aria-expanded="isFiltersModalActive"
+                    :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
+                    @click="isFiltersModalActive = !isFiltersModalActive">
+                <span class="icon">
+                    <i 
+                            :class="{ 'tainacan-icon-arrowleft' : isFiltersModalActive, 'tainacan-icon-arrowright' : !isFiltersModalActive }"
+                            class="tainacan-icon tainacan-icon-1-25em" />
+                </span>
+                <span class="text is-hidden-tablet">{{ $i18n.get('filters') }}</span>
+            </button>
+
+
         <!-- SIDEBAR WITH FILTERS -->
         <b-modal
                 id="filters-modal"
@@ -615,11 +625,11 @@
                     role="region"
                     class="above-search-control">
 
-                <h3 
+                <h2 
                         id="items-list-landmark"
                         class="sr-only">
                     {{ $i18n.get('label_items_list') }}
-                </h3>
+                </h2>
 
                 <div 
                         v-show="showLoading"
@@ -789,7 +799,8 @@
                 windowWidth: null,
                 newOrder: 'DESC',
                 newOrderBy: 'date',
-                filtersModalStateHasChanged: false
+                filtersModalStateHasChanged: false,
+                repositoryItemsURL: tainacan_plugin.theme_items_list_url
             }
         },
         computed: {
@@ -829,6 +840,9 @@
             },
             hasSearchByMoreThanOneWord() {
                 return this.futureSearchQuery && this.futureSearchQuery.split(' ').length > 1;
+            },
+            isAdminIframeMode() {
+                return this.$adminOptions.itemsSingleSelectionMode || this.$adminOptions.itemsMultipleSelectionMode || this.$adminOptions.itemsSearchSelectionMode;
             }
         },
         watch: {
@@ -1008,8 +1022,10 @@
 
                     if ((this.$refs['search-control'].classList.contains('floating-search-control')))
                         this.$refs['search-control'].classList.remove('floating-search-control');
-
-                    this.$refs['items-page-container'].scrollTo({ top: this.$refs['search-control'].offsetTop - 12, behavior: 'smooth'});
+                    
+                    this.$refs['items-page-container'].scrollTo({ top: 0, behavior: 'smooth'});
+                    console.log(this.$refs['items-page-container'].scrollTop);
+                    console.log(this.$refs['items-page-container'])
                 }
 
                 this.isLoadingItems = isLoadingItems;
@@ -1476,6 +1492,9 @@
             }, 500),
             handleMouseMoveOverList: _.debounce( function($event) {
 
+                if ( this.isAdminIframeMode )
+                    return;
+
                 // Handles search control bar
                 if (this.$refs['search-control']) {
                     const bounding = this.$refs['search-control'].getBoundingClientRect();
@@ -1531,19 +1550,6 @@
 
 <style lang="scss" scoped>
 
-    .page-container.admin-items-list {
-        padding: 0 var(--tainacan-one-column);
-    }
-
-    .tainacan-page-title {
-        padding: var(--tainacan-container-padding) 0;
-        margin: 0;
-    }
-
-    .tainacan-repository-level-colors {
-        overflow-y: auto;
-    }
-
     .advanced-search-form-submit {
         display: flex;
         justify-content: flex-end;
@@ -1562,10 +1568,6 @@
         .column {
             padding: 0 0.3em 0.3em !important;
         }
-    }
-
-    .page-container {
-        padding: 0;
     }
 
     .filters-menu {
@@ -1589,7 +1591,7 @@
             padding: 0;
         }
         @media screen and (min-width: 769px) {
-            top: 1px !important;
+            top: calc(0.5rem + var(--tainacan-container-padding) + 1.25em + 0.5rem) !important;
             position: relative;
             position: sticky;
             
@@ -1602,8 +1604,7 @@
     #filter-menu-compress-button {
         position: absolute;
         z-index: 99;
-        bottom: 0px;
-        left: calc(-1 * var(--tainacan-one-column) - 1px);
+        left: 0;
         max-width: 1.625em;
         height: 1.625em;
         width: 1.625em;
@@ -1611,11 +1612,12 @@
         background-color: var(--tainacan-primary);
         color: var(--tainacan-secondary);
         padding: 0;
-        border-top-right-radius: 2px;
-        border-bottom-right-radius: 2px;
+        border-top-right-radius: var(--tainacan-button-border-radius);
+        border-bottom-right-radius: var(--tainacan-button-border-radius);
         cursor: pointer;
         display: flex;
         align-items: center;
+        transform: translateY(18px);
         transition: top 0.3s;
 
         &:focus {
@@ -1627,6 +1629,7 @@
             width: auto;
             padding: 3px 6px 3px 0px;
             height: 1.625em;
+            transform: translateY(-18px);
         }
     }
 
@@ -1634,7 +1637,7 @@
         min-height: 42px;
         height: auto;
         position: relative;
-        padding: 2px 0 var(--tainacan-container-padding) 0;
+        padding: 0.5em 0;
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(144px, 1fr));
         justify-content: space-between;
@@ -1650,7 +1653,7 @@
 
         &.floating-search-control {
             position: sticky;
-            top: 0;
+            top: calc( var(--tainacan-container-padding) + var(--tainacan-button-min-height, 2.571em) );
             z-index: 99999999;
             background: var(--tainacan-background-color);
             animation: appear-from-top 0.2s;

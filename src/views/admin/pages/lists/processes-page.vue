@@ -1,10 +1,9 @@
 <template>
     <div class="tainacan-repository-level-colors page-container">
+                
+        <tainacan-title :is-sticky="true" />
 
-        <tainacan-title />
-
-
-        <div class="sub-header tainacan-sticky-content-subheader">
+        <div class="sub-header tainacan-sub-header--sticky">
 
             <b-field 
                     class="header-item"

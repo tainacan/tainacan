@@ -4,11 +4,16 @@
                 v-model="isLoading"
                 :is-full-page="false"
                 :can-cancel="false" />
-        <div 
-                v-if="!$adminOptions.hideBulkEditionPageTitle"
+        <!-- <div 
+                
                 class="tainacan-page-title">
             <h1>{{ $i18n.get('add_items_bulk') }}</h1>
-        </div>
+        </div> -->
+
+        <tainacan-title 
+                v-if="!$adminOptions.hideBulkEditionPageTitle"        
+                :is-sticky="true" />
+
         <form
                 v-if="!isLoading && collection && collection.current_user_can_bulk_edit"
                 class="tainacan-form" 
@@ -358,22 +363,6 @@ export default {
             margin-bottom: 56px;
         }
 
-        .tainacan-page-title {
-            margin-bottom: 28px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-end;
-            justify-content: space-between;
-
-            h1, h2 {
-                font-size: 1.25em;
-                font-weight: 500;
-                color: var(--tainacan-heading-color);
-                display: inline-block;
-                flex-shrink: 1;
-                flex-grow: 1;
-            }
-        }
         .source-file-upload {
             width: 100%;
             padding: 0.75em var(--tainacan-one-column);
@@ -521,6 +510,19 @@ export default {
             //         margin-right: 6px;
             //     }
             // }
+        }
+        @media screen and (max-width: 769px) {
+            .tainacan-form {
+                padding-bottom: 6rem;
+            }
+            .footer {
+                padding: 13px 0.5em;
+                margin-left: 0;
+                width: 100%;
+                flex-wrap: wrap;
+                height: auto;
+                position: fixed;
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 
 // Tables
 .table-container {
+    overflow-x: hidden;
     padding: 0 var(--tainacan-one-column);
     position: relative;
 
@@ -168,10 +169,13 @@
             tbody {
                 tr {
                     cursor: pointer;
-                    border-bottom: 1px solid var(--tainacan-lists-separator-color, var(--tainacan-item-hover-background-color));
                     background-color: var(--tainacan-item-background-color);
                     transition: background-color 0.15s ease;
     
+                    &:not(:last-child) {
+                        border-bottom: 1px solid var(--tainacan-lists-separator-color, var(--tainacan-item-hover-background-color));
+                    }
+
                     &.selected-row { 
                         --tainacan-item-background-color: var(--tainacan-primary);
                         --tainacan-item-heading-hover-background-color: var(--tainacan-turquoise2);

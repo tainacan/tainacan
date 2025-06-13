@@ -38,27 +38,6 @@
     font-size: 1em;
 }
 
-// Scrollbars
-#tainacan-admin-app * {
-    // For Firefox
-    scrollbar-color: var(--tainacan-gray3) transparent;
-
-    // For Chromium and related
-    &::-webkit-scrollbar-thumb {
-        background-color: var(--tainacan-gray3);
-    }
-
-    @media screen and (min-width: 770px) {
-        // For Firefox
-        scrollbar-width: thin;
-
-        // For Chromium and related
-        &::-webkit-scrollbar {
-            width: 0.4em;
-        }
-    }
-}
-
 // Tainacan Loading
 .loading-overlay {
     z-index: 998;
@@ -107,7 +86,7 @@ a:hover {
 
 // Generic page container
 .page-container {
-    padding: var(--tainacan-container-padding) var(--tainacan-one-column);
+    padding: 0 var(--tainacan-one-column);
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
@@ -118,15 +97,6 @@ a:hover {
 }
 html.is-clipped .page-container:not(.is-filters-menu-open) {
     overflow-y: hidden;
-}
-
-// Used for pages with subheader in mobile
-.page-container-narrow {
-    padding: var(--tainacan-container-padding);
-    
-    @media screen and (max-width: 769px) {
-        padding: 1em;
-    }
 }
 
 // Metadata type textarea has different separators in different spots on interface
@@ -358,10 +328,10 @@ audio, video {
     }
 }
 
-.tainacan-sticky-content-subheader {
+.tainacan-sub-header--sticky {
     position: sticky;
     top: calc(-1 * var(--tainacan-container-padding));
-    z-index: 2;
+    z-index: 999;
     background: var(--tainacan-background-color);
     height: auto;
     min-height: 2.5em;
@@ -372,4 +342,7 @@ audio, video {
     align-items: center;
     width: 100%;
     gap: 4px;
+}
+.tainacan-page-title--sticky + .tainacan-sub-header--sticky {
+    top: calc( var(--tainacan-container-padding) + var(--tainacan-button-min-height, 2.571em) );
 }

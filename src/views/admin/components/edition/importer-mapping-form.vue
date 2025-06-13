@@ -1,6 +1,6 @@
 <template>
     <div class="tainacan-repository-level-colors page-container">
-        <tainacan-title>
+        <tainacan-title :is-sticky="true">
             <h1>
                 {{ $i18n.get('title_importer_mapping_page') }} 
                 <span 
@@ -187,7 +187,8 @@
                         aria-role="dialog"
                         :can-cancel="['escape', 'outside']"
                         custom-class="tainacan-modal"
-                        @close="onMetadatumEditionCanceled()">
+                        @close="onMetadatumEditionCanceled()"
+                        :width="420">
                     <div 
                             v-if="selectedMetadatumType == undefined && !isEditingMetadatum"
                             autofocus="true"
@@ -200,9 +201,8 @@
                         <div 
                                 
                                 class="tainacan-modal-content">
-                            <div class="tainacan-modal-title">
+                            <div class="tainacan-modal-title tainacan-page-title tainacan-page-title--sticky">
                                 <h2>{{ $i18n.get('instruction_select_metadatum_type') }}</h2>
-                                <hr>
                             </div>
                             <section class="tainacan-form">
                                 <div class="metadata-types-container">
@@ -282,9 +282,8 @@
                 aria-modal
                 custom-class="tainacan-modal">
             <form class="tainacan-modal-content tainacan-form">
-                <div class="tainacan-modal-title">
+                <div class="tainacan-modal-title tainacan-page-title">
                     <h2>{{ $i18n.get('instruction_select_title_mapping') }}</h2>
-                    <hr>
                 </div>
                 <div class="columns">
                     <div class="column">
@@ -789,10 +788,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-    .page-container {
-        padding-bottom: 0;
-    }
 
     .field {
         position: relative;

@@ -4,7 +4,7 @@
             :class="{
                 'tainacan-repository-level-colors': isRepositoryLevel
             }">
-        <tainacan-title />
+        <tainacan-title :is-sticky="true" />
         
         <tainacan-reports-subheader />
 

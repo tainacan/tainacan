@@ -1,40 +1,27 @@
 <template>
     <div 
-            class="has-mounted is-fullheight"
+            class="has-mounted is-fullheight is-main-content"
             :class="{ 
                 'tainacan-admin-mobile-app-mode': $adminOptions.mobileAppMode
             }">
-        <template v-if="hasPermalinksStructure">
-            <tainacan-repository-subheader
-                    v-if="!$adminOptions.hideRepositorySubheader" 
-                    :is-repository-level="isRepositoryLevel"
-                    :is-menu-compressed="isMenuCompressed"
-                    :active-route="activeRoute" />
-            <div 
-                    id="repository-container"
-                    class="column is-main-content">  
-                <router-view :key="$route.query.authorid" /> 
-            </div>
-        </template>
+        <router-view 
+                v-if="hasPermalinksStructure"
+                :key="$route.query.authorid" /> 
     </div>
 </template>
 
 <script>
     import { mapGetters } from 'vuex';
-    import TainacanRepositorySubheader from './components/navigation/tainacan-repository-subheader.vue';
     import CustomDialog from './components/other/custom-dialog.vue';
 
     export default { 
         name: "AdminPage",
-        components: {
-            TainacanRepositorySubheader
-        },
         data(){
             return {
-                isMenuCompressed: false,
+                
                 isRepositoryLevel : true,
-                activeRoute: '/collections',
-                hasPermalinksStructure: false
+                hasPermalinksStructure: false,
+                pageScrollIntersectionObserver: null
             }
         },
         computed: {
@@ -45,8 +32,6 @@
         watch: {
             '$route': {
                 handler(to, from) {
-                    this.isMenuCompressed = (to.params.collectionId != undefined);
-                    this.activeRoute = to.name;
                     this.isRepositoryLevel = this.$route.params.collectionId == undefined;
 
                     if ( to.path !== from.path && this.isRepositoryLevel ) {
@@ -65,8 +50,6 @@
             if ( this.hasPermalinksStructure ) {
                 this.$statusHelper.loadStatuses(); 
                 this.$userPrefs.init();
-                this.isMenuCompressed = (this.$route.params.collectionId != undefined);
-                this.activeRoute = this.$route.name;
                 this.isRepositoryLevel = this.$route.params.collectionId == undefined;
 
                 if (jQuery && jQuery( document )) {
@@ -132,22 +115,19 @@
         margin-top: 0px;
     }  
 
-    @media screen and (max-width: 769px) {
-        .is-fullheight:not(.tainacan-admin-mobile-app-mode):not(.tainacan-admin-collection-mobile-app-mode) {
-            height: auto;
-        }
-    }
-
     .is-main-content {
-        padding: 0px !important;
+        overflow: hidden;
+        overflow: clip;
         margin: 0 auto;
         position: relative;
-        overflow: hidden;
-        height: calc(100% -  var(--tainacan-admin-header-height, 3.25em));
+        height: 100%;
 
         @media screen and (max-width: 769px) {
-            overflow-y: visible;
-        } 
+            &:not(.tainacan-admin-mobile-app-mode):not(.tainacan-admin-collection-mobile-app-mode) {
+                height: auto;
+            }
+        }
+
         .columns {
             margin-left: 0px;
             margin-right: 0px;
@@ -156,11 +136,9 @@
 
     .is-secondary-content {
         max-width: 100%;
-        padding: 0;
 
         .columns {
-            margin-left: 0px;
-            margin-right: 0px;
+            margin: 0;
         }
     }
 

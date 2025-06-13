@@ -610,6 +610,12 @@
             .tainacan-help-tooltip-trigger {
                 font-size: 1.25em;
             }
+
+            @media screen and (max-width: 600px) {
+                -moz-column-count: 1;
+                -webkit-column-count: 1;
+                column-count: 1;
+            }
         }
         .tainacan-form .field:not(:last-child) {
             margin-bottom: 1em;

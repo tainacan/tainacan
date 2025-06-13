@@ -164,7 +164,7 @@
             .dropdown-trigger button {
                 padding: 2px 0.5em 2px 0.5em !important;
                 min-height: 100% !important;
-                height: 2.571em !important;
+                height: var(--tainacan-button-min-height, 2.571em) !important;
                 border-top-right-radius: 0 !important;
                 border-bottom-right-radius: 0 !important;
                 border-right-width: 0px !important;

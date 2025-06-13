@@ -2,7 +2,7 @@
     <div
             :class="{ 'tainacan-repository-level-colors page-container': isRepositoryLevel }"
             style="padding-bottom: 0;">
-        <tainacan-title />
+        <tainacan-title :is-sticky="true" />
         
         <template v-if="isRepositoryLevel">
             <p>{{ $i18n.get('info_repository_metadata_inheritance') }}</p>
@@ -133,24 +133,6 @@ export default {
 
     .metadata-list-page {
         padding-bottom: 0;
-
-        .tainacan-page-title {
-            margin-bottom: 14px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-end;
-            justify-content: space-between;
-
-            h1, h2 {
-                font-size: 1.25em;
-                font-weight: 500;
-                color: var(--tainacan-heading-color);
-                display: inline-block;
-                width: 80%;
-                flex-shrink: 1;
-                flex-grow: 1;
-            }
-        }
                   
         .b-tabs .tab-content {
             overflow: visible;

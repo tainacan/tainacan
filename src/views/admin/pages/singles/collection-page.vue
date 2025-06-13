@@ -1,23 +1,14 @@
 <template>
-    <div 
-            class="columns is-fullheight"
+    <router-view
+            id="collection-page-container"
+            :key="$route.query.authorid"
+            :collection-id="collectionId" 
+            class="page-container is-secondary-content"
             :class="{
+                'is-loading-collection-basics': isLoadingCollectionBasics,
                 'tainacan-admin-collection-item-edition-mode': $adminOptions.itemEditionMode,
                 'tainacan-admin-collection-mobile-app-mode': $adminOptions.mobileAppMode
-            }">
-        <section 
-                class="column is-secondary-content"
-                :style="$adminOptions.hideRepositorySubheader ? 'margin-top: 0; height: 100%;' : ''">
-            <router-view
-                    id="collection-page-container"
-                    :key="$route.query.authorid"
-                    :collection-id="collectionId" 
-                    class="page-container"
-                    :class="{
-                        'is-loading-collection-basics': isLoadingCollectionBasics
-                    }" />
-        </section>
-    </div>
+            }" />
 </template>
 
 <script>
