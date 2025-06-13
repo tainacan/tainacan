@@ -13,10 +13,10 @@
                     {{ form & form.id && form.id != 'new' ? $i18n.get("title_term_edit") : $i18n.get("title_term_creation") }}
                 </h2>
                 <tainacan-external-link
-                    v-if="form && form.url != undefined && form.url!= ''"
-                    :link-label="$i18n.get('label_term_page_on_website')"
-                    :link-url="form.url"
-                    style="position: absolute; top: 0; right: 0;" />
+                        v-if="form && form.url != undefined && form.url!= ''"
+                        :link-label="$i18n.get('label_term_page_on_website')"
+                        :link-url="form.url"
+                        style="position: absolute; top: 0; right: 0;" />
             </header>
         
             <div class="modal-card-body">

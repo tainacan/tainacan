@@ -540,26 +540,26 @@
                 v-if="!openAdvancedSearch"
                 id="filter-menu-compress-button"
                 v-tooltip="{
-                        delay: {
-                            show: 500,
-                            hide: 300,
-                        },
-                        content: !isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
-                        autoHide: false,
-                        placement: 'auto-start',
-                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
-                    }"
-                    aria-controls="filters-modal"
-                    :aria-expanded="isFiltersModalActive"
-                    :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
-                    @click="isFiltersModalActive = !isFiltersModalActive">
-                <span class="icon">
-                    <i 
-                            :class="{ 'tainacan-icon-arrowleft' : isFiltersModalActive, 'tainacan-icon-arrowright' : !isFiltersModalActive }"
-                            class="tainacan-icon tainacan-icon-1-25em" />
-                </span>
-                <span class="text is-hidden-tablet">{{ $i18n.get('filters') }}</span>
-            </button>
+                    delay: {
+                        show: 500,
+                        hide: 300,
+                    },
+                    content: !isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
+                    autoHide: false,
+                    placement: 'auto-start',
+                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
+                }"
+                aria-controls="filters-modal"
+                :aria-expanded="isFiltersModalActive"
+                :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
+                @click="isFiltersModalActive = !isFiltersModalActive">
+            <span class="icon">
+                <i 
+                        :class="{ 'tainacan-icon-arrowleft' : isFiltersModalActive, 'tainacan-icon-arrowright' : !isFiltersModalActive }"
+                        class="tainacan-icon tainacan-icon-1-25em" />
+            </span>
+            <span class="text is-hidden-tablet">{{ $i18n.get('filters') }}</span>
+        </button>
 
 
         <!-- SIDEBAR WITH FILTERS -->
@@ -1024,8 +1024,6 @@
                         this.$refs['search-control'].classList.remove('floating-search-control');
                     
                     this.$refs['items-page-container'].scrollTo({ top: 0, behavior: 'smooth'});
-                    console.log(this.$refs['items-page-container'].scrollTop);
-                    console.log(this.$refs['items-page-container'])
                 }
 
                 this.isLoadingItems = isLoadingItems;

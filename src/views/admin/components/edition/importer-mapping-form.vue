@@ -185,10 +185,10 @@
                         trap-focus
                         aria-modal
                         aria-role="dialog"
+                        :width="420"
                         :can-cancel="['escape', 'outside']"
                         custom-class="tainacan-modal"
-                        @close="onMetadatumEditionCanceled()"
-                        :width="420">
+                        @close="onMetadatumEditionCanceled()">
                     <div 
                             v-if="selectedMetadatumType == undefined && !isEditingMetadatum"
                             autofocus="true"
