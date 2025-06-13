@@ -7,6 +7,8 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use Tainacan\Exporter\Exporter;
+use Tainacan;
+use Tainacan\Entities;
 
 class Xlsx_Exporter extends Exporter {
 
@@ -74,6 +76,125 @@ class Xlsx_Exporter extends Exporter {
         }
     }
 
+    public function process_collections() {
+
+        $this->initializeWriter();
+        
+		$current_collection = $this->get_current_collection();
+		$collections = $this->get_collections();
+		$collection_definition = isset($collections[$current_collection]) ? $collections[$current_collection] : false;
+		$current_collection_item = $this->get_current_collection_item();
+
+		if ( !$collection_definition || !is_array($collection_definition) || !isset($collection_definition['id']) ) {
+			parent::add_error_log('Collection misconfigured');
+			return false;
+		}
+		$length_items = parent::get_step_length_items();
+		parent::add_log("Processing batch with $length_items items, starting from item $current_collection_item");
+
+		$this->process_header($current_collection_item, $collection_definition);
+		$init = microtime(true);
+		$processed_items = $this->get_items($current_collection_item, $collection_definition);
+		foreach ($processed_items as $processed_item) {
+			$this->process_item( $processed_item['item'], $processed_item['metadata'] );
+		}
+		$final = microtime(true);
+		$total = ($final - $init);
+		$time_log = sprintf( __('Processed in %f seconds', 'tainacan'), $total );
+		$this->add_log($time_log);
+
+		$this->process_footer($current_collection_item, $collection_definition);
+
+        $this->finalizeWriter();        
+
+		return parent::next_item();
+	}
+
+    private function process_header($current_collection_item, $collection_definition) {
+		if ($current_collection_item == 0) {
+			$this->output_header();
+		}
+	}
+
+    private function process_footer($current_collection_item, $collection_definition) {
+		if ($current_collection_item > $collection_definition['total_items']) {
+			$this->output_footer();
+		}
+	}
+
+    private function get_items($index, $collection_definition) {
+		$collection_id = $collection_definition['id'];
+		$tainacan_items = \Tainacan\Repositories\Items::get_instance();
+		$per_page = parent::get_step_length_items();
+		$page = intdiv($index, $per_page) + 1;
+		$filters = [
+			'posts_per_page' => $per_page,
+			'paged'   => $page,
+			'order'   => 'DESC',
+			'orderby' => 'ID',
+			'post_status' => ["private", "publish", "draft"]
+		];
+
+		parent::add_log("Retrieving $per_page items on page index: $page , item index: $index, in collection " . $collection_definition['id'] );
+		$items = $tainacan_items->fetch($filters, $collection_id, 'WP_Query');
+
+		if ( !isset($collection_definition['total_items']) ) {
+			$collection_definition['total_items'] = $items->found_posts;
+			parent::update_current_collection($collection_definition);
+		}
+		
+		$data = [];
+		while ($items->have_posts()) {
+			$items->the_post();
+			$item = new Entities\Item($items->post);
+			
+			if ($item instanceof \Tainacan\Entities\Item ) {
+				$data[] = [
+					'metadata' =>$this->map_item_metadata($item),
+					'item' => $item
+				];
+			} else {
+				parent::add_error_log( __('Error processing item', 'tainacan') );
+			}
+		}
+		wp_reset_postdata();
+		$dataLen = count($data);
+		parent::add_log("Retrieved data size: $dataLen");
+		return $data;
+	}
+
+    private function map_item_metadata(\Tainacan\Entities\Item $item) {
+		
+		$mapper = $this->get_current_mapper();
+		$metadata = $item->get_metadata();
+		if (!$mapper) {
+			return $metadata;
+		}
+		$pre = [];
+		foreach ($metadata as $item_metadata) {
+			$metadatum = $item_metadata->get_metadatum();
+			$meta_mappings = $metadatum->get_exposer_mapping();
+			if ( array_key_exists($this->get_mapping_selected(), $meta_mappings) ) {
+				
+				$pre[ $meta_mappings[$this->get_mapping_selected()] ] = $item_metadata;
+			}
+		}
+		
+		// reorder
+		$return = [];
+		foreach ( $mapper->metadata as $meta_slug => $meta ) {
+			if ( array_key_exists($meta_slug, $pre) ) {
+				$return[$meta_slug] = $pre[$meta_slug];
+			} else {
+				$return[$meta_slug] = null;
+			}
+		}
+		
+		return $return;
+		
+	}
+
+
     public function process_item($item, $metadata) {
         
         $mapper = $this->get_current_mapper();
@@ -132,12 +253,7 @@ class Xlsx_Exporter extends Exporter {
 			$line[] = get_permalink( $item->get_id() ); // public_url
 		}
 
-        if ($this->spreadsheet === null) {
-            $this->initializeWriter();
-        }
-        
         $this->addRowToSheet($line); 
-        $this->finalizeWriter();        
     }
     
     public function addRowToSheet(array $rowData, $sheetIndex = 0) {
@@ -329,7 +445,7 @@ class Xlsx_Exporter extends Exporter {
 	}
 
     public function output_header() {
-        $this->initializeWriter();
+        //$this->initializeWriter();
 
         $mapper = $this->get_current_mapper();
 
