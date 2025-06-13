@@ -77,10 +77,12 @@ class Xlsx_Exporter extends Exporter {
     public function process_item($item, $metadata) {
         
         $mapper = $this->get_current_mapper();
-		
         $line = [];
-        $line[] = $item->get_id();
-    
+        
+        if(!$mapper) {
+			$line[] = $item->get_id();
+		}
+
         add_filter('tainacan-item-metadata-get-multivalue-separator', [$this, 'filter_multivalue_separator'], 20);
         add_filter('tainacan-terms-hierarchy-html-separator', [$this, 'filter_hierarchy_separator'], 20);
         
