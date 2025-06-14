@@ -736,6 +736,7 @@
         transition: none;
 
         & > .tainacan-form {
+            margin-top: 0.5rem;
             margin-bottom: 3.5rem;
 
             .field:not(:last-child) {

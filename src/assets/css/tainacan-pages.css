@@ -98,6 +98,7 @@
   --tainacan-item-background-color: var(--tainacan-background-color);
   --tainacan-item-hover-background-color: var(--tainacan-gray1);
   --tainacan-item-heading-hover-background-color: var(--tainacan-gray2);
+  --tainacan-item-border-radius: 4px;
   --tainacan-primary: var(--tainacan-turquoise2);
   --tainacan-secondary: var(--tainacan-turquoise5);
   --tainacan-success: var(--tainacan-green2);
@@ -1294,6 +1295,10 @@ html {
   --tainacan-dashboard-card-border: none;
   --tainacan-dashboard-card-box-shadow: none;
   --tainacan-dashboard-card-background: var(--tainacan-gray1);
+  --tainacan-input-border-radius: 2px;
+  --tainacan-button-border-radius: 2px;
+  --tainacan-dropdownmenu-border-radius: 2px;
+  --tainacan-modal-border-radius: 2px;
 }
 .tainacan-pages-container.tainacan-pages-container--admin-legacy-style #tainacan-page-container #tainacan-navigation-menu a .icon,
 .tainacan-pages-container.tainacan-pages-container--admin-legacy-style #tainacan-page-container #tainacan-navigation-menu button .icon {
@@ -1329,7 +1334,11 @@ html {
   --tainacan-dashboard-card-border-radius: 2px;
   --tainacan-dashboard-card-border: 1px solid #c3c4c7;
   --tainacan-dashboard-card-box-shadow: 0 1px 1px rgba(0,0,0,.04);
+  --tainacan-input-border-radius: 2px;
+  --tainacan-button-border-radius: 2px;
+  --tainacan-dropdownmenu-border-radius: 2px;
 }
+.tainacan-pages-container.tainacan-pages-container--admin-classic-style #tainacan-page-container #tainacan-navigation-menu a,
 .tainacan-pages-container.tainacan-pages-container--admin-classic-style #tainacan-page-container #tainacan-navigation-menu a .icon,
 .tainacan-pages-container.tainacan-pages-container--admin-classic-style #tainacan-page-container #tainacan-navigation-menu button .icon {
   color: #f6fafd !important;
@@ -1363,7 +1372,12 @@ html {
   --tainacan-dashboard-card-border-radius: 4px;
   --tainacan-dashboard-card-border: 1px solid #e5e5e5;
   --tainacan-dashboard-card-box-shadow: none;
+  --tainacan-input-border-radius: 2px;
+  --tainacan-button-border-radius: 2px;
+  --tainacan-dropdownmenu-border-radius: 4px;
+  --tainacan-modal-border-radius: 4px;
 }
+.tainacan-pages-container.tainacan-pages-container--admin-gutenberg-style #tainacan-page-container #tainacan-navigation-menu a,
 .tainacan-pages-container.tainacan-pages-container--admin-gutenberg-style #tainacan-page-container #tainacan-navigation-menu a .icon,
 .tainacan-pages-container.tainacan-pages-container--admin-gutenberg-style #tainacan-page-container #tainacan-navigation-menu button .icon {
   color: var(--tainacan-white) !important;

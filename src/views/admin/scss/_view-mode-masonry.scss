@@ -107,11 +107,13 @@
         margin-bottom: var(--tainacan-container-padding);
         text-align: center;
         text-decoration: none;
+        border-radius: var(--tainacan-item-border-radius, 0px);
         transition: background-color 0.2s ease;
 
         :deep(img) {
             height: auto;
             max-width: 100%;
+            border-radius: var(--tainacan-item-border-radius, 0px);
         }
 
         &:hover:not(.skeleton) {
@@ -143,6 +145,8 @@
             padding: 2px 8px;
             transition: visibility 0.2s, opacity 0.2s;
             margin-top: 0px;
+            border-bottom-left-radius: var(--tainacan-item-border-radius, 0px);
+            border-bottom-right-radius: var(--tainacan-item-border-radius, 0px);
             background-color: var(--tainacan-item-heading-hover-background-color);
             transition: visibility 0.2s ease, opacity 0.2s ease, height 0.2s ease, margin-top 0.2s ease;
 
@@ -196,6 +200,8 @@
             min-height: calc(1em + 8px);
             cursor: pointer;
             position: relative;
+            border-top-left-radius: var(--tainacan-item-border-radius, 0px);
+            border-top-right-radius: var(--tainacan-item-border-radius, 0px);
 
             p { 
                 font-size: 0.875em !important;

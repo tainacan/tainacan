@@ -29,6 +29,7 @@
         margin: 15px;
         text-align: center;
         transition: background-color 0.2s ease;
+        border-radius: var(--tainacan-item-border-radius, 0px);
         
         :deep(img) {
             height: auto;
@@ -55,6 +56,8 @@
             opacity: 0;
             padding: 3px 8px;
             margin-top: 0px;
+            border-bottom-left-radius: var(--tainacan-item-border-radius, 0px);
+            border-bottom-right-radius: var(--tainacan-item-border-radius, 0px);
             background-color: var(--tainacan-item-heading-hover-background-color);
             transition: visibility 0.2s ease, opacity 0.2s ease, height 0.2s ease, margin-top 0.2s ease;
 
@@ -95,13 +98,11 @@
                 bottom: 0;
             }
             
-            img {
+            :deep(img) {
                 width: 255px;
                 height: 255px;
                 height: auto;
-                border-radius: 0px;
-                margin-bottom: -5px;
-                visibility: hidden;
+                border-radius: var(--tainacan-item-border-radius, 0px);
             }
         }
         
@@ -111,6 +112,8 @@
             padding: 6px 1em;
             min-height: 30px;
             cursor: pointer;
+            border-top-left-radius: var(--tainacan-item-border-radius, 0px);
+            border-top-right-radius: var(--tainacan-item-border-radius, 0px);
 
             p { 
                 font-size: 0.875em; 

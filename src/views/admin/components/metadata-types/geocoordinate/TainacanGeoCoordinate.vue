@@ -351,7 +351,7 @@
 <style lang="scss">
 .tainacan-leaflet-map-container .leaflet-container {
     border: 1px solid var(--tainacan-input-border-color);
-    border-radius: 3px;
+    border-radius: var(--tainacan-input-border-radius, 3px);
     z-index: 0;
 
     .leaflet-marker-pane {

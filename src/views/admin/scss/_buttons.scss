@@ -70,6 +70,10 @@ button.link-style:active {
     &.is-outlined:hover {
         color: var(--tainacan-secondary) !important;
     }
+    &.is-outlined.is-danger,
+    &.is-outlined.is-:hover {
+        color: var(--tainacan-danger) !important;
+    }
     &:focus {
         outline: 0px;
     }

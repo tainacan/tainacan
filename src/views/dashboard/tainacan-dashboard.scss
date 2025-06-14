@@ -224,7 +224,7 @@
                 margin: 0;
 
                 a {
-                    border-radius: 8px;
+                    border-radius: var(--tainacan-admin-button-border-radius, 8px);
                     padding: 0.35rem;
                     display: flex;
                     align-items: center;
@@ -286,7 +286,7 @@
                 gap: 1px;
 
                 a {
-                    border-radius: 8px;
+                    border-radius: var(--tainacan-admin-button-border-radius, 8px);
                     gap: 0.125rem;
                     font-size: 0.875em;
                     font-weight: bold;

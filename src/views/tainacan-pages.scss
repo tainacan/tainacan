@@ -934,6 +934,11 @@ html {
     --tainacan-dashboard-card-box-shadow: none;
     --tainacan-dashboard-card-background: var(--tainacan-gray1);
 
+    --tainacan-input-border-radius: 2px;
+    --tainacan-button-border-radius: 2px;
+    --tainacan-dropdownmenu-border-radius: 2px;
+    --tainacan-modal-border-radius: 2px;
+
     #tainacan-navigation-menu a .icon,
     #tainacan-navigation-menu button .icon {
         color: var(--tainacan-white) !important;
@@ -971,6 +976,11 @@ html {
     --tainacan-dashboard-card-border: 1px solid #c3c4c7;
     --tainacan-dashboard-card-box-shadow: 0 1px 1px rgba(0,0,0,.04);
 
+    --tainacan-input-border-radius: 2px;
+    --tainacan-button-border-radius: 2px;
+    --tainacan-dropdownmenu-border-radius: 2px;
+
+    #tainacan-navigation-menu a,
     #tainacan-navigation-menu a .icon,
     #tainacan-navigation-menu button .icon {
         color: #f6fafd !important;
@@ -1007,6 +1017,12 @@ html {
     --tainacan-dashboard-card-border: 1px solid #e5e5e5;
     --tainacan-dashboard-card-box-shadow: none;
 
+    --tainacan-input-border-radius: 2px;
+    --tainacan-button-border-radius: 2px;
+    --tainacan-dropdownmenu-border-radius: 4px;
+    --tainacan-modal-border-radius: 4px;
+
+    #tainacan-navigation-menu a,
     #tainacan-navigation-menu a .icon,
     #tainacan-navigation-menu button .icon {
         color: var(--tainacan-white) !important;

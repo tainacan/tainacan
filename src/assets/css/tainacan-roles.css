@@ -15967,7 +15967,7 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
 .table-container .table-wrapper table.tainacan-table-skeleton tbody td.skeleton.thumbnail-cell {
   max-height: 52px;
   max-width: 34px;
-  border-radius: 0;
+  border-radius: var(--tainacan-item-border-radius, 0px);
   background-color: var(--tainacan-skeleton-color) !important;
   border-top: 8px solid white !important;
   border-bottom: 8px solid white !important;
@@ -15976,7 +15976,7 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
 }
 .table-container .table-wrapper table.tainacan-table-skeleton tbody td.skeleton:not(.thumbnail-cell) {
   max-height: 52px;
-  border-radius: 0;
+  border-radius: var(--tainacan-item-border-radius, 0px);
   background-color: var(--tainacan-skeleton-color) !important;
   border-top: 18px solid white !important;
   border-bottom: 18px solid white !important;
@@ -16004,7 +16004,8 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
 }
 .table-container .table-wrapper table.tainacan-table .checkbox-cell label.checkbox,
 .table-container .table-wrapper table.tainacan-table .checkbox-cell label.radio {
-  border-radius: 0px;
+  border-top-left-radius: var(--tainacan-item-border-radius, 0px);
+  border-bottom-left-radius: var(--tainacan-item-border-radius, 0px);
   background-color: var(--tainacan-item-background-color);
   padding: 0;
   width: 100%;
@@ -16105,6 +16106,7 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
 }
 .table-container .table-wrapper table.tainacan-table tbody tr {
   cursor: pointer;
+  border-radius: var(--tainacan-item-border-radius, 0px);
   background-color: var(--tainacan-item-background-color);
   transition: background-color 0.15s ease;
 }
@@ -16125,6 +16127,14 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
   vertical-align: middle;
   line-height: 0.75em;
   border: none !important;
+}
+.table-container .table-wrapper table.tainacan-table tbody tr td:first-child {
+  border-top-left-radius: var(--tainacan-item-border-radius, 0px);
+  border-bottom-left-radius: var(--tainacan-item-border-radius, 0px);
+}
+.table-container .table-wrapper table.tainacan-table tbody tr td:last-child {
+  border-top-right-radius: var(--tainacan-item-border-radius, 0px);
+  border-bottom-right-radius: var(--tainacan-item-border-radius, 0px);
 }
 .table-container .table-wrapper table.tainacan-table tbody tr td.thumbnail-cell .skeleton {
   height: 38px;
@@ -16224,11 +16234,15 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
   max-height: 38px !important;
   min-height: 38px;
   max-width: 38px;
-  border-radius: 0px;
+  border-radius: var(--tainacan-item-border-radius, 0px);
   padding-bottom: 0px !important;
   padding-left: 0px !important;
   padding-right: 0px !important;
   padding-top: 0px !important;
+}
+.table-container .table-wrapper table.tainacan-table tbody tr img.table-thumb :deep(img),
+.table-container .table-wrapper table.tainacan-table tbody tr .table-thumb > div :deep(img) {
+  border-radius: var(--tainacan-item-border-radius, 0px);
 }
 .table-container .table-wrapper table.tainacan-table tbody tr td.actions-cell {
   padding: 0px;
@@ -16239,6 +16253,8 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
   width: 100px;
 }
 .table-container .table-wrapper table.tainacan-table tbody tr td.actions-cell .actions-container {
+  border-top-right-radius: var(--tainacan-item-border-radius, 0px);
+  border-bottom-right-radius: var(--tainacan-item-border-radius, 0px);
   display: flex;
   position: relative;
   padding: 0;
@@ -16397,6 +16413,9 @@ button.link-style:focus button.link-style:active:hover {
 }
 .button.is-outlined:hover {
   color: var(--tainacan-secondary) !important;
+}
+.button.is-outlined.is-danger, .button.is-outlined.is-:hover {
+  color: var(--tainacan-danger) !important;
 }
 .button:focus {
   outline: 0px;

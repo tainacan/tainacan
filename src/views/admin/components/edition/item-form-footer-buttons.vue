@@ -31,7 +31,7 @@
                 <button
                         v-if="!$adminOptions.mobileAppMode"
                         type="button"
-                        class="button is-outlined"
+                        class="button is-outlined is-danger"
                         @click="$emit('on-discard')">{{ $i18n.get('label_discard') }}</button>
                 <button
                         type="button"
@@ -47,7 +47,7 @@
                 <button 
                         v-if="!isOnSequenceEdit && currentUserCanDelete && !$adminOptions.mobileAppMode"
                         type="button"
-                        class="button is-outlined"
+                        class="button is-outlined is-danger"
                         @click="$emit('on-submit', 'trash')">
                     <span v-if="!isMobileScreen">{{ $i18n.get('label_send_to_trash') }}</span>
                     <span v-else>{{ $i18n.get('status_trash') }}</span>

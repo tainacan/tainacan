@@ -110,9 +110,7 @@
             </div>
         </div>
 
-        <div 
-                ref="tainacan-admin-items-list-wrapper"
-                class="table-wrapper">
+        <div class="table-wrapper">
 
             <!-- Context menu for right click selection -->
             <div
@@ -2860,24 +2858,8 @@ export default {
             if ( !this.$adminOptions.itemsSearchSelectionMode ) {
                 $event.preventDefault();
 
-                let wrapperOffsetX = 0;
-                let wrapperOffsetY = 0;
-
-                // These elements have 'container-type: inline-size;', thus they need to be positioned relative to parent
-                if (    
-                    ( this.viewMode == 'masonry' || this.viewMode == 'records' ) &&
-                    this.$refs &&
-                    this.$refs['tainacan-admin-items-list-wrapper']
-                ) {
-                    const wrapperOffsets = this.$refs['tainacan-admin-items-list-wrapper'].getClientRects();
-                    if ( wrapperOffsets.length && wrapperOffsets[0].top && wrapperOffsets[0].left ) {
-                        wrapperOffsetX = wrapperOffsets[0].left;
-                        wrapperOffsetY = wrapperOffsets[0].top;        
-                    }
-                }
-
-                this.cursorPosX = $event.clientX - wrapperOffsetX;
-                this.cursorPosY = $event.clientY - wrapperOffsetY;
+                this.cursorPosX = $event.clientX;
+                this.cursorPosY = $event.clientY;
                 this.contextMenuItem = item;
             }
         },

@@ -70,6 +70,7 @@
     --tainacan-item-background-color: var(--tainacan-background-color);
     --tainacan-item-hover-background-color: var(--tainacan-gray1);
     --tainacan-item-heading-hover-background-color: var(--tainacan-gray2);
+    --tainacan-item-border-radius: #{$tainacan-item-border-radius};
 
     // Derived colors
     --tainacan-primary: var(--tainacan-turquoise2); // Tooltips and selected dropwdown items background

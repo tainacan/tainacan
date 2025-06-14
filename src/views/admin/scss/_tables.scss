@@ -18,7 +18,7 @@
                 td.skeleton.thumbnail-cell {
                     max-height: 52px;
                     max-width: 34px;
-                    border-radius: 0;
+                    border-radius: var(--tainacan-item-border-radius, 0px);
                     background-color: var(--tainacan-skeleton-color) !important;
                     border-top: 8px solid white !important;
                     border-bottom: 8px solid white !important;
@@ -27,7 +27,7 @@
                 }
                 td.skeleton:not(.thumbnail-cell) {
                     max-height: 52px;
-                    border-radius: 0;
+                    border-radius: var(--tainacan-item-border-radius, 0px);
                     background-color: var(--tainacan-skeleton-color) !important;
                     border-top: 18px solid white !important;
                     border-bottom: 18px solid white !important;
@@ -61,7 +61,8 @@
     
                 label.checkbox,
                 label.radio {  
-                    border-radius: 0px;
+                    border-top-left-radius: var(--tainacan-item-border-radius, 0px);
+                    border-bottom-left-radius: var(--tainacan-item-border-radius, 0px);
                     background-color: var(--tainacan-item-background-color);
                     padding: 0;
                     width: 100%;
@@ -169,6 +170,7 @@
             tbody {
                 tr {
                     cursor: pointer;
+                    border-radius: var(--tainacan-item-border-radius, 0px);
                     background-color: var(--tainacan-item-background-color);
                     transition: background-color 0.15s ease;
     
@@ -190,6 +192,15 @@
                         vertical-align: middle;
                         line-height: 0.75em;
                         border: none !important;
+
+                        &:first-child {
+                            border-top-left-radius: var(--tainacan-item-border-radius, 0px);
+                            border-bottom-left-radius: var(--tainacan-item-border-radius, 0px);
+                        }
+                        &:last-child {
+                            border-top-right-radius: var(--tainacan-item-border-radius, 0px);
+                            border-bottom-right-radius: var(--tainacan-item-border-radius, 0px);
+                        }
 
                         &.thumbnail-cell .skeleton {
                             height: 38px;
@@ -297,11 +308,15 @@
                         max-height: 38px !important;
                         min-height: 38px;
                         max-width: 38px;
-                        border-radius: 0px;
+                        border-radius: var(--tainacan-item-border-radius, 0px);
                         padding-bottom: 0px !important;
                         padding-left: 0px !important;
                         padding-right: 0px !important;
                         padding-top: 0px !important;
+
+                        :deep(img) {
+                            border-radius: var(--tainacan-item-border-radius, 0px);
+                        }
                     }
                     td.actions-cell {
                         padding: 0px;
@@ -312,6 +327,8 @@
                         width: 100px;
     
                         .actions-container {
+                            border-top-right-radius: var(--tainacan-item-border-radius, 0px);
+                            border-bottom-right-radius: var(--tainacan-item-border-radius, 0px);
                             display: flex;
                             position: relative;
                             padding: 0;
@@ -341,7 +358,7 @@
                             position: -webkit-sticky !important;
                             background-color: var(--tainacan-item-heading-hover-background-color);
                             
-                            .checkbox { 
+                            .checkbox {     
                                 background-color: var(--tainacan-item-heading-hover-background-color) !important; 
                             }
                             .radio { 

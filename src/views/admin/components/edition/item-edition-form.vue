@@ -2072,6 +2072,7 @@ export default {
         transition: none;
 
         & > .tainacan-form {
+            margin-top: 0.5rem;
             margin-bottom: 3.5rem;
 
             .field:not(:last-child) {
@@ -2242,7 +2243,7 @@ export default {
             }
 
             &.is-metadata-navigation-active {
-                width: calc(58.33333337% - (2 * var(--tainacan-one-column)) );
+                width: calc(58.33333337% - var(--tainacan-admin-navigation-sidebar-width, 215px));
                 position: fixed;
                 z-index: 99999;
                 bottom: 0;
@@ -2258,13 +2259,16 @@ export default {
                     max-width: 210px;
                 }
 
-                @media screen and (max-width: 1440px) {
-                    width: calc(58.33333337% - var(--tainacan-one-column));
+                @media screen and (max-width: 1024px) {
+                    width: calc(100% - var(--tainacan-one-column) -  var(--tainacan-admin-navigation-sidebar-width, 215px) - var(--tainacan-one-column));
                 }
             }
 
             .metadata-navigation {
                 margin-right: auto;
+                .field {
+                    gap: 0.5em;
+                }
             }
             .metadata-navigation :deep(.button) {
                 border-radius: 0 !important;

@@ -28,14 +28,17 @@
         position: relative;
         margin: 0 !important;
         padding: 0 !important;
+        border-radius: var(--tainacan-item-border-radius, 0px);
 
         :deep(img) {
             position: absolute;
             width: auto;
             height: 100%;
+            border-radius: var(--tainacan-item-border-radius, 0px);
         }
 
         :deep(canvas.child) {
+            border-radius: var(--tainacan-item-border-radius, 0px);
             aspect-ratio: var(--tainacan-mosaic-item-width, 300) / var(--tainacan-mosaic-item-height, 300);
         }
 
@@ -75,6 +78,8 @@
             opacity: 0.0;
             padding: 8px;
             margin-top: -25px;
+            border-top-left-radius: var(--tainacan-item-border-radius, 0px);
+            border-top-right-radius: var(--tainacan-item-border-radius, 0px);
             background-color: var(--tainacan-item-heading-hover-background-color);
             transition: visibility 0.2s ease, opacity 0.3s ease, height 0.2s ease, margin-top 0.1s ease;
 
@@ -142,6 +147,8 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
+            border-bottom-left-radius: var(--tainacan-item-border-radius, 0px);
+            border-bottom-right-radius: var(--tainacan-item-border-radius, 0px);
 
             p { 
                 font-size: 0.875em !important;
