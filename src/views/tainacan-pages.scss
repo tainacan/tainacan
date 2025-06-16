@@ -51,7 +51,10 @@ html {
     z-index: 10;
     font-size: 13px;
 }
-.tainacan-pages-container #screen-meta-links{
+.tainacan-pages-container #screen-meta-links {
+    margin: 0px;
+    position: absolute;
+    right: 0;
     
     &:has(+#tainacan-page-container > #tainacan-navigation-menu.is-active) {
         z-index: 0;
@@ -63,12 +66,38 @@ html {
             visibility: hidden;
         }
     }
+
+    // Necessary as the '.button' class is overriden by bulma styles in some pages.
+    .button {
+        height: auto !important;
+        margin-bottom: 0 !important;
+        padding: 3px 6px 3px 16px !important;
+        border-radius: 0 0 var(--tainacan-admin-button-border-radius, 8px) var(--tainacan-admin-button-border-radius, 8px) !important;
+        box-shadow: 0 0 0 transparent !important;
+        font-size: 13px !important;
+        display: inline-block !important;
+
+        &:not([aria-expanded="true"]) {
+            background-color: var(--tainacan-admin-button-background-color);
+            color: var(--tainacan-admin-button-color);
+            border: none;
+            
+            &:hover,
+            &:focus {
+                background-color: var(--tainacan-admin-button-hover-color);
+                background-color: var(--tainacan-admin-button-hover-background-color);
+            }
+        }
+    }
+    .screen-meta-toggle:last-child .button {
+        border-bottom-right-radius: 0px !important;
+    }
 }
 .tainacan-pages-container #screen-meta {
 
     @media screen and (min-width: 769px) {
-        left: 0;//calc(var(--tainacan-admin-navigation-sidebar-width, 215px) + var(--tainacan-page-container--inner-padding-x, 1rem));
-        width: 100%;//calc(100% - var(--tainacan-admin-navigation-sidebar-width, 215px) - (2 * var(--tainacan-page-container--inner-padding-x, 1rem)));
+        left: 0;//calc(var(--tainacan-admin-navigation-sidebar-width, 14rem) + var(--tainacan-page-container--inner-padding-x, 1rem));
+        width: 100%;//calc(100% - var(--tainacan-admin-navigation-sidebar-width, 14rem) - (2 * var(--tainacan-page-container--inner-padding-x, 1rem)));
     }
 
     .icon {
@@ -88,107 +117,10 @@ html {
         vertical-align: inherit;
     }
 }
-.tainacan-pages-container #screen-meta-links {
-    position: absolute;
-    right: 0;
-}
 
-// Necessary as the '.button' class is overriden by bulma styles in some pages.
-.tainacan-pages-container #screen-meta-links .button {
-    height: auto !important;
-    margin-bottom: 0 !important;
-    padding: 3px 6px 3px 16px !important;
-    border-radius: 0 0 4px 4px !important;
-    box-shadow: 0 0 0 transparent !important;
-    font-size: 13px !important;
-    display: inline-block !important;
-}
-
-/* Fullscreen mode */
+/* General varialbes for the pages container */
 .tainacan-pages-container {
     transition: all 0.3s ease-in-out;
-}
-.tainacan-pages-container.tainacan-pages-container--fullscreen {
-    height: calc(100% + var(--wp-admin--admin-bar--height, 32px));
-    position: fixed;
-    top:0;
-    left: 0;
-    height: 100dvh;
-    width: 100%;
-
-    #wpwrap {
-        z-index: 1;
-    }
-    #wpcontent,
-    #wpfooter {
-        margin-left: 0;
-    }
-    #wpadminbar,
-    #adminmenumain {
-        display: none;
-    }
-    #tainacan-page-container {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100dvh;
-        width: 100%;
-        --wp-admin--admin-bar--height: 0px;
-
-        #tainacan-navigation-menu header h1 {
-            margin: 0.25rem 0;
-        }
-        #tainacan-navigation-menu.is-active #tainacan-wordpress-shortcut,
-        #tainacan-navigation-menu.is-active #tainacan-site-shortcut {
-            display: block;
-            visibility: visible;
-            z-index: 1005;
-        }
-        @media screen and (min-width: 769px) {
-            #tainacan-navigation-menu #tainacan-wordpress-shortcut,
-            #tainacan-navigation-menu #tainacan-site-shortcut {
-                display: block;
-                display: inline-flex;
-                align-items: center;
-                visibility: visible;
-            }
-        }
-    }
-    @media screen and (max-width: 600px) {
-        #wpbody {
-          padding-top: 0;
-        }
-    }
-}
-
-
-/* Iframe Mode (is used with fullscreen) */
-.tainacan-pages-container.tainacan-pages-container--iframe-mode {
-    #wpadminbar,
-    #adminmenumain {
-        display: none;
-    }
-    #wpbody {
-        padding-top: 0px;
-    }
-    #tainacan-page-container {
-        --wp-admin--admin-bar--height: 0px;
-        --tainacan-breadcumbs-list-height: 0px;
-        --tainacan-page-container-margin-top: 0px;
-        --tainacan-page-container-border-radius: 0px;
-        --tainacan-admin-navigation-sidebar-width: 0px;
-        grid-template-columns: 1fr;
-
-        #tainacan-page-container--inner {
-            --tainacan-page-container--inner-padding-x: 0px;
-            --tainacan-page-container--inner-padding-y: 0px;
-        }
-    }
-}
-
-
-/* Page container */
-#tainacan-page-container {
     --tainacan-admin-background-color: var(--tainacan-turquoise1);
     --tainacan-admin-background-image: radial-gradient(rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%), radial-gradient(at 70% 60%, var(--tainacan-turquoise2) 0%, rgba(217, 236, 237, 0) 90%), radial-gradient(at 30% 30%, var(--tainacan-turquoise1) 0%, rgba(230, 246, 248, 0) 60%), radial-gradient(at left bottom, var(--tainacan-turquoise2) 0%, rgba(204, 227, 242, 0) 70%), linear-gradient(135deg, rgba(18, 46, 119, 0) 0%, rgba(18, 46, 119, 0) 75%, var(--tainacan-turquoise1) 100%), linear-gradient(to right, var(--tainacan-gray0) 0%, var(--tainacan-gray1) 35%, var(--tainacan-turquoise2) 65%, var(--tainacan-turquoise1) 100%);
     --tainacan-admin-color: var(--tainacan-blue4);
@@ -199,13 +131,19 @@ html {
     --tainacan-admin-button-color: var(--tainacan-black); 
     --tainacan-admin-button-hover-color: var(--tainacan-black);
     --tainacan-admin-button-active-color: var(--tainacan-black);
-    --tainacan-admin-button-hover-background-color: color-mix(in srgb, var(--tainacan-turquoise3) 30%, transparent);
-    --tainacan-admin-button-active-background-color: color-mix(in srgb, var(--tainacan-turquoise3) 50%, transparent);
+    --tainacan-admin-button-hover-background-color: color-mix(in srgb, var(--tainacan-turquoise3) 25%, transparent);
+    --tainacan-admin-button-active-background-color: color-mix(in srgb, var(--tainacan-turquoise3) 45%, transparent);
+    --tainacan-admin-button-font-weight: 500;
     --tainacan-admin-navigation-sidebar-background-color: var(--tainacan-turquoise2);
     --tainacan-admin-navigation-sidebar-background-image: radial-gradient(100% 100% at 32% 64%, var(--tainacan-admin-background-color) 58%, var(--tainacan-admin-navigation-sidebar-background-color) 100%);
     --tainacan-admin-navigation-sidebar-separator-color: var(--tainacan-gray5); 
+    --tainacan-admin-navigation-sidebar-padding-x: 0.75rem;
     --tainacan-admin-navigation-sidebar-floating-menu-background-color: var(--tainacan-white);
-    --tainacan-admin-navigation-sidebar-width: 215px;
+    --tainacan-admin-navigation-sidebar-width: 14rem;
+}
+
+/* Page container */
+#tainacan-page-container {
     display: grid;
     grid-template-columns: auto 1fr;
     grid-template-rows: 100%;
@@ -277,7 +215,7 @@ html {
     }
     #tainacan-menu-collapser {
         position: absolute;
-        max-width: var(--tainacan-admin-navigation-sidebar-width, 215px);
+        max-width: var(--tainacan-admin-navigation-sidebar-width, 14rem);
         left: 0;
         bottom: 0;
         border-top-left-radius: 0px;
@@ -341,7 +279,7 @@ html {
         #tainacan-breadcrumbs-list {
             display: flex;
             gap: var(--tainacan-breadcumbs-list-gap, 0.5rem);
-            margin: 0 calc( 2 * var(--tainacan-page-container-padding-x, 1rem) );
+            margin: 0 1em 0 calc( 2 * var(--tainacan-page-container-padding-x, 1rem) );
             font-size: 0.75em;
             font-weight: 500;
             flex-wrap: nowrap;
@@ -366,10 +304,10 @@ html {
         height: calc(100dvh - var(--wp-admin--admin-bar--height, 32px));
         max-height: calc(100dvh - var(--wp-admin--admin-bar--height, 32px));
         overflow-y: auto;
-        flex-basis: var(--tainacan-admin-navigation-sidebar-width, 215px);
-        min-width: var(--tainacan-admin-navigation-sidebar-width, 215px);
-        max-width: var(--tainacan-admin-navigation-sidebar-width, 215px);
-        padding: 1rem 0.75rem 2.5rem;
+        flex-basis: var(--tainacan-admin-navigation-sidebar-width, 14rem);
+        min-width: var(--tainacan-admin-navigation-sidebar-width, 14rem);
+        max-width: var(--tainacan-admin-navigation-sidebar-width, 14rem);
+        padding: 1rem var(--tainacan-admin-navigation-sidebar-padding-x, 0.75rem) 2.5rem;
         background-color: var(--tainacan-admin-navigation-sidebar-background-color);
         background-image: var(--tainacan-admin-navigation-sidebar-background-image);
         background-repeat: no-repeat;
@@ -541,7 +479,7 @@ html {
             gap: 0.5em;
 
             h1 {
-                margin: 1rem 0;
+                margin: 1rem 0 1rem 0.5rem;
                 font-size: 2rem;
                 line-height: 1;
 
@@ -576,7 +514,8 @@ html {
                 border-radius: var(--tainacan-admin-button-border-radius, 8px);
                 padding: 0.5rem;
                 font-size: 1em;
-                font-weight: 500;
+                line-height: normal;
+                font-weight: var(--tainacan-admin-button-font-weight, 500);
                 border: none;
                 cursor: pointer;
                 text-decoration: none !important;
@@ -721,7 +660,7 @@ html {
         #tainacan-wordpress-shortcut {
             box-sizing: border-box;
             position: relative;
-            left: -0.75rem;
+            left: calc( -1 * var(--tainacan-admin-navigation-sidebar-padding-x, 0.75rem) );
             top: -1rem;
             border-radius: 0;
             border-bottom-right-radius: var(--tainacan-admin-button-border-radius);
@@ -768,7 +707,7 @@ html {
             font-size: 0.875em;
             text-decoration: none;
             font-weight: 500;
-            max-width: calc(var(--tainacan-admin-navigation-sidebar-width, 215px) - 4.75em);
+            max-width: calc(var(--tainacan-admin-navigation-sidebar-width, 14rem) - 4.75em);
             display: none;
             visibility: hidden;
             gap: 0.5em;
@@ -778,7 +717,7 @@ html {
                 white-space: nowrap;
                 overflow: hidden;
                 display: inline-block;
-                max-width: calc(var(--tainacan-admin-navigation-sidebar-width, 215px) - 5em);
+                max-width: calc(var(--tainacan-admin-navigation-sidebar-width, 14rem) - 5em);
             }
     
             .icon {
@@ -800,19 +739,38 @@ html {
     }
 
     h1.tainacan-page-title {
+        padding: 0;
         font-size: 1.25em;
         line-height: 1.5em;
         font-weight: 500;
         color: var(--tainacan-heading-color);
+    
+        &.tainacan-page-title--sticky {
+            margin-bottom: 0px;
+            z-index: 999;
+            position: sticky;
+            top: 0;
+            background-color: var(--tainacan-background-color);
+            container-type: scroll-state;
+
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background-color: var(--tainacan-input-border-color);
+                transition: background 0.2s ease;
+            }
+        }
     }
 
     .tainacan-fixed-subheader {
-        box-sizing: content-box;
-        width: calc(100% + (2 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column))));
+        width: 100%;
         max-width: 100%;
-        margin-left: calc( -1 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column)));
-        margin-top: calc(-1 * var(--tainacan-page-container-padding-y, 1rem));
-        padding: var(--tainacan-page-container-padding-y, 1rem) var(--tainacan-page-container-padding-x, var(--tainacan-one-column));
+        min-height: calc( 0.125rem + var(--tainacan-container-padding) + 0.5rem + var(--tainacan-button-min-height, 2.571em) );
+        padding: var(--tainacan-page-container-padding-y, 1rem) 0 0.25rem;
         background: var(--tainacan-background-color);
         position: sticky;
         top: calc(-1 * var(--tainacan-page-container-padding-y, 1rem));
@@ -821,10 +779,32 @@ html {
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 1rem;
+        gap: 0.75em 1.5em;
+        container-type: scroll-state;
 
         .notice:only-of-type {
             margin: 0px;
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: var(--tainacan-input-border-color);
+            transition: background 0.2s ease;
+        }
+    }
+    @container scroll-state(stuck: top) {
+        .tainacan-fixed-subheader::after {
+            background: var(--tainacan-input-border-color) !important;
+        }
+    }
+    @supports (container-type: scroll-state) {
+        .tainacan-fixed-subheader::after {
+                background-color: var(--tainacan-background-color);
         }
     }
 
@@ -854,6 +834,7 @@ html {
     @media (max-width: 768px) {
         & {
             grid-template-columns: 1fr; /* Oculta sidebar */
+            --tainacan-breadcumbs-list-height: 0px; /* Oculta breadcrumbs */
         }
         #tainacan-menu-toggler {
             display: block;
@@ -861,7 +842,8 @@ html {
             left: 0;
             transition: left 0.2s ease-in-out;
         }
-        #tainacan-menu-collapser {
+        #tainacan-menu-collapser,
+        #tainacan-breadcrumbs {
             display: none;
             visibility: hidden;
         }
@@ -873,13 +855,92 @@ html {
         #tainacan-navigation-menu.is-active {
             transform: translateX(0%);
             visibility: visible;
-            width: var(--tainacan-admin-navigation-sidebar-width, 215px);
+            width: var(--tainacan-admin-navigation-sidebar-width, 14rem);
             z-index: 1002;
             box-shadow: 0.5rem 0 2rem -1.5rem var(--tainacan-black);
 
             & + #tainacan-page-container--inner #tainacan-menu-toggler {
-                left: calc( var(--tainacan-admin-navigation-sidebar-width, 215px) - var(--tainacan-page-container--inner-padding-x, 1rem) );
+                left: calc( var(--tainacan-admin-navigation-sidebar-width, 14rem) - var(--tainacan-page-container--inner-padding-x, 1rem) );
             }
+        }
+    }
+}
+
+
+/* Fullscreen mode */
+.tainacan-pages-container.tainacan-pages-container--fullscreen {
+    height: calc(100% + var(--wp-admin--admin-bar--height, 32px));
+    position: fixed;
+    top:0;
+    left: 0;
+    height: 100dvh;
+    width: 100%;
+
+    #wpwrap {
+        z-index: 1;
+    }
+    #wpcontent,
+    #wpfooter {
+        margin-left: 0;
+    }
+    #wpadminbar,
+    #adminmenumain {
+        display: none;
+    }
+    #tainacan-page-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100dvh;
+        width: 100%;
+        --wp-admin--admin-bar--height: 0px;
+
+        #tainacan-navigation-menu header h1 {
+            margin: 0.25rem 0 0.25rem 0.5rem;
+        }
+        #tainacan-navigation-menu.is-active #tainacan-wordpress-shortcut,
+        #tainacan-navigation-menu.is-active #tainacan-site-shortcut {
+            display: block;
+            visibility: visible;
+            z-index: 1005;
+        }
+        @media screen and (min-width: 769px) {
+            #tainacan-navigation-menu #tainacan-wordpress-shortcut,
+            #tainacan-navigation-menu #tainacan-site-shortcut {
+                display: block;
+                display: inline-flex;
+                align-items: center;
+                visibility: visible;
+            }
+        }
+    }
+    @media screen and (max-width: 600px) {
+        #wpbody {
+          padding-top: 0;
+        }
+    }
+}
+
+/* Iframe Mode (is used with fullscreen) */
+.tainacan-pages-container.tainacan-pages-container--iframe-mode {
+    #wpadminbar,
+    #adminmenumain {
+        display: none;
+    }
+    #wpbody {
+        padding-top: 0px;
+    }
+    #tainacan-page-container {
+        --wp-admin--admin-bar--height: 0px;
+        --tainacan-breadcumbs-list-height: 0px;
+        --tainacan-page-container-margin-top: 0px;
+        --tainacan-page-container-border-radius: 0px;
+        --tainacan-admin-navigation-sidebar-width: 0px;
+        grid-template-columns: 1fr;
+
+        #tainacan-page-container--inner {
+            --tainacan-page-container--inner-padding-x: 0px;
+            --tainacan-page-container--inner-padding-y: 0px;
         }
     }
 }
@@ -895,7 +956,7 @@ html {
     }
     #tainacan-page-container #tainacan-navigation-menu #tainacan-site-shortcut {
         left: calc(-2em - 0.75rem);
-        max-width: var(--tainacan-admin-navigation-sidebar-width, 215px);
+        max-width: var(--tainacan-admin-navigation-sidebar-width, 14rem);
     }
 }
 .tainacan-pages-container.tainacan-pages-container--hide-site-shortcut {
@@ -906,7 +967,8 @@ html {
 }
 
 /* Admin style samples (experimental) */
-.tainacan-pages-container.tainacan-pages-container--admin-legacy-style #tainacan-page-container {
+.tainacan-pages-container.tainacan-pages-container--admin-legacy-style {
+    --tainacan-page-container-margin-top: 0px;
     --tainacan-admin-background-color: var(--tainacan-white);
     --tainacan-admin-background-image: unset;
     --tainacan-admin-link-color: var(--tainacan-turquoise5);
@@ -918,6 +980,7 @@ html {
     --tainacan-admin-button-active-color: var(--tainacan-white);
     --tainacan-admin-button-hover-background-color: var(--tainacan-blue3);
     --tainacan-admin-button-active-background-color: var(--tainacan-blue4);
+    --tainacan-admin-button-font-weight: 400;
     --tainacan-admin-navigation-sidebar-background-color: var(--tainacan-blue5);
     --tainacan-admin-navigation-sidebar-background-image: none;
     --tainacan-admin-navigation-sidebar-separator-color: var(--tainacan-blue2);
@@ -939,19 +1002,21 @@ html {
     --tainacan-dropdownmenu-border-radius: 2px;
     --tainacan-modal-border-radius: 2px;
 
-    #tainacan-navigation-menu a .icon,
-    #tainacan-navigation-menu button .icon {
-        color: var(--tainacan-white) !important;
-    }
-    #tainacan-navigation-menu a:hover .icon,
-    #tainacan-navigation-menu button:hover .icon {
-        color: var(--tainacan-white) !important;
-    }
-    #tainacan-navigation-menu .menu-item-has-children button::after {
-        filter: invert(1.0);
+    #tainacan-page-container {
+        #tainacan-navigation-menu a .icon,
+        #tainacan-navigation-menu button .icon {
+            color: var(--tainacan-white) !important;
+        }
+        #tainacan-navigation-menu a:hover .icon,
+        #tainacan-navigation-menu button:hover .icon {
+            color: var(--tainacan-white) !important;
+        }
+        #tainacan-navigation-menu .menu-item-has-children button::after {
+            filter: invert(1.0);
+        }
     }
 }
-.tainacan-pages-container.tainacan-pages-container--admin-classic-style #tainacan-page-container {
+.tainacan-pages-container.tainacan-pages-container--admin-classic-style {
     --tainacan-admin-background-color: #f0f0f1;
     --tainacan-admin-background-image: unset;
     --tainacan-admin-link-color: #2271b1;
@@ -963,9 +1028,11 @@ html {
     --tainacan-admin-button-active-color: white;
     --tainacan-admin-button-hover-background-color: #2c3338;
     --tainacan-admin-button-active-background-color: #2271b1;
+    --tainacan-admin-button-font-weight: 400;
     --tainacan-admin-navigation-sidebar-background-color: #1d2327;
     --tainacan-admin-navigation-sidebar-background-image: none;
     --tainacan-admin-navigation-sidebar-separator-color: #949494;
+    --tainacan-admin-navigation-sidebar-padding-x: 0px;
     --tainacan-admin-navigation-sidebar-floating-menu-background-color: #2c3338;
 
     --tainacan-page-container-border-radius: 4px;
@@ -977,23 +1044,33 @@ html {
     --tainacan-dashboard-card-box-shadow: 0 1px 1px rgba(0,0,0,.04);
 
     --tainacan-input-border-radius: 2px;
-    --tainacan-button-border-radius: 2px;
+    --tainacan-button-border-radius: 3px;
     --tainacan-dropdownmenu-border-radius: 2px;
 
-    #tainacan-navigation-menu a,
-    #tainacan-navigation-menu a .icon,
-    #tainacan-navigation-menu button .icon {
-        color: #f6fafd !important;
+    #screen-meta-links .button:not([aria-expanded=true]) {
+        background-color: #fff !important;
+        border-bottom: 1px solid #c3c4c7 !important;
+        border-left: 1px solid #c3c4c7 !important;
+        border-right: 1px solid #c3c4c7 !important;
+        color: #646970 !important;
     }
-    #tainacan-navigation-menu a:hover .icon,
-    #tainacan-navigation-menu button:hover .icon {
-        color: #72aee6 !important;
-    }
-    #tainacan-navigation-menu .menu-item-has-children button::after {
-        filter: invert(1.0);
+
+    #tainacan-page-container {
+        #tainacan-navigation-menu a,
+        #tainacan-navigation-menu a .icon,
+        #tainacan-navigation-menu button .icon {
+            color: #f6fafd !important;
+        }
+        #tainacan-navigation-menu a:hover .icon,
+        #tainacan-navigation-menu button:hover .icon {
+            color: #72aee6 !important;
+        }
+        #tainacan-navigation-menu .menu-item-has-children button::after {
+            filter: invert(1.0);
+        }
     }
 }
-.tainacan-pages-container.tainacan-pages-container--admin-gutenberg-style #tainacan-page-container {
+.tainacan-pages-container.tainacan-pages-container--admin-gutenberg-style {
     --tainacan-admin-background-color: #1e1e1e;
     --tainacan-admin-background-image: unset;
     --tainacan-admin-color: white;
@@ -1006,6 +1083,7 @@ html {
     --tainacan-admin-button-active-color: white;
     --tainacan-admin-button-hover-background-color: #2f2f2f;
     --tainacan-admin-button-active-background-color: #2271b1;
+    --tainacan-admin-button-font-weight: 400;
     --tainacan-admin-navigation-sidebar-background-color: #1e1e1e;
     --tainacan-admin-navigation-sidebar-background-image: none;
     --tainacan-admin-navigation-sidebar-separator-color: #949494;
@@ -1022,19 +1100,21 @@ html {
     --tainacan-dropdownmenu-border-radius: 4px;
     --tainacan-modal-border-radius: 4px;
 
-    #tainacan-navigation-menu a,
-    #tainacan-navigation-menu a .icon,
-    #tainacan-navigation-menu button .icon {
-        color: var(--tainacan-white) !important;
-    }
-    #tainacan-navigation-menu .menu-item-has-children button::after {
-        filter: invert(1.0);
+    #tainacan-page-container {
+        #tainacan-navigation-menu a,
+        #tainacan-navigation-menu a .icon,
+        #tainacan-navigation-menu button .icon {
+            color: var(--tainacan-white) !important;
+        }
+        #tainacan-navigation-menu .menu-item-has-children button::after {
+            filter: invert(1.0);
+        }
     }
 }
-.tainacan-pages-container--fullscreen.tainacan-pages-container.tainacan-pages-container--admin-gutenberg-style #tainacan-page-container {
+.tainacan-pages-container--fullscreen.tainacan-pages-container.tainacan-pages-container--admin-gutenberg-style {
     --tainacan-admin-navigation-sidebar-width: 300px;
 }
-.tainacan-pages-container.tainacan-pages-container--admin-light-style #tainacan-page-container {
+.tainacan-pages-container.tainacan-pages-container--admin-light-style {
     --tainacan-admin-background-color: var(--tainacan-gray0);
     --tainacan-admin-background-image: unset;
     --tainacan-admin-button-background-color: var(--tainacan-gray1);

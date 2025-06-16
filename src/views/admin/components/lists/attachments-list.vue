@@ -226,6 +226,8 @@
                 width: 94px;
                 margin: 6px 0;
                 bottom: 0px;
+                border-bottom-right-radius: var(--tainacan-item-border-radius, 3px);
+                border-bottom-left-radius: var(--tainacan-item-border-radius, 3px);
                 padding: 2px 8px 4px 8px;
                 text-align: right;
                 display: none;

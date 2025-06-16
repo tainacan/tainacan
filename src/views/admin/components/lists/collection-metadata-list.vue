@@ -1,5 +1,5 @@
 <template>
-    <div class="column">
+    <div class="column is-12-touch">
                            
         <b-loading
                 v-model="isLoadingMetadataSections"

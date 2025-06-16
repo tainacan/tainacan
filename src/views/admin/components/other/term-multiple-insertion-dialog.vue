@@ -108,23 +108,23 @@
                     </b-autocomplete>
                 </div>
             </section>
-            <footer class="modal-card-foot form-submit">
-                <button 
-                        v-if="!hideCancel"
-                        class="button is-outlined" 
-                        type="button"
-                        @click="$emit('close')">
-                    {{ $i18n.get('cancel') }}
-                </button>
-                <button 
-                        type="submit"
-                        class="button is-success"
-                        :disabled="hasParent ? !selectedParentTerm : false"
-                        @click="onConfirm({ parent: hasParent ? selectedParentTerm : 0, termNames: termNames }); $emit('close');">
-                    {{ $i18n.get('continue') }}
-                </button>
-            </footer>
         </div>
+        <footer class="form-submit">
+            <button 
+                    v-if="!hideCancel"
+                    class="button is-outlined" 
+                    type="button"
+                    @click="$emit('close')">
+                {{ $i18n.get('cancel') }}
+            </button>
+            <button 
+                    type="submit"
+                    class="button is-success"
+                    :disabled="hasParent ? !selectedParentTerm : false"
+                    @click="onConfirm({ parent: hasParent ? selectedParentTerm : 0, termNames: termNames }); $emit('close');">
+                {{ $i18n.get('continue') }}
+            </button>
+        </footer>
     </div>
 </template>
 
@@ -287,15 +287,17 @@
     .separator-term-names > label.is-inline {
         margin-top: 2px;
     }
-
+    .tainacan-multiple-term-insertion--taginput :deep(.taginput-container) {
+        font-size: 1em;
+    }
     .tainacan-multiple-term-insertion--taginput :deep(.tag),
     .tainacan-multiple-term-insertion--taginput :deep(.tags) {
         white-space: normal !important;
-        min-height: calc(3em - 2px) !important;
+        min-height: calc(2.5em - 2px) !important;
         height: auto !important;
     }
     .tainacan-multiple-term-insertion--taginput :deep(.tag.is-delete) {
-        min-width: calc(3em - 2px) !important;
+        min-width: calc(2.5em - 2px) !important;
     }
 
     @media screen and (max-width: 768px) {
@@ -303,6 +305,39 @@
             display: none !important;
         }
     }
+
+    .form-submit {
+        background-color: var(--tainacan-gray1);
+        position: sticky;
+        bottom: 0;
+        padding: 16px var(--tainacan-one-column);
+        display: flex;
+        justify-content: space-between;
+        z-index: 2;
+
+        &::after,
+        &::before {
+            height: calc(2 * (var(--tainacan-modal-border-radius, 8px) + 2px ));
+            width: calc(2 * (var(--tainacan-modal-border-radius, 8px) + 2px ));
+            background: transparent;
+            display: block;
+            content: '';
+            position: absolute;
+        }
+        &::before {
+            left: 0;
+            top: calc(-2 * (var(--tainacan-modal-border-radius, 8px) + 2px ));
+            border-bottom-left-radius: calc(var(--tainacan-modal-border-radius, 8px) + 2px);
+            box-shadow: calc(-1 * (var(--tainacan-modal-border-radius, 8px) + 2px)) 0px 0 0 var(--tainacan-gray1);
+        }
+        &::after {
+            right: 0;
+            top: calc(-2 * (var(--tainacan-modal-border-radius, 8px) + 2px ));
+            border-bottom-right-radius: calc(var(--tainacan-modal-border-radius, 8px) + 2px);
+            box-shadow: calc(var(--tainacan-modal-border-radius, 8px) + 2px) 0px 0 0 var(--tainacan-gray1);
+        }
+    }
+
 
 </style>
 

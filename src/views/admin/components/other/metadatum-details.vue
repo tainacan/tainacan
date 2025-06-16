@@ -111,7 +111,7 @@ export default {
         -webkit-column-break-inside: avoid;
         page-break-inside: avoid;
         break-inside: avoid;
-        margin-bottom: 1em;
+        margin-bottom: 0.5em;
 
         & > .field:not(:last-child) {
             margin-bottom: 0em;

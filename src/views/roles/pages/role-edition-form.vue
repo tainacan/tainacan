@@ -742,7 +742,29 @@
         box-shadow: 0px 0px 12px -8px var(--tainacan-black);
         margin-left: calc( -1 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column)));
         margin-top: auto;
-        padding: var(--tainacan-page-container-padding-y, 1rem) var(--tainacan-page-container-padding-x, var(--tainacan-one-column));
+        padding: 10px var(--tainacan-page-container-padding-x, var(--tainacan-one-column));
+
+        &::after,
+        &::before {
+            height: 18px;
+            width: 18px;
+            background: transparent;
+            display: block;
+            content: '';
+            position: absolute;
+        }
+        &::before {
+            left: 0;
+            top: -18px;
+            border-bottom-left-radius: 9px;
+            box-shadow: -9px 0px 0 0 var(--tainacan-gray1), inset 2px -2px 5px -3px var(--tainacan-gray2)
+        }
+        &::after {
+            right: 0;
+            top: -18px;
+            border-bottom-right-radius: 9px;
+            box-shadow: 9px 0px 0 0 var(--tainacan-gray1), inset -2px -2px 5px -3px var(--tainacan-gray2)
+        }
 
         p {
             margin: 0;

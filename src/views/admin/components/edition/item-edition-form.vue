@@ -2089,15 +2089,15 @@ export default {
         .tainacan-page-title {
         
             .status-tag {
-                color: var(--tainacan-secondary);
-                background: var(--tainacan-primary);
-                padding: 0.15em 0.5em;
-                font-size: 0.75em;
+                color: var(--tainacan-gray5);
+                background: var(--tainacan-gray2);
+                padding: .25em .5em;
+                font-size: .625em;
                 margin: 0 0 0 1em;
-                font-weight: 600;
+                font-weight: 500;
                 position: relative;
                 top: -2px;
-                border-radius: 2px;
+                border-radius: 3px;
             }
         }
         .tainacan-form > .columns {
@@ -2243,7 +2243,7 @@ export default {
             }
 
             &.is-metadata-navigation-active {
-                width: calc(58.33333337% - var(--tainacan-admin-navigation-sidebar-width, 215px));
+                width: calc(58.33333337% - var(--tainacan-admin-navigation-sidebar-width, 14rem));
                 position: fixed;
                 z-index: 99999;
                 bottom: 0;
@@ -2260,7 +2260,7 @@ export default {
                 }
 
                 @media screen and (max-width: 1024px) {
-                    width: calc(100% - var(--tainacan-one-column) -  var(--tainacan-admin-navigation-sidebar-width, 215px) - var(--tainacan-one-column));
+                    width: calc(100% - var(--tainacan-one-column) -  var(--tainacan-admin-navigation-sidebar-width, 14rem) - var(--tainacan-one-column));
                 }
             }
 

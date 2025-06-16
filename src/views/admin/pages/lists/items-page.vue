@@ -1633,6 +1633,7 @@
 
     .search-control {
         min-height: 42px;
+        margin-top: 0.25em;
         height: auto;
         position: relative;
         padding: 0.5em 0;

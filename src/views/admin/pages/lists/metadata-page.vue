@@ -14,7 +14,7 @@
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata') || (!isRepositoryLevel && collection && collection.current_user_can_edit_metadata))"
                     v-model="activeTab">    
                 <b-tab-item :label="isRepositoryLevel ? repositoryTabLabel : collectionTabLabel">
-                    <div class="columns">
+                    <div class="columns is-multiline">
 
                         <!-- Active Metadata and Sections Area -->
                         <repository-metadata-list
@@ -336,16 +336,13 @@ export default {
                 .controls { 
                     font-size: 0.875em;
                     position: absolute;
-                    right: 10px;
-                    top: 10px;
-                    .switch {
-                        position: relative;
-                        bottom: 1px;
-                    }
+                    right: 11px;
+                    top: 11px;
+                    display: flex;
+                    align-items: center;
+    
                     .icon {
-                        width: 1.75em;
-                        bottom: 1px;   
-                        position: relative;
+                        width: 1.875em;
                         i, i:before { font-size: 1.25em; }
                     }
                 }
@@ -463,6 +460,14 @@ export default {
                 &:hover {
                     color: var(--tainacan-blue5);
                 }
+            }
+        }
+
+        @media screen and (max-width: 1023px) {
+            .sub-header,
+            .active-metadata-area.active-metadata-sections-area,
+            .active-metadata-sections-area.active-metadata-sections-area {
+                padding-right: 0;
             }
         }
     }

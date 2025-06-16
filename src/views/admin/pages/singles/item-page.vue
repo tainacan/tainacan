@@ -747,15 +747,15 @@
         .tainacan-page-title {
 
             .status-tag {
-                color: var(--tainacan-secondary);
-                background: var(--tainacan-primary);
-                padding: 0.15em 0.5em;
-                font-size: 0.75em;
+                color: var(--tainacan-gray5);
+                background: var(--tainacan-gray2);
+                padding: .25em .5em;
+                font-size: .625em;
                 margin: 0 0 0 1em;
-                font-weight: 600;
+                font-weight: 500;
                 position: relative;
                 top: -2px;
-                border-radius: 2px;
+                border-radius: 3px;
             }
         }
 

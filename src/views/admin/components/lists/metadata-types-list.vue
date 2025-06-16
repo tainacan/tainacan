@@ -1,7 +1,7 @@
 <template>
     <div 
             v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata')) || !isRepositoryLevel"
-            class="column available-metadata-types-area">
+            class="column available-metadata-types-area is-12-touch">
 
         <b-loading v-model="isLoadingMetadataTypes" />
 
@@ -221,11 +221,11 @@ export default {
         min-width: 20.8333333%;
         max-height: calc(100vh - 7.75em);
         max-height: calc(100dvh - 7.75em);
-        top: -28px;
+        top: calc(0.125rem + var(--tainacan-container-padding) + var(--tainacan-button-min-height, 2.571em));
         position: sticky;
         font-size: 0.875em;
 
-        @media screen and (max-width: 769px) {
+        @media screen and (max-width: 1023px) {
             max-width: 100%;
             padding: 10px;
             h3 {

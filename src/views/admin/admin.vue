@@ -122,12 +122,6 @@
         position: relative;
         height: 100%;
 
-        @media screen and (max-width: 769px) {
-            &:not(.tainacan-admin-mobile-app-mode):not(.tainacan-admin-collection-mobile-app-mode) {
-                height: auto;
-            }
-        }
-
         .columns {
             margin-left: 0px;
             margin-right: 0px;

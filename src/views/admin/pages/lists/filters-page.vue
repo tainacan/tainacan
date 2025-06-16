@@ -16,8 +16,8 @@
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || (!isRepositoryLevel && collection && collection.current_user_can_edit_filters))"
                     ref="filterEditionPageColumns"
                     :style="{ height: activeFiltersList.length <= 0 && !isLoadingFilters ? 'auto' : 'calc(100% - 6px - ' + columnsTopY + 'px)'}"
-                    class="columns">
-                <div class="column">
+                    class="columns is-multiline">
+                <div class="column is-12-touch">
 
                     <div class="tainacan-form sub-header">
                         <h3>{{ $i18n.get('filters') }}</h3>
@@ -230,7 +230,7 @@
                 </div>
                 <div 
                         v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || !isRepositoryLevel)"
-                        class="column available-metadata-area">
+                        class="column available-metadata-area is-12-touch">
                     <div class="tainacan-form sub-header">
                         <h3>{{ $i18n.get('label_available_metadata') }}</h3>
 
@@ -949,7 +949,7 @@ export default {
                 margin-right: 30px;
                 flex-grow: 2;
 
-                @media screen and (max-width: 769px) {
+                @media screen and (max-width: 1023px) {
                     margin-right: 0;
                 }
             }
@@ -993,7 +993,7 @@ export default {
             padding-top: 1em;
             min-height: 330px;
 
-            @media screen and (max-width: 769px) {
+            @media screen and (max-width: 1024px) {
                 min-height: 45px;
                 margin: 0; 
                 padding-right: 0em;
@@ -1108,15 +1108,13 @@ export default {
                 .controls { 
                     font-size: 0.875em;
                     position: absolute;
-                    right: 10px; 
-                    top: 10px;
-                    .switch {
-                        position: relative;
-                        bottom: 2px;
-                    }
-                    .icon {
-                        bottom: 1px;   
-                        position: relative;
+                    right: 11px;
+                    top: 11px;
+                    display: flex;
+                    align-items: center;
+
+                   .icon {
+                        width: 2em;
                         i, i:before { font-size: 1.25em; }
                     }
                 }
@@ -1183,7 +1181,7 @@ export default {
             max-width: 600px;
             min-width: 41.66666667%;
 
-            @media screen and (max-width: 769px) {
+            @media screen and (max-width: 1023px) {
                 max-width: 100%;
                 padding: 10px;
                 h3 {
@@ -1395,7 +1393,7 @@ export default {
                 min-height: 290px;
                 align-items: normal;
 
-                @media screen and (max-width: 769px) {
+                @media screen and (max-width: 1023px) {
                     max-width: 100%;
                 }
 

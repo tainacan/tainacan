@@ -297,6 +297,11 @@ audio, video {
         width: 100%;
         position: relative;
         overflow-x: hidden;
+        border-radius: var(--tainacan-item-border-radius, 0px);
+
+        p {
+            line-height: normal;
+        }
         
         &:hover {
             cursor: pointer;
@@ -321,10 +326,15 @@ audio, video {
     }
     .item-thumb {
         display: flex;
-        min-height: 28px;
-        min-width: 28px;
-        margin-left: 2px;
+        height: 28px;
+        width: 28px;
+        margin-left: 3px;
         margin-right: 8px;
+        border-radius: var(--tainacan-item-border-radius, 0px);
+
+        :deep(img) {
+            border-radius: var(--tainacan-item-border-radius, 0px);
+        }
     }
 }
 

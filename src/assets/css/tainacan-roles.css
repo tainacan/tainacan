@@ -15770,7 +15770,6 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
   pointer-events: none;
 }
 .tainacan-form .b-numberinput {
-  height: auto;
   padding: 0 !important;
 }
 .tainacan-form .b-numberinput .control {
@@ -15800,7 +15799,6 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
   border-top-right-radius: 0px !important;
   border-bottom-right-radius: 0px !important;
   text-align: start;
-  height: 100%;
 }
 .tainacan-form .b-numberinput button {
   height: auto !important;

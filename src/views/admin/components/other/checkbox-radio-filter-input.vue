@@ -925,7 +925,7 @@
         .b-checkbox {
             break-inside: avoid;
             max-width: 100%;
-            min-height: 1.5em;
+            min-height: 1.75em;
             margin-left: 0.7em;
             margin-right: 2em !important;
             margin-bottom: 0px !important;

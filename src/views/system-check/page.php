@@ -26,7 +26,11 @@
 </style>
 
 <div class="wrap tainacan-page-container-content">
-	<h1 class="tainacan-page-title"><?php _e('Tainacan System Check', 'tainacan'); ?></h1>
+	<div class="tainacan-fixed-subheader">
+		<h1 class="tainacan-page-title">
+			<?php _e('Tainacan System Check', 'tainacan'); ?>
+		</h1>
+	</div>
 	
 	<p><?php _e('This page checks your system against the Tainacan requirements. It helps you to find out whether your server is properly configured.', 'tainacan'); ?></p>
 	

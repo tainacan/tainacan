@@ -248,6 +248,10 @@
     }
     .related-items-list {
         .related-item-group {
+
+            .related-item-group__items-list {
+                margin-top: 0.25em;
+            }
             
             &:not(:last-child) {
                 border-bottom: 1px dashed var(--tainacan-gray3);

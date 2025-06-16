@@ -1,7 +1,5 @@
 <template>
-    <div class="has-mounted wrap is-repository-level">
-        <router-view /> 
-    </div> 
+    <router-view class="has-mounted wrap" />
 </template>
 
 <script>

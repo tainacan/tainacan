@@ -325,7 +325,7 @@
         padding: 0.5em 0;
         height: auto;
         border-bottom: 1px solid var(--tainacan-gray2);
-        display: inline-flex;
+        display: flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
@@ -333,7 +333,8 @@
         gap: 4px;
     }
     #roles-page-search {
-        max-width: 300px;
+        max-width: 304px;
+        width: 100%;
 
         .control {
             z-index: 0;
