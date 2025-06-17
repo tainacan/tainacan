@@ -92,6 +92,22 @@
             margin-bottom: 1rem;
         }
 
+        &.not-sortable {
+            cursor: default;
+
+            .postbox-header,
+            .hndle,
+            .handlediv {
+                cursor: default;
+                pointer-events: none;
+            }
+
+            .handle-actions {
+                display: none;
+                visibility: hidden;
+            }
+        }
+
         h1,
         h2,
         h3,

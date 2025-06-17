@@ -336,6 +336,7 @@ audio, video {
         width: 28px;
         margin-left: 3px;
         margin-right: 8px;
+        overflow: hidden;
         border-radius: var(--tainacan-item-border-radius, 0px);
 
         :deep(img) {

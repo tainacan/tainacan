@@ -122,6 +122,19 @@
 #tainacan-dashboard-app .postbox:has(+ .postbox.closed), #tainacan-dashboard-app .postbox:last-child {
   margin-bottom: 1rem;
 }
+#tainacan-dashboard-app .postbox.not-sortable {
+  cursor: default;
+}
+#tainacan-dashboard-app .postbox.not-sortable .postbox-header,
+#tainacan-dashboard-app .postbox.not-sortable .hndle,
+#tainacan-dashboard-app .postbox.not-sortable .handlediv {
+  cursor: default;
+  pointer-events: none;
+}
+#tainacan-dashboard-app .postbox.not-sortable .handle-actions {
+  display: none;
+  visibility: hidden;
+}
 #tainacan-dashboard-app .postbox h1,
 #tainacan-dashboard-app .postbox h2,
 #tainacan-dashboard-app .postbox h3,

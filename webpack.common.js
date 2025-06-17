@@ -8,6 +8,7 @@ const TainacanPluginConfig = {
     entry: {
         tainacan_pages_common_scripts: './src/views/tainacan-pages-common-scripts.js',
         tainacan_admin_navigation_menu: './src/views/tainacan-admin-navigation-menu.js',
+        tainacan_dashboard: './src/views/dashboard/tainacan-dashboard.js',
         tainacan_blocks_common_scripts: './src/views/gutenberg-blocks/tainacan-blocks-common-scripts.js',
         tainacan_blocks_category_icon: './src/views/gutenberg-blocks/js/tainacan-blocks-category-icon.js',
         tainacan_blocks_query_variations: './src/views/gutenberg-blocks/js/tainacan-blocks-query-variations.js',
