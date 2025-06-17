@@ -14,53 +14,53 @@ class Inbcm_Archive extends Mapper {
 		/* Metadata should be set here to allow translable labels */ 
 		$this->metadata = [
 			'inbcm:codRef' => [
-				'label' => __( 'Reference Code', 'tainacan')
+				'label' =>('Cód. de Referência')
 			],
 			'inbcm:titulo' => [
-				'label' => __( 'Title', 'tainacan'),
+				'label' => ('Título'),
                 'core_metadatum' => 'title'
 			],
 			'inbcm:data' => [
-				'label' => __( 'Date', 'tainacan'),
+				'label' => ('Data'),
 			],
 			'inbcm:nivelDescricao' => [
-				'label' => __( 'Level of Description', 'tainacan')
+				'label' => ( 'Nível de Descrição')
 			],
 			'inbcm:dimSuporte' => [
-				'label' => __( 'Extent and Medium', 'tainacan'),
+				'label' => ('Dimensão e suporte'),
 			],
 			'inbcm:nomeProdutor' => [
-				'label' => __( 'Name of Creator', 'tainacan')
+				'label' => ('Nome do Produtor')
 			],
 			'inbcm:biografia' => [
-				'label' => __( 'Administrative History / Biography', 'tainacan')
+				'label' => ('História administrativa / Biografia')
 			],
 			'inbcm:historiaArquivistica' => [
-				'label' => __( 'Archival History', 'tainacan')
+				'label' => ('História Arquivística')
 			],
 			'inbcm:procedencia' => [
-				'label' => __( 'Provenance', 'tainacan')
+				'label' => ('Procedência')
 			],
 			'inbcm:conteudo' => [
-				'label' => __( 'Scope and Content', 'tainacan')
+				'label' => ('Âmbito e Conteúdo')
 			],
 			'inbcm:arranjo' => [
-				'label' => __( 'System of Arrangement', 'tainacan')
+				'label' => ('Sistema de Arranjo')
 			],
 			'inbcm:reproducao' => [
-				'label' => __( 'Conditions of Reproduction', 'tainacan')
+				'label' => ('Condições de Reprodução')
 			],
 			'inbcm:originais' => [
-				'label' => __( 'Existence and Location of Originals', 'tainacan')
+				'label' => ('Existência e Localização dos Originais')
 			],
 			'inbcm:conservacao' => [
-				'label' => __( 'Existence and State of Conservation of Originals', 'tainacan')
+				'label' => ('Notas sobre conservação')
 			],
 			'inbcm:indexacao' => [
-				'label' => __( 'Access Points and Subject Indexing', 'tainacan')
+				'label' => ('Pontos de acesso e indexação de assuntos')
 			],
 			'inbcm:midias' => [
-				'label' => __( 'Related Media', 'tainacan')
+				'label' => ('Mídias Relacionadas')
 			]
 		];
 	}
