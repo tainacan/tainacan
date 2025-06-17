@@ -16237,6 +16237,12 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
   padding-left: 0px !important;
   padding-right: 0px !important;
   padding-top: 0px !important;
+  word-wrap: anywhere;
+  word-break: break-all;
+  font-size: 0.75em;
+  box-sizing: border-box;
+  width: 38px;
+  display: inline-block;
 }
 .table-container .table-wrapper table.tainacan-table tbody tr img.table-thumb :deep(img),
 .table-container .table-wrapper table.tainacan-table tbody tr .table-thumb > div :deep(img) {

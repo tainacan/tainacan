@@ -73,16 +73,16 @@
                                 {{ $i18n.get('label_description') }}
                             </div>
                         </th>
-                        <!-- Collections -->
-                        <th>
-                            <div class="th-wrap">
-                                {{ $i18n.get('label_collections_using') }}
-                            </div>
-                        </th>
                         <!-- Total Items -->
                         <th v-if="!isOnTrash">
                             <div class="th-wrap total-terms-header">
                                 {{ $i18n.get('label_total_terms') }}
+                            </div>
+                        </th>
+                        <!-- Collections -->
+                        <th>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_collections_using') }}
                             </div>
                         </th>
                         <!-- Actions -->
@@ -167,27 +167,6 @@
                                     }"
                                     v-html="(taxonomy.description != undefined && taxonomy.description != '') ? taxonomy.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />
                         </td>
-                        <!-- Collections using -->
-                        <td
-                                class="column-large-width has-text-gray "
-                                :class="{ 'is-italic' : !(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) }" 
-                                :label="$i18n.get('label_collections_using')" 
-                                :aria-label="(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? taxonomy.collections.toString() : $i18n.get('label_no_collections_using_taxonomy')">
-                            <p
-                                    v-tooltip="{
-                                        delay: {
-                                            show: 500,
-                                            hide: 300,
-                                        },
-                                        content: (taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? renderListOfCollections(taxonomy.collections, taxonomy.metadata_by_collection) : $i18n.get('label_no_collections_using_taxonomy'),
-                                        autoHide: false,
-                                        html: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
-                                        placement: 'auto-start'
-                                    }"
-                                    @click.self="onClickTaxonomy($event, taxonomy.id, index)"
-                                    v-html="(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? renderListOfCollections(taxonomy.collections, taxonomy.metadata_by_collection) : $i18n.get('label_no_collections_using_taxonomy')" />
-                        </td>
                         <!-- Total terms -->
                         <td
                                 v-if="taxonomy.total_terms != undefined"
@@ -208,6 +187,27 @@
                                         placement: 'auto-start'
                                     }" 
                                     v-html="taxonomy.total_terms['total']" />
+                        </td>
+                        <!-- Collections using -->
+                        <td
+                                class="column-large-width has-text-gray "
+                                :class="{ 'is-italic' : !(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) }" 
+                                :label="$i18n.get('label_collections_using')" 
+                                :aria-label="(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? taxonomy.collections.toString() : $i18n.get('label_no_collections_using_taxonomy')">
+                            <p
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
+                                        content: (taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? renderListOfCollections(taxonomy.collections, taxonomy.metadata_by_collection) : $i18n.get('label_no_collections_using_taxonomy'),
+                                        autoHide: false,
+                                        html: true,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                        placement: 'auto-start'
+                                    }"
+                                    @click.self="onClickTaxonomy($event, taxonomy.id, index)"
+                                    v-html="(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? renderListOfCollections(taxonomy.collections, taxonomy.metadata_by_collection) : $i18n.get('label_no_collections_using_taxonomy')" />
                         </td>
                         <!-- Actions -->
                         <td 

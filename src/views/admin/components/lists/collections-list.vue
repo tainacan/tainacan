@@ -120,6 +120,12 @@
                                 {{ $i18n.get('label_description') }}
                             </div>
                         </th>
+                        <!-- Total Items -->
+                        <th v-if="!isOnTrash">
+                            <div class="th-wrap total-items-header">
+                                {{ $i18n.get('label_total_items') }}
+                            </div>
+                        </th>
                         <!-- Modification Date -->
                         <th>
                             <div class="th-wrap">
@@ -136,12 +142,6 @@
                         <th>
                             <div class="th-wrap">
                                 {{ $i18n.get('label_created_by') }}
-                            </div>
-                        </th>
-                        <!-- Total Items -->
-                        <th v-if="!isOnTrash">
-                            <div class="th-wrap total-items-header">
-                                {{ $i18n.get('label_total_items') }}
                             </div>
                         </th>
                         <th 
@@ -244,6 +244,28 @@
                                     }" 
                                     v-html="(collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />
                         </td>
+                        <!-- Total items -->
+                        <td
+                                v-if="collection.total_items != undefined"
+                                class="column-small-width column-align-right"
+                                :label="$i18n.get('label_total_items')" 
+                                :aria-label="$i18n.get('label_total_items') + ': ' + getTotalItems(collection.total_items)" 
+                                @click.left="onClickCollection($event, collection.id, index)"
+                                @click.right="onRightClickCollection($event, collection.id, index)">
+                            <p
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
+                                        content: getTotalItemsDetailed(collection.total_items),
+                                        autoHide: false,
+                                        html: true,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                        placement: 'auto-start'
+                                    }" 
+                                    v-html="getTotalItems(collection.total_items)" />
+                        </td>
                         <!-- Modification Date -->
                         <td
                                 class="table-modification column-default-width"
@@ -306,28 +328,6 @@
                                         placement: 'auto-start'
                                     }" 
                                     v-html="collection.author_name" />
-                        </td>
-                        <!-- Total items -->
-                        <td
-                                v-if="collection.total_items != undefined"
-                                class="column-small-width column-align-right"
-                                :label="$i18n.get('label_total_items')" 
-                                :aria-label="$i18n.get('label_total_items') + ': ' + getTotalItems(collection.total_items)" 
-                                @click.left="onClickCollection($event, collection.id, index)"
-                                @click.right="onRightClickCollection($event, collection.id, index)">
-                            <p
-                                    v-tooltip="{
-                                        delay: {
-                                            show: 500,
-                                            hide: 300,
-                                        },
-                                        content: getTotalItemsDetailed(collection.total_items),
-                                        autoHide: false,
-                                        html: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
-                                        placement: 'auto-start'
-                                    }" 
-                                    v-html="getTotalItems(collection.total_items)" />
                         </td>
                         <!-- Actions -->
                         <td  
