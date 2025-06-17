@@ -235,7 +235,7 @@ function handleDynamicMenusAndBreadcrumbs() {
                         });
 
                         // Inserts the collection name as the second item in the collection level menu
-                        if ( !adminOptions.hideNavigationCollectionName === 'true' && !adminOptions.hideNavigationCollectionName === true ) {
+                        if ( adminOptions.hideNavigationCollectionName !== 'true' && adminOptions.hideNavigationCollectionName !== true ) {
                             const collectionName = document.createElement( 'li' );
                             collectionName.setAttribute( 'class', 'separator-list-item' );
                             collectionName.innerHTML = '<span class="icon"><i class="tainacan-icon tainacan-icon-collection tainacan-icon-1-125em"></i></span><span class="menu-text">' + collection.name + '</span>';
