@@ -179,30 +179,23 @@ UserPrefsPlugin.install = function (app, options = {}) {
         get(key) {
             return this.tainacanPrefs[key] ? this.tainacanPrefs[key] : undefined;
         },
-        set(key, value) {
+        async set(key, value) {
             this.tainacanPrefs[key] = value;
 
             let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
 
             if (tainacan_user.nonce) {
-                return new Promise(( resolve, reject ) => {
-                    axios.wpApi.post('/users/me/', qs.stringify(data))
-                        .then( res => {
-                            let prefs = JSON.parse(res.data.meta['tainacan_prefs']);
-                            this.tainacanPrefs[key] = prefs[key];
-                            if (prefs[key]) {
-                                resolve( prefs[key] );
-                            } else {
-                                this.tainacanPrefs[key] = value;
-                            }
-                        })
-                        .catch( () => console.log("Request to /users/me failed. Maybe you're not logged in.") );
-                });
+                    try {
+                        const res = await axios.wpApi.post('/users/me/', qs.stringify(data));
+                        let prefs = JSON.parse(res.data.meta['tainacan_prefs']);
+                        this.tainacanPrefs[key] = prefs[key];
+                        return prefs[key];
+                    } catch (e) {
+                        console.log("Request to /users/me failed. Maybe you're not logged in.");
+                        return undefined;
+                    }
             } else {
-                return new Promise(() => {})
-                    .then( () => {
-                        resolve(value);
-                    });
+                return value;
             }
         },
         clean() {
