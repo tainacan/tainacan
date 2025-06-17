@@ -537,22 +537,25 @@ export default {
             'getCollectionTaxonomies'
         ]),
         onChangeTab(status) {
-            this.page = 1;
-            this.status = status;
-            this.loadCollections();
+            if ( status != this.status ) {
+                this.page = 1;
+                this.status = status;
+                this.loadCollections();
+            }
         },
         onChangeOrder(newOrder) {
-            if (newOrder != this.order) { 
+            if ( newOrder != this.order ) { 
                 this.$userPrefs.set('collections_order', newOrder)
                     .catch(() => {
                         this.$console.log("Error settings user prefs for collections order")
                     });
+                this.page = 1;
                 this.order = newOrder;
                 this.loadCollections();
             }
         },
         onChangeOrderBy(newOrderBy) {
-            if (newOrderBy != this.orderBy) { 
+            if ( newOrderBy != this.orderBy ) { 
                 this.$userPrefs.set('collections_order_by', newOrderBy)
                     .then((newOrderBy) => {
                         this.orderBy = newOrderBy;
@@ -560,9 +563,10 @@ export default {
                     .catch(() => {
                         this.$console.log("Error settings user prefs for collections orderby")
                     });
+                this.page = 1;
+                this.orderBy = newOrderBy;
+                this.loadCollections();
             }
-            this.orderBy = newOrderBy;
-            this.loadCollections();
         },
         onChangeAuthorFilter(newAuthorFilter) {
             if ( newAuthorFilter != this.authorFilter ) { 
@@ -573,12 +577,12 @@ export default {
                     .catch(() => {
                         this.$console.log("Error settings user prefs for collections author filter")
                     });
+                this.page = 1;
+                this.authorFilter = newAuthorFilter;
+                this.loadCollections();
             }
-            this.authorFilter = newAuthorFilter;
-            this.loadCollections();
         },
         onChangeCollectionsPerPage(value) {
-            
             if (value != this.collectionsPerPage) {
                 this.$userPrefs.set('collections_per_page', value)
                     .then((newValue) => {
@@ -587,16 +591,19 @@ export default {
                     .catch(() => {
                         this.$console.log("Error settings user prefs for collection per page")
                     });
+                this.page = 1;
+                this.collectionsPerPage = value;
+                this.loadCollections();
             }
-            this.collectionsPerPage = value;
-            this.loadCollections();
         },
         onPageChange(page) {
-            this.page = page;
-            this.loadCollections();
+            if ( page != this.page ) {
+                this.page = page;
+                this.loadCollections();
+            }
         },
         onChangeCollectionTaxonomyTerms(taxonomyValue) {
-
+            this.page = 1;
             this.loadCollections();
 
             // Closes dropdown

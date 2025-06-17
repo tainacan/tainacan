@@ -335,22 +335,25 @@
                 'fetch',
             ]),
             onChangeTab(status) {
-                this.page = 1;
-                this.status = status;
-                this.load();
+                if ( status != this.status ) {
+                    this.page = 1;
+                    this.status = status;
+                    this.load();
+                }
             },
             onChangeOrder(newOrder) {
-                if (newOrder != this.order) { 
+                if ( newOrder != this.order ) { 
                     this.$userPrefs.set('taxonomies_order', newOrder)
                         .catch(() => {
                             this.$console.log("Error settings user prefs for taxonomies order")
                         });
+                    this.page =  1;
                     this.order = newOrder;
                     this.load();
                 }
             },
             onChangeOrderBy(newOrderBy) {
-                if (newOrderBy != this.orderBy) { 
+                if ( newOrderBy != this.orderBy ) { 
                     this.$userPrefs.set('taxonomies_order_by', newOrderBy)
                         .then((newOrderBy) => {
                             this.orderBy = newOrderBy;
@@ -358,12 +361,13 @@
                         .catch(() => {
                             this.$console.log("Error settings user prefs for taxonomies orderby")
                         });
+                    this.page = 1;
+                    this.orderBy = newOrderBy;
+                    this.load();
                 }
-                this.orderBy = newOrderBy;
-                this.load();
             },
             onChangePerPage(value) {
-                if (value != this.taxonomiesPerPage) { 
+                if ( value != this.taxonomiesPerPage ) { 
                     this.$userPrefs.set('taxonomies_per_page', value)
                         .then((newValue) => {
                             this.taxonomiesPerPage = newValue;
@@ -371,10 +375,10 @@
                         .catch(() => {
                             this.$console.log("Error settings user prefs for taxonomies per page")
                         });
-
+                    this.page = 1;
+                    this.taxonomiesPerPage = value;
+                    this.load();
                 }
-                this.taxonomiesPerPage = value;
-                this.load();
             },
             onPageChange(page) {
                 this.page = page;
