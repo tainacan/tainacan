@@ -17,7 +17,7 @@
         </section>
         <sortable
                 :list="childrenMetadata"
-                :style="{ minHeight: childrenMetadata.length > 0 ? '40px' : '70px' }"
+                :style="{ minHeight: childrenMetadata.length > 0 ? '50px' : '80px' }"
                 class="active-metadata-area child-metadata-area"
                 item-key="id"
                 :options="{

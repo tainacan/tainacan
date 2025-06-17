@@ -18,22 +18,38 @@ class Admin extends Pages {
 
 	function add_admin_menu() {
 
-		// Tainacan Admin Vue component. 
+		$should_hide_repository_menu = $this->has_admin_ui_option('hideNavigationRepositoryMenu') ||
+			(
+				$this->has_admin_ui_option('hideNavigationMetadataButton') &&
+				$this->has_admin_ui_option('hideNavigationFiltersButton') &&
+				$this->has_admin_ui_option('hideNavigationTaxonomiesButton') &&
+				$this->has_admin_ui_option('hideNavigationActivitiesButton') &&
+				$this->has_admin_ui_option('hideNavigationProcessesButton') &&
+				$this->has_admin_ui_option('hideNavigationCapabilitiesButton') &&
+				$this->has_admin_ui_option('hideNavigationReportsButton') &&
+				$this->has_admin_ui_option('hideNavigationImportersButton') &&
+				$this->has_admin_ui_option('hideNavigationExportersButton')
+			);
+
+		// Repository root menu							
 		$tainacan_page_suffix = add_submenu_page(
-			$this->tainacan_root_menu_slug,
+			$should_hide_repository_menu ? 'tainacan-no-show-menu' : $this->tainacan_root_menu_slug,
 			__( 'Repository', 'tainacan' ),
 			'<span class="icon" style="color: var(--tainacan-blue5)">' . $this->get_svg_icon( 'repository' ) . '</span><span class="menu-text">' .__( 'Repository', 'tainacan' ) . '</span>',
 			'read',
 			$this->repository_links_slug,
 			array( &$this, 'render_page' ),
 		);
+
+		// Tainacan Admin Vue component is instantiated when the repository submenu is loaded (returned from $tainacan_page_suffix). 
+		// If the repository submenu hidden, we can only hide it via css 
 		add_action( 'load-' . $tainacan_page_suffix, array( &$this, 'load_page' ) );
 		
 		// Inner links to the admin vue component
-		if ( !$this->has_admin_ui_option('hidePrimaryMenuMetadataButton') ) {
+		if ( !$this->has_admin_ui_option('hideNavigationMetadataButton') ) {
 
 			add_submenu_page(
-				$this->repository_links_slug,
+				$this->has_admin_ui_option('hideNavigationRepositoryMenu') ? $this->tainacan_root_menu_slug : $this->repository_links_slug,
 				__('Metadata', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'metadata' ) . '</span><span class="menu-text">' . __('Metadata', 'tainacan') . '</span>',
 				'tnc_rep_edit_metadata',
@@ -42,10 +58,10 @@ class Admin extends Pages {
 			);
 		}
 
-		if ( !$this->has_admin_ui_option('hidePrimaryMenuFiltersButton') ) {
+		if ( !$this->has_admin_ui_option('hideNavigationFiltersButton') ) {
 
 			add_submenu_page(
-				$this->repository_links_slug,
+				$this->has_admin_ui_option('hideNavigationRepositoryMenu') ? $this->tainacan_root_menu_slug : $this->repository_links_slug,
 				__('Filters', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'filters' ) . '</span><span class="menu-text">' . __('Filters', 'tainacan') . '</span>',
 				'tnc_rep_edit_filters',
@@ -54,10 +70,10 @@ class Admin extends Pages {
 			);
 		}
 
-		if ( !$this->has_admin_ui_option('hidePrimaryMenuTaxonomiesButton') ) {
+		if ( !$this->has_admin_ui_option('hideNavigationTaxonomiesButton') ) {
 
 			add_submenu_page(
-				$this->repository_links_slug,
+				$this->has_admin_ui_option('hideNavigationRepositoryMenu') ? $this->tainacan_root_menu_slug : $this->repository_links_slug,
 				__('Taxonomies', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'taxonomies' ) . '</span><span class="menu-text">' . __('Taxonomies', 'tainacan') . '</span>',
 				'read',
@@ -66,10 +82,10 @@ class Admin extends Pages {
 			);
 		}
 
-		if ( !$this->has_admin_ui_option('hidePrimaryMenuActivitiesButton') ) {
+		if ( !$this->has_admin_ui_option('hideNavigationActivitiesButton') ) {
 
 			add_submenu_page(
-				$this->repository_links_slug,
+				$this->has_admin_ui_option('hideNavigationRepositoryMenu') ? $this->tainacan_root_menu_slug : $this->repository_links_slug,
 				__('Activities', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'activities' ) . '</span><span class="menu-text">' . __('Activities', 'tainacan') . '</span>',
 				'read',
@@ -78,10 +94,10 @@ class Admin extends Pages {
 			);
 		}
 
-		if ( !$this->has_admin_ui_option('hidePrimaryMenuProcessesButton') ) {
+		if ( !$this->has_admin_ui_option('hideNavigationProcessesButton') ) {
 
 			add_submenu_page(
-				$this->repository_links_slug,
+				$this->has_admin_ui_option('hideNavigationRepositoryMenu') ? $this->tainacan_root_menu_slug : $this->repository_links_slug,
 				__('Processes', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'processes' ) . '</span><span class="menu-text">' . __('Processes', 'tainacan') . '</span>',
 				'read',
@@ -90,10 +106,10 @@ class Admin extends Pages {
 			);
 		}
 		
-		if ( !$this->has_admin_ui_option('hidePrimaryMenuCapabilitiesButton') ) {
+		if ( !$this->has_admin_ui_option('hideNavigationCapabilitiesButton') ) {
 
 			add_submenu_page(
-				$this->repository_links_slug,
+				$this->has_admin_ui_option('hideNavigationRepositoryMenu') ? $this->tainacan_root_menu_slug : $this->repository_links_slug,
 				__('Capabilities', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'capability' ) . '</span><span class="menu-text">' . __('Capabilities', 'tainacan') . '</span>',
 				'tnc_rep_edit_users',
@@ -102,10 +118,10 @@ class Admin extends Pages {
 			);
 		}
 
-		if ( !$this->has_admin_ui_option('hidePrimaryMenuReportsButton') ) {
+		if ( !$this->has_admin_ui_option('hideNavigationReportsButton') ) {
 
 			add_submenu_page(
-				$this->repository_links_slug,
+				$this->has_admin_ui_option('hideNavigationRepositoryMenu') ? $this->tainacan_root_menu_slug : $this->repository_links_slug,
 				__('Reports', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'reports' ) . '</span><span class="menu-text">' . __('Reports', 'tainacan') . '</span>',
 				'manage_tainacan',
@@ -114,10 +130,10 @@ class Admin extends Pages {
 			);
 		}
 
-		if ( !$this->has_admin_ui_option('hidePrimaryMenuImportersButton') ) {
+		if ( !$this->has_admin_ui_option('hideNavigationImportersButton') ) {
 
 			add_submenu_page(
-				$this->repository_links_slug,
+				$this->has_admin_ui_option('hideNavigationRepositoryMenu') ? $this->tainacan_root_menu_slug : $this->repository_links_slug,
 				__('Importers', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'importers' ) . '</span><span class="menu-text">' . __('Importers', 'tainacan') . '</span>',
 				'manage_tainacan',
@@ -126,10 +142,10 @@ class Admin extends Pages {
 			);
 		}
 
-		if ( !$this->has_admin_ui_option('hidePrimaryMenuExportersButton') ) {
+		if ( !$this->has_admin_ui_option('hideNavigationExportersButton') ) {
 
 			add_submenu_page(
-				$this->repository_links_slug,
+				$this->has_admin_ui_option('hideNavigationRepositoryMenu') ? $this->tainacan_root_menu_slug : $this->repository_links_slug,
 				__('Exporters', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'export' ) . '</span><span class="menu-text">' . __('Exporters', 'tainacan') . '</span>',
 				'manage_tainacan',
@@ -138,7 +154,15 @@ class Admin extends Pages {
 			);
 		}
 
-		if ( !$this->has_admin_ui_option('hideCollectionSubheader') ) {
+		// Collection-level menu 
+		$should_hide_collections_menu = $this->has_admin_ui_option('hideNavigationCollectionsMenu') ||
+			(
+				$this->has_admin_ui_option('hideNavigationCollectionsButton') &&
+				$this->has_admin_ui_option('hideNavigationItemsButton') &&
+				$this->has_admin_ui_option('hideNavigationMyItemsButton')
+			);	
+
+		if ( !$this->has_admin_ui_option('hideNavigationCollectionsMenu') && !$should_hide_collections_menu ) {
 			
 			add_submenu_page(
 				$this->tainacan_root_menu_slug,
@@ -150,7 +174,7 @@ class Admin extends Pages {
 			);
 		}
 
-		if ( !$this->has_admin_ui_option('hidePrimaryMenuCollectionsButton') ) {
+		if ( !$this->has_admin_ui_option('hideNavigationCollectionsButton') ) {
 
 			add_submenu_page(
 				$this->collections_links_slug,
@@ -162,7 +186,7 @@ class Admin extends Pages {
 			);
 		}
 
-		if ( !$this->has_admin_ui_option('hidePrimaryMenuItemsButton') ) {
+		if ( !$this->has_admin_ui_option('hideNavigationItemsButton') ) {
 			
 			add_submenu_page(
 				$this->collections_links_slug,
@@ -174,7 +198,7 @@ class Admin extends Pages {
 			);
 		}
 
-		if ( !$this->has_admin_ui_option('hidePrimaryMenuMyItemsButton') ) {
+		if ( !$this->has_admin_ui_option('hideNavigationMyItemsButton') ) {
 			
 			add_submenu_page(
 				$this->collections_links_slug,

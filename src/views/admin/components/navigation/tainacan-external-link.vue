@@ -1,5 +1,6 @@
 <template>
     <a 
+            v-if="!$adminOptions.hideExternalEntityLinks"
             :href="linkUrl"
             target="_blank"
             class="button is-primary tainacan-external-link">

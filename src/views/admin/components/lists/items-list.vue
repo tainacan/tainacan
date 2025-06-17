@@ -3,7 +3,14 @@
 
         <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
         <div
-                v-if="collectionId && collection && collection.current_user_can_edit_items && collection.current_user_can_bulk_edit"
+                v-if="collectionId &&
+                    collection &&
+                    collection.current_user_can_edit_items &&
+                    collection.current_user_can_bulk_edit &&
+                    (
+                        !$adminOptions.hideItemsListMultipleSelection ||
+                        !$adminOptions.hideItemsListBulkActionsButton
+                    ) "
                 class="selection-control">
             <div 
                     v-if="!$adminOptions.hideItemsListMultipleSelection"

@@ -1,11 +1,11 @@
 <template>
     <div :class="{ 'tainacan-repository-level-colors page-container': isRepositoryLevel }">
+        
         <tainacan-title :is-sticky="true" />
         
-        <template v-if="isRepositoryLevel">
-            <p>{{ $i18n.get('info_repository_filters_inheritance') }}</p>
-            <br>
-        </template>
+        <p v-if="isRepositoryLevel">
+            {{ $i18n.get('info_repository_filters_inheritance') }}
+        </p>
                         
         <div class="filters-list-page">
             <b-loading
@@ -20,7 +20,7 @@
                 <div class="column is-12-touch">
 
                     <div class="tainacan-form sub-header">
-                        <h3>{{ $i18n.get('filters') }}</h3>
+                        <h2>{{ $i18n.get('filters') }}</h2>
 
                         <template v-if="activeFiltersList && activeFiltersList.length > 5 && !isLoadingFilters">
                                 
@@ -232,7 +232,7 @@
                         v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || !isRepositoryLevel)"
                         class="column available-metadata-area is-12-touch">
                     <div class="tainacan-form sub-header">
-                        <h3>{{ $i18n.get('label_available_metadata') }}</h3>
+                        <h2>{{ $i18n.get('label_available_metadata') }}</h2>
 
                         <template v-if="availableMetadata && availableMetadata.length > 5 && !isLoadingMetadatumTypes">
                                 
@@ -953,6 +953,7 @@ export default {
                     margin-right: 0;
                 }
             }
+            h2,
             h3 {
                 font-weight: 500;
             }
@@ -969,6 +970,7 @@ export default {
                 margin-bottom: 0px;
             }
 
+            h2,
             h3 {
                 margin-right: auto;
             }
@@ -1184,6 +1186,8 @@ export default {
             @media screen and (max-width: 1023px) {
                 max-width: 100%;
                 padding: 10px;
+
+                h2,
                 h3 {
                     margin: 1em 0em 1em 0em !important;
                 }
@@ -1193,6 +1197,7 @@ export default {
                 }
             }
 
+            h2,
             h3 {
                 margin: 0.875em 0em 1em 0em;
                 font-weight: 500;

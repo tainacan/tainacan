@@ -234,7 +234,21 @@ RouterHelperPlugin.install = function (app, options = {}) {
             return '/collections/?' + qs.stringify(query);
         },
         getCollectionItemsPath(collectionId, query) {
+            if ( 
+                app.config.globalProperties.$adminOptions && 
+                app.config.globalProperties.$adminOptions.hideNavigationCollectionItemsButton && 
+                !app.config.globalProperties.$adminOptions.hideNavigationCollectionMyItemsButton &&
+                tainacan_user.data &&
+                tainacan_user.data.ID 
+            )
+                return this.getCollectionMyItemsPath(collectionId, query);
             return '/collections/'+ collectionId + '/items/?' + qs.stringify(query);
+        },
+        getCollectionMyItemsPath(collectionId, query) {
+            if (query.authorid == undefined || query.authorid == '' || query.authorid == null)
+                query.authorid = tainacan_user.data.ID;
+
+            return '/collections/'+ collectionId + '/my-items/?' + qs.stringify(query);
         },
         getCollectionSequenceEditPath(collectionId, sequenceId, itemPosition) {
             return '/collections/'+ collectionId + '/sequence/' + sequenceId + '/' + itemPosition;
@@ -252,7 +266,22 @@ RouterHelperPlugin.install = function (app, options = {}) {
             return '/collections/'+ collectionId + '/capabilities/';
         },
         getItemsPath(query) {
+            if ( 
+                app.config.globalProperties.$adminOptions && 
+                app.config.globalProperties.$adminOptions.hideNavigationCollectionItemsButton && 
+                !app.config.globalProperties.$adminOptions.hideNavigationCollectionMyItemsButton &&
+                tainacan_user.data &&
+                tainacan_user.data.ID
+            )
+                return this.getMyItemsPath(query);
+
             return '/items/?' + qs.stringify(query);
+        },
+        getMyItemsPath(query) {
+            if (query.authorid == undefined || query.authorid == '' || query.authorid == null)
+                query.authorid = tainacan_user.data.ID;
+
+            return '/my-items/?' + qs.stringify(query);
         },
         getTaxonomiesPath() {
             return '/taxonomies/'
@@ -280,7 +309,19 @@ RouterHelperPlugin.install = function (app, options = {}) {
         },
         // Singles
         getCollectionPath(id) {
+            if ( 
+                app.config.globalProperties.$adminOptions && 
+                app.config.globalProperties.$adminOptions.hideNavigationCollectionItemsButton && 
+                !app.config.globalProperties.$adminOptions.hideNavigationCollectionMyItemsButton &&
+                tainacan_user.data &&
+                tainacan_user.data.ID
+            )
+                return this.getMyCollectionPath(id);
+
             return '/collections/' + id;
+        },
+        getMyCollectionPath(id) {
+            return '/collections/' + id + '/my-items?authorid=' + tainacan_user.data.ID;
         },
         getItemPath(collectionId, itemId) {
             return '/collections/' + collectionId + '/items/' + itemId;
@@ -569,10 +610,12 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
         app.config.globalProperties.$adminOptions = objectOptions;
 
         if (
+            app.config.globalProperties.$adminOptions['itemCreationMode'] ||
+            app.config.globalProperties.$adminOptions['itemEditionMode'] ||
             app.config.globalProperties.$adminOptions['itemsMultipleSelectionMode'] ||
             app.config.globalProperties.$adminOptions['itemsSingleSelectionMode'] ||
             app.config.globalProperties.$adminOptions['itemsSearchSelectionMode'] ||
-            app.config.globalProperties.$adminOptions['itemEditionMode']
+            app.config.globalProperties.$adminOptions['mobileAppMode']
         ) {
             app.config.globalProperties.$router.removeRoute('CollectionsPage');
             app.config.globalProperties.$router.removeRoute('CollectionCreationForm');
@@ -582,6 +625,7 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
             app.config.globalProperties.$router.removeRoute('CollectionFiltersPage');
             app.config.globalProperties.$router.removeRoute('CollectionActivitiesPage');
             app.config.globalProperties.$router.removeRoute('CollectionCapabilitiesPage');
+            app.config.globalProperties.$router.removeRoute('CollectionReportsPage');
             app.config.globalProperties.$router.removeRoute('MappedCollectionCreationForm');
             app.config.globalProperties.$router.removeRoute('FiltersPage');
             app.config.globalProperties.$router.removeRoute('MetadataPage');
@@ -589,7 +633,9 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
             app.config.globalProperties.$router.removeRoute('TaxonomyCreationForm');
             app.config.globalProperties.$router.removeRoute('TaxonomyEditionForm');
             app.config.globalProperties.$router.removeRoute('ActivitiesPage');
+            app.config.globalProperties.$router.removeRoute('ProcessesPage');
             app.config.globalProperties.$router.removeRoute('CapabilitiesPage');
+            app.config.globalProperties.$router.removeRoute('ReportsPage');
             app.config.globalProperties.$router.removeRoute('AvailableImportersPage');
             app.config.globalProperties.$router.removeRoute('ImporterEditionForm');
             app.config.globalProperties.$router.removeRoute('ImporterCreationForm');
@@ -598,107 +644,17 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
             app.config.globalProperties.$router.removeRoute('ExporterEditionForm');
         }
 
+        if (
+            app.config.globalProperties.$adminOptions['itemsMultipleSelectionMode'] ||
+            app.config.globalProperties.$adminOptions['itemsSingleSelectionMode'] ||
+            app.config.globalProperties.$adminOptions['itemsSearchSelectionMode'] 
+        ) {
+            app.config.globalProperties.$router.removeRoute('ItemPage');
+            app.config.globalProperties.$router.removeRoute('ItemEditionForm');
+            app.config.globalProperties.$router.removeRoute('CollectionItemCreatePage');
+        }
+
     } catch(e) {
         app.config.globalProperties.$adminOptions = {};
     }
-
-    /*
-        Possible Values for Admin Options. Identation marks options that affects others:
-        * hideHomeRepositorySection
-            * hideHomeThemeCollectionsButton
-            * hideHomeThemeItemsButton
-            * hideHomeTaxonomiesButton
-            * hideHomeMetadataButton
-            * hideHomeFiltersButton
-            * hideHomeImportersButton
-            * hideHomeExportersButton
-            * hideHomeActivitiesButton
-        * hideHomeCollectionsSection
-            * hideHomeCollectionsButton
-            * hideHomeCollectionItemsButton
-            * hideHomeCollectionSettingsButton
-            * hideHomeCollectionMetadataButton
-            * hideHomeCollectionFiltersButton
-            * hideHomeCollectionActivitiesButton
-            * hideHomeCollectionThemeCollectionButton
-            * hideHomeCollectionCreateNewButton
-            * showHomeCollectionCreateItemButton // Default is false
-            * homeCollectionsPerPage // Default is 9
-            * homeCollectionsOrderBy // Default is 'modified'
-            * homeCollectionsOrder // Default is 'desc'
-        * hidePrimaryMenu
-            * hidePrimaryMenuCompressButton
-            * hidePrimaryMenuRepositoryButton
-            * hidePrimaryMenuCollectionsButton
-            * hidePrimaryMenuItemsButton
-            * hidePrimaryMenuTaxonomiesButton
-            * hidePrimaryMenuMetadataButton
-            * hidePrimaryMenuFiltersButton
-            * hidePrimaryMenuImportersButton
-            * hidePrimaryMenuExportersButton
-            * hidePrimaryMenuActivitiesButton
-            * hidePrimaryMenuCapabilitiesButton
-        * hideRepositorySubheader
-            * hideRepositorySubheaderViewCollectionButton
-            * hideRepositorySubheaderViewCollectionsButton
-            * hideRepositorySubheaderExportButton
-        * hideCollectionSubheader
-        
-        * hideCollectionsListCreationDropdown 
-
-        * hideItemsListPageTitle
-        * hideItemsListMultipleSelection
-        * hideItemsListSelection
-        * hideItemsListBulkActionsButton
-        * hideItemsListCreationDropdown
-            * hideItemsListCreationDropdownBulkAdd
-            * hideItemsListCreationDropdownImport
-        * hideItemsListAdvancedSearch
-        * hideItemsListExposersButton
-        * hideItemsListStatusTabs
-            * hideItemsListStatusTabsTotalItems
-        * hideItemsListContextMenu
-            * hideItemsListContextMenuOpenItemOption
-            * hideItemsListContextMenuOpenItemOnNewTabOption
-            * hideItemsListContextMenuEditItemOption
-            * hideItemsListContextMenuCopyItemOption
-            * hideItemsListContextMenuDeleteItemOption
-        * hideItemsListActionAreas
-        * hideItemsListFilterCreationButton
-
-        * hideItemEditionPageTitle
-        * hideItemEditionCollectionName
-        * hideItemEditionPublicationSection
-            * hideItemEditionStatusOptions // Deprecated in Version 0.21.10 due to new status system.
-            * hideItemEditionStatusPublishOption
-            * hideItemEditionCommentsToggle
-        * hideItemEditionDocument
-            * hideItemEditionDocumentFileInput
-            * hideItemEditionDocumentTextInput
-            * hideItemEditionDocumentUrlInput
-        * hideItemEditionThumbnail
-        * hideItemEditionAttachments
-        * hideItemEditionCollapses
-        * hideItemEditionFocusMode
-        * hideItemEditionRequiredOnlySwitch
-        * hideItemEditionMetadataTypes
-        * allowItemEditionModalInsideModal // Not recommended!
-        * itemEditionStatusOptionOnFooterDropdown
-        * itemEditionPublicationSectionInsideTabs
-        * itemEditionDocumentInsideTabs
-        * itemEditionAttachmentsInsideTabs
-        
-        * hideBulkEditionPageTitle
-        
-        * hideItemSinglePageTitle
-        * hideItemSingleCollectionName
-        * hideItemSingleCurrentStatus
-        * hideItemSingleCurrentVisibility
-        * hideItemSingleCommentsOpen
-        * hideItemSingleDocument
-        * hideItemSingleThumbnail
-        * hideItemSingleAttachments
-        * hideItemSingleActivities
-        * hideItemSingleExposers
-    */
 };

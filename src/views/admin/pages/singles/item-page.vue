@@ -19,7 +19,7 @@
                     {{ (item != null && item != undefined) ? item.title : '' }}
                 </span>
                 <span
-                        v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
+                        v-if="(item != null && item != undefined && item.status != undefined && !isLoading) && !$adminOptions.hideItemSingleCurrentStatus"
                         class="status-tag">
                     {{ $i18n.get('status_' + item.status) }}
                 </span>
@@ -239,7 +239,9 @@
                             </div>
 
                             <!-- Item Status -->
-                            <div class="section-status">
+                            <div 
+                                    v-if="!$adminOptions.hideItemSingleCurrentStatus"
+                                    class="section-status">
                                 <div class="field is-horizontal has-addons">
                                     <div class="field-label">
                                         <label class="label">{{ $i18n.get('label_status') }}</label>

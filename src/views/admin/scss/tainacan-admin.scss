@@ -91,8 +91,14 @@ a:hover {
     overflow-y: auto;
     overflow-x: hidden;
 
-    &>p {
+    & > h2,
+    & > h3,
+    & > h4 {
+        margin: 0.75rem 0 1.125rem;
+    }
+    & > p {
         font-size: 0.8125em;
+        margin: 0.75rem 0 1.125rem;
     }
 }
 html.is-clipped .page-container:not(.is-filters-menu-open) {
@@ -302,7 +308,7 @@ audio, video {
         p {
             line-height: normal;
         }
-        
+
         &:hover {
             cursor: pointer;
             background-color: var(--tainacan-item-hover-background-color);

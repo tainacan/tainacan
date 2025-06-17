@@ -1,5 +1,5 @@
 <template>
-    <div v-if="!$adminOptions.hideItemEditionDocument && ( !$adminOptions.hideItemEditionDocumentFileInput && !$adminOptions.hideItemEditionDocumentTextInput && !$adminOptions.hideItemEditionDocumentUrlInput )">
+    <div v-if="!$adminOptions.hideItemEditionDocument && ( !$adminOptions.hideItemEditionDocumentFileInput || !$adminOptions.hideItemEditionDocumentTextInput || !$adminOptions.hideItemEditionDocumentUrlInput )">
         <div class="section-label">
             <label>
                 <span class="icon has-text-gray4">

@@ -2,12 +2,12 @@
     <div
             :class="{ 'tainacan-repository-level-colors page-container': isRepositoryLevel }"
             style="padding-bottom: 0;">
+            
         <tainacan-title :is-sticky="true" />
         
-        <template v-if="isRepositoryLevel">
-            <p>{{ $i18n.get('info_repository_metadata_inheritance') }}</p>
-            <br>
-        </template>
+        <p v-if="isRepositoryLevel">
+            {{ $i18n.get('info_repository_metadata_inheritance') }}
+        </p>
         
         <div class="metadata-list-page">
             <b-tabs 

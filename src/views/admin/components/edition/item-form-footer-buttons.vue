@@ -136,21 +136,7 @@
                         </small>
                     </b-dropdown-item>
                     <b-dropdown-item
-                            v-if="!$adminOptions.hideItemEditionStatusPendingOption"
-                            :class="{ 'is-forced-last-option': status == 'pending' }"
-                            aria-role="listitem"
-                            @click="$emit(
-                                'on-submit',
-                                'pending',
-                                ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
-                            )">
-                        <span class="icon has-text-gray4">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting" />
-                        </span>
-                        {{ status == 'pending' ? $i18n.get('label_update_pending') : $i18n.get('label_send_to_review') }}
-                    </b-dropdown-item>
-                    <b-dropdown-item
-                            v-if="currentUserCanPublish"
+                            v-if="currentUserCanPublish && !$adminOptions.hideItemEditionStatusPrivateOption"
                             :class="{ 'is-forced-last-option': status == 'private' }"
                             aria-role="listitem"
                             @click="$emit(

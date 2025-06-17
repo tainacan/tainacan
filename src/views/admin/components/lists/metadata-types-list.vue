@@ -6,9 +6,9 @@
         <b-loading v-model="isLoadingMetadataTypes" />
 
         <div class="field">
-            <h3 class="label">
+            <h2 class="label">
                 {{ $i18n.get('label_available_metadata_types') }}
-            </h3>
+            </h2>
             <sortable 
                     :list="availableMetadataTypes"
                     item-key="component"
@@ -228,6 +228,8 @@ export default {
         @media screen and (max-width: 1023px) {
             max-width: 100%;
             padding: 10px;
+
+            h2,
             h3 {
                 margin: 1em 0em 1em 0em !important;
             }
@@ -239,6 +241,7 @@ export default {
             }
         }
 
+        h2,
         h3 {
             margin: 0.875em 0em 1em 0em;
         }

@@ -2,7 +2,7 @@
     <div class="tainacan-repository-level-colors page-container">
         <tainacan-title :is-sticky="true" />
 
-        <h3>{{ $i18n.get('label_available_exporters') }}</h3>
+        <h2>{{ $i18n.get('label_available_exporters') }}</h2>
         <p>{{ $i18n.get('instruction_select_an_exporter_type') }}</p>
         <div
                 role="list"

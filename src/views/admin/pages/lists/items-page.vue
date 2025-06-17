@@ -208,7 +208,9 @@
             </div>
 
             <!-- Displayed Metadata Dropdown -->
-            <div class="search-control-item">
+            <div 
+                    v-if="!$adminOptions.hideDisplayedMetadataDropdown"
+                    class="search-control-item">
                 <b-dropdown
                         ref="displayedMetadataDropdown" 
                         v-tooltip="{
@@ -747,6 +749,8 @@
                 <div ref="items-pagination">
                     <items-pagination
                             v-if="totalItems > 0"
+                            :hide-items-per-page-button="$adminOptions.hideItemsListItemsPerPageButton"
+                            :hide-go-to-page-button="$adminOptions.hideItemsListGoToPageButton"
                             :is-sorting-by-custom-metadata="isSortingByCustomMetadata" />
                 </div>
             </div>

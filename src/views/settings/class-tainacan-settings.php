@@ -16,24 +16,27 @@ class Settings extends Pages {
 
 	public function add_admin_menu() {
 		
-		add_submenu_page(
-			$this->tainacan_root_menu_slug,
-			__('Other', 'tainacan'),
-			'<span class="icon">' . $this->get_svg_icon( 'viewminiature' ) . '</span><span class="menu-text">' .__( 'Other', 'tainacan' ) . '</span>',
-			'read',
-			$this->tainacan_other_links_slug,
-			'#'
-		);
+		if ( !$this->has_admin_ui_option('hideNavigationOtherMenu') )
+			add_submenu_page(
+				$this->tainacan_root_menu_slug,
+				__('Other', 'tainacan'),
+				'<span class="icon">' . $this->get_svg_icon( 'viewminiature' ) . '</span><span class="menu-text">' .__( 'Other', 'tainacan' ) . '</span>',
+				'read',
+				$this->tainacan_other_links_slug,
+				'#'
+			);
 
-		$tainacan_page_suffix = add_submenu_page(
-			$this->tainacan_other_links_slug,
-			__('Settings', 'tainacan'),
-			'<span class="icon">' . $this->get_svg_icon( 'settings' ) . '</span><span class="menu-text">' .__( 'Settings', 'tainacan' ) . '</span>',
-			'manage_options',
-			$this->get_page_slug(),
-			array( &$this, 'render_page' )
-		);
-		add_action( 'load-' . $tainacan_page_suffix, array( &$this, 'load_page' ) );
+		if ( !$this->has_admin_ui_option('hideNavigationSettingsButton') ) { 
+			$tainacan_page_suffix = add_submenu_page(
+				!$this->has_admin_ui_option('hideNavigationOtherMenu') ? $this->tainacan_other_links_slug : $this->tainacan_root_menu_slug,
+				__('Settings', 'tainacan'),
+				'<span class="icon">' . $this->get_svg_icon( 'settings' ) . '</span><span class="menu-text">' .__( 'Settings', 'tainacan' ) . '</span>',
+				'manage_options',
+				$this->get_page_slug(),
+				array( &$this, 'render_page' )
+			);
+			add_action( 'load-' . $tainacan_page_suffix, array( &$this, 'load_page' ) );
+		}
 	}
 
 	function admin_enqueue_css() {

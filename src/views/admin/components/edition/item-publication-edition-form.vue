@@ -387,7 +387,7 @@ export default {
                             if ( status.slug == 'publish' && ( this.$adminOptions.hideItemEditionStatusPublishOption || !this.currentUserCanPublish ) )
                                 return false;
 
-                            if ( status.slug == 'private' && !this.currentUserCanPublish )
+                            if ( status.slug == 'private' && ( !this.$adminOptions.hideItemEditionStatusPrivateOption || !this.currentUserCanPublish ) )
                                 return false;
 
                             return true;
