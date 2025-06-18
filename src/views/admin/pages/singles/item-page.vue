@@ -20,7 +20,7 @@
                 </span>
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading) && !$adminOptions.hideItemSingleCurrentStatus"
-                        class="status-tag">
+                        class="status-tag is-hidden-mobile">
                     {{ $i18n.get('status_' + item.status) }}
                 </span>
             </h1>
@@ -1196,7 +1196,7 @@
             }
         }
     }
-    @media screen and (max-width: 769px) {
+    @media screen and (max-width: 768px) {
         .tainacan-form {
             padding-bottom: 6rem;
         }

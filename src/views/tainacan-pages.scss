@@ -60,13 +60,6 @@ html {
         z-index: 0;
     }
 
-    @media screen and (max-width: 768px) {
-        .tainacan-pages-container #screen-meta-links:has(+#tainacan-page-container > #tainacan-navigation-menu.is-active) {
-            display: none;
-            visibility: hidden;
-        }
-    }
-
     // Necessary as the '.button' class is overriden by bulma styles in some pages.
     .button {
         height: auto !important;
@@ -93,7 +86,15 @@ html {
         border-bottom-right-radius: 0px !important;
     }
 }
+@media screen and (max-width: 768px) {
+    .tainacan-pages-container #screen-meta-links:has(+#tainacan-page-container > #tainacan-navigation-menu.is-active),
+    .tainacan-pages-container:not(.toplevel_page_tainacan_dashboard) #screen-meta-links {
+        display: none;
+        visibility: hidden;
+    }
+}
 .tainacan-pages-container #screen-meta {
+    margin-right: 0;
 
     @media screen and (min-width: 769px) {
         left: 0;//calc(var(--tainacan-admin-navigation-sidebar-width, 14rem) + var(--tainacan-page-container--inner-padding-x, 1rem));
@@ -255,6 +256,7 @@ html {
         }
         @media screen and (max-width: 768px) {
             --tainacan-page-container--inner-padding-x: 0rem;
+            --tainacan-page-container--inner-padding-y: 0px;
         }
 
         &:only-child {
@@ -835,11 +837,19 @@ html {
         & {
             grid-template-columns: 1fr; /* Oculta sidebar */
             --tainacan-breadcumbs-list-height: 0px; /* Oculta breadcrumbs */
+            --tainacan-page-container-margin-top: 0px;
+            --tainacan-page-container-border-radius: 0px;
+            --tainacan-page-container-box-shadow: none;
+            --tainacan-admin-background-color: var(--tainacan-background-color);
+            --tainacan-admin-background-image: none;
         }
         #tainacan-menu-toggler {
             display: block;
             visibility: visible;
             left: 0;
+            top: 0px;
+            margin-top: 0px;
+            border-top-right-radius: 0px;
             transition: left 0.2s ease-in-out;
         }
         #tainacan-menu-collapser,

@@ -515,12 +515,6 @@ html {
 .tainacan-pages-container #screen-meta-links:has(+ #tainacan-page-container > #tainacan-navigation-menu.is-active) {
   z-index: 0;
 }
-@media screen and (max-width: 768px) {
-  .tainacan-pages-container #screen-meta-links .tainacan-pages-container #screen-meta-links:has(+ #tainacan-page-container > #tainacan-navigation-menu.is-active) {
-    display: none;
-    visibility: hidden;
-  }
-}
 .tainacan-pages-container #screen-meta-links .button {
   height: auto !important;
   margin-bottom: 0 !important;
@@ -543,6 +537,16 @@ html {
   border-bottom-right-radius: 0px !important;
 }
 
+@media screen and (max-width: 768px) {
+  .tainacan-pages-container #screen-meta-links:has(+ #tainacan-page-container > #tainacan-navigation-menu.is-active),
+  .tainacan-pages-container:not(.toplevel_page_tainacan_dashboard) #screen-meta-links {
+    display: none;
+    visibility: hidden;
+  }
+}
+.tainacan-pages-container #screen-meta {
+  margin-right: 0;
+}
 @media screen and (min-width: 769px) {
   .tainacan-pages-container #screen-meta {
     left: 0;
@@ -695,6 +699,7 @@ html {
 @media screen and (max-width: 768px) {
   #tainacan-page-container #tainacan-page-container--inner {
     --tainacan-page-container--inner-padding-x: 0rem;
+    --tainacan-page-container--inner-padding-y: 0px;
   }
 }
 #tainacan-page-container #tainacan-page-container--inner:only-child {
@@ -1204,11 +1209,19 @@ html {
   #tainacan-page-container {
     grid-template-columns: 1fr; /* Oculta sidebar */
     --tainacan-breadcumbs-list-height: 0px; /* Oculta breadcrumbs */
+    --tainacan-page-container-margin-top: 0px;
+    --tainacan-page-container-border-radius: 0px;
+    --tainacan-page-container-box-shadow: none;
+    --tainacan-admin-background-color: var(--tainacan-background-color);
+    --tainacan-admin-background-image: none;
   }
   #tainacan-page-container #tainacan-menu-toggler {
     display: block;
     visibility: visible;
     left: 0;
+    top: 0px;
+    margin-top: 0px;
+    border-top-right-radius: 0px;
     transition: left 0.2s ease-in-out;
   }
   #tainacan-page-container #tainacan-menu-collapser,

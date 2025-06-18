@@ -97,6 +97,16 @@ export default {
                 transition: background 0.2s ease;
             }
         }
+      
+        @media screen and (max-width: 769px) {
+            top: 206px;
+            margin-bottom: 0px !important;
+
+            :deep(h1),
+            :deep(h2) {
+                padding: 0 1.5rem;
+            }
+        }
 
         :deep(h1),
         :deep(h2) {
@@ -107,27 +117,6 @@ export default {
             display: inline-block;
             width: auto;
             flex-shrink: 1;
-        }
-      
-        .level-left {
-            .level-item {
-                display: inline-block;
-                margin-left: 268px;
-            }  
-        }
-        @media screen and (max-width: 769px) {
-            .level-left {
-                margin-left: 0px !important;
-                .level-item {
-                    margin-left: 30px;
-                }
-            }
-            .level-right {
-                display: none;
-            }
-
-            top: 206px;
-            margin-bottom: 0px !important;
         }
     }
 

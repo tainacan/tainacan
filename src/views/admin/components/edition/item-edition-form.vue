@@ -18,7 +18,7 @@
                 <span style="font-weight: 600;">{{ collection && collection.name ? collection.name : '' }}</span>
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
-                        class="status-tag"
+                        class="status-tag is-hidden-mobile"
                         @mouseenter="$emit('toggleItemEditionFooterDropdown')">
                     {{ $i18n.get('status_' + item.status) }}
                 </span>
@@ -30,7 +30,7 @@
                 </span>
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
-                        class="status-tag"
+                        class="status-tag is-hidden-mobile"
                         @mouseenter="$emit('toggleItemEditionFooterDropdown')">
                     {{ $i18n.get('status_' + item.status) }}
                 </span>
@@ -2558,13 +2558,21 @@ export default {
                 bottom: -300px;
             }
         }
-         @media screen and (max-width: 769px) {
+         @media screen and (max-width: 768px) {
             .tainacan-form {
                 padding-bottom: 3rem;
             }
-            .update-info-section {
-                margin-left: auto;margin-bottom: 0.75em;
-                margin-top: -0.25em;
+            .footer {
+                padding: 13px 0.5em;
+                margin-left: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
+                width: 100%;
+                flex-wrap: wrap;
+                height: auto;
+                position: fixed;
+                .update-info-section {
+                    margin-left: auto;margin-bottom: 0.75em;
+                    margin-top: -0.25em;
+                }
             }
         }
 

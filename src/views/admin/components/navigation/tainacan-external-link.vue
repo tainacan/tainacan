@@ -23,7 +23,7 @@ export default {
 
 <style lang="scss" scoped>
     .tainacan-external-link {
-        border-radius: 0 var(--tainacan-page-container-border-radius, 12px) 0 var(--tainacan-page-container-border-radius, 12px) !important;
+        border-radius: 0 var(--tainacan-page-container-border-radius, 12px) 0 var(--tainacan-admin-button-border-radius, 8px) !important;
         position: fixed;
         right: var(--tainacan-page-container--inner-padding-x, 1rem);
         top: var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem);

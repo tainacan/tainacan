@@ -2042,11 +2042,11 @@ export default {
 
     .footer {
         padding: 10px var(--tainacan-one-column);
-        position: sticky;
+        position: absolute;
         bottom: 0;
         z-index: 9999;
         background-color: var(--tainacan-gray1);
-        width: calc(100% + (2 * var(--tainacan-one-column)));
+        width: 100%;
         margin-left: calc(-1 * var(--tainacan-one-column));
         height: 3.5rem;
         display: flex;
