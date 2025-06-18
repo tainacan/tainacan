@@ -17,7 +17,7 @@ export default function getCollectionIdFromPossibleTemplateEdition() {
 
         // Extracts collectionId from a string like theme-slug//single-tnc_col_123_item
         let postId = queryParams.get('postId');
-        console.log('Template mode: ' + postId)
+        
         if (typeof postId == 'string') {
             postId = postId.split('single-tnc_col_');
             
