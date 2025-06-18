@@ -81,8 +81,9 @@ class Term_Exporter extends Exporter {
         ob_start();
         ?>
         <div class="field">
-            <label class="label"><?php _e('CSV Delimiter', 'tainacan'); ?></label>
-            <span class="help-wrapper">
+            <label class="label" style="position: relative">
+                <?php _e('CSV Delimiter', 'tainacan'); ?>
+                <span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
 							<i class="tainacan-icon tainacan-icon-help" ></i>
@@ -97,14 +98,16 @@ class Term_Exporter extends Exporter {
 						</div>
 					</div>
 				</span>
+            </label>
             <div class="control is-clearfix">
                 <input class="input" type="text" name="delimiter" value="<?php echo esc_attr($this->get_option('delimiter')); ?>">
             </div>
         </div>
 
         <div class="field export_term_csv_taxonomies">
-            <label class="label"><?php _e('Source Taxonomy:', 'tainacan'); ?></label>
-            <span class="help-wrapper">
+            <label class="label" style="position: relative">
+                <?php _e('Source Taxonomy:', 'tainacan'); ?>
+                <span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
 							<i class="tainacan-icon tainacan-icon-help" ></i>
@@ -119,6 +122,7 @@ class Term_Exporter extends Exporter {
 						</div>
 					</div>
 				</span>
+            </label>
             <div class="control is-clearfix">
                 <div class="select">
                     <select name="select_taxonomy" class="select_taxonomy">

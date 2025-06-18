@@ -332,8 +332,9 @@ class CSV extends Exporter {
 		ob_start();
 		?>
 		<div class="field">
-			<label class="label"><?php _e('CSV Delimiter', 'tainacan'); ?></label>
-			<span class="help-wrapper">
+			<label class="label" style="position: relative">
+				<?php _e('CSV Delimiter', 'tainacan'); ?>
+				<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
 							 <i class="tainacan-icon tainacan-icon-help" ></i>
@@ -347,15 +348,17 @@ class CSV extends Exporter {
 							<p><?php _e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
 						</div>
 					</div>
-			</span>
+				</span>
+			</label>
 			<div class="control is-clearfix">
 				<input class="input" type="text" name="delimiter" maxlength="1" value="<?php echo esc_attr($this->get_option('delimiter')); ?>">
 			</div>
 		</div>
 
 		<div class="field">
-			<label class="label"><?php _e('Multivalued metadata delimiter', 'tainacan'); ?></label>
-			<span class="help-wrapper">
+			<label class="label" style="position: relative">
+				<?php _e('Multivalued metadata delimiter', 'tainacan'); ?>
+				<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
 							 <i class="tainacan-icon tainacan-icon-help" ></i>
@@ -369,15 +372,18 @@ class CSV extends Exporter {
 							<p><?php _e('The character used to separate each value inside a cell with multiple values (e.g. ||). Note that the target metadatum must accept multiple values.', 'tainacan'); ?></p>
 						</div>
 					</div>
-			</span>
+				</span>
+			</label>
+				
 			<div class="control is-clearfix">
 				<input class="input" type="text" name="multivalued_delimiter" value="<?php echo esc_attr($this->get_option('multivalued_delimiter')); ?>">
 			</div>
 		</div>
 
 		<div class="field">
-			<label class="label"><?php _e('Enclosure', 'tainacan'); ?></label>
-			<span class="help-wrapper">
+			<label class="label" style="position: relative">
+				<?php _e('Enclosure', 'tainacan'); ?>
+				<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
 							 <i class="tainacan-icon tainacan-icon-help" ></i>
@@ -391,15 +397,17 @@ class CSV extends Exporter {
 							<p><?php _e('The character that wraps the content of each cell in your CSV. (e.g. ")', 'tainacan'); ?></p>
 						</div>
 					</div>
-			</span>
+				</span>
+			</label>	
 			<div class="control is-clearfix">
 				<input class="input" type="text" name="enclosure" value="<?php echo esc_attr($this->get_option('enclosure')); ?>">
 			</div>
 		</div>
 
 		<div class="field">
-			<label class="label"><?php _e('Include metadata section name', 'tainacan'); ?></label>
-			<span class="help-wrapper">
+			<label class="label" style="position: relative">
+				<?php _e('Include metadata section name', 'tainacan'); ?>
+				<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
 						<span class="icon is-small">
 							<i class="tainacan-icon tainacan-icon-help" ></i>
@@ -413,7 +421,8 @@ class CSV extends Exporter {
 							<p><?php _e('Include metadatum section name after the metadatum name. Metadata inside the default section are not modified', 'tainacan'); ?></p>
 						</div>
 					</div> 
-			</span>
+				</span>
+			</label>
 			<div class="control is-clearfix">
 				<label class="checkbox">
 					<input

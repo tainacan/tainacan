@@ -93,7 +93,7 @@
                     </b-field>
                 </div>
             </div>
-            <div class="columns">
+            <div class="columns is-mobile is-multiline">
                 <span class="help is-danger">{{ formErrorMessage }}</span>
 
                 <div class="column">
@@ -256,8 +256,8 @@
 
 <style scoped>
 
-    .tainacan-form>.columns {
-        padding: 0 var(--tainacan-one-column);
+    .tainacan-form >.columns {
+        padding: var(--tainacan-container-padding) var(--tainacan-one-column) 0 var(--tainacan-one-column);
     }
 
 </style>

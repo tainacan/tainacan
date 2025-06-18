@@ -92,7 +92,7 @@
                 <div 
                         v-if="importer.manual_collection"
                         style="margin-top: 2em;"
-                        class="column is-narrow">
+                        class="column is-narrow is-hidden-mobile">
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-pointer tainacan-icon-36px has-text-gray2" />
                     </span>
@@ -478,6 +478,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+    .tainacan-form >.columns {
+        padding-top: var(--tainacan-container-padding);
+    }
 
     .field {
         position: relative;

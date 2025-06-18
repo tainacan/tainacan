@@ -43,22 +43,24 @@ class Term_Importer extends Importer {
 			<div class="columns">
 				<div class="column">
 					<div class="field">
-						<label class="label"><?php _e('CSV Delimiter', 'tainacan'); ?></label>
-						<span class="help-wrapper">
-							<a class="help-button has-text-secondary">
-								<span class="icon is-small">
-									<i class="tainacan-icon tainacan-icon-help" ></i>
-								</span>
-							</a>
-							<div class="help-tooltip">
-								<div class="help-tooltip-header">
-									<h5><?php _e('CSV Delimiter', 'tainacan'); ?></h5>
+						<label class="label" style="position: relative">
+							<?php _e('CSV Delimiter', 'tainacan'); ?>
+							<span class="help-wrapper">
+								<a class="help-button has-text-secondary">
+									<span class="icon is-small">
+										<i class="tainacan-icon tainacan-icon-help" ></i>
+									</span>
+								</a>
+								<div class="help-tooltip">
+									<div class="help-tooltip-header">
+										<h5><?php _e('CSV Delimiter', 'tainacan'); ?></h5>
+									</div>
+									<div class="help-tooltip-body">
+										<p><?php _e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
+									</div>
 								</div>
-								<div class="help-tooltip-body">
-									<p><?php _e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
-								</div>
-							</div>
-						</span>
+							</span>
+						</label>
 						<div class="control is-clearfix">
 							<input class="input" type="text" name="delimiter" value="<?php echo esc_attr($this->get_option('delimiter')); ?>">
 						</div>
@@ -67,23 +69,25 @@ class Term_Importer extends Importer {
 
 				<div class="column">
 					<div class="field import_term_csv_taxonomies">
-						<label class="label"><?php _e('Target taxonomy:', 'tainacan'); ?></label>
-						<span class="help-wrapper">
-							<a class="help-button has-text-secondary">
-								<span class="icon is-small">
-									<i class="tainacan-icon tainacan-icon-help" ></i>
-								</span>
-							</a>
-							<div class="help-tooltip">
-								<div class="help-tooltip-header">
-									<h5><?php _e('Existing Taxonomy', 'tainacan'); ?></h5>
+						<label class="label" style="position: relative">
+							<?php _e('Target taxonomy:', 'tainacan'); ?>
+							<span class="help-wrapper">
+								<a class="help-button has-text-secondary">
+									<span class="icon is-small">
+										<i class="tainacan-icon tainacan-icon-help" ></i>
+									</span>
+								</a>
+								<div class="help-tooltip">
+									<div class="help-tooltip-header">
+										<h5><?php _e('Existing Taxonomy', 'tainacan'); ?></h5>
+									</div>
+									<div class="help-tooltip-body">
+										<p><?php _e('Specify the taxonomy you want to import the terms to.', 'tainacan'); ?></p>
+										<p><?php _e('Select an existing taxonomy or create a new one on the fly.', 'tainacan'); ?></p>
+									</div>
 								</div>
-								<div class="help-tooltip-body">
-									<p><?php _e('Specify the taxonomy you want to import the terms to.', 'tainacan'); ?></p>
-									<p><?php _e('Select an existing taxonomy or create a new one on the fly.', 'tainacan'); ?></p>
-								</div>
-							</div>
-						</span>
+							</span>
+						</label>
 						<div class="control is-clearfix">
 							<div class="select is-fullwidth">
 								<select name="select_taxonomy" class="select_taxonomy">

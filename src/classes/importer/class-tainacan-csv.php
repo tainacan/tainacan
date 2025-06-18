@@ -336,10 +336,11 @@ class CSV extends Importer {
 		ob_start();
 		?>
 		<div class="columns is-multiline is-align-items-end">
-			<div class="column">
+			<div class="column is-6-tablet is-3-desktop">
 				<div class="field">
-					<label class="label"><?php _e('CSV Delimiter', 'tainacan'); ?></label>
-					<span class="help-wrapper">
+					<label class="label" style="position: relative">
+						<?php _e('CSV Delimiter', 'tainacan'); ?>
+						<span class="help-wrapper">
 							<a class="help-button has-text-secondary">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
@@ -353,16 +354,18 @@ class CSV extends Importer {
 									<p><?php _e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
 								</div>
 							</div>
-					</span>
+						</span>
+					</label>
 					<div class="control is-clearfix">
 						<input class="input" type="text" name="delimiter" value="<?php echo esc_attr($this->get_option('delimiter')); ?>">
 					</div>
 				</div>
 			</div>
-			<div class="column">
+			<div class="column is-6-tablet is-3-desktop">
 				<div class="field">
-					<label class="label"><?php _e('Multivalued metadata delimiter', 'tainacan'); ?></label>
-					<span class="help-wrapper">
+					<label class="label" style="position: relative">
+						<?php _e('Multivalued metadata delimiter', 'tainacan'); ?>
+						<span class="help-wrapper">
 							<a class="help-button has-text-secondary">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
@@ -376,16 +379,18 @@ class CSV extends Importer {
 									<p><?php _e('The character used to separate each value inside a cell with multiple values (e.g. ||). Note that the target metadatum must accept multiple values.', 'tainacan'); ?></p>
 								</div>
 							</div>
-					</span>
+						</span>
+					</label>	
 					<div class="control is-clearfix">
 						<input class="input" type="text" name="multivalued_delimiter" value="<?php echo esc_attr($this->get_option('multivalued_delimiter')); ?>">
 					</div>
 				</div>
 			</div>
-			<div class="column">
+			<div class="column is-6-tablet is-3-desktop">
 				<div class="field">
-					<label class="label"><?php _e('Enclosure', 'tainacan'); ?></label>
-					<span class="help-wrapper">
+					<label class="label" style="position: relative">
+						<?php _e('Enclosure', 'tainacan'); ?>
+						<span class="help-wrapper">
 							<a class="help-button has-text-secondary">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
@@ -399,7 +404,8 @@ class CSV extends Importer {
 									<p><?php _e('The character that wraps the content of each cell in your CSV. (e.g. ")', 'tainacan'); ?></p>
 								</div>
 							</div>
-					</span>
+						</span>
+					</label>
 					<div class="control is-clearfix">
 						<input class="input" type="text" name="enclosure" value="<?php echo esc_attr($this->get_option('enclosure')); ?>">
 					</div>
@@ -407,9 +413,40 @@ class CSV extends Importer {
 			</div>
 
 			<div class="column">
+				<div class="field">
+					<label class="label" style="position: relative">
+						<?php _e('Empty value', 'tainacan'); ?>
+						<span class="help-wrapper">
+							<a class="help-button has-text-secondary">
+								<span class="icon is-small">
+									<i class="tainacan-icon tainacan-icon-help" ></i>
+								</span>
+							</a>
+							<div class="help-tooltip">
+								<div class="help-tooltip-header">
+									<h5><?php _e('Empty value', 'tainacan'); ?></h5>
+								</div>
+								<div class="help-tooltip-body">
+									<p><?php _e('The string representing a value not specified for the metadata. (e.g. \EMPTY)', 'tainacan'); ?></p>
+								</div>
+							</div>
+						</span>
+					</label>
+					<div class="control is-clearfix">
+						<input class="input" type="text" name="escape_empty_value" value="<?php echo esc_attr($this->get_option('escape_empty_value')); ?>">
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="columns">
+
+			<div class="column">
 				<div class="field is-expanded">
-					<label class="label"><?php _e('File Encoding', 'tainacan'); ?></label>
-					<span class="help-wrapper">
+					<label class="label" style="position: relative">
+						<?php _e('File Encoding', 'tainacan'); ?>
+						<span class="help-wrapper">
 							<a class="help-button has-text-secondary">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
@@ -423,7 +460,8 @@ class CSV extends Importer {
 									<p><?php _e('The encoding of the CSV file.', 'tainacan'); ?></p>
 								</div>
 							</div>
-					</span>
+						</span>
+					</label>
 					<div class="control is-clearfix">
 						<div class="select is-fullwidth">
 							<select name="encode">
@@ -436,37 +474,10 @@ class CSV extends Importer {
 			</div>
 
 			<div class="column">
-				<div class="field">
-					<label class="label"><?php _e('Empty value', 'tainacan'); ?></label>
-					<span class="help-wrapper">
-						<a class="help-button has-text-secondary">
-							<span class="icon is-small">
-								<i class="tainacan-icon tainacan-icon-help" ></i>
-							</span>
-						</a>
-						<div class="help-tooltip">
-							<div class="help-tooltip-header">
-								<h5><?php _e('Empty value', 'tainacan'); ?></h5>
-							</div>
-							<div class="help-tooltip-body">
-								<p><?php _e('The string representing a value not specified for the metadata. (e.g. \EMPTY)', 'tainacan'); ?></p>
-							</div>
-						</div>
-					</span>
-					<div class="control is-clearfix">
-						<input class="input" type="text" name="escape_empty_value" value="<?php echo esc_attr($this->get_option('escape_empty_value')); ?>">
-					</div>
-				</div>
-			</div>
-
-		</div>
-
-		<div class="columns">
-
-			<div class="column">
 				<div class="field is-expanded">
-					<label class="label"><?php _e('Repeated Item', 'tainacan'); ?></label>
-					<span class="help-wrapper">
+					<label class="label" style="position: relative">
+						<?php _e('Repeated Item', 'tainacan'); ?>
+						<span class="help-wrapper">
 							<a class="help-button has-text-secondary">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
@@ -480,7 +491,8 @@ class CSV extends Importer {
 									<p><?php _e('Choose the action when a repeated item is found', 'tainacan'); ?></p>
 								</div>
 							</div>
-					</span>
+						</span>
+					</label>
 					<div class="control is-clearfix">
 						<div class="select is-fullwidth">
 							<select name="repeated_item">
@@ -492,24 +504,26 @@ class CSV extends Importer {
 				</div>
 			</div>
 
-			<div class="column is-three-quarters">
+			<div class="column is-half">
 				<div class="field is-expanded">
-					<label class="label"><?php _e('Server path', 'tainacan'); ?></label>
-					<span class="help-wrapper">
-						<a class="help-button has-text-secondary">
-							<span class="icon is-small">
-								<i class="tainacan-icon tainacan-icon-help" ></i>
-							</span>
-						</a>
-						<div class="help-tooltip">
-							<div class="help-tooltip-header">
-								<h5><?php _e('Server path', 'tainacan'); ?></h5>
+					<label class="label" style="position: relative">
+						<?php _e('Server path', 'tainacan'); ?>
+						<span class="help-wrapper">
+							<a class="help-button has-text-secondary">
+								<span class="icon is-small">
+									<i class="tainacan-icon tainacan-icon-help" ></i>
+								</span>
+							</a>
+							<div class="help-tooltip">
+								<div class="help-tooltip-header">
+									<h5><?php _e('Server path', 'tainacan'); ?></h5>
+								</div>
+								<div class="help-tooltip-body">
+									<p><?php _e("When using CSV special field to add documents or attachments that you've uploaded to the server, specify the full path to the folder here (e.g. /home/user/files/)", 'tainacan'); ?></p>
+								</div>
 							</div>
-							<div class="help-tooltip-body">
-								<p><?php _e("When using CSV special field to add documents or attachments that you've uploaded to the server, specify the full path to the folder here (e.g. /home/user/files/)", 'tainacan'); ?></p>
-							</div>
-						</div>
-					</span>
+						</span>
+					</label>
 					<div class="control is-clearfix">
 						<input class="input" type="text" name="server_path" value="<?php echo esc_attr($this->get_option('server_path')); ?>">
 					</div>

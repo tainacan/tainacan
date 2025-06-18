@@ -838,8 +838,9 @@ class Oaipmh_Importer extends Importer {
 		<div class="columns">
 			<div class="column">
 				<div class="field">
-					<label class="label"><?php _e('Create set as', 'tainacan'); ?></label>
-					<span class="help-wrapper">
+					<label class="label" style="position: relative">
+						<?php _e('Create set as', 'tainacan'); ?>
+						<span class="help-wrapper">
 							<a class="help-button has-text-secondary">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
@@ -853,7 +854,8 @@ class Oaipmh_Importer extends Importer {
 									<p><?php _e('Choose the action to manipulate sets', 'tainacan'); ?></p>
 								</div>
 							</vdiv>
-					</span>
+						</span>
+					</label>
 					<div class="control is-clearfix">
 						<div class="select">
 							<select name="using_set">

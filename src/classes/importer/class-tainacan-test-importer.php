@@ -114,8 +114,9 @@ class Test_Importer extends Importer {
 
 			<div class="column is-half">
 				<div class="field">
-					<label class="label"><?php _e('Number of items in collection 1', 'tainacan'); ?></label>
-					<span class="help-wrapper">
+					<label class="label" style="position: relative">
+						<?php _e('Number of items in collection 1', 'tainacan'); ?>
+						<span class="help-wrapper">
 							<a class="help-button has-text-secondary">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
@@ -129,7 +130,8 @@ class Test_Importer extends Importer {
 									<p><?php _e('The total of items to created in first collection (e.g. 20)', 'tainacan'); ?></p>
 								</div>
 							</div> 
-					</span>
+						</span>
+					</label>
 					<div class="control is-clearfix">
 						<input class="input" type="number" name="items_col_1" value="<?php echo esc_attr($this->get_option('items_col_1')); ?>">
 					</div>
@@ -138,8 +140,9 @@ class Test_Importer extends Importer {
 
 			<div class="column is-half">
 				<div class="field">
-					<label class="label"><?php _e('Number of extra metadata to create in first collection', 'tainacan'); ?></label>
-					<span class="help-wrapper">
+					<label class="label" style="position: relative">
+						<?php _e('Number of extra metadata to create in first collection', 'tainacan'); ?>
+						<span class="help-wrapper">
 							<a class="help-button has-text-secondary">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
@@ -153,7 +156,8 @@ class Test_Importer extends Importer {
 									<p><?php _e('Create additional text metadata with random values  in first collection', 'tainacan'); ?></p>
 								</div>
 							</div> 
-					</span>
+						</span>
+					</label>
 					<div class="control is-clearfix">
 						<input class="input" type="number" name="additonal_metadata" value="<?php echo esc_attr($this->get_option('additonal_metadata')); ?>">
 					</div>
@@ -162,8 +166,9 @@ class Test_Importer extends Importer {
 			
 			<div class="column is-half">
 				<div class="field">
-					<label class="label"><?php _e('Create second collection with a relationship', 'tainacan'); ?></label>
-					<span class="help-wrapper">
+					<label class="label" style="position: relative">
+						<?php _e('Create second collection with a relationship', 'tainacan'); ?>
+						<span class="help-wrapper">
 							<a class="help-button has-text-secondary">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
@@ -177,7 +182,8 @@ class Test_Importer extends Importer {
 									<p><?php _e('Create second collection with a relationship with the first collection created', 'tainacan'); ?></p>
 								</div>
 							</div> 
-					</span>
+						</span>
+					</label>
 					<div class="control is-clearfix">
 						<label class="checkbox">
 							<input
@@ -193,8 +199,9 @@ class Test_Importer extends Importer {
 
 			<div class="column is-half">
 				<div class="field">
-					<label class="label"><?php _e('Number of items in collection 2', 'tainacan'); ?></label>
-					<span class="help-wrapper">
+					<label class="label" style="position: relative">
+						<?php _e('Number of items in collection 2', 'tainacan'); ?>
+						<span class="help-wrapper">
 							<a class="help-button has-text-secondary">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
@@ -208,7 +215,8 @@ class Test_Importer extends Importer {
 									<p><?php _e('The total of items to created in second collection (e.g. 20)', 'tainacan'); ?></p>
 								</div>
 							</div> 
-					</span>
+						</span>
+					</label>
 					<div class="control is-clearfix">
 						<input class="input" type="number" name="items_col_2" value="<?php echo esc_attr($this->get_option('items_col_2')); ?>">
 					</div>
@@ -226,8 +234,9 @@ class Test_Importer extends Importer {
 
 			<div class="column">
 				<div class="field">
-					<label class="label"><?php _e('Add random images from flickr', 'tainacan'); ?></label>
-					<span class="help-wrapper">
+					<label class="label" style="position: relative">
+						<?php _e('Add random images from flickr', 'tainacan'); ?>
+						<span class="help-wrapper">
 							<a class="help-button has-text-secondary">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
@@ -241,7 +250,8 @@ class Test_Importer extends Importer {
 									<p><?php _e('Add random images from flickr using [https://loremflickr.com/] in first collection', 'tainacan'); ?></p>
 								</div>
 							</div> 
-					</span>
+						</span>
+					</label>	
 					<div class="control is-clearfix">
 						<label class="checkbox">
 							<input
@@ -255,8 +265,9 @@ class Test_Importer extends Importer {
 				</div>
 
 				<div class="field">
-					<label class="label"><?php _e('Keyword Search', 'tainacan'); ?></label>
-					<span class="help-wrapper">
+					<label class="label" style="position: relative">
+						<?php _e('Keyword Search', 'tainacan'); ?>
+						<span class="help-wrapper">
 							<a class="help-button has-text-secondary">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
@@ -270,7 +281,8 @@ class Test_Importer extends Importer {
 									<p><?php _e('Optionally type one keyword which it will be used to find images in flickr (e.g. dogs, cat). Default is "kitten".', 'tainacan'); ?></p>
 								</div>
 							</div> 
-					</span>
+						</span>
+					</label>
 					<div class="control is-clearfix">
 						<input class="input" type="text" name="keyword_images" value="<?php echo esc_attr($this->get_option('keyword_images')); ?>">
 					</div>
@@ -279,8 +291,9 @@ class Test_Importer extends Importer {
 
 			<div class="column">
 				<div class="field">
-					<label class="label"><?php _e('Horizontal image size (0 for random)', 'tainacan'); ?></label>
-					<span class="help-wrapper">
+					<label class="label" style="position: relative">
+						<?php _e('Horizontal image size (0 for random)', 'tainacan'); ?>
+						<span class="help-wrapper">
 							<a class="help-button has-text-secondary">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
@@ -294,15 +307,17 @@ class Test_Importer extends Importer {
 									<p><?php _e('Horizontal image size in pixels ( 0 for random size )', 'tainacan'); ?></p>
 								</div>
 							</div> 
-					</span>
+						</span>
+					</label>
 					<div class="control is-clearfix">
 						<input class="input" type="number" name="horizontal_image_size" value="<?php echo esc_attr($this->get_option('horizontal_image_size')); ?>">
 					</div>
 				</div>
 
 				<div class="field">
-					<label class="label"><?php _e('Vertical image size (0 for random)', 'tainacan'); ?></label>
-					<span class="help-wrapper">
+					<label class="label" style="position: relative">
+						<?php _e('Vertical image size (0 for random)', 'tainacan'); ?>
+						<span class="help-wrapper">
 							<a class="help-button has-text-secondary">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
@@ -316,7 +331,8 @@ class Test_Importer extends Importer {
 									<p><?php _e('Vertical image size in pixels ( 0 for random size )', 'tainacan'); ?></p>
 								</div>
 							</div> 
-					</span>
+						</span>
+					</label>
 					<div class="control is-clearfix">
 						<input class="input" type="number" name="vertical_image_size" value="<?php echo esc_attr($this->get_option('vertical_image_size')); ?>">
 					</div>
