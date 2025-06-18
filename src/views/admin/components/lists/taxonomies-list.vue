@@ -45,7 +45,9 @@
         </div>
 
         <div class="table-wrapper">
-            <table class="tainacan-table is-narrow">
+            <table 
+                    id="taxonomies-list-results"
+                    class="tainacan-table is-narrow">
                 <thead>
                     <tr>
                         <!-- Checking list -->

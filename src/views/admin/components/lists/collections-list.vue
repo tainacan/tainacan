@@ -86,7 +86,9 @@
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
-            <table class="tainacan-table">
+            <table 
+                    id="collections-list-results"
+                    class="tainacan-table">
                 <thead>
                     <tr>
                         <!-- Checking list -->

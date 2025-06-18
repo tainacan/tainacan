@@ -49,73 +49,100 @@
             </b-field>
 
             <!-- Sorting options ----  -->
-            <b-field class="header-item">
-                <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
+            <b-field 
+                    id="taxonomies-page-sorting-options"
+                    class="header-item">
                 <b-dropdown
+                        ref="sortingDropdown" 
                         :mobile-modal="true"
-                        :disabled="taxonomies.length <= 0 || isLoading"
+                        :multiple="false"
+                        class="show sorting-options-dropdown"
                         aria-role="list"
                         trap-focus
-                        @update:model-value="onChangeOrder">
+                        position="is-bottom-left"
+                        :close-on-click="false"
+                        :disabled="taxonomies.length <= 0 || isLoading"
+                        @active-change="() => { newOrder = order; newOrderBy = orderBy; }">
                     <template #trigger>
                         <button
-                                :aria-label="$i18n.get('label_sorting_direction')"
+                                v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
+                                    content: $i18n.getWithVariables('info_sorting_%s_by_%s', [order == 'asc' ? $i18n.get('label_ascending') : $i18n.get('label_descending'), orderByName]),
+                                    autoHide: false,
+                                    html: true,
+                                    placement: 'auto-start',
+                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
+                                }"
+                                :aria-label="$i18n.get('label_sorting')"
                                 class="button is-white">
-                            <span 
-                                    style="margin-top: -2px;"
-                                    class="icon is-small gray-icon">
+                            <span class="is-small gray-icon">
                                 <i 
                                         :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
-                                        class="tainacan-icon tainacan-icon-1-125em" />
+                                        class="tainacan-icon" />
                             </span>
+                            &nbsp;
+                            <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_sorting') }}</span>
+                            <span class="is-hidden-widescreen">{{ $i18n.get('label_sort') }}</span>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
                     </template>
-                    <b-dropdown-item
-                            aria-controls="items-list-results"
-                            role="button"
-                            :class="{ 'is-active': order == 'desc' }"
-                            :value="'desc'"
-                            aria-role="listitem"
-                            style="padding-bottom: 0.45em">
-                        <span class="icon is-small gray-icon">
-                            <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortdescending" />
-                        </span>
-                        {{ $i18n.get('label_descending') }}
-                    </b-dropdown-item>
-                    <b-dropdown-item
-                            aria-controls="items-list-results"
-                            role="button"
-                            :class="{ 'is-active': order == 'asc' }"
-                            :value="'asc'"
-                            aria-role="listitem"
-                            style="padding-bottom: 0.45em">
-                        <span class="icon is-small gray-icon">
-                            <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortascending" />
-                        </span>
-                        {{ $i18n.get('label_ascending') }}
-                    </b-dropdown-item>
+                    <div class="sorting-options-container">
+                        <div class="sorting-options-container-direction">
+                            <b-dropdown-item
+                                    aria-controls="taxonomies-list-results"
+                                    role="button"
+                                    :class="{ 'is-active': newOrder == 'desc' }"
+                                    :value="'desc'"
+                                    aria-role="listitem"
+                                    @click="newOrder = 'desc'">
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-sortdescending" />
+                                </span>
+                                <span>{{ $i18n.get('label_descending') }}</span>
+                            </b-dropdown-item>
+                            <b-dropdown-item
+                                    aria-controls="taxonomies-list-results"
+                                    role="button"
+                                    :class="{ 'is-active': newOrder == 'asc' }"
+                                    :value="'asc'"
+                                    aria-role="listitem"
+                                    @click="newOrder = 'asc'">
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-sortascending" />
+                                </span>
+                                <span>{{ $i18n.get('label_ascending') }}</span>
+                            </b-dropdown-item>
+                        </div>
+                        <div class="sorting-options-container-orderby">
+                            <template 
+                                    v-for="option in sortingOptions"
+                                    :key="option.value">
+                                <b-dropdown-item
+                                        aria-controls="taxonomies-list-results"
+                                        role="button"
+                                        :class="{ 'is-active': newOrderBy == option.value }"
+                                        :value="option.value"
+                                        aria-role="listitem"
+                                        @click="newOrderBy = option.value">
+                                    {{ option.label }}
+                                </b-dropdown-item>
+                            </template>
+                        </div>
+                     </div>
+                    <div class="dropdown-item-apply">
+                        <button 
+                                aria-controls="items-list-results"
+                                class="button is-success"
+                                @click="onChangeOrderAndOrderBy(newOrder, newOrderBy)">
+                            {{ $i18n.get('label_apply_changes') }}
+                        </button>
+                    </div>  
                 </b-dropdown>
-                <span
-                        class="label"
-                        style="padding-left: 0.65em;">
-                    {{ $i18n.get('info_by_inner') }}
-                </span>
-                <b-select
-                        class="sorting-select"
-                        :disabled="taxonomies.length <= 0"
-                        :model-value="orderBy"
-                        :aria-label="$i18n.get('label_sorting')"
-                        @update:model-value="onChangeOrderBy($event)">
-                    <option
-                            v-for="(option, index) in sortingOptions"
-                            :key="index"
-                            :value="option.value">
-                        {{ option.label }}
-                    </option>
-                </b-select>
             </b-field>
 
         </div>
@@ -284,6 +311,8 @@
                 status: '',
                 order: 'asc',
                 orderBy: 'date',
+                newOrder: 'asc',
+                newOrderBy: 'date',
                 searchQuery: '',
                 sortingOptions: [
                     { label: this.$i18n.get('label_title'), value: 'title' },
@@ -300,7 +329,14 @@
             }),
             statusOptionsForTaxonomies() {
                 return this.$statusHelper.getStatuses().filter((status) => status.slug != 'draft' && (status.slug != 'private' || (status.slug == 'private' && this.$userCaps.hasCapability('tnc_rep_read_private_taxonomies'))));
-            }
+            },
+            orderByName() {
+                const selectedOrderOption = this.sortingOptions.find( aOption => aOption.value == this.orderBy);
+                if ( selectedOrderOption )
+                    return selectedOrderOption.label;
+
+                return this.orderBy;
+            },
         },
         created() {
             this.taxonomiesPerPage = this.$userPrefs.get('taxonomies_per_page');
@@ -341,30 +377,26 @@
                     this.load();
                 }
             },
-            onChangeOrder(newOrder) {
-                if ( newOrder != this.order ) { 
-                    this.$userPrefs.set('taxonomies_order', newOrder)
-                        .catch(() => {
-                            this.$console.log("Error settings user prefs for taxonomies order")
-                        });
-                    this.page =  1;
-                    this.order = newOrder;
-                    this.load();
-                }
-            },
-            onChangeOrderBy(newOrderBy) {
-                if ( newOrderBy != this.orderBy ) { 
-                    this.$userPrefs.set('taxonomies_order_by', newOrderBy)
-                        .then((newOrderBy) => {
-                            this.orderBy = newOrderBy;
-                        })
-                        .catch(() => {
-                            this.$console.log("Error settings user prefs for taxonomies orderby")
-                        });
-                    this.page = 1;
-                    this.orderBy = newOrderBy;
-                    this.load();
-                }
+            onChangeOrderAndOrderBy(newOrder, newOrderBy) {
+                this.$userPrefs.set('taxonomies_order', newOrder)
+                    .then((newOrder) => {
+                        this.order = newOrder;
+                    })
+                    .catch(() => {
+                        this.$console.log("Error settings user prefs for taxonomies order")
+                    });
+                this.$userPrefs.set('taxonomies_order_by', newOrderBy)
+                    .then((newOrderBy) => {
+                        this.orderBy = newOrderBy;
+                    })
+                    .catch(() => {
+                        this.$console.log("Error settings user prefs for taxonomies orderby")
+                    });
+                this.page = 1;
+                this.order = newOrder;
+                this.orderBy = newOrderBy;
+                this.$refs['sortingDropdown'].toggle();
+                this.load();
             },
             onChangePerPage(value) {
                 if ( value != this.taxonomiesPerPage ) { 
@@ -418,6 +450,7 @@
 <style lang="scss" scoped>
 
     .sub-header {
+        gap: 8px;
 
         .header-item {
             margin-bottom: 0 !important;
@@ -427,7 +460,7 @@
                 margin-right: auto;
             }
             &:not(:last-child) {
-                padding-right: 0.5em;
+                padding-right: 0.875em;
             }
 
             .label {
@@ -436,30 +469,19 @@
                 margin-top: 5px;
                 margin-bottom: 2px;
                 cursor: default;
-            }
-
-            &:not(:first-child) {
-                .button {
-                    display: flex;
-                    align-items: center;
-                    border-radius: 0 !important;
-                    height: 1.95em !important;
-                }
+                display: flex;
+                align-items: center;
             }
             
             .field {
                 align-items: center;
             }
 
-            .gray-icon, 
-            .gray-icon .icon {
-                color: var(--tainacan-info-color) !important;
-                padding-right: 10px;
-                height: 1.125em !important;
-            }
             .gray-icon .icon i::before, 
             .gray-icon i::before {
-                max-width: 1.25em;
+                font-size: 1.3125em !important;
+                color: var(--tainacan-info-color) !important;
+                max-width: 1.25em;   
             }
 
             .icon {
@@ -469,6 +491,57 @@
                 height: 27px;
                 font-size: 1.125em !important;
                 height: 1.75em;
+            }
+
+            .dropdown-menu {
+                display: block;
+
+                div.dropdown-content {
+                    padding: 0;
+
+                    .sorting-options-container,
+                    .metadata-options-container {
+                        max-height: 288px;
+                        overflow: auto;
+                    }
+                    .sorting-options-container-direction {
+                        position: sticky;
+                        top: 0;
+                        display: flex;
+                        background-color: var(--tainacan-background-color);
+                        border-bottom: 1px solid var(--tainacan-input-border-color);
+                        padding: 8px 12px;
+                        z-index: 1;
+
+                        & > .dropdown-item {
+                            border: 1px solid var(--tainacan-primary);
+
+                            &:first-child {
+                                border-top-left-radius: var(--tainacan-button-border-radius);
+                                border-bottom-left-radius: var(--tainacan-button-border-radius);
+                            }
+                            &:last-child {
+                                border-top-right-radius: var(--tainacan-button-border-radius);
+                                border-bottom-right-radius: var(--tainacan-button-border-radius);
+                            }
+                        }
+                    }
+                    .dropdown-item {
+                        padding: 0.25em 1.0em 0.25em 0.75em; 
+                    }
+                    .dropdown-item span{
+                        vertical-align: middle;
+                    }      
+                    .dropdown-item-apply {
+                        width: 100%;
+                        border-top: 1px solid var(--tainacan-skeleton-color);
+                        padding: 8px;
+                        text-align: right;
+                    }
+                    .dropdown-item-apply .button {
+                        width: 100%;
+                    }
+                }
             }
         }
 
