@@ -17334,7 +17334,7 @@ textarea.textarea[rows="7"],
   overflow: hidden;
   display: block;
 }
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 769px) {
   .datepicker .datepicker-header {
     margin-bottom: 0.5em;
     padding-top: 0.15em;
@@ -17448,7 +17448,7 @@ body.tainacan-admin-page > .control.autocomplete {
 .b-tabs .tabs a:hover:not([href]) {
   text-decoration: none;
 }
-@media screen and (max-width: 769px) {
+@media screen and (max-width: 768px) {
   .b-tabs .tab-content {
     padding-left: 0.5em;
     padding-right: 0.5em;
@@ -17458,7 +17458,7 @@ body.tainacan-admin-page > .control.autocomplete {
 .tainacan-modal.is-active {
   justify-content: center;
 }
-@media screen and (max-width: 769px) {
+@media screen and (max-width: 768px) {
   .tainacan-modal.is-active {
     justify-content: flex-end;
   }
@@ -17478,7 +17478,7 @@ body.tainacan-admin-page > .control.autocomplete {
   overflow: auto;
   border-radius: var(--tainacan-modal-border-radius, 8px);
 }
-@media screen and (max-width: 769px) {
+@media screen and (max-width: 768px) {
   .tainacan-modal .animation-content {
     max-height: 95%;
     max-height: 95vh;
@@ -17736,7 +17736,7 @@ body.tainacan-admin-page > .control.autocomplete {
 .media-modal .tainacan-item-attachments-modal .media-frame-menu-toggle {
   display: none !important;
 }
-@media screen and (max-width: 769px) {
+@media screen and (max-width: 768px) {
   .media-modal {
     left: 1.5em;
     right: 1.5em;

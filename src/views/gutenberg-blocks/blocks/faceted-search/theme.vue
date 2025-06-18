@@ -1972,7 +1972,7 @@
             margin-right: auto;
             padding-right: 10px;
 
-            @media screen and (max-width: 769px) {            
+            @media screen and (max-width: 768px) {            
                 margin-right: 0;
                 padding-right: 0;
 

@@ -511,7 +511,7 @@ export default {
             //     }
             // }
         }
-        @media screen and (max-width: 769px) {
+        @media screen and (max-width: 768px) {
             .tainacan-form {
                 padding-bottom: 6rem;
             }

@@ -763,7 +763,7 @@ export default {
             }
         }
 
-        @media screen and (max-width: 769px) {
+        @media screen and (max-width: 768px) {
             margin-top: -0.5em;
             padding-top: 0.9em;
 
@@ -783,7 +783,7 @@ export default {
         margin-top: 0;
         height: auto;
     }
-    @media screen and (max-width: 769px) {
+    @media screen and (max-width: 768px) {
         .table-container {
             padding-left: 0;
             padding-right: 0;

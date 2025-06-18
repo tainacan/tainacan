@@ -1404,7 +1404,7 @@ export default {
         padding-top: 24px;
         padding-bottom: 10px;
 
-        @media screen and (max-width: 769px) {
+        @media screen and (max-width: 768px) {
             max-width: 100%;
         }
         .field:not(:last-child) {

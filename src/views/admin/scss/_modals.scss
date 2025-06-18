@@ -2,7 +2,7 @@
 .tainacan-modal.is-active {
     justify-content: center;
 
-    @media screen and (max-width: 769px) {
+    @media screen and (max-width: 768px) {
         justify-content: flex-end;
 
         .animation-content,
@@ -21,7 +21,7 @@
     overflow: auto;
     border-radius: var(--tainacan-modal-border-radius, 8px);
 
-    @media screen and (max-width: 769px) {
+    @media screen and (max-width: 768px) {
         max-height: 95%;
         max-height: 95vh;
     }
@@ -267,7 +267,7 @@
         }
     }
 
-    @media screen and (max-width: 769px) {
+    @media screen and (max-width: 768px) {
         left: 1.5em;
         right: 1.5em;
         top: 1.5em;

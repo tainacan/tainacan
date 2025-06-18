@@ -1686,7 +1686,7 @@ export default {
 
 <style lang="scss" scoped>
 
-    @media screen and (min-width: 1024px) {
+    @media screen and (min-width: 1025px) {
         .column:last-of-type {
             padding-left: var(--tainacan-one-column) !important;
         }
@@ -2105,7 +2105,7 @@ export default {
             border: none;
         }
     }
-    @media screen and (max-width: 769px) {
+    @media screen and (max-width: 768px) {
         .tainacan-form {
             padding-bottom: 3rem;
         }

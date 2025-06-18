@@ -374,102 +374,104 @@ html {
                         display: none;
                     }
                 }
-                #tainacan-root-menu > li {
-                    margin: 0 0.5rem;
+                #tainacan-root-menu {
+                    & > li {
+                        margin: 0 0.5rem;
 
-                    &:not(.menu-item-has-children.is-open) > * > .menu-text {
-                        display: none;
-                    }
-
-                    & > a,
-                    & > button {
-                        justify-content: center;
-                        text-align: center;
-                        padding: 0.5rem !important;
-
-                        .icon {
-                            margin-right: 0;
-                        }
-                    }
-                }
-                .menu-item-has-children {
-                    button::after {
-                        transform: rotate(-90deg) !important;
-                        right: -1rem !important;
-                    } 
-                    &.is-open {
-
-                        & > .menu-backdrop {
-                            position: fixed;
-                            top: 0;
-                            right: 0;
-                            left: 0;
-                            border: 0;
-                            width: 100%;
-                            height: 100%;
-                            z-index: 9999;
+                        &:not(.menu-item-has-children.is-open) > * > .menu-text {
+                            display: none;
                         }
 
-                        button {
-                            background-color: var(--tainacan-turquoise3);
-                            background-color: var(--tainacan-admin-button-active-background-color);
-                            justify-content: start;
+                        & > a,
+                        & > button {
+                            justify-content: center;
+                            text-align: center;
+                            padding: 0.5rem !important;
 
-                            .menu-text {
-                                padding: 0.75rem;
-                                z-index: 99999999;
-                                border-top-left-radius: var(--tainacan-admin-button-border-radius, 8px);
-                                border-top-right-radius: var(--tainacan-admin-button-border-radius, 8px);
-                                border-bottom: 1px solid var(--tainacan-turquoise3);
-                                border-bottom: 1px solid color-mix(in srgb, var(--tainacan-admin-navigation-sidebar-separator-color) 50%, transparent);
+                            .icon {
+                                margin-right: 0;
                             }
                         }
-
-                        button::after {
-                            transform: skewY(90deg) !important;
-                            right: -0.875rem;
-                            background-image: url('data:image/svg+xml,<svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.976713 0H9.01734C9.57359 0 9.85171 0.671875 9.45796 1.06563L5.43921 5.0875C5.19546 5.33125 4.79859 5.33125 4.55484 5.0875L0.536088 1.06563C0.142338 0.671875 0.420463 0 0.976713 0Z" fill="white" fill-opacity="1.0"/></svg>');
-                        }
-                        button {
-                            border-top-right-radius: 0;
-                            border-bottom-right-radius: 0;
-                        }
-                        ul {
-                            padding: 0.5rem 0.75rem;
-                            z-index: 99999998;
-                            border: none;
-                            border-bottom-right-radius: var(--tainacan-admin-button-border-radius, 8px);
-                            border-bottom-left-radius: var(--tainacan-admin-button-border-radius, 8px);
-                            box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px --tainacan-blue3);
-                            box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px color-mix(in srgb, var(--tainacan-blue3) 20%, transparent) );
-                            margin-top: -1px;
-                            transform-origin: top left;
-                            transform: scaleY(1.0) translateY(0px);
-                        }
-                        & > button > .menu-text {
-                            border-bottom: 1px solid var(--tainacan-gray2);
-                            box-shadow: var(--tainacan-page-container-box-shadow, 4px -4px 8px -4px --tainacan-blue3);
-                            box-shadow: var(--tainacan-page-container-box-shadow, 4px -4px 8px -4px color-mix(in srgb, var(--tainacan-blue3) 20%, transparent) );
-                        }
-                        & > button > .menu-text,
-                        ul {
-                            position: absolute;
-                            left: 100%;
-                            min-width: 180px;
-                            max-width: 180px;
-                            max-height: calc(100vh - var(--wp-admin--admin-bar--height, 32px) - 280px);
-                            overflow-y: auto;
-                            border-top-left-radius: 0;
-                            box-sizing: border-box;
-                            margin: 0;
-                            background-color: var(--tainacan-admin-navigation-sidebar-floating-menu-background-color);
-                        }
                     }
-                    ul {
-                        transform-origin: top left;
-                        transform: scaleY(0.5) translateY(-30px);
-                        transition: transform 0.2s ease;
-                    } 
+                    .menu-item-has-children {
+                        button::after {
+                            transform: rotate(-90deg) !important;
+                            right: -1rem !important;
+                        } 
+                        &.is-open {
+
+                            & > .menu-backdrop {
+                                position: fixed;
+                                top: 0;
+                                right: 0;
+                                left: 0;
+                                border: 0;
+                                width: 100%;
+                                height: 100%;
+                                z-index: 9999;
+                            }
+
+                            button {
+                                background-color: var(--tainacan-turquoise3);
+                                background-color: var(--tainacan-admin-button-active-background-color);
+                                justify-content: start;
+
+                                .menu-text {
+                                    padding: 0.75rem;
+                                    z-index: 99999999;
+                                    border-top-left-radius: var(--tainacan-admin-button-border-radius, 8px);
+                                    border-top-right-radius: var(--tainacan-admin-button-border-radius, 8px);
+                                    border-bottom: 1px solid var(--tainacan-turquoise3);
+                                    border-bottom: 1px solid color-mix(in srgb, var(--tainacan-admin-navigation-sidebar-separator-color) 50%, transparent);
+                                }
+                            }
+
+                            button::after {
+                                transform: skewY(90deg) !important;
+                                right: -0.875rem;
+                                background-image: url('data:image/svg+xml,<svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.976713 0H9.01734C9.57359 0 9.85171 0.671875 9.45796 1.06563L5.43921 5.0875C5.19546 5.33125 4.79859 5.33125 4.55484 5.0875L0.536088 1.06563C0.142338 0.671875 0.420463 0 0.976713 0Z" fill="white" fill-opacity="1.0"/></svg>');
+                            }
+                            button {
+                                border-top-right-radius: 0;
+                                border-bottom-right-radius: 0;
+                            }
+                            ul {
+                                padding: 0.5rem 0.75rem;
+                                z-index: 99999998;
+                                border: none;
+                                border-bottom-right-radius: var(--tainacan-admin-button-border-radius, 8px);
+                                border-bottom-left-radius: var(--tainacan-admin-button-border-radius, 8px);
+                                box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px --tainacan-blue3);
+                                box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px color-mix(in srgb, var(--tainacan-blue3) 20%, transparent) );
+                                margin-top: -1px;
+                                transform-origin: top left;
+                                transform: scaleY(1.0) translateY(0px);
+                            }
+                            & > button > .menu-text {
+                                border-bottom: 1px solid var(--tainacan-gray2);
+                                box-shadow: var(--tainacan-page-container-box-shadow, 4px -4px 8px -4px --tainacan-blue3);
+                                box-shadow: var(--tainacan-page-container-box-shadow, 4px -4px 8px -4px color-mix(in srgb, var(--tainacan-blue3) 20%, transparent) );
+                            }
+                            & > button > .menu-text,
+                            ul {
+                                position: absolute;
+                                left: 100%;
+                                min-width: 180px;
+                                max-width: 180px;
+                                max-height: calc(100vh - var(--wp-admin--admin-bar--height, 32px) - 280px);
+                                overflow-y: auto;
+                                border-top-left-radius: 0;
+                                box-sizing: border-box;
+                                margin: 0;
+                                background-color: var(--tainacan-admin-navigation-sidebar-floating-menu-background-color);
+                            }
+                        }
+                        ul {
+                            transform-origin: top left;
+                            transform: scaleY(0.5) translateY(-30px);
+                            transition: transform 0.2s ease;
+                        } 
+                    }
                 }
             }
         }
@@ -565,9 +567,8 @@ html {
                     }
                 }
             }
-        }
 
-         .menu-item-has-children {
+            .menu-item-has-children {
                 position: relative;
     
                 &.is-open ul {
@@ -620,7 +621,7 @@ html {
                         
                         a,
                         button {
-                            line-height: 1.25em;
+                            line-height: 1em;
                             font-size: 0.875em !important;
         
                             .menu-text {
@@ -658,6 +659,7 @@ html {
                     margin-right: 0.5em;
                 }
             }
+        }
 
         #tainacan-wordpress-shortcut {
             box-sizing: border-box;

@@ -242,7 +242,7 @@
         }
     }
 
-    @media screen and (max-width: 769px) {
+    @media screen and (max-width: 768px) {
         .table-container {
             padding-left: 1em;
             padding-right: 1em;

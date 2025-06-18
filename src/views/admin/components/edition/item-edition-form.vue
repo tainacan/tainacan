@@ -2150,7 +2150,7 @@ export default {
                     margin-bottom: 187px;
                 }
 
-                @media screen and (max-width: 769px) {
+                @media screen and (max-width: 768px) {
                     padding-right: var(--tainacan-one-column);
                     max-width: 100%;
 
@@ -2160,7 +2160,7 @@ export default {
                 }
             }
 
-            @media screen and (max-width: 769px) {
+            @media screen and (max-width: 768px) {
                 margin-left: 0;
                 margin-right: 0;
 
@@ -2299,7 +2299,7 @@ export default {
                     max-width: 160px;
                 }
             }
-            @media screen and (max-width: 769px) {
+            @media screen and (max-width: 768px) {
                 .metadata-name-search {
                     position: absolute;
                     right: 0.5em;

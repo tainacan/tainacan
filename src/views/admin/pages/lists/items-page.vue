@@ -1682,7 +1682,7 @@
                 grid-row: 1/5;
                 justify-self: stretch;
             }
-            @container searchcontrol (max-width: 769px) {
+            @container searchcontrol (max-width: 768px) {
                 margin-right: 0;
                 padding-right: 0;
 
@@ -1703,7 +1703,7 @@
                 }
             }
             @supports not (contain: inline-size) {
-                @media screen and (max-width: 769px) {            
+                @media screen and (max-width: 768px) {            
                     margin-right: 0;
                     padding-right: 0;
 

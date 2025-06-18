@@ -800,13 +800,13 @@
                     margin-left: -3px;
                 }
 
-                @media screen and (max-width: 769px) {
+                @media screen and (max-width: 768px) {
                     padding-right: var(--tainacan-one-column);
                     width: 100%;
                 }
             }
 
-            @media screen and (max-width: 769px) {
+            @media screen and (max-width: 768px) {
                 margin-left: 0;
                 margin-right: 0;
                 display: flex;
@@ -869,7 +869,7 @@
             margin-top: 0px;
         }
 
-        @media screen and (max-width: 769px) {
+        @media screen and (max-width: 768px) {
             :deep(.section-attachments) .table-container {
                 padding-left: 0;
                 padding-right: 0;

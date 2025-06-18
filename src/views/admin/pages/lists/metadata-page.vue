@@ -158,7 +158,7 @@ export default {
                 margin-right: var(--tainacan-one-column);
                 flex-grow: 2;
 
-                @media screen and (max-width: 769px) {
+                @media screen and (max-width: 768px) {
                     margin-right: 0;
                 }
             }
@@ -242,7 +242,7 @@ export default {
                 min-height: 220px;
             }
 
-            @media screen and (max-width: 769px) {
+            @media screen and (max-width: 768px) {
                 min-height: 45px;
                 margin: 0; 
                 padding-right: 0em;
