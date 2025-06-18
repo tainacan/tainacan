@@ -146,33 +146,31 @@
                             style="float: none; margin: 0 auto;" />
                     <template v-if="!isLoadingCollections"> 
                         <!-- <h3>{{ $i18n.get('Role\'s Collection Related Capabilities List') }}</h3> -->
-                        <div class="tablenav top">
-                            <div class="alignleft collection-selector">
-                                <label 
-                                        for="bulk-action-selector-top" 
-                                        class="sr-only">
-                                    {{ $i18n.get('Select the collection to change capabilities') }}
-                                </label>
-                                <span class="select">
-                                    <select 
-                                            id="collection-select" 
-                                            name="collection"
-                                            :value="selectedCollection"
-                                            @input="selectedCollection = $event.target.value">
-                                        <option value="all">
-                                            {{ $i18n.get('All Collections') }}
-                                        </option>
-                                        <option 
-                                                v-for="(collection, index) of collections"
-                                                :key="index"
-                                                :value="collection.id">
-                                            {{ collection.name }}
-                                        </option>
-                                    </select>
-                                </span>
-                            </div>
-                            <br class="clear">
+                        <div class="alignleft collection-selector">
+                            <label 
+                                    for="bulk-action-selector-top" 
+                                    class="sr-only">
+                                {{ $i18n.get('Select the collection to change capabilities') }}
+                            </label>
+                            <span class="select">
+                                <select 
+                                        id="collection-select" 
+                                        name="collection"
+                                        :value="selectedCollection"
+                                        @input="selectedCollection = $event.target.value">
+                                    <option value="all">
+                                        {{ $i18n.get('All Collections') }}
+                                    </option>
+                                    <option 
+                                            v-for="(collection, index) of collections"
+                                            :key="index"
+                                            :value="collection.id">
+                                        {{ collection.name }}
+                                    </option>
+                                </select>
+                            </span>
                         </div>
+                        <br class="clear">
 
                         <div 
                                 v-if="!isLoadingCapabilities"
@@ -230,18 +228,39 @@
                     <p v-if="roleSlug === 'new'">
                         <span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('You must first create the slug before defining apperaence options for it.') }}
                     </p>
-                   
+                    
                     <div class="capabilities-list">
-                        <div
+                        <section
                                 v-for="(group, groupIndex) of groupedAdminUIOptions"
                                 :key="groupIndex"
-                                class="capability-group">
-                            <h3>{{ groupIndex }}</h3>
-                            <ul>
-                                <template
-                                        v-for="(optionLabel, optionSlug) of group"
-                                        :key="optionSlug">
-                                    <li>
+                                class="admin-ui-group-collapse">
+                            <div    
+                                    role="button"
+                                    :aria-controls="'admin-ui-group--' + groupIndex"
+                                    :aria-expanded="openedAdminUIOptionCollapse == 'admin-ui-group--' + groupIndex"
+                                    @click="openedAdminUIOptionCollapse = ( openedAdminUIOptionCollapse == 'admin-ui-group--' + groupIndex ? '' : 'admin-ui-group--' + groupIndex)"
+                                    class="admin-ui-group-collapse--button">
+                                <span class="icon">
+                                    <i 
+                                            :class="{
+                                                'tainacan-icon-arrowdown' : openedAdminUIOptionCollapse == 'admin-ui-group--' + groupIndex,
+                                                'tainacan-icon-arrowright' : openedAdminUIOptionCollapse != 'admin-ui-group--' + groupIndex 
+                                            }"
+                                            class="tainacan-icon tainacan-icon-1-25em" />
+                                </span>
+                                <span class="collapse-label">
+                                    <h3 v-if="group.label">{{ group.label }}</h3>
+                                    <p v-if="group.description">{{ group.description }}</p>
+                                </span>
+                            </div>
+                            <transition name="admin-ui-collapse">
+                                <ul 
+                                        v-if="openedAdminUIOptionCollapse == 'admin-ui-group--' + groupIndex"
+                                        :id="'admin-ui-group--' + groupIndex"
+                                        class="admin-ui-group-collapse--content">
+                                    <li 
+                                            v-for="(optionLabel, optionSlug) of group.items"
+                                            :key="optionSlug">
                                         <label>
                                             <input 
                                                     :id="optionSlug"
@@ -253,10 +272,10 @@
                                             <span class="name column-name">{{ optionLabel }}</span>
                                         </label>
                                     </li>
-                                    <br>
-                                </template>
-                            </ul>
-                        </div>
+                                </ul>
+                            </transition>
+                        </section>
+
                     </div>
                 </div><!-- End of PluginUI tab -->
 
@@ -357,6 +376,7 @@
                 groupedAdminUIOptions: tainacan_plugin && tainacan_plugin.admin_ui_options ? tainacan_plugin.admin_ui_options : {},
                 isLoadingAdminUIOptions: false,
                 localAdminUIOptions: {},
+                openedAdminUIOptionCollapse: 'admin-ui-group--navigation'
             }
         },
         computed: {
@@ -703,6 +723,62 @@
     height: 100%;
     gap: var(--tainacan-container-padding);
 
+    // Admin UI Collapse 
+    @keyframes admin-ui-collapse-in {
+        from {
+            opacity: 0;
+            height: 0px;
+            max-height: 0px;
+            min-height: 0px;
+            -ms-transform: translate(0%, -30%); /* IE 9 */
+            -webkit-transform: translate(0%, -30%); /* Safari */
+            transform: translate(0%, -30%);
+        }
+        to {
+            height: 35px;
+            max-height: 35px;
+            min-height: 35px;
+            opacity: 1;        
+            -ms-transform: translate(0, 0); /* IE 9 */
+            -webkit-transform: translate(0, 0); /* Safari */
+            transform: translate(0, 0);
+        }
+    }
+
+    @keyframes admin-ui-collapse-out {
+        from {
+            height: 35px;
+            max-height: 35px;
+            min-height: 35px;
+            opacity: 1;
+            -ms-transform: translate(0, 0); /* IE 9 */
+            -webkit-transform: translate(0, 0); /* Safari */
+            transform: translate(0, 0);
+        }
+        to {
+            height: 0px;
+            max-height: 0px;
+            min-height: 0px;
+            opacity: 0;
+            -ms-transform: translate(0%, -30%); /* IE 9 */
+            -webkit-transform: translate(0%, -30%); /* Safari */
+            transform: translate(0%, -30%);
+        }
+    }
+
+    .admin-ui-collapse-enter-active {
+        overflow: hidden;
+        animation-name: admin-ui-collapse-in;
+        animation-duration: 0.1s;
+        animation-timing-function: ease;   
+    }
+    .admin-ui-collapse-leave-active {   
+        overflow: hidden; 
+        animation-name: admin-ui-collapse-out;
+        animation-duration: 0.1s;
+        animation-timing-function: ease;   
+    }
+
     @keyframes appear-from-right {
         from {
             right: -100%;
@@ -795,7 +871,7 @@
     }
     .tabs-content {
         border-top: none;
-        padding: 0.25em 2em;
+        padding: 0.25em var(--tainacan-one-column);
     }
     .dashicons-info {
         color: var(--tainacan-warning);
@@ -816,22 +892,69 @@
             h3 {
                 margin-top: 0;
                 margin-bottom: 1em;
-                font-size: 1em;
+                font-size: 1.125em;
                 font-weight: bold;
                 color: var(--taincan-label-color);
             }
             ul {
                 li {
-                    margin: 0 0.5em 0.5em;
+                    margin: 0 0.5em 0.75em;
                     display: inline-block;
 
                     label {
                         display: flex;
                         align-items: center;
+
+                        input[type="checkbox"] {
+                            flex-shrink: 0
+                        }
                     }
                 }
             }
         }
+    }
+    .admin-ui-group-collapse {
+        padding: 0 0 0.25rem 0;
+        width: 100%;
+
+        .admin-ui-group-collapse--button {
+            display: flex;
+            gap: 1em;
+            border-bottom: 1px solid var(--tainacan-input-border-color);
+            cursor: pointer;
+            padding: 0.5rem 0;
+            font-size: 1.125em;
+
+            h3 {
+                font-weight: bold;
+                font-weight: 1.25em;
+            }
+            .icon {
+                color: var(--tainacan-secondary);
+            }
+        }
+        .admin-ui-group-collapse--content {
+            padding: 0.75rem var(--tainacan-one-column);
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 320px);
+            gap: 0.5em var(--tainacan-one-column);
+
+            li {
+                margin-bottom: 0.125em;
+                display: block;
+                max-width: 100%;
+
+                label {
+                    display: flex;
+                    align-items: center;
+                    
+                    input[type="checkbox"] {
+                        flex-shrink: 0
+                    }
+                }
+            }
+        }
+
     }
     @media only screen and (max-width: 783px) {
         #collection-select {

@@ -11,7 +11,7 @@ import {
     Button,
     Dropdown,
     Dialog,
-    Checkbox,
+    Checkbox
 } from '@ntohq/buefy-next';
 
 import { I18NPlugin } from './wp-i18n-plugin';
