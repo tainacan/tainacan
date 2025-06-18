@@ -422,7 +422,7 @@ abstract class Pages {
 		}
 
 		?>
-		<aside id="tainacan-navigation-menu" <?php echo ( $is_navigation_sidebar_collapsed ? 'class="is-collapsed"' : '') ?>>
+		<aside id="tainacan-navigation-menu" <?php echo ( $is_navigation_sidebar_collapsed ? 'class="is-collapsed"' : '') ?>>	
 			<nav>
 				<header>
 					<?php if ( !$this->has_admin_ui_option( 'hideWordPressShorcutButton' ) || !$this->has_admin_ui_option( 'hideSiteShorcutButton' ) ) : ?>
@@ -480,7 +480,7 @@ abstract class Pages {
 								if ( isset( $submenu[$tainacan_root_link[2]] ) ) : ?>
 
 									<li class="menu-item-has-children <?php echo $current_page_parent === $tainacan_root_link[2] ? 'is-open' : ''; ?>">
-										<div class="menu-backdrop"></div>
+										<div class="menu-item-backdrop"></div>
 										<button type="button" aria-expanded="<?php echo $current_page_parent === $tainacan_root_link[2] ?>"><?php echo $tainacan_root_link[0]; ?></button>
 										
 										<?php if ( count( $submenu[$tainacan_root_link[2]] ) ) : ?>
@@ -507,6 +507,7 @@ abstract class Pages {
 				</ul>
 			</nav>
 		</aside>
+		<div id="tainacan-navigation-menu-backdrop"></div>
 		<?php
 	}
 

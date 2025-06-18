@@ -236,10 +236,10 @@
                                 class="admin-ui-group-collapse">
                             <div    
                                     role="button"
+                                    class="admin-ui-group-collapse--button"
                                     :aria-controls="'admin-ui-group--' + groupIndex"
                                     :aria-expanded="openedAdminUIOptionCollapse == 'admin-ui-group--' + groupIndex"
-                                    @click="openedAdminUIOptionCollapse = ( openedAdminUIOptionCollapse == 'admin-ui-group--' + groupIndex ? '' : 'admin-ui-group--' + groupIndex)"
-                                    class="admin-ui-group-collapse--button">
+                                    @click="openedAdminUIOptionCollapse = ( openedAdminUIOptionCollapse == 'admin-ui-group--' + groupIndex ? '' : 'admin-ui-group--' + groupIndex)">
                                 <span class="icon">
                                     <i 
                                             :class="{

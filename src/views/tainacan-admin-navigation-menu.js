@@ -28,7 +28,7 @@ function handleMenuCollapses() {
             }
         } );
 
-        const backdrops = document.querySelectorAll('.menu-backdrop');
+        const backdrops = document.querySelectorAll('.menu-item-backdrop');
 
         backdrops.forEach( backdrop => {
             backdrop.addEventListener( 'click', function() {
@@ -302,8 +302,9 @@ function handleUITweakButtons() {
     const tainacanMenuCollapser = document.getElementById('tainacan-menu-collapser');
     const tainacanFullscreenToggler = document.getElementById('tainacan-fullscreen-toggler');
     const tainacanNavigationMenu = document.getElementById('tainacan-navigation-menu');
+    const tainacanNavigationMenuBackdrop = document.getElementById('tainacan-navigation-menu-backdrop');
 
-    if ( tainacanMenuToggler && tainacanMenuCollapser && tainacanNavigationMenu ) {
+    if ( tainacanMenuToggler && tainacanMenuCollapser && tainacanNavigationMenu && tainacanNavigationMenuBackdrop ) {
 
         tainacanMenuToggler.addEventListener( 'click', function() {
 
@@ -312,6 +313,11 @@ function handleUITweakButtons() {
             tainacanNavigationMenu.classList.toggle('is-active');
             tainacanMenuToggler.ariaPressed = '' + isToggled;
 
+        } );
+
+        tainacanNavigationMenuBackdrop.addEventListener( 'click', function() {
+            tainacanNavigationMenu.classList.remove('is-active');
+            tainacanMenuToggler.ariaPressed = 'false';
         } );
 
         tainacanMenuCollapser.addEventListener( 'click', function() {
