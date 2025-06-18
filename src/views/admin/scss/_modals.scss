@@ -201,24 +201,34 @@
 // WordPress Media Modal customization
 .media-modal-backdrop {
     z-index: 9999999 !important;
-    background: var(--tainacan-backdrop-background-color, rgba(0, 0, 0, 0.35));
+    background: var(--tainacan-backdrop-background-color, rgba(0, 0, 0, 0.35)) !important;
     opacity: 1;
 }
 .media-modal {
-    left: 100px;
-    top: 100px;
-    bottom: 100px;
-    right: 100px;
     background-color: var(--tainacan-background-color);
     border-radius: var(--tainacan-modal-border-radius, 8px);
     z-index: 99999999999 !important;
 
+    .media-modal-content {
+        border-radius: var(--tainacan-modal-border-radius);
+    }
+    .media-frame input,
+    .media-frame select {
+        border-radius: var(--tainacan-input-border-radius) !important;
+    }
+
     .media-toolbar {
-        font-size: 16px;
+        font-size: 1rem;
+
         .button {
             margin-top: 15px !important;
             line-height: 2.30769231 !important;
         }
+    }
+    .attachment,
+    .attachment-preview,
+    .thumbnail {
+        border-radius: var(--tainacan-item-border-radius, 0px);
     }
     .tainacan-document-modal, 
     .tainacan-header-image-modal,
@@ -284,10 +294,10 @@
     }
 
     @media only screen and (max-width: 498px) {
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
+        left: 0 !important;
+        right: 0 !important;
+        top: 0 !important;
+        bottom: 0 !important;
     }
 }
 .media-modal .tainacan-item-attachments-modal button.check {

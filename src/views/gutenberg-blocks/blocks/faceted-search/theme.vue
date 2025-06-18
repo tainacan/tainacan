@@ -1992,7 +1992,7 @@
             .label {
                 color: var(--tainacan-label-color);
                 font-size: 0.875em;
-                line-height: 1.75em;
+                line-height: calc(var(--tainacan-button-min-height, 2.571em) - 2px);
                 font-weight: normal;
                 margin-top: 2px;
                 margin-bottom: 2px;

@@ -798,6 +798,7 @@ export default {
         flex-direction: column;
         justify-content: space-between;
         min-height: 247px;
+        padding-top: var(--tainacan-container-padding);
     }
 
     .form-submit {
