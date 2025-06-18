@@ -226,7 +226,7 @@
                                 placement: 'auto',
                                 popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
                             }"
-                            :class="{ 'is-active': status == undefined || status == ''}"
+                            :class="{ 'is-active': status == undefined || status == '' || status == 'publish,private,pending,draft' }"
                             @click="onChangeTab('')">
                         <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
                             {{ `${$i18n.get('label_all_collections')}` }}
@@ -583,7 +583,7 @@ export default {
             this.fetchCollections({ 
                 page: this.page, 
                 collectionsPerPage: this.collectionsPerPage,
-                status: this.status,
+                status: this.status ? this.status : 'publish,private,pending,draft',
                 contextEdit: true, 
                 order: this.order,
                 orderby: this.orderBy,
