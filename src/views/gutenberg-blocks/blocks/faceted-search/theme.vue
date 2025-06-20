@@ -2090,7 +2090,6 @@
                         width: 100%;
                     }
                     :deep(.dropdown-menu) {
-                        z-index: 99999991;
 
                         .dropdown-item:last-child {
                             line-height: 2.25em;

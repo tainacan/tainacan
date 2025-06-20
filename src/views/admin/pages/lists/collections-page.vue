@@ -21,6 +21,7 @@
                 <b-dropdown
                         id="collection-creation-options-dropdown"
                         aria-role="list"
+                        :mobile-modal="true"
                         trap-focus
                         append-to-body>
                     <template #trigger>
@@ -167,7 +168,7 @@
             </b-field>
 
             <!-- Sorting options ----  -->
-             <b-field 
+            <b-field 
                     id="collections-page-sorting-options"
                     class="header-item">
                 <b-dropdown
@@ -251,7 +252,7 @@
                                 </b-dropdown-item>
                             </template>
                         </div>
-                     </div>
+                    </div>
                     <div class="dropdown-item-apply">
                         <button 
                                 aria-controls="items-list-results"
@@ -696,6 +697,7 @@ export default {
 <style lang="scss" scoped>
 
     .sub-header {
+        flex-wrap: wrap;
         gap: 8px;
 
         .header-item {

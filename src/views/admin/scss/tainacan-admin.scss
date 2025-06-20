@@ -363,3 +363,11 @@ audio, video {
 .tainacan-page-title--sticky + .tainacan-sub-header--sticky {
     top: calc( var(--tainacan-container-padding) + var(--tainacan-button-min-height, 2.571em) );
 }
+@media screen and (max-width: 768px) {
+    .tainacan-page-title--sticky:has(.dropdown.is-active.is-mobile-modal) {
+        z-index: 1 !important;
+    }
+    .tainacan-page-title--sticky:has(.dropdown.is-active.is-mobile-modal) + .tainacan-sub-header--sticky {
+        z-index: 0 !important;
+    }
+}

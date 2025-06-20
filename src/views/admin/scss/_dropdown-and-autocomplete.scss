@@ -46,7 +46,7 @@
         border-radius: var(--tainacan-dropdownmenu-border-radius, 0px);
         min-width: 6em;
         border: none;
-        z-index: 999991;
+        z-index: 999991 !important;
         background-color: var(--tainacan-input-background-color);
 
         .dropdown-content {

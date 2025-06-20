@@ -133,7 +133,7 @@
                                 </b-dropdown-item>
                             </template>
                         </div>
-                     </div>
+                    </div>
                     <div class="dropdown-item-apply">
                         <button 
                                 aria-controls="items-list-results"
@@ -542,16 +542,6 @@
                         width: 100%;
                     }
                 }
-            }
-        }
-
-        @media screen and (max-width: 768px) {
-            height: 160px;
-            margin-top: -0.5em;
-            padding-top: 0.9em;
-
-            .header-item:not(:last-child) {
-                padding-right: 0.2em;
             }
         }
     }

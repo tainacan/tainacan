@@ -245,10 +245,6 @@
         }
 
         @media screen and (max-width: 768px) {
-            height: 160px;
-            margin-top: -0.5em;
-            padding-top: 0.9em;
-
             .header-item:not(:last-child) {
                 padding-right: 0.2em;
             }
