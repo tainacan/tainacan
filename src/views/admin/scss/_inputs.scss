@@ -22,6 +22,7 @@ input[type="week"].input {
     font-family: var(--tainacan-font-family, inherit);
     border-radius: var(--tainacan-input-border-radius, 2px) !important;
     box-shadow: none !important;
+    box-sizing: border-box;
     background-color: var(--tainacan-input-background-color);
     border: 1px solid var(--tainacan-input-border-color);
     color: var(--tainacan-input-color);
