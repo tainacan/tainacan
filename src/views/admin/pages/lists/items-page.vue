@@ -2,7 +2,6 @@
     <div 
             ref="items-page-container"
             :class="{ 
-                'tainacan-repository-level-colors': isRepositoryLevel,
                 'is-filters-menu-open': isFiltersModalActive && !openAdvancedSearch
             }"
             class="admin-items-list page-container"
