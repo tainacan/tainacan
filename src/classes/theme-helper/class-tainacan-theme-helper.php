@@ -36,11 +36,9 @@ class Theme_Helper {
 				true !== TAINACAN_DISABLE_ITEM_THE_CONTENT_FILTER
 			)
 		) {
-			// Classic themes
-			add_filter( 'the_content', [$this, 'the_content_filter_item'] );
+			$this->override_item_single_template();
 
-			// FSE Block themes
-			add_action( 'init', [$this, 'register_block_templates_for_item_single'] );
+			// add_action( 'init', [$this, 'register_block_templates_for_item_single'] );
 		}
 
 		if ( 
@@ -52,7 +50,7 @@ class Theme_Helper {
 				true !== TAINACAN_DISABLE_TAXONOMY_THE_CONTENT_FILTER
 			)
 		) {
-			add_filter( 'the_content', [$this, 'the_content_filter_taxonomy'] );
+			$this->override_taxonomy_single_template();
 		}
 
 		if ( 
@@ -64,11 +62,9 @@ class Theme_Helper {
 				true === TAINACAN_ENABLE_COLLECTION_THE_CONTENT_FILTER
 			)
 		) {
-			// Classic themes
 			$this->override_collection_items_archive_template();
 
-			// FSE Block themes
-			add_action( 'init', [$this, 'register_block_templates_for_collection_items_archive'] );
+			// add_action( 'init', [$this, 'register_block_templates_for_collection_items_archive'] );
 		}
 
 		if ( 
@@ -80,7 +76,6 @@ class Theme_Helper {
 				true === TAINACAN_ENABLE_TAXONOMY_TERM_THE_CONTENT_FILTER
 			)
 		) {
-			// Classic themes
 			$this->override_taxonomy_term_items_archive_template();
 		}
 
@@ -173,52 +168,26 @@ class Theme_Helper {
 	}
 
 	/**
-	 * Filters the post content to create Tainacan default 
-	 * item single, including its metadata sections and the
-	 * item media gallery.
-	 * 
-	 * @return string content tweaked to the item features
+	 * Overrides the WordPress post single to display a Tainacan item
+	 * basic structure with Media Gallery, Metadata Sections and Attachments
+	 *
 	 */
-	public function the_content_filter_item($content) {
-		
-		if (!is_single())
-			return $content;
+	public function override_item_single_template() {
 
-		$post = get_queried_object();
-		
-		// Is it a collection Item 
-		if ( !$this->is_post_an_item($post) )
-			return $content;
-	
-		$item = new Entities\Item($post);
+		add_filter( 'the_content', function($content) {
 
-		$content = '';
-		
-		// document
-		$content .= '<section id="tainacan-default-document-section">';
-			$content .= '<h2>' . __( 'Document', 'tainacan' ) . '</h2>';
-			$content .= $this->get_tainacan_item_gallery(array(
-				'layoutElements' => array( 'main' => true, 'thumbnails' => false ),
-				'mediaSources' => 	array( 'document' => true, 'attachments' => false, 'metadata' => false),
-			));
-		$content .= '</section>';
-		
-		// metadata sections
-		$content .= $item->get_metadata_sections_as_html();
+			if ( !is_single() )
+				return $content;
 
-		// attachments
-		$content .= '<section id="tainacan-default-attachments-section">';
-			$content .= '<h2>' . __( 'Attachments', 'tainacan' ) . '</h2>';
-			$content .= $this->get_tainacan_item_gallery(array(
-				'layoutElements' => array( 'main' => false, 'thumbnails' => true ),
-				'mediaSources' => 	array( 'document' => false, 'attachments' => true, 'metadata' => false),
-			));
-		$content .= '</section>';
+			$post = get_queried_object();
+			
+			// Is it a collection Item 
+			if ( !($post instanceof \WP_Post) || !$this->is_post_an_item($post) )
+				return $content;
 		
-		$content = apply_filters('tainacan_single_item_content', $content, $item);
+			return $this->get_tainacan_item_single_content();
 
-		return $content;
-		
+		} );
 	}
 
 	/**
@@ -240,6 +209,8 @@ class Theme_Helper {
 
 					<!-- wp:group {"tagName":"main","layout":{"type":"constrained"}} -->
 					<main class="wp-block-group">
+						
+						<!-- wp:post-title {"level":1} /-->
 
 						<!-- wp:tainacan/item-gallery { "templateMode": true, "collectionId": "' . $collection->get_id() . '" } /-->
 
@@ -310,9 +281,15 @@ class Theme_Helper {
 					'post_types'  => [ $collection->get_db_identifier() ],
 					'content'     => '<!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->
 
+					<!-- wp:group {"layout":{"type":"constrained"}} -->
+					<div class="wp-block-group">
+						<!-- wp:query-title {"type":"archive","showPrefix":false} /-->
+					</div>
+					<!-- /wp:group -->
+
 					<!-- wp:group {"layout":{"type":"default"}} -->
 					<div class="wp-block-group">
-						
+
 						<!-- wp:tainacan/faceted-search {"collectionId": "' . $collection->get_id() . '", "listType":"collection"} -->
 							<div style="font-size:16px;--tainacan-base-font-size:16px;--tainacan-background-color:#ffffff;--tainacan-filter-menu-width-theme:20%;--tainacan-filters-inline-width:272px;--tainacan-input-color:#1d1d1d;--tainacan-input-background-color:#ffffff;--tainacan-input-border-color:#dbdbdb;--tainacan-label-color:#373839;--tainacan-info-color:#505253;--tainacan-heading-color:#000000;--tainacan-skeleton-color:#eeeeee;--tainacan-item-background-color:#ffffff;--tainacan-item-hover-background-color:#f2f2f2;--tainacan-item-heading-hover-background-color:#dbdbdb;--tainacan-primary:#d9eced;--tainacan-secondary:#187181" class="wp-block-tainacan-faceted-search"><main id="tainacan-items-page" data-module="faceted-search" data-collection-id="' . $collection->get_id() . '" data-default-view-mode="masonry" data-is-forced-view-mode="false" data-enabled-view-modes="" data-hide-filters="false" data-hide-hide-filters-button="false" data-hide-search="false" data-hide-advanced-search="false" data-hide-displayed-metadata-button="false" data-hide-pagination-area="false" data-hide-sorting-area="false" data-hide-items-thumbnail="false" data-hide-sort-by-button="false" data-hide-exposers-button="false" data-hide-items-per-page-button="false" data-default-items-per-page="12" data-hide-go-to-page-button="false" data-show-filters-button-inside-search-control="false" data-start-with-filters-hidden="false" data-filters-as-modal="false" data-show-inline-view-mode-options="false" data-show-fullscreen-with-view-modes="false" data-default-order="ASC" data-default-orderby="date" data-default-orderby-meta="" data-default-orderby-type="" data-should-not-hide-filters-on-mobile="false" data-hide-filter-collapses="false" data-display-filters-horizontally="false"></main></div>
 						<!-- /wp:tainacan/faceted-search -->
@@ -472,30 +449,33 @@ class Theme_Helper {
 	}
 
 	/**
-	 * Filters the post content to create Tainacan default 
-	 * taxonomy single, which works as a "terms archive"
+	 * Overrides the WordPress post single to display a Tainacan taxonomy
+	 * basic structure with a list of terms. Filters the post content to 
+	 * create Tainacan default taxonomy single, which works as a "terms archive"
 	 * 
-	 * @return string content tweaked to show the taxonomy terms list
 	 */
-	public function the_content_filter_taxonomy($content) {
-		
-		if ( !is_single() )
+	public function override_taxonomy_single_template() {
+
+		add_filter( 'the_content', function($content) {
+
+			if ( !is_single() )
+				return $content;
+
+			$post = get_queried_object();
+			
+			// Is it a taxonomy-post-type post?
+			if ( !($post instanceof \WP_Post) || !$this->is_post_a_tainacan_taxonomy_postype($post) )
+				return $content;
+			
+			$content .= tainacan_get_taxonomies_orderby();
+			$content .= tainacan_get_taxonomies_search();
+			$taxonomy_terms_list = tainacan_get_single_taxonomy_content($post);
+			$content .= $taxonomy_terms_list['content'];
+			$content .= tainacan_get_taxonomies_pagination($taxonomy_terms_list['total_terms']);
+
 			return $content;
 
-		$post = get_queried_object();
-		
-		// Is it a taxonomy-post-type post?
-		if ( !$this->is_post_a_tainacan_taxonomy_postype($post) )
-			return $content;
-		
-		$content .= tainacan_get_taxonomies_orderby();
-		$content .= tainacan_get_taxonomies_search();
-		$taxonomy_terms_list = tainacan_get_single_taxonomy_content($post);
-		$content .= $taxonomy_terms_list['content'];
-		$content .= tainacan_get_taxonomies_pagination($taxonomy_terms_list['total_terms']);
-
-		return $content;
-		
+		} );
 	}
 	
 	/**
@@ -697,7 +677,7 @@ class Theme_Helper {
 		$post = get_queried_object();
 		
 		// Is it a taxonomy-post-type post?
-		if ( $this->is_post_a_tainacan_taxonomy_postype($post) ) {
+		if ( ($post instanceof \WP_Post) && $this->is_post_a_tainacan_taxonomy_postype($post) ) {
 			
 			$last_template = array_pop($templates);
 			
@@ -787,6 +767,43 @@ class Theme_Helper {
 		];
 
 		return wp_kses("<div data-module='item-submission-form' id='tainacan-item-submission-form' $props ></div>", $allowed_html);
+	}
+
+	/** 
+	 * A basic content for a Tainacan Single page content.
+	 * This may be used as an example for theme developers who
+	 * will implement their own tainacan/single-items.php template
+	 */
+	public function get_tainacan_item_single_content() {
+
+		$item = tainacan_get_item();
+
+		$content = '';
+		
+		// document
+		$content .= '<section id="tainacan-default-document-section">';
+			$content .= '<h2>' . __( 'Document', 'tainacan' ) . '</h2>';
+			$content .= $this->get_tainacan_item_gallery(array(
+				'layoutElements' => array( 'main' => true, 'thumbnails' => false ),
+				'mediaSources' => 	array( 'document' => true, 'attachments' => false, 'metadata' => false),
+			));
+		$content .= '</section>';
+		
+		// metadata sections
+		$content .= $item->get_metadata_sections_as_html();
+
+		// attachments
+		$content .= '<section id="tainacan-default-attachments-section">';
+			$content .= '<h2>' . __( 'Attachments', 'tainacan' ) . '</h2>';
+			$content .= $this->get_tainacan_item_gallery(array(
+				'layoutElements' => array( 'main' => false, 'thumbnails' => true ),
+				'mediaSources' => 	array( 'document' => false, 'attachments' => true, 'metadata' => false),
+			));
+		$content .= '</section>';
+		
+		$content = apply_filters('tainacan_single_item_content', $content, $item);
+
+		return $content;
 	}
 
 	/**
@@ -969,11 +986,19 @@ class Theme_Helper {
 
 	function rewrite_rule_template_include( $template ) {
 		global $wp_query;
+		
 		if ( $wp_query->get( 'tainacan_repository_archive' ) == 1 ) {
 
 			$templates = apply_filters('tainacan_repository_archive_template_hierarchy', ['tainacan/archive-repository.php', 'index.php']);
 			
-			return locate_template($templates, false);
+			// First, search for PHP templates, which block themes can also use.
+			$template = locate_template( $templates, false );
+
+			// Pass the result into the block template locator and let it figure
+			// out whether block templates are supported and this template exists.
+			$template = locate_block_template( $template, 'archive-repository', $templates );
+
+			return $template;
 			
 		}
 		return $template;
@@ -1164,7 +1189,7 @@ class Theme_Helper {
 		if (!$post)
 			return null;
 
-		if (!$this->is_post_an_item($post))
+		if ( !($post instanceof \WP_Post) || !$this->is_post_an_item($post))
 			return null;
 
 		$item = new \Tainacan\Entities\Item($post);
@@ -1266,7 +1291,7 @@ class Theme_Helper {
 			/**
 			 * Adds Dublin Core meta tags to the header 
 			 */
-			if ( is_singular() && $this->is_post_an_item($post) ) {
+			if ( is_singular() && ($post instanceof \WP_Post) && $this->is_post_an_item($post) ) {
 				$metadatum_mapper = \Tainacan\Mappers_Handler::get_instance()->get_mapper('dublin-core');
 				
 				if ( $metadatum_mapper ) {
@@ -1963,7 +1988,7 @@ class Theme_Helper {
 				// Document description is a bit more tricky
 				if ($document_type === 'attachment')  {
 					$attachment = get_post(tainacan_get_the_document_raw($item_id));
-					$document_description = ($attachment instanceof WP_Post) ? $attachment->post_content : '';
+					$document_description = ($attachment instanceof \WP_Post) ? $attachment->post_content : '';
 				}
 
 				$media_items_main[] =
