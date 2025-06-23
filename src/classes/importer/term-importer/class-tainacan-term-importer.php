@@ -95,9 +95,9 @@ class Term_Importer extends Importer {
 								<?php
 									$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
 									$taxonomies  = $Tainacan_Taxonomies->fetch( ['nopaging' => true], 'OBJECT' );
-									foreach( $taxonomies as $taxonomie) {
+									foreach( $taxonomies as $taxonomy) {
 										?>
-										<option value="<?php echo esc_attr($taxonomie->get_db_identifier());?>"><?php echo esc_attr($taxonomie->get_name()) ?> </option>
+										<option value="<?php echo esc_attr($taxonomy->get_db_identifier());?>"><?php echo esc_attr($taxonomy->get_name()) ?> </option>
 										<?php
 									}
 								?>
@@ -232,10 +232,10 @@ class Term_Importer extends Importer {
 	* @return string
 	*/
 	public function get_output() {
-		$taxonomie = \Tainacan\Repositories\Taxonomies::get_instance()->fetch_by_db_identifier( $this->get_transient('new_taxonomy') );
-		if ( !empty($taxonomie) ) {
+		$taxonomy = \Tainacan\Repositories\Taxonomies::get_instance()->fetch_by_db_identifier( $this->get_transient('new_taxonomy') );
+		if ( !empty($taxonomy) ) {
 			$message = __('target taxonomy:', 'tainacan');
-			$message .= " <b>" . $taxonomie->get_name() . "</b><br/>";
+			$message .= " <b>" . $taxonomy->get_name() . "</b><br/>";
 		}
 		return $message;
 	}
