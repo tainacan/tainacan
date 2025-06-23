@@ -37,6 +37,28 @@ export default function getCollectionIdFromPossibleTemplateEdition() {
                 }
             }
         }
+    } else if ( typeof queryParams.get('p') == 'string' && queryParams.get('p').indexOf('/wp_template/') === 0 ) {
+        
+        // Extracts collectionId from a string like /wp_template/theme-slug//single-tnc_col_123_item
+        let postId = queryParams.get('p');
+
+        postId = postId.split('single-tnc_col_');
+            
+        if (postId.length == 2) {
+            postId = postId[1];
+
+            if (typeof postId == 'string') {
+                postId = postId.split('_item');
+
+                if (postId.length == 2) {
+                    postId = postId[0];
+
+                    const collectionId = !isNaN(postId) ? Number(postId) : false;
+
+                    return collectionId;
+                }
+            }
+        }
     }
 
     return false;

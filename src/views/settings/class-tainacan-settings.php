@@ -183,6 +183,20 @@ class Settings extends Pages {
 		) );
 
 		$this->create_tainacan_setting( array(
+			'id' => 'override_taxonomy_term_items_archive_template',
+			'section' => 'tainacan_settings_theme_templates',
+			'title' => __( 'Taxonomy term items page', 'tainacan' ),
+			'label' => __( 'Replace WordPress blog-like template with a faceted search', 'tainacan' ),
+			'description' => __( 'Enable this option to override the WordPress default blog-list-like template and display the faceted search in the taxonomy term items page, incluiding filters and custom view modes.', 'tainacan' ),
+			'type' => 'boolean',
+			'input_type' => 'checkbox',
+			'input_disabled' => defined( 'TAINACAN_ENABLE_TAXONOMY_TERM_THE_CONTENT_FILTER' ),
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'default' => defined( 'TAINACAN_ENABLE_TAXONOMY_TERM_THE_CONTENT_FILTER' ) ? TAINACAN_ENABLE_TAXONOMY_TERM_THE_CONTENT_FILTER : false,
+			'forced_value' => defined( 'TAINACAN_ENABLE_TAXONOMY_TERM_THE_CONTENT_FILTER' ) ? TAINACAN_ENABLE_TAXONOMY_TERM_THE_CONTENT_FILTER : null
+		) );
+
+		$this->create_tainacan_setting( array(
 			'id' => 'override_repository_items_archive_template',
 			'section' => 'tainacan_settings_theme_templates',
 			'title' => __( 'Repository items page', 'tainacan' ),

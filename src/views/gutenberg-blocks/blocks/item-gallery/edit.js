@@ -17,6 +17,7 @@ const ServerSideRender = wp.serverSideRender;
 const { InspectorControls, useBlockProps, store } = wp.blockEditor;
 
 const { useSelect } = wp.data;
+const { useEffect } = wp.element;
 
 import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
 import pick from 'lodash/pick';
@@ -59,20 +60,22 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
     const className = blockProps.className;
 
     // Obtains block's client id to render it on save function
-    setAttributes({ blockId: clientId });
-
+    useEffect(() => {
+        setAttributes({ blockId: clientId });
+	}, [ clientId ]);
+    
     // Checks if we are in template mode, if so, gets the collection Id from URL.
-    if ( !templateMode ) {
-        const possibleCollectionId = getCollectionIdFromPossibleTemplateEdition();
-        if (possibleCollectionId) {
-            collectionId = String(possibleCollectionId);
-            templateMode = true;
-            setAttributes({ 
-                collectionId: collectionId,
-                templateMode: templateMode
-            });
+    useEffect(() => {
+        if ( !templateMode || ( templateMode && !collectionId ) ) {
+            const possibleCollectionId = getCollectionIdFromPossibleTemplateEdition();
+            if ( possibleCollectionId ) {
+                setAttributes({ 
+                    collectionId: String(possibleCollectionId),
+                    templateMode: true
+                });
+            }
         }
-    }
+    }, [ templateMode, collectionId ]);
 
     // Get available image sizes
     const {	imageSizes } = useSelect(

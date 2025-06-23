@@ -1,4 +1,7 @@
 const { __ } = wp.i18n;
+
+const { useEffect } = wp.element;
+
 const { Button, Placeholder, ToolbarDropdownMenu, SVG, Path } = wp.components;
 
 const ServerSideRender = wp.serverSideRender;
@@ -40,17 +43,17 @@ export default function ({ attributes, setAttributes, isSelected }) {
     const className = blockProps.className;
 
     // Checks if we are in template mode, if so, gets the collection Id from URL.
-    if ( !templateMode ) {
-        const possibleCollectionId = getCollectionIdFromPossibleTemplateEdition();
-        if (possibleCollectionId) {
-            collectionId = possibleCollectionId;
-            templateMode = true
-            setAttributes({ 
-                collectionId: collectionId,
-                templateMode: templateMode
-            });
+    useEffect(() => {
+        if ( !templateMode || ( templateMode && !collectionId ) ) {
+            const possibleCollectionId = getCollectionIdFromPossibleTemplateEdition();
+            if ( possibleCollectionId ) {
+                setAttributes({ 
+                    collectionId: possibleCollectionId,
+                    templateMode: true
+                });
+            }
         }
-    }
+    }, [ templateMode, collectionId ]);
     
     return <div { ...blockProps }>
 

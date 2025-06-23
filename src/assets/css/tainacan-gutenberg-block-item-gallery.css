@@ -558,7 +558,6 @@ button.swiper-pagination-bullet {
   justify-content: center;
   gap: 20px;
   list-style: none !important;
-  margin: 0px auto !important;
   padding: 0px !important;
   max-width: var(--tainacan-media-thumbs-carousel-width, 100%);
   width: var(--tainacan-media-thumbs-carousel-width, 100%);
@@ -833,6 +832,7 @@ button.swiper-pagination-bullet {
   max-width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
   object-fit: cover;
   object-position: center;
+  height: auto;
 }
 .tainacan-media-component__swiper-thumbs li.swiper-slide.has-fixed-height {
   width: auto;

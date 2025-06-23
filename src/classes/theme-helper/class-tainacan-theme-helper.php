@@ -36,7 +36,11 @@ class Theme_Helper {
 				true !== TAINACAN_DISABLE_ITEM_THE_CONTENT_FILTER
 			)
 		) {
+			// Classic themes
 			add_filter( 'the_content', [$this, 'the_content_filter_item'] );
+
+			// FSE Block themes
+			add_action( 'init', [$this, 'register_block_templates_for_item_single'] );
 		}
 
 		if ( 
@@ -60,7 +64,24 @@ class Theme_Helper {
 				true === TAINACAN_ENABLE_COLLECTION_THE_CONTENT_FILTER
 			)
 		) {
+			// Classic themes
 			$this->override_collection_items_archive_template();
+
+			// FSE Block themes
+			add_action( 'init', [$this, 'register_block_templates_for_collection_items_archive'] );
+		}
+
+		if ( 
+			( 
+				!defined('TAINACAN_ENABLE_TAXONOMY_TERM_THE_CONTENT_FILTER') &&
+				get_option( 'tainacan_option_override_taxonomy_term_items_archive_template', false )		
+			) || (
+				defined('TAINACAN_ENABLE_TAXONOMY_TERM_THE_CONTENT_FILTER') &&
+				true === TAINACAN_ENABLE_TAXONOMY_TERM_THE_CONTENT_FILTER
+			)
+		) {
+			// Classic themes
+			$this->override_taxonomy_term_items_archive_template();
 		}
 
 		if ( 
@@ -201,6 +222,39 @@ class Theme_Helper {
 	}
 
 	/**
+	 * Uses register_block_template to define a default block-based template
+	 * for the item single page in FSE themes
+	 */
+	function register_block_templates_for_item_single() {
+
+		if ( function_exists('register_block_template') && wp_is_block_theme() ) {
+			$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+			$collections          = $Tainacan_Collections->fetch( [], 'OBJECT' );
+
+			foreach( $collections as $collection ) {
+				register_block_template( 'tainacan//single-' . $collection->get_db_identifier(), [
+					'title'       => __( 'Single item', 'tainacan' ) . ': ' . $collection->get_name(),
+					'description' => __( 'An open template for use with single items. Includes a basic structure with site header, item gallery, metadata and footer.', 'tainacan' ),
+					'post_types'  => [ $collection->get_db_identifier() ],
+					'content'     => '<!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->
+
+					<!-- wp:group {"tagName":"main","layout":{"type":"constrained"}} -->
+					<main class="wp-block-group">
+
+						<!-- wp:tainacan/item-gallery { "templateMode": true, "collectionId": "' . $collection->get_id() . '" } /-->
+
+						<!-- wp:tainacan/item-metadata-sections { "templateMode":true,"isDynamic":true, "collectionId": "' . $collection->get_id() . '" } /-->
+
+					</main>
+					<!-- /wp:group -->
+
+					<!-- wp:template-part {"slug":"footer","area":"footer","tagName":"footer"} /-->'
+					] );
+			}
+		}
+	}
+
+	/**
 	 * Overrides the WordPress blog-like archive to display collection
 	 * items list using the faceted search block.
 	 * 
@@ -239,6 +293,130 @@ class Theme_Helper {
 		}
 	}
 
+	/**
+	 * Uses register_block_template to define a default block-based template
+	 * for the collection items archive page in FSE themes
+	 */
+	function register_block_templates_for_collection_items_archive() {
+
+		if ( function_exists('register_block_template') && wp_is_block_theme() ) {
+			$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+			$collections          = $Tainacan_Collections->fetch( [], 'OBJECT' );
+
+			foreach( $collections as $collection ) {
+				register_block_template( 'tainacan//archive-' . $collection->get_db_identifier(), [
+					'title'       => __( 'List of items', 'tainacan' ) . ': ' . $collection->get_name(),
+					'description' => __( 'An open template for use with a lists of items. Includes a structure with site header, faceted search and footer.', 'tainacan' ),
+					'post_types'  => [ $collection->get_db_identifier() ],
+					'content'     => '<!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->
+
+					<!-- wp:group {"layout":{"type":"default"}} -->
+					<div class="wp-block-group">
+						
+						<!-- wp:tainacan/faceted-search {"collectionId": "' . $collection->get_id() . '", "listType":"collection"} -->
+							<div style="font-size:16px;--tainacan-base-font-size:16px;--tainacan-background-color:#ffffff;--tainacan-filter-menu-width-theme:20%;--tainacan-filters-inline-width:272px;--tainacan-input-color:#1d1d1d;--tainacan-input-background-color:#ffffff;--tainacan-input-border-color:#dbdbdb;--tainacan-label-color:#373839;--tainacan-info-color:#505253;--tainacan-heading-color:#000000;--tainacan-skeleton-color:#eeeeee;--tainacan-item-background-color:#ffffff;--tainacan-item-hover-background-color:#f2f2f2;--tainacan-item-heading-hover-background-color:#dbdbdb;--tainacan-primary:#d9eced;--tainacan-secondary:#187181" class="wp-block-tainacan-faceted-search"><main id="tainacan-items-page" data-module="faceted-search" data-collection-id="' . $collection->get_id() . '" data-default-view-mode="masonry" data-is-forced-view-mode="false" data-enabled-view-modes="" data-hide-filters="false" data-hide-hide-filters-button="false" data-hide-search="false" data-hide-advanced-search="false" data-hide-displayed-metadata-button="false" data-hide-pagination-area="false" data-hide-sorting-area="false" data-hide-items-thumbnail="false" data-hide-sort-by-button="false" data-hide-exposers-button="false" data-hide-items-per-page-button="false" data-default-items-per-page="12" data-hide-go-to-page-button="false" data-show-filters-button-inside-search-control="false" data-start-with-filters-hidden="false" data-filters-as-modal="false" data-show-inline-view-mode-options="false" data-show-fullscreen-with-view-modes="false" data-default-order="ASC" data-default-orderby="date" data-default-orderby-meta="" data-default-orderby-type="" data-should-not-hide-filters-on-mobile="false" data-hide-filter-collapses="false" data-display-filters-horizontally="false"></main></div>
+						<!-- /wp:tainacan/faceted-search -->
+
+					</div>
+					<!-- /wp:group -->
+
+					<!-- wp:template-part {"slug":"footer","area":"footer","tagName":"footer"} /-->'
+					] );
+			}
+		}
+	}
+
+
+	/**
+	 * Overrides the WordPress blog-like archive to display taxonomy term
+	 * items list using the faceted search block.
+	 * 
+	 * @return string HTML containing the faceted search block for items
+	 */
+	public function override_taxonomy_term_items_archive_template() {
+
+		if ( is_admin() )
+			return;
+
+		// Classic themes
+		if ( !wp_is_block_theme() ) {
+
+			add_action('loop_start', function( $query ) {
+				
+				if ( !$query->is_main_query() || get_query_var('tainacan_repository_archive') == 1 )
+					return;
+
+				$term = get_queried_object();
+	
+				if ( isset($term->taxonomy) && $this->is_taxonomy_a_tainacan_tax($term->taxonomy) ) {
+					$tax_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($term->taxonomy);
+					$tax = \Tainacan\Repositories\Taxonomies::get_instance()->fetch($tax_id);
+					
+					if ( $tax ) {
+						$post_types = $tax->get_enabled_post_types();
+						
+						if (sizeof($post_types))
+							return;
+					};
+					
+					ob_start();
+				}
+			});
+
+			add_action('loop_end', function( $query ) {
+
+				if ( !$query->is_main_query() || get_query_var('tainacan_repository_archive') == 1 )
+					return;
+
+				$term = get_queried_object();
+	
+				if ( isset($term->taxonomy) && $this->is_taxonomy_a_tainacan_tax($term->taxonomy)) {
+					$tax_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($term->taxonomy);
+					$tax = \Tainacan\Repositories\Taxonomies::get_instance()->fetch($tax_id);
+					
+					if ( $tax ) {
+						$post_types = $tax->get_enabled_post_types();
+
+						if (sizeof($post_types))
+							return;
+					}
+
+					$theme_archive_content = ob_get_clean();
+					$tainacan_archive_content = \Tainacan\Theme_Helper::get_tainacan_items_list(array());
+					echo $tainacan_archive_content;
+				}
+			});
+
+		// Block-based FSE themes
+		} else {
+
+			add_filter('render_block', function($block_content, $block) {
+				
+				if ( $block['blockName'] !== 'core/query' || get_query_var('tainacan_repository_archive') == 1  )
+					return $block_content;
+
+				$term = get_queried_object();
+	
+				if ( isset($term->taxonomy) && $this->is_taxonomy_a_tainacan_tax($term->taxonomy)) {
+					$tax_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($term->taxonomy);
+					$tax = \Tainacan\Repositories\Taxonomies::get_instance()->fetch($tax_id);
+					
+					if ( $tax ) {
+						$post_types = $tax->get_enabled_post_types();
+						
+						if (sizeof($post_types))
+							return $block_content;
+					}
+
+					return \Tainacan\Theme_Helper::get_tainacan_items_list(array());
+				}
+				
+				return $block_content;
+
+			}, 10, 2);
+		}
+	}
+
 
 	/**
 	 * Overrides the WordPress blog-like archive to display repository-level
@@ -259,25 +437,9 @@ class Theme_Helper {
 				if ( !$query->is_main_query() )
 					return;
 
-				if ( get_query_var('tainacan_repository_archive') == 1 ) {
+				if ( get_query_var('tainacan_repository_archive') == 1 )
 					ob_start();
-				} else {
-					$term = get_queried_object();
-		
-					if ( isset($term->taxonomy) && $this->is_taxonomy_a_tainacan_tax($term->taxonomy) ) {
-						$tax_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($term->taxonomy);
-						$tax = \Tainacan\Repositories\Taxonomies::get_instance()->fetch($tax_id);
-						
-						if ( $tax ) {
-							$post_types = $tax->get_enabled_post_types();
-							
-							if (sizeof($post_types))
-								return;
-						};
-						
-						ob_start();
-					}
-				}
+				
 			});
 				
 			add_action('loop_end', function( $query ) {
@@ -289,25 +451,6 @@ class Theme_Helper {
 					$theme_archive_content = ob_get_clean();
 					$tainacan_archive_content = \Tainacan\Theme_Helper::get_tainacan_items_list(array());
 					echo $tainacan_archive_content;
-
-				} else {
-					$term = get_queried_object();
-		
-					if ( isset($term->taxonomy) && $this->is_taxonomy_a_tainacan_tax($term->taxonomy)) {
-						$tax_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($term->taxonomy);
-						$tax = \Tainacan\Repositories\Taxonomies::get_instance()->fetch($tax_id);
-						
-						if ( $tax ) {
-							$post_types = $tax->get_enabled_post_types();
-
-							if (sizeof($post_types))
-								return;
-						}
-
-						$theme_archive_content = ob_get_clean();
-						$tainacan_archive_content = \Tainacan\Theme_Helper::get_tainacan_items_list(array());
-						echo $tainacan_archive_content;
-					}
 				}
 			});
 
@@ -319,26 +462,9 @@ class Theme_Helper {
 				if ( $block['blockName'] !== 'core/query' )
 					return $block_content;
 
-				if ( get_query_var('tainacan_repository_archive') == 1 ) {
+				if ( get_query_var('tainacan_repository_archive') == 1 )
 					return \Tainacan\Theme_Helper::get_tainacan_items_list(array());
 
-				} else {
-					$term = get_queried_object();
-		
-					if ( isset($term->taxonomy) && $this->is_taxonomy_a_tainacan_tax($term->taxonomy)) {
-						$tax_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($term->taxonomy);
-						$tax = \Tainacan\Repositories\Taxonomies::get_instance()->fetch($tax_id);
-						
-						if ( $tax ) {
-							$post_types = $tax->get_enabled_post_types();
-							
-							if (sizeof($post_types))
-								return $block_content;
-						}
-
-						return \Tainacan\Theme_Helper::get_tainacan_items_list(array());
-					}
-				}
 				return $block_content;
 
 			}, 10, 2);

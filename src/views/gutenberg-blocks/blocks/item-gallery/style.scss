@@ -33,7 +33,6 @@
         justify-content: center;
         gap: 20px;
         list-style: none !important;
-        margin: 0px auto !important;
         padding: 0px !important;
         max-width: var(--tainacan-media-thumbs-carousel-width, 100%);
         width: var(--tainacan-media-thumbs-carousel-width, 100%);
@@ -320,7 +319,8 @@
                 width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
                 max-width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
                 object-fit: cover;
-                object-position: center
+                object-position: center;
+                height: auto;
             }
         }
         &.has-fixed-height {

@@ -37,10 +37,10 @@ export default function ({ attributes, setAttributes, isSelected }) {
 
     useEffect(() => {
         setContent();
-    }, []);
+    }, [ itemId, collectionId, isDynamic, templateMode ]);
 
     function setContent() {
-
+        
         if (collectionId) {
 
             isLoading = true;
@@ -109,18 +109,17 @@ export default function ({ attributes, setAttributes, isSelected }) {
     }
 
     // Checks if we are in template mode, if so, gets the collection Id from URL.
-    if ( !templateMode ) {
-        const possibleCollectionId = getCollectionIdFromPossibleTemplateEdition();
-        if (possibleCollectionId) {
-            collectionId = possibleCollectionId;
-            templateMode = true
-            setAttributes({ 
-                collectionId: collectionId,
-                templateMode: templateMode
-            });
-            setContent();
+    useEffect(() => {
+        if ( !templateMode || ( templateMode && !collectionId ) ) {
+            const possibleCollectionId = getCollectionIdFromPossibleTemplateEdition();
+            if ( possibleCollectionId ) {
+                setAttributes({ 
+                    collectionId: possibleCollectionId,
+                    templateMode: true
+                });
+            }
         }
-    }
+    }, [ templateMode, collectionId ]);
     
     return <div { ...blockProps }>
 
