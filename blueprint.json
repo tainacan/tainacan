@@ -24,10 +24,19 @@
             "slug": "tainacan"
         }
     ],
+    "constants": {
+		"WP_DEBUG": true,
+        "WP_DEBUG_DISPLAY": true,
+        "WP_DEBUG_LOG": true
+	},
     "steps": [
         {
-            "step": "setSiteLanguage",
-            "language": "pt_BR"
+            "step": "wp-cli",
+            "command": "wp language core install pt_BR"
+        },
+        {
+            "step": "wp-cli",
+            "command": "wp site switch-language pt_BR"
         },
         {
             "step": "setSiteOptions",
@@ -35,10 +44,6 @@
                 "blogname": "Tainacan Demonstration",
                 "permalink_structure": "/%postname%/"
             }
-        },
-        {
-            "step": "wp-cli",
-            "command": "wp plugin is-active hello-dolly && wp plugin deactivate hello-dolly && wp plugin delete hello-dolly"
         }
     ]
 }
