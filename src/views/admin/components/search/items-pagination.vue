@@ -41,6 +41,7 @@
                         :model-value="itemsPerPage"
                         aria-controls="items-list-results"
                         aria-labelledby="items-per-page-select"
+                        :disabled="itemsPerPageOptions.length <= 1"
                         @update:model-value="onChangeItemsPerPage">
                     <template 
                             v-for="(itemsPerPageOption, index) of itemsPerPageOptions"
@@ -132,11 +133,23 @@ export default {
             return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));    
         },
         itemsPerPageOptions() {
-            const defaultItemsPerPageOptions = [12, 24, 48, this.maxItemsPerPage];
-            if (!isNaN(this.itemsPerPage) && !defaultItemsPerPageOptions.includes(this.itemsPerPage))
-                defaultItemsPerPageOptions.push(this.itemsPerPage);
+            const defaultItemsPerPageOptions = [];
             
-            return defaultItemsPerPageOptions.sort();
+            if ( 12 < this.maxItemsPerPage )
+                defaultItemsPerPageOptions.push(12);
+            
+            if ( 24 < this.maxItemsPerPage )
+                defaultItemsPerPageOptions.push(24);
+            
+            if ( 48 < this.maxItemsPerPage )
+                defaultItemsPerPageOptions.push(48);
+            
+            defaultItemsPerPageOptions.push(this.maxItemsPerPage);
+
+            if (!isNaN(this.itemsPerPage) && !defaultItemsPerPageOptions.includes(this.itemsPerPage))
+                defaultItemsPerPageOptions.push(Number(this.itemsPerPage));
+            
+            return defaultItemsPerPageOptions.sort((a,b) => a - b);
         }
     },
     watch: {

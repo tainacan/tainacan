@@ -173,19 +173,13 @@
                             :label="$i18n.get('label_activities_per_page')">
                         <b-select
                                 :model-value="activitiesPerPage"
-                                :disabled="activities.length <= 0"
+                                :disabled="activities.length <= 0 || activitiesPerPageOptions.length <= 1"
                                 @update:model-value="onChangeActivitiesPerPage">
-                            <option value="12">
-                                12
-                            </option>
-                            <option value="24">
-                                24
-                            </option>
-                            <option value="48">
-                                48
-                            </option>
-                            <option :value="maxActivitiesPerPage">
-                                {{ maxActivitiesPerPage }}
+                           <option 
+                                    v-for="perPageOption of activitiesPerPageOptions"
+                                    :key="perPageOption"
+                                    :value="perPageOption">
+                                {{ perPageOption }}
                             </option>
                         </b-select>
                     </b-field>
@@ -251,6 +245,25 @@
                         moment(activity['log_date'], 'YYYY-MM-DD h:mm:ss').format('DD/MM/YYYY, hh:mm:ss');
 
                 return activitiesList;
+            },
+            activitiesPerPageOptions() {
+                const defaultActivitiesPerPageOptions = [];
+                
+                if ( 12 < this.maxActivitiesPerPage )
+                    defaultActivitiesPerPageOptions.push(12);
+                
+                if ( 24 < this.maxActivitiesPerPage )
+                    defaultActivitiesPerPageOptions.push(24);
+                
+                if ( 48 < this.maxActivitiesPerPage )
+                    defaultActivitiesPerPageOptions.push(48);
+                
+                defaultActivitiesPerPageOptions.push(this.maxActivitiesPerPage);
+
+                if (!isNaN(this.activitiesPerPage) && !defaultActivitiesPerPageOptions.includes(this.activitiesPerPage))
+                    defaultActivitiesPerPageOptions.push(Number(this.activitiesPerPage));
+                
+                return defaultActivitiesPerPageOptions.sort((a,b) => a - b);
             }
         },
         created() {

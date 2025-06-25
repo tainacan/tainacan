@@ -415,19 +415,13 @@
                             <b-select
                                     :aria-label="$i18n.get('label_collections_per_page')"
                                     :model-value="collectionsPerPage"
-                                    :disabled="collections.length <= 0" 
+                                    :disabled="collections.length <= 0 || collectionsPerPageOptions.length <= 1" 
                                     @update:model-value="onChangeCollectionsPerPage">
-                                <option value="12">
-                                    12
-                                </option>
-                                <option value="24">
-                                    24
-                                </option>
-                                <option value="48">
-                                    48
-                                </option>
-                                <option :value="maxCollectionsPerPage">
-                                    {{ maxCollectionsPerPage }}
+                                <option 
+                                        v-for="perPageOption of collectionsPerPageOptions"
+                                        :key="perPageOption"
+                                        :value="perPageOption">
+                                    {{ perPageOption }}
                                 </option>
                             </b-select>
                         </b-field>
@@ -514,6 +508,25 @@ export default {
 
             return this.orderBy;
         },
+        collectionsPerPageOptions() {
+            const defaultCollectionsPerPageOptions = [];
+            
+            if ( 12 < this.maxCollectionsPerPage )
+                defaultCollectionsPerPageOptions.push(12);
+            
+            if ( 24 < this.maxCollectionsPerPage )
+                defaultCollectionsPerPageOptions.push(24);
+            
+            if ( 48 < this.maxCollectionsPerPage )
+                defaultCollectionsPerPageOptions.push(48);
+            
+            defaultCollectionsPerPageOptions.push(this.maxCollectionsPerPage);
+
+            if (!isNaN(this.collectionsPerPage) && !defaultCollectionsPerPageOptions.includes(this.collectionsPerPage))
+                defaultCollectionsPerPageOptions.push(Number(this.collectionsPerPage));
+            
+            return defaultCollectionsPerPageOptions.sort((a,b) => a - b);
+        }
     },
     created() {
         this.collectionsPerPage = this.$userPrefs.get('collections_per_page');

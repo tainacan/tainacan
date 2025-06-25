@@ -256,19 +256,13 @@
                             <b-select
                                     :aria-label="$i18n.get('label_taxonomies_per_page')"
                                     :model-value="taxonomiesPerPage"
-                                    :disabled="taxonomies.length <= 0"
+                                    :disabled="taxonomies.length <= 0 || taxonomiesPerPageOptions.length <= 1"
                                     @update:model-value="onChangePerPage">
-                                <option value="12">
-                                    12
-                                </option>
-                                <option value="24">
-                                    24
-                                </option>
-                                <option value="48">
-                                    48
-                                </option>
-                                <option :value="maxTaxonomiesPerPage">
-                                    {{ maxTaxonomiesPerPage }}
+                                <option 
+                                        v-for="perPageOption of taxonomiesPerPageOptions"
+                                        :key="perPageOption"
+                                        :value="perPageOption">
+                                    {{ perPageOption }}
                                 </option>
                             </b-select>
                         </b-field>
@@ -337,6 +331,25 @@
 
                 return this.orderBy;
             },
+            taxonomiesPerPageOptions() {
+                const defaultTaxonomiesPerPageOptions = [];
+                
+                if ( 12 < this.maxTaxonomiesPerPage )
+                    defaultTaxonomiesPerPageOptions.push(12);
+                
+                if ( 24 < this.maxTaxonomiesPerPage )
+                    defaultTaxonomiesPerPageOptions.push(24);
+                
+                if ( 48 < this.maxTaxonomiesPerPage )
+                    defaultTaxonomiesPerPageOptions.push(48);
+                
+                defaultTaxonomiesPerPageOptions.push(this.maxTaxonomiesPerPage);
+
+                if (!isNaN(this.taxonomiesPerPage) && !defaultTaxonomiesPerPageOptions.includes(this.taxonomiesPerPage))
+                    defaultTaxonomiesPerPageOptions.push(Number(this.taxonomiesPerPage));
+                
+                return defaultTaxonomiesPerPageOptions.sort((a,b) => a - b);
+            }
         },
         created() {
             this.taxonomiesPerPage = this.$userPrefs.get('taxonomies_per_page');

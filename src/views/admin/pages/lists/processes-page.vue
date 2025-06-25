@@ -120,19 +120,13 @@
                             :label="$i18n.get('label_processes_per_page')">
                         <b-select
                                 :model-value="processesPerPage"
-                                :disabled="processes.length <= 0"
+                                :disabled="processes.length <= 0 || processesPerPageOptions.length <= 1"
                                 @update:model-value="onChangeProcessesPerPage">
-                            <option value="12">
-                                12
-                            </option>
-                            <option value="24">
-                                24
-                            </option>
-                            <option value="48">
-                                48
-                            </option>
-                            <option :value="maxProcessesPerPage">
-                                {{ maxProcessesPerPage }}
+                           <option 
+                                    v-for="perPageOption of processesPerPageOptions"
+                                    :key="perPageOption"
+                                    :value="perPageOption">
+                                {{ perPageOption }}
                             </option>
                         </b-select>
                     </b-field>
@@ -183,6 +177,25 @@
             ...mapGetters('bgprocess', {
                'processes': 'getProcesses'
             }),
+            processesPerPageOptions() {
+                const defaultProcessesPerPageOptions = [];
+                
+                if ( 12 < this.maxProcessesPerPage )
+                    defaultProcessesPerPageOptions.push(12);
+                
+                if ( 24 < this.maxProcessesPerPage )
+                    defaultProcessesPerPageOptions.push(24);
+                
+                if ( 48 < this.maxProcessesPerPage )
+                    defaultProcessesPerPageOptions.push(48);
+                
+                defaultProcessesPerPageOptions.push(this.maxProcessesPerPage);
+
+                if (!isNaN(this.processesPerPage) && !defaultProcessesPerPageOptions.includes(this.processesPerPage))
+                    defaultProcessesPerPageOptions.push(Number(this.processesPerPage));
+                
+                return defaultProcessesPerPageOptions.sort((a,b) => a - b);
+            }
         },
         created() {
             this.processesPerPage = this.$userPrefs.get('processes_per_page');
