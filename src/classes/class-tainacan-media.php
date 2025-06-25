@@ -261,7 +261,11 @@ class Media {
 
 	public function index_pdf_content($file, $item_id) {
 
-		if ( ! defined('TAINACAN_INDEX_PDF_CONTENT') || true !== TAINACAN_INDEX_PDF_CONTENT ) {
+		if ( ! (
+			defined('TAINACAN_INDEX_PDF_CONTENT') 
+				? ( true === TAINACAN_INDEX_PDF_CONTENT )
+				: !get_option( 'tainacan_option_index_pdf_content', false ) 
+		) ) {
 			return;
 		}
 

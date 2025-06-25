@@ -66,7 +66,7 @@ class Settings extends Pages {
 			'section' => 'tainacan_settings_search_and_performance',
 			'type' => 'number',
 			'input_type' => 'number',
-			'input_attrs' => 'min=0',
+			'input_attrs' => 'min=1',
 			'input_disabled' => defined('TAINACAN_API_MAX_ITEMS_PER_PAGE'),
 			'description' => sprintf( __( 'Number of items to show in search results. The default is %s and larger numbers should be avoided as it impacts in your server load time.', 'tainacan' ), ( defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? TAINACAN_API_MAX_ITEMS_PER_PAGE : 96 ) ),
 			'sanitize_callback' => 'absint',
@@ -124,7 +124,7 @@ class Settings extends Pages {
 			'description' => __( 'Check this option to have filter values being reloaded every time a new filter is applied for displaing only options that will result in some item count. If disabled, this can increase the search results speed well.', 'tainacan' ),
 			'type' => 'boolean',
 			'input_type' => 'checkbox',
-			'input_disabled' => defined('TAINACAN_FACETS_ENABLE_FILTER_ITEMS'),
+			'input_disabled' => defined('TAINACAN_FACETS_DISABLE_FILTER_ITEMS'),
 			'sanitize_callback' => 'rest_sanitize_boolean',
 			'default' => defined('TAINACAN_FACETS_DISABLE_FILTER_ITEMS') ? !TAINACAN_FACETS_DISABLE_FILTER_ITEMS : true,
 			'forced_value' => defined('TAINACAN_FACETS_DISABLE_FILTER_ITEMS') ? !TAINACAN_FACETS_DISABLE_FILTER_ITEMS : null

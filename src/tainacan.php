@@ -22,7 +22,7 @@ $TAINACAN_BASE_URL = plugins_url('', __FILE__);
 const TAINACAN_BASE_DIR     = __DIR__;
 const TAINACAN_API_DIR     = __DIR__ . '/classes/api/';
 const TAINACAN_CLASSES_DIR = __DIR__ . '/classes/';
-$TAINACAN_API_MAX_ITEMS_PER_PAGE = defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? TAINACAN_API_MAX_ITEMS_PER_PAGE : 96;
+$TAINACAN_API_MAX_ITEMS_PER_PAGE = defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? TAINACAN_API_MAX_ITEMS_PER_PAGE : get_option('tainacan_option_search_results_per_page', 96);
 require_once(TAINACAN_CLASSES_DIR . 'tainacan-creator.php');
 require_once(TAINACAN_API_DIR     . 'tainacan-rest-creator.php');
 require_once('migrations.php');

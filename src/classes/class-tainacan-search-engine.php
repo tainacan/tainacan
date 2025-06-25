@@ -32,7 +32,11 @@ class Search_Engine {
 		$this->ajax_request = $ajax_query ? true : false;
 		$this->options = [];
 
-		if (!defined('TAINACAN_DISABLE_DEFAULT_SEARCH_ENGINE') || TAINACAN_DISABLE_DEFAULT_SEARCH_ENGINE !== true) {
+		if ( !(
+				defined('TAINACAN_DISABLE_DEFAULT_SEARCH_ENGINE') 
+					? ( true === TAINACAN_DISABLE_DEFAULT_SEARCH_ENGINE )
+					: !get_option('tainacan_option_enable_default_search_engine', true) 
+		) ) {
 			$this->search_hooks();
 		}
 	}
@@ -178,7 +182,11 @@ class Search_Engine {
 			if ( empty($search_meta_query) ) return '';
 			
 			$content_index_meta = '';
-			if ( defined('TAINACAN_INDEX_PDF_CONTENT') && true === TAINACAN_INDEX_PDF_CONTENT ) {
+			if ( 
+				defined('TAINACAN_INDEX_PDF_CONTENT') 
+					? ( true === TAINACAN_INDEX_PDF_CONTENT )
+					: get_option( 'tainacan_option_index_pdf_content', false ) 
+			) {
 				$content_index_meta_meta_key = \TAINACAN\Media::$content_index_meta;
 				$content_index_meta = "OR (m.meta_key='{$content_index_meta_meta_key}')";
 			}

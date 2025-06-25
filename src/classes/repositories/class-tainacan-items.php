@@ -366,7 +366,11 @@ class Items extends Repository {
 			$args['orderby'] = $new_order;
 		}
 
-		if ( defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') && true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY ) {
+		if ( 
+			defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') 
+				? ( true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY )
+				: get_option( 'tainacan_option_enable_relationship_metaquery', true )
+		) {
 			$args = $this->parse_relationship_metaquery($args);
 		}
 
