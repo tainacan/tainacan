@@ -28,13 +28,9 @@ class Theme_Helper {
 
 		// Add support for Tainacan templates, in case a theme does not support it
 		if ( 
-			( 
-				!defined('TAINACAN_DISABLE_ITEM_THE_CONTENT_FILTER') &&
-				get_option( 'tainacan_option_override_item_single_template', true )
-			) || (
-				defined('TAINACAN_DISABLE_ITEM_THE_CONTENT_FILTER') &&
-				true !== TAINACAN_DISABLE_ITEM_THE_CONTENT_FILTER
-			)
+			defined('TAINACAN_DISABLE_ITEM_THE_CONTENT_FILTER')
+				? ( true !== TAINACAN_DISABLE_ITEM_THE_CONTENT_FILTER )
+				: get_option( 'tainacan_option_override_item_single_template', true )
 		) {
 			$this->override_item_single_template();
 
@@ -42,25 +38,17 @@ class Theme_Helper {
 		}
 
 		if ( 
-			( 
-				!defined('TAINACAN_DISABLE_TAXONOMY_THE_CONTENT_FILTER') &&
-				get_option( 'tainacan_option_override_taxonomy_single_template', true )		
-			) || (
-				defined('TAINACAN_DISABLE_TAXONOMY_THE_CONTENT_FILTER') &&
-				true !== TAINACAN_DISABLE_TAXONOMY_THE_CONTENT_FILTER
-			)
+			defined('TAINACAN_DISABLE_TAXONOMY_THE_CONTENT_FILTER')
+				? ( true !== TAINACAN_DISABLE_TAXONOMY_THE_CONTENT_FILTER )
+				: get_option( 'tainacan_option_override_taxonomy_single_template', true )	
 		) {
 			$this->override_taxonomy_single_template();
 		}
 
 		if ( 
-			( 
-				!defined('TAINACAN_ENABLE_COLLECTION_THE_CONTENT_FILTER') &&
-				get_option( 'tainacan_option_override_collection_items_archive_template', false )		
-			) || (
-				defined('TAINACAN_ENABLE_COLLECTION_THE_CONTENT_FILTER') &&
-				true === TAINACAN_ENABLE_COLLECTION_THE_CONTENT_FILTER
-			)
+			defined('TAINACAN_ENABLE_COLLECTION_THE_CONTENT_FILTER') 
+				? ( true === TAINACAN_ENABLE_COLLECTION_THE_CONTENT_FILTER )
+        		: get_option('tainacan_option_override_collection_items_archive_template', false) 
 		) {
 			$this->override_collection_items_archive_template();
 
@@ -68,25 +56,17 @@ class Theme_Helper {
 		}
 
 		if ( 
-			( 
-				!defined('TAINACAN_ENABLE_TAXONOMY_TERM_THE_CONTENT_FILTER') &&
-				get_option( 'tainacan_option_override_taxonomy_term_items_archive_template', false )		
-			) || (
-				defined('TAINACAN_ENABLE_TAXONOMY_TERM_THE_CONTENT_FILTER') &&
-				true === TAINACAN_ENABLE_TAXONOMY_TERM_THE_CONTENT_FILTER
-			)
+			defined('TAINACAN_ENABLE_TAXONOMY_TERM_THE_CONTENT_FILTER')
+				? ( true === TAINACAN_ENABLE_TAXONOMY_TERM_THE_CONTENT_FILTER )
+				: get_option( 'tainacan_option_override_taxonomy_term_items_archive_template', false )
 		) {
 			$this->override_taxonomy_term_items_archive_template();
 		}
 
-		if ( 
-			( 
-				!defined('TAINACAN_ENABLE_REPOSITORY_THE_CONTENT_FILTER') &&
-				get_option( 'tainacan_option_override_repository_items_archive_template', false )		
-			) || (
-				defined('TAINACAN_ENABLE_REPOSITORY_THE_CONTENT_FILTER') &&
-				true === TAINACAN_ENABLE_REPOSITORY_THE_CONTENT_FILTER
-			)
+		if (
+			defined('TAINACAN_ENABLE_REPOSITORY_THE_CONTENT_FILTER')
+				? ( true === TAINACAN_ENABLE_REPOSITORY_THE_CONTENT_FILTER )
+				: get_option( 'tainacan_option_override_repository_items_archive_template', false )
 		) {
 			$this->override_repository_items_archive_template();
 		}
