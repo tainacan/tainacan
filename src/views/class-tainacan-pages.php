@@ -262,9 +262,8 @@ abstract class Pages {
 				false === TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH
 			),
 			'tainacan_enable_relationship_metaquery' => ( 
-				defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') 
-					? ( true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY )
-					: get_option( 'tainacan_option_enable_relationship_metaquery', true )
+				defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') &&
+				true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY
 			),
 			'has_permalinks_structure' => get_option('permalink_structure') !== ''
 		];

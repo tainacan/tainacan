@@ -103,20 +103,6 @@ class Settings extends Pages {
 		) );
 
 		$this->create_tainacan_setting( array(
-			'id' => 'enable_relationship_metaquery',
-			'section' => 'tainacan_settings_search_and_performance',
-			'title' => __( 'Metadados relacionados', 'tainacan' ),
-			'label' => __( 'Search in related metadata of related items', 'tainacan' ),
-			'description' => __( 'Check this option to enable Tainacan\'s textual search in metadata other than title of itens related items. If disabled it may improve the search performance.', 'tainacan' ),
-			'type' => 'boolean',
-			'input_type' => 'checkbox',
-			'input_disabled' => defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY'),
-			'sanitize_callback' => 'rest_sanitize_boolean',
-			'default' => defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') ? TAINACAN_ENABLE_RELATIONSHIP_METAQUERY : true,
-			'forced_value' => defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') ? TAINACAN_ENABLE_RELATIONSHIP_METAQUERY : null
-		) );
-
-		$this->create_tainacan_setting( array(
 			'id' => 'facets_enable_filter_items',
 			'section' => 'tainacan_settings_search_and_performance',
 			'title' => __( 'Filters dynamic values', 'tainacan' ),
