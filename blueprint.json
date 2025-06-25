@@ -1,13 +1,10 @@
 {
 	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
-    "landingPage": "/wp-admin/",
+    "landingPage": "/wp-admin/admin.php?page=tainacan_admin#/home",
     "login": true,
     "preferredVersions": {
         "php": "8.4",
         "wp": "6.8"
-    },
-    "siteOptions": {
-        "blogname": "Tainacan Demonstration"
     },
     "meta": {
         "title": "Tainacan Demonstration Blueprint",
@@ -18,10 +15,30 @@
         "intl": true,
         "networking": true
     },
+    "extraLibraries": [
+        "wp-cli"
+    ],
     "plugins": [
         {
             "resource": "wordpress.org/plugins",
             "slug": "tainacan"
+        }
+    ],
+    "steps": [
+        {
+            "step": "setSiteLanguage",
+            "language": "pt_BR"
+        },
+        {
+            "step": "setSiteOptions",
+            "options": {
+                "blogname": "Tainacan Demonstration",
+                "permalink_structure": "/%postname%/"
+            }
+        },
+        {
+            "step": "wp-cli",
+            "command": "plugin uninstall hello-dolly --deactivate"
         }
     ]
 }
