@@ -38,7 +38,7 @@
         },
         {
             "step": "wp-cli",
-            "command": "plugin uninstall hello-dolly --deactivate"
+            "command": "wp plugin is-active hello-dolly && wp plugin deactivate hello-dolly && wp plugin delete hello-dolly"
         }
     ]
 }
