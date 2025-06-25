@@ -155,7 +155,6 @@
             },
             openActivityDetailsModal(activity) {
                 this.$buefy.modal.open({
-                    parent: this,
                     component: ActivityDetailsModal,
                     props: {
                         activityId: activity.id,

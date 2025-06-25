@@ -486,7 +486,6 @@ export default {
         },
         deleteOneCollection(collectionId) {
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
@@ -525,7 +524,6 @@ export default {
         },
         deleteSelectedCollections() {
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',

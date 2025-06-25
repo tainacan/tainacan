@@ -522,7 +522,6 @@ export default {
         removeTerm(term) {
 
             this.$buefy.modal.open({
-                parent: this,
                 component: TermDeletionDialog,
                 props: {
                     message: term.total_children && term.total_children != '0' ?  this.$i18n.get('info_warning_term_with_child') : this.$i18n.get('info_warning_selected_term_delete'),
@@ -552,7 +551,6 @@ export default {
         deleteSelectedTerms() {
 
             this.$buefy.modal.open({
-                parent: this,
                 component: TermDeletionDialog,
                 props: {
                     message: this.$i18n.get('info_warning_some_terms_with_child'),
@@ -582,7 +580,6 @@ export default {
         updateSelectedTermsParent() {
 
             this.$buefy.modal.open({
-                parent: this,
                 component: TermParentSelectionDialog,
                 props: {
                     amountOfTerms: this.amountOfTermsSelected,
@@ -727,7 +724,6 @@ export default {
         multipleInsertion({ parentId, parentName }) {
 
             this.$buefy.modal.open({
-                parent: this,
                 component: TermMultipleInsertionDialog,
                 props: {
                     excludeTree: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : false, 

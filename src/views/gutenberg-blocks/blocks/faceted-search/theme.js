@@ -22,7 +22,7 @@ import {
     Toast,
     Pagination,
     Numberinput
-} from '@ntohq/buefy-next';
+} from 'buefy';
 import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
 import VueBlurHash from 'another-vue3-blurhash';

@@ -196,7 +196,6 @@
             },
             openCheckboxModal() {
                 this.$buefy.modal.open({
-                    parent: this,
                     component: CheckboxRadioFilterInput,
                     props: {
                         //parent: parent,

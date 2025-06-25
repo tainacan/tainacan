@@ -28,7 +28,7 @@ import {
     Snackbar,
     Toast,
     Numberinput
-} from '@ntohq/buefy-next';
+} from 'buefy';
 import FloatingVue from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
 import VueBlurHash from 'another-vue3-blurhash';

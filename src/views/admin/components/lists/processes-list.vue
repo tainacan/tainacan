@@ -418,7 +418,6 @@
             },
             deleteOneProcess(index) {
                 this.$buefy.modal.open({
-                    parent: this,
                     component: CustomDialog,
                     props: {
                         icon: 'alert',
@@ -436,7 +435,6 @@
             },
             deleteSelected() {
                 this.$buefy.modal.open({
-                    parent: this,
                     component: CustomDialog,
                     props: {
                         icon: 'alert',
@@ -487,7 +485,6 @@
             pauseProcess(index) {
 
                 this.$buefy.modal.open({
-                    parent: this,
                     component: CustomDialog,
                     props: {
                         icon: 'alert',

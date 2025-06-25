@@ -148,7 +148,6 @@
         methods: {
             openCapabilitiyEditModal(capabilityKey) {
                 this.$buefy.modal.open({
-                    parent: this,
                     component: CapabilityEditionModal,
                     props: {
                         capability: this.capabilities[capabilityKey],

@@ -805,7 +805,6 @@ export default {
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
@@ -1497,7 +1496,6 @@ export default {
         },
         setTextDocument() {
             this.$buefy.modal.open({
-                parent: this,
                 component: ItemDocumentTextModal,
                 canCancel: false,
                 width: 640,
@@ -1534,7 +1532,6 @@ export default {
         },
         setURLDocument() {
             this.$buefy.modal.open({
-                parent: this,
                 component: ItemDocumentURLModal,
                 canCancel: false,
                 width: 860,
@@ -1635,7 +1632,6 @@ export default {
         },
         deleteAttachment(attachment) {
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
@@ -1762,7 +1758,6 @@ export default {
         },
         onDeletePermanently() {
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',

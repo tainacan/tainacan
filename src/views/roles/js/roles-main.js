@@ -12,7 +12,7 @@ import {
     Dropdown,
     Dialog,
     Checkbox
-} from '@ntohq/buefy-next';
+} from 'buefy';
 
 import { I18NPlugin } from './wp-i18n-plugin';
 

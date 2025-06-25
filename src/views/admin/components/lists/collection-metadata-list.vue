@@ -860,7 +860,6 @@ export default {
         },
         removeMetadatum(removedMetadatum, sectionIndex) {
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
@@ -889,7 +888,6 @@ export default {
         },
         removeMetadataSection(removedMetadataSection) {
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',

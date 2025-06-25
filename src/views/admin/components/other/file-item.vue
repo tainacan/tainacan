@@ -78,7 +78,6 @@ export default {
         },
         openPreviewModal() {
             this.$buefy.modal.open({
-                parent: this,
                 component: FilePreviewModal,
                 props: {
                     file: this.file

@@ -180,7 +180,6 @@
                 let onlyItemIds = this.newItems.map(item => item.id);
 
                 this.$buefy.modal.open({
-                    parent: this,
                     component: BulkEditionModal,
                     props: {
                         modalTitle: this.$i18n.get('info_editing_items_in_bulk'),

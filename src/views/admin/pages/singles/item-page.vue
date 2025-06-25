@@ -706,7 +706,6 @@
             },
             openExposersModal() {
                 this.$buefy.modal.open({
-                    parent: this,
                     component: ExposersModal,
                     hasModalCard: true,
                     props: { 
@@ -722,7 +721,6 @@
             },
             openActivitiesModal() {
                 this.$buefy.modal.open({
-                    parent: this,
                     component: ActivitiesPage,
                     customClass: 'tainacan-modal',
                     canCancel: ['escape', 'outside']

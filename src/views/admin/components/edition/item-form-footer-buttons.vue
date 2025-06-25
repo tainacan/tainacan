@@ -260,7 +260,6 @@ export default {
         openItemCreationStatusDialog() {
 
             this.$buefy.modal.open({
-                parent: this,
                 component: ItemCreationStatusDialog,
                 canCancel: false,
                 props: {

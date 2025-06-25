@@ -307,7 +307,6 @@ export default {
                 return;
 
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'userfill',

@@ -2588,7 +2588,6 @@ export default {
         },
         openBulkEditionModal(){
             this.$buefy.modal.open({
-                parent: this,
                 component: defineAsyncComponent(() => import('../modals/bulk-edition-modal.vue')),
                 props: {
                     modalTitle: this.$i18n.get('info_editing_items_in_bulk'),
@@ -2624,7 +2623,6 @@ export default {
         makeCopiesOfOneItem(itemId) {
 
             this.$buefy.modal.open({
-                parent: this,
                 component: defineAsyncComponent(() => import('../other/item-copy-dialog.vue')),
                 canCancel: false,
                 props: {
@@ -2645,7 +2643,6 @@ export default {
         },
         untrashOneItem(itemId) {
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
@@ -2672,7 +2669,6 @@ export default {
         },
         deleteOneItem(itemId) {
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
@@ -2695,7 +2691,6 @@ export default {
         },
         untrashSelectedItems(){
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
@@ -2733,7 +2728,6 @@ export default {
         },
         deleteSelectedItems() {
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',

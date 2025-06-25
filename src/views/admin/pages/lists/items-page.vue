@@ -1090,7 +1090,6 @@
             ]),
             onOpenImportersModal() {
                 this.$buefy.modal.open({
-                    parent: this,
                     component: AvailableImportersModal,
                     hasModalCard: true,
                     props: { 
@@ -1104,7 +1103,6 @@
             },
             openExposersModal(selectedItems) {
                 this.$buefy.modal.open({
-                    parent: this,
                     component: ExposersModal,
                     hasModalCard: true,
                     props: { 
@@ -1120,7 +1118,6 @@
             },
             onOpenCollectionsModal() {
                 this.$buefy.modal.open({
-                    parent: this,
                     component: CollectionsModal,
                     hasModalCard: true,
                     trapFocus: true,
@@ -1448,7 +1445,6 @@
             },
             openMetatadaSortingWarningDialog({ offerCheckbox }) {
                 this.$buefy.modal.open({
-                        parent: this,
                         component: CustomDialog,
                         props: {
                             icon: 'alert',

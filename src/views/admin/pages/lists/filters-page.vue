@@ -491,7 +491,6 @@ export default {
         }
         if ((this.openedFilterId != '' && this.openedFilterId != undefined) || hasUnsavedForms ) {
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',

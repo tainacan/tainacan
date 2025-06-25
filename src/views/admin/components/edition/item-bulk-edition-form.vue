@@ -313,7 +313,6 @@ export default {
             let onlyItemIds = this.uploadedItems.map(item => item.id);
 
             this.$buefy.modal.open({
-                parent: this,
                 component: BulkEditionModal,
                 props: {
                     modalTitle: this.$i18n.get('info_editing_items_in_bulk'),
@@ -330,7 +329,6 @@ export default {
         },
         deleteOneItem(itemId, index) {
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',

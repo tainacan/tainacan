@@ -356,7 +356,6 @@
             },
             deleteOneTaxonomy(taxonomyId) {
                 this.$buefy.modal.open({
-                    parent: this,
                     component: CustomDialog,
                     props: {
                         icon: 'alert',
@@ -395,7 +394,6 @@
             },
             deleteSelected() {
                 this.$buefy.modal.open({
-                    parent: this,
                     component: CustomDialog,
                     props: {
                         icon: 'alert',

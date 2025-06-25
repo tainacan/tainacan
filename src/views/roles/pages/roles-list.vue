@@ -290,7 +290,6 @@
             },
             removeRole(roleSlug) {
                 this.$buefy.modal.open({
-                    parent: this,
                     component: CustomDialog,
                     props: {
                         icon: 'alert',

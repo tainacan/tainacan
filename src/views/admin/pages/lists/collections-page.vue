@@ -668,7 +668,6 @@ export default {
         },
         onOpenImportersModal() {
             this.$buefy.modal.open({
-                parent: this,
                 component: AvailableImportersModal,
                 hasModalCard: true,
                 trapFocus: true,
@@ -678,7 +677,6 @@ export default {
         },
         onOpenCollectionCreationModal() {
             this.$buefy.modal.open({
-                parent: this,
                 component: CollectionCreationModal,
                 hasModalCard: true,
                 trapFocus: true,
