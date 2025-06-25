@@ -1,0 +1,27 @@
+{
+	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
+    "landingPage": "/wp-admin/",
+    "login": true,
+    "preferredVersions": {
+        "php": "8.4",
+        "wp": "6.8"
+    },
+    "siteOptions": {
+        "blogname": "Tainacan Demonstration"
+    },
+    "meta": {
+        "title": "Tainacan Demonstration Blueprint",
+        "description": "Provides a pre-configured demonstration environment for the Tainacan plugin. It automates the setup of collections, items, metadatas and filters within a WordPress Playground instance, allowing users to quickly experience the plugin's features without a full installation.",
+        "author": "FabricioDeQueiroz, CaioSulz and harry-cmartin"
+    },
+    "features": {
+        "intl": true,
+        "networking": true
+    },
+    "plugins": [
+        {
+            "resource": "wordpress.org/plugins",
+            "slug": "tainacan"
+        }
+    ]
+}
