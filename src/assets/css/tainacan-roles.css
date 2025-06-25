@@ -16152,46 +16152,46 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
   white-space: nowrap;
   max-height: 2.5em;
 }
-.table-container .table-wrapper table.tainacan-table tbody tr td p .tainacan-relationship-group {
+.table-container .table-wrapper table.tainacan-table tbody tr td p :deep(.tainacan-relationship-group) {
   display: inline-flex;
   align-items: center;
 }
-.table-container .table-wrapper table.tainacan-table tbody tr td p .tainacan-relationship-group > .multivalue-separator {
+.table-container .table-wrapper table.tainacan-table tbody tr td p :deep(.tainacan-relationship-group) > .multivalue-separator {
   display: inline-block;
   max-height: unset;
   margin: 0 1.25em;
   height: 2em;
   width: 1px;
 }
-.table-container .table-wrapper table.tainacan-table tbody tr td p .tainacan-relationship-group .tainacan-relationship-metadatum {
+.table-container .table-wrapper table.tainacan-table tbody tr td p :deep(.tainacan-relationship-group) .tainacan-relationship-metadatum {
   display: inline-flex;
   align-items: center;
   max-height: 2.5em;
 }
-.table-container .table-wrapper table.tainacan-table tbody tr td p .tainacan-relationship-group .tainacan-relationship-metadatum .tainacan-relationship-metadatum-header {
+.table-container .table-wrapper table.tainacan-table tbody tr td p :deep(.tainacan-relationship-group) .tainacan-relationship-metadatum .tainacan-relationship-metadatum-header {
   display: inline-flex;
 }
-.table-container .table-wrapper table.tainacan-table tbody tr td p .tainacan-relationship-group .tainacan-relationship-metadatum .tainacan-relationship-metadatum-header .label {
+.table-container .table-wrapper table.tainacan-table tbody tr td p :deep(.tainacan-relationship-group) .tainacan-relationship-metadatum .tainacan-relationship-metadatum-header .label {
   font-size: 1.125em;
 }
-.table-container .table-wrapper table.tainacan-table tbody tr td p .tainacan-relationship-group .tainacan-relationship-metadatum .tainacan-metadatum {
+.table-container .table-wrapper table.tainacan-table tbody tr td p :deep(.tainacan-relationship-group) .tainacan-relationship-metadatum .tainacan-metadatum {
   display: inline-flex;
   align-items: baseline;
   margin-left: 0.75em;
 }
-.table-container .table-wrapper table.tainacan-table tbody tr td p .tainacan-relationship-group .tainacan-relationship-metadatum .tainacan-metadatum .label {
+.table-container .table-wrapper table.tainacan-table tbody tr td p :deep(.tainacan-relationship-group) .tainacan-relationship-metadatum .tainacan-metadatum .label {
   margin-top: 0;
   margin-bottom: 0;
   margin-right: 0.5em;
   font-size: 0.95em;
 }
-.table-container .table-wrapper table.tainacan-table tbody tr td p .tainacan-relationship-group .tainacan-relationship-metadatum .tainacan-metadatum p {
+.table-container .table-wrapper table.tainacan-table tbody tr td p :deep(.tainacan-relationship-group) .tainacan-relationship-metadatum .tainacan-metadatum p {
   font-size: 1em;
 }
 .table-container .table-wrapper table.tainacan-table tbody tr td a {
   text-decoration: none !important;
 }
-.table-container .table-wrapper table.tainacan-table tbody tr td .tainacan-compound-group {
+.table-container .table-wrapper table.tainacan-table tbody tr td :deep(.tainacan-compound-group) {
   display: inline-block;
   font-size: 1.125em;
   margin-top: -0.25em;
@@ -16200,14 +16200,14 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
   overflow: hidden;
   max-width: 100%;
 }
-.table-container .table-wrapper table.tainacan-table tbody tr td .tainacan-compound-group * {
+.table-container .table-wrapper table.tainacan-table tbody tr td :deep(.tainacan-compound-group) * {
   display: inline;
 }
-.table-container .table-wrapper table.tainacan-table tbody tr td .tainacan-compound-group .label {
+.table-container .table-wrapper table.tainacan-table tbody tr td :deep(.tainacan-compound-group) .label {
   font-size: 1em;
   color: var(--tainacan-info-color);
 }
-.table-container .table-wrapper table.tainacan-table tbody tr td .tainacan-compound-group .label:not(:first-child)::before {
+.table-container .table-wrapper table.tainacan-table tbody tr td :deep(.tainacan-compound-group) .label:not(:first-child)::before {
   content: ", ";
   font-size: 1em;
   font-weight: normal;
@@ -16216,14 +16216,14 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
   margin-right: 0.35em;
   margin-left: -0.15em;
 }
-.table-container .table-wrapper table.tainacan-table tbody tr td .tainacan-compound-group .label::after {
+.table-container .table-wrapper table.tainacan-table tbody tr td :deep(.tainacan-compound-group) .label::after {
   content: ": ";
   font-size: 1em;
   color: var(--tainacan-info-color);
   display: inline-block;
   margin-right: 0.15em;
 }
-.table-container .table-wrapper table.tainacan-table tbody tr td .tainacan-compound-group p {
+.table-container .table-wrapper table.tainacan-table tbody tr td :deep(.tainacan-compound-group) p {
   font-size: 1em !important;
   line-height: 1.25em !important;
 }

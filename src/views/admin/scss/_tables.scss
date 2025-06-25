@@ -221,7 +221,7 @@
                             white-space: nowrap;
                             max-height: 2.5em;
 
-                            .tainacan-relationship-group {
+                            :deep(.tainacan-relationship-group) {
                                 display: inline-flex;
                                 align-items: center;
 
@@ -265,7 +265,7 @@
                         a {
                             text-decoration: none !important;
                         }
-                        .tainacan-compound-group {
+                        :deep(.tainacan-compound-group) {
                             display: inline-block;
                             font-size: 1.125em;
                             margin-top: -0.25em;
