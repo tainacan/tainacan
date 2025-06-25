@@ -69,7 +69,7 @@
                         hideCancel: true,
                         confirmText: this.$i18n.get('label_go_to_permalinks'),
                         onConfirm: () => {
-                            window.location.href = tainacan_plugin.admin_url + 'options-permalink.php';
+                            window.location.href = tainacan_plugin.admin_url.replace('/admin.php', '/options-permalink.php');
                         }
                     },
                     ariaRole: 'alertdialog',
