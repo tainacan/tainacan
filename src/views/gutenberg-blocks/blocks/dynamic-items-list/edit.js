@@ -2,7 +2,7 @@ const { __, sprintf } = wp.i18n;
 
 const { Icon, ToolbarDropdownMenu, ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Placeholder, ColorPalette, BaseControl, PanelBody } = wp.components;
 
-const { createInterpolateElement } = wp.element;
+const { createInterpolateElement, useEffect } = wp.element;
 
 const { InspectorControls, BlockControls, useBlockProps, store } = wp.blockEditor;
 
@@ -180,15 +180,16 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
     }
 
     function setContent() {
-        isLoading = true;
-
-        setAttributes({
-            isLoading: isLoading
-        });
-
-        items = [];
         
         if (loadStrategy == 'parent') {
+
+            isLoading = true;
+
+            setAttributes({
+                isLoading: isLoading
+            });
+
+            items = [];
 
             if (layout !== 'mosaic') {
             
@@ -229,6 +230,14 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
             }
 
         } else if (loadStrategy == 'selection') {
+            
+            isLoading = true;
+
+            setAttributes({
+                isLoading: isLoading
+            });
+
+            items = [];
 
             if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
                 itemsRequestSource.cancel('Previous items search canceled.');
@@ -280,118 +289,123 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                     }
                         
                 });
-        } else {
+        } else if (searchURL) {
+            
+            isLoading = true;
 
-            if (searchURL) {
+            setAttributes({
+                isLoading: isLoading
+            });
 
-                if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
-                    itemsRequestSource.cancel('Previous items search canceled.');
+            items = [];
 
-                itemsRequestSource = axios.CancelToken.source();
-                
-                let endpoint = '/collection' + searchURL.split('#')[1].split('/collections')[1];
-                let query = endpoint.split('?')[1];
-                let queryObject = qs.parse(query);
+            if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
+                itemsRequestSource.cancel('Previous items search canceled.');
 
-                // Set up max items to be shown
-                if (maxItemsNumber != undefined && maxItemsNumber > 0)
-                    queryObject.perpage = maxItemsNumber;
-                else if (queryObject.perpage != undefined && queryObject.perpage > 0)
-                    setAttributes({ maxItemsNumber: Number(queryObject.perpage) });
-                else {
-                    queryObject.perpage = 12;
-                    setAttributes({ maxItemsNumber: 12 });
-                }
+            itemsRequestSource = axios.CancelToken.source();
+            
+            let endpoint = '/collection' + searchURL.split('#')[1].split('/collections')[1];
+            let query = endpoint.split('?')[1];
+            let queryObject = qs.parse(query);
 
-                // Set up sorting order
-                if (queryObject.order != '' && !showSearchBar)
-                    setAttributes({ order: queryObject.order });
-                else if (order != '')
-                    queryObject.order = order;
-                else {
-                    queryObject.order = 'asc';
-                    setAttributes({ order: 'asc' });
-                }
-                
-                // Set up sorting orderby
-                if (queryObject.orderby != '')
-                    setAttributes({ orderBy: queryObject.orderby });
-                else if (orderBy != 'date')
-                    queryObject.orderby = orderBy;
-                else {
-                    queryObject.orderby = 'date';
-                    setAttributes({ orderBy: 'date' });
-                }
-
-                // Set up sorting metakey (used by some orderby)
-                if (queryObject.metakey != '')
-                    setAttributes({ orderByMetaKey: queryObject.metakey });
-                else if (orderByMetaKey != '')
-                    queryObject.metakey = orderByMetaKey;
-                else {
-                    queryObject.metakey = '';
-                    setAttributes({ orderByMetaKey: '' });
-                }
-
-                // Set up search string
-                if (searchString != undefined)
-                    queryObject.search = searchString;
-                else if (queryObject.search != undefined)
-                    setAttributes({ searchString: queryObject.search });
-                else {
-                    delete queryObject.search;
-                    setAttributes({ searchString: undefined });
-                }
-
-                // Remove unecessary queries
-                delete queryObject.admin_view_mode;
-                delete queryObject.fetch_only_meta;
-                
-                endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
-                
-                tainacanApi.get(endpoint, { cancelToken: itemsRequestSource.token })
-                    .then(response => {
-                        
-                        if (layout !== 'mosaic') {
-                            
-                            for (let item of response.data.items)
-                                items.push(prepareItem(item));
-
-                            setAttributes({
-                                content: <div></div>,
-                                items: items,
-                                isLoading: false,
-                                itemsRequestSource: itemsRequestSource
-                            });
-
-                        } else {
-                            // Initializes some variables
-                            mosaicDensity = mosaicDensity ? Number(mosaicDensity) : 5;
-                            mosaicGridRows = mosaicGridRows ? Number(mosaicGridRows) : 3;
-                            mosaicGridColumns = mosaicGridColumns ? Number(mosaicGridColumns) : 3;
-                            mosaicHeight = mosaicHeight ? Number(mosaicHeight) : 280;
-                            mosaicItemFocalPoint = mosaicItemFocalPoint ? mosaicItemFocalPoint : { x: 0.5, y: 0.5 };
-                            sampleBackgroundImage = response.data.items && response.data.items[0] && response.data.items[0] ? getItemThumbnail(response.data.items[0], 'tainacan-medium') : ''; 
-
-                            const mosaicGroups = mosaicPartition(response.data.items);
-                            for (let mosaicGroup of mosaicGroups)
-                                items.push(prepareMosaicItem(mosaicGroup, mosaicGroups.length));
-
-                            setAttributes({
-                                content: <div></div>,
-                                items: items,
-                                isLoading: false,
-                                itemsRequestSource: itemsRequestSource,
-                                mosaicDensity: mosaicDensity,
-                                mosaicHeight: mosaicHeight,
-                                mosaicGridRows: mosaicGridRows,
-                                mosaicGridColumns: mosaicGridColumns,
-                                mosaicItemFocalPoint: mosaicItemFocalPoint,
-                                sampleBackgroundImage: sampleBackgroundImage
-                            });
-                        }
-                    });
+            // Set up max items to be shown
+            if (maxItemsNumber != undefined && maxItemsNumber > 0)
+                queryObject.perpage = maxItemsNumber;
+            else if (queryObject.perpage != undefined && queryObject.perpage > 0)
+                setAttributes({ maxItemsNumber: Number(queryObject.perpage) });
+            else {
+                queryObject.perpage = 12;
+                setAttributes({ maxItemsNumber: 12 });
             }
+
+            // Set up sorting order
+            if (queryObject.order != '' && !showSearchBar)
+                setAttributes({ order: queryObject.order });
+            else if (order != '')
+                queryObject.order = order;
+            else {
+                queryObject.order = 'asc';
+                setAttributes({ order: 'asc' });
+            }
+            
+            // Set up sorting orderby
+            if (queryObject.orderby != '')
+                setAttributes({ orderBy: queryObject.orderby });
+            else if (orderBy != 'date')
+                queryObject.orderby = orderBy;
+            else {
+                queryObject.orderby = 'date';
+                setAttributes({ orderBy: 'date' });
+            }
+
+            // Set up sorting metakey (used by some orderby)
+            if (queryObject.metakey != '')
+                setAttributes({ orderByMetaKey: queryObject.metakey });
+            else if (orderByMetaKey != '')
+                queryObject.metakey = orderByMetaKey;
+            else {
+                queryObject.metakey = '';
+                setAttributes({ orderByMetaKey: '' });
+            }
+
+            // Set up search string
+            if (searchString != undefined)
+                queryObject.search = searchString;
+            else if (queryObject.search != undefined)
+                setAttributes({ searchString: queryObject.search });
+            else {
+                delete queryObject.search;
+                setAttributes({ searchString: undefined });
+            }
+
+            // Remove unecessary queries
+            delete queryObject.admin_view_mode;
+            delete queryObject.fetch_only_meta;
+            
+            endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
+            
+            tainacanApi.get(endpoint, { cancelToken: itemsRequestSource.token })
+                .then(response => {
+                    
+                    if (layout !== 'mosaic') {
+                        
+                        for (let item of response.data.items)
+                            items.push(prepareItem(item));
+
+                        setAttributes({
+                            content: <div></div>,
+                            items: items,
+                            isLoading: false,
+                            itemsRequestSource: itemsRequestSource
+                        });
+
+                    } else {
+                        // Initializes some variables
+                        mosaicDensity = mosaicDensity ? Number(mosaicDensity) : 5;
+                        mosaicGridRows = mosaicGridRows ? Number(mosaicGridRows) : 3;
+                        mosaicGridColumns = mosaicGridColumns ? Number(mosaicGridColumns) : 3;
+                        mosaicHeight = mosaicHeight ? Number(mosaicHeight) : 280;
+                        mosaicItemFocalPoint = mosaicItemFocalPoint ? mosaicItemFocalPoint : { x: 0.5, y: 0.5 };
+                        sampleBackgroundImage = response.data.items && response.data.items[0] && response.data.items[0] ? getItemThumbnail(response.data.items[0], 'tainacan-medium') : ''; 
+
+                        const mosaicGroups = mosaicPartition(response.data.items);
+                        for (let mosaicGroup of mosaicGroups)
+                            items.push(prepareMosaicItem(mosaicGroup, mosaicGroups.length));
+
+                        setAttributes({
+                            content: <div></div>,
+                            items: items,
+                            isLoading: false,
+                            itemsRequestSource: itemsRequestSource,
+                            mosaicDensity: mosaicDensity,
+                            mosaicHeight: mosaicHeight,
+                            mosaicGridRows: mosaicGridRows,
+                            mosaicGridColumns: mosaicGridColumns,
+                            mosaicItemFocalPoint: mosaicItemFocalPoint,
+                            sampleBackgroundImage: sampleBackgroundImage
+                        });
+                    }
+                });
         }
     }
 
@@ -539,6 +553,10 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
     // Executed only on the first load of page
     if(content && content.length && content[0].type)
         setContent();
+
+    useEffect(() => {
+        setContent();
+    }, []);
     
     return content == 'preview' ? 
         <div className={className}>

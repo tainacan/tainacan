@@ -10,11 +10,11 @@ const TAINACAN_BLOCKS = [
 	'carousel-items-list' => [ 'set_script_translations' => true ],
 	'carousel-terms-list' => [ 'set_script_translations' => true ],
 	'carousel-collections-list' => [ 'set_script_translations' => true ],
-	'related-items-list' => [],
+	'related-items-list' => [ 'render_callback' => 'tainacan_blocks_render_related_items_list', 'keep_inner_blocks' => true ],
 	'terms-list' => [],
 	'faceted-search' => [],
 	'item-submission-form' => [],
-	'item-gallery' => [  'set_script_translations' => true, 'render_callback' => 'tainacan_blocks_render_items_gallery' ],
+	'item-gallery' => [ 'set_script_translations' => true, 'render_callback' => 'tainacan_blocks_render_items_gallery' ],
 	'item-metadata-sections' => ['render_callback' => 'tainacan_blocks_render_metadata_sections'],
 	'item-metadata-section' => ['render_callback' => 'tainacan_blocks_render_metadata_section'],
 	'item-metadata' => ['render_callback' => 'tainacan_blocks_render_item_metadata'],
@@ -136,8 +136,11 @@ function tainacan_blocks_register_block($block_slug, $options = [], $block_setti
 	// If there is a server side render callback, we add its render function
 	if ( isset($options['render_callback']) ) {
 		require_once( __DIR__ . '/blocks/' . $block_slug . '/save.php' );
+
 		$register_params['render_callback'] = $options['render_callback'];
-		$register_params['skip_inner_blocks'] = true;
+
+		if ( !isset($options['keep_inner_blocks']) || $options['keep_inner_blocks'] === false )
+			$register_params['skip_inner_blocks'] = true;
 
 	// Also, none of the rest is necessary regarding 
 	// blocks that are non server side, their content
