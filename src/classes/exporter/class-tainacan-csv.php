@@ -405,12 +405,13 @@ class CSV extends Exporter {
 					</div> 
 			</span>
 			<div class="control is-clearfix">
-				<label class="checkbox">
+				<label class="b-checkbox checkbox">
 					<input
 						type="checkbox" 
 						name="add_section_name" checked value="yes"
 						>
-					<?php _e('Yes', 'tainacan'); ?>
+					<span class="check"></span>
+					<span class="control-label"><?php _e('Yes', 'tainacan'); ?></span>
 				</label>
 			</div>
 		</div>
