@@ -41,7 +41,7 @@ class Export_Handler {
 			'name' => 'XLSX',
 			'description' => __('Allows you to export one collection to a XLSX file', 'tainacan'),
 			'slug' => 'xlsx',
-			'class_name' => '\Tainacan\Exporter\Xlsx_Exporter',
+			'class_name' => '\Tainacan\Exporter\XLSX_Exporter',
 			'manual_mapping' => false,
 			'manual_collection' => true
 		]);

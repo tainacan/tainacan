@@ -2,15 +2,15 @@
 
 namespace Tainacan\Exporter;
 
+use Tainacan;
+use Tainacan\Entities;
+use Tainacan\Exporter\Exporter;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use Tainacan\Exporter\Exporter;
-use Tainacan;
-use Tainacan\Entities;
 
-class Xlsx_Exporter extends Exporter {
+class XLSX_Exporter extends Exporter {
 
     private $collection_name;
     private $spreadsheet;
@@ -25,7 +25,7 @@ class Xlsx_Exporter extends Exporter {
 
         if ($current_collection = $this->get_current_collection_object()) {
             $name = $current_collection->get_name();
-            $this->collection_name = sanitize_title($name) . "_export.xlsx";
+            $this->collection_name = sanitize_title($name) . "_xlsx_export.xlsx";
         } else {
             $this->collection_name = "xlsx_export.xlsx";
         }
@@ -37,11 +37,10 @@ class Xlsx_Exporter extends Exporter {
         $this->set_default_options([
             'delimiter' => ',',
             'multivalued_delimiter' => '||',
-            'enclosure' => '"',
         ]);
     }
 
-    public function initializeWriter() {
+    public function initialize_writer() {
         if (!array_key_exists($this->collection_name, $this->get_output_files())) {
             $this->add_new_file($this->collection_name);
         }
@@ -57,7 +56,7 @@ class Xlsx_Exporter extends Exporter {
         }
     }
 
-    public function finalizeWriter() {
+    public function finalize_writer() {
         if ($this->spreadsheet) {
             $writer = new Xlsx($this->spreadsheet);
             $savePath = $this->tempFilePath ?: $this->filePath;
@@ -78,7 +77,7 @@ class Xlsx_Exporter extends Exporter {
 
     public function process_collections() {
 
-        $this->initializeWriter();
+        $this->initialize_writer();
         
 		$current_collection = $this->get_current_collection();
 		$collections = $this->get_collections();
@@ -105,7 +104,7 @@ class Xlsx_Exporter extends Exporter {
 
 		$this->process_footer($current_collection_item, $collection_definition);
 
-        $this->finalizeWriter();        
+        $this->finalize_writer();        
 
 		return parent::next_item();
 	}
@@ -118,7 +117,7 @@ class Xlsx_Exporter extends Exporter {
 
     private function process_footer($current_collection_item, $collection_definition) {
 		if ($current_collection_item > $collection_definition['total_items']) {
-			$this->output_footer();
+			parent::output_footer();
 		}
 	}
 
@@ -445,14 +444,11 @@ class Xlsx_Exporter extends Exporter {
 	}
 
     public function output_header() {
-        //$this->initializeWriter();
-
         $mapper = $this->get_current_mapper();
-
         $headerRowContents = [];
 
         if ($mapper) {
-            
+
             $inbcm_mapper = in_array($mapper->slug, ["inbcm-arquivistico", "inbcm-bibliografico", "inbcm-museologico"]);
 
             foreach ($mapper->metadata as $meta_slug => $meta) {
@@ -496,15 +492,35 @@ class Xlsx_Exporter extends Exporter {
             $sheet->setCellValue($cellCoordinate, $value);
             $col++;
         }
-
-        //$this->finalizeWriter();
     }
 
+    function get_compound_metadata_cell($meta) {
+		$enclosure = $this->get_option('enclosure');
+		$delimiter = $this->get_option('delimiter');
+		$multivalued_delimiter = $this->get_option('multivalued_delimiter');
 
-    public function output_footer() {
-        $this->finalizeWriter();
-    }
-
+		$metadata_type_options = $meta->get_metadatum()->get_metadata_type_options();
+		$initial_values = [];
+		foreach($metadata_type_options['children_order'] as $order) {
+			$initial_values[$order['id']] = "";
+		}
+		$values = ($meta->get_metadatum()->is_multiple() ? $meta->get_value(): [$meta->get_value()]);
+		$array_meta = [];
+		foreach($values as $value) {
+			$assoc_arr = array_reduce( $value, function ($result, $item) {
+				$metadatum_id = $item->get_metadatum()->get_id();
+				if ($item->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Relationship') {
+					$result[$metadatum_id] = $item->get_value();
+				} else {
+					$result[$metadatum_id] = $item->get_value_as_string();
+				}
+				return $result;
+			}, $initial_values);
+			
+			$array_meta[] = $this->str_putcsv($assoc_arr, $delimiter, $enclosure);
+		}
+		return implode($multivalued_delimiter, $array_meta);
+	}
 
     public function options_form() {
 		ob_start();
