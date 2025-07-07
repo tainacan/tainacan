@@ -302,11 +302,11 @@
   flex-direction: column;
   margin-bottom: 4px;
   gap: 1px;
+  font-size: 0.875em;
 }
 #tainacan-dashboard-app .postbox .tainacan-dashboard-links-list li a {
   border-radius: var(--tainacan-admin-button-border-radius, 8px);
   gap: 0.125rem;
-  font-size: 0.875em;
   font-weight: bold;
   line-height: 1.125em;
 }
@@ -316,6 +316,9 @@
 }
 #tainacan-dashboard-app .postbox .tainacan-dashboard-links-list li a:hover, #tainacan-dashboard-app .postbox .tainacan-dashboard-links-list li a:focus {
   text-decoration: underline;
+}
+#tainacan-dashboard-app .postbox .tainacan-dashboard-links-list li p {
+  margin-top: 0;
 }
 #tainacan-dashboard-app .postbox-container:has(.empty-container) + .postbox-container:has(.meta-box-sortables:empty) {
   display: none;

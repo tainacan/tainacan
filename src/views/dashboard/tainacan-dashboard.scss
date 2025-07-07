@@ -300,11 +300,11 @@
                 flex-direction: column;
                 margin-bottom: 4px;
                 gap: 1px;
+                font-size: 0.875em;
 
                 a {
                     border-radius: var(--tainacan-admin-button-border-radius, 8px);
                     gap: 0.125rem;
-                    font-size: 0.875em;
                     font-weight: bold;
                     line-height: 1.125em;
 
@@ -316,6 +316,9 @@
                     &:focus {
                         text-decoration: underline;
                     }
+                }
+                p {
+                    margin-top: 0;
                 }
             }
         }

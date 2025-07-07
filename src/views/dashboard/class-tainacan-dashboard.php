@@ -19,6 +19,11 @@ class Dashboard extends Pages {
 		'posts_per_feed' => 3,
 	);
 
+	public function init() {
+		parent::init();
+		add_action( 'wp_ajax_tainacan_fetch_dashboard_news', array($this, 'tainacan_ajax_fetch_dashboard_news') );
+	}
+
 	function add_admin_menu() {
 
 		// Main Page, Dashboard
@@ -58,8 +63,14 @@ class Dashboard extends Pages {
 
 		$dashboard_settings = array(
 			'disable_cards_sorting' => $this->has_admin_ui_option('disableDashboardCardsSorting'),
+			'ajax_url' => admin_url( 'admin-ajax.php' ),
+			'nonce'    => wp_create_nonce( 'tainacan_dashboard_news_nonce' ),
 		);
-		wp_localize_script( 'tainacan-dashboard-scripts', 'tainacan_dashboard', $dashboard_settings );
+		wp_localize_script(
+			'tainacan-dashboard-scripts',
+			'tainacan_dashboard',
+			$dashboard_settings
+		);
 	}
 
 	function load_page() {
@@ -527,9 +538,24 @@ class Dashboard extends Pages {
 
 	/**
 	 * Creates the display code for the news card,
+	 * featuring RSS feed from Tainacan website. At start
+	 * there is only the loading placeholder, since fetching 
+	 * is done via ajax.
+	 */
+	function tainacan_news_dashboard_card( $args = null ) {
+		?>
+		<ul id="tainacan-dashboard-news" class="tainacan-dashboard-links-list">
+			<p><em><?php echo esc_html__( 'Loading news…', 'tainacan' ); ?></em></p>
+		</ul>
+		<?php
+	}
+
+	/**
+	 * Creates the display code for the news card,
 	 * featuring RSS feed from Tainacan website
 	 */
-	function tainacan_news_dashboard_card($args = null) {
+	function tainacan_ajax_fetch_dashboard_news() {
+		check_ajax_referer( 'tainacan_dashboard_news_nonce', '_nonce' );
 
 		// Apply filters to allow customization
 		$feed_options = apply_filters('tainacan_dashboard_news_feed', $this->default_news_feed_options);
@@ -539,26 +565,16 @@ class Dashboard extends Pages {
 				
 		// Actually fetches the feed  (this function already caches the feed every 12 hours using wp transient)
 		$rss = fetch_feed($feed_options['feed_url']);
-		
+
 		// Checks if there was an error fetching the feed
 		if ( is_wp_error($rss) ) { 
-			?>
-				<ul class="tainacan-dashboard-links-list">
-					<li>
-						<p>
-						<?php 
-							printf(
-								__('The feed "%s" could not be loaded at the moment. <a href="%s" target="_blank" rel="noopener">Visit the website</a> to check its content.', 'tainacan'),
-								esc_html($feed_options['title']),
-								esc_url($feed_options['view_all_link'])
-							);
-						?>
-						</p>
-					</li>
-				</ul>
-			<?php
-
-			return;
+			wp_send_json_error([
+				'message' => sprintf(
+					__('The feed "%s" could not be loaded at the moment. <a href="%s" target="_blank" rel="noopener">Visit the website</a> to check its content.', 'tainacan'),
+					esc_html($feed_options['title']),
+					esc_url($feed_options['view_all_link'])
+				)
+			]);
 		}
 		
 		// Fetches the items from the feed
@@ -573,6 +589,8 @@ class Dashboard extends Pages {
 				'date' => $item->get_date('U')
 			);
 		}
+
+		ob_start();
     
 		if ( empty($feed_data) ) : ?>
 			<p><?php echo __( 'No news available at the moment.', 'tainacan' ); ?></p>
@@ -608,6 +626,9 @@ class Dashboard extends Pages {
 				</li>
 			</ul>
 		<?php endif;
+
+		$html = ob_get_clean();
+		wp_send_json_success( [ 'html' => $html ] );
 	}
 		
 	/**
