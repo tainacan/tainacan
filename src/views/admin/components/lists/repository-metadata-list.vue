@@ -407,22 +407,42 @@ export default {
             });
         },
         removeMetadatum(removedMetadatum) {
+            let metadatumName = '';
+            
+            if (removedMetadatum && typeof removedMetadatum === 'object') {
+                if (removedMetadatum.name !== undefined && removedMetadatum.name !== null && removedMetadatum.name !== '') {
+                    metadatumName = removedMetadatum.name;
+                } else if (removedMetadatum.id) {
+                    metadatumName = 'ID: ' + removedMetadatum.id;
+                }
+            }
+            
+            if (!metadatumName) {
+                metadatumName = this.$i18n.get('label_unnamed_metadatum') || 'Unnamed Metadatum';
+            }
+            
+            let message = this.$i18n.get('info_warning_metadatum_delete') || 'Do you really want to delete this metadatum?';
+            
+            if (message.endsWith('?')) {
+                message = message.substring(0, message.length - 1) + ' "' + metadatumName + '"?';
+            } else {
+                message = message + ' "' + metadatumName + '"';
+            }
+            
             this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
                     title: this.$i18n.get('label_warning'),
-                    message: this.$i18n.get('info_warning_metadatum_delete'),
+                    message: message,
                     onConfirm: () => { 
                         this.deleteMetadatum({
                             collectionId: this.collectionId,
                             metadatumId: removedMetadatum.id,
                             isRepositoryLevel: true
                         })
-                        .catch(() => {
-                            this.$console.log("Error deleting metadatum.")
-                        });
+                        .catch(() => {});
                     }
                 },
                 trapFocus: true,
