@@ -449,7 +449,7 @@ class XLSX_Exporter extends Exporter {
 
         if ($mapper) {
             foreach ($mapper->metadata as $meta_slug => $meta) {
-				$line[] = $meta['field'] ?? $meta_slug;
+				$headerRowContents[] = $meta['field'] ?? $meta_slug;
 			}
         } else {
             $headerRowContents = ['special_item_id'];
