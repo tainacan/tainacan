@@ -12,50 +12,65 @@ class Inbcm_Museological extends Mapper {
 
 		$this->metadata = [
 			'inbcm:numRegistro' => [
-				'label' => ('Nº de Registro')
+				'label' => __( 'Registration number', 'tainacan' ),
+				'field' => 'Nº de Registro'
 			],
 			'inbcm:outrosNum' => [
-				'label' => ('Outros Números')
+				'label' => __( 'Other numbers', 'tainacan' ),
+				'field' => 'Outros Números'
 			],
 			'inbcm:situacao' => [
-				'label' => ('Situação')
+				'label' => __( 'Situation', 'tainacan' ),
+				'field' => 'Situação',
 			],
 			'inbcm:denominacao' => [
-				'label' => ('Denominação')
+				'label' => __( 'Designation', 'tainacan'),
+				'field' => 'Denominação'
 			],
 			'inbcm:titulo' => [
-				'label' => ('Título'),
-                'core_metadatum' => 'title'
+				'label' => __( 'Title', 'tainacan' ),
+                'core_metadatum' => 'title',
+				'field' => 'Título'
 			],
 			'inbcm:autor' => [
-				'label' => ('Autor')
+				'label' => __( 'Author', 'tainacan' ),
+				'field' => 'Autor'
 			],
 			'inbcm:classificacao' => [
-				'label' => ('Classificação')
+				'label' => __( 'Classification', 'tainacan' ),
+				'field' => 'Classificação'
 			],
 			'inbcm:resumoDes' => [
-				'label' => ('Resumo Descritivo')
+				'label' => __( 'Descriptive Summary', 'tainacan' ),
+				'field' => 'Resumo Descritivo'
 			],
 			'inbcm:dimensoes' => [
-				'label' => ('Dimensões')
+				'label' => __( 'Dimensions', 'tainacan' ),
+				'field' => 'Dimensões'
 			],
 			'inbcm:matTecnica' => [
-				'label' => ('Material/Técnica')
+				'label' => __( 'Material/Technique', 'tainacan' ),
+				'field' => 'Material/Técnica'
 			],
 			'inbcm:conservacao' => [
-				'label' => ('Estado de Conservação')
+				'label' => __( 'Conservation status', 'tainacan' ),
+				'field' => 'Estado de Conservação'
 			],
 			'inbcm:localProd' => [
-				'label' => ('Local de Produção')
+				'label' => __( 'Production Site', 'tainacan' ),
+				'label' => 'Local de Produção'
 			],
 			'inbcm:dataProd' => [
-				'label' => ('Data de Produção')
+				'label' => __( 'Production Date', 'tainacan' ),
+				'field' => 'Data de Produção'
 			],
 			'inbcm:condReproducao' => [
-				'label' => ('Condições de Reprodução')
+				'label' => __( 'Reproduction Conditions', 'tainacan' ),
+				'field' => 'Condições de Reprodução'
 			],
 			'inbcm:midias' => [
-				'label' => ('Mídias Relacionadas')
+				'label' => __( 'Related media', 'tainacan' ),
+				'field' => 'Mídias Relacionadas'
 			]
 		];
 	}

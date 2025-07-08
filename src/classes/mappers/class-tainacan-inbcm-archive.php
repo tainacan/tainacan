@@ -14,53 +14,69 @@ class Inbcm_Archive extends Mapper {
 		/* Metadata should be set here to allow translable labels */ 
 		$this->metadata = [
 			'inbcm:codRef' => [
-				'label' =>('Cód. de Referência')
+				'label' => __( 'Reference Code', 'tainacan' ),
+				'field' => 'Cód. de Referência'
 			],
 			'inbcm:titulo' => [
-				'label' => ('Título'),
-                'core_metadatum' => 'title'
+				'label' => __( 'Title', 'tainacan' ),
+                'core_metadatum' => 'title',
+				'field' => 'Título'
 			],
 			'inbcm:data' => [
-				'label' => ('Data'),
+				'label' => __( 'Date', 'tainacan' ),
+				'field' => 'Data'
 			],
 			'inbcm:nivelDescricao' => [
-				'label' => ( 'Nível de Descrição')
+				'label' => __( 'Level of Description', 'tainacan' ),
+				'field' => 'Nível de Descrição'
 			],
 			'inbcm:dimSuporte' => [
-				'label' => ('Dimensão e suporte'),
+				'label' => __( 'Dimension and Support', 'tainacan' ),
+				'field' => 'Dimensão e suporte'
 			],
 			'inbcm:nomeProdutor' => [
-				'label' => ('Nome do Produtor')
+				'label' => __( 'Producer Name', 'tainacan' ),
+				'field' => 'Nome do Produtor'
 			],
 			'inbcm:biografia' => [
-				'label' => ('História administrativa / Biografia')
+				'label' => __( 'Administrative History / Biography', 'tainacan' ),
+				'field' => 'História administrativa / Biografia',
 			],
 			'inbcm:historiaArquivistica' => [
-				'label' => ('História Arquivística')
+				'label' => __( 'Archival History', 'tainacan' ),
+				'field' => 'História Arquivística'
 			],
 			'inbcm:procedencia' => [
-				'label' => ('Procedência')
+				'label' => __( 'Origin', 'tainacan' ),
+				'field' => 'Procedência'
 			],
 			'inbcm:conteudo' => [
-				'label' => ('Âmbito e Conteúdo')
+				'label' => __( 'Scope and Content', 'tainacan' ),
+				'field' => 'Âmbito e Conteúdo'
 			],
 			'inbcm:arranjo' => [
-				'label' => ('Sistema de Arranjo')
+				'label' => __( 'Arrangement System', 'tainacan' ),
+				'field' => 'Sistema de Arranjo'
 			],
 			'inbcm:reproducao' => [
-				'label' => ('Condições de Reprodução')
+				'label' => __( 'Reproduction Conditions', 'tainacan' ),
+				'field' => 'Condições de Reprodução'
 			],
 			'inbcm:originais' => [
-				'label' => ('Existência e Localização dos Originais')
+				'label' => __( 'Existence and Location of Originals', 'tainacan'),
+				'field' => 'Existência e Localização dos Originais'
 			],
 			'inbcm:conservacao' => [
-				'label' => ('Notas sobre conservação')
+				'label' => __( 'Conservvation Notes', 'tainacan' ),
+				'field' => 'Notas sobre conservação',
 			],
 			'inbcm:indexacao' => [
-				'label' => ('Pontos de acesso e indexação de assuntos')
+				'label' => __( 'Access Points and Subject Indexing', 'tainacan' ),
+				'field' => 'Pontos de acesso e indexação de assuntos'
 			],
 			'inbcm:midias' => [
-				'label' => ('Mídias Relacionadas')
+				'label' => __( 'Related media', 'tainacan' ),
+				'field' => 'Mídias Relacionadas'
 			]
 		];
 	}
