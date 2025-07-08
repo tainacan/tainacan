@@ -63,7 +63,6 @@ class Dashboard extends Pages {
 
 		$dashboard_settings = array(
 			'disable_cards_sorting' => $this->has_admin_ui_option('disableDashboardCardsSorting'),
-			'disable_news_card' => $this->has_admin_ui_option('hideDashboardNewsCard'),
 			'ajax_url' => admin_url( 'admin-ajax.php' ),
 			'nonce'    => wp_create_nonce( 'tainacan_dashboard_news_nonce' ),
 		);

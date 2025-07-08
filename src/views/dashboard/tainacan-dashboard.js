@@ -25,13 +25,6 @@ function tainacanSetupDashboardSettings() {
 
 function tainacanAjaxFetchNews() {
 
-    if ( tainacan_dashboard.disable_news_card )
-        return;
-
-    const newsContainer = document.getElementById('tainacan-dashboard-news');
-    if ( !newsContainer || newsContainer.offsetParent === null)
-        return;
-
     const data = new URLSearchParams();
     data.append('action', 'tainacan_fetch_dashboard_news');
     data.append('_nonce', tainacan_dashboard.nonce);
@@ -45,13 +38,16 @@ function tainacanAjaxFetchNews() {
     })
         .then(response => response.json())
         .then(response => {
-            if (response.success)
-                newsContainer.innerHTML = response.data.html;
-            else
-                newsContainer.innerHTML = '<p>' + response.data.message + '</p>';
+            const container = document.getElementById('tainacan-dashboard-news');
+            if (response.success) {
+                container.innerHTML = response.data.html;
+            } else {
+                container.innerHTML = '<p>' + response.data.message + '</p>';
+            }
         })
         .catch(error => {
             console.error('Error fetching dashboard news:', error);
-            newsContainer.innerHTML = '<p>Something went wrong while loading the news.</p>';
+            const container = document.getElementById('tainacan-dashboard-news');
+            container.innerHTML = '<p>Something went wrong while loading the news.</p>';
         });
 }
