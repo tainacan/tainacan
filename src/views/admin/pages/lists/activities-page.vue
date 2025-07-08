@@ -175,7 +175,7 @@
                                 :model-value="activitiesPerPage"
                                 :disabled="activities.length <= 0 || activitiesPerPageOptions.length <= 1"
                                 @update:model-value="onChangeActivitiesPerPage">
-                           <option 
+                            <option 
                                     v-for="perPageOption of activitiesPerPageOptions"
                                     :key="perPageOption"
                                     :value="perPageOption">

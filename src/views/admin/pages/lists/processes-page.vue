@@ -122,7 +122,7 @@
                                 :model-value="processesPerPage"
                                 :disabled="processes.length <= 0 || processesPerPageOptions.length <= 1"
                                 @update:model-value="onChangeProcessesPerPage">
-                           <option 
+                            <option 
                                     v-for="perPageOption of processesPerPageOptions"
                                     :key="perPageOption"
                                     :value="perPageOption">
