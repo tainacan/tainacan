@@ -2587,13 +2587,54 @@ export default {
             });
         },
         deleteOneItem(itemId) {
+            const item = this.items.find(item => item.id === itemId);
+            
+            let itemTitle = '';
+            
+            if (item) {
+                if (item.metadata) {
+                    for (const metaKey in item.metadata) {
+                        const meta = item.metadata[metaKey];
+                        if (meta.name && meta.name.toLowerCase() === 'title' && meta.value) {
+                            itemTitle = meta.value;
+                            break;
+                        }
+                    }
+                }
+                
+                if (!itemTitle && item.title) {
+                    itemTitle = item.title;
+                }
+                
+                if (!itemTitle) {
+                    itemTitle = this.$i18n.get('label_unnamed_item') || 'Unnamed Item';
+                }
+            } else {
+                itemTitle = 'Item #' + itemId;
+            }
+            
+            let message = '';
+            if (this.isOnTrash) {
+                message = this.$i18n.get('info_warning_item_delete');
+            } else {
+                message = this.$i18n.get('info_warning_item_trash');
+            }
+            
+            if (itemTitle) {
+                if (message.endsWith('?')) {
+                    message = message.substring(0, message.length - 1) + ' "' + itemTitle + '"?';
+                } else {
+                    message = message + ' "' + itemTitle + '"';
+                }
+            }
+            
             this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
                     title: this.$i18n.get('label_warning'),
-                    message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
+                    message: message,
                     onConfirm: () => {
                         this.$emit('update-is-loading', true);
 
@@ -2640,13 +2681,70 @@ export default {
             });
         },
         deleteSelectedItems() {
+            const selectedItemNames = [];
+            for (let i = 0; i < this.selectedItems.length; i++) {
+                const item = this.items.find(item => item.id === this.selectedItems[i]);
+                let itemTitle = '';
+                
+                if (item) {
+                    if (item.metadata) {
+                        for (const metaKey in item.metadata) {
+                            const meta = item.metadata[metaKey];
+                            if (meta.name && meta.name.toLowerCase() === 'title' && meta.value) {
+                                itemTitle = meta.value;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (!itemTitle && item.title) {
+                        itemTitle = item.title;
+                    }
+                    
+                    // Se encontrou um título, adiciona à lista
+                    if (itemTitle) {
+                        selectedItemNames.push(itemTitle);
+                    } else {
+                        selectedItemNames.push(this.$i18n.get('label_unnamed_item') || 'Unnamed Item');
+                    }
+                }
+            }
+            
+            let message = '';
+            if (this.isOnTrash) {
+                message = this.$i18n.get('info_warning_selected_items_delete') || 'Do you really want to permanently delete the selected items?';
+            } else {
+                message = this.$i18n.get('info_warning_selected_items_trash') || 'Do you really want to trash the selected items?';
+            }
+            
+            if (selectedItemNames.length > 0) {
+                let itemsText = '';
+                if (selectedItemNames.length === 1) {
+                    itemsText = ' "' + selectedItemNames[0] + '"';
+                } else if (selectedItemNames.length <= 3) {
+                    const lastItem = selectedItemNames.pop();
+                    itemsText = ' "' + selectedItemNames.join('", "') + '" ' + 
+                        (this.$i18n.get('label_and') || 'and') + ' "' + lastItem + '"';
+                } else {
+                    itemsText = ' "' + selectedItemNames.slice(0, 3).join('", "') + '" ' + 
+                        (this.$i18n.get('label_and') || 'and') + ' ' + (selectedItemNames.length - 3) + ' ' + 
+                        (this.$i18n.get('label_more') || 'more');
+                }
+                
+                if (message.endsWith('?')) {
+                    message = message.substring(0, message.length - 1) + itemsText + '?';
+                } else {
+                    message = message + itemsText;
+                }
+            }
+            
             this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
                     title: this.$i18n.get('label_warning'),
-                    message: this.isOnTrash ? this.$i18n.get('info_warning_selected_items_delete') : this.$i18n.get('info_warning_selected_items_trash'),
+                    message: message,
                     onConfirm: () => {
                         this.$emit('update-is-loading', true);
 
@@ -2953,5 +3051,4 @@ export default {
     }
 
 </style>
-
 
