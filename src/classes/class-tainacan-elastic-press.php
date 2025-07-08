@@ -143,6 +143,9 @@ class Elastic_Press {
 			'relationship_label',
 			'_thumbnail_id',
 			'_tnc_log',
+			'document_type',
+			'collection_id',
+			'has_thumbnail'
 		];
 		
 		// Get all registered metadata IDs from Tainacan
