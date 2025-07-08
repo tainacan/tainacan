@@ -39,7 +39,7 @@
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
                 :date-parser="(date) => dateParser(date)"
-                :years-range="[-200, 50]"
+                :years-range="uiConfig.datepicker.yearsRange"
                 :day-names="[
                     $i18n.get('datepicker_short_sunday'),
                     $i18n.get('datepicker_short_monday'),
@@ -69,6 +69,7 @@
 
 <script>
     import { dateInter } from "../../../js/mixins";
+    import UIConfig from '../../../js/ui-config';
     import { filterTypeMixin } from '../../../js/filter-types-mixin';
     import moment from 'moment';
 
@@ -82,6 +83,7 @@
         ],
         data() {
             return {
+                uiConfig: UIConfig,
                 value: null,
                 comparatorsObject: [],
                 comparator: '=', // =, !=, >, >=, <, <=

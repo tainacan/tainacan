@@ -19,7 +19,7 @@
                     :date-formatter="(date) => dateFormatter(date)"
                     :date-parser="(date) => dateParser(date)"
                     icon="calendar-today"
-                    :years-range="[-200, 100]"
+                    :years-range="uiConfig.datepicker.yearsRange"
                     :day-names="[
                         $i18n.get('datepicker_short_sunday'),
                         $i18n.get('datepicker_short_monday'),
@@ -64,7 +64,7 @@
                     :date-formatter="(date) => dateFormatter(date)"
                     :date-parser="(date) => dateParser(date)"
                     icon="calendar-today"
-                    :years-range="[-200, 50]"
+                    :years-range="uiConfig.datepicker.yearsRange"
                     :day-names="[
                         $i18n.get('datepicker_short_sunday'),
                         $i18n.get('datepicker_short_monday'),
@@ -97,19 +97,21 @@
 <script>
     import { dateInter } from "../../../js/mixins";
     import moment from 'moment';
+    import UIConfig from '../../../js/ui-config';
 
     export default {
-        mixins: [
-            dateInter, 
-        ],
+        name: 'FormDate',
+        mixins: [ dateInter ],
         props: {
+            metadatum: Object,
             value: [ String, Object, Array ]
         },
         emits: ['update:value'],
         data() {
             return {
-                min: [Date, undefined],
-                max: [Date, undefined],
+                min: undefined,
+                max: undefined,
+                uiConfig: UIConfig,
                 isTouched: false
             }
         },
