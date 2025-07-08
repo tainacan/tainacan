@@ -448,16 +448,9 @@ class XLSX_Exporter extends Exporter {
         $headerRowContents = [];
 
         if ($mapper) {
-
-            $inbcm_mapper = in_array($mapper->slug, ["inbcm-arquivistico", "inbcm-bibliografico", "inbcm-museologico"]);
-
             foreach ($mapper->metadata as $meta_slug => $meta) {
-                if($inbcm_mapper) {
-                    $headerRowContents[] = $meta['label']; 
-                }else{
-                    $headerRowContents[] = $meta_slug; 
-                }
-            }
+				$line[] = $meta['field'] ?? $meta_slug;
+			}
         } else {
             $headerRowContents = ['special_item_id'];
 
