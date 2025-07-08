@@ -12,73 +12,73 @@ use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 class XLSX_Exporter extends Exporter {
 
-    private $collection_name;
-    private $spreadsheet;
-    private $filePath;
-    private $tempFilePath;
+	private $collection_name;
+	private $spreadsheet;
+	private $filePath;
+	private $tempFilePath;
 
-    public function __construct($attributes = array()) {
-        parent::__construct($attributes);
+	public function __construct($attributes = array()) {
+		parent::__construct($attributes);
 
-        $this->set_accepted_mapping_methods('any'); // set all method to mapping
-        $this->accept_no_mapping = true;
+		$this->set_accepted_mapping_methods('any'); // set all method to mapping
+		$this->accept_no_mapping = true;
 
-        if ($current_collection = $this->get_current_collection_object()) {
-            $name = $current_collection->get_name();
-            $this->collection_name = sanitize_title($name) . "_xlsx_export.xlsx";
-        } else {
-            $this->collection_name = "xlsx_export.xlsx";
-        }
-        
-        $this->tempFilePath = "";
+		if ($current_collection = $this->get_current_collection_object()) {
+			$name = $current_collection->get_name();
+			$this->collection_name = sanitize_title($name) . "_xlsx_export.xlsx";
+		} else {
+			$this->collection_name = "xlsx_export.xlsx";
+		}
+		
+		$this->tempFilePath = "";
 
-        $this->spreadsheet = null;
+		$this->spreadsheet = null;
 
-        $this->set_default_options([
-            'delimiter' => ',',
-            'multivalued_delimiter' => '||',
-        ]);
-    }
+		$this->set_default_options([
+			'delimiter' => ',',
+			'multivalued_delimiter' => '||',
+		]);
+	}
 
-    public function initialize_writer() {
-        if (!array_key_exists($this->collection_name, $this->get_output_files())) {
-            $this->add_new_file($this->collection_name);
-        }
-        
-        $file_info = $this->get_output_files()[$this->collection_name];
-        $this->filePath = $file_info['filename'];
-        
-        if (file_exists($this->filePath)) {
-            $reader = IOFactory::createReader('Xlsx');
-            $this->spreadsheet = $reader->load($this->filePath);
-        } else {
-            $this->spreadsheet = new Spreadsheet();
-        }
-    }
+	public function initialize_writer() {
+		if (!array_key_exists($this->collection_name, $this->get_output_files())) {
+			$this->add_new_file($this->collection_name);
+		}
+		
+		$file_info = $this->get_output_files()[$this->collection_name];
+		$this->filePath = $file_info['filename'];
+		
+		if (file_exists($this->filePath)) {
+			$reader = IOFactory::createReader('Xlsx');
+			$this->spreadsheet = $reader->load($this->filePath);
+		} else {
+			$this->spreadsheet = new Spreadsheet();
+		}
+	}
 
-    public function finalize_writer() {
-        if ($this->spreadsheet) {
-            $writer = new Xlsx($this->spreadsheet);
-            $savePath = $this->tempFilePath ?: $this->filePath;
-            $writer->save($savePath);
+	public function finalize_writer() {
+		if ($this->spreadsheet) {
+			$writer = new Xlsx($this->spreadsheet);
+			$savePath = $this->tempFilePath ?: $this->filePath;
+			$writer->save($savePath);
 
-            $this->spreadsheet->disconnectWorksheets();
-            unset($this->spreadsheet);
-            $this->spreadsheet = null;
+			$this->spreadsheet->disconnectWorksheets();
+			unset($this->spreadsheet);
+			$this->spreadsheet = null;
 
-            if ($this->tempFilePath) {
-                if (file_exists($this->filePath)) {
-                    unlink($this->filePath);
-                }
-                rename($this->tempFilePath, $this->filePath);
-            }
-        }
-    }
+			if ($this->tempFilePath) {
+				if (file_exists($this->filePath)) {
+					unlink($this->filePath);
+				}
+				rename($this->tempFilePath, $this->filePath);
+			}
+		}
+	}
 
-    public function process_collections() {
+	public function process_collections() {
 
-        $this->initialize_writer();
-        
+		$this->initialize_writer();
+		
 		$current_collection = $this->get_current_collection();
 		$collections = $this->get_collections();
 		$collection_definition = isset($collections[$current_collection]) ? $collections[$current_collection] : false;
@@ -104,24 +104,24 @@ class XLSX_Exporter extends Exporter {
 
 		$this->process_footer($current_collection_item, $collection_definition);
 
-        $this->finalize_writer();        
+		$this->finalize_writer();
 
 		return parent::next_item();
 	}
 
-    private function process_header($current_collection_item, $collection_definition) {
+	private function process_header($current_collection_item, $collection_definition) {
 		if ($current_collection_item == 0) {
 			$this->output_header();
 		}
 	}
 
-    private function process_footer($current_collection_item, $collection_definition) {
+	private function process_footer($current_collection_item, $collection_definition) {
 		if ($current_collection_item > $collection_definition['total_items']) {
 			parent::output_footer();
 		}
 	}
 
-    private function get_items($index, $collection_definition) {
+	private function get_items($index, $collection_definition) {
 		$collection_id = $collection_definition['id'];
 		$tainacan_items = \Tainacan\Repositories\Items::get_instance();
 		$per_page = parent::get_step_length_items();
@@ -162,7 +162,7 @@ class XLSX_Exporter extends Exporter {
 		return $data;
 	}
 
-    private function map_item_metadata(\Tainacan\Entities\Item $item) {
+	private function map_item_metadata(\Tainacan\Entities\Item $item) {
 		
 		$mapper = $this->get_current_mapper();
 		$metadata = $item->get_metadata();
@@ -194,30 +194,30 @@ class XLSX_Exporter extends Exporter {
 	}
 
 
-    public function process_item($item, $metadata) {
-        
-        $mapper = $this->get_current_mapper();
-        $line = [];
-        
-        if(!$mapper) {
+	public function process_item($item, $metadata) {
+
+		$mapper = $this->get_current_mapper();
+		$line = [];
+		
+		if(!$mapper) {
 			$line[] = $item->get_id();
 		}
 
-        add_filter('tainacan-item-metadata-get-multivalue-separator', [$this, 'filter_multivalue_separator'], 20);
-        add_filter('tainacan-terms-hierarchy-html-separator', [$this, 'filter_hierarchy_separator'], 20);
-        
-        foreach ($metadata as $meta_key => $meta) {
-            if (!$meta || empty($meta->get_value())) {
-                $line[] = '';
-                continue;
-            }
-    
-            if ($meta->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Relationship') {
-                $rel = $meta->get_value();
-                $line[] = is_array($rel) ? implode($this->get_option('multivalued_delimiter'), $rel) : $rel;
-            } elseif ($meta->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Compound') {
-                $line[] = $this->get_compound_metadata_cell($meta);
-            } elseif ($meta->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Date' ) {
+		add_filter('tainacan-item-metadata-get-multivalue-separator', [$this, 'filter_multivalue_separator'], 20);
+		add_filter('tainacan-terms-hierarchy-html-separator', [$this, 'filter_hierarchy_separator'], 20);
+
+		foreach ($metadata as $meta_key => $meta) {
+			if (!$meta || empty($meta->get_value())) {
+				$line[] = '';
+				continue;
+			}
+
+			if ($meta->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Relationship') {
+				$rel = $meta->get_value();
+				$line[] = is_array($rel) ? implode($this->get_option('multivalued_delimiter'), $rel) : $rel;
+			} elseif ($meta->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Compound') {
+				$line[] = $this->get_compound_metadata_cell($meta);
+			} elseif ($meta->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Date' ) {
 				$metadatum = $meta->get_metadatum();
 				$date_value = 'ERROR ON FORMATING DATE';
 				if (is_object($metadatum)) {
@@ -231,14 +231,14 @@ class XLSX_Exporter extends Exporter {
 				} 
 				$line[] = $date_value;
 			} else {
-                $line[] = $meta->get_value_as_string();
-            }
-        }
-    
-        remove_filter('tainacan-item-metadata-get-multivalue-separator', [$this, 'filter_multivalue_separator']);
-        remove_filter('tainacan-terms-hierarchy-html-separator', [$this, 'filter_hierarchy_separator']);
-    
-        if(!$mapper) {
+				$line[] = $meta->get_value_as_string();
+			}
+		}
+
+		remove_filter('tainacan-item-metadata-get-multivalue-separator', [$this, 'filter_multivalue_separator']);
+		remove_filter('tainacan-terms-hierarchy-html-separator', [$this, 'filter_hierarchy_separator']);
+
+		if(!$mapper) {
 			$line[] = $item->get_status(); // special_item_status
 			$line[] = $this->get_document_cell($item); // special_document
 			$line[] = $this->get_thumbnail_cell($item); // special_thumbnail
@@ -252,34 +252,34 @@ class XLSX_Exporter extends Exporter {
 			$line[] = get_permalink( $item->get_id() ); // public_url
 		}
 
-        $this->addRowToSheet($line); 
-    }
-    
-    public function addRowToSheet(array $rowData, $sheetIndex = 0) {
-        if (!$this->spreadsheet) {
-            throw new \Exception("Spreadsheet não inicializado. Chame initializeWriter() antes.");
-        }
+		$this->addRowToSheet($line); 
+	}
 
-        $sheet = $this->spreadsheet->getSheet($sheetIndex);
-        if (!$sheet) {
-            $sheet = new Worksheet($this->spreadsheet, 'Sheet' . ($sheetIndex + 1));
-            $this->spreadsheet->addSheet($sheet, $sheetIndex);
-        }
+	public function addRowToSheet(array $rowData, $sheetIndex = 0) {
+		if (!$this->spreadsheet) {
+			throw new \Exception("Spreadsheet não inicializado. Chame initializeWriter() antes.");
+		}
 
-        $lastRow = $sheet->getHighestRow() + 1;
-        $col = 1;
-        foreach ($rowData as $value) {
-            $cellCoordinate = Coordinate::stringFromColumnIndex($col) . $lastRow;
-            $sheet->setCellValue($cellCoordinate, $value);
-            $col++;
-        }
-    }
+		$sheet = $this->spreadsheet->getSheet($sheetIndex);
+		if (!$sheet) {
+			$sheet = new Worksheet($this->spreadsheet, 'Sheet' . ($sheetIndex + 1));
+			$this->spreadsheet->addSheet($sheet, $sheetIndex);
+		}
 
-    public function get_file_path() {
-        return $this->filePath;
-    }
+		$lastRow = $sheet->getHighestRow() + 1;
+		$col = 1;
+		foreach ($rowData as $value) {
+			$cellCoordinate = Coordinate::stringFromColumnIndex($col) . $lastRow;
+			$sheet->setCellValue($cellCoordinate, $value);
+			$col++;
+		}
+	}
 
-    function get_thumbnail_cell($item) {
+	public function get_file_path() {
+		return $this->filePath;
+	}
+
+	function get_thumbnail_cell($item) {
 		$thumbnail = $item->get__thumbnail_id();
 		
 		$url = wp_get_attachment_image_url($thumbnail, 'full');
@@ -288,139 +288,139 @@ class XLSX_Exporter extends Exporter {
 		return $thumbnail;
 	}
 
-    public function get_file_name() {
-        return $this->collection_name;
-    }
+	public function get_file_name() {
+		return $this->collection_name;
+	}
 
-    public function get_content_type() {
-        return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-    }
+	public function get_content_type() {
+		return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+	}
 
-    public function filter_multivalue_separator($separator) {
-        return $this->get_option('multivalued_delimiter');
-    }
+	public function filter_multivalue_separator($separator) {
+		return $this->get_option('multivalued_delimiter');
+	}
 
-    public function filter_hierarchy_separator($separator) {
-        return '>>';
-    }
+	public function filter_hierarchy_separator($separator) {
+		return '>>';
+	}
 
-    public function get_date_value($value) {
-        if (!$value) {
-            return '';
-        }
+	public function get_date_value($value) {
+		if (!$value) {
+			return '';
+		}
 
-        if ($timestamp = strtotime($value)) {
-            return date_i18n(get_option('date_format'), $timestamp);
-        }
+		if ($timestamp = strtotime($value)) {
+			return date_i18n(get_option('date_format'), $timestamp);
+		}
 
-        return $value;
-    }
+		return $value;
+	}
 
-    function get_document_cell($item) {
-        $type = $item->get_document_type();
-        if ($type == 'attachment') {
-            $type = 'file';
-        }
+	function get_document_cell($item) {
+		$type = $item->get_document_type();
+		if ($type == 'attachment') {
+			$type = 'file';
+		}
 
-        $document = $item->get_document();
+		$document = $item->get_document();
 
-        if ($type == 'file') {
-            $url = wp_get_attachment_url($document);
-            if ($url) {
-                $document = $url;
-            }
+		if ($type == 'file') {
+			$url = wp_get_attachment_url($document);
+			if ($url) {
+				$document = $url;
+			}
 
-        }
-        return $type . ':' . $document;
-    }
+		}
+		return $type . ':' . $document;
+	}
 
-    function get_attachments_cell($item) {
-        $attachments = $item->get_attachments();
+	function get_attachments_cell($item) {
+		$attachments = $item->get_attachments();
 
-        $attachments_urls = array_map(function ($a) {
-            if (isset($a->guid)) {
-                return $a->guid;
-            }
+		$attachments_urls = array_map(function ($a) {
+			if (isset($a->guid)) {
+				return $a->guid;
+			}
 
-        }, $attachments);
+		}, $attachments);
 
-        return implode($this->get_option('multivalued_delimiter'), $attachments_urls);
-    }
+		return implode($this->get_option('multivalued_delimiter'), $attachments_urls);
+	}
 
-    function get_author_name_last_modification($item_id) {
-        $last_id = get_post_meta($item_id, '_user_edit_lastr', true);
-        if ($last_id) {
-            $last_user = get_userdata($last_id);
-            return apply_filters('tainacan-the-modified-author', $last_user->display_name);
-        }
-        return "";
-    }
+	function get_author_name_last_modification($item_id) {
+		$last_id = get_post_meta($item_id, '_user_edit_lastr', true);
+		if ($last_id) {
+			$last_user = get_userdata($last_id);
+			return apply_filters('tainacan-the-modified-author', $last_user->display_name);
+		}
+		return "";
+	}
 
-    private function get_description_title_meta($meta) {
-        $meta_type = explode('\\', $meta->get_metadata_type());
-        $meta_type = strtolower($meta_type[sizeof($meta_type) - 1]);
+	private function get_description_title_meta($meta) {
+		$meta_type = explode('\\', $meta->get_metadata_type());
+		$meta_type = strtolower($meta_type[sizeof($meta_type) - 1]);
 
-        $meta_section_name = '';
-        if ($this->get_option('add_section_name') == 'yes' && $current_collection = $this->get_current_collection_object()) {
-            $meta_section_id = $meta->get_metadata_section_id();
-            $collection_id = $current_collection->get_id();
+		$meta_section_name = '';
+		if ($this->get_option('add_section_name') == 'yes' && $current_collection = $this->get_current_collection_object()) {
+			$meta_section_id = $meta->get_metadata_section_id();
+			$collection_id = $current_collection->get_id();
 
-            if ($meta->is_repository_level()) {
-                foreach ($meta_section_id as $section_id) {
-                    if ($collection_id == get_post_meta($section_id, 'collection_id', true)) {
-                        $meta_section_name = '(' . get_the_title($section_id) . ')';
-                        continue;
-                    }
-                }
-            } else {
-                if ($meta_section_id != \Tainacan\Entities\Metadata_Section::$default_section_slug) {
-                    $meta_section_name = '(' . get_the_title($meta_section_id) . ')';
-                }
-            }
-        }
+			if ($meta->is_repository_level()) {
+				foreach ($meta_section_id as $section_id) {
+					if ($collection_id == get_post_meta($section_id, 'collection_id', true)) {
+						$meta_section_name = '(' . get_the_title($section_id) . ')';
+						continue;
+					}
+				}
+			} else {
+				if ($meta_section_id != \Tainacan\Entities\Metadata_Section::$default_section_slug) {
+					$meta_section_name = '(' . get_the_title($meta_section_id) . ')';
+				}
+			}
+		}
 
-        if ($meta_type == 'compound') {
-            $enclosure = $this->get_option('enclosure');
-            $delimiter = $this->get_option('delimiter');
-            $metadata_type_options = $meta->get_metadata_type_options();
-            $desc_childrens = [];
-            foreach ($metadata_type_options['children_objects'] as $children) {
-                $children_meta_type = explode('\\', $children['metadata_type']);
-                $children_meta_type = strtolower($children_meta_type[sizeof($children_meta_type) - 1]);
-                $children_meta_type .= ($children['collection_key'] === 'yes' ? '|collection_key_yes' : '');
-                $desc_childrens[] = $children['name'] . '|' . $children_meta_type;
-            }
-            $meta_type .= "(" . implode($delimiter, $desc_childrens) . ")";
-            $desc_title_meta =
-            $meta->get_name() .
-                $meta_section_name .
-                ('|' . $meta_type) .
-                ($meta->is_multiple() ? '|multiple' : '') .
-                ('|display_' . $meta->get_display());
-        } else {
-            $desc_title_meta =
-            $meta->get_name() .
-                $meta_section_name .
-                ('|' . $meta_type) .
-                ($meta->is_multiple() ? '|multiple' : '') .
-                ($meta->is_required() ? '|required' : '') .
-                ('|display_' . $meta->get_display()) .
-                ($meta->is_collection_key() ? '|collection_key_yes' : '');
-        }
-        return $desc_title_meta;
-    }
+		if ($meta_type == 'compound') {
+			$enclosure = $this->get_option('enclosure');
+			$delimiter = $this->get_option('delimiter');
+			$metadata_type_options = $meta->get_metadata_type_options();
+			$desc_childrens = [];
+			foreach ($metadata_type_options['children_objects'] as $children) {
+				$children_meta_type = explode('\\', $children['metadata_type']);
+				$children_meta_type = strtolower($children_meta_type[sizeof($children_meta_type) - 1]);
+				$children_meta_type .= ($children['collection_key'] === 'yes' ? '|collection_key_yes' : '');
+				$desc_childrens[] = $children['name'] . '|' . $children_meta_type;
+			}
+			$meta_type .= "(" . implode($delimiter, $desc_childrens) . ")";
+			$desc_title_meta =
+			$meta->get_name() .
+				$meta_section_name .
+				('|' . $meta_type) .
+				($meta->is_multiple() ? '|multiple' : '') .
+				('|display_' . $meta->get_display());
+		} else {
+			$desc_title_meta =
+			$meta->get_name() .
+				$meta_section_name .
+				('|' . $meta_type) .
+				($meta->is_multiple() ? '|multiple' : '') .
+				($meta->is_required() ? '|required' : '') .
+				('|display_' . $meta->get_display()) .
+				($meta->is_collection_key() ? '|collection_key_yes' : '');
+		}
+		return $desc_title_meta;
+	}
 
-    private function get_collections_names() {
-        $collections_names = [];
-        foreach ($this->collections as $col) {
-            $collection = \Tainacan\Repositories\Collections::get_instance()->fetch((int) $col['id'], 'OBJECT');
-            $collections_names[] = $collection->get_name();
-        }
-        return $collections_names;
-    }
+	private function get_collections_names() {
+		$collections_names = [];
+		foreach ($this->collections as $col) {
+			$collection = \Tainacan\Repositories\Collections::get_instance()->fetch((int) $col['id'], 'OBJECT');
+			$collections_names[] = $collection->get_name();
+		}
+		return $collections_names;
+	}
 
 
-    public function get_output() {
+	public function get_output() {
 		$files = $this->get_output_files();
 		
 		if ( is_array($files) && isset($files[$this->collection_name])) {
@@ -443,34 +443,34 @@ class XLSX_Exporter extends Exporter {
 		}
 	}
 
-    public function output_header() {
-        $mapper = $this->get_current_mapper();
-        $headerRowContents = [];
+	public function output_header() {
+		$mapper = $this->get_current_mapper();
+		$headerRowContents = [];
 
-        if ($mapper) {
+		if ($mapper) {
 
-            $inbcm_mapper = in_array($mapper->slug, ["inbcm-arquivistico", "inbcm-bibliografico", "inbcm-museologico"]);
+			$inbcm_mapper = in_array($mapper->slug, ["inbcm-arquivistico", "inbcm-bibliografico", "inbcm-museologico"]);
 
-            foreach ($mapper->metadata as $meta_slug => $meta) {
-                if($inbcm_mapper) {
-                    $headerRowContents[] = $meta['label']; 
-                }else{
-                    $headerRowContents[] = $meta_slug; 
-                }
-            }
-        } else {
-            $headerRowContents = ['special_item_id'];
+			foreach ($mapper->metadata as $meta_slug => $meta) {
+				if($inbcm_mapper) {
+					$headerRowContents[] = $meta['label']; 
+				}else{
+					$headerRowContents[] = $meta_slug; 
+				}
+			}
+		} else {
+			$headerRowContents = ['special_item_id'];
 
-            $collection = $this->get_current_collection_object();
-            if ($collection) {
-                $metadata = $collection->get_metadata();
-                foreach ($metadata as $meta) {
-                    $desc_title_meta = $this->get_description_title_meta($meta);
-                    $headerRowContents[] = $desc_title_meta;
-                }
-            }
+			$collection = $this->get_current_collection_object();
+			if ($collection) {
+				$metadata = $collection->get_metadata();
+				foreach ($metadata as $meta) {
+					$desc_title_meta = $this->get_description_title_meta($meta);
+					$headerRowContents[] = $desc_title_meta;
+				}
+			}
 
-            $headerRowContents[] = 'special_item_status';
+			$headerRowContents[] = 'special_item_status';
 			$headerRowContents[] = 'special_document';
 			$headerRowContents[] = 'special_thumbnail';
 			$headerRowContents[] = 'special_attachments';
@@ -481,20 +481,20 @@ class XLSX_Exporter extends Exporter {
 			$headerRowContents[] = 'user_last_modified';
 			$headerRowContents[] = 'modification_date';
 			$headerRowContents[] = 'public_url';
-        }
+		}
 
-        $sheet = $this->spreadsheet->getActiveSheet();
+		$sheet = $this->spreadsheet->getActiveSheet();
 
-        $row = 1;
-        $col = 1;
-        foreach ($headerRowContents as $value) {
-            $cellCoordinate = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $row;
-            $sheet->setCellValue($cellCoordinate, $value);
-            $col++;
-        }
-    }
+		$row = 1;
+		$col = 1;
+		foreach ($headerRowContents as $value) {
+			$cellCoordinate = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $row;
+			$sheet->setCellValue($cellCoordinate, $value);
+			$col++;
+		}
+	}
 
-    function get_compound_metadata_cell($meta) {
+	function get_compound_metadata_cell($meta) {
 		$enclosure = $this->get_option('enclosure');
 		$delimiter = $this->get_option('delimiter');
 		$multivalued_delimiter = $this->get_option('multivalued_delimiter');
@@ -522,7 +522,7 @@ class XLSX_Exporter extends Exporter {
 		return implode($multivalued_delimiter, $array_meta);
 	}
 
-    public function options_form() {
+	public function options_form() {
 		ob_start();
 		?>
 
@@ -576,7 +576,7 @@ class XLSX_Exporter extends Exporter {
 			</div>
 		</div>
 
-      <?php
-      return ob_get_clean();
+		<?php
+		return ob_get_clean();
   }
 } 
