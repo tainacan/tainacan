@@ -818,8 +818,12 @@ class Items extends Repository {
 					}
 
 					foreach ($collections as $collection) {
-						if ($meta_query["key"] === "tainacan_core_title") {
+						if ( $meta_query["key"] === "tainacan_core_title" ) {
+
 							$title_meta = $collection->get_core_title_metadatum();
+
+							if ( !$title_meta ) // The metadata may be disabled in the collection
+								continue;
 
 							// Builds inner meta_queries for each collection, using the same settings of the special one
 							$core_title_meta_query[] = [
@@ -827,10 +831,12 @@ class Items extends Repository {
 								"compare" => $meta_query["compare"],
 								"value" => $meta_query["value"],
 							];
-						} elseif (
-							$meta_query["key"] === "tainacan_core_description"
-						) {
+						} elseif ( $meta_query["key"] === "tainacan_core_description" ) {
+
 							$description_meta = $collection->get_core_description_metadatum();
+
+							if ( !$description_meta ) // The metadata may be disabled in the collection
+								continue;
 
 							// Builds inner meta_queries for each collection, using the same settings of the special one
 							$core_description_meta_query[] = [
