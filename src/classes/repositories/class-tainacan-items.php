@@ -798,10 +798,11 @@ class Items extends Repository {
 			!empty($args["meta_query"]) &&
 			is_array($args["meta_query"])
 		) {
-			$core_title_meta_query = [];
-			$core_description_meta_query = [];
 
 			foreach ($args["meta_query"] as $key => $meta_query) {
+				$core_title_meta_query = [];
+				$core_description_meta_query = [];
+
 				// Finds a special key value, that should represent all core title or core description
 				if (
 					isset($meta_query["key"]) &&
@@ -841,14 +842,14 @@ class Items extends Repository {
 					}
 					unset($args["meta_query"][$key]);
 				}
-			}
-			if (count($core_title_meta_query)) {
-				$core_title_meta_query["relation"] = "OR";
-				$args["meta_query"][] = $core_title_meta_query;
-			}
-			if (count($core_description_meta_query)) {
-				$core_description_meta_query["relation"] = "OR";
-				$args["meta_query"][] = $core_description_meta_query;
+				if (count($core_title_meta_query)) {
+					$core_title_meta_query["relation"] = "OR";
+					$args["meta_query"][] = $core_title_meta_query;
+				}
+				if (count($core_description_meta_query)) {
+					$core_description_meta_query["relation"] = "OR";
+					$args["meta_query"][] = $core_description_meta_query;
+				}
 			}
 		}
 		return $args;
