@@ -55,8 +55,8 @@ class Inbcm_Bibliographic extends Mapper {
 				'field' => 'Dimensão física'
 			],
 			'inbcm:matTecnica' => [
-				'label' => __( 'Material / Technique', 'tainacan' ),
-				'field' => 'Material / Técnica'
+				'label' => __( 'Material/Technique', 'tainacan' ),
+				'field' => 'Material/Técnica'
 			],
 			'inbcm:encadernacao' => [
 				'label' => __( 'Bindings', 'tainacan' ),

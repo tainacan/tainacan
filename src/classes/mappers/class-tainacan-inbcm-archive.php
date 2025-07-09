@@ -58,7 +58,7 @@ class Inbcm_Archive extends Mapper {
 				'label' => __( 'Arrangement System', 'tainacan' ),
 				'field' => 'Sistema de Arranjo'
 			],
-			'inbcm:reproducao' => [
+			'inbcm:condReproducao' => [
 				'label' => __( 'Reproduction Conditions', 'tainacan' ),
 				'field' => 'Condições de Reprodução'
 			],
