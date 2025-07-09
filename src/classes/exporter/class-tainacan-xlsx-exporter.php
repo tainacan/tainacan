@@ -37,6 +37,7 @@ class XLSX_Exporter extends Exporter {
         $this->set_default_options([
             'delimiter' => ',',
             'multivalued_delimiter' => '||',
+			'enclosure' => '"'
         ]);
     }
 
@@ -380,7 +381,6 @@ class XLSX_Exporter extends Exporter {
         }
 
         if ($meta_type == 'compound') {
-            $enclosure = $this->get_option('enclosure');
             $delimiter = $this->get_option('delimiter');
             $metadata_type_options = $meta->get_metadata_type_options();
             $desc_childrens = [];
@@ -487,7 +487,7 @@ class XLSX_Exporter extends Exporter {
         }
     }
 
-    function get_compound_metadata_cell($meta) {
+	function get_compound_metadata_cell($meta) {
 		$enclosure = $this->get_option('enclosure');
 		$delimiter = $this->get_option('delimiter');
 		$multivalued_delimiter = $this->get_option('multivalued_delimiter');
@@ -515,6 +515,19 @@ class XLSX_Exporter extends Exporter {
 		return implode($multivalued_delimiter, $array_meta);
 	}
 
+    function str_putcsv($input, $delimiter = ',', $enclosure = '"') {
+		// Open a memory "file" for read/write...
+		$fp = fopen('php://temp', 'r+');
+		
+		fputcsv($fp, $input, $delimiter, $enclosure);
+		rewind($fp);
+		//Getting detailed stats to check filesize:
+		$fstats = fstat($fp);
+		$data = fread($fp, $fstats['size']);
+		fclose($fp);
+		return rtrim($data, "\n");
+	}
+
     public function options_form() {
 		ob_start();
 		?>
@@ -538,6 +551,50 @@ class XLSX_Exporter extends Exporter {
 			</span>
 			<div class="control is-clearfix">
 				<input class="input" type="text" name="multivalued_delimiter" value="<?php echo esc_attr($this->get_option('multivalued_delimiter')); ?>">
+			</div>
+		</div>
+
+        <div class="field">
+			<label class="label"><?php _e('Compound children delimiter', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="tainacan-icon tainacan-icon-help" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Compound children delimiter', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('The character used to separate each child of compound metadata (e.g. , or ;)', 'tainacan'); ?></p>
+						</div>
+					</div>
+			</span>
+			<div class="control is-clearfix">
+				<input class="input" type="text" name="delimiter" maxlength="1" value="<?php echo esc_attr($this->get_option('delimiter')); ?>">
+			</div>
+		</div>
+
+		<div class="field">
+			<label class="label"><?php _e('Enclosure for compound children', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="tainacan-icon tainacan-icon-help" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Enclosure', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('The character that wraps the content of each compound child value in the cell if necessary (e.g. ")', 'tainacan'); ?></p>
+						</div>
+					</div>
+			</span>
+			<div class="control is-clearfix">
+				<input class="input" type="text" name="enclosure" value="<?php echo esc_attr($this->get_option('enclosure')); ?>">
 			</div>
 		</div>
 
