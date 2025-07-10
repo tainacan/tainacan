@@ -198,7 +198,6 @@ class CSV extends Exporter {
 		
 
 		if($meta_type == 'compound') {
-			$enclosure = $this->get_option('enclosure');
 			$delimiter = $this->get_option('delimiter');
 			$metadata_type_options = $meta->get_metadata_type_options();
 			$desc_childrens = [];
@@ -235,7 +234,7 @@ class CSV extends Exporter {
 		$line = [];
 		if ($mapper) {
 			foreach ($mapper->metadata as $meta_slug => $meta) {
-				$line[] = $meta_slug;
+				$line[] = $meta['field'] ?? $meta_slug;
 			}
 		} else {
 			$line = ['special_item_id'];
@@ -344,6 +343,28 @@ class CSV extends Exporter {
 		</div>
 
 		<div class="field">
+			<label class="label"><?php _e('Enclosure', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							 <i class="tainacan-icon tainacan-icon-help" ></i>
+						 </span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Enclosure', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('The character that wraps the content of each cell in your CSV, if necessary (e.g. ")', 'tainacan'); ?></p>
+						</div>
+					</div>
+			</span>
+			<div class="control is-clearfix">
+				<input class="input" type="text" name="enclosure" value="<?php echo esc_attr($this->get_option('enclosure')); ?>">
+			</div>
+		</div>
+
+		<div class="field">
 			<label class="label"><?php _e('Multivalued metadata delimiter', 'tainacan'); ?></label>
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
@@ -362,28 +383,6 @@ class CSV extends Exporter {
 			</span>
 			<div class="control is-clearfix">
 				<input class="input" type="text" name="multivalued_delimiter" value="<?php echo esc_attr($this->get_option('multivalued_delimiter')); ?>">
-			</div>
-		</div>
-
-		<div class="field">
-			<label class="label"><?php _e('Enclosure', 'tainacan'); ?></label>
-			<span class="help-wrapper">
-					<a class="help-button has-text-secondary">
-						<span class="icon is-small">
-							 <i class="tainacan-icon tainacan-icon-help" ></i>
-						 </span>
-					</a>
-					<div class="help-tooltip">
-						<div class="help-tooltip-header">
-							<h5><?php _e('Enclosure', 'tainacan'); ?></h5>
-						</div>
-						<div class="help-tooltip-body">
-							<p><?php _e('The character that wraps the content of each cell in your CSV. (e.g. ")', 'tainacan'); ?></p>
-						</div>
-					</div>
-			</span>
-			<div class="control is-clearfix">
-				<input class="input" type="text" name="enclosure" value="<?php echo esc_attr($this->get_option('enclosure')); ?>">
 			</div>
 		</div>
 
