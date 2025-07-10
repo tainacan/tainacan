@@ -15,29 +15,26 @@
                 @click="formErrorMessage = ''">
             <div class="columns">
 
-                <div class="column is-gapless">
+                <div 
+                        v-if="exporterSession.options_form"
+                        class="column is-gapless">
                     <form id="exporterOptionsForm">
                         <div v-html="exporterSession.options_form" />
                     </form>
                 </div>
-                <div
-                        style="max-width: var(--tainacan-one-column);"
-                        class="column is-gapless" />
                 <div class="column is-gapless">
                     <b-field
                             v-if="exporterSession.manual_collection"
                             :addons="false"
                             :label="$i18n.get('label_source_collection')">
-                        <help-button
-                                :title="$i18n.get('label_source_collection')"
-                                :message="$i18n.get('info_source_collection_helper')"
-                                extra-classes="tainacan-repository-tooltip" />
+                        <span class="required-metadatum-asterisk">*</span>
                         <br>
                         <b-select
                                 v-model="selectedCollection"
                                 expanded
                                 :loading="isFetchingCollections"
                                 :placeholder="$i18n.get('instruction_select_a_collection')"
+                                :required="true"
                                 @update:model-value="formErrorMessage = null">
                             <option
                                     v-for="collection in collections"
@@ -48,28 +45,34 @@
                         </b-select>
                     </b-field>
 
-                    <b-field
-                            v-if="Object.keys(exporterSession).length &&
-                                Object.keys(exporterSession.mapping_accept).length &&
-                                exporterSession.mapping_list.length"
-                            class="is-block"
-                            :label="$i18n.get('mapping')">
-                        <b-select
-                                v-model="selectedMapping"
-                                expanded
-                                :placeholder="$i18n.get('instruction_select_a_mapper')"
-                                @update:model-value="formErrorMessage = null">
-                            <option 
-                                    v-if="exporterSession.accept_no_mapping"
-                                    :value="''">{{ $i18n.get('label_no_mapping') }}</option>
-                            <option
-                                    v-for="(mapping) in exporterSession.mapping_list"
-                                    :key="mapping"
-                                    :value="mapping">
-                                {{ mapping.replace(/-/, ' ') }}
-                            </option>
-                        </b-select>
-                    </b-field>
+                    <transition name="filter-item">
+                        <b-field
+                                v-if="Object.keys(exporterSession).length &&
+                                    Object.keys(exporterSession.mapping_accept).length &&
+                                    exporterSession.mapping_list.length &&
+                                    selectedCollection"
+                                class="is-block"
+                                :label="$i18n.get('mapping')">
+                            <template #message>
+                                <span v-html="$i18n.getWithVariables('instruction_go_to_metadata_mapping_%s', [ adminFullURL + $routerHelper.getCollectionMetadataPath(selectedCollection) ])" />
+                            </template>
+                            <b-select
+                                    v-model="selectedMapping"
+                                    expanded
+                                    :placeholder="$i18n.get('instruction_select_a_mapper')"
+                                    @update:model-value="formErrorMessage = null">
+                                <option 
+                                        v-if="exporterSession.accept_no_mapping"
+                                        :value="''">{{ $i18n.get('label_no_mapping') }}</option>
+                                <option
+                                        v-for="(mapping) in exporterSession.mapping_list"
+                                        :key="mapping"
+                                        :value="mapping">
+                                    {{ mapping.replace(/-/, ' ') }}
+                                </option>
+                            </b-select>
+                        </b-field>
+                    </transition>
 
                     <b-field 
                             :addons="false"
@@ -89,14 +92,17 @@
                 </div>
             </div>
             <div class="columns">
-                <span class="help is-danger">{{ formErrorMessage }}</span>
-
                 <div class="column">
                     <button
                             class="button is-pulled-left is-outlined"
                             @click.prevent="$router.go(-1)">
                         {{ $i18n.get('cancel') }}
                     </button>
+                </div>
+                <div 
+                        v-if="formErrorMessage"
+                        class="column">
+                    <span class="help is-danger">{{ formErrorMessage }}</span>
                 </div>
                 <div class="column">
                     <button
@@ -238,8 +244,9 @@
 
 <style scoped>
 
-    .tainacan-form>.columns {
+    .tainacan-form > .columns {
         padding: 0 var(--tainacan-one-column);
+        gap: var(--tainacan-one-column);
     }
 
 </style>

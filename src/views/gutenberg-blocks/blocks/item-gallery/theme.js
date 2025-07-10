@@ -282,13 +282,13 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                                 (item.title.description && !self.options.hide_media_description)
                             )
                         ) {
-                            innerHTML += '<div className="pswp__caption-inner">';
+                            innerHTML += '<div class="pswp__caption-inner">';
                             
                             if (item.title.caption && !self.options.hide_media_caption)
-                                innerHTML += '<span className="pswp__figure_caption">' + item.title.caption.innerHTML + '</span>';
+                                innerHTML += '<span class="pswp__figure_caption">' + item.title.caption.innerHTML + '</span>';
 
                             if (item.title.description && !self.options.hide_media_description)
-                                innerHTML += '<span className="pswp__description">' + item.title.description.innerHTML + '</span>';
+                                innerHTML += '<span class="pswp__description">' + item.title.description.innerHTML + '</span>';
                             
                             innerHTML += '</div>';
                         }
@@ -303,6 +303,16 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         if (carouselDownloadButtons && carouselDownloadButtons.length) {
             for (let i = 0; i < carouselDownloadButtons.length; i++) {
                 carouselDownloadButtons[i].addEventListener('click',function(e){
+                    e.stopPropagation();
+                });
+            }
+        }
+
+        /* Stops propagation inside links that are inside metatada */
+        let carouselMetadataLinks = galleryElement.querySelectorAll('.swiper-slide-metadata a');
+        if (carouselMetadataLinks && carouselMetadataLinks.length) {
+            for (let i = 0; i < carouselMetadataLinks.length; i++) {
+                carouselMetadataLinks[i].addEventListener('click',function(e){
                     e.stopPropagation();
                 });
             }

@@ -882,7 +882,6 @@ class Item extends Entity {
 	public function get_document_as_html($img_size = 'large') {
 
 		$type = $this->get_document_type();
-		$document_options = $this->get_document_options();
 
 		$output = '';
 		
@@ -892,6 +891,8 @@ class Item extends Entity {
 			$url = $this->get_document();
 
 			if ( esc_url($_embed) == esc_url($url) ) {
+
+				$document_options = $this->get_document_options();
 
 				if ( $document_options && isset($document_options['forced_iframe']) && $document_options['forced_iframe'] === true ) {
 			
@@ -914,35 +915,12 @@ class Item extends Entity {
 				$tainacan_embed = \Tainacan\Embed::get_instance();
 				$_embed = $tainacan_embed->add_responsive_wrapper($_embed);
 			}
-			$output .= $_embed;
+			$output = $_embed;
+			
 		} elseif ( $type == 'text' ) {
-			$output .= '<article>' . $this->get_document() . '</article>';
+			$output = '<article>' . $this->get_document() . '</article>';
 		} elseif ( $type == 'attachment' ) {
-
-			if ( wp_attachment_is_image($this->get_document()) ) {
-
-				$img_full = wp_get_attachment_url($this->get_document());			
-				$img = wp_get_attachment_image( $this->get_document(), $img_size );
-
-				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $img_full, $img);
-
-			} else {
-
-				global $wp_embed;
-
-				$url = wp_get_attachment_url($this->get_document());
-
-				$embed = $wp_embed->autoembed($url);
-
-				if ( esc_url($embed) == esc_url($url) ) {
-					$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);
-				} else {
-					$tainacan_embed = \Tainacan\Embed::get_instance();
-					$embed = $tainacan_embed->add_responsive_wrapper($embed);
-					$output .= $embed;
-				}
-			}
-
+			$output = $this->get_attachment_as_html($this->get_document(), $img_size);
 		}
 
 		return apply_filters("tainacan-item-get-document-as-html", wp_kses_tainacan($output), $img_size, $this);

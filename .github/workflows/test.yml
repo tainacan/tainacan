@@ -24,7 +24,7 @@ jobs:
       matrix:
         # Notes regarding supported versions in WP:
         # The base matrix only contains the PHP versions which are supported on all supported WP versions.
-        php: ['7.4', '8.3']
+        php: ['7.4', '8.3', '8.4']
         wp: ['latest', '5.9']
         experimental: [false]
 
@@ -109,13 +109,15 @@ jobs:
       - name: Install Composer dependencies for PHP < 8.0
         if: ${{ matrix.php >= 7.3 && matrix.php < 8.0 }}
         uses: "ramsey/composer-install@v1"
+        with:
+          composer-options: --ignore-platform-reqs
 
       # For the PHP 8.0 and above, we need to install with ignore platform reqs as not all dependencies allow it yet.
       - name: Install Composer dependencies for PHP >= 8.0
         if: ${{ matrix.php >= 8.0 }}
         uses: "ramsey/composer-install@v1"
-        with:
-          composer-options: --ignore-platform-reqs
+        # with:
+        #   composer-options: --ignore-platform-reqs
 
       - name: Run the unit tests - single site
         run: /usr/local/bin/phpunit

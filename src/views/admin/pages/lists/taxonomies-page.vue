@@ -124,7 +124,7 @@
                                     placement: 'auto',
                                     popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
                                 }"
-                                :class="{ 'is-active': status == undefined || status == ''|| status == 'publish,private,draft'}"
+                                :class="{ 'is-active': status == undefined || status == ''|| status == 'publish,private,pending'}"
                                 @click="onChangeTab('')">
                             <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
                                 {{ `${$i18n.get('label_all_taxonomies')}` }}
@@ -375,7 +375,7 @@
                 this.fetch({ 
                     page: this.page, 
                     taxonomiesPerPage: this.taxonomiesPerPage, 
-                    status: this.status, 
+                    status: this.status ? this.status : 'publish,private,pending',
                     order: this.order,
                     orderby: this.orderBy,
                     search: this.searchQuery

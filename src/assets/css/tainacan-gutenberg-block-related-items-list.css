@@ -79,5 +79,20 @@
 .wp-block-tainacan-related-items .related-items-edit-container .skeleton {
   min-height: 150px;
 }
+.wp-block-tainacan-related-items .has-view-more-link--bottom-right .related-items-view-more-link {
+  text-align: right;
+}
+@media screen and (min-width: 768px) {
+  .wp-block-tainacan-related-items .has-view-more-link--top-right h2,
+  .wp-block-tainacan-related-items .has-view-more-link--top-right h3,
+  .wp-block-tainacan-related-items .has-view-more-link--top-right h4 {
+    display: inline-block;
+  }
+  .wp-block-tainacan-related-items .has-view-more-link--top-right .related-items-view-more-link,
+  .wp-block-tainacan-related-items .has-view-more-link--bottom-right .related-items-view-more-link {
+    float: right;
+    margin-left: 1em;
+  }
+}
 
 /*# sourceMappingURL=tainacan-gutenberg-block-related-items-list.css.map */

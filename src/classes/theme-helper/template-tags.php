@@ -577,11 +577,10 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 		<?php echo wp_kses_post($args['before_slide_metadata']); ?>
 
 		<?php if ( !empty($args['media_title']) || !empty($args['description']) || !empty($args['media_caption']) ) : ?>
-			<div class="swiper-slide-metadata  <?php echo wp_kses_post($args['class_slide_metadata']); ?>">
+			<div class="swiper-slide-metadata <?php echo !empty($args['media_title']) ? 'has-name ' : ''; echo !empty($args['media_caption']) ? 'has-caption ' : ''; echo !empty($args['media_description']) ? 'has-description ' : ''; ?> <?php echo wp_kses_post($args['class_slide_metadata']); ?>">
 				<?php if ( !empty($args['media_caption']) ) :?>
 					<span class="swiper-slide-metadata__caption">
 						<?php echo wp_kses_post($args['media_caption']); ?>
-						<br>
 					</span>
 				<?php endif; ?>	
 				<?php if ( !empty($args['media_title']) ) :?>
@@ -589,7 +588,6 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 						<?php echo wp_kses_post($args['media_title']); ?>
 					</span>
 				<?php endif; ?>
-				<br>
 				<?php if ( !empty($args['media_description']) ) :?>
 					<span class="swiper-slide-metadata__description">
 						<?php echo wp_kses_post($args['media_description']); ?>

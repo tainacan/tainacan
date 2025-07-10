@@ -47,6 +47,9 @@
             position: relative;
         }
     }
+    .tainacan-media-component__swiper-thumbs li.swiper-slide.has-fixed-height {
+        margin-right: 12px;
+    }
 }
 .tainacan-media-component {
     --swiper-theme-color: var(--tainacan-secondary, #187181);
@@ -130,7 +133,8 @@
             a {
                 cursor: zoom-in !important;
             }
-            .tainacan-item-file-download a {
+            .tainacan-item-file-download a,
+            .swiper-slide-metadata a {
                 cursor: pointer !important;
             }
         }
@@ -149,6 +153,11 @@
         }
 
         .swiper-slide-metadata {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5em;
             text-align: center;
             font-size: 0.875em;
             margin-bottom: 1em;
@@ -320,7 +329,8 @@
                 width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
                 max-width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
                 object-fit: cover;
-                object-position: center
+                object-position: center;
+                height: auto;
             }
         }
         &.has-fixed-height {
@@ -442,6 +452,9 @@
         cursor: pointer;
     }
 }
+.tainacan-media-component+.wp-block-buttons {
+    margin-top: 1rem;
+}
 
 // Photoswip zoom ---------------------------------
 .pswp.tainacan-photoswipe-layer {
@@ -517,6 +530,12 @@
             .pswp__description {
                 font-size: 0.9375em;
                 display: block;
+            }
+
+            a,
+            a:hover,
+            a:focus {
+                color: var(--pswp-icon-color);
             }
         }
     }

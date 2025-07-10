@@ -24,6 +24,7 @@ module.exports = {
         block_faceted_search: './src/views/gutenberg-blocks/blocks/faceted-search/index.js',
         block_carousel_terms_list: './src/views/gutenberg-blocks/blocks/carousel-terms-list/index.js',
         block_item_gallery: './src/views/gutenberg-blocks/blocks/item-gallery/index.js',
+        block_items_gallery: './src/views/gutenberg-blocks/blocks/items-gallery/index.js',
         block_item_metadata_sections: './src/views/gutenberg-blocks/blocks/item-metadata-sections/index.js',
         block_item_metadata_section: './src/views/gutenberg-blocks/blocks/item-metadata-section/index.js',
         block_item_metadata: './src/views/gutenberg-blocks/blocks/item-metadata/index.js',
