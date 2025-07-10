@@ -14,62 +14,81 @@ class Inbcm_Bibliographic extends Mapper {
 		/* Metadata should be set here to allow translable labels */ 
 		$this->metadata = [
 			'inbcm:numRegistro' => [
-				'label' => ('Nº de Registro')
+				'label' => __( 'Registration number', 'tainacan' ),
+				'field' => 'Nº de Registro'
 			],
 			'inbcm:outrosNum' => [
-				'label' => ('Outros Números')
+				'label' => __( 'Other numbers', 'tainacan' ),
+				'field' => 'Outros Números'
 			],
 			'inbcm:situacao' => [
-				'label' => ('Situação'),
+				'label' => __( 'Situation', 'tainacan' ),
+				'field' => 'Situação',
 			],
 			'inbcm:titulo' => [
-				'label' => ('Título'),
-                'core_metadatum' => 'title'
+				'label' => __( 'Title', 'tainacan' ),
+                'core_metadatum' => 'title',
+				'field' => 'Título'
 			],
 			'inbcm:tipo' => [
-				'label' => ('Tipo'),
+				'label' => __( 'Type', 'tainacan' ),
+				'field' => 'Tipo',
 			],
 			'inbcm:idenResponsabilidade' => [
-				'label' => ('Identificação de responsabilidade')
+				'label' => __( 'Identification of Responsibility', 'tainacan' ),
+				'field' => 'Identificação de responsabilidade'
 			],
 			'inbcm:localProd' => [
-				'label' => ('Local de produção')
+				'label' => __( 'Production Site', 'tainacan' ),
+				'field' => 'Local de produção'
 			],
 			'inbcm:editora' => [
-				'label' => ('Editora')
+				'label' => __( 'Publisher', 'tainacan' ),
+				'field' => 'Editora'
 			],
 			'inbcm:dataProd' => [
-				'label' => ('Data de Produção')
+				'label' => __( 'Production Date', 'tainacan' ),
+				'field' => 'Data de Produção'
 			],
 			'inbcm:dimFisica' => [
-				'label' => ('Dimensão física')
+				'label' => __( 'Physical dimension', 'tainacan' ),
+				'field' => 'Dimensão física'
 			],
 			'inbcm:matTecnica' => [
-				'label' => ('Material / Técnica')
+				'label' => __( 'Material/Technique', 'tainacan' ),
+				'field' => 'Material/Técnica'
 			],
 			'inbcm:encadernacao' => [
-				'label' => ('Encadernação')
+				'label' => __( 'Bindings', 'tainacan' ),
+				'field' => 'Encadernação'
 			],
 			'inbcm:resumoDes' => [
-				'label' => ('Resumo Descritivo')
+				'label' => __( 'Descriptive Summary', 'tainacan' ),
+				'field' => 'Resumo Descritivo'
 			],
 			'inbcm:conservacao' => [
-				'label' => ('Estado de Conservação')
+				'label' => __( 'Conservation status', 'tainacan' ),
+				'field' => 'Estado de Conservação'
 			],
 			'inbcm:assuntoPrincipal' => [
-				'label' => ('Assunto Principal')
+				'label' => __( 'Main Subject', 'tainacan' ),
+				'field' => 'Assunto Principal'
 			],
 			'inbcm:assuntoCronologico' => [
-				'label' => ('Assunto Cronológico')
+				'label' => __( 'Chronological Subject', 'tainacan' ),
+				'field' => 'Assunto Cronológico',
 			],
 			'inbcm:assuntoGeo' => [
-				'label' => ('Assunto Geográfico')
+				'label' => __( 'Geographical Subject', 'tainacan' ),
+				'field' => 'Assunto Geográfico',
 			],
 			'inbcm:condReproducao' => [
-				'label' => ('Condições de Reprodução')
+				'label' => __( 'Reproduction Conditions', 'tainacan' ),
+				'field' => 'Condições de Reprodução'
 			],
 			'inbcm:midias' => [
-				'label' => ('Mídias Relacionadas')
+				'label' => __( 'Related media', 'tainacan' ),
+				'field' => 'Mídias Relacionadas'
 			]
 		];
 	}

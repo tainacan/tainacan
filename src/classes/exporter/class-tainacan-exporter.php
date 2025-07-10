@@ -718,7 +718,7 @@ abstract class Exporter {
 	* @param string $key The file identifier. (it is the name of the file, with extension, and will be prefixed with the process ID)
 	* @param string $data The content to be appended to the file
 	*/
-	public function	append_to_file($key, $data) {
+	public function append_to_file($key, $data) {
 		if ( array_key_exists ( $key , $this->output_files ) ) {
 			$fp = fopen($this->output_files[$key]['filename'], 'a');
 			if($fp == false) {

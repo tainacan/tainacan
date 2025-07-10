@@ -798,10 +798,11 @@ class Items extends Repository {
 			!empty($args["meta_query"]) &&
 			is_array($args["meta_query"])
 		) {
-			$core_title_meta_query = [];
-			$core_description_meta_query = [];
 
 			foreach ($args["meta_query"] as $key => $meta_query) {
+				$core_title_meta_query = [];
+				$core_description_meta_query = [];
+
 				// Finds a special key value, that should represent all core title or core description
 				if (
 					isset($meta_query["key"]) &&
@@ -817,8 +818,12 @@ class Items extends Repository {
 					}
 
 					foreach ($collections as $collection) {
-						if ($meta_query["key"] === "tainacan_core_title") {
+						if ( $meta_query["key"] === "tainacan_core_title" ) {
+
 							$title_meta = $collection->get_core_title_metadatum();
+
+							if ( !$title_meta ) // The metadata may be disabled in the collection
+								continue;
 
 							// Builds inner meta_queries for each collection, using the same settings of the special one
 							$core_title_meta_query[] = [
@@ -826,10 +831,12 @@ class Items extends Repository {
 								"compare" => $meta_query["compare"],
 								"value" => $meta_query["value"],
 							];
-						} elseif (
-							$meta_query["key"] === "tainacan_core_description"
-						) {
+						} elseif ( $meta_query["key"] === "tainacan_core_description" ) {
+
 							$description_meta = $collection->get_core_description_metadatum();
+
+							if ( !$description_meta ) // The metadata may be disabled in the collection
+								continue;
 
 							// Builds inner meta_queries for each collection, using the same settings of the special one
 							$core_description_meta_query[] = [
@@ -841,14 +848,14 @@ class Items extends Repository {
 					}
 					unset($args["meta_query"][$key]);
 				}
-			}
-			if (count($core_title_meta_query)) {
-				$core_title_meta_query["relation"] = "OR";
-				$args["meta_query"][] = $core_title_meta_query;
-			}
-			if (count($core_description_meta_query)) {
-				$core_description_meta_query["relation"] = "OR";
-				$args["meta_query"][] = $core_description_meta_query;
+				if (count($core_title_meta_query)) {
+					$core_title_meta_query["relation"] = "OR";
+					$args["meta_query"][] = $core_title_meta_query;
+				}
+				if (count($core_description_meta_query)) {
+					$core_description_meta_query["relation"] = "OR";
+					$args["meta_query"][] = $core_description_meta_query;
+				}
 			}
 		}
 		return $args;

@@ -50,6 +50,7 @@ require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-importer-handler.php');
 
 require_once(TAINACAN_EXPORTER_DIR . 'class-tainacan-bg-exporter.php');
 require_once(TAINACAN_EXPORTER_DIR . 'class-tainacan-export-handler.php');
+require_once(TAINACAN_EXPORTER_DIR . 'traits/class-tainacan-exporter-handler-cell.php');
 
 require_once(TAINACAN_GENERIC_BACKGROUND_PROCESS . 'class-tainacan-bg-generic.php');
 require_once(TAINACAN_GENERIC_BACKGROUND_PROCESS . 'class-tainacan-generic-process.php');
