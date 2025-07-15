@@ -12,8 +12,8 @@
 export default function getCollectionIdFromPossibleTemplateEdition() {
 
     const queryParams = new URLSearchParams(window.location.search);
-
-    if (queryParams.get('postType') == 'wp_template') {
+    
+    if ( queryParams.get('postType') == 'wp_template' ) {
 
         // Extracts collectionId from a string like theme-slug//single-tnc_col_123_item
         let postId = queryParams.get('postId');

@@ -25,6 +25,7 @@
 
     &>li,
     .tainacan-records-grid-sizer {
+        list-style: none;
         width: calc(16.666% - 30px);
 
         @container tablewrapper (max-width: 2560px) {

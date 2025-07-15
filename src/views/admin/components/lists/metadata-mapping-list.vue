@@ -293,37 +293,53 @@ export default {
             this.isMapperMetadataLoading = true;
             this.mapper = metadatumMapper; //TODO try to use v-model again
             this.mapperMetadata = [];
+            this.mappedMetadata = [];
             
-            if (metadatumMapper != '') {
-                for (var k in metadatumMapper.metadata) {
-                    var item = metadatumMapper.metadata[k];
-                    item.slug = k;
+            if ( this.mapper && this.mapper.metadata ) {
+
+                for (let metadatum in this.mapper.metadata) {
+                    let item = this.mapper.metadata[metadatum];
+                    item.slug = metadatum;
                     item.selected = '';
                     item.isCustom = false;
-                    this.activeMetadatumList.forEach((metadatum) => {
+
+                    this.activeMetadatumList.forEach((activeMetadatum) => {
                         if (
-                            Object.prototype.hasOwnProperty.call(metadatum.exposer_mapping, metadatumMapper.slug) &&
-                            metadatum.exposer_mapping[metadatumMapper.slug] == item.slug
+                            Object.prototype.hasOwnProperty.call(activeMetadatum.exposer_mapping, this.mapper.slug) &&
+                            activeMetadatum.exposer_mapping[this.mapper.slug] == item.slug
                         ) {
-                            item.selected = metadatum.id;
-                            this.mappedMetadata.push(metadatum.id);
+                            item.selected = activeMetadatum.id;
+                            item.isRepositoryLevel = activeMetadatum.collection_id === 'default';
+                            this.mappedMetadata.push(activeMetadatum.id);
                         }
                     });
                     this.mapperMetadata.push(item);
                 }
-                this.activeMetadatumList.forEach((metadatum) => {
+                
+                this.activeMetadatumList.forEach((activeMetadatum) => {
                     if (
-                        Object.prototype.hasOwnProperty.call(metadatum.exposer_mapping, metadatumMapper.slug) &&
-                        typeof metadatum.exposer_mapping[metadatumMapper.slug] == 'object'
+                        Object.prototype.hasOwnProperty.call(activeMetadatum.exposer_mapping, this.mapper.slug) &&
+                        typeof activeMetadatum.exposer_mapping[this.mapper.slug] == 'object'
                     ) {
-                        this.newMapperMetadataList.push(Object.assign({},metadatum.exposer_mapping[metadatumMapper.slug]));
-                        this.mappedMetadata.push(metadatum.id);
-                        var item = Object.assign({},metadatum.exposer_mapping[metadatumMapper.slug]);
-                        item.selected = metadatum.id;
+                        this.newMapperMetadataList.push(Object.assign({},activeMetadatum.exposer_mapping[this.mapper.slug]));
+                        this.mappedMetadata.push(activeMetadatum.id);
+
+                        let item = Object.assign( {}, activeMetadatum.exposer_mapping[this.mapper.slug] );
+                        item.selected = activeMetadatum.id;
                         item.isCustom = true;
-                        this.mapperMetadata.push(item);
+                        item.isRepositoryLevel = activeMetadatum.collection_id === 'default';
+
+                        const existingMapperMetadataIndex = this.mapperMetadata.findIndex((mapperMetadata) => {
+                            return mapperMetadata.slug == item.slug;
+                        });
+                        
+                        if ( existingMapperMetadataIndex >= 0 )
+                            this.mapperMetadata[existingMapperMetadataIndex] = item;
+                        else  
+                            this.mapperMetadata.push(item);
                     }
                 });
+
             }
             this.isMapperMetadataLoading = false;
         },
@@ -333,7 +349,7 @@ export default {
         onSelectMetadatumForMapperMetadata() {
             this.mappedMetadata = [];
             this.mapperMetadata.forEach((item) => {
-                if(item.selected.length != 0) {
+                if (item.selected.length != 0) {
                     this.mappedMetadata.push(item.selected);
                 }
             });

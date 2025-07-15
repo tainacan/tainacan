@@ -40,7 +40,7 @@
 
                     <!-- Hook for extra Form options -->
                     <template 
-                            v-if="hasBeginLeftForm">  
+                            v-if="hasBeginLeftForm && form.id !== 'default_section'">  
                         <form 
                                 id="form-metadataSection-begin-left"
                                 class="form-hook-region"
@@ -216,7 +216,7 @@
                 </transition>
             
                 <!-- Hook for extra Form options -->
-                <template v-if="hasEndLeftForm">  
+                <template v-if="hasEndLeftForm && form.id !== 'default_section'">  
                     <form 
                             id="form-metadataSection-end-left"
                             class="form-hook-region"

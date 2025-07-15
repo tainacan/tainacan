@@ -81,12 +81,14 @@ export default {
                     pending: 0
                 };
 
-                for(let collection of collections){
-                    total_items.trash += Number(collection.total_items.trash);
-                    total_items.draft += Number(collection.total_items.draft);
-                    total_items.publish += Number(collection.total_items.publish);
-                    total_items.private += Number(collection.total_items.private);
-                    total_items.pending += Number(collection.total_items.pending);
+                for (let collection of collections) {
+                    if ( collection.total_items ) {
+                        total_items.trash += Number(collection.total_items.trash);
+                        total_items.draft += Number(collection.total_items.draft);
+                        total_items.publish += Number(collection.total_items.publish);
+                        total_items.private += Number(collection.total_items.private);
+                        total_items.pending += Number(collection.total_items.pending);
+                    }
                 }
 
                 return total_items;

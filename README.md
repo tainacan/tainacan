@@ -43,7 +43,7 @@ Tainacan is a software solution for building, managing and publishing digital re
 
 #### API and interoperability
 
-- Tainacan implements a RESTful API (read and write) to allow other applications to interact with your repository. Expose you collection in different formats, such as JSON, JSON-LD and OAI-PMH. If your collection uses a custom standard, you can map it to well-known standards such as DublinCore.
+- Tainacan implements a RESTful API (read and write) to allow other applications to interact with your repository. Expose you collection in different formats, such as JSON, HTML and CSV. If your collection uses a custom standard, you can map it to well-known standards such as DublinCore.
 
 ### Showcases
 

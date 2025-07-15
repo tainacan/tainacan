@@ -818,6 +818,7 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_create_item_before_change_slug'	 => __( 'Please create the item first before changing its slug.', 'tainacan' ),
 	'instruction_create_item_before_change_status'	 => __( 'Please create the item first to define its status.', 'tainacan' ),
 	'instruction_filter_processes_date'				 => __( 'Select the date range for the processes', 'tainacan' ),
+	'instruction_go_to_metadata_mapping_%s'		     => __( 'To use a mapping standard, you must first configure it in the <a href="%s" target="_blank">collection metadata mapping screen</a>.', 'tainacan' ),
 	
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),
@@ -1115,6 +1116,8 @@ return apply_filters( 'tainacan-i18n', [
 	'info_sorting_%s_by_%s'				 			 => __( 'Sorting <em>%1$s</em> by <em>%2$s</em>.', 'tainacan' ),		
 	'info_manage_collections'						 => __( 'Manage which are available in the <a href="%s">collections list</a> page.', 'tainacan' ),
 	'info_manage_taxonomies'						 => __( 'Manage which are available in the <a href="%s">taxonomies list</a> page.', 'tainacan' ),
+	'info_error_date_smaller_than_min_%s'			 => __( 'Date should be after %s.', 'tainacan' ),
+	'info_error_date_greater_than_max_%s'			 => __( 'Date should be before %s.', 'tainacan' ),
 
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),

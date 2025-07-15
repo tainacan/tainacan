@@ -37,6 +37,9 @@ class Mappers_Handler {
 	
 	function init() {
 		$this->register_mapper('Tainacan\Mappers\Dublin_Core');
+        	$this->register_mapper('Tainacan\Mappers\Inbcm_Archive');
+        	$this->register_mapper('Tainacan\Mappers\Inbcm_Bibliographic');
+        	$this->register_mapper('Tainacan\Mappers\Inbcm_Museological');
 		
 		do_action('tainacan-register-mappers', $this);
 	}

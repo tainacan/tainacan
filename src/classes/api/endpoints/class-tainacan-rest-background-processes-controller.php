@@ -408,6 +408,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
             \ob_clean();
             \flush();
             \readfile($path);
+            exit;
         } else {
             return new \WP_REST_Response("file not found", 404, array('content-type' => 'text/html; charset=utf-8'));
         }
