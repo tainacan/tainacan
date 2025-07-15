@@ -570,6 +570,9 @@ button.swiper-pagination-bullet {
   flex-basis: var(--tainacan-media-thumbs-carousel-item-size, 136px);
   position: relative;
 }
+.item-gallery-edit-container .tainacan-media-component__swiper-thumbs li.swiper-slide.has-fixed-height {
+  margin-right: 12px;
+}
 
 .tainacan-media-component {
   --swiper-theme-color: var(--tainacan-secondary, #187181);
@@ -657,7 +660,8 @@ button.swiper-pagination-bullet {
 .tainacan-media-component__swiper-main ul.swiper-wrapper[data-pswp-uid]:not([data-pswp-uid=""]) li.swiper-slide .swiper-slide-content a {
   cursor: zoom-in !important;
 }
-.tainacan-media-component__swiper-main ul.swiper-wrapper[data-pswp-uid]:not([data-pswp-uid=""]) li.swiper-slide .swiper-slide-content .tainacan-item-file-download a {
+.tainacan-media-component__swiper-main ul.swiper-wrapper[data-pswp-uid]:not([data-pswp-uid=""]) li.swiper-slide .swiper-slide-content .tainacan-item-file-download a,
+.tainacan-media-component__swiper-main ul.swiper-wrapper[data-pswp-uid]:not([data-pswp-uid=""]) li.swiper-slide .swiper-slide-content .swiper-slide-metadata a {
   cursor: pointer !important;
 }
 .tainacan-media-component__swiper-main li.swiper-slide {
@@ -672,6 +676,11 @@ button.swiper-pagination-bullet {
   opacity: 0.75;
 }
 .tainacan-media-component__swiper-main li.swiper-slide .swiper-slide-metadata {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
   text-align: center;
   font-size: 0.875em;
   margin-bottom: 1em;
@@ -943,6 +952,10 @@ button.swiper-pagination-bullet {
   cursor: pointer;
 }
 
+.tainacan-media-component + .wp-block-buttons {
+  margin-top: 1rem;
+}
+
 .pswp.tainacan-photoswipe-layer {
   --pswp-bg: var(--tainacan-lightbox-background, #1d1d1d);
   --pswp-error-text-color: var(--tainacan-lightbox-text-color, #fafafa);
@@ -1013,6 +1026,11 @@ button.swiper-pagination-bullet {
 .pswp.tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner .pswp__description {
   font-size: 0.9375em;
   display: block;
+}
+.pswp.tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner a,
+.pswp.tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner a:hover,
+.pswp.tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner a:focus {
+  color: var(--pswp-icon-color);
 }
 .pswp.tainacan-photoswipe-layer.pswp--zoomed-in .pswp__name {
   opacity: 0;
