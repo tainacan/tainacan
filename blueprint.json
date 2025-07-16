@@ -1,0 +1,54 @@
+{
+	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
+    "landingPage": "/wp-admin/admin.php?page=tainacan_admin#/home",
+    "login": true,
+    "preferredVersions": {
+        "php": "8.4",
+        "wp": "6.8"
+    },
+    "meta": {
+        "title": "Tainacan Demonstration Blueprint",
+        "description": "Provides a pre-configured demonstration environment for the Tainacan plugin. It automates the setup of collections, items, metadatas and filters within a WordPress Playground instance, allowing users to quickly experience the plugin's features without a full installation.",
+        "author": "FabricioDeQueiroz, CaioSulz and harry-cmartin"
+    },
+    "features": {
+        "intl": true,
+        "networking": true
+    },
+    "extraLibraries": [
+        "wp-cli"
+    ],
+    "siteOptions": {
+        "timezone_string": "America/Sao_Paulo",
+        "date_format": "d/m/Y",
+        "time_format": "H:i"
+    },
+    "plugins": [
+        {
+            "resource": "wordpress.org/plugins",
+            "slug": "tainacan"
+        }
+    ],
+    "constants": {
+		"WP_DEBUG": false,
+        "WP_DEBUG_DISPLAY": false,
+        "WP_DEBUG_LOG": false
+	},
+    "steps": [
+        {
+            "step": "wp-cli",
+            "command": "wp language core install pt_BR"
+        },
+        {
+            "step": "wp-cli",
+            "command": "wp site switch-language pt_BR"
+        },
+        {
+            "step": "setSiteOptions",
+            "options": {
+                "blogname": "Tainacan Demonstration",
+                "permalink_structure": "/%postname%/"
+            }
+        }
+    ]
+}
