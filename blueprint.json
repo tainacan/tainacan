@@ -18,6 +18,11 @@
     "extraLibraries": [
         "wp-cli"
     ],
+    "siteOptions": {
+        "timezone_string": "America/Sao_Paulo",
+        "date_format": "d/m/Y",
+        "time_format": "H:i"
+    },
     "plugins": [
         {
             "resource": "wordpress.org/plugins",
