@@ -468,13 +468,37 @@ export default {
                    this.$i18n.get('status_draft') + ': ' + total_items['draft'];
         },
         deleteOneCollection(collectionId) {
+            const collectionIndex = this.collections.findIndex(collection => collection.id === collectionId);
+            let collectionName = '';
+            
+            if (collectionIndex >= 0 && this.collections[collectionIndex].name) {
+                collectionName = this.collections[collectionIndex].name;
+            } else if (collectionIndex >= 0) {
+                collectionName = this.$i18n.get('label_unnamed_collection') || 'Unnamed Collection';
+            }
+            
+            let message = '';
+            if (this.isOnTrash) {
+                message = this.$i18n.get('info_warning_collection_delete');
+            } else {
+                message = this.$i18n.get('info_warning_collection_trash');
+            }
+            
+            if (collectionName) {
+                if (message.endsWith('?')) {
+                    message = message.substring(0, message.length - 1) + ' "' + collectionName + '"?';
+                } else {
+                    message = message + ' "' + collectionName + '"';
+                }
+            }
+            
             this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
                     title: this.$i18n.get('label_warning'),
-                    message: this.isOnTrash ? this.$i18n.get('info_warning_collection_delete') : this.$i18n.get('info_warning_collection_trash'),
+                    message: message,
                     onConfirm: () => {
                         this.deleteCollection({ collectionId: collectionId, isPermanently: this.isOnTrash })
                         .then(() => {
@@ -507,13 +531,48 @@ export default {
             this.clearContextMenu();
         },
         deleteSelectedCollections() {
+            const selectedCollectionNames = [];
+            for (let i = 0; i < this.collections.length; i++) {
+                if (this.selectedCollections[i]) {
+                    selectedCollectionNames.push(this.collections[i].name || this.$i18n.get('label_unnamed_collection'));
+                }
+            }
+            
+            let message = '';
+            if (this.isOnTrash) {
+                message = this.$i18n.get('info_warning_selected_collections_delete') || 'Do you really want to permanently delete the selected collections?';
+            } else {
+                message = this.$i18n.get('info_warning_selected_collections_trash') || 'Do you really want to trash the selected collections?';
+            }
+            
+            if (selectedCollectionNames.length > 0) {
+                let collectionsText = '';
+                if (selectedCollectionNames.length === 1) {
+                    collectionsText = ' "' + selectedCollectionNames[0] + '"';
+                } else if (selectedCollectionNames.length <= 3) {
+                    const lastItem = selectedCollectionNames.pop();
+                    collectionsText = ' "' + selectedCollectionNames.join('", "') + '" ' + 
+                        (this.$i18n.get('label_and') || 'and') + ' "' + lastItem + '"';
+                } else {
+                    collectionsText = ' "' + selectedCollectionNames.slice(0, 3).join('", "') + '" ' + 
+                        (this.$i18n.get('label_and') || 'and') + ' ' + (selectedCollectionNames.length - 3) + ' ' + 
+                        (this.$i18n.get('label_more') || 'more');
+                }
+                
+                if (message.endsWith('?')) {
+                    message = message.substring(0, message.length - 1) + collectionsText + '?';
+                } else {
+                    message = message + collectionsText;
+                }
+            }
+            
             this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
                     title: this.$i18n.get('label_warning'),
-                    message: this.isOnTrash ? this.$i18n.get('info_warning_selected_collections_delete') : this.$i18n.get('info_warning_selected_collections_trash'),
+                    message: message,
                     onConfirm: () => {
 
                         for (let i = 0; i < this.collections.length; i++) {
@@ -634,5 +693,4 @@ export default {
     }
     
 </style>
-
 

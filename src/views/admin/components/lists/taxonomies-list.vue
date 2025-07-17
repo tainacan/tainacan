@@ -340,13 +340,32 @@
                 return this.$i18n.get('label_total_terms') + ': ' + total_terms['total'] + '<br> ' + this.$i18n.get('label_root_terms') + ': ' + total_terms['root'] + '<br> ' + this.$i18n.get('label_used_by_items') + ': ' + total_terms['not_empty'];
             },
             deleteOneTaxonomy(taxonomyId) {
+                const taxonomy = this.taxonomies.find(tax => tax.id === taxonomyId);
+                let taxonomyName = '';
+                
+                if (taxonomy) {
+                    taxonomyName = taxonomy.name || this.$i18n.get('label_unnamed_taxonomy') || 'Unnamed Taxonomy';
+                } else {
+                    taxonomyName = 'Taxonomy #' + taxonomyId;
+                }
+                
+                let message = this.$i18n.get('info_warning_taxonomy_delete') || 'Do you really want to delete this taxonomy?';
+                
+                if (taxonomyName) {
+                    if (message.endsWith('?')) {
+                        message = message.substring(0, message.length - 1) + ' "' + taxonomyName + '"?';
+                    } else {
+                        message = message + ' "' + taxonomyName + '"';
+                    }
+                }
+                
                 this.$buefy.modal.open({
                     parent: this,
                     component: CustomDialog,
                     props: {
                         icon: 'alert',
                         title: this.$i18n.get('label_warning'),
-                        message: this.$i18n.get('info_warning_taxonomy_delete'),
+                        message: message,
                         onConfirm: () => {
                             this.deleteTaxonomy({ taxonomyId: taxonomyId, isPermanently: this.isOnTrash })
                                 .then(() => {
@@ -356,8 +375,7 @@
                                     //     position: 'is-bottom',
                                     //     type: 'is-secondary',
                                     //     queue: true
-                                    // });
-                                    for (let i = 0; i < this.selected.length; i++) {
+                                    // });                                    for (let i = 0; i < this.selected.length; i++) {
                                         if (this.selected[i].id === this.taxonomyId)
                                             this.selected.splice(i, 1);
                                     }
@@ -379,13 +397,45 @@
                 });
             },
             deleteSelected() {
+                const selectedTaxonomyNames = [];
+                
+                for (let i = 0; i < this.taxonomies.length; i++) {
+                    if (this.selected[i]) {
+                        const taxonomyName = this.taxonomies[i].name || this.$i18n.get('label_unnamed_taxonomy') || 'Unnamed Taxonomy';
+                        selectedTaxonomyNames.push(taxonomyName);
+                    }
+                }
+                
+                let message = this.$i18n.get('info_warning_selected_taxonomies_delete') || 'Do you really want to delete the selected taxonomies?';
+                
+                if (selectedTaxonomyNames.length > 0) {
+                    let taxonomiesText = '';
+                    if (selectedTaxonomyNames.length === 1) {
+                        taxonomiesText = ' "' + selectedTaxonomyNames[0] + '"';
+                    } else if (selectedTaxonomyNames.length <= 3) {
+                        const lastItem = selectedTaxonomyNames.pop();
+                        taxonomiesText = ' "' + selectedTaxonomyNames.join('", "') + '" ' + 
+                            (this.$i18n.get('label_and') || 'and') + ' "' + lastItem + '"';
+                    } else {
+                        taxonomiesText = ' "' + selectedTaxonomyNames.slice(0, 3).join('", "') + '" ' + 
+                            (this.$i18n.get('label_and') || 'and') + ' ' + (selectedTaxonomyNames.length - 3) + ' ' + 
+                            (this.$i18n.get('label_more') || 'more');
+                    }
+                    
+                    if (message.endsWith('?')) {
+                        message = message.substring(0, message.length - 1) + taxonomiesText + '?';
+                    } else {
+                        message = message + taxonomiesText;
+                    }
+                }
+                
                 this.$buefy.modal.open({
                     parent: this,
                     component: CustomDialog,
                     props: {
                         icon: 'alert',
                         title: this.$i18n.get('label_warning'),
-                        message: this.$i18n.get('info_warning_selected_taxonomies_delete'),
+                        message: message,
                         onConfirm: () => {
 
                             for (let i = 0; i < this.taxonomies.length;  i++) {

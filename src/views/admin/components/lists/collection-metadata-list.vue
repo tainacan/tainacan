@@ -842,13 +842,22 @@ export default {
             });
         },
         removeMetadatum(removedMetadatum, sectionIndex) {
+            let metadatumName = removedMetadatum.name || this.$i18n.get('label_unnamed_metadatum') || 'Unnamed Metadatum';
+            let message = this.$i18n.get('info_warning_metadatum_delete') || 'Do you really want to delete this metadatum?';
+            
+            if (message.endsWith('?')) {
+                message = message.substring(0, message.length - 1) + ' "' + metadatumName + '"?';
+            } else {
+                message = message + ' "' + metadatumName + '"';
+            }
+            
             this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
                     title: this.$i18n.get('label_warning'),
-                    message: this.$i18n.get('info_warning_metadatum_delete'),
+                    message: message,
                     onConfirm: () => { 
                         this.isUpdatingMetadataOrder = true;
                         this.deleteMetadatum({
@@ -871,13 +880,22 @@ export default {
             }); 
         },
         removeMetadataSection(removedMetadataSection) {
+            let sectionName = removedMetadataSection.name || this.$i18n.get('label_unnamed_metadata_section') || 'Unnamed Metadata Section';
+            let message = this.$i18n.get('info_warning_metadata_section_delete') || 'Do you really want to delete this metadata section?';
+            
+            if (message.endsWith('?')) {
+                message = message.substring(0, message.length - 1) + ' "' + sectionName + '"?';
+            } else {
+                message = message + ' "' + sectionName + '"';
+            }
+            
             this.$buefy.modal.open({
                 parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
                     title: this.$i18n.get('label_warning'),
-                    message: this.$i18n.get('info_warning_metadata_section_delete'),
+                    message: message,
                     onConfirm: () => { 
                         this.isUpdatingMetadataSectionsOrder = true;
                         this.deleteMetadataSection({ collectionId: this.collectionId, metadataSectionId: removedMetadataSection.id })
