@@ -497,7 +497,7 @@ class Settings extends Pages {
 
 	public function search_and_performance_section_description() {
 	?>
-		<p class="settings-section-descrition">
+		<p class="settings-section-description">
 			<?php echo _e('Options that may impact on your servers response. Some may be disabled by your server settings. Use with caution!', 'tainacan');?>
 		</p>
 	<?php
@@ -505,7 +505,7 @@ class Settings extends Pages {
 
 	public function theme_templates_section_description() {
 	?>
-		<p class="settings-section-descrition">
+		<p class="settings-section-description">
 			<?php echo _e('Options related to theme compatibility. If your theme does not implements its own versions of Tainacan templates you can enable some options that will override WordPress default templates. Extra customization might required at least some knowledge of CSS.', 'tainacan');?>
 		</p>
 	<?php
@@ -513,7 +513,7 @@ class Settings extends Pages {
 
 	public function items_list_defaults_section_description() {
 	?>
-		<p class="settings-section-descrition">
+		<p class="settings-section-description">
 			<?php echo _e('Options that will be used as default for items list in the collection and repository pages. They might be overridden by collection settings or theme options.', 'tainacan');?>
 		</p>
 	<?php
@@ -521,7 +521,7 @@ class Settings extends Pages {
 
 	public function print_section_info() {
 	?>
-		<p class="settings-section-descrition">
+		<p class="settings-section-description">
 			<?php echo _e('When using the Item\'s Submission block, you can enable Google reCAPTCHA for increasing security. For that you must configure your site and key settings here.', 'tainacan');?>
 		</p>
 	<?php
