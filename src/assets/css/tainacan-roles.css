@@ -15948,6 +15948,11 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
   height: 1px;
   background-color: var(--tainacan-secondary);
 }
+.tainacan-form .form-hook-region:empty {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none;
+}
 
 .table-container {
   overflow-x: hidden;

@@ -159,13 +159,22 @@ export const formHooks = {
             }
         },
         checkFormConditionals(aForm) {
-            if (aForm['form']) {
-                if (aForm['conditional'] && aForm['conditional']['attribute'] && aForm['conditional']['value'])
-                    return (this.form && this.form[aForm['conditional']['attribute']] === aForm['conditional']['value'] ) ? aForm['form'] : '';
-                else
-                    return aForm['form'];
+            if ( !aForm['form'] ) 
+                return '';
+
+            // If the form does not have a 'conditional' attribute, return the form as is
+            if ( !aForm['conditional'] || !Object.keys(aForm['conditional']) || !Object.keys(aForm['conditional']).length )
+                return aForm['form'];
+            
+            const conditionalAttributes = Object.keys(aForm['conditional']);
+            for (let attribute of conditionalAttributes) {
+                console.log('Checking conditional attribute:', attribute, 'with value:', aForm['conditional'][attribute]);
+                console.log('Current form value:', this.form ? this.form[attribute] : 'undefined');
+                // If the conditional attribute is not present or does not match, return empty string
+                if ( !this.form || !this.form[attribute] || this.form[attribute] !== aForm['conditional'][attribute] )    
+                    return '';
             }
-            return '';
+            return aForm['form'];
         }
     }
 };

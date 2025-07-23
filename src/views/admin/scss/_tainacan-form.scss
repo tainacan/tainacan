@@ -252,5 +252,11 @@
             height: 1px;
             background-color: var(--tainacan-secondary);
         }
+
+        &:empty {
+            display: none !important;
+            visibility: hidden !important;
+            pointer-events: none;
+        }
     }
 }
