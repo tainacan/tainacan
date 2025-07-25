@@ -17684,6 +17684,12 @@ body.tainacan-admin-page > .control.autocomplete {
 .media-modal .thumbnail {
   border-radius: var(--tainacan-item-border-radius, 0px);
 }
+.media-modal .tainacan-document-modal,
+.media-modal .tainacan-header-image-modal,
+.media-modal .tainacan-thumbnail-modal,
+.media-modal .tainacan-item-attachments-modal {
+  /* Hides disabled inputs on the media frame when user does not have permission to edit them. Avoid frustration...*/
+}
 .media-modal .tainacan-document-modal .tainacan-document-attachment::before,
 .media-modal .tainacan-document-modal .tainacan-thumbnail-attachment::before,
 .media-modal .tainacan-header-image-modal .tainacan-document-attachment::before,
@@ -17748,6 +17754,24 @@ body.tainacan-admin-page > .control.autocomplete {
 .media-modal .tainacan-header-image-modal .media-frame-menu-toggle,
 .media-modal .tainacan-thumbnail-modal .media-frame-menu-toggle,
 .media-modal .tainacan-item-attachments-modal .media-frame-menu-toggle {
+  display: none !important;
+}
+.media-modal .tainacan-document-modal input:disabled,
+.media-modal .tainacan-document-modal input[readonly],
+.media-modal .tainacan-document-modal textarea:disabled,
+.media-modal .tainacan-document-modal textarea[readonly],
+.media-modal .tainacan-header-image-modal input:disabled,
+.media-modal .tainacan-header-image-modal input[readonly],
+.media-modal .tainacan-header-image-modal textarea:disabled,
+.media-modal .tainacan-header-image-modal textarea[readonly],
+.media-modal .tainacan-thumbnail-modal input:disabled,
+.media-modal .tainacan-thumbnail-modal input[readonly],
+.media-modal .tainacan-thumbnail-modal textarea:disabled,
+.media-modal .tainacan-thumbnail-modal textarea[readonly],
+.media-modal .tainacan-item-attachments-modal input:disabled,
+.media-modal .tainacan-item-attachments-modal input[readonly],
+.media-modal .tainacan-item-attachments-modal textarea:disabled,
+.media-modal .tainacan-item-attachments-modal textarea[readonly] {
   display: none !important;
 }
 @media screen and (max-width: 768px) {

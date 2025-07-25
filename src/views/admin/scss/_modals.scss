@@ -275,6 +275,14 @@
         .media-frame-menu-toggle {
             display: none !important;
         }
+
+        /* Hides disabled inputs on the media frame when user does not have permission to edit them. Avoid frustration...*/
+        input:disabled,
+        input[readonly],
+        textarea:disabled,
+        textarea[readonly] {
+            display: none !important;
+        }
     }
 
     @media screen and (max-width: 768px) {
