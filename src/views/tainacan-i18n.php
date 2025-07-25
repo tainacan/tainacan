@@ -732,6 +732,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_editing_publication_authorship'			 => __( 'Publication authorship editing', 'tainacan' ),
 	'label_range_of_dates'				             => __( 'Range of dates', 'tainacan'),
 	'label_view_processes'				             => __( 'View processes', 'tainacan'),
+	'label_collections_taxonomies'				     => __( 'Collection taxonomies', 'tainacan'),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

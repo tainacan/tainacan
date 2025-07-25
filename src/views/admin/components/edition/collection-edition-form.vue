@@ -62,6 +62,43 @@
                                 @focus="clearErrors('description')" />
                     </b-field>
 
+                    <!-- Collection Taxonomies options ------------------------ -->
+                    <div 
+                            v-if="!isLoading && !isLoadingCollectionTaxonomies && Object.values(getCollectionTaxonomies) && Object.values(getCollectionTaxonomies).length > 0"
+                            class="collection-form-section"
+                            @click="showCollectionsTaxonomiesOptions = !showCollectionsTaxonomiesOptions;">
+                        <span class="icon">
+                            <i 
+                                    class="tainacan-icon"
+                                    :class="showCollectionsTaxonomiesOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                        </span>
+                        <strong>{{ $i18n.get('label_collections_taxonomies') }}</strong>
+                        <hr>
+                    </div>
+                    <transition name="filter-item">
+                        <div 
+                                v-show="showCollectionsTaxonomiesOptions"
+                                class="options-columns">
+                            <template v-for="(collectionTaxonomy, taxonomySlug) in getCollectionTaxonomies">
+                                <b-field 
+                                        v-if="collectionTaxonomy['terms'] && form.collection_taxonomies && form.collection_taxonomies[taxonomySlug]"
+                                        :key="taxonomySlug"
+                                        :addons="false"
+                                        :label="collectionTaxonomy['name']">
+                                    <div class="options-checkboxes">
+                                        <b-checkbox
+                                                v-for="(collectionTaxonomyTerm, index) in collectionTaxonomy['terms']"
+                                                :key="index"
+                                                :model-value="form.collection_taxonomies[taxonomySlug]['terms'] && form.collection_taxonomies[taxonomySlug]['terms'][collectionTaxonomyTerm['slug']] ? true : false"
+                                                @update:model-value="($event) => updateCollectionTaxonomyTerm(collectionTaxonomy['rest_base'], taxonomySlug, collectionTaxonomyTerm, $event)">
+                                            {{ collectionTaxonomyTerm['name'] }}
+                                        </b-checkbox>
+                                    </div>
+                                </b-field>
+                            </template>
+                        </div>
+                    </transition>
+
                     <!-- Items list options ------------------------ -->
                     <div 
                             class="collection-form-section"
@@ -1057,6 +1094,7 @@ export default {
                 item_enable_metadata_searchbar: 'yes',
                 item_enable_metadata_collapses: 'yes',
                 item_enable_metadata_enumeration: 'yes',
+                collection_taxonomies: []
             },
             thumbnail: {},
             cover: {},
@@ -1088,15 +1126,20 @@ export default {
             isLoadingMetadata: true,
             sortingMetadata: [],
             localDefaultOrderBy: 'date',
+            showCollectionsTaxonomiesOptions: false,
             showItemsListOptions: true,
             showItemEditionFormOptions: false,
-            showItemSubmissionOptions: false
+            showItemSubmissionOptions: false,
+            isLoadingCollectionTaxonomies: false
         }
     },
     computed: {
         ...mapGetters('metadata', {
             'metadata': 'getMetadata'
         }),
+        ...mapGetters('collection', [
+            'getCollectionTaxonomies'
+        ]),
         validDefaultViewModes() {
             return Array.isArray(this.form.enabled_view_modes) ? this.form.enabled_view_modes.filter((aViewMode) => this.registeredAndNotDisabledViewModes[aViewMode] != undefined && this.registeredAndNotDisabledViewModes[aViewMode].full_screen == false ) : [];
         },
@@ -1107,7 +1150,7 @@ export default {
                     delete registered[key];
             }
             return registered;
-        }
+        },
     },
     watch: {
         'form.hide_items_thumbnail_on_lists' (newValue) {
@@ -1200,6 +1243,7 @@ export default {
                 this.form.item_enable_metadata_searchbar = this.collection.item_enable_metadata_searchbar;
                 this.form.item_enable_metadata_collapses = this.collection.item_enable_metadata_collapses;
                 this.form.item_enable_metadata_enumeration = this.collection.item_enable_metadata_enumeration;
+                this.form.collection_taxonomies = this.collection.collection_taxonomies;
 
                 // Generates CoverPage from current cover_page_id info
                 if (this.form.cover_page_id != undefined && this.form.cover_page_id != '') {
@@ -1243,15 +1287,23 @@ export default {
                 this.isLoading = false; 
             });
         } else {
-            var tmppath = this.$route.fullPath.split("/");
-            var mapper = tmppath.pop();
-            if(tmppath.pop() == 'new') {
+            let temporaryPath = this.$route.fullPath.split("/");
+            let mapper = temporaryPath.pop();
+            if ( temporaryPath.pop() == 'new' ) {
                 this.isNewCollection = true;
                 this.isMapped = true;
                 this.mapper = mapper;
                 this.createNewCollection();
             }
         }
+
+        this.fetchCollectionTaxonomies({ termParent: 0, termPerPage: tainacan_plugin.api_max_items_per_page })
+            .then(() => {
+                this.isLoadingCollectionTaxonomies = false;
+            })
+            .catch(() => {
+                this.isLoadingCollectionTaxonomies = false;
+            });
     },
     methods: {
         ...mapActions('collection', [
@@ -1263,7 +1315,9 @@ export default {
             'updateHeaderImage',
             'fetchPages',
             'fetchPage',
-            'fetchAllCollectionNames'
+            'fetchAllCollectionNames',
+            'fetchCollectionTaxonomies',
+            'updateCollectionTaxonomyValues'
         ]),
         ...mapActions('metadata', [
             'fetchMetadata'
@@ -1679,7 +1733,26 @@ export default {
                     this.metadataSearchCancel = resp.source;
                 })
                 .catch(() => this.isLoadingMetadata = false);  
-        }
+        },
+        updateCollectionTaxonomyTerm(taxonomyRestBase, taxonomySlug, term, isEnabled) {
+
+            this.form.collection_taxonomies[taxonomySlug]['terms'] = this.form.collection_taxonomies[taxonomySlug]['terms'] || [];
+
+            if ( isEnabled )
+                this.form.collection_taxonomies[taxonomySlug]['terms'][term.slug] = term;
+            else 
+               delete this.form.collection_taxonomies[taxonomySlug]['terms'][term.slug];
+           
+            const taxonomyTermValues = Object.values(this.form.collection_taxonomies[taxonomySlug]['terms']).map(aTerm => aTerm.id || aTerm.slug || aTerm);
+
+            this.updateCollectionTaxonomyValues({ collectionId: this.collection.id, taxonomyValues: { [taxonomyRestBase]: taxonomyTermValues } })
+                .then(() => {
+                    this.$console.log('Collection Taxonomy Values updated successfully');
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                });
+        },
     }
 }
 </script>

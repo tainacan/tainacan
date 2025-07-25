@@ -53,6 +53,13 @@ export const cleanCollection = (state) => {
     state.collection = [];
 }
 
+export const setCollectionTaxonomyValues = (state, { collection, taxonomyValues }) => {
+    if ( collection.id == state.collection.id ) {
+        state.collection.collection_taxonomies = state.collection.collection_taxonomies || {};
+        state.collection.collection_taxonomies[taxonomyValues.slug] = taxonomyValues;
+    }
+}
+
 export const setSingleAttachment = ( state, attachment ) => {
     let index = state.attachments.findIndex(newAttachment => newAttachment.id === attachment.id);
     if ( index >= 0){

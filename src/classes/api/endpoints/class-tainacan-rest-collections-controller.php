@@ -250,6 +250,46 @@ class REST_Collections_Controller extends REST_Controller {
 	}
 
 	/**
+	 * @param \Tainacan\Entities\Collection $collection
+	 *
+	 * @return array
+	 */
+	public function get_collection_taxonomies($collection) {
+		
+		// Fetches all taxonomies associated with the 'tainacan-collection' post type
+		$taxonomies = get_object_taxonomies( 'tainacan-collection', 'objects' );
+
+		$result = [];
+
+		foreach ( $taxonomies as $taxonomy_slug => $taxonomy_obj ) {
+			// Fetches the terms associated with this post for the current taxonomy
+			$terms = get_the_terms( $collection->get_id(), $taxonomy_slug );
+
+			if ( is_wp_error( $terms ) || empty( $terms ) ) {
+				$result[ $taxonomy_slug ] = [];
+				continue;
+			}
+
+			// Formats the terms into a more usable array structure
+			$formatted_terms = [];
+			array_map( function( $term ) use ( &$formatted_terms ) {
+				$formatted_terms[$term->slug] = [
+					'id'    => $term->term_id,
+					'name'  => $term->name,
+					'slug'  => $term->slug,
+				];
+			}, $terms );
+
+			$result[ $taxonomy_slug ] = [
+				'label' => $taxonomy_obj->label,
+				'terms' => $formatted_terms,
+			];
+		}
+
+		return $result;
+	}
+
+	/**
 	 *
 	 * Receive a \WP_Query or a Collection object and return both in JSON
 	 *
@@ -315,6 +355,10 @@ class REST_Collections_Controller extends REST_Controller {
 
 			if ( isset($request['fetch_preview_image_items']) && $request['fetch_preview_image_items'] != 0 ) {
 				$item_arr['preview_image_items'] = $this->get_preview_image_items($item, $request['fetch_preview_image_items']);
+			}
+
+			if ( isset($request['fetch_collection_taxonomies']) && $request['fetch_collection_taxonomies'] == true ) {
+				$item_arr['collection_taxonomies'] = $this->get_collection_taxonomies($item, $request['fetch_collection_taxonomies']);
 			}
 
 			$total_items = wp_count_posts( $item->get_db_identifier(), 'readable' );

@@ -92,7 +92,7 @@
             </b-field>
 
             <!-- Collection Taxonomies, if available -->
-            <template v-if="!isLoadingCollectionTaxonomies && Object.values(collectionTaxonomies) && Object.values(collectionTaxonomies).length >= 0">
+            <template v-if="!isLoadingCollectionTaxonomies && Object.values(collectionTaxonomies) && Object.values(collectionTaxonomies).length > 0">
                 <b-field 
                         v-for="(collectionTaxonomy, taxonomyValue) in collectionTaxonomies"
                         :key="taxonomyValue"
@@ -532,12 +532,12 @@ export default {
         this.collectionsPerPage = this.$userPrefs.get('collections_per_page');
 
         this.isLoadingCollectionTaxonomies = true;
-        this.fetchCollectionTaxonomies()
+        this.fetchCollectionTaxonomies({ termParent: 0, termPerPage: tainacan_plugin.api_max_items_per_page })
             .then(() => {
                 this.isLoadingCollectionTaxonomies = false;
             })
             .catch(() => {
-                this.isLoadingCollectionTaxonomies= false;
+                this.isLoadingCollectionTaxonomies = false;
             });
     }, 
     mounted() {

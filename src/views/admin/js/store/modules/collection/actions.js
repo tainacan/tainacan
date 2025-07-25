@@ -227,7 +227,7 @@ export const cleanCollection = ({ commit }) => {
 
 export const fetchCollection = ({ commit, }, id) => {
     return new Promise((resolve, reject) => { 
-        axios.tainacanApi.get('/collections/' + id + '?context=edit')
+        axios.tainacanApi.get('/collections/' + id + '?context=edit&fetch_collection_taxonomies=true')
         .then(res => {
             let collection = res.data;
             commit('setCollection', collection);
@@ -258,7 +258,7 @@ export const fetchCollectionBasics = ({ commit }, {collectionId, isContextEdit }
     });
 };
 
-export const fetchCollectionTaxonomies = ({ commit }) => {
+export const fetchCollectionTaxonomies = ({ commit }, { termParent, termPerPage = 96 }) => {
     return new Promise((resolve, reject) => { 
         axios.wpApi.get('/taxonomies/?type=tainacan-collection')
             .then(res => {
@@ -271,7 +271,7 @@ export const fetchCollectionTaxonomies = ({ commit }) => {
                     Object.keys(taxonomies).forEach(taxonomySlug => {
                         if ( taxonomies[taxonomySlug]['rest_base'] ) {
                             termsRequests.push(
-                                axios.wpApi.get(taxonomies[taxonomySlug]['rest_base'])
+                                axios.wpApi.get(taxonomies[taxonomySlug]['rest_base'] + '?per_page=' + termPerPage + ( termParent !== undefined && termParent !== null ? '&parent=' + termParent : '' ))
                                     .then(resp => {
                                        return { taxonomy: taxonomySlug, terms: resp.data };
                                     })
@@ -344,10 +344,7 @@ export const deleteCollection = ({ commit }, { collectionId, isPermanently }) =>
     });
 };
 
-export const updateCollection = ({ commit }, { 
-        collection_id, 
-        collection
-    }) => {
+export const updateCollection = ({ commit }, { collection_id, collection }) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.put('/collections/' + collection_id + '?context=edit', collection)
         .then( res => {
@@ -359,6 +356,18 @@ export const updateCollection = ({ commit }, {
         });
 
     });
+};
+
+export const updateCollectionTaxonomyValues = ({ commit }, { collectionId, taxonomyValues }) => {
+    return new Promise((resolve, reject) => {
+        axios.wpApi.patch('/tainacan-collection/' + collectionId, taxonomyValues)
+            .then(res => {
+                resolve(res.data);
+            })
+            .catch(error => {
+                reject(error);
+            });
+        });
 };
 
 export const sendCollection = ( { commit }, collection) => {

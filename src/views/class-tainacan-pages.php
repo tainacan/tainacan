@@ -299,8 +299,11 @@ abstract class Pages {
 		$settings['form_hooks'] = Admin_Hooks::get_instance()->get_registered_hooks();
 
 		$wp_post_types = get_post_types(['show_ui' => true], 'objects');
-		if (isset($wp_post_types['attachment'])) {
+		if ( isset($wp_post_types['attachment']) ) {
 			unset($wp_post_types['attachment']);
+		}
+		if ( isset($wp_post_types['wp_navigation']) ) {
+			unset($wp_post_types['wp_navigation']);
 		}
 
 		$wp_post_types = array_map(function($i) {
@@ -309,6 +312,11 @@ abstract class Pages {
 				'label' => $i->label
 			];
 		}, $wp_post_types);
+
+		$wp_post_types['tainacan-collection'] = [
+			'slug' => 'tainacan-collection',
+			'label' => $Tainacan_Collections->get_cpt_labels()['name']
+		];
 
 		$settings['wp_post_types'] = $wp_post_types;
 
