@@ -33,14 +33,6 @@
                         class="column main-column"
                         :class="shouldDisplayItemSingleDocument || shouldDisplayItemSingleThumbnail ? 'is-12 is-6-desktop is-7-widescreen' : 'is-12'">
 
-                    <!-- Hook for extra Form options -->
-                    <template v-if="hasBeginRightForm">
-                        <div
-                                id="view-item-begin-right"
-                                class="form-hook-region"
-                                v-html="getBeginRightForm" />
-                    </template>
-
                     <div class="b-tabs">
                         <nav 
                                 v-if="tabs.length >= 2 "
@@ -138,13 +130,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Hook for extra Form options -->
-                                <template v-if="hasEndRightForm">
-                                    <div
-                                            id="view-item-end-right"
-                                            class="form-hook-region"
-                                            v-html="getEndRightForm" />
-                                </template>
                             </div>
 
                             <!-- Related items -->
@@ -177,14 +162,6 @@
                         v-if="shouldDisplayItemSingleDocument || shouldDisplayItemSingleThumbnail"
                         class="column secondary-column is-12 is-6-desktop is-5-widescreen">
                     <div class="sticky-container">
-
-                        <!-- Hook for extra Form options -->
-                        <template v-if="hasBeginLeftForm">
-                            <div
-                                    id="view-item-begin-left"
-                                    class="form-hook-region"
-                                    v-html="getBeginLeftForm" />
-                        </template>
 
                         <!-- Publication area -->
                         <div class="section-label">
@@ -397,14 +374,6 @@
                                     :collection="collection" />
                         </div>   
 
-                        <!-- Hook for extra Form options -->
-                        <template v-if="hasEndLeftForm">
-                            <div
-                                    id="view-item-end-left"
-                                    class="form-hook-region"
-                                    v-html="getEndLeftForm" />
-                        </template>
-
                     </div>
                 </div>
    
@@ -509,7 +478,6 @@
 <script>
     import {mapActions, mapGetters} from 'vuex';
     import FileItem from '../../components/other/file-item.vue';
-    import { formHooks } from '../../js/mixins';
     import ActivitiesPage from '../lists/activities-page.vue';
     import ExposersModal from '../../components/modals/exposers-modal.vue';
     import AttachmentsList from '../../components/lists/attachments-list.vue';
@@ -523,7 +491,6 @@
             RelatedItemsList,
             AttachmentsList
         },
-        mixins: [formHooks],
         data() {
             return {
                 collectionId: [String, Number],
@@ -609,12 +576,6 @@
             },
             shouldDisplayItemSingleAttachments() {
                 return !this.$adminOptions.hideItemSingleAttachments && (this.collection && this.collection.item_enable_attachments === 'yes');
-            }
-        },
-        watch: {
-            item() {
-                // Fills hook forms with it's real values 
-                this.updateExtraFormData(this.item);
             }
         },
         created() {
