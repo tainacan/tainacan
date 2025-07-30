@@ -66,28 +66,6 @@ import esLocaleConfig from 'apexcharts/dist/locales/es.json';
 import frLocaleConfig from 'apexcharts/dist/locales/fr.json';
 import ptBrLocaleConfig from 'apexcharts/dist/locales/pt-br.json';
 
-// import { configureCompat } from 'vue';
-// configureCompat({
-//     COMPONENT_V_MODEL: false,
-//     ATTR_FALSE_VALUE: false,
-//     RENDER_FUNCTION: false,
-//     MODE: 3
-// })
-
-function copyAppContext(src, dest) {
-    // replacing _context won't work because methods of app bypasses app._context
-    const { _context: srcContext } = src
-    const { _context: destContext } = dest
-    destContext.config = srcContext.config
-    destContext.mixins = srcContext.mixins
-    destContext.components = srcContext.components
-    destContext.directives = srcContext.directives
-    destContext.provdes = srcContext.provides
-    destContext.optionsCache = srcContext.optionsCache
-    destContext.propsCache = srcContext.propsCache
-    destContext.emitsCache = srcContext.emitsCache
-}
-
 export default (element) => {
 
     function renderTainacanAdminPage() {
@@ -113,7 +91,6 @@ export default (element) => {
             if (typeof window.tainacan_extra_plugins != "undefined") {
                 for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins)) {
                     const aPlugin = app.use(extraVuePluginObject);
-                    //copyAppContext(app, aPlugin);
                 }
             }
 
@@ -223,7 +200,6 @@ export default (element) => {
             if (typeof window.tainacan_extra_components != "undefined") {
                 for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components)) {
                     const aComponent = app.component(extraVueComponentName, extraVueComponentObject);
-                    ///copyAppContext(app, aComponent);
                 }
             }
 
