@@ -19,7 +19,7 @@ class Admin_Hooks {
 	}
 
 	private function __construct() {
-		add_action('init', [$this, 'init']);
+		add_action('admin_init', [$this, 'init']);
 	}
 
 	function init() {

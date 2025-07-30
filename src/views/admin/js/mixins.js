@@ -166,10 +166,16 @@ export const formHooks = {
             if ( !aForm['conditional'] || !Object.keys(aForm['conditional']) || !Object.keys(aForm['conditional']).length )
                 return aForm['form'];
             
+            // Legacy support for single conditional attribute
+            const singleConditionalAttribute = aForm['conditional']['attribute'];
+            const singleConditionalValue = aForm['conditional']['value'];
+            if ( singleConditionalAttribute && singleConditionalValue )
+                return (this.form && this.form[singleConditionalAttribute] === singleConditionalValue ) ? aForm['form'] : '';
+
+            // New support for multiple conditional attributes
             const conditionalAttributes = Object.keys(aForm['conditional']);
-            for (let attribute of conditionalAttributes) {
-                console.log('Checking conditional attribute:', attribute, 'with value:', aForm['conditional'][attribute]);
-                console.log('Current form value:', this.form ? this.form[attribute] : 'undefined');
+            for ( let attribute of conditionalAttributes ) {
+
                 // If the conditional attribute is not present or does not match, return empty string
                 if ( !this.form || !this.form[attribute] || this.form[attribute] !== aForm['conditional'][attribute] )    
                     return '';
