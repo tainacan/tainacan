@@ -25,7 +25,26 @@ class Media {
 
 		add_filter( 'query_vars', [$this, 'attachment_page_add_var'] );
 		add_action( 'template_redirect', [$this, 'attachment_page'] );
+
+		add_action( 'after_setup_theme', [$this, 'add_image_sizes'] );
+        add_filter( 'image_size_names_choose', [$this, 'add_image_sizes_to_admin'] );
 	}
+
+	public function add_image_sizes() {
+        add_image_size( 'tainacan-small', 40, 40, true );
+        add_image_size( 'tainacan-medium', 275, 275, true );
+        add_image_size( 'tainacan-medium-full', 205, 1500 );
+        add_image_size( 'tainacan-large-full', 480, 860 );
+    }
+
+    public function add_image_sizes_to_admin( $sizes ) {
+        return array_merge( $sizes, array(
+            'tainacan-small'       => __( 'Tainacan small (40x40 - cropped)', 'tainacan' ),
+            'tainacan-medium'      => __( 'Tainacan medium (275x275 - cropped)', 'tainacan' ),
+            'tainacan-medium-full' => __( 'Tainacan medium full (205x1500 - not cropped)', 'tainacan' ),
+            'tainacan-large-full'  => __( 'Tainacan large full (480x860 - not cropped)', 'tainacan' )
+        ) );
+    }
 
 	public function add_attachment_page_rewrite_rule() {
 		add_rewrite_rule(

@@ -382,4 +382,32 @@ class Private_Files {
 		}
 	}
 
+	/**
+	 * Function to add rules to [upload_dir]/tainacan/.htaccess
+	 * 
+	 * This function is used as callback for the register_activation_hook
+	 */
+	public static function add_htaccess_rules() {
+		if ( function_exists('insert_with_markers') ) {
+			$uploads_dir = wp_upload_dir(); // Uploads directory
+			$htaccess_dir = trailingslashit($uploads_dir['basedir']) . 'tainacan'; // Path to the tainacan folder
+			$htaccess_file = trailingslashit($htaccess_dir) . '.htaccess'; // Path to the .htaccess file
+
+			// If the folder doesn't exist, create it
+			if (!file_exists($htaccess_dir)) {
+				wp_mkdir_p($htaccess_dir);
+			}
+
+			$marker = 'Tainacan [<wp_upload_dir()>/tainacan] rules'; // Marker name for identification
+			$rules = array(
+				'# Prevent direct access to files',
+				'Order deny,allow',
+				'Deny from all'
+			); // Rules to be added
+
+			// Add rules to the .htaccess file
+			insert_with_markers($htaccess_file, $marker, $rules);
+		}
+	}
+
 }

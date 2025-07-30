@@ -3,7 +3,6 @@ namespace Tainacan;
 
 class Migrations {
 
-
 	static function run_migrations() {
 
 		$migrations = get_class_methods('Tainacan\Migrations');
@@ -535,5 +534,3 @@ class Migrations {
 		}
 	}
 }
-
-?>

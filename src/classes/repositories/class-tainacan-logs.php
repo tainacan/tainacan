@@ -42,7 +42,8 @@ class Logs extends Repository {
 		add_action( 'delete_attachment', array( $this, 'pre_delete_attachment' ) );
 		add_action( 'delete_post', array( $this, 'delete_attachment' ) );
 
-		add_filter('tainacan-log-set-title', [$this, 'filter_log_title']);
+		add_filter( 'tainacan-log-set-title', array( $this, 'filter_log_title' ) );
+		add_filter( 'pre_wp_unique_post_slug', array( $this, 'tainacan_set_log_slug' ), 10, 6 );
 	}
 
 	protected function _get_map() {
@@ -833,4 +834,13 @@ class Logs extends Repository {
 		return $title;
 	}
 
+	function tainacan_set_log_slug( $override, $slug, $post_ID, $post_status, $post_type, $post_parent ) {
+		if ( 'tainacan-log' === $post_type ) {
+			if ( $post_ID ) {
+				return uniqid( $post_type . '-' . $post_ID );
+			}
+			return uniqid( $post_type . '-' );
+		}
+		return $override;
+	}
 }
