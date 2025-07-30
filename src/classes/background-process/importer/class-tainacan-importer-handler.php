@@ -87,13 +87,6 @@ class Importer_Handler {
         ]);
 
 		do_action('tainacan-register-importers');
-
-		add_action( 'tainacan-enqueue-admin-scripts', array($this, 'enqueue_scripts') );
-	}
-
-	function enqueue_scripts() {
-	 	global $TAINACAN_BASE_URL;
-	 	wp_enqueue_script('import_term_csv_script', $TAINACAN_BASE_URL . '/classes/importer/term-importer/js/term.js', false, TAINACAN_VERSION, true);
 	}
 
 	function add_to_queue(\Tainacan\Importer\Importer $importer_object) {
@@ -113,8 +106,6 @@ class Importer_Handler {
 
 	/**
 	 * Register Importer
-	 *
-	 *
 	 *
 	 * @param array $importer {
 	 *     Required. Array or string of arguments describing the importer
@@ -222,8 +213,4 @@ class Importer_Handler {
 		return delete_option('tnc_transient_' . $importer->get_id());
 	}
 
-
 }
-
-global $Tainacan_Importer_Handler;
-$Tainacan_Importer_Handler = new Importer_Handler();

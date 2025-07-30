@@ -1,7 +1,7 @@
 <?php
 namespace Tainacan;
 
-class Background_Importer_Heartbeat {
+class Background_Process_Heartbeat {
 	
 	public function __construct() {
 		add_filter( 'heartbeat_send', array( &$this, 'bg_process_feedback' ), 10, 2 );

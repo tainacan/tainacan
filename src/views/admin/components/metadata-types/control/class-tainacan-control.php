@@ -4,12 +4,8 @@ namespace Tainacan\Metadata_Types;
 
 use Tainacan\Entities\Metadatum;
 
-
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-/**
- * Class TainacanMetadatumType
- */
 class MetadataTypeControlHelper {
 	private static $instance = null;
 	private function __construct() { }

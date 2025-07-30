@@ -21,7 +21,6 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 // Basic constants
 const TAINACAN_VERSION = '0.21.16';
 const TAINACAN_BASE_DIR    = __DIR__;
-const TAINACAN_API_DIR     = __DIR__ . '/classes/api/';
 const TAINACAN_CLASSES_DIR = __DIR__ . '/classes/';
 
 $TAINACAN_BASE_URL = plugins_url('', __FILE__);
@@ -29,7 +28,6 @@ $TAINACAN_API_MAX_ITEMS_PER_PAGE = defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? 
 
 // Initialization logic (loads most classes and instantiates singletons)
 require_once(TAINACAN_CLASSES_DIR . 'tainacan-creator.php');
-require_once(TAINACAN_API_DIR     . 'tainacan-rest-creator.php');
 
 // Perform migrations
 require_once('migrations.php');

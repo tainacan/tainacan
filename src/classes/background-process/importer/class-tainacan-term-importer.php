@@ -88,6 +88,14 @@ class Term_Importer extends Importer {
 								</div>
 							</span>
 						</label>
+						<style>
+							.import_term_csv_taxonomies:has(select.select_taxonomy option:checked[value=""]) input.new_taxonomy {
+								display: block;
+							}
+							.import_term_csv_taxonomies:has(select.select_taxonomy option:checked:not([value=""])) input.new_taxonomy {
+								display: none;
+							}
+						</style>
 						<div class="control is-clearfix">
 							<div class="select is-fullwidth">
 								<select name="select_taxonomy" class="select_taxonomy">

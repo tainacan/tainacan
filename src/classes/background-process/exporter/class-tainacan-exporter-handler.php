@@ -2,7 +2,7 @@
 
 namespace Tainacan;
 
-class Export_Handler {
+class Exporter_Handler {
 	
 	/**
 	 * bg_exporter
@@ -149,7 +149,3 @@ class Export_Handler {
 		return delete_option('tnc_transient_' . $exporter->get_id());
 	}
 }
-
-global $Tainacan_Exporter_Handler;
-$Tainacan_Exporter_Handler = new Export_Handler();
- ?>

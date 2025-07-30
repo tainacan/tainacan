@@ -1,5 +1,5 @@
 <?php
-namespace Tainacan\GenericBackgroundProcess;
+namespace Tainacan\GenericProcess;
 use Tainacan;
 use Tainacan\Entities;
 

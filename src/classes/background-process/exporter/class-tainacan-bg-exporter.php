@@ -57,4 +57,3 @@ class Background_Exporter extends Background_Process {
 		return false;
 	}
 }
- ?>

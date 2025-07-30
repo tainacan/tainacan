@@ -19,9 +19,7 @@ class Cli {
 	}
 	
 	private function __construct() {
-		
 		\WP_CLI::add_hook( 'after_wp_load', [$this, 'add_commands'] );
-		
 	}
 	
 	function add_commands() {
@@ -32,9 +30,4 @@ class Cli {
 		\WP_CLI::add_command('tainacan control-metadata', 'Tainacan\Cli_Control_Metadata');
 	}
 	
-	
-	
 }
-
-
- ?>

@@ -121,9 +121,9 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 	/**
 	 * Returns a new bulk edit background process
 	 *
-	 * @param array $process_args Arguments to initialize the process. As expected by Tainacan\GenericBackgroundProcess\Bulk_Edit_Process::create_bulk_edit()
-	 * @param array $bulk_edit_data Arguments with the bulk edit data, as expected by Tainacan\GenericBackgroundProcess\Bulk_Edit_Process::set_bulk_edit_data()
-	 * @return \Tainacan\GenericBackgroundProcess\Bulk_Edit_Process $process
+	 * @param array $process_args Arguments to initialize the process. As expected by Tainacan\GenericProcess\Bulk_Edit_Process::create_bulk_edit()
+	 * @param array $bulk_edit_data Arguments with the bulk edit data, as expected by Tainacan\GenericProcess\Bulk_Edit_Process::set_bulk_edit_data()
+	 * @return \Tainacan\GenericProcess\Bulk_Edit_Process $process
 	 */
 	private function new_process($process_args, $bulk_edit_data) {
 		global $Tainacan_Generic_Process_Handler;
@@ -139,10 +139,10 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 	/**
 	 * Runs the process
 	 *
-	 * @param \Tainacan\GenericBackgroundProcess\Bulk_Edit_Process $process
+	 * @param \Tainacan\GenericProcess\Bulk_Edit_Process $process
 	 * @return int|bool Returns the number of iterations the process took to run if it succeeded. Return false in case of error.
 	 */
-	private function run_process( \Tainacan\GenericBackgroundProcess\Bulk_Edit_Process $process ) {
+	private function run_process( \Tainacan\GenericProcess\Bulk_Edit_Process $process ) {
 
 		$steps = 0;
 

@@ -3,19 +3,19 @@
 namespace Tainacan;
 
 /**
- * Abstract Tainacan_Background_Process class.
+ * Abstract Tainacan\Background_Process class.
  *
- * Uses https://github.com/A5hleyRich/wp-background-processing to handle DB
- * updates in the background.
+ * Uses modified version of https://github.com/A5hleyRich/wp-background-processing
+ * to handle DB updates in the background.
  *
  */
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Tainacan_Background_Process class.
+ * Tainacan\Background_Process class.
  */
-abstract class Background_Process extends \Tainacan_WP_Background_Process {
+abstract class Background_Process extends Background_Process_Base {
 
 	/**
 	 * Table name where the queue is stored
