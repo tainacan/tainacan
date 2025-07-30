@@ -59,7 +59,7 @@
                                 class="is-block"
                                 :label="$i18n.get('mapping')">
                             <template #message>
-                                <span v-html="$i18n.getWithVariables('instruction_go_to_metadata_mapping_%s', [ adminFullURL + $routerHelper.getCollectionMetadataPath(selectedCollection) ])" />
+                                <span v-html="$i18n.getWithVariables('instruction_go_to_metadata_mapping_%s', [ $routerHelper.getAbsoluteAdminPath() + $routerHelper.getCollectionMetadataPath(selectedCollection) ])" />
                             </template>
                             <b-select
                                     v-model="selectedMapping"
@@ -143,7 +143,7 @@
                 runButtonLoading: false,
                 exporterSession: {},
                 formErrorMessage: '',
-                isLoading: false,
+                isLoading: false
             }
         },
         created() {
