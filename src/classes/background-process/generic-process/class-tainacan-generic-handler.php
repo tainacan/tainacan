@@ -3,7 +3,7 @@
 namespace Tainacan;
 
 class Generic_Process_Handler {
-
+    use \Tainacan\Traits\Singleton_Instance;
 	
 	/**
 	 * bg_process
@@ -15,12 +15,12 @@ class Generic_Process_Handler {
 
 	private $registered_process = [];
 
-	function __construct() {
+	private function init() {
 		$this->bg_process = new Background_Generic_Process();
-		add_action('init', array(&$this, 'init'));
+		add_action('init', array(&$this, 'register_generic_processes'));
 	}
 
-	public function init() {
+	public function register_generic_processes() {
 
 		$this->register_generic_process([
 			'name' => 'Bulk edit',

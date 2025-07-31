@@ -2,27 +2,16 @@
 
 namespace Tainacan;
 
-
 class Admin_Hooks {
-
+	use \Tainacan\Traits\Singleton_Instance;
 
 	private $registered_hooks = [];
 
-	private static $instance = null;
-
-	public static function get_instance() {
-		if ( ! isset( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
+	private function init() {
+		add_action('admin_init', [$this, 'register_hooks']);
 	}
 
-	private function __construct() {
-		add_action('admin_init', [$this, 'init']);
-	}
-
-	function init() {
+	function register_hooks() {
 		do_action('tainacan-register-admin-hooks');
 	}
 

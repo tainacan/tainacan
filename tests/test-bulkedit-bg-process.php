@@ -126,7 +126,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 	 * @return \Tainacan\GenericProcess\Bulk_Edit_Process $process
 	 */
 	private function new_process($process_args, $bulk_edit_data) {
-		global $Tainacan_Generic_Process_Handler;
+		$Tainacan_Generic_Process_Handler = \Tainacan\Generic_Process_Handler::get_instance();
 		$process = $Tainacan_Generic_Process_Handler->initialize_generic_process('bulk_edit');
 		$process->create_bulk_edit($process_args);
 		$Tainacan_Generic_Process_Handler->save_process_instance($process);

@@ -3,7 +3,8 @@
 namespace Tainacan;
 
 class Exporter_Handler {
-	
+	use \Tainacan\Traits\Singleton_Instance;
+
 	/**
 	 * bg_exporter
 	 *
@@ -14,12 +15,12 @@ class Exporter_Handler {
 
 	private $registered_exporters = [];
 	
-	function __construct() {
+	private function init() {
 		$this->bg_exporter = new Background_Exporter();
-		add_action('init', array(&$this, 'init'));
+		add_action('init', array(&$this, 'register_exporters'));
 	}
 
-	public function init() {
+	public function register_exporters() {
 
 		$this->register_exporter([
 			'name' => __('CSV', 'tainacan'),

@@ -530,7 +530,7 @@ abstract class Exporter {
 		}
 		$return['class_name'] = get_class($this);
 
-		global $Tainacan_Exporter_Handler;
+		$Tainacan_Exporter_Handler = \Tainacan\Exporter_Handler::get_instance();
 		$exporter_definition = $Tainacan_Exporter_Handler->get_exporter_by_object($this);
 
 		if ($short === false) {

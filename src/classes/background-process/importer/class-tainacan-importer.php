@@ -162,7 +162,7 @@ abstract class Importer {
 		}
 		$return['class_name'] = get_class($this);
 
-		global $Tainacan_Importer_Handler;
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
 		$importer_definition = $Tainacan_Importer_Handler->get_importer_by_object($this);
 
 		if ($short === false) {

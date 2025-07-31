@@ -13,19 +13,11 @@ use \Respect\Validation\Validator as v;
  * Class Tainacan_Taxonomies
  */
 class Taxonomies extends Repository {
+	use \Tainacan\Traits\Singleton_Instance;
+
 	public $entities_type = '\Tainacan\Entities\Taxonomy';
 
-	private static $instance = null;
-
-	public static function get_instance() {
-		if ( ! isset( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
-
-	protected function __construct() {
+	protected function init() {
 		parent::__construct();
 		add_action( 'tainacan-taxonomy-removed-from-collection', array( $this, 'removed_collection' ), 10, 2 );
 		add_action( 'tainacan-taxonomy-added-to-collection', array( $this, 'added_collection' ), 10, 2 );

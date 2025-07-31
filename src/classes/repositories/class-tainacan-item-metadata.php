@@ -7,21 +7,12 @@ use Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class Item_Metadata extends Repository {
-
-	protected function __construct() {
-		parent::__construct();
-	}
+	use \Tainacan\Traits\Singleton_Instance;
 
 	public $entities_type = '\Tainacan\Entities\Item_Metadata_Entity';
 
-	private static $instance = null;
-
-	public static function get_instance() {
-		if ( ! isset( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
+	protected function init() {
+		parent::__construct();
 	}
 
 	/**

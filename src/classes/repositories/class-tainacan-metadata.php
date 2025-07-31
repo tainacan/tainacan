@@ -12,6 +12,8 @@ use \Respect\Validation\Validator as v;
  * Class Metadata
  */
 class Metadata extends Repository {
+	use \Tainacan\Traits\Singleton_Instance;
+
 	public $entities_type = '\Tainacan\Entities\Metadatum';
 	protected $default_metadata = 'default';
 	protected $current_taxonomy;
@@ -23,20 +25,7 @@ class Metadata extends Repository {
 		'Tainacan\Metadata_Types\Core_Description'
 	];
 
-	private static $instance = null;
-
-	public static function get_instance() {
-		if ( ! isset( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
-
-	/**
-	 * Register specific hooks for metadatum repository
-	 */
-	protected function __construct() {
+	protected function init() {
 		parent::__construct();
 		add_filter( 'pre_trash_post', array( &$this, 'disable_delete_core_metadata' ), 10, 2 );
 		add_filter( 'pre_delete_post', array( &$this, 'force_delete_core_metadata' ), 10, 3 );

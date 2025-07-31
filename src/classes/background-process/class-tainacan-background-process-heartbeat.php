@@ -2,8 +2,9 @@
 namespace Tainacan;
 
 class Background_Process_Heartbeat {
+	use \Tainacan\Traits\Singleton_Instance;
 	
-	public function __construct() {
+	private function init() {
 		add_filter( 'heartbeat_send', array( &$this, 'bg_process_feedback' ), 10, 2 );
 	}
 	

@@ -16,7 +16,6 @@ class Exposers_Handler {
 	private static $instance = null;
 	private static $request = null;
 	
-	
 	const TYPE_PARAM = 'exposer';
 	
 	public static function get_instance() {

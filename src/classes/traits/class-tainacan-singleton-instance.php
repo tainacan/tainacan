@@ -5,7 +5,7 @@ namespace Tainacan\Traits;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Class for formatter texts
+ * Class for Singleton pattern
  * @author Vinicius Nunus - L3P/Medialab
  *
  */

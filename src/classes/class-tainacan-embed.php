@@ -2,16 +2,7 @@
 namespace Tainacan;
 
 class Embed {
-	
-	private static $instance = null;
-
-    public static function get_instance() {
-        if(!isset(self::$instance)) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
+	use \Tainacan\Traits\Singleton_Instance;
 
 	private static $aspect_ratios = array(
 		// Common video resolutions.
@@ -26,7 +17,7 @@ class Embed {
 		array("ratio" => '0.50', "className" => 'tainacan-embed-aspect-1-2' )
 	);
 	
-	protected function __construct() {
+	protected function init() {
 		
 		/**
 		 * Replace default WordPress embedders with HTML 5 tags instead of shortcodes

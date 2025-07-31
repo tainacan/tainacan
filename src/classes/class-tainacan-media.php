@@ -5,22 +5,14 @@ namespace Tainacan;
  * Class withe helpful methods to handle media in Tainacan
  */
 class Media {
+	use \Tainacan\Traits\Singleton_Instance;
 
-	private static $instance = null;
 	private static $file_name = null;
 	private $attachment_html_url_base = 'tainacan_attachment_html';
 
 	public static $content_index_meta = 'document_content_index';
 
-	public static function get_instance() {
-			if(!isset(self::$instance)) {
-					self::$instance = new self();
-			}
-
-			return self::$instance;
-	}
-
-	protected function __construct() {
+	protected function init() {
 		add_action( 'init', [$this, 'add_attachment_page_rewrite_rule'] );
 
 		add_filter( 'query_vars', [$this, 'attachment_page_add_var'] );

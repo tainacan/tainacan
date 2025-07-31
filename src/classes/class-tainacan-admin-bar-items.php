@@ -2,8 +2,9 @@
 namespace Tainacan;
 
 class Admin_Bar_Items {
+	use \Tainacan\Traits\Singleton_Instance;
 	
-	public function __construct() {
+	private function init() {
 		add_action( 'admin_bar_menu', array($this, 'add_admin_bar_items'), 500 );
         add_action( 'init', array($this, 'add_admin_bar_items_styles') );
 	}

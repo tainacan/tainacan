@@ -152,7 +152,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		$file_name = 'demosaved.csv';
-		global $Tainacan_Importer_Handler;
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
 		$csv_importer = $Tainacan_Importer_Handler->initialize_importer('csv');
 		$Tainacan_Importer_Handler->save_importer_instance($csv_importer);
 		$id = $csv_importer->get_id();
@@ -262,7 +262,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		$file_name = 'demosaved.csv';
-		global $Tainacan_Importer_Handler;
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
 		$csv_importer = $Tainacan_Importer_Handler->initialize_importer('csv');
 		$Tainacan_Importer_Handler->save_importer_instance($csv_importer);
 		$id = $csv_importer->get_id();
@@ -414,7 +414,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 	 * @group xis
 	 */
 	public function test_get_registered() {
-		global $Tainacan_Importer_Handler;
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
 		$csv_importer = new Importer\CSV();
 		$registered = $Tainacan_Importer_Handler->get_importer_by_object($csv_importer);
 		$this->assertEquals('csv', $registered['slug']);
@@ -428,7 +428,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		$file_name = 'demosaved.csv';
-		global $Tainacan_Importer_Handler;
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
 		$csv_importer = $Tainacan_Importer_Handler->initialize_importer('csv');
 		$Tainacan_Importer_Handler->save_importer_instance($csv_importer);
 		$id = $csv_importer->get_id();
@@ -580,7 +580,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 	 * @group importer_csv_special_fields
 	 */
 	public function test_special_fields_status_and_id(){
-		global $Tainacan_Importer_Handler;
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
 		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		$file_name = 'demosaved.csv';

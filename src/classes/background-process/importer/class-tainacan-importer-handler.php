@@ -3,6 +3,7 @@
 namespace Tainacan;
 
 class Importer_Handler {
+    use \Tainacan\Traits\Singleton_Instance;
 
 	/**
 	 * bg_importer
@@ -14,14 +15,14 @@ class Importer_Handler {
 
 	private $registered_importers = [];
 
-	function __construct() {
+	private function init() {
 
 		$this->bg_importer = new Background_Importer();
 
-		add_action('init', array(&$this, 'init'));
+		add_action('init', array(&$this, 'register_importers'));
 	}
 
-	public function init() {
+	public function register_importers() {
 
 		$this->register_importer([
 			'name' => __('CSV', 'tainacan'),

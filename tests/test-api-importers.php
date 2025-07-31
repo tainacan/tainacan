@@ -20,7 +20,7 @@ class TAINACAN_REST_Importers_Controller extends TAINACAN_UnitApiTestCase {
 	}
 
 	public function test_update() {
-		global $Tainacan_Importer_Handler;
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
 		$slug='csv';
 		$importer = $Tainacan_Importer_Handler->initialize_importer($slug);
 		$Tainacan_Importer_Handler->save_importer_instance($importer);
