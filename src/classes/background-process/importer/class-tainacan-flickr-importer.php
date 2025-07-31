@@ -10,7 +10,7 @@ class Flickr_Importer extends Importer {
 	protected $apiKey = '&api_key=';
 	protected $perPage = '&per_page=1';
 	protected $format = '&format=json&nojsoncallback=1';
-	protected $apiKeyValue = '59dcf7e8e317103416c529b476f44fab';
+	protected $apiKeyValue = '';
 
 	protected $steps = [
 		[
@@ -26,18 +26,15 @@ class Flickr_Importer extends Importer {
 		],
 	];
 
+	private $items_repo;
+
 	/**
 	 * constructor
 	 */
 	public function __construct($attributes = array()) {
 		parent::__construct($attributes);
 
-		$this->col_repo = \Tainacan\Repositories\Collections::get_instance();
 		$this->items_repo = \Tainacan\Repositories\Items::get_instance();
-		$this->metadata_repo = \Tainacan\Repositories\Metadata::get_instance();
-		$this->item_metadata_repo = \Tainacan\Repositories\Item_Metadata::get_instance();
-		$this->tax_repo = \Tainacan\Repositories\Taxonomies::get_instance();
-		$this->term_repo = \Tainacan\Repositories\Terms::get_instance();
 
 		$this->remove_import_method('file');
 		$this->add_import_method('url');

@@ -24,6 +24,13 @@ class Oaipmh_Importer extends Importer {
 	protected $has_sets = true;
 	protected $items_per_page = 100;
 
+	private $col_repo;
+	private $items_repo;
+	private $metadata_repo;
+	private $item_metadata_repo;
+	private $tax_repo;
+	private $term_repo;
+
 	/**
 	 * tainacan old importer construct
 	 */
