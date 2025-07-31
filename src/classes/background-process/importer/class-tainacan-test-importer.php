@@ -1,5 +1,11 @@
 <?php
 
+namespace Tainacan\Importer;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
+use \Tainacan\Entities;
+
 /**
  * Test Importer
  *
@@ -9,10 +15,6 @@
  * create test collections and items
  *
  */
-
-namespace Tainacan\Importer;
-use \Tainacan\Entities;
-
 class Test_Importer extends Importer {
 	
 	protected $steps = [

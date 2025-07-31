@@ -2,6 +2,8 @@
 
 namespace Tainacan\OAIPMHExpose;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 class OAIPMH_List_Metadata_Formats extends OAIPMH_Expose {
 
     protected $working_node;

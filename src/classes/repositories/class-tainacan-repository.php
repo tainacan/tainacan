@@ -2,12 +2,12 @@
 
 namespace Tainacan\Repositories;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use Tainacan\Entities;
 use Tainacan\Entities\Entity;
 use Tainacan;
 use Tainacan\Repositories;
-
-defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 abstract class Repository {
 	public $entities_type = '\Tainacan\Entities\Entity';

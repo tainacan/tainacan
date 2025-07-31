@@ -2,6 +2,8 @@
 
 namespace Tainacan\OAIPMHExpose;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use Tainacan;
 
 /**

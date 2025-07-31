@@ -1,5 +1,8 @@
 <?php
+
 namespace Tainacan;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class Admin_Bar_Items {
 	use \Tainacan\Traits\Singleton_Instance;

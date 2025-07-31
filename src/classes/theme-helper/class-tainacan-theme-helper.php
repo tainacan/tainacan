@@ -1,9 +1,17 @@
 <?php
 
 namespace Tainacan;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use Tainacan\Entities;
 
-
+/**
+ * Class Tainacan\Theme_Helper
+ * 
+ * This class provides helper methods for Tainacan themes, including template overrides,
+ * 
+ */
 class Theme_Helper {
 	use \Tainacan\Traits\Singleton_Instance;
 	

@@ -1,5 +1,13 @@
 <?php
 
+namespace Tainacan\Exporter;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
+use Tainacan;
+use Tainacan\Entities;
+use Tainacan\Repositories;
+
 /**
  * @author: MediaLab-UFG(Eduardo Humberto).
  * Term Exporter
@@ -7,12 +15,6 @@
  * Class to export files CSV with terms
  *
  */
-
-namespace Tainacan\Exporter;
-use Tainacan;
-use Tainacan\Entities;
-use Tainacan\Repositories;
-
 class Term_Exporter extends Exporter {
 
     protected $steps = [

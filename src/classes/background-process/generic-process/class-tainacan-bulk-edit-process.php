@@ -1,5 +1,9 @@
 <?php
+
 namespace Tainacan\GenericProcess;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use Tainacan;
 use Tainacan\Entities;
 

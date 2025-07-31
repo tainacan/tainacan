@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 return apply_filters( 'tainacan-i18n', [
 
 	// Comparators

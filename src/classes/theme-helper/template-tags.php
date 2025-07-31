@@ -1,8 +1,19 @@
 <?php
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use \Tainacan\Entities;
 use \Tainacan\Repositories;
-
+/**
+ * Tainacan Template Tags
+ *
+ * This file contains template tags that can be used in Tainacan theme templates.
+ * It provides functions to retrieve and display metadata, documents, collections,
+ * and other related information.
+ *
+ * @package Tainacan
+ * @since 0.1.0
+ */
 
 /**
  * To be used inside The Loop

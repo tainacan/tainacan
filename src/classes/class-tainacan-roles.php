@@ -1,7 +1,13 @@
 <?php
 
 namespace Tainacan;
-use Tainacan\Repositories\Repository;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
+/**
+ * This file contains the Tainacan Roles class, which manages the roles and capabilities
+ * used in the Tainacan plugin.
+ */
 
 class Roles {
 	use \Tainacan\Traits\Singleton_Instance;

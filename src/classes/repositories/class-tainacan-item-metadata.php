@@ -2,9 +2,9 @@
 
 namespace Tainacan\Repositories;
 
-use Tainacan\Entities;
-
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
+use Tainacan\Entities;
 
 class Item_Metadata extends Repository {
 	use \Tainacan\Traits\Singleton_Instance;

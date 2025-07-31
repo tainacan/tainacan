@@ -2,6 +2,8 @@
 
 namespace Tainacan;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use WP_CLI;
 use Tainacan\Repositories;
 

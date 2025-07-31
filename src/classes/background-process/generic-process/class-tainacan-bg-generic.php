@@ -2,6 +2,8 @@
 
 namespace Tainacan;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 class Background_Generic_Process extends Background_Process {
 	/**
 	 * @var string

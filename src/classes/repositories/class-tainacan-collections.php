@@ -2,12 +2,11 @@
 
 namespace Tainacan\Repositories;
 
-use Tainacan\Entities;
-
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+use Tainacan\Entities;
+
 use \Respect\Validation\Validator as v;
-use Tainacan\Entities\Collection;
 
 class Collections extends Repository {
 	use \Tainacan\Traits\Singleton_Instance;

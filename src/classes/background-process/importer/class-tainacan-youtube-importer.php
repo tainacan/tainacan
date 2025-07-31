@@ -1,7 +1,9 @@
 <?php
 namespace Tainacan\Importer;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use Tainacan;
-use Tainacan\Entities;
 
 class Youtube_Importer extends Importer {
 
@@ -19,18 +21,15 @@ class Youtube_Importer extends Importer {
         ],
     ];
 
+    private $items_repo;
+
     /**
      * constructor
      */
     public function __construct($attributes = array()) {
         parent::__construct($attributes);
 
-        $this->col_repo = \Tainacan\Repositories\Collections::get_instance();
         $this->items_repo = \Tainacan\Repositories\Items::get_instance();
-        $this->metadata_repo = \Tainacan\Repositories\Metadata::get_instance();
-        $this->item_metadata_repo = \Tainacan\Repositories\Item_Metadata::get_instance();
-        $this->tax_repo = \Tainacan\Repositories\Taxonomies::get_instance();
-        $this->term_repo = \Tainacan\Repositories\Terms::get_instance();
 
         $this->remove_import_method('file');
         $this->add_import_method('url');

@@ -1,5 +1,8 @@
 <?php
+
 namespace Tainacan\OAIPMHExpose;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
  * Generate an XML response when a request cannot be finished

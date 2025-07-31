@@ -2,11 +2,11 @@
 
 namespace Tainacan\Repositories;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use Tainacan\Entities;
 use \Respect\Validation\Validator as v;
 use Tainacan\Entities\Item;
-
-defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class Items extends Repository {
 	use \Tainacan\Traits\Singleton_Instance;

@@ -1,6 +1,9 @@
 <?php
 
 namespace Tainacan\OAIPMHExpose;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use Tainacan\Repositories;
 use Tainacan\Entities;
 

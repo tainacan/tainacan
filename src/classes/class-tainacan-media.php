@@ -1,5 +1,8 @@
 <?php
+
 namespace Tainacan;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
  * Class withe helpful methods to handle media in Tainacan

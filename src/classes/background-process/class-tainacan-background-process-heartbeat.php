@@ -1,5 +1,8 @@
 <?php
+
 namespace Tainacan;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class Background_Process_Heartbeat {
 	use \Tainacan\Traits\Singleton_Instance;

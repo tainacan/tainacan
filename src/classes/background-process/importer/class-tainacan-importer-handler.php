@@ -2,6 +2,8 @@
 
 namespace Tainacan;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 class Importer_Handler {
     use \Tainacan\Traits\Singleton_Instance;
 

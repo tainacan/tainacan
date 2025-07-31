@@ -5,8 +5,8 @@ use Tainacan\Entities;
 use Tainacan\Entities\Collection;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
-// used by Item, Event, Metadatum
 
+// used by Item, Event, Metadatum
 /**
  * Defines Collection and Items relation
  * @author medialab

@@ -1,7 +1,8 @@
 <?php
+
 namespace Tainacan\GenericProcess;
-use Tainacan;
-use Tainacan\Entities;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 abstract class Generic_Process {
 

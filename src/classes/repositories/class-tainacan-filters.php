@@ -2,10 +2,9 @@
 
 namespace Tainacan\Repositories;
 
-use Tainacan\Entities;
-
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+use Tainacan\Entities;
 use \Respect\Validation\Validator as v;
 
 class Filters extends Repository {

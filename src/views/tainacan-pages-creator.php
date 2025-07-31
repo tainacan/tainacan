@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 require_once(__DIR__ . '/class-tainacan-pages.php');
 
 require_once(__DIR__ . '/dashboard/class-tainacan-dashboard.php');

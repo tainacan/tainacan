@@ -2,6 +2,8 @@
 
 namespace Tainacan;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 /**
  * Abstract Tainacan\Background_Process_Base class.
  *

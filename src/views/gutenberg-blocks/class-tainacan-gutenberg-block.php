@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 // Slugs and options for the Tainacan Blocks.
 const TAINACAN_BLOCKS = [
 	'items-list' => [],

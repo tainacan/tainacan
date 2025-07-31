@@ -1,6 +1,9 @@
 <?php
 
 namespace Tainacan\Importer;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use \Tainacan\Entities;
 
 class Old_Tainacan extends Importer {

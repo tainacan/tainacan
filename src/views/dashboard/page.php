@@ -1,4 +1,8 @@
+<?php
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
+?>
 <div id="tainacan-dashboard-app" class="content-body">
     <div class="tainacan-dashboard-header">
         <h1>

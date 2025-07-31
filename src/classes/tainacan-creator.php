@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 const TAINACAN_CLI_DIR                    = __DIR__ . '/cli/';
 const TAINACAN_API_DIR     				  = __DIR__ . '/api/';
 const TAINACAN_OAIPMH_DIR                 = __DIR__ . '/oaipmh/';

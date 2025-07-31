@@ -2,6 +2,8 @@
 
 namespace Tainacan\API\EndPoints;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use Tainacan\OAIPMHExpose;
 use \Tainacan\API\REST_Controller;
 

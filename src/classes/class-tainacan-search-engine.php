@@ -1,4 +1,9 @@
 <?php
+
+namespace Tainacan;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 /**
  * This class implements the default Tainacan Search engine.
  * 
@@ -13,9 +18,6 @@
  * Author URI: http://www.sovrn.com
  * 
  */
-
-namespace Tainacan;
-
 class Search_Engine {
 
 	var $logging = false;

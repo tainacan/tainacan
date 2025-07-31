@@ -2,6 +2,8 @@
 
 namespace Tainacan\API;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 abstract class REST_Controller extends \WP_REST_Controller {
 
 	/**

@@ -1,5 +1,8 @@
 <?php
 namespace Tainacan\Importer;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use Tainacan;
 use Tainacan\Entities;
 

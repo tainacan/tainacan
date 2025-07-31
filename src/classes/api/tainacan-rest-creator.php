@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 /**
  * Base namespace for all rest api requests. WordPress default is 'wp/v2'.
  */

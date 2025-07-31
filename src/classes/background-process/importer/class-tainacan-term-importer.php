@@ -1,5 +1,11 @@
 <?php
 
+namespace Tainacan\Importer;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
+use \Tainacan\Entities;
+
 /**
  * @author: MediaLab-UFG(Vinicius Nunes).
  * Term Importer
@@ -7,10 +13,6 @@
  * Class to import files CSV with terms
  *
  */
-
-namespace Tainacan\Importer;
-use \Tainacan\Entities;
-
 class Term_Importer extends Importer {
 
 	protected $steps = [

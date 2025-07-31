@@ -1,10 +1,9 @@
 <?php
 namespace Tainacan;
 
-use Tainacan\Mappers_Handler;
-use Tainacan\Mappers\Mapper;
-
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
+use Tainacan\Mappers_Handler;
 
 /**
  * Load exposers classes

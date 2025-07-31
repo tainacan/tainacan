@@ -2,6 +2,8 @@
 
 namespace Tainacan;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 /**
  * Pages is an abstract base class for all Tainacan admin pages.
  */

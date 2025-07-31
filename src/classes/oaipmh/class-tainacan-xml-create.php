@@ -1,5 +1,8 @@
 <?php
+
 namespace Tainacan\OAIPMHExpose;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
  * A wraper of DOMDocument for data provider

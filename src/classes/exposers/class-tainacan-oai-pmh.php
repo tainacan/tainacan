@@ -2,6 +2,8 @@
 
 namespace Tainacan\Exposers;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 /**
  * Generate a OAI_PMH/oai_dc formated response
  *

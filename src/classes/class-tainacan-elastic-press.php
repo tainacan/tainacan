@@ -1,5 +1,14 @@
 <?php
+
+namespace Tainacan;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
+require_once('class-tainacan-elastic-press-lte-4.7.2.php');
+
 /**
+ * Class Elastic_Press
+ *
  * This class implements the integration of Tainacan with ElasticPress, a WordPress plugin that connects your WordPress installation with Elastic Search
  *
  * https://github.com/10up/ElasticPress
@@ -7,13 +16,6 @@
  * 
  * @package Tainacan
  * @since 0.21.15
- */
-namespace Tainacan;
-require_once('class-tainacan-elastic-press-lte-4.7.2.php');
-
-/**
- * Class Elastic_Press
- * Handles the integration between Tainacan and ElasticPress
  */
 class Elastic_Press {
 	/**

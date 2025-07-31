@@ -6,7 +6,6 @@ use Tainacan\Entities;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-
 use \Respect\Validation\Validator as v;
 
 /**

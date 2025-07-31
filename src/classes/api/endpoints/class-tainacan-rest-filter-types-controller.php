@@ -2,6 +2,8 @@
 
 namespace Tainacan\API\EndPoints;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use \Tainacan\API\REST_Controller;
 
 class REST_Filter_Types_Controller extends REST_Controller {

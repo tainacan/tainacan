@@ -2,6 +2,8 @@
 
 namespace Tainacan;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 class Mobile_App extends Pages {
 	use \Tainacan\Traits\Singleton_Instance;
 

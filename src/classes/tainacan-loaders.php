@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 /**
  * Retrieve the singleton Collections Repository instance
  * @return \Tainacan\Repositories\Collections The Tainacan Collections Repository

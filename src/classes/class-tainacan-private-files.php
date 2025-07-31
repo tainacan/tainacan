@@ -1,8 +1,7 @@
 <?php
 namespace Tainacan;
 
-use Tainacan\Repositories;
-use Tainacan\Entities;
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
  * Class withe helpful methods to handle media in Tainacan

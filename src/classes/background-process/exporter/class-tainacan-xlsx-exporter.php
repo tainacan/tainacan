@@ -2,6 +2,8 @@
 
 namespace Tainacan\Exporter;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use Tainacan;
 use Tainacan\Entities;
 use Tainacan\Exporter\Exporter;

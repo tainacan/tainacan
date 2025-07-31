@@ -2,18 +2,14 @@
 
 namespace Tainacan;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 /**
  * Abstract Tainacan\Background_Process class.
  *
  * Uses modified version of https://github.com/A5hleyRich/wp-background-processing
  * to handle DB updates in the background.
  *
- */
-
-defined( 'ABSPATH' ) || exit;
-
-/**
- * Tainacan\Background_Process class.
  */
 abstract class Background_Process extends Background_Process_Base {
 

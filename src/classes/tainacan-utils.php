@@ -1,9 +1,11 @@
 <?php
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 /**
  * This file gathers functions usefull for theme and plugin developers
  * as well as some global filters/hooks.
  */
-
 
 /**
  * Retrieves raw data sent to an API endpoint reading the php://input stream

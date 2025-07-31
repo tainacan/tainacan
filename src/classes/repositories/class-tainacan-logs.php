@@ -2,10 +2,10 @@
 
 namespace Tainacan\Repositories;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use Tainacan\Entities;
 use Tainacan\Entities\Entity;
-
-defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
  * Implement a Logs system

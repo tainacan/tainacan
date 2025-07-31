@@ -2,6 +2,8 @@
 
 namespace Tainacan\Mappers;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 abstract class Mapper {
 	public $slug = null; // Slug of Mapper, used as option on api call 
 	public $name = null; // Public name do mapper
