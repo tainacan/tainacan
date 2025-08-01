@@ -3009,6 +3009,9 @@ export default {
                 color: var(--tainacan-info-color);
             }
         }
+        @media screen and (max-width: 1024px) {
+            flex-wrap: wrap;
+        }
     }
 
     .selected-items-info {

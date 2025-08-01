@@ -613,7 +613,6 @@ export default {
     @import "../../scss/_tables.scss";
 
     .selection-control {
-        
         padding: 6px 0px 0px 12px;
         background: var(--tainacan-background-color);
         height: 40px;
@@ -624,6 +623,10 @@ export default {
             &:hover {
                 color: var(--tainacan-info-color);
             }
+        }
+
+        @media screen and (max-width: 1024px) {
+            flex-wrap: wrap;
         }
     }
 
