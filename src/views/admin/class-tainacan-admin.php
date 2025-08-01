@@ -90,7 +90,7 @@ class Admin extends Pages {
 				$this->has_admin_ui_option('hideNavigationRepositoryMenu') ? $this->tainacan_root_menu_slug : $this->repository_links_slug,
 				__('Activities', 'tainacan'),
 				'<span class="icon">' . $this->get_svg_icon( 'activities' ) . '</span><span class="menu-text">' . __('Activities', 'tainacan') . '</span>',
-				'read',
+				'tnc_rep_read_logs',
 				$this->get_page_slug() . '#/activities',
 				array( &$this, 'render_page' )
 			);

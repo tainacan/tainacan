@@ -86,7 +86,7 @@
                     @update-total-processes="(total) => { totalProcesses = total; $console.log(totalProcesses);}" />
 
             <!-- Empty state processes image -->
-            <div v-if="tab == 'processes' && processes.length <= 0 && !isLoading">
+            <div v-if="processes.length <= 0 && !isLoading">
                 <section class="section">
                     <div class="content has-text-grey has-text-centered">
                         <p>
@@ -167,7 +167,6 @@
                 processesPage: 1,
                 processesPerPage: 12,
                 totalProcesses: 0,
-                tab: '',
                 searchQuery: '',
                 searchDates: [],
                 maxProcessesPerPage: tainacan_plugin.api_max_items_per_page ? Number(tainacan_plugin.api_max_items_per_page) : 96
