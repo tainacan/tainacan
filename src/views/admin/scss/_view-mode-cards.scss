@@ -11,8 +11,8 @@
     display: -ms-grid;
     display: grid;
     -ms-grid-columns: 455px 455px;
-    grid-template-columns: repeat(auto-fill, 455px);
-    grid-gap: 0;
+    grid-template-columns: repeat(auto-fill, min(425px, 100%));
+    grid-gap: 30px;
     justify-content: space-evenly;
     animation-name: appear;
     animation-duration: 0.5s;
@@ -27,9 +27,9 @@
         background-color: var(--tainacan-item-background-color);
         padding: 0;
         flex-basis: 0;
-        margin: 15px;
+        margin: 0;
         max-width: 425px;
-        min-width: 425px;
+        min-width: min(425px, 100%);
         min-height: 210px;
         max-height: 210px;
         border-radius: var(--tainacan-item-border-radius, 0px);
