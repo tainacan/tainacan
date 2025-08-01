@@ -456,7 +456,7 @@
                                                         :hide-help-buttons="false"
                                                         :help-info-bellow-label="false"
                                                         :is-mobile-screen="isMobileScreen"
-                                                        :enumerate-metadatum="metadataSections.length > 1 && collection && collection.item_enable_metadata_enumeration === 'yes' ? ( (Number(sectionIndex) + 1) + '.' + (Number(getMetadatumOrderInSection(sectionIndex, itemMetadatum.metadatum)) + 1) ) : false"
+                                                        :enumerate-metadatum="metadataSections.length >= 1 && collection && collection.item_enable_metadata_enumeration === 'yes' ? ( ( metadataSections.length > 1 ? ((Number(sectionIndex) + 1) + '.') : '' ) + (Number(getMetadatumOrderInSection(sectionIndex, itemMetadatum.metadatum)) + 1) ) : false"
                                                         :is-last-metadatum="index > 2 && (index == itemMetadata.length - 1)"
                                                         :is-focused="focusedMetadatum === index"
                                                         :is-metadata-navigation="isMetadataNavigation"
