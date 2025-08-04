@@ -203,7 +203,7 @@ class Dashboard extends Pages {
 
 			foreach( $collections as $index => $collection ) {
 
-				if ( $this->has_admin_ui_option('showOnlyCollectionCardsThatUserCanEdit') && !current_user_can( 'tnc_col_', $collection->get_id() . '_edit_items' ) )
+				if ( $this->has_admin_ui_option('showOnlyCollectionCardsThatUserCanEdit') && !current_user_can( 'tnc_col_' . $collection->get_id() . '_edit_items' ) )
 					continue;
 
 				$tainacan_dashboard_cards[] = array(
