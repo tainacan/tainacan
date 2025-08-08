@@ -530,6 +530,7 @@
             position: sticky;
             bottom: 0;
             padding: 16px var(--tainacan-one-column);
+            margin: 0;
             display: flex;
             justify-content: space-between;
             z-index: 2;

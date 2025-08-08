@@ -248,13 +248,13 @@
                         </td>
                         <!-- Total items -->
                         <td
-                                v-if="collection.total_items != undefined"
                                 class="column-small-width column-align-right"
                                 :label="$i18n.get('label_total_items')" 
-                                :aria-label="$i18n.get('label_total_items') + ': ' + getTotalItems(collection.total_items)" 
+                                :aria-label="$i18n.get('label_total_items') + ': ' + (collection.total_items ? getTotalItems(collection.total_items) : 0)" 
                                 @click.left="onClickCollection($event, collection.id, index)"
                                 @click.right="onRightClickCollection($event, collection.id, index)">
                             <p
+                                    v-if="collection.total_items != undefined"
                                     v-tooltip="{
                                         delay: {
                                             show: 500,
