@@ -386,7 +386,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
         $guid = $request['guid'];
         $upload_url = wp_upload_dir();
-        $path = $upload_url['basedir'] . '/tainacan/' . $guid;
+        $path = realpath($upload_url['basedir'] . '/tainacan') . '/' . $guid;
         $real_file_path = realpath($path);
         if (strpos($real_file_path, $path) !== 0) {
             $error_def = [
