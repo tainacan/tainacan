@@ -2345,6 +2345,8 @@ class Theme_Helper {
 							$document_options = $item->get_document_options();
 							$media_includes_images = isset($document_options['is_image']) && $document_options['is_image'];
 						}
+						if ( $media_includes_images )
+							break;
 					}
 				}
 				
