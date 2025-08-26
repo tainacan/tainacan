@@ -2,6 +2,7 @@
     <div>
         <b-loading
                 v-model="isLoading"
+                :is-full-page="false"
                 :can-cancel="false" />
 
         <tainacan-external-link

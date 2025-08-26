@@ -1042,7 +1042,7 @@ export default {
                     border-bottom-right-radius: 0;
                     border-top-left-radius: var(--tainacan-button-border-radius, 3px);
                     border-bottom-left-radius: var(--tainacan-button-border-radius, 3px);
-                    font-size: 0.875em;
+                    font-size: 0.938em;
                     left: 0em; 
                     top: 0px;
                     opacity: 0;
@@ -1061,7 +1061,7 @@ export default {
                     .sorting-buttons {
                         opacity: 1.0;
                         visibility: visible;
-                        left: -2em
+                        left: -1.062em
                     }
                 }
                 .handle {

@@ -1022,7 +1022,8 @@
         </div>
 
         <b-loading 
-                v-model="isLoading" 
+                v-model="isLoading"
+                :is-full-page="false"
                 :can-cancel="false" />
     </div>
 </template>

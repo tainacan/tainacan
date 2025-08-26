@@ -27,7 +27,7 @@
         <div>
             <b-loading
                     v-model="isLoading" 
-                    :is-full-page="true" 
+                    :is-full-page="false" 
                     :can-cancel="false" />
 
             <capabilities-list
