@@ -275,14 +275,8 @@
   font-size: 1rem;
   color: var(--tainacan-turquoise5);
 }
-#tainacan-dashboard-app .postbox .tainacan-dashboard-card-list[data-color-scheme=gray] li > a {
-  color: var(--tainacan-gray5);
-}
 #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list[data-color-scheme=gray] .icon {
   color: var(--tainacan-gray5);
-}
-#tainacan-dashboard-app .postbox .tainacan-dashboard-card-list[data-color-scheme=blue] li > a {
-  color: var(--tainacan-blue5);
 }
 #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list[data-color-scheme=blue] .icon {
   color: var(--tainacan-blue5);
