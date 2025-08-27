@@ -1,6 +1,6 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
-    "name": "tainacan/geocoorinate-item-metadatum",
+    "name": "tainacan/geocoordinate-item-metadatum",
     "title": "Tainacan Geo Coordinate Item Metadatum",
     "apiVersion": 3,
     "category": "tainacan-blocks",

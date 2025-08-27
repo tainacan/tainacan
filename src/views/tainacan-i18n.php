@@ -696,7 +696,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_use_search_separated_words'				 => __( 'Search each word separatelly', 'tainacan' ),
 	'label_map'										 => __( 'Map', 'tainacan' ),
 	'label_show_item_location_on_map'				 => __( 'Show item location on map', 'tainacan' ),
-	/* translators: This appears before a select where you choose possible geocoorinate metadata */
+	/* translators: This appears before a select where you choose possible geocoordinate metadata */
 	'label_showing_locations_for'					 => __( 'Showing locations for:', 'tainacan' ),
 	'label_one_selected_location'                    => __( 'One location selected', 'tainacan' ),
 	'label_%s_selected_locations'                    => __( '%s locations selected', 'tainacan' ),
