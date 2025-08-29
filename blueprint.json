@@ -1,6 +1,6 @@
 {
 	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
-    "landingPage": "/wp-admin/admin.php?page=tainacan_admin#/home",
+    "landingPage": "/wp-admin/admin.php?page=tainacan_admin",
     "login": true,
     "preferredVersions": {
         "php": "8.4",
@@ -18,17 +18,6 @@
     "extraLibraries": [
         "wp-cli"
     ],
-    "siteOptions": {
-        "timezone_string": "America/Sao_Paulo",
-        "date_format": "d/m/Y",
-        "time_format": "H:i"
-    },
-    "plugins": [
-        {
-            "resource": "wordpress.org/plugins",
-            "slug": "tainacan"
-        }
-    ],
     "constants": {
 		"WP_DEBUG": false,
         "WP_DEBUG_DISPLAY": false,
@@ -36,12 +25,47 @@
 	},
     "steps": [
         {
-            "step": "wp-cli",
-            "command": "wp language core install pt_BR"
+            "step": "installPlugin",
+            "pluginData": {
+                "resource": "wordpress.org/plugins",
+                "slug": "tainacan"
+            }
         },
         {
-            "step": "wp-cli",
-            "command": "wp site switch-language pt_BR"
+            "step": "activatePlugin",
+            "pluginPath": "/wordpress/wp-content/plugins/tainacan"
+        },
+        {
+            "step": "installPlugin",
+            "pluginData": {
+                "resource": "wordpress.org/plugins",
+                "slug": "tainacan-blocksy"
+            }
+        },
+        {
+            "step": "activatePlugin",
+            "pluginPath": "/wordpress/wp-content/plugins/tainacan-blocksy"
+        },
+        {
+            "step": "installTheme",
+            "themeData": {
+                "resource": "wordpress.org/themes",
+                "slug": "taina"
+            }
+        },
+        {
+            "step": "installTheme",
+            "themeData": {
+                "resource": "wordpress.org/themes",
+                "slug": "blocksy"
+            }
+        },
+        {
+            "step": "installTheme",
+            "themeData": {
+                "resource": "wordpress.org/themes",
+                "slug": "tainacan-interface"
+            }
         },
         {
             "step": "setSiteOptions",
