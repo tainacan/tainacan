@@ -471,14 +471,11 @@
                                     </div>
 
                                     <!-- Hook for extra Form options -->
-                                    <template
-                                            v-if="formHooks != undefined &&
-                                                formHooks['item'] != undefined &&
-                                                formHooks['item']['end-right'] != undefined">
+                                    <template v-if="hasEndRightForm">
                                         <form
                                                 id="form-item-end-right"
                                                 class="form-hook-region"
-                                                v-html="formHooks['item']['end-right'].join('')" />
+                                                v-html="getEndRightForm" />
                                     </template>
                                 </div>
 
