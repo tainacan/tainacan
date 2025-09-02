@@ -8,15 +8,60 @@ use Tainacan\Entities;
 
 use \Respect\Validation\Validator as v;
 
+/**
+ * Repository for managing Tainacan collections.
+ *
+ * Handles all database operations for collections including creation,
+ * updates, deletion, and querying with proper validation and logging.
+ *
+ * @since 1.0.0
+ */
 class Collections extends Repository {
 	use \Tainacan\Traits\Singleton_Instance;
 
+	/**
+	 * The entity type this repository manages.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	public $entities_type = '\Tainacan\Entities\Collection';
 
+	/**
+	 * Stores the old collection state for comparison during updates.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var \Tainacan\Entities\Collection
+	 */
 	private $old_collection;
+
+	/**
+	 * Stores the old core title for comparison during updates.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	private $old_core_title;
+
+	/**
+	 * Stores the old core description for comparison during updates.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	private $old_core_description;
 
+	/**
+	 * Initializes the collections repository.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
 	protected function init() {
 		parent::__construct();
 	}

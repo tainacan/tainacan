@@ -10,9 +10,13 @@ use Tainacan\Entities;
 use \Tainacan\Exposers\Mappers\Value;
 
 /**
- * Represents the Exporters REST Controller
+ * REST API controller for managing Tainacan exporters.
  *
- * */
+ * Handles all REST API endpoints for export operations including
+ * export configuration, export execution, and export management.
+ *
+ * @since 1.0.0
+ */
 class REST_Exporters_Controller extends REST_Controller {
 	private $collections_repository;
 

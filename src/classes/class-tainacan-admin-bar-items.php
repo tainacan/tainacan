@@ -4,16 +4,35 @@ namespace Tainacan;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+/**
+ * Handles WordPress admin bar items for Tainacan.
+ *
+ * Adds contextual edit links to the WordPress admin bar for Tainacan items,
+ * collections, taxonomies, and terms when users have appropriate permissions.
+ *
+ * @since 0.1.0
+ */
 class Admin_Bar_Items {
 	use \Tainacan\Traits\Singleton_Instance;
 	
+	/**
+	 * Initializes the admin bar items functionality.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
 	private function init() {
 		add_action( 'admin_bar_menu', array($this, 'add_admin_bar_items'), 500 );
         add_action( 'init', array($this, 'add_admin_bar_items_styles') );
 	}
 
 	/**
-	 * Color to style the admin bar items
+	 * Enqueues styles for admin bar items.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
 	 */
 	function add_admin_bar_items_styles() {
 		global $TAINACAN_BASE_URL;
@@ -22,10 +41,17 @@ class Admin_Bar_Items {
 		    wp_enqueue_style( 'tainacan-admin-bar', $TAINACAN_BASE_URL . '/assets/css/tainacan-admin-bar.css', [], TAINACAN_VERSION );
 	}
 
-    /*
-    *
-    * Adds Edit links to Tainacan item and collection pages
-    */
+	/**
+	 * Adds contextual edit links to the WordPress admin bar.
+	 *
+	 * Adds edit links for Tainacan items, collections, taxonomies, and terms
+	 * when users have appropriate permissions and are viewing relevant pages.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param \WP_Admin_Bar $admin_bar The WordPress admin bar object.
+	 * @return void
+	 */
     function add_admin_bar_items ( \WP_Admin_Bar $admin_bar ) {
 
         // No need to add this shortcuts on the admin

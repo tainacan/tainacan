@@ -5,7 +5,12 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Represents the Entity Item
+ * Represents a Tainacan Item entity.
+ *
+ * Items are the main content entities in Tainacan, containing
+ * metadata values, attachments, and relationships within collections.
+ *
+ * @since 1.0.0
  */
 class Item extends Entity {
 	use \Tainacan\Traits\Entity_Collection_Relation;

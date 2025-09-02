@@ -8,6 +8,14 @@ use \Tainacan\API\REST_Controller;
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
+/**
+ * REST API controller for managing Tainacan taxonomy terms.
+ *
+ * Handles all REST API endpoints for term operations including
+ * creation, updates, deletion, and querying of taxonomy terms.
+ *
+ * @since 1.0.0
+ */
 class REST_Terms_Controller extends REST_Controller {
 	private $term;
 	private $terms_repository;

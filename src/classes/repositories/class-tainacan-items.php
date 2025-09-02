@@ -8,6 +8,14 @@ use Tainacan\Entities;
 use \Respect\Validation\Validator as v;
 use Tainacan\Entities\Item;
 
+/**
+ * Repository for managing Tainacan items.
+ *
+ * Handles all database operations for items including creation,
+ * updates, deletion, and querying with proper validation and logging.
+ *
+ * @since 1.0.0
+ */
 class Items extends Repository {
 	use \Tainacan\Traits\Singleton_Instance;
 

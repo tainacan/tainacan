@@ -9,7 +9,12 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 use \Respect\Validation\Validator as v;
 
 /**
- * Class Tainacan_Terms
+ * Repository for managing Tainacan taxonomy terms.
+ *
+ * Handles all database operations for taxonomy terms including creation,
+ * updates, deletion, and querying with proper validation and logging.
+ *
+ * @since 1.0.0
  */
 class Terms extends Repository {
 	use \Tainacan\Traits\Singleton_Instance;

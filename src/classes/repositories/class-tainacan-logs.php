@@ -8,10 +8,12 @@ use Tainacan\Entities;
 use Tainacan\Entities\Entity;
 
 /**
- * Implement a Logs system
+ * Repository for managing Tainacan logs.
  *
- * @author medialab
+ * Implements a comprehensive logging system for tracking changes
+ * and operations within Tainacan including entity modifications.
  *
+ * @since 1.0.0
  */
 class Logs extends Repository {
 	use \Tainacan\Traits\Singleton_Instance;

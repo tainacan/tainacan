@@ -5,16 +5,52 @@ namespace Tainacan;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Class withe helpful methods to handle media in Tainacan
+ * Handles media functionality for Tainacan.
+ *
+ * Provides methods for managing images, attachments, and media-related features
+ * including custom image sizes, attachment pages, and content indexing.
+ *
+ * @since 0.1.0
  */
 class Media {
 	use \Tainacan\Traits\Singleton_Instance;
 
+	/**
+	 * Current file name being processed.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var string|null
+	 */
 	private static $file_name = null;
+
+	/**
+	 * Base URL slug for attachment HTML pages.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var string
+	 */
 	private $attachment_html_url_base = 'tainacan_attachment_html';
 
+	/**
+	 * Meta key for document content indexing.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var string
+	 */
 	public static $content_index_meta = 'document_content_index';
 
+	/**
+	 * Initializes the media functionality.
+	 *
+	 * Sets up rewrite rules, query vars, and image sizes for Tainacan media handling.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
 	protected function init() {
 		add_action( 'init', [$this, 'add_attachment_page_rewrite_rule'] );
 
@@ -25,6 +61,13 @@ class Media {
         add_filter( 'image_size_names_choose', [$this, 'add_image_sizes_to_admin'] );
 	}
 
+	/**
+	 * Registers custom image sizes for Tainacan.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
 	public function add_image_sizes() {
         add_image_size( 'tainacan-small', 40, 40, true );
         add_image_size( 'tainacan-medium', 275, 275, true );
@@ -32,6 +75,14 @@ class Media {
         add_image_size( 'tainacan-large-full', 480, 860 );
     }
 
+	/**
+	 * Adds custom image sizes to the admin interface.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param array $sizes Existing image size options.
+	 * @return array Modified image size options.
+	 */
     public function add_image_sizes_to_admin( $sizes ) {
         return array_merge( $sizes, array(
             'tainacan-small'       => __( 'Tainacan small (40x40 - cropped)', 'tainacan' ),
@@ -41,6 +92,13 @@ class Media {
         ) );
     }
 
+	/**
+	 * Adds rewrite rule for attachment HTML pages.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
 	public function add_attachment_page_rewrite_rule() {
 		add_rewrite_rule(
 			'^' . $this->attachment_html_url_base . '/([0-9]+)/?',

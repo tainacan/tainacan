@@ -5,18 +5,61 @@ namespace Tainacan;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * This file contains the Tainacan Roles class, which manages the roles and capabilities
- * used in the Tainacan plugin.
+ * Manages roles and capabilities for the Tainacan plugin.
+ *
+ * Handles the creation, management, and enforcement of custom roles and capabilities
+ * specific to Tainacan functionality, including collection and item permissions.
+ *
+ * @since 0.1.0
  */
-
 class Roles {
 	use \Tainacan\Traits\Singleton_Instance;
 
+	/**
+	 * Array of Tainacan capabilities.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var array
+	 */
 	private $capabilities = array();
+
+	/**
+	 * Metadata capabilities.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var array
+	 */
 	private $meta_caps;
+
+	/**
+	 * Metadata section capabilities.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var array
+	 */
 	private $meta_section_caps;
+
+	/**
+	 * Filter capabilities.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var array
+	 */
 	private $filters_caps;
 
+	/**
+	 * Initializes the roles and capabilities system.
+	 *
+	 * Sets up WordPress hooks for capability management and user role translation.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
 	private function init() {
 		$this->meta_caps = (new \Tainacan\Entities\Metadatum())->get_capabilities();
 		$this->meta_section_caps = (new \Tainacan\Entities\Metadata_Section())->get_capabilities();
@@ -36,6 +79,16 @@ class Roles {
 
 	}
 
+	/**
+	 * Populates the Tainacan capabilities array.
+	 *
+	 * Defines all custom capabilities used by Tainacan for managing
+	 * collections, items, metadata, and other features.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
 	public function populate_tainacan_capabilities() {
 
 		$this->capabilities = [

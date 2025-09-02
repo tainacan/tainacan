@@ -9,10 +9,13 @@ use Tainacan\Repositories;
 use Tainacan\Entities;
 
 /**
- * Represents the Items REST Controller
- * @uses Tainacan\Repositories\
- * @uses Tainacan\Entities\
-*/
+ * REST API controller for managing Tainacan items.
+ *
+ * Handles all REST API endpoints for item operations including
+ * creation, updates, deletion, and querying of items within collections.
+ *
+ * @since 1.0.0
+ */
 class REST_Items_Controller extends REST_Controller {
 	private $items_repository;
 	private $item;

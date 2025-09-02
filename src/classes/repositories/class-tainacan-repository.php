@@ -9,44 +9,82 @@ use Tainacan\Entities\Entity;
 use Tainacan;
 use Tainacan\Repositories;
 
+/**
+ * Abstract base class for all Tainacan repositories.
+ *
+ * Provides common functionality for data access and manipulation
+ * including logging, validation, and entity management.
+ *
+ * @since 1.0.0
+ * @abstract
+ */
 abstract class Repository {
+	/**
+	 * The entity type this repository manages.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	public $entities_type = '\Tainacan\Entities\Entity';
 
 	/**
-	 * If set to false, no logs will be generated upon insertion or update
+	 * Whether to generate logs for insertions and updates.
 	 *
-	 * use enable_logs() and disable_logs() to set the values
+	 * Use enable_logs() and disable_logs() to control this setting.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @var bool
 	 */
 	protected $use_logs = true;
 
 	/**
-	 * Instance of Repository Logs
+	 * Instance of the logs repository.
 	 *
-	 * @var Repositories\Logs
+	 * @since 1.0.0
+	 *
+	 * @var \Tainacan\Repositories\Logs
 	 */
   protected $logs_repository;
 
+  /**
+   * Internal mapping cache.
+   *
+   * @since 1.0.0
+   *
+   * @var array
+   */
   private $map = [];
 
 	/**
-	 * Disable creation of logs while inerting and updating entities
+	 * Disables creation of logs while inserting and updating entities.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
 	 */
 	public function disable_logs() {
 		$this->use_logs = false;
 	}
 
 	/**
-	 * Enable creation of logs while inserting and updating entities
-	 * if it was disabled
+	 * Enables creation of logs while inserting and updating entities.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
 	 */
 	public function enable_logs() {
 		$this->use_logs = true;
 	}
 
 	/**
-	 * Get if creation of logs while inserting and updating entities are enable
+	 * Gets whether creation of logs while inserting and updating entities is enabled.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool True if logging is enabled, false otherwise.
 	 */
 	public function get_enabled_logs() {
 		return $this->use_logs;

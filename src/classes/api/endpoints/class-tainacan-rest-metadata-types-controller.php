@@ -6,6 +6,14 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 use \Tainacan\API\REST_Controller;
 
+/**
+ * REST API controller for managing Tainacan metadata types.
+ *
+ * Handles all REST API endpoints for metadata type operations including
+ * type registration, configuration, and management of metadata type definitions.
+ *
+ * @since 1.0.0
+ */
 class REST_Metadata_Types_Controller extends REST_Controller {
 
 	/**

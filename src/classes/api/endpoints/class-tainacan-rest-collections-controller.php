@@ -10,10 +10,13 @@ use Tainacan\Entities;
 use Tainacan\Entities\Collection;
 
 /**
- * Represents the Collections REST Controller
+ * REST API controller for managing Tainacan collections.
  *
- * @uses Entities\Collection and Repositories\Collections
- * */
+ * Handles all REST API endpoints for collection operations including
+ * creation, updates, deletion, and querying of collections.
+ *
+ * @since 1.0.0
+ */
 class REST_Collections_Controller extends REST_Controller {
 	private $collections_repository;
 	private $collection;

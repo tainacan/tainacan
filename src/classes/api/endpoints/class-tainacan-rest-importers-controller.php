@@ -9,9 +9,13 @@ use Tainacan\Repositories;
 use Tainacan\Entities;
 
 /**
- * Represents the Importers REST Controller
+ * REST API controller for managing Tainacan importers.
  *
- * */
+ * Handles all REST API endpoints for import operations including
+ * import configuration, import execution, and import management.
+ *
+ * @since 1.0.0
+ */
 class REST_Importers_Controller extends REST_Controller {
 	protected function get_schema() {
         return "TODO:get_schema";

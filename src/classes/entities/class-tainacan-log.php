@@ -5,7 +5,12 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Represents entity Log
+ * Represents a Tainacan Log entity.
+ *
+ * Logs track changes and operations within Tainacan, providing
+ * an audit trail for entity modifications and system activities.
+ *
+ * @since 1.0.0
  */
 class Log extends Entity {
 

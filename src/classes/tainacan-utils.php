@@ -18,8 +18,15 @@ function tainacan_get_api_postdata() {
 }
 
 /**
- * Retrieve if the post status is viewable
- * @return boolean
+ * Determines whether a post status is viewable by visitors.
+ *
+ * Checks if a post status object or string represents a status that can be
+ * viewed by non-logged-in users on the frontend.
+ *
+ * @since 0.1.0
+ *
+ * @param string|\WP_Post_Status $post_status Post status name or object.
+ * @return bool True if the post status is viewable, false otherwise.
  */
 if ( !function_exists("is_post_status_viewable") ) {
 	function is_post_status_viewable( $post_status ) {
@@ -54,7 +61,16 @@ function tnc_enable_dev_wp_interface() {
 }
 
 /**
- * Custom wp_kses function for Tainacan.
+ * Custom wp_kses function for Tainacan content.
+ *
+ * Sanitizes content using WordPress kses with Tainacan-specific allowed HTML tags.
+ * Extends the default 'post' context to include iframe elements for embedded content.
+ *
+ * @since 0.1.0
+ *
+ * @param string $content The content to sanitize.
+ * @param string $context The kses context to use. Default 'tainacan_content'.
+ * @return string Sanitized content.
  */
 function wp_kses_tainacan($content, $context = 'tainacan_content') {
 	$allowed_html = wp_kses_allowed_html($context);

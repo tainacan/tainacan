@@ -6,6 +6,14 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 use Tainacan\Entities;
 
+/**
+ * Repository for managing Tainacan item metadata.
+ *
+ * Handles all database operations for item metadata including creation,
+ * updates, deletion, and querying with proper validation and logging.
+ *
+ * @since 1.0.0
+ */
 class Item_Metadata extends Repository {
 	use \Tainacan\Traits\Singleton_Instance;
 

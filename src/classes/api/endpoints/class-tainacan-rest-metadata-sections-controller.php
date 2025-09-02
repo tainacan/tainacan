@@ -8,6 +8,14 @@ use \Tainacan\API\REST_Controller;
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
+/**
+ * REST API controller for managing Tainacan metadata sections.
+ *
+ * Handles all REST API endpoints for metadata section operations including
+ * section creation, updates, deletion, and querying within collections.
+ *
+ * @since 1.0.0
+ */
 class REST_Metadata_Sections_Controller extends REST_Controller {
 
 	private $metadata_sections_repository;

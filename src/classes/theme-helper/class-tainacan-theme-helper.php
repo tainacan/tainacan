@@ -7,10 +7,12 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 use Tainacan\Entities;
 
 /**
- * Class Tainacan\Theme_Helper
- * 
- * This class provides helper methods for Tainacan themes, including template overrides,
- * 
+ * Theme helper class for Tainacan.
+ *
+ * Provides theme integration functionality including template overrides,
+ * view modes, template tags, and theme compatibility features.
+ *
+ * @since 1.0.0
  */
 class Theme_Helper {
 	use \Tainacan\Traits\Singleton_Instance;

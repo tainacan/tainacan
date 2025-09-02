@@ -5,46 +5,49 @@ namespace Tainacan;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Abstract Tainacan\Background_Process_Base class.
+ * Abstract base class for background processes in Tainacan.
  *
+ * Extends Async_Request to provide background processing capabilities
+ * for long-running tasks like imports, exports, and bulk operations.
+ *
+ * @since 1.0.0
  * @abstract
- * @extends Async_Request
  */
 abstract class Background_Process_Base extends Async_Request {
 
 	/**
-	 * Action
+	 * Action name for background processes.
 	 *
-	 * (default value: 'background_process')
+	 * @since 1.0.0
 	 *
 	 * @var string
-	 * @access protected
 	 */
 	protected $action = 'background_process';
 
 	/**
-	 * Start time of current process.
+	 * Start time of the current process.
 	 *
-	 * (default value: 0)
+	 * @since 1.0.0
 	 *
 	 * @var int
-	 * @access protected
 	 */
 	protected $start_time = 0;
 
 	/**
-	 * Cron_hook_identifier
+	 * Cron hook identifier for scheduling.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @var mixed
-	 * @access protected
 	 */
 	protected $cron_hook_identifier;
 
 	/**
-	 * Cron_interval_identifier
+	 * Cron interval identifier for scheduling.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @var mixed
-	 * @access protected
 	 */
 	protected $cron_interval_identifier;
 

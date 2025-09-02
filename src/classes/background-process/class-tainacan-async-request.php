@@ -5,52 +5,58 @@ namespace Tainacan;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Abstract Async_Request class.
+ * Abstract base class for asynchronous requests.
  *
+ * Provides the foundation for handling asynchronous HTTP requests
+ * in WordPress, typically used for background processing tasks.
+ *
+ * @since 1.0.0
  * @abstract
  */
 abstract class Async_Request {
 
 	/**
-	 * Prefix
+	 * Request prefix for identifying the async request.
 	 *
-	 * (default value: 'wp')
+	 * @since 1.0.0
 	 *
 	 * @var string
-	 * @access protected
 	 */
 	protected $prefix = 'wp';
 
 	/**
-	 * Action
+	 * Action name for the async request.
 	 *
-	 * (default value: 'async_request')
+	 * @since 1.0.0
 	 *
 	 * @var string
-	 * @access protected
 	 */
 	protected $action = 'async_request';
 
 	/**
-	 * Identifier
+	 * Unique identifier for this request.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @var mixed
-	 * @access protected
 	 */
 	protected $identifier;
 
 	/**
-	 * Data
+	 * Data to be sent with the async request.
 	 *
-	 * (default value: array())
+	 * @since 1.0.0
 	 *
 	 * @var array
-	 * @access protected
 	 */
 	protected $data = array();
 
 	/**
-	 * Initiate new async request
+	 * Constructor for the Async_Request class.
+	 *
+	 * Initializes the async request with a unique identifier.
+	 *
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		$this->identifier = $this->prefix . '_' . $this->action;

@@ -9,6 +9,14 @@ use Tainacan\Entities;
 use Tainacan\Repositories;
 use Tainacan\Entities\Entity;
 
+/**
+ * REST API controller for managing Tainacan bulk edit operations.
+ *
+ * Handles all REST API endpoints for bulk editing operations including
+ * bulk metadata updates, bulk item modifications, and batch processing.
+ *
+ * @since 1.0.0
+ */
 class REST_Bulkedit_Controller extends REST_Controller {
 	private $metadatum_repository;
 	private $collections_repository;

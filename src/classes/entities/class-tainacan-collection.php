@@ -5,7 +5,12 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Class that represents the Collection entity
+ * Represents a Tainacan Collection entity.
+ *
+ * Collections are the main organizational units in Tainacan, containing
+ * items and their associated metadata, filters, and display settings.
+ *
+ * @since 1.0.0
  */
 class Collection extends Entity {
 

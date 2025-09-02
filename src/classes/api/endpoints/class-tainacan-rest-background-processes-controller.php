@@ -9,9 +9,13 @@ use Tainacan\Repositories;
 use Tainacan\Entities;
 
 /**
- * Represents the Background Processes REST Controller
+ * REST API controller for managing Tainacan background processes.
  *
- * */
+ * Handles all REST API endpoints for background process operations including
+ * process monitoring, status checking, and process management.
+ *
+ * @since 1.0.0
+ */
 class REST_Background_Processes_Controller extends REST_Controller {
     
     /**

@@ -4,13 +4,35 @@ namespace Tainacan;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Class withe helpful methods to handle media in Tainacan
+ * Handles private file management for Tainacan.
+ *
+ * Provides methods for managing private file uploads, access control,
+ * and file organization within Tainacan collections and items.
+ *
+ * @since 0.1.0
  */
 class Private_Files {
 	use \Tainacan\Traits\Singleton_Instance;
 
+	/**
+	 * Directory separator for file paths.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var string
+	 */
 	public $dir_separator;
 
+	/**
+	 * Initializes the private files functionality.
+	 *
+	 * Sets up WordPress hooks for file upload handling, access control,
+	 * and template redirection for private files.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
 	protected function init() {
 
 		// Once upon a time I thought I had to worry about Windows and use DIRECTORY_SEPARATOR
@@ -35,6 +57,16 @@ class Private_Files {
 
 	}
 
+	/**
+	 * Handles pre-upload processing for Tainacan attachments.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param mixed  $blob     The file data.
+	 * @param string $filename The filename.
+	 * @param int    $post_id  The post ID.
+	 * @return void
+	 */
 	function pre_tainacan_upload($blob, $filename, $post_id) {
 		if (is_numeric($post_id)) {
 			global $TAINACAN_UPLOADING_ATTACHMENT_TO_POST;
@@ -43,6 +75,16 @@ class Private_Files {
 		}
 	}
 
+	/**
+	 * Handles post-upload processing for Tainacan attachments.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param int   $attach_id  The attachment ID.
+	 * @param array $attach_data The attachment data.
+	 * @param int   $post_id    The post ID.
+	 * @return void
+	 */
 	function post_tainacan_upload($attach_id, $attach_data, $post_id) {
 		remove_filter('upload_dir', [$this, 'change_upload_dir']);
 	}

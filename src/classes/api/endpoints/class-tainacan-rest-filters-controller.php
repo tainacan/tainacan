@@ -8,6 +8,14 @@ use \Tainacan\API\REST_Controller;
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
+/**
+ * REST API controller for managing Tainacan filters.
+ *
+ * Handles all REST API endpoints for filter operations including
+ * creation, updates, deletion, and querying of collection filters.
+ *
+ * @since 1.0.0
+ */
 class REST_Filters_Controller extends REST_Controller {
 	private $collection;
 	private $collection_repository;

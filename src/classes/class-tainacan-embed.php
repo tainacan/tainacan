@@ -4,9 +4,24 @@ namespace Tainacan;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+/**
+ * Handles media embedding functionality for Tainacan.
+ *
+ * Provides enhanced embedding capabilities for various media types including
+ * video, audio, and PDF files with responsive design support.
+ *
+ * @since 0.1.0
+ */
 class Embed {
 	use \Tainacan\Traits\Singleton_Instance;
 
+	/**
+	 * Available aspect ratios for responsive embeds.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var array Array of aspect ratio configurations.
+	 */
 	private static $aspect_ratios = array(
 		// Common video resolutions.
 		array("ratio" => '2.33', "className" => 'tainacan-embed-aspect-21-9'),
@@ -20,6 +35,16 @@ class Embed {
 		array("ratio" => '0.50', "className" => 'tainacan-embed-aspect-1-2' )
 	);
 	
+	/**
+	 * Initializes the embed functionality.
+	 *
+	 * Sets up WordPress hooks for video, audio, and PDF embedding,
+	 * and enqueues necessary styles for responsive embeds.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
 	protected function init() {
 		
 		/**
@@ -42,6 +67,17 @@ class Embed {
 
 	}
 	
+	/**
+	 * Filters video embed output to use HTML5 video tags.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param string $video    The current video embed HTML.
+	 * @param array  $attr     Embed attributes.
+	 * @param string $url      The video URL.
+	 * @param array  $rawattr  Raw embed attributes.
+	 * @return string Modified video embed HTML.
+	 */
 	public function filter_video_embed($video, $attr, $url, $rawattr) {
 		
 		
@@ -56,6 +92,17 @@ class Embed {
 		
 	}
 	
+	/**
+	 * Filters audio embed output to use HTML5 audio tags.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param string $audio    The current audio embed HTML.
+	 * @param array  $attr     Embed attributes.
+	 * @param string $url      The audio URL.
+	 * @param array  $rawattr  Raw embed attributes.
+	 * @return string Modified audio embed HTML.
+	 */
 	public function filter_audio_embed($audio, $attr, $url, $rawattr) {
 		
 		
@@ -69,6 +116,17 @@ class Embed {
 		
 	}
 	
+	/**
+	 * Handles PDF file embedding using iframe.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param array  $matches   Regex matches from the embed handler.
+	 * @param array  $attr      Embed attributes.
+	 * @param string $url       The PDF file URL.
+	 * @param array  $rawattr   Raw embed attributes.
+	 * @return string PDF embed HTML.
+	 */
 	public function pdf_embed_handler($matches, $attr, $url, $rawattr) {
 		global $TAINACAN_BASE_URL;
 		
@@ -90,10 +148,12 @@ class Embed {
 	}
 	
 	/**
-	 * Retrieves the thumbnail URL, if provided, for a given URL
+	 * Retrieves the thumbnail URL, if provided, for a given URL.
 	 * 
-	 * @param  $string $url the URL for the content
-	 * @return string|null  The thumbnail URL or null on failure
+	 * @since 0.1.0
+	 *
+	 * @param string $url The URL for the content.
+	 * @return string|null The thumbnail URL or null on failure.
 	 */
 	public function oembed_get_thumbnail($url) {
 		
@@ -103,6 +163,16 @@ class Embed {
 		return $return;
 		
 	}
+	/**
+	 * Filters oEmbed data to extract thumbnail URL.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param mixed  $return The oEmbed return data.
+	 * @param object $data   The oEmbed data object.
+	 * @param string $url    The original URL.
+	 * @return string|null The thumbnail URL or null.
+	 */
 	public function oembed_get_thumbnail_filter($return, $data, $url) {
 		
 		if ( isset($data->thumbnail_url) ) {
@@ -114,7 +184,11 @@ class Embed {
 	}
 
 	/**
-	 * Responsiveness
+	 * Enqueues CSS for responsive embeds.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
 	 */
 	public function add_css() {
 		global $TAINACAN_BASE_URL;
@@ -122,12 +196,15 @@ class Embed {
 	}
 
 	/**
-	 * Get responsive class based on aspect ratio
+	 * Adds responsive wrapper classes based on aspect ratio.
+	 *
 	 * This code is heavily inspired by Gutenberg plugin's "getClassNames" function.
 	 * Check their source code for more details: /packages/block-library/src/embed/util.js
-	 * 
-	 * @param {string}  html               The preview HTML that possibly contains an iframe with width and height set.
- 	 * @return {string} Deduped class names.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param string $html The preview HTML that possibly contains an iframe with width and height set.
+	 * @return string HTML with responsive wrapper classes added.
 	 */
 	public function add_responsive_wrapper( $html ) {
 	

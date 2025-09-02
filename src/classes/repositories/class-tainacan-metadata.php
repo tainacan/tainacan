@@ -8,7 +8,12 @@ use Tainacan\Entities;
 use \Respect\Validation\Validator as v;
 
 /**
- * Class Metadata
+ * Repository for managing Tainacan metadata definitions.
+ *
+ * Handles all database operations for metadata including creation,
+ * updates, deletion, and querying with proper validation and logging.
+ *
+ * @since 1.0.0
  */
 class Metadata extends Repository {
 	use \Tainacan\Traits\Singleton_Instance;

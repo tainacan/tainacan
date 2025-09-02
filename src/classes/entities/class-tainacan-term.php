@@ -5,8 +5,13 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Represents the Entity Term
-*/
+ * Represents a Tainacan Term entity.
+ *
+ * Terms are individual entries within taxonomies, representing
+ * specific categories or classifications for organizing items.
+ *
+ * @since 1.0.0
+ */
 class Term extends Entity {
 	public $WP_Term;
 

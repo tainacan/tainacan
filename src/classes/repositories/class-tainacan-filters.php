@@ -7,6 +7,14 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 use Tainacan\Entities;
 use \Respect\Validation\Validator as v;
 
+/**
+ * Repository for managing Tainacan filters.
+ *
+ * Handles all database operations for collection filters including creation,
+ * updates, deletion, and querying with proper validation and logging.
+ *
+ * @since 1.0.0
+ */
 class Filters extends Repository {
 	use \Tainacan\Traits\Singleton_Instance;
 

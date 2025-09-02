@@ -71,6 +71,17 @@ require_once(TAINACAN_GENERIC_PROCESS_DIR . 'class-tainacan-generic-handler.php'
 
 spl_autoload_register('tainacan_autoload');
 
+/**
+ * Autoloader function for Tainacan classes.
+ *
+ * Handles automatic loading of Tainacan classes based on their namespace and class name.
+ * Supports both simple classes and namespaced classes with proper directory mapping.
+ *
+ * @since 0.1.0
+ *
+ * @param string $class_name The fully qualified class name to load.
+ * @return void
+ */
 function tainacan_autoload($class_name) {
 	
 	if ( strpos($class_name, 'Tainacan\\') !== 0 ) {

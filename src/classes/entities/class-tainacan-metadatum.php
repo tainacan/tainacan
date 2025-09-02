@@ -5,7 +5,12 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Represents the Entity Metadatum
+ * Represents a Tainacan Metadatum entity.
+ *
+ * Metadata definitions that specify the structure and validation
+ * rules for item metadata within collections.
+ *
+ * @since 1.0.0
  */
 class Metadatum extends Entity {
 	protected

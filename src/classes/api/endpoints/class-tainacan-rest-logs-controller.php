@@ -9,6 +9,14 @@ use Tainacan\Entities;
 use Tainacan\Repositories;
 use Tainacan\Repositories\Repository;
 
+/**
+ * REST API controller for managing Tainacan logs.
+ *
+ * Handles all REST API endpoints for log operations including
+ * log creation, querying, and log management for audit trails.
+ *
+ * @since 1.0.0
+ */
 class REST_Logs_Controller extends REST_Controller {
 	private $logs_repository;
 

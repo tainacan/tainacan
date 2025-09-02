@@ -8,6 +8,14 @@ use Tainacan\Repositories;
 use Tainacan\Entities;
 use \Tainacan\API\REST_Controller;
 
+/**
+ * REST API controller for managing Tainacan facets.
+ *
+ * Handles all REST API endpoints for facet operations including
+ * facet creation, updates, deletion, and querying of collection facets.
+ *
+ * @since 1.0.0
+ */
 class REST_Facets_Controller extends REST_Controller {
 	private $metadatum_repository;
 

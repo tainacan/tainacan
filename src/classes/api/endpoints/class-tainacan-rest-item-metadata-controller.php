@@ -8,6 +8,14 @@ use \Tainacan\API\REST_Controller;
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
+/**
+ * REST API controller for managing Tainacan item metadata.
+ *
+ * Handles all REST API endpoints for item metadata operations including
+ * item metadata value creation, updates, deletion, and querying.
+ *
+ * @since 1.0.0
+ */
 class REST_Item_Metadata_Controller extends REST_Controller {
 	
 	private $metadatum;

@@ -6,6 +6,14 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 use \Tainacan\API\REST_Controller;
 
+/**
+ * REST API controller for managing Tainacan roles and capabilities.
+ *
+ * Handles all REST API endpoints for role operations including
+ * role creation, updates, deletion, and capability management.
+ *
+ * @since 1.0.0
+ */
 class REST_Roles_Controller extends REST_Controller {
 
 
