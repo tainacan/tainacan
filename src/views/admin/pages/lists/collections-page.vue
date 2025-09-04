@@ -491,6 +491,7 @@ export default {
             // Adds the 'enable' property to our local version of terms
             if ( Object.values(collectionTaxonomies).length ) {
                 Object.values(collectionTaxonomies).forEach(collectionTaxonomy => {
+                    collectionTaxonomy.terms = collectionTaxonomy.terms || [];
                     collectionTaxonomy.terms.forEach(aTerm => aTerm.enabled = false);
                 });
                 return collectionTaxonomies;
