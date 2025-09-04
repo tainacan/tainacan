@@ -77,7 +77,7 @@ class REST_Roles_Controller extends REST_Controller {
 				'permission_callback' => array($this, 'update_admin_ui_options_permissions_check'),
 				'args'				  => [
 					'admin_ui_options' => [
-						'description' => __( 'Admin appearence options Capabilities for each user role.', 'tainacan' ),
+						'description' => __( 'Admin appearance options Capabilities for each user role.', 'tainacan' ),
 						'type' => 'object',
 						'required' => true,
 					]
@@ -772,16 +772,16 @@ class REST_Roles_Controller extends REST_Controller {
 			'tags' => [ $this->rest_base ],
 			'properties' => [
 				'admin_ui_options' => [
-					'description' => __( 'Admin appearence options Capabilities for each user role.', 'tainacan' ),
+					'description' => __( 'Admin appearance options Capabilities for each user role.', 'tainacan' ),
 					'type'        => 'object',
 					'properties' 	 => [
 						'[role]:string' => [
 							'type' => 'object',
-							'description' => __( 'Enabled admin appearence options object', 'tainacan' ),
+							'description' => __( 'Enabled admin appearance options object', 'tainacan' ),
 							'patternProperties' => [
 								'^[a-zA-Z0-9_-]+$' => [
 									'type'        => 'object',
-									'description' => __('Some admin appearence option.', 'tainacan'),
+									'description' => __('Some admin appearance option.', 'tainacan'),
 								]
 							],
 						]

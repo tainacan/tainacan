@@ -1029,7 +1029,7 @@ class Theme_Helper {
 	 * 		@type bool		$dynamic_metadata	 	Whether to display or not (and use or not) the "displayed metadata" selector. Default false.
 	 * 		@type bool		$implements_skeleton 	Whether the view mode has its own strategy for disaplying loading state.
 	 * 		@type string	$skeleton_template	 	If the view mode is a template, this is the html of its loading state.
-	 * 		@type string	$placeholder_template 	The placeholder template is rendered in Gutenberg blocks to demo the view mode appearence.
+	 * 		@type string	$placeholder_template 	The placeholder template is rendered in Gutenberg blocks to demo the view mode appearance.
 	 * 		@type bool		$required_thumbnail		Whether the view mode considers essential that the item thumbnail is available, even if it is a placeholder.
 	 * }
 	 * 
@@ -1664,7 +1664,7 @@ class Theme_Helper {
 		 *     @type array   $carousel_args						Array of arguments to be passed to the get_tainacan_items_carousel function if $items_list_layout == carousel
 		 *     @type array   $dynamic_items_args				Array of arguments to be passed to the get_tainacan_dynamic_items function if $items_list_layout != carousel && layout != gallery
 		 *     @type array   $items_gallery_args				Array of arguments to be passed to the get_tainacan_items_gallery function if $items_list_layout == gallery
-		 * 	   @type string  $view_more_link_style				Appearence of the "View all %s related items" link. Either 'button' or 'link'. Defaults to 'button'
+		 * 	   @type string  $view_more_link_style				Appearance of the "View all %s related items" link. Either 'button' or 'link'. Defaults to 'button'
 		 * 	   @type string  $view_more_link_position			Placement of the "View all %s related items" link. Either 'top-right', 'bottom-left' or 'bottom-right'. Defaults to 'bottom-left'
 		 *	   @type string  $view_more_link_text				Inner text content of the "View all %s related items" link. Defaults to 'View all %s related items'.
 		 * @return string  The HTML div to be used for rendering the related items vue component

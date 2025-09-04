@@ -75,7 +75,7 @@
                         </li>
                         <li :class="{ 'is-active': capabilitiesTab == 'admin-ui'}">
                             <a @click="capabilitiesTab = 'admin-ui'">
-                                {{ $i18n.get('Admin Appearence') }}
+                                {{ $i18n.get('Admin Appearance') }}
                             </a>
                         </li>
                         <li 
@@ -223,7 +223,7 @@
                         v-else-if="capabilitiesTab === 'admin-ui'"
                         id="tab-admin-ui"
                         class="tabs-content">
-                    <p>{{ $i18n.get('The following capabilities are related to the admin interface appearence.') }}</p>
+                    <p>{{ $i18n.get('The following capabilities are related to the admin interface appearance.') }}</p>
 
                     <p v-if="roleSlug === 'new'">
                         <span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('You must first create the slug before defining apperaence options for it.') }}
