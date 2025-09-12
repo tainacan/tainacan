@@ -448,7 +448,7 @@ abstract class Pages {
 								title="<?php _e('Visit the site', 'tainacan'); ?>"
 								href="<?php echo site_url(); ?>"
 								target="_blank">
-							<span class="menu-text"><?php echo get_bloginfo( 'name' ); ?> </span><span class="icon">↗</span>
+							<span class="menu-text"><?php echo get_bloginfo( 'name' ); ?> </span><span class="icon"></span>
 						</a>
 					<?php endif; ?>
 					<h1>

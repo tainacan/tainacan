@@ -731,6 +731,10 @@ html {
                 position: relative;
                 left: -0.5em;
                 transition: left 0.3s ease, opacity 0.3s ease;
+
+                &::after {
+                    content: '↗';
+                }
             }
             &:hover .icon,
             &:focus .icon {

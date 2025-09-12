@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /**
  * Tainacan Pages
  * 
@@ -1113,6 +1114,9 @@ html {
   position: relative;
   left: -0.5em;
   transition: left 0.3s ease, opacity 0.3s ease;
+}
+#tainacan-page-container #tainacan-navigation-menu #tainacan-site-shortcut .icon::after {
+  content: "↗";
 }
 #tainacan-page-container #tainacan-navigation-menu #tainacan-site-shortcut:hover .icon, #tainacan-page-container #tainacan-navigation-menu #tainacan-site-shortcut:focus .icon {
   text-decoration: none;

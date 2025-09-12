@@ -1,3 +1,4 @@
+@charset "UTF-8";
 #tainacan-dashboard-app {
   --tainacan-dashboard-text-color: var(--tainacan-admin-color);
   width: 100%;
@@ -232,6 +233,9 @@
   position: relative;
   left: -0.5em;
   transition: left 0.3s ease, opacity 0.3s ease;
+}
+#tainacan-dashboard-app .postbox .external-link-icon::after {
+  content: "↗";
 }
 #tainacan-dashboard-app .postbox a:hover .external-link-icon,
 #tainacan-dashboard-app .postbox a:focus .external-link-icon {

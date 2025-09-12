@@ -473,7 +473,7 @@ class Dashboard extends Pages {
 						<span class="text">
 							<?php _e('User\'s forum', 'tainacan'); ?>
 							<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span> 
-							<span class="external-link-icon">↗</span>
+							<span class="external-link-icon"></span>
 						</span>
 					</a>
 				</li>
@@ -487,7 +487,7 @@ class Dashboard extends Pages {
 						<span class="text">
 							<?php _e('F.A.Q.', 'tainacan'); ?>
 							<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span> 
-							<span class="external-link-icon">↗</span>
+							<span class="external-link-icon"></span>
 						</span>
 					</span>
 					</a>
@@ -502,7 +502,7 @@ class Dashboard extends Pages {
 						<span class="text">
 							<?php _e('Wiki', 'tainacan'); ?>
 							<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span> 
-							<span class="external-link-icon">↗</span></span>
+							<span class="external-link-icon"></span></span>
 						</span>
 					</a>
 				</li>
@@ -516,7 +516,7 @@ class Dashboard extends Pages {
 						<span class="text">
 							<?php _e('GitHub', 'tainacan'); ?>
 							<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span> 
-							<span class="external-link-icon">↗</span></span>
+							<span class="external-link-icon"></span></span>
 						</span>
 					</a>
 				</li>
@@ -530,7 +530,7 @@ class Dashboard extends Pages {
 						<span class="text">
 							<?php _e('YouTube', 'tainacan'); ?>
 							<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span> 
-							<span class="external-link-icon">↗</span></span>
+							<span class="external-link-icon"></span></span>
 						</span>
 					</a>
 				</li>
@@ -604,7 +604,7 @@ class Dashboard extends Pages {
 						<a href="<?php echo esc_url($feed_item['link']); ?>" target="_blank" rel="noopener noreferrer">
 							<?php echo esc_html( $feed_item['title'] ); ?>
 							<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span>
-							<span class="external-link-icon">↗</span>
+							<span class="external-link-icon"></span>
 						</a>
 						<?php
 							$date = $feed_item['date'];
@@ -624,7 +624,7 @@ class Dashboard extends Pages {
 					<a href="<?php echo $feed_options['view_all_link'];?>" target="_blank" rel="noopener noreferrer">
 						<?php echo __('See all news', 'tainacan'); ?>
 						<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span>
-						<span class="external-link-icon">↗</span>
+						<span class="external-link-icon"></span>
 					</a>
 				</li>
 			</ul>
@@ -664,7 +664,7 @@ class Dashboard extends Pages {
 						<span class="text">
 							<?php _e('Visit page', 'tainacan'); ?>
 							<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span>
-							<span class="external-link-icon">↗</span>
+							<span class="external-link-icon"></span>
 						</span>
 					</a>
 				</li>
