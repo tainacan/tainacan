@@ -215,11 +215,8 @@ export default {
         .collapse-all {
             display: inline-flex;
             align-items: center;
-            margin-left: -0.5em;
+            margin-left: -0.875em;
             margin-right: auto;
-        }
-        .collapse-all__text {
-            font-size: 0.75em !important;
         }
         .loading-spinner {
             animation: spinAround 500ms infinite linear;
@@ -257,7 +254,7 @@ export default {
 
             &.active-metadata-sections-area {
                 font-size: 0.875em;
-                margin-left: 1.5em;
+                margin-left: 1em;
                 padding-right: 1em;
                 min-height: 330px;
             }
@@ -278,7 +275,7 @@ export default {
                 }
                 
                 .handle {
-                    padding: 0.7em 6.9em 0.7em 0.9em;
+                    padding: 0.813em 6.9em 0.813em 0.9em;
                     border-radius: var(--tainacan-button-border-radius, 0px);
                     white-space: nowrap;
                     display: flex;

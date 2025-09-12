@@ -10,7 +10,7 @@
                 <button
                         v-if="activeMetadataSectionsList.length > 0"
                         :aria-expanded="!collapseAll"
-                        class="link-style collapse-all"
+                        class="button link-style collapse-all"
                         @click="collapseAll = !collapseAll">
                     <span class="icon">
                         <i 

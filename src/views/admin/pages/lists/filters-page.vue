@@ -1013,7 +1013,7 @@ export default {
 
             .active-filter-item {
                 background-color: var(--tainacan-white);
-                padding: 0.7em 0.9em;
+                padding: 0.813em 0.9em;
                 margin: 4px;
                 min-height: 2.8571em;
                 position: relative;

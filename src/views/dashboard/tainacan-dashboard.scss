@@ -303,8 +303,8 @@
                 a {
                     border-radius: var(--tainacan-admin-button-border-radius, 8px);
                     gap: 0.125rem;
-                    font-weight: bold;
-                    line-height: 1.125em;
+                    font-weight: 600;
+                    line-height: 1.25em;
 
                     &:focus {
                         box-shadow: 0 0 0 2px var(--tainacan-turquoise5);

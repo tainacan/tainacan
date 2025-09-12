@@ -519,6 +519,7 @@ html {
                 padding: 0.5rem;
                 font-size: 1em;
                 line-height: normal;
+                font-family: var(--tainacan-font-family, inherit);
                 font-weight: var(--tainacan-admin-button-font-weight, 500);
                 border: none;
                 cursor: pointer;

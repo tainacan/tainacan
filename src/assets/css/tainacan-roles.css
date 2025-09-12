@@ -16356,7 +16356,7 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
 
 button.link-style,
 button.link-style:focus button.link-style:active {
-  border: none;
+  border: none !important;
   outline: none;
   cursor: pointer;
   font-size: inherit;
