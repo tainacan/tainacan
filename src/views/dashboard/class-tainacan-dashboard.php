@@ -179,7 +179,7 @@ class Dashboard extends Pages {
 			$tainacan_dashboard_cards[] = array(
 				'id' => 'tainacan-dashboard-news-card',
 				'title' => __( 'News and events', 'tainacan' ),
-				'description' => __('Keep an eye on oficial Tainacan community news and upcoming events.', 'tainacan'),
+				'description' => __('Keep an eye on oficial Tainacan news.', 'tainacan'),
 				'content' => array( $this, 'tainacan_news_dashboard_card' ),
 				'constrol' => array( $this, 'tainacan_news_dashboard_card_control' ),
 				'icon' => $this->get_svg_icon( 'openurl' ),

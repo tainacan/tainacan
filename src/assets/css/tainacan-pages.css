@@ -61,7 +61,7 @@
   --tainacan-blue3: #244879;
   --tainacan-blue4: #1d3968;
   --tainacan-blue5: #062a57;
-  --tainacan-turquoise1: #e6f6f8;
+  --tainacan-turquoise1: #e9f5f6;
   --tainacan-turquoise2: #d9eced;
   --tainacan-turquoise3: #76c6cc;
   --tainacan-turquoise4: #31818c;
@@ -1521,7 +1521,7 @@ html {
 }
 
 .tainacan-pages-container--fullscreen.tainacan-pages-container.tainacan-pages-container--admin-gutenberg-style {
-  --tainacan-admin-navigation-sidebar-width: 300px;
+  --tainacan-admin-navigation-sidebar-width: calc( 300px - var(--tainacan-page-container--inner-padding-x, 1rem) );
 }
 
 .tainacan-pages-container.tainacan-pages-container--admin-light-style {

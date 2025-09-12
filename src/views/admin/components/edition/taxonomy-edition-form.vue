@@ -284,7 +284,7 @@
 
         <div v-if="!isLoadingTaxonomy && (($route.name == 'TaxonomyCreationForm' && !$userCaps.hasCapability('tnc_rep_edit_taxonomies')) || ($route.name == 'TaxonomyEditionForm' && taxonomy && taxonomy.current_user_can_edit != undefined && !taxonomy.current_user_can_edit))">
             <section class="section">
-                <div class="content has-text-grey has-text-centered">
+                <div class="content has-text-gray has-text-centered">
                     <p>
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-taxonomies" />

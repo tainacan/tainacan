@@ -1179,7 +1179,7 @@ html {
     }
 }
 .tainacan-pages-container--fullscreen.tainacan-pages-container.tainacan-pages-container--admin-gutenberg-style {
-    --tainacan-admin-navigation-sidebar-width: 300px;
+    --tainacan-admin-navigation-sidebar-width: calc( 300px - var(--tainacan-page-container--inner-padding-x, 1rem) );
 }
 .tainacan-pages-container.tainacan-pages-container--admin-light-style {
     --tainacan-admin-background-color: var(--tainacan-gray0);

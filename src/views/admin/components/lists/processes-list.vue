@@ -321,7 +321,7 @@
 
         <div v-else-if="isLoading">
             <section class="section">
-                <div class="content has-text-grey has-text-centered">
+                <div class="content has-text-gray has-text-centered">
                     <p>{{ $i18n.get('loading_processes') }}</p>
                 </div>
             </section>

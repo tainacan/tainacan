@@ -285,7 +285,7 @@
                         <section 
                                 v-if="(selected instanceof Array ? selected.length <= 0 : !selected) && !isSelectedTermsLoading"
                                 class="section">
-                            <div class="content has-text-grey has-text-centered">
+                            <div class="content has-text-gray has-text-centered">
                                 <p>
                                     <span class="icon is-medium">
                                         <i  

@@ -674,7 +674,7 @@
             <!-- In case user enters this page whithout having permission -->
             <template v-if="!isLoading && ((isCreatingNewItem && collection && collection.current_user_can_edit_items == false) || (!isCreatingNewItem && item && item.current_user_can_edit != undefined && collection && collection.current_user_can_edit_items == false))">
                 <section class="section">
-                    <div class="content has-text-grey has-text-centered">
+                    <div class="content has-text-gray has-text-centered">
                         <p>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />

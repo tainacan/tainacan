@@ -184,7 +184,7 @@
                             <section 
                                     v-else
                                     class="section">
-                                <div class="content has-text-grey has-text-centered">
+                                <div class="content has-text-gray has-text-centered">
                                     <p style="margin-bottom: 0px">
                                         <span class="icon is-large">
                                             <i>

@@ -37,7 +37,7 @@
                         
             <template v-else-if="(isRepositoryLevel && !$userCaps.hasCapability('tnc_rep_edit_users')) || (!isRepositoryLevel && collection && !collection.current_user_can_edit_users)">
                 <section class="section">
-                    <div class="content has-text-grey has-text-centered">
+                    <div class="content has-text-gray has-text-centered">
                         <p>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-user" />
@@ -51,7 +51,7 @@
             <!-- Empty state -->
             <div v-if="capabilities.length <= 0 && !isLoading && $userCaps.hasCapability('tnc_rep_edit_users')">
                 <section class="section">
-                    <div class="content has-text-grey has-text-centered">
+                    <div class="content has-text-gray has-text-centered">
                         <p>
                             <span class="icon is-medium">
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-user" />
