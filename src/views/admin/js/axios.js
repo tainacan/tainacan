@@ -3,7 +3,7 @@ import axios from 'axios';
 // Simpler version of the i18n plugin to translate error feedback messages
 const i18nGet = function (key) {
     let string = tainacan_plugin.i18n[key];
-    return (string !== undefined && string !== null && string !== '' ) ? string : "ERROR: Invalid i18n key!";
+    return (string !== undefined && string !== null && string !== '' ) ? string : 'ERROR: Invalid i18n key!';
 };
 export const tainacanErrorHandler = function(error) {
 
@@ -67,6 +67,26 @@ tainacanApi.interceptors.response.use(
     (response) => response,
     (error) => tainacanErrorHandler(error)
 );
+// Converts PUT, PATCH and DELETE requests to POST requests with _method param
+// This is necessary in some environments such as the WordPress Playground
+// See https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters/#method
+tainacanApi.interceptors.request.use((config) => {
+    const tunnelingMethods = ['put', 'patch', 'delete'];
+  
+    if (config.method && tunnelingMethods.includes(config.method.toLowerCase())) {
+      const originalMethod = config.method.toUpperCase();
+  
+      // Force request to POST
+      config.method = 'post';
+  
+      // Add _method param to URL
+      const url = new URL(config.url, window.location.origin);
+      url.searchParams.set('_method', originalMethod);
+      config.url = url.pathname + url.search;
+    }
+  
+    return config;
+});
 
 // WordPress JSON API axios
 export const wpApi= axios.create({
@@ -79,6 +99,26 @@ wpApi.interceptors.response.use(
     (response) => response,
     (error) => tainacanErrorHandler(error)
 );
+// Converts PUT, PATCH and DELETE requests to POST requests with _method param
+// This is necessary in some environments such as the WordPress Playground
+// See https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters/#method
+wpApi.interceptors.request.use((config) => {
+    const tunnelingMethods = ['put', 'patch', 'delete'];
+  
+    if (config.method && tunnelingMethods.includes(config.method.toLowerCase())) {
+      const originalMethod = config.method.toUpperCase();
+  
+      // Force request to POST
+      config.method = 'post';
+  
+      // Add _method param to URL
+      const url = new URL(config.url, window.location.origin);
+      url.searchParams.set('_method', originalMethod);
+      config.url = url.pathname + url.search;
+    }
+  
+    return config;
+});
 
 // WordPress AJAX axios
 export const wpAjax = axios.create({
