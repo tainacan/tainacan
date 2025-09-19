@@ -174,7 +174,7 @@
 </script>
 
 <style scoped lang="scss">
-    @import "../../scss/_tables.scss";
+    @use "../../scss/_tables.scss";
 
     .activities-icon {
         height: 24px;

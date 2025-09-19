@@ -8,51 +8,14 @@
 /**
  * Tainacan Basics
  * 
- * This file contains the SASS styles and variables 
- * that are needed by Tainacan build of Bulma components.
- * In the future, when migrating to Bulma 1.0.0, this might 
- * be replaced by simpler css variables as those present in 
- * 'tainacan-variables.scss'.
+ * This file contains base root definitions of Tainacan CSS Variables
  * 
  */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
-}
-
-.icon {
-  height: 1.5em;
-  width: 1.5em;
-}
-
-.icon.is-small {
-  height: 1em;
-  width: 1em;
-}
-
-.icon.is-medium {
-  height: 2em;
-  width: 2em;
-}
-
-.icon.is-large {
-  height: 3em;
-  width: 3em;
-}
-
 /**
  * Tainacan Variables
  * 
- * This file contains css variables used by many Tainacan
- * components. It uses SASS variables defined in 'tainacan-basics.scss'.
- * In the future, when migrating to Bulma 1.0.0, this might
- * be replaced by simpler css variables.
+ * This file contains SASS variables used by many Tainacan
+ * components.
  * 
  */
 :root {
@@ -124,279 +87,6 @@
   }
 }
 
-.tainacan-pages-container,
-#tainacan-admin-app,
-.theme-items-list,
-.tainacan-item-submission-form,
-.tainacan-modal-content {
-  /* Basic styles to checkboxes that won't affect Bulma components but will work for WordPress default ones */
-}
-.tainacan-pages-container .has-text-primary,
-.tainacan-pages-container .has-text-primary:hover,
-.tainacan-pages-container .has-text-primary:focus,
-.tainacan-pages-container .has-text-secondary,
-.tainacan-pages-container .has-text-secondary:hover,
-.tainacan-pages-container .has-text-secondary:focus,
-#tainacan-admin-app .has-text-primary,
-#tainacan-admin-app .has-text-primary:hover,
-#tainacan-admin-app .has-text-primary:focus,
-#tainacan-admin-app .has-text-secondary,
-#tainacan-admin-app .has-text-secondary:hover,
-#tainacan-admin-app .has-text-secondary:focus,
-.theme-items-list .has-text-primary,
-.theme-items-list .has-text-primary:hover,
-.theme-items-list .has-text-primary:focus,
-.theme-items-list .has-text-secondary,
-.theme-items-list .has-text-secondary:hover,
-.theme-items-list .has-text-secondary:focus,
-.tainacan-item-submission-form .has-text-primary,
-.tainacan-item-submission-form .has-text-primary:hover,
-.tainacan-item-submission-form .has-text-primary:focus,
-.tainacan-item-submission-form .has-text-secondary,
-.tainacan-item-submission-form .has-text-secondary:hover,
-.tainacan-item-submission-form .has-text-secondary:focus,
-.tainacan-modal-content .has-text-primary,
-.tainacan-modal-content .has-text-primary:hover,
-.tainacan-modal-content .has-text-primary:focus,
-.tainacan-modal-content .has-text-secondary,
-.tainacan-modal-content .has-text-secondary:hover,
-.tainacan-modal-content .has-text-secondary:focus {
-  color: var(--tainacan-secondary) !important;
-}
-.tainacan-pages-container .has-text-turquoise5,
-.tainacan-pages-container .has-text-turquoise5:hover,
-.tainacan-pages-container .has-text-turquoise5:focus,
-#tainacan-admin-app .has-text-turquoise5,
-#tainacan-admin-app .has-text-turquoise5:hover,
-#tainacan-admin-app .has-text-turquoise5:focus,
-.theme-items-list .has-text-turquoise5,
-.theme-items-list .has-text-turquoise5:hover,
-.theme-items-list .has-text-turquoise5:focus,
-.tainacan-item-submission-form .has-text-turquoise5,
-.tainacan-item-submission-form .has-text-turquoise5:hover,
-.tainacan-item-submission-form .has-text-turquoise5:focus,
-.tainacan-modal-content .has-text-turquoise5,
-.tainacan-modal-content .has-text-turquoise5:hover,
-.tainacan-modal-content .has-text-turquoise5:focus {
-  color: var(--tainacan-turquoise5) !important;
-}
-.tainacan-pages-container .has-text-blue5,
-.tainacan-pages-container .has-text-blue5:hover,
-.tainacan-pages-container .has-text-blue5:focus,
-#tainacan-admin-app .has-text-blue5,
-#tainacan-admin-app .has-text-blue5:hover,
-#tainacan-admin-app .has-text-blue5:focus,
-.theme-items-list .has-text-blue5,
-.theme-items-list .has-text-blue5:hover,
-.theme-items-list .has-text-blue5:focus,
-.tainacan-item-submission-form .has-text-blue5,
-.tainacan-item-submission-form .has-text-blue5:hover,
-.tainacan-item-submission-form .has-text-blue5:focus,
-.tainacan-modal-content .has-text-blue5,
-.tainacan-modal-content .has-text-blue5:hover,
-.tainacan-modal-content .has-text-blue5:focus {
-  color: var(--tainacan-blue5) !important;
-}
-.tainacan-pages-container .has-text-blue4,
-.tainacan-pages-container .has-text-blue4:hover,
-.tainacan-pages-container .has-text-blue4:focus,
-#tainacan-admin-app .has-text-blue4,
-#tainacan-admin-app .has-text-blue4:hover,
-#tainacan-admin-app .has-text-blue4:focus,
-.theme-items-list .has-text-blue4,
-.theme-items-list .has-text-blue4:hover,
-.theme-items-list .has-text-blue4:focus,
-.tainacan-item-submission-form .has-text-blue4,
-.tainacan-item-submission-form .has-text-blue4:hover,
-.tainacan-item-submission-form .has-text-blue4:focus,
-.tainacan-modal-content .has-text-blue4,
-.tainacan-modal-content .has-text-blue4:hover,
-.tainacan-modal-content .has-text-blue4:focus {
-  color: var(--tainacan-blue4) !important;
-}
-.tainacan-pages-container .has-text-gray,
-.tainacan-pages-container .has-text-gray:hover,
-.tainacan-pages-container .has-text-gray:focus,
-#tainacan-admin-app .has-text-gray,
-#tainacan-admin-app .has-text-gray:hover,
-#tainacan-admin-app .has-text-gray:focus,
-.theme-items-list .has-text-gray,
-.theme-items-list .has-text-gray:hover,
-.theme-items-list .has-text-gray:focus,
-.tainacan-item-submission-form .has-text-gray,
-.tainacan-item-submission-form .has-text-gray:hover,
-.tainacan-item-submission-form .has-text-gray:focus,
-.tainacan-modal-content .has-text-gray,
-.tainacan-modal-content .has-text-gray:hover,
-.tainacan-modal-content .has-text-gray:focus {
-  color: var(--tainacan-info-color) !important;
-}
-.tainacan-pages-container .has-text-gray3,
-.tainacan-pages-container .has-text-gray3:hover,
-.tainacan-pages-container .has-text-gray3:focus,
-#tainacan-admin-app .has-text-gray3,
-#tainacan-admin-app .has-text-gray3:hover,
-#tainacan-admin-app .has-text-gray3:focus,
-.theme-items-list .has-text-gray3,
-.theme-items-list .has-text-gray3:hover,
-.theme-items-list .has-text-gray3:focus,
-.tainacan-item-submission-form .has-text-gray3,
-.tainacan-item-submission-form .has-text-gray3:hover,
-.tainacan-item-submission-form .has-text-gray3:focus,
-.tainacan-modal-content .has-text-gray3,
-.tainacan-modal-content .has-text-gray3:hover,
-.tainacan-modal-content .has-text-gray3:focus {
-  color: var(--tainacan-gray3) !important;
-}
-.tainacan-pages-container .has-text-gray4,
-.tainacan-pages-container .has-text-gray4:hover,
-.tainacan-pages-container .has-text-gray4:focus,
-#tainacan-admin-app .has-text-gray4,
-#tainacan-admin-app .has-text-gray4:hover,
-#tainacan-admin-app .has-text-gray4:focus,
-.theme-items-list .has-text-gray4,
-.theme-items-list .has-text-gray4:hover,
-.theme-items-list .has-text-gray4:focus,
-.tainacan-item-submission-form .has-text-gray4,
-.tainacan-item-submission-form .has-text-gray4:hover,
-.tainacan-item-submission-form .has-text-gray4:focus,
-.tainacan-modal-content .has-text-gray4,
-.tainacan-modal-content .has-text-gray4:hover,
-.tainacan-modal-content .has-text-gray4:focus {
-  color: var(--tainacan-gray4) !important;
-}
-.tainacan-pages-container .has-text-gray5,
-.tainacan-pages-container .has-text-gray5:hover,
-.tainacan-pages-container .has-text-gray5:focus,
-#tainacan-admin-app .has-text-gray5,
-#tainacan-admin-app .has-text-gray5:hover,
-#tainacan-admin-app .has-text-gray5:focus,
-.theme-items-list .has-text-gray5,
-.theme-items-list .has-text-gray5:hover,
-.theme-items-list .has-text-gray5:focus,
-.tainacan-item-submission-form .has-text-gray5,
-.tainacan-item-submission-form .has-text-gray5:hover,
-.tainacan-item-submission-form .has-text-gray5:focus,
-.tainacan-modal-content .has-text-gray5,
-.tainacan-modal-content .has-text-gray5:hover,
-.tainacan-modal-content .has-text-gray5:focus {
-  color: var(--tainacan-gray4) !important;
-}
-.tainacan-pages-container .has-text-danger,
-.tainacan-pages-container .has-text-danger:hover,
-.tainacan-pages-container .has-text-danger:focus,
-#tainacan-admin-app .has-text-danger,
-#tainacan-admin-app .has-text-danger:hover,
-#tainacan-admin-app .has-text-danger:focus,
-.theme-items-list .has-text-danger,
-.theme-items-list .has-text-danger:hover,
-.theme-items-list .has-text-danger:focus,
-.tainacan-item-submission-form .has-text-danger,
-.tainacan-item-submission-form .has-text-danger:hover,
-.tainacan-item-submission-form .has-text-danger:focus,
-.tainacan-modal-content .has-text-danger,
-.tainacan-modal-content .has-text-danger:hover,
-.tainacan-modal-content .has-text-danger:focus {
-  color: var(--tainacan-danger) !important;
-}
-.tainacan-pages-container .has-text-success,
-.tainacan-pages-container .has-text-success:hover,
-.tainacan-pages-container .has-text-success:focus,
-#tainacan-admin-app .has-text-success,
-#tainacan-admin-app .has-text-success:hover,
-#tainacan-admin-app .has-text-success:focus,
-.theme-items-list .has-text-success,
-.theme-items-list .has-text-success:hover,
-.theme-items-list .has-text-success:focus,
-.tainacan-item-submission-form .has-text-success,
-.tainacan-item-submission-form .has-text-success:hover,
-.tainacan-item-submission-form .has-text-success:focus,
-.tainacan-modal-content .has-text-success,
-.tainacan-modal-content .has-text-success:hover,
-.tainacan-modal-content .has-text-success:focus {
-  color: var(--tainacan-success) !important;
-}
-.tainacan-pages-container .is-success,
-.tainacan-pages-container .is-success:hover,
-.tainacan-pages-container .is-success:focus,
-#tainacan-admin-app .is-success,
-#tainacan-admin-app .is-success:hover,
-#tainacan-admin-app .is-success:focus,
-.theme-items-list .is-success,
-.theme-items-list .is-success:hover,
-.theme-items-list .is-success:focus,
-.tainacan-item-submission-form .is-success,
-.tainacan-item-submission-form .is-success:hover,
-.tainacan-item-submission-form .is-success:focus,
-.tainacan-modal-content .is-success,
-.tainacan-modal-content .is-success:hover,
-.tainacan-modal-content .is-success:focus {
-  background-color: var(--tainacan-success) !important;
-  color: var(--tainacan-white) !important;
-}
-.tainacan-pages-container .is-white,
-#tainacan-admin-app .is-white,
-.theme-items-list .is-white,
-.tainacan-item-submission-form .is-white,
-.tainacan-modal-content .is-white {
-  color: var(--tainacan-black) !important;
-  transition: background-color 0.2s ease-out;
-  background-color: rgba(125, 125, 125, 0) !important;
-}
-.tainacan-pages-container .is-white:hover,
-.tainacan-pages-container .is-white:focus,
-#tainacan-admin-app .is-white:hover,
-#tainacan-admin-app .is-white:focus,
-.theme-items-list .is-white:hover,
-.theme-items-list .is-white:focus,
-.tainacan-item-submission-form .is-white:hover,
-.tainacan-item-submission-form .is-white:focus,
-.tainacan-modal-content .is-white:hover,
-.tainacan-modal-content .is-white:focus {
-  background-color: rgba(125, 125, 125, 0.05) !important;
-  color: var(--tainacan-black) !important;
-}
-.tainacan-pages-container .button.is-loading, .tainacan-pages-container .button.is-loading:hover, .tainacan-pages-container .button.is-loading:focus,
-.tainacan-pages-container .button.is-loading.is-success, .tainacan-pages-container .button.is-loading.is-success:hover, .tainacan-pages-container .button.is-loading.is-success:focus,
-.tainacan-pages-container .button.is-loading.is-secondary, .tainacan-pages-container .button.is-loading.is-secondary:hover, .tainacan-pages-container .button.is-loading.is-secondary:focus,
-#tainacan-admin-app .button.is-loading,
-#tainacan-admin-app .button.is-loading:hover,
-#tainacan-admin-app .button.is-loading:focus,
-#tainacan-admin-app .button.is-loading.is-success,
-#tainacan-admin-app .button.is-loading.is-success:hover,
-#tainacan-admin-app .button.is-loading.is-success:focus,
-#tainacan-admin-app .button.is-loading.is-secondary,
-#tainacan-admin-app .button.is-loading.is-secondary:hover,
-#tainacan-admin-app .button.is-loading.is-secondary:focus,
-.theme-items-list .button.is-loading,
-.theme-items-list .button.is-loading:hover,
-.theme-items-list .button.is-loading:focus,
-.theme-items-list .button.is-loading.is-success,
-.theme-items-list .button.is-loading.is-success:hover,
-.theme-items-list .button.is-loading.is-success:focus,
-.theme-items-list .button.is-loading.is-secondary,
-.theme-items-list .button.is-loading.is-secondary:hover,
-.theme-items-list .button.is-loading.is-secondary:focus,
-.tainacan-item-submission-form .button.is-loading,
-.tainacan-item-submission-form .button.is-loading:hover,
-.tainacan-item-submission-form .button.is-loading:focus,
-.tainacan-item-submission-form .button.is-loading.is-success,
-.tainacan-item-submission-form .button.is-loading.is-success:hover,
-.tainacan-item-submission-form .button.is-loading.is-success:focus,
-.tainacan-item-submission-form .button.is-loading.is-secondary,
-.tainacan-item-submission-form .button.is-loading.is-secondary:hover,
-.tainacan-item-submission-form .button.is-loading.is-secondary:focus,
-.tainacan-modal-content .button.is-loading,
-.tainacan-modal-content .button.is-loading:hover,
-.tainacan-modal-content .button.is-loading:focus,
-.tainacan-modal-content .button.is-loading.is-success,
-.tainacan-modal-content .button.is-loading.is-success:hover,
-.tainacan-modal-content .button.is-loading.is-success:focus,
-.tainacan-modal-content .button.is-loading.is-secondary,
-.tainacan-modal-content .button.is-loading.is-secondary:hover,
-.tainacan-modal-content .button.is-loading.is-secondary:focus {
-  color: transparent !important;
-}
 .tainacan-pages-container a:not(.wp-element-button),
 .tainacan-pages-container a:not(.wp-element-button):hover,
 .tainacan-pages-container a:not(.wp-element-button):focus,
@@ -429,6 +119,13 @@
   border-bottom: none;
   border-right: none;
   box-shadow: none;
+}
+.tainacan-pages-container,
+#tainacan-admin-app,
+.theme-items-list,
+.tainacan-item-submission-form,
+.tainacan-modal-content {
+  /* Basic styles to checkboxes that won't affect Bulma components but will work for WordPress default ones */
 }
 .tainacan-pages-container input[type=checkbox]:checked::before,
 #tainacan-admin-app input[type=checkbox]:checked::before,
@@ -464,6 +161,17 @@
     height: 1.25rem;
     margin: 0.125rem;
   }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }
 
 *, ::before, ::after {

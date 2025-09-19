@@ -624,9 +624,12 @@ export default {
 
 <style  lang="scss" scoped>
 
-    @import "../../../../../admin/scss/_view-mode-records.scss";
-    @import "../../../../../admin/scss/_view-mode-map.scss";
-    @import "../../../../../admin/scss/_selects.scss";
+    @use "../../../../../admin/scss/_view-mode-records.scss";
+    @use "../../../../../admin/scss/_view-mode-map.scss";
+    @use "../../../../../admin/scss/_selects.scss" as _selects;
+
+    // Include selects mixin
+    @include _selects.tainacan-selects;
 
     .tainacan-records-container--map .tainacan-record .metadata-title {
         padding: 0.6em 0.875em;

@@ -143,7 +143,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    @import "../../../../../admin/scss/_view-mode-cards.scss";
+    @use "../../../../../admin/scss/_view-mode-cards.scss";
     
     .tainacan-cards-container .tainacan-card .metadata-title {
         padding: 0.6em 0.75em;

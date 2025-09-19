@@ -461,7 +461,7 @@
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_tables.scss";
+    @use "../../scss/_tables.scss";
 
     .selection-control {
         

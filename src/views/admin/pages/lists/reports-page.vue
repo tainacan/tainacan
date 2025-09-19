@@ -381,7 +381,7 @@ export default {
 <style lang="scss">
 
     // TAINACAN Variables
-    @import "../../scss/_animations.scss";
+    @use "../../scss/_animations.scss";
 
     .tainacan-reports-page {
 

@@ -11,6 +11,7 @@
             <b-dropdown
                     id="roles-page-add-new"
                     aria-role="list"
+                    :mobile-modal="true"
                     trap-focus>
                 <template #trigger>
                     <router-link
@@ -38,7 +39,8 @@
                 </template>
                 <b-dropdown-item 
                         aria-role="listitem"
-                        has-link>
+                        has-link
+                        class="dropdown-item">
                     <router-link
                             to="/roles/new"
                             style="min-height: unset;">
@@ -58,7 +60,8 @@
                     <b-dropdown-item 
                             v-if="role.slug.match('tainacan')"
                             aria-role="listitem"
-                            has-link>
+                            has-link
+                            class="dropdown-item">
                         <router-link 
                                 :to="'/roles/new?template=' + role.slug"
                                 style="min-height: unset;">
@@ -100,13 +103,13 @@
                                     {{ $i18n.get('Role\'s Name') }}
                                 </div>
                             </th>
-                            <!-- <th
-                                        scope="col"
-                                        id="role">
-                                    <div class="th-wrap">
-                                        {{ $i18n.get('Slug') }}
-                                    </div>
-                            </th> -->
+                            <th
+                                    id="role"
+                                    scope="col">
+                                <div class="th-wrap">
+                                    {{ $i18n.get('Slug') }}
+                                </div>
+                            </th>
                             <th
                                     id="capabilities-number"
                                     scope="col"
@@ -151,16 +154,22 @@
                                     </router-link>
                                 </p>
                             </td>
-                            <!-- <td
+                            <td
                                     class="slug column-slug"
                                     :data-colname="$i18n.get('Slug')">
-                                {{ role.slug }}
-                            </td> -->
+                                <p>
+                                    <router-link :to="'/roles/' + role.slug">
+                                        <code>{{ role.slug }}</code>
+                                    </router-link>
+                                </p>
+                            </td>
                             <td
                                     class="column-small-width column-align-right"
                                     :data-colname="$i18n.get('Number of capabilities')">
                                 <p>
-                                    {{ Object.values(role.capabilities).filter((capability) => capability == true).length }}
+                                    <router-link :to="'/roles/' + role.slug">
+                                        {{ Object.values(role.capabilities).filter((capability) => capability == true).length }}
+                                    </router-link>
                                 </p>
                             </td>
                             <td class="column-default-width actions-cell">

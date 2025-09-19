@@ -2975,17 +2975,17 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_tables.scss";
-    @import "../../scss/_view-mode-cards.scss";
-    @import "../../scss/_view-mode-masonry.scss";
-    @import "../../scss/_view-mode-mosaic.scss";
-    @import "../../scss/_view-mode-grid.scss";
-    @import "../../scss/_view-mode-records.scss";
-    @import "../../scss/_view-mode-list.scss";
-    @import "../../scss/_view-mode-map.scss";
+    @use "../../scss/_tables.scss";
+    @use "../../scss/_view-mode-cards.scss";
+    @use "../../scss/_view-mode-masonry.scss";
+    @use "../../scss/_view-mode-mosaic.scss";
+    @use "../../scss/_view-mode-grid.scss";
+    @use "../../scss/_view-mode-records.scss";
+    @use "../../scss/_view-mode-list.scss";
+    @use "../../scss/_view-mode-map.scss";
     
     // Vue Blurhash transtition effect
-    @import '../../../../../node_modules/another-vue3-blurhash/dist/style.css';
+    @import url('../../../../../node_modules/another-vue3-blurhash/dist/style.css');
     :deep(canvas.child) {
         max-width: 100%;
     }

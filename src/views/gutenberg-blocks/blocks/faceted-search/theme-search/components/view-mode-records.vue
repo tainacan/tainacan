@@ -206,7 +206,7 @@ export default {
 
 <style  lang="scss" scoped>
 
-    @import "../../../../../admin/scss/_view-mode-records.scss";
+    @use "../../../../../admin/scss/_view-mode-records.scss";
 
     .tainacan-records-container .tainacan-record .metadata-title {
         padding: 0.6em 0.875em;

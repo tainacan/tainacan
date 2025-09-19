@@ -231,6 +231,8 @@ export default {
 
 <style lang="scss" scoped>
 
+@use "sass:string";
+
 .number-block {
     text-align: center;
     display: flex;
@@ -243,7 +245,7 @@ export default {
         margin-top: 0.25em;
 
         &.is-2 {
-            font-size: unquote('clamp(1.75rem, 1.386vw + 1.391rem, 2.5rem)');
+            font-size: string.unquote('clamp(1.75rem, 1.386vw + 1.391rem, 2.5rem)');
             margin-bottom: 0.5em;
         }
     }
@@ -251,7 +253,7 @@ export default {
         padding-left: 0;
         padding-right: 0;
         margin: 0 auto;
-        font-size: unquote('clamp(1.125rem, 1vw + 1rem, 1.875rem)');
+        font-size: string.unquote('clamp(1.125rem, 1vw + 1rem, 1.875rem)');
         max-width: fit-content;
         white-space: nowrap;
         display: flex;

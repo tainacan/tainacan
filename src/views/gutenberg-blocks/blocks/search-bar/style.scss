@@ -1,4 +1,4 @@
-@import '../../scss/gutenberg-blocks-variables.scss';
+@use '../../scss/gutenberg-blocks-variables.scss';
 
 .edit-post-sidebar div.components-toolbar {
     border: none;
@@ -17,7 +17,7 @@
             justify-content: center;
             align-items: stretch;
             margin: 0 auto;
-            border: 1px solid var(--tainacan-block-gray2, $gray2);
+            border: 1px solid var(--tainacan-block-gray2, gutenberg-blocks-variables.$gray2);
             transition: border-color ease 0.3s;
 
             &.is-aligned-left {
@@ -62,7 +62,7 @@
                     svg {
                         transform: scale(1);
                         height: 100%;
-                        fill: var(--tainacan-block-primary, $primary); 
+                        fill: var(--tainacan-block-primary, gutenberg-blocks-variables.$primary); 
                     }
                 }
             }
@@ -126,12 +126,12 @@
                 &:active,
                 &:hover {
                     width: 100%;
-                    border-color: var(--tainacan-block-gray3, $gray3);
+                    border-color: var(--tainacan-block-gray3, gutenberg-blocks-variables.$gray3);
                     background:rgba(250, 250, 250, 1);
                     box-shadow: none;
                 }
                 &::placeholder {
-                    color: var(--tainacan-block-gray3, $gray3);
+                    color: var(--tainacan-block-gray3, gutenberg-blocks-variables.$gray3);
                 }
             }
 
@@ -146,7 +146,7 @@
 
                 .icon {
                     svg { 
-                        fill: var(--tainacan-block-gray3, $gray3); 
+                        fill: var(--tainacan-block-gray3, gutenberg-blocks-variables.$gray3); 
                         transition: fill 0.4s ease;
                     }
                 }
@@ -175,12 +175,12 @@
                     &:hover {
                         input,
                         input::placeholder { 
-                            color: var(--tainacan-block-gray5, $gray5); 
+                            color: var(--tainacan-block-gray5, gutenberg-blocks-variables.$gray5); 
                             border-width: 0;
                         }
                         button .icon {
                             svg { 
-                                fill: var(--tainacan-block-gray3, $gray3) !important; 
+                                fill: var(--tainacan-block-gray3, gutenberg-blocks-variables.$gray3) !important; 
                             }
                         }
                     }
@@ -194,13 +194,13 @@
                         &:focus::placeholder,
                         &:active::placeholder,
                         &:hover::placeholder {
-                            color: var(--tainacan-block-gray5, $gray5);
+                            color: var(--tainacan-block-gray5, gutenberg-blocks-variables.$gray5);
                         }
 
                     }
                     button .icon {
                         svg { 
-                            fill: var(--tainacan-block-gray2, $gray2) !important; 
+                            fill: var(--tainacan-block-gray2, gutenberg-blocks-variables.$gray2) !important; 
                         }
                     }
                 }
@@ -238,7 +238,7 @@
                 padding-left: 1.625em;
                 font-size: 1em;
                 border-width: 0;
-                background: var(--tainacan-block-gray1, $gray1);
+                background: var(--tainacan-block-gray1, gutenberg-blocks-variables.$gray1);
                 transition: width 0.5s ease-in, padding 0.5s ease-in;
 
                 &:focus,
@@ -349,7 +349,7 @@
         min-height: 125px;
         background-size: cover;
         background-position: center;
-        background-color: var(--tainacan-block-gray2, $gray2);
+        background-color: var(--tainacan-block-gray2, gutenberg-blocks-variables.$gray2);
     }
     .search-bar-collection-header-container {
         width: 100%;

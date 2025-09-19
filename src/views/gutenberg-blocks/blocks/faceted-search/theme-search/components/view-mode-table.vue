@@ -256,7 +256,7 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import '../../../../../admin/scss/_tables.scss';
+    @use '../../../../../admin/scss/_tables.scss';
     
     tr .actions-cell {
         opacity: 0;

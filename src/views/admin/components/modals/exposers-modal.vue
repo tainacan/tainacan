@@ -492,7 +492,7 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import '../../scss/_cards.scss';
+    @use '../../scss/_cards.scss';
 
     .tainacan-modal-title {
         margin-bottom: 24px;

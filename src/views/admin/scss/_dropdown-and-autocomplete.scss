@@ -1,4 +1,5 @@
-.dropdown, .autocomplete {
+@mixin tainacan-dropdown-and-autocomplete {
+    .dropdown, .autocomplete {
     .dropdown-trigger{
         .button {
             border: none;
@@ -466,10 +467,11 @@
             padding: 0px;
             max-height: inherit !important;
         }
+        }
     }
-}
 
-/* This makes sure dropdown autocomplete inside a modal that is appended to body appears in front of the modal. */
-body.tainacan-admin-page>.control.autocomplete {
-    z-index: 9999999;
+    /* This makes sure dropdown autocomplete inside a modal that is appended to body appears in front of the modal. */
+    body.tainacan-admin-page>.control.autocomplete {
+        z-index: 9999999;
+    }
 }

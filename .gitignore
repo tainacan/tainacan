@@ -5,6 +5,7 @@ tests/bootstrap-config.php
 .idea
 .buildpath
 .project
+.cursor
 .settings
 vendor
 src/vendor

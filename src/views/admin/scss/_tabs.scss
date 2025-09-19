@@ -1,55 +1,57 @@
 // Tabs 
-.tabs {
-    font-size: 1em;
-    font-family: var(--tainacan-font-family, inherit);
+@mixin tainacan-tabs {
+    .tabs {
+        font-size: 1em;
+        font-family: var(--tainacan-font-family, inherit);
 
-    ul {
-        border-bottom-color: var(--tainacan-input-border-color);
-        margin-bottom: 0;
-    }
-    li {
-        overflow-y: hidden;
-        margin: 0;
-        padding: 0;
-    }
-    a {
-        font-size: 0.8125em;
-        color: var(--tainacan-heading-color) !important;
-        padding: 0.5em 1.45em;
-        border-bottom: 4px solid transparent;
-        transition: border-bottom-color ease 0.3s;
-        cursor: pointer !important;
+        ul {
+            border-bottom-color: var(--tainacan-input-border-color);
+            margin-bottom: 0;
+        }
+        li {
+            overflow-y: hidden;
+            margin: 0;
+            padding: 0;
+        }
+        a {
+            font-size: 0.8125em;
+            color: var(--tainacan-heading-color) !important;
+            padding: 0.5em 1.45em;
+            border-bottom: 4px solid transparent;
+            transition: border-bottom-color ease 0.3s;
+            cursor: pointer !important;
 
-        &:hover{
-            border-bottom-color: transparent;
-            text-decoration: none;
-            color: var(--tainacan-secondary) !important;
+            &:hover{
+                border-bottom-color: transparent;
+                text-decoration: none;
+                color: var(--tainacan-secondary) !important;
+            }
+        }
+        li.is-active a,
+        li.is-active a:hover,
+        li.is-active a:focus {
+            border-bottom-color: var(--tainacan-secondary);
+            color: var(--tainacan-heading-color) !important;
+        }
+        .icon:first-child {
+            margin-right: 0.2em;
+            margin-left: -3px;
         }
     }
-    li.is-active a,
-    li.is-active a:hover,
-    li.is-active a:focus {
-        border-bottom-color: var(--tainacan-secondary);
-        color: var(--tainacan-heading-color) !important;
-    }
-    .icon:first-child {
-        margin-right: 0.2em;
-        margin-left: -3px;
-    }
-}
-.b-tabs {
-    .tab-content {         
-        padding: 0.75em;
-    }
-    .tabs a,
-    .tabs a:hover,
-    .tabs a:hover:not([href]) {
-        text-decoration: none;
-    }
-    @media screen and (max-width: 768px) {
+    .b-tabs {
         .tab-content {         
-            padding-left: 0.5em;
-            padding-right: 00.5em;
+            padding: 0.75em;
+        }
+        .tabs a,
+        .tabs a:hover,
+        .tabs a:hover:not([href]) {
+            text-decoration: none;
+        }
+        @media screen and (max-width: 768px) {
+            .tab-content {         
+                padding-left: 0.5em;
+                padding-right: 00.5em;
+            }
         }
     }
 }

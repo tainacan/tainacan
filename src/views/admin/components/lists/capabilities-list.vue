@@ -188,7 +188,7 @@
 
 <style scoped lang="scss">
 
-    @import "../../scss/_tables.scss";
+    @use "../../scss/_tables.scss";
 
     .table-container {
         padding-bottom: var(--tainacan-container-padding);

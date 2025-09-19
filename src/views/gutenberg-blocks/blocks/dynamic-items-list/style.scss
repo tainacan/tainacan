@@ -1,4 +1,4 @@
-@import '../../scss/gutenberg-blocks-variables.scss';
+@use '../../scss/gutenberg-blocks-variables.scss';
 
 .wp-block-tainacan-dynamic-items-list {
     margin-top: 2em;
@@ -16,7 +16,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        color: var(--tainacan-block-gray4, $gray4);
+        color: var(--tainacan-block-gray4, gutenberg-blocks-variables.$gray4);
     }
 
     // Resizer
@@ -47,7 +47,7 @@
     }
     .skeleton {
         border-radius: 2px;
-        background: var(--tainacan-block-gray1, $gray1);
+        background: var(--tainacan-block-gray1, gutenberg-blocks-variables.$gray1);
 
         -webkit-animation: skeleton-animation 1.8s ease infinite;
         -moz-animation: skeleton-animation 1.8s ease infinite;
@@ -86,7 +86,7 @@
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            background-color: var(--tainacan-block-gray5, $gray5);
+            background-color: var(--tainacan-block-gray5, gutenberg-blocks-variables.$gray5);
 
             h3 { 
                 color: white; 
@@ -124,7 +124,7 @@
             position: relative;
             margin-left: -155px; 
             left: 82px;
-            background-color: var(--tainacan-block-gray2, $gray2);
+            background-color: var(--tainacan-block-gray2, gutenberg-blocks-variables.$gray2);
         }
         .collection-header-image {
             width: auto;
@@ -133,7 +133,7 @@
             flex-grow: 2;
             background-size: cover;
             background-position: center;
-            background-color: var(--tainacan-block-gray2, $gray2);
+            background-color: var(--tainacan-block-gray2, gutenberg-blocks-variables.$gray2);
         }
 
         @media only screen and (max-width: 1024px) { 
@@ -165,7 +165,7 @@
         width: 100%;
         display: flex;
         align-items: center;
-        border-bottom: 1px solid var(--tainacan-block-gray3, $gray3);
+        border-bottom: 1px solid var(--tainacan-block-gray3, gutenberg-blocks-variables.$gray3);
         padding: 1.00em 0.5em 0.75em 0.5em;
         position: relative;
         box-sizing: border-box;
@@ -185,7 +185,7 @@
                 margin-top: 8px;
                 margin-left: 0px !important;
                 padding-left: 4px !important;
-                border-color: var(--tainacan-block-gray2, $gray2) !important;
+                border-color: var(--tainacan-block-gray2, gutenberg-blocks-variables.$gray2) !important;
             }
         } 
 
@@ -199,7 +199,7 @@
             cursor: pointer;
 
             svg { 
-                fill: var(--tainacan-block-gray3, $gray3); 
+                fill: var(--tainacan-block-gray3, gutenberg-blocks-variables.$gray3); 
                 transition: fill 0.4s ease;
             }
             &:hover svg { fill: #545758; }
@@ -211,17 +211,17 @@
                 margin-right: 0em;
                 padding: 0;
 
-                svg { fill: var(--tainacan-block-primary, $primary); }
+                svg { fill: var(--tainacan-block-primary, gutenberg-blocks-variables.$primary); }
             }
             &.previous-button {
                 margin-left: auto;
                 margin-right: 1em;
                 padding: 0;
 
-                svg { fill: var(--tainacan-block-primary, $primary); }
+                svg { fill: var(--tainacan-block-primary, gutenberg-blocks-variables.$primary); }
             }
             &[disabled] svg {
-                fill: var(--tainacan-block-gray1, $gray1);
+                fill: var(--tainacan-block-gray1, gutenberg-blocks-variables.$gray1);
                 cursor: not-allowed;
             }
         }
@@ -238,7 +238,7 @@
             &:active,
             &:hover {
                 width: 100%;
-                border: 1px solid var(--tainacan-block-gray3, $gray3);
+                border: 1px solid var(--tainacan-block-gray3, gutenberg-blocks-variables.$gray3);
                 box-shadow: none;
             }
         }
@@ -261,7 +261,7 @@
         button {
             position: absolute !important;
             background-color: rgba(255, 255, 255, 0.75);
-            color: var(--tainacan-block-gray5, $gray5);
+            color: var(--tainacan-block-gray5, gutenberg-blocks-variables.$gray5);
             padding: 2px;
             margin-left: 5px;
             min-width: 14px;
@@ -281,13 +281,13 @@
             opacity: 1;
             right: -8px;
             top: -8px;
-            border: 1px solid var(--tainacan-block-gray3, $gray3);
+            border: 1px solid var(--tainacan-block-gray3, gutenberg-blocks-variables.$gray3);
             border-radius: 100em;
             transition: opacity linear 0.15s, right linear 0.15s;
         }
         &:hover button:hover {
             background-color: rgba(255, 255, 255, 1) !important;
-            border: 1px solid var(--tainacan-block-gray3, $gray3) !important;
+            border: 1px solid var(--tainacan-block-gray3, gutenberg-blocks-variables.$gray3) !important;
         }
 
         a {
@@ -1231,7 +1231,7 @@
     li.item-list-item {
         a>span,
         a:hover>span {
-            color: var(--tainacan-block-gray5, $gray5);
+            color: var(--tainacan-block-gray5, gutenberg-blocks-variables.$gray5);
         }
     }
 }

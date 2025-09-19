@@ -1,134 +1,148 @@
-button.link-style,
-button.link-style:focus
-button.link-style:active {
-    border: none !important;
-    outline: none;
-    cursor: pointer;
-    font-size: inherit;
-    text-transform: inherit;
-    color: var(--tainacan-secondary) !important;
-    padding: 0;
-    margin: 0;
-    font-weight: normal;
-    background: transparent !important;
-
-    &:hover {
-        text-decoration: underline;
-    }
-}
-.button {
-    border-radius: var(--tainacan-button-border-radius, 4px) !important;
-    min-height: 2.125em;
-    font-weight: normal;
-    text-transform: inherit;
-    font-family: var(--tainacan-font-family, inherit);
-    padding: 2px 13px !important;
-    margin-top: 0px !important;
-    margin-bottom: 0px !important;
-    height: inherit !important;
-    box-shadow: none !important;
-    cursor: pointer;
-    text-shadow: none !important;
-
-    &:not(.hidden) {
-        display: inline-flex !important;
-    }
-    &.is-secondary, &.is-secondary:hover, &.is-secondary:focus {
-        background: var(--tainacan-secondary) !important;
-        color: var(--tainacan-white) !important;
-    }
-    &.is-primary, &.is-primary:hover, &.is-primary:focus {
-        background: var(--tainacan-primary) !important;
-        color: var(--tainacan-secondary) !important;
-    }
-    &.is-success, &.is-success:hover, &.is-success:focus {
-        background: var(--tainacan-success) !important;
-        color: var(--tainacan-white) !important;
-    }
-    &.is-white,
-    &.is-outlined:hover, &.is-outlined:focus {
-        transition: background-color 0.2s ease-out;
-        background-color: rgba(125,125,125,0.0) !important;
-    }
-    &.is-white:hover, &.is-white:focus {
-        background-color: rgba(125,125,125,0.05) !important;
-    }
-    &.is-loading, &.is-loading:hover, &.is-loading:focus,
-    &.is-loading.is-success, &.is-loading.is-success:hover, &.is-loading.is-success:focus,
-    &.is-loading.is-secondary, &.is-loading.is-secondary:hover, &.is-loading.is-secondary:focus {
-        color: transparent !important;
-    }
-    &:active {
-        -webkit-transform: none !important;
-        transform: none !important;
-    }
-    &.is-outlined {
-        color: var(--tainacan-secondary);
-        background-color: transparent !important;
-        border-color: var(--tainacan-input-border-color) !important;
-    }
-    &.is-outlined:hover {
-        color: var(--tainacan-secondary) !important;
-    }
-    &.is-outlined.is-danger,
-    &.is-outlined.is-:hover {
-        color: var(--tainacan-danger) !important;
-    }
-    &:focus {
-        outline: 0px;
-    }
-    &[disabled], &:hover[disabled] {
+@mixin tainacan-buttons {
+    button.link-style,
+    button.link-style:focus,
+    button.link-style:active {
         border: none !important;
-        cursor: not-allowed !important;
-        color: var(--tainacan-info-color) !important;
-        background-color: var(--tainacan-input-disabled-color,var(--tainacan-input-border-color)) !important;
+        outline: none;
+        cursor: pointer;
+        font-size: inherit;
+        text-transform: inherit;
+        color: var(--tainacan-secondary) !important;
+        padding: 0;
+        margin: 0;
+        font-weight: normal;
+        background: transparent !important;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+    .button {
+        border-radius: var(--tainacan-button-border-radius, 4px) !important;
+        min-height: 2.125em;
+        font-weight: normal;
+        text-transform: inherit;
+        font-family: var(--tainacan-font-family, inherit);
+        padding: 2px 13px !important;
+        margin-top: 0px !important;
+        margin-bottom: 0px !important;
+        height: inherit !important;
+        box-shadow: none !important;
+        cursor: pointer;
         text-shadow: none !important;
+
+        &:not(.hidden) {
+            display: inline-flex !important;
+        }
+        &:not(.is-outlined),
+        &:not(.is-outlined):hover,
+        &:not(.is-outlined):focus {
+            border-color: transparent;
+        }
+        &.is-secondary, &.is-secondary:hover, &.is-secondary:focus {
+            background: var(--tainacan-secondary) !important;
+            color: var(--tainacan-white) !important;
+        }
+        &.is-primary, &.is-primary:hover, &.is-primary:focus {
+            background: var(--tainacan-primary) !important;
+            color: var(--tainacan-secondary) !important;
+        }
+        &.is-success, &.is-success:hover, &.is-success:focus {
+            background: var(--tainacan-success) !important;
+            color: var(--tainacan-white) !important;
+        }
+        &.is-white {
+            color: var(--tainacan-black) !important;
+            transition: background-color 0.2s ease-out;
+            border-color: transparent;
+            background-color: rgba(125,125,125,0.0) !important;
+        }
+        &.is-white:hover, &.is-white:focus {
+            color: var(--tainacan-black) !important;
+            background-color: rgba(125,125,125,0.05) !important;
+        }
+        &.is-outlined:hover, &.is-outlined:focus {
+            transition: background-color 0.2s ease-out;
+            background-color: rgba(125,125,125,0.0) !important;
+        }
+        &.is-loading, &.is-loading:hover, &.is-loading:focus,
+        &.is-loading.is-success, &.is-loading.is-success:hover, &.is-loading.is-success:focus,
+        &.is-loading.is-white, &.is-loading.is-white:hover, &.is-loading.is-white:focus,
+        &.is-loading.is-secondary, &.is-loading.is-secondary:hover, &.is-loading.is-secondary:focus {
+            color: transparent !important;
+        }
+        &:active {
+            -webkit-transform: none !important;
+            transform: none !important;
+        }
+        &.is-outlined {
+            color: var(--tainacan-secondary);
+            background-color: transparent !important;
+            border-color: var(--tainacan-input-border-color) !important;
+        }
+        &.is-outlined:hover {
+            color: var(--tainacan-secondary) !important;
+        }
+        &.is-outlined.is-danger,
+        &.is-outlined.is-:hover {
+            color: var(--tainacan-danger) !important;
+        }
+        &:focus {
+            outline: 0px;
+        }
+        &[disabled], &:hover[disabled] {
+            border: none !important;
+            cursor: not-allowed !important;
+            color: var(--tainacan-info-color) !important;
+            background-color: var(--tainacan-input-disabled-color,var(--tainacan-input-border-color)) !important;
+            text-shadow: none !important;
+        }
+        &.is-outlined[disabled], &.is-outlined:hover[disabled] {
+            border: 1px solid var(--tainacan-input-disabled-color,var(--tainacan-input-border-color)) !important;
+            color: var(--tainacan-info-color) !important;
+            background-color: var(--tainacan-input-disabled-color,var(--tainacan-input-border-color)) !important;
+        }
+        &.is-white[disabled] {
+            background-color: transparent !important;
+            opacity: 0.85;
+        }
+        &.is-small {
+            height: 1.625em !important;
+            line-height: 0.75em;
+        }
+        &.is-loading {
+            color: transparent !important;
+            background-color: transparent !important;
+            border-color: var(--tainacan-gray2) !important;
+        }
+        &:not(.is-small):not(.is-medium):not(.is-large) {
+            min-height: var(--tainacan-button-min-height, 2.571em) !important;
+            font-size: 0.875em !important;
+            line-height: 1.75em;
+        }
     }
-    &.is-outlined[disabled], &.is-outlined:hover[disabled] {
-        border: 1px solid var(--tainacan-input-disabled-color,var(--tainacan-input-border-color)) !important;
-        color: var(--tainacan-info-color) !important;
-        background-color: var(--tainacan-input-disabled-color,var(--tainacan-input-border-color)) !important;
+    kbd {
+        padding: 0.125rem 0.5rem 0.125rem 0.35rem;
+        background: radial-gradient(var(--tainacan-white, #ffffff), var(--tainacan-gray1, #f2f2f2) );
+        color: inherit;
+        display: inline-block;
+        position: relative;
+        top: -0.15rem;
+        font-size: 0.65rem;
+        border-top-width: 1px;
+        border-left-width: 2px;
+        border-right-width: 3px;
+        border-bottom-width: 4px;
+        border-radius: var(--tainacan-button-border-radius, 4px);
+        border-style: solid;
+        border-color: var(--tainacan-gray2, #dbdbdb);
+        border-bottom-color: var(--tainacan-gray3, #a5a5a5);
+        transition: top 0.1s ease, background 0.1s ease, border-bottom-width 0.1s ease;
     }
-    &.is-white[disabled] {
-        background-color: transparent !important;
-        opacity: 0.85;
+    kbd:hover,
+    kbd:focus {
+        background: radial-gradient(var(--tainacan-gray1, #f2f2f2), var(--tainacan-gray1, #f2f2f2) );
+        top: 0rem;
+        border-bottom-width: 3px;
     }
-    &.is-small {
-        height: 1.625em !important;
-        line-height: 0.75em;
-    }
-    &.is-loading {
-        color: transparent !important;
-        background-color: transparent !important;
-        border-color: var(--tainacan-gray2) !important;
-    }
-    &:not(.is-small):not(.is-medium):not(.is-large) {
-        min-height: var(--tainacan-button-min-height, 2.571em) !important;
-        font-size: 0.875em !important;
-        line-height: 1.75em;
-    }
-}
-kbd {
-    padding: 0.125rem 0.5rem 0.125rem 0.35rem;
-    background: radial-gradient(var(--tainacan-white, #ffffff), var(--tainacan-gray1, #f2f2f2) );
-    color: inherit;
-    display: inline-block;
-    position: relative;
-    top: -0.15rem;
-    font-size: 0.65rem;
-    border-top-width: 1px;
-    border-left-width: 2px;
-    border-right-width: 3px;
-    border-bottom-width: 4px;
-    border-radius: var(--tainacan-button-border-radius, 4px);
-    border-style: solid;
-    border-color: var(--tainacan-gray2, #dbdbdb);
-    border-bottom-color: var(--tainacan-gray3, #a5a5a5);
-    transition: top 0.1s ease, background 0.1s ease, border-bottom-width 0.1s ease;
-}
-kbd:hover,
-kbd:focus {
-    background: radial-gradient(var(--tainacan-gray1, #f2f2f2), var(--tainacan-gray1, #f2f2f2) );
-    top: 0rem;
-    border-bottom-width: 3px;
 }

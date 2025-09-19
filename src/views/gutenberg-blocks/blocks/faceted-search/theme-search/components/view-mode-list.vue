@@ -147,7 +147,7 @@ export default {
 
 <style  lang="scss" scoped>
 
-    @import "../../../../../admin/scss/view-mode-list.scss";
+    @use "../../../../../admin/scss/view-mode-list.scss";
 
     .tainacan-list-container .tainacan-list .metadata-title {
         padding: 0.5em 0.875em;

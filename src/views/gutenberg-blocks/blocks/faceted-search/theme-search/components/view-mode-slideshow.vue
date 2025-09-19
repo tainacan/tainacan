@@ -675,7 +675,7 @@ export default {
 </script>
 
 <style  lang="scss">
-    @import "../scss/_view-mode-slideshow.scss";
+    @use "../scss/_view-mode-slideshow.scss";
 </style>
 
 

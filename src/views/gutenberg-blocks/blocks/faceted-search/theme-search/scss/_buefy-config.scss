@@ -1,0 +1,20 @@
+@use "buefy/src/scss/utils/_all.scss";
+@use "buefy/src/scss/components/_form.scss";
+@use "buefy/src/scss/components/_datepicker.scss";
+@use "buefy/src/scss/components/_checkbox.scss" with (
+    $checkbox-size: 1em,
+    $checkbox-border-width: 1px,
+);
+@use "buefy/src/scss/components/_radio.scss" with (
+    $radio-active-background-color: var(--tainacan-input-color, #000000),
+    $radio-size: 0.9375em,
+);
+@use "buefy/src/scss/components/_tag.scss";
+@use "buefy/src/scss/components/_loading.scss";
+@use "buefy/src/scss/components/_dropdown.scss" with (
+    $dropdown-mobile-breakpoint: 769px
+);
+@use "buefy/src/scss/components/_modal.scss";
+@use "buefy/src/scss/components/_dialog.scss";
+@use "buefy/src/scss/components/_notices.scss" as buefy-notices;
+@use "buefy/src/scss/components/_numberinput.scss";

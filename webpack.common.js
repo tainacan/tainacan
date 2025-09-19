@@ -88,9 +88,12 @@ const TainacanPluginConfig = {
                     {
                         loader: 'sass-loader',
                         options: {
+                            implementation: require('sass'),
                             sassOptions: {
-                                implementation: require('sass'),
-                                includePaths: [path.resolve(__dirname, './src/views/tainacan-basics.scss')]
+                                loadPaths: [
+                                    path.resolve(__dirname, 'node_modules')
+                                ],
+                                silenceDeprecations: ['global-builtin']
                             }
                         }
                     },
