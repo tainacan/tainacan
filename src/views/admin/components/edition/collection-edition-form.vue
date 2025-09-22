@@ -2114,6 +2114,10 @@ export default {
         }
     }
 
+    .tainacan-form {
+        padding-bottom: 3.5rem;
+    }
+
     .footer {
         padding: 10px var(--tainacan-one-column);
         position: absolute;
@@ -2180,9 +2184,6 @@ export default {
         }
     }
     @media screen and (max-width: 768px) {
-        .tainacan-form {
-            padding-bottom: 3rem;
-        }
         .footer {
             padding: 13px 0.5em;
             margin-left: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
