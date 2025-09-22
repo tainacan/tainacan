@@ -431,13 +431,14 @@
                         :is="showSteppedLayout ? 'b-step-item' : 'div'"
                         v-for="(metadataSection, sectionIndex) of metadataSections"
                         :id="'metadata-section-id-' + metadataSection.id"
-                        :key="sectionIndex"
+                        :key="metadataSection.id"
                         v-tooltip="{
                             content: !showSteppedLayout && isSectionHidden(metadataSection.id) ? $i18n.get('info_metadata_section_hidden_conditional') : false,
                             autoHide: true,
                             placement: 'auto',
                             popperClass: ['tainacan-tooltip', 'tooltip']
                         }"
+                        :order="sectionIndex"
                         :step="sectionIndex + 1"
                         :label="metadataSection.name"
                         :label-position="'right'"
