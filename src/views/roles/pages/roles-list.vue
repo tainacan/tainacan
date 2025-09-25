@@ -100,13 +100,13 @@
                                     {{ $i18n.get('Role\'s Name') }}
                                 </div>
                             </th>
-                            <!-- <th
-                                        scope="col"
-                                        id="role">
-                                    <div class="th-wrap">
-                                        {{ $i18n.get('Slug') }}
-                                    </div>
-                            </th> -->
+                            <th
+                                    id="role"
+                                    scope="col">
+                                <div class="th-wrap">
+                                    {{ $i18n.get('Slug') }}
+                                </div>
+                            </th>
                             <th
                                     id="capabilities-number"
                                     scope="col"
@@ -151,16 +151,22 @@
                                     </router-link>
                                 </p>
                             </td>
-                            <!-- <td
+                            <td
                                     class="slug column-slug"
                                     :data-colname="$i18n.get('Slug')">
-                                {{ role.slug }}
-                            </td> -->
+                                <p>
+                                    <router-link :to="'/roles/' + role.slug">
+                                        <code>{{ role.slug }}</code>
+                                    </router-link>
+                                </p>
+                            </td>
                             <td
                                     class="column-small-width column-align-right"
                                     :data-colname="$i18n.get('Number of capabilities')">
-                                <p>
-                                    {{ Object.values(role.capabilities).filter((capability) => capability == true).length }}
+                                    <p>
+                                    <router-link :to="'/roles/' + role.slug">
+                                        {{ Object.values(role.capabilities).filter((capability) => capability == true).length }}
+                                    </router-link>
                                 </p>
                             </td>
                             <td class="column-default-width actions-cell">
