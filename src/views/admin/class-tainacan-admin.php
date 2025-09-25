@@ -216,7 +216,6 @@ class Admin extends Pages {
 	function admin_enqueue_css() {
 		global $TAINACAN_BASE_URL;
 
-		wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/tainacanicons.css', [], TAINACAN_VERSION );
 		wp_enqueue_script('underscore');
 		wp_enqueue_style( 'tainacan-admin-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-admin.css', [], TAINACAN_VERSION );
 
