@@ -275,14 +275,13 @@ class Relationship extends Metadata_Type {
 		$return = '';
 		$id = $item->get_id();
 		
-		if(!empty($display_metas) && is_array($display_metas) && count($display_metas) > 1) {
-			$has_thumbnail = array_search('thumbnail', $display_metas);
+		if ( !empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 ) {
+			$has_thumbnail = in_array('thumbnail', $display_metas);
 			$thumbnail_id = false;
-			if($has_thumbnail !== false) {
-				unset($display_metas[$has_thumbnail]);
+			if ( $has_thumbnail !== false ) {
 				$thumbnail_id = $item->get__thumbnail_id();
 			}
-			$args = ['post__in' => $display_metas];
+			$args = [ 'post__in' => array_filter($display_metas, function($meta) { return $meta !== 'thumbnail'; } ) ];
 			$metadatum = $item->get_metadata($args);
 
 			$metadata_value = [];
