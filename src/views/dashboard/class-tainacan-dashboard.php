@@ -224,7 +224,7 @@ class Dashboard extends Pages {
 		 * Remeber to return an array containing the card objects
 		 * with a structure that contains the id, title, description,
 		 * content (a callback), icon (an svg or img html tag), color
-		 * (one of gray, blue and turoquoise) and position (normal, side, column3, column4)
+		 * (one of gray, blue and turquoise) and position (normal, side, column3, column4)
 		 * 
 		 * If you remove any card from the array, users won't be able to add it anyway.
 		 * If you just remove its id from the 'tainacan_dashboard_disabled_cards' wp option, 
