@@ -163,7 +163,7 @@
                             <td
                                     class="column-small-width column-align-right"
                                     :data-colname="$i18n.get('Number of capabilities')">
-                                    <p>
+                                <p>
                                     <router-link :to="'/roles/' + role.slug">
                                         {{ Object.values(role.capabilities).filter((capability) => capability == true).length }}
                                     </router-link>
