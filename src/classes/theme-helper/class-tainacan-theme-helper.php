@@ -1184,130 +1184,141 @@ class Theme_Helper {
 	 * Adds meta tags to the header to improve social sharing 
 	 */
 	public function add_social_meta() {
+		global $wp;
+		global $post;
 
-		if ( is_single() || is_tax() || is_archive() ) {
+		if ( !is_single() && !is_tax() && !is_post_type_archive() )
+			return;
 
-			$logo = get_template_directory_uri() . '/assets/images/social-logo.png';
-			$excerpt = get_bloginfo( 'description' );
-			$url_src = esc_url((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
-			global $wp;
-			global $post;
-				
-			if ( is_post_type_archive() ) {
-				$collection_id = tainacan_get_collection_id();
-				if ($collection_id) {
-					$title = tainacan_get_the_collection_name();
-					$img_info = ( has_post_thumbnail( tainacan_get_collection_id() ) ) ? wp_get_attachment_image_src( get_post_thumbnail_id( tainacan_get_collection_id() ), 'full' ) : $logo;
-					$url_src = home_url( $wp->request );
-					$excerpt = strip_tags(tainacan_get_the_collection_description());
-				} elseif ( is_post_type_archive('tainacan-collection') ) {
-					$title = __('Collections', 'tainacan');
-				} elseif ( is_post_type_archive('tainacan-taxonomy') ) {
-					$title = __('Taxonomies', 'tainacan');
-				} else {
-					$title = get_the_archive_title();
+		$excerpt = get_bloginfo( 'description' );
+		$url_src = esc_url((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");	
+		$img_info = null; // Initialize as null, will only be set if relevant media exists
+		$title = null;
+			
+		if ( is_single() ) {
+
+			$post = get_queried_object();
+			
+			// Is it a collection Item 
+			if ( !($post instanceof \WP_Post) || !$this->is_post_an_item($post) )
+				return;
+
+			$title = get_the_title();
+
+			// Only set img_info if post has a featured image
+			if ( has_post_thumbnail( $post->ID ) ) 
+				$img_info = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'full' );
+			
+			$url_src = get_permalink();
+			$content = wp_trim_words( $post->post_content, 28, '[...]' );
+
+			if ( $content ) {
+				$excerpt = strip_tags( $content );
+				$excerpt = str_replace( '', "'", $excerpt );
+			} 
+
+		} elseif ( is_post_type_archive() ) {
+
+			$collection_id = tainacan_get_collection_id();
+
+			if ( $collection_id ) {
+				$title = tainacan_get_the_collection_name();
+
+				// Only set img_info if collection has a featured image
+				if ( has_post_thumbnail( tainacan_get_collection_id() ) ) {
+					$img_info = wp_get_attachment_image_src( get_post_thumbnail_id( tainacan_get_collection_id() ), 'full' );
 				}
-			} elseif ( is_singular() ) {
+				$url_src = home_url( $wp->request );
+				$excerpt = strip_tags(tainacan_get_the_collection_description());
 
-				if ( !is_object($post) ) { return; }
-
-				$title = get_the_title();
-				$img_info = ( has_post_thumbnail( $post->ID ) ) ? wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'full' ) : $logo;
-				$url_src = get_permalink();
-				$content = wp_trim_words( $post->post_content, 28, '[...]' );
-				if ( $content ) {
-					$excerpt = strip_tags( $content );
-					$excerpt = str_replace( '', "'", $excerpt );
-				} 
-			} elseif ( is_tax() ) {
-				$term = get_queried_object();
-				$tainacan_term = tainacan_get_term();
-				
-				$title = $term->name;
-				$excerpt = strip_tags($term->description);
-				
-				$url_src = get_term_link($term->term_id, $term->taxonomy);
-
-				if ($tainacan_term) {
-					$_term = new \Tainacan\Entities\Term( $tainacan_term );
-					$img_id = $_term->get_header_image_id();
-					if ($img_id) {
-						$img_info = wp_get_attachment_image_src( $img_id, 'full' );
-					}
-				}
-				
-			} else {
-				
-				if ( is_day() ) :
-					$title =  sprintf( __( 'Daily Archives: %s', 'tainacan-interface' ), get_the_date() );
-				elseif ( is_month() ) :
-					$title =  sprintf( __( 'Monthly Archives: %s', 'tainacan-interface' ), get_the_date( _x( 'F Y', 'monthly archives date format', 'tainacan-interface' ) ) );
-				elseif ( is_year() ) :
-					$title =  sprintf( __( 'Yearly Archives: %s', 'tainacan-interface' ), get_the_date( _x( 'Y', 'yearly archives date format', 'tainacan-interface' ) ) );
-				elseif ( is_author() ) :
-					$title = get_the_author();
-				else :
-					$title = get_the_archive_title();
-				endif;
-				
+			} elseif ( is_post_type_archive('tainacan-collection') ) {
+				$title = __('Collections', 'tainacan');
+			} elseif ( is_post_type_archive('tainacan-taxonomy') ) {
+				$title = __('Taxonomies', 'tainacan');
 			}
 
+		} elseif ( is_tax() ) {
+
+			$term = get_queried_object();
+
+			if ( !($term instanceof \WP_Term) || !$this->is_term_a_tainacan_term($term) )
+				return;
+
+			$tainacan_term = tainacan_get_term();
+			
+			$title = $term->name;
+			$excerpt = strip_tags($term->description);
+			
+			$url_src = get_term_link($term->term_id, $term->taxonomy);
+
+			if ( $tainacan_term ) {
+				$_term = new \Tainacan\Entities\Term( $tainacan_term );
+				$img_id = $_term->get_header_image_id();
+				if ($img_id) {
+					$img_info = wp_get_attachment_image_src( $img_id, 'full' );
+				}
+			}
+			
+		}
+
+		if ( $title ) : ?>
+			<meta property="og:type" content="article"/>
+			<meta property="og:site_name" content="<?php echo esc_attr(get_bloginfo()); ?>"/>
+			<meta property="og:title" content="<?php echo esc_attr($title); ?>"/>
+			<meta property="og:description" content="<?php echo esc_html($excerpt); ?>"/>
+			<meta property="og:url" content="<?php echo esc_url($url_src); ?>"/>
+		<?php endif;
+
+
+		// Only create image array if we have valid image info
+		$image = null;
+		if ( ! empty( $img_info[0] ) && $img_info[1] >= 200 && $img_info[2] >= 200 ) {
 			$image = array(
-			   'url' => ( ! empty( $img_info[0] ) && $img_info[1] >= 200 && $img_info[2] >= 200 ) ? $img_info[0] : $logo,
-			   'width' => ( ! empty( $img_info[1] ) && $img_info[1] >= 200 && $img_info[2] >= 200 ) ? $img_info[1] : 200,
-			   'height' => ( ! empty( $img_info[2] ) && $img_info[1] >= 200 && $img_info[2] >= 200 ) ? $img_info[2] : 200,
+				'url' => $img_info[0],
+				'width' => $img_info[1],
+				'height' => $img_info[2],
 			);
+		}
+		
+		if ( $image ) : ?>
+			<meta property="og:image" content="<?php echo esc_url($image['url']); ?>"/>
+			<meta property="og:image:width" content="<?php echo esc_attr($image['width']); ?>"/>
+			<meta property="og:image:height" content="<?php echo esc_attr($image['height']); ?>"/>
+		<?php endif; 
 
-			?>
-				<meta property="og:type" content="article"/>
-				<meta property="og:title" content="<?php echo esc_attr($title); ?>"/>
-				<meta property="og:site_name" content="<?php echo esc_attr(get_bloginfo()); ?>"/>
-				<meta property="og:description" content="<?php echo esc_html($excerpt); ?>"/>
-				<meta property="og:url" content="<?php echo esc_url($url_src); ?>"/>
-				<meta property="og:image" content="<?php echo esc_url($image['url']); ?>"/>
-				<meta property="og:image:width" content="<?php echo esc_attr($image['width']); ?>"/>
-				<meta property="og:image:height" content="<?php echo esc_attr($image['height']); ?>"/>
-
-			<?php
-
-			/**
-			 * Adds Dublin Core meta tags to the header 
-			 */
-			if ( is_singular() && ($post instanceof \WP_Post) && $this->is_post_an_item($post) ) {
-				$metadatum_mapper = \Tainacan\Mappers_Handler::get_instance()->get_mapper('dublin-core');
+		/**
+		 * Adds Dublin Core meta tags to the header 
+		 */
+		if ( is_single() && ($post instanceof \WP_Post) && $this->is_post_an_item($post) ) {
+			$metadatum_mapper = \Tainacan\Mappers_Handler::get_instance()->get_mapper('dublin-core');
+			
+			if ( $metadatum_mapper ) {
+				$item = $this->tainacan_get_item($post->ID);
+				$item_metadata = $item->get_metadata();
 				
-				if ( $metadatum_mapper ) {
-					$item = $this->tainacan_get_item($post->ID);
-					$item_metadata = $item->get_metadata();
-					
-					foreach ($item_metadata as $item_metadatum) {
-						$metadatum = $item_metadatum->get_metadatum();
-						$meta_mappings = $metadatum->get_exposer_mapping();
+				foreach ($item_metadata as $item_metadatum) {
+					$metadatum = $item_metadatum->get_metadatum();
+					$meta_mappings = $metadatum->get_exposer_mapping();
 
-						if ( array_key_exists('dublin-core', $meta_mappings) && $item_metadatum->has_value() ) {
-							$values = $item_metadatum->get_value();
-							$values = is_array($values) ? $values : [$values];
+					if ( array_key_exists('dublin-core', $meta_mappings) && $item_metadatum->has_value() ) {
+						$values = $item_metadatum->get_value();
+						$values = is_array($values) ? $values : [$values];
 
-							$values = array_map(function($value) use ($meta_mappings) {
-								echo '<meta name="' . str_replace('dc:' , 'dc.', $meta_mappings['dublin-core']) . '" content="' . esc_attr($value) . '" />';
-							}, $values);
-						}
+						$values = array_map(function($value) use ($meta_mappings) {
+							echo '<meta name="' . str_replace('dc:' , 'dc.', $meta_mappings['dublin-core']) . '" content="' . esc_attr($value) . '" />';
+						}, $values);
 					}
 				}
-			} else if ( is_post_type_archive() ){
-		
-				$collections_post_types = \Tainacan\Repositories\Repository::get_collections_db_identifiers();
-				$current_post_type = get_post_type();
-				
-				if ( in_array($current_post_type, $collections_post_types) ) : ?>
-					<meta name="dc.title" content="<?php echo esc_attr($title); ?>"/>
-					<meta name="dc.description" content="<?php echo esc_html($excerpt); ?>"/>
-					<meta name="dc.type" content="Collection">
-				<?php endif;
 			}
+		} else if ( is_post_type_archive() ){
+	
+			if ( $this->is_post_type_a_collection(get_post_type()) ) : ?>
+				<meta name="dc.title" content="<?php echo esc_attr($title); ?>"/>
+				<meta name="dc.description" content="<?php echo esc_html($excerpt); ?>"/>
+				<meta name="dc.type" content="Collection">
+			<?php endif;
+		}
 
-				
-		} else { return; } // End if().
 	}
 
 

@@ -7,10 +7,10 @@
         <div
                 role="list"
                 class="exporter-types-container tainacan-clickable-cards">
-            <template v-for="exporterType in availableExporters">
+            <template 
+                    v-for="exporterType in availableExporters"
+                    :key="exporterType.slug">
                 <router-link
-                        v-if="exporterType.manual_collection"
-                        :key="exporterType.slug"
                         class="exporter-type tainacan-clickable-card"
                         :to="$routerHelper.getExporterEditionPath(exporterType.slug) + ( selectedCollection ? ('?sourceCollection=' + selectedCollection) : '' )"
                         role="listitem">

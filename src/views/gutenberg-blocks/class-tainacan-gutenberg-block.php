@@ -177,7 +177,7 @@ function tainacan_blocks_register_block($block_slug, $options = [], $block_setti
 	// Registers style
 	wp_register_style(
 		$block_slug,
-		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-' . $block_slug . '.css',
+		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-' . ( $block_slug === 'items-gallery' ? 'item-gallery' : $block_slug ) . '.css',
 		array(),
 		$TAINACAN_VERSION
 	);

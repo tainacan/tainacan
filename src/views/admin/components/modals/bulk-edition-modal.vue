@@ -941,7 +941,6 @@
             flex-direction: column;
             flex-grow: 1;
             flex-shrink: 1;
-            text-align: center;
             padding-bottom: 9px;
             flex-basis: 10%;
 

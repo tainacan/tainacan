@@ -366,9 +366,17 @@ abstract class Pages {
 	 */
 	public function render_page() {
 		global $TAINACAN_BASE_URL;
+
 		wp_enqueue_style( 
 			'tainacan-page-container',
 			$TAINACAN_BASE_URL . '/assets/css/tainacan-pages.css',
+			[],
+			TAINACAN_VERSION
+		);
+
+		wp_enqueue_style(
+			'tainacan-fonts',
+			$TAINACAN_BASE_URL . '/assets/css/tainacanicons.css',
 			[],
 			TAINACAN_VERSION
 		);
