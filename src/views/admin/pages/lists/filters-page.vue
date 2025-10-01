@@ -40,7 +40,7 @@
                     <section 
                             v-if="activeFiltersList.length <= 0 && !isLoadingFilters"
                             class="field is-grouped-centered section">
-                        <div class="content has-text-gray has-text-centered">
+                        <div class="content has-text-dark has-text-centered">
                             <p>
                                 <span class="icon is-large">
                                     <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters" />
@@ -76,7 +76,7 @@
                                         'not-sortable-item': (isRepositoryLevel || isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || filterNameFilterString != ''),
                                         'not-focusable-item': openedFilterId == filter.id, 
                                         'disabled-filter': filter.enabled == false,
-                                        'inherited-filter': filter.collection_id != collectionId || isRepositoryLevel
+                                        'inherited-filter tainacan-repository-level-colors': filter.collection_id != collectionId || isRepositoryLevel
                                     }">
                                 <div class="handle">
                                     <span
@@ -160,9 +160,9 @@
                                                     :class="{ 
                                                         'tainacan-icon-collection': filter.collection_id == collectionId, 
                                                         'tainacan-icon-repository': filter.collection_id != collectionId,
-                                                        'has-text-turquoise5': filter.enabled && filter.collection_id != 'default', 
-                                                        'has-text-blue5': filter.enabled && filter.collection_id == 'default',
-                                                        'has-text-gray3': !filter.enabled  
+                                                        'has-text-secondary': filter.enabled && filter.collection_id != 'default', 
+                                                        'has-text-secondary': filter.enabled && filter.collection_id == 'default',
+                                                        'has-text-grey': !filter.enabled  
                                                     }"
                                                     class="tainacan-icon" />
                                         </span> 
@@ -334,8 +334,8 @@
                                             class="icon icon-level-identifier">
                                         <i 
                                                 :class="{   
-                                                    'tainacan-icon-collection has-text-turquoise5': metadatum.collection_id == collectionId && !isRepositoryLevel, 
-                                                    'tainacan-icon-repository has-text-blue5': isRepositoryLevel || metadatum.collection_id != collectionId 
+                                                    'tainacan-icon-collection has-text-secondary': metadatum.collection_id == collectionId && !isRepositoryLevel, 
+                                                    'tainacan-icon-repository has-text-secondary': isRepositoryLevel || metadatum.collection_id != collectionId 
                                                 }"
                                                 class="tainacan-icon" />
                                     </span> 
@@ -346,7 +346,7 @@
                         <section 
                                 v-if="availableMetadata.length <= 0 && !isLoadingMetadatumTypes"
                                 class="field is-grouped-centered section">
-                            <div class="content has-text-gray has-text-centered">
+                            <div class="content has-text-dark has-text-centered">
                                 <p>
                                     <span class="icon is-large">
                                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
@@ -375,7 +375,7 @@
             <section 
                     v-else
                     class="section">
-                <div class="content has-text-gray has-text-centered">
+                <div class="content has-text-dark has-text-centered">
                     <p>
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-filters" />
@@ -446,7 +446,7 @@
                                         </div>
                                         <span 
                                                 v-else
-                                                class="has-text-gray">
+                                                class="has-text-dark">
                                             {{ $i18n.get('instruction_hover_a_filter_type_to_preview') }}
                                         </span>
                                     </div>

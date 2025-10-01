@@ -76,7 +76,7 @@
                                                     v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" /> 
                                             <span 
                                                     v-if="option.total_items != undefined"
-                                                    class="has-text-gray">
+                                                    class="has-text-dark">
                                                 &nbsp;{{ "(" + option.total_items + ")" }}
                                             </span>
                                         </span>
@@ -143,7 +143,7 @@
                                                     class="checkbox-label-text">{{ `${ (option.label ? option.label : '') }` }}</span> 
                                             <span 
                                                     v-if="option.total_items != undefined"
-                                                    class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
+                                                    class="has-text-dark">&nbsp;{{ "(" + option.total_items + ")" }}</span>
                                         </span>
                                     </label>
                                 </li>
@@ -212,7 +212,7 @@
                                                     class="checkbox-label-text">{{ `${option.label}` }}</span> 
                                             <span 
                                                     v-if="option.total_items != undefined"
-                                                    class="has-text-gray">
+                                                    class="has-text-dark">
                                                 &nbsp;{{ "(" + option.total_items + ")" }}
                                             </span>
                                         </span>
@@ -285,7 +285,7 @@
                         <section 
                                 v-if="(selected instanceof Array ? selected.length <= 0 : !selected) && !isSelectedTermsLoading"
                                 class="section">
-                            <div class="content has-text-gray has-text-centered">
+                            <div class="content has-text-dark has-text-centered">
                                 <p>
                                     <span class="icon is-medium">
                                         <i  

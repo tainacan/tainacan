@@ -260,7 +260,7 @@
                     ( !isRepositoryLevel && !taxonomy && filters && filters.length <= 0 )
                 )"
                 class="is-grouped-centered">
-            <div class="content has-text-gray has-text-centered">
+            <div class="content has-text-dark has-text-centered">
                 <p>
                     <span class="icon is-large">
                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters" />

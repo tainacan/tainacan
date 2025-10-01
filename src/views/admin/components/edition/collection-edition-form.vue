@@ -210,7 +210,7 @@
                                                                     class="gray-icon"
                                                                     :class="{ 
                                                                         'has-text-secondary' : checkIfViewModeEnabled(viewMode),
-                                                                        'has-text-gray4' : !checkIfViewModeEnabled(viewMode)  
+                                                                        'has-text-dark' : !checkIfViewModeEnabled(viewMode)  
                                                                     }"
                                                                     v-html="registeredAndNotDisabledViewModes[viewMode].icon" />
                                                             &nbsp;{{ registeredAndNotDisabledViewModes[viewMode].label }}
@@ -560,7 +560,7 @@
                                                     :key="index"
                                                     v-model="form.submission_default_status"
                                                     :native-value="statusOption.slug">
-                                                <span class="icon has-text-gray">
+                                                <span class="icon has-text-dark">
                                                     <i 
                                                             class="tainacan-icon tainacan-icon-18px"
                                                             :class="$statusHelper.getIcon(statusOption.slug)" />
@@ -661,7 +661,7 @@
                                             class="button is-outlined"
                                             :class="{ 'disabled': collection.status === 'auto-draft' || ( editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) ) }"
                                             style="width: auto">
-                                        <span class="icon has-text-gray">
+                                        <span class="icon has-text-dark">
                                             <i 
                                                     class="tainacan-icon tainacan-icon-18px"
                                                     :class="$statusHelper.getIcon(form.status)" />
@@ -684,7 +684,7 @@
                                         :key="index"
                                         aria-role="listitem"
                                         @click="form.status = statusOption.slug">
-                                    <span class="icon has-text-gray">
+                                    <span class="icon has-text-dark">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-18px"
                                                 :class="$statusHelper.getIcon(statusOption.slug)" />
@@ -1010,7 +1010,7 @@
 
         <div v-if="!isLoading && ((isNewCollection && !$userCaps.hasCapability('tnc_rep_edit_collections')) || (!isNewCollection && collection && collection.current_user_can_edit != undefined && collection.current_user_can_edit == false))">
             <section class="section">
-                <div class="content has-text-gray has-text-centered">
+                <div class="content has-text-dark has-text-centered">
                     <p>
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />

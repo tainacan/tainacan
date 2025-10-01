@@ -300,7 +300,7 @@
                 <div class="section-label">
                     <label v-if="attachmentsSectionLabel">
                         <span>{{ attachmentsSectionLabel }}</span>
-                        <span class="icon has-text-gray4">
+                        <span class="icon has-text-dark">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments" />
                         </span>
                     </label>
@@ -395,7 +395,7 @@
             <div class="section-label">
                 <label v-if="metadataSectionLabel">
                     <span>{{ metadataSectionLabel }}</span>
-                    <span class="icon has-text-gray4">
+                    <span class="icon has-text-dark">
                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata" />
                     </span>
                 </label>
@@ -681,7 +681,7 @@
                 v-if="isSubmitting || isUploading"
                 id="submission-form-processing"
                 class="section">
-            <div class="content has-text-gray has-text-centered">
+            <div class="content has-text-dark has-text-centered">
                 <br>
                 <p>
                     <span class="icon is-medium">
@@ -710,7 +710,7 @@
                 v-if="hasSentForm"
                 id="submission-form-sent"
                 class="section">
-            <div class="content has-text-gray has-text-centered">
+            <div class="content has-text-dark has-text-centered">
                 <br>
                 <p>
                     <span class="icon is-medium">
@@ -749,7 +749,7 @@
     <section
             v-else
             class="section">
-        <div class="content has-text-gray has-text-centered">
+        <div class="content has-text-dark has-text-centered">
             <br>
             <h2>{{ $i18n.get('label_form_not_loaded') }}</h2>
             <p>{{ $i18n.get('info_form_not_loaded') }}</p>

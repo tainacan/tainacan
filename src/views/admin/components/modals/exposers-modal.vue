@@ -536,7 +536,7 @@ export default {
                     white-space: nowrap;
                     overflow: hidden;
                 }
-                .has-text-gray {
+                .has-text-dark {
                     font-size: 0.75em;
                     text-overflow: ellipsis;
                     white-space: nowrap;

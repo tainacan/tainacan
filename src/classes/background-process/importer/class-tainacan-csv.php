@@ -344,7 +344,7 @@ class CSV extends Importer {
 					<label class="label" style="position: relative">
 						<?php _e('CSV Delimiter', 'tainacan'); ?>
 						<span class="help-wrapper">
-							<a class="help-button has-text-secondary">
+							<a class="help-button">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
 								</span>
@@ -369,7 +369,7 @@ class CSV extends Importer {
 					<label class="label" style="position: relative">
 						<?php _e('Multivalued metadata delimiter', 'tainacan'); ?>
 						<span class="help-wrapper">
-							<a class="help-button has-text-secondary">
+							<a class="help-button">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
 								</span>
@@ -394,7 +394,7 @@ class CSV extends Importer {
 					<label class="label" style="position: relative">
 						<?php _e('Enclosure', 'tainacan'); ?>
 						<span class="help-wrapper">
-							<a class="help-button has-text-secondary">
+							<a class="help-button">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
 								</span>
@@ -420,7 +420,7 @@ class CSV extends Importer {
 					<label class="label" style="position: relative">
 						<?php _e('Empty value', 'tainacan'); ?>
 						<span class="help-wrapper">
-							<a class="help-button has-text-secondary">
+							<a class="help-button">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
 								</span>
@@ -450,7 +450,7 @@ class CSV extends Importer {
 					<label class="label" style="position: relative">
 						<?php _e('File Encoding', 'tainacan'); ?>
 						<span class="help-wrapper">
-							<a class="help-button has-text-secondary">
+							<a class="help-button">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
 								</span>
@@ -481,7 +481,7 @@ class CSV extends Importer {
 					<label class="label" style="position: relative">
 						<?php _e('Repeated Item', 'tainacan'); ?>
 						<span class="help-wrapper">
-							<a class="help-button has-text-secondary">
+							<a class="help-button">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
 								</span>
@@ -512,7 +512,7 @@ class CSV extends Importer {
 					<label class="label" style="position: relative">
 						<?php _e('Server path', 'tainacan'); ?>
 						<span class="help-wrapper">
-							<a class="help-button has-text-secondary">
+							<a class="help-button">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
 								</span>

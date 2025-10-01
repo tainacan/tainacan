@@ -278,6 +278,8 @@
   align-items: center;
   font-size: 1rem;
   color: var(--tainacan-turquoise5);
+  height: 1.5em;
+  width: 1.5em;
 }
 #tainacan-dashboard-app .postbox .tainacan-dashboard-card-list[data-color-scheme=gray] .icon {
   color: var(--tainacan-gray5);

@@ -40,7 +40,7 @@
                             v-model="selectedStatus"
                             :native-value="statusOption.slug"
                             :disabled="(statusOption.slug === 'private' || statusOption.slug === 'publish') && !currentUserCanPublish">
-                        <span class="icon has-text-gray">
+                        <span class="icon has-text-dark">
                             <i 
                                     class="tainacan-icon tainacan-icon-18px"
                                     :class="$statusHelper.getIcon(statusOption.slug)" />

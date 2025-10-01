@@ -5,13 +5,13 @@
                 v-if="!$adminOptions.hideItemEditionAttachments"
                 class="section-label">
             <label>
-                <span class="icon has-text-gray4">
+                <span class="icon has-text-dark">
                     <i class="tainacan-icon tainacan-icon-attachments" />
                 </span>
                 {{ collection && collection.item_attachment_label ? collection.item_attachment_label : $i18n.get('label_attachments') }}&nbsp;
                 <span 
                         v-if="totalAttachments"
-                        class="has-text-gray has-text-weight-normal"
+                        class="has-text-dark has-text-weight-normal"
                         style="font-size: 0.875em;">
                     ({{ totalAttachments }})
                 </span>

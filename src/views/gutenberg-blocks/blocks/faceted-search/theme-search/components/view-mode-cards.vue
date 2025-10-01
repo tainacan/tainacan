@@ -102,7 +102,7 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"   
                                         class="metadata-description"
-                                        v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />                                                        
+                                        v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-grey is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />                                                        
                                 <br>
 
                             </div>

@@ -32,7 +32,7 @@
         <section 
                 v-if="activeMetadatumList.length <= 0 && !isLoadingMetadata"
                 class="field is-grouped-centered section">
-            <div class="content has-text-gray has-text-centered">
+            <div class="content has-text-dark has-text-centered">
                 <p>
                     <span class="icon is-large">
                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />

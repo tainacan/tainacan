@@ -127,7 +127,7 @@
                                         name="status"
                                         native-value="publish"
                                         @focus="clearErrors('label_status')">
-                                    <span class="icon has-text-gray3">
+                                    <span class="icon has-text-grey">
                                         <i class="tainacan-icon tainacan-icon-public" />
                                     </span>
                                     {{ $i18n.get('status_public') }}
@@ -138,7 +138,7 @@
                                         name="status"
                                         native-value="private"
                                         @focus="clearErrors('label_status')">
-                                    <span class="icon has-text-gray3">
+                                    <span class="icon has-text-grey">
                                         <i class="tainacan-icon tainacan-icon-private" />
                                     </span>
                                     {{ $i18n.get('status_private') }}

@@ -186,16 +186,14 @@
                                 :focusable="false"
                                 @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
                             {{ $i18n.get('info_for_more_metadata_search_options_use') }}&nbsp; 
-                            <a 
-                                    class="has-text-secondary"
-                                    @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
+                            <a @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
                                 {{ $i18n.get('advanced_search') }}
                             </a>
                         </b-dropdown-item>
                     </b-dropdown>
                     <a
                             v-if="!$adminOptions.hideItemsListAdvancedSearch"
-                            class="advanced-search-toggle has-text-secondary"
+                            class="advanced-search-toggle"
                             :class="openAdvancedSearch ? 'is-open' : 'is-closed'"
                             @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
                         {{ $i18n.get('advanced_search') }}
@@ -688,7 +686,7 @@
                 <section
                         v-if="!isLoadingItems && totalItems == 0"
                         class="section">
-                    <div class="content has-text-gray has-text-centered">
+                    <div class="content has-text-dark has-text-centered">
                         <p>
                             <span class="icon is-large">
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />

@@ -27,7 +27,7 @@
                     <span class="icon is-large">
                         <i 
                                 :class="'tainacan-icon-' + getIconForMimeType(file.mime_type)"
-                                class="has-text-gray tainacan-icon tainacan-icon-36px" />
+                                class="has-text-dark tainacan-icon tainacan-icon-36px" />
                     </span>
                 </div>
             </div>

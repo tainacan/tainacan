@@ -6,32 +6,8 @@
     $success: tainacan-variables.$green2,
     $warning: tainacan-variables.$yellow2,
     $danger: tainacan-variables.$red2,
-    $custom-colors: ( 
-        "secondary": tainacan-variables.$secondary,
-        "gray": tainacan-variables.$gray4,
-        "blue1": tainacan-variables.$blue1,
-        "blue2": tainacan-variables.$blue2,
-        "blue3": tainacan-variables.$blue3,
-        "blue4": tainacan-variables.$blue4,
-        "blue5": tainacan-variables.$blue5,
-        "turquoise1": tainacan-variables.$turquoise1,
-        "turquoise2": tainacan-variables.$turquoise2,
-        "turquoise3": tainacan-variables.$turquoise3,
-        "turquoise4": tainacan-variables.$turquoise4,
-        "turquoise5": tainacan-variables.$turquoise5,
-        "gray1": tainacan-variables.$gray1,
-        "gray2": tainacan-variables.$gray2,
-        "gray3": tainacan-variables.$gray3,
-        "gray4": tainacan-variables.$gray4,
-        "gray5": tainacan-variables.$gray5,
-        "red1": tainacan-variables.$red1,
-        "red2": tainacan-variables.$red2,
-        "green1": tainacan-variables.$green1,
-        "green2": tainacan-variables.$green2,
-        "yellow1": tainacan-variables.$yellow1,
-        "yellow2": tainacan-variables.$yellow2
-    ),
-    // Links
+    $dark: tainacan-variables.$gray4,
+    $grey: tainacan-variables.$gray3,
     $link: tainacan-variables.$secondary,
     $size-small: 0.875em, // 0.75em on Bulma.
 
@@ -49,3 +25,9 @@
     $modal-z: 9999999,
     $modal-background-background-color: tainacan-variables.$tainacan-backdrop-background-color
 );
+.has-text-secondary {
+    color: var(--tainacan-secondary, tainacan-variables.$secondary) !important;
+}
+.is-secondary {
+    background-color: var(--tainacan-secondary, tainacan-variables.$secondary) !important;
+}

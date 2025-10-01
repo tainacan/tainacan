@@ -16,7 +16,7 @@ class Checkbox extends Filter_Type {
         $this->set_preview_template('
             <div>
                 <div>
-                    <p class="has-text-gray">'. __('Selected values') . ': </p> 
+                    <p class="has-text-dark">'. __('Selected values') . ': </p> 
                     <div class="field selected-tags is-grouped-multiline is-grouped">
                         <div>
                             <div class="tags has-addons">

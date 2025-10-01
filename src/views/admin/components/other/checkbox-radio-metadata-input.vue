@@ -27,7 +27,7 @@
                                 class="button"
                                 @click="toggleResultsSection()">
                             <span 
-                                    class="icon is-left has-text-gray">
+                                    class="icon is-left has-text-dark">
                                 <i 
                                         class="tainacan-icon tainacan-icon-1-25em"
                                         :class="isTaxonomy ? 'tainacan-icon-taxonomies' : 'tainacan-icon-view-table'" />
@@ -273,7 +273,7 @@
                 <section 
                         v-if="( (isTaxonomy && (finderColumns instanceof Array ? finderColumns.length <= 0 : !finderColumns) ) || (!isTaxonomy && options instanceof Array ? options.length <= 0 : !options) ) && expandResultsSection && !isSearching && !isLoadingSearch && !isColumnLoading"
                         class="section">
-                    <div class="content has-text-gray has-text-centered">
+                    <div class="content has-text-dark has-text-centered">
                         <p>
                             <span class="icon is-medium">
                                 <i  
@@ -317,7 +317,7 @@
                     <section 
                             v-if="(selected instanceof Array ? selected.length <= 0 : !selected) && !isSelectedTermsLoading"
                             class="section">
-                        <div class="content has-text-gray has-text-centered">
+                        <div class="content has-text-dark has-text-centered">
                             <p>
                                 <span class="icon is-medium">
                                     <i  

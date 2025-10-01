@@ -60,13 +60,13 @@
                                                 show: 500,
                                                 hide: 300,
                                             },
-                                            content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
+                                            content: item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
                                             html: true,
                                             autoHide: false,
                                             placement: 'top-start',
                                             popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"
-                                        v-html="item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />                             
+                                        v-html="item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />                             
                                 <div class="tainacan-map-card-thumbnail">
                                     <blur-hash-image
                                             v-if="item.thumbnail != undefined"
@@ -143,7 +143,7 @@
                                 <div 
                                         v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
                                         style="font-weight: bold;"
-                                        v-html="(itemLocation.item.metadata != undefined && collectionId ? renderMetadata(itemLocation.item, column) : (itemLocation.item.title ? itemLocation.item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)) + getMultivalueIndicator(itemLocation)" />
+                                        v-html="(itemLocation.item.metadata != undefined && collectionId ? renderMetadata(itemLocation.item, column) : (itemLocation.item.title ? itemLocation.item.title :`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)) + getMultivalueIndicator(itemLocation)" />
                                 <div 
                                         v-if="column.display && column.metadata_type == 'Tainacan\\Metadata_Types\\Compound' && selectedGeocoordinateMetadatum.parent == column.id"
                                         v-html="itemLocation.item.metadata != undefined ? renderMetadata(itemLocation.item, column, itemLocation.multivalueIndex) : ''" />
@@ -184,7 +184,7 @@
                             <section 
                                     v-else
                                     class="section">
-                                <div class="content has-text-gray has-text-centered">
+                                <div class="content has-text-dark has-text-centered">
                                     <p style="margin-bottom: 0px">
                                         <span class="icon is-large">
                                             <i>
@@ -290,13 +290,13 @@
                                                         show: 500,
                                                         hide: 300,
                                                     },
-                                                    content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
+                                                    content: item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
                                                     html: true,
                                                     autoHide: false,
                                                     placement: 'auto-start',
                                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                                 }"
-                                                v-html="item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />            
+                                                v-html="item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />            
                                         <span 
                                                 v-if="isSlideshowViewModeEnabled"
                                                 v-tooltip="{

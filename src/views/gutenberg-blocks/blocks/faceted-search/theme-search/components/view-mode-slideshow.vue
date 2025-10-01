@@ -150,7 +150,7 @@
                                 <section
                                         v-if="!isLoadingItem && items.length <= 0"
                                         class="section">
-                                    <div class="content has-text-gray4 has-text-centered">
+                                    <div class="content has-text-dark has-text-centered">
                                         <p>
                                             <span class="icon is-large">
                                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-items" />

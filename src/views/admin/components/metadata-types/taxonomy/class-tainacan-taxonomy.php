@@ -36,7 +36,7 @@ class Taxonomy extends Metadata_Type {
 		$this->set_preview_template('
 			<div>
 				<div>
-					<p class="has-text-gray" style="font-size: 0.75em;">'. __('Selected terms') . ': </p>
+					<p class="has-text-dark" style="font-size: 0.75em;">'. __('Selected terms') . ': </p>
 					<div class="field selected-tags is-grouped-multiline is-grouped">
 						<div>
 							<div class="tags has-addons">

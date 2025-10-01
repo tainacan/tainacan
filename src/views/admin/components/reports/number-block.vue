@@ -9,14 +9,14 @@
                     :options="{ separator: ' ' }" />
         </p>
         <p class="subtitle is-3">
-            <span class="icon has-text-gray">
+            <span class="icon has-text-dark">
                 <i
                         class="tainacan-icon tainacan-icon-1-125em"
                         :class="'tainacan-icon-' + entityType" />
             </span>
             &nbsp;{{ $i18n.get(entityType) }}
         </p>
-        <ul class="has-text-gray status-list">
+        <ul class="has-text-dark status-list">
             <template 
                     v-for="(statusOption, index) of $statusHelper.getStatuses()"
                     :key="index">
@@ -33,7 +33,7 @@
                     </span>
                     <span 
                             v-if="$statusHelper.hasIcon(statusOption.slug)"
-                            class="icon has-text-gray">
+                            class="icon has-text-dark">
                         <i 
                                 :style="(isRepositoryLevel && entityType === 'items') ? 'color: var(--tainacan-secondary, #187181);' : ''"
                                 class="tainacan-icon tainacan-icon-1-125em"
@@ -52,13 +52,13 @@
                 v-if="entityType === 'items' && !isBuildingChart && isRepositoryLevel"
                 class="visibility-charts">
             <div :style="'margin-right: 6px; background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'publish') ? '#acacac' : ';' ) + '; width: ' + visibilityChartOpenWidth + '%'">
-                <span class="icon has-text-gray">
+                <span class="icon has-text-dark">
                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-see" />
                     &nbsp;{{ totalByVisibility['not_restrict'] }}
                 </span>
             </div>
             <div :style="'background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'publish') ? '#acacac' : ';' ) + '; width: ' + visibilityChartRestrictWidth + '%'">
-                <span class="icon has-text-gray">
+                <span class="icon has-text-dark">
                     <i 
                             class="tainacan-icon tainacan-icon-svg"
                             style="display: flex;">
@@ -97,7 +97,7 @@
         </div>
         <!-- <ul 
                 v-if="entityType == 'items' && (totalByVisibility['not_restrict'] || totalByVisibility['restrict'])"
-                class="has-text-gray status-list">
+                class="has-text-dark status-list">
             <li>
                 <span class="value">
                     <i-count-up
@@ -106,7 +106,7 @@
                             :options="{ separator: ' ' }" />
                     &nbsp;
                 </span>
-                <span class="icon has-text-gray">
+                <span class="icon has-text-dark">
                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-see" />
                 </span>
             </li>
@@ -118,7 +118,7 @@
                             :options="{ separator: ' ' }" />
                     &nbsp;
                 </span>
-                <span class="icon has-text-gray">
+                <span class="icon has-text-dark">
                     <i
                             class="tainacan-icon tainacan-icon-svg"
                             style="display: flex;">

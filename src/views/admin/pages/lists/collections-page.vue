@@ -280,7 +280,7 @@
                             @click="onChangeTab('')">
                         <a style="font-weight: bold;">
                             {{ `${$i18n.get('label_all_collections')}` }}
-                            <span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalCollections ? `(${Number(repositoryTotalCollections.pending) + Number(repositoryTotalCollections.private) + Number(repositoryTotalCollections.publish)})` : '' }`}` }}</span>
+                            <span class="has-text-dark">&nbsp;{{ `${` ${repositoryTotalCollections ? `(${Number(repositoryTotalCollections.pending) + Number(repositoryTotalCollections.private) + Number(repositoryTotalCollections.publish)})` : '' }`}` }}</span>
                         </a>
                     </li>
                     <li 
@@ -298,14 +298,14 @@
                         <a>
                             <span 
                                     v-if="$statusHelper.hasIcon(statusOption.slug)"
-                                    class="icon has-text-gray">
+                                    class="icon has-text-dark">
                                 <i 
                                         class="tainacan-icon tainacan-icon-1-125em"
                                         :class="$statusHelper.getIcon(statusOption.slug)"
                                     />
                             </span>
                             {{ statusOption.name }}
-                            <span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalCollections ? `(${repositoryTotalCollections[statusOption.slug]})` : '' }`}` }}</span>
+                            <span class="has-text-dark">&nbsp;{{ `${` ${repositoryTotalCollections ? `(${repositoryTotalCollections[statusOption.slug]})` : '' }`}` }}</span>
                         </a>
                     </li>
                 </ul>
@@ -323,7 +323,7 @@
                 <!-- Empty state image -->
                 <div v-if="collections.length <= 0 && !isLoading">
                     <section class="section">
-                        <div class="content has-text-gray has-text-centered">
+                        <div class="content has-text-dark has-text-centered">
                             <p>
                                 <span class="icon is-large">
                                     <i class="tainacan-icon tainacan-icon-30px tainacan-icon-collections" />
