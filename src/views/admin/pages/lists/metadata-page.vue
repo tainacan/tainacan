@@ -216,7 +216,7 @@ export default {
             display: inline-flex;
             align-items: center;
             margin-left: -0.875em;
-            margin-right: auto;
+            margin-right: auto !important;
         }
         .loading-spinner {
             animation: spinAround 500ms infinite linear;

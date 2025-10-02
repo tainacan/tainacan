@@ -114,7 +114,10 @@
                                             :aria-minus-label="$i18n.get('label_decrease')"
                                             :aria-plus-label="$i18n.get('label_increase')"
                                             min="1"
-                                            step="1" />
+                                            step="1"
+                                            controls-position="compact"
+                                            controls-alignment="right"
+                                            expanded />
                                 </b-field>
                                 <b-field
                                         style="padding: 0; margin-left: 12px;"
@@ -124,7 +127,10 @@
                                             :aria-minus-label="$i18n.get('label_decrease')"
                                             :aria-plus-label="$i18n.get('label_increase')"
                                             min="1"
-                                            step="1" />
+                                            step="1"
+                                            controls-position="compact"
+                                            controls-alignment="right"
+                                            expanded />
                                 </b-field>
                             </b-field>
                             <p
@@ -1248,12 +1254,6 @@ export default {
     @use "buefy/src/scss/components/_notices.scss" as buefy-notices;
     @use "buefy/src/scss/components/_numberinput.scss";
     @use "buefy/src/scss/components/_steps.scss";
-
-    // These have to be outside of the scoped context
-    @use '../../../admin/scss/_animations.scss';
-    @use "../../../admin/scss/_tooltips.scss";
-    @use "../../../admin/scss/_notices.scss" as tainacan-notices;
-    @use "../../../admin/scss/_modals.scss";
     
     // Nested Tainacan imports (now mixins)
     @use "../../../admin/scss/_tainacan-form.scss" as _tainacan-form;
@@ -1271,6 +1271,12 @@ export default {
     @use "../../../admin/scss/_control.scss" as _control;
     @use "../../../admin/scss/_upload.scss" as _upload;
 
+    // These have to be outside of the scoped context
+    @use '../../../admin/scss/_animations.scss';
+    @use "../../../admin/scss/_tooltips.scss";
+    @use "../../../admin/scss/_notices.scss" as tainacan-notices;
+    @include _modals.tainacan-modals;
+
     //Vue Tooltip
     @import "floating-vue/dist/style.css";
 
@@ -1280,7 +1286,6 @@ export default {
 
         // Include nested imports using mixins
         @include _tainacan-form.tainacan-form;
-        @include _modals.tainacan-modals;
         @include _buttons.tainacan-buttons;
         @include _inputs.tainacan-inputs;
         @include _checkboxes.tainacan-checkboxes;
@@ -1487,6 +1492,11 @@ export default {
         padding: 0 calc(0.75em - 1px);
         margin-top: 10px;
         margin-bottom: 14px;
+
+        .field {
+            padding-left: 0 !important;
+            margin-left: 0 !important;
+        }
 
         ul {
             padding: 0;

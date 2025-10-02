@@ -1,62 +1,62 @@
 @mixin tainacan-filters-menu-modal {
     #filters-modal { 
-    padding: 0;
+        padding: 0;
 
-    &.is-fullscreen {
-        z-index: 9999;
-    }
-
-    .modal-content {
-        background-color: var(--tainacan-background-color);
-        padding: 20px var(--tainacan-one-column);
-        margin: 0;
-        height: 100%;
-        max-height: 100%;
-        max-width: 100% !important;
-        overflow-y: auto;
-        overflow-x: hidden;
-        border-radius: 0;
-        border: none;
-        box-sizing: border-box;
-
-        h3 {
-            font-size: 1em;
-            padding-top: 0;
-            color: var(--tainacan-heading-color);
-            margin-bottom: 1em;
+        &.is-fullscreen {
+            z-index: 9999;
         }
-    }
 
-    .modal-close {
-        top: 32px;
-        right: calc((2 * var(--tainacan-one-column)) + 28px);
-        background-color: var(--tainacan-background-color);
-
-        &::before, &::after {
-            background-color: var(--tainacan-secondary);
-        }
-    }
-
-    &.horizontal-filters {
         .modal-content {
-            padding: calc(var(--tainacan-container-padding) - 12px) var(--tainacan-one-column) var(--tainacan-container-padding) var(--tainacan-one-column);
+            background-color: var(--tainacan-background-color);
+            padding: 20px var(--tainacan-one-column);
+            margin: 0;
+            height: 100%;
+            max-height: 100%;
+            max-width: 100% !important;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border-radius: 0;
+            border: none;
+            box-sizing: border-box;
+
+            h3 {
+                font-size: 1em;
+                padding-top: 0;
+                color: var(--tainacan-heading-color);
+                margin-bottom: 1em;
+            }
         }
-    }
 
-    @media screen and (max-width: 768px) {
+        .modal-close {
+            top: 32px;
+            right: calc((2 * var(--tainacan-one-column)) + 28px);
+            background-color: var(--tainacan-background-color);
 
-        &.modal:not(.filters-menu-modal) {
+            &::before, &::after {
+                background-color: var(--tainacan-secondary);
+            }
+        }
+
+        &.horizontal-filters {
             .modal-content {
-                background-color: var(--tainacan-background-color);
-                margin: 0 12% 0 0;
-                margin: 0 12vw 0 0;
-                padding: var(--tainacan-container-padding);
-                max-width: calc(100% - 12vw) !important;
-            }
-            .modal-close {
-                top: 16px;
+                padding: calc(var(--tainacan-container-padding) - 12px) var(--tainacan-one-column) var(--tainacan-container-padding) var(--tainacan-one-column);
             }
         }
+
+        @media screen and (max-width: 768px) {
+
+            &.modal:not(.filters-menu-modal) {
+                .modal-content {
+                    background-color: var(--tainacan-background-color);
+                    margin: 0 12% 0 0;
+                    margin: 0 12vw 0 0;
+                    padding: var(--tainacan-container-padding);
+                    max-width: calc(100% - 12vw) !important;
+                }
+                .modal-close {
+                    top: 16px;
+                }
+            }
             &.filters-menu-modal {
                 .modal-close {
                     right: 12px;

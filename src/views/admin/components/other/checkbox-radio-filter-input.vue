@@ -855,10 +855,6 @@
 
 <style lang="scss" scoped>
 
-    :deep(.tainacan-modal-title) {
-        margin-bottom: 16px;
-    }
-
     .tainacan-modal-content {
         width: auto;
     }
@@ -882,8 +878,7 @@
 
     .tainacan-modal-title {
         align-self: baseline;
-        display: flex;
-        flex-direction: column;
+        margin-bottom: 1rem;
         width: 100%;
     }
 

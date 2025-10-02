@@ -669,7 +669,7 @@
             openExposersModal() {
                 this.$buefy.modal.open({
                     component: ExposersModal,
-                    hasModalCard: true,
+                    hasModalCard: false,
                     props: { 
                         collectionId: this.collectionId,
                         itemId: this.itemId,

@@ -36,6 +36,7 @@
     $modal-z: 9999999,
     $modal-background-background-color: tainacan-variables.$tainacan-backdrop-background-color
 );
+@forward "bulma/sass/helpers";
 @forward "bulma/sass/themes";
 
 .has-text-secondary {

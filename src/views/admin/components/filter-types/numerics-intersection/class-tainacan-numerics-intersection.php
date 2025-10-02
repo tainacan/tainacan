@@ -25,7 +25,10 @@ class Numerics_Intersection extends Filter_Type {
 		$this->set_use_max_options(false);
 		$this->set_preview_template('
 			<div>
-				<div class="b-numberinput field is-grouped">
+				<div class="b-numberinput field has-addons is-expanded">
+					<div class="control is-small is-clearfix">
+						<input type="number" step="0.01" class="input is-small" value="6">
+					</div>
 					<p class="control">
 						<button type="button" class="button is-primary is-small">
 							<span class="icon is-small">
@@ -33,9 +36,6 @@ class Numerics_Intersection extends Filter_Type {
 							</span>
 						</button>
 					</p>
-					<div class="control is-small is-clearfix">
-						<input type="number" step="0.01" class="input is-small" value="6">
-					</div>
 					<p class="control">
 						<button type="button" class="button is-primary is-small">
 							<span class="icon is-small">

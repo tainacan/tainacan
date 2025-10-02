@@ -35389,17 +35389,13 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
   margin-bottom: 0;
   margin-top: 0;
 }
-.tainacan-form .b-numberinput div.control {
-  flex-shrink: 1;
-  order: -1;
-}
-.tainacan-form .b-numberinput p.control:first-child .button {
+.tainacan-form .b-numberinput p.control.minus .button {
   border-right-width: 0px;
   border-left-width: 0px;
   border-top-left-radius: 0px !important;
   border-bottom-left-radius: 0px !important;
 }
-.tainacan-form .b-numberinput p.control:last-child .button {
+.tainacan-form .b-numberinput p.control.plus .button {
   border-left-width: 0px;
   border-top-right-radius: var(--tainacan-input-border-radius) !important;
   border-bottom-right-radius: var(--tainacan-input-border-radius) !important;
@@ -35624,6 +35620,7 @@ button.link-style:active {
   text-transform: inherit;
   color: var(--tainacan-secondary) !important;
   padding: 0;
+  margin: 0;
   font-weight: normal;
   background: transparent !important;
 }

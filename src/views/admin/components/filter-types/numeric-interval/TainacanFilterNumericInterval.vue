@@ -7,6 +7,9 @@
                 :aria-plus-label="$i18n.get('label_increase')"
                 :placeholder="filter.placeholder ? filter.placeholder : ''"
                 size="is-small"
+                controls-position="compact"
+                controls-alignment="right"
+                expanded
                 :step="filterTypeOptions.step"
                 @update:model-value="($event) => { resetPage(); validadeValues($event) }"
             />
@@ -22,6 +25,9 @@
                 :aria-plus-label="$i18n.get('label_increase')"
                 :placeholder="filter.placeholder ? filter.placeholder : ''"
                 size="is-small"
+                controls-position="compact"
+                controls-alignment="right"
+                expanded
                 :step="filterTypeOptions.step"
                 @update:model-value="($event) => { resetPage(); validadeValues($event) }" />
         

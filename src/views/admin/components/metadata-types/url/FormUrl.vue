@@ -47,6 +47,9 @@
                             :model-value="iframeMinimumHeight === '' ? 0 : iframeMinimumHeight"
                             size="is-small"
                             step="1"
+                            controls-position="compact"
+                            controls-alignment="right"
+                            expanded
                             @update:model-value="onUpdateIframeMinimumHeight" />
                 </b-field>
 

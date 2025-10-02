@@ -266,6 +266,9 @@
                                     name="cardinality"
                                     step="1"
                                     min="2"
+                                    controls-position="compact"
+                                    controls-alignment="right"
+                                    expanded
                                     :model-value="form.cardinality ? Number(form.cardinality) : 2"
                                     @update:model-value="(newCardinalty) => form.cardinality = newCardinalty" />
                         </b-field>

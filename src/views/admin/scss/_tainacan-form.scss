@@ -80,17 +80,13 @@
                 margin-bottom: 0;
                 margin-top: 0;
             }
-            div.control {
-                flex-shrink: 1;
-                order: -1;
-            }
-            p.control:first-child .button {
+            p.control.minus .button {
                 border-right-width: 0px;
                 border-left-width: 0px;
                 border-top-left-radius: 0px !important;
                 border-bottom-left-radius: 0px !important;
             }
-            p.control:last-child .button {
+            p.control.plus .button {
                 border-left-width: 0px;
                 border-top-right-radius: var(--tainacan-input-border-radius) !important;
                 border-bottom-right-radius: var(--tainacan-input-border-radius) !important;

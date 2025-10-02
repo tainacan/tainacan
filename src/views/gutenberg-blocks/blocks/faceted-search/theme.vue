@@ -1319,7 +1319,7 @@
             openExposersModal() {
                 this.$buefy.modal.open({
                     component: defineAsyncComponent(() => import('../../../admin/components/modals/exposers-modal.vue')),
-                    hasModalCard: true,
+                    hasModalCard: false,
                     props: { 
                         collectionId: this.collectionId,
                         totalItems: this.totalItems
@@ -1664,9 +1664,6 @@
 
 <style lang="scss">
 
-    //Vue Tooltip
-    @use "floating-vue/dist/style.css";
-
     // Block level custom variables
     @use "../../../tainacan-basics.scss";
 
@@ -1675,12 +1672,6 @@
 
     // Buefy imports
     @use "./theme-search/scss/_buefy-config.scss";
-
-    // These have to be outside of the scoped context
-    @use "./theme-search/scss/_layout.scss";
-    @use '../../../admin/scss/_animations.scss';
-    @use "../../../admin/scss/_tooltips.scss";
-    @use "../../../admin/scss/_notices.scss" as tainacan-notices;
 
     // Nested Tainacan imports (now mixins)
     @use "../../../admin/scss/_modals.scss" as _modals;
@@ -1696,6 +1687,16 @@
     @use "../../../admin/scss/_tainacan-form.scss" as _tainacan-form;
     @use "../../../admin/scss/_filters-menu-modal.scss" as _filters-menu-modal;
 
+    // These have to be outside of the scoped context
+    @use "./theme-search/scss/_layout.scss";
+    @use '../../../admin/scss/_animations.scss';
+    @use "../../../admin/scss/_tooltips.scss";
+    @use "../../../admin/scss/_notices.scss";
+    @include _modals.tainacan-modals;
+
+    //Vue Tooltip
+    @import "floating-vue/dist/style.css";
+
     // Scoped, to avoid conflicts with theme's css 
     .tainacan-modal,
     .theme-items-list {
@@ -1708,7 +1709,6 @@
 
         // Include nested imports using mixins
         @include _tainacan-form.tainacan-form;
-        @include _modals.tainacan-modals;
         @include _buttons.tainacan-buttons;
         @include _inputs.tainacan-inputs;
         @include _checkboxes.tainacan-checkboxes;
