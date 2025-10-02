@@ -94,13 +94,13 @@ class Dashboard extends Pages {
 		// Add help tabs if needed
 		$screen->add_help_tab(array(
 			'id' => 'tainacan_dashboard_help_tab',
-			'title' => __('Dashboard Options', 'your-textdomain'),
-			'content' => '<p>' . __('You can customize which widgets appear on this dashboard.', 'your-textdomain') . '</p>',
+			'title' => __('Dashboard Options', 'tainacan'),
+			'content' => '<p>' . __('You can customize which cards appear on this dashboard.', 'tainacan') . '</p>',
 		));
 
 		$screen->set_help_sidebar(
-			'<p>' . __('For more information:', 'your-textdomain') . '</p>' .
-			'<p><a href="https://tainacan.org/docs/" target="_blank">' . __('Tainacan Documentation', 'your-textdomain') . '</a></p>'
+			'<p>' . __('For more information:', 'tainacan') . '</p>' .
+			'<p><a href="https://tainacan.org/" target="_blank">' . __('Tainacan Documentation', 'tainacan') . '</a></p>'
 		);
 	}
 
