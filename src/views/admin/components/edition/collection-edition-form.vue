@@ -652,14 +652,14 @@
                                     class="item-edition-status-dropdown"
                                     position="is-bottom-left"
                                     :triggers="[ 'click' ]"
-                                    :disabled="collection.status === 'auto-draft' || ( editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) )"
+                                    :disabled="editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' )"
                                     max-height="300px">
                                 <template #trigger>
                                     <button 
-                                            :disabled="collection.status === 'auto-draft' || ( editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) )"
+                                            :disabled="editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' )"
                                             type="button"
                                             class="button is-outlined"
-                                            :class="{ 'disabled': collection.status === 'auto-draft' || ( editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) ) }"
+                                            :class="{ 'disabled': editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) }"
                                             style="width: auto">
                                         <span class="icon has-text-gray">
                                             <i 
@@ -680,7 +680,7 @@
                                     </button>
                                 </template>
                                 <b-dropdown-item 
-                                        v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
+                                        v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft' && (collection.status != 'auto-draft' || status.slug != 'trash'))"
                                         :key="index"
                                         aria-role="listitem"
                                         @click="form.status = statusOption.slug">
