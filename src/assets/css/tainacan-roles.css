@@ -16096,6 +16096,7 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
   z-index: 9;
   padding: 10px;
   vertical-align: bottom;
+  text-align: start;
 }
 .table-container .table-wrapper table.tainacan-table th .th-wrap {
   font-size: 0.75em !important;
