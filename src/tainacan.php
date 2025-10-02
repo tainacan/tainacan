@@ -9,7 +9,7 @@ Version: 1.0.0-RC2
 Requires at least: 5.9
 Tested up to: 6.8
 Requires PHP: 7.0
-Stable tag: 1.0.0-RC2
+Stable tag: 0.21.16
 Text Domain: tainacan
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
