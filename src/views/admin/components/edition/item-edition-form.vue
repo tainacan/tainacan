@@ -183,6 +183,7 @@
                             class="column main-column"
                             :class="
                                 (
+                                    ( !$adminOptions.hideItemEditionPublicationSection && !$adminOptions.itemEditionPublicationSectionInsideTabs ) ||
                                     ( (shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs ) ||
                                     ( shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs )
                                 ) ? 'is-12 is-6-desktop is-7-widescreen' : 'is-12'">
@@ -574,8 +575,11 @@
                     </div>
 
                     <div 
-                            v-if="( (shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
-                                (shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)"
+                            v-if="( 
+                                ( !$adminOptions.hideItemEditionPublicationSection && !$adminOptions.itemEditionPublicationSectionInsideTabs ) ||
+                                ( (shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs ) ||
+                                ( shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs )
+                            )"
                             class="column secondary-column is-12 is-6-desktop is-5-widescreen">
                 
                         <div 
@@ -2104,7 +2108,7 @@ export default {
                     .sticky-container {
                         position: relative;
                         position: sticky;
-                        top: 0px;
+                        top: calc(.125rem + var(--tainacan-container-padding) + var(--tainacan-button-min-height, 2.571em));
                         margin: 0;
                         max-height: calc(100vh - 3.5rem - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
                         max-height: calc(100dvh - 3.5rem - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));

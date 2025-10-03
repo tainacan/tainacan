@@ -448,6 +448,7 @@ export default {
         }
         &.has-only-status-field {
             padding-left: 0 !important;
+            padding-top: .75em !important;
 
             .dropdown,
             .field.has-addons {
