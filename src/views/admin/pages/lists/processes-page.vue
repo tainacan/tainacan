@@ -179,13 +179,13 @@
             processesPerPageOptions() {
                 const defaultProcessesPerPageOptions = [];
                 
-                if ( 12 < this.maxProcessesPerPage )
+                if ( 12 <= this.maxProcessesPerPage )
                     defaultProcessesPerPageOptions.push(12);
                 
-                if ( 24 < this.maxProcessesPerPage )
+                if ( 24 <= this.maxProcessesPerPage )
                     defaultProcessesPerPageOptions.push(24);
                 
-                if ( 48 < this.maxProcessesPerPage )
+                if ( 48 <= this.maxProcessesPerPage )
                     defaultProcessesPerPageOptions.push(48);
                 
                 defaultProcessesPerPageOptions.push(this.maxProcessesPerPage);

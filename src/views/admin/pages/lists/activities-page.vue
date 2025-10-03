@@ -249,13 +249,13 @@
             activitiesPerPageOptions() {
                 const defaultActivitiesPerPageOptions = [];
                 
-                if ( 12 < this.maxActivitiesPerPage )
+                if ( 12 <= this.maxActivitiesPerPage )
                     defaultActivitiesPerPageOptions.push(12);
                 
-                if ( 24 < this.maxActivitiesPerPage )
+                if ( 24 <= this.maxActivitiesPerPage )
                     defaultActivitiesPerPageOptions.push(24);
                 
-                if ( 48 < this.maxActivitiesPerPage )
+                if ( 48 <= this.maxActivitiesPerPage )
                     defaultActivitiesPerPageOptions.push(48);
                 
                 defaultActivitiesPerPageOptions.push(this.maxActivitiesPerPage);

@@ -512,13 +512,13 @@ export default {
         collectionsPerPageOptions() {
             const defaultCollectionsPerPageOptions = [];
             
-            if ( 12 < this.maxCollectionsPerPage )
+            if ( 12 <= this.maxCollectionsPerPage )
                 defaultCollectionsPerPageOptions.push(12);
             
-            if ( 24 < this.maxCollectionsPerPage )
+            if ( 24 <= this.maxCollectionsPerPage )
                 defaultCollectionsPerPageOptions.push(24);
             
-            if ( 48 < this.maxCollectionsPerPage )
+            if ( 48 <= this.maxCollectionsPerPage )
                 defaultCollectionsPerPageOptions.push(48);
             
             defaultCollectionsPerPageOptions.push(this.maxCollectionsPerPage);

@@ -135,13 +135,13 @@ export default {
         itemsPerPageOptions() {
             const defaultItemsPerPageOptions = [];
             
-            if ( 12 < this.maxItemsPerPage )
+            if ( 12 <= this.maxItemsPerPage )
                 defaultItemsPerPageOptions.push(12);
             
-            if ( 24 < this.maxItemsPerPage )
+            if ( 24 <= this.maxItemsPerPage )
                 defaultItemsPerPageOptions.push(24);
             
-            if ( 48 < this.maxItemsPerPage )
+            if ( 48 <= this.maxItemsPerPage )
                 defaultItemsPerPageOptions.push(48);
             
             defaultItemsPerPageOptions.push(this.maxItemsPerPage);
