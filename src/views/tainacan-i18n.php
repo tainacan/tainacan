@@ -113,7 +113,7 @@ return apply_filters( 'tainacan-i18n', [
 	'status_draft_description'                       => __( 'Not ready to be published.', 'tainacan' ),
 	/* translators: The noun for the trash pending, not the verb */
 	'status_pending'                                 => __( 'Pending', 'tainacan' ),
-	'status_pending_description'                     => __( 'Pending review before pulishing.', 'tainacan' ),
+	'status_pending_description'                     => __( 'Pending review before publishing.', 'tainacan' ),
 	'status_private'                                 => __( 'Private', 'tainacan' ),
 	'status_private_description'                     => __( 'Only you and those with permission can see it.', 'tainacan' ),
 	/* translators: The noun for the trash status, not the verb */
