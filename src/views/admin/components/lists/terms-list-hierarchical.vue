@@ -1103,14 +1103,17 @@ export default {
                 max-height: 100%;
             }
             .tainacan-hierarchical-list-column {
-                max-width: calc(99vw - 0.75em - 0.75em - 2px);
-                min-width: calc(99vw - 0.75em - 0.75em - 24px);
+                max-width: calc(99vw -  var(--tainacan-one-column) - 0.75em - 0.75em - 2px);
+                min-width: calc(99vw -  var(--tainacan-one-column) - 0.75em - 0.75em - 24px);
             }
             .tainacan-hierarchical-list-column .column-header+ul {
                 max-height: calc(100% - 0.75em - 0.45em - 0.45em - 5px);
             }
-            .tainacan-hierarchical-list-column a {
-                width: 3.5em;
+            .tainacan-hierarchical-list-column .column-subheader {
+                flex-wrap: wrap;
+            }
+            .tainacan-hierarchical-list-column ul a {
+                width: 4.5em;
                 border-left: 1px solid var(--tainacan-gray1);
                 border-bottom: 1px solid var(--tainacan-gray1);
                 display: flex;

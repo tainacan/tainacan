@@ -627,8 +627,10 @@
     .tainacan-form>.columns {
         margin-bottom: 72px;
     }
-    .tainacan-form .column:last-of-type {
-        padding-left: var(--tainacan-one-column) !important;
+    @media screen and (min-width: 769px) {
+        .tainacan-form .column:last-of-type {
+            padding-left: var(--tainacan-one-column) !important;
+        }
     }
     .two-columns-fields {
         column-width: 180px;

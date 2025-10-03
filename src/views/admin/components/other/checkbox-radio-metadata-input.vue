@@ -1371,8 +1371,8 @@
                 max-height: 100%;
             }
             .tainacan-finder-column {
-                max-width: calc(99vw - 0.75em - 0.75em - 2px);
-                min-width: calc(99vw - 0.75em - 0.75em - 24px);
+                max-width: calc(99vw - var(--tainacan-one-column) - 0.75em - 0.75em - 2px);
+                min-width: calc(99vw - var(--tainacan-one-column) - 0.75em - 0.75em - 24px);
             }
             .tainacan-finder-column .column-label+ul {
                 max-height: calc(100% - 0.75em - 0.45em - 0.45em - 5px);
