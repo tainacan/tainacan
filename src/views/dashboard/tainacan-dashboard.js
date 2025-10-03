@@ -52,6 +52,11 @@ function tainacanAjaxFetchNews() {
         })
         .catch(error => {
             console.error('Error fetching dashboard news:', error);
-            newsContainer.innerHTML = '<p>Something went wrong while loading the news.</p>';
+            
+            // Escape the error_message to prevent injection
+            const p = document.createElement('p');
+            p.textContent = tainacan_dashboard.error_message;
+            newsContainer.innerHTML = '';
+            newsContainer.appendChild(p);
         });
 }

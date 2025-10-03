@@ -68,6 +68,7 @@ class Dashboard extends Pages {
 			'disable_news_card' => $this->has_admin_ui_option('hideDashboardNewsCard'),
 			'ajax_url' => admin_url( 'admin-ajax.php' ),
 			'nonce'    => wp_create_nonce( 'tainacan_dashboard_news_nonce' ),
+			'error_message' => __('Something went wrong while loading the news.', 'tainacan'),
 		);
 		wp_localize_script(
 			'tainacan-dashboard-scripts',
