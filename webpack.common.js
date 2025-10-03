@@ -39,7 +39,7 @@ const TainacanPluginConfig = {
         path: path.resolve(__dirname, './src/assets/js/'),
         publicPath: './wp-content/plugins/tainacan/assets/js/',
         filename: '[name].js',
-        chunkFilename: `[name].js?ver=[contenthash]`
+        chunkFilename: `[name].[contenthash].js`
     },
     resolve: {
         fallback: {

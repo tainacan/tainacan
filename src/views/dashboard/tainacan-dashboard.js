@@ -1,5 +1,5 @@
 // Checks if document is loaded
-const performWhenDocumentIsLoaded = callback => {
+const tainacanDashboardPerformWhenDocumentIsLoaded = callback => {
     if (/comp|inter|loaded/.test(document.readyState))
         callback();
     else
@@ -7,7 +7,7 @@ const performWhenDocumentIsLoaded = callback => {
 }
 
 // Initialize the dashboard settings
-performWhenDocumentIsLoaded(() => {
+tainacanDashboardPerformWhenDocumentIsLoaded(() => {
     tainacanSetupDashboardSettings();
     tainacanAjaxFetchNews();
 });
