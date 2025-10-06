@@ -399,12 +399,26 @@
                 });
             },
             removeMetadatum(removedMetadatum) {
+                let metadatumName = '';
+            
+                if (removedMetadatum && typeof removedMetadatum === 'object') {
+                    if (removedMetadatum.name !== undefined && removedMetadatum.name !== null && removedMetadatum.name !== '')
+                        metadatumName = removedMetadatum.name;
+                    else if (removedMetadatum.id)
+                        metadatumName = 'ID: ' + removedMetadatum.id; 
+                }
+                
+                let message = this.$i18n.getWithVariables(
+                    'info_warning_metadatum_delete_%s',
+                    [ metadatumName ]
+                );
+
                 this.$buefy.modal.open({
                     component: CustomDialog,
                     props: {
                         icon: 'alert',
                         title: this.$i18n.get('label_warning'),
-                        message: this.$i18n.get('info_warning_metadatum_delete'),
+                        message: message,
                         onConfirm: () => { 
                             this.deleteMetadatum({
                                     collectionId: this.collectionId,

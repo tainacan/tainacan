@@ -81,7 +81,7 @@
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="contextMenuCollection != null && (collections[contextMenuIndex] && collections[contextMenuIndex].current_user_can_delete)"
-                            @click="deleteOneCollection(contextMenuCollection)">
+                            @click="deleteOneCollection(collections[contextMenuIndex])">
                         {{ $i18n.get('label_delete_collection') }}
                     </b-dropdown-item>
                 </b-dropdown>
@@ -366,7 +366,7 @@
                                         class="button-delete"
                                         role="button"
                                         :aria-label="$i18n.get('label_button_delete')" 
-                                        @click.prevent.stop="deleteOneCollection(collection.id)">
+                                        @click.prevent.stop="deleteOneCollection(collection)">
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
@@ -484,15 +484,29 @@ export default {
                    this.$i18n.get('status_pending') + ': ' + total_items['pending'] + '<br> ' +
                    this.$i18n.get('status_draft') + ': ' + total_items['draft'];
         },
-        deleteOneCollection(collectionId) {
+        deleteOneCollection(collection) {
+            let collectionName = '';
+            
+            if ( collection && typeof collection === 'object' ) {
+                if (collection.name !== undefined && collection.name !== null && collection.name !== '')
+                    collectionName = collection.name;
+                else if (collection.id)
+                    collectionName = 'ID: ' + collection.id;
+            }
+            
+            let message = this.$i18n.getWithVariables(
+                this.isOnTrash ? 'info_warning_collection_delete_%s' : 'info_warning_collection_trash_%s',
+                [ collectionName ]
+            );
+            
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
                     title: this.$i18n.get('label_warning'),
-                    message: this.isOnTrash ? this.$i18n.get('info_warning_collection_delete') : this.$i18n.get('info_warning_collection_trash'),
+                    message: message,
                     onConfirm: () => {
-                        this.deleteCollection({ collectionId: collectionId, isPermanently: this.isOnTrash })
+                        this.deleteCollection({ collectionId: collection.id, isPermanently: this.isOnTrash })
                         .then(() => {
                         //     this.$buefy.toast.open({
                         //         duration: 3000,
@@ -502,7 +516,7 @@ export default {
                         //         queue: true
                         //     });
                             for (let i = 0; i < this.selectedCollections.length; i++) {
-                                if (this.selectedCollections[i].id == collectionId)
+                                if (this.selectedCollections[i].id == collection.id)
                                     this.selectedCollections.splice(i, 1);
                             }
                         }).catch(() => {
@@ -523,12 +537,18 @@ export default {
             this.clearContextMenu();
         },
         deleteSelectedCollections() {
+            let message = this.isOnTrash ? 
+                this.$i18n.get('info_warning_selected_collections_delete') : 
+                this.$i18n.get('info_warning_selected_collections_trash');
+            
+            // For multiple collections, we don't add individual names
+            // The message already indicates multiple collections are being deleted
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
                     title: this.$i18n.get('label_warning'),
-                    message: this.isOnTrash ? this.$i18n.get('info_warning_selected_collections_delete') : this.$i18n.get('info_warning_selected_collections_trash'),
+                    message: message,
                     onConfirm: () => {
 
                         for (let i = 0; i < this.collections.length; i++) {
