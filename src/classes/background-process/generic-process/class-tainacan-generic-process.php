@@ -6,14 +6,14 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 abstract class Generic_Process {
 
-	public function __construct( $attributess = array() ) {
+	public function __construct( $attributes = array() ) {
 		$this->id = uniqid();
 		$author = get_current_user_id();
 		if($author) {
 			$this->add_transient('author', $author);
 		}
-		if (!empty($attributess)) {
-			foreach ($attributess as $attr => $value) {
+		if (!empty($attributes)) {
+			foreach ($attributes as $attr => $value) {
 				$method = 'set_' . $attr;
 				if (method_exists($this, $method)) {
 					$this->$method($value);

@@ -9,7 +9,7 @@ use Tainacan\Entities;
 
 abstract class Exporter {
 
-	public function __construct($attributess = array()) {
+	public function __construct($attributes = array()) {
 		$this->id = uniqid();
 		$author = get_current_user_id();
 		if($author) {
@@ -24,8 +24,8 @@ abstract class Exporter {
 			'send_email'
 		]);
 
-		if (!empty($attributess)) {
-			foreach ($attributess as $attr => $value) {
+		if (!empty($attributes)) {
+			foreach ($attributes as $attr => $value) {
 				$method = 'set_' . $attr;
 				if (method_exists($this, $method)) {
 					$this->$method($value);
