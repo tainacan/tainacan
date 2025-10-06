@@ -16,6 +16,7 @@ class Numeric_List_Interval_Helper {
 			!isset($filter_arguments['filter']) ||
 			!isset($filter_arguments['filter']['filter_type_options']) ||
 			!isset($filter_arguments['filter']['filter_type_options']['intervals']) ||
+			!isset($filter_arguments['value']) ||
 			!is_array($filter_arguments['value']) ||
 			count($filter_arguments['value']) != 2
 		) {
