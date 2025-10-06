@@ -96,7 +96,9 @@ export default (element) => {
         .addTo(tainacanMap);
 
         coordinates.forEach(coordinate => {
-            TainacanLeaflet.marker(coordinate).addTo(tainacanMap);
+            TainacanLeaflet.marker(coordinate)
+                .bindPopup(`${coordinate[0]}, ${coordinate[1]}`)
+                .addTo(tainacanMap);
         });
         
         tainacanMap.flyToBounds(coordinates, { maxZoom: maximum_zoom });
