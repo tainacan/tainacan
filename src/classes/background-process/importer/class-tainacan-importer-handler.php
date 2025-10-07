@@ -45,15 +45,6 @@ class Importer_Handler {
 		]);
 
 		$this->register_importer([
-			'name' => __('Tainacan Legacy', 'tainacan'),
-			'description' => __('Import structure from legacy version of Tainacan', 'tainacan'),
-			'slug' => 'tainacan_old',
-			'class_name' => '\Tainacan\Importer\Old_Tainacan',
-			'manual_collection' => false,
-			'manual_mapping' => false,
-		]);
-
-		$this->register_importer([
 			'name' => __('Vocabulary CSV', 'tainacan'),
 			'description' => __('Import a vocabulary from a CSV file into a taxonomy', 'tainacan'),
 			'slug' => 'terms',
