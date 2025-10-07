@@ -425,8 +425,7 @@
                     this.load();
                 }
             },
-            onPageChange(page) {
-                this.page = page;
+            onPageChange() {
                 this.load();
             },
             load() {

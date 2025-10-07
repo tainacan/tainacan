@@ -146,8 +146,7 @@
                 this.attachmentsPerPage = value;
                 this.loadAttachments();
             },
-            onPageChange(page) {
-                this.attachmentsPage = page;
+            onPageChange() {
                 this.loadAttachments();
             },
             getLastAttachmentsNumber() {

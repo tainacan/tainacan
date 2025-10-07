@@ -227,8 +227,7 @@
                 this.processesPerPage = value;
                 this.loadProcesses();
             },
-            onPageChange(page) {
-                this.processesPage = page;
+            onPageChange() {
                 this.loadProcesses();
             },
             searchProcesses() {

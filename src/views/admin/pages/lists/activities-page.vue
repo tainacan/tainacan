@@ -305,8 +305,7 @@
                 this.activitiesPerPage = value;
                 this.loadActivities();
             },
-            onPageChange(page) {
-                this.activitiesPage = page;
+            onPageChange() {
                 this.loadActivities();
             },
             loadActivities() {

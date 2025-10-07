@@ -639,11 +639,8 @@ export default {
                 this.loadCollections();
             }
         },
-        onPageChange(page) {
-            if ( page != this.page ) {
-                this.page = page;
-                this.loadCollections();
-            }
+        onPageChange() {
+            this.loadCollections();
         },
         onChangeCollectionTaxonomyTerms(taxonomyValue) {
             this.page = 1;
