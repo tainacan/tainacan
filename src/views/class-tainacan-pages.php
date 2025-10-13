@@ -461,21 +461,53 @@ abstract class Pages {
 					<?php endif; ?>
 					<h1>
 						<a href="admin.php?page=tainacan_dashboard">
+
+							<?php
+								/**
+								 * Tweaks the navigation logo to use white, monochrome version
+								 * 
+								 * @param boolean $navigation_logo_use_white The boolean to indicate if the white logo should be used
+								 * 
+								 * @return boolean The boolean to indicate if the white logo should be used
+								 */
+								$navigation_logo_use_white = apply_filters('tainacan-navigation-logo-use-white', false);
+								
+								/**
+								 * Filter the navigation logo
+								 * 
+								 * @param string $navigation_logo The navigation logo
+								 * 
+								 * @return string The navigation logo
+								 */
+								$navigation_logo_full = apply_filters(
+									'tainacan-navigation-logo',
+									plugin_dir_url( __DIR__ ) . '/assets/images/' . ($navigation_logo_use_white ? 'tainacan_logo_header_white.svg' : 'tainacan_logo_header.svg')
+								);
+
+								/**
+								 * Filter the navigation logo icon
+								 * 
+								 * @param string $navigation_logo_icon The navigation logo icon
+								 * 
+								 * @return string The navigation logo icon
+								 */
+								$navigation_logo_icon = apply_filters(
+									'tainacan-navigation-logo-icon',
+									plugin_dir_url( __DIR__ ) . '/assets/images/' . ($navigation_logo_use_white ? 'tainacan_logo_symbol.svg' : 'tainacan_logo_icon.svg')
+								);
+							?>
 							<img
-								id="tainacan-menu-logo-full" 
-								alt="<?php _e('Tainacan', 'tainacan'); ?>" 
-								width="140" 
-								src="<?php echo plugin_dir_url( __DIR__ ) . '/assets/images/tainacan_logo_header.svg'; ?>" />
+									id="tainacan-menu-logo-full" 
+									alt="<?php _e('Tainacan', 'tainacan'); ?>" 
+									width="170" 
+									src="<?php echo esc_attr( $navigation_logo_full ); ?>" />
 							<img 
-								id="tainacan-menu-logo-icon"
-								alt="<?php _e('Tainacan', 'tainacan'); ?>" 
-								width="28" 
-								src="<?php echo plugin_dir_url( __DIR__ ) . '/assets/images/tainacan_logo_icon.svg'; ?>" />
+									id="tainacan-menu-logo-icon"
+									alt="<?php _e('Tainacan', 'tainacan'); ?>" 
+									width="28" 
+									src="<?php echo esc_attr( $navigation_logo_icon ); ?>" />
 						</a>
 					</h1>
-					<span class="plugin-version">
-						<?php echo TAINACAN_VERSION; ?>
-					</span>
 				</header>
 				<ul id="tainacan-root-menu">
 					<?php if ( !$this->has_admin_ui_option('hideNavigationHomeButton') ) : ?>

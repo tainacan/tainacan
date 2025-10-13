@@ -15,6 +15,7 @@
 #tainacan-dashboard-app .tainacan-dashboard-header p {
   margin-top: 0;
   font-size: 1rem;
+  padding: 0.5em;
   color: var(--tainacan-dashboard-text-color);
 }
 #tainacan-dashboard-app > .wrap {
@@ -321,6 +322,13 @@
 #tainacan-dashboard-app .postbox-container:has(.empty-container) + .postbox-container:has(.meta-box-sortables:empty) {
   display: none;
   visibility: hidden;
+}
+#tainacan-dashboard-app .plugin-version {
+  color: var(--tainacan-dashboard-text-color);
+  font-size: 0.688rem;
+  font-weight: normal;
+  margin: 1em;
+  float: right;
 }
 
 /*# sourceMappingURL=tainacan-dashboard.css.map */

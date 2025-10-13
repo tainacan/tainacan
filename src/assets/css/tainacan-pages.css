@@ -780,6 +780,10 @@ html {
   #tainacan-page-container #tainacan-navigation-menu.is-collapsed header {
     justify-content: center;
   }
+  #tainacan-page-container #tainacan-navigation-menu.is-collapsed header h1 {
+    margin-left: 0;
+    margin-right: 0;
+  }
   #tainacan-page-container #tainacan-navigation-menu.is-collapsed header #tainacan-site-shortcut {
     font-size: 0;
     opacity: 0;
@@ -791,9 +795,6 @@ html {
   #tainacan-page-container #tainacan-navigation-menu.is-collapsed header #tainacan-menu-logo-icon {
     display: block;
     visibility: visible;
-  }
-  #tainacan-page-container #tainacan-navigation-menu.is-collapsed header .plugin-version {
-    display: none;
   }
   #tainacan-page-container #tainacan-navigation-menu.is-collapsed #tainacan-root-menu > li {
     margin: 0 0.5rem;
@@ -898,11 +899,6 @@ html {
 #tainacan-page-container #tainacan-navigation-menu header h1 #tainacan-menu-logo-icon {
   display: none;
   visibility: hidden;
-}
-#tainacan-page-container #tainacan-navigation-menu header .plugin-version {
-  color: var(--tainacan-admin-link-color);
-  font-size: 0.625rem;
-  font-weight: normal;
 }
 #tainacan-page-container #tainacan-navigation-menu ul {
   margin: 0.75rem 0;
@@ -1312,7 +1308,7 @@ html {
   top: 0px;
 }
 .tainacan-pages-container.tainacan-pages-container--fullscreen #tainacan-page-container #tainacan-navigation-menu header h1 {
-  margin: 0.25rem 0 0.25rem 0.5rem;
+  margin-top: 1.5rem;
 }
 .tainacan-pages-container.tainacan-pages-container--fullscreen #tainacan-page-container #tainacan-navigation-menu.is-active #tainacan-wordpress-shortcut,
 .tainacan-pages-container.tainacan-pages-container--fullscreen #tainacan-page-container #tainacan-navigation-menu.is-active #tainacan-site-shortcut {
