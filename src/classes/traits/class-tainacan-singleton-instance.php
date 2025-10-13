@@ -21,6 +21,7 @@ trait Singleton_Instance {
 	}
 
 	private function __construct() {
+		parent::__construct()
 		$this->init();
 	}
 }

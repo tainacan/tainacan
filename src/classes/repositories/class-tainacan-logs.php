@@ -24,7 +24,6 @@ class Logs extends Repository {
 	private $current_action;
 
 	protected function init() {
-		parent::__construct();
 
 		add_action( 'tainacan-pre-insert', array( $this, 'pre_insert_entity' ) );
 

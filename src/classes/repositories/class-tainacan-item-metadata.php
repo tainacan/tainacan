@@ -19,9 +19,7 @@ class Item_Metadata extends Repository {
 
 	public $entities_type = '\Tainacan\Entities\Item_Metadata_Entity';
 
-	protected function init() {
-		parent::__construct();
-	}
+	protected function init() { }
 
 	/**
 	 * @param Entities\Item_Metadata_Entity $item_metadata
