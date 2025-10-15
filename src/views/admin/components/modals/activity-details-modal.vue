@@ -679,7 +679,7 @@
                         let localeData = moment.localeData();
                         this.dateFormat = localeData.longDateFormat('LLL');
 
-                        let logDate = this.activity.log_date;
+                        let logDate = this.activity.date;
 
                         let date = moment(logDate).format(this.dateFormat);
 
