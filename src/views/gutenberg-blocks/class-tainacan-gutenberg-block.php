@@ -281,19 +281,15 @@ function tainacan_blocks_add_common_theme_scripts() {
 	wp_localize_script( 'tainacan-blocks-common-scripts', 'tainacan_user', $user_settings);
 	wp_localize_script( 'tainacan-blocks-common-scripts', 'tainacan_plugin', $plugin_settings);
 
-	// Necessary do this only when the item submission block is present
-	function tainacan_enqueue_extra_item_submission_assets() {
-		if ( has_block( 'tainacan/item-submission-form', get_the_ID() ) )
-			tainacan_blocks_add_extra_item_submission_assets();
-	}
-	add_action('wp', 'tainacan_enqueue_extra_item_submission_assets');
-
-	// Necessary do this only when the faceted search block is present
-	function tainacan_enqueue_extra_faceted_search_assets() {
-		if ( has_block( 'tainacan/faceted-search', get_the_ID() ) )
+	// Hook into block rendering to detect and immediately enqueue extra assets
+	add_filter('render_block', function($block_content, $block) {
+		if ($block['blockName'] === 'tainacan/faceted-search') {
 			tainacan_blocks_add_extra_faceted_search_assets();
-	}
-	add_action('wp', 'tainacan_enqueue_extra_faceted_search_assets');
+		} else if ($block['blockName'] === 'tainacan/item-submission-form') {
+			tainacan_blocks_add_extra_item_submission_assets();
+		}
+		return $block_content;
+	}, 10, 2);
 }
 
 /** 
