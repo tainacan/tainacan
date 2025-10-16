@@ -1,4 +1,4 @@
-const { __ } = wp.i18n;
+const { __, sprintf } = wp.i18n;
 
 const { useEffect } = wp.element;
 
