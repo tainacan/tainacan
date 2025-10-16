@@ -178,7 +178,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
                     className="tainacan-block-placeholder"
                     icon={(
                         <img
-                            width={148}
+                            width="148px"
                             src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
                             alt="Tainacan Logo"/>
                     )}>
