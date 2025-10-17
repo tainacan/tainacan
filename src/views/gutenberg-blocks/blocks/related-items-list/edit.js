@@ -291,10 +291,12 @@ export default function ({ attributes, setAttributes, isSelected }) {
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(
-                        <img
-                            width="148px"
-                            src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                            alt="Tainacan Logo"/>
+                        <span style={{ display: 'inline-block', width: '148px' }}>
+                            <img
+                                style={{ width: '100%', height: 'auto' }}
+                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
+                                alt="Tainacan Logo"/>
+                        </span>
                     )}>
                     <p>
                         <svg
@@ -320,10 +322,12 @@ export default function ({ attributes, setAttributes, isSelected }) {
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(
-                        <img
-                            width="148px"
-                            src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                            alt="Tainacan Logo"/>
+                        <span style={{ display: 'inline-block', width: '148px' }}>
+                            <img
+                                style={{ width: '100%', height: 'auto' }}
+                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
+                                alt="Tainacan Logo"/>
+                        </span>
                     )}>
                     <p>{ __('The selected item does not contain other items related to it.', 'tainacan') }</p>
                      <Button
