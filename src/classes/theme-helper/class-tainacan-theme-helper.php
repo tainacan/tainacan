@@ -1802,9 +1802,9 @@ class Theme_Helper {
 							'selected_items' => json_encode($related_group['items']),
 							'layout' => $args['itemsListLayout'],
 							'displayed_metadata' => json_encode(isset( $block_args['displayed_metadata'] ) ? $block_args['displayed_metadata'] : []),
-							'tainacan_view_mode' => $block_args['tainacan_view_mode']
+							'tainacan_view_mode' => isset($block_args['tainacan_view_mode']) ? $block_args['tainacan_view_mode'] : ( isset($args['tainacanViewMode']) ? $args['tainacanViewMode'] : 'masonry' )
 						], $block_args);
-
+						
 						$items_list_div = $this->get_tainacan_dynamic_items_list($items_list_args);
 
 					} else {
