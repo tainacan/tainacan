@@ -98,6 +98,7 @@ class Theme_Helper {
 		add_shortcode( 'tainacan-terms-carousel', array($this, 'get_tainacan_terms_carousel'));
 		add_shortcode( 'tainacan-dynamic-items-list', array($this, 'get_tainacan_dynamic_items_list'));
 		add_shortcode( 'tainacan-related-items-carousel', array($this, 'get_tainacan_related_items_carousel'));
+		add_shortcode( 'tainacan-related-items-list', array($this, 'get_tainacan_related_items_list'));
 
 		add_action( 'generate_rewrite_rules', array( &$this, 'rewrite_rules' ), 10, 1 );
 		add_filter( 'query_vars', array( &$this, 'rewrite_rules_query_vars' ) );
