@@ -336,7 +336,7 @@ class Media {
 		if ( ! (
 			defined('TAINACAN_INDEX_PDF_CONTENT') 
 				? ( true === TAINACAN_INDEX_PDF_CONTENT )
-				: !get_option( 'tainacan_option_index_pdf_content', false ) 
+				: get_option( 'tainacan_option_index_pdf_content', false ) 
 		) ) {
 			return;
 		}
