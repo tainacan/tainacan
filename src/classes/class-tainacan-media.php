@@ -404,13 +404,15 @@ class Media {
 			$content = mb_convert_encoding($content, $wp_charset, $content_charset);
 			update_post_meta( $item_id, SELF::$content_index_meta, $content );
 			
-			// Store file metadata for future change detection
-			$file_info = array(
-				'file_name' => $current_file_name,
-				'mod_time' => $current_mod_time,
-				'file_size' => $current_file_size
-			);
-			update_post_meta( $item_id, SELF::$content_index_last, $file_info );
+			// Store file metadata for future change detection (only if we have valid data)
+			if ($current_mod_time !== false && $current_file_size !== false) {
+				$file_info = array(
+					'file_name' => $current_file_name,
+					'mod_time' => $current_mod_time,
+					'file_size' => $current_file_size
+				);
+				update_post_meta( $item_id, SELF::$content_index_last, $file_info );
+			}
 			
 		} catch(\Exception $e) {
 			error_log('Caught exception: ' .  $e->getMessage() . "\n");
