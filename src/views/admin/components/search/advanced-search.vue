@@ -171,7 +171,7 @@
                 <span class="icon">
                     <i class="has-text-secondary tainacan-icon tainacan-icon-add" />
                 </span>
-                {{ searchCriteria.length &lt;= 0 ?
+                {{ searchCriteria.length <= 0 ?
                     $i18n.get('add_one_search_criterion') :
                     $i18n.get('add_another_search_criterion')
                 }}

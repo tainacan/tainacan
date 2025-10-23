@@ -43,6 +43,15 @@ class Media {
 	public static $content_index_meta = 'document_content_index';
 
 	/**
+	 * Meta key for document content last index metadata.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
+	public static $content_index_last = 'document_content_last_index';
+
+	/**
 	 * Initializes the media functionality.
 	 *
 	 * Sets up rewrite rules, query vars, and image sizes for Tainacan media handling.
@@ -343,6 +352,7 @@ class Media {
 
 		if ($file == null) {
 			update_post_meta( $item_id, SELF::$content_index_meta, null );
+			update_post_meta( $item_id, SELF::$content_index_last, null );
 			return true;
 		}
 
@@ -352,6 +362,31 @@ class Media {
 
 		if ( $this->get_mime_content_type($file) != 'application/pdf') {
 			return null;
+		}
+
+		// Check if file has changed since last indexing
+		$stored_file_info = get_post_meta($item_id, SELF::$content_index_last, true);
+		
+		// Get current file information with error handling
+		$current_file_name = basename($file);
+		$current_file_size = filesize($file);
+		$current_mod_time = filemtime($file);
+		
+		// Validate file information
+		if ($current_mod_time === false || $current_file_size === false) {
+			// If we can't get file info, proceed with indexing to be safe
+			error_log("Tainacan: Could not get file metadata for {$file} to make sure it has changed, proceeding with indexing anyways.");
+		} else {
+			// If file hasn't changed, skip re-indexing
+			if (is_array($stored_file_info) && 
+				isset($stored_file_info['file_name']) && 
+				isset($stored_file_info['mod_time']) &&
+				isset($stored_file_info['file_size']) &&
+				$stored_file_info['file_name'] === $current_file_name && 
+				$stored_file_info['mod_time'] === $current_mod_time &&
+				$stored_file_info['file_size'] === $current_file_size) {
+				return true;
+			}
 		}
 
 		// Allow plugins to implement other approach to index pdf contents
@@ -368,6 +403,17 @@ class Media {
 			$content_charset = mb_detect_encoding($content);
 			$content = mb_convert_encoding($content, $wp_charset, $content_charset);
 			update_post_meta( $item_id, SELF::$content_index_meta, $content );
+			
+			// Store file metadata for future change detection (only if we have valid data)
+			if ($current_mod_time !== false && $current_file_size !== false) {
+				$file_info = array(
+					'file_name' => $current_file_name,
+					'mod_time' => $current_mod_time,
+					'file_size' => $current_file_size
+				);
+				update_post_meta( $item_id, SELF::$content_index_last, $file_info );
+			}
+			
 		} catch(\Exception $e) {
 			error_log('Caught exception: ' .  $e->getMessage() . "\n");
 			return false;

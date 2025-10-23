@@ -29,6 +29,11 @@
         <template #default="props">
             <div class="media">
                 <div class="media-content">
+                    <span     
+                            v-if="props.option.hierarchy_path"
+                            class="hierarchy-path">
+                        {{ props.option.hierarchy_path }}
+                    </span>
                     {{ props.option.label }}
                 </div>
             </div>
@@ -85,6 +90,15 @@
                     this.itemMetadatum.metadatum.cardinality > 1
                 ) ? this.itemMetadatum.metadatum.cardinality : undefined;
             },
+            hideHierarchyPath() {
+                return ( 
+                    this.itemMetadatum &&
+                    this.itemMetadatum.metadatum &&
+                    this.itemMetadatum.metadatum.metadata_type_options
+                    && this.itemMetadatum.metadatum.metadata_type_options.hide_hierarchy_path 
+                    && this.itemMetadatum.metadatum.metadata_type_options.hide_hierarchy_path === 'yes'
+                ) ? true : false;
+            }
         },
         watch: {
             value() {
@@ -123,9 +137,9 @@
 
                 this.isFetching = true;
 
-                this.fetchTerms({ 
+                let fetchParams = {
                     taxonomyId: this.taxonomyId,
-                    fetchOnly: { 
+                    fetchOnly: {
                         fetch_only: {
                             0: 'name',
                             1: 'id'
@@ -139,10 +153,16 @@
                     offset: this.offset,
                     number: 12,
                     exclude: this.selected.map((aSelected) => aSelected.value )
-                }).then((res) => {
+                }
+
+                // If we need the hierarchy_path field, we cannot pass the fetchOnly parameter
+                if ( !this.hideHierarchyPath )
+                    delete fetchParams['fetchOnly'];
+
+                this.fetchTerms(fetchParams).then((res) => {
                     
                     for (let term of res.terms)
-                        this.options.push({ label: term.name, value: term.id });
+                        this.options.push({ label: term.name, value: term.id, hierarchy_path: term.hierarchy_path ? term.hierarchy_path.replace('>', ' > ') : false });
 
                     this.offset += 12;
                     this.totalTerms = res.total;
@@ -187,3 +207,12 @@
         }
     }
 </script>
+
+<style scoped>
+    .hierarchy-path {
+        color: var(--tainacan-info-color);
+    }
+    .media-content {
+        display: inline !important;
+    }
+</style>
