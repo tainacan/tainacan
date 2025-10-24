@@ -271,7 +271,7 @@
                                                     :class="showCardinalityOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
                                         </span>
                                         <strong>
-                                            {{ $i18n.getHelperTitle('metadata', 'cardinality')  }}
+                                            {{ $i18n.getHelperTitle('metadata', 'cardinality') }}
                                             <help-button
                                                     :title="$i18n.getHelperTitle('metadata', 'cardinality')"
                                                     :message="$i18n.getHelperMessage('metadata', 'cardinality')"
