@@ -496,7 +496,7 @@
                                         trap-focus
                                         aria-modal
                                         aria-role="dialog"
-                                        width="900px"
+                                        width="860px"
                                         custom-class="tainacan-modal"
                                         :can-cancel="['escape', 'outside']"
                                         @close="onEditionCanceled()">
@@ -519,6 +519,7 @@
                             trap-focus
                             aria-modal
                             aria-role="dialog"
+                            width="820px"
                             custom-class="tainacan-modal"
                             :can-cancel="['escape', 'outside']"
                             @close="onSectionEditionCanceled()">
@@ -859,12 +860,26 @@ export default {
             });
         },
         removeMetadatum(removedMetadatum, sectionIndex) {
+            let metadatumName = '';
+            
+            if (removedMetadatum && typeof removedMetadatum === 'object') {
+                if (removedMetadatum.name !== undefined && removedMetadatum.name !== null && removedMetadatum.name !== '')
+                    metadatumName = removedMetadatum.name;
+                else if (removedMetadatum.id)
+                    metadatumName = 'ID: ' + removedMetadatum.id; 
+            }
+            
+            let message = this.$i18n.getWithVariables(
+                'info_warning_metadatum_delete_%s',
+                [ metadatumName ]
+            );
+            
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
                     title: this.$i18n.get('label_warning'),
-                    message: this.$i18n.get('info_warning_metadatum_delete'),
+                    message: message,
                     onConfirm: () => { 
                         this.isUpdatingMetadataOrder = true;
                         this.deleteMetadatum({
@@ -887,12 +902,26 @@ export default {
             }); 
         },
         removeMetadataSection(removedMetadataSection) {
+            let metadataSectionName = '';
+            
+            if (removedMetadataSection && typeof removedMetadataSection === 'object') {
+                if (removedMetadataSection.name !== undefined && removedMetadataSection.name !== null && removedMetadataSection.name !== '')
+                    metadataSectionName = removedMetadataSection.name;
+                else if (removedMetadataSection.id)
+                    metadataSectionName = 'ID: ' + removedMetadataSection.id;
+            }
+            
+            let message = this.$i18n.getWithVariables(
+                'info_warning_metadata_section_delete_%s',
+                [ metadataSectionName ]
+            );
+            
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
                     title: this.$i18n.get('label_warning'),
-                    message: this.$i18n.get('info_warning_metadata_section_delete'),
+                    message: message,
                     onConfirm: () => { 
                         this.isUpdatingMetadataSectionsOrder = true;
                         this.deleteMetadataSection({ collectionId: this.collectionId, metadataSectionId: removedMetadataSection.id })

@@ -161,7 +161,7 @@ UserPrefsPlugin.install = function (app, options = {}) {
             'map_view_mode_selected_geocoordinate_metadatum': 0
         },
         init() {
-            if (tainacan_user.caps == undefined || tainacan_user.caps == '') {
+            if (tainacan_user.prefs == undefined || tainacan_user.prefs == '') {
                 let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
 
                 if (tainacan_user.nonce) {

@@ -324,6 +324,7 @@
         max-height: 125px;
         overflow-y: auto;
         border: 1px solid var(--tainacan-gray2);
+        border-radius: var(--tainacan-dropdownmenu-border-radius, 0px);
         overflow-x: hidden;
         padding: 6px 12px;
     }

@@ -5,9 +5,9 @@ const { __ } = wp.i18n;
 __webpack_public_path__ = tainacan_plugin.plugin_dir_url + 'assets/js/';
 
 // Checks if document is loaded
-const performWhenDocumentIsLoaded = callback => {
+const tainacanBlocksPerformWhenDocumentIsLoaded = callback => {
     if (/comp|inter|loaded/.test(document.readyState))
-        cb();
+        callback();
     else
         document.addEventListener('DOMContentLoaded', callback, false);
 }
@@ -49,7 +49,7 @@ const addDataModuleToOldBlocks = () => {
 
 }
 
-performWhenDocumentIsLoaded(() => {
+tainacanBlocksPerformWhenDocumentIsLoaded(() => {
 
     addDataModuleToOldBlocks();
     

@@ -1,5 +1,5 @@
 // Checks if document is loaded
-const performWhenDocumentIsLoaded = callback => {
+const tainacanDashboardPerformWhenDocumentIsLoaded = callback => {
     if (/comp|inter|loaded/.test(document.readyState))
         callback();
     else
@@ -7,7 +7,7 @@ const performWhenDocumentIsLoaded = callback => {
 }
 
 // Initialize the dashboard settings
-performWhenDocumentIsLoaded(() => {
+tainacanDashboardPerformWhenDocumentIsLoaded(() => {
     tainacanSetupDashboardSettings();
     tainacanAjaxFetchNews();
 });
@@ -52,6 +52,11 @@ function tainacanAjaxFetchNews() {
         })
         .catch(error => {
             console.error('Error fetching dashboard news:', error);
-            newsContainer.innerHTML = '<p>Something went wrong while loading the news.</p>';
+            
+            // Escape the error_message to prevent injection
+            const p = document.createElement('p');
+            p.textContent = tainacan_dashboard.error_message;
+            newsContainer.innerHTML = '';
+            newsContainer.appendChild(p);
         });
 }

@@ -161,7 +161,7 @@
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.hideItemsListContextMenuDeleteItemOption"
-                            @click="deleteOneItem(contextMenuItem.id)">
+                            @click="deleteOneItem(contextMenuItem)">
                         {{ $i18n.get('label_delete_item') }}
                     </b-dropdown-item>
                 </b-dropdown>
@@ -299,7 +299,7 @@
                                 class="button-delete" 
                                 role="button"
                                 :aria-label="$i18n.get('label_button_delete')" 
-                                @click.prevent.stop="deleteOneItem(item.id)">
+                                @click.prevent.stop="deleteOneItem(item)">
                             <span
                                     v-tooltip="{
                                         content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
@@ -471,7 +471,7 @@
                                     class="button-delete" 
                                     role="button"
                                     :aria-label="$i18n.get('label_button_delete')" 
-                                    @click.prevent.stop="deleteOneItem(item.id)">
+                                    @click.prevent.stop="deleteOneItem(item)">
                                 <span
                                         v-tooltip="{
                                             content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
@@ -627,7 +627,7 @@
                                 class="button-delete" 
                                 role="button"
                                 :aria-label="$i18n.get('label_button_delete')" 
-                                @click.prevent.stop="deleteOneItem(item.id)">
+                                @click.prevent.stop="deleteOneItem(item)">
                             <span
                                     v-tooltip="{
                                         content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
@@ -877,7 +877,7 @@
                                     class="button-delete" 
                                     role="button"
                                     :aria-label="$i18n.get('label_button_delete')" 
-                                    @click.prevent.stop="deleteOneItem(item.id)">
+                                    @click.prevent.stop="deleteOneItem(item)">
                                 <span
                                         v-tooltip="{
                                             content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
@@ -1260,7 +1260,7 @@
                                         class="button-delete" 
                                         role="button"
                                         :aria-label="$i18n.get('label_button_delete')" 
-                                        @click.prevent.stop="deleteOneItem(item.id)">
+                                        @click.prevent.stop="deleteOneItem(item)">
                                     <span
                                             v-tooltip="{
                                                 content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
@@ -1442,7 +1442,7 @@
                                 class="button-delete" 
                                 role="button"
                                 :aria-label="$i18n.get('label_button_delete')" 
-                                @click.prevent.stop="deleteOneItem(item.id)">
+                                @click.prevent.stop="deleteOneItem(item)">
                             <span
                                     v-tooltip="{
                                         content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
@@ -1690,7 +1690,7 @@
                                         class="button-delete" 
                                         role="button"
                                         :aria-label="$i18n.get('label_button_delete')" 
-                                        @click.prevent.stop="deleteOneItem(item.id)">
+                                        @click.prevent.stop="deleteOneItem(item)">
                                     <span
                                             v-tooltip="{
                                                 content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
@@ -1958,7 +1958,7 @@
                                                 class="button-delete" 
                                                 role="button"
                                                 :aria-label="$i18n.get('label_button_delete')" 
-                                                @click.prevent.stop="deleteOneItem(item.id)">
+                                                @click.prevent.stop="deleteOneItem(item)">
                                             <span
                                                     v-tooltip="{
                                                         content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
@@ -2195,7 +2195,7 @@
                                     class="button-delete" 
                                     role="button"
                                     :aria-label="$i18n.get('label_button_delete')" 
-                                    @click.prevent.stop="deleteOneItem(item.id)">
+                                    @click.prevent.stop="deleteOneItem(item)">
                                 <span
                                         v-tooltip="{
                                             content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
@@ -2635,8 +2635,7 @@ export default {
                     }
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                customClass: 'tainacan-modal'
             });
 
             this.clearContextMenu();
@@ -2667,18 +2666,34 @@ export default {
                 canCancel: ['escape', 'outside']
             });
         },
-        deleteOneItem(itemId) {
+        deleteOneItem(item) {
+            let itemTitle = '';
+            
+            if (item && typeof item === 'object') {
+                if ( this.titleItemMetadatum && item.metadata)
+                    itemTitle = this.renderMetadata(item.metadata, this.titleItemMetadatum);
+                else if (item.title !== undefined && item.title !== null && item.title !== '')
+                    itemTitle = item.title;
+                else if (item.id)
+                    itemTitle = 'ID: ' + item.id;
+            }
+            
+            let message = this.$i18n.getWithVariables(
+                this.isOnTrash ? 'info_warning_item_delete_%s' : 'info_warning_item_trash_%s',
+                [ itemTitle ]
+            );
+            
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
                     title: this.$i18n.get('label_warning'),
-                    message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
+                    message: message,
                     onConfirm: () => {
                         this.$emit('update-is-loading', true);
 
                         this.deleteItem({
-                            itemId: itemId,
+                            itemId: item.id,
                             isPermanently: this.isOnTrash
                         }).then(() => this.$eventBusSearch.loadItems() );
                     }
@@ -2727,12 +2742,19 @@ export default {
             });
         },
         deleteSelectedItems() {
+            let message = this.isOnTrash ? 
+                this.$i18n.get('info_warning_selected_items_delete') : 
+                this.$i18n.get('info_warning_selected_items_trash');
+            
+            // For multiple items, we don't add individual names
+            // The message already indicates multiple items are being deleted
+            
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
                     title: this.$i18n.get('label_warning'),
-                    message: this.isOnTrash ? this.$i18n.get('info_warning_selected_items_delete') : this.$i18n.get('info_warning_selected_items_trash'),
+                    message: message,
                     onConfirm: () => {
                         this.$emit('update-is-loading', true);
 

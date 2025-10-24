@@ -7,7 +7,28 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
     <div class="tainacan-dashboard-header">
         <h1>
             <?php
-                $dashboard_logo = apply_filters('tainacan-dashboard-logo', plugin_dir_url( dirname( __FILE__, 2 ) ) . '/assets/images/tainacan_logo_dashboard.svg');
+
+                /**
+                 * Tweaks the dashboard logo to use white, monochrome version
+                 * 
+                 * @param boolean $dashboard_logo_use_white The boolean to indicate if the white logo should be used
+                 * 
+                 * @return boolean The boolean to indicate if the white logo should be used
+                 */
+                $dashboard_logo_use_white = apply_filters('tainacan-dashboard-logo-use-white', false);
+
+                /**
+                 * Filter the dashboard logo
+                 * 
+                 * @param string $dashboard_logo The dashboard logo
+                 * 
+                 * @return string The dashboard logo
+                 */
+                $dashboard_logo = apply_filters(
+                    'tainacan-dashboard-logo',
+                    plugin_dir_url( dirname( __FILE__, 2 ) ) . '/assets/images/' . ($dashboard_logo_use_white ? 'tainacan_logo_dashboard_white.svg' : 'tainacan_logo_dashboard.svg')
+                );
+
             ?>
             <img 
                     alt="<?php _e('Tainacan', 'tainacan'); ?>" 
@@ -40,4 +61,11 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
         <?php do_action( 'tainacan-dashboard-after-cards' ); ?>
 
     </div><!-- wrap -->
+
+    <span class="plugin-version">
+        <?php echo sprintf(
+            __( 'Version %s' , 'tainacan' ),
+            TAINACAN_VERSION
+        ); ?>
+    </span>
 </div>

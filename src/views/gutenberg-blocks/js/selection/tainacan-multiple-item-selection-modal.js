@@ -10,8 +10,6 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
     constructor(props) {
         super(props);
 
-        this.hasMounted = false;
-
         // Initialize state
         this.state = {
             collectionsPerPage: 24,
@@ -55,12 +53,8 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
             });
         } else {
             this.setState({ collectionPage: 1 });
-
-            if ( !this.hasMounted )
-                this.fetchModalCollections();
+            this.fetchModalCollections();
         }
-
-        this.hasMounted = true;
     }
 
     // COLLECTIONS RELATED --------------------------------------------------

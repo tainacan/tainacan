@@ -1,4 +1,4 @@
-const { __ } = wp.i18n;
+const { __, sprintf } = wp.i18n;
 const { ToolbarDropdownMenu, SVG, Path, __experimentalHeading: Heading } = wp.components;
 const { useEffect } = wp.element;
 const { useBlockProps, BlockControls, AlignmentControl } = wp.blockEditor;

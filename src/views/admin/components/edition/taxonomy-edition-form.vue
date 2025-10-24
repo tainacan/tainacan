@@ -102,14 +102,14 @@
                                 aria-role="list"
                                 class="item-edition-status-dropdown"
                                 :triggers="[ 'click' ]"
-                                :disabled="taxonomy.status === 'auto-draft' || ( editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) )"
+                                :disabled="editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' )"
                                 max-height="300px">
                             <template #trigger>
                                 <button 
-                                        :disabled="taxonomy.status === 'auto-draft' || ( editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) )"
+                                        :disabled="editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' )"
                                         type="button"
                                         class="button is-outlined"
-                                        :class="{ 'disabled': taxonomy.status === 'auto-draft' || ( editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) ) }"
+                                        :class="{ 'disabled': editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) }"
                                         style="width: auto">
                                     <span class="icon has-text-dark">
                                         <i 
@@ -130,7 +130,7 @@
                                 </button>
                             </template>
                             <b-dropdown-item 
-                                    v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
+                                    v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft' && (taxonomy.status != 'auto-draft' || status.slug != 'trash'))"
                                     :key="index"
                                     aria-role="listitem"
                                     @click="form.status = statusOption.slug">
@@ -627,8 +627,10 @@
     .tainacan-form>.columns {
         margin-bottom: 72px;
     }
-    .tainacan-form .column:last-of-type {
-        padding-left: var(--tainacan-one-column) !important;
+    @media screen and (min-width: 769px) {
+        .tainacan-form .column:last-of-type {
+            padding-left: var(--tainacan-one-column) !important;
+        }
     }
     .two-columns-fields {
         column-width: 180px;

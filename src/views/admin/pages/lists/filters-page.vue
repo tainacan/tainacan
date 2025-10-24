@@ -326,7 +326,7 @@
                                     </span>
                                     <span 
                                             v-tooltip="{
-                                                content: isRepositoryLevel || metadatum.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
+                                                content: isRepositoryLevel || metadatum.collection_id != collectionId ? $i18n.get('label_repository_metadatum') : $i18n.get('label_collection_metadatum'),
                                                 autoHide: true,
                                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                 placement: 'auto-start'
@@ -791,19 +791,45 @@ export default {
             });
         },
         removeFilter(removedFilter) {
+            let filterName = '';
+            
+            if (removedFilter && typeof removedFilter === 'object') {
+                if (removedFilter.name !== undefined && removedFilter.name !== null && removedFilter.name !== '') 
+                    filterName = removedFilter.name;
+                else if (removedFilter.id)
+                    filterName = 'ID: ' + removedFilter.id;
+            }
+            
+            let message = this.$i18n.getWithVariables(
+                'info_warning_filter_delete_%s',
+                [ filterName ]
+            );
+            
+            this.$buefy.modal.open({
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: message,
+                    onConfirm: () => {
+                        if (this.editForms[removedFilter.id])
+                            delete this.editForms[removedFilter.id];
 
-            if (this.editForms[removedFilter.id])
-                delete this.editForms[removedFilter.id];
-
-            this.deleteFilter(removedFilter.id)
-                .then(() => {
-                    // Reload Available Metadatum Types List
-                    this.updateListOfMetadata();
-                })
-                .catch((error) => { this.$console.log(error)});
-        
-            if (!this.isRepositoryLevel)
-                this.updateFiltersOrder(); 
+                        this.deleteFilter(removedFilter.id)
+                            .then(() => {
+                                // Reload Available Metadatum Types List
+                                this.updateListOfMetadata();
+                            })
+                            .catch((error) => { this.$console.log(error)});
+                    
+                        if (!this.isRepositoryLevel)
+                            this.updateFiltersOrder();
+                    }
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                canCancel: ['escape', 'outside']
+            });
         },
         confirmSelectedFilterType() {
             this.isSelectingFilterType = false;

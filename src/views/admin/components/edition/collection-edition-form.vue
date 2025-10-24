@@ -647,19 +647,19 @@
                                     :title="$i18n.getHelperTitle('collections', 'status')"
                                     :message="$i18n.getHelperMessage('collections', 'status')" />
                             <b-dropdown
-                                    ref="item-edition-status-dropdown"
+                                    ref="collection-edition-status-dropdown"
                                     aria-role="list"
-                                    class="item-edition-status-dropdown"
+                                    class="collection-edition-status-dropdown"
                                     position="is-bottom-left"
                                     :triggers="[ 'click' ]"
-                                    :disabled="collection.status === 'auto-draft' || ( editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) )"
+                                    :disabled="editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' )"
                                     max-height="300px">
                                 <template #trigger>
                                     <button 
-                                            :disabled="collection.status === 'auto-draft' || ( editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) )"
+                                            :disabled="editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' )"
                                             type="button"
                                             class="button is-outlined"
-                                            :class="{ 'disabled': collection.status === 'auto-draft' || ( editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) ) }"
+                                            :class="{ 'disabled': editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) }"
                                             style="width: auto">
                                         <span class="icon has-text-dark">
                                             <i 
@@ -680,7 +680,7 @@
                                     </button>
                                 </template>
                                 <b-dropdown-item 
-                                        v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
+                                        v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft' && (collection.status != 'auto-draft' || status.slug != 'trash'))"
                                         :key="index"
                                         aria-role="listitem"
                                         @click="form.status = statusOption.slug">

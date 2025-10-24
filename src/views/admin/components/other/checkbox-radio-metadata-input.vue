@@ -1208,7 +1208,7 @@
             color: var(--tainacan-input-color);
         }
         .button {
-            border-radius: 0 !important;
+            border-radius: var(--tainacan-input-border-radius, 0) 0 0 var(--tainacan-input-border-radius, 0) !important;
             min-height: 100%;
             background-color: var(--tainacan-input-background-color);
             border: 1px solid var(--tainacan-input-border-color);
@@ -1224,6 +1224,9 @@
         :deep(.field-body>.field) {
             padding: 0px !important;
             margin-left: 0px !important;
+        }
+        :deep(.field-body>.field>p.control+.control>.input) {
+            border-radius: 0 var(--tainacan-input-border-radius, 0) var(--tainacan-input-border-radius, 0) 0 !important;
         }
     }
 
@@ -1371,8 +1374,8 @@
                 max-height: 100%;
             }
             .tainacan-finder-column {
-                max-width: calc(99vw - 0.75em - 0.75em - 2px);
-                min-width: calc(99vw - 0.75em - 0.75em - 24px);
+                max-width: calc(99vw - var(--tainacan-one-column) - 0.75em - 0.75em - 2px);
+                min-width: calc(99vw - var(--tainacan-one-column) - 0.75em - 0.75em - 24px);
             }
             .tainacan-finder-column .column-label+ul {
                 max-height: calc(100% - 0.75em - 0.45em - 0.45em - 5px);

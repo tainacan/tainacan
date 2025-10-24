@@ -32,7 +32,7 @@
 
                 <div
                         class="column main-column"
-                        :class="shouldDisplayItemSingleDocument || shouldDisplayItemSingleThumbnail ? 'is-12 is-6-desktop is-7-widescreen' : 'is-12'">
+                        :class="shouldDisplayItemSingleDocument || shouldDisplayItemSingleThumbnail || shouldDisplayItemSingleAttachments ? 'is-12 is-6-desktop is-7-widescreen' : 'is-12'">
 
                     <div class="b-tabs">
                         <nav 
@@ -160,7 +160,7 @@
                 </div>
 
                 <div 
-                        v-if="shouldDisplayItemSingleDocument || shouldDisplayItemSingleThumbnail"
+                        v-if="shouldDisplayItemSingleDocument || shouldDisplayItemSingleThumbnail || shouldDisplayItemSingleAttachments"
                         class="column secondary-column is-12 is-6-desktop is-5-widescreen">
                     <div class="sticky-container">
 
@@ -733,7 +733,7 @@
                     .sticky-container {
                         position: relative;
                         position: sticky;
-                        top: 0;
+                        top: calc(.125rem + var(--tainacan-container-padding) + var(--tainacan-button-min-height, 2.571em));
                         margin: 0;
                         max-height: calc(100vh - 3.5rem - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
                         max-height: calc(100dvh - 3.5rem - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));

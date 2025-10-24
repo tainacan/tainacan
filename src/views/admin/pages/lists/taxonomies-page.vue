@@ -334,13 +334,13 @@
             taxonomiesPerPageOptions() {
                 const defaultTaxonomiesPerPageOptions = [];
                 
-                if ( 12 < this.maxTaxonomiesPerPage )
+                if ( 12 <= this.maxTaxonomiesPerPage )
                     defaultTaxonomiesPerPageOptions.push(12);
                 
-                if ( 24 < this.maxTaxonomiesPerPage )
+                if ( 24 <= this.maxTaxonomiesPerPage )
                     defaultTaxonomiesPerPageOptions.push(24);
                 
-                if ( 48 < this.maxTaxonomiesPerPage )
+                if ( 48 <= this.maxTaxonomiesPerPage )
                     defaultTaxonomiesPerPageOptions.push(48);
                 
                 defaultTaxonomiesPerPageOptions.push(this.maxTaxonomiesPerPage);
@@ -425,8 +425,7 @@
                     this.load();
                 }
             },
-            onPageChange(page) {
-                this.page = page;
+            onPageChange() {
                 this.load();
             },
             load() {

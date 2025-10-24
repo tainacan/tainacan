@@ -13,6 +13,10 @@
         }
     },
     "attributes": {
+        "isDynamic": {
+            "type": "boolean",
+            "default": false
+        },
         "collectionId": {
             "type": "string",
             "default": ""
@@ -32,10 +36,6 @@
         "relatedItemsTemplate": {
             "type": "array",
             "default": []
-        },
-        "itemRequestSource": {
-            "type": "string",
-            "default": ""
         },
         "itemsListLayout": {
             "type": "string",

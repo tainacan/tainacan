@@ -177,7 +177,7 @@
             this.fetchAvailableExporters().then((exporterTypes) => {
             if ( exporterTypes[this.exporterType] ) 
                 this.exporterName = exporterTypes[this.exporterType].name;
-                this.$routerHelper.appendToPageTitle(this.importerName);
+                this.$routerHelper.appendToPageTitle(this.exporterName);
                 wp.hooks.doAction(
                 'tainacan_navigation_path_updated', 
                     { 

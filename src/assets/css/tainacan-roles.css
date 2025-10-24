@@ -34773,6 +34773,7 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
   z-index: 9;
   padding: 10px;
   vertical-align: bottom;
+  text-align: start;
 }
 .table-container .table-wrapper table.tainacan-table th .th-wrap {
   font-size: 0.75em !important;
@@ -36289,10 +36290,6 @@ textarea.textarea[rows="7"],
 }
 .dropdown.dropdown.is-disabled, .autocomplete.dropdown.is-disabled {
   cursor: not-allowed;
-  opacity: 1;
-}
-.dropdown.dropdown.is-disabled.button, .autocomplete.dropdown.is-disabled.button {
-  opacity: 0.75;
 }
 .dropdown .dropdown-menu, .autocomplete .dropdown-menu {
   font-size: 1em;

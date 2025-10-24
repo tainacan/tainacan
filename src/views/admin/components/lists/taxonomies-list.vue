@@ -245,7 +245,7 @@
                                         class="button-delete"
                                         role="button"
                                         :aria-label="$i18n.get('label_button_delete')" 
-                                        @click.prevent.stop="deleteOneTaxonomy(taxonomy.id)">
+                                        @click.prevent.stop="deleteOneTaxonomy(taxonomy)">
                                     <span
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
@@ -354,15 +354,29 @@
             getTotalTermsDetailed(total_terms) {
                 return this.$i18n.get('label_total_terms') + ': ' + total_terms['total'] + '<br> ' + this.$i18n.get('label_root_terms') + ': ' + total_terms['root'] + '<br> ' + this.$i18n.get('label_used_by_items') + ': ' + total_terms['not_empty'];
             },
-            deleteOneTaxonomy(taxonomyId) {
+            deleteOneTaxonomy(taxonomy) {
+                let taxonomyName = '';
+                
+                if (taxonomy && typeof taxonomy === 'object') {
+                    if (taxonomy.name !== undefined && taxonomy.name !== null && taxonomy.name !== '')
+                        taxonomyName = taxonomy.name;
+                    else if (taxonomy.id)
+                        taxonomyName = 'ID: ' + taxonomy.id;
+                }
+                
+                let message = this.$i18n.getWithVariables(
+                    'info_warning_taxonomy_delete_%s',
+                    [ taxonomyName ]
+                );
+                
                 this.$buefy.modal.open({
                     component: CustomDialog,
                     props: {
                         icon: 'alert',
                         title: this.$i18n.get('label_warning'),
-                        message: this.$i18n.get('info_warning_taxonomy_delete'),
+                        message: message,
                         onConfirm: () => {
-                            this.deleteTaxonomy({ taxonomyId: taxonomyId, isPermanently: this.isOnTrash })
+                            this.deleteTaxonomy({ taxonomyId: taxonomy.id, isPermanently: this.isOnTrash })
                                 .then(() => {
                                     // this.$buefy.toast.open({
                                     //     duration: 3000,
@@ -372,7 +386,7 @@
                                     //     queue: true
                                     // });
                                     for (let i = 0; i < this.selected.length; i++) {
-                                        if (this.selected[i].id === this.taxonomyId)
+                                        if (this.selected[i].id === taxonomy.id)
                                             this.selected.splice(i, 1);
                                     }
                                 })
@@ -393,12 +407,17 @@
                 });
             },
             deleteSelected() {
+                let message = this.$i18n.get('info_warning_selected_taxonomies_delete') || 'Do you really want to delete the selected taxonomies?';
+                
+                // For multiple taxonomies, we don't add individual names
+                // The message already indicates multiple taxonomies are being deleted
+                
                 this.$buefy.modal.open({
                     component: CustomDialog,
                     props: {
                         icon: 'alert',
                         title: this.$i18n.get('label_warning'),
-                        message: this.$i18n.get('info_warning_selected_taxonomies_delete'),
+                        message: message,
                         onConfirm: () => {
 
                             for (let i = 0; i < this.taxonomies.length;  i++) {

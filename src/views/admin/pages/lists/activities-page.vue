@@ -242,20 +242,20 @@
                 for (let activity of activitiesList)
                     activity['by'] = this.$i18n.get('info_by') +
                         activity['user_name'] + '<br>' + this.$i18n.get('info_date') +
-                        moment(activity['log_date'], 'YYYY-MM-DD h:mm:ss').format('DD/MM/YYYY, hh:mm:ss');
+                        moment(activity['date'], 'YYYY-MM-DD h:mm:ss').format('DD/MM/YYYY, hh:mm:ss');
 
                 return activitiesList;
             },
             activitiesPerPageOptions() {
                 const defaultActivitiesPerPageOptions = [];
                 
-                if ( 12 < this.maxActivitiesPerPage )
+                if ( 12 <= this.maxActivitiesPerPage )
                     defaultActivitiesPerPageOptions.push(12);
                 
-                if ( 24 < this.maxActivitiesPerPage )
+                if ( 24 <= this.maxActivitiesPerPage )
                     defaultActivitiesPerPageOptions.push(24);
                 
-                if ( 48 < this.maxActivitiesPerPage )
+                if ( 48 <= this.maxActivitiesPerPage )
                     defaultActivitiesPerPageOptions.push(48);
                 
                 defaultActivitiesPerPageOptions.push(this.maxActivitiesPerPage);
@@ -305,8 +305,7 @@
                 this.activitiesPerPage = value;
                 this.loadActivities();
             },
-            onPageChange(page) {
-                this.activitiesPage = page;
+            onPageChange() {
                 this.loadActivities();
             },
             loadActivities() {

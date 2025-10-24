@@ -140,7 +140,7 @@ abstract class Importer {
 		'tmp_file'
 	];
 
-	public function __construct($attributess = array()) {
+	public function __construct($attributes = array()) {
 		$this->id = uniqid();
 
 		$author = get_current_user_id();
@@ -148,8 +148,8 @@ abstract class Importer {
 			$this->add_transient('author', $author);
 		}
 
-		if (!empty($attributess)) {
-			foreach ($attributess as $attr => $value) {
+		if (!empty($attributes)) {
+			foreach ($attributes as $attr => $value) {
 				$method = 'set_' . $attr;
 				if (method_exists($this, $method)) {
 					$this->$method($value);

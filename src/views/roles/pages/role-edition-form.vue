@@ -850,12 +850,6 @@
             padding: 2px 16px;
         }
     }
-    .name-edition-box label {
-        margin-right: 2em;
-        padding-bottom: 3px;
-        font-size: 1em;
-        font-weight: bold;
-    }
     .nav-tab {
         padding: 5px 24px;
         margin: 0;
