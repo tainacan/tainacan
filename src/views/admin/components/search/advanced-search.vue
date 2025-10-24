@@ -299,7 +299,7 @@
                     resp.request
                         .then((metadata) => {
 
-                            metadata = metadata.filter(metadatum => metadatum.allow_advanced_search != 'no');
+                            metadata = metadata.filter(metadatum => metadatum.allow_advanced_search !== 'no');
 
                             this.metadataAsArray = JSON.parse(JSON.stringify(metadata));
 
