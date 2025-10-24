@@ -326,7 +326,7 @@
                                     </span>
                                     <span 
                                             v-tooltip="{
-                                                content: isRepositoryLevel || metadatum.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
+                                                content: isRepositoryLevel || metadatum.collection_id != collectionId ? $i18n.get('label_repository_metadatum') : $i18n.get('label_collection_metadatum'),
                                                 autoHide: true,
                                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                 placement: 'auto-start'

@@ -4,24 +4,91 @@
             class="tainacan-form" 
             @submit.prevent="saveEdition(form)">
         <div class="options-columns">
-            <b-field 
-                    :addons="false"
-                    :type="formErrors['name'] != undefined ? 'is-danger' : ''" 
-                    :message="formErrors['name'] != undefined ? formErrors['name'] : ''">
-                <label class="label is-inline">
-                    {{ $i18n.get('label_name') }} 
-                    <span 
-                            class="required-metadatum-asterisk"
-                            :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span> 
-                    <help-button 
-                            :title="$i18n.getHelperTitle('filters', 'name')" 
-                            :message="$i18n.getHelperMessage('filters', 'name')" />
-                </label>
-                <b-input
-                        v-model="form.name" 
-                        name="name" 
-                        @focus="clearErrors('name')" />
-            </b-field>
+
+            <div class="two-thirds-layout-options">
+
+                <!-- Name -->
+                <b-field 
+                        :addons="false"
+                        :type="formErrors['name'] != undefined ? 'is-danger' : ''" 
+                        :message="formErrors['name'] != undefined ? formErrors['name'] : ''">
+                    <label class="label is-inline">
+                        {{ $i18n.get('label_name') }} 
+                        <span 
+                                class="required-metadatum-asterisk"
+                                :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span> 
+                        <help-button 
+                                :title="$i18n.getHelperTitle('filters', 'name')" 
+                                :message="$i18n.getHelperMessage('filters', 'name')" />
+                    </label>
+                    <b-input
+                            v-model="form.name" 
+                            name="name" 
+                            @focus="clearErrors('name')" />
+                </b-field>
+
+                <!-- Status -------------------------------- --> 
+                <b-field
+                        :addons="false" 
+                        :type="formErrors['status'] != undefined ? 'is-danger' : ''" 
+                        :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
+                    <label class="label is-inline">
+                        {{ $i18n.get('label_status') }}
+                        <help-button
+                                :title="$i18n.getHelperTitle('filters', 'status')"
+                                :message="$i18n.getHelperMessage('filters', 'status')" />
+                    </label>
+                    <b-dropdown
+                            ref="metadatum-edition-status-dropdown"
+                            aria-role="list"
+                            class="metadatum-edition-status-dropdown"
+                            position="is-bottom-left"
+                            :triggers="[ 'click' ]">
+                        <template #trigger>
+                            <button 
+                                    type="button"
+                                    class="button is-outlined"
+                                    style="width: auto">
+                                <span class="icon has-text-gray">
+                                    <i 
+                                            class="tainacan-icon tainacan-icon-18px"
+                                            :class="$statusHelper.getIcon(form.status)" />
+                                </span>
+                                <template v-if="form.status !== 'auto-draft' && $statusHelper.getStatuses().find(aStatusObject => aStatusObject.slug == form.status)">
+                                    {{ $statusHelper.getStatuses().find(aStatusObject => aStatusObject.slug == form.status).name }}
+                                </template>
+                                <template v-else-if="form.status === 'auto-draft'">
+                                    {{ $i18n.get('status_auto-draft') }}
+                                </template>
+                                <span 
+                                        style="margin-left: 0.5em;"
+                                        class="icon is-small">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                </span>
+                            </button>
+                        </template>
+                        <b-dropdown-item 
+                                v-for="(statusOption, statusOptionIndex) of $statusHelper.getStatuses().filter((status) => status.slug != 'trash' && status.slug != 'draft' && status.slug != 'pending' && (form.status != 'auto-draft' || status.slug != 'trash'))"
+                                :key="statusOptionIndex"
+                                aria-role="listitem"
+                                @click="form.status = statusOption.slug">
+                            <span class="icon has-text-gray">
+                                <i 
+                                        class="tainacan-icon tainacan-icon-18px"
+                                        :class="$statusHelper.getIcon(statusOption.slug)" />
+                            </span>
+                            {{ statusOption.name }}
+                            <br>
+                            <small 
+                                    v-if="$statusHelper.hasDescription(statusOption.slug)"
+                                    class="is-small"
+                                    style="margin-left: 2px;">
+                                {{ $statusHelper.getDescription(statusOption.slug) }}
+                            </small>
+                        </b-dropdown-item>
+                    </b-dropdown>
+                </b-field>
+            </div>
 
             <!-- Hook for extra Form options -->
             <template v-if="hasBeginLeftForm">  
@@ -86,43 +153,6 @@
                         v-model="form.placeholder"
                         name="placeholder"
                         @focus="clearErrors('placeholder')" />
-            </b-field>
-
-            <b-field 
-                    :addons="false"
-                    :type="formErrors['status'] != undefined ? 'is-danger' : ''" 
-                    :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
-                <label class="label is-inline">
-                    {{ $i18n.get('label_status') }} 
-                    <help-button 
-                            :title="$i18n.getHelperTitle('filters', 'status')" 
-                            :message="$i18n.getHelperMessage('filters', 'status')" />
-                </label>
-                <div class="inline-block">
-                    <b-radio 
-                            id="tainacan-select-status-publish"
-                            v-model="form.status"
-                            name="status" 
-                            native-value="publish"
-                            @focus="clearErrors('label_status')">
-                        <span class="icon has-text-gray3">
-                            <i class="tainacan-icon tainacan-icon-public" />
-                        </span>
-                        {{ $i18n.get('status_public') }}
-                    </b-radio>
-                    <br>
-                    <b-radio
-                            id="tainacan-select-status-private"
-                            v-model="form.status"
-                            name="status" 
-                            native-value="private"
-                            @focus="clearErrors('label_status')">
-                        <span class="icon has-text-gray3">
-                            <i class="tainacan-icon tainacan-icon-private" />
-                        </span>
-                        {{ $i18n.get('status_private') }}
-                    </b-radio>
-                </div>
             </b-field>
 
             <b-field
@@ -496,7 +526,27 @@ export default {
                 column-count: 1;
             }
         }
+        .two-thirds-layout-options {
+            display: flex;
+            column-gap: 1em !important;
+            column-span: all;
 
+            & > .field:first-child {
+                flex-grow: 1;
+                flex-shrink: 0;
+                margin-bottom: 1em;
+            }
+            & > .field:nth-child(2) {
+                width: min-content;
+                flex-shrink: 1;
+                flex-grow: 0;
+            }
+
+            @media screen and (max-width: 600px) {
+                flex-direction: column;
+                margin-bottom: 1em;
+            }
+        }
         .form-submit {
             margin-bottom: 0.75em;
         }

@@ -230,7 +230,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_required'                                 => __( 'Required', 'tainacan' ),
 	'label_allow_multiple'                           => __( 'Allow multiple values', 'tainacan' ),
 	'label_default_value'                            => __( 'Default value', 'tainacan' ),
-	'label_unique_value'                             => __( 'Unique value', 'tainacan' ),
+	'label_unique_value'                             => __( 'Unique value across items', 'tainacan' ),
 	'label_yes'                                      => __( 'Yes', 'tainacan' ),
 	'label_no'                                       => __( 'No', 'tainacan' ),
 	'label_approved'                                 => __( 'Approved', 'tainacan' ),
@@ -240,7 +240,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_select_taxonomy_input_type'               => __( 'Input type', 'tainacan' ),
 	'label_taxonomy_allow_new_terms'                 => __( 'Allow new terms', 'tainacan' ),
 	'label_selectbox_init'                           => __( 'Select', 'tainacan' ),
-	'label_insert_options'                           => __( 'Insert options', 'tainacan'),
+	'label_insert_options'                           => __( 'Insertion options', 'tainacan'),
 	'label_insert_items'                             => __( 'Insert items', 'tainacan'),
 	'label_available_terms'                          => __( 'Available terms', 'tainacan' ),
 	'label_some_available_terms'                     => __( 'Some available terms', 'tainacan' ),
@@ -822,6 +822,7 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_create_item_before_change_status'	 => __( 'Please create the item first to define its status.', 'tainacan' ),
 	'instruction_filter_processes_date'				 => __( 'Select the date range for the processes', 'tainacan' ),
 	'instruction_go_to_metadata_mapping_%s'		     => __( 'To use a mapping standard, you must first configure it in the <a href="%s" target="_blank">collection metadata mapping screen</a>.', 'tainacan' ),
+	'instruction_2_or_more'						     => __( '2 or more', 'tainacan' ),
 	
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),
