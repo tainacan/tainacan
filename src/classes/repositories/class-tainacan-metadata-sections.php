@@ -50,7 +50,7 @@ class Metadata_Sections extends Repository {
 				'title'       => __( 'Status', 'tainacan' ),
 				'type'        => 'string',
 				'default'     => 'publish',
-				'description' => __( 'Status', 'tainacan' )
+				'description' => __( 'Status for control of visibility and access.', 'tainacan' )
 			],
 			'description'           => [
 				'map'         => 'post_content',

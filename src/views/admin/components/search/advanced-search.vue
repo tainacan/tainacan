@@ -299,6 +299,8 @@
                     resp.request
                         .then((metadata) => {
 
+                            metadata = metadata.filter(metadatum => metadatum.allow_advanced_search !== 'no');
+
                             this.metadataAsArray = JSON.parse(JSON.stringify(metadata));
 
                             // In repository level, if set, we add fake options to search on every title and description
@@ -654,7 +656,7 @@
         margin: 0 var(--tainacan-one-column) 0.875em;
         background: var(--tainacan-background-color);
         border: 1px solid var(--tainacan-input-border-color);
-        border-radius: 1px;
+        border-radius: var(--tainacan-dropdownmenu-border-radius, 0px);
         transition: height 0.2s ease;
 
         .tnc-advanced-search-container {

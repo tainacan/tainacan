@@ -17,7 +17,7 @@
 
         <form 
                 v-if="importer != undefined && importer != null" 
-                class="tainacan-form"
+                class="tainacan-form tainacan-importer-mapping-form"
                 label-width="120px">
             <p>{{ $i18n.get('info_metadata_mapping_helper') }}</p>
             <br>
@@ -180,64 +180,6 @@
                     {{ $i18n.get('info_no_special_fields_available') }}<br>
                 </p>
                 
-                <b-modal 
-                        v-model="isNewMetadatumModalActive"
-                        trap-focus
-                        aria-modal
-                        aria-role="dialog"
-                        :width="420"
-                        :can-cancel="['escape', 'outside']"
-                        custom-class="tainacan-modal"
-                        @close="onMetadatumEditionCanceled()">
-                    <div 
-                            v-if="selectedMetadatumType == undefined && !isEditingMetadatum"
-                            autofocus="true"
-                            tabindex="-1"
-                            role="dialog"
-                            aria-modal>
-                        <b-loading 
-                                v-model="isLoadingMetadatumTypes" 
-                                :is-full-page="false" />
-                        <div 
-                                
-                                class="tainacan-modal-content">
-                            <div class="tainacan-modal-title tainacan-page-title tainacan-page-title--sticky">
-                                <h2>{{ $i18n.get('instruction_select_metadatum_type') }}</h2>
-                            </div>
-                            <section class="tainacan-form">
-                                <div class="metadata-types-container">
-                                    <div
-                                            v-for="(metadatumType, index) of metadatumTypes"
-                                            :key="index"
-                                            class="metadata-type"
-                                            @click="onSelectMetadatumType(metadatumType)">
-                                        <h4>{{ metadatumType.name }}</h4>
-                                    </div>
-                                </div>
-                                <div class="field is-grouped form-submit">
-                                    <div class="control">
-                                        <button
-                                                id="button-cancel-importer-edition"
-                                                class="button is-outlined"
-                                                type="button"
-                                                @click="onMetadatumEditionCanceled(); isNewMetadatumModalActive = false">
-                                            {{ $i18n.get('cancel') }}</button>
-                                    </div>
-                                </div>
-                            </section>
-                        </div>
-                    </div>
-                    
-                    <metadatum-edition-form
-                            v-if="selectedMetadatumType && isEditingMetadatum"
-                            :collection-id="collectionId"
-                            :is-repository-level="false"
-                            :index="0"
-                            :original-metadatum="metadatum"
-                            :is-inside-importer-flow="true"
-                            @on-edition-finished="onMetadatumEditionFinished()"
-                            @on-edition-canceled="onMetadatumEditionCanceled()" />
-                </b-modal>
             </div>
             <div 
                     v-if="importerSourceInfo == undefined || 
@@ -267,6 +209,75 @@
                 </div>
             </div>
         </form>
+
+        <b-modal 
+                v-if="selectedMetadatumType == undefined && !isEditingMetadatum"
+                v-model="isNewMetadatumModalActive"
+                trap-focus
+                aria-modal
+                aria-role="dialog"
+                width="420px"
+                :can-cancel="['escape', 'outside']"
+                custom-class="tainacan-modal"
+                @close="onMetadatumEditionCanceled()">
+            <div 
+                    autofocus="true"
+                    tabindex="-1"
+                    role="dialog"
+                    aria-modal>
+                <b-loading 
+                        v-model="isLoadingMetadatumTypes" 
+                        :is-full-page="false" />
+                <div 
+                        
+                        class="tainacan-modal-content">
+                    <div class="tainacan-modal-title tainacan-page-title tainacan-page-title--sticky">
+                        <h2>{{ $i18n.get('instruction_select_metadatum_type') }}</h2>
+                    </div>
+                    <section class="tainacan-form">
+                        <div class="metadata-types-container">
+                            <div
+                                    v-for="(metadatumType, index) of metadatumTypes"
+                                    :key="index"
+                                    class="metadata-type"
+                                    @click="onSelectMetadatumType(metadatumType)">
+                                <h4>{{ metadatumType.name }}</h4>
+                            </div>
+                        </div>
+                        <div class="field is-grouped form-submit">
+                            <div class="control">
+                                <button
+                                        id="button-cancel-importer-edition"
+                                        class="button is-outlined"
+                                        type="button"
+                                        @click="onMetadatumEditionCanceled(); isNewMetadatumModalActive = false">
+                                    {{ $i18n.get('cancel') }}</button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </b-modal>
+
+        <b-modal 
+                v-if="selectedMetadatumType && isEditingMetadatum"
+                v-model="isNewMetadatumModalActive"
+                trap-focus
+                aria-modal
+                aria-role="dialog"
+                width="860px"
+                :can-cancel="['escape', 'outside']"
+                custom-class="tainacan-modal"
+                @close="onMetadatumEditionCanceled()">
+            <metadatum-edition-form
+                    :collection-id="collectionId"
+                    :is-repository-level="false"
+                    :index="0"
+                    :original-metadatum="metadatum"
+                    :is-inside-importer-flow="true"
+                    @on-edition-finished="onMetadatumEditionFinished()"
+                    @on-edition-canceled="onMetadatumEditionCanceled()" />
+        </b-modal>
 
         <!-- Prompt to show title -->
         <b-modal 
@@ -793,30 +804,30 @@ export default {
         position: relative;
     }
 
-    .tainacan-form {
+    .tainacan-importer-mapping-form {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         min-height: 247px;
         padding-top: var(--tainacan-container-padding);
-    }
 
-    .form-submit {
-        margin-top: 24px;
-        position: sticky !important;
-        bottom: 0;
-        background: var(--tainacan-background-color, white);
-        z-index: 9;
-        padding: 12px;
-        border-top: 1px solid  var(--tainacan-gray3);
-        box-shadow: 0 -5px 12px -14px var(--tainacan-gray5);
-    }
+        .form-submit {
+            margin-top: 24px;
+            position: sticky !important;
+            bottom: 0;
+            background: var(--tainacan-background-color, white);
+            z-index: 9;
+            padding: 12px;
+            border-top: 1px solid  var(--tainacan-gray3);
+            box-shadow: 0 -5px 12px -14px var(--tainacan-gray5);
+        }
 
-    .section-label {
-        font-size: 1em !important;
-        font-weight: 500 !important;
-        color: var(--tainacan-blue5) !important;
-        line-height: 1.2em;
+        .section-label {
+            font-size: 1em !important;
+            font-weight: 500 !important;
+            color: var(--tainacan-blue5) !important;
+            line-height: 1.2em;
+        }
     }
 
     .source-metadatum {

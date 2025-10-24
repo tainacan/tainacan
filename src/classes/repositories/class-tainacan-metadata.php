@@ -200,6 +200,15 @@ class Metadata extends Repository {
 				'description' => __( 'Display by default on listing or do not display or never display.', 'tainacan' ),
 				'default'     => 'no'
 			],
+			'allow_advanced_search' => [
+				'map'         => 'meta',
+				'title'       => __( 'Allow advanced search', 'tainacan' ),
+				'type'        => 'string',
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ),
+				'enum'		  => [ 'yes', 'no' ],
+				'description' => __( 'Allow this metadata to be offered as an option for advanced search', 'tainacan' ),
+				'default'     => 'yes'
+			],
 			'semantic_uri'          => [
 				'map'         => 'meta',
 				'title'       => __( 'The semantic metadatum description URI' ),
