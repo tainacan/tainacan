@@ -579,6 +579,10 @@
                         else
                             formObj[key] = value;
                     }
+                    if ( formObj['allow_advanced_search'] === undefined )
+                        formObj['allow_advanced_search'] = 'no';
+                    if ( formObj['description_bellow_name'] === undefined )
+                        formObj['description_bellow_name'] = 'no';
 
                     let repository = formObj['repository_level'];
 
