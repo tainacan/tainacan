@@ -24,6 +24,7 @@ class Metadatum extends Entity {
 		$required,
 		$multiple,
 		$display,
+		$allow_advanced_search,
 		$cardinality,
 		$collection_key,
 		$default_value,
@@ -71,6 +72,21 @@ class Metadatum extends Entity {
 	 */
 	function get_display(){
 		return $this->get_mapped_property('display');
+	}
+
+	/**
+	 * @return string
+	 */
+	function get_allow_advanced_search(){
+		return $this->get_mapped_property('allow_advanced_search');
+	}
+
+	/**
+	 * @param string $allow_advanced_search
+	 * @return void
+	 */
+	function set_allow_advanced_search( $allow_advanced_search ){
+		$this->set_mapped_property('allow_advanced_search', $allow_advanced_search);
 	}
 
 	/**
