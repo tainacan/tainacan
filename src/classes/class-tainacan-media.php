@@ -67,7 +67,7 @@ class Media {
 		add_action( 'template_redirect', [$this, 'attachment_page'] );
 
 		add_action( 'after_setup_theme', [$this, 'add_image_sizes'] );
-        add_filter( 'image_size_names_choose', [$this, 'add_image_sizes_to_admin'] );
+		add_filter( 'image_size_names_choose', [$this, 'add_image_sizes_to_admin'] );
 	}
 
 	/**
