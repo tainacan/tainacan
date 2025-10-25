@@ -22,7 +22,7 @@ class Mappers_Handler {
 	}
 	
 	public function __construct() {
-	    self::$instance = $this;
+		self::$instance = $this;
 		
 		add_action('init', array(&$this, 'init'));
 		
@@ -39,9 +39,9 @@ class Mappers_Handler {
 	
 	function init() {
 		$this->register_mapper('Tainacan\Mappers\Dublin_Core');
-        	$this->register_mapper('Tainacan\Mappers\Inbcm_Archive');
-        	$this->register_mapper('Tainacan\Mappers\Inbcm_Bibliographic');
-        	$this->register_mapper('Tainacan\Mappers\Inbcm_Museological');
+			$this->register_mapper('Tainacan\Mappers\Inbcm_Archive');
+			$this->register_mapper('Tainacan\Mappers\Inbcm_Bibliographic');
+			$this->register_mapper('Tainacan\Mappers\Inbcm_Museological');
 		
 		do_action('tainacan-register-mappers', $this);
 	}
@@ -52,11 +52,11 @@ class Mappers_Handler {
 	 * @param $class_name string | object The class name or the object instance
 	 */
 	public function register_mapper( $class_name ){
-	    $obj = $class_name;
+		$obj = $class_name;
 		if( is_object( $class_name ) ){
 			$class_name = get_class( $class_name );
 		} else {
-		    $obj = new $class_name;
+			$obj = new $class_name;
 		}
 		
 		if(!in_array( $class_name, $this->mappers)){
@@ -70,11 +70,11 @@ class Mappers_Handler {
 	 * @param $class_name string | object The class name or the object instance
 	 */
 	public function unregister_mapper( $class_name ){
-	    $obj = $class_name;
+		$obj = $class_name;
 		if( is_object( $class_name ) ){
 			$class_name = get_class( $class_name );
 		} else {
-		    $obj = new $class_name;
+			$obj = new $class_name;
 		}
 		
 		if ( array_key_exists($obj->slug, $this->mappers) ) {
@@ -156,8 +156,8 @@ class Mappers_Handler {
 			$mapper = $Tainacan_Mappers->check_class_name($body[self::MAPPER_PARAM], true, self::MAPPER_CLASS_PREFIX);
 			$return_mapper = new $mapper;
 		} elseif(
-		    is_array($query_url_params) && array_key_exists(self::MAPPER_PARAM, $query_url_params) &&
-		    $Tainacan_Mappers->mapper_exists($query_url_params[self::MAPPER_PARAM])
+			is_array($query_url_params) && array_key_exists(self::MAPPER_PARAM, $query_url_params) &&
+			$Tainacan_Mappers->mapper_exists($query_url_params[self::MAPPER_PARAM])
 		) {
 			$mapper = $Tainacan_Mappers->check_class_name($query_url_params[self::MAPPER_PARAM], true, self::MAPPER_CLASS_PREFIX);
 			$return_mapper = new $mapper;
@@ -176,22 +176,22 @@ class Mappers_Handler {
 		$metadatum_mapping = $item_arr['metadatum']['exposer_mapping'];
 		if(array_key_exists($mapper->slug, $metadatum_mapping)) {
 			if(
-			    is_string($metadatum_mapping[$mapper->slug]) && is_array($mapper->metadata) && !array_key_exists( $metadatum_mapping[$mapper->slug], $mapper->metadata) ||
-			    is_array($metadatum_mapping[$mapper->slug]) && $mapper->allow_extra_metadata != true
+				is_string($metadatum_mapping[$mapper->slug]) && is_array($mapper->metadata) && !array_key_exists( $metadatum_mapping[$mapper->slug], $mapper->metadata) ||
+				is_array($metadatum_mapping[$mapper->slug]) && $mapper->allow_extra_metadata != true
 			) {
 				throw new \Exception('Invalid Mapper Option');
 			}
 			$slug = '';
 			if(is_string($metadatum_mapping[$mapper->slug])) {
-			    $slug = $metadatum_mapping[$mapper->slug];
+				$slug = $metadatum_mapping[$mapper->slug];
 			} else {
-			    $slug = $metadatum_mapping[$mapper->slug]['slug'];
+				$slug = $metadatum_mapping[$mapper->slug]['slug'];
 			}
 			$ret = [$mapper->prefix.$slug.$mapper->sufix => $item_arr['value']]; //TODO Validate option
 		} elseif($mapper->slug == 'value') {
 			$ret = [$item_arr['metadatum']['name'] => $item_arr['value']];
 		} else {
-		    $ret = [];
+			$ret = [];
 		}
 		return $ret;
 	}
@@ -237,12 +237,12 @@ class Mappers_Handler {
 	 * @return string
 	 */
 	public function check_class_name($class_name, $root = false, $prefix = 'Tainacan\Mapper\\') {
-	    if(is_string($class_name)) {
-    	    if( array_key_exists($class_name, $this->mappers)) {
-    	        $class_name = $this->mappers[$class_name];
-    	        $prefix = '';
-    	    }
-	    }
+		if(is_string($class_name)) {
+			if( array_key_exists($class_name, $this->mappers)) {
+				$class_name = $this->mappers[$class_name];
+				$prefix = '';
+			}
+		}
 		$class = $prefix.sanitize_text_field($class_name);
 		$class = str_replace(['-', ' '], ['_', '_'], $class);
 		
@@ -256,8 +256,6 @@ class Mappers_Handler {
 	 * @param \WP_REST_Request $request
 	 */
 	public function create_mapped_collection( $collection, $request ) {
-	    
-		
 		if ($mapper = $this->get_mapper_from_request($request)) {
 			
 			$mapper_metadata = $mapper->metadata;
