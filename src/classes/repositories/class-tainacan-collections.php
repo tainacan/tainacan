@@ -62,9 +62,7 @@ class Collections extends Repository {
 	 *
 	 * @return void
 	 */
-	protected function init() {
-		parent::__construct();
-	}
+	protected function init() { }
 
 	/**
 	 * {@inheritDoc}

@@ -22,7 +22,6 @@ class Taxonomies extends Repository {
 	public $entities_type = '\Tainacan\Entities\Taxonomy';
 
 	protected function init() {
-		parent::__construct();
 		add_action( 'tainacan-taxonomy-removed-from-collection', array( $this, 'removed_collection' ), 10, 2 );
 		add_action( 'tainacan-taxonomy-added-to-collection', array( $this, 'added_collection' ), 10, 2 );
 	}

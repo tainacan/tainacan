@@ -21,7 +21,6 @@ class Metadata_Sections extends Repository {
 	public $entities_type = '\Tainacan\Entities\Metadata_Section';
 
 	protected function init() {
-		parent::__construct();
 	}
 
 	/**
