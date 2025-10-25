@@ -367,10 +367,16 @@ class Item_Metadata extends Repository {
 				return null;
 			}
 
-			$terms = wp_get_object_terms( $item_metadata->get_item()->get_id(), $taxonomy_slug );
+			// Using get_the_terms instead of wp_get_object_terms to take advantage of WP caching
+			$terms = get_the_terms( $item_metadata->get_item()->get_id(), $taxonomy_slug );
 
-			if( is_wp_error($terms) ) {
+			if ( is_wp_error($terms) ) {
 				return null;
+			}
+			
+			// Normalize false return value to empty array for consistency
+			if ( false === $terms ) {
+				$terms = [];
 			}
 			
 			if ( $unique ) {

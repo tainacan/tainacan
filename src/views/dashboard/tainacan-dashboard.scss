@@ -14,6 +14,7 @@
         p {
             margin-top: 0;
             font-size: 1rem;
+            padding: 0.5em;
             color: var(--tainacan-dashboard-text-color);
         }
     }
@@ -325,6 +326,15 @@
     .postbox-container:has(.empty-container) + .postbox-container:has(.meta-box-sortables:empty) {
         display: none;
         visibility: hidden;
+    }
+
+
+    .plugin-version {
+        color: var(--tainacan-dashboard-text-color);
+        font-size: 0.688rem;
+        font-weight: normal;
+        margin: 1em;
+        float: right;
     }
 
 } 

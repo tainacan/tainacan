@@ -171,7 +171,7 @@
                 <span class="icon">
                     <i class="has-text-secondary tainacan-icon tainacan-icon-add" />
                 </span>
-                {{ searchCriteria.length &lt;= 0 ?
+                {{ searchCriteria.length <= 0 ?
                     $i18n.get('add_one_search_criterion') :
                     $i18n.get('add_another_search_criterion')
                 }}
@@ -298,6 +298,8 @@
             }).then((resp) => {
                     resp.request
                         .then((metadata) => {
+
+                            metadata = metadata.filter(metadatum => metadatum.allow_advanced_search !== 'no');
 
                             this.metadataAsArray = JSON.parse(JSON.stringify(metadata));
 
@@ -654,7 +656,7 @@
         margin: 0 var(--tainacan-one-column) 0.875em;
         background: var(--tainacan-background-color);
         border: 1px solid var(--tainacan-input-border-color);
-        border-radius: 1px;
+        border-radius: var(--tainacan-dropdownmenu-border-radius, 0px);
         transition: height 0.2s ease;
 
         .tnc-advanced-search-container {

@@ -647,9 +647,9 @@
                                     :title="$i18n.getHelperTitle('collections', 'status')"
                                     :message="$i18n.getHelperMessage('collections', 'status')" />
                             <b-dropdown
-                                    ref="item-edition-status-dropdown"
+                                    ref="collection-edition-status-dropdown"
                                     aria-role="list"
-                                    class="item-edition-status-dropdown"
+                                    class="collection-edition-status-dropdown"
                                     position="is-bottom-left"
                                     :triggers="[ 'click' ]"
                                     :disabled="editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' )"

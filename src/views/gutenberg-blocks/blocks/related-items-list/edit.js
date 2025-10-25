@@ -2,9 +2,10 @@ const { __ } = wp.i18n;
 
 const { useEffect } = wp.element;
 
-const { Icon, Spinner, Button, Placeholder, ToolbarDropdownMenu } = wp.components;
+const { Icon, Spinner, Button, Placeholder, ToolbarDropdownMenu, PanelBody, ToggleControl } = wp.components;
 
-const { InnerBlocks, BlockControls, useBlockProps } = wp.blockEditor;
+const ServerSideRender = wp.serverSideRender;
+const { InnerBlocks, BlockControls, useBlockProps, InspectorControls } = wp.blockEditor;
 
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 import TainacanSingleItemSelectionModal from '../../js/selection/tainacan-single-item-selection-modal.js';
@@ -57,19 +58,21 @@ export default function ({ attributes, setAttributes, isSelected }) {
         isModalOpen,
         relatedItems,
         isLoading,
-        itemRequestSource,
         relatedItemsTemplate,
         itemsListLayout,
         tainacanViewMode,
-        templateMode
+        templateMode,
+        isDynamic
     } = attributes;
+
+    let itemRequestSource = undefined;
   
     // Gets blocks props from hook
     const blockProps = useBlockProps();
 
     useEffect(() => {
         setContent();
-    }, [ itemId ]);
+    }, [ itemId, isDynamic, templateMode, itemsListLayout, tainacanViewMode ]);
         
     // Checks if we are in template mode, if so, gets the collection Id from URL.
     useEffect(() => {
@@ -88,7 +91,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
         setAttributes({
             relatedItemsTemplate: getRelatedItemsTemplates(relatedItems)
         })
-    }, [ relatedItems ]);
+    }, [ relatedItems, itemsListLayout, tainacanViewMode ]);
 
     const layoutControls = [
         {
@@ -156,8 +159,8 @@ export default function ({ attributes, setAttributes, isSelected }) {
                     'tainacan/dynamic-items-list',
                     { 
                         content: <div></div>,
-                        selectedItems: collection.items,
-                        loadStrategy: 'parent',
+                        selectedItems: itemsListLayout === 'tainacan-view-modes' ? collection.items.map(item => item.id) : collection.items,
+                        loadStrategy: itemsListLayout === 'tainacan-view-modes' ? 'selection' : 'parent',
                         collectionId: '' + collection.collection_id,
                         layout: itemsListLayout,
                         tainacanViewMode: tainacanViewMode
@@ -229,35 +232,49 @@ export default function ({ attributes, setAttributes, isSelected }) {
     return (
         <div { ...blockProps }>
 
+            <InspectorControls>
+                <PanelBody
+                    title={ __('Data source', 'tainacan') }
+                    initialOpen={ true }
+                >
+                    <ToggleControl
+                        label={ __('Dynamic sync from Tainacan', 'tainacan') }
+                        help={ __( 'Check this if you want the items related to this item to be always sync with its source from Tainacan. If disabled, however, you will be able to change order of inner blocks, delete and wrap them inside other blocks.', 'tainacan' ) }
+                        checked={ isDynamic }
+                        onChange={ ( isChecked ) => {
+                                setAttributes({ isDynamic: isChecked });
+                            } 
+                        }
+                    />
+                </PanelBody>
+            </InspectorControls>
+
             { isSelected ? 
                 ( 
                 <div>
-                    { (!itemId || templateMode) && !relatedItemsTemplate.length ?
-                        <BlockControls>
-                            { TainacanBlocksCompatToolbar({
-                                controls: layoutControls,
-                                extraComponents: <ToolbarDropdownMenu
-                                        icon={ () => <Icon icon="plus" /> }
-                                        label={ __('Tainacan View Modes', 'tainacan') }
-                                        controls={ 
-                                            Object.entries(tainacan_blocks.registered_view_modes)
-                                                .filter((aViewMode) => !aViewMode[1].full_screen)
-                                                .map((aViewMode) => {
-                                                    return {
-                                                        title: aViewMode[1].label,
-                                                        isActive: itemsListLayout === 'tainacan-view-modes' && tainacanViewMode === aViewMode[0],
-                                                        onClick: () => { 
-                                                            setAttributes({ tainacanViewMode: aViewMode[0] })
-                                                            updateLayout('tainacan-view-modes');
-                                                        }
+                    <BlockControls>
+                        { TainacanBlocksCompatToolbar({
+                            controls: layoutControls,
+                            extraComponents: <ToolbarDropdownMenu
+                                    icon={ () => <Icon icon="plus" /> }
+                                    label={ __('Tainacan View Modes', 'tainacan') }
+                                    controls={ 
+                                        Object.entries(tainacan_blocks.registered_view_modes)
+                                            .filter((aViewMode) => !aViewMode[1].full_screen)
+                                            .map((aViewMode) => {
+                                                return {
+                                                    title: aViewMode[1].label,
+                                                    isActive: itemsListLayout === 'tainacan-view-modes' && tainacanViewMode === aViewMode[0],
+                                                    onClick: () => { 
+                                                        setAttributes({ tainacanViewMode: aViewMode[0] })
+                                                        updateLayout('tainacan-view-modes');
                                                     }
-                                                }) 
-                                        }
-                                    /> 
-                            }) }
-                            </BlockControls>
-                        : null
-                    }
+                                                }
+                                            }) 
+                                    }
+                                /> 
+                        }) }
+                    </BlockControls>
                     { isModalOpen ?   
                         <TainacanSingleItemSelectionModal
                             modalTitle={ __('Select one item that has relations', 'tainacan') }
@@ -291,10 +308,12 @@ export default function ({ attributes, setAttributes, isSelected }) {
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(
-                        <img
-                            width={148}
-                            src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                            alt="Tainacan Logo"/>
+                        <span style={{ display: 'inline-block', width: '148px' }}>
+                            <img
+                                style={{ width: '100%', height: 'auto' }}
+                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
+                                alt="Tainacan Logo"/>
+                        </span>
                     )}>
                     <p>
                         <svg
@@ -320,10 +339,12 @@ export default function ({ attributes, setAttributes, isSelected }) {
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(
-                        <img
-                            width={148}
-                            src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                            alt="Tainacan Logo"/>
+                        <span style={{ display: 'inline-block', width: '148px' }}>
+                            <img
+                                style={{ width: '100%', height: 'auto' }}
+                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
+                                alt="Tainacan Logo"/>
+                        </span>
                     )}>
                     <p>{ __('The selected item does not contain other items related to it.', 'tainacan') }</p>
                      <Button
@@ -344,19 +365,29 @@ export default function ({ attributes, setAttributes, isSelected }) {
                 <div>
                     { relatedItemsTemplate.length ? (
                         <div className={ 'related-items-edit-container' }>
-                            <InnerBlocks
-                                    allowedBlocks={[ 
-                                        'core/heading',
-                                        'core/paragraph',
-                                        'tainacan/carousel-items-list',
-                                        'tainacan/dynamic-items-list',
-                                        'core/buttons',
-                                        'core/spacer',
-                                        'core/group',
-                                        'core/columns'
-                                    ]}
-                                    template={ relatedItemsTemplate }
-                                    templateInsertUpdatesSelection={ true } />
+                        {
+                            ( isDynamic ? 
+                                <ServerSideRender
+                                    block="tainacan/related-items-list"
+                                    attributes={ attributes }
+                                    httpMethod={ 'POST' }
+                                />
+                                :
+                                <InnerBlocks
+                                        allowedBlocks={[ 
+                                            'core/heading',
+                                            'core/paragraph',
+                                            'tainacan/carousel-items-list',
+                                            'tainacan/dynamic-items-list',
+                                            'core/buttons',
+                                            'core/spacer',
+                                            'core/group',
+                                            'core/columns'
+                                        ]}
+                                        template={ relatedItemsTemplate }
+                                        templateInsertUpdatesSelection={ true } />
+                            )
+                        }
                         </div>
                         ) : null
                     }

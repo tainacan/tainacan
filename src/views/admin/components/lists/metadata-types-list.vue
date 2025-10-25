@@ -217,7 +217,7 @@ export default {
     .available-metadata-types-area {
         padding: 10px 0px 10px 10px !important;
         margin: 0;
-        max-width: 380px;
+        max-width: 260px;
         min-width: 20.8333333%;
         max-height: calc(100vh - 7.75em);
         max-height: calc(100dvh - 7.75em);

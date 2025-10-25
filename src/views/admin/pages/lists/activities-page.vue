@@ -242,7 +242,7 @@
                 for (let activity of activitiesList)
                     activity['by'] = this.$i18n.get('info_by') +
                         activity['user_name'] + '<br>' + this.$i18n.get('info_date') +
-                        moment(activity['log_date'], 'YYYY-MM-DD h:mm:ss').format('DD/MM/YYYY, hh:mm:ss');
+                        moment(activity['date'], 'YYYY-MM-DD h:mm:ss').format('DD/MM/YYYY, hh:mm:ss');
 
                 return activitiesList;
             },

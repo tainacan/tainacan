@@ -165,7 +165,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 		return $metadata_section;
 	}
 
-		/**
+	/**
 	 * @param Entities\Metadata_Section $item
 	 * @param \WP_REST_Request $request
 	 *

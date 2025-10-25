@@ -92,17 +92,17 @@ class Dashboard extends Pages {
 		// Register Tainacan Cards using WordPress Widgets API
 		$this->register_cards();
 
-		// Add help tabs if needed
-		$screen->add_help_tab(array(
-			'id' => 'tainacan_dashboard_help_tab',
-			'title' => __('Dashboard Options', 'tainacan'),
-			'content' => '<p>' . __('You can customize which cards appear on this dashboard.', 'tainacan') . '</p>',
-		));
+		// // Add help tabs if needed
+		// $screen->add_help_tab(array(
+		// 	'id' => 'tainacan_dashboard_help_tab',
+		// 	'title' => __('Dashboard Options', 'tainacan'),
+		// 	'content' => '<p>' . __('You can customize which cards appear on this dashboard.', 'tainacan') . '</p>',
+		// ));
 
-		$screen->set_help_sidebar(
-			'<p>' . __('For more information:', 'tainacan') . '</p>' .
-			'<p><a href="https://tainacan.org/" target="_blank">' . __('Tainacan Documentation', 'tainacan') . '</a></p>'
-		);
+		// $screen->set_help_sidebar(
+		// 	'<p>' . __('For more information:', 'tainacan') . '</p>' .
+		// 	'<p><a href="https://tainacan.org/" target="_blank">' . __('Tainacan Documentation', 'tainacan') . '</a></p>'
+		// );
 	}
 
 	public function render_page_content() {

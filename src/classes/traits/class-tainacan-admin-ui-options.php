@@ -145,7 +145,7 @@ trait Admin_UI_Options {
 						'itemEditionAttachmentsInsideTabs' => __('Show attachments inside tabs', 'tainacan'),
 						'hideItemEditionPublicationSection' => __('Hide publication section', 'tainacan'),
 						'hideItemEditionStatusOption' => __('Hide status options', 'tainacan'),
-						'hideItemEditionStatusPublishOption' => __('Hide publish status option', 'tainacan'),
+						'hideItemEditionStatusPublishOption' => __('Hide public status option', 'tainacan'),
 						'hideItemEditionStatusPrivateOption' => __('Hide private status option', 'tainacan'),
 						'hideItemEditionStatusPendingOption' => __('Hide pending status option', 'tainacan'),
 						'hideItemEditionCommentsToggle' => __('Hide comments option', 'tainacan'),

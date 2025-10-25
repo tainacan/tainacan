@@ -496,7 +496,7 @@
                                         trap-focus
                                         aria-modal
                                         aria-role="dialog"
-                                        width="900px"
+                                        width="860px"
                                         custom-class="tainacan-modal"
                                         :can-cancel="['escape', 'outside']"
                                         @close="onEditionCanceled()">
@@ -519,6 +519,7 @@
                             trap-focus
                             aria-modal
                             aria-role="dialog"
+                            width="820px"
                             custom-class="tainacan-modal"
                             :can-cancel="['escape', 'outside']"
                             @close="onSectionEditionCanceled()">
