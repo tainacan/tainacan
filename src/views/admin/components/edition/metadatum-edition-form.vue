@@ -190,7 +190,6 @@
                                         v-model="form.required"
                                         true-value="yes"
                                         false-value="no"
-                                        class="is-inline-block"
                                         name="required"
                                         @update:model-value="clearErrors('required')">
                                     {{ $i18n.get('label_required') }}
@@ -204,7 +203,6 @@
                             <b-field v-if="!isRepositoryLevel && isInsideImporterFlow">
                                 <b-checkbox
                                         v-model="form.repository_level"
-                                        class="is-inline-block"
                                         name="repository_level"
                                         true-value="yes"
                                         false-value="no"
@@ -225,7 +223,6 @@
                                         v-model="form.collection_key"
                                         true-value="yes"
                                         false-value="no"
-                                        class="is-inline-block"
                                         name="collection_key"
                                         @update:model-value="clearErrors('collection_key')">
                                     {{ $i18n.get('label_unique_value') }}
@@ -244,7 +241,6 @@
                                         v-model="form.multiple"
                                         true-value="yes"
                                         false-value="no"
-                                        class="is-inline-block"
                                         name="multiple"
                                         @update:model-value="clearErrors('multiple')">
                                     {{ $i18n.get('label_allow_multiple') }}
