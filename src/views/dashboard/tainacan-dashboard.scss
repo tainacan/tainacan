@@ -127,7 +127,7 @@
 
         h2.hndle, 
         h3.hndle {
-            padding: var(--tainacan-dashboard-card-padding-y, 1rem) var(--tainacan-dashboard-card-padding-x, 1.5rem);
+            padding: var(--tainacan-dashboard-card-padding-y, 0.75rem) var(--tainacan-dashboard-card-padding-x, 1.5rem);
             transition: padding 0.2s ease;
         }
         h2.hndle.sortable-handle, 

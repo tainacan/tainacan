@@ -2239,7 +2239,7 @@ export default {
             }
 
             &.is-metadata-navigation-active {
-                width: calc(58.33333337% - var(--tainacan-admin-navigation-sidebar-width, 14rem));
+                width: calc(58.33333337% - var(--tainacan-admin-navigation-sidebar-width, 14rem) );
                 position: fixed;
                 z-index: 99999;
                 bottom: 0;
@@ -2256,7 +2256,7 @@ export default {
                 }
 
                 @media screen and (max-width: 1024px) {
-                    width: calc(100% - var(--tainacan-one-column) -  var(--tainacan-admin-navigation-sidebar-width, 14rem) - var(--tainacan-one-column));
+                    width: calc(100% - var(--tainacan-page-container--inner-padding-x, 1rem) - var(--tainacan-admin-navigation-sidebar-width, 14rem) - var(--tainacan-page-container--inner-padding-x, 1rem) - var(--tainacan-one-column) - var(--tainacan-one-column) - 0.75em - 0.75em);
                 }
             }
 
