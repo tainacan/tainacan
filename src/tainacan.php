@@ -24,7 +24,7 @@ const TAINACAN_BASE_DIR    = __DIR__;
 const TAINACAN_CLASSES_DIR = __DIR__ . '/classes/';
 
 $TAINACAN_BASE_URL = plugins_url('', __FILE__);
-$TAINACAN_API_MAX_ITEMS_PER_PAGE = defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? TAINACAN_API_MAX_ITEMS_PER_PAGE : get_option('tainacan_option_search_results_per_page', 96);
+$TAINACAN_API_MAX_ITEMS_PER_PAGE = defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? max(TAINACAN_API_MAX_ITEMS_PER_PAGE, 12) : get_option('tainacan_option_search_results_per_page', 96);
 
 // Initialization logic (loads most classes and instantiates singletons)
 require_once(TAINACAN_CLASSES_DIR . 'tainacan-creator.php');

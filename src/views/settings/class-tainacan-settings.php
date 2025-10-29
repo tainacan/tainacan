@@ -66,12 +66,12 @@ class Settings extends Pages {
 			'section' => 'tainacan_settings_search_and_performance',
 			'type' => 'number',
 			'input_type' => 'number',
-			'input_attrs' => 'min=1',
+			'input_attrs' => 'min=12 required="required"',
 			'input_disabled' => defined('TAINACAN_API_MAX_ITEMS_PER_PAGE'),
-			'description' => sprintf( __( 'Number of items to show in search results. The default is %s and larger numbers should be avoided as it impacts in your server load time.', 'tainacan' ), ( defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? TAINACAN_API_MAX_ITEMS_PER_PAGE : 96 ) ),
+			'description' => sprintf( __( 'Number of items to show in search results. The default is %s and larger numbers should be avoided as it impacts in your server load time.', 'tainacan' ), ( defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? max(TAINACAN_API_MAX_ITEMS_PER_PAGE, 12) : 96 ) ),
 			'sanitize_callback' => 'absint',
-			'default' => defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? TAINACAN_API_MAX_ITEMS_PER_PAGE : 96,
-			'forced_value' => defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? TAINACAN_API_MAX_ITEMS_PER_PAGE : null
+			'default' => defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? max(TAINACAN_API_MAX_ITEMS_PER_PAGE, 12) : 12,
+			'forced_value' => defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? max(TAINACAN_API_MAX_ITEMS_PER_PAGE, 12) : null
 		) );
 
 		$this->create_tainacan_setting( array(
