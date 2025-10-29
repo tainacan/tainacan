@@ -431,13 +431,14 @@
                         :is="showSteppedLayout ? 'b-step-item' : 'div'"
                         v-for="(metadataSection, sectionIndex) of metadataSections"
                         :id="'metadata-section-id-' + metadataSection.id"
-                        :key="sectionIndex"
+                        :key="metadataSection.id"
                         v-tooltip="{
                             content: !showSteppedLayout && isSectionHidden(metadataSection.id) ? $i18n.get('info_metadata_section_hidden_conditional') : false,
                             autoHide: true,
                             placement: 'auto',
                             popperClass: ['tainacan-tooltip', 'tooltip']
                         }"
+                        :order="sectionIndex"
                         :step="sectionIndex + 1"
                         :label="metadataSection.name"
                         :label-position="'right'"
@@ -680,7 +681,7 @@
                 v-if="isSubmitting || isUploading"
                 id="submission-form-processing"
                 class="section">
-            <div class="content has-text-grey has-text-centered">
+            <div class="content has-text-gray has-text-centered">
                 <br>
                 <p>
                     <span class="icon is-medium">
@@ -709,7 +710,7 @@
                 v-if="hasSentForm"
                 id="submission-form-sent"
                 class="section">
-            <div class="content has-text-grey has-text-centered">
+            <div class="content has-text-gray has-text-centered">
                 <br>
                 <p>
                     <span class="icon is-medium">
@@ -748,7 +749,7 @@
     <section
             v-else
             class="section">
-        <div class="content has-text-grey has-text-centered">
+        <div class="content has-text-gray has-text-centered">
             <br>
             <h2>{{ $i18n.get('label_form_not_loaded') }}</h2>
             <p>{{ $i18n.get('info_form_not_loaded') }}</p>
@@ -1218,7 +1219,7 @@ export default {
 <style lang="scss">
 
     // TAINACAN Variables
-    @import "../../../admin/scss/_variables.scss";
+    @import '../../../tainacan-basics.scss';
 
     //Vue Tooltip
     @import "../../../../../node_modules/floating-vue/dist/style.css";
@@ -1227,26 +1228,27 @@ export default {
     @import "./item-submission/scss/item-submission-basics.sass";
 
     // Buefy imports
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/utils/_all.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_form.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_datepicker.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_checkbox.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_radio.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_switch.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_upload.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_tag.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_loading.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_dropdown.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_modal.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_dialog.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_notices.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_numberinput.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_steps.scss";
+    @import "../../../../../node_modules/buefy/src/scss/utils/_all.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_form.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_datepicker.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_checkbox.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_radio.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_switch.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_upload.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_tag.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_loading.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_dropdown.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_modal.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_dialog.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_notices.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_numberinput.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_steps.scss";
 
     // Block level custom variables
-    @import "../../../admin/scss/_custom_variables.scss";
+    @import "../../../tainacan-variables.scss";
 
     // These have to be outside of the scoped context
+    @import '../../../admin/scss/_animations.scss';
     @import "../../../admin/scss/_tooltips.scss";
     @import "../../../admin/scss/_notices.scss";
     @import "../../../admin/scss/_modals.scss";
@@ -1403,7 +1405,7 @@ export default {
         padding-top: 24px;
         padding-bottom: 10px;
 
-        @media screen and (max-width: 769px) {
+        @media screen and (max-width: 768px) {
             max-width: 100%;
         }
         .field:not(:last-child) {

@@ -3,7 +3,7 @@ import axios from 'axios';
 // Simpler version of the i18n plugin to translate error feedback messages
 const i18nGet = function (key) {
     let string = tainacan_plugin.i18n[key];
-    return (string !== undefined && string !== null && string !== '' ) ? string : "ERROR: Invalid i18n key!";
+    return (string !== undefined && string !== null && string !== '' ) ? string : 'ERROR: Invalid i18n key!';
 };
 export const tainacanErrorHandler = function(error) {
 
@@ -55,8 +55,8 @@ export const tainacanErrorHandler = function(error) {
 export const tainacanApi = axios.create({
     baseURL: tainacan_plugin.tainacan_api_url
 });
-if (tainacan_plugin.nonce) {
-    tainacanApi.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
+if (tainacan_user.nonce) {
+    tainacanApi.defaults.headers.common['X-WP-Nonce'] = tainacan_user.nonce;
 }
 if (tainacan_plugin.admin_request_options) {
     Object.keys(tainacan_plugin.admin_request_options).forEach(requestOption => {
@@ -67,25 +67,65 @@ tainacanApi.interceptors.response.use(
     (response) => response,
     (error) => tainacanErrorHandler(error)
 );
+// Converts PUT, PATCH and DELETE requests to POST requests with _method param
+// This is necessary in some environments such as the WordPress Playground
+// See https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters/#method
+tainacanApi.interceptors.request.use((config) => {
+    const tunnelingMethods = ['put', 'patch', 'delete'];
+  
+    if (config.method && tunnelingMethods.includes(config.method.toLowerCase())) {
+      const originalMethod = config.method.toUpperCase();
+  
+      // Force request to POST
+      config.method = 'post';
+  
+      // Add _method param to URL
+      const url = new URL(config.url, window.location.origin);
+      url.searchParams.set('_method', originalMethod);
+      config.url = url.pathname + url.search;
+    }
+  
+    return config;
+});
 
 // WordPress JSON API axios
 export const wpApi= axios.create({
     baseURL: tainacan_plugin.wp_api_url
 });
-if (tainacan_plugin.nonce) {
-    wpApi.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
+if (tainacan_user.nonce) {
+    wpApi.defaults.headers.common['X-WP-Nonce'] = tainacan_user.nonce;
 }
 wpApi.interceptors.response.use(
     (response) => response,
     (error) => tainacanErrorHandler(error)
 );
+// Converts PUT, PATCH and DELETE requests to POST requests with _method param
+// This is necessary in some environments such as the WordPress Playground
+// See https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters/#method
+wpApi.interceptors.request.use((config) => {
+    const tunnelingMethods = ['put', 'patch', 'delete'];
+  
+    if (config.method && tunnelingMethods.includes(config.method.toLowerCase())) {
+      const originalMethod = config.method.toUpperCase();
+  
+      // Force request to POST
+      config.method = 'post';
+  
+      // Add _method param to URL
+      const url = new URL(config.url, window.location.origin);
+      url.searchParams.set('_method', originalMethod);
+      config.url = url.pathname + url.search;
+    }
+  
+    return config;
+});
 
 // WordPress AJAX axios
 export const wpAjax = axios.create({
     baseURL: tainacan_plugin.wp_ajax_url
 });
-if (tainacan_plugin.nonce) {
-    wpAjax.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
+if (tainacan_user.nonce) {
+    wpAjax.defaults.headers.common['X-WP-Nonce'] = tainacan_user.nonce;
 }
 wpAjax.interceptors.response.use(
     (response) => response,

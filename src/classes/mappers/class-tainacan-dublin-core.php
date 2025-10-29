@@ -2,6 +2,8 @@
 
 namespace Tainacan\Mappers;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 /**
  * Support Dublin Core Mapping 
  * http://purl.org/dc/elements/1.1/

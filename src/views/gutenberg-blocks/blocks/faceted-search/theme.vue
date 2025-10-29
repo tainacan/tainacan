@@ -186,7 +186,8 @@
                             :key="index"
                             class="control"
                             custom
-                            aria-role="listitem">
+                            aria-role="listitem"
+                            :class="{ 'is-active': column.display }">
                         <b-checkbox
                                 v-model="column.display"
                                 :native-value="column.display">
@@ -456,7 +457,10 @@
                 id="filters-modal"
                 ref="filters-modal"     
                 v-model="isFiltersModalActive"
-                role="region"
+                :tabindex="filtersAsModal ? -1 : 0"
+                :aria-modal="filtersAsModal"
+                :role="filtersAsModal ? 'dialog' : ''"
+                aria-labelledby="filters-label-landmark"
                 :width="736"
                 :auto-focus="filtersAsModal"
                 :trap-focus="filtersAsModal"
@@ -477,9 +481,6 @@
                     id="filters-items-list"
                     :is-loading-items="isLoadingItems"
                     :autofocus="filtersAsModal"
-                    :tabindex="filtersAsModal ? -1 : 0"
-                    :aria-modal="filtersAsModal"
-                    :role="filtersAsModal ? 'dialog' : ''"
                     :taxonomy="taxonomy"
                     :collection-id="collectionId + ''"
                     :is-repository-level="isRepositoryLevel"
@@ -661,7 +662,7 @@
                 <section
                         v-if="!showLoading && totalItems == 0"
                         class="section">
-                    <div class="content has-text-grey has-text-centered">
+                    <div class="content has-text-gray has-text-centered">
                         <p>
                             <span class="icon is-large">
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
@@ -847,7 +848,8 @@
                     'is-filters-menu-open': !this.hideFilters && this.isFiltersModalActive && !this.openAdvancedSearch,
                     'is-filters-menu-fixed-at-top': this.isFiltersListFixedAtTop,
                     'is-filters-menu-fixed-at-bottom': this.isFiltersListFixedAtBottom,
-                    'repository-level-page': this.isRepositoryLevel,
+                    'repository-level-page': this.isRepositoryLevel, // Keeping this for compatibility with versions previous to 1.0, where tainacan-repository-level-colors was implemented
+                    'tainacan-repository-level-colors': this.isRepositoryLevel,
                     'is-fullscreen': this.registeredViewModes[this.viewMode] != undefined && this.registeredViewModes[this.viewMode].full_screen   
                 }
             },
@@ -1318,7 +1320,6 @@
             },
             openExposersModal() {
                 this.$buefy.modal.open({
-                    parent: this,
                     component: defineAsyncComponent(() => import('../../../admin/components/modals/exposers-modal.vue')),
                     hasModalCard: true,
                     props: { 
@@ -1327,7 +1328,8 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
+                    canCancel: ['escape', 'outside'],
+                    width: 786
                 });
             },
             updateSearch() {
@@ -1603,7 +1605,6 @@
             },
             openMetatadaSortingWarningDialog({ offerCheckbox }) {
                 this.$buefy.modal.open({
-                        parent: this,
                         component: defineAsyncComponent(() => import('../../../admin/components/other/custom-dialog.vue')),
                         props: {
                             icon: 'alert',
@@ -1613,12 +1614,12 @@
                                 this.hasAnOpenModal = false;
                             },
                             hideCancel: true,
-                            showNeverShowAgainOption: offerCheckbox && tainacan_plugin.user_caps != undefined && Object.keys(tainacan_plugin.user_caps).length != undefined && Object.keys(tainacan_plugin.user_caps).length > 0,
+                            showNeverShowAgainOption: offerCheckbox && tainacan_user.caps != undefined && Object.keys(tainacan_user.caps).length != undefined && Object.keys(tainacan_user.caps).length > 0,
                             messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
                         },
                         trapFocus: true,
                         customClass: 'tainacan-modal',
-                        closeButtonAriaLabel: this.$i18n.get('close')
+                        canCancel: ['escape', 'outside']
                     });
             },
             hideFiltersOnMobile: _.debounce( function() {
@@ -1666,7 +1667,7 @@
 <style lang="scss">
 
     // TAINACAN Variables
-    @import "../../../admin/scss/_variables.scss";
+    @import '../../../tainacan-basics.scss';
 
     //Vue Tooltip
     @import "../../../../../node_modules/floating-vue/dist/style.css";
@@ -1675,24 +1676,25 @@
     @import "./theme-search/scss/theme-basics.sass";
 
     // Buefy imports
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/utils/_all.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_form.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_datepicker.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_checkbox.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_radio.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_tag.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_loading.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_dropdown.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_modal.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_dialog.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_notices.scss";
-    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_numberinput.scss";
+    @import "../../../../../node_modules/buefy/src/scss/utils/_all.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_form.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_datepicker.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_checkbox.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_radio.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_tag.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_loading.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_dropdown.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_modal.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_dialog.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_notices.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_numberinput.scss";
 
     // Block level custom variables
-    @import "../../../admin/scss/_custom_variables.scss";
+    @import "../../../tainacan-variables.scss";
 
     // These have to be outside of the scoped context
     @import "./theme-search/scss/_layout.scss";
+    @import '../../../admin/scss/_animations.scss';
     @import "../../../admin/scss/_tooltips.scss";
     @import "../../../admin/scss/_notices.scss";
     @import "../../../admin/scss/_modals.scss";
@@ -1903,10 +1905,6 @@
 
         p { margin-left: 0.75em; }
     }
-
-    .page-container {
-        padding: 0;
-    }
     
     #filter-menu-compress-button {
         position: absolute;
@@ -1972,7 +1970,7 @@
             margin-right: auto;
             padding-right: 10px;
 
-            @media screen and (max-width: 769px) {            
+            @media screen and (max-width: 768px) {            
                 margin-right: 0;
                 padding-right: 0;
 
@@ -1992,7 +1990,7 @@
             .label {
                 color: var(--tainacan-label-color);
                 font-size: 0.875em;
-                line-height: 1.75em;
+                line-height: calc(var(--tainacan-button-min-height, 2.571em) - 2px);
                 font-weight: normal;
                 margin-top: 2px;
                 margin-bottom: 2px;
@@ -2067,7 +2065,7 @@
                     .dropdown-item-apply {
                         width: 100%;
                         border-top: 1px solid var(--tainacan-skeleton-color);
-                        padding: 8px 12px; 
+                        padding: 8px; 
                         text-align: right;
                     }
                     .dropdown-item-apply .button {
@@ -2090,7 +2088,6 @@
                         width: 100%;
                     }
                     :deep(.dropdown-menu) {
-                        z-index: 99999991;
 
                         .dropdown-item:last-child {
                             line-height: 2.25em;

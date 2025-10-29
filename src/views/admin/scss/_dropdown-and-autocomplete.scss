@@ -25,13 +25,14 @@
             cursor: pointer;
         }
     }
+    @media screen and (max-width: 1023px) {
+        &.is-mobile-modal.is-mobile-modal.is-touch-enabled .background,
+        &.is-mobile-modal:not(.is-hoverable) .background {
+            background-color: var(--tainacan-backdrop-background-color, rgba(0, 0, 0, 0.35));
+        }
+    }
     &.dropdown.is-disabled {
         cursor: not-allowed;
-        opacity: 1.0;
-
-        &.button {
-            opacity: 0.75;
-        }
     }
     .dropdown-menu {
         font-size: 1em;
@@ -40,15 +41,15 @@
         border-radius: var(--tainacan-dropdownmenu-border-radius, 0px);
         min-width: 6em;
         border: none;
-        z-index: 999991;
+        z-index: 999991 !important;
         background-color: var(--tainacan-input-background-color);
 
         .dropdown-content {
             padding: 0px 0px 1px 0px;
             border-radius: var(--tainacan-dropdownmenu-border-radius, 0px) !important;
-            max-height: 240px;
+            max-height: 280px;
             overflow-y: auto;
-            box-shadow: none;
+            box-shadow: 0 4px 5px #0000000a,0 12px 12px #00000008,0 16px 16px #00000005;
             background-color: var(--tainacan-background-color);
             border: 1px solid var(--tainacan-input-border-color);
 
@@ -60,11 +61,21 @@
                 color: var(--tainacan-input-color) !important;
                 border: none;
                 transition: background-color 0.3s ease;
+                min-height: var(--tainacan-button-min-height, 2.571em) !important;
+                line-height: 1.75em;
 
-                &.is-active { background-color: var(--tainacan-primary); }
+                &.is-active, &.is-active:hover, &.is-active:focus { 
+                    background-color: var(--tainacan-primary); 
+                    box-shadow: none;
+                }
                 &.control { font-size: 0.8125em !important; }
                 &.dropdown-header { color: var(--tainacan-info-color) !important; }
-                &:not(.dropdown-header):hover { background-color: var(--tainacan-input-border-color); }
+                &:not(.dropdown-header):not(.is-active):hover {
+                    background-color: var(--tainacan-dropdownmenu-item-background-hover, var(--tainacan-input-border-color));
+                }
+                &:not(.dropdown-header):hover {
+                    color: var(--tainacan-secondary) !important;
+                }
                 
                 .b-checkbox { width: 100% };
                 label { margin-bottom: 0; }
@@ -115,9 +126,11 @@
             .dropdown-content {
                 font-size: 1.125em;
                 max-height: 100vh;
+                max-height: 100dvh;
             }
             .dropdown-menu {
-                border-radius: 4px;
+                border-radius: var(-tainacan-dropdownmenu-border-radius, 4px);
+
                 .dropdown-item {
                     padding: 0.75em !important;
                 }
@@ -127,7 +140,8 @@
 }
 
 // This dropdown has a particular way of dealing with scroll
-.metadata-options-dropdown {
+.metadata-options-dropdown,
+.sorting-options-dropdown {
     .dropdown-content {
         max-height: unset !important;
     }
@@ -153,11 +167,11 @@
 .select select.is-active {
     box-shadow: none;
 }
-.taginput-container {
+.taginput .taginput-container {
     padding: 0px !important;
     background-color: var(--tainacan-input-background-color);
     border: 1px solid var(--tainacan-input-border-color) !important;
-    border-radius: var(--tainacan-input-border-radius, 1px) !important;
+    border-radius: var(--tainacan-input-border-radius, 2px) !important;
 
     &:focus, &:active, &.is-focused {
         border: 1px solid var(--tainacan-secondary) !important;
@@ -202,6 +216,9 @@
     }
     .autocomplete .icon {
         height: 100% !important;
+    }
+    .autocomplete input {
+        height: calc(3em - 1px);
     }
 }
 .selected-list-box {
@@ -370,7 +387,7 @@
         }
     }
 
-    @media screen and (min-width: 768px) {
+    @media screen and (min-width: 769px) {
 
         .datepicker-header {
             margin-bottom: 0.5em;

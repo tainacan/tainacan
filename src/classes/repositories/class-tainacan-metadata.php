@@ -2,16 +2,22 @@
 
 namespace Tainacan\Repositories;
 
-use Tainacan\Entities;
-
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+use Tainacan\Entities;
 use \Respect\Validation\Validator as v;
 
 /**
- * Class Metadata
+ * Repository for managing Tainacan metadata definitions.
+ *
+ * Handles all database operations for metadata including creation,
+ * updates, deletion, and querying with proper validation and logging.
+ *
+ * @since 1.0.0
  */
 class Metadata extends Repository {
+	use \Tainacan\Traits\Singleton_Instance;
+
 	public $entities_type = '\Tainacan\Entities\Metadatum';
 	protected $default_metadata = 'default';
 	protected $current_taxonomy;
@@ -23,21 +29,7 @@ class Metadata extends Repository {
 		'Tainacan\Metadata_Types\Core_Description'
 	];
 
-	private static $instance = null;
-
-	public static function get_instance() {
-		if ( ! isset( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
-
-	/**
-	 * Register specific hooks for metadatum repository
-	 */
-	protected function __construct() {
-		parent::__construct();
+	protected function init() {
 		add_filter( 'pre_trash_post', array( &$this, 'disable_delete_core_metadata' ), 10, 2 );
 		add_filter( 'pre_delete_post', array( &$this, 'force_delete_core_metadata' ), 10, 3 );
 
@@ -206,6 +198,15 @@ class Metadata extends Repository {
 				'enum'		  => [ 'yes', 'no', 'never' ],
 				'description' => __( 'Display by default on listing or do not display or never display.', 'tainacan' ),
 				'default'     => 'no'
+			],
+			'allow_advanced_search' => [
+				'map'         => 'meta',
+				'title'       => __( 'Allow advanced search', 'tainacan' ),
+				'type'        => 'string',
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ),
+				'enum'		  => [ 'yes', 'no' ],
+				'description' => __( 'Allow this metadata to be offered as an option for advanced search', 'tainacan' ),
+				'default'     => 'yes'
 			],
 			'semantic_uri'          => [
 				'map'         => 'meta',

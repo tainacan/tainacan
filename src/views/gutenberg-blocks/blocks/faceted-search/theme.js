@@ -22,7 +22,7 @@ import {
     Toast,
     Pagination,
     Numberinput
-} from '@ntohq/buefy-next';
+} from 'buefy';
 import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
 import VueBlurHash from 'another-vue3-blurhash';
@@ -91,10 +91,10 @@ export default (element) => {
             }
 
             // View Mode settings
-            let possibleDefaultViewMode = 'masonry';
+            let possibleDefaultViewMode = tainacan_plugin.default_view_mode ? tainacan_plugin.default_view_mode : 'masonry';
             if ( getDataAttribute(blockElement, 'default-view-mode') != undefined )
                 possibleDefaultViewMode = getDataAttribute(blockElement, 'default-view-mode');
-        
+
             if ( possibleViewModes.indexOf(possibleDefaultViewMode) < 0 )
                 possibleViewModes.push(possibleDefaultViewMode);
 
@@ -110,9 +110,9 @@ export default (element) => {
                     collectionId: getDataAttribute(blockElement, 'collection-id'),
                     termId: getDataAttribute(blockElement, 'term-id'),
                     taxonomy: getDataAttribute(blockElement, 'taxonomy'),
-                    defaultOrder: getDataAttribute(blockElement, 'default-order', 'ASC'),
+                    defaultOrder: getDataAttribute(blockElement, 'default-order', tainacan_plugin.default_order),
                     defaultOrderBy: (() => {
-                        const defaultOrderByValue = maybeConvertFromJSON(getDataAttribute(blockElement, 'default-orderby', 'date'));
+                        const defaultOrderByValue = maybeConvertFromJSON(getDataAttribute(blockElement, 'default-orderby', tainacan_plugin.default_orderby));
                         return defaultOrderByValue === 'creation_date' ? 'date' : defaultOrderByValue;
                     })(),
                     defaultOrderByMeta: getDataAttribute(blockElement, 'default-orderby-meta'),

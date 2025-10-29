@@ -1,10 +1,10 @@
 const { merge } = require('webpack-merge');
-const common = require('./webpack.common.js');
+const { TainacanPluginConfig, TainacanModulesConfig } = require('./webpack.common.js');
 
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 
-module.exports = merge(common, {
+module.exports = [ merge(TainacanPluginConfig, {
     mode: 'development',
     devtool: 'source-map',
     plugins: [
@@ -32,4 +32,4 @@ module.exports = merge(common, {
             'Swiper$': 'swiper/js/swiper.min.js'
         }
     }
-});
+}), TainacanModulesConfig ];

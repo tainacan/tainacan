@@ -227,10 +227,12 @@ export default function({ attributes, setAttributes, isSelected }) {
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(
-                        <img
-                            width={148}
-                            src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                            alt="Tainacan Logo"/>
+                        <span style={{ display: 'inline-block', width: '148px' }}>
+                            <img
+                                style={{ width: '100%', height: 'auto' }}
+                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
+                                alt="Tainacan Logo"/>
+                        </span>
                     )}>
                     <p>
                         <svg width="24" height="24" viewBox="0 -2 12 16">

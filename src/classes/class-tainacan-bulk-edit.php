@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This is the old Bulk Edit approach that performs SQL queries directly into the database
  * It was disabled in favor of Bulk edit BG process approach
@@ -8,10 +9,11 @@
  */
 
 namespace Tainacan;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use Tainacan\Repositories;
 use Tainacan\Entities;
-
-defined( 'ABSPATH' ) || exit;
 
 /**
  * Bulk_Edit class handles bulk item edition

@@ -4,7 +4,14 @@
             <h2 v-if="capability.display_name != undefined">
                 {{ $i18n.get('label_editing_capability') + ' ' }} <span class="has-text-bold">{{ capability.display_name }}</span>
             </h2>
-            <hr>
+            <button         
+                    class="button is-medium is-white is-align-self-flex-start"
+                    :aria-label="$i18n.get('close')"
+                    @click="$emit('close')">
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-125em" />
+                </span>
+            </button>
         </header>
         <div 
                 v-if="!isLoading"
@@ -142,7 +149,6 @@ export default {
         min-height: 120px;
         vertical-align: top;
         display: flex;
-        padding-top: 24px;
 
         &>div {
             padding: 24px;
@@ -153,6 +159,10 @@ export default {
             &:last-of-type {
                 background-color: var(--tainacan-yellow1);
                 color: var(--tainacan-yellow1);
+
+                &:has(.roles-list:empty) {
+                    display: none;
+                }
 
                 .label,
                 .control-label,
@@ -178,6 +188,9 @@ export default {
             .roles-list {
                 column-count: 1;
             }
+        }
+        @media screen and (max-width: 768px) {
+            flex-wrap: wrap;
         }
     }
 </style>

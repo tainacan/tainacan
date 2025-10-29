@@ -1,7 +1,5 @@
 <template>
-    <aside 
-            aria-labelledby="filters-label-landmark"
-            :aria-busy="isLoadingFilters">
+    <aside :aria-busy="isLoadingFilters">
         <b-loading
                 v-model="isLoadingFilters"
                 :is-full-page="false" />
@@ -21,7 +19,7 @@
                 )"
                 aria-controls="filters-items-list"
                 :aria-expanded="!collapseAll"
-                class="link-style collapse-all"
+                class="button link-style collapse-all"
                 @click="collapseAll = !collapseAll">
             <span class="icon">
                 <i 
@@ -496,11 +494,8 @@
     .collapse-all {
         display: inline-flex;
         align-items: center;
-        margin-left: -0.5em !important;
+        margin-left: -0.875em !important;
         margin-bottom: 12px !important;
-    }
-    .collapse-all__text {
-        font-size: 0.75em !important;
     }
     .filters-components-list {
         margin-bottom: 64px;

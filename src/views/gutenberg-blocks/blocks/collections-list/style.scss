@@ -40,7 +40,10 @@
     ul.collections-list.collections-layout-grid,
     ul.collections-list-edit.collections-layout-grid {
         padding: 0;
-        @include display-grid;
+        flex-wrap: wrap;
+        display: flex;
+        display: -ms-grid;
+        display: grid;
         -ms-grid-columns: 220px 220px 220px 220px 220px;
         grid-template-columns: repeat(auto-fill, 220px);
         grid-gap: 0px;

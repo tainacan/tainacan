@@ -10,7 +10,7 @@ const { useSelect } = wp.data;
 import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
 import pick from 'lodash/pick';
 
-import DynamicItemsModal from '../carousel-items-list/dynamic-and-carousel-items-modal.js';
+import TainacanMultipleItemSelectionModal from '../../js/selection/tainacan-multiple-item-selection-modal.js';
 import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
@@ -551,7 +551,7 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                     (
                     <div>
                         { isModalOpen ? 
-                            <DynamicItemsModal
+                            <TainacanMultipleItemSelectionModal
                                 loadStrategy={ loadStrategy }
                                 existingCollectionId={ collectionId } 
                                 existingSearchURL={ searchURL } 
@@ -607,10 +607,12 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(
-                        <img
-                            width={148}
-                            src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                            alt="Tainacan Logo"/>
+                        <span style={{ display: 'inline-block', width: '148px' }}>
+                            <img
+                                style={{ width: '100%', height: 'auto' }}
+                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
+                                alt="Tainacan Logo"/>
+                        </span>
                     )}>
                     <p>
                     <svg

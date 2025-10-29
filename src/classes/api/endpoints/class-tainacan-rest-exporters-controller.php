@@ -2,15 +2,21 @@
 
 namespace Tainacan\API\EndPoints;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use \Tainacan\API\REST_Controller;
 use Tainacan\Repositories;
 use Tainacan\Entities;
 use \Tainacan\Exposers\Mappers\Value;
 
 /**
- * Represents the Exporters REST Controller
+ * REST API controller for managing Tainacan exporters.
  *
- * */
+ * Handles all REST API endpoints for export operations including
+ * export configuration, export execution, and export management.
+ *
+ * @since 1.0.0
+ */
 class REST_Exporters_Controller extends REST_Controller {
 	private $collections_repository;
 
@@ -115,7 +121,7 @@ class REST_Exporters_Controller extends REST_Controller {
 	}
 
 	public function get_registered_exporters() {
-		global $Tainacan_Exporter_Handler;
+		$Tainacan_Exporter_Handler = \Tainacan\Exporter_Handler::get_instance();
 		$exporters = $Tainacan_Exporter_Handler->get_registered_exporters();
 		return new \WP_REST_Response( $exporters, 200 );
 	}
@@ -136,7 +142,7 @@ class REST_Exporters_Controller extends REST_Controller {
 			], 400);
 		}
 		$slug = $body['exporter_slug'];
-		global $Tainacan_Exporter_Handler;
+		$Tainacan_Exporter_Handler = \Tainacan\Exporter_Handler::get_instance();
 
 		if ($object = $Tainacan_Exporter_Handler->initialize_exporter($slug)) {
 			$response = $object->_to_Array();
@@ -162,7 +168,7 @@ class REST_Exporters_Controller extends REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if(!empty($body)) {
-			global $Tainacan_Exporter_Handler;
+			$Tainacan_Exporter_Handler = \Tainacan\Exporter_Handler::get_instance();
 			$exporter = $Tainacan_Exporter_Handler->get_exporter_instance_by_session_id($session_id);
 			
 			if($exporter) {
@@ -213,7 +219,7 @@ class REST_Exporters_Controller extends REST_Controller {
 	 */
 	public function run($request) {
 		$session_id = $request['session_id'];
-		global $Tainacan_Exporter_Handler;
+		$Tainacan_Exporter_Handler = \Tainacan\Exporter_Handler::get_instance();
 		$exporter = $Tainacan_Exporter_Handler->get_exporter_instance_by_session_id($session_id);
 
 		if(!$exporter) {
@@ -223,7 +229,7 @@ class REST_Exporters_Controller extends REST_Controller {
 			], 400);
 		}
 
-		global $Tainacan_Exporter_Handler;
+		$Tainacan_Exporter_Handler = \Tainacan\Exporter_Handler::get_instance();
 		$process = $Tainacan_Exporter_Handler->add_to_queue($exporter);
 		if (false === $process) {
 			return new \WP_REST_Response([

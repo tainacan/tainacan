@@ -5,7 +5,12 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Represents the Entity Metadatum
+ * Represents a Tainacan Metadatum entity.
+ *
+ * Metadata definitions that specify the structure and validation
+ * rules for item metadata within collections.
+ *
+ * @since 1.0.0
  */
 class Metadatum extends Entity {
 	protected
@@ -19,6 +24,7 @@ class Metadatum extends Entity {
 		$required,
 		$multiple,
 		$display,
+		$allow_advanced_search,
 		$cardinality,
 		$collection_key,
 		$default_value,
@@ -66,6 +72,21 @@ class Metadatum extends Entity {
 	 */
 	function get_display(){
 		return $this->get_mapped_property('display');
+	}
+
+	/**
+	 * @return string
+	 */
+	function get_allow_advanced_search(){
+		return $this->get_mapped_property('allow_advanced_search');
+	}
+
+	/**
+	 * @param string $allow_advanced_search
+	 * @return void
+	 */
+	function set_allow_advanced_search( $allow_advanced_search ){
+		$this->set_mapped_property('allow_advanced_search', $allow_advanced_search);
 	}
 
 	/**

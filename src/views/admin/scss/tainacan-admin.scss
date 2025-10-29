@@ -1,16 +1,13 @@
-// TAINACAN ICON FONT
-@import "../../assets/css/tainacanicons.css";
-
 // Tainacan custom colors and bulma's core
-@import "./_variables.scss";
-
+@import "../../tainacan-basics.scss";
 
 // Import Bulma and Buefy styles
 @import "../../assets/css/materialdesignicons.css";
 @import "../../../../node_modules/bulma/bulma.sass";
-@import "../../../../node_modules/@ntohq/buefy-next/src/scss/buefy.scss";
+@import "../../../../node_modules/buefy/src/scss/buefy.scss";
 
 // Import Tainacan custom styles
+@import "../scss/_animations.scss";
 @import "../scss/_tainacan-form.scss";
 @import "../scss/_control.scss";
 @import "../scss/_buttons.scss";
@@ -29,57 +26,17 @@
 @import "../scss/_notices.scss";
 @import "../scss/_filters-menu-modal.scss";
 @import "../scss/_repository-level-overrides.scss";
-@import "../scss/_custom_variables.scss";
 
-// Clears wordpress content
-html {
-    overflow-y: hidden;
-}
-body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter {
-    display: none;
-}
-body.tainacan-admin-page #wp-auth-check-wrap {
-    z-index: 9999999;
-}
 #tainacan-admin-app {
     background: var(--tainacan-background-color);
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    z-index: 999999;
     overflow-y: auto;
-    margin: 0px !important; 
-    font-family: var(--tainacan-font-family, $family-sans-serif);
+    padding: 0 !important;
     font-size: 1em;
-}
-
-// Scrollbars
-#tainacan-admin-app * {
-    // For Firefox
-    scrollbar-color: var(--tainacan-gray3) transparent;
-
-    // For Chromium and related
-    &::-webkit-scrollbar-thumb {
-        background-color: var(--tainacan-gray3);
-    }
-
-    @media screen and (min-width: 770px) {
-        // For Firefox
-        scrollbar-width: thin;
-
-        // For Chromium and related
-        &::-webkit-scrollbar {
-            width: 0.4em;
-        }
-    }
 }
 
 // Tainacan Loading
 .loading-overlay {
-    z-index: 9999999999;
+    z-index: 998;
     min-height: auto !important;
 }
 .loading-overlay .loading-icon::after {
@@ -125,35 +82,23 @@ a:hover {
 
 // Generic page container
 .page-container {
-    padding: var(--tainacan-container-padding) var(--tainacan-one-column);
+    padding: 0 var(--tainacan-one-column);
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
 
-    &>p {
+    & > h2,
+    & > h3,
+    & > h4 {
+        margin: 0.75rem 0 1.125rem;
+    }
+    & > p {
         font-size: 0.8125em;
+        margin: 0.75rem 0 1.125rem;
     }
 }
 html.is-clipped .page-container:not(.is-filters-menu-open) {
     overflow-y: hidden;
-}
-
-// Used for pages with collection subheader
-.page-container-small {
-    height: calc(100% - 38px);
-    overflow-y: auto;
-    transition: height 0.6s;
-}
-html.is-clipped .page-container-small:not(.is-filters-menu-open) {
-    overflow-y: hidden;
-}
-// Used for pages with subheader in mobile
-.page-container-narrow {
-    padding: var(--tainacan-container-padding);
-    
-    @media screen and (max-width: 769px) {
-        padding: 1em;
-    }
 }
 
 // Metadata type textarea has different separators in different spots on interface
@@ -332,4 +277,93 @@ html.is-clipped .page-container-small:not(.is-filters-menu-open) {
 
 audio, video {
     width: 100%;
+}
+
+/* Items list style used in multiple places */
+.tainacan-compact-items-list {
+    list-style: none;
+    padding: 0px;
+    margin-bottom: 1rem;
+    column-width: 26ch;
+
+    @media screen and (max-width: 768px) {
+        -moz-column-count: 1;
+        -webkit-column-count: 1;
+        column-count: 1;
+    }
+
+    li {
+        display: flex;
+        align-items: center;
+        padding: 8px 32px 8px 6px;
+        width: 100%;
+        position: relative;
+        overflow-x: hidden;
+        border-radius: var(--tainacan-item-border-radius, 0px);
+
+        p {
+            line-height: normal;
+        }
+
+        &:hover {
+            cursor: pointer;
+            background-color: var(--tainacan-item-hover-background-color);
+
+            .actions-area {
+                opacity: 1;
+                visibility: 1;
+                right: 0;
+            }
+        }
+    }
+    .actions-area {
+        position: absolute;
+        right: -32px;
+        padding: 0 6px;
+        min-height: 28px;
+        min-width: 28px;
+        opacity: 0;
+        visibility: 0;
+        transition: right 0.3s ease;
+    }
+    .item-thumb {
+        display: flex;
+        height: 28px;
+        width: 28px;
+        margin-left: 3px;
+        margin-right: 8px;
+        overflow: hidden;
+        border-radius: var(--tainacan-item-border-radius, 0px);
+
+        :deep(img) {
+            border-radius: var(--tainacan-item-border-radius, 0px);
+        }
+    }
+}
+
+.tainacan-sub-header--sticky {
+    position: sticky;
+    top: calc(-1 * var(--tainacan-container-padding));
+    z-index: 999;
+    background: var(--tainacan-background-color);
+    height: auto;
+    min-height: 2.5em;
+    padding: 0.5em 0;
+    border-bottom: 1px solid #ddd;
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 4px;
+}
+.tainacan-page-title--sticky + .tainacan-sub-header--sticky {
+    top: calc( var(--tainacan-container-padding) + var(--tainacan-button-min-height, 2.571em) );
+}
+@media screen and (max-width: 768px) {
+    .tainacan-page-title--sticky:has(.dropdown.is-active.is-mobile-modal) {
+        z-index: 1 !important;
+    }
+    .tainacan-page-title--sticky:has(.dropdown.is-active.is-mobile-modal) + .tainacan-sub-header--sticky {
+        z-index: 0 !important;
+    }
 }

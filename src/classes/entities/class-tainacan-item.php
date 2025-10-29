@@ -5,7 +5,12 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Represents the Entity Item
+ * Represents a Tainacan Item entity.
+ *
+ * Items are the main content entities in Tainacan, containing
+ * metadata values, attachments, and relationships within collections.
+ *
+ * @since 1.0.0
  */
 class Item extends Entity {
 	use \Tainacan\Traits\Entity_Collection_Relation;
@@ -967,7 +972,7 @@ class Item extends Entity {
 	public function get_edit_url() {
 		$collection_id = $this->get_collection_id();
 		$id = $this->get_id();
-		return admin_url("?page=tainacan_admin#/collections/$collection_id/items/$id/edit");
+		return admin_url("admin.php?page=tainacan_admin#/collections/$collection_id/items/$id/edit");
 	}
 
 	/**
@@ -1235,7 +1240,7 @@ class Item extends Entity {
 							}, $term_values);
 						} else {
 							$term_values = $item_metadata->get_value();
-							$meta_values = $term_values == false ? [] : [ $term_values->get_id() ];
+							$meta_values = empty($term_values) ? [] : [ $term_values->get_id() ];
 						}
 
 					} else {

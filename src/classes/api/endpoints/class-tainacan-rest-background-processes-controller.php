@@ -2,14 +2,20 @@
 
 namespace Tainacan\API\EndPoints;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use \Tainacan\API\REST_Controller;
 use Tainacan\Repositories;
 use Tainacan\Entities;
 
 /**
- * Represents the Background Processes REST Controller
+ * REST API controller for managing Tainacan background processes.
  *
- * */
+ * Handles all REST API endpoints for background process operations including
+ * process monitoring, status checking, and process management.
+ *
+ * @since 1.0.0
+ */
 class REST_Background_Processes_Controller extends REST_Controller {
     
     /**
@@ -384,7 +390,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
         $guid = $request['guid'];
         $upload_url = wp_upload_dir();
-        $path = $upload_url['basedir'] . '/tainacan/' . $guid;
+        $path = realpath($upload_url['basedir'] . '/tainacan') . '/' . $guid;
         $real_file_path = realpath($path);
         if (strpos($real_file_path, $path) !== 0) {
             $error_def = [

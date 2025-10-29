@@ -4,7 +4,6 @@
             <h2 id="item-document-text-modal-title">
                 {{ $i18n.get('instruction_write_text') }}
             </h2>
-            <hr>
         </div>
         <b-input
                 ref="item-document-text-input"

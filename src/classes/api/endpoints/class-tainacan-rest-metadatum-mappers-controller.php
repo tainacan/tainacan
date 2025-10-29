@@ -2,9 +2,19 @@
 
 namespace Tainacan\API\EndPoints;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use \Tainacan\API\REST_Controller;
 use Tainacan\Entities\Metadatum;
 
+/**
+ * REST API controller for managing Tainacan metadatum mappers.
+ *
+ * Handles all REST API endpoints for metadatum mapper operations including
+ * mapper configuration, data transformation, and mapper management.
+ *
+ * @since 1.0.0
+ */
 class REST_Metadatum_Mappers_Controller extends REST_Controller {
 	protected function get_schema() {
         return "TODO:get_schema";

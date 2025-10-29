@@ -1,12 +1,23 @@
 <?php
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 /**
- * Base namespace for all rest api requests. WordPress default is 'wp/v2'.
+ * Base namespace for all Tainacan REST API requests.
+ *
+ * WordPress default is 'wp/v2', but Tainacan uses its own namespace.
+ *
+ * @since 1.0.0
  */
 const TAINACAN_REST_NAMESPACE = 'tainacan/v2';
 
 /**
- * Tainacan REST APIs initialization.
+ * Initializes all Tainacan REST API controllers.
+ *
+ * Creates instances of all REST API endpoint controllers for Tainacan
+ * functionality including items, collections, taxonomies, and more.
+ *
+ * @since 1.0.0
  */
 $rest_items_controller                = new \Tainacan\API\EndPoints\REST_Items_Controller();
 $rest_terms_controller                = new \Tainacan\API\EndPoints\REST_Terms_Controller();

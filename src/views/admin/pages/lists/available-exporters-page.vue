@@ -1,20 +1,23 @@
 <template>
-    <div class="repository-level-page page-container">
-        <tainacan-title
-                :bread-crumb-items="[{ path: '', label: $i18n.get('exporters') }]" />
+    <div class="tainacan-repository-level-colors page-container">
+        <tainacan-title :is-sticky="true" />
 
-        <h3>{{ $i18n.get('label_available_exporters') }}</h3>
+        <h2>{{ $i18n.get('label_available_exporters') }}</h2>
         <p>{{ $i18n.get('instruction_select_an_exporter_type') }}</p>
-        <div class="exporter-types-container">
-            <div
+        <div
+                role="list"
+                class="exporter-types-container tainacan-clickable-cards">
+            <template 
                     v-for="exporterType in availableExporters"
-                    :key="exporterType.slug"
-                    class="exporter-type"
-                    @click="onSelectExporter(exporterType)">
-                <h4>{{ exporterType.name }}</h4>
-                <p>{{ exporterType.description }}</p>
-            </div>
-
+                    :key="exporterType.slug">
+                <router-link
+                        class="exporter-type tainacan-clickable-card"
+                        :to="$routerHelper.getExporterEditionPath(exporterType.slug) + ( selectedCollection ? ('?sourceCollection=' + selectedCollection) : '' )"
+                        role="listitem">
+                    <h4>{{ exporterType.name }}</h4>
+                    <p>{{ exporterType.description }}</p>
+                </router-link>
+            </template>
         </div>
 
         <b-loading
@@ -31,14 +34,19 @@
         data(){
             return {
                 availableExporters: [],
-                isLoading: false
+                isLoading: false,
+                selectedCollection: false
             }
         },
         created() {
             this.isLoading = true;
+
+            this.selectedCollection = this.$route.query.sourceCollection;
+
             this.fetchAvailableExporters()
                 .then((res) => {
                     this.availableExporters = res;
+   
                     this.isLoading = false;
                 }).catch((error) => {
                     this.$console.log(error);
@@ -49,32 +57,12 @@
             ...mapActions('exporter', [
                 'fetchAvailableExporters'
             ]),
-            onSelectExporter(exporterType) {
-                this.$router.push(this.$routerHelper.getExporterEditionPath(exporterType.slug));
-            }
         }
     }
 </script>
 
 <style lang="scss" scoped>
 
-    .exporter-types-container {
-        display: flex;
-        flex-wrap: wrap;
-
-        .exporter-type {
-            border: 1px solid var(--tainacan-gray2);
-            padding: 15px;
-            margin: 20px;
-            cursor: pointer;
-            transition: border 0.3s ease;
-
-            &:hover {
-                border: 1px solid var(--tainacan-gray3);
-            }
-        }
-    }
+    @import '../../scss/_cards.scss';
 
 </style>
-
-

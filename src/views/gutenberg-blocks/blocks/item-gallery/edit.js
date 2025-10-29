@@ -1,16 +1,28 @@
 const { __ } = wp.i18n;
 
-const { Button, ButtonGroup, BaseControl, Placeholder, SelectControl, RangeControl, ToggleControl, PanelBody } = wp.components;
+const { 
+    Button, 
+    ButtonGroup,
+    __experimentalToggleGroupControl: ToggleGroupControl,
+	__experimentalToggleGroupControlOption: ToggleGroupControlOption,
+    BaseControl,
+    Placeholder,
+    SelectControl,
+    RangeControl,
+    ToggleControl,
+    PanelBody
+} = wp.components;
 
 const ServerSideRender = wp.serverSideRender;
 const { InspectorControls, useBlockProps, store } = wp.blockEditor;
 
 const { useSelect } = wp.data;
+const { useEffect } = wp.element;
 
 import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
 import pick from 'lodash/pick';
 
-import SingleItemModal from '../../js/selection/single-item-modal.js';
+import TainacanSingleItemSelectionModal from '../../js/selection/tainacan-single-item-selection-modal.js';
 import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
 
 export default function ({ attributes, setAttributes, isSelected, clientId }) {
@@ -48,20 +60,22 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
     const className = blockProps.className;
 
     // Obtains block's client id to render it on save function
-    setAttributes({ blockId: clientId });
-
+    useEffect(() => {
+        setAttributes({ blockId: clientId });
+	}, [ clientId ]);
+    
     // Checks if we are in template mode, if so, gets the collection Id from URL.
-    if ( !templateMode ) {
-        const possibleCollectionId = getCollectionIdFromPossibleTemplateEdition();
-        if (possibleCollectionId) {
-            collectionId = String(possibleCollectionId);
-            templateMode = true;
-            setAttributes({ 
-                collectionId: collectionId,
-                templateMode: templateMode
-            });
+    useEffect(() => {
+        if ( !templateMode || ( templateMode && !collectionId ) ) {
+            const possibleCollectionId = getCollectionIdFromPossibleTemplateEdition();
+            if ( possibleCollectionId ) {
+                setAttributes({ 
+                    collectionId: String(possibleCollectionId),
+                    templateMode: true
+                });
+            }
         }
-    }
+    }, [ templateMode, collectionId ]);
 
     // Get available image sizes
     const {	imageSizes } = useSelect(
@@ -306,26 +320,48 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                         <BaseControl
                                 id="lightbox-color-scheme"
                                 label={ __('Background color scheme', 'tainacan') }>
-                            <ButtonGroup id="lightbox-color-scheme">   
-                                <Button 
-                                        onClick={ () => {
-                                                lightboxHasLightBackground = false;
-                                                setAttributes({ lightboxHasLightBackground: lightboxHasLightBackground });
+                            { tainacan_blocks.wp_version >= '6.8' ?
+                                <ToggleGroupControl
+                                        __next40pxDefaultSize
+                                        __nextHasNoMarginBottom
+                                        isBlock
+                                        id="lightbox-color-scheme"
+                                        onChange={ ( newLightboxHasLightBackground ) => {
+                                            setAttributes({ lightboxHasLightBackground: newLightboxHasLightBackground === 'true' });
+                                        } }
+                                        value={ lightboxHasLightBackground ? 'true' : 'false' }
+                                >
+                                    <ToggleGroupControlOption
+                                        label={ __('Dark', 'tainacan') }
+                                        value="false"
+                                    />
+                                    <ToggleGroupControlOption
+                                        label={ __('Light', 'tainacan') }
+                                        value="true"
+                                    />
+                                </ToggleGroupControl>
+                                :
+                                <ButtonGroup id="lightbox-color-scheme">   
+                                    <Button 
+                                            onClick={ () => {
+                                                    lightboxHasLightBackground = false;
+                                                    setAttributes({ lightboxHasLightBackground: lightboxHasLightBackground });
+                                                }
                                             }
-                                        }
-                                        variant={ lightboxHasLightBackground ? 'secondary' : 'primary' }>
-                                    { __('Dark', 'tainacan') }
-                                </Button>
-                                <Button 
-                                        onClick={ () => {
-                                                lightboxHasLightBackground = true;
-                                                setAttributes({ lightboxHasLightBackground: lightboxHasLightBackground });
+                                            variant={ lightboxHasLightBackground ? 'secondary' : 'primary' }>
+                                        { __('Dark', 'tainacan') }
+                                    </Button>
+                                    <Button 
+                                            onClick={ () => {
+                                                    lightboxHasLightBackground = true;
+                                                    setAttributes({ lightboxHasLightBackground: lightboxHasLightBackground });
+                                                }
                                             }
-                                        }
-                                        variant={ lightboxHasLightBackground ? 'primary' : 'secondary' }>
-                                    { __('Light', 'tainacan') }
-                                </Button>
-                            </ButtonGroup>
+                                            variant={ lightboxHasLightBackground ? 'primary' : 'secondary' }>
+                                        { __('Light', 'tainacan') }
+                                    </Button>
+                                </ButtonGroup>
+                            }
                         </BaseControl>
                         <ToggleControl
                             label={__('Hide file name', 'tainacan')}
@@ -362,7 +398,7 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                 ( 
                 <div>
                     { isModalOpen ?
-                        <SingleItemModal
+                        <TainacanSingleItemSelectionModal
                             modalTitle={ __('Select one item to create its media gallery', 'tainacan') }
                             applyButtonLabel={ __('Create gallery from this item', 'tainacan') }
                             existingCollectionId={ collectionId }
@@ -392,10 +428,12 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(
-                        <img
-                            width={148}
-                            src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                            alt="Tainacan Logo"/>
+                        <span style={{ display: 'inline-block', width: '148px' }}>
+                            <img
+                                style={{ width: '100%', height: 'auto' }}
+                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
+                                alt="Tainacan Logo"/>
+                        </span>
                     )}>
                     <p>
                         <svg

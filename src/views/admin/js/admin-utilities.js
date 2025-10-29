@@ -26,7 +26,7 @@ ConsolePlugin.install = function (app, options = { visual: false }) {
             if (options.visual) {
                 app.config.globalProperties.$buefy.snackbar.open({
                     message: tainacanSanitize(something),
-                    type: 'is-secondary',
+                    type: 'is-primary',
                     position: 'is-bottom-right',
                     indefinite: true,
                     queue: false
@@ -39,7 +39,7 @@ ConsolePlugin.install = function (app, options = { visual: false }) {
             if (options.visual) {
                 app.config.globalProperties.$buefy.snackbar.open({
                     message: tainacanSanitize(someInfo),
-                    type: 'is-primary',
+                    type: 'is-dark',
                     position: 'is-bottom-right',
                     duration: 5000,
                     queue: false
@@ -161,10 +161,10 @@ UserPrefsPlugin.install = function (app, options = {}) {
             'map_view_mode_selected_geocoordinate_metadatum': 0
         },
         init() {
-            if (tainacan_plugin.user_prefs == undefined || tainacan_plugin.user_prefs == '') {
+            if (tainacan_user.prefs == undefined || tainacan_user.prefs == '') {
                 let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
 
-                if (tainacan_plugin.nonce) {
+                if (tainacan_user.nonce) {
                     axios.wpApi.post('/users/me/', qs.stringify(data))
                         .then( updatedRes => {
                             let prefs = JSON.parse(updatedRes.data.meta['tainacan_prefs']);
@@ -173,42 +173,34 @@ UserPrefsPlugin.install = function (app, options = {}) {
                         .catch( () => console.log("Request to /users/me failed. Maybe you're not logged in.") );
                 }
             } else {
-                let prefs = JSON.parse(tainacan_plugin.user_prefs);
-                this.tainacanPrefs = prefs;
+                this.tainacanPrefs = tainacan_user.prefs ? JSON.parse(tainacan_user.prefs) : {};
             }
         },
         get(key) {
             return this.tainacanPrefs[key] ? this.tainacanPrefs[key] : undefined;
         },
-        set(key, value) {
+        async set(key, value) {
             this.tainacanPrefs[key] = value;
 
             let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
 
-            if (tainacan_plugin.nonce) {
-                return new Promise(( resolve, reject ) => {
-                    axios.wpApi.post('/users/me/', qs.stringify(data))
-                        .then( res => {
-                            let prefs = JSON.parse(res.data.meta['tainacan_prefs']);
-                            this.tainacanPrefs[key] = prefs[key];
-                            if (prefs[key]) {
-                                resolve( prefs[key] );
-                            } else {
-                                this.tainacanPrefs[key] = value;
-                            }
-                        })
-                        .catch( () => console.log("Request to /users/me failed. Maybe you're not logged in.") );
-                });
+            if (tainacan_user.nonce) {
+                    try {
+                        const res = await axios.wpApi.post('/users/me/', qs.stringify(data));
+                        let prefs = JSON.parse(res.data.meta['tainacan_prefs']);
+                        this.tainacanPrefs[key] = prefs[key];
+                        return prefs[key];
+                    } catch (e) {
+                        console.log("Request to /users/me failed. Maybe you're not logged in.");
+                        return undefined;
+                    }
             } else {
-                return new Promise(() => {})
-                    .then( () => {
-                        resolve(value);
-                    });
+                return value;
             }
         },
         clean() {
             let data = {'meta': {'tainacan_prefs': ''} };
-            if (tainacan_plugin.nonce)
+            if (tainacan_user.nonce)
                 axios.wpApi.post('/users/me/', qs.stringify(data));
         }
     }
@@ -220,12 +212,36 @@ export const RouterHelperPlugin = {};
 RouterHelperPlugin.install = function (app, options = {}) {
     
     app.config.globalProperties.$routerHelper = {
+        updatePageTitle(title) {
+            document.title = title;
+        },
+        appendToPageTitle(titleSuffix) {
+            const title = app.config.globalProperties.$route.meta.title + ' ' + titleSuffix;
+            this.updatePageTitle(title);
+        },
+        getAbsoluteAdminPath() {
+            return tainacan_plugin.admin_url + '?page=tainacan_admin#';
+        },
         // Lists
         getCollectionsPath(query) {
             return '/collections/?' + qs.stringify(query);
         },
         getCollectionItemsPath(collectionId, query) {
+            if ( 
+                app.config.globalProperties.$adminOptions && 
+                app.config.globalProperties.$adminOptions.hideNavigationCollectionItemsButton && 
+                !app.config.globalProperties.$adminOptions.hideNavigationCollectionMyItemsButton &&
+                tainacan_user.data &&
+                tainacan_user.data.ID 
+            )
+                return this.getCollectionMyItemsPath(collectionId, query);
             return '/collections/'+ collectionId + '/items/?' + qs.stringify(query);
+        },
+        getCollectionMyItemsPath(collectionId, query) {
+            if (query.authorid == undefined || query.authorid == '' || query.authorid == null)
+                query.authorid = tainacan_user.data.ID;
+
+            return '/collections/'+ collectionId + '/my-items/?' + qs.stringify(query);
         },
         getCollectionSequenceEditPath(collectionId, sequenceId, itemPosition) {
             return '/collections/'+ collectionId + '/sequence/' + sequenceId + '/' + itemPosition;
@@ -243,7 +259,22 @@ RouterHelperPlugin.install = function (app, options = {}) {
             return '/collections/'+ collectionId + '/capabilities/';
         },
         getItemsPath(query) {
+            if ( 
+                app.config.globalProperties.$adminOptions && 
+                app.config.globalProperties.$adminOptions.hideNavigationCollectionItemsButton && 
+                !app.config.globalProperties.$adminOptions.hideNavigationCollectionMyItemsButton &&
+                tainacan_user.data &&
+                tainacan_user.data.ID
+            )
+                return this.getMyItemsPath(query);
+
             return '/items/?' + qs.stringify(query);
+        },
+        getMyItemsPath(query) {
+            if (query.authorid == undefined || query.authorid == '' || query.authorid == null)
+                query.authorid = tainacan_user.data.ID;
+
+            return '/my-items/?' + qs.stringify(query);
         },
         getTaxonomiesPath() {
             return '/taxonomies/'
@@ -263,15 +294,27 @@ RouterHelperPlugin.install = function (app, options = {}) {
         getAvailableImportersPath() {
             return '/importers';
         },
-        getProcessesPage(highlightedProcess) {
+        getProcessesPath(highlightedProcess) {
             if (highlightedProcess)
-                return '/activities?tab=processes&highlight=' + highlightedProcess;
+                return '/processes?highlight=' + highlightedProcess;
             else 
-                return '/activities?tab=processes';
+                return '/processes';
         },
         // Singles
         getCollectionPath(id) {
+            if ( 
+                app.config.globalProperties.$adminOptions && 
+                app.config.globalProperties.$adminOptions.hideNavigationCollectionItemsButton && 
+                !app.config.globalProperties.$adminOptions.hideNavigationCollectionMyItemsButton &&
+                tainacan_user.data &&
+                tainacan_user.data.ID
+            )
+                return this.getMyCollectionPath(id);
+
             return '/collections/' + id;
+        },
+        getMyCollectionPath(id) {
+            return '/collections/' + id + '/my-items?authorid=' + tainacan_user.data.ID;
         },
         getItemPath(collectionId, itemId) {
             return '/collections/' + collectionId + '/items/' + itemId;
@@ -371,7 +414,7 @@ UserCapabilitiesPlugin.install = function (app, options = {}) {
     
     app.config.globalProperties.$userCaps = {
         hasCapability(key) {
-            return tainacan_plugin.user_caps[key];
+            return tainacan_user.caps[key];
         }
     }
 };
@@ -382,11 +425,26 @@ StatusHelperPlugin.install = function (app, options = {}) {
     
     app.config.globalProperties.$statusHelper = {
         statuses: [
-            { name: tainacan_plugin.i18n['status_publish'], slug: 'publish' },
-            { name: tainacan_plugin.i18n['status_private'], slug: 'private' },
-            { name: tainacan_plugin.i18n['status_pending'], slug: 'pending' },
-            { name: tainacan_plugin.i18n['status_draft'], slug: 'draft' },
-            { name: tainacan_plugin.i18n['status_trash'], slug: 'trash' }
+            {
+                name: tainacan_plugin.i18n['status_publish'],
+                slug: 'publish'
+            },
+            {
+                name: tainacan_plugin.i18n['status_private'],
+                slug: 'private'
+            },
+            {
+                name: tainacan_plugin.i18n['status_pending'],
+                slug: 'pending'
+            },
+            {
+                name: tainacan_plugin.i18n['status_draft'],
+                slug: 'draft'
+            },
+            {
+                name: tainacan_plugin.i18n['status_trash'],
+                slug: 'trash'
+            }
         ],
         getIcon(status) {
             switch (status) {
@@ -401,6 +459,18 @@ StatusHelperPlugin.install = function (app, options = {}) {
         hasIcon(status) {
             return ['publish', 'pending', 'private', 'draft', 'trash'].includes(status);
         },
+        getDescription(status) {
+            switch (status) {
+                case 'publish': return tainacan_plugin.i18n['status_publish_description'];
+                case 'private': return tainacan_plugin.i18n['status_private_description'];      
+                case 'pending': return tainacan_plugin.i18n['status_pending_description'];
+                case 'draft': return tainacan_plugin.i18n['status_draft_description'];
+                case 'trash': return tainacan_plugin.i18n['status_trash_description'];
+            }
+        },
+        hasDescription(status) {
+            return ['publish', 'pending', 'private', 'draft', 'trash'].includes(status);
+        },
         getStatuses() {
             return this.statuses;
         },
@@ -413,8 +483,8 @@ StatusHelperPlugin.install = function (app, options = {}) {
                     if (loadedStatus['publish'] != undefined)
                         this.statuses.push(loadedStatus['publish']);
                     
-                    this.statuses.concat(Object.values(loadedStatus).filter((status) => {
-                        return !['publish','private', 'pending', 'draft', 'trash'].includes(status.slug); 
+                    this.statuses = this.statuses.concat(Object.values(loadedStatus).filter((status) => {
+                        return !['publish','private', 'pending', 'draft', 'trash', 'future'].includes(status.slug); 
                     }));
 
                     // We always show pending, private, draft and trash
@@ -489,7 +559,7 @@ AxiosErrorHandlerPlugin.install = function (app, options = {}) {
                         ariaRole: 'alertdialog',
                         ariaModal: true,
                         customClass: 'tainacan-modal',
-                        closeButtonAriaLabel: i18nGet('close')
+                        canCancel: ['escape', 'outside']
                     });
                 }
             });
@@ -532,235 +602,52 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
         }
         app.config.globalProperties.$adminOptions = objectOptions;
 
+        if (
+            app.config.globalProperties.$adminOptions['itemCreationMode'] ||
+            app.config.globalProperties.$adminOptions['itemEditionMode'] ||
+            app.config.globalProperties.$adminOptions['itemsMultipleSelectionMode'] ||
+            app.config.globalProperties.$adminOptions['itemsSingleSelectionMode'] ||
+            app.config.globalProperties.$adminOptions['itemsSearchSelectionMode'] ||
+            app.config.globalProperties.$adminOptions['mobileAppMode']
+        ) {
+            app.config.globalProperties.$router.removeRoute('CollectionsPage');
+            app.config.globalProperties.$router.removeRoute('CollectionCreationForm');
+            app.config.globalProperties.$router.removeRoute('CollectionItemBulkAddPage');
+            app.config.globalProperties.$router.removeRoute('CollectionEditionForm');
+            app.config.globalProperties.$router.removeRoute('CollectionMetadataPage');
+            app.config.globalProperties.$router.removeRoute('CollectionFiltersPage');
+            app.config.globalProperties.$router.removeRoute('CollectionActivitiesPage');
+            app.config.globalProperties.$router.removeRoute('CollectionCapabilitiesPage');
+            app.config.globalProperties.$router.removeRoute('CollectionReportsPage');
+            app.config.globalProperties.$router.removeRoute('MappedCollectionCreationForm');
+            app.config.globalProperties.$router.removeRoute('FiltersPage');
+            app.config.globalProperties.$router.removeRoute('MetadataPage');
+            app.config.globalProperties.$router.removeRoute('TaxonomyPage');
+            app.config.globalProperties.$router.removeRoute('TaxonomyCreationForm');
+            app.config.globalProperties.$router.removeRoute('TaxonomyEditionForm');
+            app.config.globalProperties.$router.removeRoute('ActivitiesPage');
+            app.config.globalProperties.$router.removeRoute('ProcessesPage');
+            app.config.globalProperties.$router.removeRoute('CapabilitiesPage');
+            app.config.globalProperties.$router.removeRoute('ReportsPage');
+            app.config.globalProperties.$router.removeRoute('AvailableImportersPage');
+            app.config.globalProperties.$router.removeRoute('ImporterEditionForm');
+            app.config.globalProperties.$router.removeRoute('ImporterCreationForm');
+            app.config.globalProperties.$router.removeRoute('ImporterMappingForm');
+            app.config.globalProperties.$router.removeRoute('ExportersPage');
+            app.config.globalProperties.$router.removeRoute('ExporterEditionForm');
+        }
+
+        if (
+            app.config.globalProperties.$adminOptions['itemsMultipleSelectionMode'] ||
+            app.config.globalProperties.$adminOptions['itemsSingleSelectionMode'] ||
+            app.config.globalProperties.$adminOptions['itemsSearchSelectionMode'] 
+        ) {
+            app.config.globalProperties.$router.removeRoute('ItemPage');
+            app.config.globalProperties.$router.removeRoute('ItemEditionForm');
+            app.config.globalProperties.$router.removeRoute('CollectionItemCreatePage');
+        }
+
     } catch(e) {
         app.config.globalProperties.$adminOptions = {};
     }
-
-    // Declares common 'modes', which group certain admin options
-    // Order matters here, as the latest overrides previous ones
-    const adminSpecialModes = {
-        itemsSingleSelectionMode: {
-            hideTainacanHeader: true,
-            hidePrimaryMenu: true,
-            hideRepositorySubheader: true,
-            hideCollectionSubheader: true,
-            hideItemsListMultipleSelection: true,
-            hideItemsListBulkActionsButton: true,
-            hideItemsListContextMenuOpenItemOption: true,
-            hideItemsListContextMenuOpenItemOnNewTabOption: true,
-            hideItemsListContextMenuEditItemOption: true,
-            hideItemsListContextMenuCopyItemOption: true,
-            hideItemsListContextMenuDeleteItemOption: true,
-            hideItemsListActionAreas: true,
-            hideItemsListPageTitle: true,
-            hideItemsListCreationDropdown: true,
-            hideItemsListExposersButton: true,
-            hideItemsListStatusTabs: true,
-            hideItemsListFilterCreationButton: true
-        },
-        itemsMultipleSelectionMode: {
-            hideTainacanHeader: true,
-            hidePrimaryMenu: true,
-            hideRepositorySubheader: true,
-            hideCollectionSubheader: true,
-            hideItemsListMultipleSelection: true,
-            hideItemsListBulkActionsButton: true,
-            hideItemsListContextMenuOpenItemOption: true,
-            hideItemsListContextMenuOpenItemOnNewTabOption: true,
-            hideItemsListContextMenuEditItemOption: true,
-            hideItemsListContextMenuCopyItemOption: true,
-            hideItemsListContextMenuDeleteItemOption: true,
-            hideItemsListActionAreas: true,
-            hideItemsListPageTitle: true,
-            hideItemsListCreationDropdown: true,
-            hideItemsListExposersButton: true,
-            hideItemsListStatusTabs: true,
-            hideItemsListFilterCreationButton: true
-        },
-        itemsSearchSelectionMode: {
-            hideTainacanHeader: true,
-            hidePrimaryMenu: true,
-            hideRepositorySubheader: true,
-            hideCollectionSubheader: true,
-            hideItemsListMultipleSelection: true,
-            hideItemsListBulkActionsButton: true,
-            hideItemsListActionAreas: true,
-            hideItemsListPageTitle: true,
-            hideItemsListCreationDropdown: true,
-            hideItemsListExposersButton: true,
-            hideItemsListContextMenu: true,
-            hideItemsListSelection: true,
-            hideItemsListStatusTabs: true,
-            hideItemsListFilterCreationButton: true
-        },
-        itemEditionMode: {
-            hideTainacanHeader: true,
-            hidePrimaryMenu: true,
-            hideRepositorySubheader: true,
-            hideCollectionSubheader: true
-        },
-        mobileAppMode: {
-            hideTainacanHeader: true,
-            hidePrimaryMenu: true,
-            hideRepositorySubheader: true,
-            hideCollectionSubheader: true,
-            hideItemsListPageTitle: true,
-            hideItemEditionPageTitle: true,
-            hideBulkEditionPageTitle: true,
-            hideItemSingleCollectionName: true,
-            hideItemEditionCollapses: true,
-            hideItemEditionMetadataTypes: true,
-            itemEditionDocumentInsideTabs: true,
-            itemEditionAttachmentsInsideTabs: true,
-            itemEditionPublicationSectionInsideTabs: true
-        }
-    }
-    for (let adminSpecialMode in adminSpecialModes) {
-
-        if (app.config.globalProperties.$adminOptions[adminSpecialMode]) {
-
-            console.log('Tainacan Admin loaded in ' + adminSpecialMode);
-
-            // Under these special modes, several routes do not need to exist
-            if (
-                adminSpecialMode === 'itemsMultipleSelectionMode' ||
-                adminSpecialMode === 'itemsSingleSelectionMode' ||
-                adminSpecialMode === 'itemsSearchSelectionMode' ||
-                adminSpecialMode === 'itemEditionMode'
-            ) {
-                app.config.globalProperties.$router.removeRoute('HomePage');
-                app.config.globalProperties.$router.removeRoute('CollectionsPage');
-                app.config.globalProperties.$router.removeRoute('CollectionCreationForm');
-                app.config.globalProperties.$router.removeRoute('CollectionItemBulkAddPage');
-                app.config.globalProperties.$router.removeRoute('CollectionEditionForm');
-                app.config.globalProperties.$router.removeRoute('CollectionMetadataPage');
-                app.config.globalProperties.$router.removeRoute('CollectionFiltersPage');
-                app.config.globalProperties.$router.removeRoute('CollectionActivitiesPage');
-                app.config.globalProperties.$router.removeRoute('CollectionCapabilitiesPage');
-                app.config.globalProperties.$router.removeRoute('MappedCollectionCreationForm');
-                app.config.globalProperties.$router.removeRoute('FiltersPage');
-                app.config.globalProperties.$router.removeRoute('MetadataPage');
-                app.config.globalProperties.$router.removeRoute('TaxonomyPage');
-                app.config.globalProperties.$router.removeRoute('TaxonomyCreationForm');
-                app.config.globalProperties.$router.removeRoute('TaxonomyEditionForm');
-                app.config.globalProperties.$router.removeRoute('ActivitiesPage');
-                app.config.globalProperties.$router.removeRoute('CapabilitiesPage');
-                app.config.globalProperties.$router.removeRoute('AvailableImportersPage');
-                app.config.globalProperties.$router.removeRoute('ImporterEditionForm');
-                app.config.globalProperties.$router.removeRoute('ImporterCreationForm');
-                app.config.globalProperties.$router.removeRoute('ImporterMappingForm');
-                app.config.globalProperties.$router.removeRoute('ExportersPage');
-                app.config.globalProperties.$router.removeRoute('ExporterEditionForm');
-            }
-
-            for (let option in adminSpecialModes[adminSpecialMode])
-                app.config.globalProperties.$adminOptions[option] = adminSpecialModes[adminSpecialMode][option];
-        }
-    }
-    
-    /*
-        Possible Values for Admin Options. Identation marks options that affects others:
-        * hideHomeRepositorySection
-            * hideHomeThemeCollectionsButton
-            * hideHomeThemeItemsButton
-            * hideHomeTaxonomiesButton
-            * hideHomeMetadataButton
-            * hideHomeFiltersButton
-            * hideHomeImportersButton
-            * hideHomeExportersButton
-            * hideHomeActivitiesButton
-        * hideHomeCollectionsSection
-            * hideHomeCollectionsButton
-            * hideHomeCollectionItemsButton
-            * hideHomeCollectionSettingsButton
-            * hideHomeCollectionMetadataButton
-            * hideHomeCollectionFiltersButton
-            * hideHomeCollectionActivitiesButton
-            * hideHomeCollectionThemeCollectionButton
-            * hideHomeCollectionCreateNewButton
-            * showHomeCollectionCreateItemButton // Default is false
-            * homeCollectionsPerPage // Default is 9
-            * homeCollectionsOrderBy // Default is 'modified'
-            * homeCollectionsOrder // Default is 'desc'
-        * hideTainacanHeader
-            * tainacanHeaderExtraLabel // Adds a textual label aside the Tainacan Logo. 
-            * hideTainacanHeaderHomeButton
-            * hideTainacanHeaderSearchInput
-            * hideTainacanHeaderAdvancedSearch
-            * hideTainacanHeaderProcessesPopup
-        * hidePrimaryMenu
-            * hidePrimaryMenuCompressButton
-            * hidePrimaryMenuRepositoryButton
-            * hidePrimaryMenuCollectionsButton
-            * hidePrimaryMenuItemsButton
-            * hidePrimaryMenuTaxonomiesButton
-            * hidePrimaryMenuMetadataButton
-            * hidePrimaryMenuFiltersButton
-            * hidePrimaryMenuImportersButton
-            * hidePrimaryMenuExportersButton
-            * hidePrimaryMenuActivitiesButton
-            * hidePrimaryMenuCapabilitiesButton
-        * hideRepositorySubheader
-            * hideRepositorySubheaderViewCollectionButton
-            * hideRepositorySubheaderViewCollectionsButton
-            * hideRepositorySubheaderExportButton
-        * hideCollectionSubheader
-        
-        * hideCollectionsListCreationDropdown 
-
-        * hideItemsListPageTitle
-        * hideItemsListMultipleSelection
-        * hideItemsListSelection
-        * hideItemsListBulkActionsButton
-        * hideItemsListCreationDropdown
-            * hideItemsListCreationDropdownBulkAdd
-            * hideItemsListCreationDropdownImport
-        * hideItemsListAdvancedSearch
-        * hideItemsListExposersButton
-        * hideItemsListStatusTabs
-            * hideItemsListStatusTabsTotalItems
-        * hideItemsListContextMenu
-            * hideItemsListContextMenuOpenItemOption
-            * hideItemsListContextMenuOpenItemOnNewTabOption
-            * hideItemsListContextMenuEditItemOption
-            * hideItemsListContextMenuCopyItemOption
-            * hideItemsListContextMenuDeleteItemOption
-        * hideItemsListActionAreas
-        * hideItemsListFilterCreationButton
-
-        * hideItemEditionPageTitle
-        * hideItemEditionCollectionName
-        * hideItemEditionPublicationSection
-            * hideItemEditionStatusOptions // Deprecated in Version 0.21.10 due to new status system.
-            * hideItemEditionStatusPublishOption
-            * hideItemEditionCommentsToggle
-        * hideItemEditionDocument
-            * hideItemEditionDocumentFileInput
-            * hideItemEditionDocumentTextInput
-            * hideItemEditionDocumentUrlInput
-        * hideItemEditionThumbnail
-        * hideItemEditionAttachments
-        * hideItemEditionCollapses
-        * hideItemEditionFocusMode
-        * hideItemEditionRequiredOnlySwitch
-        * hideItemEditionMetadataTypes
-        * allowItemEditionModalInsideModal // Not recommended!
-        * itemEditionStatusOptionOnFooterDropdown
-        * itemEditionPublicationSectionInsideTabs
-        * itemEditionDocumentInsideTabs
-        * itemEditionAttachmentsInsideTabs
-        
-        * hideBulkEditionPageTitle
-        
-        * hideItemSinglePageTitle
-        * hideItemSingleCollectionName
-        * hideItemSingleCurrentStatus
-        * hideItemSingleCurrentVisibility
-        * hideItemSingleCommentsOpen
-        * hideItemSingleDocument
-        * hideItemSingleThumbnail
-        * hideItemSingleAttachments
-        * hideItemSingleActivities
-        * hideItemSingleExposers
-    */
 };

@@ -2,16 +2,64 @@
 
 namespace Tainacan;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use WP_CLI;
 use Tainacan\Repositories;
 
+/**
+ * Handles WP-CLI commands for Tainacan collections.
+ *
+ * Provides command-line interface for managing collections including
+ * listing, removing items, and other collection operations.
+ *
+ * @since 1.0.0
+ */
 class Cli_Collection {
 
+	/**
+	 * Collection repository instance.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var \Tainacan\Repositories\Collections
+	 */
 	private $collection_repository;
+
+	/**
+	 * Items repository instance.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var \Tainacan\Repositories\Items
+	 */
 	private $items_repository;
+
+	/**
+	 * Result count for operations.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var array
+	 */
 	private $result_count;
+
+	/**
+	 * Whether to perform a dry run without making changes.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var bool
+	 */
 	private $dry_run = false;
 
+	/**
+	 * Constructor for the Cli_Collection class.
+	 *
+	 * Initializes repository instances and result counters.
+	 *
+	 * @since 1.0.0
+	 */
 	public function __construct() {
 		$this->items_repository = Repositories\Items::get_instance();
 		$this->collection_repository = Repositories\Collections::get_instance();
@@ -19,10 +67,12 @@ class Cli_Collection {
 	}
 
 	/**
-	 * Show a list of collections.
+	 * Shows a list of all collections.
+	 *
+	 * Displays a table with collection IDs and titles.
 	 *
 	 * ## EXAMPLES
-   *
+	 *
 	 * wp tainacan collection list
 	 * +------+-------------------+
 	 * | ID   | title             |
@@ -32,7 +82,10 @@ class Cli_Collection {
 	 * | 1177 | Livros            |
 	 * | 1157 | autores           |
 	 * +------+-------------------+
-   *
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
 	 */
 	public function list() {
 		$response = [];

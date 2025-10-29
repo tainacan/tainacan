@@ -5,7 +5,7 @@ namespace Tainacan\Traits;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Class for formatter texts
+ * Class for Singleton pattern
  * @author Vinicius Nunus - L3P/Medialab
  *
  */
@@ -21,6 +21,10 @@ trait Singleton_Instance {
 	}
 
 	private function __construct() {
+		$parent = get_parent_class($this);
+		if ( $parent && method_exists($parent, '__construct') ) {
+			parent::__construct();
+		}
 		$this->init();
 	}
 }

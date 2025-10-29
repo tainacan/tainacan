@@ -1,93 +1,90 @@
 === Tainacan ===
-Contributors: andrebenedito, daltonmartins, fabianobn, jacsonp, leogermani, weryques, wetah, eduardohumberto, ravipassos, jessicafpx, marinagiolo, omarceloavila, vnmedeiros, tainacan, suelanesilva, ccaio, alanargomes, ateneagarcia123, rodrigo0freire, clarandreozzi
+Contributors: alanargomes, andrebenedito, ateneagarcia123, ccaio, clarandreozzi, daltonmartins, eduardohumberto, fabianobn, jacsonp, jessicafpx, leogermani, marinagiolo, omarceloavila, ravipassos, rodrigo0freire, suelanesilva, tainacan, vnmedeiros, weryques, wetah
 Tags: museums, archives, GLAM, collections, repository
 Requires at least: 5.9
 Tested up to: 6.8
 Requires PHP: 7.0
 Stable tag: 0.21.16
-License: GPLv2 or later
+License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-
-Tainacan is an open-source, powerful and flexible digital repository platform for WordPress. 
+A powerful and flexible open-source repository platform that brings digital collection management to WordPress.
 
 == Description ==
 
-[Tainacan](https://tainacan.org/) is an [open-source](https://github.com/tainacan/tainacan), powerful and flexible digital repository platform for WordPress. Manage and publish your digital collections just as easily as you post to your blog, having all the tools of a professional repository platform. It can be used for the creation of a digital collection, a digital library or a digital repository for your institutional or personal collection.
+[Tainacan](https://tainacan.org/) is an [open-source](https://github.com/tainacan/tainacan) repository platform that turns WordPress into a powerful and flexible environment for managing and publishing digital collections — as easily as writing a blog post.
 
-Tainacan aims to facilitate the activities of organizing, documenting, disseminating and displaying digital objects based on simple and accessible principles of digital curation. The plugin integrates with the WordPress block engine, making it easy to reuse objects for different and varied uses. You can manage and publish your digital collections as easily as posting to your blog. It is versatile and can be used to create a digital collection, a digital library or a digital repository for your institutional or personal collection.
+Designed for cultural institutions, research projects, archives, museums, and any kind of digital collection, Tainacan integrates seamlessly with the WordPress block editor and takes full advantage of its ecosystem.
+
+**Key Features:**
 
 
-
-= Features =
-
-* "Metadata and Filters": Use a metadata standard or choose whatever set of metadata you want to describe the items in your collections. Also, choose which metadata will be used as a filter when browsing collections.
-
-* "Faceted Search". Browse your collection (and let the public browse it) using a faceted search interface with the filters you have chosen.
-
-* "Manage Taxonomies": Manage vocabularies that can be used across all your collections.
-
-* "Themes": The Tainacan plugin has its own default theme, which helps you to showcase your collections beautifully and effectively. But it can also work with any WordPress theme, so interface developers can easily add Tainacan-specific features to an existing theme.
-
-* "API and Interoperability": Tainacan implements a RESTful API (read and write) to allow other applications to interact with your repository. That way, you can expose your collection in different formats, such as JSON, CSV, HTML and others. If your collection has a specific set of metadata, you can map this metadata to match the patterns you want to use.
-
-* "Gutenberg blocks": Tell stories with your collections. Tainacan offers you several Gutenberg blocks so you can present your collections to the public in many different ways!
-
-== Getting Started ==
-
-After installation, you will see a new menu item in your admin panel called "Tainacan". Click on it to open the Tainacan admin interface.
-
-To get an overview of the main concepts of Tainacan, please visit [this page](https://tainacan.github.io/tainacan-wiki/#/general-concepts).
-
-= Create a collection =
-
-Click "New Collection" to create a new collection, use a mapping standard or import it using one of our importers.
-
-= Configure your collection =
-
-Navigate to the top menu to set your collection up. Create the metadata that items in this collection will have, and choose, from these metadata, which ones are going to be used as a filter.
-
-= Add items =
-
-Back to the "Items" screen, click "Add new" to create a new item.
-
-= Manage and browse your collection =
-
-Through this admin interface, you can manage your collection and browse its items using the faceted search interface or advanced search interface.
-
-If you want to visit your collections on the public side of your site, using your current theme, visit http://your-site/collections and you will get the list of your collections.
-
-= Set up Taxonomies =
-
-You can also have metadata as taxonomies, which you can configure with a set of hierarchical terms of your own vocabulary.
-
-= Add links to your menu =
-
-Edit your menu and links directly to your collections. Click "Screen options" at the top of the Edit Menu page and enable "Collections".
-
-If you want to add a link to the list of collections, click the "View all" tab on the Collections box on the left, and then add the first item named "Collections" to the menu.
-
-= Faceted search in your theme =
-
-To have a fully-featured faceted search in your theme, you can either make it compatible with a few templates or use our Faceted Search Block.
+* **Free and open source** – Licensed under GPLv3: use, modify, and share freely
+* **WordPress based** - Built to last taking advantage of the power of the WordPress ecosystem and features
+* **Compatible with any theme** - Use the Tainacan Interface theme or adapt any WordPress theme
+* **Easy management** - Create collections, define metadata, manage users, and publish content effortlessly
+* **Highly customizable** - Configure metadata, taxonomies, and filters to match your project’s needs
+* **Faceted search** - Offer advanced browsing with intuitive custom filters
+* **Importing and exporting** - Import bulk data from spreadsheets, export in CSV, XLSX, JSON, and other formats
+* **API and interoperability** - Complete RESTful API with support for metadata mapping to standards such as Dublin Core
+* **Gutenberg blocks** - Tell stories about your digital archive using a variety of blocks anywhere in your site
 
 == Installation ==
 
-Upload the files to the plugins directory and activate it. You can also install and activate directly from the admin panel.
+1. Upload the `tainacan` folder to the `/wp-content/plugins/` directory
+2. Activate the plugin through the 'Plugins' menu in WordPress
+3. You will see a new menu item called "Tainacan" in your admin panel
+4. Click on it to open the Tainacan admin interface and start creating your collections
 
-If you have Imagick installed on your server, Tainacan will be able to automatically generate a thumbnail from your PDF files. This is desired but not required.
+**Requirements:**
 
-== Find out more ==
-
-* Visit our official website: [https://tainacan.org/](https://tainacan.org/)
-* Contribute to the source code: [https://github.com/tainacan/tainacan](https://github.com/tainacan/tainacan)
-* Check our documentation Wiki: [https://wiki.tainacan.org/](https://wiki.tainacan.org/)
+* WordPress 5.9 or higher
+* PHP 7.0 or higher
+* For automatic PDF thumbnail generation, Imagick is recommended (but not required)
 
 == Frequently Asked Questions ==
 
+= How do I get started? =
+
+After installation, click on the "Tainacan" menu item in your WordPress admin panel. You can create your first collection by clicking "New Collection", configure its metadata and filters, and start adding items to your collection.
+
+For an overview of the main concepts, visit our [documentation](https://tainacan.github.io/tainacan-wiki/#/general-concepts).
+
+= Can I use Tainacan with any WordPress theme? =
+
+Yes! Tainacan works with any WordPress theme, but developers can improve their integration. If you want more dedicated page templates we recommend using the [Tainacan Interface](https://wordpress.org/themes/tainacan-interface) theme, which is our classic theme that meets the demands of most collections. But you can also try using an FSE theme such as [Tainá](https://wordpress.org/themes/taina/), or install an [integration plugin](https://wordpress.org/plugins/tainacan-blocksy/) for a popular theme such as [Blocksy](https://wordpress.org/themes/blocksy/).
+
+= How do I browse my collections on the public side? =
+
+Visit `https://your-site/collections` to see the list of your collections. You can also add links to the collections in your menu by editing it and enabling "Collections" in the Screen options.
+
+= Can I import data from other systems? =
+
+Yes! Tainacan supports importing bulk data from CSV spreadsheets. You can also use bulk editing tools to perform adaptations from your system modeling to the one you created in Tainacan.
+
+= Does Tainacan have an API? =
+
+Yes! Tainacan implements a complete RESTful API (read and write) that allows other applications to interact with your repository. You can expose your collection in different formats such as JSON, CSV, and HTML.
+
+= What metadata standards are supported? =
+
+Tainacan allows you to define your own metadata standards by adopting a variety of types (text, relationship, numeric, date, geocoordinate etc.), but also supports predefined ones including Dublin Core and INBCM. Even when creating your own, you can still define mappers to other standards, allowing you to export to other systems.
+
+= What are taxonomies and how do I use them? =
+
+Taxonomies in Tainacan are vocabularies that can be used across all your collections. You can configure taxonomy metadata with a set of hierarchical terms of your own vocabulary. This allows you to create controlled vocabularies that can be reused throughout your repository, ensuring consistency across different collections.
+
+= How do I use Gutenberg blocks with Tainacan? =
+
+Tainacan offers several Gutenberg blocks so you can present your collections in many different ways! You can display items, collections, search interfaces, and more. Simply add the blocks to your posts and pages through the WordPress block editor.
+
 = Where do I report security bugs found in this plugin? =
 
-Please report security bugs found in the source code of the Tainacan plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/tainacan). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+We take security very seriously. Please report any security bugs found in the source code of the Tainacan plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/tainacan). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+
+= I'm getting 404 errors or blank pages when accessing my collection =
+
+After site migration, plugin updates, or new installations, you may need to rebuild WordPress permalinks. If collections or pages are returning 404 errors despite already having items on it, go to **Settings** -> **Permalinks** in your WordPress admin panel, ensure "Post Name" or a Custom Structure with /%postname%/ is selected, then click **Save Changes** (even if nothing changed). This will rebuild the permalink structure.
 
 == Screenshots ==
 
@@ -105,3 +102,14 @@ Please report security bugs found in the source code of the Tainacan plugin thro
 12. Use Gutenberg blocks to display your collections in posts and pages
 13. Choose which items will be displayed in your block
 14. Items displayed using a Gutenberg block
+
+
+== Support ==
+
+**Need help?**
+Find documentation, community support, and development resources at:
+
+* **Website**: [https://tainacan.org/](https://tainacan.org/)
+* **Documentation Wiki**: [https://wiki.tainacan.org/](https://wiki.tainacan.org/)
+* **GitHub**: [https://github.com/tainacan/tainacan](https://github.com/tainacan/tainacan)
+* **User Forum**: [https://tainacan.discourse.group/](https://tainacan.discourse.group/)

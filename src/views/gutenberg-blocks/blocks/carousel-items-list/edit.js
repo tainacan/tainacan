@@ -4,11 +4,13 @@ const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder
 
 const { InspectorControls, BlockControls, useBlockProps, store } = wp.blockEditor;
 
+const { useEffect } = wp.element;
+
 const { useSelect } = wp.data;
 
 import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
 import pick from 'lodash/pick';
-import CarouselItemsModal from './dynamic-and-carousel-items-modal.js';
+import TainacanMultipleItemSelectionModal from '../../js/selection/tainacan-multiple-item-selection-modal.js';
 import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
@@ -123,15 +125,16 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
     }
 
     function setContent() {
-        isLoading = true;
-
-        setAttributes({
-            isLoading: isLoading
-        });
-
-        items = [];
 
         if (loadStrategy == 'parent') {
+
+            isLoading = true;
+
+            setAttributes({
+                isLoading: isLoading
+            });
+
+            items = [];
             
             for (let item of selectedItems)
                 items.push(prepareItem(item));
@@ -143,6 +146,14 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
             });
 
         } else if (loadStrategy == 'selection') {
+
+            isLoading = true;
+
+            setAttributes({
+                isLoading: isLoading
+            });
+
+            items = [];
 
             if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
                 itemsRequestSource.cancel('Previous items search canceled.');
@@ -164,7 +175,15 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                         itemsRequestSource: itemsRequestSource
                     });
                 });
-        } else {
+        } else if (searchURL) {
+
+            isLoading = true;
+
+            setAttributes({
+                isLoading: isLoading
+            });
+
+            items = [];
 
             let endpoint = '/collection' + searchURL.split('#')[1].split('/collections')[1];
             let query = endpoint.split('?')[1];
@@ -269,8 +288,12 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
     }
 
     // Executed only on the first load of page
-    if(content && content.length && content[0].type)
+    if( content && content.length && content[0].type)
         setContent();
+
+    useEffect(() => {
+        setContent();
+    }, []);
 
     return content == 'preview' ? 
             <div className={className}>
@@ -549,7 +572,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                 ( 
                 <div>
                     { isModalOpen ?   
-                        <CarouselItemsModal
+                        <TainacanMultipleItemSelectionModal
                             loadStrategy={ loadStrategy }
                             existingCollectionId={ collectionId }
                             existingSearchURL={ loadStrategy == 'search' ? searchURL : false } 
@@ -646,10 +669,12 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(
-                        <img
-                            width={148}
-                            src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                            alt="Tainacan Logo"/>
+                        <span style={{ display: 'inline-block', width: '148px' }}>
+                            <img
+                                style={{ width: '100%', height: 'auto' }}
+                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
+                                alt="Tainacan Logo"/>
+                        </span>
                     )}>
                     <p>
                         <svg

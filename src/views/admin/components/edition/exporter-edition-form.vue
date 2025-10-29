@@ -1,10 +1,15 @@
 <template>
-    <div class="repository-level-page page-container">
-        <tainacan-title
-                :bread-crumb-items="[
-                    { path: $routerHelper.getAvailableExportersPath(), label: $i18n.get('exporters') },
-                    { path: '', label: exporterType != undefined ? (exporterName != undefined ? exporterName : exporterType) : $i18n.get('title_exporter_page') }
-                ]" />
+    <div class="tainacan-repository-level-colors page-container">
+        <tainacan-title :is-sticky="true">
+            <h1>
+                {{ $i18n.get('title_exporter_page') }} 
+                <span 
+                        v-if="exporterName"
+                        class="is-italic has-text-weight-semibold">
+                    {{ exporterName }}
+                </span>
+            </h1>
+        </tainacan-title>
         <b-loading
                 v-model="isLoading"
                 :can-cancel="false" />
@@ -54,7 +59,7 @@
                                 class="is-block"
                                 :label="$i18n.get('mapping')">
                             <template #message>
-                                <span v-html="$i18n.getWithVariables('instruction_go_to_metadata_mapping_%s', [ adminFullURL + $routerHelper.getCollectionMetadataPath(selectedCollection) ])" />
+                                <span v-html="$i18n.getWithVariables('instruction_go_to_metadata_mapping_%s', [ $routerHelper.getAbsoluteAdminPath() + $routerHelper.getCollectionMetadataPath(selectedCollection) ])" />
                             </template>
                             <b-select
                                     v-model="selectedMapping"
@@ -79,7 +84,7 @@
                             :label="$i18n.get('label_send_email')">
                         <help-button
                                 :title="$i18n.get('label_send_email')"
-                                :message="'<span>' + $i18n.get('info_send_email') + `&nbsp;<a href='` + adminFullURL + $routerHelper.getProcessesPage() + `'>` + $i18n.get('activities') + ` ` + $i18n.get('label_page') + '</a></span>'"
+                                :message="'<span>' + $i18n.get('info_send_email') + `&nbsp;<a href='` + $routerHelper.getAbsoluteAdminPath() + $routerHelper.getProcessesPath() + `'>` + $i18n.get('activities') + ` ` + $i18n.get('label_page') + '</a></span>'"
                                 extra-classes="tainacan-repository-tooltip" />
                         <b-checkbox
                                 v-model="sendEmail"
@@ -91,7 +96,9 @@
                     </b-field>
                 </div>
             </div>
-            <div class="columns">
+            <div class="columns is-mobile is-multiline">
+                <span class="help is-danger">{{ formErrorMessage }}</span>
+
                 <div class="column">
                     <button
                             class="button is-pulled-left is-outlined"
@@ -129,7 +136,6 @@
                 exporterType: '',
                 exporterName: '',
                 collections: [],
-                adminFullURL: tainacan_plugin.admin_url + '?page=tainacan_admin#', 
                 isFetchingCollections: false,
                 selectedMapping: undefined,
                 selectedCollection: undefined,
@@ -137,7 +143,7 @@
                 runButtonLoading: false,
                 exporterSession: {},
                 formErrorMessage: '',
-                isLoading: false,
+                isLoading: false
             }
         },
         created() {
@@ -169,8 +175,22 @@
 
             // Set exporter's name
             this.fetchAvailableExporters().then((exporterTypes) => {
-            if (exporterTypes[this.exporterType]) 
-                    this.exporterName = exporterTypes[this.exporterType].name;
+            if ( exporterTypes[this.exporterType] ) 
+                this.exporterName = exporterTypes[this.exporterType].name;
+                this.$routerHelper.appendToPageTitle(this.exporterName);
+                wp.hooks.doAction(
+                'tainacan_navigation_path_updated', 
+                    { 
+                        currentRoute: this.$route,
+                        adminOptions: this.$adminOptions,
+                        parentEntity: {
+                            rootLink: 'exporters',
+                            name: this.exporterName,
+                            defaultLink: `exporters/${this.exporterType}/edit`,
+                            label: this.$i18n.get('exporters')
+                        }
+                    }
+                );
             });
         },
         methods: {
@@ -216,7 +236,7 @@
                             this.runExporterSession(this.exporterSession.id)
                                 .then((bgp) => {
                                     this.runButtonLoading = false;
-                                    this.$router.push(this.$routerHelper.getProcessesPage(bgp.bg_process_id));
+                                    this.$router.push(this.$routerHelper.getProcessesPath(bgp.bg_process_id));
                                 })
                                 .catch((error) => {
                                     this.formErrorMessage = error.error_message;
@@ -244,9 +264,8 @@
 
 <style scoped>
 
-    .tainacan-form > .columns {
-        padding: 0 var(--tainacan-one-column);
-        gap: var(--tainacan-one-column);
+    .tainacan-form >.columns {
+        padding: var(--tainacan-container-padding) var(--tainacan-one-column) 0 var(--tainacan-one-column);
     }
 
 </style>

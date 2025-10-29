@@ -1,7 +1,9 @@
 <template>
-    <div class="column">
+    <div class="column is-12-touch">
                            
-        <b-loading v-model="isLoadingMetadata" />
+        <b-loading 
+                v-model="isLoadingMetadata"
+                :is-full-page="false" />
 
         <div class="tainacan-form sub-header">
             <!-- <h3>{{ $i18n.get('metadata') }}<span class="has-text-gray">{{ ( activeMetadatumList && activeMetadatumList.length ? (' (' + activeMetadatumList.length + ')') : '' ) }}</span></h3> -->
@@ -9,9 +11,8 @@
             <template v-if="activeMetadatumList && !isLoadingMetadata">
                 <button
                         v-if="activeMetadatumList.length > 0"
-                        aria-controls="filters-items-list"
                         :aria-expanded="!collapseAll"
-                        class="link-style collapse-all"
+                        class="button link-style collapse-all"
                         @click="collapseAll = !collapseAll">
                     <span class="icon">
                         <i 
@@ -19,7 +20,7 @@
                                 class="has-text-secondary tainacan-icon tainacan-icon-1-125em" />
                     </span>
                     <span class="collapse-all__text">
-                        {{ collapseAll ? $i18n.get('label_show_less_details') : $i18n.get('label_show_more_details') }}
+                        {{ collapseAll ? $i18n.get('label_hide_details') : $i18n.get('label_show_details') }}
                     </span>
                 </button>
                 <b-field class="header-item">
@@ -33,7 +34,7 @@
                             <button
                                     :aria-label="$i18n.get('label_filter_by_metadata_type')"
                                     class="button is-white">
-                                <span>{{ $i18n.get('label_filter_by_metadata_type') }}</span>
+                                <span>{{ $i18n.get('label_filter_by_type') }}</span>
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                 </span>
@@ -45,7 +46,8 @@
                                     :key="index"
                                     class="control"
                                     custom
-                                    aria-role="listitem">
+                                    aria-role="listitem"
+                                    :class="{ 'is-active': metadataType.enabled }">
                                 <b-checkbox
                                         v-model="metadataType.enabled"
                                         :native-value="metadataType.enabled">
@@ -207,7 +209,9 @@
                                             :style="{ visibility: 
                                                 metadatum.collection_id != collectionId
                                                     ? 'hidden' : 'visible'
-                                            }" 
+                                            }"
+                                            role="button"
+                                            :aria-label="$i18n.get('edit')" 
                                             @click.prevent="toggleMetadatumEdition(metadatum)">
                                         <span 
                                                 v-tooltip="{
@@ -223,6 +227,8 @@
                                     <a 
                                             v-if="metadatum.current_user_can_delete"
                                             :style="{ visibility: metadatum.collection_id != collectionId || metadatum.metadata_type_object.core ? 'hidden' : 'visible' }"
+                                            role="button"
+                                            :aria-label="$i18n.get('delete')"
                                             @click.prevent="removeMetadatum(metadatum)">
                                         <span
                                                 v-tooltip="{
@@ -262,7 +268,7 @@
                                 aria-modal
                                 aria-role="dialog"
                                 custom-class="tainacan-modal"
-                                :close-button-aria-label="$i18n.get('close')"
+                                :can-cancel="['escape', 'outside']"
                                 @close="onEditionCanceled()">
                             <metadatum-edition-form
                                     :collection-id="collectionId"
@@ -353,6 +359,7 @@ export default {
         // Cancels previous Request
         if (this.metadataSearchCancel != undefined)
             this.metadataSearchCancel.cancel('Metadata search Canceled.');
+        this.$emitter.off('addMetadatumViaButton', this.addMetadatumViaButton);
     },
     methods: {
         ...mapActions('metadata', [
@@ -407,13 +414,26 @@ export default {
             });
         },
         removeMetadatum(removedMetadatum) {
+            let metadatumName = '';
+            
+            if (removedMetadatum && typeof removedMetadatum === 'object') {
+                if (removedMetadatum.name !== undefined && removedMetadatum.name !== null && removedMetadatum.name !== '')
+                    metadatumName = removedMetadatum.name;
+                else if (removedMetadatum.id)
+                    metadatumName = 'ID: ' + removedMetadatum.id; 
+            }
+            
+            let message = this.$i18n.getWithVariables(
+                'info_warning_metadatum_delete_%s',
+                [ metadatumName ]
+            );
+            
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
                     title: this.$i18n.get('label_warning'),
-                    message: this.$i18n.get('info_warning_metadatum_delete'),
+                    message: message,
                     onConfirm: () => { 
                         this.deleteMetadatum({
                             collectionId: this.collectionId,
@@ -427,7 +447,7 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             }); 
         },
         toggleMetadatumEdition(metadatum) {

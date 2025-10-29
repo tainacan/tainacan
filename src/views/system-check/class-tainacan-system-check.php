@@ -2,7 +2,14 @@
 
 namespace Tainacan;
 
-class System_Check {
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
+class System_Check extends Pages {
+	use \Tainacan\Traits\Singleton_Instance;
+
+	protected function get_page_slug() : string {
+        return 'tainacan_systemcheck';
+    }
 
 	private $min_php_version = '7.0';
 
@@ -14,16 +21,28 @@ class System_Check {
 	private $health_check_mysql_rec_version = '5.0';
 	private $health_check_mysql_min_version = '5.0';
 
-	public function __construct() {
-		$this->init();
-	}
-
 	public function init() {
+		parent::init();
 		$this->prepare_sql_data();
 	}
 
-	public function admin_page() {
-		include('admin-page.php');
+	public function add_admin_menu() {
+
+		if ( !$this->has_admin_ui_option('hideNavigationSystemCheckButton') ) {
+			$system_check_page_suffix = add_submenu_page(
+				!$this->has_admin_ui_option('hideNavigationOtherMenu') ? $this->tainacan_other_links_slug : $this->tainacan_root_menu_slug,
+				__('System check', 'tainacan'),
+				'<span class="icon">' . $this->get_svg_icon( 'finish' ) . '</span><span class="menu-text">' .__( 'System check', 'tainacan' ) . '</span>',
+				'manage_options',
+				$this->get_page_slug(),
+				array( &$this, 'render_page' )
+			);
+			add_action( 'load-' . $system_check_page_suffix, array( &$this, 'load_page' ) );
+		}
+	}
+
+	public function render_page_content() {
+		require_once('page.php');
 	}
 
 	public function test_php_version() {

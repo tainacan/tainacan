@@ -1,4 +1,9 @@
 <?php
+
+namespace Tainacan;
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 /**
  * @deprecated This class will be removed in future versions. 
  * Please use Elastic_Press.
@@ -10,9 +15,6 @@
  * 
  * 
  */
-
-namespace Tainacan;
-
 class Elastic_Press_lte4 {
 	public $last_aggregations;
 	public $facets;

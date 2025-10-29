@@ -1,8 +1,10 @@
 <?php
+
 namespace Tainacan;
 
-class Migrations {
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+class Migrations {
 
 	static function run_migrations() {
 
@@ -535,5 +537,3 @@ class Migrations {
 		}
 	}
 }
-
-?>

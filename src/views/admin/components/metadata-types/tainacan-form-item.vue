@@ -473,7 +473,7 @@
             font-size: 0.75em;
         }
 
-        @media screen and (max-width: 769px) {
+        @media screen and (max-width: 768px) {
             .collapse-handle {
                 font-size: 1em;
                 margin-left: 0;

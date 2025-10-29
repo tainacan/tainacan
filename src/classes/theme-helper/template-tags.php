@@ -1,8 +1,19 @@
 <?php
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use \Tainacan\Entities;
 use \Tainacan\Repositories;
-
+/**
+ * Tainacan Template Tags
+ *
+ * This file contains template tags that can be used in Tainacan theme templates.
+ * It provides functions to retrieve and display metadata, documents, collections,
+ * and other related information.
+ *
+ * @package Tainacan
+ * @since 0.1.0
+ */
 
 /**
  * To be used inside The Loop
@@ -383,6 +394,10 @@ function tainacan_get_the_media_component(
 	if ( $args['has_media_main'] || $args['has_media_thumbs'] ) :
 	
 		wp_enqueue_style( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-item-gallery.css', array(), TAINACAN_VERSION);
+		
+		if ( !isset($args['swiper_arrows_as_svg']) || !$args['swiper_arrows_as_svg'] )
+			wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/tainacanicons.css', array(), TAINACAN_VERSION );
+		
 		?>
 
 		<script>
@@ -643,18 +658,14 @@ function tainacan_the_collection_url() {
 
 
 /**
- * Get related to view modes
+ * Get view modes already filtered by hooks, user preferences and collection settings
  *
  * @return array ['default_view_mode'=> '', '$enabled_view_modes'=> [], , '$registered_view_modes'=> [] ]
  */
 function tainacan_get_the_view_modes() {
-	$default_view_mode = apply_filters( 'tainacan-default-view-mode-for-themes', 'masonry' );
+	$default_view_mode = \Tainacan\Theme_Helper::get_instance()->get_default_view_mode();
 	$registered_view_modes = \Tainacan\Theme_Helper::get_instance()->get_registered_view_modes();
-	$registered_view_modes_slugs = [];
-	foreach ($registered_view_modes as $key => $value) {
-		array_push($registered_view_modes_slugs, $key);
-	}
-	$enabled_view_modes = apply_filters( 'tainacan-enabled-view-modes-for-themes', $registered_view_modes_slugs );
+	$enabled_view_modes = \Tainacan\Theme_Helper::get_instance()->get_enabled_view_modes();
 
 	// If in a collection page
 	$collection = tainacan_get_collection();

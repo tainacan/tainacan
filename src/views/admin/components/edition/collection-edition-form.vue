@@ -1,17 +1,22 @@
 <template>
     <div 
             class="page-container"
-            :class="{'repository-level-page' : isNewCollection }">
-        <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: $i18n.get('collection') }]" />
+            :class="{'tainacan-repository-level-colors' : isNewCollection }">
+
+        <tainacan-external-link
+                v-if="collection && collection.slug && collection.url"
+                :link-label="$i18n.get('label_view_collection_on_website')"
+                :link-url="collection.url" />
+
+        <tainacan-title :is-sticky="true" />
         
         <form 
                 v-if="collection != null && collection != undefined && ((isNewCollection && $userCaps.hasCapability('tnc_rep_edit_collections')) || (!isNewCollection && collection.current_user_can_edit))" 
                 class="tainacan-form" 
                 label-width="120px">
         
-            <div class="columns">
-                <div class="column">
+            <div class="columns is-multiline">
+                <div class="column is-7-widescreen is-full-desktop">
 
                     <!-- Name -------------------------------- --> 
                     <b-field 
@@ -57,23 +62,42 @@
                                 @focus="clearErrors('description')" />
                     </b-field>
 
-                    <!-- Slug -------------------------------- --> 
-                    <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_slug')"
-                            :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''" 
-                            :message="isUpdatingSlug ? $i18n.get('info_validating_slug') : (editFormErrors['slug'] != undefined ? editFormErrors['slug'] : '')">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'slug')" 
-                                :message="$i18n.getHelperMessage('collections', 'slug')" />
-                        <b-input
-                                id="tainacan-text-slug"
-                                v-model="form.slug"
-                                :disabled="isUpdatingSlug"
-                                :loading="isUpdatingSlug"
-                                @update:model-value="updateSlug"
-                                @focus="clearErrors('slug')" />
-                    </b-field>
+                    <!-- Collection Taxonomies options ------------------------ -->
+                    <div 
+                            v-if="!isLoading && !isLoadingCollectionTaxonomies && Object.values(getCollectionTaxonomies) && Object.values(getCollectionTaxonomies).length > 0"
+                            class="collection-form-section"
+                            @click="showCollectionsTaxonomiesOptions = !showCollectionsTaxonomiesOptions;">
+                        <span class="icon">
+                            <i 
+                                    class="tainacan-icon"
+                                    :class="showCollectionsTaxonomiesOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                        </span>
+                        <strong>{{ $i18n.get('label_collections_taxonomies') }}</strong>
+                        <hr>
+                    </div>
+                    <transition name="filter-item">
+                        <div 
+                                v-show="showCollectionsTaxonomiesOptions"
+                                class="options-columns">
+                            <template v-for="(collectionTaxonomy, taxonomySlug) in getCollectionTaxonomies">
+                                <b-field 
+                                        v-if="collectionTaxonomy['terms'] && form.collection_taxonomies && form.collection_taxonomies[taxonomySlug]"
+                                        :key="taxonomySlug"
+                                        :addons="false"
+                                        :label="collectionTaxonomy['name']">
+                                    <div class="options-checkboxes">
+                                        <b-checkbox
+                                                v-for="(collectionTaxonomyTerm, index) in collectionTaxonomy['terms']"
+                                                :key="index"
+                                                :model-value="form.collection_taxonomies[taxonomySlug]['terms'] && form.collection_taxonomies[taxonomySlug]['terms'][collectionTaxonomyTerm['slug']] ? true : false"
+                                                @update:model-value="($event) => updateCollectionTaxonomyTerm(collectionTaxonomy['rest_base'], taxonomySlug, collectionTaxonomyTerm, $event)">
+                                            {{ collectionTaxonomyTerm['name'] }}
+                                        </b-checkbox>
+                                    </div>
+                                </b-field>
+                            </template>
+                        </div>
+                    </transition>
 
                     <!-- Items list options ------------------------ -->
                     <div 
@@ -142,7 +166,7 @@
 
 
                             <label class="label">{{ $i18n.get('label_view_modes_public_list') }}</label>
-                            <div class="items-view-mode-options">
+                            <div class="two-thirds-layout-options items-view-mode-options">
 
                                 <!-- Enabled View Modes ------------------------------- --> 
                                 <div class="field">
@@ -155,7 +179,7 @@
                                                 ref="enabledViewModesDropdown"
                                                 class="enabled-view-modes-dropdown"
                                                 :mobile-modal="true"
-                                                :disabled="Object.keys(registeredViewModes).length < 0"
+                                                :disabled="Object.keys(registeredAndNotDisabledViewModes).length < 0"
                                                 aria-role="list"
                                                 trap-focus
                                                 position="is-top-right">
@@ -171,14 +195,14 @@
                                                 </button>
                                             </template>
                                             <b-dropdown-item
-                                                    v-for="(viewMode, index) in Object.keys(registeredViewModes)"
+                                                    v-for="(viewMode, index) in Object.keys(registeredAndNotDisabledViewModes)"
                                                     :key="index"
                                                     custom
                                                     aria-role="listitem">
                                                 <b-checkbox
-                                                        v-if="registeredViewModes[viewMode] != undefined"
+                                                        v-if="registeredAndNotDisabledViewModes[viewMode] != undefined"
                                                         :model-value="checkIfViewModeEnabled(viewMode)"
-                                                        :disabled="checkIfViewModeEnabled(viewMode) && form.enabled_view_modes.filter((aViewMode) => (registeredViewModes[aViewMode] && registeredViewModes[aViewMode].full_screen != true)).length <= 1"
+                                                        :disabled="checkIfViewModeEnabled(viewMode) && form.enabled_view_modes.filter((aViewMode) => (registeredAndNotDisabledViewModes[aViewMode] && registeredAndNotDisabledViewModes[aViewMode].full_screen != true)).length <= 1"
                                                         @update:model-value="updateViewModeslist(viewMode)">
                                                     <p>
                                                         <strong>
@@ -188,12 +212,12 @@
                                                                         'has-text-secondary' : checkIfViewModeEnabled(viewMode),
                                                                         'has-text-gray4' : !checkIfViewModeEnabled(viewMode)  
                                                                     }"
-                                                                    v-html="registeredViewModes[viewMode].icon" />
-                                                            &nbsp;{{ registeredViewModes[viewMode].label }}
+                                                                    v-html="registeredAndNotDisabledViewModes[viewMode].icon" />
+                                                            &nbsp;{{ registeredAndNotDisabledViewModes[viewMode].label }}
                                                         </strong>
                                                     </p>
-                                                    <p v-if="registeredViewModes[viewMode].description">
-                                                        {{ registeredViewModes[viewMode].description }}
+                                                    <p v-if="registeredAndNotDisabledViewModes[viewMode].description">
+                                                        {{ registeredAndNotDisabledViewModes[viewMode].description }}
                                                     </p>
                                                 </b-checkbox>
                                             </b-dropdown-item>   
@@ -220,7 +244,7 @@
                                                 v-for="(viewMode, index) of validDefaultViewModes"
                                                 :key="index"
                                                 :value="viewMode">
-                                            {{ registeredViewModes[viewMode].label }}
+                                            {{ registeredAndNotDisabledViewModes[viewMode].label }}
                                         </option>
                                     </b-select>
                                 </b-field>
@@ -411,22 +435,6 @@
                                         v-model="form.item_publication_label" />
                             </b-field>
 
-                            <!-- Author editing ------------------------ --> 
-                            <b-field
-                                    :addons="false" 
-                                    :label="$i18n.getHelperTitle('collections', 'allow_item_author_editing')">
-                                &nbsp;
-                                <b-switch
-                                        id="tainacan-checkbox-item-author-editing" 
-                                        v-model="form.allow_item_author_editing"
-                                        size="is-small" 
-                                        true-value="yes"
-                                        false-value="no" />
-                                <help-button 
-                                        :title="$i18n.getHelperTitle('collections', 'allow_item_author_editing')" 
-                                        :message="$i18n.getHelperMessage('collections', 'allow_item_author_editing')" />
-                            </b-field>
-
                             <!-- Slug editing ------------------------ --> 
                             <b-field
                                     :addons="false" 
@@ -441,6 +449,22 @@
                                 <help-button 
                                         :title="$i18n.getHelperTitle('collections', 'allow_item_slug_editing')" 
                                         :message="$i18n.getHelperMessage('collections', 'allow_item_slug_editing')" />
+                            </b-field>
+
+                            <!-- Author editing ------------------------ --> 
+                            <b-field
+                                    :addons="false" 
+                                    :label="$i18n.getHelperTitle('collections', 'allow_item_author_editing')">
+                                &nbsp;
+                                <b-switch
+                                        id="tainacan-checkbox-item-author-editing" 
+                                        v-model="form.allow_item_author_editing"
+                                        size="is-small" 
+                                        true-value="yes"
+                                        false-value="no" />
+                                <help-button 
+                                        :title="$i18n.getHelperTitle('collections', 'allow_item_author_editing')" 
+                                        :message="$i18n.getHelperMessage('collections', 'allow_item_author_editing')" />
                             </b-field>
 
                             <!-- Comment Status ------------------------ --> 
@@ -591,32 +615,93 @@
                     </template>
 
                 </div>
-                <div class="column">
+                <div class="column is-5-widescreen is-full-desktop">
 
-                    <!-- Status -------------------------------- --> 
-                    <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_status')"
-                            :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
-                            :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'status')" 
-                                :message="$i18n.getHelperMessage('collections', 'status')" />
-                        <div class="status-radios">
-                            <b-radio
-                                    v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
-                                    :key="index"
-                                    v-model="form.status"
-                                    :native-value="statusOption.slug">
-                                <span class="icon has-text-gray">
-                                    <i 
-                                            class="tainacan-icon tainacan-icon-18px"
-                                            :class="$statusHelper.getIcon(statusOption.slug)" />
-                                </span>
-                                {{ statusOption.name }}
-                            </b-radio>
-                        </div>
-                    </b-field>
+                    <div class="two-thirds-layout-options">
+
+                        <!-- Slug -------------------------------- --> 
+                        <b-field
+                                :addons="false" 
+                                :label="$i18n.get('label_slug')"
+                                :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''" 
+                                :message="isUpdatingSlug ? $i18n.get('info_validating_slug') : (editFormErrors['slug'] != undefined ? editFormErrors['slug'] : '')">
+                            <help-button 
+                                    :title="$i18n.getHelperTitle('collections', 'slug')" 
+                                    :message="$i18n.getHelperMessage('collections', 'slug')" />
+                            <b-input
+                                    id="tainacan-text-slug"
+                                    v-model="form.slug"
+                                    :disabled="isUpdatingSlug"
+                                    :loading="isUpdatingSlug"
+                                    @update:model-value="updateSlug"
+                                    @focus="clearErrors('slug')" />
+                        </b-field>
+
+                        <!-- Status -------------------------------- --> 
+                        <b-field
+                                :addons="false" 
+                                :label="$i18n.get('label_status')"
+                                :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
+                                :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
+                            <help-button
+                                    :title="$i18n.getHelperTitle('collections', 'status')"
+                                    :message="$i18n.getHelperMessage('collections', 'status')" />
+                            <b-dropdown
+                                    ref="collection-edition-status-dropdown"
+                                    aria-role="list"
+                                    class="collection-edition-status-dropdown"
+                                    position="is-bottom-left"
+                                    :triggers="[ 'click' ]"
+                                    :disabled="editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' )"
+                                    max-height="300px">
+                                <template #trigger>
+                                    <button 
+                                            :disabled="editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' )"
+                                            type="button"
+                                            class="button is-outlined"
+                                            :class="{ 'disabled': editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) }"
+                                            style="width: auto">
+                                        <span class="icon has-text-gray">
+                                            <i 
+                                                    class="tainacan-icon tainacan-icon-18px"
+                                                    :class="$statusHelper.getIcon(form.status)" />
+                                        </span>
+                                        <template v-if="form.status !== 'auto-draft' && $statusHelper.getStatuses().find(aStatusObject => aStatusObject.slug == form.status)">
+                                            {{ $statusHelper.getStatuses().find(aStatusObject => aStatusObject.slug == form.status).name }}
+                                        </template>
+                                        <template v-else-if="form.status === 'auto-draft'">
+                                            {{ $i18n.get('status_auto-draft') }}
+                                        </template>
+                                        <span 
+                                                style="margin-left: 0.5em;"
+                                                class="icon is-small">
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                        </span>
+                                    </button>
+                                </template>
+                                <b-dropdown-item 
+                                        v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft' && (collection.status != 'auto-draft' || status.slug != 'trash'))"
+                                        :key="index"
+                                        aria-role="listitem"
+                                        @click="form.status = statusOption.slug">
+                                    <span class="icon has-text-gray">
+                                        <i 
+                                                class="tainacan-icon tainacan-icon-18px"
+                                                :class="$statusHelper.getIcon(statusOption.slug)" />
+                                    </span>
+                                    {{ statusOption.name }}
+                                    <br>
+                                    <small 
+                                            v-if="$statusHelper.hasDescription(statusOption.slug)"
+                                            class="is-small"
+                                            style="margin-left: 2px;">
+                                        {{ $statusHelper.getDescription(statusOption.slug) }}
+                                    </small>
+                                </b-dropdown-item>
+                            </b-dropdown>
+                        </b-field>
+
+                    </div>  
 
                     <!-- Hook for extra Form options -->
                     <template v-if="hasBeginRightForm">  
@@ -627,7 +712,9 @@
                     </template>
 
                     <!-- Image thumbnail & Header Image -------------------------------- --> 
-                    <b-field :addons="false">
+                    <b-field 
+                            id="header-and-thumbnail-container"
+                            :addons="false">
                         <label class="label">
                             {{ $i18n.get('label_thumbnail') }} & {{ $i18n.get('label_header_image') }}
                             <help-button 
@@ -898,14 +985,14 @@
                 </p>
                 <div 
                         style="margin-left: auto;"
-                        class="control">
+                        class="control is-hidden-mobile">
                     <button
                             v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata') && !fromImporter"
                             id="button-submit-goto-metadata"
                             class="button is-secondary"
                             @click.prevent="onSubmit('metadata')">{{ $i18n.get('label_save_goto_metadata') }}</button>
                 </div>
-                <div class="control">
+                <div class="control is-hidden-mobile">
                     <button
                             v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata') && !fromImporter"
                             id="button-submit-goto-filter"
@@ -923,7 +1010,7 @@
 
         <div v-if="!isLoading && ((isNewCollection && !$userCaps.hasCapability('tnc_rep_edit_collections')) || (!isNewCollection && collection && collection.current_user_can_edit != undefined && collection.current_user_can_edit == false))">
             <section class="section">
-                <div class="content has-text-grey has-text-centered">
+                <div class="content has-text-gray has-text-centered">
                     <p>
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
@@ -935,7 +1022,8 @@
         </div>
 
         <b-loading 
-                v-model="isLoading" 
+                v-model="isLoading"
+                :is-full-page="false"
                 :can-cancel="false" />
     </div>
 </template>
@@ -1007,6 +1095,7 @@ export default {
                 item_enable_metadata_searchbar: 'yes',
                 item_enable_metadata_collapses: 'yes',
                 item_enable_metadata_enumeration: 'yes',
+                collection_taxonomies: []
             },
             thumbnail: {},
             cover: {},
@@ -1029,7 +1118,7 @@ export default {
             headerImageMediaFrame: undefined,
             viewModesList: [],
             fromImporter: '',
-            registeredViewModes: tainacan_plugin.registered_view_modes,
+            repositoryEnabledViewModes: tainacan_plugin.enabled_view_modes,
             reCAPTCHASettingsPagePath: tainacan_plugin.admin_url + '?page=tainacan_item_submission',
             newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page',
             isUpdatingSlug: false,
@@ -1038,18 +1127,31 @@ export default {
             isLoadingMetadata: true,
             sortingMetadata: [],
             localDefaultOrderBy: 'date',
+            showCollectionsTaxonomiesOptions: false,
             showItemsListOptions: true,
             showItemEditionFormOptions: false,
-            showItemSubmissionOptions: false
+            showItemSubmissionOptions: false,
+            isLoadingCollectionTaxonomies: false
         }
     },
     computed: {
         ...mapGetters('metadata', {
             'metadata': 'getMetadata'
         }),
+        ...mapGetters('collection', [
+            'getCollectionTaxonomies'
+        ]),
         validDefaultViewModes() {
-            return Array.isArray(this.form.enabled_view_modes) ? this.form.enabled_view_modes.filter((aViewMode) => this.registeredViewModes[aViewMode] != undefined && this.registeredViewModes[aViewMode].full_screen == false ) : [];
-        }
+            return Array.isArray(this.form.enabled_view_modes) ? this.form.enabled_view_modes.filter((aViewMode) => this.registeredAndNotDisabledViewModes[aViewMode] != undefined && this.registeredAndNotDisabledViewModes[aViewMode].full_screen == false ) : [];
+        },
+        registeredAndNotDisabledViewModes() {
+            let registered = tainacan_plugin.registered_view_modes;
+            for (let key in registered) {
+                if ( tainacan_plugin.enabled_view_modes.indexOf(key) == -1 )
+                    delete registered[key];
+            }
+            return registered;
+        },
     },
     watch: {
         'form.hide_items_thumbnail_on_lists' (newValue) {
@@ -1059,9 +1161,9 @@ export default {
                     if (!tainacan_plugin.registered_view_modes[viewModeKey]['requires_thumbnail']) 
                         validViewModes[viewModeKey] = tainacan_plugin.registered_view_modes[viewModeKey];
                 });
-                this.registeredViewModes = validViewModes;
+                this.registeredAndNotDisabledViewModes = validViewModes;
                 
-                this.form.enabled_view_modes = this.form.enabled_view_modes.filter((aViewMode) => this.registeredViewModes[aViewMode] != undefined );
+                this.form.enabled_view_modes = this.form.enabled_view_modes.filter((aViewMode) => this.registeredAndNotDisabledViewModes[aViewMode] != undefined );
 
                 this.updateDefaultViewModeBasedOnEnabled();           
                 
@@ -1070,7 +1172,7 @@ export default {
                     this.$userPrefs.set('admin_view_mode_' + this.collectionId, 'table');
 
             } else {
-                this.registeredViewModes = tainacan_plugin.registered_view_modes;
+                this.registeredAndNotDisabledViewModes = tainacan_plugin.registered_view_modes;
             }
         },
         localDefaultOrderBy(newValue) {
@@ -1082,8 +1184,6 @@ export default {
         }
     },
     mounted(){
-        this.$emitter.emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('settings') }]);
-
 
         if (this.$route.query.fromImporter != undefined) 
             this.fromImporter = this.$route.query.fromImporter;
@@ -1144,6 +1244,7 @@ export default {
                 this.form.item_enable_metadata_searchbar = this.collection.item_enable_metadata_searchbar;
                 this.form.item_enable_metadata_collapses = this.collection.item_enable_metadata_collapses;
                 this.form.item_enable_metadata_enumeration = this.collection.item_enable_metadata_enumeration;
+                this.form.collection_taxonomies = this.collection.collection_taxonomies;
 
                 // Generates CoverPage from current cover_page_id info
                 if (this.form.cover_page_id != undefined && this.form.cover_page_id != '') {
@@ -1187,15 +1288,23 @@ export default {
                 this.isLoading = false; 
             });
         } else {
-            var tmppath = this.$route.fullPath.split("/");
-            var mapper = tmppath.pop();
-            if(tmppath.pop() == 'new') {
+            let temporaryPath = this.$route.fullPath.split("/");
+            let mapper = temporaryPath.pop();
+            if ( temporaryPath.pop() == 'new' ) {
                 this.isNewCollection = true;
                 this.isMapped = true;
                 this.mapper = mapper;
                 this.createNewCollection();
             }
         }
+
+        this.fetchCollectionTaxonomies({ termParent: 0, termPerPage: tainacan_plugin.api_max_items_per_page })
+            .then(() => {
+                this.isLoadingCollectionTaxonomies = false;
+            })
+            .catch(() => {
+                this.isLoadingCollectionTaxonomies = false;
+            });
     },
     methods: {
         ...mapActions('collection', [
@@ -1207,7 +1316,9 @@ export default {
             'updateHeaderImage',
             'fetchPages',
             'fetchPage',
-            'fetchAllCollectionNames'
+            'fetchAllCollectionNames',
+            'fetchCollectionTaxonomies',
+            'updateCollectionTaxonomyValues'
         ]),
         ...mapActions('metadata', [
             'fetchMetadata'
@@ -1441,7 +1552,7 @@ export default {
         updateDefaultViewModeBasedOnEnabled() {
             // Puts a valid view mode as default if the current one is not in the list anymore.
             if (!this.checkIfViewModeEnabled(this.form.default_view_mode)) {
-                const validViewModeIndex = this.form.enabled_view_modes.findIndex((aViewMode) => (this.registeredViewModes[aViewMode] && !this.registeredViewModes[aViewMode].full_screen));
+                const validViewModeIndex = this.form.enabled_view_modes.findIndex((aViewMode) => (this.registeredAndNotDisabledViewModes[aViewMode] && !this.registeredAndNotDisabledViewModes[aViewMode].full_screen));
                 if (validViewModeIndex >= 0)
                     this.form.default_view_mode = this.form.enabled_view_modes[validViewModeIndex];
             }
@@ -1623,14 +1734,33 @@ export default {
                     this.metadataSearchCancel = resp.source;
                 })
                 .catch(() => this.isLoadingMetadata = false);  
-        }
+        },
+        updateCollectionTaxonomyTerm(taxonomyRestBase, taxonomySlug, term, isEnabled) {
+
+            this.form.collection_taxonomies[taxonomySlug]['terms'] = this.form.collection_taxonomies[taxonomySlug]['terms'] || [];
+
+            if ( isEnabled )
+                this.form.collection_taxonomies[taxonomySlug]['terms'][term.slug] = term;
+            else 
+               delete this.form.collection_taxonomies[taxonomySlug]['terms'][term.slug];
+           
+            const taxonomyTermValues = Object.values(this.form.collection_taxonomies[taxonomySlug]['terms']).map(aTerm => aTerm.id || aTerm.slug || aTerm);
+
+            this.updateCollectionTaxonomyValues({ collectionId: this.collection.id, taxonomyValues: { [taxonomyRestBase]: taxonomyTermValues } })
+                .then(() => {
+                    this.$console.log('Collection Taxonomy Values updated successfully');
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                });
+        },
     }
 }
 </script>
 
 <style lang="scss" scoped>
 
-    @media screen and (min-width: 1024px) {
+    @media screen and (min-width: 1025px) {
         .column:last-of-type {
             padding-left: var(--tainacan-one-column) !important;
         }
@@ -1723,15 +1853,47 @@ export default {
 
         &>div:not(.field) {
             -moz-column-count: 2;
-            -moz-column-gap: 0;
+            -moz-column-gap: 1.5em;
             -moz-column-rule: 1px solid var(--tainacan-gray1);
             -webkit-column-count: 2;
-            -webkit-column-gap: 0;
+            -webkit-column-gap: 1.5em;
             -webkit-column-rule: 1px solid var(--tainacan-gray1);
             column-count: 2;
-            column-gap: 4em;
             column-rule: 1px solid var(--tainacan-gray1);
             margin-bottom: 1.125rem;
+
+            @media screen and (max-width: 600px) {
+                -moz-column-count: 1;
+                -webkit-column-count: 1;
+                column-count: 1;
+            }
+        }
+    }
+
+    #header-and-thumbnail-container {
+        @supports (contain: inline-size) {
+            container-type: inline-size;
+            container-name: headerandthumbnailfield; 
+        }
+
+        @container headerandthumbnailfield (max-width: 395px) {
+            .header-field .image-placeholder {
+                right: 18%;
+                top: 34%;
+            }
+            .thumbnail-field {
+                margin: 0px;
+                padding: 0px;
+
+                img,
+                :deep(.image-wrapper) {
+                    border: none;
+                }
+                .thumbnail-buttons-row {
+                    left: 61px;
+                    bottom: calc(1em + 0px);
+                }
+            }
         }
     }
 
@@ -1740,26 +1902,29 @@ export default {
 
         .image-placeholder {
             position: absolute;
-            left: 10%;
+            left: unset;
             right: 10%;
-            top: 35%;
-            font-size: 1em;
+            top: 38%;
+            font-size: 0.875em;
             font-weight: bold;
             z-index: 99;
             text-align: center;
             color: var(--tainacan-info-color);
-            
-            @media screen and (max-width: 1024px) {
-                font-size: 1.2em;
+
+            & + img {
+                opacity: 0.5;
+                border: 1px dashed var(--tainacan-info-color);
             }
-            
         }
         .header-buttons-row {
             text-align: right;
             top: -15px;
             position: relative;
         }
-
+        .image,
+        img {
+            border-radius: 3px;
+        }
         &+.thumbnail-field {
             opacity: 1.0;
             transition: opacity 0.2s ease;
@@ -1781,10 +1946,23 @@ export default {
             padding: 10px;
             font-size: 0.8em;
         }
+        .image {
+            border-radius: 3px;
+
+            &:has(.image-placeholder) img {
+                opacity: 0.5;
+                border: 1px dashed var(--tainacan-info-color) !important;
+            }
+            &:has(.image-placeholder) {
+                border: 6px solid var(--tainacan-background-color);
+                background: var(--tainacan-background-color);
+            }
+        }
         img,
         :deep(.image-wrapper) {
             height: 146px;
             width: 146px;
+            border-radius: 3px;
             border: 6px solid var(--tainacan-background-color);
         }
         .image-placeholder {
@@ -1812,8 +1990,15 @@ export default {
     }
     .selected-cover-page {
         border: 1px solid var(--tainacan-gray2);
-        padding: 3px 8px;
+        padding: calc(0.57em - 1px) 8px;
         font-size: .875em;
+        height: auto;
+        line-height: 1em;
+        min-height: 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
         .span { vertical-align: middle;}
 
         .selected-cover-page-control {
@@ -1847,48 +2032,60 @@ export default {
         opacity: 0.7;
     }
     .status-radios {
+        flex-wrap: wrap;
         display: flex;
         margin: 5px 0;
 
+        .checkbox {
+            width: auto;
+        }
         .control-label {
             display: flex;
             align-items: center;
         }
     }
     .options-checkboxes {
-        display: flex;
-        margin: 5px 0;
-        flex-wrap: wrap;
+        display: grid;
+        margin: 5px 1px;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
         gap: 0.5rem;
         justify-content: space-between;
+        
         :deep(.b-checkbox.checkbox),
         :deep(.b-radio.radio) {
-            width: auto
-        }
-        .control-label {
-            display: flex;
-            align-items: center;
-        }
-    }
-    .items-view-mode-options {
-        display: flex;
+            width: auto;
 
-        &>.field:first-child {
-            width: 66.66%;
-            margin-right: 12px;
-
-            .dropdown-trigger>.button {
-                min-height: 35px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+            .control-label {
+                display: flex;
+                align-items: center;
+                white-space: normal;
             }
         }
-        &>.field:last-child {
-            width: 33.33%;
+    }
+    .two-thirds-layout-options {
+        display: flex;
+        column-gap: 1em !important;
+
+        & > .field:first-child {
+            flex-basis: 75%;
+        }
+        & > .field:last-child {
+            flex-basis: 25%;
         }
 
-        @media screen and (min-width: 1024px) {
+        .dropdown-trigger>.button {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        @media screen and (max-width: 782px) {
+            flex-wrap: wrap;
+            margin-bottom: 1em;
+
+            & > .field {
+                flex-basis: 100% !important;
+            }
             .dropdown-trigger>.button {
                 min-height: 40px;
             }
@@ -1918,22 +2115,45 @@ export default {
     }
 
     .tainacan-form {
-        padding-bottom: 48px;
+        padding-bottom: 3.5rem;
     }
 
     .footer {
-        padding: 14px var(--tainacan-one-column);
-        position: fixed;
+        padding: 10px var(--tainacan-one-column);
+        position: absolute;
         bottom: 0;
-        right: 0;
         z-index: 9999;
         background-color: var(--tainacan-gray1);
-        width: calc(100% - var(--tainacan-sidebar-width, 3.25em));
-        height: 60px;
+        width: 100%;
+        margin-left: calc(-1 * var(--tainacan-one-column));
+        height: 3.5rem;
         display: flex;
         justify-content: flex-end;
         align-items: center;
         transition: bottom 0.5s ease, width 0.2s linear;
+        box-shadow: 0px 0px 12px -8px var(--tainacan-black);
+
+        &::after,
+        &::before {
+            height: 18px;
+            width: 18px;
+            background: transparent;
+            display: block;
+            content: '';
+            position: absolute;
+        }
+        &::before {
+            left: 0;
+            top: -18px;
+            border-bottom-left-radius: 9px;
+            box-shadow: -9px 0px 0 0 var(--tainacan-gray1), inset 2px -2px 5px -3px var(--tainacan-gray2)
+        }
+        &::after {
+            right: 0;
+            top: -18px;
+            border-bottom-right-radius: 9px;
+            box-shadow: 9px 0px 0 0 var(--tainacan-gray1), inset -2px -2px 5px -3px var(--tainacan-gray2)
+        }
 
         .footer-message {
             display: flex;
@@ -1962,16 +2182,19 @@ export default {
             background-color: transparent;
             border: none;
         }
-
-        @media screen and (max-width: 769px) {
+    }
+    @media screen and (max-width: 768px) {
+        .footer {
             padding: 13px 0.5em;
+            margin-left: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
             width: 100%;
             flex-wrap: wrap;
             height: auto;
             position: fixed;
 
             .update-info-section {
-                margin-left: auto;margin-bottom: 0.75em;
+                margin-left: auto;
+                margin-bottom: 0.75em;
                 margin-top: -0.25em;
             }
         }

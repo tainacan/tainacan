@@ -2,10 +2,20 @@
 
 namespace Tainacan\API\EndPoints;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use \Tainacan\API\REST_Controller;
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
+/**
+ * REST API controller for managing Tainacan metadata sections.
+ *
+ * Handles all REST API endpoints for metadata section operations including
+ * section creation, updates, deletion, and querying within collections.
+ *
+ * @since 1.0.0
+ */
 class REST_Metadata_Sections_Controller extends REST_Controller {
 
 	private $metadata_sections_repository;
@@ -155,7 +165,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 		return $metadata_section;
 	}
 
-		/**
+	/**
 	 * @param Entities\Metadata_Section $item
 	 * @param \WP_REST_Request $request
 	 *

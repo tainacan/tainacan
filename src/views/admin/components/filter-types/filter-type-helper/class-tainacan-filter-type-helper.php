@@ -8,29 +8,18 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Class FilterTypeHelper
  */
 class Filter_Type_Helper {
+	use \Tainacan\Traits\Singleton_Instance;
 
-	private static $instance = null;
 	/**
 	 * Stores external filter type available to be used in Tainacan
 	 */
 	private $registered_filter_type;
 	private $Tainacan_Filters;
 
-	public static function get_instance() {
-		if ( ! isset( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
-
-	private function __construct() {
+	private function init() {
 		$this->registered_filter_type = [];
 		$this->Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
-		$this->init();
-	}
 
-	private function init() {
 		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Date');
 		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numeric');
 		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Taginput');

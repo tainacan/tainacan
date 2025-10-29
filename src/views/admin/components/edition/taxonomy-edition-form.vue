@@ -1,267 +1,304 @@
 <template>
-    <div>
-        <div class="page-container repository-level-page">
-            <tainacan-title 
-                    :bread-crumb-items="[
-                        { path: $routerHelper.getTaxonomiesPath(), label: $i18n.get('taxonomies') },
-                        { path: '', label: (taxonomy != null && taxonomy.name != undefined) ? taxonomy.name : $i18n.get('taxonomy') }
-                    ]" />
+    <div class="page-container tainacan-repository-level-colors">
 
-            <form 
-                    v-if="taxonomy != null && taxonomy != undefined && (($route.name == 'TaxonomyCreationForm' && $userCaps.hasCapability('tnc_rep_edit_taxonomies')) || ($route.name == 'TaxonomyEditionForm' && taxonomy.current_user_can_edit))"
-                    class="tainacan-form" 
-                    label-width="120px">
-                <div class="columns">
-                    <div class="column is-3">
+        <tainacan-external-link
+                v-if="taxonomy && taxonomy.slug"
+                :link-label="$i18n.get('label_taxonomy_page_on_website')"
+                :link-url="themeTaxonomiesURL + taxonomy.slug" />
 
-                        <!-- Name -------------------------------- -->
-                        <b-field
-                                :addons="false"
-                                :label="$i18n.get('label_name')"
-                                :type="editFormErrors['name'] != undefined ? 'is-danger' : ''"
-                                :message="isUpdatingSlug ? $i18n.get('info_validating_slug') : (editFormErrors['name'] != undefined ? editFormErrors['name'] : '')">
-                            <span class="required-metadatum-asterisk">*</span>
-                            <help-button 
-                                    :title="$i18n.getHelperTitle('taxonomies', 'name')" 
-                                    :message="$i18n.getHelperMessage('taxonomies', 'name')"
-                                    extra-classes="tainacan-repository-tooltip" />
-                            <b-input
-                                    id="tainacan-text-name"
-                                    v-model="form.name"
-                                    :disabled="isUpdatingSlug"
-                                    :loading="isUpdatingSlug"
-                                    @focus="clearErrors('name')"
-                                    @blur="updateSlug()" />
-                        </b-field>
+        <tainacan-title :is-sticky="true">
+            <h1>
+                <template v-if="$route.name == 'TaxonomyCreationForm'">
+                    {{ $i18n.get('title_create_taxonomy_page') }}
+                </template>
+                <template v-else-if="$route.name == 'TaxonomyEditionForm'">
+                    {{ $i18n.get('title_taxonomy_edit_page') }} <span class="is-italic has-text-weight-semibold">{{ taxonomy ? taxonomy.name : '' }}</span>
+                </template>
+            </h1>
+        </tainacan-title>
 
-                        <!-- Hook for extra Form options -->
-                        <template v-if="hasBeginLeftForm">  
-                            <form 
-                                    id="form-taxonomy-begin-left"
-                                    class="form-hook-region"
-                                    v-html="getBeginLeftForm" />
-                        </template>
+        <form 
+                v-if="taxonomy != null && taxonomy != undefined && (($route.name == 'TaxonomyCreationForm' && $userCaps.hasCapability('tnc_rep_edit_taxonomies')) || ($route.name == 'TaxonomyEditionForm' && taxonomy.current_user_can_edit))"
+                class="tainacan-form" 
+                label-width="120px">
+            <div class="columns">
+                <div class="column is-3">
 
-                        <!-- Description -------------------------------- -->
-                        <b-field
-                                :addons="false"
-                                :label="$i18n.get('label_description')"
-                                :type="editFormErrors['description'] != undefined ? 'is-danger' : ''"
-                                :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
-                            <help-button 
-                                    :title="$i18n.getHelperTitle('taxonomies', 'description')" 
-                                    :message="$i18n.getHelperMessage('taxonomies', 'description')"
-                                    extra-classes="tainacan-repository-tooltip" />
-                            <b-input
-                                    id="tainacan-text-description"
-                                    v-model="form.description"
-                                    type="textarea"
-                                    rows="3"
-                                    @focus="clearErrors('description')" />
-                        </b-field>
+                    <!-- Name -------------------------------- -->
+                    <b-field
+                            :addons="false"
+                            :label="$i18n.get('label_name')"
+                            :type="editFormErrors['name'] != undefined ? 'is-danger' : ''"
+                            :message="isUpdatingSlug ? $i18n.get('info_validating_slug') : (editFormErrors['name'] != undefined ? editFormErrors['name'] : '')">
+                        <span class="required-metadatum-asterisk">*</span>
+                        <help-button 
+                                :title="$i18n.getHelperTitle('taxonomies', 'name')" 
+                                :message="$i18n.getHelperMessage('taxonomies', 'name')"
+                                extra-classes="tainacan-repository-tooltip" />
+                        <b-input
+                                id="tainacan-text-name"
+                                v-model="form.name"
+                                :disabled="isUpdatingSlug"
+                                :loading="isUpdatingSlug"
+                                @focus="clearErrors('name')"
+                                @blur="updateSlug()" />
+                    </b-field>
 
-                        <!-- Allow Insert -->
-                        <b-field :addons="false">
-                            <label class="label is-inline">
-                                {{ $i18n.get('label_taxonomy_allow_new_terms') }}
-                                <b-switch
-                                        id="tainacan-checkbox-allow-insert" 
-                                        v-model="form.allowInsert"
-                                        size="is-small"
-                                        true-value="yes"
-                                        false-value="no" />
-                                <help-button 
-                                        :title="$i18n.getHelperTitle('taxonomies', 'allow_insert')" 
-                                        :message="$i18n.getHelperMessage('taxonomies', 'allow_insert')"
-                                        extra-classes="tainacan-repository-tooltip" />
-                            </label>
-                        </b-field>
+                    <!-- Hook for extra Form options -->
+                    <template v-if="hasBeginLeftForm">  
+                        <form 
+                                id="form-taxonomy-begin-left"
+                                class="form-hook-region"
+                                v-html="getBeginLeftForm" />
+                    </template>
 
-                        <!-- Allow Insert -->
-                        <b-field :addons="false">
-                            <label class="label is-inline">
-                                {{ $i18n.getHelperTitle('taxonomies', 'hierarchical') }}
-                                <b-switch
-                                        id="tainacan-checkbox-allow-insert" 
-                                        v-model="form.hierarchical"
-                                        size="is-small"
-                                        true-value="yes"
-                                        false-value="no" />
-                                <help-button 
-                                        :title="$i18n.getHelperTitle('taxonomies', 'hierarchical')" 
-                                        :message="$i18n.getHelperMessage('taxonomies', 'hierarchical')"
-                                        extra-classes="tainacan-repository-tooltip" />
-                            </label>
-                        </b-field>
-                        
-                        <!-- Slug -------------------------------- -->
-                        <b-field
-                                :addons="false"
-                                :label="$i18n.get('label_slug')"
-                                :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''"
-                                :message="editFormErrors['slug'] != undefined ? editFormErrors['slug'] : ''">
-                            <help-button 
-                                    :title="$i18n.getHelperTitle('taxonomies', 'slug')" 
-                                    :message="$i18n.getHelperMessage('taxonomies', 'slug')"
-                                    extra-classes="tainacan-repository-tooltip" />
-                            <b-input
-                                    id="tainacan-text-slug"
-                                    v-model="form.slug"
-                                    :disabled="isUpdatingSlug"
-                                    @update:model-value="updateSlug()"
-                                    @focus="clearErrors('slug')" />
-                        </b-field>
+                    <!-- Description -------------------------------- -->
+                    <b-field
+                            :addons="false"
+                            :label="$i18n.get('label_description')"
+                            :type="editFormErrors['description'] != undefined ? 'is-danger' : ''"
+                            :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('taxonomies', 'description')" 
+                                :message="$i18n.getHelperMessage('taxonomies', 'description')"
+                                extra-classes="tainacan-repository-tooltip" />
+                        <b-input
+                                id="tainacan-text-description"
+                                v-model="form.description"
+                                type="textarea"
+                                rows="3"
+                                @focus="clearErrors('description')" />
+                    </b-field>
 
-                        <!-- Activate for other post types -->
-                        <b-field
-                                :addons="false"
-                                :label="$i18n.getHelperTitle('taxonomies', 'enabled_post_types')"
-                                :type="editFormErrors['enabled_post_types'] != undefined ? 'is-danger' : ''"
-                                :message="editFormErrors['enabled_post_types'] != undefined ? editFormErrors['enabled_post_types'] : ''">
-                            <help-button 
-                                    :title="$i18n.getHelperTitle('taxonomies', 'enabled_post_types')" 
-                                    :message="$i18n.getHelperMessage('taxonomies', 'enabled_post_types')"
-                                    extra-classes="tainacan-repository-tooltip" />
+                    <!-- Slug -------------------------------- -->
+                    <b-field
+                            :addons="false"
+                            :label="$i18n.get('label_slug')"
+                            :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''"
+                            :message="editFormErrors['slug'] != undefined ? editFormErrors['slug'] : ''">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('taxonomies', 'slug')" 
+                                :message="$i18n.getHelperMessage('taxonomies', 'slug')"
+                                extra-classes="tainacan-repository-tooltip" />
+                        <b-input
+                                id="tainacan-text-slug"
+                                v-model="form.slug"
+                                :disabled="isUpdatingSlug"
+                                @update:model-value="updateSlug()"
+                                @focus="clearErrors('slug')" />
+                    </b-field>
 
-                            <div class="two-columns-fields">
-                                <div 
-                                        v-for="wpPostType in wpPostTypes"
-                                        :key="wpPostType.slug"
-                                        class="field">
-                                    <b-checkbox
-                                            v-model="form.enabledPostTypes"
-                                            :native-value="wpPostType.slug"
-                                            :true-value="wpPostType.slug"
-                                            false-value=""
-                                            name="enabled_post_types">
-                                        {{ wpPostType.label }}  
-                                    </b-checkbox>
-                                </div>    
-                            </div>
-                        </b-field>
-
-                    </div>
-
-                    <div class="column is-9">
-
-                        <!-- Status -------------------------------- --> 
-                        <b-field
-                                :addons="false" 
-                                :label="$i18n.get('label_status')"
-                                :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
-                                :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
-                            <help-button 
-                                    :title="$i18n.getHelperTitle('taxonomies', 'status')" 
-                                    :message="$i18n.getHelperMessage('taxonomies', 'status')"
-                                    extra-classes="tainacan-repository-tooltip" />
-                            <div class="status-radios">
-                                <b-radio
-                                        v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
-                                        :key="index"
-                                        v-model="form.status"
-                                        :native-value="statusOption.slug">
+                    <!-- Status -------------------------------- --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_status')"
+                            :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
+                        <help-button
+                                :title="$i18n.getHelperTitle('taxonomies', 'status')"
+                                :message="$i18n.getHelperMessage('taxonomies', 'status')" />
+                        <b-dropdown
+                                ref="item-edition-status-dropdown"
+                                aria-role="list"
+                                class="item-edition-status-dropdown"
+                                :triggers="[ 'click' ]"
+                                :disabled="editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' )"
+                                max-height="300px">
+                            <template #trigger>
+                                <button 
+                                        :disabled="editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' )"
+                                        type="button"
+                                        class="button is-outlined"
+                                        :class="{ 'disabled': editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) }"
+                                        style="width: auto">
                                     <span class="icon has-text-gray">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-18px"
-                                                :class="$statusHelper.getIcon(statusOption.slug)" />
+                                                :class="$statusHelper.getIcon(form.status)" />
                                     </span>
-                                    {{ statusOption.name }}
-                                </b-radio>
-                            </div>
-                        </b-field>
+                                    <template v-if="form.status !== 'auto-draft' && $statusHelper.getStatuses().find(aStatusObject => aStatusObject.slug == form.status)">
+                                        {{ $statusHelper.getStatuses().find(aStatusObject => aStatusObject.slug == form.status).name }}
+                                    </template>
+                                    <template v-else-if="form.status === 'auto-draft'">
+                                        {{ $i18n.get('status_auto-draft') }}
+                                    </template>
+                                    <span 
+                                            style="margin-left: 0.5em;"
+                                            class="icon is-small">
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                    </span>
+                                </button>
+                            </template>
+                            <b-dropdown-item 
+                                    v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft' && (taxonomy.status != 'auto-draft' || status.slug != 'trash'))"
+                                    :key="index"
+                                    aria-role="listitem"
+                                    @click="form.status = statusOption.slug">
+                                <span class="icon has-text-gray">
+                                    <i 
+                                            class="tainacan-icon tainacan-icon-18px"
+                                            :class="$statusHelper.getIcon(statusOption.slug)" />
+                                </span>
+                                {{ statusOption.name }}
+                                <br>
+                                <small 
+                                        v-if="$statusHelper.hasDescription(statusOption.slug)"
+                                        class="is-small"
+                                        style="margin-left: 2px;">
+                                    {{ $statusHelper.getDescription(statusOption.slug) }}
+                                </small>
+                            </b-dropdown-item>
+                        </b-dropdown>
+                    </b-field>
 
-                        <!-- Terms List -->                        
-                        <b-field
-                                :addons="false"
-                                :label="$i18n.get('terms')">
+                    <!-- Allow Insert -->
+                    <b-field :addons="false">
+                        <label class="label is-inline">
+                            {{ $i18n.get('label_taxonomy_allow_new_terms') }}
+                            <b-switch
+                                    id="tainacan-checkbox-allow-insert" 
+                                    v-model="form.allowInsert"
+                                    size="is-small"
+                                    true-value="yes"
+                                    false-value="no" />
                             <help-button 
-                                    :title="$i18n.get('terms')" 
-                                    :message="$i18n.get('info_taxonomy_terms_list')"
+                                    :title="$i18n.getHelperTitle('taxonomies', 'allow_insert')" 
+                                    :message="$i18n.getHelperMessage('taxonomies', 'allow_insert')"
                                     extra-classes="tainacan-repository-tooltip" />
-                            <terms-list
-                                    :key="shouldReloadTermsList ? 'termslistreloaded' : 'termslist'"
-                                    :is-hierarchical="form.hierarchical !== 'no'"
-                                    :taxonomy-id="taxonomyId"
-                                    :current-user-can-edit-taxonomy="taxonomy ? taxonomy.current_user_can_edit : false" />
-                        </b-field>
+                        </label>
+                    </b-field>
 
-                        <!-- Hook for extra Form options -->
-                        <template v-if="hasEndLeftForm">  
-                            <form 
-                                    id="form-taxonomy-end-left"
-                                    class="form-hook-region"
-                                    v-html="getEndLeftForm" />
-                        </template>
-                    </div>
+                    <!-- Allow Insert -->
+                    <b-field :addons="false">
+                        <label class="label is-inline">
+                            {{ $i18n.getHelperTitle('taxonomies', 'hierarchical') }}
+                            <b-switch
+                                    id="tainacan-checkbox-allow-insert" 
+                                    v-model="form.hierarchical"
+                                    size="is-small"
+                                    true-value="yes"
+                                    false-value="no" />
+                            <help-button 
+                                    :title="$i18n.getHelperTitle('taxonomies', 'hierarchical')" 
+                                    :message="$i18n.getHelperMessage('taxonomies', 'hierarchical')"
+                                    extra-classes="tainacan-repository-tooltip" />
+                        </label>
+                    </b-field>
+
+                    <!-- Activate for other post types -->
+                    <b-field
+                            :addons="false"
+                            :label="$i18n.getHelperTitle('taxonomies', 'enabled_post_types')"
+                            :type="editFormErrors['enabled_post_types'] != undefined ? 'is-danger' : ''"
+                            :message="editFormErrors['enabled_post_types'] != undefined ? editFormErrors['enabled_post_types'] : ''">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('taxonomies', 'enabled_post_types')" 
+                                :message="$i18n.getHelperMessage('taxonomies', 'enabled_post_types')"
+                                extra-classes="tainacan-repository-tooltip" />
+
+                        <div class="two-columns-fields">
+                            <div 
+                                    v-for="wpPostType in wpPostTypes"
+                                    :key="wpPostType.slug"
+                                    class="field">
+                                <b-checkbox
+                                        v-model="form.enabledPostTypes"
+                                        :native-value="wpPostType.slug"
+                                        :true-value="wpPostType.slug"
+                                        false-value=""
+                                        name="enabled_post_types">
+                                    {{ wpPostType.label }}  
+                                </b-checkbox>
+                            </div>    
+                        </div>
+                    </b-field>
+
                 </div>
 
-                <!-- Submit -->
-                <footer class="footer field is-grouped form-submit">
-                    <div
-                            v-if="$route.query.recent"
-                            class="control">
-                        <button
-                                id="button-another-taxonomy-creation"
-                                class="button is-secondary"
-                                @click.prevent="goToCreateAnotherTaxonomy()">{{ $i18n.get('label_create_another_taxonomy') }}</button>
-                    </div>
-                    <div    
-                            v-if="!$route.query.recent"
-                            style="margin-right: auto;"
-                            class="control">
-                        <button
-                                id="button-cancel-taxonomy-creation"
-                                class="button is-outlined"
-                                type="button"
-                                @click="cancelBack">{{ $i18n.get('cancel') }}</button>
-                    </div>
-                    <p 
-                            style="margin: 0 12px;"
-                            class="help is-danger">
-                        {{ formErrorMessage }}
-                    </p>
-                    <p 
-                            v-if="updatedAt != undefined"
-                            class="updated-at">
-                        {{ ($i18n.get('info_updated_at') + ' ' + updatedAt) }}
-                    </p>
-                    <div class="control">
-                        <a
-                                target="_blank"
-                                class="button link-button"
-                                :href="themeTaxonomiesURL + taxonomy.slug">
-                            <span class="icon is-large">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl" />
-                            </span>
-                            <span>{{ $i18n.get('label_taxonomy_page_on_website') }}</span>
-                        </a>
-                        <button
-                                id="button-submit-taxonomy-creation"
-                                :class="{ 'is-loading': isLoadingTaxonomy, 'is-success': !isLoadingTaxonomy }"
-                                class="button"
-                                @click.prevent="onSubmit">{{ $i18n.get('save') }}</button>
-                    </div>
-                </footer>
-            </form>
+                <div class="column is-9">
 
-            <div v-if="!isLoadingTaxonomy && (($route.name == 'TaxonomyCreationForm' && !$userCaps.hasCapability('tnc_rep_edit_taxonomies')) || ($route.name == 'TaxonomyEditionForm' && taxonomy && taxonomy.current_user_can_edit != undefined && !taxonomy.current_user_can_edit))">
-                <section class="section">
-                    <div class="content has-text-grey has-text-centered">
-                        <p>
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-taxonomies" />
-                            </span>
-                        </p>
-                        <p>{{ $i18n.get('info_can_not_edit_taxonomy') }}</p>
-                    </div>
-                </section>
+                    <!-- Terms List -->                        
+                    <b-field
+                            :addons="false"
+                            :label="$i18n.get('terms')">
+                        <help-button 
+                                :title="$i18n.get('terms')" 
+                                :message="$i18n.get('info_taxonomy_terms_list')"
+                                extra-classes="tainacan-repository-tooltip" />
+                        <terms-list
+                                :key="shouldReloadTermsList ? 'termslistreloaded' : 'termslist'"
+                                :is-hierarchical="form.hierarchical !== 'no'"
+                                :taxonomy-id="taxonomyId"
+                                :current-user-can-edit-taxonomy="taxonomy ? taxonomy.current_user_can_edit : false" />
+                    </b-field>
+
+                    <!-- Hook for extra Form options -->
+                    <template v-if="hasEndLeftForm">  
+                        <form 
+                                id="form-taxonomy-end-left"
+                                class="form-hook-region"
+                                v-html="getEndLeftForm" />
+                    </template>
+                </div>
             </div>
 
-            <b-loading 
-                    v-model="isLoadingTaxonomy" 
-                    :can-cancel="false" />
+            <!-- Submit -->
+            <footer class="footer field is-grouped form-submit">
+                <div
+                        v-if="$route.query.recent"
+                        class="control">
+                    <button
+                            id="button-another-taxonomy-creation"
+                            class="button is-secondary"
+                            @click.prevent="goToCreateAnotherTaxonomy()">{{ $i18n.get('label_create_another_taxonomy') }}</button>
+                </div>
+                <div    
+                        v-if="!$route.query.recent"
+                        style="margin-right: auto;"
+                        class="control">
+                    <button
+                            id="button-cancel-taxonomy-creation"
+                            class="button is-outlined"
+                            type="button"
+                            @click="cancelBack">{{ $i18n.get('cancel') }}</button>
+                </div>
+                <p 
+                        style="margin: 0 12px;"
+                        class="help is-danger">
+                    {{ formErrorMessage }}
+                </p>
+                <p 
+                        v-if="updatedAt != undefined"
+                        class="updated-at">
+                    {{ ($i18n.get('info_updated_at') + ' ' + updatedAt) }}
+                </p>
+                <div class="control">
+                    <button
+                            id="button-submit-taxonomy-creation"
+                            :class="{ 'is-loading': isLoadingTaxonomy, 'is-success': !isLoadingTaxonomy }"
+                            class="button"
+                            @click.prevent="onSubmit">{{ $i18n.get('save') }}</button>
+                </div>
+            </footer>
+        </form>
 
+        <div v-if="!isLoadingTaxonomy && (($route.name == 'TaxonomyCreationForm' && !$userCaps.hasCapability('tnc_rep_edit_taxonomies')) || ($route.name == 'TaxonomyEditionForm' && taxonomy && taxonomy.current_user_can_edit != undefined && !taxonomy.current_user_can_edit))">
+            <section class="section">
+                <div class="content has-text-gray has-text-centered">
+                    <p>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-taxonomies" />
+                        </span>
+                    </p>
+                    <p>{{ $i18n.get('info_can_not_edit_taxonomy') }}</p>
+                </div>
+            </section>
         </div>
+
+        <b-loading 
+                v-model="isLoadingTaxonomy" 
+                :can-cancel="false" />
+
     </div>
 </template>
 
@@ -300,7 +337,6 @@
 
             if (formNotSaved && this.taxonomy) {
                 this.$buefy.modal.open({
-                    parent: this,
                     component: CustomDialog,
                     props: {
                         icon: 'alert',
@@ -312,7 +348,7 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
+                    canCancel: ['escape', 'outside']
                 });   
             } else {
                 next();
@@ -360,7 +396,23 @@
 
                 this.fetchTaxonomy({ taxonomyId: this.taxonomyId, isContextEdit: true })
                     .then(res => {
-                        this.taxonomy = res.taxonomy;
+                        this.taxonomy = JSON.parse(JSON.stringify(res.taxonomy));
+
+                        this.$routerHelper.appendToPageTitle(this.taxonomy.name);
+
+                        wp.hooks.doAction(
+                            'tainacan_navigation_path_updated', 
+                            { 
+                                currentRoute: this.$route,
+                                adminOptions: this.$adminOptions,
+                                parentEntity: {
+                                    rootLink: 'taxonomies',
+                                    name: this.taxonomy.name,
+                                    defaultLink: `taxonomies/${this.taxonomyId}/edit`,
+                                    label: this.$i18n.get('taxonomies')
+                                }
+                            }
+                        );
 
                         // Fills hook forms with it's real values 
                         nextTick()
@@ -416,7 +468,22 @@
                 this.updateTaxonomy(data)
                     .then(updatedTaxonomy => {
 
-                        this.taxonomy = updatedTaxonomy;
+                        this.taxonomy = JSON.parse(JSON.stringify(updatedTaxonomy));
+
+                        wp.hooks.doAction(
+                            'tainacan_navigation_path_updated', 
+                            { 
+                                currentRoute: this.$route,
+                                adminOptions: this.$adminOptions,
+                                parentEntity: {
+                                    rootLink: 'taxonomies',
+                                    name: this.taxonomy.name,
+                                    defaultLink: `taxonomies/${this.taxonomyId}/edit`,
+                                    label: this.$i18n.get('taxonomies')
+                                }
+                            }
+                        );
+
                         // Fills hook forms with it's real values 
                         this.updateExtraFormData(this.taxonomy);
 
@@ -558,10 +625,12 @@
         align-items: center;
     }
     .tainacan-form>.columns {
-        margin-bottom: 48px;
+        margin-bottom: 72px;
     }
-    .tainacan-form .column:last-of-type {
-        padding-left: var(--tainacan-one-column) !important;
+    @media screen and (min-width: 769px) {
+        .tainacan-form .column:last-of-type {
+            padding-left: var(--tainacan-one-column) !important;
+        }
     }
     .two-columns-fields {
         column-width: 180px;
@@ -578,20 +647,71 @@
         color: var(--tainacan-info-color);
         font-style: italic;
     }
+    .two-thirds-layout-options {
+        display: flex;
+        column-gap: 1em !important;
 
+        & > .field:first-child {
+            flex-basis: 75%;
+        }
+        & > .field:last-child {
+            flex-basis: 25%;
+        }
+
+        .dropdown-trigger>.button {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        @media screen and (max-width: 782px) {
+            flex-wrap: wrap;
+            margin-bottom: 1em;
+
+            & > .field {
+                flex-basis: 100% !important;
+            }
+            .dropdown-trigger>.button {
+                min-height: 40px;
+            }
+        }
+    }
     .footer {
-        padding: 14px var(--tainacan-one-column);
-        position: fixed;
+        padding: 10px var(--tainacan-one-column);
+        position: absolute;
         bottom: 0;
         right: 0;
         z-index: 9999;
         background-color: var(--tainacan-gray1);
-        width: calc(100% - var(--tainacan-sidebar-width, 3.25em));
-        height: 60px;
+        width: 100%;
+        height: 3.5rem;
         display: flex;
         justify-content: flex-end;
         align-items: center;
         transition: bottom 0.5s ease, width 0.2s linear;
+        box-shadow: 0px 0px 12px -8px var(--tainacan-black);
+
+        &::after,
+        &::before {
+            height: 18px;
+            width: 18px;
+            background: transparent;
+            display: block;
+            content: '';
+            position: absolute;
+        }
+        &::before {
+            left: 0;
+            top: -18px;
+            border-bottom-left-radius: 9px;
+            box-shadow: -9px 0px 0 0 var(--tainacan-gray1), inset 2px -2px 5px -3px var(--tainacan-gray2)
+        }
+        &::after {
+            right: 0;
+            top: -18px;
+            border-bottom-right-radius: 9px;
+            box-shadow: 9px 0px 0 0 var(--tainacan-gray1), inset -2px -2px 5px -3px var(--tainacan-gray2)
+        }
 
         .footer-message {
             display: flex;
@@ -620,16 +740,22 @@
             background-color: transparent;
             border: none;
         }
-
-        @media screen and (max-width: 769px) {
+    }
+    @media screen and (max-width: 768px) {
+        .tainacan-form {
+            padding-bottom: 3rem;
+        }
+        .footer {
             padding: 13px 0.5em;
+            margin-left: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
             width: 100%;
             flex-wrap: wrap;
             height: auto;
             position: fixed;
 
             .update-info-section {
-                margin-left: auto;margin-bottom: 0.75em;
+                margin-left: auto;
+                margin-bottom: 0.75em;
                 margin-top: -0.25em;
             }
         }

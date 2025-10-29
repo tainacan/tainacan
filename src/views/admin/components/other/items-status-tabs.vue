@@ -6,13 +6,14 @@
                         content: $i18n.get('info_items_tab_all'),
                         autoHide: true,
                         placement: 'auto',
+                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                     }"
                     :class="{ 'is-active': status == undefined || status == '' || status == 'publish,private,pending,draft' }"
                     @click="onChangeTab('')">
-                <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
+                <a style="font-weight: bold;">
                     {{ $i18n.get('label_all_items') }}
                     <span 
-                            v-if="!$adminOptions.hideItemsListStatusTabsTotalItems"
+                            v-if="!$adminOptions.hideItemsListStatusTabsTotalItems && !$route.query.authorid"
                             class="has-text-gray">
                         &nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.pending + repositoryTotalItems.publish + repositoryTotalItems.draft })` : (collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.pending) + Number(collection.total_items.publish) + Number(collection.total_items.draft)})` : '') }}
                     </span>
@@ -42,7 +43,7 @@
                         </span>
                         {{ statusOption.name }}
                         <span 
-                                v-if="!$adminOptions.hideItemsListStatusTabsTotalItems"
+                                v-if="!$adminOptions.hideItemsListStatusTabsTotalItems && !$route.query.authorid"
                                 class="has-text-gray">
                             &nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems[statusOption.slug] })` : (collection && collection.total_items ? ` (${collection.total_items[statusOption.slug]})` : '') }}
                         </span>

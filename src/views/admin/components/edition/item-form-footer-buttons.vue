@@ -31,7 +31,7 @@
                 <button
                         v-if="!$adminOptions.mobileAppMode"
                         type="button"
-                        class="button is-outlined"
+                        class="button is-outlined is-danger"
                         @click="$emit('on-discard')">{{ $i18n.get('label_discard') }}</button>
                 <button
                         type="button"
@@ -47,7 +47,7 @@
                 <button 
                         v-if="!isOnSequenceEdit && currentUserCanDelete && !$adminOptions.mobileAppMode"
                         type="button"
-                        class="button is-outlined"
+                        class="button is-outlined is-danger"
                         @click="$emit('on-submit', 'trash')">
                     <span v-if="!isMobileScreen">{{ $i18n.get('label_send_to_trash') }}</span>
                     <span v-else>{{ $i18n.get('status_trash') }}</span>
@@ -106,6 +106,13 @@
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-draft" />
                         </span>
                         {{ status == 'draft' ? $i18n.get('label_update_draft') : $i18n.get('label_change_to_draft') }}
+                        <br>
+                        <small 
+                                v-if="$statusHelper.hasDescription('draft')"
+                                class="is-small"
+                                style="margin-left: 2px;">
+                            {{ $statusHelper.getDescription('draft') }}
+                        </small>
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="!$adminOptions.hideItemEditionStatusPendingOption"
@@ -120,9 +127,16 @@
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting" />
                         </span>
                         {{ status == 'pending' ? $i18n.get('label_update_pending') : $i18n.get('label_send_to_review') }}
+                        <br>
+                        <small 
+                                v-if="$statusHelper.hasDescription('pending')"
+                                class="is-small"
+                                style="margin-left: 2px;">
+                            {{ $statusHelper.getDescription('pending') }}
+                        </small>
                     </b-dropdown-item>
                     <b-dropdown-item
-                            v-if="currentUserCanPublish"
+                            v-if="currentUserCanPublish && !$adminOptions.hideItemEditionStatusPrivateOption"
                             :class="{ 'is-forced-last-option': status == 'private' }"
                             aria-role="listitem"
                             @click="$emit(
@@ -134,6 +148,13 @@
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-private" />
                         </span>
                         {{ status == 'private' ? $i18n.get('label_update_as_private') : ( status == 'draft' ? $i18n.get('label_verb_publish_privately') : $i18n.get('label_change_to_private') ) }}
+                        <br>
+                        <small 
+                                v-if="$statusHelper.hasDescription('private')"
+                                class="is-small"
+                                style="margin-left: 2px;">
+                            {{ $statusHelper.getDescription('private') }}
+                        </small>
                     </b-dropdown-item>
                     <b-dropdown-item 
                             v-if="currentUserCanPublish && !$adminOptions.hideItemEditionStatusPublishOption"
@@ -147,6 +168,13 @@
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-public" />
                         </span>
                         {{ status == 'publish' ? $i18n.get('label_update_as_public') : $i18n.get('label_verb_publish') }}
+                        <br>
+                        <small 
+                                v-if="$statusHelper.hasDescription('publish')"
+                                class="is-small"
+                                style="margin-left: 2px;">
+                            {{ $statusHelper.getDescription('publish') }}
+                        </small>
                     </b-dropdown-item>
                 </b-dropdown>
                 
@@ -232,7 +260,6 @@ export default {
         openItemCreationStatusDialog() {
 
             this.$buefy.modal.open({
-                parent: this,
                 component: ItemCreationStatusDialog,
                 canCancel: false,
                 props: {
@@ -243,8 +270,7 @@ export default {
                     }
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                customClass: 'tainacan-modal'
             });
         },
     }

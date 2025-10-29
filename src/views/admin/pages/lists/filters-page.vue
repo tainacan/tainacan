@@ -1,24 +1,26 @@
 <template>
-    <div :class="{ 'repository-level-page page-container': isRepositoryLevel }">
-        <tainacan-title :bread-crumb-items="[{ path: '', label: $i18n.get('filters') }]" />
+    <div :class="{ 'tainacan-repository-level-colors page-container': isRepositoryLevel }">
         
-        <template v-if="isRepositoryLevel">
-            <p>{{ $i18n.get('info_repository_filters_inheritance') }}</p>
-            <br>
-        </template>
+        <tainacan-title :is-sticky="true" />
+        
+        <p v-if="isRepositoryLevel">
+            {{ $i18n.get('info_repository_filters_inheritance') }}
+        </p>
                         
         <div class="filters-list-page">
-            <b-loading v-model="isLoadingMetadatumTypes" />
+            <b-loading
+                    v-model="isLoadingMetadatumTypes"
+                    :is-full-page="false" />
             
             <div
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || (!isRepositoryLevel && collection && collection.current_user_can_edit_filters))"
                     ref="filterEditionPageColumns"
-                    :style="{ height: activeFiltersList.length <= 0 && !isLoadingFilters ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
-                    class="columns">
-                <div class="column">
+                    :style="{ height: activeFiltersList.length <= 0 && !isLoadingFilters ? 'auto' : 'calc(100% - 6px - ' + columnsTopY + 'px)'}"
+                    class="columns is-multiline">
+                <div class="column is-12-touch">
 
                     <div class="tainacan-form sub-header">
-                        <h3>{{ $i18n.get('filters') }}</h3>
+                        <h2>{{ $i18n.get('filters') }}</h2>
 
                         <template v-if="activeFiltersList && activeFiltersList.length > 5 && !isLoadingFilters">
                                 
@@ -228,9 +230,9 @@
                 </div>
                 <div 
                         v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || !isRepositoryLevel)"
-                        class="column available-metadata-area">
+                        class="column available-metadata-area is-12-touch">
                     <div class="tainacan-form sub-header">
-                        <h3>{{ $i18n.get('label_available_metadata') }}</h3>
+                        <h2>{{ $i18n.get('label_available_metadata') }}</h2>
 
                         <template v-if="availableMetadata && availableMetadata.length > 5 && !isLoadingMetadatumTypes">
                                 
@@ -324,7 +326,7 @@
                                     </span>
                                     <span 
                                             v-tooltip="{
-                                                content: isRepositoryLevel || metadatum.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
+                                                content: isRepositoryLevel || metadatum.collection_id != collectionId ? $i18n.get('label_repository_metadatum') : $i18n.get('label_collection_metadatum'),
                                                 autoHide: true,
                                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                 placement: 'auto-start'
@@ -373,7 +375,7 @@
             <section 
                     v-else
                     class="section">
-                <div class="content has-text-grey has-text-centered">
+                <div class="content has-text-gray has-text-centered">
                     <p>
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-filters" />
@@ -391,6 +393,7 @@
                     aria-modal
                     aria-role="dialog"
                     custom-class="tainacan-modal"
+                    :can-cancel="['escape', 'outside']"
                     :close-button-aria-label="$i18n.get('close')">
                 <div 
                         autofocus
@@ -401,7 +404,6 @@
                         style="width: auto">
                     <header class="tainacan-modal-title">
                         <h2>{{ $i18n.get('label_available_filter_types') }}</h2>
-                        <hr>
                     </header>
                     <section class="tainacan-form">
                         <form class="tainacan-form">
@@ -489,7 +491,6 @@ export default {
         }
         if ((this.openedFilterId != '' && this.openedFilterId != undefined) || hasUnsavedForms ) {
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
@@ -502,7 +503,7 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             });  
         } else {
             next()
@@ -566,18 +567,15 @@ export default {
         this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
     },
     mounted() {
-
-        if (!this.isRepositoryLevel)
-            this.$emitter.emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('filter') }]);
-
         nextTick(() => { 
             this.columnsTopY = this.$refs.filterEditionPageColumns ? this.$refs.filterEditionPageColumns.getBoundingClientRect().top : 0;
         });
 
         if (this.isRepositoryLevel)
             this.collectionId = 'default';
-        else
+        else {
             this.collectionId = this.$route.params.collectionId;
+        }
 
         this.isLoadingFilterTypes = true;
 
@@ -793,19 +791,45 @@ export default {
             });
         },
         removeFilter(removedFilter) {
+            let filterName = '';
+            
+            if (removedFilter && typeof removedFilter === 'object') {
+                if (removedFilter.name !== undefined && removedFilter.name !== null && removedFilter.name !== '') 
+                    filterName = removedFilter.name;
+                else if (removedFilter.id)
+                    filterName = 'ID: ' + removedFilter.id;
+            }
+            
+            let message = this.$i18n.getWithVariables(
+                'info_warning_filter_delete_%s',
+                [ filterName ]
+            );
+            
+            this.$buefy.modal.open({
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: message,
+                    onConfirm: () => {
+                        if (this.editForms[removedFilter.id])
+                            delete this.editForms[removedFilter.id];
 
-            if (this.editForms[removedFilter.id])
-                delete this.editForms[removedFilter.id];
-
-            this.deleteFilter(removedFilter.id)
-                .then(() => {
-                    // Reload Available Metadatum Types List
-                    this.updateListOfMetadata();
-                })
-                .catch((error) => { this.$console.log(error)});
-        
-            if (!this.isRepositoryLevel)
-                this.updateFiltersOrder(); 
+                        this.deleteFilter(removedFilter.id)
+                            .then(() => {
+                                // Reload Available Metadatum Types List
+                                this.updateListOfMetadata();
+                            })
+                            .catch((error) => { this.$console.log(error)});
+                    
+                        if (!this.isRepositoryLevel)
+                            this.updateFiltersOrder();
+                    }
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                canCancel: ['escape', 'outside']
+            });
         },
         confirmSelectedFilterType() {
             this.isSelectingFilterType = false;
@@ -936,36 +960,7 @@ export default {
 
     .filters-list-page {
         padding-bottom: 0;
-
-        .tainacan-page-title {
-            margin-bottom: 28px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-end;
-            justify-content: space-between;
-
-            h1, h2 {
-                font-size: 1.25em;
-                font-weight: 500;
-                color: var(--tainacan-heading-color);
-                display: inline-block;
-                width: 80%;
-                flex-shrink: 1;
-                flex-grow: 1;
-            }
-            a.back-link{
-                font-weight: 500;
-                float: right;
-                margin-top: 5px;
-            }
-            hr{
-                margin: 3px 0px 4px 0px; 
-                height: 1px;
-                background-color: var(--tainacan-secondary);
-                width: 100%;
-            }
-        }
-                    
+           
         .column {
             overflow-x: hidden;
             overflow-y: auto;
@@ -979,10 +974,11 @@ export default {
                 margin-right: 30px;
                 flex-grow: 2;
 
-                @media screen and (max-width: 769px) {
+                @media screen and (max-width: 1023px) {
                     margin-right: 0;
                 }
             }
+            h2,
             h3 {
                 font-weight: 500;
             }
@@ -999,6 +995,7 @@ export default {
                 margin-bottom: 0px;
             }
 
+            h2,
             h3 {
                 margin-right: auto;
             }
@@ -1023,7 +1020,7 @@ export default {
             padding-top: 1em;
             min-height: 330px;
 
-            @media screen and (max-width: 769px) {
+            @media screen and (max-width: 1024px) {
                 min-height: 45px;
                 margin: 0; 
                 padding-right: 0em;
@@ -1042,13 +1039,14 @@ export default {
 
             .active-filter-item {
                 background-color: var(--tainacan-white);
-                padding: 0.7em 0.9em;
+                padding: 0.813em 0.9em;
                 margin: 4px;
                 min-height: 2.8571em;
                 position: relative;
                 display: block; 
                 transition: top 0.1s ease;
                 cursor: grab;
+                border-radius: var(--tainacan-button-border-radius, 3px);
 
                 form.tainacan-form {
                     padding: 1.0em 2.0em;
@@ -1068,9 +1066,9 @@ export default {
                     overflow: hidden;
                     border-top-right-radius: 0;
                     border-bottom-right-radius: 0;
-                    border-top-left-radius: 3px;
-                    border-bottom-left-radius: 3px;
-                    font-size: 0.875em;
+                    border-top-left-radius: var(--tainacan-button-border-radius, 3px);
+                    border-bottom-left-radius: var(--tainacan-button-border-radius, 3px);
+                    font-size: 0.938em;
                     left: 0em; 
                     top: 0px;
                     opacity: 0;
@@ -1089,11 +1087,12 @@ export default {
                     .sorting-buttons {
                         opacity: 1.0;
                         visibility: visible;
-                        left: -2em
+                        left: -1.062em
                     }
                 }
                 .handle {
                     padding-right: 6em;
+                    border-radius: var(--tainacan-button-border-radius, 0px);
                     white-space: nowrap;
                     display: flex;
                 }
@@ -1136,15 +1135,13 @@ export default {
                 .controls { 
                     font-size: 0.875em;
                     position: absolute;
-                    right: 10px; 
-                    top: 10px;
-                    .switch {
-                        position: relative;
-                        bottom: 2px;
-                    }
-                    .icon {
-                        bottom: 1px;   
-                        position: relative;
+                    right: 11px;
+                    top: 11px;
+                    display: flex;
+                    align-items: center;
+
+                   .icon {
+                        width: 2em;
                         i, i:before { font-size: 1.25em; }
                     }
                 }
@@ -1211,9 +1208,11 @@ export default {
             max-width: 600px;
             min-width: 41.66666667%;
 
-            @media screen and (max-width: 769px) {
+            @media screen and (max-width: 1023px) {
                 max-width: 100%;
                 padding: 10px;
+
+                h2,
                 h3 {
                     margin: 1em 0em 1em 0em !important;
                 }
@@ -1223,6 +1222,7 @@ export default {
                 }
             }
 
+            h2,
             h3 {
                 margin: 0.875em 0em 1em 0em;
                 font-weight: 500;
@@ -1243,7 +1243,7 @@ export default {
                 height: 2.8571em;
                 position: relative;
                 border: 1px solid var(--tainacan-gray2);
-                border-radius: 1px;
+                border-radius: var(--tainacan-button-border-radius, 0px);
                 transition: left 0.2s ease;
                 
                 .grip-icon { 
@@ -1273,6 +1273,7 @@ export default {
                     width: 0;
                     height: 0;
                     border-style: solid;
+                    border-radius: var(--tainacan-button-border-radius, 0px);
                 }
                 &:after {
                     top: -1px;
@@ -1280,7 +1281,7 @@ export default {
                     border-right-width: 16px;
                     border-top-width: 1.4286em;
                     border-bottom-width: 1.4286em;
-                    left: -19px;
+                    left: calc( -19px + (var(--tainacan-button-border-radius, 0px) / 2));
                 }
                 &:before {
                     top: -1px;
@@ -1288,7 +1289,7 @@ export default {
                     border-right-width: 16px;
                     border-top-width: 1.4286em;
                     border-bottom-width: 1.4286em;
-                    left: -20px;
+                    left: calc( -20px + (var(--tainacan-button-border-radius, 0px) / 2));
                 }
                 .label-details {
                     font-weight: normal;
@@ -1422,7 +1423,7 @@ export default {
                 min-height: 290px;
                 align-items: normal;
 
-                @media screen and (max-width: 769px) {
+                @media screen and (max-width: 1023px) {
                     max-width: 100%;
                 }
 
@@ -1501,6 +1502,14 @@ export default {
 
             }
 
+        }
+    }
+    .tainacan-repository-level-colors {
+        .tainacan-form.sub-header {
+            padding-left: 0 !important;
+        }
+        .filters-list-page .active-filters-area {
+            margin-left: 0 !important;
         }
     }
 </style>

@@ -4,13 +4,21 @@
             autofocus
             role="dialog"
             class="tainacan-modal-content"
+            :class="{ 'tainacan-repository-level-colors': isRepositoryLevel }"
             tabindex="-1"
             aria-modal>
         <header 
                 v-if="!isLoadingActivity"
                 class="tainacan-modal-title">
             <h2>{{ activity.title ? activity.title : $i18n.get('activity') }}</h2>
-            <hr>
+            <button 
+                    class="button is-medium is-white is-align-self-flex-start"
+                    :aria-label="$i18n.get('close')"
+                    @click="$emit('close')">
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-125em" />
+                </span>
+            </button>
             <p>{{ activityCreationDate + ', ' + $i18n.get('info_by_inner') }} <strong> {{ activity.user_name }}</strong></p>
         </header>
         <b-loading 
@@ -589,7 +597,7 @@
                 dateFormat: '',
                 activityCreationDate: '',
                 isLoadingActivity: false,
-                adminFullURL: tainacan_plugin.admin_url + '?page=tainacan_admin#', 
+                isRepositoryLevel: false
             }
         },
         computed: {
@@ -600,31 +608,31 @@
                 switch(this.activity.object_type) {
                     case 'Tainacan\\Entities\\Collection':
                         return `${ this.$i18n.get('collection') } 
-                                <a href="${ this.adminFullURL + this.$routerHelper.getCollectionPath(this.activity.object_id) }">${ this.activity.object.name }</a>
+                                <a href="${ this.$routerHelper.getAbsoluteAdminPath() + this.$routerHelper.getCollectionPath(this.activity.object_id) }">${ this.activity.object.name }</a>
                                 <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-collections"/></span>`;
                     case 'Tainacan\\Entities\\Taxonomy':
                         return `${ this.$i18n.get('taxonomy') } 
-                                <a href="${ this.adminFullURL + this.$routerHelper.getTaxonomyPath(this.activity.object_id) }">${ this.activity.object.name }</a>
+                                <a href="${ this.$routerHelper.getAbsoluteAdminPath() + this.$routerHelper.getTaxonomyPath(this.activity.object_id) }">${ this.activity.object.name }</a>
                                 <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-taxonomies"/></span>`;
                     case 'Tainacan\\Entities\\Metadatum':
                         return `${ this.$i18n.get('metadatum') } 
-                                <a href="${ this.adminFullURL + (this.activity.object.collection_id == 'default' ? this.$routerHelper.getMetadataEditPath(this.activity.object_id) : this.$routerHelper.getCollectionMetadataEditPath(this.activity.object.collection_id, this.activity.object_id)) }">${ this.activity.object.name }</a>
+                                <a href="${ this.$routerHelper.getAbsoluteAdminPath() + (this.activity.object.collection_id == 'default' ? this.$routerHelper.getMetadataEditPath(this.activity.object_id) : this.$routerHelper.getCollectionMetadataEditPath(this.activity.object.collection_id, this.activity.object_id)) }">${ this.activity.object.name }</a>
                                 <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata"/></span>`;
                     case 'Tainacan\\Entities\\Filter':
                         return `${ this.$i18n.get('filter') } 
-                                <a href="${ this.adminFullURL + (this.activity.object.collection_id == 'default' ? this.$routerHelper.getFilterEditPath(this.activity.object_id) : this.$routerHelper.getCollectionFilterEditPath(this.activity.object.collection_id, this.activity.object_id)) }">${ this.activity.object.name }</a>
+                                <a href="${ this.$routerHelper.getAbsoluteAdminPath() + (this.activity.object.collection_id == 'default' ? this.$routerHelper.getFilterEditPath(this.activity.object_id) : this.$routerHelper.getCollectionFilterEditPath(this.activity.object.collection_id, this.activity.object_id)) }">${ this.activity.object.name }</a>
                                 <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/></span>`;
                     case 'Tainacan\\Entities\\Term':
                         return `${ this.$i18n.get('term') } 
-                                <a href="${ this.adminFullURL + this.$routerHelper.getTermEditPath(this.activity.object.taxonomy.replace( /^\D+/g, ''), this.activity.object_id) }">${ this.activity.object.name }</a>
+                                <a href="${ this.$routerHelper.getAbsoluteAdminPath() + this.$routerHelper.getTermEditPath(this.activity.object.taxonomy.replace( /^\D+/g, ''), this.activity.object_id) }">${ this.activity.object.name }</a>
                                 <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-terms"/></span>`;
                     case 'Tainacan\\Entities\\Item':
                         return `${ this.$i18n.get('item') } 
-                                <a href="${ this.adminFullURL + this.$routerHelper.getItemEditPath(this.activity.object.collection_id, this.activity.object_id) }">${ this.activity.object.title }</a>
+                                <a href="${ this.$routerHelper.getAbsoluteAdminPath() + this.$routerHelper.getItemEditPath(this.activity.object.collection_id, this.activity.object_id) }">${ this.activity.object.title }</a>
                                 <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/></span>`;
                     case 'Tainacan\\Entities\\Item_Metadata_Entity':
                         return `${ this.$i18n.get('item') } 
-                                <a href="${ this.adminFullURL + this.$routerHelper.getItemEditPath(this.activity.item.collection_id, this.activity.item.id) }">${ this.activity.item.title }</a>
+                                <a href="${ this.$routerHelper.getAbsoluteAdminPath() + this.$routerHelper.getItemEditPath(this.activity.item.collection_id, this.activity.item.id) }">${ this.activity.item.title }</a>
                                 <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/></span>`;
                     default: 
                         return '';
@@ -642,6 +650,7 @@
         },
         created() {
             this.loadActivity();
+            this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
         },
         mounted() {
             if (this.$refs.activityDetailsModal)
@@ -670,7 +679,7 @@
                         let localeData = moment.localeData();
                         this.dateFormat = localeData.longDateFormat('LLL');
 
-                        let logDate = this.activity.log_date;
+                        let logDate = this.activity.date;
 
                         let date = moment(logDate).format(this.dateFormat);
 
@@ -689,11 +698,6 @@
 <style lang="scss" scoped>
 
     .tainacan-modal-title {
-        align-self: baseline;
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-
         p {
             margin-right: auto;
         }
@@ -701,7 +705,7 @@
 
     .tainacan-modal-content {
         width: auto;
-        min-height: 500px;
+        min-height: 100px;
         
         p {
             font-size: 0.875em;
@@ -709,7 +713,7 @@
     }
 
     .modal-card-body {
-        min-height: 300px;
+        min-height: 42px;
         padding: 0;
         .columns {
             margin: 6px var(--tainacan-one-column) 0 var(--tainacan-one-column);

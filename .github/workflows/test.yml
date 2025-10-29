@@ -74,7 +74,9 @@ jobs:
         run: php -v
 
       - name: install tools deps
-        run: sudo apt install mariadb-client subversion -y
+        run: |
+          sudo apt-get update
+          sudo apt install mariadb-client subversion -y
 
       - name: Add bootstrap-config
         run: |

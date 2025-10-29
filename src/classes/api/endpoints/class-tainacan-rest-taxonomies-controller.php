@@ -2,10 +2,20 @@
 
 namespace Tainacan\API\EndPoints;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use \Tainacan\API\REST_Controller;
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
+/**
+ * REST API controller for managing Tainacan taxonomies.
+ *
+ * Handles all REST API endpoints for taxonomy operations including
+ * creation, updates, deletion, and querying of taxonomies.
+ *
+ * @since 1.0.0
+ */
 class REST_Taxonomies_Controller extends REST_Controller {
 	private $taxonomy;
 	private $taxonomy_repository;

@@ -61,7 +61,6 @@
             <div class="collapse-trigger">
                 <button
                         :for="'filter-input-id-' + filter.id"
-                        :aria-controls="'filter-input-id-' + filter.id"
                         class="label"
                         @click="displayFilter = true">
                     <span class="icon">
@@ -307,7 +306,7 @@
         }
 
         .taginput-container {
-            border-radius: var(--tainacan-input-border-radius, 1px) !important;
+            border-radius: var(--tainacan-input-border-radius, 2px) !important;
             box-shadow: none !important;
             transition: background-color 0.1s;
         }
@@ -364,13 +363,13 @@
 
         .datepicker {
             .dropdown-menu {
-                left: -18px;
                 right: 0;
+                min-width: calc(100% + 18px) !important;
             }
-            @media screen and (min-width: 768px) {
+            @media screen and (min-width: 769px) {
                 .dropdown-trigger input {
                     font-size: 0.75em !important;
-                    line-height: 1.75em;
+                    line-height: 1.875em;
                 }
                 .datepicker-header {
 

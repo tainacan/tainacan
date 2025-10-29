@@ -1,0 +1,78 @@
+{
+	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
+    "landingPage": "/wp-admin/admin.php?page=tainacan_dashboard",
+    "login": true,
+    "preferredVersions": {
+        "php": "8.4",
+        "wp": "6.8"
+    },
+    "meta": {
+        "title": "Tainacan Demonstration Blueprint",
+        "description": "Provides a pre-configured demonstration environment for the Tainacan plugin.", 
+        "author": "FabricioDeQueiroz, CaioSulz and harry-cmartin"
+    },
+    "features": {
+        "intl": true,
+        "networking": true
+    },
+    "extraLibraries": [
+        "wp-cli"
+    ],
+    "constants": {
+		"WP_DEBUG": false,
+        "WP_DEBUG_DISPLAY": false,
+        "WP_DEBUG_LOG": false
+	},
+    "steps": [
+        {
+            "step": "installPlugin",
+            "pluginData": {
+                "resource": "wordpress.org/plugins",
+                "slug": "tainacan"
+            }
+        },
+        {
+            "step": "activatePlugin",
+            "pluginPath": "/wordpress/wp-content/plugins/tainacan"
+        },
+        {
+            "step": "installPlugin",
+            "pluginData": {
+                "resource": "wordpress.org/plugins",
+                "slug": "tainacan-blocksy"
+            }
+        },
+        {
+            "step": "activatePlugin",
+            "pluginPath": "/wordpress/wp-content/plugins/tainacan-blocksy"
+        },
+        {
+            "step": "installTheme",
+            "themeData": {
+                "resource": "wordpress.org/themes",
+                "slug": "taina"
+            }
+        },
+        {
+            "step": "installTheme",
+            "themeData": {
+                "resource": "wordpress.org/themes",
+                "slug": "blocksy"
+            }
+        },
+        {
+            "step": "installTheme",
+            "themeData": {
+                "resource": "wordpress.org/themes",
+                "slug": "tainacan-interface"
+            }
+        },
+        {
+            "step": "setSiteOptions",
+            "options": {
+                "blogname": "Tainacan Demonstration",
+                "permalink_structure": "/%postname%/"
+            }
+        }
+    ]
+}

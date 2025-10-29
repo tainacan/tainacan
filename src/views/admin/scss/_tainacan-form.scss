@@ -72,7 +72,6 @@
         pointer-events: none;
     }
     .b-numberinput {
-        height: auto;
         padding: 0 !important;
         
         .control {
@@ -86,16 +85,26 @@
         }
         p.control:first-child .button {
             border-right-width: 0px;
+            border-left-width: 0px;
+            border-top-left-radius: 0px !important;
+            border-bottom-left-radius: 0px !important;
         }
         p.control:last-child .button {
             border-left-width: 0px;
+            border-top-right-radius: var(--tainacan-input-border-radius) !important;
+            border-bottom-right-radius: var(--tainacan-input-border-radius) !important;
         }
-        button, 
-        input {
-            height: auto !important;
+        p.control button.is-primary {
+            min-height: 100% !important;
+        }
+        input.input {
+            border-top-right-radius: 0px !important;
+            border-bottom-right-radius: 0px !important;
             text-align: start;
         }
-        p.cont
+        button {
+            height: auto !important;
+        }
         button.is-primary:disabled,
         button.is-primary:disabled:hover,
         button.is-primary:disabled:focus,
@@ -118,7 +127,6 @@
             color: var(--tainacan-secondary) !important;
             padding: 0.25em 0.6em !important;
             border-radius: 0 !important;
-            min-height: 100%;
 
             &:hover {
                 background-color: var(--tainacan-primary) !important;
@@ -161,6 +169,7 @@
         color: var(--tainacan-input-color);
         padding-left: 0.8em;
         font-size: 0.81em;
+        line-height: 1.125em;
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
@@ -190,8 +199,10 @@
             justify-content: space-between;
             width: 100%;
             border: 1px solid var(--tainacan-input-border-color) !important;
-            border-radius: var(--tainacan-input-border-radius, 1px) !important;
-            padding: 2px 14px 2px 18px !important
+            border-radius: var(--tainacan-input-border-radius, 2px) !important;
+            padding: calc(0.375em - 1px) 14px calc(0.375em - 1px) 18px !important;
+            height: auto !important;
+            line-height: 1.75em !important;
         }
     }
     .two-columns-dropdown {
@@ -208,7 +219,6 @@
     .upload-draggable {
         color: var(--tainacan-info-color);
         transition: color 0.2s background-color 0.2s;
-        border-radius: 0 !important;
         border-color: var(--tainacan-input-border-color);
         padding: 1.25em;
 
@@ -227,7 +237,8 @@
 
     .form-hook-region {
         margin-top: 0.75em;
-        background-color: var(--tainacan-gray1);
+        background-color: var(--tainacan-gray0);
+        border-radius: var(--tainacan-input-border-radius);
         padding: 1em 1.5em 2em 1.5em;
         margin-bottom: 0.75em;
         break-inside: avoid;
@@ -241,6 +252,12 @@
             margin-top: 4px;
             height: 1px;
             background-color: var(--tainacan-secondary);
+        }
+
+        &:empty {
+            display: none !important;
+            visibility: hidden !important;
+            pointer-events: none;
         }
     }
 }

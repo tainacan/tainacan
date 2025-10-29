@@ -1,7 +1,5 @@
 <template>
-    <div class="has-mounted wrap">
-        <router-view /> 
-    </div> 
+    <router-view class="has-mounted wrap" />
 </template>
 
 <script>
@@ -17,7 +15,6 @@
         overflow-x: hidden;
     }
     #tainacan-roles-app {
-        margin-top: 42px;
         a:hover {
             cursor: pointer;
         }

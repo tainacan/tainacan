@@ -5,6 +5,14 @@ namespace Tainacan;
 use WP_CLI;
 use Tainacan\Repositories;
 
+/**
+ * Handles WP-CLI commands for Tainacan control metadata operations.
+ *
+ * Provides command-line interface for managing control metadata including
+ * recalculation of metadata values and metadata validation operations.
+ *
+ * @since 1.0.0
+ */
 class Cli_Control_Metadata {
 
 	private $collection_repository;

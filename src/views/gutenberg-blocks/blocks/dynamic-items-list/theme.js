@@ -36,7 +36,7 @@ export default (element) => {
                     possibleViewModes = getDataAttribute(block, 'enabled-view-modes').split(',');
 
                 // View Mode settings
-                let possibleDefaultViewMode = 'masonry';
+                let possibleDefaultViewMode = tainacan_blocks.default_view_mode ? tainacan_blocks.default_view_mode : 'masonry';
                 if ( getDataAttribute(block, 'tainacan-view-mode') != undefined )
                     possibleDefaultViewMode = getDataAttribute(block, 'tainacan-view-mode');
             

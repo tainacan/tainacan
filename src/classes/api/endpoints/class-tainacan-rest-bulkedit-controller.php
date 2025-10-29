@@ -2,11 +2,21 @@
 
 namespace Tainacan\API\EndPoints;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use \Tainacan\API\REST_Controller;
 use Tainacan\Entities;
 use Tainacan\Repositories;
 use Tainacan\Entities\Entity;
 
+/**
+ * REST API controller for managing Tainacan bulk edit operations.
+ *
+ * Handles all REST API endpoints for bulk editing operations including
+ * bulk metadata updates, bulk item modifications, and batch processing.
+ *
+ * @since 1.0.0
+ */
 class REST_Bulkedit_Controller extends REST_Controller {
 	private $metadatum_repository;
 	private $collections_repository;
@@ -238,7 +248,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 			], 400);
 		}
 
-		global $Tainacan_Generic_Process_Handler;
+		$Tainacan_Generic_Process_Handler = \Tainacan\Generic_Process_Handler::get_instance();
 		$bulk = $Tainacan_Generic_Process_Handler->initialize_generic_process('bulk_edit');
 		$bulk->create_bulk_edit($args);
 		$Tainacan_Generic_Process_Handler->save_process_instance($bulk);
@@ -299,7 +309,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 	public function get_item($request) {
 		$group_id = $request['group_id'];
 
-		global $Tainacan_Generic_Process_Handler;
+		$Tainacan_Generic_Process_Handler = \Tainacan\Generic_Process_Handler::get_instance();
 		$bulk = $Tainacan_Generic_Process_Handler->get_process_instance_by_session_id($group_id);
 		if ($bulk == false) {
 			return new \WP_REST_Response([
@@ -352,7 +362,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 
 		$bulk_id = $request['group_id'];
 
-		global $Tainacan_Generic_Process_Handler;
+		$Tainacan_Generic_Process_Handler = \Tainacan\Generic_Process_Handler::get_instance();
 		$process = $Tainacan_Generic_Process_Handler->get_process_instance_by_session_id($bulk_id);
 		if ($process !== false) {
 			$bulk_edit_value = isset($body['new_value']) ? $body['new_value'] : (isset($body['value']) ? $body['value'] : null);

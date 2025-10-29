@@ -28,15 +28,17 @@ import {
     Snackbar,
     Toast,
     Numberinput
-} from '@ntohq/buefy-next';
+} from 'buefy';
 import FloatingVue from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
 import VueBlurHash from 'another-vue3-blurhash';
+import VueApexCharts from 'vue3-apexcharts';
 
 // Remaining imports
 import AdminPage from '../admin.vue'
 import HelpButton from '../components/other/help-button.vue';
 import TainacanTitle from '../components/navigation/tainacan-title.vue';
+import TainacanExternalLink from '../components/navigation/tainacan-external-link.vue';
 import store from './store/store';
 import router from './router';
 import eventBusSearch from './event-bus-search';
@@ -58,27 +60,11 @@ import {
 } from './utilities';
 import mitt from 'mitt';
 
-// import { configureCompat } from 'vue';
-// configureCompat({
-//     COMPONENT_V_MODEL: false,
-//     ATTR_FALSE_VALUE: false,
-//     RENDER_FUNCTION: false,
-//     MODE: 3
-// })
-
-function copyAppContext(src, dest) {
-    // replacing _context won't work because methods of app bypasses app._context
-    const { _context: srcContext } = src
-    const { _context: destContext } = dest
-    destContext.config = srcContext.config
-    destContext.mixins = srcContext.mixins
-    destContext.components = srcContext.components
-    destContext.directives = srcContext.directives
-    destContext.provdes = srcContext.provides
-    destContext.optionsCache = srcContext.optionsCache
-    destContext.propsCache = srcContext.propsCache
-    destContext.emitsCache = srcContext.emitsCache
-}
+/* Sets some locale configs for Reports ApexChart */
+import enLocaleConfig from 'apexcharts/dist/locales/en.json';
+import esLocaleConfig from 'apexcharts/dist/locales/es.json';
+import frLocaleConfig from 'apexcharts/dist/locales/fr.json';
+import ptBrLocaleConfig from 'apexcharts/dist/locales/pt-br.json';
 
 export default (element) => {
 
@@ -105,7 +91,6 @@ export default (element) => {
             if (typeof window.tainacan_extra_plugins != "undefined") {
                 for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins)) {
                     const aPlugin = app.use(extraVuePluginObject);
-                    //copyAppContext(app, aPlugin);
                 }
             }
 
@@ -148,12 +133,6 @@ export default (element) => {
                         autoHide: true,
                         html: true,
                     },
-                    'tainacan-header-tooltip': {
-                        '$extend': 'tainacan-tooltip',
-                        triggers: ['hover', 'focus', 'touch'],
-                        autoHide: true,
-                        html: true,
-                    },
                     'tainacan-repository-header-tooltip': {
                         '$extend': 'tainacan-repository-tooltip',
                         triggers: ['hover', 'focus', 'touch'],
@@ -182,18 +161,52 @@ export default (element) => {
             app.use(AxiosErrorHandlerPlugin);
             app.use(AdminOptionsHelperPlugin, pageElement.dataset['options']);
 
+            /* Reports-related */
+            Apex.colors = [
+                '#187181', // Tainacan Turquoise
+                '#062a57', // Tainacan Blue
+                '#1a745c', // Tainacan Green
+                '#a06522', // Tainacan Yellow
+                '#9b3636', // Tainacan Red
+                '#592570', // Tainacan Purple
+                '#ed4f63', // Tainacan Pink
+                '#b46659',  // Tainacan Brown
+                '#e5721c',  // Tainacan Orange
+                '#04a5ff',  // Tainacan Other Blue
+                '#373839'  // Tainacan Dark Gray
+            ];
+            const availableLocales = ['en', 'es', 'fr', 'pt-br'];
+            const browserLanguage = navigator.language.toLocaleLowerCase();
+
+            if (availableLocales.indexOf(browserLanguage) >= 0) {
+                let localeConfig = {};
+
+                switch(browserLanguage) {
+                    case 'es': localeConfig = esLocaleConfig; break;
+                    case 'fr': localeConfig = frLocaleConfig; break;
+                    case 'pt-br': localeConfig = ptBrLocaleConfig; break;
+                    case 'en': default: localeConfig = enLocaleConfig; break;
+                }
+                Apex.chart = {
+                    defaultLocale: browserLanguage,
+                    locales: [ localeConfig ]
+                }
+            }
+
+            app.use(VueApexCharts);
+
 
             /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
             if (typeof window.tainacan_extra_components != "undefined") {
                 for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components)) {
                     const aComponent = app.component(extraVueComponentName, extraVueComponentObject);
-                    ///copyAppContext(app, aComponent);
                 }
             }
 
             /* Others */
             app.component('help-button', HelpButton);
             app.component('tainacan-title', TainacanTitle);
+            app.component('tainacan-external-link', TainacanExternalLink)
             
             // Event bus are needed to facilate comunication between child-parent-child components
             app.use(eventBusSearch);

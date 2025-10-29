@@ -45,17 +45,23 @@
         </div>
 
         <div class="table-wrapper">
-            <table class="tainacan-table is-narrow">
+            <table 
+                    id="taxonomies-list-results"
+                    class="tainacan-table is-narrow">
                 <thead>
                     <tr>
                         <!-- Checking list -->
                         <th v-if="$userCaps.hasCapability('tnc_rep_delete_taxonomies')">
-                            &nbsp;
+                            <span class="sr-only">
+                                {{ $i18n.get('label_select_taxonomy') }}
+                            </span>
                         <!-- nothing to show on header -->
                         </th>
                         <!-- Status icon -->
                         <th v-if="isOnAllTaxonomiesTab">
-                            &nbsp;
+                            <span class="sr-only">
+                                {{ $i18n.get('label_status') }}
+                            </span>
                         </th>
                         <!-- Name -->
                         <th>
@@ -69,23 +75,25 @@
                                 {{ $i18n.get('label_description') }}
                             </div>
                         </th>
-                        <!-- Collections -->
-                        <th>
-                            <div class="th-wrap">
-                                {{ $i18n.get('label_collections_using') }}
-                            </div>
-                        </th>
                         <!-- Total Items -->
                         <th v-if="!isOnTrash">
                             <div class="th-wrap total-terms-header">
                                 {{ $i18n.get('label_total_terms') }}
                             </div>
                         </th>
+                        <!-- Collections -->
+                        <th>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_collections_using') }}
+                            </div>
+                        </th>
                         <!-- Actions -->
                         <th 
                                 v-if="taxonomies.findIndex((taxonomy) => taxonomy.current_user_can_edit || taxonomy.current_user_can_delete) >= 0"
                                 class="actions-header">
-                            &nbsp;
+                            <span class="sr-only">
+                                {{ $i18n.get('label_actions') }}
+                            </span>
                         <!-- nothing to show on header for actions cell-->
                         </th>
                     </tr>
@@ -101,7 +109,8 @@
                                 :class="{ 'is-selecting': isSelecting }"
                                 class="checkbox-cell">
                             <b-checkbox 
-                                    v-model="selected[index]" /> 
+                                    v-model="selected[index]"
+                                    :aria-label="$i18n.get('label_select_taxonomy') + ': ' + taxonomy.name" /> 
                         </td>
                         <!-- Status icon -->
                         <td 
@@ -160,6 +169,27 @@
                                     }"
                                     v-html="(taxonomy.description != undefined && taxonomy.description != '') ? taxonomy.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />
                         </td>
+                        <!-- Total terms -->
+                        <td
+                                class="column-small-width column-align-right" 
+                                :label="$i18n.get('label_total_terms')" 
+                                :aria-label="$i18n.get('label_total_terms') + ': ' + (taxonomy.total_terms != undefined ? taxonomy.total_terms['total'] : 0)"
+                                @click.self="onClickTaxonomy($event, taxonomy.id, index)">
+                            <p
+                                    v-if="taxonomy.total_terms != undefined"
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
+                                        content: getTotalTermsDetailed(taxonomy.total_terms),
+                                        autoHide: false,
+                                        html: true,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                        placement: 'auto-start'
+                                    }" 
+                                    v-html="taxonomy.total_terms['total']" />
+                        </td>
                         <!-- Collections using -->
                         <td
                                 class="column-large-width has-text-gray "
@@ -181,27 +211,6 @@
                                     @click.self="onClickTaxonomy($event, taxonomy.id, index)"
                                     v-html="(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? renderListOfCollections(taxonomy.collections, taxonomy.metadata_by_collection) : $i18n.get('label_no_collections_using_taxonomy')" />
                         </td>
-                        <!-- Total terms -->
-                        <td
-                                v-if="taxonomy.total_terms != undefined"
-                                class="column-small-width column-align-right" 
-                                :label="$i18n.get('label_total_terms')" 
-                                :aria-label="$i18n.get('label_total_terms') + ': ' + taxonomy.total_terms['total']"
-                                @click.self="onClickTaxonomy($event, taxonomy.id, index)">
-                            <p
-                                    v-tooltip="{
-                                        delay: {
-                                            show: 500,
-                                            hide: 300,
-                                        },
-                                        content: getTotalTermsDetailed(taxonomy.total_terms),
-                                        autoHide: false,
-                                        html: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
-                                        placement: 'auto-start'
-                                    }" 
-                                    v-html="taxonomy.total_terms['total']" />
-                        </td>
                         <!-- Actions -->
                         <td 
                                 v-if="taxonomy.current_user_can_edit || taxonomy.current_user_can_delete"
@@ -209,12 +218,16 @@
                                 :class="{ 'actions-cell': taxonomy.current_user_can_edit || taxonomy.current_user_can_delete }"
                                 :label="$i18n.get('label_actions')" 
                                 @click="onClickTaxonomy($event, taxonomy.id, index)">
-                            <div class="actions-container">
+                            <div 
+                                    v-if="!isSelecting"
+                                    class="actions-container">
                                 <a 
                                         v-if="taxonomy.current_user_can_edit" 
-                                        id="button-edit"
+                                        :id="'button-edit-' + taxonomy.id"
+                                        class="button-edit"
                                         :aria-label="$i18n.getFrom('taxonomies','edit_item')" 
-                                        @click="onClickTaxonomy($event, taxonomy.id, index)">
+                                        :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getTaxonomyEditPath(taxonomy.id)"
+                                        @click.prevent.stop="onClickTaxonomy($event, taxonomy.id, index)">
                                     <span
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
@@ -228,9 +241,11 @@
                                 </a>
                                 <a 
                                         v-if="taxonomy.current_user_can_delete" 
-                                        id="button-delete"
+                                        :id="'button-delete-' + taxonomy.id"
+                                        class="button-delete"
+                                        role="button"
                                         :aria-label="$i18n.get('label_button_delete')" 
-                                        @click.prevent.stop="deleteOneTaxonomy(taxonomy.id)">
+                                        @click.prevent.stop="deleteOneTaxonomy(taxonomy)">
                                     <span
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
@@ -246,7 +261,8 @@
                                 </a>
                                 <a 
                                         v-if="!isOnTrash"
-                                        id="button-open-external" 
+                                        :id="'button-open-external-' + taxonomy.id"
+                                        class="button-open-external" 
                                         :aria-label="$i18n.getFrom('taxonomies','view_item')"
                                         target="_blank" 
                                         :href="themeTaxonomiesURL + taxonomy.slug"
@@ -291,7 +307,6 @@
                 selected: [],
                 allOnPageSelected: false,
                 isSelecting: false,
-                adminUrl: tainacan_plugin.admin_url,
                 themeTaxonomiesURL: tainacan_plugin.theme_taxonomy_list_url
             }
         },
@@ -339,16 +354,29 @@
             getTotalTermsDetailed(total_terms) {
                 return this.$i18n.get('label_total_terms') + ': ' + total_terms['total'] + '<br> ' + this.$i18n.get('label_root_terms') + ': ' + total_terms['root'] + '<br> ' + this.$i18n.get('label_used_by_items') + ': ' + total_terms['not_empty'];
             },
-            deleteOneTaxonomy(taxonomyId) {
+            deleteOneTaxonomy(taxonomy) {
+                let taxonomyName = '';
+                
+                if (taxonomy && typeof taxonomy === 'object') {
+                    if (taxonomy.name !== undefined && taxonomy.name !== null && taxonomy.name !== '')
+                        taxonomyName = taxonomy.name;
+                    else if (taxonomy.id)
+                        taxonomyName = 'ID: ' + taxonomy.id;
+                }
+                
+                let message = this.$i18n.getWithVariables(
+                    'info_warning_taxonomy_delete_%s',
+                    [ taxonomyName ]
+                );
+                
                 this.$buefy.modal.open({
-                    parent: this,
                     component: CustomDialog,
                     props: {
                         icon: 'alert',
                         title: this.$i18n.get('label_warning'),
-                        message: this.$i18n.get('info_warning_taxonomy_delete'),
+                        message: message,
                         onConfirm: () => {
-                            this.deleteTaxonomy({ taxonomyId: taxonomyId, isPermanently: this.isOnTrash })
+                            this.deleteTaxonomy({ taxonomyId: taxonomy.id, isPermanently: this.isOnTrash })
                                 .then(() => {
                                     // this.$buefy.toast.open({
                                     //     duration: 3000,
@@ -358,7 +386,7 @@
                                     //     queue: true
                                     // });
                                     for (let i = 0; i < this.selected.length; i++) {
-                                        if (this.selected[i].id === this.taxonomyId)
+                                        if (this.selected[i].id === taxonomy.id)
                                             this.selected.splice(i, 1);
                                     }
                                 })
@@ -375,17 +403,21 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
+                    canCancel: ['escape', 'outside']
                 });
             },
             deleteSelected() {
+                let message = this.$i18n.get('info_warning_selected_taxonomies_delete') || 'Do you really want to delete the selected taxonomies?';
+                
+                // For multiple taxonomies, we don't add individual names
+                // The message already indicates multiple taxonomies are being deleted
+                
                 this.$buefy.modal.open({
-                    parent: this,
                     component: CustomDialog,
                     props: {
                         icon: 'alert',
                         title: this.$i18n.get('label_warning'),
-                        message: this.$i18n.get('info_warning_selected_taxonomies_delete'),
+                        message: message,
                         onConfirm: () => {
 
                             for (let i = 0; i < this.taxonomies.length;  i++) {
@@ -416,7 +448,7 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
+                    canCancel: ['escape', 'outside']
                 });
             },
             onClickTaxonomy($event, taxonomyId, index) {
@@ -429,7 +461,7 @@
                 let htmlList = '';
 
                 for (let i = 0; i < collections.length; i++) {
-                    htmlList += `<a target="_blank" href=${ this.adminUrl + '?page=tainacan_admin#' + this.$routerHelper.getCollectionPath(collections[i].id)}>${collections[i].name} (${metadata[collections[i].id].name})</a>`;
+                    htmlList += `<a target="_blank" href=${ this.$routerHelper.getAbsoluteAdminPath() + this.$routerHelper.getCollectionPath(collections[i].id)}>${collections[i].name} (${metadata[collections[i].id].name})</a>`;
                     if (collections.length > 2 && i < collections.length - 1) {
                         if (i < collections.length - 2)
                             htmlList += ', '
@@ -462,6 +494,9 @@
             &:hover {
                 color: var(--tainacan-info-color);
             }
+        }
+        @media screen and (max-width: 1024px) {
+            flex-wrap: wrap;
         }
     }
 

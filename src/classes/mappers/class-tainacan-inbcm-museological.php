@@ -2,6 +2,8 @@
 
 namespace Tainacan\Mappers;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 class Inbcm_Museological extends Mapper {
 	public $slug = 'inbcm-museologico';
 	public $name = 'INBCM: Museológico';

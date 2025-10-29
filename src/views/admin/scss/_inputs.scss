@@ -17,11 +17,12 @@ input[type="time"].input,
 input[type="url"].input,
 input[type="week"].input {
     height: auto;
-    line-height: 1em;
+    line-height: 1.5em;
     font-size: 0.875em;
     font-family: var(--tainacan-font-family, inherit);
-    border-radius: var(--tainacan-input-border-radius, 1px) !important;
+    border-radius: var(--tainacan-input-border-radius, 2px) !important;
     box-shadow: none !important;
+    box-sizing: border-box;
     background-color: var(--tainacan-input-background-color);
     border: 1px solid var(--tainacan-input-border-color);
     color: var(--tainacan-input-color);
@@ -82,4 +83,40 @@ input[type="week"].input {
 textarea.textarea, 
 .textarea {
     line-height: 1.35em;
+    field-sizing: content;
+    transition: height 0.1s ease, max-height 0.2s ease;
+
+    &:focus,
+    &:active {
+        max-height: unset !important;
+    }
+
+    &[rows="1"] {
+        min-height: 2lh;
+        max-height: 2lh;
+    }
+    &[rows="2"] {
+        min-height: 3lh;
+        max-height: 3lh;
+    }
+    &[rows="3"] {
+        min-height: 4lh;
+        max-height: 4lh;
+    }
+    &[rows="4"] {
+        min-height: 5lh;
+        max-height: 5lh;
+    }
+    &[rows="5"] {
+        min-height: 6lh;
+        max-height: 6lh;
+    }
+    &[rows="6"] {
+        min-height: 7lh;
+        max-height: 7lh;
+    }
+    &[rows="7"] {
+        min-height: 8lh;
+        max-height: 8lh;
+    }
 }

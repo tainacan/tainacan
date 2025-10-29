@@ -2,10 +2,24 @@
 
 namespace Tainacan\API;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
+/**
+ * Abstract base class for Tainacan REST API controllers.
+ *
+ * Provides common functionality for all Tainacan REST API endpoints including
+ * object filtering, attribute handling, and standard WordPress REST API integration.
+ *
+ * @since 1.0.0
+ */
 abstract class REST_Controller extends \WP_REST_Controller {
 
 	/**
-	 * REST_Controller constructor.
+	 * Constructor for the REST_Controller class.
+	 *
+	 * Sets up the namespace and registers routes and filters.
+	 *
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		$this->namespace = TAINACAN_REST_NAMESPACE;
@@ -14,10 +28,13 @@ abstract class REST_Controller extends \WP_REST_Controller {
 	}
 
 	/**
-	 * @param $object
-	 * @param $attributes
+	 * Filters an object by specified attributes.
 	 *
-	 * @return array
+	 * @since 1.0.0
+	 *
+	 * @param mixed  $object     The object to filter.
+	 * @param string|array $attributes The attributes to include in the filtered result.
+	 * @return array Filtered object data.
 	 */
 	protected function filter_object_by_attributes($object, $attributes){
 		$object_filtered = [];
@@ -42,10 +59,13 @@ abstract class REST_Controller extends \WP_REST_Controller {
 	}
 
 	/**
-	 * @param $object
-	 * @param $new_values
+	 * Prepares an item for updating with new values.
 	 *
-	 * @return \Tainacan\Entities\Entity
+	 * @since 1.0.0
+	 *
+	 * @param mixed $object     The object to update.
+	 * @param array $new_values New values to set on the object.
+	 * @return \Tainacan\Entities\Entity The updated entity.
 	 */
 	protected function prepare_item_for_updating($object, $new_values){
 		foreach ($new_values as $key => $value) {

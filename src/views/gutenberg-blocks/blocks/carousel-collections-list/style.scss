@@ -22,7 +22,10 @@
         &.collection-carousel-view-mode-grid {
             margin-right: 6px;
             div {
-                @include display-grid;
+                flex-wrap: wrap;
+                display: flex;
+                display: -ms-grid;
+                display: grid;
                 -ms-grid-columns: 1fr 1fr 1fr;
                 grid-template-columns: 1fr 1fr 1fr;
                 -ms-grid-rows: 1fr 1fr;
@@ -182,7 +185,10 @@
                     display: block;
                 }
                 .collection-items-grid {
-                    @include display-grid;
+                    flex-wrap: wrap;
+                    display: flex;
+                    display: -ms-grid;
+                    display: grid;
                     grid-template-columns: 1fr 1fr 1fr;
                     grid-template-rows: 1fr 1fr;
                     width: 100%;
@@ -433,7 +439,10 @@
             }
 
             .collection-items-grid {
-                @include display-grid;
+                flex-wrap: wrap;
+                display: flex;
+                display: -ms-grid;
+                display: grid;
                 grid-template-columns: 1fr 1fr 1fr;
                 grid-template-rows: 1fr 1fr;
                 grid-gap: 5px;

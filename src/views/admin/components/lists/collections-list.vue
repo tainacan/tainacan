@@ -81,22 +81,28 @@
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="contextMenuCollection != null && (collections[contextMenuIndex] && collections[contextMenuIndex].current_user_can_delete)"
-                            @click="deleteOneCollection(contextMenuCollection)">
+                            @click="deleteOneCollection(collections[contextMenuIndex])">
                         {{ $i18n.get('label_delete_collection') }}
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
-            <table class="tainacan-table">
+            <table 
+                    id="collections-list-results"
+                    class="tainacan-table">
                 <thead>
                     <tr>
                         <!-- Checking list -->
                         <th v-if="$userCaps.hasCapability('tnc_rep_delete_collections')">
-                            &nbsp;
+                            <span class="sr-only">
+                                {{ $i18n.get('label_select_collection') }}
+                            </span>
                         <!-- nothing to show on header -->
                         </th>
                         <!-- Status icon -->
                         <th v-if="isOnAllCollectionsTab">
-                            &nbsp;
+                            <span class="sr-only">
+                                {{ $i18n.get('label_status') }}
+                            </span>
                         </th>
                         <!-- Thumbnail -->
                         <th class="thumbnail-cell">
@@ -114,6 +120,12 @@
                         <th>
                             <div class="th-wrap">
                                 {{ $i18n.get('label_description') }}
+                            </div>
+                        </th>
+                        <!-- Total Items -->
+                        <th v-if="!isOnTrash">
+                            <div class="th-wrap total-items-header">
+                                {{ $i18n.get('label_total_items') }}
                             </div>
                         </th>
                         <!-- Modification Date -->
@@ -134,16 +146,12 @@
                                 {{ $i18n.get('label_created_by') }}
                             </div>
                         </th>
-                        <!-- Total Items -->
-                        <th v-if="!isOnTrash">
-                            <div class="th-wrap total-items-header">
-                                {{ $i18n.get('label_total_items') }}
-                            </div>
-                        </th>
                         <th 
                                 v-if="collections.findIndex((collection) => collection.current_user_can_edit || collection.current_user_can_delete) >= 0"
                                 class="actions-header">
-                            &nbsp;
+                            <span class="sr-only">
+                                {{ $i18n.get('label_actions') }}
+                            </span>
                         <!-- nothing to show on header for actions cell-->
                         </th>
                     </tr>
@@ -158,7 +166,9 @@
                                 v-if="$userCaps.hasCapability('tnc_rep_delete_collections')"
                                 :class="{ 'is-selecting': isSelectingCollections }"
                                 class="checkbox-cell">
-                            <b-checkbox v-model="selectedCollections[index]" /> 
+                            <b-checkbox
+                                    v-model="selectedCollections[index]"
+                                    :aria-label="$i18n.get('label_select_collection') + ': ' + collection.name" /> 
                         </td>
                         <!-- Status icon -->
                         <td 
@@ -236,6 +246,28 @@
                                     }" 
                                     v-html="(collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />
                         </td>
+                        <!-- Total items -->
+                        <td
+                                class="column-small-width column-align-right"
+                                :label="$i18n.get('label_total_items')" 
+                                :aria-label="$i18n.get('label_total_items') + ': ' + (collection.total_items ? getTotalItems(collection.total_items) : 0)" 
+                                @click.left="onClickCollection($event, collection.id, index)"
+                                @click.right="onRightClickCollection($event, collection.id, index)">
+                            <p
+                                    v-if="collection.total_items != undefined"
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
+                                        content: getTotalItemsDetailed(collection.total_items),
+                                        autoHide: false,
+                                        html: true,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                        placement: 'auto-start'
+                                    }" 
+                                    v-html="getTotalItems(collection.total_items)" />
+                        </td>
                         <!-- Modification Date -->
                         <td
                                 class="table-modification column-default-width"
@@ -299,40 +331,22 @@
                                     }" 
                                     v-html="collection.author_name" />
                         </td>
-                        <!-- Total items -->
-                        <td
-                                v-if="collection.total_items != undefined"
-                                class="column-small-width column-align-right"
-                                :label="$i18n.get('label_total_items')" 
-                                :aria-label="$i18n.get('label_total_items') + ': ' + getTotalItems(collection.total_items)" 
-                                @click.left="onClickCollection($event, collection.id, index)"
-                                @click.right="onRightClickCollection($event, collection.id, index)">
-                            <p
-                                    v-tooltip="{
-                                        delay: {
-                                            show: 500,
-                                            hide: 300,
-                                        },
-                                        content: getTotalItemsDetailed(collection.total_items),
-                                        autoHide: false,
-                                        html: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
-                                        placement: 'auto-start'
-                                    }" 
-                                    v-html="getTotalItems(collection.total_items)" />
-                        </td>
                         <!-- Actions -->
                         <td  
-                                v-if="collection.current_user_can_edit || collection.current_user_can_delete"
+                                v-if="( collection.current_user_can_edit || collection.current_user_can_delete )"
                                 class="column-default-width"
                                 :class="{ 'actions-cell': collection.current_user_can_edit || collection.current_user_can_delete }"
                                 :label="$i18n.get('label_actions')"  
                                 @click="onClickCollection($event, collection.id, index)">
-                            <div class="actions-container">
+                            <div 
+                                    v-if="!isSelectingCollections"
+                                    class="actions-container">
                                 <a 
                                         v-if="collection.current_user_can_edit" 
-                                        id="button-edit"
+                                        :id="'button-edit-' + collection.id"
+                                        class="button-edit"
                                         :aria-label="$i18n.getFrom('collections','edit_item')" 
+                                        :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getCollectionEditPath(collection.id)"
                                         @click.prevent.stop="goToCollectionEditPage(collection.id)">                      
                                     <span 
                                             v-tooltip="{
@@ -348,9 +362,11 @@
                                 </a>
                                 <a 
                                         v-if="collection.current_user_can_delete"
-                                        id="button-delete"
+                                        :id="'button-delete-' + collection.id"
+                                        class="button-delete"
+                                        role="button"
                                         :aria-label="$i18n.get('label_button_delete')" 
-                                        @click.prevent.stop="deleteOneCollection(collection.id)">
+                                        @click.prevent.stop="deleteOneCollection(collection)">
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
@@ -365,7 +381,8 @@
                                     </span>
                                 </a>
                                 <a 
-                                        id="button-open-external" 
+                                        :id="'button-open-external-' + collection.id"
+                                        class="button-open-external" 
                                         :aria-label="$i18n.getFrom('collections','view_item')"
                                         target="_blank" 
                                         :href="collection.url"
@@ -413,7 +430,7 @@ export default {
             cursorPosX: -1,
             cursorPosY: -1,
             contextMenuIndex: null,
-            contextMenuCollection: null
+            contextMenuCollection: null,
         }
     },
     computed: {
@@ -467,16 +484,29 @@ export default {
                    this.$i18n.get('status_pending') + ': ' + total_items['pending'] + '<br> ' +
                    this.$i18n.get('status_draft') + ': ' + total_items['draft'];
         },
-        deleteOneCollection(collectionId) {
+        deleteOneCollection(collection) {
+            let collectionName = '';
+            
+            if ( collection && typeof collection === 'object' ) {
+                if (collection.name !== undefined && collection.name !== null && collection.name !== '')
+                    collectionName = collection.name;
+                else if (collection.id)
+                    collectionName = 'ID: ' + collection.id;
+            }
+            
+            let message = this.$i18n.getWithVariables(
+                this.isOnTrash ? 'info_warning_collection_delete_%s' : 'info_warning_collection_trash_%s',
+                [ collectionName ]
+            );
+            
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
                     title: this.$i18n.get('label_warning'),
-                    message: this.isOnTrash ? this.$i18n.get('info_warning_collection_delete') : this.$i18n.get('info_warning_collection_trash'),
+                    message: message,
                     onConfirm: () => {
-                        this.deleteCollection({ collectionId: collectionId, isPermanently: this.isOnTrash })
+                        this.deleteCollection({ collectionId: collection.id, isPermanently: this.isOnTrash })
                         .then(() => {
                         //     this.$buefy.toast.open({
                         //         duration: 3000,
@@ -486,7 +516,7 @@ export default {
                         //         queue: true
                         //     });
                             for (let i = 0; i < this.selectedCollections.length; i++) {
-                                if (this.selectedCollections[i].id == collectionId)
+                                if (this.selectedCollections[i].id == collection.id)
                                     this.selectedCollections.splice(i, 1);
                             }
                         }).catch(() => {
@@ -502,18 +532,23 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             });
             this.clearContextMenu();
         },
         deleteSelectedCollections() {
+            let message = this.isOnTrash ? 
+                this.$i18n.get('info_warning_selected_collections_delete') : 
+                this.$i18n.get('info_warning_selected_collections_trash');
+            
+            // For multiple collections, we don't add individual names
+            // The message already indicates multiple collections are being deleted
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
                     title: this.$i18n.get('label_warning'),
-                    message: this.isOnTrash ? this.$i18n.get('info_warning_selected_collections_delete') : this.$i18n.get('info_warning_selected_collections_trash'),
+                    message: message,
                     onConfirm: () => {
 
                         for (let i = 0; i < this.collections.length; i++) {
@@ -544,7 +579,7 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             });
         },
         openCollection() {
@@ -598,7 +633,6 @@ export default {
     @import "../../scss/_tables.scss";
 
     .selection-control {
-        
         padding: 6px 0px 0px 12px;
         background: var(--tainacan-background-color);
         height: 40px;
@@ -609,6 +643,10 @@ export default {
             &:hover {
                 color: var(--tainacan-info-color);
             }
+        }
+
+        @media screen and (max-width: 1024px) {
+            flex-wrap: wrap;
         }
     }
 
@@ -629,6 +667,7 @@ export default {
             border: 0;
             width: 100%;
             height: 100vh;
+            height: 100dvh;
             z-index: 9999999;
         }
     }

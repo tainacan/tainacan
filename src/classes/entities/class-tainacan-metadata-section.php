@@ -5,7 +5,12 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Represents the Entity Metadatum
+ * Represents a Tainacan Metadata Section entity.
+ *
+ * Metadata sections organize metadata fields into logical groups
+ * within collections, improving the user interface and organization.
+ *
+ * @since 1.0.0
  */
 class Metadata_Section extends Entity {
 	// Collection getter and setter declared here

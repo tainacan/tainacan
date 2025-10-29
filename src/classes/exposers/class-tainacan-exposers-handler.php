@@ -1,10 +1,9 @@
 <?php
 namespace Tainacan;
 
-use Tainacan\Mappers_Handler;
-use Tainacan\Mappers\Mapper;
-
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
+use Tainacan\Mappers_Handler;
 
 /**
  * Load exposers classes
@@ -15,7 +14,6 @@ class Exposers_Handler {
 	
 	private static $instance = null;
 	private static $request = null;
-	
 	
 	const TYPE_PARAM = 'exposer';
 	

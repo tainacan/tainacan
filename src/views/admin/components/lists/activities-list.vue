@@ -98,7 +98,7 @@
         <!-- Empty state image -->
         <div v-if="(totalActivities <= 0 || !totalActivities) && !isLoading">
             <section class="section">
-                <div class="content has-text-grey has-text-centered">
+                <div class="content has-text-gray has-text-centered">
                     <p>
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities" />
@@ -143,9 +143,6 @@
                 'approve',
                 'notApprove'
             ]),
-            // getThis(){
-            //     return this;
-            // },
             approveActivity(activity) {
                 this.approve(activity.id)
                     .then(data => {
@@ -158,7 +155,6 @@
             },
             openActivityDetailsModal(activity) {
                 this.$buefy.modal.open({
-                    parent: this,
                     component: ActivityDetailsModal,
                     props: {
                         activityId: activity.id,
@@ -167,9 +163,10 @@
                         approveActivity: (activityId) => this.approveActivity(activityId),
                         notApproveActivity: (activityId) => this.notApproveActivity(activityId)
                     },
+                    width: 840,
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
+                    canCancel: ['escape', 'outside']
                 });
             },
         }

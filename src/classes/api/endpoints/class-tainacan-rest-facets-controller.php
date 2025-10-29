@@ -2,10 +2,20 @@
 
 namespace Tainacan\API\EndPoints;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use Tainacan\Repositories;
 use Tainacan\Entities;
 use \Tainacan\API\REST_Controller;
 
+/**
+ * REST API controller for managing Tainacan facets.
+ *
+ * Handles all REST API endpoints for facet operations including
+ * facet creation, updates, deletion, and querying of collection facets.
+ *
+ * @since 1.0.0
+ */
 class REST_Facets_Controller extends REST_Controller {
 	private $metadatum_repository;
 
@@ -88,7 +98,11 @@ class REST_Facets_Controller extends REST_Controller {
 			$last_term = ( isset($request['last_term']) ) ? $request['last_term'] : '';
 
 			$query_args = $request['current_query'];
-			if(defined('TAINACAN_FACETS_DISABLE_FILTER_ITEMS') && true === TAINACAN_FACETS_DISABLE_FILTER_ITEMS) {
+			if (
+				defined('TAINACAN_FACETS_DISABLE_FILTER_ITEMS') 
+					? ( true === TAINACAN_FACETS_DISABLE_FILTER_ITEMS )
+					: !get_option( 'tainacan_option_facets_enable_filter_items', true )
+			) {
 				$query_args = is_user_logged_in() && is_admin() ? ["status" =>  ["publish", "private", "draft"]] : [];
 			}
 			$query_args = $this->prepare_filters($query_args);
@@ -145,7 +159,11 @@ class REST_Facets_Controller extends REST_Controller {
 				'items_filter' => $query_args,
 				'include' => $include,
 				'parent_id' => $parent_id,
-				'count_items' => defined('TAINACAN_FACETS_DISABLE_COUNT_ITEMS') && true === TAINACAN_FACETS_DISABLE_COUNT_ITEMS ? false : $count_items,
+				'count_items' => ( 
+					defined('TAINACAN_FACETS_DISABLE_COUNT_ITEMS')
+						? ( true === TAINACAN_FACETS_DISABLE_COUNT_ITEMS )
+						: !get_option('tainacan_option_facets_enable_count_items', true)
+				) ? false : $count_items,
 				'last_term' => $last_term
 			];
 

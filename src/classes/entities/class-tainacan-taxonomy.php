@@ -5,7 +5,12 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Represents the Entity Taxonomy
+ * Represents a Tainacan Taxonomy entity.
+ *
+ * Taxonomies define hierarchical classification systems for organizing
+ * and categorizing items within Tainacan collections.
+ *
+ * @since 1.0.0
  */
 class Taxonomy extends Entity {
     use \Tainacan\Traits\Entity_Collections_Relation;

@@ -54,6 +54,7 @@
                     <a
                             v-if="checkboxListOffset"
                             role="button"
+                            :aria-label="$i18n.get('previous')"
                             class="tainacan-checkbox-list-page-changer"
                             @click="previousSearchPage">
                         <span class="icon">
@@ -113,6 +114,7 @@
                     <a
                             v-if="!noMoreSearchPage"
                             role="button"
+                            :aria-label="$i18n.get('next')"
                             class="tainacan-checkbox-list-page-changer"
                             @click="nextSearchPage">
                         <span class="icon">
@@ -129,6 +131,7 @@
                     <a
                             v-if="checkboxListOffset"
                             role="button"
+                            :aria-label="$i18n.get('previous')"
                             class="tainacan-checkbox-list-page-changer"
                             @click="previousPage">
                         <span class="icon">
@@ -173,6 +176,7 @@
                     <a
                             v-if="!noMorePage"
                             role="button"
+                            :aria-label="$i18n.get('next')"
                             class="tainacan-checkbox-list-page-changer"
                             @click="nextPage">
                         <span class="icon">
@@ -269,7 +273,7 @@
                 <section 
                         v-if="( (isTaxonomy && (finderColumns instanceof Array ? finderColumns.length <= 0 : !finderColumns) ) || (!isTaxonomy && options instanceof Array ? options.length <= 0 : !options) ) && expandResultsSection && !isSearching && !isLoadingSearch && !isColumnLoading"
                         class="section">
-                    <div class="content has-text-grey has-text-centered">
+                    <div class="content has-text-gray has-text-centered">
                         <p>
                             <span class="icon is-medium">
                                 <i  
@@ -313,7 +317,7 @@
                     <section 
                             v-if="(selected instanceof Array ? selected.length <= 0 : !selected) && !isSelectedTermsLoading"
                             class="section">
-                        <div class="content has-text-grey has-text-centered">
+                        <div class="content has-text-gray has-text-centered">
                             <p>
                                 <span class="icon is-medium">
                                     <i  
@@ -981,7 +985,7 @@
 
         :deep(.b-checkbox), :deep(.b-radio) {
             max-width: 100%;
-            min-height: 1.5em;
+            min-height: 1.75em;
             margin-left: 0.7em;
             margin-bottom: 0px !important;
             height: auto;
@@ -1204,7 +1208,7 @@
             color: var(--tainacan-input-color);
         }
         .button {
-            border-radius: 0 !important;
+            border-radius: var(--tainacan-input-border-radius, 0) 0 0 var(--tainacan-input-border-radius, 0) !important;
             min-height: 100%;
             background-color: var(--tainacan-input-background-color);
             border: 1px solid var(--tainacan-input-border-color);
@@ -1220,6 +1224,9 @@
         :deep(.field-body>.field) {
             padding: 0px !important;
             margin-left: 0px !important;
+        }
+        :deep(.field-body>.field>p.control+.control>.input) {
+            border-radius: 0 var(--tainacan-input-border-radius, 0) var(--tainacan-input-border-radius, 0) 0 !important;
         }
     }
 
@@ -1360,17 +1367,18 @@
         }
         .tainacan-finder-columns-container {
             max-height: calc(100vh - 184px - 56px);
+            max-height: calc(100dvh - 184px - 56px);
 
             .tainacan-finder-column,
             .tainacan-finder-column ul {
                 max-height: 100%;
             }
             .tainacan-finder-column {
-                max-width: calc(99vw - 0.75em - 0.75em - 2px);
-                min-width: calc(99vw - 0.75em - 0.75em - 24px);
+                max-width: calc(99vw - var(--tainacan-one-column) - 0.75em - 0.75em - 2px);
+                min-width: calc(99vw - var(--tainacan-one-column) - 0.75em - 0.75em - 24px);
             }
             .tainacan-finder-column .column-label+ul {
-                max-height: calc(100% - 0.75em - 0.45em - 0.45em - 3px);
+                max-height: calc(100% - 0.75em - 0.45em - 0.45em - 5px);
             }
             .tainacan-finder-column a {
                 width: 3.5em;
