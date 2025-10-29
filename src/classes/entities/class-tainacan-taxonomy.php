@@ -64,8 +64,8 @@ class Taxonomy extends Entity {
 	    $labels = array(
             'name'              => $taxonomy_name,
             'singular_name'     => $taxonomy_name,
-            'search_items'      => __( sprintf('Search terms in %s', $taxonomy_name), 'tainacan' ),
-            'all_items'         => __( sprintf('All terms in %s', $taxonomy_name), 'tainacan' ),
+            'search_items'      => sprintf(__('Search terms in %s', 'tainacan'), $taxonomy_name),
+            'all_items'         => sprintf(__('All terms in %s', 'tainacan'), $taxonomy_name),
             'parent_item'       => __( 'Parent term', 'tainacan' ),
             'parent_item_colon' => __( 'Parent term:', 'tainacan' ),
             'edit_item'         => __( 'Edit term', 'tainacan' ),

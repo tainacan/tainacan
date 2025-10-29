@@ -1187,7 +1187,7 @@ return apply_filters( 'tainacan-i18n', [
 	'error_511'	  => __('You must authenticate to get access this information. Try logging in again on the WordPress Admin panel.', 'tainacan'),
 	'error_other' => __('Something went wrong here. You may want to try again or contact the Administrator.', 'tainacan'),
 	'error_connectivity_detail' => __('The WordPress Heartbit API sends requests periodically to the server to update some information. The latest request failed for some reason. It can be the case of a lost connection or bad communication between the browser and the server.', 'tainacan'),
-	'error_permalinks_detail' => __( 'Tainacan requires your Permalink settings to be configured. Please visit %sPermalink settings%s and define it to an option such as "postname".', 'tainacan' ),
+	'error_permalinks_detail' => __( 'Tainacan requires your Permalink settings to be configured. Please visit <a href="%s" target="_blank">Permalink settings</a> and define it to an option such as "postname".', 'tainacan' ),
 	'error_400_detail'	 => __('The server could not understand the request due to invalid syntax. This is possibly an issue with Tainacan and should be reported to its developers.', 'tainacan'),
 	'error_401_detail'	 => __('You must authenticate to get access this information. Even if you have access to the Tainacan admin panel, it may be the case that your session cookies were lost. Try reloading the page or logging again on the WordPress Admin panel.', 'tainacan'),
 	'error_403_detail'	 => __('It seems that you are not allowed to access this content. Your user might have a role with insufficient capabilities. If that is not the case, check if you are correctly logged in on the WordPress Admin panel.', 'tainacan'),

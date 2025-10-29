@@ -574,7 +574,8 @@ class Dashboard extends Pages {
 		if ( is_wp_error($rss) ) { 
 			wp_send_json_error([
 				'message' => sprintf(
-					__('The feed "%s" could not be loaded at the moment. <a href="%s" target="_blank" rel="noopener">Visit the website</a> to check its content.', 'tainacan'),
+					/* translators: 1: feed title, 2: feed URL */
+					__('The feed "%1$s" could not be loaded at the moment. <a href="%2$s" target="_blank" rel="noopener">Visit the website</a> to check its content.', 'tainacan'),
 					esc_html($feed_options['title']),
 					esc_url($feed_options['view_all_link'])
 				)
@@ -611,7 +612,8 @@ class Dashboard extends Pages {
 							$date = $feed_item['date'];
 							if ( $date ) {
 								$date = sprintf(
-									_x('%s ago', '%s = homan readable time period', 'tainacan'),
+									/* translators: %s = human readable time period */
+									_x('%s ago', '%s = human readable time period', 'tainacan'),
 									human_time_diff($date, current_time('timestamp'))
 								);
 							}

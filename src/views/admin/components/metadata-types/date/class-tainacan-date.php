@@ -118,7 +118,7 @@ class Date extends Metadata_Type {
 
 	private function format_error_msg($value) {
 		return sprintf(
-			__('Invalid date format. Expected format is %s, got %s.', 'tainacan'),
+			__('Invalid date format. Expected format is %1$s, got %2$s.', 'tainacan'),
 			$this->format,
 			$value
 		);

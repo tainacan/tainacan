@@ -519,7 +519,7 @@ abstract class Importer {
 		}
 
 		if ( sizeof($steps) > 1 ) {
-			$preLabel = sprintf( __('Step %d of %d', 'tainacan'), $current_step + 1, sizeof($steps) );
+			$preLabel = sprintf( __('Step %1$d of %2$d', 'tainacan'), $current_step + 1, sizeof($steps) );
 			$label = $preLabel . ': ' . $label;
 		}
 

@@ -193,7 +193,7 @@ class System_Check extends Pages {
 			$class = 'warning';
 			$text  = sprintf(
 				// translators: %s: Your current version of WordPress.
-				__( '%s - We were unable to check if any new versions are available.', 'health-check' ),
+				__( '%s - We were unable to check if any new versions are available.', 'tainacan' ),
 				$core_current_version
 			);
 		} else {
@@ -368,7 +368,7 @@ class System_Check extends Pages {
 					sprintf(
 						// translators: %1$2: If a module is required or recommended. %2$s: The module name.
 						__( 'The %1$s module %2$s is not installed, or has been disabled.', 'tainacan' ),
-						( $module['required'] ? __( 'required', 'health-check' ) : __( 'optional', 'health-check' ) ),
+						( $module['required'] ? __( 'required', 'tainacan' ) : __( 'optional', 'tainacan' ) ),
 						$library
 					)
 				);
@@ -392,7 +392,7 @@ class System_Check extends Pages {
 		} else {
 			printf(
 				'<span class="good"></span> %s',
-				__( 'All required and recommended modules are installed.', 'health-check' )
+				__( 'All required and recommended modules are installed.', 'tainacan' )
 			);
 		}
 	}
@@ -457,14 +457,14 @@ class System_Check extends Pages {
 					'<span class="warning"></span> %s',
 					sprintf(
 						/* translators: %s: Number of version. */
-						esc_html__( 'WordPress\' utf8mb4 support requires MySQL version %s or greater', 'health-check' ),
+						esc_html__( 'WordPress\' utf8mb4 support requires MySQL version %s or greater', 'tainacan' ),
 						'5.5.3'
 					)
 				);
 			} else {
 				printf(
 					'<span class="good"></span> %s',
-					esc_html__( 'Your MySQL version supports utf8mb4', 'health-check' )
+					esc_html__( 'Your MySQL version supports utf8mb4', 'tainacan' )
 				);
 			}
 		} else { // MariaDB introduced utf8mb4 support in 5.5.0
@@ -473,14 +473,14 @@ class System_Check extends Pages {
 					'<span class="warning"></span> %s',
 					sprintf(
 						/* translators: %s: Number of version. */
-						esc_html__( 'WordPress\' utf8mb4 support requires MariaDB version %s or greater', 'health-check' ),
+						esc_html__( 'WordPress\' utf8mb4 support requires MariaDB version %s or greater', 'tainacan' ),
 						'5.5.0'
 					)
 				);
 			} else {
 				printf(
 					'<span class="good"></span> %s',
-					esc_html__( 'Your MariaDB version supports utf8mb4', 'health-check' )
+					esc_html__( 'Your MariaDB version supports utf8mb4', 'tainacan' )
 				);
 			}
 		}
@@ -504,7 +504,7 @@ class System_Check extends Pages {
 					'<br><span class="warning"></span> %s',
 					sprintf(
 						/* translators: %1$s: Name of the library, %2$s: Number of version. */
-						__( 'WordPress\' utf8mb4 support requires MySQL client library (%1$s) version %2$s or newer.', 'health-check' ),
+						__( 'WordPress\' utf8mb4 support requires MySQL client library (%1$s) version %2$s or newer.', 'tainacan' ),
 						'mysqlnd',
 						'5.0.9'
 					)
@@ -516,7 +516,7 @@ class System_Check extends Pages {
 					'<br><span class="warning"></span> %s',
 					sprintf(
 						/* translators: %1$s: Name of the library, %2$s: Number of version. */
-						__( 'WordPress\' utf8mb4 support requires MySQL client library (%1$s) version %2$s or newer.', 'health-check' ),
+						__( 'WordPress\' utf8mb4 support requires MySQL client library (%1$s) version %2$s or newer.', 'tainacan' ),
 						'libmysql',
 						'5.5.3'
 					)
