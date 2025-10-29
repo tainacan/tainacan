@@ -258,7 +258,8 @@
                 if ( 48 <= this.maxActivitiesPerPage )
                     defaultActivitiesPerPageOptions.push(48);
                 
-                defaultActivitiesPerPageOptions.push(this.maxActivitiesPerPage);
+                if ( !defaultActivitiesPerPageOptions.includes(this.maxActivitiesPerPage) )
+                    defaultActivitiesPerPageOptions.push(this.maxActivitiesPerPage);
 
                 if (!isNaN(this.activitiesPerPage) && !defaultActivitiesPerPageOptions.includes(this.activitiesPerPage))
                     defaultActivitiesPerPageOptions.push(Number(this.activitiesPerPage));

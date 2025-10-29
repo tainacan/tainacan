@@ -47,7 +47,6 @@
                             v-for="(itemsPerPageOption, index) of itemsPerPageOptions"
                             :key="index">
                         <option
-                                v-if="maxItemsPerPage >= 12"
                                 :value="itemsPerPageOption">
                             {{ itemsPerPageOption }} &nbsp;
                         </option>
@@ -143,8 +142,9 @@ export default {
             
             if ( 48 <= this.maxItemsPerPage )
                 defaultItemsPerPageOptions.push(48);
-            
-            defaultItemsPerPageOptions.push(this.maxItemsPerPage);
+
+            if ( !defaultItemsPerPageOptions.includes(this.maxItemsPerPage) )
+                defaultItemsPerPageOptions.push(this.maxItemsPerPage);
 
             if (!isNaN(this.itemsPerPage) && !defaultItemsPerPageOptions.includes(this.itemsPerPage))
                 defaultItemsPerPageOptions.push(Number(this.itemsPerPage));
