@@ -39,7 +39,7 @@ class Compound extends Metadata_Type {
 						</span>
 						<div>
 							<div class="control is-clearfix">
-								<input type="text" placeholder="' . __('Type here...') . '" autocomplete="on" id="tainacan-text-texto-simples" class="input">
+								<input type="text" placeholder="' . __('Type here...', 'tainacan') . '" autocomplete="on" id="tainacan-text-texto-simples" class="input">
 							</div>
 						</div>
 					</div>

@@ -25,7 +25,7 @@ class Date extends Metadata_Type {
 		$this->set_preview_template('
 			<div>
 				<div class="control is-inline">
-					<input type="text" placeholder="' . __('mm/dd/yyyy') . '" class="input"></input>
+					<input type="text" placeholder="mm/dd/yyyy" class="input"></input>
 				</div>
 			</div>
 		');

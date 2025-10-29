@@ -88,7 +88,7 @@ class REST_Collections_Controller extends REST_Controller {
 						'required' => true,
 					],
 					'permanently' => array(
-						'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection'),
+						'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection', 'tainacan'),
 						'default'     => '0',
 					),
 				)
@@ -916,7 +916,7 @@ class REST_Collections_Controller extends REST_Controller {
 		switch ( $method ) {
 			case \WP_REST_Server::READABLE:
 				$endpoint_args['name'] = array(
-					'description' => __('Limits the result set to collections with a specific name'),
+					'description' => __('Limits the result set to collections with a specific name', 'tainacan'),
 					'type'        => 'string',
 				);
 	

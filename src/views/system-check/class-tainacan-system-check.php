@@ -185,7 +185,7 @@ class System_Check extends Pages {
 
 			$class = 'error';
 			$text =  sprintf(
-				__('Tainacan requires WordPress 5.9 or newer! Your version is %s. Please upgrade.'),
+				__('Tainacan requires WordPress 5.9 or newer! Your version is %s. Please upgrade.', 'tainacan'),
 				$core_current_version
 			);
 

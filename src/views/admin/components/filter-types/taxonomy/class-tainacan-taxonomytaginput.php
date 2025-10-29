@@ -15,17 +15,17 @@ class TaxonomyTaginput extends Filter_Type {
         $this->set_use_max_options(false);
         $this->set_preview_template('
             <div>
-                <p class="has-text-gray">'. __('Selected values') . ': </p> 
+                <p class="has-text-gray">'. __('Selected values', 'tainacan') . ': </p> 
                 <div class="field selected-tags is-grouped-multiline is-grouped">
                     <div>
                         <div class="tags has-addons">
-                            <span class="tag"><span>'. __('Value') . ' 21</span></span> 
+                            <span class="tag"><span>'. __('Value', 'tainacan') . ' 21</span></span> 
                             <a class="tag is-delete"></a>
                         </div>
                     </div>
                     <div>
                         <div class="tags has-addons">
-                            <span class="tag"><span>'. __('Value') . ' 7</span></span> 
+                            <span class="tag"><span>'. __('Value', 'tainacan') . ' 7</span></span> 
                             <a class="tag is-delete"></a>
                         </div>
                     </div>
@@ -34,18 +34,18 @@ class TaxonomyTaginput extends Filter_Type {
                     <div class="taginput-container is-focusable"> 
                         <div class="autocomplete control">
                             <div class="control has-icon-right is-loading is-clearfix">
-                                <input type="text" class="input" value="'. __('Value') . ' 9" > 
+                                <input type="text" class="input" value="'. __('Value', 'tainacan') . ' 9" > 
                             </div> 
                             <div class="dropdown-menu" style="">
                                 <div class="dropdown-content">
                                     <a class="dropdown-item is-hovered">
-                                        <span><strong>'._('Value') . ' 9</strong>9</span>
+                                        <span><strong>'. __('Value', 'tainacan') . ' 9</strong>9</span>
                                     </a>
                                     <a class="dropdown-item">
-                                        <span><strong>'._('Value') . ' 9</strong>9</span>
+                                        <span><strong>'. __('Value', 'tainacan') . ' 9</strong>9</span>
                                     </a>
                                     <a class="dropdown-item">
-                                        <span><strong>'._('Value') . ' 9</strong>8</span>
+                                        <span><strong>'. __('Value', 'tainacan') . ' 9</strong>8</span>
                                     </a>
                                 </div>
                             </div>

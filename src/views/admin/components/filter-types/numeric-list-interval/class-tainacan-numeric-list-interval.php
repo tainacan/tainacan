@@ -89,7 +89,7 @@ class Numeric_List_Interval extends Filter_Type {
 			],
 			'showIntervalOnTag' => [
 				'title' => __('Interval on tags', 'tainacan'),
-				'description' => __('Whether the applied interval values should appear on filter tags.')
+				'description' => __('Whether the applied interval values should appear on filter tags.', 'tainacan')
 			]
 		];
 	}

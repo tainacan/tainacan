@@ -1578,7 +1578,7 @@ class REST_Items_Controller extends REST_Controller {
 	 */
 	public function get_wp_query_params() {
 		$query_params['title'] = array(
-			'description' => __('Limits the result set to items with a specific title'),
+			'description' => __('Limits the result set to items with a specific title', 'tainacan'),
 			'type'        => 'string',
 		);
 

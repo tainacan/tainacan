@@ -403,11 +403,11 @@ return apply_filters( 'tainacan-i18n', [
 	'label_mapper_metadata'                          => __( 'Metadata Mapper', 'tainacan' ),
 	'label_add_more_mapper_metadata'                 => __( 'Add more metadata mappers', 'tainacan' ),
 	/* translators: 'Exposer' here is not the same as 'Exporter'. These are links where you can see the items in different file formats such as CSV, JSON, etc, but not a download of a zip file. */
-	'label_exposer_urls'                             => __( 'Exposer URLs' ),
-	'label_exposer_mapper_values'                    => __( 'values only, no metadata scheme' ),
+	'label_exposer_urls'                             => __( 'Exposer URLs', 'tainacan' ),
+	'label_exposer_mapper_values'                    => __( 'values only, no metadata scheme', 'tainacan' ),
 	/* translators: 'Exposer' here is not the same as 'Exporter'. These are links where you can see the items in different file formats such as CSV, JSON, etc, but not a download of a zip file. */
-	'label_exposer'                                  => __( 'exposer' ),
-	'label_mapper'                                   => __( 'mapper' ),
+	'label_exposer'                                  => __( 'exposer', 'tainacan' ),
+	'label_mapper'                                   => __( 'mapper', 'tainacan' ),
 	'label_no_details_of_process'                    => __( 'There are no details about this process', 'tainacan' ),
 	'label_queued_on'                                => __( 'Queued on:', 'tainacan' ),
 	'label_last_processed_on'                        => __( 'Last processed on:', 'tainacan' ),
@@ -931,7 +931,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_associated_roles'							 => __( 'These are the roles that have this capability set. You may add or remove the capability to customize the role.', 'tainacan' ),
 	'info_inherited_roles'							 => __( 'These are the roles that have greater capabilities, which inherit this one. You cannot edit this as it will not have precedence over the greater capability.', 'tainacan' ),
 	'info_showing_terms'                        	 => __( 'Showing terms ', 'tainacan' ),
-	'info_warning_remove_from_trash_first'           => __( 'Remove this item from trash first' ),
+	'info_warning_remove_from_trash_first'           => __( 'Remove this item from trash first', 'tainacan' ),
 	/* translators: This is displayed before sentences like "Showing items 2 to 8 of 12 */
 	'info_to'                                        => __( ' to ', 'tainacan' ),
 	/* translators: This is displayed before sentences like "Showing items 2 to 8 of 12 */
