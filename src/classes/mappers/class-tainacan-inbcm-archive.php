@@ -2,6 +2,7 @@
 
 namespace Tainacan\Mappers;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class Inbcm_Archive extends Mapper {
 	public $slug = 'inbcm-arquivistico';

@@ -2,10 +2,20 @@
 
 namespace Tainacan\API\EndPoints;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use Tainacan\Exposers_Handler;
 use Tainacan\Mappers_Handler;
 use \Tainacan\API\REST_Controller;
 
+/**
+ * REST API controller for managing Tainacan exposers.
+ *
+ * Handles all REST API endpoints for exposer operations including
+ * exposer configuration, mappers configuration and exposer management.
+ *
+ * @since 1.0.0
+ */
 class REST_Exposers_Controller extends REST_Controller {
 	
 	private $metadatum_repository;

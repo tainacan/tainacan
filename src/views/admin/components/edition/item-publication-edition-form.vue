@@ -157,8 +157,10 @@
                                     aria-role="list"
                                     class="item-edition-status-dropdown"
                                     :triggers="[ 'click' ]"
+                                    :append-to-body="true"
                                     :disabled="item.status === 'auto-draft' || ( hasSomeError && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) )"
-                                    style="width: auto;">
+                                    style="width: auto;"
+                                    max-height="300px">
                                 <template #trigger>
                                     <button 
                                             :disabled="item.status === 'auto-draft' || ( hasSomeError && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) )"
@@ -199,6 +201,13 @@
                                                 :class="$statusHelper.getIcon(statusOption.slug)" />
                                     </span>
                                     {{ statusOption.name }}
+                                    <br>
+                                    <small 
+                                            v-if="$statusHelper.hasDescription(statusOption.slug)"
+                                            class="is-small"
+                                            style="margin-left: 2px;">
+                                        {{ $statusHelper.getDescription(statusOption.slug) }}
+                                    </small>
                                 </b-dropdown-item>
                             </b-dropdown>
                             <help-button
@@ -289,9 +298,6 @@ export default {
             imediate: true
         }
     },
-    beforeUnmount() {
-        this.$emitter.off('toggleItemEditionFooterDropdown');
-    },
     methods: {
         ...mapActions('activity', [
             'fetchUsers'
@@ -301,7 +307,6 @@ export default {
                 return;
 
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'userfill',
@@ -314,7 +319,7 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal authorship-modal',
-                closeButtonAriaLabel: this.$i18n.get('close'),
+                canCancel: ['escape', 'outside'],
                 width: 620,
             });   
         },
@@ -381,7 +386,7 @@ export default {
                             if ( status.slug == 'publish' && ( this.$adminOptions.hideItemEditionStatusPublishOption || !this.currentUserCanPublish ) )
                                 return false;
 
-                            if ( status.slug == 'private' && !this.currentUserCanPublish )
+                            if ( status.slug == 'private' && ( this.$adminOptions.hideItemEditionStatusPrivateOption || !this.currentUserCanPublish ) )
                                 return false;
 
                             return true;
@@ -397,6 +402,11 @@ export default {
         flex-direction: column;
         gap: 0.5em;
 
+        @supports (contain: inline-size) {
+            container-type: inline-size;
+            container-name: publicationfield; 
+        }
+
         .field-label {
             white-space: nowrap;
             text-align: left;
@@ -408,6 +418,18 @@ export default {
         }
         .field.has-addons {
             align-items: center;
+        }
+        .field.is-horizontal {
+            @container publicationfield (max-width: 280px) {
+                align-items: start;
+                flex-wrap: wrap;
+
+                .field-label {
+                    max-width: 100%;
+                    width: 100%;
+                    min-width: 100%;
+                }
+            }
         }
         .tainacan-help-tooltip-trigger {
             margin-left: 0.5rem;
@@ -426,6 +448,7 @@ export default {
         }
         &.has-only-status-field {
             padding-left: 0 !important;
+            padding-top: .75em !important;
 
             .dropdown,
             .field.has-addons {

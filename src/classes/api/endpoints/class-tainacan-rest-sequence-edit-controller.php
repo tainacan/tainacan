@@ -2,10 +2,20 @@
 
 namespace Tainacan\API\EndPoints;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use \Tainacan\API\REST_Controller;
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
+/**
+ * REST API controller for managing Tainacan sequence edit operations.
+ *
+ * Handles all REST API endpoints for sequence editing operations including
+ * sequential item editing, batch sequence updates, and sequence management.
+ *
+ * @since 1.0.0
+ */
 class REST_Sequence_Edit_Controller extends REST_Controller {
 
 	private $items_repository;

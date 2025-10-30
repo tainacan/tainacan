@@ -6,7 +6,8 @@ const state = {
     capabilities: [],
     capability: {},
     roles: [],
-    role: {}
+    role: {},
+    adminUIOptions: {}
 };
 
 export default {

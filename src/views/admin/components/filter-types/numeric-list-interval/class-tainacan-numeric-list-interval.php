@@ -4,6 +4,44 @@ namespace Tainacan\Filter_Types;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+class Numeric_List_Interval_Helper {
+	use \Tainacan\Traits\Singleton_Instance;
+
+	protected function init() {
+		add_filter( 'tainacan-api-items-tainacan-filter-numeric-list-interval-filter-arguments', [$this, 'format_filter_arguments']);
+	}
+
+	function format_filter_arguments( $filter_arguments ) {
+		if (
+			!isset($filter_arguments['filter']) ||
+			!isset($filter_arguments['filter']['filter_type_options']) ||
+			!isset($filter_arguments['filter']['filter_type_options']['intervals']) ||
+			!isset($filter_arguments['value']) ||
+			!is_array($filter_arguments['value']) ||
+			count($filter_arguments['value']) != 2
+		) {
+			return $filter_arguments;
+		}
+
+		$intervals = $filter_arguments['filter']['filter_type_options']['intervals'];
+		foreach($intervals as $interval) {
+			if (
+				$interval['from'] == $filter_arguments['value'][0] &&
+				$interval['to'] == $filter_arguments['value'][1]
+			) {
+				$filter_arguments['label'] = $interval['label'];
+
+				if ( isset($filter_arguments['filter']['filter_type_options']['showIntervalOnTag']) && $filter_arguments['filter']['filter_type_options']['showIntervalOnTag'] )
+					$filter_arguments['label'] .= ' (' . $filter_arguments['value'][0] . '-' . $filter_arguments['value'][1] . ')';
+
+				break;
+			}
+		}
+		return $filter_arguments;
+	}
+}
+Numeric_List_Interval_Helper::get_instance();
+
 /**
  * Class TainacanFilterType
  */
@@ -51,43 +89,8 @@ class Numeric_List_Interval extends Filter_Type {
 			],
 			'showIntervalOnTag' => [
 				'title' => __('Interval on tags', 'tainacan'),
-				'description' => __('Whether the applied interval values should appear on filter tags.')
+				'description' => __('Whether the applied interval values should appear on filter tags.', 'tainacan')
 			]
 		];
 	}
 }
-
-class Numeric_List_Interval_Helper {
-	use \Tainacan\Traits\Singleton_Instance;
-
-	protected function init() {
-		add_filter( 'tainacan-api-items-tainacan-filter-numeric-list-interval-filter-arguments', [$this, 'format_filter_arguments']);
-	}
-
-	function format_filter_arguments( $filter_arguments ) {
-		if (
-			!isset($filter_arguments['filter']) ||
-			!isset($filter_arguments['filter']['filter_type_options']) ||
-			!isset($filter_arguments['filter']['filter_type_options']['intervals'])
-		) {
-			return $filter_arguments;
-		}
-
-		$intervals = $filter_arguments['filter']['filter_type_options']['intervals'];
-		foreach($intervals as $interval) {
-			if (
-				$interval['from'] == $filter_arguments['value'][0] &&
-				$interval['to'] == $filter_arguments['value'][1]
-			) {
-				$filter_arguments['label'] = $interval['label'];
-
-				if ( isset($filter_arguments['filter']['filter_type_options']['showIntervalOnTag']) && $filter_arguments['filter']['filter_type_options']['showIntervalOnTag'] )
-					$filter_arguments['label'] .= ' (' . $filter_arguments['value'][0] . '-' . $filter_arguments['value'][1] . ')';
-
-				break;
-			}
-		}
-		return $filter_arguments;
-	}
-}
-Numeric_List_Interval_Helper::get_instance();

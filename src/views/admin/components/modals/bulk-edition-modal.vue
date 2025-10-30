@@ -13,7 +13,14 @@
                     {{ `(${totalItems} ${objectType})` }}
                 </small>
             </h2>
-            <hr>
+            <button         
+                    class="button is-medium is-white is-align-self-flex-start"
+                    :aria-label="$i18n.get('close')"
+                    @click="$emit('close')">
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-125em" />
+                </span>
+            </button>
         </header>
         <div class="tainacan-form">
             <div class="modal-card-body no-overflow-modal-card-body">
@@ -351,7 +358,7 @@
                             :disabled="dones.every((item) => item === true) === false"
                             class="button is-success"
                             type="button"
-                            @click="$emitter.emit('openProcessesPopup'); $eventBusSearch.loadItems(); $emit('close');">
+                            @click="onFinish">
                         {{ $i18n.get('finish') }}
                     </button>
                 </p>
@@ -767,10 +774,23 @@
                         this.$console.error(error);
                         this.isFetchingUsers = false;
                     });
-                }, 500),
-                fetchMoreUsersForAuthor: _.debounce(function () {
-                    this.fetchUsersForAuthor(this.usersSearch)
-                }, 250),
+            }, 500),
+            fetchMoreUsersForAuthor: _.debounce(function () {
+                this.fetchUsersForAuthor(this.usersSearch)
+            }, 250),
+            onFinish() {
+                this.$buefy.snackbar.open({
+                    message: this.$i18n.get('info_bulk_edit_process_added'),
+                    type: 'is-primary',
+                    duration: 4000,
+                    actionText: this.$i18n.get('label_view_processes'),
+                    onAction: () => {
+                        this.$router.push(this.$routerHelper.getProcessesPath());
+                    }
+                });
+                this.$eventBusSearch.loadItems();
+                this.$emit('close');
+            }
         }
     }
 </script>
@@ -793,7 +813,7 @@
     }
 
     .this-tainacan-modal-content {
-        min-height: 300px;
+        min-height: 276px;
         
         .button.is-white.is-loading {
             cursor: inherit;
@@ -806,7 +826,7 @@
             font-size: 0.875em;
         }
         .form-submit {
-            padding: 42px 0 0.4em 0 !important;
+            padding: 42px 0 0 0 !important;
         }
     }
 
@@ -829,6 +849,7 @@
         flex-direction: row;
         flex-wrap: wrap;
         width: 100%;
+        padding-right: 0.75rem;
 
         .control {
             .select {
@@ -841,7 +862,6 @@
         }
 
         .taginput-container {
-            height: 32px !important;
 
             .tags {
                 margin-bottom: calc(0.275em - 1px) !important;
@@ -921,7 +941,6 @@
             flex-direction: column;
             flex-grow: 1;
             flex-shrink: 1;
-            text-align: center;
             padding-bottom: 9px;
             flex-basis: 10%;
 

@@ -8,29 +8,18 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Class MetadataTypeHelper
  */
 class Metadata_Type_Helper {
+	use \Tainacan\Traits\Singleton_Instance;
 
-	private static $instance = null;
 	/**
 	 * Stores external metadata type available to be used in Tainacan
 	 */
 	private $registered_metadata_type;
 	private $Tainacan_Metadata;
 
-	public static function get_instance() {
-		if ( ! isset( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
-
-	private function __construct() {
+	private function init() {
 		$this->registered_metadata_type = [];
 		$this->Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
-		$this->init();
-	}
 
-	private function init() {
 		//register metadatum types
 		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Text');
 		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Textarea');
@@ -45,7 +34,7 @@ class Metadata_Type_Helper {
 		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\GeoCoordinate');
 		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\URL');
 
-		// the priority should see less than on function 
+		// The priority should see less than on function 
 		// `load_admin_page()` of class `Admin` in file /src/views/class-tainacan-admin.php
 		add_action( 'admin_enqueue_scripts', array( &$this, 'register_metadata_type_component' ), 80 ); 
 		do_action('tainacan-register-metadata-type', $this);

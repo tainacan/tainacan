@@ -25,7 +25,7 @@ class Date extends Metadata_Type {
 		$this->set_preview_template('
 			<div>
 				<div class="control is-inline">
-					<input type="text" placeholder="' . __('mm/dd/yyyy') . '" class="input"></input>
+					<input type="text" placeholder="mm/dd/yyyy" class="input"></input>
 				</div>
 			</div>
 		');
@@ -118,7 +118,7 @@ class Date extends Metadata_Type {
 
 	private function format_error_msg($value) {
 		return sprintf(
-			__('Invalid date format. Expected format is %s, got %s.', 'tainacan'),
+			__('Invalid date format. Expected format is %1$s, got %2$s.', 'tainacan'),
 			$this->format,
 			$value
 		);

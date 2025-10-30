@@ -4,17 +4,16 @@
                 v-model="isLoading"
                 :is-full-page="false"
                 :can-cancel="false" />
-        <div 
-                v-if="!$adminOptions.hideBulkEditionPageTitle"
+        <!-- <div 
+                
                 class="tainacan-page-title">
             <h1>{{ $i18n.get('add_items_bulk') }}</h1>
-            <a 
-                    class="back-link has-text-secondary"
-                    @click="$router.go(-1)">
-                {{ $i18n.get('back') }}
-            </a>
-            <hr>
-        </div>
+        </div> -->
+
+        <tainacan-title 
+                v-if="!$adminOptions.hideBulkEditionPageTitle"        
+                :is-sticky="true" />
+
         <form
                 v-if="!isLoading && collection && collection.current_user_can_bulk_edit"
                 class="tainacan-form" 
@@ -178,7 +177,7 @@
         </form>
         <template v-else-if="!isLoading && collection && !collection.current_user_can_bulk_edit">
             <section class="section">
-                <div class="content has-text-grey has-text-centered">
+                <div class="content has-text-gray has-text-centered">
                     <p>
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-collection" />
@@ -218,12 +217,6 @@ export default {
         this.collectionId = this.$route.params.collectionId;
 
         this.cleanFiles();
-
-        // Updates Collection BreadCrumb
-        this.$emitter.emit('onCollectionBreadCrumbUpdate', [
-            { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
-            { path: '', label: this.$i18n.get('add_items_bulk') }
-        ]);
     },
     methods: {
         ...mapActions('collection', [
@@ -320,7 +313,6 @@ export default {
             let onlyItemIds = this.uploadedItems.map(item => item.id);
 
             this.$buefy.modal.open({
-                parent: this,
                 component: BulkEditionModal,
                 props: {
                     modalTitle: this.$i18n.get('info_editing_items_in_bulk'),
@@ -332,19 +324,17 @@ export default {
                 width: 'calc(100% - (2 * var(--tainacan-one-column)))',
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             });
         },
         deleteOneItem(itemId, index) {
             this.$buefy.modal.open({
-                parent: this,
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
                     title: this.$i18n.get('label_warning'),
                     message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
                     onConfirm: () => {
-                        this.teste
                         this.deleteItem({
                             itemId: itemId
                         }).then(() => {
@@ -355,7 +345,7 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             });
         },
     }
@@ -364,45 +354,19 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_variables.scss";
-
     .page-container {
 
         &>.tainacan-form {
             margin-bottom: 56px;
         }
 
-        .tainacan-page-title {
-            margin-bottom: 28px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-end;
-            justify-content: space-between;
-
-            h1, h2 {
-                font-size: 1.25em;
-                font-weight: 500;
-                color: var(--tainacan-heading-color);
-                display: inline-block;
-                flex-shrink: 1;
-                flex-grow: 1;
-            }
-            a.back-link{
-                font-weight: 500;
-                float: right;
-                margin-top: 5px;
-            }
-            hr{
-                margin: 3px 0px 4px 0px; 
-                height: 1px;
-                background-color: var(--tainacan-secondary);
-                width: 100%;
-            }
-        }
         .source-file-upload {
             width: 100%;
             padding: 0.75em var(--tainacan-one-column);
-            @include display-grid;
+            flex-wrap: wrap;
+            display: flex;
+            display: -ms-grid;
+            display: grid;
         }
         .document-list {
             display: inline-block;
@@ -502,23 +466,59 @@ export default {
         }
 
         .footer {
-            padding: 14px var(--tainacan-one-column);
+            padding: 10px var(--tainacan-one-column);
             position: absolute;
             bottom: 0;
             z-index: 999999;
             background-color: var(--tainacan-gray1);
             width: 100%;
-            height: 60px;
+            height: 3.5rem;
             display: flex;
             justify-content: flex-end;
             align-items: center;
             left: 0;
+            box-shadow: 0px 0px 12px -8px var(--tainacan-black);
 
-            .form-submission-footer {    
-                .button {
-                    margin-left: 16px;
-                    margin-right: 6px;
-                }
+            &::after,
+            &::before {
+                height: 18px;
+                width: 18px;
+                background: transparent;
+                display: block;
+                content: '';
+                position: absolute;
+            }
+            &::before {
+                left: 0;
+                top: -18px;
+                border-bottom-left-radius: 9px;
+                box-shadow: -9px 0px 0 0 var(--tainacan-gray1), inset 2px -2px 5px -3px var(--tainacan-gray2)
+            }
+            &::after {
+                right: 0;
+                top: -18px;
+                border-bottom-right-radius: 9px;
+                box-shadow: 9px 0px 0 0 var(--tainacan-gray1), inset -2px -2px 5px -3px var(--tainacan-gray2)
+            }
+
+            // .form-submission-footer {    
+            //     .button {
+            //         margin-left: 16px;
+            //         margin-right: 6px;
+            //     }
+            // }
+        }
+        @media screen and (max-width: 768px) {
+            .tainacan-form {
+                padding-bottom: 6rem;
+            }
+            .footer {
+                padding: 13px 0.5em;
+                margin-left: 0;
+                width: 100%;
+                flex-wrap: wrap;
+                height: auto;
+                position: fixed;
             }
         }
     }

@@ -1,11 +1,16 @@
 <template>
     <div 
-            class="repository-level-page page-container">
-        <tainacan-title 
-                :bread-crumb-items="[
-                    { path: $routerHelper.getAvailableImportersPath(), label: $i18n.get('importers') },
-                    { path: '', label: importerType != undefined ? (importerName != undefined ? importerName :importerType) : $i18n.get('title_importer_page') }
-                ]" />
+            class="tainacan-repository-level-colors page-container">
+        <tainacan-title :is-sticky="true">
+            <h1>
+                {{ $i18n.get('title_importer_page') }} 
+                <span 
+                        v-if="importerName"
+                        class="is-italic has-text-weight-semibold">
+                    {{ importerName }}
+                </span>
+            </h1>
+        </tainacan-title>
         <form   
                 v-if="importer != undefined && importer != null"
                 class="tainacan-form" 
@@ -87,7 +92,7 @@
                 <div 
                         v-if="importer.manual_collection"
                         style="margin-top: 2em;"
-                        class="column is-narrow">
+                        class="column is-narrow is-hidden-mobile">
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-pointer tainacan-icon-36px has-text-gray2" />
                     </span>
@@ -242,6 +247,20 @@ export default {
         this.fetchAvailableImporters().then((importerTypes) => {
            if (importerTypes[this.importerType]) 
             this.importerName = importerTypes[this.importerType].name;
+            this.$routerHelper.appendToPageTitle(this.importerName);
+            wp.hooks.doAction(
+                'tainacan_navigation_path_updated', 
+                { 
+                    currentRoute: this.$route,
+                    adminOptions: this.$adminOptions,
+                    parentEntity: {
+                        rootLink: 'importers',
+                        name: this.importerName,
+                        defaultLink: `importers/${this.importerType}/edit`,
+                        label: this.$i18n.get('importers')
+                    }
+                }
+            );
         });
 
         if (this.sessionId != undefined)
@@ -420,7 +439,7 @@ export default {
                 .then(backgroundProcess => {  
                     this.backgroundProcess = backgroundProcess;
                     this.isLoadingRun = false;
-                    this.$router.push(this.$routerHelper.getProcessesPage(backgroundProcess.bg_process_id));
+                    this.$router.push(this.$routerHelper.getProcessesPath(backgroundProcess.bg_process_id));
                 })
                 .catch((errors) => {
                     this.isLoadingRun = false;
@@ -460,11 +479,8 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_variables.scss";
-
-    :deep(.columns) {
-        padding-left: var(--tainacan-one-column);
-        padding-right: var(--tainacan-one-column);
+    .tainacan-form >.columns {
+        padding-top: var(--tainacan-container-padding);
     }
 
     .field {
@@ -515,7 +531,10 @@ export default {
 
     .source-file-upload {
         width: 100%;
-        @include display-grid;
+        flex-wrap: wrap;
+        display: flex;
+        display: -ms-grid;
+        display: grid;
     }
 
     .selected-source-file {

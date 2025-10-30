@@ -2,10 +2,20 @@
 
 namespace Tainacan\API\EndPoints;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use \Tainacan\API\REST_Controller;
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
+/**
+ * REST API controller for managing Tainacan filters.
+ *
+ * Handles all REST API endpoints for filter operations including
+ * creation, updates, deletion, and querying of collection filters.
+ *
+ * @since 1.0.0
+ */
 class REST_Filters_Controller extends REST_Controller {
 	private $collection;
 	private $collection_repository;
@@ -524,7 +534,7 @@ class REST_Filters_Controller extends REST_Controller {
 	public function get_wp_query_params() {
 
 		$query_params['name'] = array(
-			'description' => __('Limits the result set to filters with a specific name'),
+			'description' => __('Limits the result set to filters with a specific name', 'tainacan'),
 			'type'        => 'string',
 		);
 

@@ -2,10 +2,20 @@
 
 namespace Tainacan\API\EndPoints;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use \Tainacan\API\REST_Controller;
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
+/**
+ * REST API controller for managing Tainacan metadata.
+ *
+ * Handles all REST API endpoints for metadata operations including
+ * creation, updates, deletion, and querying of metadata definitions.
+ *
+ * @since 1.0.0
+ */
 class REST_Metadata_Controller extends REST_Controller {
 	private $collection_repository;
 	private $metadatum_repository;
@@ -576,7 +586,7 @@ class REST_Metadata_Controller extends REST_Controller {
 		$query_params = array_merge($query_params, parent::get_wp_query_params());
 
 		$query_params['name'] = array(
-			'description' => __('Limits the result set to metadata with a specific name'),
+			'description' => __('Limits the result set to metadata with a specific name', 'tainacan'),
 			'type'        => 'string',
 		);
 

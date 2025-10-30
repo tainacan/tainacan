@@ -2,28 +2,67 @@
 
 namespace Tainacan\Repositories;
 
-use Tainacan\Entities;
-
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-use \Respect\Validation\Validator as v;
-use Tainacan\Entities\Collection;
+use Tainacan\Entities;
 
+use \Respect\Validation\Validator as v;
+
+/**
+ * Repository for managing Tainacan collections.
+ *
+ * Handles all database operations for collections including creation,
+ * updates, deletion, and querying with proper validation and logging.
+ *
+ * @since 1.0.0
+ */
 class Collections extends Repository {
+	use \Tainacan\Traits\Singleton_Instance;
+
+	/**
+	 * The entity type this repository manages.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	public $entities_type = '\Tainacan\Entities\Collection';
 
-	private static $instance = null;
+	/**
+	 * Stores the old collection state for comparison during updates.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var \Tainacan\Entities\Collection
+	 */
 	private $old_collection;
+
+	/**
+	 * Stores the old core title for comparison during updates.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	private $old_core_title;
+
+	/**
+	 * Stores the old core description for comparison during updates.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	private $old_core_description;
 
-	public static function get_instance() {
-		if ( ! isset( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
+	/**
+	 * Initializes the collections repository.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	protected function init() { }
 
 	/**
 	 * {@inheritDoc}

@@ -2,13 +2,23 @@
 
 namespace Tainacan\API\EndPoints;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use Tainacan\OAIPMHExpose;
 use \Tainacan\API\REST_Controller;
 
+/**
+ * REST API controller for managing Tainacan OAI-PMH exposure.
+ *
+ * Handles all REST API endpoints for OAI-PMH protocol operations including
+ * metadata harvesting, repository configuration, and OAI-PMH compliance.
+ *
+ * @since 1.0.0
+ */
 class REST_Oaipmh_Expose_Controller extends REST_Controller {
 
     /**
-     * REST_Facets_Controller constructor.
+     * REST_Oaipmh_Expose_Controller constructor.
      */
     public function __construct() {
         $this->rest_base = 'oai';

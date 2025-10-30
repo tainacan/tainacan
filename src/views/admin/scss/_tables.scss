@@ -1,13 +1,13 @@
 
 // Tables
 .table-container {
+    overflow-x: hidden;
     padding: 0 var(--tainacan-one-column);
     position: relative;
-    margin-bottom: 40px;
 
     .table-wrapper {
         width: 100%;
-        height: calc(100% - 40px);
+        height: 100%;
         border-collapse: separate;
         overflow-x: auto;
         overflow-y: hidden;
@@ -18,7 +18,7 @@
                 td.skeleton.thumbnail-cell {
                     max-height: 52px;
                     max-width: 34px;
-                    border-radius: 0;
+                    border-radius: var(--tainacan-item-border-radius, 0px);
                     background-color: var(--tainacan-skeleton-color) !important;
                     border-top: 8px solid white !important;
                     border-bottom: 8px solid white !important;
@@ -27,7 +27,7 @@
                 }
                 td.skeleton:not(.thumbnail-cell) {
                     max-height: 52px;
-                    border-radius: 0;
+                    border-radius: var(--tainacan-item-border-radius, 0px);
                     background-color: var(--tainacan-skeleton-color) !important;
                     border-top: 18px solid white !important;
                     border-bottom: 18px solid white !important;
@@ -41,7 +41,7 @@
             animation-name: appear;
             animation-duration: 0.5s;
             width: 100%;
-            border-collapse: separate;
+            border-collapse: collapse;
             border-spacing: 0;
             border-color: transparent;
 
@@ -61,8 +61,9 @@
     
                 label.checkbox,
                 label.radio {  
-                    border-radius: 0px;
-                    background-color: var(--tainacan-white);
+                    border-top-left-radius: var(--tainacan-item-border-radius, 0px);
+                    border-bottom-left-radius: var(--tainacan-item-border-radius, 0px);
+                    background-color: var(--tainacan-item-background-color);
                     padding: 0;
                     width: 100%;
                     height: 100%; 
@@ -70,8 +71,8 @@
                     justify-content: center;
                     transition: background-color 0.15s ease;
                 }
-                .b-checkbox.checkbox .control-label,
-                .b-radio.radio .control-label {
+                .b-checkbox.checkbox :deep(.control-label),
+                .b-radio.radio :deep(.control-label) {
                     display: none;
                 }
                 &.is-selecting {
@@ -93,6 +94,7 @@
                 width: 2rem;
                 padding-left: 1px;
                 padding-right: 1px;
+                text-align: center;
             }
             .column-small-width {
                 min-width: 80px;
@@ -155,6 +157,7 @@
                 z-index: 9;
                 padding: 10px;
                 vertical-align: bottom;
+                text-align: start;
     
                 .th-wrap {
                     font-size: 0.75em !important;
@@ -168,15 +171,20 @@
             tbody {
                 tr {
                     cursor: pointer;
+                    border-radius: var(--tainacan-item-border-radius, 0px);
                     background-color: var(--tainacan-item-background-color);
                     transition: background-color 0.15s ease;
     
+                    &:not(:last-child) {
+                        border-bottom: 1px solid var(--tainacan-lists-separator-color, var(--tainacan-item-hover-background-color));
+                    }
+
                     &.selected-row { 
-                        background-color: var(--tainacan-turquoise1); 
-                        .checkbox-cell .checkbox, 
-                        .actions-cell .actions-container {
-                            transition: background-color 0.15s ease;
-                        }
+                        --tainacan-item-background-color: var(--tainacan-primary);
+                        --tainacan-item-heading-hover-background-color: var(--tainacan-turquoise2);
+                        --tainacan-item-heading-hover-background-color: color-mix(in srgb, var(--tainacan-secondary) 5%, transparent);
+                        --tainacan-item-hover-background-color: var(--tainacan-primary); 
+                        --tainacan-item-hover-background-color: color-mix(in srgb, var(--tainacan-secondary) 20%, transparent);
                     }
                     td {
                         height: 60px;
@@ -185,6 +193,15 @@
                         vertical-align: middle;
                         line-height: 0.75em;
                         border: none !important;
+
+                        &:first-child {
+                            border-top-left-radius: var(--tainacan-item-border-radius, 0px);
+                            border-bottom-left-radius: var(--tainacan-item-border-radius, 0px);
+                        }
+                        &:last-child {
+                            border-top-right-radius: var(--tainacan-item-border-radius, 0px);
+                            border-bottom-right-radius: var(--tainacan-item-border-radius, 0px);
+                        }
 
                         &.thumbnail-cell .skeleton {
                             height: 38px;
@@ -205,7 +222,7 @@
                             white-space: nowrap;
                             max-height: 2.5em;
 
-                            .tainacan-relationship-group {
+                            :deep(.tainacan-relationship-group) {
                                 display: inline-flex;
                                 align-items: center;
 
@@ -249,7 +266,7 @@
                         a {
                             text-decoration: none !important;
                         }
-                        .tainacan-compound-group {
+                        :deep(.tainacan-compound-group) {
                             display: inline-block;
                             font-size: 1.125em;
                             margin-top: -0.25em;
@@ -292,11 +309,21 @@
                         max-height: 38px !important;
                         min-height: 38px;
                         max-width: 38px;
-                        border-radius: 0px;
+                        border-radius: var(--tainacan-item-border-radius, 0px);
                         padding-bottom: 0px !important;
                         padding-left: 0px !important;
                         padding-right: 0px !important;
                         padding-top: 0px !important;
+                        word-wrap: anywhere;
+                        word-break: break-all;
+                        font-size: 0.75em;
+                        box-sizing: border-box;
+                        width: 38px;
+                        display: inline-block;
+
+                        :deep(img) {
+                            border-radius: var(--tainacan-item-border-radius, 0px);
+                        }
                     }
                     td.actions-cell {
                         padding: 0px;
@@ -307,13 +334,15 @@
                         width: 100px;
     
                         .actions-container {
+                            border-top-right-radius: var(--tainacan-item-border-radius, 0px);
+                            border-bottom-right-radius: var(--tainacan-item-border-radius, 0px);
                             display: flex;
                             position: relative;
                             padding: 0;
                             height: 100%;
                             width: 100px;
                             z-index: 9;
-                            background-color: var(--tainacan-white); 
+                            background-color: var(--tainacan-item-background-color); 
                             float: right;
                             justify-content: center;
                             align-items: center;
@@ -336,7 +365,7 @@
                             position: -webkit-sticky !important;
                             background-color: var(--tainacan-item-heading-hover-background-color);
                             
-                            .checkbox { 
+                            .checkbox {     
                                 background-color: var(--tainacan-item-heading-hover-background-color) !important; 
                             }
                             .radio { 
@@ -344,6 +373,8 @@
                             }
                         }
                         .actions-cell {
+                            transition: background-color 0.15s ease;
+
                             .actions-container {
                                 background: var(--tainacan-item-heading-hover-background-color) !important;
                             }

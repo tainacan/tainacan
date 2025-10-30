@@ -5,7 +5,12 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Represents the entity Filter
+ * Represents a Tainacan Filter entity.
+ *
+ * Filters define search and filtering capabilities for collections,
+ * allowing users to narrow down item results based on metadata criteria.
+ *
+ * @since 1.0.0
  */
 class Filter extends Entity {
     use \Tainacan\Traits\Entity_Collection_Relation;

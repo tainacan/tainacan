@@ -1,32 +1,113 @@
 <?php
+
 namespace Tainacan;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 /**
- * Class withe helpful methods to handle media in Tainacan
+ * Handles media functionality for Tainacan.
+ *
+ * Provides methods for managing images, attachments, and media-related features
+ * including custom image sizes, attachment pages, and content indexing.
+ *
+ * @since 0.1.0
  */
 class Media {
+	use \Tainacan\Traits\Singleton_Instance;
 
-	private static $instance = null;
+	/**
+	 * Current file name being processed.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var string|null
+	 */
 	private static $file_name = null;
+
+	/**
+	 * Base URL slug for attachment HTML pages.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var string
+	 */
 	private $attachment_html_url_base = 'tainacan_attachment_html';
 
+	/**
+	 * Meta key for document content indexing.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var string
+	 */
 	public static $content_index_meta = 'document_content_index';
 
-	public static function get_instance() {
-			if(!isset(self::$instance)) {
-					self::$instance = new self();
-			}
+	/**
+	 * Meta key for document content last index metadata.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
+	public static $content_index_last = 'document_content_last_index';
 
-			return self::$instance;
-	}
-
-	protected function __construct() {
+	/**
+	 * Initializes the media functionality.
+	 *
+	 * Sets up rewrite rules, query vars, and image sizes for Tainacan media handling.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
+	protected function init() {
 		add_action( 'init', [$this, 'add_attachment_page_rewrite_rule'] );
 
 		add_filter( 'query_vars', [$this, 'attachment_page_add_var'] );
 		add_action( 'template_redirect', [$this, 'attachment_page'] );
+
+		add_action( 'after_setup_theme', [$this, 'add_image_sizes'] );
+		add_filter( 'image_size_names_choose', [$this, 'add_image_sizes_to_admin'] );
 	}
 
+	/**
+	 * Registers custom image sizes for Tainacan.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
+	public function add_image_sizes() {
+        add_image_size( 'tainacan-small', 40, 40, true );
+        add_image_size( 'tainacan-medium', 275, 275, true );
+        add_image_size( 'tainacan-medium-full', 205, 1500 );
+        add_image_size( 'tainacan-large-full', 480, 860 );
+    }
+
+	/**
+	 * Adds custom image sizes to the admin interface.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param array $sizes Existing image size options.
+	 * @return array Modified image size options.
+	 */
+    public function add_image_sizes_to_admin( $sizes ) {
+        return array_merge( $sizes, array(
+            'tainacan-small'       => __( 'Tainacan small (40x40 - cropped)', 'tainacan' ),
+            'tainacan-medium'      => __( 'Tainacan medium (275x275 - cropped)', 'tainacan' ),
+            'tainacan-medium-full' => __( 'Tainacan medium full (205x1500 - not cropped)', 'tainacan' ),
+            'tainacan-large-full'  => __( 'Tainacan large full (480x860 - not cropped)', 'tainacan' )
+        ) );
+    }
+
+	/**
+	 * Adds rewrite rule for attachment HTML pages.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
 	public function add_attachment_page_rewrite_rule() {
 		add_rewrite_rule(
 			'^' . $this->attachment_html_url_base . '/([0-9]+)/?',
@@ -261,12 +342,17 @@ class Media {
 
 	public function index_pdf_content($file, $item_id) {
 
-		if ( ! defined('TAINACAN_INDEX_PDF_CONTENT') || true !== TAINACAN_INDEX_PDF_CONTENT ) {
+		if ( ! (
+			defined('TAINACAN_INDEX_PDF_CONTENT') 
+				? ( true === TAINACAN_INDEX_PDF_CONTENT )
+				: get_option( 'tainacan_option_index_pdf_content', false ) 
+		) ) {
 			return;
 		}
 
 		if ($file == null) {
 			update_post_meta( $item_id, SELF::$content_index_meta, null );
+			update_post_meta( $item_id, SELF::$content_index_last, null );
 			return true;
 		}
 
@@ -276,6 +362,31 @@ class Media {
 
 		if ( $this->get_mime_content_type($file) != 'application/pdf') {
 			return null;
+		}
+
+		// Check if file has changed since last indexing
+		$stored_file_info = get_post_meta($item_id, SELF::$content_index_last, true);
+		
+		// Get current file information with error handling
+		$current_file_name = basename($file);
+		$current_file_size = filesize($file);
+		$current_mod_time = filemtime($file);
+		
+		// Validate file information
+		if ($current_mod_time === false || $current_file_size === false) {
+			// If we can't get file info, proceed with indexing to be safe
+			error_log("Tainacan: Could not get file metadata for {$file} to make sure it has changed, proceeding with indexing anyways.");
+		} else {
+			// If file hasn't changed, skip re-indexing
+			if (is_array($stored_file_info) && 
+				isset($stored_file_info['file_name']) && 
+				isset($stored_file_info['mod_time']) &&
+				isset($stored_file_info['file_size']) &&
+				$stored_file_info['file_name'] === $current_file_name && 
+				$stored_file_info['mod_time'] === $current_mod_time &&
+				$stored_file_info['file_size'] === $current_file_size) {
+				return true;
+			}
 		}
 
 		// Allow plugins to implement other approach to index pdf contents
@@ -292,6 +403,17 @@ class Media {
 			$content_charset = mb_detect_encoding($content);
 			$content = mb_convert_encoding($content, $wp_charset, $content_charset);
 			update_post_meta( $item_id, SELF::$content_index_meta, $content );
+			
+			// Store file metadata for future change detection (only if we have valid data)
+			if ($current_mod_time !== false && $current_file_size !== false) {
+				$file_info = array(
+					'file_name' => $current_file_name,
+					'mod_time' => $current_mod_time,
+					'file_size' => $current_file_size
+				);
+				update_post_meta( $item_id, SELF::$content_index_last, $file_info );
+			}
+			
 		} catch(\Exception $e) {
 			error_log('Caught exception: ' .  $e->getMessage() . "\n");
 			return false;

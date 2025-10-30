@@ -1,6 +1,6 @@
 .tainacan-leaflet-map-container {
     border: 1px solid var(--tainacan-input-border-color);
-    border-radius: 3px;
+    border-radius: var(--tainacan-item-border-radius, 0px);
     display: flex;
     height: 60vh;
 
@@ -40,7 +40,7 @@
         .geocoordinate-panel {
             background: var(--tainacan-background-color, #fff);
             box-shadow: 0px 0px 12px -10px var(--tainacan-black, #000);
-            border-radius: 3px;
+            border-radius: var(--tainacan-item-border-radius, 0px);
             padding: 0.25rem 0.125rem 0.25rem 1rem;
             border: 2px solid rgba(0,0,0,0.2);
             background-clip: padding-box;
@@ -131,6 +131,7 @@
                 border: 2px solid rgba(0,0,0,0.2);
                 opacity: 1.0;
                 transition: 1.0;
+                border-radius: var(--tainacan-item-border-radius, 0px);
 
                 &:not(.is-selecting) {
                     background-color: var(--tainacan-background-color);
@@ -157,6 +158,7 @@
                 .tainacan-record-item-thumbnail,
                 img {
                     max-width: 75px;
+                    border-radius: var(--tainacan-item-border-radius, 0px);
                 }
 
                 .media .list-metadata {
@@ -186,6 +188,7 @@
             .tainacan-map-card {
                 max-width: 100%;
                 opacity: 1.0;
+                border-radius: var(--tainacan-item-border-radius, 0px);
                 background-color: var(--tainacan-item-background-color);
                 border-bottom: 1px solid var(--tainacan-item-hover-background-color);
 
@@ -201,6 +204,7 @@
                 .tainacan-map-card-item-thumbnail,
                 img {
                     max-width: 60px;
+                    border-radius: var(--tainacan-item-border-radius, 0px);
                 }
 
                 &.selected-map-card {
@@ -256,12 +260,13 @@
                     margin-left: auto;
                 }
                 .tainacan-map-card-item-thumbnail,
-                img {
+                :deep(img) {
                     width: 40px;
                     height: 40px;
                     border-radius: 0px;
                     position: relative;
                     z-index: 1;
+                    border-radius: var(--tainacan-item-border-radius, 0px);
                 }
                 .metadata-title {
                     box-sizing: border-box;

@@ -196,7 +196,6 @@
             },
             openCheckboxModal() {
                 this.$buefy.modal.open({
-                    parent: this,
                     component: CheckboxRadioFilterInput,
                     props: {
                         //parent: parent,
@@ -224,7 +223,7 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
+                    canCancel: ['escape', 'outside']
                 });
             },
         }

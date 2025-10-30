@@ -23,11 +23,13 @@
         cursor: pointer;
         text-decoration: none;
         display: block;
+        border-radius: var(--tainacan-item-border-radius, 0px);
         transition: background-color 0.2s ease;
 
         :deep(img) {
             height: auto;
             max-width: 100%;
+            border-radius: var(--tainacan-item-border-radius, 0px);
         }
 
         &:hover {

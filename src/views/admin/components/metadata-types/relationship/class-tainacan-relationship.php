@@ -25,18 +25,18 @@ class Relationship extends Metadata_Type {
 					<div class="taginput-container is-focusable"> 
 						<div class="autocomplete control">
 							<div class="control has-icon-right is-loading is-clearfix">
-								<input type="text" class="input" value="'. __('Item') . ' 9" > 
+								<input type="text" class="input" value="'. __('Item', 'tainacan') . ' 9" > 
 							</div> 
 							<div class="dropdown-menu" style="">
 								<div class="dropdown-content">
 									<a class="dropdown-item is-hovered">
-										<span>'. __('Collection') . ' 3 <strong>'._('item') . ' 2</strong>9</span>
+										<span>'. __('Collection', 'tainacan') . ' 3 <strong>' . __('item', 'tainacan') . ' 2</strong>9</span>
 									</a>
 									<a class="dropdown-item">
-										<span>'. __('Collection') . ' 3 <strong>'._('item') . ' 4</strong>9</span>
+										<span>'. __('Collection', 'tainacan') . ' 3 <strong>' . __('item', 'tainacan') . ' 4</strong>9</span>
 									</a>
 									<a class="dropdown-item">
-										<span>'. __('Collection') . ' 3 <strong>'._('item') . ' 9</strong>8</span>
+										<span>'. __('Collection', 'tainacan') . ' 3 <strong>'. __('item', 'tainacan') . ' 9</strong>8</span>
 									</a>
 								</div>
 							</div>
@@ -275,14 +275,13 @@ class Relationship extends Metadata_Type {
 		$return = '';
 		$id = $item->get_id();
 		
-		if(!empty($display_metas) && is_array($display_metas) && count($display_metas) > 1) {
-			$has_thumbnail = array_search('thumbnail', $display_metas);
+		if ( !empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 ) {
+			$has_thumbnail = in_array('thumbnail', $display_metas);
 			$thumbnail_id = false;
-			if($has_thumbnail !== false) {
-				unset($display_metas[$has_thumbnail]);
+			if ( $has_thumbnail !== false ) {
 				$thumbnail_id = $item->get__thumbnail_id();
 			}
-			$args = ['post__in' => $display_metas];
+			$args = [ 'post__in' => array_filter($display_metas, function($meta) { return $meta !== 'thumbnail'; } ) ];
 			$metadatum = $item->get_metadata($args);
 
 			$metadata_value = [];

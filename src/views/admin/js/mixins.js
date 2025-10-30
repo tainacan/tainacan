@@ -159,13 +159,43 @@ export const formHooks = {
             }
         },
         checkFormConditionals(aForm) {
-            if (aForm['form']) {
-                if (aForm['conditional'] && aForm['conditional']['attribute'] && aForm['conditional']['value'])
-                    return (this.form && this.form[aForm['conditional']['attribute']] === aForm['conditional']['value'] ) ? aForm['form'] : '';
-                else
-                    return aForm['form'];
+            if ( !aForm['form'] ) 
+                return '';
+
+            // If the form does not have a 'conditional' attribute, return the form as is
+            if ( !aForm['conditional'] || !Object.keys(aForm['conditional']) || !Object.keys(aForm['conditional']).length )
+                return aForm['form'];
+            
+            // Legacy support for single conditional attribute
+            const singleConditionalAttribute = aForm['conditional']['attribute'];
+            const singleConditionalValue = aForm['conditional']['value'];
+            if ( singleConditionalAttribute && singleConditionalValue )
+                return (this.form && this.form[singleConditionalAttribute] === singleConditionalValue ) ? aForm['form'] : '';
+
+            // New support for multiple conditional attributes
+            const conditionalAttributes = Object.keys(aForm['conditional']);
+            for ( let attribute of conditionalAttributes ) {
+
+                // If the conditional attribute is not present or does not match, return empty string
+                if ( !this.form || !this.form[attribute] || this.form[attribute] !== aForm['conditional'][attribute] )    
+                    return '';
             }
-            return '';
+            return aForm['form'];
+        }
+    }
+};
+
+// Reports common chart mixin
+export const reportsChartMixin = {
+    props: {
+        chartData: {},
+        isFetchingData: false
+    },
+    data () {
+        return {
+           isBuildingChart: false,
+           chartSeries: [],
+           chartOptions: {}
         }
     }
 };

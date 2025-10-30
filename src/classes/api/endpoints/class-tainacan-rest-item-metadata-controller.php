@@ -2,10 +2,20 @@
 
 namespace Tainacan\API\EndPoints;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use \Tainacan\API\REST_Controller;
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
+/**
+ * REST API controller for managing Tainacan item metadata.
+ *
+ * Handles all REST API endpoints for item metadata operations including
+ * item metadata value creation, updates, deletion, and querying.
+ *
+ * @since 1.0.0
+ */
 class REST_Item_Metadata_Controller extends REST_Controller {
 	
 	private $metadatum;
@@ -330,12 +340,12 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 			$endpoint_args['values'] = [
 				'type'        => ['array', 'string', 'object', 'integer'],
 				'items'       => [ 'type' => ['array', 'string', 'object', 'integer'] ],
-				'description' => __('The value(s) of item metadata')
+				'description' => __('The value(s) of item metadata', 'tainacan')
 			];
 			$endpoint_args['parent_meta_id'] = [
 				'type'        => ['array', 'string', 'object', 'integer'],
 				'items'       => ['type' => ['string', 'integer'] ],
-				'description' => __('The parent meta ID for the item metadata children group')
+				'description' => __('The parent meta ID for the item metadata children group', 'tainacan')
 			];
 		} elseif ($method === \WP_REST_Server::DELETABLE) {
 			$endpoint_args['metadatum_id'] = [
@@ -359,7 +369,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 		$query_params['context'] = array(
 			'type'    	  => 'string',
 			'default' 	  => 'view',
-			'description' => 'The context in which the request is made.',
+			'description' => __('The context in which the request is made.', 'tainacan'),
 			'enum'    	  => array(
 				'view',
 				'edit'

@@ -2,8 +2,18 @@
 
 namespace Tainacan\API\EndPoints;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use \Tainacan\API\REST_Controller;
 
+/**
+ * REST API controller for managing Tainacan filter types.
+ *
+ * Handles all REST API endpoints for filter type operations including
+ * filter type registration, configuration, and management.
+ *
+ * @since 1.0.0
+ */
 class REST_Filter_Types_Controller extends REST_Controller {
 
 	/**

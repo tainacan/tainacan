@@ -2,7 +2,7 @@ const { __, sprintf } = wp.i18n;
 
 const { Icon, ToolbarDropdownMenu, ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Placeholder, ColorPalette, BaseControl, PanelBody } = wp.components;
 
-const { createInterpolateElement } = wp.element;
+const { createInterpolateElement, useEffect } = wp.element;
 
 const { InspectorControls, BlockControls, useBlockProps, store } = wp.blockEditor;
 
@@ -10,7 +10,7 @@ const { useSelect } = wp.data;
 
 import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
 import pick from 'lodash/pick';
-import DynamicItemsModal from '../carousel-items-list/dynamic-and-carousel-items-modal.js';
+import TainacanMultipleItemSelectionModal from '../../js/selection/tainacan-multiple-item-selection-modal.js';
 import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
@@ -180,15 +180,16 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
     }
 
     function setContent() {
-        isLoading = true;
-
-        setAttributes({
-            isLoading: isLoading
-        });
-
-        items = [];
         
         if (loadStrategy == 'parent') {
+
+            isLoading = true;
+
+            setAttributes({
+                isLoading: isLoading
+            });
+
+            items = [];
 
             if (layout !== 'mosaic') {
             
@@ -229,6 +230,14 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
             }
 
         } else if (loadStrategy == 'selection') {
+            
+            isLoading = true;
+
+            setAttributes({
+                isLoading: isLoading
+            });
+
+            items = [];
 
             if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
                 itemsRequestSource.cancel('Previous items search canceled.');
@@ -280,118 +289,123 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                     }
                         
                 });
-        } else {
+        } else if (searchURL) {
+            
+            isLoading = true;
 
-            if (searchURL) {
+            setAttributes({
+                isLoading: isLoading
+            });
 
-                if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
-                    itemsRequestSource.cancel('Previous items search canceled.');
+            items = [];
 
-                itemsRequestSource = axios.CancelToken.source();
-                
-                let endpoint = '/collection' + searchURL.split('#')[1].split('/collections')[1];
-                let query = endpoint.split('?')[1];
-                let queryObject = qs.parse(query);
+            if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
+                itemsRequestSource.cancel('Previous items search canceled.');
 
-                // Set up max items to be shown
-                if (maxItemsNumber != undefined && maxItemsNumber > 0)
-                    queryObject.perpage = maxItemsNumber;
-                else if (queryObject.perpage != undefined && queryObject.perpage > 0)
-                    setAttributes({ maxItemsNumber: Number(queryObject.perpage) });
-                else {
-                    queryObject.perpage = 12;
-                    setAttributes({ maxItemsNumber: 12 });
-                }
+            itemsRequestSource = axios.CancelToken.source();
+            
+            let endpoint = '/collection' + searchURL.split('#')[1].split('/collections')[1];
+            let query = endpoint.split('?')[1];
+            let queryObject = qs.parse(query);
 
-                // Set up sorting order
-                if (queryObject.order != '' && !showSearchBar)
-                    setAttributes({ order: queryObject.order });
-                else if (order != '')
-                    queryObject.order = order;
-                else {
-                    queryObject.order = 'asc';
-                    setAttributes({ order: 'asc' });
-                }
-                
-                // Set up sorting orderby
-                if (queryObject.orderby != '')
-                    setAttributes({ orderBy: queryObject.orderby });
-                else if (orderBy != 'date')
-                    queryObject.orderby = orderBy;
-                else {
-                    queryObject.orderby = 'date';
-                    setAttributes({ orderBy: 'date' });
-                }
-
-                // Set up sorting metakey (used by some orderby)
-                if (queryObject.metakey != '')
-                    setAttributes({ orderByMetaKey: queryObject.metakey });
-                else if (orderByMetaKey != '')
-                    queryObject.metakey = orderByMetaKey;
-                else {
-                    queryObject.metakey = '';
-                    setAttributes({ orderByMetaKey: '' });
-                }
-
-                // Set up search string
-                if (searchString != undefined)
-                    queryObject.search = searchString;
-                else if (queryObject.search != undefined)
-                    setAttributes({ searchString: queryObject.search });
-                else {
-                    delete queryObject.search;
-                    setAttributes({ searchString: undefined });
-                }
-
-                // Remove unecessary queries
-                delete queryObject.admin_view_mode;
-                delete queryObject.fetch_only_meta;
-                
-                endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
-                
-                tainacanApi.get(endpoint, { cancelToken: itemsRequestSource.token })
-                    .then(response => {
-                        
-                        if (layout !== 'mosaic') {
-                            
-                            for (let item of response.data.items)
-                                items.push(prepareItem(item));
-
-                            setAttributes({
-                                content: <div></div>,
-                                items: items,
-                                isLoading: false,
-                                itemsRequestSource: itemsRequestSource
-                            });
-
-                        } else {
-                            // Initializes some variables
-                            mosaicDensity = mosaicDensity ? Number(mosaicDensity) : 5;
-                            mosaicGridRows = mosaicGridRows ? Number(mosaicGridRows) : 3;
-                            mosaicGridColumns = mosaicGridColumns ? Number(mosaicGridColumns) : 3;
-                            mosaicHeight = mosaicHeight ? Number(mosaicHeight) : 280;
-                            mosaicItemFocalPoint = mosaicItemFocalPoint ? mosaicItemFocalPoint : { x: 0.5, y: 0.5 };
-                            sampleBackgroundImage = response.data.items && response.data.items[0] && response.data.items[0] ? getItemThumbnail(response.data.items[0], 'tainacan-medium') : ''; 
-
-                            const mosaicGroups = mosaicPartition(response.data.items);
-                            for (let mosaicGroup of mosaicGroups)
-                                items.push(prepareMosaicItem(mosaicGroup, mosaicGroups.length));
-
-                            setAttributes({
-                                content: <div></div>,
-                                items: items,
-                                isLoading: false,
-                                itemsRequestSource: itemsRequestSource,
-                                mosaicDensity: mosaicDensity,
-                                mosaicHeight: mosaicHeight,
-                                mosaicGridRows: mosaicGridRows,
-                                mosaicGridColumns: mosaicGridColumns,
-                                mosaicItemFocalPoint: mosaicItemFocalPoint,
-                                sampleBackgroundImage: sampleBackgroundImage
-                            });
-                        }
-                    });
+            // Set up max items to be shown
+            if (maxItemsNumber != undefined && maxItemsNumber > 0)
+                queryObject.perpage = maxItemsNumber;
+            else if (queryObject.perpage != undefined && queryObject.perpage > 0)
+                setAttributes({ maxItemsNumber: Number(queryObject.perpage) });
+            else {
+                queryObject.perpage = 12;
+                setAttributes({ maxItemsNumber: 12 });
             }
+
+            // Set up sorting order
+            if (queryObject.order != '' && !showSearchBar)
+                setAttributes({ order: queryObject.order });
+            else if (order != '')
+                queryObject.order = order;
+            else {
+                queryObject.order = 'asc';
+                setAttributes({ order: 'asc' });
+            }
+            
+            // Set up sorting orderby
+            if (queryObject.orderby != '')
+                setAttributes({ orderBy: queryObject.orderby });
+            else if (orderBy != 'date')
+                queryObject.orderby = orderBy;
+            else {
+                queryObject.orderby = 'date';
+                setAttributes({ orderBy: 'date' });
+            }
+
+            // Set up sorting metakey (used by some orderby)
+            if (queryObject.metakey != '')
+                setAttributes({ orderByMetaKey: queryObject.metakey });
+            else if (orderByMetaKey != '')
+                queryObject.metakey = orderByMetaKey;
+            else {
+                queryObject.metakey = '';
+                setAttributes({ orderByMetaKey: '' });
+            }
+
+            // Set up search string
+            if (searchString != undefined)
+                queryObject.search = searchString;
+            else if (queryObject.search != undefined)
+                setAttributes({ searchString: queryObject.search });
+            else {
+                delete queryObject.search;
+                setAttributes({ searchString: undefined });
+            }
+
+            // Remove unecessary queries
+            delete queryObject.admin_view_mode;
+            delete queryObject.fetch_only_meta;
+            
+            endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
+            
+            tainacanApi.get(endpoint, { cancelToken: itemsRequestSource.token })
+                .then(response => {
+                    
+                    if (layout !== 'mosaic') {
+                        
+                        for (let item of response.data.items)
+                            items.push(prepareItem(item));
+
+                        setAttributes({
+                            content: <div></div>,
+                            items: items,
+                            isLoading: false,
+                            itemsRequestSource: itemsRequestSource
+                        });
+
+                    } else {
+                        // Initializes some variables
+                        mosaicDensity = mosaicDensity ? Number(mosaicDensity) : 5;
+                        mosaicGridRows = mosaicGridRows ? Number(mosaicGridRows) : 3;
+                        mosaicGridColumns = mosaicGridColumns ? Number(mosaicGridColumns) : 3;
+                        mosaicHeight = mosaicHeight ? Number(mosaicHeight) : 280;
+                        mosaicItemFocalPoint = mosaicItemFocalPoint ? mosaicItemFocalPoint : { x: 0.5, y: 0.5 };
+                        sampleBackgroundImage = response.data.items && response.data.items[0] && response.data.items[0] ? getItemThumbnail(response.data.items[0], 'tainacan-medium') : ''; 
+
+                        const mosaicGroups = mosaicPartition(response.data.items);
+                        for (let mosaicGroup of mosaicGroups)
+                            items.push(prepareMosaicItem(mosaicGroup, mosaicGroups.length));
+
+                        setAttributes({
+                            content: <div></div>,
+                            items: items,
+                            isLoading: false,
+                            itemsRequestSource: itemsRequestSource,
+                            mosaicDensity: mosaicDensity,
+                            mosaicHeight: mosaicHeight,
+                            mosaicGridRows: mosaicGridRows,
+                            mosaicGridColumns: mosaicGridColumns,
+                            mosaicItemFocalPoint: mosaicItemFocalPoint,
+                            sampleBackgroundImage: sampleBackgroundImage
+                        });
+                    }
+                });
         }
     }
 
@@ -443,7 +457,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
         )
     }
 
-    function openDynamicItemsModal(aLoadStrategy) {
+    function openTainacanMultipleItemSelectionModal(aLoadStrategy) {
         loadStrategy = aLoadStrategy;
         isModalOpen = true;
         setAttributes( { 
@@ -539,6 +553,10 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
     // Executed only on the first load of page
     if(content && content.length && content[0].type)
         setContent();
+
+    useEffect(() => {
+        setContent();
+    }, []);
     
     return content == 'preview' ? 
         <div className={className}>
@@ -584,7 +602,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                             width="24px">
                                         <path d="M14,2V4H7v7.24A5.33,5.33,0,0,0,5.5,11a4.07,4.07,0,0,0-.5,0V4A2,2,0,0,1,7,2Zm7,10v8a2,2,0,0,1-2,2H12l1-1-2.41-2.41A5.56,5.56,0,0,0,11,16.53a5.48,5.48,0,0,0-2-4.24V8a2,2,0,0,1,2-2h4Zm-2.52,0L14,7.5V12ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1-.5-7,2.74,2.74,0,0,1,.5,0,3.41,3.41,0,0,1,1.5.34,3.5,3.5,0,0,1,2,3.16,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,0,0,5.5,15a1.39,1.39,0,0,0-.5.09A1.5,1.5,0,0,0,5.5,18a1.48,1.48,0,0,0,1.42-1A1.5,1.5,0,0,0,7,16.53Z"/>
                                     </svg>,
-                                onClick: openDynamicItemsModal,
+                                onClick: openTainacanMultipleItemSelectionModal,
                                 onClickParams: 'selection'
                             })
                             :
@@ -597,7 +615,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                             width="24px">
                                         <path d="M14,2V4H7v7.24A5.33,5.33,0,0,0,5.5,11a4.07,4.07,0,0,0-.5,0V4A2,2,0,0,1,7,2Zm7,10v8a2,2,0,0,1-2,2H12l1-1-2.41-2.41A5.56,5.56,0,0,0,11,16.53a5.48,5.48,0,0,0-2-4.24V8a2,2,0,0,1,2-2h4Zm-2.52,0L14,7.5V12ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1-.5-7,2.74,2.74,0,0,1,.5,0,3.41,3.41,0,0,1,1.5.34,3.5,3.5,0,0,1,2,3.16,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,0,0,5.5,15a1.39,1.39,0,0,0-.5.09A1.5,1.5,0,0,0,5.5,18a1.48,1.48,0,0,0,1.42-1A1.5,1.5,0,0,0,7,16.53Z"/>
                                     </svg>,
-                                onClick: openDynamicItemsModal,
+                                onClick: openTainacanMultipleItemSelectionModal,
                                 onClickParams: 'search'
                             })
                         ) : null
@@ -882,7 +900,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                 (
                 <div>
                     { isModalOpen ? 
-                        <DynamicItemsModal
+                        <TainacanMultipleItemSelectionModal
                             loadStrategy={ loadStrategy }
                             existingCollectionId={ collectionId } 
                             existingSearchURL={ searchURL } 
@@ -1068,10 +1086,12 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(
-                        <img
-                            width={148}
-                            src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                            alt="Tainacan Logo"/>
+                        <span style={{ display: 'inline-block', width: '148px' }}>
+                            <img
+                                style={{ width: '100%', height: 'auto' }}
+                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
+                                alt="Tainacan Logo"/>
+                        </span>
                     )}>
                     <p>
                     <svg
@@ -1089,14 +1109,14 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                 <Button
                                     isPrimary
                                     type="button"
-                                    onClick={ () => openDynamicItemsModal('selection') }>
+                                    onClick={ () => openTainacanMultipleItemSelectionModal('selection') }>
                                     {__('Select Items', 'tainacan')}
                                 </Button> 
                                 <p style={{ margin: '0 12px' }}>{__('or', 'tainacan')}</p>
                                 <Button
                                     isPrimary
                                     type="button"
-                                    onClick={ () => openDynamicItemsModal('search') }>
+                                    onClick={ () => openTainacanMultipleItemSelectionModal('search') }>
                                     {__('Configure a search', 'tainacan')}
                                 </Button>
                             </div>

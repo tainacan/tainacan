@@ -1,21 +1,20 @@
 <template>
     <div
-            :class="{ 'repository-level-page page-container': isRepositoryLevel }"
+            :class="{ 'tainacan-repository-level-colors page-container': isRepositoryLevel }"
             style="padding-bottom: 0;">
-        <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: $i18n.get('metadata') }]" />
+            
+        <tainacan-title :is-sticky="true" />
         
-        <template v-if="isRepositoryLevel">
-            <p>{{ $i18n.get('info_repository_metadata_inheritance') }}</p>
-            <br>
-        </template>
+        <p v-if="isRepositoryLevel">
+            {{ $i18n.get('info_repository_metadata_inheritance') }}
+        </p>
         
         <div class="metadata-list-page">
             <b-tabs 
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata') || (!isRepositoryLevel && collection && collection.current_user_can_edit_metadata))"
                     v-model="activeTab">    
                 <b-tab-item :label="isRepositoryLevel ? repositoryTabLabel : collectionTabLabel">
-                    <div class="columns">
+                    <div class="columns is-multiline">
 
                         <!-- Active Metadata and Sections Area -->
                         <repository-metadata-list
@@ -46,7 +45,7 @@
             <section 
                     v-else
                     class="section">
-                <div class="content has-text-grey has-text-centered">
+                <div class="content has-text-gray has-text-centered">
                     <p>
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-metadata" />
@@ -110,10 +109,6 @@ export default {
     created() {
         this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
     },
-    mounted() {
-        if (!this.isRepositoryLevel)
-            this.$emitter.emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('metadata') }]);
-    },
     methods: {
         ...mapGetters('metadata',[
             'getMetadatumTypes',
@@ -138,35 +133,6 @@ export default {
 
     .metadata-list-page {
         padding-bottom: 0;
-
-        .tainacan-page-title {
-            margin-bottom: 14px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-end;
-            justify-content: space-between;
-
-            h1, h2 {
-                font-size: 1.25em;
-                font-weight: 500;
-                color: var(--tainacan-heading-color);
-                display: inline-block;
-                width: 80%;
-                flex-shrink: 1;
-                flex-grow: 1;
-            }
-            a.back-link {
-                font-weight: 500;
-                float: right;
-                margin-top: 5px;
-            }
-            hr {
-                margin: 3px 0px 4px 0px; 
-                height: 1px;
-                background-color: var(--tainacan-secondary);
-                width: 100%;
-            }
-        }
                   
         .b-tabs .tab-content {
             overflow: visible;
@@ -192,7 +158,7 @@ export default {
                 margin-right: var(--tainacan-one-column);
                 flex-grow: 2;
 
-                @media screen and (max-width: 769px) {
+                @media screen and (max-width: 768px) {
                     margin-right: 0;
                 }
             }
@@ -214,7 +180,7 @@ export default {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.5em 1em 0.5em 2em;
+            padding: 0.5em 1em 0.5em 0em;
 
             .header-item {
                 margin-left: 0.75rem;
@@ -249,11 +215,8 @@ export default {
         .collapse-all {
             display: inline-flex;
             align-items: center;
-            margin-left: -0.5em;
+            margin-left: -0.875em;
             margin-right: auto;
-        }
-        .collapse-all__text {
-            font-size: 0.75em !important;
         }
         .loading-spinner {
             animation: spinAround 500ms infinite linear;
@@ -276,7 +239,7 @@ export default {
                 min-height: 220px;
             }
 
-            @media screen and (max-width: 769px) {
+            @media screen and (max-width: 768px) {
                 min-height: 45px;
                 margin: 0; 
                 padding-right: 0em;
@@ -291,7 +254,7 @@ export default {
 
             &.active-metadata-sections-area {
                 font-size: 0.875em;
-                margin-left: 1.5em;
+                margin-left: 1em;
                 padding-right: 1em;
                 min-height: 330px;
             }
@@ -312,7 +275,8 @@ export default {
                 }
                 
                 .handle {
-                    padding: 0.7em 6.9em 0.7em 0.9em;
+                    padding: 0.813em 6.9em 0.813em 0.9em;
+                    border-radius: var(--tainacan-button-border-radius, 0px);
                     white-space: nowrap;
                     display: flex;
                 }
@@ -369,15 +333,13 @@ export default {
                 .controls { 
                     font-size: 0.875em;
                     position: absolute;
-                    right: 10px;
-                    top: 10px;
-                    .switch {
-                        position: relative;
-                        bottom: 1px;
-                    }
+                    right: 11px;
+                    top: 11px;
+                    display: flex;
+                    align-items: center;
+    
                     .icon {
-                        bottom: 1px;   
-                        position: relative;
+                        width: 1.875em;
                         i, i:before { font-size: 1.25em; }
                     }
                 }
@@ -389,9 +351,9 @@ export default {
                     overflow: hidden;
                     border-top-right-radius: 0;
                     border-bottom-right-radius: 0;
-                    border-top-left-radius: 3px;
-                    border-bottom-left-radius: 3px;
-                    font-size: 0.875em;
+                    border-top-left-radius: var(--tainacan-button-border-radius, 3px);
+                    border-bottom-left-radius: var(--tainacan-button-border-radius, 3px);
+                    font-size: 0.938em;
                     left: 0em; 
                     top: 0px;
                     opacity: 0;
@@ -409,7 +371,7 @@ export default {
                 &:not(.not-sortable-item) .handle:hover >.sorting-buttons {
                     opacity: 1.0;
                     visibility: visible;
-                    left: -2em
+                    left: -1.062em
                 }
 
                 &.is-compact-item .metadatum-name {
@@ -497,9 +459,17 @@ export default {
                 }
             }
         }
+
+        @media screen and (max-width: 1023px) {
+            .sub-header,
+            .active-metadata-area.active-metadata-sections-area,
+            .active-metadata-sections-area.active-metadata-sections-area {
+                padding-right: 0;
+            }
+        }
     }
 
-    .repository-level-page {
+    .tainacan-repository-level-colors {
         .tainacan-form.sub-header {
             padding-left: 2.75em !important;
         }

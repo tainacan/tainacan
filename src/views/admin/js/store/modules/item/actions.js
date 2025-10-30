@@ -363,7 +363,7 @@ export const deleteGroupFromItemSubmissionMetadatum = ({ commit }, { metadatum_i
 export const submitItemSubmission = ({ commit }, { itemSubmission, itemSubmissionMetadata, captchaResponse }) => {
     return new Promise((resolve, reject) => {
 
-        let item = JSON.parse(JSON.stringify(itemSubmission)); // Use a copy as the next request will need document, attchment and thumbnail
+        let item = JSON.parse(JSON.stringify(itemSubmission)); // Use a copy as the next request will need document, attachment and thumbnail
 
         for (let key of Object.keys(item)) {
             if (['attachments', 'thumbnail'].includes(key) )

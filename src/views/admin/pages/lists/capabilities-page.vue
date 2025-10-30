@@ -1,15 +1,14 @@
 <template>
     <div 
             :class="{
-                'repository-level-page': isRepositoryLevel,
+                'tainacan-repository-level-colors': isRepositoryLevel,
                 'page-container': isRepositoryLevel
             }">
-        <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: $i18n.get('capabilities') }]" />
+        <tainacan-title :is-sticky="true" />
 
-        <div class="sub-header">
+        <div class="sub-header tainacan-sub-header--sticky">
             <b-field 
-                    style="margin-left: auto; margin-right: 0;"
+                    style="margin-left: 0; margin-right: auto;"
                     class="header-item">
                 <div class="control has-icons-right  is-small is-clearfix">
                     <b-autocomplete
@@ -28,7 +27,7 @@
         <div>
             <b-loading
                     v-model="isLoading" 
-                    :is-full-page="true" 
+                    :is-full-page="false" 
                     :can-cancel="false" />
 
             <capabilities-list
@@ -38,7 +37,7 @@
                         
             <template v-else-if="(isRepositoryLevel && !$userCaps.hasCapability('tnc_rep_edit_users')) || (!isRepositoryLevel && collection && !collection.current_user_can_edit_users)">
                 <section class="section">
-                    <div class="content has-text-grey has-text-centered">
+                    <div class="content has-text-gray has-text-centered">
                         <p>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-user" />
@@ -52,7 +51,7 @@
             <!-- Empty state -->
             <div v-if="capabilities.length <= 0 && !isLoading && $userCaps.hasCapability('tnc_rep_edit_users')">
                 <section class="section">
-                    <div class="content has-text-grey has-text-centered">
+                    <div class="content has-text-gray has-text-centered">
                         <p>
                             <span class="icon is-medium">
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-user" />
@@ -189,22 +188,8 @@
 </script>
 
 <style lang="scss" scoped>
-    @import '../../scss/_variables.scss';
 
     .sub-header {
-        position: sticky;
-        top: calc(-1 * var(--tainacan-container-padding));
-        z-index: 2;
-        background: var(--tainacan-background-color);
-        min-height: 2.5em;
-        padding: 0.5em 0;
-        height: auto;
-        border-bottom: 1px solid #ddd;
-        display: inline-flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        width: 100%;
 
         .header-item {
             margin-bottom: 0 !important;
@@ -259,11 +244,7 @@
             }
         }
 
-        @media screen and (max-width: 769px) {
-            height: 160px;
-            margin-top: -0.5em;
-            padding-top: 0.9em;
-
+        @media screen and (max-width: 768px) {
             .header-item:not(:last-child) {
                 padding-right: 0.2em;
             }

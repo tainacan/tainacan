@@ -3,8 +3,8 @@
 namespace Tainacan\Traits;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
-// used by Taxonomy
 
+// used by Taxonomy
 trait Entity_Collections_Relation {
 
 	public function get_collections_ids() {

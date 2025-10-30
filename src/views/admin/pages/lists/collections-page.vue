@@ -1,10 +1,19 @@
 <template>
-    <div class="repository-level-page page-container">
-        <b-loading v-model="isLoading" />
-        <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: $i18n.get('collections') }]" />
-        <div class="sub-header">
-            
+    <div class="page-container">
+        
+        <b-loading 
+                v-model="isLoading"
+                :is-full-page="false" />
+        
+        <tainacan-external-link 
+                :link-label="$i18n.get('label_view_collections_on_website')"
+                :link-url="repositoryCollectionsURL" />
+
+        <tainacan-title :is-sticky="true">
+            <h1>
+                {{ $route.meta.title }}
+            </h1>
+
             <!-- New Collection button -->
             <div 
                     v-if="!$adminOptions.hideCollectionsListCreationDropdown && $userCaps.hasCapability('tnc_rep_edit_collections')"
@@ -12,7 +21,9 @@
                 <b-dropdown
                         id="collection-creation-options-dropdown"
                         aria-role="list"
-                        trap-focus>
+                        :mobile-modal="true"
+                        trap-focus
+                        append-to-body>
                     <template #trigger>
                         <button class="button is-secondary">
                             <div>{{ $i18n.getFrom('collections', 'new_item') }}</div>
@@ -59,9 +70,29 @@
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
+        </tainacan-title>
+
+        <div class="sub-header tainacan-sub-header--sticky">
+          
+            <!-- Textual Search -------------->
+            <b-field 
+                    id="collection-page-search"
+                    class="header-item">
+                <b-input 
+                        v-model="searchQuery"
+                        :placeholder="$i18n.get('instruction_search')"
+                        type="search"
+                        size="is-small"
+                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('collections')"
+                        autocomplete="on"
+                        icon-right="magnify"
+                        icon-right-clickable
+                        @keyup.enter="searchCollections()"
+                        @icon-right-click="searchCollections()" />
+            </b-field>
 
             <!-- Collection Taxonomies, if available -->
-            <template v-if="!isLoadingCollectionTaxonomies && Object.values(collectionTaxonomies) && Object.values(collectionTaxonomies).length >= 0">
+            <template v-if="!isLoadingCollectionTaxonomies && Object.values(collectionTaxonomies) && Object.values(collectionTaxonomies).length > 0">
                 <b-field 
                         v-for="(collectionTaxonomy, taxonomyValue) in collectionTaxonomies"
                         :key="taxonomyValue"
@@ -89,7 +120,8 @@
                                     :key="index"
                                     class="control"
                                     custom
-                                    aria-role="listitem">
+                                    aria-role="listitem"
+                                    :class="{ 'is-active': collectionTaxonomyTerm.enabled }">
                                 <b-checkbox
                                         v-model="collectionTaxonomyTerm.enabled"
                                         :native-value="collectionTaxonomyTerm.enabled">
@@ -99,7 +131,7 @@
                         </div>
                         <div class="dropdown-item-apply">
                             <button 
-                                    aria-controls="items-list-results"
+                                    aria-controls="collections-list-results"
                                     class="button is-success"
                                     @click="onChangeCollectionTaxonomyTerms(taxonomyValue)">
                                 {{ $i18n.get('label_apply_changes') }}
@@ -113,15 +145,24 @@
             <b-field   
                     id="collections-page-author-filter"
                     class="header-item">
-                <label class="label">{{ $i18n.get('label_show_only_created_by_me') }}&nbsp;</label>
+                <label 
+                        id="author-filter-switch-label"
+                        v-tooltip="{
+                            content: $i18n.get('label_show_only_created_by_me'),
+                            autoHide: true,
+                            placement: 'auto',
+                            popperClass: ['tainacan-tooltip', 'tooltip']
+                        }"
+                        class="label">{{ $i18n.get('label_authored_by_me') }}&nbsp;</label>
                 <b-switch
                         v-model="authorFilter"
                         size="is-small"
                         class="author-filter-switch"
+                        aria-labelledby="author-filter-switch-label"
                         :disabled="collections.length <= 0 && isLoading"
                         :true-value="'current-author'"
                         :false-value="''"
-                        :label="$i18n.get('label_show_only_created_by_me')"
+                        :label="$i18n.get('label_authored_by_me')"
                         @update:model-value="onChangeAuthorFilter" />
                 
             </b-field>
@@ -130,90 +171,99 @@
             <b-field 
                     id="collections-page-sorting-options"
                     class="header-item">
-                <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
                 <b-dropdown
+                        ref="sortingDropdown" 
                         :mobile-modal="true"
-                        :disabled="collections.length <= 0 || isLoading"
+                        :multiple="false"
+                        class="show sorting-options-dropdown"
                         aria-role="list"
                         trap-focus
-                        @update:model-value="onChangeOrder">
+                        position="is-bottom-left"
+                        :close-on-click="false"
+                        :disabled="collections.length <= 0 || isLoading"
+                        @active-change="() => { newOrder = order; newOrderBy = orderBy; }">
                     <template #trigger>
                         <button
-                                :aria-label="$i18n.get('label_sorting_direction')"
+                                v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
+                                    content: $i18n.getWithVariables('info_sorting_%s_by_%s', [order == 'asc' ? $i18n.get('label_ascending') : $i18n.get('label_descending'), orderByName]),
+                                    autoHide: false,
+                                    html: true,
+                                    placement: 'auto-start',
+                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
+                                }"
+                                :aria-label="$i18n.get('label_sorting')"
                                 class="button is-white">
-                            <span 
-                                    style="margin-top: -2px;"
-                                    class="icon is-small gray-icon">
+                            <span class="is-small gray-icon">
                                 <i 
                                         :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
-                                        class="tainacan-icon tainacan-icon-1-125em" />
+                                        class="tainacan-icon" />
                             </span>
+                            &nbsp;
+                            <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_sorting') }}</span>
+                            <span class="is-hidden-widescreen">{{ $i18n.get('label_sort') }}</span>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
                     </template>
-                    <b-dropdown-item
-                            aria-controls="items-list-results"
-                            role="button"
-                            :class="{ 'is-active': order == 'desc' }"
-                            :value="'desc'"
-                            aria-role="listitem"
-                            style="padding-bottom: 0.45em">
-                        <span class="icon is-small gray-icon">
-                            <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortdescending" />
-                        </span>
-                        {{ $i18n.get('label_descending') }}
-                    </b-dropdown-item>
-                    <b-dropdown-item
-                            aria-controls="items-list-results"
-                            role="button"
-                            :class="{ 'is-active': order == 'asc' }"
-                            :value="'asc'"
-                            aria-role="listitem"
-                            style="padding-bottom: 0.45em">
-                        <span class="icon is-small gray-icon">
-                            <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortascending" />
-                        </span>
-                        {{ $i18n.get('label_ascending') }}
-                    </b-dropdown-item>
+                    <div class="sorting-options-container">
+                        <div class="sorting-options-container-direction">
+                            <b-dropdown-item
+                                    aria-controls="collections-list-results"
+                                    role="button"
+                                    :class="{ 'is-active': newOrder == 'desc' }"
+                                    :value="'desc'"
+                                    aria-role="listitem"
+                                    @click="newOrder = 'desc'">
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-sortdescending" />
+                                </span>
+                                <span>{{ $i18n.get('label_descending') }}</span>
+                            </b-dropdown-item>
+                            <b-dropdown-item
+                                    aria-controls="collections-list-results"
+                                    role="button"
+                                    :class="{ 'is-active': newOrder == 'asc' }"
+                                    :value="'asc'"
+                                    aria-role="listitem"
+                                    @click="newOrder = 'asc'">
+                                <span class="icon gray-icon">
+                                    <i class="tainacan-icon tainacan-icon-sortascending" />
+                                </span>
+                                <span>{{ $i18n.get('label_ascending') }}</span>
+                            </b-dropdown-item>
+                        </div>
+                        <div class="sorting-options-container-orderby">
+                            <template 
+                                    v-for="option in sortingOptions"
+                                    :key="option.value">
+                                <b-dropdown-item
+                                        aria-controls="collections-list-results"
+                                        role="button"
+                                        :class="{ 'is-active': newOrderBy == option.value }"
+                                        :value="option.value"
+                                        aria-role="listitem"
+                                        @click="newOrderBy = option.value">
+                                    {{ option.label }}
+                                </b-dropdown-item>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="dropdown-item-apply">
+                        <button 
+                                aria-controls="items-list-results"
+                                class="button is-success"
+                                @click="onChangeOrderAndOrderBy(newOrder, newOrderBy)">
+                            {{ $i18n.get('label_apply_changes') }}
+                        </button>
+                    </div>  
                 </b-dropdown>
-                <span
-                        class="label"
-                        style="padding-left: 0.65em;">
-                    {{ $i18n.get('info_by_inner') }}
-                </span>
-                <b-select
-                        class="sorting-select"
-                        :disabled="collections.length <= 0"
-                        :model-value="orderBy"
-                        :label="$i18n.get('label_sorting')"
-                        @update:model-value="onChangeOrderBy($event)">
-                    <option
-                            v-for="(option, index) in sortingOptions"
-                            :key="index"
-                            :value="option.value">
-                        {{ option.label }}
-                    </option>
-                </b-select>
             </b-field>
 
-            <!-- Textual Search -------------->
-            <b-field 
-                    id="collection-page-search"
-                    class="header-item">
-                <b-input 
-                        v-model="searchQuery"
-                        :placeholder="$i18n.get('instruction_search')"
-                        type="search"
-                        size="is-small"
-                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('collections')"
-                        autocomplete="on"
-                        icon-right="magnify"
-                        icon-right-clickable
-                        @keyup.enter="searchCollections()"
-                        @icon-right-click="searchCollections()" />
-            </b-field>
         </div>
 
         <div class="above-subheader">
@@ -228,7 +278,7 @@
                             }"
                             :class="{ 'is-active': status == undefined || status == '' || status == 'publish,private,pending,draft' }"
                             @click="onChangeTab('')">
-                        <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
+                        <a style="font-weight: bold;">
                             {{ `${$i18n.get('label_all_collections')}` }}
                             <span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalCollections ? `(${Number(repositoryTotalCollections.pending) + Number(repositoryTotalCollections.private) + Number(repositoryTotalCollections.publish)})` : '' }`}` }}</span>
                         </a>
@@ -273,7 +323,7 @@
                 <!-- Empty state image -->
                 <div v-if="collections.length <= 0 && !isLoading">
                     <section class="section">
-                        <div class="content has-text-grey has-text-centered">
+                        <div class="content has-text-gray has-text-centered">
                             <p>
                                 <span class="icon is-large">
                                     <i class="tainacan-icon tainacan-icon-30px tainacan-icon-collections" />
@@ -362,21 +412,16 @@
                         <b-field 
                                 horizontal 
                                 :label="$i18n.get('label_collections_per_page')"> 
-                            <b-select 
+                            <b-select
+                                    :aria-label="$i18n.get('label_collections_per_page')"
                                     :model-value="collectionsPerPage"
-                                    :disabled="collections.length <= 0" 
+                                    :disabled="collections.length <= 0 || collectionsPerPageOptions.length <= 1" 
                                     @update:model-value="onChangeCollectionsPerPage">
-                                <option value="12">
-                                    12
-                                </option>
-                                <option value="24">
-                                    24
-                                </option>
-                                <option value="48">
-                                    48
-                                </option>
-                                <option :value="maxCollectionsPerPage">
-                                    {{ maxCollectionsPerPage }}
+                                <option 
+                                        v-for="perPageOption of collectionsPerPageOptions"
+                                        :key="perPageOption"
+                                        :value="perPageOption">
+                                    {{ perPageOption }}
                                 </option>
                             </b-select>
                         </b-field>
@@ -422,6 +467,8 @@ export default {
             status: '',
             order: 'desc',
             orderBy: 'date',
+            newOrder: 'desc',
+            newOrderBy: 'date',
             searchQuery: '',
             authorFilter: '',
             sortingOptions: [
@@ -429,7 +476,8 @@ export default {
                 { label: this.$i18n.get('label_creation_date'), value: 'date' },
                 { label: this.$i18n.get('label_modification_date'), value: 'modified' }
             ],
-            maxCollectionsPerPage: tainacan_plugin.api_max_items_per_page ? Number(tainacan_plugin.api_max_items_per_page) : 96
+            maxCollectionsPerPage: tainacan_plugin.api_max_items_per_page ? Number(tainacan_plugin.api_max_items_per_page) : 96,
+            repositoryCollectionsURL: tainacan_plugin.theme_collection_list_url
         }
     },
     computed: {
@@ -443,6 +491,7 @@ export default {
             // Adds the 'enable' property to our local version of terms
             if ( Object.values(collectionTaxonomies).length ) {
                 Object.values(collectionTaxonomies).forEach(collectionTaxonomy => {
+                    collectionTaxonomy.terms = collectionTaxonomy.terms || [];
                     collectionTaxonomy.terms.forEach(aTerm => aTerm.enabled = false);
                 });
                 return collectionTaxonomies;
@@ -452,18 +501,45 @@ export default {
         },
         statusOptionsForCollections() {
             return this.$statusHelper.getStatuses().filter((status) => status.slug != 'draft' && (status.slug != 'private' || (status.slug == 'private' && this.$userCaps.hasCapability('tnc_rep_read_private_collections'))));
+        },
+        orderByName() {
+            const selectedOrderOption = this.sortingOptions.find( aOption => aOption.value == this.orderBy);
+            if ( selectedOrderOption )
+                return selectedOrderOption.label;
+
+            return this.orderBy;
+        },
+        collectionsPerPageOptions() {
+            const defaultCollectionsPerPageOptions = [];
+            
+            if ( 12 <= this.maxCollectionsPerPage )
+                defaultCollectionsPerPageOptions.push(12);
+            
+            if ( 24 <= this.maxCollectionsPerPage )
+                defaultCollectionsPerPageOptions.push(24);
+            
+            if ( 48 <= this.maxCollectionsPerPage )
+                defaultCollectionsPerPageOptions.push(48);
+            
+            if ( !defaultCollectionsPerPageOptions.includes(this.maxCollectionsPerPage) )
+                defaultCollectionsPerPageOptions.push(this.maxCollectionsPerPage);
+
+            if (!isNaN(this.collectionsPerPage) && !defaultCollectionsPerPageOptions.includes(this.collectionsPerPage))
+                defaultCollectionsPerPageOptions.push(Number(this.collectionsPerPage));
+            
+            return defaultCollectionsPerPageOptions.sort((a,b) => a - b);
         }
     },
     created() {
         this.collectionsPerPage = this.$userPrefs.get('collections_per_page');
 
         this.isLoadingCollectionTaxonomies = true;
-        this.fetchCollectionTaxonomies()
+        this.fetchCollectionTaxonomies({ termParent: 0, termPerPage: tainacan_plugin.api_max_items_per_page })
             .then(() => {
                 this.isLoadingCollectionTaxonomies = false;
             })
             .catch(() => {
-                this.isLoadingCollectionTaxonomies= false;
+                this.isLoadingCollectionTaxonomies = false;
             });
     }, 
     mounted() {
@@ -511,48 +587,46 @@ export default {
             'getCollectionTaxonomies'
         ]),
         onChangeTab(status) {
-            this.page = 1;
-            this.status = status;
-            this.loadCollections();
-        },
-        onChangeOrder(newOrder) {
-            if (newOrder != this.order) { 
-                this.$userPrefs.set('collections_order', newOrder)
-                    .catch(() => {
-                        this.$console.log("Error settings user prefs for collections order")
-                    });
-                this.order = newOrder;
+            if ( status != this.status ) {
+                this.page = 1;
+                this.status = status;
                 this.loadCollections();
             }
         },
-        onChangeOrderBy(newOrderBy) {
-            if (newOrderBy != this.orderBy) { 
-                this.$userPrefs.set('collections_order_by', newOrderBy)
-                    .then((newOrderBy) => {
-                        this.orderBy = newOrderBy;
-                    })
-                    .catch(() => {
-                        this.$console.log("Error settings user prefs for collections orderby")
-                    });
-            }
+        onChangeOrderAndOrderBy(newOrder, newOrderBy) {
+            this.$userPrefs.set('collections_order', newOrder)
+                .then((newOrder) => {
+                    this.order = newOrder;
+                })
+                .catch(() => {
+                    this.$console.log("Error settings user prefs for collections order")
+                });
+            this.$userPrefs.set('collections_order_by', newOrderBy)
+                .then((newOrderBy) => {
+                    this.orderBy = newOrderBy;
+                })
+                .catch(() => {
+                    this.$console.log("Error settings user prefs for collections orderby")
+                });
+            this.page = 1;
+            this.order = newOrder;
             this.orderBy = newOrderBy;
+            this.$refs['sortingDropdown'].toggle();
             this.loadCollections();
         },
         onChangeAuthorFilter(newAuthorFilter) {
-            if ( newAuthorFilter != this.authorFilter ) { 
-                this.$userPrefs.set('collections_author_filter', newAuthorFilter)
-                    .then((newAuthorFilter) => {
-                        this.authorFilter = newAuthorFilter;
-                    })
-                    .catch(() => {
-                        this.$console.log("Error settings user prefs for collections author filter")
-                    });
-            }
+            this.$userPrefs.set('collections_author_filter', newAuthorFilter)
+                .then((newAuthorFilter) => {
+                    this.authorFilter = newAuthorFilter;
+                })
+                .catch(() => {
+                    this.$console.log("Error settings user prefs for collections author filter")
+                });
+            this.page = 1;
             this.authorFilter = newAuthorFilter;
             this.loadCollections();
         },
         onChangeCollectionsPerPage(value) {
-            
             if (value != this.collectionsPerPage) {
                 this.$userPrefs.set('collections_per_page', value)
                     .then((newValue) => {
@@ -561,16 +635,16 @@ export default {
                     .catch(() => {
                         this.$console.log("Error settings user prefs for collection per page")
                     });
+                this.page = 1;
+                this.collectionsPerPage = value;
+                this.loadCollections();
             }
-            this.collectionsPerPage = value;
-            this.loadCollections();
         },
-        onPageChange(page) {
-            this.page = page;
+        onPageChange() {
             this.loadCollections();
         },
         onChangeCollectionTaxonomyTerms(taxonomyValue) {
-
+            this.page = 1;
             this.loadCollections();
 
             // Closes dropdown
@@ -589,7 +663,7 @@ export default {
                 orderby: this.orderBy,
                 search: this.searchQuery,
                 collectionTaxonomies: this.collectionTaxonomies,
-                authorid: this.authorFilter === 'current-author' && tainacan_plugin.user_data && tainacan_plugin.user_data.ID ? tainacan_plugin.user_data.ID : ''
+                authorid: this.authorFilter === 'current-author' && tainacan_user.data && tainacan_user.data.ID ? tainacan_user.data.ID : ''
             })
             .then((res) => {
                 this.isLoading = false;
@@ -606,22 +680,20 @@ export default {
         },
         onOpenImportersModal() {
             this.$buefy.modal.open({
-                parent: this,
                 component: AvailableImportersModal,
                 hasModalCard: true,
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             });
         },
         onOpenCollectionCreationModal() {
             this.$buefy.modal.open({
-                parent: this,
                 component: CollectionCreationModal,
                 hasModalCard: true,
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             });
         },
         searchCollections() {
@@ -634,19 +706,9 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import '../../scss/_variables.scss';
-
     .sub-header {
-        min-height: 2.5em;
-        padding: 0.5em 0;
-        height: auto;
-        border-bottom: 1px solid #ddd;
-        display: inline-flex;
-        justify-content: space-between;
-        align-items: center;
         flex-wrap: wrap;
-        width: 100%;
-        gap: 4px;
+        gap: 8px;
 
         .header-item {
             margin-bottom: 0 !important;
@@ -668,28 +730,16 @@ export default {
                 display: flex;
                 align-items: center;
             }
-
-            &:not(:first-child) {
-                .button {
-                    display: flex;
-                    align-items: center;
-                    height: 1.95em !important;
-                }
-            }
             
             .field {
                 align-items: center;
             }
 
-            .gray-icon,
-            .gray-icon .icon {
-                color: var(--tainacan-info-color) !important;
-                padding-right: 10px;
-                height: 1.125em !important;
-            }
             .gray-icon .icon i::before, 
             .gray-icon i::before {
-                max-width: 1.25em;
+                font-size: 1.3125em !important;
+                color: var(--tainacan-info-color) !important;
+                max-width: 1.25em;   
             }
 
             .icon {
@@ -700,18 +750,38 @@ export default {
                 font-size: 1.125em !important;
                 height: 1.75em
             }
-            .collections-page-author-filter {
-                display: flex;
-            }
             .dropdown-menu {
                 display: block;
 
                 div.dropdown-content {
                     padding: 0;
 
+                    .sorting-options-container,
                     .metadata-options-container {
                         max-height: 288px;
                         overflow: auto;
+                    }
+                    .sorting-options-container-direction {
+                        position: sticky;
+                        top: 0;
+                        display: flex;
+                        background-color: var(--tainacan-background-color);
+                        border-bottom: 1px solid var(--tainacan-input-border-color);
+                        padding: 8px 12px;
+                        z-index: 1;
+
+                        & > .dropdown-item {
+                            border: 1px solid var(--tainacan-primary);
+
+                            &:first-child {
+                                border-top-left-radius: var(--tainacan-button-border-radius);
+                                border-bottom-left-radius: var(--tainacan-button-border-radius);
+                            }
+                            &:last-child {
+                                border-top-right-radius: var(--tainacan-button-border-radius);
+                                border-bottom-right-radius: var(--tainacan-button-border-radius);
+                            }
+                        }
                     }
                     .dropdown-item {
                         padding: 0.25em 1.0em 0.25em 0.75em; 
@@ -722,7 +792,7 @@ export default {
                     .dropdown-item-apply {
                         width: 100%;
                         border-top: 1px solid var(--tainacan-skeleton-color);
-                        padding: 8px 12px;
+                        padding: 8px;
                         text-align: right;
                     }
                     .dropdown-item-apply .button {
@@ -732,7 +802,12 @@ export default {
             }
         }
 
-        @media screen and (max-width: 769px) {
+        #collections-page-author-filter {
+            display: flex;
+            align-items: center;
+        }
+
+        @media screen and (max-width: 768px) {
             margin-top: -0.5em;
             padding-top: 0.9em;
 
@@ -752,7 +827,7 @@ export default {
         margin-top: 0;
         height: auto;
     }
-    @media screen and (max-width: 769px) {
+    @media screen and (max-width: 768px) {
         .table-container {
             padding-left: 0;
             padding-right: 0;

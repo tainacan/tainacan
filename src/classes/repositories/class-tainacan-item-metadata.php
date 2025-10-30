@@ -2,27 +2,24 @@
 
 namespace Tainacan\Repositories;
 
-use Tainacan\Entities;
-
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-class Item_Metadata extends Repository {
+use Tainacan\Entities;
 
-	protected function __construct() {
-		parent::__construct();
-	}
+/**
+ * Repository for managing Tainacan item metadata.
+ *
+ * Handles all database operations for item metadata including creation,
+ * updates, deletion, and querying with proper validation and logging.
+ *
+ * @since 1.0.0
+ */
+class Item_Metadata extends Repository {
+	use \Tainacan\Traits\Singleton_Instance;
 
 	public $entities_type = '\Tainacan\Entities\Item_Metadata_Entity';
 
-	private static $instance = null;
-
-	public static function get_instance() {
-		if ( ! isset( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
+	protected function init() { }
 
 	/**
 	 * @param Entities\Item_Metadata_Entity $item_metadata
@@ -370,10 +367,16 @@ class Item_Metadata extends Repository {
 				return null;
 			}
 
-			$terms = wp_get_object_terms( $item_metadata->get_item()->get_id(), $taxonomy_slug );
+			// Using get_the_terms instead of wp_get_object_terms to take advantage of WP caching
+			$terms = get_the_terms( $item_metadata->get_item()->get_id(), $taxonomy_slug );
 
-			if( is_wp_error($terms) ) {
+			if ( is_wp_error($terms) ) {
 				return null;
+			}
+			
+			// Normalize false return value to empty array for consistency
+			if ( false === $terms ) {
+				$terms = [];
 			}
 			
 			if ( $unique ) {

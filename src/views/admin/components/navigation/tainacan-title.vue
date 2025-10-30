@@ -1,56 +1,11 @@
 <template>
-    <div class="tainacan-page-title">
+    <div 
+            class="tainacan-page-title"
+            :class="{ 'tainacan-page-title--sticky': isSticky }">
         <slot />
         <h1 v-if="!slotPassed">
             {{ pageTitle }} <span class="is-italic has-text-weight-semibold">{{ !isRepositoryLevel && collection && collection.name ? collection.name : '' }}</span>
         </h1>
-        <a 
-                class="back-link has-text-secondary"
-                @click="$router.go(-1)">
-            {{ $i18n.get('back') }}
-        </a>
-        <hr>
-
-        <nav 
-                v-if="isRepositoryLevel"
-                class="breadcrumbs">
-            <router-link :to="$routerHelper.getCollectionsPath()">
-                {{ $i18n.get('repository') }}
-            </router-link>
-            <template 
-                    v-for="(breadCrumbItem, index) of breadCrumbItems"
-                    :key="index">
-                <span>&nbsp;>&nbsp;</span>
-                <router-link    
-                        v-if="breadCrumbItem.path != ''"
-                        :to="breadCrumbItem.path">{{ breadCrumbItem.label }}</router-link>
-                <span v-else>{{ breadCrumbItem.label }}</span>
-            </template>   
-        </nav>
-        <nav 
-                v-else
-                class="breadcrumbs">
-            <router-link 
-                    :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link>
-            &nbsp;>&nbsp; 
-            <router-link  
-                    :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('collections') }}</router-link>
-            &nbsp;>&nbsp; 
-            <router-link  
-                    :to="{ path: collectionBreadCrumbItem.url, query: { fromBreadcrumb: true }}">{{ collectionBreadCrumbItem.name }}</router-link> 
-            <template 
-                    v-for="(childBreadCrumbItem, index) of childrenBreadCrumbItems"
-                    :key="index">
-                <span>&nbsp;>&nbsp;</span>
-                <router-link    
-                        v-if="childBreadCrumbItem.path != ''"
-                        :to="{ path: childBreadCrumbItem.path, query: index === $i18n.get('items') ? { fromBreadcrumb: true } : null }">
-                    {{ childBreadCrumbItem.label }}
-                </router-link>
-                <span v-else>{{ childBreadCrumbItem.label }}</span>
-            </template>
-        </nav>
-
     </div>
 </template>
 
@@ -61,14 +16,12 @@ import { useSlots } from 'vue';
 export default {
     name: 'TainacanTitle',
     props: {
-        breadCrumbItems: Array
+        isSticky: true
     },
     data() {
         return {
             isRepositoryLevel: true,
-            pageTitle: '',
-            activeRouteName: '',
-            childrenBreadCrumbItems: []
+            pageTitle: ''
         }
     },
     computed: {
@@ -79,108 +32,111 @@ export default {
             const slots = useSlots();
             return !!slots['default'];
         },
-        collectionBreadCrumbItem() {
-            return { 
-                url: this.collection && this.collection.id ? this.$routerHelper.getCollectionPath(this.collection.id) : '',
-                name: this.collection && this.collection.name ? this.collection.name : ''
-            };
-        }
     },
     watch: {
         '$route': {
             handler(to, from) {
-                if (to.path != from.path) {
+                if (!from || to.path != from.path) {
                     this.isRepositoryLevel = (to.params.collectionId == undefined);
+                    this.pageTitle = to.meta.title;
 
-                    this.activeRoute = to.name;
-                    this.pageTitle = this.$route.meta.title;
+                    if ( !this.isRepositoryLevel && this.collection && this.collection.name )
+                        this.$routerHelper.appendToPageTitle(this.collection.name);
                 }
             },
+            immediate: true,
             deep: true
+        },
+        'collection': {
+            handler() {
+                if ( !this.isRepositoryLevel && this.collection && this.collection.name )
+                    this.$routerHelper.appendToPageTitle(this.collection.name);
+            },
+            deep: true,
+            immediate: true,
         }
     },
-    created() {
-        this.isRepositoryLevel = (this.$route.params.collectionId == undefined);
+    mounted() {
+        // Set the initial title
+        this.pageTitle = this.$route.meta.title;
 
-        document.title = this.$route.meta.title;
-        this.pageTitle = document.title;
-
-        this.$emitter.on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
+        if ( !this.isRepositoryLevel && this.collection && this.collection.name )
+            this.$routerHelper.appendToPageTitle(this.collection.name);
     },
-    beforeUnmount() {
-        this.$emitter.on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
-    },
-    methods: {
-        collectionBreadCrumbUpdate(breadCrumbItems) {
-            this.childrenBreadCrumbItems = breadCrumbItems;
-        }
-    }
 }
 </script>
 
 <style lang="scss" scoped>
 
     .tainacan-page-title {
-        margin-bottom: 28px;
+        padding-top: calc(0.125rem + var(--tainacan-container-padding));
+        padding-bottom: 0.5rem;
+        margin-bottom: var(--tainacan-container-padding);
         display: flex;
         flex-wrap: wrap;
-        align-items: flex-end;
-        justify-content: space-between;
+        align-items: center;
+        gap: 0.75em 1.5em;
+        min-height: calc( 0.125rem + var(--tainacan-container-padding) + 0.5rem + var(--tainacan-button-min-height, 2.571em) );
+
+        &.tainacan-page-title--sticky {
+            margin-bottom: 0px;
+            z-index: 999;
+            position: sticky;
+            top: 0;
+            background-color: var(--tainacan-background-color);
+            container-type: scroll-state;
+
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background-color: var(--tainacan-input-border-color);
+                transition: background 0.2s ease;
+            }
+        }
+      
+        @media screen and (max-width: 768px) {
+            top: 206px;
+            margin-bottom: 0px !important;
+
+            :deep(h1),
+            :deep(h2) {
+                padding: 0 1.5rem;
+            }
+        }
 
         :deep(h1),
         :deep(h2) {
             font-size: 1.25em;
+            line-height: 1.25em;
             font-weight: 500;
             color: var(--tainacan-heading-color);
             display: inline-block;
-            width: 80%;
+            width: auto;
             flex-shrink: 1;
         }
-        a.back-link{
-            font-weight: 500;
-            float: right;
-            margin-top: 5px;
-        }
-        hr{
-            margin: 3px 0px 4px 0px; 
-            height: 1px;
-            background-color: var(--tainacan-secondary);
-            width: 100%;
-        }
-        .breadcrumbs {
-            font-size: 0.75em;
-            width: 100%;
-            a {
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
-                max-width: 75%;
-                margin: 0 0.1em;
-                display: inline-block;
-                vertical-align: bottom;
-            }
-        }
-        .level-left {
-            .level-item {
-                display: inline-block;
-                margin-left: 268px;
-            }  
-        }
-        @media screen and (max-width: 769px) {
-            .level-left {
-                margin-left: 0px !important;
-                .level-item {
-                    margin-left: 30px;
-                }
-            }
-            .level-right {
-                display: none;
-            }
+    }
 
-            top: 206px;
-            margin-bottom: 0px !important;
+    @media screen and (min-width: 769px) {
+        .tainacan-external-link + .tainacan-page-title--sticky {
+            padding-right: 200px;
         }
     }
+
+    @container scroll-state(stuck: top) {
+        .tainacan-page-title.tainacan-page-title--sticky::after {
+            background: var(--tainacan-input-border-color) !important;
+        }
+    }
+    @supports (container-type: scroll-state) {
+        .tainacan-page-title.tainacan-page-title--sticky::after {
+                background-color: var(--tainacan-background-color);
+        }
+    }
+
 </style>
 
 

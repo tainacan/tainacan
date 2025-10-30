@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 // Slugs and options for the Tainacan Blocks.
 const TAINACAN_BLOCKS = [
 	'items-list' => [],
@@ -10,7 +12,7 @@ const TAINACAN_BLOCKS = [
 	'carousel-items-list' => [ 'set_script_translations' => true ],
 	'carousel-terms-list' => [ 'set_script_translations' => true ],
 	'carousel-collections-list' => [ 'set_script_translations' => true ],
-	'related-items-list' => [],
+	'related-items-list' => [ 'render_callback' => 'tainacan_blocks_render_related_items_list', 'keep_inner_blocks' => true ],
 	'terms-list' => [],
 	'faceted-search' => [],
 	'item-submission-form' => [],
@@ -51,6 +53,12 @@ function tainacan_blocks_initialize() {
 	// The reason why we don't use admin_init here is because server side blocks
 	// need to be registered whithin the init
 	add_action( 'init', 'tainacan_blocks_register_and_enqueue_all_blocks', 11 );
+
+	// Adicionally, we also register the Tainacan react components that may be used by
+	// block editor scripts and plugin extenders
+	if ( is_admin() ) {
+		add_action( 'init', 'tainacan_blocks_register_react_components', 12 );
+	}
 }
 
 /** 
@@ -88,11 +96,12 @@ function tainacan_blocks_register_and_enqueue_all_blocks() {
 	 * Populates js variables here to avoid calling it for each block
 	 */
 	$block_settings = tainacan_blocks_get_plugin_js_settings();
+	$user_settings = \Tainacan\Admin::get_instance()->get_admin_js_user_data();
 	$plugin_settings = \Tainacan\Admin::get_instance()->get_admin_js_localization_params();
 
 	// May be needed outside the editor, if server side render is used
 	foreach(TAINACAN_BLOCKS as $block_slug => $block_options) {
-		tainacan_blocks_register_block($block_slug, $block_options, $block_settings, $plugin_settings);
+		tainacan_blocks_register_block($block_slug, $block_options, $block_settings, $user_settings, $plugin_settings);
 	}
 }
 
@@ -105,9 +114,10 @@ function tainacan_blocks_register_and_enqueue_all_blocks() {
  *     @type array		 $extra_editor_script_deps		Array of strings containing script dependencies of the editor side script
  *  }
  * @param array $block_settings JSON array containing the block settings from the server
+ * @param array $user_settings JSON array containing the user settings from the server
  * @param array $plugin_settings JSON array containing the plugin settings from the server
  */
-function tainacan_blocks_register_block($block_slug, $options = [], $block_settings = [], $plugin_settings = []) {
+function tainacan_blocks_register_block($block_slug, $options = [], $block_settings = [], $user_settings = [], $plugin_settings = []) {
 	global $TAINACAN_BASE_URL;
 	global $TAINACAN_VERSION;
 
@@ -129,8 +139,11 @@ function tainacan_blocks_register_block($block_slug, $options = [], $block_setti
 	// If there is a server side render callback, we add its render function
 	if ( isset($options['render_callback']) ) {
 		require_once( __DIR__ . '/blocks/' . $block_slug . '/save.php' );
+
 		$register_params['render_callback'] = $options['render_callback'];
-		$register_params['skip_inner_blocks'] = true;
+
+		if ( !isset($options['keep_inner_blocks']) || $options['keep_inner_blocks'] === false )
+			$register_params['skip_inner_blocks'] = true;
 
 	// Also, none of the rest is necessary regarding 
 	// blocks that are non server side, their content
@@ -158,12 +171,13 @@ function tainacan_blocks_register_block($block_slug, $options = [], $block_setti
 
 	// Passes global variables to the blocks editor side
 	wp_localize_script( $block_slug, 'tainacan_blocks', $block_settings);
+	wp_localize_script( $block_slug, 'tainacan_user', $user_settings);
 	wp_localize_script( $block_slug, 'tainacan_plugin', $plugin_settings);
 
 	// Registers style
 	wp_register_style(
 		$block_slug,
-		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-' . $block_slug . '.css',
+		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-' . ( $block_slug === 'items-gallery' ? 'item-gallery' : $block_slug ) . '.css',
 		array(),
 		$TAINACAN_VERSION
 	);
@@ -227,11 +241,15 @@ function tainacan_blocks_get_plugin_js_settings(){
 		'nonce'   	 => is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : false,
 		'base_url' 	 => $TAINACAN_BASE_URL,
 		'api_max_items_per_page'    => $TAINACAN_API_MAX_ITEMS_PER_PAGE,
-		'admin_url'  => admin_url(),
+		'admin_url'  => admin_url('admin.php'),
 		'site_url'	 => site_url(),
 		'theme_items_list_url' => esc_url_raw( get_site_url() ) . '/' . \Tainacan\Theme_Helper::get_instance()->get_items_list_slug(),
 		'collections_post_types' => $cpts,
 		'registered_view_modes' => \Tainacan\Theme_Helper::get_instance()->get_registered_view_modes(),
+		'enabled_view_modes' => \Tainacan\Theme_Helper::get_instance()->get_enabled_view_modes(),
+		'default_view_mode' => \Tainacan\Theme_Helper::get_instance()->get_default_view_mode(),
+		'default_order' => \Tainacan\Theme_Helper::get_instance()->get_default_order(),
+		'default_orderby' => \Tainacan\Theme_Helper::get_instance()->get_default_orderby()
 	];
 	
 	return $settings;
@@ -244,34 +262,42 @@ function tainacan_blocks_add_common_theme_scripts() {
 	global $TAINACAN_BASE_URL;
 	global $TAINACAN_VERSION;
 
+	wp_enqueue_script('underscore');
+
 	wp_enqueue_script(
 		'tainacan-blocks-common-scripts',
 		$TAINACAN_BASE_URL . '/assets/js/tainacan_blocks_common_scripts.js',
-		array('wp-i18n'),
+		array('wp-i18n', 'underscore'),
 		$TAINACAN_VERSION
 	);
 
 	wp_set_script_translations( 'tainacan-blocks-common-scripts', 'tainacan' );
 
 	$block_settings = tainacan_blocks_get_plugin_js_settings();
+	$user_settings = \Tainacan\Admin::get_instance()->get_admin_js_user_data();
 	$plugin_settings = \Tainacan\Admin::get_instance()->get_admin_js_localization_params();
 
 	wp_localize_script( 'tainacan-blocks-common-scripts', 'tainacan_blocks', $block_settings);
+	wp_localize_script( 'tainacan-blocks-common-scripts', 'tainacan_user', $user_settings);
 	wp_localize_script( 'tainacan-blocks-common-scripts', 'tainacan_plugin', $plugin_settings);
 
-	// Necessary do this only when the item submission block is present
-	function tainacan_enqueue_extra_item_submission_assets() {
-		if ( has_block( 'tainacan/item-submission-form', get_the_ID() ) )
+	// Hook into block rendering to detect and immediately enqueue extra assets
+	add_filter('render_block', function($block_content, $block) {
+		if ($block['blockName'] === 'tainacan/faceted-search') {
+			tainacan_blocks_add_extra_faceted_search_assets();
+		} else if ($block['blockName'] === 'tainacan/item-submission-form') {
 			tainacan_blocks_add_extra_item_submission_assets();
-	}
-	add_action('wp', 'tainacan_enqueue_extra_item_submission_assets');
+		}
+		return $block_content;
+	}, 10, 2);
 }
 
 /** 
  * Registers the extra scripts necessary for item submission block
  */
 function tainacan_blocks_add_extra_item_submission_assets() {
-	
+	global $TAINACAN_BASE_URL;
+
 	// Registers extra script for Google ReCAPTCHA
 	wp_register_script(
 		'tainacan-google-recaptcha-script',
@@ -279,12 +305,21 @@ function tainacan_blocks_add_extra_item_submission_assets() {
 		[], false, true 
 	);
 	
-	wp_enqueue_script('tainacan-google-recaptcha-script');
-
+	wp_enqueue_script('tainacan-google-recaptcha-script');	
+	wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/tainacanicons.css', [], TAINACAN_VERSION );
+		
 	// Registers extra metadata type forms
 	$theme_helper = \Tainacan\Metadata_Types\Metadata_Type_Helper::get_instance();
 	if (isset($theme_helper))
 		$theme_helper->register_metadata_type_component();
+}
+
+/** 
+ * Registers the extra styles necessary for faceted search block
+ */
+function tainacan_blocks_add_extra_faceted_search_assets() {
+	global $TAINACAN_BASE_URL;
+	wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/tainacanicons.css', [], TAINACAN_VERSION );
 }
 
 /** 
@@ -320,3 +355,42 @@ function tainacan_blocks_get_variations_script() {
 	wp_localize_script( 'tainacan-blocks-query-variations', 'tainacan_blocks', $block_settings );
 }
 
+/**
+ * Registers Tainacan react components that may be used by either block editor
+ * scripts or plugin extenders.
+ */
+function tainacan_blocks_register_react_components() {
+	global $TAINACAN_BASE_URL;
+	global $TAINACAN_VERSION;
+
+	$dependencies = array( 'wp-element', 'wp-components', 'wp-i18n' );
+
+	wp_register_script(
+        'tainacan-multiple-item-selection-modal',
+        $TAINACAN_BASE_URL . '/assets/js/tainacan_multiple_item_selection_modal.js',
+        $dependencies,
+        $TAINACAN_VERSION,
+        true
+    );
+	wp_register_script(
+        'tainacan-single-item-selection-modal',
+        $TAINACAN_BASE_URL . '/assets/js/tainacan_single_item_selection_modal.js',
+        $dependencies,
+        $TAINACAN_VERSION,
+        true
+    );
+	wp_register_script(
+        'tainacan-single-item-metadatum-selection-modal',
+        $TAINACAN_BASE_URL . '/assets/js/tainacan_single_item_metadatum_selection_modal.js',
+        $dependencies,
+        $TAINACAN_VERSION,
+        true
+    );
+	wp_register_script(
+        'tainacan-single-item-metadata-section-selection-modal',
+        $TAINACAN_BASE_URL . '/assets/js/tainacan_single_item_metadata_section_selection_modal.js',
+        $dependencies,
+        $TAINACAN_VERSION,
+        true
+    );
+}

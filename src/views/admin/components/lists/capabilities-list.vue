@@ -37,7 +37,8 @@
                         <td
                                 class="column-default-width column-main-content"
                                 :label="$i18n.get('label_name')"
-                                :aria-label="$i18n.get('label_name') + ': ' + capability.display_name">
+                                :aria-label="$i18n.get('label_name') + ': ' + capability.display_name"
+                                @click="openCapabilitiyEditModal(index)">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -56,7 +57,8 @@
                         <td
                                 class="table-creation column-large-width"
                                 :label="$i18n.get('label_description')"
-                                :aria-label="$i18n.get('label_description') + ': ' + capability.description">
+                                :aria-label="$i18n.get('label_description') + ': ' + capability.description"
+                                @click="openCapabilitiyEditModal(index)">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -78,7 +80,8 @@
                                 <td
                                         class="table-creation column-small-width"
                                         :label="$i18n.get('label_associated_roles')"
-                                        :aria-label="$i18n.get('label_associated_roles') + ': ' + props['complete-roles-list']">
+                                        :aria-label="$i18n.get('label_associated_roles') + ': ' + props['complete-roles-list']"
+                                        @click="openCapabilitiyEditModal(index)">
                                     <p
                                             v-tooltip="{
                                                 delay: {
@@ -145,7 +148,6 @@
         methods: {
             openCapabilitiyEditModal(capabilityKey) {
                 this.$buefy.modal.open({
-                    parent: this,
                     component: CapabilityEditionModal,
                     props: {
                         capability: this.capabilities[capabilityKey],
@@ -153,7 +155,7 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
+                    canCancel: ['escape', 'outside']
                 });
             },
             getCompleteRolesList(roles, rolesInherited) {
@@ -186,10 +188,14 @@
 
 <style scoped lang="scss">
 
-@import "../../scss/_tables.scss";
+    @import "../../scss/_tables.scss";
 
-.table-container .table-wrapper table.tainacan-table tbody tr {
-    cursor: default;
-}
+    .table-container {
+        padding-bottom: var(--tainacan-container-padding);
+        
+        .table-wrapper table.tainacan-table tbody tr {
+            cursor: default;
+        }
+    }
 
 </style>

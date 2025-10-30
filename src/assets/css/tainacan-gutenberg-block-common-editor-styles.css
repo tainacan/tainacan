@@ -85,7 +85,7 @@
 .wp-block-tainacan-modal.dynamic-modal .modal-footer-area {
   height: 68px;
   width: 100%;
-  border-top: 1px solid var(--tainacan-block-gray3, #a5a5a5);
+  border-top: 1px solid var(--tainacan-block-gray2, #dbdbdb);
   padding: 15px 32px;
 }
 .wp-block-tainacan-modal.dynamic-modal .components-modal__content {
@@ -97,6 +97,7 @@
 }
 .wp-block-tainacan-modal.dynamic-modal .components-modal__content .components-modal__header + div {
   height: 100%;
+  line-height: 0;
 }
 .wp-block-tainacan-modal .spinner-container {
   min-height: 56px;
@@ -134,7 +135,7 @@
   margin-bottom: 6px;
 }
 .wp-block-tainacan-modal .modal-search-area .components-base-control {
-  width: 60%;
+  width: 75%;
 }
 @media only screen and (max-width: 1024px) {
   .wp-block-tainacan-modal .modal-search-area .components-base-control {
@@ -150,16 +151,6 @@
 }
 .wp-block-tainacan-modal .modal-search-area .components-base-control .components-base-control__field .components-select-control {
   width: 100%;
-}
-.wp-block-tainacan-modal .modal-search-area .components-base-control label.components-base-control__label {
-  font-weight: 500;
-  color: var(--tainacan-block-gray5, #373839);
-  font-size: 1em;
-  text-align: center;
-}
-.wp-block-tainacan-modal .modal-search-area .components-base-control input.components-text-control__input {
-  padding: 5px 8px;
-  height: 28px;
 }
 .wp-block-tainacan-modal .modal-radio-area-label {
   font-weight: 500;
@@ -231,8 +222,7 @@
 }
 .wp-block-tainacan-modal .modal-loadmore-section p {
   color: var(--tainacan-block-gray4, #505253);
-  margin-right: 12px;
-  margin-top: 2px;
+  margin: 4px 11px;
 }
 .wp-block-tainacan-modal .modal-footer-area {
   border-top: 1px solid #e2e4e7;

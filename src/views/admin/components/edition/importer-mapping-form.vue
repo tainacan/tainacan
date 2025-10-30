@@ -1,26 +1,15 @@
 <template>
-    <div 
-            class="repository-level-page page-container">
-        <div class="tainacan-page-title">
-            <h1>{{ $i18n.get('label_metadata_mapping') }} </h1>
-            <a 
-                    class="back-link has-text-secondary"
-                    @click="$router.go(-1)">
-                {{ $i18n.get('back') }}
-            </a>
-            <hr>
-            <nav class="breadcrumbs">
-                <router-link 
-                        :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
-                <router-link  
-                        :to="$routerHelper.getAvailableImportersPath()">{{ $i18n.get('importers') }}</router-link> > 
-                <router-link 
-                        :to="$routerHelper.getImporterPath(importerType, sessionId)">{{ importerType != undefined ? (importerName != undefined ? importerName :importerType) : $i18n.get('title_importer_page') }}</router-link> >
-                <router-link 
-                        :to="$routerHelper.getImporterMappingPath(importerType, sessionId, collectionId)">{{ $i18n.get('label_metadata_mapping') }}</router-link> 
-            </nav>
-
-        </div>
+    <div class="tainacan-repository-level-colors page-container">
+        <tainacan-title :is-sticky="true">
+            <h1>
+                {{ $i18n.get('title_importer_mapping_page') }} 
+                <span 
+                        v-if="importerName"
+                        class="is-italic has-text-weight-semibold">
+                    {{ importerName }}
+                </span>
+            </h1>
+        </tainacan-title>
 
         <b-loading 
                 v-model="isLoading" 
@@ -28,7 +17,7 @@
 
         <form 
                 v-if="importer != undefined && importer != null" 
-                class="tainacan-form"
+                class="tainacan-form tainacan-importer-mapping-form"
                 label-width="120px">
             <p>{{ $i18n.get('info_metadata_mapping_helper') }}</p>
             <br>
@@ -191,64 +180,6 @@
                     {{ $i18n.get('info_no_special_fields_available') }}<br>
                 </p>
                 
-                <b-modal 
-                        v-model="isNewMetadatumModalActive"
-                        trap-focus
-                        aria-modal
-                        aria-role="dialog"
-                        :close-button-aria-label="$i18n.get('close')"
-                        custom-class="tainacan-modal"
-                        @close="onMetadatumEditionCanceled()">
-                    <div 
-                            v-if="selectedMetadatumType == undefined && !isEditingMetadatum"
-                            autofocus="true"
-                            tabindex="-1"
-                            role="dialog"
-                            aria-modal>
-                        <b-loading 
-                                v-model="isLoadingMetadatumTypes" 
-                                :is-full-page="false" />
-                        <div 
-                                
-                                class="tainacan-modal-content">
-                            <div class="tainacan-modal-title">
-                                <h2>{{ $i18n.get('instruction_select_metadatum_type') }}</h2>
-                                <hr>
-                            </div>
-                            <section class="tainacan-form">
-                                <div class="metadata-types-container">
-                                    <div
-                                            v-for="(metadatumType, index) of metadatumTypes"
-                                            :key="index"
-                                            class="metadata-type"
-                                            @click="onSelectMetadatumType(metadatumType)">
-                                        <h4>{{ metadatumType.name }}</h4>
-                                    </div>
-                                </div>
-                                <div class="field is-grouped form-submit">
-                                    <div class="control">
-                                        <button
-                                                id="button-cancel-importer-edition"
-                                                class="button is-outlined"
-                                                type="button"
-                                                @click="onMetadatumEditionCanceled(); isNewMetadatumModalActive = false">
-                                            {{ $i18n.get('cancel') }}</button>
-                                    </div>
-                                </div>
-                            </section>
-                        </div>
-                    </div>
-                    
-                    <metadatum-edition-form
-                            v-if="selectedMetadatumType && isEditingMetadatum"
-                            :collection-id="collectionId"
-                            :is-repository-level="false"
-                            :index="0"
-                            :original-metadatum="metadatum"
-                            :is-inside-importer-flow="true"
-                            @on-edition-finished="onMetadatumEditionFinished()"
-                            @on-edition-canceled="onMetadatumEditionCanceled()" />
-                </b-modal>
             </div>
             <div 
                     v-if="importerSourceInfo == undefined || 
@@ -279,6 +210,75 @@
             </div>
         </form>
 
+        <b-modal 
+                v-if="selectedMetadatumType == undefined && !isEditingMetadatum"
+                v-model="isNewMetadatumModalActive"
+                trap-focus
+                aria-modal
+                aria-role="dialog"
+                width="420px"
+                :can-cancel="['escape', 'outside']"
+                custom-class="tainacan-modal"
+                @close="onMetadatumEditionCanceled()">
+            <div 
+                    autofocus="true"
+                    tabindex="-1"
+                    role="dialog"
+                    aria-modal>
+                <b-loading 
+                        v-model="isLoadingMetadatumTypes" 
+                        :is-full-page="false" />
+                <div 
+                        
+                        class="tainacan-modal-content">
+                    <div class="tainacan-modal-title tainacan-page-title tainacan-page-title--sticky">
+                        <h2>{{ $i18n.get('instruction_select_metadatum_type') }}</h2>
+                    </div>
+                    <section class="tainacan-form">
+                        <div class="metadata-types-container">
+                            <div
+                                    v-for="(metadatumType, index) of metadatumTypes"
+                                    :key="index"
+                                    class="metadata-type"
+                                    @click="onSelectMetadatumType(metadatumType)">
+                                <h4>{{ metadatumType.name }}</h4>
+                            </div>
+                        </div>
+                        <div class="field is-grouped form-submit">
+                            <div class="control">
+                                <button
+                                        id="button-cancel-importer-edition"
+                                        class="button is-outlined"
+                                        type="button"
+                                        @click="onMetadatumEditionCanceled(); isNewMetadatumModalActive = false">
+                                    {{ $i18n.get('cancel') }}</button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </b-modal>
+
+        <b-modal 
+                v-if="selectedMetadatumType && isEditingMetadatum"
+                v-model="isNewMetadatumModalActive"
+                trap-focus
+                aria-modal
+                aria-role="dialog"
+                width="860px"
+                :can-cancel="['escape', 'outside']"
+                custom-class="tainacan-modal"
+                @close="onMetadatumEditionCanceled()">
+            <metadatum-edition-form
+                    :collection-id="collectionId"
+                    :is-repository-level="false"
+                    :index="0"
+                    :original-metadatum="metadatum"
+                    :is-inside-importer-flow="true"
+                    @on-edition-finished="onMetadatumEditionFinished()"
+                    @on-edition-canceled="onMetadatumEditionCanceled()" />
+        </b-modal>
+
         <!-- Prompt to show title -->
         <b-modal 
                 v-if="importerSourceInfo"
@@ -287,16 +287,14 @@
                 :width="820"
                 scroll="keep"
                 trap-focus
-                :close-button-aria-label="$i18n.get('close')"
                 autofocus
                 role="dialog"
                 tabindex="-1"
                 aria-modal
                 custom-class="tainacan-modal">
             <form class="tainacan-modal-content tainacan-form">
-                <div class="tainacan-modal-title">
+                <div class="tainacan-modal-title tainacan-page-title">
                     <h2>{{ $i18n.get('instruction_select_title_mapping') }}</h2>
-                    <hr>
                 </div>
                 <div class="columns">
                     <div class="column">
@@ -414,7 +412,7 @@ export default {
         }
     },
     created() {
-        this.importerType = this.$route.params.importerType;
+        this.importerType = this.$route.params.importerSlug;
         this.sessionId = this.$route.params.sessionId;
         this.collectionId = this.$route.params.collectionId;
         this.mappedCollection['id'] = this.collectionId;
@@ -423,6 +421,20 @@ export default {
         this.fetchAvailableImporters().then((importerTypes) => {
            if (importerTypes[this.importerType]) 
             this.importerName = importerTypes[this.importerType].name;
+            this.$routerHelper.appendToPageTitle(this.importerName);
+            wp.hooks.doAction(
+                'tainacan_navigation_path_updated', 
+                { 
+                    currentRoute: this.$route,
+                    adminOptions: this.$adminOptions,
+                    parentEntity: {
+                        rootLink: 'importers',
+                        name: this.importerName,
+                        defaultLink: `importers/${this.importerType}/edit`,
+                        label: this.$i18n.get('importers')
+                    }
+                }
+            );
         });
 
         this.loadImporter();
@@ -632,7 +644,7 @@ export default {
                 .then(backgroundProcess => {
                     this.backgroundProcess = backgroundProcess;
                     this.isLoadingRun = false;
-                    this.$router.push(this.$routerHelper.getProcessesPage());
+                    this.$router.push(this.$routerHelper.getProcessesPath());
                 })
                 .catch((errors) => {
                     this.isLoadingRun = false;
@@ -788,81 +800,34 @@ export default {
 
 <style lang="scss" scoped>
 
-    .tainacan-page-title {
-        margin-bottom: 38px;
-
-        h1, h2 {
-            font-size: 1.25em;
-            font-weight: 500;
-            color: var(--tainacan-blue5);
-            display: inline-block;
-        }
-        a.back-link{
-            font-weight: 500;
-            float: right;
-            margin-top: 5px;
-        }
-        hr{
-            margin: 3px 0px 4px 0px; 
-            height: 1px;
-            background-color: var(--tainacan-secondary);
-        }
-        .breadcrumbs {
-            font-size: 0.75em;
-        }
-        .level-left {
-            .level-item {
-                display: inline-block;
-                margin-left: 268px;
-            }  
-        }
-        @media screen and (max-width: 769px) {
-            .level-left {
-                margin-left: 0px !important;
-                .level-item {
-                    margin-left: 30px;
-                }
-            }
-            .level-right {
-                display: none;
-            }
-
-            top: 206px;
-            margin-bottom: 0px !important;
-        }
-    }
-
-    .page-container {
-        padding-bottom: 0;
-    }
-
     .field {
         position: relative;
     }
 
-    .tainacan-form {
+    .tainacan-importer-mapping-form {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         min-height: 247px;
-    }
+        padding-top: var(--tainacan-container-padding);
 
-    .form-submit {
-        margin-top: 24px;
-        position: sticky !important;
-        bottom: 0;
-        background: var(--tainacan-background-color, white);
-        z-index: 9;
-        padding: 12px;
-        border-top: 1px solid  var(--tainacan-gray3);
-        box-shadow: 0 -5px 12px -14px var(--tainacan-gray5);
-    }
+        .form-submit {
+            margin-top: 24px;
+            position: sticky !important;
+            bottom: 0;
+            background: var(--tainacan-background-color, white);
+            z-index: 9;
+            padding: 12px;
+            border-top: 1px solid  var(--tainacan-gray3);
+            box-shadow: 0 -5px 12px -14px var(--tainacan-gray5);
+        }
 
-    .section-label {
-        font-size: 1em !important;
-        font-weight: 500 !important;
-        color: var(--tainacan-blue5) !important;
-        line-height: 1.2em;
+        .section-label {
+            font-size: 1em !important;
+            font-weight: 500 !important;
+            color: var(--tainacan-blue5) !important;
+            line-height: 1.2em;
+        }
     }
 
     .source-metadatum {
@@ -882,7 +847,7 @@ export default {
             height: 1px;
             width: 100%;
             background-color: var(--tainacan-gray2);
-            z-index: -1;
+            z-index: 0;
         }
         &>p {
             font-weight: normal;
@@ -891,6 +856,7 @@ export default {
             overflow: hidden;
             word-wrap: break-word;
             background-color: var(--tainacan-background-color, white);
+            z-index: 1;
         }
         .control {
             max-width: 60%;

@@ -30,6 +30,10 @@
                     {{ option.name }}
                 </option>
             </b-select>
+            <p 
+                    v-if="$userCaps.hasCapability('tnc_rep_edit_taxonomies')"
+                    class="help" 
+                    v-html="$i18n.getWithVariables( 'info_manage_taxonomies', [ $routerHelper.getAbsoluteAdminPath() + $routerHelper.getTaxonomiesPath() ] )" />
         </b-field>
 
         <b-field :addons="false">

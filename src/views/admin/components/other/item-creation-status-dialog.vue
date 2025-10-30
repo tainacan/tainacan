@@ -86,7 +86,11 @@
         ],
         data() {
             return {
-                selectedStatus: this.currentUserCanPublish ? ( !this.$adminOptions.hideItemEditionStatusPublishOption ? 'publish' : 'private' ) : 'draft'
+                selectedStatus: this.currentUserCanPublish ?
+                    ( !this.$adminOptions.hideItemEditionStatusPublishOption ?
+                        'publish' : (
+                            !this.$adminOptions.hideItemEditionStatusPrivateOption ? 'private' : ( !this.$adminOptions.hideItemEditionStatusPendingOption ? 'pending' : 'draft' )
+                        ) ) : 'draft'
             }
         },
         computed: {
@@ -95,6 +99,7 @@
                     if (    
                         status.slug != 'trash' &&
                         ( ( this.currentUserCanPublish && !this.$adminOptions.hideItemEditionStatusPublishOption ) || status.slug != 'publish' ) &&
+                        ( ( this.currentUserCanPublish && !this.$adminOptions.hideItemEditionStatusPrivateOption ) || status.slug != 'private' ) &&
                         ( ( !this.$adminOptions.hideItemEditionStatusPendingOption ) || status.slug != 'pending' )
                     )
                         return true;

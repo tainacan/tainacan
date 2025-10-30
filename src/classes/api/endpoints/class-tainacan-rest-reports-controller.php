@@ -2,10 +2,20 @@
 
 namespace Tainacan\API\EndPoints;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use \Tainacan\API\REST_Controller;
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
+/**
+ * REST API controller for managing Tainacan reports.
+ *
+ * Handles all REST API endpoints for report operations including
+ * report generation, data analysis, and statistical reporting.
+ *
+ * @since 1.0.0
+ */
 class REST_Reports_Controller extends REST_Controller {
 
 	private $taxonomy_repository;

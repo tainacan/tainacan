@@ -33,7 +33,6 @@
         justify-content: center;
         gap: 20px;
         list-style: none !important;
-        margin: 0px auto !important;
         padding: 0px !important;
         max-width: var(--tainacan-media-thumbs-carousel-width, 100%);
         width: var(--tainacan-media-thumbs-carousel-width, 100%);
@@ -574,6 +573,7 @@
             &>iframe:not(.wp-embedded-content) {
                 width: 90vw;
                 height: calc(100vh - 120px);
+                height: calc(100dvh - 120px);
                 border: none;
                 margin: 60px;
                 display: block;
@@ -586,6 +586,7 @@
         .pswp__zoom-wrap>iframe#iframePDF {
             width: 90vw;
             height: calc(100vh - 120px);
+            height: calc(100dvh - 120px);
             border: none;
             margin: 60px auto;
             display: block;

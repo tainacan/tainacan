@@ -22,7 +22,7 @@ import {
     Taginput,
     Snackbar,
     Steps
-} from '@ntohq/buefy-next';
+} from 'buefy';
 import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
 import mitt from 'mitt';

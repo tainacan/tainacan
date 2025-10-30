@@ -4,7 +4,7 @@
     "title": "Tainacan Related Items List",
     "apiVersion": 3,
     "category": "tainacan-blocks",
-    "keywords": [ "items", "carousel", "slider", "relationship" ],
+    "keywords": [ "items", "relationship" ],
     "description": "A set of lists to display items related to a certain item via relationship metadata.",
     "textdomain": "tainacan",
     "example": {
@@ -12,40 +12,42 @@
             "content": "preview"
         }
     },
-    "parent": [],
     "attributes": {
-        "content": {
-            "type": "Array",
-            "source": "children",
-            "selector": "div"
+        "isDynamic": {
+            "type": "boolean",
+            "default": false
         },
         "collectionId": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "itemId": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "isModalOpen": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "relatedItems": {
-            "type": "Array",
+            "type": "array",
             "default": []
         },
         "relatedItemsTemplate": {
-            "type": "Array",
+            "type": "array",
             "default": []
         },
-        "itemRequestSource": {
-            "type": "String",
-            "default": ""
-        },
-        "itemsListlayout": {
-            "type": "String",
+        "itemsListLayout": {
+            "type": "string",
             "default": "carousel"
+        },
+        "tainacanViewMode": {
+            "type": "string",
+            "default": "masonry"
+        },
+        "templateMode": {
+            "type": "boolean",
+            "default": false
         }
     },
     "supports": {

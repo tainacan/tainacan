@@ -11,6 +11,8 @@
                 :remove-on-keys="[]"
                 field="label"
                 attached
+                :maxtags="1"
+                :has-counter="false"
                 :aria-close-label="$i18n.get('remove_value')"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :class="{'has-selected': selected != undefined && selected != []}"

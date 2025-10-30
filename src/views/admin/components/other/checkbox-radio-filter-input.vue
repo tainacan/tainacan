@@ -13,7 +13,6 @@
             <h2 :id="'checkbox-radio-filter--title-' + filter.id">
                 {{ $i18n.get('filter') }} <em>{{ filter.name }}</em>
             </h2>
-            <hr>
         </header>
 
         <div 
@@ -51,6 +50,7 @@
                         <a
                                 v-if="isUsingElasticSearch ? previousLastTerms.length && previousLastTerms[0] != checkboxListOffset : checkboxListOffset"
                                 role="button"
+                                :aria-label="$i18n.get('previous')"
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="previousSearchPage">
                             <span class="icon">
@@ -95,6 +95,7 @@
                         <a
                                 v-if="!noMoreSearchPage"
                                 role="button"
+                                :aria-label="$i18n.get('next')"
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="nextSearchPage">
                             <span class="icon">
@@ -110,6 +111,7 @@
                         <a
                                 v-if="isUsingElasticSearch ? previousLastTerms.length && previousLastTerms[0] != checkboxListOffset : checkboxListOffset"
                                 role="button"
+                                :aria-label="$i18n.get('previous')"
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="previousPage">
                             <span class="icon">
@@ -158,6 +160,7 @@
                         <a
                                 v-if="!noMorePage"
                                 role="button"
+                                :aria-label="$i18n.get('next')"
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="nextPage">
                             <span class="icon">
@@ -282,7 +285,7 @@
                         <section 
                                 v-if="(selected instanceof Array ? selected.length <= 0 : !selected) && !isSelectedTermsLoading"
                                 class="section">
-                            <div class="content has-text-grey has-text-centered">
+                            <div class="content has-text-gray has-text-centered">
                                 <p>
                                     <span class="icon is-medium">
                                         <i  
@@ -922,7 +925,7 @@
         .b-checkbox {
             break-inside: avoid;
             max-width: 100%;
-            min-height: 1.5em;
+            min-height: 1.75em;
             margin-left: 0.7em;
             margin-right: 2em !important;
             margin-bottom: 0px !important;

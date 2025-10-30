@@ -1,10 +1,13 @@
 const { __ } = wp.i18n;
+
+const { useEffect } = wp.element;
+
 const { Button, Placeholder, ToolbarDropdownMenu, SVG, Path } = wp.components;
 
 const ServerSideRender = wp.serverSideRender;
 const { useBlockProps, BlockControls, AlignmentControl } = wp.blockEditor;
 
-import SingleItemMetadatumModal from '../../js/selection/single-item-metadatum-modal.js';
+import TainacanSingleItemMetadatumSelectionModal from '../../js/selection/tainacan-single-item-metadatum-selection-modal.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
 
@@ -30,17 +33,17 @@ export default function ({ attributes, setAttributes, isSelected }) {
     const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
 
     // Checks if we are in template mode, if so, gets the collection Id from URL.
-    if ( !templateMode ) {
-        const possibleCollectionId = getCollectionIdFromPossibleTemplateEdition();
-        if (possibleCollectionId) {
-            collectionId = possibleCollectionId;
-            templateMode = true
-            setAttributes({ 
-                collectionId: collectionId,
-                templateMode: templateMode
-            });
+    useEffect(() => {
+        if ( !templateMode || ( templateMode && !collectionId ) ) {
+            const possibleCollectionId = getCollectionIdFromPossibleTemplateEdition();
+            if ( possibleCollectionId ) {
+                setAttributes({ 
+                    collectionId: possibleCollectionId,
+                    templateMode: true
+                });
+            }
         }
-    }
+    }, [ templateMode, collectionId ]);
 
     return <div { ...blockProps }>
             { dataSource == 'selection' ? (
@@ -71,7 +74,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
                 ( 
                 <div>
                     { isModalOpen ?
-                        <SingleItemMetadatumModal
+                        <TainacanSingleItemMetadatumSelectionModal
                             modalTitle={ templateMode ? __('Select one metadatum', 'tainacan') : __('Select one item to render its metadata', 'tainacan') }
                             existingCollectionId={ collectionId }
                             existingItemId={ itemId }
@@ -111,10 +114,12 @@ export default function ({ attributes, setAttributes, isSelected }) {
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(
-                        <img
-                            width={148}
-                            src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                            alt="Tainacan Logo"/>
+                        <span style={{ display: 'inline-block', width: '148px' }}>
+                            <img
+                                style={{ width: '100%', height: 'auto' }}
+                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
+                                alt="Tainacan Logo"/>
+                        </span>
                     )}>
                     <p>
                         <svg 

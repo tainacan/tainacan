@@ -2,10 +2,20 @@
 
 namespace Tainacan\API\EndPoints;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use \Tainacan\API\REST_Controller;
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
+/**
+ * REST API controller for managing Tainacan taxonomies.
+ *
+ * Handles all REST API endpoints for taxonomy operations including
+ * creation, updates, deletion, and querying of taxonomies.
+ *
+ * @since 1.0.0
+ */
 class REST_Taxonomies_Controller extends REST_Controller {
 	private $taxonomy;
 	private $taxonomy_repository;
@@ -61,7 +71,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 						'context' => array(
 							'type'    	  => 'string',
 							'default' 	  => 'view',
-							'description' => 'The context in which the request is made.',
+							'description' => __('The context in which the request is made.', 'tainacan'),
 							'enum'    	  => array(
 								'view',
 								'edit'
@@ -553,7 +563,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 			break;
 			case \WP_REST_Server::DELETABLE:
 				$endpoint_args['permanently'] = array(
-					'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection'),
+					'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection', 'tainacan'),
 					'default'     => '0',
 				);
 			break;
@@ -576,7 +586,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		$query_params = array_merge($query_params, parent::get_wp_query_params());
 
 		$query_params['name'] = array(
-			'description' => __('Limits the result set to a taxonomy with a specific name.'),
+			'description' => __('Limits the result set to a taxonomy with a specific name.', 'tainacan'),
 			'type'        => 'string',
 		);
 

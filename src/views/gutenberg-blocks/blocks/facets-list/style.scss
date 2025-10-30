@@ -267,7 +267,10 @@
     ul.facets-list.facets-layout-grid,
     ul.facets-list-edit.facets-layout-grid {
         padding: 0 2em;
-        @include display-grid;
+        flex-wrap: wrap;
+        display: flex;
+        display: -ms-grid;
+        display: grid;
         justify-content: space-evenly;
         list-style-type: none;
 
@@ -448,7 +451,10 @@
         padding-left: 0;
         margin: 0;
         margin-left: 0;
-        @include display-grid;
+        flex-wrap: wrap;
+        display: flex;
+        display: -ms-grid;
+        display: grid;
         align-items: self-start;
         list-style-type: none;
         grid-gap: 12px;

@@ -6,10 +6,13 @@
     list-style: none;
     padding: 0;
     height: auto !important;
-    @include display-grid;
+    flex-wrap: wrap;
+    display: flex;
+    display: -ms-grid;
+    display: grid;
     -ms-grid-columns: 455px 455px;
-    grid-template-columns: repeat(auto-fill, 455px);
-    grid-gap: 0;
+    grid-template-columns: repeat(auto-fill, min(425px, 100%));
+    grid-gap: 30px;
     justify-content: space-evenly;
     animation-name: appear;
     animation-duration: 0.5s;
@@ -24,11 +27,12 @@
         background-color: var(--tainacan-item-background-color);
         padding: 0;
         flex-basis: 0;
-        margin: 15px;
+        margin: 0;
         max-width: 425px;
-        min-width: 425px;
+        min-width: min(425px, 100%);
         min-height: 210px;
         max-height: 210px;
+        border-radius: var(--tainacan-item-border-radius, 0px);
         cursor: pointer;
         text-decoration: none !important;
         transition: background-color 0.2s ease;
@@ -115,7 +119,7 @@
         :deep(canvas) {
             width: 170px !important;
             height: 170px !important;
-            border-radius: 0px;
+            border-radius: var(--tainacan-item-border-radius, 0px);
             object-fit: cover;
             object-position: center;
 
@@ -148,6 +152,8 @@
             overflow: hidden;
             color: var(--tainacan-heading-color) !important;
             transition: background-color 0.3s ease;
+            border-top-left-radius: var(--tainacan-item-border-radius, 0px);
+            border-top-right-radius: var(--tainacan-item-border-radius, 0px);
 
             p {
                 color: var(--tainacan-heading-color) !important;
@@ -198,6 +204,8 @@
                 font-size: 1em;
                 width: 100%;
                 height: 170px;
+                border-bottom-left-radius: var(--tainacan-item-border-radius, 0px);
+                border-bottom-right-radius: var(--tainacan-item-border-radius, 0px);
                 color: var(--tainacan-info-color);
 
                 p.metadata-description {

@@ -1,42 +1,122 @@
 <?php
-/**
- * This class implements the default Tainacan Search engine.
- * 
- * It replaces the default WordPress behavior, which is search only in the title and content of posts, and searches every item metadata.
- * 
- * This is a very basic and non-performatic approach. For better results, you should try other WordPress plugins for this task. We recommend integration with Elastic Search
- * 
- * 
- * This class is a modification of the class found in the Search Everything plugin. All credits to the authors
- * http://wordpress.org/plugins/search-everything/
- * Author: Sovrn, zemanta
- * Author URI: http://www.sovrn.com
- * 
- */
 
 namespace Tainacan;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
+/**
+ * Implements the default Tainacan search engine.
+ *
+ * Replaces the default WordPress search behavior to search through item metadata
+ * in addition to titles and content. This is a basic implementation that can be
+ * disabled in favor of more performant solutions like Elasticsearch.
+ *
+ * This class is based on the Search Everything plugin by Sovrn, zemanta.
+ * Original plugin: http://wordpress.org/plugins/search-everything/
+ *
+ * @since 0.1.0
+ */
 class Search_Engine {
 
+	/**
+	 * Whether to enable logging for search operations.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var bool
+	 */
 	var $logging = false;
+
+	/**
+	 * Search engine options.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var array
+	 */
 	var $options;
+
+	/**
+	 * Whether this is an AJAX request.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var bool
+	 */
 	var $ajax_request;
+
+	/**
+	 * Current query instance.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var \WP_Query
+	 */
 	private $query_instance;
 
+	/**
+	 * Taxonomies to search in.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var array
+	 */
 	private $taxonomies = [];
+
+	/**
+	 * Relationships to search in.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var array
+	 */
 	private $relationships = [];
+
+	/**
+	 * Whether this is a Tainacan-specific search.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var bool
+	 */
 	private $is_tainacan_search = false;
+
+	/**
+	 * Whether this is an inner query.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var bool
+	 */
 	private $is_inner_query = false;
 
+	/**
+	 * Constructor for the Search_Engine class.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param bool $ajax_query Whether this is an AJAX query.
+	 */
 	function __construct($ajax_query=false) {
 		$this->ajax_request = $ajax_query ? true : false;
 		$this->options = [];
 
-		if (!defined('TAINACAN_DISABLE_DEFAULT_SEARCH_ENGINE') || TAINACAN_DISABLE_DEFAULT_SEARCH_ENGINE !== true) {
+		if ( !(
+				defined('TAINACAN_DISABLE_DEFAULT_SEARCH_ENGINE') 
+					? ( true === TAINACAN_DISABLE_DEFAULT_SEARCH_ENGINE )
+					: !get_option('tainacan_option_enable_default_search_engine', true) 
+		) ) {
 			$this->search_hooks();
 		}
 	}
 
+	/**
+	 * Sets up WordPress hooks for search functionality.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
 	function search_hooks() {
 
 		// add_filter( 'posts_join', array( &$this, 'terms_join' ) );
@@ -178,7 +258,11 @@ class Search_Engine {
 			if ( empty($search_meta_query) ) return '';
 			
 			$content_index_meta = '';
-			if ( defined('TAINACAN_INDEX_PDF_CONTENT') && true === TAINACAN_INDEX_PDF_CONTENT ) {
+			if ( 
+				defined('TAINACAN_INDEX_PDF_CONTENT') 
+					? ( true === TAINACAN_INDEX_PDF_CONTENT )
+					: get_option( 'tainacan_option_index_pdf_content', false ) 
+			) {
 				$content_index_meta_meta_key = \TAINACAN\Media::$content_index_meta;
 				$content_index_meta = "OR (m.meta_key='{$content_index_meta_meta_key}')";
 			}

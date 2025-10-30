@@ -180,7 +180,6 @@
                 let onlyItemIds = this.newItems.map(item => item.id);
 
                 this.$buefy.modal.open({
-                    parent: this,
                     component: BulkEditionModal,
                     props: {
                         modalTitle: this.$i18n.get('info_editing_items_in_bulk'),
@@ -192,7 +191,7 @@
                     width: 'calc(100% - (2 * var(--tainacan-one-column)))',
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
+                    canCancel: ['escape', 'outside']
                 }); 
 
                 this.$emit('close');

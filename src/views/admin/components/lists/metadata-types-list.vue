@@ -1,14 +1,14 @@
 <template>
     <div 
             v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata')) || !isRepositoryLevel"
-            class="column available-metadata-types-area">
+            class="column available-metadata-types-area is-12-touch">
 
         <b-loading v-model="isLoadingMetadataTypes" />
 
         <div class="field">
-            <h3 class="label">
+            <h2 class="label">
                 {{ $i18n.get('label_available_metadata_types') }}
-            </h3>
+            </h2>
             <sortable 
                     :list="availableMetadataTypes"
                     item-key="component"
@@ -217,16 +217,19 @@ export default {
     .available-metadata-types-area {
         padding: 10px 0px 10px 10px !important;
         margin: 0;
-        max-width: 380px;
+        max-width: 260px;
         min-width: 20.8333333%;
         max-height: calc(100vh - 7.75em);
-        top: -28px;
+        max-height: calc(100dvh - 7.75em);
+        top: calc(0.125rem + var(--tainacan-container-padding) + var(--tainacan-button-min-height, 2.571em));
         position: sticky;
         font-size: 0.875em;
 
-        @media screen and (max-width: 769px) {
+        @media screen and (max-width: 1023px) {
             max-width: 100%;
             padding: 10px;
+
+            h2,
             h3 {
                 margin: 1em 0em 1em 0em !important;
             }
@@ -238,6 +241,7 @@ export default {
             }
         }
 
+        h2,
         h3 {
             margin: 0.875em 0em 1em 0em;
         }
@@ -250,9 +254,9 @@ export default {
             cursor: pointer;
             left: 0;
             height: 2.8571em;
+            border-radius: var(--tainacan-button-border-radius, 0px);
             position: relative;
             border: 1px solid var(--tainacan-gray2);
-            border-radius: 1px;
             transition: left 0.2s ease;
             
             .grip-icon { 
@@ -287,6 +291,7 @@ export default {
                 width: 0;
                 height: 0;
                 border-style: solid;
+                border-radius: var(--tainacan-button-border-radius, 0px);
             }
             &::after {
                 top: -1px;
@@ -294,7 +299,7 @@ export default {
                 border-right-width: 16px;
                 border-top-width: 1.4286em;
                 border-bottom-width: 1.4286em;
-                left: -19px;
+                left: calc( -19px + (var(--tainacan-button-border-radius, 0px) / 2));
             }
             &::before {
                 top: -1px;
@@ -302,7 +307,7 @@ export default {
                 border-right-width: 16px;
                 border-top-width: 1.4286em;
                 border-bottom-width: 1.4286em;
-                left: -20px;
+                left: calc( -20px + (var(--tainacan-button-border-radius, 0px) / 2));
             }
         }
 

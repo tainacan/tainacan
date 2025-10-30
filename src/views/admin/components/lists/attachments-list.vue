@@ -46,7 +46,7 @@
             <!-- Empty state image -->
             <div v-if="(totalAttachments <= 0 || !totalAttachments) && !isLoading">
                 <section class="section">
-                    <div class="content has-text-grey has-text-centered">
+                    <div class="content has-text-gray has-text-centered">
                         <p>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-attachments" />
@@ -146,8 +146,7 @@
                 this.attachmentsPerPage = value;
                 this.loadAttachments();
             },
-            onPageChange(page) {
-                this.attachmentsPage = page;
+            onPageChange() {
                 this.loadAttachments();
             },
             getLastAttachmentsNumber() {
@@ -183,14 +182,15 @@
 
     .table-container {
         width: 100%;
+        padding: 0 0.75em 0 1.875em;
     }
     .uploaded-files {
         display: flex;
         flex-wrap: wrap;
+        gap: 10px 12px;
 
         .file-item-container {
             display: inline-block;
-            margin: 10px 12px;
             position: relative;
 
             &:hover .file-item-control {
@@ -225,6 +225,8 @@
                 width: 94px;
                 margin: 6px 0;
                 bottom: 0px;
+                border-bottom-right-radius: var(--tainacan-item-border-radius, 3px);
+                border-bottom-left-radius: var(--tainacan-item-border-radius, 3px);
                 padding: 2px 8px 4px 8px;
                 text-align: right;
                 display: none;
@@ -239,7 +241,7 @@
         }
     }
 
-    @media screen and (max-width: 769px) {
+    @media screen and (max-width: 768px) {
         .table-container {
             padding-left: 1em;
             padding-right: 1em;

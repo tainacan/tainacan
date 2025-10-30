@@ -5,7 +5,12 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Represents the Item Metadatum Entity
+ * Represents a Tainacan Item Metadata Entity.
+ *
+ * Represents the relationship between items and their metadata values,
+ * storing the actual data content for specific metadata fields.
+ *
+ * @since 1.0.0
  */
 class Item_Metadata_Entity extends Entity {
 	protected static $post_type = false;
@@ -520,7 +525,7 @@ class Item_Metadata_Entity extends Entity {
 			if (is_array($value)) {
 				$cardinality = $metadatum->get_cardinality();
 				if ( !empty($cardinality) && $cardinality > 1 && count($value) > $cardinality ) {
-					$this->add_error( 'invalid', sprintf( __('Metadatum %s is set to accept a maximum of %s values.', 'tainacan'), $metadatum->get_name(), $cardinality ) );
+					$this->add_error( 'invalid', sprintf( __('Metadatum %1$s is set to accept a maximum of %2$s values.', 'tainacan'), $metadatum->get_name(), $cardinality ) );
 					return false;
 				}
 				// if its required, at least one must be filled

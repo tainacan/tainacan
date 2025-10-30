@@ -2,30 +2,29 @@
 
 namespace Tainacan\Repositories;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use Tainacan\Entities;
 use \Respect\Validation\Validator as v;
 use Tainacan\Entities\Item;
 
-defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
-
+/**
+ * Repository for managing Tainacan items.
+ *
+ * Handles all database operations for items including creation,
+ * updates, deletion, and querying with proper validation and logging.
+ *
+ * @since 1.0.0
+ */
 class Items extends Repository {
-	public $entities_type = '\Tainacan\Entities\Item';
+	use \Tainacan\Traits\Singleton_Instance;
 
-	private static $instance = null;
+	public $entities_type = '\Tainacan\Entities\Item';
 
 	// temporary variable used to filter items query
 	private $fetching_from_collections = [];
 
-	public static function get_instance() {
-		if ( ! isset( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
-
-	protected function __construct() {
-		parent::__construct();
+	protected function init() {
 		add_filter( 'comments_open', [$this, 'hook_comments_open'], 10, 2);
 		add_action( 'tainacan-api-item-updated', array( &$this, 'hook_api_updated_item' ), 10, 2 );
 		add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 10, 4 );

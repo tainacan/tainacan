@@ -2,14 +2,20 @@
 
 namespace Tainacan\API\EndPoints;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use \Tainacan\API\REST_Controller;
 use Tainacan\Repositories;
 use Tainacan\Entities;
 
 /**
- * Represents the Importers REST Controller
+ * REST API controller for managing Tainacan importers.
  *
- * */
+ * Handles all REST API endpoints for import operations including
+ * import configuration, import execution, and import management.
+ *
+ * @since 1.0.0
+ */
 class REST_Importers_Controller extends REST_Controller {
 	protected function get_schema() {
         return "TODO:get_schema";
@@ -158,7 +164,7 @@ class REST_Importers_Controller extends REST_Controller {
 		
 		$slug = $body['importer_slug'];
 
-		global $Tainacan_Importer_Handler;
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
 
 		if ($object = $Tainacan_Importer_Handler->initialize_importer($slug)) {
 			$response = $object->_to_Array();
@@ -190,7 +196,7 @@ class REST_Importers_Controller extends REST_Controller {
 				$attributes[$att] = $value;
 			}
 			
-			global $Tainacan_Importer_Handler;
+			$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
 			$importer = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($session_id);
 			
 			if ($importer) {
@@ -239,7 +245,7 @@ class REST_Importers_Controller extends REST_Controller {
 
 	public function source_info( $request ) {
 		$session_id = $request['session_id'];
-		global $Tainacan_Importer_Handler;
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
 		$importer = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($session_id);
 
 		if(!$importer) {
@@ -274,7 +280,7 @@ class REST_Importers_Controller extends REST_Controller {
 	public function get_saved_mapping( $request ){
 		$session_id = $request['session_id'];
 		$collection_id = $request['collection_id'];
-		global $Tainacan_Importer_Handler;
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
 		$importer = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($session_id);
 		$response = false;
 
@@ -294,7 +300,7 @@ class REST_Importers_Controller extends REST_Controller {
 
 	public function get_item( $request ) {
 		$session_id = $request['session_id'];
-		global $Tainacan_Importer_Handler;
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
 		$importer = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($session_id);
 
 		if(!$importer) {
@@ -311,7 +317,7 @@ class REST_Importers_Controller extends REST_Controller {
 
 	public function add_file( $request )  {
 		$session_id = $request['session_id'];
-		global $Tainacan_Importer_Handler;
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
 		$importer = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($session_id);
 
 		if(!$importer) {
@@ -342,7 +348,7 @@ class REST_Importers_Controller extends REST_Controller {
 
 	public function run($request) {
 		$session_id = $request['session_id'];
-		global $Tainacan_Importer_Handler;
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
 		$importer = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($session_id);
 
 		if(!$importer) {
@@ -351,8 +357,6 @@ class REST_Importers_Controller extends REST_Controller {
 				'session_id' => $session_id
 			], 400);
 		}
-
-		global $Tainacan_Importer_Handler; 
 
 		$process = $Tainacan_Importer_Handler->add_to_queue($importer);
 
@@ -372,7 +376,7 @@ class REST_Importers_Controller extends REST_Controller {
 	}
 
 	public function get_registered_importers() {
-		global $Tainacan_Importer_Handler; 
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance(); 
 		$importers = $Tainacan_Importer_Handler->get_registered_importers();
 		return new \WP_REST_Response( $importers, 200 );
 	}

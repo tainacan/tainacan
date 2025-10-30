@@ -2,10 +2,24 @@
 
 namespace Tainacan\API;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
+/**
+ * Abstract base class for Tainacan REST API controllers.
+ *
+ * Provides common functionality for all Tainacan REST API endpoints including
+ * object filtering, attribute handling, and standard WordPress REST API integration.
+ *
+ * @since 1.0.0
+ */
 abstract class REST_Controller extends \WP_REST_Controller {
 
 	/**
-	 * REST_Controller constructor.
+	 * Constructor for the REST_Controller class.
+	 *
+	 * Sets up the namespace and registers routes and filters.
+	 *
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		$this->namespace = TAINACAN_REST_NAMESPACE;
@@ -14,10 +28,13 @@ abstract class REST_Controller extends \WP_REST_Controller {
 	}
 
 	/**
-	 * @param $object
-	 * @param $attributes
+	 * Filters an object by specified attributes.
 	 *
-	 * @return array
+	 * @since 1.0.0
+	 *
+	 * @param mixed  $object     The object to filter.
+	 * @param string|array $attributes The attributes to include in the filtered result.
+	 * @return array Filtered object data.
 	 */
 	protected function filter_object_by_attributes($object, $attributes){
 		$object_filtered = [];
@@ -42,10 +59,13 @@ abstract class REST_Controller extends \WP_REST_Controller {
 	}
 
 	/**
-	 * @param $object
-	 * @param $new_values
+	 * Prepares an item for updating with new values.
 	 *
-	 * @return \Tainacan\Entities\Entity
+	 * @since 1.0.0
+	 *
+	 * @param mixed $object     The object to update.
+	 * @param array $new_values New values to set on the object.
+	 * @return \Tainacan\Entities\Entity The updated entity.
 	 */
 	protected function prepare_item_for_updating($object, $new_values){
 		foreach ($new_values as $key => $value) {
@@ -435,17 +455,17 @@ abstract class REST_Controller extends \WP_REST_Controller {
 		$metaquery_properties = array(
 			'key'      => array(
 				'type'        => ['integer', 'string'],
-				'description' => __('Custom metadata key.'),
+				'description' => __('Custom metadata key.', 'tainacan'),
 			),
 			'value'    => array(
 				'type'        => ['string', 'array'],
 				'items'       => array('type' => 'string'),
-				'description' => __('Custom metadata value. It can be an array only when compare is IN, NOT IN, BETWEEN, or NOT BETWEEN. You dont have to specify a value when using the EXISTS or NOT EXISTS comparisons in WordPress 3.9 and up. (Note: Due to bug #23268, value is required for NOT EXISTS comparisons to work correctly prior to 3.9. You must supply some string for the value parameter. An empty string or NULL will NOT work. However, any other string will do the trick and will NOT show up in your SQL when using NOT EXISTS. Need inspiration? How about \'bug #23268\'.'),
+				'description' => __('Custom metadata value. It can be an array only when compare is IN, NOT IN, BETWEEN, or NOT BETWEEN. You dont have to specify a value when using the EXISTS or NOT EXISTS comparisons in WordPress 3.9 and up. (Note: Due to bug #23268, value is required for NOT EXISTS comparisons to work correctly prior to 3.9. You must supply some string for the value parameter. An empty string or NULL will NOT work. However, any other string will do the trick and will NOT show up in your SQL when using NOT EXISTS. Need inspiration? How about \'bug #23268\'.', 'tainacan'),
 				'sanitize_callback'  => 'sanitize_text_field',
 			),
 			'compare'  => array(
 				'type'        => 'string',
-				'description' => __('Operator to test.'),
+				'description' => __('Operator to test.', 'tainacan'),
 				'default'     => '=',
 				'enum'		  => array(
 					'=',
@@ -466,32 +486,32 @@ abstract class REST_Controller extends \WP_REST_Controller {
 			),
 			'relation' => array(
 				'type'        => 'string',
-				'description' => __('OR or AND, how the sub-arrays should be compared.'),
+				'description' => __('OR or AND, how the sub-arrays should be compared.', 'tainacan'),
 				'default'     => 'AND',
 			),
 			'metadatumtype' => array(
 				'type'        => 'string',
-				'description' => __('Custom metadata type. Possible values are NUMERIC, BINARY, CHAR, DATE, DATETIME, DECIMAL, SIGNED, TIME, UNSIGNED. Default value is CHAR. You can also specify precision and scale for the DECIMAL and NUMERIC types (for example, DECIMAL(10,5) or NUMERIC(10) are valid). The type DATE works with the compare value BETWEEN only if the date is stored at the format YYYY-MM-DD and tested with this format.'),
+				'description' => __('Custom metadata type. Possible values are NUMERIC, BINARY, CHAR, DATE, DATETIME, DECIMAL, SIGNED, TIME, UNSIGNED. Default value is CHAR. You can also specify precision and scale for the DECIMAL and NUMERIC types (for example, DECIMAL(10,5) or NUMERIC(10) are valid). The type DATE works with the compare value BETWEEN only if the date is stored at the format YYYY-MM-DD and tested with this format.', 'tainacan'),
 			),
 		);
 
 		return array(
 			'metakey'      => array(
 				'type'        => ['integer', 'string'],
-				'description' => __('Custom metadata key.'),
+				'description' => __('Custom metadata key.', 'tainacan'),
 			),
 			'metavalue'    => array(
 				'type'        => ['string', 'array'],
-				'description' => __('Custom metadata value'),
+				'description' => __('Custom metadata value', 'tainacan'),
 				'sanitize_callback'  => 'sanitize_text_field',
 			),
 			'metavaluenum' => array(
 				'type'        => 'number',
-				'description' => __('Custom metadata value'),
+				'description' => __('Custom metadata value', 'tainacan'),
 			),
 			'metacompare'  => array(
 				'type'        => 'string',
-				'description' => __('Operator to test the metavalue'),
+				'description' => __('Operator to test the metavalue', 'tainacan'),
 				'default'     => '=',
 				'enum'        => array(
 					'=',
@@ -513,7 +533,7 @@ abstract class REST_Controller extends \WP_REST_Controller {
 				)
 			),
 			'metaquery'    => array(
-				'description' => __('Limits result set to items that have specific custom metadata'),
+				'description' => __('Limits result set to items that have specific custom metadata', 'tainacan'),
 				'type'        => ['array', 'object',],
 				'properties'  => $metaquery_properties,
 				'items'       => array(
@@ -522,41 +542,41 @@ abstract class REST_Controller extends \WP_REST_Controller {
 				),
 			),
 			'datequery'    => array(
-				'description' => __('Limits the result set to items that were created or modified in some specific date'),
+				'description' => __('Limits the result set to items that were created or modified in some specific date', 'tainacan'),
 				'type'        => ['array', 'object'],
 				'items'       => array(
 					'keys' => array(
 						'year'      => array(
 							'type'        => 'integer',
-							'description' => __('4 digit year (e.g. 2018).'),
+							'description' => __('4 digit year (e.g. 2018).', 'tainacan'),
 						),
 						'month'     => array(
 							'type'        => 'integer',
-							'description' => __('Month number (from 1 to 12).'),
+							'description' => __('Month number (from 1 to 12).', 'tainacan'),
 						),
 						'day'       => array(
 							'type'        => 'integer',
-							'description' => __('Day of the month (from 1 to 31).'),
+							'description' => __('Day of the month (from 1 to 31).', 'tainacan'),
 						),
 						'week'      => array(
 							'type'        => 'integer',
-							'description' => __('Week of the year (from 0 to 53).'),
+							'description' => __('Week of the year (from 0 to 53).', 'tainacan'),
 						),
 						'hour'      => array(
 							'type'        => 'integer',
-							'description' => __('Hour (from 0 to 23).'),
+							'description' => __('Hour (from 0 to 23).', 'tainacan'),
 						),
 						'minute'    => array(
 							'type'        => 'integer',
-							'description' => __('Minute (from 0 to 59).'),
+							'description' => __('Minute (from 0 to 59).', 'tainacan'),
 						),
 						'second'    => array(
 							'type'        => 'integer',
-							'description' => __('Second (from 0 to 59).')
+							'description' => __('Second (from 0 to 59).', 'tainacan'),
 						),
 						'compare'   => array(
 							'type'        => 'string',
-							'description' => __('Operator to test.'),
+							'description' => __('Operator to test.', 'tainacan'),
 							'default'     => '=',
 							'enum'        => array(
 								'=',
@@ -578,37 +598,37 @@ abstract class REST_Controller extends \WP_REST_Controller {
 						'dayofweek' => array('type' => 'array'),
 						'inclusive' => array(
 							'type'        => 'boolean',
-							'description' => __('For after/before, whether exact value should be matched or not.'),
+							'description' => __('For after/before, whether exact value should be matched or not.', 'tainacan'),
 						),
 						'before'    => array(
 							'type'        => ['string', 'array'],
-							'description' => __('Date to retrieve posts before. Accepts strtotime()-compatible string, or array of year, month, day '),
+							'description' => __('Date to retrieve posts before. Accepts strtotime()-compatible string, or array of year, month, day ', 'tainacan'),
 						),
 						'after'     => array(
 							'type'        => ['string', 'array'],
-							'description' => __('Date to retrieve posts after. Accepts strtotime()-compatible string, or array of year, month, day '),
+							'description' => __('Date to retrieve posts after. Accepts strtotime()-compatible string, or array of year, month, day ', 'tainacan'),
 						),
 						'column'     => array(
 							'type'        => 'string',
-							'description' => __('Posts column to query against, possible values: post_date, post_date_gmt, post_modified, post_modified_gmt. Default: ‘post_date’.'),
+							'description' => __('Posts column to query against, possible values: post_date, post_date_gmt, post_modified, post_modified_gmt. Default: ‘post_date’.', 'tainacan'),
 						),
 					),
 					'type'      => ['array', 'object']
 				),
 			),
 			'taxquery'     => array(
-				'description' => __('Show items associated with certain taxonomy.'),
+				'description' => __('Show items associated with certain taxonomy.', 'tainacan'),
 				'type'        => ['array', 'object'],
 				'items'       => array(
 					'keys' => array(
 						'taxonomy' => array(
 							'type'        => 'string',
-							'description' => __('The taxonomy data base identifier.')
+							'description' => __('The taxonomy data base identifier.', 'tainacan')
 						),
 						'metadatum'    => array(
 							'type'        => 'string',
 							'default'	  => 'term_id',
-							'description' => __('Select taxonomy term by'),
+							'description' => __('Select taxonomy term by', 'tainacan'),
 							'enum'		  => array(
 								'term_id',
 								'name',
@@ -619,11 +639,11 @@ abstract class REST_Controller extends \WP_REST_Controller {
 						'terms'    => array(
 							'type'        => ['integer', 'string', 'array'],
 							'sanitize_callback'  => 'sanitize_text_field',
-							'description' => __('Taxonomy term(s).'),
+							'description' => __('Taxonomy term(s).', 'tainacan'),
 						),
 						'operator' => array(
 							'type'        => 'string',
-							'description' => __('Operator to test.'),
+							'description' => __('Operator to test.', 'tainacan'),
 							'default'     => 'IN',
 							'enum'        => array(
 								'IN',
@@ -635,7 +655,7 @@ abstract class REST_Controller extends \WP_REST_Controller {
 						),
 						'relation' => array(
 							'type'        => 'string',
-							'description' => __('The logical relationship between each inner taxonomy array when there is more than one. Do not use with a single inner taxonomy array.'),
+							'description' => __('The logical relationship between each inner taxonomy array when there is more than one. Do not use with a single inner taxonomy array.', 'tainacan'),
 							'default'     => 'AND',
 							'enum'		  => array(
 								'AND',
@@ -673,12 +693,12 @@ abstract class REST_Controller extends \WP_REST_Controller {
 
 		return [
 			'current_user_can_edit' => [
-				'description' => esc_html__('Whether current user can edit this object', 'tainacan'),
+				'description' => __('Whether current user can edit this object', 'tainacan'),
 				'type' => 'boolean',
 				'context' => 'edit'
 			],
 			'current_user_can_delete' => [
-				'description' => esc_html__('Whether current user can delete this object', 'tainacan'),
+				'description' => __('Whether current user can delete this object', 'tainacan'),
 				'type' => 'boolean',
 				'context' => 'edit'
 			]
@@ -690,7 +710,7 @@ abstract class REST_Controller extends \WP_REST_Controller {
 		return [
 
 			'id' => [
-				'description'  => esc_html__( 'Unique identifier for the object.', 'tainacan' ),
+				'description'  => __('Unique identifier for the object.', 'tainacan'),
 				'type'         => 'integer',
 				'context'      => array( 'view', 'edit' ),
 				'readonly'     => true

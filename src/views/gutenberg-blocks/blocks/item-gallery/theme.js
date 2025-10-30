@@ -346,6 +346,8 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                             w: parseInt(fullContentElement.width),
                             h: parseInt(fullContentElement.height)
                         };
+                        if (fullContentElement.alt)
+                            item.alt = fullContentElement.alt;
                     } else {
                         fullContentElement = fullContentElement[0];
                         item = {

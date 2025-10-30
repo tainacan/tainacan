@@ -6,6 +6,7 @@ tests/bootstrap-config.php
 .buildpath
 .project
 .settings
+.cursor
 vendor
 src/vendor
 node_modules

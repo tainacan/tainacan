@@ -134,11 +134,6 @@
         :deep(.tag),
         :deep(.tags) {
             white-space: normal !important;
-            min-height: calc(2em - 1px) !important;
-            height: auto !important;
-        }
-        :deep(.tag.is-delete) {
-            min-width: calc(2em - 1px) !important;
         }
     }
 </style>

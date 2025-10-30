@@ -129,6 +129,7 @@
             <b-modal 
                     v-model="editItemModalOpen"
                     :width="1200"
+                    :can-cancel="['escape', 'outside']"
                     :custom-class="'tainacan-modal' + (collection && collection.id ? ' tainacan-modal-item-edition--collection-' + collection.id : '')"
                     :close-button-aria-label="$i18n.get('close')">
                 <iframe 
@@ -412,7 +413,7 @@
                     query['status'] = ['publish','private','pending','draft'];
 
                 if ( this.isAcceptingOnlyItemsAuthoredByCurrentUser )
-                    query['authorid'] = tainacan_plugin.user_data.ID;
+                    query['authorid'] = tainacan_user.data.ID;
 
                 if (this.selected.length > 0)
                     query['exclude'] = this.selected.map((item) => item.value);
@@ -544,6 +545,8 @@
     }
     :deep(.tainacan-relationship-results-container) {
         border: 1px solid var(--tainacan-gray1);
+        border-bottom-right-radius: var(--tainacan-input-border-radius);
+        border-bottom-left-radius: var(--tainacan-input-border-radius);
         background-color: var(--tainacan-background-color);
         margin-top: calc(-1 * (0.5em + 1px));
         margin-bottom: calc(-1 * (0.5em + 1px));

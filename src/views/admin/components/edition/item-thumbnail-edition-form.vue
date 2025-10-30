@@ -131,6 +131,30 @@ export default {
     }
     .thumbnail-field {
         display: flex;
+        min-height: 110px;
+
+        @supports (contain: inline-size) {
+            container-type: inline-size;
+            container-name: thumbnailfield; 
+        }
+
+        @container thumbnailfield (max-width: 300px) {
+            :deep(img),
+            :deep(.image-wrapper) {
+                height: 58px !important;
+                width: 58px !important;
+                min-width: 58px !important;
+            }
+            :deep(.image-placeholder) {
+                top: 12px !important;
+                font-size: 0.75em !important;
+                margin-left: 3px !important;
+                margin-right: 3px !important;
+            }
+            .thumbnail-buttons-row {
+                bottom: 42px !important;
+            }
+        }
 
         .field {
             margin-left: 1em;
@@ -141,9 +165,10 @@ export default {
             font-size: 0.8em;
         }
         img {
-            height: 120px;
-            width: 120px;
-            min-width: 120px;
+            height: 110px;
+            width: 110px;
+            min-width: 110px;
+            border-radius: 3px;
         }
         .image-placeholder {
             position: absolute;
@@ -156,6 +181,11 @@ export default {
             color: var(--tainacan-info-color);
             top: 34px;
             max-width: 84px;
+
+            & + img {
+                opacity: 0.5;
+                border: 1px dashed var(--tainacan-info-color);
+            }
         }
 
         .thumbnail-alt-input {

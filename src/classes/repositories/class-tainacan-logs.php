@@ -2,35 +2,28 @@
 
 namespace Tainacan\Repositories;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 use Tainacan\Entities;
 use Tainacan\Entities\Entity;
 
-defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
-
 /**
- * Implement a Logs system
+ * Repository for managing Tainacan logs.
  *
- * @author medialab
+ * Implements a comprehensive logging system for tracking changes
+ * and operations within Tainacan including entity modifications.
  *
+ * @since 1.0.0
  */
 class Logs extends Repository {
+	use \Tainacan\Traits\Singleton_Instance;
+
 	public $entities_type = '\Tainacan\Entities\Log';
-	private static $instance = null;
 	private $current_diff = null;
 	private $current_deleting_entity;
 	private $current_action;
 
-	public static function get_instance() {
-		if ( ! isset( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
-
-
-	protected function __construct() {
-		parent::__construct();
+	protected function init() {
 
 		add_action( 'tainacan-pre-insert', array( $this, 'pre_insert_entity' ) );
 
@@ -42,7 +35,8 @@ class Logs extends Repository {
 		add_action( 'delete_attachment', array( $this, 'pre_delete_attachment' ) );
 		add_action( 'delete_post', array( $this, 'delete_attachment' ) );
 
-		add_filter('tainacan-log-set-title', [$this, 'filter_log_title']);
+		add_filter( 'tainacan-log-set-title', array( $this, 'filter_log_title' ) );
+		add_filter( 'pre_wp_unique_post_slug', array( $this, 'tainacan_set_log_slug' ), 10, 6 );
 	}
 
 	protected function _get_map() {
@@ -66,7 +60,7 @@ class Logs extends Repository {
 				'map'         => 'post_content',
 				'title'       => __( 'Description', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'The log description' ),
+				'description' => __( 'The log description', 'tainacan' ),
 				'default'     => '',
 				'validation'  => ''
 			],
@@ -74,14 +68,14 @@ class Logs extends Repository {
 				'map'         => 'post_name',
 				'title'       => __( 'Slug', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'The log slug' ),
+				'description' => __( 'The log slug', 'tainacan' ),
 				'validation'  => ''
 			],
 			'user_id'        => [
 				'map'         => 'post_author',
 				'title'       => __( 'User ID', 'tainacan' ),
 				'type'        => 'integer',
-				'description' => __( 'Unique identifier' ),
+				'description' => __( 'Unique identifier', 'tainacan' ),
 				'validation'  => ''
 			],
 			'item_id'        => [
@@ -833,4 +827,13 @@ class Logs extends Repository {
 		return $title;
 	}
 
+	function tainacan_set_log_slug( $override, $slug, $post_ID, $post_status, $post_type, $post_parent ) {
+		if ( 'tainacan-log' === $post_type ) {
+			if ( $post_ID ) {
+				return uniqid( $post_type . '-' . $post_ID );
+			}
+			return uniqid( $post_type . '-' );
+		}
+		return $override;
+	}
 }

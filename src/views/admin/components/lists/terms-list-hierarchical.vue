@@ -237,7 +237,7 @@
         <section 
                 v-if="( termColumns instanceof Array ? termColumns.length <= 0 : !termColumns ) && !isColumnLoading"
                 class="section">
-            <div class="content has-text-grey has-text-centered">
+            <div class="content has-text-gray has-text-centered">
                 <p>
                     <span class="icon is-medium">
                         <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms" />
@@ -522,7 +522,6 @@ export default {
         removeTerm(term) {
 
             this.$buefy.modal.open({
-                parent: this,
                 component: TermDeletionDialog,
                 props: {
                     message: term.total_children && term.total_children != '0' ?  this.$i18n.get('info_warning_term_with_child') : this.$i18n.get('info_warning_selected_term_delete'),
@@ -546,13 +545,12 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             });  
         },
         deleteSelectedTerms() {
 
             this.$buefy.modal.open({
-                parent: this,
                 component: TermDeletionDialog,
                 props: {
                     message: this.$i18n.get('info_warning_some_terms_with_child'),
@@ -576,13 +574,12 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             });  
         },
         updateSelectedTermsParent() {
 
             this.$buefy.modal.open({
-                parent: this,
                 component: TermParentSelectionDialog,
                 props: {
                     amountOfTerms: this.amountOfTermsSelected,
@@ -605,7 +602,7 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             });  
         },
         updateSelectedTerms(selectedTerm) {
@@ -727,7 +724,6 @@ export default {
         multipleInsertion({ parentId, parentName }) {
 
             this.$buefy.modal.open({
-                parent: this,
                 component: TermMultipleInsertionDialog,
                 props: {
                     excludeTree: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : false, 
@@ -746,7 +742,7 @@ export default {
 
                             this.$buefy.snackbar.open({
                                 message: this.$i18n.getWithVariables('info_%s_terms_created', [ createdTerms.length ]),
-                                type: 'is-warning',
+                                type: 'is-success',
                                 position: 'is-bottom-right',
                                 pauseOnHover: true,
                                 queue: false
@@ -774,7 +770,7 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
+                canCancel: ['escape', 'outside']
             });      
         },
         resetTermsListUI() {
@@ -878,10 +874,7 @@ export default {
     .tainacan-hierarchical-list-columns-container {
         background-color: var(--tainacan-background-color);
         border: 1px solid var(--tainacan-gray2);
-        border-bottom-left-radius: var(--tainacan-dropdownmenu-border-radius);
-        border-bottom-right-radius: var(--tainacan-dropdownmenu-border-radius);
-        border-top-right-radius: 0px;
-        border-top-left-radius: 0px;
+        border-radius: var(--tainacan-dropdownmenu-border-radius);
         margin-top: 0px;
         display: flex;
         height: auto;
@@ -939,7 +932,7 @@ export default {
         }
 
         ul {
-            max-height: calc(42vh - 20px - 0.7em);
+            max-height: calc(50vh - 20px - 0.7em);
             min-height: inherit;
             overflow-y: auto;
             overflow-x: hidden;
@@ -1103,20 +1096,24 @@ export default {
 
         .tainacan-hierarchical-list-columns-container {
             max-height: calc(100vh - 184px - 56px);
+            max-height: calc(100dvh - 184px - 56px);
 
             .tainacan-hierarchical-list-column,
             .tainacan-hierarchical-list-column ul {
                 max-height: 100%;
             }
             .tainacan-hierarchical-list-column {
-                max-width: calc(99vw - 0.75em - 0.75em - 2px);
-                min-width: calc(99vw - 0.75em - 0.75em - 24px);
+                max-width: calc(99vw -  var(--tainacan-one-column) - 0.75em - 0.75em - 2px);
+                min-width: calc(99vw -  var(--tainacan-one-column) - 0.75em - 0.75em - 24px);
             }
             .tainacan-hierarchical-list-column .column-header+ul {
-                max-height: calc(100% - 0.75em - 0.45em - 0.45em - 3px);
+                max-height: calc(100% - 0.75em - 0.45em - 0.45em - 5px);
             }
-            .tainacan-hierarchical-list-column a {
-                width: 3.5em;
+            .tainacan-hierarchical-list-column .column-subheader {
+                flex-wrap: wrap;
+            }
+            .tainacan-hierarchical-list-column ul a {
+                width: 4.5em;
                 border-left: 1px solid var(--tainacan-gray1);
                 border-bottom: 1px solid var(--tainacan-gray1);
                 display: flex;

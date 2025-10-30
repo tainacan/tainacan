@@ -1,45 +1,47 @@
 <template>
     <form 
-            class="tainacan-role-edition-form"
+            class="tainacan-role-edition-form tainacan-form"
             @submit="onSubmit">
-        <h1 
-                v-if="roleSlug !== 'new'"
-                class="wp-heading-inline">
-            {{ $route.meta.title }}&nbsp;<strong>{{ form.name ? form.name : '' }}</strong>
-        </h1>
-        <h1 
-                v-else
-                class="wp-heading-inline">
-            {{ $i18n.get('Add new role') }}
-        </h1>
-        <transition name="appear-from-right">
-            <div 
-                    v-if="showNotice"
-                    class="notice notice-success notice-alt">
-                <p>{{ $i18n.get('User Role Saved') }}</p>
-            </div>
-        </transition>
-        <transition name="appear-from-right">
-            <div 
-                    v-if="showErrorNotice"
-                    class="notice notice-error notice-alt">
-                <p>{{ errorMessage }}</p>
-            </div>
-        </transition>
-        <hr class="wp-header-end">
-        <br>
+        <div class="tainacan-fixed-subheader">
+            <h1 
+                    v-if="roleSlug !== 'new'"
+                    class="tainacan-page-title">
+                {{ $route.meta.title }}&nbsp;<strong>{{ form.name ? form.name : '' }}</strong>
+            </h1>
+            <h1 
+                    v-else
+                    class="tainacan-page-title">
+                {{ $i18n.get('Add new role') }}
+            </h1>
+            <transition name="appear-from-right">
+                <div 
+                        v-if="showNotice"
+                        class="notice notice-success notice-alt">
+                    <p>{{ $i18n.get('User Role Saved') }}</p>
+                </div>
+            </transition>
+            <transition name="appear-from-right">
+                <div 
+                        v-if="showErrorNotice"
+                        class="notice notice-error notice-alt">
+                    <p>{{ errorMessage }}</p>
+                </div>
+            </transition>
+        </div>
+
         <template v-if="!isLoadingRole">
-            <div class="name-edition-box">
-                <label for="role-name-input">{{ $i18n.get('Role name') + ':' }}</label>
-                <input
-                        id="role-name-input" 
+            <b-field
+                    class="name-edition-input"
+                    :addons="false"
+                    :label="$i18n.get('Role name')">
+                <b-input
                         v-model="form.name" 
                         type="text"
-                        name="name" 
+                        name="name"
                         :placeholder="$i18n.get('Insert the role name...')" 
-                        @input="showNotice = false">
-            </div>
-            <br>
+                        @update:model-value="showNotice = false" />
+            </b-field>
+
             <!-- Hook for extra Form options -->
             <template v-if="hasBeginLeftForm">  
                 <form
@@ -50,7 +52,7 @@
                 <br>
             </template>
         </template>
-
+        
         <span 
                 v-if="isLoadingRole || isLoadingCapabilities"
                 class="spinner is-active"
@@ -59,28 +61,32 @@
         <template v-if="!isLoadingRole">
 
             <div id="capabilities-tabs">
-                <h2 class="nav-tab-wrapper">
-                    <a 
-                            class="nav-tab"
-                            :class="{ 'nav-tab-active': capabilitiesTab == 'repository'}"
-                            @click="capabilitiesTab = 'repository'">
-                        {{ $i18n.get('Repository') }}
-                    </a>
-                    <a 
-                            class="nav-tab"
-                            :class="{ 'nav-tab-active': capabilitiesTab == 'collections'}"
-                            @click="capabilitiesTab = 'collections'">
-                        {{ $i18n.get('Collections') }}
-                    </a>
-
-                    <a        
-                            v-if="hasBeginRightForm || hasEndRightForm"
-                            class="nav-tab"
-                            :class="{ 'nav-tab-active': capabilitiesTab == 'extra'}"
-                            @click="capabilitiesTab = 'extra'">
-                        {{ $i18n.get('Others') }}
-                    </a>
-                </h2>
+                <div class="tabs">
+                    <ul>
+                        <li :class="{ 'is-active': capabilitiesTab == 'repository'}">
+                            <a @click="capabilitiesTab = 'repository'">
+                                {{ $i18n.get('Repository') }}
+                            </a>
+                        </li>
+                        <li :class="{ 'is-active': capabilitiesTab == 'collections'}">
+                            <a @click="capabilitiesTab = 'collections'">
+                                {{ $i18n.get('Collections') }}
+                            </a>
+                        </li>
+                        <li :class="{ 'is-active': capabilitiesTab == 'admin-ui'}">
+                            <a @click="capabilitiesTab = 'admin-ui'">
+                                {{ $i18n.get('Admin Appearance') }}
+                            </a>
+                        </li>
+                        <li 
+                                v-if="hasBeginRightForm || hasEndRightForm"
+                                :class="{ 'is-active': capabilitiesTab == 'extra'}">
+                            <a @click="capabilitiesTab = 'extra'">
+                                {{ $i18n.get('Others') }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
                 <div 
                         v-if="capabilitiesTab === 'repository'"
                         id="tab-repository"
@@ -99,12 +105,7 @@
                                         v-for="(capability, index) of group"
                                         :key="index">
                                     <li :id="'capability-' + capability">
-                                        <span class="check-column">
-                                            <label
-                                                    class="screen-reader-text"
-                                                    :for="'capability_' + capability">
-                                                {{ $i18n.get('Selecionar') + ' ' + repositoryCapabilities[capability].display_name }}
-                                            </label>
+                                        <label>
                                             <input
                                                     :id="'capability_'+ capability"
                                                     type="checkbox"
@@ -112,20 +113,20 @@
                                                     :disabled="repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap] == true) >= 0"
                                                     :checked="form.capabilities[capability] || (repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap] == true) >= 0)"
                                                     @input="onUpdateCapability($event.target.checked, capability)">
-                                        </span>
-                                        <span 
-                                                v-tooltip="{
-                                                    content: repositoryCapabilities[capability].description,
-                                                    autoHide: true,
-                                                    delay: { show: 500, hide: 0 },
-                                                    placement: 'auto-end',
-                                                    instantMove: true,
-                                                    popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
-                                                }"        
-                                                class="name column-name"
-                                                :data-colname="$i18n.get('Capability name')">
-                                            {{ repositoryCapabilities[capability].display_name }}
-                                        </span>
+                                            <span 
+                                                    v-tooltip="{
+                                                        content: repositoryCapabilities[capability].description,
+                                                        autoHide: true,
+                                                        delay: { show: 500, hide: 0 },
+                                                        placement: 'auto-end',
+                                                        instantMove: true,
+                                                        popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
+                                                    }"        
+                                                    class="name column-name"
+                                                    :data-colname="$i18n.get('Capability name')">
+                                                {{ repositoryCapabilities[capability].display_name }}
+                                            </span>
+                                        </label>
                                     </li>
                                     <br>
                                 </template>
@@ -145,13 +146,13 @@
                             style="float: none; margin: 0 auto;" />
                     <template v-if="!isLoadingCollections"> 
                         <!-- <h3>{{ $i18n.get('Role\'s Collection Related Capabilities List') }}</h3> -->
-                        <div class="tablenav top">
-                            <div class="alignleft collection-selector">
-                                <label 
-                                        for="bulk-action-selector-top" 
-                                        class="screen-reader-text">
-                                    {{ $i18n.get('Select the collection to change capabilities') }}
-                                </label>
+                        <div class="alignleft collection-selector">
+                            <label 
+                                    for="bulk-action-selector-top" 
+                                    class="sr-only">
+                                {{ $i18n.get('Select the collection to change capabilities') }}
+                            </label>
+                            <span class="select">
                                 <select 
                                         id="collection-select" 
                                         name="collection"
@@ -166,10 +167,10 @@
                                             :value="collection.id">
                                         {{ collection.name }}
                                     </option>
-                                </select>    
-                            </div>
-                            <br class="clear">
+                                </select>
+                            </span>
                         </div>
+                        <br class="clear">
 
                         <div 
                                 v-if="!isLoadingCapabilities"
@@ -184,34 +185,29 @@
                                             v-for="(capability, index) of group"
                                             :key="index">
                                         <li :id="'capability-' + capability.replace('%d', selectedCollection)">
-                                            <span class="check-column">
-                                                <label
-                                                        class="screen-reader-text"
-                                                        :for="'capability_' + capability.replace('%d', selectedCollection)">
-                                                    {{ $i18n.get('Selecionar') + ' ' + collectionCapabilities[capability].display_name }}
-                                                </label>
+                                            <label>
                                                 <input
-                                                        :id="'capability_'+ capability.replace('%d', selectedCollection)"
+                                                        :id="'capability_' + capability.replace('%d', selectedCollection)"
                                                         type="checkbox"
                                                         name="roles[]"
                                                         :style="{ 'margin-left': collectionCapabilities[capability].deps && collectionCapabilities[capability].deps.size > 0 ? ( collectionCapabilities[capability].deps.size + 'em') : '0' }"
                                                         :disabled="isCapabilityDisabled(capability, selectedCollection)"
                                                         :checked="isCapabilityChecked(capability, selectedCollection)"
                                                         @input="onUpdateCapability($event.target.checked, capability.replace('%d', selectedCollection))">
-                                            </span>
-                                            <span 
-                                                    v-tooltip="{
-                                                        content: collectionCapabilities[capability].description,
-                                                        autoHide: true,
-                                                        delay: { show: 500, hide: 0 },
-                                                        placement: 'auto-end',
-                                                        instantMove: true,
-                                                        popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
-                                                    }"
-                                                    class="name column-name"
-                                                    :data-colname="$i18n.get('Capability name')">
-                                                {{ collectionCapabilities[capability].display_name }}
-                                            </span>
+                                                <span 
+                                                        v-tooltip="{
+                                                            content: collectionCapabilities[capability].description,
+                                                            autoHide: true,
+                                                            delay: { show: 500, hide: 0 },
+                                                            placement: 'auto-end',
+                                                            instantMove: true,
+                                                            popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
+                                                        }"
+                                                        class="name column-name"
+                                                        :data-colname="$i18n.get('Capability name')">
+                                                    {{ collectionCapabilities[capability].display_name }}
+                                                </span>
+                                            </label>
                                         </li>
                                         <br>
                                     </template>
@@ -222,6 +218,66 @@
                     <p><span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('The capability "Manage Tainacan" may affect other capabilities related to repository and collections.') }}</p>
                     <p><span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('Capabilities related to All Collections shall affect other Collections capabilities.') }}</p>
                 </div> <!-- End of Collections Tab -->
+
+                <div
+                        v-else-if="capabilitiesTab === 'admin-ui'"
+                        id="tab-admin-ui"
+                        class="tabs-content">
+                    <p>{{ $i18n.get('The following capabilities are related to the admin interface appearance.') }}</p>
+
+                    <p v-if="roleSlug === 'new'">
+                        <span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('You must first create the slug before defining apperaence options for it.') }}
+                    </p>
+                    
+                    <div class="capabilities-list">
+                        <section
+                                v-for="(group, groupIndex) of groupedAdminUIOptions"
+                                :key="groupIndex"
+                                class="admin-ui-group-collapse">
+                            <div    
+                                    role="button"
+                                    class="admin-ui-group-collapse--button"
+                                    :aria-controls="'admin-ui-group--' + groupIndex"
+                                    :aria-expanded="openedAdminUIOptionCollapse == 'admin-ui-group--' + groupIndex"
+                                    @click="openedAdminUIOptionCollapse = ( openedAdminUIOptionCollapse == 'admin-ui-group--' + groupIndex ? '' : 'admin-ui-group--' + groupIndex)">
+                                <span class="icon">
+                                    <i 
+                                            :class="{
+                                                'tainacan-icon-arrowdown' : openedAdminUIOptionCollapse == 'admin-ui-group--' + groupIndex,
+                                                'tainacan-icon-arrowright' : openedAdminUIOptionCollapse != 'admin-ui-group--' + groupIndex 
+                                            }"
+                                            class="tainacan-icon tainacan-icon-1-25em" />
+                                </span>
+                                <span class="collapse-label">
+                                    <h3 v-if="group.label">{{ group.label }}</h3>
+                                    <p v-if="group.description">{{ group.description }}</p>
+                                </span>
+                            </div>
+                            <transition name="admin-ui-collapse">
+                                <ul 
+                                        v-if="openedAdminUIOptionCollapse == 'admin-ui-group--' + groupIndex"
+                                        :id="'admin-ui-group--' + groupIndex"
+                                        class="admin-ui-group-collapse--content">
+                                    <li 
+                                            v-for="(optionLabel, optionSlug) of group.items"
+                                            :key="optionSlug">
+                                        <label>
+                                            <input 
+                                                    :id="optionSlug"
+                                                    type="checkbox"
+                                                    name="tainacan_admin_options_by_role"
+                                                    :disabled="roleSlug === 'new'"
+                                                    :checked="getAdminUIOptionValue(optionSlug)"
+                                                    @input="($event) => setAdminUIOptionValue($event, optionSlug)">
+                                            <span class="name column-name">{{ optionLabel }}</span>
+                                        </label>
+                                    </li>
+                                </ul>
+                            </transition>
+                        </section>
+
+                    </div>
+                </div><!-- End of PluginUI tab -->
 
                 <div
                         v-show="capabilitiesTab === 'extra'"
@@ -250,7 +306,6 @@
                                 v-html="getEndRightForm" />
                     </template>
                     
-                    <br>
                 </div><!-- End of the Extra Tab -->
 
             </div> <!-- End of Tabs-->
@@ -268,16 +323,16 @@
         </template>
 
         <div class="form-submit">
-            <p class="cancel">
+            <div class="control">
                 <input 
                         id="cancel"
                         type="button"
                         name="cancel"
-                        class="button" 
+                        class="button is-outlined" 
                         :value="$i18n.get('Cancel')"
                         @click="$router.go(-1)">
-            </p>
-            <p class="submit">
+            </div>
+            <div class="control">
                 <span 
                         v-if="isUpdatingRole"
                         class="spinner is-active"
@@ -287,9 +342,9 @@
                         type="submit"
                         name="submit"
                         :disabled="!form.name || showNotice" 
-                        class="button button-primary"
+                        class="is-success button"
                         :value="roleSlug === 'new' ? $i18n.get('Create Role') : $i18n.get('Save Changes')">
-            </p>
+            </div>
         </div>
     </form>
 </template>
@@ -317,13 +372,18 @@
                 capabilitiesTab: 'repository',
                 showNotice: false,
                 showErrorNotice: false,
-                errorMessage: ''
+                errorMessage: '',
+                groupedAdminUIOptions: tainacan_plugin && tainacan_plugin.admin_ui_options ? tainacan_plugin.admin_ui_options : {},
+                isLoadingAdminUIOptions: false,
+                localAdminUIOptions: {},
+                openedAdminUIOptionCollapse: 'admin-ui-group--navigation'
             }
         },
         computed: {
             ...mapGetters('capability', {
                 'originalRole': 'getRole',
-                'capabilities': 'getCapabilities'
+                'capabilities': 'getCapabilities',
+                'adminUIOptions': 'getAdminUIOptions'
             }),
             collectionCapabilities() {
                 let collectionCapabilities = {}
@@ -385,6 +445,18 @@
 
                         this.isLoadingRole = false;
 
+                        wp.hooks.doAction(
+                            'tainacan_navigation_path_updated', 
+                            { 
+                                currentRoute: this.$route,
+                                adminOptions: this.$adminOptions,
+                                parentEntity: {
+                                    rootLink: 'roles',
+                                    label: this.$i18n.get('Tainacan User Roles')
+                                }
+                            }
+                        );
+
                         // Fills hook forms with it's real values 
                         nextTick(() => this.updateExtraFormData(this.form) );
                         
@@ -400,6 +472,18 @@
                         this.form.slug = undefined;
 
                         this.isLoadingRole = false;
+
+                        wp.hooks.doAction(
+                            'tainacan_navigation_path_updated', 
+                            { 
+                                currentRoute: this.$route,
+                                adminOptions: this.$adminOptions,
+                                parentEntity: {
+                                    rootLink: 'roles',
+                                    label: this.$i18n.get('Tainacan User Roles')
+                                }
+                            }
+                        );
 
                         // Fills hook forms with it's real values 
                         nextTick(() => this.updateExtraFormData(this.form) );
@@ -436,6 +520,19 @@
                 .catch(() => {
                     this.isLoadingCollections = false;
                 }); 
+
+            this.isLoadingAdminUIOptions = true;
+            this.fetchAdminUIOptions()
+                .then(() => {
+                    if ( Array.isArray(this.adminUIOptions) && this.adminUIOptions.length === 0 )
+                        this.localAdminUIOptions = {};
+                    else
+                        this.localAdminUIOptions = JSON.parse(JSON.stringify(this.adminUIOptions));
+                    
+                    this.isLoadingAdminUIOptions = false;
+                }).catch(() => {
+                    this.isLoadingAdminUIOptions = false;
+                });
         },
         methods: {
             ...mapActions('collection', [
@@ -445,7 +542,9 @@
                 'createRole',
                 'updateRole',
                 'fetchRole',
-                'fetchCapabilities'
+                'fetchCapabilities',
+                'fetchAdminUIOptions',
+                'updateAdminUIOptions'
             ]),
             onUpdateCapability(value, capabilityKey) {
                 this.showNotice = false;
@@ -464,16 +563,29 @@
                 }
                 this.fillExtraFormData(data);
 
-                if (this.roleSlug === 'new') {
+                if ( this.roleSlug === 'new' ) {
                     this.createRole(data)
                         .then((createdRole) => {
                             this.roleSlug = createdRole.slug;
                             this.form = createdRole;
                             this.$router.push('/roles/' + this.roleSlug);
                             this.isUpdatingRole = false;
-                            this.showNotice = true;
-                            this.showErrorNotice = false;
-                            this.errorMessage = '';
+                           
+                            this.isLoadingAdminUIOptions = true;
+                            this.updateAdminUIOptions(this.localAdminUIOptions)
+                                .then(() => {
+                                    this.isLoadingAdminUIOptions = false;
+                                    
+                                    this.showNotice = true;
+                                    this.showErrorNotice = false;
+                                    this.errorMessage = '';
+                                }).catch((error) => {
+                                    this.isLoadingAdminUIOptions = false;
+
+                                    this.errorMessage = error.error_message;
+                                    this.showErrorNotice = true;
+                                });
+                            
                         })
                         .catch((error) => {
                             this.isUpdatingRole = false;
@@ -484,9 +596,21 @@
                     this.updateRole(data)
                         .then(() => {
                             this.isUpdatingRole = false;
-                            this.showNotice = true;
-                            this.showErrorNotice = false;
-                            this.errorMessage = '';
+                           
+                            this.isLoadingAdminUIOptions = true;
+                            
+                            this.updateAdminUIOptions(JSON.parse(JSON.stringify(this.localAdminUIOptions)))
+                                .then(() => {
+                                    this.isLoadingAdminUIOptions = false;
+
+                                    this.showNotice = true;
+                                    this.showErrorNotice = false;
+                                    this.errorMessage = '';
+                                }).catch((error) => {
+                                    this.isLoadingAdminUIOptions = false;
+                                    this.errorMessage = error.error_message;
+                                    this.showErrorNotice = true;
+                                });
                         })
                         .catch((error) => {
                             this.isUpdatingRole = false;
@@ -514,6 +638,21 @@
                     return this.$i18n.get('Collection')
                 else
                     return this.$i18n.get('Repository')
+            },
+            getAdminUIOptionValue(optionSlug) {
+                return this.localAdminUIOptions[this.roleSlug] && this.localAdminUIOptions[this.roleSlug][optionSlug] ? this.localAdminUIOptions[this.roleSlug][optionSlug] : false;
+            },
+            setAdminUIOptionValue($event, optionSlug) {
+
+                this.showNotice = false;
+                    
+                // Ensure the localAdminUIOptions object is initialized for the current roleSlug
+                if (!this.localAdminUIOptions[this.roleSlug]) {
+                    this.localAdminUIOptions[this.roleSlug] = {};
+                }
+
+                // Update the specific optionSlug value
+                this.localAdminUIOptions[this.roleSlug][optionSlug] = $event.target.checked;
             },
             isCapabilityChecked(capability, selectedCollection) {
                 const isCapabilityEnabled = this.form.capabilities[capability.replace('%d', selectedCollection)] ;
@@ -579,6 +718,66 @@
 <style lang="scss">
 
 .tainacan-role-edition-form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: var(--tainacan-container-padding);
+
+    // Admin UI Collapse 
+    @keyframes admin-ui-collapse-in {
+        from {
+            opacity: 0;
+            height: 0px;
+            max-height: 0px;
+            min-height: 0px;
+            -ms-transform: translate(0%, -30%); /* IE 9 */
+            -webkit-transform: translate(0%, -30%); /* Safari */
+            transform: translate(0%, -30%);
+        }
+        to {
+            height: 35px;
+            max-height: 35px;
+            min-height: 35px;
+            opacity: 1;        
+            -ms-transform: translate(0, 0); /* IE 9 */
+            -webkit-transform: translate(0, 0); /* Safari */
+            transform: translate(0, 0);
+        }
+    }
+
+    @keyframes admin-ui-collapse-out {
+        from {
+            height: 35px;
+            max-height: 35px;
+            min-height: 35px;
+            opacity: 1;
+            -ms-transform: translate(0, 0); /* IE 9 */
+            -webkit-transform: translate(0, 0); /* Safari */
+            transform: translate(0, 0);
+        }
+        to {
+            height: 0px;
+            max-height: 0px;
+            min-height: 0px;
+            opacity: 0;
+            -ms-transform: translate(0%, -30%); /* IE 9 */
+            -webkit-transform: translate(0%, -30%); /* Safari */
+            transform: translate(0%, -30%);
+        }
+    }
+
+    .admin-ui-collapse-enter-active {
+        overflow: hidden;
+        animation-name: admin-ui-collapse-in;
+        animation-duration: 0.1s;
+        animation-timing-function: ease;   
+    }
+    .admin-ui-collapse-leave-active {   
+        overflow: hidden; 
+        animation-name: admin-ui-collapse-out;
+        animation-duration: 0.1s;
+        animation-timing-function: ease;   
+    }
 
     @keyframes appear-from-right {
         from {
@@ -600,14 +799,48 @@
         position: relative;
         float: right;
     }
-    #role-name-input {
-        min-width: 200px;
+    .name-edition-input {
+        max-width: 280px;
     }
     .form-submit {
         display: flex;
         justify-content: space-between;
-        align-content: center;
-        margin: 2em 0 1em 0;
+        gap: var(--tainacan-container-padding);
+        position: sticky;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        z-index: 1001;
+        background-color: var(--tainacan-gray1);
+        width: calc( 100% + ( 2 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column)) ) );
+        align-items: center;
+        transition: bottom 0.5s ease, width 0.2s linear;
+        box-shadow: 0px 0px 12px -8px var(--tainacan-black);
+        margin-left: calc( -1 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column)));
+        margin-top: auto;
+        padding: 10px var(--tainacan-page-container-padding-x, var(--tainacan-one-column));
+
+        &::after,
+        &::before {
+            height: 18px;
+            width: 18px;
+            background: transparent;
+            display: block;
+            content: '';
+            position: absolute;
+        }
+        &::before {
+            left: 0;
+            top: -18px;
+            border-bottom-left-radius: 9px;
+            box-shadow: -9px 0px 0 0 var(--tainacan-gray1), inset 2px -2px 5px -3px var(--tainacan-gray2)
+        }
+        &::after {
+            right: 0;
+            top: -18px;
+            border-bottom-right-radius: 9px;
+            box-shadow: 9px 0px 0 0 var(--tainacan-gray1), inset -2px -2px 5px -3px var(--tainacan-gray2)
+        }
 
         p {
             margin: 0;
@@ -617,31 +850,32 @@
             padding: 2px 16px;
         }
     }
-    .name-edition-box label {
-        margin-right: 2em;
-        padding-bottom: 3px;
-        font-size: 1em;
-        font-weight: bold;
-    }
     .nav-tab {
-        background-color: #faf9f9;
-        border-bottom-color: #faf9f9;
         padding: 5px 24px;
+        margin: 0;
+        background-color: transparent;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        border-bottom: 3px solid transparent;
+
+        &.nav-tab-active {
+            border-bottom: 3px solid var(--tainacan-secondary);
+        }
     }
     .tabs-content {
-        background-color: #faf9f9;
-        border: 1px solid #ccc;
         border-top: none;
-        padding: 1em 2em;
+        padding: 0.25em var(--tainacan-one-column);
     }
     .dashicons-info {
-        color: #a06522;
+        color: var(--tainacan-warning);
     }
     .capabilities-list {
         padding: 1em 0;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
+        font-size: 13px;
         width: 100%;
 
         .capability-group {
@@ -652,28 +886,76 @@
             h3 {
                 margin-top: 0;
                 margin-bottom: 1em;
-                font-size: 1em;
+                font-size: 1.125em;
                 font-weight: bold;
-                color: #0073aa;
+                color: var(--taincan-label-color);
             }
             ul {
                 li {
-                    margin: 0 0.5em 0.5em;
+                    margin: 0 0.5em 0.75em;
                     display: inline-block;
-                    white-space: nowrap;
-                    .column-name {
-                        white-space: nowrap;
+
+                    label {
+                        display: flex;
+                        align-items: center;
+
+                        input[type="checkbox"] {
+                            flex-shrink: 0
+                        }
                     }
                 }
             }
         }
+    }
+    .admin-ui-group-collapse {
+        padding: 0 0 0.25rem 0;
+        width: 100%;
+
+        .admin-ui-group-collapse--button {
+            display: flex;
+            gap: 1em;
+            border-bottom: 1px solid var(--tainacan-input-border-color);
+            cursor: pointer;
+            padding: 0.5rem 0;
+            font-size: 1.125em;
+
+            h3 {
+                font-weight: bold;
+                font-weight: 1.25em;
+            }
+            .icon {
+                color: var(--tainacan-secondary);
+            }
+        }
+        .admin-ui-group-collapse--content {
+            padding: 0.75rem var(--tainacan-one-column);
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 320px);
+            gap: 0.5em var(--tainacan-one-column);
+
+            li {
+                margin-bottom: 0.125em;
+                display: block;
+                max-width: 100%;
+
+                label {
+                    display: flex;
+                    align-items: center;
+                    
+                    input[type="checkbox"] {
+                        flex-shrink: 0
+                    }
+                }
+            }
+        }
+
     }
     @media only screen and (max-width: 783px) {
         #collection-select {
             width: 100%;
         }
         .nav-tab-wrapper {
-            border-bottom: 1px solid #ccc;
+            border-bottom: 1px solid var(--tainacan-gray2);
         }
     }
 }

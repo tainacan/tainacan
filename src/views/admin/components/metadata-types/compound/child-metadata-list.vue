@@ -17,7 +17,7 @@
         </section>
         <sortable
                 :list="childrenMetadata"
-                :style="{ minHeight: childrenMetadata.length > 0 ? '40px' : '70px' }"
+                :style="{ minHeight: childrenMetadata.length > 0 ? '50px' : '80px' }"
                 class="active-metadata-area child-metadata-area"
                 item-key="id"
                 :options="{
@@ -175,7 +175,9 @@
                                     :style="{ visibility: 
                                         metadatum.collection_id != collectionId
                                             ? 'hidden' : 'visible'
-                                    }" 
+                                    }"
+                                    role="button"
+                                    :aria-label="$i18n.get('edit')" 
                                     @click.prevent="toggleMetadatumEdition(metadatum.id)">
                                 <span 
                                         v-tooltip="{
@@ -196,6 +198,8 @@
                                         metadatum.metadata_type_object.related_mapped_prop == 'description'
                                             ? 'hidden' : 'visible'
                                     }" 
+                                    role="button"
+                                    :aria-label="$i18n.get('delete')"
                                     @click.prevent="removeMetadatum(metadatum)">
                                 <span
                                         v-tooltip="{
@@ -221,7 +225,7 @@
                             aria-modal
                             aria-role="dialog"
                             custom-class="tainacan-modal"
-                            :close-button-aria-label="$i18n.get('close')"
+                            :can-cancel="['escape', 'outside']"
                             @close="onEditionCanceled()">
                         <metadatum-edition-form
                                 :collection-id="collectionId"
@@ -395,13 +399,26 @@
                 });
             },
             removeMetadatum(removedMetadatum) {
+                let metadatumName = '';
+            
+                if (removedMetadatum && typeof removedMetadatum === 'object') {
+                    if (removedMetadatum.name !== undefined && removedMetadatum.name !== null && removedMetadatum.name !== '')
+                        metadatumName = removedMetadatum.name;
+                    else if (removedMetadatum.id)
+                        metadatumName = 'ID: ' + removedMetadatum.id; 
+                }
+                
+                let message = this.$i18n.getWithVariables(
+                    'info_warning_metadatum_delete_%s',
+                    [ metadatumName ]
+                );
+
                 this.$buefy.modal.open({
-                    parent: this,
                     component: CustomDialog,
                     props: {
                         icon: 'alert',
                         title: this.$i18n.get('label_warning'),
-                        message: this.$i18n.get('info_warning_metadatum_delete'),
+                        message: message,
                         onConfirm: () => { 
                             this.deleteMetadatum({
                                     collectionId: this.collectionId,
@@ -418,7 +435,7 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
+                    canCancel: ['escape', 'outside']
                 }); 
             },
             toggleMetadatumEdition(metadatumId) {

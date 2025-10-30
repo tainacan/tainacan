@@ -7,6 +7,7 @@
             tabindex="-1"
             aria-modal 
             class="tainacan-modal-content"
+            :class="{ 'tainacan-repository-level-colors': isNaN(collectionId) || !collectionId }"
             style="width: auto">
         <header class="tainacan-modal-title">
             <h2 
@@ -19,13 +20,14 @@
                     id="exposers-modal-title">
                 {{ (itemId ? $i18n.get('label_urls_for_item_page') : $i18n.get('label_urls_for_items_list')) + " - " + selectedExposer.name }}
             </h2>
-            <a 
-                    v-if="selectedExposer != undefined"
-                    class="back-link"
-                    @click="selectedExposerMappers = []; selectedExposer = undefined;">
-                {{ $i18n.get('back') }}
-            </a>
-            <hr>
+            <button         
+                    class="button is-medium is-white is-align-self-flex-start"
+                    :aria-label="$i18n.get('close')"
+                    @click="$emit('close')">
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-125em" />
+                </span>
+            </button>
         </header>
         <section class="tainacan-form">
             <div 
@@ -91,14 +93,16 @@
                         </a>
                     </span>
                 </div>
-                <p>{{ itemId ? $i18n.get('info_other_options') : $i18n.get('info_other_item_listing_options') }}</p>
+                <p style="font-size: 1em; padding: 0em 1.25em; margin-top: 0.75em;">
+                    {{ itemId ? $i18n.get('info_other_options') : $i18n.get('info_other_item_listing_options') }}
+                </p>
                 <div 
                         role="list"
-                        class="exposer-types-list">
+                        class="exposer-types-list tainacan-clickable-cards">
                     <div
                             v-for="(exposerType, index ) in availableExposers"
                             :key="index"
-                            class="exposer-type"
+                            class="exposer-type tainacan-clickable-card"
                             role="listitem"
                             @click="siteLinkCopied = false; selectExposer(exposerType)">
                         <h4>{{ exposerType.name }}</h4>
@@ -380,7 +384,7 @@ export default {
             this.selectedExposerMappers = [];
             this.selectedExposerMappers.push({
                 name: undefined,
-                collapsed: true,
+                collapsed: false,
                 linkCopied: false
             });
 
@@ -408,8 +412,8 @@ export default {
             if (pagedLink && (this.itemId == undefined || this.itemId == null))
                 params.paged = pagedLink;
 
-            if (tainacan_plugin.nonce)
-                params._wpnonce = tainacan_plugin.nonce;
+            if (tainacan_user.nonce)
+                params._wpnonce = tainacan_user.nonce;
 
             return this.exposerBaseURL + '&' + qs.stringify(params);
         },
@@ -488,15 +492,13 @@ export default {
 
 <style lang="scss" scoped>
 
+    @import '../../scss/_cards.scss';
+
     .tainacan-modal-title {
         margin-bottom: 24px;
 
         h2 {
             margin-bottom: 0;
-        }
-        .back-link {
-            color: var(--tainacan-secondary);
-            cursor: pointer;
         }
     }
 
@@ -504,55 +506,9 @@ export default {
 
         .exposer-item-link {
             padding-left: 0em;
+            
             p {
                 padding-left: 0.5em;
-            }
-        }
-        
-        p {
-            font-size: 1em;
-            color: var(--tainacan-label-color);
-            padding: 0em 1.25em;
-            margin-top: 0.75em;
-            margin-bottom: 0;
-        }
-
-        .exposer-types-list {
-            display: flex;
-            flex-wrap: wrap;
-        
-            .exposer-type {
-                border: 1px solid var(--tainacan-input-border-color);
-                padding: 15px;
-                margin: 24px 12px;
-                cursor: pointer;
-                max-width: 50%;
-                flex-grow: 1;
-                font-size: 1em;
-                transition: border 0.3s ease;
-
-                @media screen and (max-width: 768px) {
-                    max-width: 100%;
-                    margin: 12px;
-                }
-
-                h4 {
-                    color: var(--tainacan-heading-color);
-                    font-size: 1em !important;
-                    font-weight: 500;
-                    padding: 0em 0.5em;
-                    margin: 0;
-                }
-                p {
-                    font-size: 0.75em;
-                    color: var(--tainacan-label-color);
-                    padding: 0em 0.5em;
-                    margin-bottom: 0;
-                }
-
-                &:hover {
-                    border: 1px solid var(--tainacan-item-hover-background-color);
-                }
             }
         }
     }
@@ -614,6 +570,7 @@ export default {
         align-items: center;
         padding-left: 0.125em;
         height: 42px;
+        border-bottom: 1px solid var(--tainacan-lists-separator-color, var(--tainacan-item-hover-background-color));            
 
         &:first-of-type {
             margin-top: 0.5em;

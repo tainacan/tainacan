@@ -475,8 +475,6 @@
 
 <style lang="scss" scoped>
 
-    @import '../../../admin/scss/_variables.scss';
-
     .child-metadata-inputs {
         margin-left: -30px;
         padding-left: 38px;
@@ -519,7 +517,7 @@
             font-style: italic;
         }
 
-        @media screen and (max-width: 769px) {
+        @media screen and (max-width: 768px) {
             margin-left: 0px;
             padding-left: 22px;
 

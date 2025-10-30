@@ -5,7 +5,12 @@ namespace Tainacan\Entities;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Represents the Entity Taxonomy
+ * Represents a Tainacan Taxonomy entity.
+ *
+ * Taxonomies define hierarchical classification systems for organizing
+ * and categorizing items within Tainacan collections.
+ *
+ * @since 1.0.0
  */
 class Taxonomy extends Entity {
     use \Tainacan\Traits\Entity_Collections_Relation;
@@ -59,8 +64,8 @@ class Taxonomy extends Entity {
 	    $labels = array(
             'name'              => $taxonomy_name,
             'singular_name'     => $taxonomy_name,
-            'search_items'      => __( sprintf('Search terms in %s', $taxonomy_name), 'tainacan' ),
-            'all_items'         => __( sprintf('All terms in %s', $taxonomy_name), 'tainacan' ),
+            'search_items'      => sprintf(__('Search terms in %s', 'tainacan'), $taxonomy_name),
+            'all_items'         => sprintf(__('All terms in %s', 'tainacan'), $taxonomy_name),
             'parent_item'       => __( 'Parent term', 'tainacan' ),
             'parent_item_colon' => __( 'Parent term:', 'tainacan' ),
             'edit_item'         => __( 'Edit term', 'tainacan' ),

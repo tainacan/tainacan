@@ -1,10 +1,4 @@
 // Grid mixin for display: grid compatibility
-@mixin display-grid {
-    flex-wrap: wrap;
-    display: flex;
-    display: -ms-grid;
-    display: grid;
-}
 @mixin grid-child ($col-start, $col-end, $row-start, $row-end) {
     -ms-grid-column: $col-start;
     -ms-grid-column-span: $col-end - $col-start;

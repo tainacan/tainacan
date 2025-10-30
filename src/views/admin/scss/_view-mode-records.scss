@@ -14,7 +14,6 @@
 }
 .tainacan-records-container {
     list-style: none;
-    margin-left: 30px;
     padding: 0;
     display: flex;
     flex-wrap: wrap;
@@ -73,11 +72,13 @@
         cursor: pointer;
         text-decoration: none;
         display: block;
+        border-radius: var(--tainacan-item-border-radius, 0px);
         transition: background-color 0.2s ease;
 
         :deep(img) {
             height: auto;
             max-width: 100%;
+            border-radius: var(--tainacan-item-border-radius, 0px);
         }
 
         &:hover {
@@ -294,6 +295,8 @@
         }
     }
 }
-
-
-
+@media screen and (min-width: 769px) {
+    .is-filters-menu-open #filters-modal+#items-list-area .tainacan-records-container {
+        margin-left: 30px;
+    }
+}
