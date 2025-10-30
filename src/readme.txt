@@ -103,6 +103,9 @@ After site migration, plugin updates, or new installations, you may need to rebu
 13. Choose which items will be displayed in your block
 14. Items displayed using a Gutenberg block
 
+== Changelog ==
+
+To see the changelog, please visit the [GitHub Releases](https://github.com/tainacan/tainacan/releases) page.
 
 == Support ==
 
