@@ -119,7 +119,7 @@ class REST_Terms_Controller extends REST_Controller {
 					'args'                => array_merge(
 						array(
 							'new_parent_id' => array(
-								'description'       => __('The new parent term ID.'),
+								'description'       => __('The new parent term ID.', 'tainacan'),
 								'type'              => ['integer', 'string'],
 								'required'          => true
 							),
@@ -729,22 +729,22 @@ class REST_Terms_Controller extends REST_Controller {
 					$endpoint_args['metadatum_id'] = [
 						'required' => false,
 						'type' => 'integer',
-						'description' => __('If term is being created in the context of a Taxonomy metadatum, specify its ID')
+						'description' => __('If term is being created in the context of a Taxonomy metadatum, specify its ID', 'tainacan')
 					];
 					$endpoint_args['item_id'] = [
 						'required' => false,
 						'type' => 'integer',
-						'description' => __('If term is being created in the context of a Taxonomy metadatum, specify the ID of the item being edited')
+						'description' => __('If term is being created in the context of a Taxonomy metadatum, specify the ID of the item being edited', 'tainacan')
 					];
 				}
 			break;
 			case \WP_REST_Server::DELETABLE:
 				$endpoint_args['permanently'] = [
-					'description' => __('Delete term permanently.'),
+					'description' => __('Delete term permanently.', 'tainacan'),
 					'default'     => '1'
 				];
 				$endpoint_args['delete_child_terms'] = [
-					'description' => __('Delete all child terms.'),
+					'description' => __('Delete all child terms.', 'tainacan'),
 					'default'     => false
 				];
 			break;
@@ -763,7 +763,7 @@ class REST_Terms_Controller extends REST_Controller {
 	 */
 	public function get_wp_query_params() {
 		$query_params['taxonomy_id'] = array(
-			'description'       => __('Taxonomy ID.'),
+			'description'       => __('Taxonomy ID.', 'tainacan'),
 			'type'              => ['integer', 'string'],
 			'required'          => true
 		);
@@ -773,7 +773,7 @@ class REST_Terms_Controller extends REST_Controller {
 		$query_params = array_merge($query_params, parent::get_wp_query_params());
 
 		$query_params['name'] = array(
-			'description' => __('Limits the result set to terms with a specific name'),
+			'description' => __('Limits the result set to terms with a specific name', 'tainacan'),
 			'type'        => 'string',
 		);
 

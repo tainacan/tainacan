@@ -141,7 +141,7 @@ class Theme_Helper {
 		if (is_post_type_archive()) {
 	
 			if ( $this->is_post_type_a_collection( get_post_type() ) )
-				$title = sprintf( __( 'Collection: %s' ), post_type_archive_title( '', false ) );
+				$title = sprintf( __( 'Collection: %s', 'tainacan' ), post_type_archive_title( '', false ) );
 			
 		} elseif ( is_archive() && get_query_var('tainacan_repository_archive') == 1 ) {
 			$title = __( 'All items in repository', 'tainacan' );

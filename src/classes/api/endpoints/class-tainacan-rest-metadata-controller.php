@@ -586,7 +586,7 @@ class REST_Metadata_Controller extends REST_Controller {
 		$query_params = array_merge($query_params, parent::get_wp_query_params());
 
 		$query_params['name'] = array(
-			'description' => __('Limits the result set to metadata with a specific name'),
+			'description' => __('Limits the result set to metadata with a specific name', 'tainacan'),
 			'type'        => 'string',
 		);
 

@@ -4,7 +4,7 @@ Tags: museums, archives, GLAM, collections, repository
 Requires at least: 5.9
 Tested up to: 6.8
 Requires PHP: 7.0
-Stable tag: 0.21.16
+Stable tag: 1.0.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -103,6 +103,9 @@ After site migration, plugin updates, or new installations, you may need to rebu
 13. Choose which items will be displayed in your block
 14. Items displayed using a Gutenberg block
 
+== Changelog ==
+
+To see the changelog, please visit the [GitHub Releases](https://github.com/tainacan/tainacan/releases) page.
 
 == Support ==
 

@@ -406,7 +406,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 	public function get_create_params($object_name = null) {
 
 		$query_params['title'] = array(
-			'description' => __('Limits the result set to items with a specific title'),
+			'description' => __('Limits the result set to items with a specific title', 'tainacan'),
 			'type'        => 'string',
 		);
 

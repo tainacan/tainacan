@@ -210,7 +210,7 @@ class Metadata extends Repository {
 			],
 			'semantic_uri'          => [
 				'map'         => 'meta',
-				'title'       => __( 'The semantic metadatum description URI' ),
+				'title'       => __( 'The semantic metadatum description URI', 'tainacan' ),
 				'type'        => 'string',
 				'validation'  => v::optional( v::url() ),
 				'description' => __( 'The semantic metadatum description URI like: ', 'tainacan' ) . 'https://schema.org/URL',

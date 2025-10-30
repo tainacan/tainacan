@@ -60,7 +60,7 @@ class Logs extends Repository {
 				'map'         => 'post_content',
 				'title'       => __( 'Description', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'The log description' ),
+				'description' => __( 'The log description', 'tainacan' ),
 				'default'     => '',
 				'validation'  => ''
 			],
@@ -68,14 +68,14 @@ class Logs extends Repository {
 				'map'         => 'post_name',
 				'title'       => __( 'Slug', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'The log slug' ),
+				'description' => __( 'The log slug', 'tainacan' ),
 				'validation'  => ''
 			],
 			'user_id'        => [
 				'map'         => 'post_author',
 				'title'       => __( 'User ID', 'tainacan' ),
 				'type'        => 'integer',
-				'description' => __( 'Unique identifier' ),
+				'description' => __( 'Unique identifier', 'tainacan' ),
 				'validation'  => ''
 			],
 			'item_id'        => [
