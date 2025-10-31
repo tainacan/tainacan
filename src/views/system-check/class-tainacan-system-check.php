@@ -23,7 +23,6 @@ class System_Check extends Pages {
 
 	public function init() {
 		parent::init();
-		$this->prepare_sql_data();
 	}
 
 	public function add_admin_menu() {
@@ -42,6 +41,7 @@ class System_Check extends Pages {
 	}
 
 	public function render_page_content() {
+		$this->prepare_sql_data();
 		require_once('page.php');
 	}
 
@@ -67,13 +67,9 @@ class System_Check extends Pages {
 		global $wpdb;
 
 		if ( method_exists( $wpdb, 'db_version' ) ) {
-			if ( $wpdb->use_mysqli ) {
-				// phpcs:ignore WordPress.DB.RestrictedFunctions.mysql_mysqli_get_server_info
-				$mysql_server_type = mysqli_get_server_info( $wpdb->dbh );
-			} else {
-				// phpcs:ignore WordPress.DB.RestrictedFunctions.mysql_mysql_get_server_info
-				$mysql_server_type = mysql_get_server_info( $wpdb->dbh );
-			}
+			
+			// phpcs:ignore WordPress.DB.RestrictedFunctions.mysql_mysqli_get_server_info
+			$mysql_server_type = mysqli_get_server_info( $wpdb->dbh );
 
 			$this->mysql_server_version = $wpdb->get_var( 'SELECT VERSION()' );
 		}
@@ -485,14 +481,9 @@ class System_Check extends Pages {
 			}
 		}
 
-		if ( $wpdb->use_mysqli ) {
-			// phpcs:ignore WordPress.DB.RestrictedFunctions.mysql_mysqli_get_client_info
-			$mysql_client_version = mysqli_get_client_info();
-		} else {
-			// phpcs:ignore WordPress.DB.RestrictedFunctions.mysql_mysql_get_client_info
-			$mysql_client_version = mysql_get_client_info();
-		}
-
+		// phpcs:ignore WordPress.DB.RestrictedFunctions.mysql_mysqli_get_client_info
+		$mysql_client_version = mysqli_get_client_info();
+		
 		/*
 		 * libmysql has supported utf8mb4 since 5.5.3, same as the MySQL server.
 		 * mysqlnd has supported utf8mb4 since 5.0.9.
