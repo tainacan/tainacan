@@ -165,7 +165,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 		return $metadata_section;
 	}
 
-		/**
+	/**
 	 * @param Entities\Metadata_Section $item
 	 * @param \WP_REST_Request $request
 	 *
@@ -626,7 +626,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 		$query_params = array_merge($query_params, parent::get_wp_query_params());
 
 		$query_params['name'] = array(
-			'description' => __('Limits the result set to metadata sections with a specific name'),
+			'description' => __('Limits the result set to metadata sections with a specific name', 'tainacan'),
 			'type'        => 'string',
 		);
 

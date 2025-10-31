@@ -521,7 +521,8 @@ export default {
             if ( 48 <= this.maxCollectionsPerPage )
                 defaultCollectionsPerPageOptions.push(48);
             
-            defaultCollectionsPerPageOptions.push(this.maxCollectionsPerPage);
+            if ( !defaultCollectionsPerPageOptions.includes(this.maxCollectionsPerPage) )
+                defaultCollectionsPerPageOptions.push(this.maxCollectionsPerPage);
 
             if (!isNaN(this.collectionsPerPage) && !defaultCollectionsPerPageOptions.includes(this.collectionsPerPage))
                 defaultCollectionsPerPageOptions.push(Number(this.collectionsPerPage));

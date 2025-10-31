@@ -534,7 +534,7 @@ class REST_Filters_Controller extends REST_Controller {
 	public function get_wp_query_params() {
 
 		$query_params['name'] = array(
-			'description' => __('Limits the result set to filters with a specific name'),
+			'description' => __('Limits the result set to filters with a specific name', 'tainacan'),
 			'type'        => 'string',
 		);
 

@@ -343,7 +343,8 @@
                 if ( 48 <= this.maxTaxonomiesPerPage )
                     defaultTaxonomiesPerPageOptions.push(48);
                 
-                defaultTaxonomiesPerPageOptions.push(this.maxTaxonomiesPerPage);
+                if ( !defaultTaxonomiesPerPageOptions.includes(this.maxTaxonomiesPerPage) )
+                    defaultTaxonomiesPerPageOptions.push(this.maxTaxonomiesPerPage);
 
                 if (!isNaN(this.taxonomiesPerPage) && !defaultTaxonomiesPerPageOptions.includes(this.taxonomiesPerPage))
                     defaultTaxonomiesPerPageOptions.push(Number(this.taxonomiesPerPage));

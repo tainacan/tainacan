@@ -403,11 +403,11 @@ return apply_filters( 'tainacan-i18n', [
 	'label_mapper_metadata'                          => __( 'Metadata Mapper', 'tainacan' ),
 	'label_add_more_mapper_metadata'                 => __( 'Add more metadata mappers', 'tainacan' ),
 	/* translators: 'Exposer' here is not the same as 'Exporter'. These are links where you can see the items in different file formats such as CSV, JSON, etc, but not a download of a zip file. */
-	'label_exposer_urls'                             => __( 'Exposer URLs' ),
-	'label_exposer_mapper_values'                    => __( 'values only, no metadata scheme' ),
+	'label_exposer_urls'                             => __( 'Exposer URLs', 'tainacan' ),
+	'label_exposer_mapper_values'                    => __( 'values only, no metadata scheme', 'tainacan' ),
 	/* translators: 'Exposer' here is not the same as 'Exporter'. These are links where you can see the items in different file formats such as CSV, JSON, etc, but not a download of a zip file. */
-	'label_exposer'                                  => __( 'exposer' ),
-	'label_mapper'                                   => __( 'mapper' ),
+	'label_exposer'                                  => __( 'exposer', 'tainacan' ),
+	'label_mapper'                                   => __( 'mapper', 'tainacan' ),
 	'label_no_details_of_process'                    => __( 'There are no details about this process', 'tainacan' ),
 	'label_queued_on'                                => __( 'Queued on:', 'tainacan' ),
 	'label_last_processed_on'                        => __( 'Last processed on:', 'tainacan' ),
@@ -931,7 +931,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_associated_roles'							 => __( 'These are the roles that have this capability set. You may add or remove the capability to customize the role.', 'tainacan' ),
 	'info_inherited_roles'							 => __( 'These are the roles that have greater capabilities, which inherit this one. You cannot edit this as it will not have precedence over the greater capability.', 'tainacan' ),
 	'info_showing_terms'                        	 => __( 'Showing terms ', 'tainacan' ),
-	'info_warning_remove_from_trash_first'           => __( 'Remove this item from trash first' ),
+	'info_warning_remove_from_trash_first'           => __( 'Remove this item from trash first', 'tainacan' ),
 	/* translators: This is displayed before sentences like "Showing items 2 to 8 of 12 */
 	'info_to'                                        => __( ' to ', 'tainacan' ),
 	/* translators: This is displayed before sentences like "Showing items 2 to 8 of 12 */
@@ -1187,7 +1187,7 @@ return apply_filters( 'tainacan-i18n', [
 	'error_511'	  => __('You must authenticate to get access this information. Try logging in again on the WordPress Admin panel.', 'tainacan'),
 	'error_other' => __('Something went wrong here. You may want to try again or contact the Administrator.', 'tainacan'),
 	'error_connectivity_detail' => __('The WordPress Heartbit API sends requests periodically to the server to update some information. The latest request failed for some reason. It can be the case of a lost connection or bad communication between the browser and the server.', 'tainacan'),
-	'error_permalinks_detail' => __( 'Tainacan requires your Permalink settings to be configured. Please visit %sPermalink settings%s and define it to an option such as "postname".', 'tainacan' ),
+	'error_permalinks_detail' => __( 'Tainacan requires your Permalink settings to be configured. Please visit <a href="%s" target="_blank">Permalink settings</a> and define it to an option such as "postname".', 'tainacan' ),
 	'error_400_detail'	 => __('The server could not understand the request due to invalid syntax. This is possibly an issue with Tainacan and should be reported to its developers.', 'tainacan'),
 	'error_401_detail'	 => __('You must authenticate to get access this information. Even if you have access to the Tainacan admin panel, it may be the case that your session cookies were lost. Try reloading the page or logging again on the WordPress Admin panel.', 'tainacan'),
 	'error_403_detail'	 => __('It seems that you are not allowed to access this content. Your user might have a role with insufficient capabilities. If that is not the case, check if you are correctly logged in on the WordPress Admin panel.', 'tainacan'),

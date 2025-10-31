@@ -188,7 +188,8 @@
                 if ( 48 <= this.maxProcessesPerPage )
                     defaultProcessesPerPageOptions.push(48);
                 
-                defaultProcessesPerPageOptions.push(this.maxProcessesPerPage);
+                if ( !defaultProcessesPerPageOptions.includes(this.maxProcessesPerPage) )    
+                    defaultProcessesPerPageOptions.push(this.maxProcessesPerPage);
 
                 if (!isNaN(this.processesPerPage) && !defaultProcessesPerPageOptions.includes(this.processesPerPage))
                     defaultProcessesPerPageOptions.push(Number(this.processesPerPage));

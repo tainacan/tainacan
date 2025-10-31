@@ -22,7 +22,6 @@ class Filters extends Repository {
 	public $filters_types = [];
 
 	protected function init() {
-		parent::__construct();
 		add_action( 'tainacan-deleted-tainacan-metadatum', array( &$this, 'hook_delete_when_metadata_deleted' ), 10, 2 );
 		add_action( 'tainacan-insert-tainacan-metadatum', array( &$this, 'hook_update_when_metadata_saved_as_private' ), 10, 2 );
 	}

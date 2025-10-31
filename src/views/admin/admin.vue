@@ -65,7 +65,7 @@
                     component: CustomDialog,
                     props: {
                         title: this.$i18n.get('error_permalinks_label'),
-                        message: this.$i18n.getWithVariables('error_permalinks_detail', [ '<a href="' + tainacan_plugin.admin_url + 'options-permalink.php">', '</a>' ]),
+                        message: this.$i18n.getWithVariables('error_permalinks_detail', [ tainacan_plugin.admin_url + 'options-permalink.php' ]),
                         hideCancel: true,
                         confirmText: this.$i18n.get('label_go_to_permalinks'),
                         onConfirm: () => {

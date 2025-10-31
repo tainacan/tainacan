@@ -566,7 +566,7 @@ class Flickr_Importer extends Importer {
 					<p>
 						<?php printf(
 							# translators %s are for opening and closing the link
-							__('In order to import photos from Flickr you need to %sapply for a Flickr API Key%s.', 'tainacan'),
+							__('In order to import photos from Flickr you need to %1$sapply for a Flickr API Key%2$s.', 'tainacan'),
 							# translator you may get the link to the console in the current language. e.g. https://console.developers.google.com/?hl=pt-br
 							sprintf('<a target="_blank" href="%s">', __('https://www.flickr.com/services/api/misc.api_keys.html', 'tainacan') ),
 							'</a>'

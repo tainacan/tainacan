@@ -21,7 +21,7 @@ class Textarea extends Metadata_Type {
 		$this->set_preview_template('
 			<div>
 				<div class="control is-clearfix">
-					<textarea rows="3" placeholder="' . __('Type some long text here...') . '" class="input"></textarea> 
+					<textarea rows="3" placeholder="' . __('Type some long text here...', 'tainacan') . '" class="input"></textarea> 
 				</div>
 			</div>
 		');

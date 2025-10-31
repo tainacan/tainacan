@@ -30,7 +30,6 @@ class Metadata extends Repository {
 	];
 
 	protected function init() {
-		parent::__construct();
 		add_filter( 'pre_trash_post', array( &$this, 'disable_delete_core_metadata' ), 10, 2 );
 		add_filter( 'pre_delete_post', array( &$this, 'force_delete_core_metadata' ), 10, 3 );
 
@@ -211,7 +210,7 @@ class Metadata extends Repository {
 			],
 			'semantic_uri'          => [
 				'map'         => 'meta',
-				'title'       => __( 'The semantic metadatum description URI' ),
+				'title'       => __( 'The semantic metadatum description URI', 'tainacan' ),
 				'type'        => 'string',
 				'validation'  => v::optional( v::url() ),
 				'description' => __( 'The semantic metadatum description URI like: ', 'tainacan' ) . 'https://schema.org/URL',

@@ -335,7 +335,6 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
                     onConfirm: () => {
-                        this.teste
                         this.deleteItem({
                             itemId: itemId
                         }).then(() => {

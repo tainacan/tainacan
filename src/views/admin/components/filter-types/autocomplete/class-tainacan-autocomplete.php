@@ -19,18 +19,18 @@ class Autocomplete extends Filter_Type {
                     <div class="taginput-container is-focusable"> 
                         <div class="autocomplete control">
                             <div class="control has-icon-right is-loading is-clearfix">
-                                <input type="text" class="input" value="'. __('Item') . ' 9" > 
+                                <input type="text" class="input" value="'. __('Item', 'tainacan') . ' 9" > 
                             </div> 
                             <div class="dropdown-menu" style="">
                                 <div class="dropdown-content">
                                     <a class="dropdown-item is-hovered">
-                                        <span>'. __('Collection') . ' 2 <strong>'._('item') . ' 9</strong>9</span>
+                                        <span>'. __('Collection', 'tainacan') . ' 2 <strong>'. __('item', 'tainacan') . ' 9</strong>9</span>
                                     </a>
                                     <a class="dropdown-item">
-                                        <span>'. __('Collection') . ' 3 <strong>'._('item') . ' 9</strong>9</span>
+                                        <span>'. __('Collection', 'tainacan') . ' 3 <strong>'. __('item', 'tainacan') . ' 9</strong>9</span>
                                     </a>
                                     <a class="dropdown-item">
-                                        <span>'. __('Collection') . ' 3 <strong>'._('item') . ' 9</strong>8</span>
+                                        <span>'. __('Collection', 'tainacan') . ' 3 <strong>'. __('item', 'tainacan') . ' 9</strong>8</span>
                                     </a>
                                 </div>
                             </div>

@@ -17,7 +17,7 @@ class TaxonomySelectbox extends Filter_Type {
                 <div class="control is-expanded">
                     <span class="select is-fullwidth">
                         <select>
-                            <option value="someValue">' . __('Select here...') . '</option> 
+                            <option value="someValue">' . __('Select here...', 'tainacan') . '</option> 
                         </select>
                     </span>
                 </div>

@@ -22,7 +22,6 @@ class Terms extends Repository {
 	public $entities_type = '\Tainacan\Entities\Term';
 
 	protected function init() {
-		parent::__construct();
 	}
 
 	protected function _get_map() {

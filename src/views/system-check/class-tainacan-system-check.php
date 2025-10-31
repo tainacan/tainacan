@@ -23,7 +23,6 @@ class System_Check extends Pages {
 
 	public function init() {
 		parent::init();
-		$this->prepare_sql_data();
 	}
 
 	public function add_admin_menu() {
@@ -42,6 +41,7 @@ class System_Check extends Pages {
 	}
 
 	public function render_page_content() {
+		$this->prepare_sql_data();
 		require_once('page.php');
 	}
 
@@ -67,13 +67,9 @@ class System_Check extends Pages {
 		global $wpdb;
 
 		if ( method_exists( $wpdb, 'db_version' ) ) {
-			if ( $wpdb->use_mysqli ) {
-				// phpcs:ignore WordPress.DB.RestrictedFunctions.mysql_mysqli_get_server_info
-				$mysql_server_type = mysqli_get_server_info( $wpdb->dbh );
-			} else {
-				// phpcs:ignore WordPress.DB.RestrictedFunctions.mysql_mysql_get_server_info
-				$mysql_server_type = mysql_get_server_info( $wpdb->dbh );
-			}
+			
+			// phpcs:ignore WordPress.DB.RestrictedFunctions.mysql_mysqli_get_server_info
+			$mysql_server_type = mysqli_get_server_info( $wpdb->dbh );
 
 			$this->mysql_server_version = $wpdb->get_var( 'SELECT VERSION()' );
 		}
@@ -185,7 +181,7 @@ class System_Check extends Pages {
 
 			$class = 'error';
 			$text =  sprintf(
-				__('Tainacan requires WordPress 5.9 or newer! Your version is %s. Please upgrade.'),
+				__('Tainacan requires WordPress 5.9 or newer! Your version is %s. Please upgrade.', 'tainacan'),
 				$core_current_version
 			);
 
@@ -193,7 +189,7 @@ class System_Check extends Pages {
 			$class = 'warning';
 			$text  = sprintf(
 				// translators: %s: Your current version of WordPress.
-				__( '%s - We were unable to check if any new versions are available.', 'health-check' ),
+				__( '%s - We were unable to check if any new versions are available.', 'tainacan' ),
 				$core_current_version
 			);
 		} else {
@@ -368,7 +364,7 @@ class System_Check extends Pages {
 					sprintf(
 						// translators: %1$2: If a module is required or recommended. %2$s: The module name.
 						__( 'The %1$s module %2$s is not installed, or has been disabled.', 'tainacan' ),
-						( $module['required'] ? __( 'required', 'health-check' ) : __( 'optional', 'health-check' ) ),
+						( $module['required'] ? __( 'required', 'tainacan' ) : __( 'optional', 'tainacan' ) ),
 						$library
 					)
 				);
@@ -392,7 +388,7 @@ class System_Check extends Pages {
 		} else {
 			printf(
 				'<span class="good"></span> %s',
-				__( 'All required and recommended modules are installed.', 'health-check' )
+				__( 'All required and recommended modules are installed.', 'tainacan' )
 			);
 		}
 	}
@@ -457,14 +453,14 @@ class System_Check extends Pages {
 					'<span class="warning"></span> %s',
 					sprintf(
 						/* translators: %s: Number of version. */
-						esc_html__( 'WordPress\' utf8mb4 support requires MySQL version %s or greater', 'health-check' ),
+						esc_html__( 'WordPress\' utf8mb4 support requires MySQL version %s or greater', 'tainacan' ),
 						'5.5.3'
 					)
 				);
 			} else {
 				printf(
 					'<span class="good"></span> %s',
-					esc_html__( 'Your MySQL version supports utf8mb4', 'health-check' )
+					esc_html__( 'Your MySQL version supports utf8mb4', 'tainacan' )
 				);
 			}
 		} else { // MariaDB introduced utf8mb4 support in 5.5.0
@@ -473,26 +469,21 @@ class System_Check extends Pages {
 					'<span class="warning"></span> %s',
 					sprintf(
 						/* translators: %s: Number of version. */
-						esc_html__( 'WordPress\' utf8mb4 support requires MariaDB version %s or greater', 'health-check' ),
+						esc_html__( 'WordPress\' utf8mb4 support requires MariaDB version %s or greater', 'tainacan' ),
 						'5.5.0'
 					)
 				);
 			} else {
 				printf(
 					'<span class="good"></span> %s',
-					esc_html__( 'Your MariaDB version supports utf8mb4', 'health-check' )
+					esc_html__( 'Your MariaDB version supports utf8mb4', 'tainacan' )
 				);
 			}
 		}
 
-		if ( $wpdb->use_mysqli ) {
-			// phpcs:ignore WordPress.DB.RestrictedFunctions.mysql_mysqli_get_client_info
-			$mysql_client_version = mysqli_get_client_info();
-		} else {
-			// phpcs:ignore WordPress.DB.RestrictedFunctions.mysql_mysql_get_client_info
-			$mysql_client_version = mysql_get_client_info();
-		}
-
+		// phpcs:ignore WordPress.DB.RestrictedFunctions.mysql_mysqli_get_client_info
+		$mysql_client_version = mysqli_get_client_info();
+		
 		/*
 		 * libmysql has supported utf8mb4 since 5.5.3, same as the MySQL server.
 		 * mysqlnd has supported utf8mb4 since 5.0.9.
@@ -504,7 +495,7 @@ class System_Check extends Pages {
 					'<br><span class="warning"></span> %s',
 					sprintf(
 						/* translators: %1$s: Name of the library, %2$s: Number of version. */
-						__( 'WordPress\' utf8mb4 support requires MySQL client library (%1$s) version %2$s or newer.', 'health-check' ),
+						__( 'WordPress\' utf8mb4 support requires MySQL client library (%1$s) version %2$s or newer.', 'tainacan' ),
 						'mysqlnd',
 						'5.0.9'
 					)
@@ -516,7 +507,7 @@ class System_Check extends Pages {
 					'<br><span class="warning"></span> %s',
 					sprintf(
 						/* translators: %1$s: Name of the library, %2$s: Number of version. */
-						__( 'WordPress\' utf8mb4 support requires MySQL client library (%1$s) version %2$s or newer.', 'health-check' ),
+						__( 'WordPress\' utf8mb4 support requires MySQL client library (%1$s) version %2$s or newer.', 'tainacan' ),
 						'libmysql',
 						'5.5.3'
 					)

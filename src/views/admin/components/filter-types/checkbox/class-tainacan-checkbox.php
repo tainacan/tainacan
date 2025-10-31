@@ -16,17 +16,17 @@ class Checkbox extends Filter_Type {
         $this->set_preview_template('
             <div>
                 <div>
-                    <p class="has-text-dark">'. __('Selected values') . ': </p> 
+                    <p class="has-text-dark">'. __('Selected values', 'tainacan') . ': </p> 
                     <div class="field selected-tags is-grouped-multiline is-grouped">
                         <div>
                             <div class="tags has-addons">
-                                <span class="tag"><span>'. __('Value') . ' 2</span></span> 
+                                <span class="tag"><span>'. __('Value', 'tainacan') . ' 2</span></span> 
                                 <a class="tag is-delete"></a>
                             </div>
                         </div>
                         <div>
                             <div class="tags has-addons">
-                                <span class="tag"><span>'. __('Value') . ' 3</span></span> 
+                                <span class="tag"><span>'. __('Value', 'tainacan') . ' 3</span></span> 
                                 <a class="tag is-delete"></a>
                             </div>
                         </div>
@@ -35,7 +35,7 @@ class Checkbox extends Filter_Type {
                         <label class="b-checkbox checkbox" border="" style="padding-left: 8px;">
                             <input type="checkbox" value="option1">
                             <span class="check"></span>
-                            <span class="control-label">'. __('Value') . ' 1</span>
+                            <span class="control-label">'. __('Value', 'tainacan') . ' 1</span>
                         </label> 
                         <br>
                     </div>
@@ -43,18 +43,18 @@ class Checkbox extends Filter_Type {
                         <label class="b-checkbox checkbox" border="" style="padding-left: 8px;">
                             <input type="checkbox" checked value="option2">
                             <span class="check"></span> 
-                            <span class="control-label">'. __('Value') . ' 2</span>
+                            <span class="control-label">'. __('Value', 'tainacan') . ' 2</span>
                         </label> 
                     </div>
                     <div>
                         <label class="b-checkbox checkbox" border="" style="padding-left: 8px;">
                             <input type="checkbox" checked value="option3">
                             <span class="check"></span> 
-                            <span class="control-label">'. __('Value') . ' 3</span>
+                            <span class="control-label">'. __('Value', 'tainacan') . ' 3</span>
                         </label> 
                     </div>
                 </div> 
-                <a class="add-new-term">'. __('View all') . '</a>
+                <a class="add-new-term">'. __('View all', 'tainacan') . '</a>
             </div>
         ');
     }

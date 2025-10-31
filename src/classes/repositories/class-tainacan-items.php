@@ -25,7 +25,6 @@ class Items extends Repository {
 	private $fetching_from_collections = [];
 
 	protected function init() {
-		parent::__construct();
 		add_filter( 'comments_open', [$this, 'hook_comments_open'], 10, 2);
 		add_action( 'tainacan-api-item-updated', array( &$this, 'hook_api_updated_item' ), 10, 2 );
 		add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 10, 4 );

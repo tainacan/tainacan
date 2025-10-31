@@ -35482,6 +35482,7 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
   color: var(--tainacan-input-color);
   padding-left: 0.8em;
   font-size: 0.81em;
+  line-height: 1.125em;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -36321,8 +36322,9 @@ textarea.textarea[rows="7"],
   min-height: var(--tainacan-button-min-height, 2.571em) !important;
   line-height: 1.75em;
 }
-.dropdown .dropdown-menu .dropdown-content .dropdown-item.is-active, .autocomplete .dropdown-menu .dropdown-content .dropdown-item.is-active {
+.dropdown .dropdown-menu .dropdown-content .dropdown-item.is-active, .dropdown .dropdown-menu .dropdown-content .dropdown-item.is-active:hover, .dropdown .dropdown-menu .dropdown-content .dropdown-item.is-active:focus, .autocomplete .dropdown-menu .dropdown-content .dropdown-item.is-active, .autocomplete .dropdown-menu .dropdown-content .dropdown-item.is-active:hover, .autocomplete .dropdown-menu .dropdown-content .dropdown-item.is-active:focus {
   background-color: var(--tainacan-primary);
+  box-shadow: none;
 }
 .dropdown .dropdown-menu .dropdown-content .dropdown-item.control, .autocomplete .dropdown-menu .dropdown-content .dropdown-item.control {
   font-size: 0.8125em !important;
@@ -36330,8 +36332,10 @@ textarea.textarea[rows="7"],
 .dropdown .dropdown-menu .dropdown-content .dropdown-item.dropdown-header, .autocomplete .dropdown-menu .dropdown-content .dropdown-item.dropdown-header {
   color: var(--tainacan-info-color) !important;
 }
-.dropdown .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):hover, .autocomplete .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):hover {
+.dropdown .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):not(.is-active):hover, .autocomplete .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):not(.is-active):hover {
   background-color: var(--tainacan-dropdownmenu-item-background-hover, var(--tainacan-input-border-color));
+}
+.dropdown .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):hover, .autocomplete .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):hover {
   color: var(--tainacan-secondary) !important;
 }
 .dropdown .dropdown-menu .dropdown-content .dropdown-item .b-checkbox, .autocomplete .dropdown-menu .dropdown-content .dropdown-item .b-checkbox {

@@ -398,7 +398,7 @@ class Youtube_Importer extends Importer {
                     <p>
                         <?php printf(
                             # translators %s are for opening and closing the link
-                            __('In order to import videos from Youtube you need to create a project and get an API Key from the %sGoogle Developers Console%s.', 'tainacan'),
+                            __('In order to import videos from Youtube you need to create a project and get an API Key from the %1$sGoogle Developers Console%2$s.', 'tainacan' ),
                             # translator you may get the link to the console in the current language. e.g. https://console.developers.google.com/?hl=pt-br
                             sprintf('<a target="_blank" href="%s">', __('https://console.developers.google.com', 'tainacan') ),
                             '</a>'

@@ -36,17 +36,17 @@ class Taxonomy extends Metadata_Type {
 		$this->set_preview_template('
 			<div>
 				<div>
-					<p class="has-text-dark" style="font-size: 0.75em;">'. __('Selected terms') . ': </p>
+					<p class="has-text-dark" style="font-size: 0.75em;">'. __('Selected terms', 'tainacan') . ': </p>
 					<div class="field selected-tags is-grouped-multiline is-grouped">
 						<div>
 							<div class="tags has-addons">
-								<span class="tag is-small"><span>'. __('Term') . ' 2</span></span>
+								<span class="tag is-small"><span>'. __('Term', 'tainacan') . ' 2</span></span>
 								<a class="tag is-delete is-small"></a>
 							</div>
 						</div>
 						<div>
 							<div class="tags has-addons">
-								<span class="tag is-small"><span>'. __('Term') . ' 3</span></span>
+								<span class="tag is-small"><span>'. __('Term', 'tainacan') . ' 3</span></span>
 								<a class="tag is-delete is-small"></a>
 							</div>
 						</div>
@@ -55,7 +55,7 @@ class Taxonomy extends Metadata_Type {
 						<label class="b-checkbox checkbox" border="" style="padding-left: 8px;">
 							<input type="checkbox" value="option1">
 							<span class="check"></span>
-							<span class="control-label">'. __('Term') . ' 1</span>
+							<span class="control-label">'. __('Term', 'tainacan') . ' 1</span>
 						</label>
 						<br>
 					</div>
@@ -63,18 +63,18 @@ class Taxonomy extends Metadata_Type {
 						<label class="b-checkbox checkbox" border="" style="padding-left: 8px;">
 							<input type="checkbox" checked value="option2">
 							<span class="check"></span>
-							<span class="control-label">'. __('Term') . ' 2</span>
+							<span class="control-label">'. __('Term', 'tainacan') . ' 2</span>
 						</label>
 					</div>
 					<div>
 						<label class="b-checkbox checkbox" border="" style="padding-left: 8px;">
 							<input type="checkbox" checked value="option3">
 							<span class="check"></span>
-							<span class="control-label">'. __('Term') . ' 3</span>
+							<span class="control-label">'. __('Term', 'tainacan') . ' 3</span>
 						</label>
 					</div>
 				</div>
-				<a class="add-new-term">'. __('View all') . '</a>
+				<a class="add-new-term">'. __('View all', 'tainacan') . '</a>
 			</div>
 		');
 
