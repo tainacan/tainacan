@@ -303,6 +303,18 @@ class Settings extends Pages {
 			'default' => isset($view_modes['default_order']) ? $view_modes['default_order'] : 'DESC'
 		) );
 
+		$this->create_tainacan_setting( array(
+			'id' => 'enable_item_link_query_params',
+			'section' => 'tainacan_settings_items_list_defaults',
+			'title' => __( 'Item link query parameters', 'tainacan' ),
+			'label' => __( 'Include query parameters in item links from faceted search', 'tainacan' ),
+			'description' => __( 'Enable this option to pass query parameters (filters, sorting, pagination) in item links. This allows navigation between items while preserving the search context. If disabled, item links will be cleaner but next/previous navigation won\'t.know about any filtering and will be sorted by the creation date.', 'tainacan' ),
+			'type' => 'boolean',
+			'input_type' => 'checkbox',
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'default' => true
+		) );
+
 		/**
 		 * Google reCAPTCHA -----------------------------------------------------
 		 */

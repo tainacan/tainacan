@@ -1129,6 +1129,16 @@ class Theme_Helper {
 	}
 
 	/**
+	 * Get whether query parameters should be included in item links from faceted search.
+	 * This can be tweaked in the settings page.
+	 * 
+	 * @return bool Whether to include query parameters in item links
+	 */
+	public function get_enable_item_link_query_params() {
+		return apply_filters( 'tainacan-enable-item-link-query-params-for-themes', get_option( 'tainacan_option_enable_item_link_query_params', true ) );
+	}
+
+	/**
 	 * When visiting a collection archive or single, returns the current collection id
 	 *
 	 * @uses get_post_type() WordPress function, which looks for the global $wp_query variable
