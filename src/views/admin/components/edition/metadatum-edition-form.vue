@@ -365,12 +365,12 @@
                             class="options-columns">
                         <component
                                 :is="form.metadata_type_object.form_component"
-                                v-if="(form.metadata_type_object && form.metadata_type_object.form_component) || form.edit_form != ''"
+                                v-if="form.metadata_type_object && form.metadata_type_object.form_component"
                                 v-model:value="form.metadata_type_options"
                                 :errors="formErrors['metadata_type_options']"
                                 :metadatum="form" />
                         <div
-                                v-else
+                                v-if="form.edit_form"
                                 v-html="form.edit_form" />
 
                         <!-- Hook for extra Form options -->
@@ -530,7 +530,7 @@
                 'updateMetadatum'
             ]),
             saveEdition(metadatum) {
-                if ( (metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {
+                if ( !metadatum.edit_form ) {
                     let repository = this.form.repository_level;
 
                     this.fillExtraFormData(this.form);
@@ -581,7 +581,7 @@
                         formObj['description_bellow_name'] = 'no';
 
                     let repository = formObj['repository_level'];
-
+                    formObj['status'] = this.form.status;
                     this.fillExtraFormData(formObj);
                     this.isUpdating = true;
                     this.updateMetadatum({

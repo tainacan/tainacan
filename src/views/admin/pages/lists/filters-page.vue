@@ -856,19 +856,19 @@ export default {
             }
         },
         editFilter(filter) {
-            this.openedFilterId = filter.id;
-
             // First time opening
-            if (this.editForms[this.openedFilterId] == undefined) {
-                this.editForms[this.openedFilterId] = JSON.parse(JSON.stringify(filter));
-                this.editForms[this.openedFilterId].saved = true;
+            if (this.editForms[filter.id] == undefined) {
+                this.editForms[filter.id] = JSON.parse(JSON.stringify(filter));
+                this.editForms[filter.id].saved = true;
                 
                 // Filter inserted now
-                if (this.editForms[this.openedFilterId].status == 'auto-draft') {
-                    this.editForms[this.openedFilterId].status = 'publish'; 
-                    this.editForms[this.openedFilterId].saved = false;
+                if (this.editForms[filter.id].status == 'auto-draft') {
+                    this.editForms[filter.id].status = 'publish'; 
+                    this.editForms[filter.id].saved = false;
                 }
-            }      
+            }    
+            
+            this.openedFilterId = filter.id;  
         },
         onEditionFinished() {
             this.formWithErrors = '';
