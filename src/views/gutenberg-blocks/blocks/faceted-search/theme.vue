@@ -452,6 +452,7 @@
                 </div>
             </div>
         </template>
+        <!-- destroy-on-hide="false" to prevent the modal from being destroyed when it is closed (solves transition classes issue) -->
         <b-modal
                 v-else
                 id="filters-modal"
@@ -465,6 +466,7 @@
                 :auto-focus="filtersAsModal"
                 :trap-focus="filtersAsModal"
                 full-screen
+                :destroy-on-hide="false"
                 :custom-class="'tainacan-modal tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '') + (displayFiltersHorizontally ? ' horizontal-filters' : '')"
                 :can-cancel="hideHideFiltersButton || !filtersAsModal ? ['x', 'outside'] : ['x', 'escape', 'outside']"
                 :close-button-aria-label="$i18n.get('close')"
@@ -477,7 +479,9 @@
                     class="faceted-search-hook faceted-search-hook-filters-before"
                     v-html="hooks['filters_before']" />
 
+            <!-- Filters Items List. It is rebuilt on each modal open/close, so we need to check if the modal is active. -->
             <filters-items-list
+                    v-if="isFiltersModalActive"
                     id="filters-items-list"
                     :is-loading-items="isLoadingItems"
                     :autofocus="filtersAsModal"
