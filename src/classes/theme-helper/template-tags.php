@@ -1417,7 +1417,7 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 	$terms = get_terms( $terms_query_args );
 
 	unset( $terms_query_args['number'], $terms_query_args['offset'] ); // necessary so wp_count_terms can work
-	$total_terms = wp_count_terms( 'tnc_tax_' . $post->ID, $terms_query_args );
+	$total_terms = wp_count_terms( $terms_query_args );
 	
 	$content = '';
 

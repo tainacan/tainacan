@@ -399,8 +399,8 @@ class REST_Reports_Controller extends REST_Controller {
 				$taxonomies->the_post();
 
 				$taxonomy = new Entities\Taxonomy($taxonomies->post);
-				$total_terms = intval(wp_count_terms( $taxonomy->get_db_identifier(), array('hide_empty'=> false) ));
-				$total_terms_used = intval(wp_count_terms( $taxonomy->get_db_identifier(), array('hide_empty'=> true) ));
+				$total_terms = intval(wp_count_terms( array('taxonomy' => $taxonomy->get_db_identifier(), 'hide_empty'=> false) ));
+				$total_terms_used = intval(wp_count_terms( array('taxonomy' => $taxonomy->get_db_identifier(), 'hide_empty'=> true) ));
 				$total_terms_not_used = $total_terms - $total_terms_used;
 				
 				$response['list'][$taxonomy->get_db_identifier()] = array(
@@ -424,7 +424,7 @@ class REST_Reports_Controller extends REST_Controller {
 		$taxonomy_id = $request['taxonomy_id'];
 		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
 		$taxonomy_identifier = $taxonomy->get_db_identifier();
-		$taxonomy_total_terms = wp_count_terms($taxonomy_identifier, array('hide_empty' => false) );
+		$taxonomy_total_terms = wp_count_terms(array('taxonomy' => $taxonomy_identifier, 'hide_empty' => false) );
 		$limit = 100;
 		$offset = 0;
 

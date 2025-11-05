@@ -176,16 +176,16 @@ class REST_Taxonomies_Controller extends REST_Controller {
 			$total_terms = wp_count_terms( array(
 				'taxonomy' => $item->get_db_identifier(),
 				'hide_empty' => false
-			), 'readable' );
+			) );
 			$total_root_terms = wp_count_terms( array(
 				'taxonomy' => $item->get_db_identifier(),
 				'parent' => 0,
 				'hide_empty' => false
-			), 'readable' );
+			) );
 			$total_not_empty = wp_count_terms( array(
 				'taxonomy' => $item->get_db_identifier(),
 				'hide_empty' => true
-			), 'readable' );
+			) );
 
 			$item_arr['total_terms']['total'] = $total_terms;
 			$item_arr['total_terms']['root'] = $total_root_terms;
