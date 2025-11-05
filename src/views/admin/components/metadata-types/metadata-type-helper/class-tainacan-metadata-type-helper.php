@@ -42,7 +42,7 @@ class Metadata_Type_Helper {
 
 	public function register_metadata_type_component() {
 		foreach($this->registered_metadata_type as $handle => $component) {
-			wp_enqueue_script($handle, $component['script_path']);
+			wp_enqueue_script($handle, $component['script_path'], [], TAINACAN_VERSION);
 		}
 	}
 

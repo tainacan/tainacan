@@ -26,7 +26,7 @@ class Plugin_Hooks {
 
 	public function register_plugin() {
 		foreach($this->registered_plugin as $handle => $plugin) {
-			wp_enqueue_script($handle, $plugin['script_path']);
+			wp_enqueue_script($handle, $plugin['script_path'], [], TAINACAN_VERSION);
 		}
 	}
 

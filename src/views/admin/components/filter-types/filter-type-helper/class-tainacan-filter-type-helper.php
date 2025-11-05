@@ -38,12 +38,12 @@ class Filter_Type_Helper {
 		// the priority should see less than on function 
 		// `load_admin_page()` of class `Admin` in file /src/views/class-tainacan-admin.php
 		add_action( 'admin_enqueue_scripts', array( &$this, 'register_filter_type_compoment' ), 80 );
-		do_action('tainacan-register-filter-type', $this);
+		do_action( 'tainacan-register-filter-type', $this );
 	}
 
 	public function register_filter_type_compoment() {
 		foreach($this->registered_filter_type as $handle => $component) {
-			wp_enqueue_script($handle, $component['script_path']);
+			wp_enqueue_script($handle, $component['script_path'], [], TAINACAN_VERSION);
 		}
 	}
 
