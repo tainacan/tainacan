@@ -427,11 +427,11 @@ class REST_Reports_Controller extends REST_Controller {
 		$taxonomy_total_terms = wp_count_terms(array('taxonomy' => $taxonomy_identifier, 'hide_empty' => false) );
 		$limit = 100;
 		$offset = 0;
+		$key_cache_object = 'taxonomy_' . $taxonomy_identifier;
 
 		if ( !$taxonomy_total_terms) {
 			$taxonomy_total_terms = 0;
 		} else {
-			$key_cache_object = 'taxonomy_' . $taxonomy_identifier;
 			$cached_object = $this->get_cache_object($key_cache_object, $request);
 			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
 		}
@@ -602,8 +602,8 @@ class REST_Reports_Controller extends REST_Controller {
 
 	private function query_item_metadata_distribution($meta_ids, $collection_post_type) {
 		$count_posts = wp_count_posts( $collection_post_type, 'readable' );
-		$total_items =  intval($count_posts->trash) + intval($count_posts->draft) +
-				intval($count_posts->publish) + intval($count_posts->private) + intval($count_posts->pending);
+		$total_items =  intval($count_posts->trash ?? 0) + intval($count_posts->draft ?? 0) +
+				intval($count_posts->publish ?? 0) + intval($count_posts->private ?? 0) + intval($count_posts->pending ?? 0);
 
 		global $wpdb;
 		$string_meta_ids = "'".implode("','", $meta_ids)."'";
