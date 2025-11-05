@@ -206,9 +206,105 @@
             </b-dropdown>
         </div>
 
-        <!-- Change OrderBy Select and Order Button-->
+        <!-- Unified Sorting Dropdown (New) -->
         <div 
-                v-if="!hideSortingArea"
+                v-if="!hideSortingArea && showUnifiedSortingDropdown"
+                class="search-control-item search-control-item--sorting-area sorting-area">
+            <b-dropdown
+                    ref="sortingDropdown" 
+                    :mobile-modal="true"
+                    :multiple="false"
+                    class="show sorting-options-dropdown"
+                    aria-role="list"
+                    trap-focus
+                    :close-on-click="false"
+                    @active-change="() => { newOrder = order; newOrderBy = orderBy; }">
+                <template #trigger>
+                    <button
+                            v-tooltip="{
+                                delay: {
+                                    show: 500,
+                                    hide: 300,
+                                },
+                                content: $i18n.getWithVariables('info_sorting_%s_by_%s', [order == 'ASC' ? $i18n.get('label_ascending') : $i18n.get('label_descending'), orderByName]),
+                                autoHide: false,
+                                html: true,
+                                placement: 'auto-start',
+                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
+                            }"
+                            :aria-label="$i18n.get('label_sorting')"
+                            class="button is-white">
+                        <span class="is-small gray-icon">
+                            <i 
+                                    :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
+                                    class="tainacan-icon" />
+                        </span>
+                        &nbsp;
+                        <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_sorting') }}</span>
+                        <span class="is-hidden-widescreen">{{ $i18n.get('label_sort') }}</span>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                        </span>
+                    </button>
+                </template>
+                <div class="sorting-options-container">
+                    <div class="sorting-options-container-direction">
+                        <b-dropdown-item
+                                aria-controls="items-list-results"
+                                role="button"
+                                :class="{ 'is-active': newOrder == 'DESC' }"
+                                :value="'DESC'"
+                                aria-role="listitem"
+                                @click="newOrder = 'DESC'">
+                            <span class="icon gray-icon">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending" />
+                            </span>
+                            <span>{{ $i18n.get('label_descending') }}</span>
+                        </b-dropdown-item>
+                        <b-dropdown-item
+                                aria-controls="items-list-results"
+                                role="button"
+                                :class="{ 'is-active': newOrder == 'ASC' }"
+                                :value="'ASC'"
+                                aria-role="listitem"
+                                @click="newOrder = 'ASC'">
+                            <span class="icon gray-icon">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending" />
+                            </span>
+                            <span>{{ $i18n.get('label_ascending') }}</span>
+                        </b-dropdown-item>
+                    </div>
+                    <div class="sorting-options-container-orderby">
+                        <template 
+                                v-for="metadatum of sortingMetadata"
+                                :key="metadatum.slug">
+                            <b-dropdown-item
+                                    v-if="metadatum != undefined"
+                                    aria-controls="items-list-results"
+                                    role="button"
+                                    :class="{ 'is-active': (newOrderBy != 'meta_value' && newOrderBy != 'meta_value_num' && (JSON.stringify(newOrderBy) == JSON.stringify($orderByHelper.getOrderByForMetadatum(metadatum)))) || ((newOrderBy == 'meta_value' || newOrderBy == 'meta_value_num') && metaKey == metadatum.id) }"
+                                    :value="metadatum"
+                                    aria-role="listitem"
+                                    @click="newOrderBy = $orderByHelper.getOrderByForMetadatum(metadatum);">
+                                {{ metadatum.name }}
+                            </b-dropdown-item>
+                        </template>
+                    </div>
+                </div>
+                <div class="dropdown-item-apply">
+                    <button 
+                            aria-controls="items-list-results"
+                            class="button is-success"
+                            @click="onChangeOrderAndOrderBy(newOrder, newOrderBy)">
+                        {{ $i18n.get('label_apply_changes') }}
+                    </button>
+                </div>  
+            </b-dropdown>
+        </div>
+
+        <!-- Legacy Change OrderBy Select and Order Button (Old) -->
+        <div 
+                v-if="!hideSortingArea && !showUnifiedSortingDropdown"
                 class="search-control-item search-control-item--sorting-area sorting-area">
             <b-field>
                 <label class="label">{{ $i18n.get('label_sort') }}</label>
@@ -795,6 +891,7 @@
             shouldNotHideFiltersOnMobile: false,
             displayFiltersHorizontally: false,
             hideFilterCollapses: false,
+            showUnifiedSortingDropdown: true,
         },
         data() {
             return {
@@ -824,7 +921,9 @@
                 latestPerPageAfterViewModeWithoutPagination: 12,
                 latestPageAfterViewModeWithoutPagination: 1,
                 hooks: {},
-                filtersModalStateHasChanged: false
+                filtersModalStateHasChanged: false,
+                newOrder: 'DESC',
+                newOrderBy: 'date'
             }
         },
         computed: {
@@ -1165,6 +1264,10 @@
             this.prepareMetadata();
             this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
             
+            // Initialize newOrder and newOrderBy for unified sorting dropdown
+            this.newOrder = this.order;
+            this.newOrderBy = this.orderBy;
+            
             // Setting initial view mode on Theme
             let prefsViewMode = !this.isRepositoryLevel ? 'view_mode_' + this.collectionId : 'view_mode';
            
@@ -1346,6 +1449,14 @@
             onChangeOrder(newOrder) {
                 if (newOrder != this.order)
                     this.$eventBusSearch.setOrder(newOrder);
+            },
+            onChangeOrderAndOrderBy(newOrder, newOrderBy) {
+                if (this.$refs['sortingDropdown'])
+                    this.$refs['sortingDropdown'].toggle();
+                if (newOrder != this.order || JSON.stringify(newOrderBy) != JSON.stringify(this.orderBy)) {
+                    this.$eventBusSearch.setOrderAndOrderBy(newOrder, newOrderBy);
+                    this.showItemsHiddingDueSortingDialog();
+                }
             },
             onChangeViewMode(viewMode) {
 
@@ -2055,9 +2166,32 @@
                 div.dropdown-content {
                     padding: 0;
 
+                    .sorting-options-container,
                     .metadata-options-container {
                         max-height: 288px;
                         overflow: auto;
+                    }
+                    .sorting-options-container-direction {
+                        position: sticky;
+                        top: 0;
+                        display: flex;
+                        background-color: var(--tainacan-background-color);
+                        border-bottom: 1px solid var(--tainacan-input-border-color);
+                        padding: 8px 12px;
+                        z-index: 1;
+
+                        & > .dropdown-item {
+                            border: 1px solid var(--tainacan-primary);
+
+                            &:first-child {
+                                border-top-left-radius: var(--tainacan-button-border-radius);
+                                border-bottom-left-radius: var(--tainacan-button-border-radius);
+                            }
+                            &:last-child {
+                                border-top-right-radius: var(--tainacan-button-border-radius);
+                                border-bottom-right-radius: var(--tainacan-button-border-radius);
+                            }
+                        }
                     }
                     .dropdown-item {
                         padding: 0.25em 1.0em 0.25em 0.75em;
@@ -2068,7 +2202,7 @@
                     }      
                     .dropdown-item-apply {
                         width: 100%;
-                        border-top: 1px solid var(--tainacan-skeleton-color);
+                        border-top: 1px solid var(--tainacan-input-border-color, var(--tainacan-skeleton-color));
                         padding: 8px; 
                         text-align: right;
                     }
