@@ -94,7 +94,12 @@ abstract class Pages {
 	 * as most pages will use this typography
 	 */
 	function admin_enqueue_fonts() {
-		wp_enqueue_style( 'roboto-fonts', 'https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i', [] );
+		wp_enqueue_style(
+			'roboto-fonts',
+			'https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i',
+			[],
+			TAINACAN_VERSION
+		);
 	}
 	
 	/**

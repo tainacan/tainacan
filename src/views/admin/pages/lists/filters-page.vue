@@ -1428,7 +1428,7 @@ export default {
                 }
 
                 .filter-type-label {
-                    font-weight: 600;
+                    font-weight: 500;
                     color: var(--tainacan-info-color);
                     width: 100%;
                     font-size: 1em;

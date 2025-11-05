@@ -307,7 +307,6 @@ export default {
                             color: var(--tainacan-gray4) !important;
                             font-size: 1.25em;
                             line-height: normal;
-                            font-weight: 600;
                         }
                     }
                 }

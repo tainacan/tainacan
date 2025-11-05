@@ -15938,7 +15938,7 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
   break-inside: avoid;
 }
 .tainacan-form .form-hook-region h3, .tainacan-form .form-hook-region h4, .tainacan-form .form-hook-region h5 {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--tainacan-secondary);
   margin-bottom: 4px;
 }
@@ -17908,7 +17908,7 @@ body.tainacan-admin-page > .control.autocomplete {
   font-size: 1.25em;
 }
 .v-popper--theme-tooltip.tainacan-tooltip.metadata-type-preview-tooltip .metadata-type-preview .metadata-type-label {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--tainacan-turquoise4);
   width: 100%;
   font-size: 1em;
