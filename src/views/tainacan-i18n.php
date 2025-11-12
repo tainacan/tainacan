@@ -17,6 +17,8 @@ return apply_filters( 'tainacan-i18n', [
 	'after'		                                     => __( 'After', 'tainacan' ),
 	'before_or_on_day'		                         => __( 'Before (inclusive)', 'tainacan' ),
 	'after_or_on_day'                          		 => __( 'After (inclusive)', 'tainacan' ),
+	'has_value'                                      => __( 'Has value', 'tainacan' ),
+	'has_no_value'                                   => __( 'Has no value', 'tainacan' ),
 
 	// Tainacan common terms
 	'repository'                                     => __( 'Repository', 'tainacan' ),
