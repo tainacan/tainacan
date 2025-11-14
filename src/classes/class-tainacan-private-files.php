@@ -466,7 +466,9 @@ class Private_Files {
 				'# 1. Prevent private files access _x_ID_NUMBER',
 				'RewriteRule ^(.*/)?_x_\d+/.+$ - [F,L]',
 				'# 2. All access files pass to WordPress',
-				'RewriteRule ^.*$ /index.php [L,QSA]'
+				'RewriteCond %{REQUEST_FILENAME} !-f',
+				'RewriteCond %{REQUEST_FILENAME} !-d',
+				'RewriteRule ^ /index.php [L,QSA]'
 			);
 
 			insert_with_markers($private_htaccess_file, $marker, $rules);
