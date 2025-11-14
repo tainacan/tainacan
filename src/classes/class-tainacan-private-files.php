@@ -463,7 +463,7 @@ class Private_Files {
 			$rules = array(
 				'RewriteEngine On',
 				'Options -MultiViews',
-				'# 1. Prevent private files access _x_NUMERO',
+				'# 1. Prevent private files access _x_ID_NUMBER',
 				'RewriteRule ^(.*/)?_x_\d+/.+$ - [F,L]',
 				'# 2. All access files pass to WordPress',
 				'RewriteRule ^.*$ /index.php [L,QSA]'
