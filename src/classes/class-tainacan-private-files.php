@@ -277,7 +277,9 @@ class Private_Files {
 					// header('Cache-Control: must-revalidate');
 					// header('Pragma: public');
 					// header('Content-Length: ' . filesize($file));
-					\ob_clean();
+					if (\ob_get_level() > 0) {
+						\ob_clean();
+					}
 					\flush();
 					\readfile($existing_file);
 

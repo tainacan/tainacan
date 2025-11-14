@@ -411,7 +411,9 @@ class REST_Background_Processes_Controller extends REST_Controller {
             header("Content-Disposition: attachment; filename=$file_name"); 
             header("Content-Type: $mime_type");
             header("Content-Length: " . @filesize( $path ));
-            \ob_clean();
+            if (\ob_get_level() > 0) {
+                \ob_clean();
+            }
             \flush();
             \readfile($path);
             exit;
