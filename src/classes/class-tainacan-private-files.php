@@ -277,7 +277,9 @@ class Private_Files {
 					// header('Cache-Control: must-revalidate');
 					// header('Pragma: public');
 					// header('Content-Length: ' . filesize($file));
-					\ob_clean();
+					if (\ob_get_level() > 0) {
+						\ob_clean();
+					}
 					\flush();
 					\readfile($existing_file);
 
@@ -425,12 +427,23 @@ class Private_Files {
 			$htaccess_dir = trailingslashit($uploads_dir['basedir']) . 'tainacan'; // Path to the tainacan folder
 			$htaccess_file = trailingslashit($htaccess_dir) . '.htaccess'; // Path to the .htaccess file
 
+			// because self::get_items_uploads_folder() is not a static function
+			$tainacan_basepath = (defined('TAINACAN_ITEMS_UPLOADS_DIR'))
+				? TAINACAN_ITEMS_UPLOADS_DIR
+				: 'tainacan-items';
+			$private_dir = trailingslashit($uploads_dir['basedir']) . $tainacan_basepath;
+			$private_htaccess_file = trailingslashit($private_dir) . '.htaccess';
+
 			// If the folder doesn't exist, create it
 			if (!file_exists($htaccess_dir)) {
 				wp_mkdir_p($htaccess_dir);
 			}
 
-			$marker = 'Tainacan [<wp_upload_dir()>/tainacan] rules'; // Marker name for identification
+			if (!file_exists($private_dir)) {
+				wp_mkdir_p($private_dir);
+			}
+
+			$marker = 'Tainacan wp_upload_dir/tainacan rules'; // Marker name for identification
 			$rules = array(
 				'# Prevent direct access to files',
 				'Order deny,allow',
@@ -439,6 +452,26 @@ class Private_Files {
 
 			// Add rules to the .htaccess file
 			insert_with_markers($htaccess_file, $marker, $rules);
+
+			$marker = 'Tainacan Items Rules';
+			$rules = array(
+				'RewriteEngine On',
+				'# Prevent private files access',
+				'RewriteRule ^_x_\d+/.+$ - [R=404,NC,L]'
+			); // Rules to be added
+
+			$rules = array(
+				'RewriteEngine On',
+				'Options -MultiViews',
+				'# 1. Prevent private files access _x_ID_NUMBER',
+				'RewriteRule ^(.*/)?_x_\d+/.+$ - [F,L]',
+				'# 2. All access files pass to WordPress',
+				'RewriteCond %{REQUEST_FILENAME} !-f',
+				'RewriteCond %{REQUEST_FILENAME} !-d',
+				'RewriteRule ^ /index.php [L,QSA]'
+			);
+
+			insert_with_markers($private_htaccess_file, $marker, $rules);
 		}
 	}
 

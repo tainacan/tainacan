@@ -249,7 +249,8 @@ function tainacan_blocks_get_plugin_js_settings(){
 		'enabled_view_modes' => \Tainacan\Theme_Helper::get_instance()->get_enabled_view_modes(),
 		'default_view_mode' => \Tainacan\Theme_Helper::get_instance()->get_default_view_mode(),
 		'default_order' => \Tainacan\Theme_Helper::get_instance()->get_default_order(),
-		'default_orderby' => \Tainacan\Theme_Helper::get_instance()->get_default_orderby()
+		'default_orderby' => \Tainacan\Theme_Helper::get_instance()->get_default_orderby(),
+		'enable_item_link_query_params' => \Tainacan\Theme_Helper::get_instance()->get_enable_item_link_query_params()
 	];
 	
 	return $settings;
@@ -302,7 +303,7 @@ function tainacan_blocks_add_extra_item_submission_assets() {
 	wp_register_script(
 		'tainacan-google-recaptcha-script',
 		'https://www.google.com/recaptcha/api.js',
-		[], false, true 
+		[], TAINACAN_VERSION, true 
 	);
 	
 	wp_enqueue_script('tainacan-google-recaptcha-script');	

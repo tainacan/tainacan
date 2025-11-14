@@ -209,8 +209,13 @@ export default (element) => {
 
             // Logic for dynamic importing Tainacan oficial view modes only if they are necessary
             possibleViewModes.forEach(viewModeSlug => {
-                if ( registeredViewModes.indexOf(viewModeSlug) >= 0 )
-                    VueItemsList.component('view-mode-' + viewModeSlug, defineAsyncComponent(() => import('./theme-search/components/view-mode-' + viewModeSlug + '.vue')));
+                if ( registeredViewModes.indexOf(viewModeSlug) >= 0 ) {
+                    const componentName = 'view-mode-' + viewModeSlug;
+                    // Only import if not already registered as an external component
+                    if (!window.tainacan_extra_components || !window.tainacan_extra_components[componentName]) {
+                        VueItemsList.component(componentName, defineAsyncComponent(() => import('./theme-search/components/view-mode-' + viewModeSlug + '.vue')));
+                    }
+                }
             });
 
             const emitter = mitt();

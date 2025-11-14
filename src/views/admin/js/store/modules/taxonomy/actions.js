@@ -128,28 +128,30 @@ export const fetchTerms = ({}, {taxonomyId, fetchOnly, search, all, order, offse
 
     let query = '';
 
-    if (order == undefined)
+    if ( order == undefined )
         order = 'asc';
 
-    if (fetchOnly && search && !all )
-        query = `?order=${order}&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
-    else if (fetchOnly && search && all )
-        query = `?hideempty=0&order=${order}&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
-    else if (search && !all && !fetchOnly)
-        query = `?hideempty=0&order=${order}&${qs.stringify(search)}`;
-    else
-        query =`?hideempty=0&order=${order}`;
+    query += '?order=' + order;
 
-    if (number != undefined)
+    if ( all )
+        query += '&hideempty=0';
+
+    if ( fetchOnly )
+        query += '&' + qs.stringify(fetchOnly);
+
+    if ( search )
+        query += '&' + qs.stringify(search);
+
+    if ( number != undefined )
         query += '&number=' + number;
 
-    if (offset != undefined)
+    if ( offset != undefined )
         query += '&offset=' + offset;
 
-    if (exclude != undefined)
+    if ( exclude != undefined )
         query += '&' + qs.stringify({ exclude: exclude });
 
-    if (include != undefined)
+    if ( include != undefined )
         query += '&' + qs.stringify({ include: include });
 
     return new Promise((resolve, reject) => {

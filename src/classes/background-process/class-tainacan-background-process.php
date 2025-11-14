@@ -456,7 +456,9 @@ abstract class Background_Process extends Background_Process_Base {
 		
 		$filepath = $logs_folder . '/' . $filename;
 		
-		\ob_clean();
+		if (\ob_get_level() > 0) {
+			\ob_clean();
+		}
 		\flush();
 		file_put_contents($filepath, $this->recursive_stingify_log_array($log), FILE_APPEND);
 		

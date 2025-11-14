@@ -171,16 +171,6 @@
             dateParser(dateString) { 
                 return moment(dateString, this.dateFormat).toDate(); 
             },
-            emitOnlyYear(year) {
-                this.value = new Date(year,0,1);
-                
-                this.value.setUTCDate(1);
-                this.value.setUTCMonth(0);
-                this.value.setFullYear(year);
-
-                this.emit();
-            },
-            // emit the operation for listeners
             emit() {
                 if ( this.value == undefined || this.value == null || this.value === '')
                     this.value = new Date();

@@ -94,7 +94,12 @@ abstract class Pages {
 	 * as most pages will use this typography
 	 */
 	function admin_enqueue_fonts() {
-		wp_enqueue_style( 'roboto-fonts', 'https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i', [] );
+		wp_enqueue_style(
+			'roboto-fonts',
+			'https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i',
+			[],
+			TAINACAN_VERSION
+		);
 	}
 	
 	/**
@@ -387,6 +392,7 @@ abstract class Pages {
 			[ 'wp-hooks', 'wp-i18n' ],
 			TAINACAN_VERSION
 		);
+		wp_set_script_translations( 'tainacan-admin-navigation-menu', 'tainacan' );
 		wp_localize_script( 'tainacan-admin-navigation-menu', 'tainacan_user', $this->get_admin_js_user_data() );
 		
 		?>

@@ -1417,7 +1417,7 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 	$terms = get_terms( $terms_query_args );
 
 	unset( $terms_query_args['number'], $terms_query_args['offset'] ); // necessary so wp_count_terms can work
-	$total_terms = wp_count_terms( 'tnc_tax_' . $post->ID, $terms_query_args );
+	$total_terms = wp_count_terms( $terms_query_args );
 	
 	$content = '';
 
@@ -1678,7 +1678,7 @@ function tainacan_get_taxonomies_search($args = []) {
 					id="tainacan-taxonomy-search-field--input"
 					class="wp-block-search__input wp-block-search__input"
 					name="search"
-					value="<?php echo $current_args['search']; ?>"
+					value="<?php echo esc_attr( $current_args['search'] ); ?>"
 					placeholder="<?php echo __( 'Search by a term name', 'tainacan'); ?>">
 			<button 
 					type="submit" 
@@ -1688,9 +1688,11 @@ function tainacan_get_taxonomies_search($args = []) {
 		</div>
 		<?php foreach ($_GET as $key => $value) {
 			if ($key !== 'search' && $key !== 'termspaged') {
-				$key = htmlspecialchars($key);
-				$value = htmlspecialchars($value);
-				echo "<input type='hidden' name='$key' value='$value'/>";
+				// Handle array values by converting to string
+				if ( is_array( $value ) ) {
+					$value = implode( ',', array_map( 'esc_attr', $value ) );
+				}
+				echo '<input type="hidden" name="' . esc_attr( $key ) . '" value="' . esc_attr( $value ) . '"/>';
 			}
 		} ?>
 	</form>
