@@ -58,7 +58,7 @@
                             </optgroup>
                         </template>
                         <option value="document_content_index">
-                            {{ $i18n.get('label_document') }}
+                            {{ $i18n.get('label_document_content') }}
                         </option>
                     </b-select>
                 </b-field>

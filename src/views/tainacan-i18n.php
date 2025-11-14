@@ -296,6 +296,7 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: Document is the main content of the Item. It can be a file, a url link or a text */
 	'label_document'                                 => __( 'Document', 'tainacan' ),
 	'label_document_empty'                           => __( 'Empty document', 'tainacan' ),
+	'label_document_content'                         => __( 'Document content', 'tainacan' ),
 	'label_file'                                     => __( 'File', 'tainacan' ),
 	'label_text'                                     => __( 'Text', 'tainacan' ),
 	'label_url'                                      => __( 'URL', 'tainacan' ),
