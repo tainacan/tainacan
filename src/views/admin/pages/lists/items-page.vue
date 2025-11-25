@@ -1589,6 +1589,7 @@
         }
         @media screen and (min-width: 769px) {
             top: calc(0.5rem + var(--tainacan-container-padding) + 1.25em + 0.5rem) !important;
+            bottom: unset;
             position: relative;
             position: sticky;
             
