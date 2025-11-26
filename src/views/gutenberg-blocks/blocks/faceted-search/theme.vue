@@ -558,6 +558,7 @@
             <filters-tags-list
                     class="filter-tags-list"
                     :is-inside-modal="filtersAsModal"
+                    :aria-label="$i18n.get('label_active_filters')"
                 />
 
             <!-- JS-side hook for extra form content -->
@@ -573,6 +574,8 @@
                 id="items-list-results"
                 :aria-busy="isLoadingItems"
                 aria-labelledby="items-list-landmark"
+                aria-live="polite"
+                aria-atomic="false"
                 role="region"
                 class="above-search-control">
             
@@ -588,10 +591,23 @@
                     ref="items-list-results-top"
                     class="sr-only" />
 
+            <!-- Loading announcement for screen readers - always in DOM -->
+            <div 
+                    class="sr-only"
+                    role="status"
+                    aria-live="polite"
+                    aria-atomic="true"
+                    aria-relevant="text">
+                <span v-if="showLoading">
+                    {{ $i18n.get('label_loading_items') }}
+                </span>
+            </div>
+            
             <div 
                     v-show="(showLoading && 
                         !(registeredViewModes[viewMode] != undefined && (registeredViewModes[viewMode].full_screen == true || registeredViewModes[viewMode].implements_skeleton == true)))"
-                    class="loading-container">
+                    class="loading-container"
+                    :aria-label="$i18n.get('label_loading_items')">
 
                 <!--  Default loading, to be used view modes without any skeleton-->
                 <b-loading 
@@ -665,10 +681,14 @@
                 <!-- Empty Placeholder, rendered in a slot inside the view modes -->
                 <section
                         v-if="!showLoading && totalItems == 0"
-                        class="section">
+                        class="section"
+                        role="status"
+                        aria-live="polite"
+                        aria-atomic="true"
+                        aria-relevant="text">
                     <div class="content has-text-gray has-text-centered">
                         <p>
-                            <span class="icon is-large">
+                            <span class="icon is-large" aria-hidden="true">
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
                             </span>
                         </p>

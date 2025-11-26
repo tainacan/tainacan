@@ -5,7 +5,12 @@
             class="pagination-area">
         <div 
                 style="flex-grow: 1;"
-                class="shown-items is-hidden-mobile">
+                class="shown-items is-hidden-mobile"
+                role="status"
+                aria-live="polite"
+                aria-atomic="false"
+                aria-relevant="text"
+                :aria-label="$i18n.get('label_list_pagination')">
             {{ 
                 $i18n.get('info_showing_items') +
                     getFirstItem() +

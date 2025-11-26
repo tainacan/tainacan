@@ -4,8 +4,7 @@
             :class="{ 
                 'is-filters-menu-open': isFiltersModalActive && !openAdvancedSearch
             }"
-            class="admin-items-list page-container"
-            aria-live="polite">
+            class="admin-items-list page-container">
 
         <tainacan-external-link
                 v-if="isRepositoryLevel" 
@@ -623,6 +622,8 @@
                     id="items-list-results"
                     :aria-busy="isLoadingItems"
                     aria-labelledby="items-list-landmark"
+                    aria-live="polite"
+                    aria-atomic="false"
                     role="region"
                     class="above-search-control">
 
@@ -632,9 +633,22 @@
                     {{ $i18n.get('label_items_list') }}
                 </h2>
 
+                <!-- Loading announcement for screen readers - always in DOM -->
+                <div 
+                        class="sr-only"
+                        role="status"
+                        aria-live="polite"
+                        aria-atomic="true"
+                        aria-relevant="text">
+                    <span v-if="showLoading">
+                        {{ $i18n.get('label_loading_items') }}
+                    </span>
+                </div>
+                
                 <div 
                         v-show="showLoading"
-                        class="loading-container">
+                        class="loading-container"
+                        :aria-label="$i18n.get('label_loading_items')">
 
                     <!--  Default loading, to be used view modes without any skeleton-->
                     <b-loading 
@@ -687,10 +701,13 @@
                 <!-- Empty Placeholder -->
                 <section
                         v-if="!isLoadingItems && totalItems == 0"
-                        class="section">
+                        class="section"
+                        role="status"
+                        aria-live="polite"
+                        aria-atomic="true">
                     <div class="content has-text-gray has-text-centered">
                         <p>
-                            <span class="icon is-large">
+                            <span class="icon is-large" aria-hidden="true">
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
                             </span>
                         </p>

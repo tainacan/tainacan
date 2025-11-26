@@ -100,7 +100,6 @@ export default (element) => {
 
             const VueItemsList = createApp({
                 created() {
-                    blockElement.setAttribute('aria-live', 'polite');
                     blockElement.classList.add('theme-items-list'); // This used to be on the component, but as Vue now do not renders the component inside a div...
                 },
                 mounted() {
