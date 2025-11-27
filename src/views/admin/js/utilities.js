@@ -224,3 +224,13 @@ export const OrderByHelperFunctions = () => {
 OrderByHelperPlugin.install = function (app, options = {}) {
     app.config.globalProperties.$orderByHelper = OrderByHelperFunctions();
 };
+
+
+// A11Y DROPDOWN DIRECTIVE PLUGIN - Adds keyboard navigation to Buefy dropdowns
+import a11yDropdownDirective from './directives/a11y-dropdown.js';
+
+export const A11yDropdownPlugin = {};
+
+A11yDropdownPlugin.install = function (app, options = {}) {
+    app.directive('a11y-dropdown', a11yDropdownDirective);
+};

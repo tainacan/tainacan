@@ -68,8 +68,9 @@
                     horizontal
                     :label="$i18n.get('label_go_to_page')"> 
                 <b-dropdown 
+                        v-a11y-dropdown
+                        :trigger-tabindex="-1"
                         position="is-top-right"
-                        aria-role="list"
                         trap-focus
                         @change="onPageChange">
                     <template #trigger>
@@ -88,7 +89,7 @@
                             aria-controls="items-list-results"
                             role="button"
                             :value="Number(pageNumber)"
-                            aria-role="listitem">
+                            custom>
                         {{ pageNumber }}
                     </b-dropdown-item>
                 </b-dropdown>

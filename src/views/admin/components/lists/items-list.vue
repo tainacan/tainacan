@@ -63,10 +63,11 @@
                 <b-dropdown
                         v-if="Array.isArray(items) && items.length > 0"
                         id="bulk-actions-dropdown"
+                        v-a11y-dropdown
+                        :trigger-tabindex="-1"
                         :mobile-modal="true"
                         position="is-bottom-left"
                         :disabled="selectedItems.length <= 1"
-                        aria-role="list"
                         trap-focus>
                     <template #trigger>
                         <button class="button is-white">
@@ -78,39 +79,45 @@
                     </template>
                     <b-dropdown-item
                             v-if="!isAllItemsSelected && selectedItems.length"
-                            aria-role="listitem"
-                            @click="filterBySelectedItems()">
+                            @click="filterBySelectedItems()"
+                            @keydown.enter.prevent="filterBySelectedItems()"
+                            @keydown.space.prevent="filterBySelectedItems()">
                         {{ $i18n.get('label_view_only_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="$route.params.collectionId && !isOnTrash"
-                            aria-role="listitem"
-                            @click="openBulkEditionModal()">
+                            @click="openBulkEditionModal()"
+                            @keydown.enter.prevent="openBulkEditionModal()"
+                            @keydown.space.prevent="openBulkEditionModal()">
                         {{ $i18n.get('label_bulk_edit_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="$route.params.collectionId && !isOnTrash"
-                            aria-role="listitem"
-                            @click="sequenceEditSelectedItems()">
+                            @click="sequenceEditSelectedItems()"
+                            @keydown.enter.prevent="sequenceEditSelectedItems()"
+                            @keydown.space.prevent="sequenceEditSelectedItems()">
                         {{ $i18n.get('label_sequence_edit_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="collectionId && collection && collection.current_user_can_delete_items"
                             id="item-delete-selected-items"
-                            aria-role="listitem"
-                            @click="deleteSelectedItems()">
+                            @click="deleteSelectedItems()"
+                            @keydown.enter.prevent="deleteSelectedItems()"
+                            @keydown.space.prevent="deleteSelectedItems()">
                         {{ isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('label_send_to_trash') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="collectionId && isOnTrash"
-                            aria-role="listitem"
-                            @click="untrashSelectedItems();">
+                            @click="untrashSelectedItems()"
+                            @keydown.enter.prevent="untrashSelectedItems()"
+                            @keydown.space.prevent="untrashSelectedItems()">
                         {{ $i18n.get('label_untrash_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             :disabled="isAllItemsSelected"
-                            aria-role="listitem"
-                            @click="$parent.openExposersModal(selectedItems)">
+                            @click="$parent.openExposersModal(selectedItems)"
+                            @keydown.enter.prevent="$parent.openExposersModal(selectedItems)"
+                            @keydown.space.prevent="$parent.openExposersModal(selectedItems)">
                         {{ $i18n.get('label_view_selected_items_as') }}
                     </b-dropdown-item>
                 </b-dropdown>
@@ -131,6 +138,7 @@
                         @click.right="clearContextMenu()" />
 
                 <b-dropdown
+                        v-a11y-dropdown
                         inline
                         :style="{ top: cursorPosY + 'px', left: cursorPosX + 'px' }"
                         trap-focus>

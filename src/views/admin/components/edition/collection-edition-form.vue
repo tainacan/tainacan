@@ -177,10 +177,11 @@
                                     <div class="control">
                                         <b-dropdown
                                                 ref="enabledViewModesDropdown"
-                                                class="enabled-view-modes-dropdown"
+                                                v-a11y-dropdown
+                                                :trigger-tabindex="-1"
                                                 :mobile-modal="true"
                                                 :disabled="Object.keys(registeredAndNotDisabledViewModes).length < 0"
-                                                aria-role="list"
+                                                class="enabled-view-modes-dropdown"
                                                 trap-focus
                                                 position="is-top-right">
                                             <template #trigger>
@@ -197,8 +198,7 @@
                                             <b-dropdown-item
                                                     v-for="(viewMode, index) in Object.keys(registeredAndNotDisabledViewModes)"
                                                     :key="index"
-                                                    custom
-                                                    aria-role="listitem">
+                                                    custom>
                                                 <b-checkbox
                                                         v-if="registeredAndNotDisabledViewModes[viewMode] != undefined"
                                                         :model-value="checkIfViewModeEnabled(viewMode)"
@@ -648,7 +648,8 @@
                                     :message="$i18n.getHelperMessage('collections', 'status')" />
                             <b-dropdown
                                     ref="collection-edition-status-dropdown"
-                                    aria-role="list"
+                                    v-a11y-dropdown
+                                    :trigger-tabindex="-1"
                                     class="collection-edition-status-dropdown"
                                     position="is-bottom-left"
                                     :triggers="[ 'click' ]"
@@ -682,8 +683,9 @@
                                 <b-dropdown-item 
                                         v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft' && (collection.status != 'auto-draft' || status.slug != 'trash'))"
                                         :key="index"
-                                        aria-role="listitem"
-                                        @click="form.status = statusOption.slug">
+                                        @click="form.status = statusOption.slug"
+                                        @keydown.enter.prevent="form.status = statusOption.slug"
+                                        @keydown.space.prevent="form.status = statusOption.slug">
                                     <span class="icon has-text-gray">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-18px"

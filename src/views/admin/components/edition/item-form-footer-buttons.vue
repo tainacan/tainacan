@@ -57,8 +57,9 @@
                 <b-dropdown
                         v-if="!$adminOptions.hideItemEditionStatusOption && $adminOptions.itemEditionStatusOptionOnFooterDropdown"
                         ref="item-edition-footer-dropdown"
+                        v-a11y-dropdown
+                        :trigger-tabindex="-1"
                         :triggers="['contextmenu']"
-                        aria-role="list"
                         animation="item-appear"
                         :mobile-modal="false"
                         position="is-top-left"
@@ -96,7 +97,6 @@
                     </template>
                     <b-dropdown-item 
                             :class="{ 'is-forced-last-option': status == 'draft' }"
-                            aria-role="listitem"
                             @click="$emit(
                                 'on-submit',
                                 'draft',
@@ -117,7 +117,6 @@
                     <b-dropdown-item
                             v-if="!$adminOptions.hideItemEditionStatusPendingOption"
                             :class="{ 'is-forced-last-option': status == 'pending' }"
-                            aria-role="listitem"
                             @click="$emit(
                                 'on-submit',
                                 'pending',
@@ -138,7 +137,6 @@
                     <b-dropdown-item
                             v-if="currentUserCanPublish && !$adminOptions.hideItemEditionStatusPrivateOption"
                             :class="{ 'is-forced-last-option': status == 'private' }"
-                            aria-role="listitem"
                             @click="$emit(
                                 'on-submit',
                                 'private',
@@ -158,7 +156,6 @@
                     </b-dropdown-item>
                     <b-dropdown-item 
                             v-if="currentUserCanPublish && !$adminOptions.hideItemEditionStatusPublishOption"
-                            aria-role="listitem"
                             @click="$emit(
                                 'on-submit',
                                 'publish',

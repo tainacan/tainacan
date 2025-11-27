@@ -12,6 +12,8 @@
                 <div class="field is-pulled-right">
                     <b-dropdown
                             position="is-bottom-left"
+                            v-a11y-dropdown
+                            :trigger-tabindex="-1"
                             :disabled="!isSelecting"
                             id="bulk-actions-dropdown"
                             trap-focus>

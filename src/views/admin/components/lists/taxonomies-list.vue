@@ -18,9 +18,10 @@
             <div class="field is-pulled-right">
                 <b-dropdown
                         id="bulk-actions-dropdown"
+                        v-a11y-dropdown
+                        :trigger-tabindex="-1"
                         position="is-bottom-left"
                         :disabled="!isSelecting"
-                        aria-role="list"
                         trap-focus>
                     <template #trigger>
                         <button class="button is-white">
@@ -32,13 +33,13 @@
                     </template>
                     <b-dropdown-item
                             id="item-delete-selected-items"
-                            aria-role="listitem"
-                            @click="deleteSelected()">
+                            @click="deleteSelected()"
+                            @keydown.enter.prevent="deleteSelected()"
+                            @keydown.space.prevent="deleteSelected()">
                         {{ $i18n.get('label_delete_selected_taxonomies') }}
                     </b-dropdown-item>
-                    <b-dropdown-item 
-                            disabled
-                            aria-role="listitem">{{ $i18n.get('label_edit_selected_taxonomies') + ' (Not ready)' }}
+                    <b-dropdown-item disabled>
+                        {{ $i18n.get('label_edit_selected_taxonomies') + ' (Not ready)' }}
                     </b-dropdown-item>
                 </b-dropdown>
             </div>

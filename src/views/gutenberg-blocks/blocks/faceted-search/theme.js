@@ -44,7 +44,8 @@ import {
 } from '../../../admin/js/admin-utilities';
 import { 
     ThumbnailHelperPlugin,
-    OrderByHelperPlugin
+    OrderByHelperPlugin,
+    A11yDropdownPlugin
 } from '../../../admin/js/utilities';
 import mitt from 'mitt';
 
@@ -195,6 +196,7 @@ export default (element) => {
             VueItemsList.use(ThumbnailHelperPlugin);
             VueItemsList.use(OrderByHelperPlugin);
             VueItemsList.use(AxiosErrorHandlerPlugin);
+            VueItemsList.use(A11yDropdownPlugin);
             VueItemsList.use(ConsolePlugin, {visual: false});
             VueItemsList.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
             VueItemsList.component('help-button', HelpButton);

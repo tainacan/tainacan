@@ -25,10 +25,11 @@
                 </button>
                 <b-field class="header-item">
                     <b-dropdown
+                            v-a11y-dropdown
+                            :trigger-tabindex="-1"
                             :mobile-modal="true"
                             :disabled="activeMetadatumList.length <= 0"
                             class="show metadata-options-dropdown"
-                            aria-role="list"
                             trap-focus>
                         <template #trigger>
                             <button
@@ -46,7 +47,6 @@
                                     :key="index"
                                     class="control"
                                     custom
-                                    aria-role="listitem"
                                     :class="{ 'is-active': metadataType.enabled }">
                                 <b-checkbox
                                         v-model="metadataType.enabled"

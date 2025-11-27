@@ -68,8 +68,8 @@
                     class="search-area">
                 <b-dropdown
                         ref="tainacan-textual-search-input"
+                        :trigger-tabindex="-1"
                         class="tainacan-textual-search-input"
-                        aria-role="dialog"
                         :mobile-modal="false"
                         :disabled="openAdvancedSearch"
                         :triggers="hasSearchByMoreThanOneWord ? ['click','contextmenu','focus'] : []">
@@ -164,10 +164,11 @@
                         placement: 'auto-start',
                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                     }"
+                    v-a11y-dropdown
+                    :trigger-tabindex="-1"
                     :mobile-modal="true"
                     :disabled="totalItems <= 0"
                     class="show metadata-options-dropdown"
-                    aria-role="list"
                     trap-focus>
                 <template #trigger>
                     <button
@@ -186,7 +187,6 @@
                             :key="index"
                             class="control"
                             custom
-                            aria-role="listitem"
                             :class="{ 'is-active': column.display }">
                         <b-checkbox
                                 v-model="column.display"
@@ -213,9 +213,10 @@
             <b-field>
                 <label class="label">{{ $i18n.get('label_sort') }}</label>
                 <b-dropdown
+                        v-a11y-dropdown
                         :mobile-modal="true"
-                        aria-role="list"
                         trap-focus
+                        :trigger-tabindex="-1"
                         @update:model-value="onChangeOrder">
                     <template #trigger>
                         <button
@@ -236,7 +237,7 @@
                             role="button"
                             :class="{ 'is-active': order == 'DESC' }"
                             :value="'DESC'"
-                            aria-role="listitem">
+                            tag="button">
                         <span class="icon gray-icon">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending" />
                         </span>
@@ -247,7 +248,7 @@
                             role="button"
                             :class="{ 'is-active': order == 'ASC' }"
                             :value="'ASC'"
-                            aria-role="listitem">
+                            tag="button">
                         <span class="icon gray-icon">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending" />
                         </span>
@@ -262,8 +263,9 @@
                     </span>
                     <b-dropdown
                             id="tainacanSortByDropdown"
+                            v-a11y-dropdown
+                            :trigger-tabindex="-1"
                             :mobile-modal="true"
-                            aria-role="list"
                             trap-focus
                             @update:model-value="onChangeOrderBy($event)">
                         <template #trigger>
@@ -285,7 +287,6 @@
                                     role="button"
                                     :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
                                     :value="metadatum"
-                                    aria-role="listitem"
                                     :data-metadatum-slug="metadatum.slug ? metadatum.slug : ''">
                                 {{ metadatum.name }}
                             </b-dropdown-item>
@@ -312,10 +313,11 @@
                     {{ $i18n.get('label_view_on') + ':&nbsp; ' }}
                 </label>
                 <b-dropdown
+                        v-a11y-dropdown
+                        :trigger-tabindex="-1"
                         :inline="showInlineViewModeOptions"
                         :mobile-modal="true"
                         position="is-bottom-left"
-                        aria-role="list"
                         trap-focus
                         @change="onChangeViewMode($event)">
                     <template #trigger>
@@ -340,8 +342,7 @@
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': viewModeOption == viewMode }"
-                                :value="viewModeOption"
-                                aria-role="listitem">
+                                :value="viewModeOption">
                             <span 
                                     v-if="!showInlineViewModeOptions"
                                     class="gray-icon"
@@ -688,7 +689,9 @@
                         aria-relevant="text">
                     <div class="content has-text-gray has-text-centered">
                         <p>
-                            <span class="icon is-large" aria-hidden="true">
+                            <span
+                                    class="icon is-large"
+                                    aria-hidden="true">
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
                             </span>
                         </p>
