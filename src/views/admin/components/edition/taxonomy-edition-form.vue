@@ -99,7 +99,8 @@
                                 :message="$i18n.getHelperMessage('taxonomies', 'status')" />
                         <b-dropdown
                                 ref="item-edition-status-dropdown"
-                                aria-role="list"
+                                v-a11y-dropdown
+                                :trigger-tabindex="-1"
                                 class="item-edition-status-dropdown"
                                 :triggers="[ 'click' ]"
                                 :disabled="editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' )"
@@ -132,7 +133,6 @@
                             <b-dropdown-item 
                                     v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft' && (taxonomy.status != 'auto-draft' || status.slug != 'trash'))"
                                     :key="index"
-                                    aria-role="listitem"
                                     @click="form.status = statusOption.slug">
                                 <span class="icon has-text-dark">
                                     <i 

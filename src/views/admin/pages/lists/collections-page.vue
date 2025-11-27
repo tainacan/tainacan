@@ -20,7 +20,8 @@
                     class="header-item">
                 <b-dropdown
                         id="collection-creation-options-dropdown"
-                        aria-role="list"
+                        v-a11y-dropdown="{ appendToBody: true }"
+                        :trigger-tabindex="-1"
                         :mobile-modal="true"
                         trap-focus
                         append-to-body>
@@ -32,37 +33,45 @@
                             </span>
                         </button>
                     </template>   
-                    <b-dropdown-item aria-role="listitem">
+                    <b-dropdown-item>
                         <router-link
                                 v-slot="{ navigate }"
                                 :to="{ path: $routerHelper.getNewCollectionPath() }"
                                 custom>
                             <div 
-                                    id="a-create-collection"
-                                    @click="navigate()">
+                                    id="a-create-collection"    
+                                    role="link"
+                                    tabindex="0"
+                                    @click="navigate()"
+                                    @keydown.enter.prevent="navigate()"
+                                    @keydown.space.prevent="navigate()">
                                 {{ $i18n.get('new_blank_collection') }}
                                 <br>
                                 <small class="is-small">{{ $i18n.get('info_choose_your_metadata') }}</small>
                             </div>
                         </router-link>
                     </b-dropdown-item>
-                    <b-dropdown-item aria-role="listitem">
+                    <b-dropdown-item>
                         <div
                                 id="a-preset-collection"
-                                tag="div"
-                                @click="onOpenCollectionCreationModal">
+                                role="button"
+                                tabindex="0"
+                                @click="onOpenCollectionCreationModal"
+                                @keydown.enter.prevent="onOpenCollectionCreationModal"
+                                @keydown.space.prevent="onOpenCollectionCreationModal">
                             {{ $i18n.get('label_preset_collections') }}
                             <br>
                             <small class="is-small">{{ $i18n.get('info_preset_collections') }}</small>
                         </div>
                     </b-dropdown-item>
-                    <b-dropdown-item 
-                            v-if="$userCaps.hasCapability('manage_tainacan')"
-                            aria-role="listitem">
+                    <b-dropdown-item v-if="$userCaps.hasCapability('manage_tainacan')">
                         <div
                                 id="a-import-collection"
-                                tag="div"
-                                @click="onOpenImportersModal">
+                                role="button"
+                                tabindex="0"
+                                @click="onOpenImportersModal"
+                                @keydown.enter.prevent="onOpenImportersModal"
+                                @keydown.space.prevent="onOpenImportersModal">
                             {{ $i18n.get('import') }}
                             <br>
                             <small class="is-small">{{ $i18n.get('info_import_collection') }}</small>
@@ -99,10 +108,11 @@
                         class="header-item">
                     <b-dropdown
                             :ref="'collectionTaxonomyFilterDropdown-' + taxonomyValue"
+                            v-a11y-dropdown
+                            :trigger-tabindex="-1"
                             :mobile-modal="true"
                             :disabled="(totalCollections && totalCollections.length && totalCollections.length <= 0) || isLoading"
                             class="show metadata-options-dropdown"
-                            aria-role="list"
                             trap-focus>
                         <template #trigger>
                             <button
@@ -120,7 +130,6 @@
                                     :key="index"
                                     class="control"
                                     custom
-                                    aria-role="listitem"
                                     :class="{ 'is-active': collectionTaxonomyTerm.enabled }">
                                 <b-checkbox
                                         v-model="collectionTaxonomyTerm.enabled"
@@ -173,10 +182,11 @@
                     class="header-item">
                 <b-dropdown
                         ref="sortingDropdown" 
+                        v-a11y-dropdown
+                        :trigger-tabindex="-1"
                         :mobile-modal="true"
                         :multiple="false"
                         class="show sorting-options-dropdown"
-                        aria-role="list"
                         trap-focus
                         position="is-bottom-left"
                         :close-on-click="false"
@@ -217,7 +227,6 @@
                                     role="button"
                                     :class="{ 'is-active': newOrder == 'desc' }"
                                     :value="'desc'"
-                                    aria-role="listitem"
                                     @click="newOrder = 'desc'">
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-sortdescending" />
@@ -229,7 +238,6 @@
                                     role="button"
                                     :class="{ 'is-active': newOrder == 'asc' }"
                                     :value="'asc'"
-                                    aria-role="listitem"
                                     @click="newOrder = 'asc'">
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-sortascending" />
@@ -246,7 +254,6 @@
                                         role="button"
                                         :class="{ 'is-active': newOrderBy == option.value }"
                                         :value="option.value"
-                                        aria-role="listitem"
                                         @click="newOrderBy = option.value">
                                     {{ option.label }}
                                 </b-dropdown-item>
@@ -344,7 +351,8 @@
                             <div v-if="!$adminOptions.hideCollectionsListCreationDropdown && $userCaps.hasCapability('tnc_rep_edit_collections') && status == undefined || status == ''">
                                 <b-dropdown 
                                         id="collection-creation-options-dropdown"
-                                        aria-role="list"
+                                        v-a11y-dropdown
+                                        :trigger-tabindex="-1"
                                         trap-focus>
                                     <template #trigger>
                                         <button class="button is-secondary">
@@ -354,35 +362,45 @@
                                             </span>
                                         </button>
                                     </template>
-                                    <b-dropdown-item aria-role="listitem">
+                                    <b-dropdown-item>
                                         <router-link
                                                 v-slot="{ navigate }"
                                                 :to="{ path: $routerHelper.getNewCollectionPath() }"
                                                 custom>
                                             <div 
                                                     id="a-create-collection"
-                                                    @click="navigate()">
+                                                    role="link"
+                                                    tabindex="0"
+                                                    @click="navigate()"
+                                                    @keydown.enter.prevent="navigate()"
+                                                    @keydown.space.prevent="navigate()">
                                                 {{ $i18n.get('new_blank_collection') }}
                                                 <br>
                                                 <small class="is-small">{{ $i18n.get('info_choose_your_metadata') }}</small>
                                             </div>
                                         </router-link>
                                     </b-dropdown-item>
-                                    <b-dropdown-item aria-role="listitem">
+                                    <b-dropdown-item>
                                         <div
                                                 id="a-preset-collection"
-                                                tag="div"
-                                                @click="onOpenCollectionCreationModal">
+                                                role="button"
+                                                tabindex="0"
+                                                @click="onOpenCollectionCreationModal"
+                                                @keydown.enter.prevent="onOpenCollectionCreationModal"
+                                                @keydown.space.prevent="onOpenCollectionCreationModal">
                                             {{ $i18n.get('label_preset_collections') }}
                                             <br>
                                             <small class="is-small">{{ $i18n.get('info_preset_collections') }}</small>
                                         </div>
                                     </b-dropdown-item>
-                                    <b-dropdown-item aria-role="listitem">
+                                    <b-dropdown-item>
                                         <div
                                                 id="a-import-collection"
-                                                tag="div"
-                                                @click="onOpenImportersModal">
+                                                role="button"
+                                                tabindex="0"
+                                                @click="onOpenImportersModal"
+                                                @keydown.enter.prevent="onOpenImportersModal"
+                                                @keydown.space.prevent="onOpenImportersModal">
                                             {{ $i18n.get('import') }}
                                             <br>
                                             <small class="is-small">{{ $i18n.get('info_import_collection') }}</small>

@@ -4,7 +4,12 @@
             <!-- The following v-if seems redundant, but we cannot add a v-if to the upper div as the swiper needs to exist to be updated, while the info bellow should never appear in this situation -->
             <p 
                     v-if="filterTags != undefined && filterTags.length > 0"
-                    class="filter-tags-info">
+                    class="filter-tags-info"
+                    aria-live="polite"
+                    aria-atomic="false"
+                    role="status"
+                    :aria-label="$i18n.get('label_active_filters')"
+                    aria-relevant="text">
                 <span 
                         style="margin-right: 1em"
                         v-html="totalItems === null ? $i18n.get('label_loading_items') : totalItems == 1 ? $i18n.getWithVariables('info_item_%s_found', [totalItems]) : $i18n.getWithVariables('info_items_%s_found', [totalItems])" />
@@ -94,7 +99,7 @@
         },
         data() {
             return {
-                swiper: {}
+                swiper: {},
             }
         },
         computed: {
@@ -147,7 +152,10 @@
             }
         },
         mounted() {
-           nextTick(() => {
+            // Initialize previous filter tags length
+            this.previousFilterTagsLength = this.filterTags ? this.filterTags.length : 0;
+            
+            nextTick(() => {
                 this.swiper = new Swiper('#tainacanFilterTagsSwiper' + (this.isInsideModal ? 'InsideModal' : ''), {
                     mousewheel: true,
                     observer: true,

@@ -15,7 +15,7 @@
                 :is-sticky="true">
             <h1 v-if="isCreatingNewItem">
                 {{ $i18n.get('title_create_item_collection') + ' ' }}
-                <span style="font-weight: 600;">{{ collection && collection.name ? collection.name : '' }}</span>
+                <span style="font-weight: 700;">{{ collection && collection.name ? collection.name : '' }}</span>
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
                         class="status-tag is-hidden-mobile"
@@ -25,7 +25,7 @@
             </h1>
             <h1 v-else>
                 {{ $i18n.get('title_edit_item') + ' ' }}
-                <span style="font-weight: 600;">
+                <span style="font-weight: 700;">
                     {{ (item != null && item != undefined) ? item.title : '' }}
                 </span>
                 <span
@@ -77,11 +77,11 @@
                 </h1>
                 <h1 v-else-if="isCreatingNewItem && !isMobileSubheaderOpen">
                     {{ $i18n.get('title_create_item_collection') + ' ' }}
-                    <span style="font-weight: 600;">{{ collection && collection.name ? collection.name : '' }}</span>
+                    <span style="font-weight: 700;">{{ collection && collection.name ? collection.name : '' }}</span>
                 </h1>
                 <h1 v-else>
                     {{ $i18n.get('title_edit_item') + ' ' }}
-                    <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
+                    <span style="font-weight: 700;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
                 </h1>
             </transition>
             <button 
@@ -126,11 +126,11 @@
                     class="tainacan-mobile-app-header_panel">
                 <h1 v-if="isCreatingNewItem">
                     {{ $i18n.get('title_create_item_collection') + ' ' }}
-                    <span style="font-weight: 600;">{{ collection && collection.name ? collection.name : '' }}</span>
+                    <span style="font-weight: 700;">{{ collection && collection.name ? collection.name : '' }}</span>
                 </h1>
                 <h1 v-else>
                     {{ $i18n.get('title_edit_item') + ' ' }}
-                    <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
+                    <span style="font-weight: 700;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
                 </h1>
                 <span v-if="!errors.length">{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}</span>
                 <span 

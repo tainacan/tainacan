@@ -847,7 +847,7 @@ class Item extends Entity {
 			$metadatum_status_info = '';
 			if ( $item_metadatum->get_metadatum()->get_status() != 'publish' ) {
 				$metadatum_status_object = get_post_status_object( $item_metadatum->get_metadatum()->get_status() );
-				$metadatum_status_info = ( $metadatum_status_object && $metadatum_status_object->label ? __( $metadatum_status_object->label, 'tainacan') : $item_metadatum->get_metadatum()->get_status() ) . ': ';
+				$metadatum_status_info = ( $metadatum_status_object && $metadatum_status_object->label ? $metadatum_status_object->label : $item_metadatum->get_metadatum()->get_status() ) . ': ';
 			}
 			
 			$metadatum_title_after = $args['after_title'];

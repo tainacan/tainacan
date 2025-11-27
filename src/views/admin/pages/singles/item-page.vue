@@ -16,7 +16,7 @@
             <h1>
                
                 {{ $i18n.get('title_item_page') + ' ' }}
-                <span style="font-weight: 600;">
+                <span style="font-weight: 700;">
                     {{ (item != null && item != undefined) ? item.title : '' }}
                 </span>
                 <span

@@ -10,7 +10,8 @@
                 style="margin-right: auto; margin-left: 0;">
             <b-dropdown
                     id="roles-page-add-new"
-                    aria-role="list"
+                    v-a11y-dropdown
+                    :trigger-tabindex="-1"
                     :mobile-modal="true"
                     trap-focus>
                 <template #trigger>
@@ -37,10 +38,7 @@
                         </button>
                     </router-link>
                 </template>
-                <b-dropdown-item 
-                        aria-role="listitem"
-                        has-link
-                        class="dropdown-item">
+                <b-dropdown-item has-link>
                     <router-link
                             to="/roles/new"
                             style="min-height: unset;">
@@ -50,7 +48,6 @@
                 <b-dropdown-item separator />
                 <b-dropdown-item 
                         class="dropdown-item-secstion-separator"
-                        aria-role="listitem"
                         custom>
                     <em>{{ $i18n.get('Create a role based on: ') }}</em>
                 </b-dropdown-item>
@@ -59,9 +56,7 @@
                         :key="role.slug">
                     <b-dropdown-item 
                             v-if="role.slug.match('tainacan')"
-                            aria-role="listitem"
-                            has-link
-                            class="dropdown-item">
+                            has-link>
                         <router-link 
                                 :to="'/roles/new?template=' + role.slug"
                                 style="min-height: unset;">

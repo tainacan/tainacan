@@ -56,7 +56,8 @@ import {
 } from './admin-utilities';
 import { 
     ThumbnailHelperPlugin,
-    OrderByHelperPlugin
+    OrderByHelperPlugin,
+    A11yDropdownPlugin
 } from './utilities';
 import mitt from 'mitt';
 
@@ -154,6 +155,7 @@ export default (element) => {
             app.use(UserCapabilitiesPlugin);
             app.use(ThumbnailHelperPlugin);
             app.use(OrderByHelperPlugin);
+            app.use(A11yDropdownPlugin);
             app.use(StatusHelperPlugin);
             app.use(HtmlSanitizerPlugin);
             app.use(ConsolePlugin, {visual: false});

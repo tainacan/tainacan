@@ -54,10 +54,11 @@
                     class="header-item">
                 <b-dropdown
                         ref="sortingDropdown" 
+                        v-a11y-dropdown
+                        :trigger-tabindex="-1"
                         :mobile-modal="true"
                         :multiple="false"
                         class="show sorting-options-dropdown"
-                        aria-role="list"
                         trap-focus
                         position="is-bottom-left"
                         :close-on-click="false"
@@ -98,8 +99,9 @@
                                     role="button"
                                     :class="{ 'is-active': newOrder == 'desc' }"
                                     :value="'desc'"
-                                    aria-role="listitem"
-                                    @click="newOrder = 'desc'">
+                                    @click="newOrder = 'desc'"
+                                    @keydown.enter.prevent="newOrder = 'desc'"
+                                    @keydown.space.prevent="newOrder = 'desc'">
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-sortdescending" />
                                 </span>
@@ -110,8 +112,9 @@
                                     role="button"
                                     :class="{ 'is-active': newOrder == 'asc' }"
                                     :value="'asc'"
-                                    aria-role="listitem"
-                                    @click="newOrder = 'asc'">
+                                    @click="newOrder = 'asc'"
+                                    @keydown.enter.prevent="newOrder = 'asc'"
+                                    @keydown.space.prevent="newOrder = 'asc'">
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-sortascending" />
                                 </span>
@@ -127,8 +130,9 @@
                                         role="button"
                                         :class="{ 'is-active': newOrderBy == option.value }"
                                         :value="option.value"
-                                        aria-role="listitem"
-                                        @click="newOrderBy = option.value">
+                                        @click="newOrderBy = option.value"
+                                        @keydown.enter.prevent="newOrderBy = option.value"
+                                        @keydown.space.prevent="newOrderBy = option.value">
                                     {{ option.label }}
                                 </b-dropdown-item>
                             </template>

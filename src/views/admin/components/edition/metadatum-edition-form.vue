@@ -61,7 +61,8 @@
                                 </label>
                                 <b-dropdown
                                         ref="metadatum-edition-status-dropdown"
-                                        aria-role="list"
+                                        v-a11y-dropdown
+                                        :trigger-tabindex="-1"
                                         class="metadatum-edition-status-dropdown"
                                         position="is-bottom-left"
                                         :triggers="[ 'click' ]">
@@ -91,8 +92,9 @@
                                     <b-dropdown-item 
                                             v-for="(statusOption, statusOptionIndex) of $statusHelper.getStatuses().filter((status) => status.slug != 'trash' && status.slug != 'draft' && status.slug != 'pending' && (form.status != 'auto-draft' || status.slug != 'trash'))"
                                             :key="statusOptionIndex"
-                                            aria-role="listitem"
-                                            @click="form.status = statusOption.slug">
+                                            @click="form.status = statusOption.slug"
+                                            @keydown.enter.prevent="form.status = statusOption.slug"
+                                            @keydown.space.prevent="form.status = statusOption.slug">
                                         <span class="icon has-text-gray">
                                             <i 
                                                     class="tainacan-icon tainacan-icon-18px"
@@ -368,12 +370,12 @@
                             class="options-columns">
                         <component
                                 :is="form.metadata_type_object.form_component"
-                                v-if="(form.metadata_type_object && form.metadata_type_object.form_component) || form.edit_form != ''"
+                                v-if="form.metadata_type_object && form.metadata_type_object.form_component"
                                 v-model:value="form.metadata_type_options"
                                 :errors="formErrors['metadata_type_options']"
                                 :metadatum="form" />
                         <div
-                                v-else
+                                v-if="form.edit_form"
                                 v-html="form.edit_form" />
 
                         <!-- Hook for extra Form options -->
@@ -533,7 +535,7 @@
                 'updateMetadatum'
             ]),
             saveEdition(metadatum) {
-                if ( (metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {
+                if ( !metadatum.edit_form ) {
                     let repository = this.form.repository_level;
 
                     this.fillExtraFormData(this.form);
@@ -584,7 +586,7 @@
                         formObj['description_bellow_name'] = 'no';
 
                     let repository = formObj['repository_level'];
-
+                    formObj['status'] = this.form.status;
                     this.fillExtraFormData(formObj);
                     this.isUpdating = true;
                     this.updateMetadatum({

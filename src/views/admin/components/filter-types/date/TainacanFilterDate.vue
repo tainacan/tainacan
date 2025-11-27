@@ -2,8 +2,9 @@
     <div class="date-filter-container">
         <b-dropdown
                 v-if="filterTypeOptions.comparators.length > 1"
+                v-a11y-dropdown
+                :trigger-tabindex="-1"
                 :mobile-modal="true"
-                aria-role="list"
                 trap-focus
                 @update:model-value="($event) => { resetPage(); onChangeComparator($event) }">
             <template #trigger>
@@ -26,7 +27,6 @@
                         role="button"
                         :class="{ 'is-active': comparator == comparatorKey }"
                         :value="comparatorKey"
-                        aria-role="listitem"
                         v-html="comparatorObject.symbol + '&nbsp;' + comparatorObject.label" />
             </template>
         </b-dropdown>
@@ -171,16 +171,6 @@
             dateParser(dateString) { 
                 return moment(dateString, this.dateFormat).toDate(); 
             },
-            emitOnlyYear(year) {
-                this.value = new Date(year,0,1);
-                
-                this.value.setUTCDate(1);
-                this.value.setUTCMonth(0);
-                this.value.setFullYear(year);
-
-                this.emit();
-            },
-            // emit the operation for listeners
             emit() {
                 if ( this.value == undefined || this.value == null || this.value === '')
                     this.value = new Date();

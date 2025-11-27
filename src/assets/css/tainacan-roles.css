@@ -35088,7 +35088,7 @@ MIT (https://github.com/Wikiki/bulma-steps/blob/master/LICENSE)
   font-size: 1.25em;
 }
 .v-popper--theme-tooltip.tainacan-tooltip.metadata-type-preview-tooltip .metadata-type-preview .metadata-type-label {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--tainacan-turquoise4);
   width: 100%;
   font-size: 1em;
@@ -36332,10 +36332,10 @@ textarea.textarea[rows="7"],
 .dropdown .dropdown-menu .dropdown-content .dropdown-item.dropdown-header, .autocomplete .dropdown-menu .dropdown-content .dropdown-item.dropdown-header {
   color: var(--tainacan-info-color) !important;
 }
-.dropdown .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):not(.is-active):hover, .autocomplete .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):not(.is-active):hover {
+.dropdown .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):not(.is-active):hover, .dropdown .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):not(.is-active):focus, .dropdown .dropdown-menu .dropdown-content .dropdown-item:has(:focus), .autocomplete .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):not(.is-active):hover, .autocomplete .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):not(.is-active):focus, .autocomplete .dropdown-menu .dropdown-content .dropdown-item:has(:focus) {
   background-color: var(--tainacan-dropdownmenu-item-background-hover, var(--tainacan-input-border-color));
 }
-.dropdown .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):hover, .autocomplete .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):hover {
+.dropdown .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):hover, .dropdown .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):focus, .dropdown .dropdown-menu .dropdown-content .dropdown-item:has(:focus), .autocomplete .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):hover, .autocomplete .dropdown-menu .dropdown-content .dropdown-item:not(.dropdown-header):focus, .autocomplete .dropdown-menu .dropdown-content .dropdown-item:has(:focus) {
   color: var(--tainacan-secondary) !important;
 }
 .dropdown .dropdown-menu .dropdown-content .dropdown-item .b-checkbox, .autocomplete .dropdown-menu .dropdown-content .dropdown-item .b-checkbox {

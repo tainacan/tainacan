@@ -602,7 +602,8 @@ class REST_Terms_Controller extends REST_Controller {
 
 		if(isset($args['number'], $args['offset'])){
 			unset( $args['number'], $args['offset'] );
-			$total_terms = wp_count_terms( $taxonomy->get_db_identifier(), $args );
+			$args['taxonomy'] = $taxonomy->get_db_identifier();
+			$total_terms = wp_count_terms( $args );
 
 			if ( ! $total_terms ) {
 				$total_terms = 0;

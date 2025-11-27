@@ -1,9 +1,15 @@
 <template>
     <form 
-            tabindex="0"
+            id="advanced-search-form"
+            ref="advancedSearchForm"
+            tabindex="-1"
             class="tnc-advanced-search-container"
+            role="search"
+            aria-labelledby="advanced-search-heading"
             @submit.prevent.stop="performAdvancedSearch">
-        <h3>{{ $i18n.get('advanced_search') }}</h3>
+        <h3 id="advanced-search-heading">
+            {{ $i18n.get('advanced_search') }}
+        </h3>
         <transition-group name="filter-item">
             <b-field
                     v-for="(searchCriterion, index) in searchCriteria"
@@ -58,7 +64,7 @@
                             </optgroup>
                         </template>
                         <option value="document_content_index">
-                            {{ $i18n.get('label_document') }}
+                            {{ $i18n.get('label_document_content') }}
                         </option>
                     </b-select>
                 </b-field>
@@ -100,7 +106,7 @@
 
                 <!-- Inputs -->
                 <b-field class="column is-half is-10-mobile">
-                    <template v-if="searchCriterion.type == 'metaquery' && advancedSearchQuery.metaquery[searchCriterion.index]">
+                    <template v-if="searchCriterion.type == 'metaquery' && advancedSearchQuery.metaquery[searchCriterion.index] && advancedSearchQuery.metaquery[searchCriterion.index].compare != 'NOT EXISTS' && advancedSearchQuery.metaquery[searchCriterion.index].compare != 'EXISTS'">
                         <b-input
                                 v-if="getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'int' || getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'float'"
                                 type="number"
@@ -129,7 +135,7 @@
                             />
                     </template>
                     <b-input
-                            v-else-if="searchCriterion.type == 'taxquery' && advancedSearchQuery.taxquery[searchCriterion.index]"
+                            v-else-if="searchCriterion.type == 'taxquery' && advancedSearchQuery.taxquery[searchCriterion.index] && advancedSearchQuery.taxquery[searchCriterion.index].operator != 'NOT EXISTS' && advancedSearchQuery.taxquery[searchCriterion.index].operator != 'EXISTS'"
                             :model-value="advancedSearchQuery.taxquery[searchCriterion.index].terms"
                             type="text"
                             :placeholder="$i18n.get('label_string_to_search_for')"
@@ -146,8 +152,11 @@
                     <button
                             class="button button-remove-criterion is-pulled-right has-text-secondary"
                             type="button"
+                            tabindex="0"
                             :aria-label="$i18n.get('remove_search_criterion')"
-                            @click.prevent="removeCriterion(searchCriterion)">
+                            @click.prevent="removeCriterion(searchCriterion)"
+                            @keydown.enter.prevent="removeCriterion(searchCriterion)"
+                            @keydown.space.prevent="removeCriterion(searchCriterion)">
                         <span 
                                 v-tooltip="{
                                     content: $i18n.get('remove_search_criterion'),
@@ -166,8 +175,12 @@
         <!-- Add button -->
         <div class="add-link-advanced-search">
             <a 
+                    ref="addCriterionButton"
                     role="button"
-                    @click="addSearchCriteria">
+                    tabindex="0"
+                    @click="addSearchCriteria"
+                    @keydown.enter.prevent="addSearchCriteria"
+                    @keydown.space.prevent="addSearchCriteria">
                 <span class="icon">
                     <i class="has-text-secondary tainacan-icon tainacan-icon-add" />
                 </span>
@@ -179,7 +192,10 @@
             <a
                     v-if="Object.keys(advancedSearchQuery.taxquery).length > 0 || Object.keys(advancedSearchQuery.metaquery).length > 0"
                     role="button"
-                    @click="clearSearch();">
+                    tabindex="0"
+                    @click="clearSearch();"
+                    @keydown.enter.prevent="clearSearch();"
+                    @keydown.space.prevent="clearSearch();">
                 <span class="icon">
                     <i class="has-text-secondary tainacan-icon tainacan-icon-remove" />
                 </span>
@@ -261,16 +277,22 @@
                     '<': this.$i18n.get('less_than'),
                     '>=': this.$i18n.get('greater_than_or_equal_to'),
                     '<=': this.$i18n.get('less_than_or_equal_to'),
+                    'NOT EXISTS': this.$i18n.get('has_no_value'),
+                    'EXISTS': this.$i18n.get('has_value'),
                 },
                 metaqueryOperatorsRegular: {
                     '=': this.$i18n.get('is_equal_to'),
                     '!=': this.$i18n.get('is_not_equal_to'),
                     'LIKE': this.$i18n.get('contains'),
                     'NOT LIKE': this.$i18n.get('not_contains'),
+                    'NOT EXISTS': this.$i18n.get('has_no_value'),
+                    'EXISTS': this.$i18n.get('has_value'),
                 },
                 taxqueryOperators: {
                     'LIKE': this.$i18n.get('contains'),
-                    'NOT LIKE': this.$i18n.get('not_contains')
+                    'NOT LIKE': this.$i18n.get('not_contains'),
+                    'NOT EXISTS': this.$i18n.get('has_no_value'),
+                    'EXISTS': this.$i18n.get('has_value'),
                 },
                 searchCriteria: [],
                 advancedSearchQuery: {
@@ -286,6 +308,20 @@
             }
         },
         mounted() {
+            // Focus the first interactive element when component is mounted
+            this.$nextTick(() => {
+                if (this.$refs.advancedSearchForm) {
+                    // Try to find and focus the first select element
+                    const firstSelect = this.$refs.advancedSearchForm.querySelector('select:not([disabled])');
+                    if (firstSelect) {
+                        firstSelect.focus();
+                    } else {
+                        // Fallback: focus the form itself
+                        this.$refs.advancedSearchForm.focus();
+                    }
+                }
+            });
+
             this.isLoadingMetadata = true;
 
             this.fetchMetadata({
@@ -576,10 +612,18 @@
                 if (!comparator)
                     return;
 
-                if (searchCriterion.type == 'metaquery' && this.advancedSearchQuery.metaquery[searchCriterion.index])
+                if (searchCriterion.type == 'metaquery' && this.advancedSearchQuery.metaquery[searchCriterion.index]) {
                     Object.assign(this.advancedSearchQuery.metaquery[searchCriterion.index], { 'compare': comparator });
-                else if (searchCriterion.type == 'taxquery' && this.advancedSearchQuery.taxquery[searchCriterion.index])
+
+                    if (comparator == 'NOT EXISTS' || comparator == 'EXISTS')
+                        delete this.advancedSearchQuery.metaquery[searchCriterion.index].value;
+                    
+                } else if (searchCriterion.type == 'taxquery' && this.advancedSearchQuery.taxquery[searchCriterion.index]) {
                     Object.assign(this.advancedSearchQuery.taxquery[searchCriterion.index], { 'operator': comparator });
+
+                    if (comparator == 'NOT EXISTS' || comparator == 'EXISTS')
+                        delete this.advancedSearchQuery.taxquery[searchCriterion.index].terms;
+                }
 
                 this.hasUpdatedSearch = true;
             },
@@ -598,13 +642,13 @@
                     delete this.advancedSearchQuery.taxquery.relation;
 
                 // Convert date values to a format (ISO_8601) that will match in database
-                if (Object.keys(this.advancedSearchQuery.metaquery).length > 0) {
+                if ( Object.keys(this.advancedSearchQuery.metaquery).length > 0 ) {
 
                     for (let metaquery in this.advancedSearchQuery.metaquery) {
                         if (this.getAdvancedSearchQueryCriterionMetadataType(metaquery) == 'date') {
                             let value = this.advancedSearchQuery.metaquery[metaquery].value;
                             
-                            if (value.includes('/'))
+                            if (value != null && value != undefined && value.includes('/'))
                                 Object.assign(this.advancedSearchQuery.metaquery[metaquery], { 'value': this.convertDateToMatchInDB(value) });
                         }
                     }
@@ -618,13 +662,13 @@
                 if ( Object.prototype.hasOwnProperty.call(this.advancedSearchQuery, 'relation') && Object.keys(this.advancedSearchQuery).length <= 3)
                     delete this.advancedSearchQuery.relation;
                 
-                if (Object.keys(this.advancedSearchQuery.metaquery).length > 0) {
+                if ( Object.keys(this.advancedSearchQuery.metaquery).length > 0 ) {
 
                     for (let metaquery in this.advancedSearchQuery.metaquery) {
                         if (this.getAdvancedSearchQueryCriterionMetadataType(metaquery) == 'date') {
                             let value = this.advancedSearchQuery.metaquery[metaquery].value;
                             
-                            if (value.includes('-'))
+                            if (value != null && value != undefined && value.includes('-'))
                                 Object.assign(this.advancedSearchQuery.metaquery[metaquery], { 'value': this.parseValidDateToNavigatorLanguage(value) });
                         }
                     }

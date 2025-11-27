@@ -44,7 +44,8 @@ import {
 } from '../../../admin/js/admin-utilities';
 import { 
     ThumbnailHelperPlugin,
-    OrderByHelperPlugin
+    OrderByHelperPlugin,
+    A11yDropdownPlugin
 } from '../../../admin/js/utilities';
 import mitt from 'mitt';
 
@@ -100,7 +101,6 @@ export default (element) => {
 
             const VueItemsList = createApp({
                 created() {
-                    blockElement.setAttribute('aria-live', 'polite');
                     blockElement.classList.add('theme-items-list'); // This used to be on the component, but as Vue now do not renders the component inside a div...
                 },
                 mounted() {
@@ -196,6 +196,7 @@ export default (element) => {
             VueItemsList.use(ThumbnailHelperPlugin);
             VueItemsList.use(OrderByHelperPlugin);
             VueItemsList.use(AxiosErrorHandlerPlugin);
+            VueItemsList.use(A11yDropdownPlugin);
             VueItemsList.use(ConsolePlugin, {visual: false});
             VueItemsList.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
             VueItemsList.component('help-button', HelpButton);
@@ -209,8 +210,13 @@ export default (element) => {
 
             // Logic for dynamic importing Tainacan oficial view modes only if they are necessary
             possibleViewModes.forEach(viewModeSlug => {
-                if ( registeredViewModes.indexOf(viewModeSlug) >= 0 )
-                    VueItemsList.component('view-mode-' + viewModeSlug, defineAsyncComponent(() => import('./theme-search/components/view-mode-' + viewModeSlug + '.vue')));
+                if ( registeredViewModes.indexOf(viewModeSlug) >= 0 ) {
+                    const componentName = 'view-mode-' + viewModeSlug;
+                    // Only import if not already registered as an external component
+                    if (!window.tainacan_extra_components || !window.tainacan_extra_components[componentName]) {
+                        VueItemsList.component(componentName, defineAsyncComponent(() => import('./theme-search/components/view-mode-' + viewModeSlug + '.vue')));
+                    }
+                }
             });
 
             const emitter = mitt();

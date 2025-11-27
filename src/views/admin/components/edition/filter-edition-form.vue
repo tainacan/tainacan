@@ -39,9 +39,10 @@
                                 :message="$i18n.getHelperMessage('filters', 'status')" />
                     </label>
                     <b-dropdown
-                            ref="metadatum-edition-status-dropdown"
-                            aria-role="list"
-                            class="metadatum-edition-status-dropdown"
+                            ref="filter-edition-status-dropdown"
+                            v-a11y-dropdown
+                            :trigger-tabindex="-1"
+                            class="filter-edition-status-dropdown"
                             position="is-bottom-left"
                             :triggers="[ 'click' ]">
                         <template #trigger>
@@ -70,8 +71,9 @@
                         <b-dropdown-item 
                                 v-for="(statusOption, statusOptionIndex) of $statusHelper.getStatuses().filter((status) => status.slug != 'trash' && status.slug != 'draft' && status.slug != 'pending' && (form.status != 'auto-draft' || status.slug != 'trash'))"
                                 :key="statusOptionIndex"
-                                aria-role="listitem"
-                                @click="form.status = statusOption.slug">
+                                @click="form.status = statusOption.slug"
+                                @keydown.enter.prevent="form.status = statusOption.slug"
+                                @keydown.space.prevent="form.status = statusOption.slug">
                             <span class="icon has-text-gray">
                                 <i 
                                         class="tainacan-icon tainacan-icon-18px"
@@ -273,7 +275,7 @@
 
             <component
                     :is="form.filter_type_object.form_component"
-                    v-if="(form.filter_type_object && form.filter_type_object.form_component) || form.edit_form == ''"
+                    v-if="form.filter_type_object && form.filter_type_object.form_component"
                     v-model="form.filter_type_options"
                     :errors="formErrors['filter_type_options']"
                     :filter="form" />
@@ -400,7 +402,7 @@ export default {
 
             this.isLoading = true;
 
-            if ((filter.filter_type_object && filter.filter_type_object.form_component) || filter.edit_form == '') {
+            if ( !filter.edit_form ) {
 
                 for (let [key, value] of Object.entries(this.form)) {
                     if (key === 'begin_with_filter_collapsed' || key === 'display_in_repository_level_lists' || key === 'description_bellow_name' )
@@ -412,7 +414,7 @@ export default {
                     this.form['display_in_repository_level_lists'] = 'no';
                 if (this.form['description_bellow_name'] === undefined)
                     this.form['description_bellow_name'] = 'no';
-
+                this.fillExtraFormData(this.form);
                 this.updateFilter({ filterId: filter.id, index: this.index, options: this.form })
                     .then(() => {
                         this.form = {};
@@ -451,7 +453,8 @@ export default {
                     formObj['display_in_repository_level_lists'] = 'no';
                 if (formObj['description_bellow_name'] === undefined)
                     formObj['description_bellow_name'] = 'no';
-                    
+                
+                formObj['status'] = this.form.status;
                 this.fillExtraFormData(formObj);
                 this.updateFilter({ filterId: filter.id, index: this.index, options: formObj })
                     .then(() => {

@@ -17,9 +17,10 @@
             <div class="field is-pulled-right">
                 <b-dropdown
                         id="bulk-actions-dropdown"
+                        v-a11y-dropdown
+                        :trigger-tabindex="-1"
                         position="is-bottom-left"
                         :disabled="!isSelectingCollections"
-                        aria-role="list"
                         trap-focus>
                     <template #trigger>
                         <button class="button is-white">
@@ -31,13 +32,12 @@
                     </template>
                     <b-dropdown-item
                             id="item-delete-selected-items"
-                            aria-role="listitem"
-                            @click="deleteSelectedCollections()">
+                            @click="deleteSelectedCollections()"
+                            @keydown.enter.prevent="deleteSelectedCollections()"
+                            @keydown.space.prevent="deleteSelectedCollections()">
                         {{ $i18n.get('label_delete_selected_collections') }}
                     </b-dropdown-item>
-                    <!-- <b-dropdown-item 
-                            disabled
-                            aria-role="listitem">{{ $i18n.get('label_edit_selected_collections') + ' (Not ready)' }}
+                    <!-- <b-dropdown-item disabled>{{ $i18n.get('label_edit_selected_collections') + ' (Not ready)' }}
                     </b-dropdown-item> -->
                 </b-dropdown>
             </div>
@@ -56,32 +56,43 @@
                         @click.right="clearContextMenu()" /> 
 
                 <b-dropdown 
+                        v-a11y-dropdown
                         inline
                         :style="{ top: cursorPosY + 'px', left: cursorPosX + 'px' }"
                         trap-focus>
                     <b-dropdown-item
                             v-if="!isOnTrash" 
-                            @click="openCollection()">
+                            @click="openCollection()"
+                            @keydown.enter.prevent="openCollection()"
+                            @keydown.space.prevent="openCollection()">
                         {{ $i18n.getFrom('collections', 'view_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="!isOnTrash"
-                            @click="openCollectionOnNewTab()">
+                            @click="openCollectionOnNewTab()"
+                            @keydown.enter.prevent="openCollectionOnNewTab()"
+                            @keydown.space.prevent="openCollectionOnNewTab()">
                         {{ $i18n.get('label_open_collection_new_tab') }}
                     </b-dropdown-item>
                     <b-dropdown-item 
                             v-if="contextMenuIndex != null"
-                            @click="selectCollection()">
+                            @click="selectCollection()"
+                            @keydown.enter.prevent="selectCollection()"
+                            @keydown.space.prevent="selectCollection()">
                         {{ !selectedCollections[contextMenuIndex] ? $i18n.get('label_select_collection') : $i18n.get('label_unselect_collection') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="contextMenuCollection != null && (collections[contextMenuIndex] && collections[contextMenuIndex].current_user_can_edit)"
-                            @click="goToCollectionEditPage(contextMenuCollection)">
+                            @click="goToCollectionEditPage(contextMenuCollection)"
+                            @keydown.enter.prevent="goToCollectionEditPage(contextMenuCollection)"
+                            @keydown.space.prevent="goToCollectionEditPage(contextMenuCollection)">
                         {{ $i18n.getFrom('collections', 'edit_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="contextMenuCollection != null && (collections[contextMenuIndex] && collections[contextMenuIndex].current_user_can_delete)"
-                            @click="deleteOneCollection(collections[contextMenuIndex])">
+                            @click="deleteOneCollection(collections[contextMenuIndex])"
+                            @keydown.enter.prevent="deleteOneCollection(collections[contextMenuIndex])"
+                            @keydown.space.prevent="deleteOneCollection(collections[contextMenuIndex])">
                         {{ $i18n.get('label_delete_collection') }}
                     </b-dropdown-item>
                 </b-dropdown>

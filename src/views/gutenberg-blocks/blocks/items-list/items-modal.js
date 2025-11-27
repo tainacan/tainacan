@@ -50,7 +50,13 @@ export default class ItemsModal extends React.Component {
         if (this.props.existingCollectionId) {
             this.fetchCollection(this.props.existingCollectionId);
             this.setState({ 
-                searchURL: (this.props.existingSearchURL && this.props.existingSearchURL.indexOf('iframemode') < 0) ? this.props.existingSearchURL : tainacan_blocks.admin_url + '?itemsMultipleSelectionMode=true&page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?status=publish' });
+                searchURL: (
+                    this.props.existingSearchURL &&
+                    this.props.existingSearchURL.indexOf('iframemode') < 0 &&
+                    this.props.existingSearchURL.includes(tainacan_blocks.admin_url)
+                ) 
+                    ? this.props.existingSearchURL
+                    : tainacan_blocks.admin_url + '?itemsMultipleSelectionMode=true&page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?status=publish' });
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();
