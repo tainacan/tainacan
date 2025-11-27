@@ -124,6 +124,8 @@ return apply_filters( 'tainacan-i18n', [
 	'status_auto-draft'                              => __( 'Automatic draft', 'tainacan' ),
 	'label_open_access'                              => __( 'Open access', 'tainacan' ),
 	'label_restrict_access'                          => __( 'Restrict access', 'tainacan' ),
+	'label_open_advanced_search'                     => __( 'Open advanced search', 'tainacan' ),
+	'label_close_advanced_search'                    => __( 'Close advanced search', 'tainacan' ),
 
 	// Page Titles (used mainly on Router)
 	'title_repository_collections_page'              => __( 'Collections', 'tainacan' ),

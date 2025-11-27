@@ -194,18 +194,34 @@
                             {{ $i18n.get('info_for_more_metadata_search_options_use') }}&nbsp; 
                             <a 
                                     class="has-text-secondary"
-                                    @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
+                                    role="button"
+                                    tabindex="0"
+                                    :aria-expanded="openAdvancedSearch"
+                                    :aria-controls="openAdvancedSearch ? 'advanced-search-container' : undefined"
+                                    :aria-label="openAdvancedSearch ? $i18n.get('label_close_advanced_search') : $i18n.get('label_open_advanced_search')"
+                                    @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
+                                    @keydown.enter.prevent="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
+                                    @keydown.space.prevent="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
                                 {{ $i18n.get('advanced_search') }}
                             </a>
                         </b-dropdown-item>
                     </b-dropdown>
                     <a
                             v-if="!$adminOptions.hideItemsListAdvancedSearch"
+                            role="button"
+                            tabindex="0"
                             class="advanced-search-toggle has-text-secondary"
                             :class="openAdvancedSearch ? 'is-open' : 'is-closed'"
-                            @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
+                            :aria-expanded="openAdvancedSearch"
+                            :aria-controls="openAdvancedSearch ? 'advanced-search-container' : undefined"
+                            :aria-label="openAdvancedSearch ? $i18n.get('label_close_advanced_search') : $i18n.get('label_open_advanced_search')"
+                            @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
+                            @keydown.enter.prevent="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
+                            @keydown.space.prevent="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
                         {{ $i18n.get('advanced_search') }}
-                        <span class="icon">
+                        <span
+                                class="icon"
+                                aria-hidden="true">
                             <i class="tainacan-icon tainacan-icon-search" />
                         </span>
                     </a>
