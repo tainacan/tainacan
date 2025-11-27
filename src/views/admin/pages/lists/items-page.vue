@@ -565,6 +565,7 @@
                 v-model="isFiltersModalActive"       
                 role="dialog"
                 :width="736"
+                :tabindex="-1"
                 animation="slide-menu"
                 trap-focus
                 aria-modal
@@ -582,7 +583,7 @@
                     @update-is-loading-items-state="(state) => isLoadingItems = state" />
         </b-modal>
 
-        <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
+        <!-- ITEMS LIST AREA ------------------------- -->
         <div 
                 id="items-list-area"
                 class="items-list-area"

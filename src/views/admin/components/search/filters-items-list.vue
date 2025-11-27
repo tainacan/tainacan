@@ -1,5 +1,8 @@
 <template>
-    <aside :aria-busy="isLoadingFilters">
+    <component 
+            :is="filtersAsModal ? 'div' : 'section'"
+            :aria-busy="isLoadingFilters"
+            :aria-label="filtersAsModal ? undefined : $i18n.get('filters')">
         <b-loading
                 v-model="isLoadingFilters"
                 :is-full-page="false" />
@@ -286,7 +289,7 @@
                 </router-link>
             </div>
         </section>
-    </aside>    
+    </component>    
 </template> 
 
 <script>

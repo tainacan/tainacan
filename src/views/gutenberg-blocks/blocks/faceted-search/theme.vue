@@ -504,7 +504,7 @@
         </b-modal>
     </template>
 
-    <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
+    <!-- ITEMS LIST AREA ------------------------- -->
     <div 
             id="items-list-area"
             ref="items-list-area"
