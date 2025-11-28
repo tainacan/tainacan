@@ -38,6 +38,14 @@
         &:focus, &:active {
             box-shadow: none !important;
         }  
+        &:focus-visible:not(:active) {
+            outline-width: 2px;
+            outline-offset: -1px;
+            outline-color: var(--tainacan-secondary);
+            outline-color: color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
+            outline-style: solid;
+            box-shadow: none;
+        }
         &:not(.is-danger):focus,
         &:not(.is-danger):focus-visible,
         &:not(.is-danger):active {

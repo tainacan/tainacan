@@ -321,7 +321,6 @@
 
     .view-all-button {
         font-size: 0.75em !important;
-        padding: 0.1em 1em;
     }
 
     .is-loading:after {

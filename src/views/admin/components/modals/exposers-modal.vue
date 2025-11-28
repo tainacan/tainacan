@@ -99,7 +99,7 @@
                 <div 
                         role="list"
                         class="exposer-types-list tainacan-clickable-cards">
-                    <div
+                    <button
                             v-for="(exposerType, index ) in availableExposers"
                             :key="index"
                             class="exposer-type tainacan-clickable-card"
@@ -107,7 +107,7 @@
                             @click="siteLinkCopied = false; selectExposer(exposerType)">
                         <h4>{{ exposerType.name }}</h4>
                         <p>{{ exposerType.description }}</p>            
-                    </div>
+                    </button>
                 </div>
             </div>
             

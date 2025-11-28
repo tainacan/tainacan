@@ -100,6 +100,16 @@
             a[disabled="disabled"] {
                 color: var(--tainacan-info-color);
             }
+            .pagination-link:focus-visible,
+            .pagination-previous:focus-visible,
+            .pagination-next:focus-visible {
+                outline-width: 2px;
+                outline-offset: 0px;
+                outline-color: var(--tainacan-secondary);
+                outline-color: color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
+                outline-style: solid;
+                box-shadow: none;
+            }
             .pagination-list {
                 flex-wrap: nowrap;
                 font-size: 1em;

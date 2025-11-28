@@ -16,6 +16,14 @@
         &:hover {
             text-decoration: underline;
         }
+        &:focus-visible {
+            outline-width: 2px;
+            outline-offset: -1px;
+            outline-color: var(--tainacan-secondary);
+            outline-color: color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
+            outline-style: solid;
+            box-shadow: none;
+        }
     }
     .button {
         border-radius: var(--tainacan-button-border-radius, 4px) !important;
@@ -89,6 +97,15 @@
         }
         &:focus {
             outline: 0px;
+        }
+        &:focus-visible,
+        .wp-core-ui &:focus-visible {
+            outline-width: 2px;
+            outline-offset: -1px;
+            outline-color: var(--tainacan-secondary);
+            outline-color: color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
+            outline-style: solid;
+            box-shadow: none;
         }
         &[disabled], &:hover[disabled] {
             border: none !important;

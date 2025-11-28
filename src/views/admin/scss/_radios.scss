@@ -16,6 +16,14 @@
             background: var(--tainacan-input-background-color);
             border-color: var(--tainacan-secondary) !important;
         }
+        input[type="radio"]:focus-visible + .check {
+            outline-width: 2px;
+            outline-offset: 0px;
+            outline-color: var(--tainacan-secondary);
+            outline-color: color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
+            outline-style: solid;
+            box-shadow: none;
+        }
         & input[type="radio"] + .check,
         &:focus input[type="radio"] + .check,
         &:active input[type="radio"] + .check,
