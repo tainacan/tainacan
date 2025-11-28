@@ -37,7 +37,15 @@
     $modal-background-background-color: tainacan-variables.$tainacan-backdrop-background-color
 );
 @forward "bulma/sass/helpers";
-@forward "bulma/sass/themes";
+
+@use "bulma/sass/themes/light" as light;
+@use "bulma/sass/themes/setup" as setup;
+
+// Apply light theme once to :root
+#{$variables-host} {
+  @include light.light-theme;
+  @include setup.setup-theme;
+}
 
 .has-text-secondary {
     color: var(--tainacan-secondary, tainacan-variables.$secondary) !important;
