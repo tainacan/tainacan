@@ -18,7 +18,11 @@
                     &nbsp;
                     <a 
                             id="button-clear-all"
-                            @click="clearAllFilters()">
+                            role="button"
+                            tabindex="0"
+                            @click="clearAllFilters()"
+                            @keydown.enter.prevent="clearAllFilters()"
+                            @keydown.space.prevent="clearAllFilters()">
                         {{ $i18n.get('label_clear_filters') }}
                     </a>
                 </span>
@@ -46,7 +50,9 @@
                                 :aria-label="$i18n.get('remove_filter')"
                                 tabindex="0"
                                 class="tag is-delete"
-                                @click="removeMetaQuery(filterTag)" />
+                                @click="removeMetaQuery(filterTag)"
+                                @keydown.enter.prevent="removeMetaQuery(filterTag)"
+                                @keydown.space.prevent="removeMetaQuery(filterTag)" />
                     </li>
                 </ul>
                 <button 
