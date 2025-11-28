@@ -1178,9 +1178,9 @@ class Metadata extends Repository {
 	  *
 	  *     @type array		 $parent_id					Used by taxonomy metadata. The ID of the parent term to retrieve terms from. Default 0
 	  *
-		*     @type bool		 $count_items				Include the count of items that can be found in each value (uses $items_filter as well). Default false
-		*
-		*     @type string   $last_term				The last term returned when using a elasticsearch for calculates the facet.
+	  *     @type bool		 $count_items				Include the count of items that can be found in each value (uses $items_filter as well). Default false
+	  *
+	  *     @type string   	 $last_term					The last term returned when using a elasticsearch for calculates the facet.
 	  *
 	  * }
 	  *
@@ -1473,9 +1473,16 @@ class Metadata extends Repository {
 
 				if ( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ) {
 					$_post = get_post($r);
-					if ( ! $_post instanceof \WP_Post) {
+					if ( ! $_post instanceof \WP_Post ) {
 						continue;
 					}
+					// Check if user can read this post (public posts are readable by everyone)
+					$status = get_post_status( $_post->ID );
+					$post_status_obj = get_post_status_object( $status );
+					if ( ! $post_status_obj || ( ! $post_status_obj->public && ! current_user_can( 'read', $_post->ID ) ) ) {
+						continue;
+					}
+					
 					$label = $_post->post_title;
 				} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\Control' ) {
 					$metadata_type_object = $metadatum->get_metadata_type_object();
