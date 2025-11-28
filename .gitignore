@@ -23,22 +23,17 @@ last-sass-build.md5
 last-composer-build.md5
 last-package-build.md5
 src/views/admin/scss/.sass-cache
-src/assets/css/tainacan-admin.css
-src/assets/css/tainacan-admin.css.map
+# Compiled CSS files (generated from SCSS)
+src/assets/css/*.css
+src/assets/css/*.css.map
 src/assets/js/report.html
 src/assets/report.html
 .vscode
 report.txt
 .tmp
 demosaved.csv
-src/assets/css/tainacan-embeds.css
-src/assets/css/tainacan-embeds.css.map
-src/assets/css/tainacan-reports.css
-src/assets/css/tainacan-reports.css.map
 .DS_Store
 src/.DS_Store
-src/assets/css/tainacan-gutenberg-block-dynamic-items-list.css
-src/assets/css/tainacan-gutenberg-block-dynamic-items-list.css.map
 tests/wordpress-test
 tests/wordpress-tests-lib
 .phpunit.result.cache
