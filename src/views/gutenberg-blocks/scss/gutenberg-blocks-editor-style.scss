@@ -1,22 +1,22 @@
 // CSS COMMON TO MOST TAINACAN BLOCKS
-@import './gutenberg-blocks-variables.scss';
+@use 'gutenberg-blocks-variables.scss';
 
 // Custom Variables
 :root {
-    --tainacan-block-gray0: #{$gray0};
-    --tainacan-block-gray1: #{$gray1};
-    --tainacan-block-gray2: #{$gray2};
-    --tainacan-block-gray3: #{$gray3};
-    --tainacan-block-gray4: #{$gray4};
-    --tainacan-block-gray5: #{$gray5};
-    --tainacan-block-primary: #{$primary};
+    --tainacan-block-gray0: #{gutenberg-blocks-variables.$gray0};
+    --tainacan-block-gray1: #{gutenberg-blocks-variables.$gray1};
+    --tainacan-block-gray2: #{gutenberg-blocks-variables.$gray2};
+    --tainacan-block-gray3: #{gutenberg-blocks-variables.$gray3};
+    --tainacan-block-gray4: #{gutenberg-blocks-variables.$gray4};
+    --tainacan-block-gray5: #{gutenberg-blocks-variables.$gray5};
+    --tainacan-block-primary: #{gutenberg-blocks-variables.$primary};
 }
 
 // Control and placeholder region ----------------------------------------------------
 .tainacan-block-placeholder.components-placeholder {
     align-items: center !important;
     margin-bottom: 0 !important;
-    background: var(--tainacan-block-gray0, $gray0) !important;
+    background: var(--tainacan-block-gray0, gutenberg-blocks-variables.$gray0) !important;
 
     .components-placeholder__label {
         margin-bottom: 0;
@@ -34,14 +34,14 @@
         p {
             font-size: 1em !important;
             margin: 12px;
-            color: var(--tainacan-block-gray5, $gray5);
-            fill: var(--tainacan-block-gray4, $gray4);
+            color: var(--tainacan-block-gray5, gutenberg-blocks-variables.$gray5);
+            fill: var(--tainacan-block-gray4, gutenberg-blocks-variables.$gray4);
 
             svg {
                 margin-right: 1em; 
                 top: 4px;
                 position: relative;
-                fill: var(--tainacan-block-gray4, $gray4);
+                fill: var(--tainacan-block-gray4, gutenberg-blocks-variables.$gray4);
             }
         }
         .components-button {
@@ -78,7 +78,7 @@
         .modal-footer-area {
             height: 68px;
             width: 100%;
-            border-top: 1px solid var(--tainacan-block-gray2, $gray2);
+            border-top: 1px solid var(--tainacan-block-gray2, gutenberg-blocks-variables.$gray2);
             padding: 15px 32px;
         }
 
@@ -103,7 +103,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        color: var(--tainacan-block-gray4, $gray4);
+        color: var(--tainacan-block-gray4, gutenberg-blocks-variables.$gray4);
         .components-spineer { margin: 8px; }
     }
 
@@ -213,7 +213,7 @@
         justify-content: center;
         
         p {
-            color: var(--tainacan-block-gray4, $gray4);
+            color: var(--tainacan-block-gray4, gutenberg-blocks-variables.$gray4);
             margin: 4px 11px;
         }
     }
@@ -226,7 +226,7 @@
 
         p {
             padding: 0 12px;
-            color: var(--tainacan-block-gray5, $gray5);
+            color: var(--tainacan-block-gray5, gutenberg-blocks-variables.$gray5);
         }
     }
 }

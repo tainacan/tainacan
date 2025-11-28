@@ -71,7 +71,7 @@
         <section 
                 v-if="activeMetadataSectionsList.length <= 0 && !isLoadingMetadataSections"
                 class="field is-grouped-centered section">
-            <div class="content has-text-gray has-text-centered">
+            <div class="content has-text-dark has-text-centered">
                 <p>
                     <span class="icon is-large">
                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
@@ -252,7 +252,7 @@
                     <section 
                             v-if="metadataSection.metadata_object_list && metadataSection.metadata_object_list.length <= 0"
                             class="field is-grouped-centered section">
-                        <div class="content has-text-gray has-text-centered">
+                        <div class="content has-text-dark has-text-centered">
                             <p>
                                 <span class="icon is-large">
                                     <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
@@ -303,7 +303,7 @@
                                             'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied || isUpdatingMetadatum,
                                             'not-focusable-item': openedMetadatumId == metadatum.id,
                                             'disabled-metadatum': metadataSection.enabled == false || metadatum.enabled == false,
-                                            'inherited-metadatum': metadatum.inherited,
+                                            'inherited-metadatum tainacan-repository-level-colors': metadatum.inherited,
                                             'child-metadatum': metadatum.parent > 0
                                         }">
                                     <div 
@@ -405,15 +405,15 @@
                                                 <i 
                                                         v-if="metadatum.collection_id == 'default'"
                                                         :class="{
-                                                            'has-text-blue5': metadatum.enabled,
-                                                            'has-text-gray3': !metadatum.enabled
+                                                            'has-text-secondary': metadatum.enabled,
+                                                            'has-text-grey': !metadatum.enabled
                                                         }"
                                                         class="tainacan-icon tainacan-icon-repository" />
                                                 <i 
                                                         v-else
                                                         :class="{ 
-                                                            'has-text-turquoise5': metadatum.enabled, 
-                                                            'has-text-gray3': !metadatum.enabled
+                                                            'has-text-secondary': metadatum.enabled, 
+                                                            'has-text-grey': !metadatum.enabled
                                                         }"
                                                         class="tainacan-icon tainacan-icon-collection" />
                                             </span>

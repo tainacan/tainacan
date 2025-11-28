@@ -700,7 +700,7 @@ class Theme_Helper {
 	public function item_submission_shortcode($args) {
 		global $TAINACAN_BASE_URL;
 
-		wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/tainacanicons.css', [], TAINACAN_VERSION );
+		wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/fonts/tainacanicons.css', [], TAINACAN_VERSION );
 		
 		$props = ' ';
 
@@ -833,7 +833,7 @@ class Theme_Helper {
 	public function get_tainacan_items_list($args, $force_enqueue = false) {
 		global $TAINACAN_BASE_URL;
 
-		wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/tainacanicons.css', [], TAINACAN_VERSION );
+		wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/fonts/tainacanicons.css', [], TAINACAN_VERSION );
 		
 		$props = ' ';
 

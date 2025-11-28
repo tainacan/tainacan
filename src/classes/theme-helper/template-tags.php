@@ -396,7 +396,7 @@ function tainacan_get_the_media_component(
 		wp_enqueue_style( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-item-gallery.css', array(), TAINACAN_VERSION);
 		
 		if ( !isset($args['swiper_arrows_as_svg']) || !$args['swiper_arrows_as_svg'] )
-			wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/tainacanicons.css', array(), TAINACAN_VERSION );
+			wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/fonts/tainacanicons.css', array(), TAINACAN_VERSION );
 		
 		?>
 

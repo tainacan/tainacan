@@ -56,7 +56,7 @@
                     <span class="icon">
                         <i
                                 :class="{ 'tainacan-icon-arrowdown' : collapses[index], 'tainacan-icon-arrowright' : !collapses[index] }"
-                                class="tainacan-icon tainacan-icon-1-25em has-text-blue4" />
+                                class="tainacan-icon tainacan-icon-1-25em" />
                     </span>
                     <!-- Checking list -->
                     <!-- <span
@@ -144,7 +144,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    class="icon has-text-gray action-icon"
+                                    class="icon has-text-dark action-icon"
                                     @click.prevent.stop="pauseProcess(index)">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-stop" />
                             </span>
@@ -176,7 +176,7 @@
                                         placement: 'auto-start'
                                     }"
                                     class="icon has-text-success">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alertcircle has-text-yellow2" />
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alertcircle has-text-warning" />
                             </span>
                             <span
                                     v-if=" bgProcess.status === 'cancelled' "
@@ -205,7 +205,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    class="icon has-text-gray">
+                                    class="icon has-text-dark">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-pause" />
                             </span>
                             <span
@@ -220,7 +220,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    class="icon has-text-gray">
+                                    class="icon has-text-dark">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting" />
                             </span>
                             <span
@@ -235,7 +235,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    class="icon has-text-gray"
+                                    class="icon has-text-dark"
                                     @click.prevent.stop="deleteOneProcess(index)">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
                             </span>
@@ -323,7 +323,7 @@
 
         <div v-else-if="isLoading">
             <section class="section">
-                <div class="content has-text-gray has-text-centered">
+                <div class="content has-text-dark has-text-centered">
                     <p>{{ $i18n.get('loading_processes') }}</p>
                 </div>
             </section>

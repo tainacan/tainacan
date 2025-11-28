@@ -1,8 +1,8 @@
-@import '../../scss/gutenberg-blocks-variables.scss';
-@import '../../../../../node_modules/swiper/swiper.scss';
-@import '../../../../../node_modules/swiper/modules/navigation.scss';
-@import '../../../../../node_modules/swiper/modules/a11y.scss';
-@import '../../../../../node_modules/swiper/modules/autoplay.scss';
+@use '../../scss/gutenberg-blocks-variables.scss';
+@use 'swiper/swiper.scss';
+@use 'swiper/modules/navigation.scss';
+@use 'swiper/modules/a11y.scss';
+@use 'swiper/modules/autoplay.scss';
 
 .components-panel__body .collection-carousel-view-modes {
     display: flex;
@@ -10,7 +10,7 @@
 
     button {
         background: transparent;
-        border: 1px solid var(--tainacan-block-gray3, $gray3);
+        border: 1px solid var(--tainacan-block-gray3, gutenberg-blocks-variables.$gray3);
         border-radius: 5px;
         padding: 2px;
         margin: 0;
@@ -38,7 +38,7 @@
 
                 &>*:first-of-type {
                     flex-basis: 100%;
-                    @include grid-child(1, 3, 1, 3);
+                    @include gutenberg-blocks-variables.grid-child(1, 3, 1, 3);
                     width: 100%;
                     height: 100%;
                 }
@@ -47,7 +47,7 @@
                     flex-basis: 50%; 
                     width: 100%;
                     height: 100%;
-                    background: var(--tainacan-block-gray4, $gray4);
+                    background: var(--tainacan-block-gray4, gutenberg-blocks-variables.$gray4);
                     transition: background-color ease 0.5s; 
                 }
             }
@@ -59,7 +59,7 @@
                 display: block;
                 height: 40px;
                 width: 40px;
-                background: var(--tainacan-block-gray4, $gray4);
+                background: var(--tainacan-block-gray4, gutenberg-blocks-variables.$gray4);
                 margin: 4px auto 8px auto;
                 transition: background-color ease 0.5s;
             }
@@ -67,22 +67,22 @@
 
         label {
             font-size: 0.75em;
-            color: var(--tainacan-block-gray4, $gray4);
+            color: var(--tainacan-block-gray4, gutenberg-blocks-variables.$gray4);
         }
 
         &.is-active {
-            border: 2px solid var(--tainacan-block-primary, $primary);
+            border: 2px solid var(--tainacan-block-primary, gutenberg-blocks-variables.$primary);
             
             &.collection-carousel-view-mode-thumbnail div,
             &.collection-carousel-view-mode-grid div>div {
-                background-color: var(--tainacan-block-primary, $primary);
+                background-color: var(--tainacan-block-primary, gutenberg-blocks-variables.$primary);
             }    
         }
         &:hover {
             opacity: 0.9;
             border-width: 2px;
             button {
-                background: var(--tainacan-block-gray1, $gray1);
+                background: var(--tainacan-block-gray1, gutenberg-blocks-variables.$gray1);
             }
         }
 
@@ -101,7 +101,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        color: var(--tainacan-block-gray4, $gray4);
+        color: var(--tainacan-block-gray4, gutenberg-blocks-variables.$gray4);
     }
 
     // Skeleton loading
@@ -127,7 +127,7 @@
     }
     .skeleton {
         border-radius: 2px;
-        background: var(--tainacan-block-gray1, $gray1);
+        background: var(--tainacan-block-gray1, gutenberg-blocks-variables.$gray1);
 
         -webkit-animation: skeleton-animation 1.8s ease infinite;
         -moz-animation: skeleton-animation 1.8s ease infinite;
@@ -198,7 +198,7 @@
     
                     &>*:first-of-type {
                         flex-basis: 100%;
-                        @include grid-child(1, 3, 1, 3);
+                        @include gutenberg-blocks-variables.grid-child(1, 3, 1, 3);
                         // padding-bottom: 100% !important;
                     }
     
@@ -246,7 +246,7 @@
 
         svg {
             border-radius: 100%;
-            fill: var(--tainacan-block-primary, $primary);
+            fill: var(--tainacan-block-primary, gutenberg-blocks-variables.$primary);
         }
         &::after,
         &::before {
@@ -370,7 +370,7 @@
             button {
                 position: absolute !important;
                 background-color: rgba(255, 255, 255, 0.75);
-                color: var(--tainacan-block-gray5, $gray5);
+                color: var(--tainacan-block-gray5, gutenberg-blocks-variables.$gray5);
                 padding: 2px;
                 margin-left: 5px;
                 min-width: 14px;
@@ -392,13 +392,13 @@
                 opacity: 1;
                 right: -8px;
                 top: -8px;
-                border: 1px solid var(--tainacan-block-gray3, $gray3);
+                border: 1px solid var(--tainacan-block-gray3, gutenberg-blocks-variables.$gray3);
                 border-radius: 100em;
                 transition: opacity linear 0.15s, right linear 0.15s;
             }
             &:hover button:hover {
                 background-color: rgba(255, 255, 255, 1) !important;
-                border: 1px solid var(--tainacan-block-gray3, $gray3) !important;
+                border: 1px solid var(--tainacan-block-gray3, gutenberg-blocks-variables.$gray3) !important;
             }
 
             &.max-collections-per-screen-9 {
@@ -450,7 +450,7 @@
 
                 &>*:first-of-type {
                     flex-basis: 100%;
-                    @include grid-child(1, 3, 1, 3);
+                    @include gutenberg-blocks-variables.grid-child(1, 3, 1, 3);
                 }
 
                 &>* {
@@ -646,7 +646,7 @@
     li.collection-list-item {
         a>span,
         a:hover>span {
-            color: var(--tainacan-block-gray5, $gray5)
+            color: var(--tainacan-block-gray5, gutenberg-blocks-variables.$gray5)
         }
     }
 }

@@ -102,7 +102,7 @@
                                 'draft',
                                 ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                             )">
-                        <span class="icon has-text-gray4">
+                        <span class="icon has-text-dark">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-draft" />
                         </span>
                         {{ status == 'draft' ? $i18n.get('label_update_draft') : $i18n.get('label_change_to_draft') }}
@@ -122,7 +122,7 @@
                                 'pending',
                                 ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                             )">
-                        <span class="icon has-text-gray4">
+                        <span class="icon has-text-dark">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting" />
                         </span>
                         {{ status == 'pending' ? $i18n.get('label_update_pending') : $i18n.get('label_send_to_review') }}
@@ -142,7 +142,7 @@
                                 'private',
                                 ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                             )">
-                        <span class="icon has-text-gray4">
+                        <span class="icon has-text-dark">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-private" />
                         </span>
                         {{ status == 'private' ? $i18n.get('label_update_as_private') : ( status == 'draft' ? $i18n.get('label_verb_publish_privately') : $i18n.get('label_change_to_private') ) }}
@@ -161,7 +161,7 @@
                                 'publish',
                                 ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                             )">
-                        <span class="icon has-text-gray4">
+                        <span class="icon has-text-dark">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-public" />
                         </span>
                         {{ status == 'publish' ? $i18n.get('label_update_as_public') : $i18n.get('label_verb_publish') }}

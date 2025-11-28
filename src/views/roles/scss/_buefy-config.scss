@@ -1,0 +1,7 @@
+@use "buefy/src/scss/buefy" with (
+    $radio-active-background-color: var(--tainacan-input-color, #000000),
+    $radio-size: 0.9375em,
+    $checkbox-size: 1em,
+    $checkbox-border-width: 1px,
+    $dropdown-mobile-breakpoint: 769px
+);

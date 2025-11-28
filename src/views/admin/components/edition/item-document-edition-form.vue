@@ -2,7 +2,7 @@
     <div v-if="!$adminOptions.hideItemEditionDocument && ( !$adminOptions.hideItemEditionDocumentFileInput || !$adminOptions.hideItemEditionDocumentTextInput || !$adminOptions.hideItemEditionDocumentUrlInput )">
         <div class="section-label">
             <label>
-                <span class="icon has-text-gray4">
+                <span class="icon has-text-dark">
                     <i :class="'tainacan-icon tainacan-icon-' + ( (!form.document_type || form.document_type == 'empty' ) ? 'item' : (form.document_type == 'attachment' ? 'attachments' : form.document_type))" />
                 </span>
                 {{ collection && collection.item_document_label ? collection.item_document_label : ( (form.document != undefined && form.document != null && form.document != '') ? $i18n.get('label_document') : $i18n.get('label_document_empty') ) }}

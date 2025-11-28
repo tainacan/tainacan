@@ -111,7 +111,6 @@
                             @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
                         {{ $i18n.get('info_for_more_metadata_search_options_use') }}&nbsp; 
                         <a 
-                                class="has-text-secondary"
                                 role="button"
                                 tabindex="0"
                                 :aria-expanded="openAdvancedSearch"
@@ -126,7 +125,7 @@
                 </b-dropdown>
                 <a
                         v-if="!hideAdvancedSearch"
-                        class="advanced-search-toggle has-text-secondary is-pulled-right"
+                        class="advanced-search-toggle is-pulled-right"
                         role="button"
                         tabindex="0"
                         :class="openAdvancedSearch ? 'is-open' : 'is-closed'"
@@ -703,7 +702,7 @@
                         aria-live="polite"
                         aria-atomic="true"
                         aria-relevant="text">
-                    <div class="content has-text-gray has-text-centered">
+                    <div class="content has-text-dark has-text-centered">
                         <p>
                             <span
                                     class="icon is-large"
@@ -1364,7 +1363,7 @@
             openExposersModal() {
                 this.$buefy.modal.open({
                     component: defineAsyncComponent(() => import('../../../admin/components/modals/exposers-modal.vue')),
-                    hasModalCard: true,
+                    hasModalCard: false,
                     props: { 
                         collectionId: this.collectionId,
                         totalItems: this.totalItems
@@ -1709,63 +1708,62 @@
 
 <style lang="scss">
 
-    // TAINACAN Variables
-    @import '../../../tainacan-basics.scss';
-
-    //Vue Tooltip
-    @import "../../../../../node_modules/floating-vue/dist/style.css";
+    // Block level custom variables
+    @use "../../../tainacan-basics.scss";
 
     // Bulma imports
-    @import "./theme-search/scss/theme-basics.sass";
+    @use "./theme-search/scss/_bulma-config.scss";
 
     // Buefy imports
-    @import "../../../../../node_modules/buefy/src/scss/utils/_all.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_form.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_datepicker.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_checkbox.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_radio.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_tag.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_loading.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_dropdown.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_modal.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_dialog.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_notices.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_numberinput.scss";
+    @use "./theme-search/scss/_buefy-config.scss";
 
-    // Block level custom variables
-    @import "../../../tainacan-variables.scss";
+    // Nested Tainacan imports (now mixins)
+    @use "../../../admin/scss/_modals.scss" as _modals;
+    @use "../../../admin/scss/_buttons.scss" as _buttons; 
+    @use "../../../admin/scss/_inputs.scss" as _inputs;
+    @use "../../../admin/scss/_checkboxes.scss" as _checkboxes;
+    @use "../../../admin/scss/_pagination.scss" as _pagination;
+    @use "../../../admin/scss/_tags.scss" as _tags;
+    @use "../../../admin/scss/_tabs.scss" as _tabs;
+    @use "../../../admin/scss/_selects.scss" as _selects;
+    @use "../../../admin/scss/_dropdown-and-autocomplete.scss" as _dropdown-and-autocomplete;
+    @use "../../../admin/scss/_control.scss" as _control;
+    @use "../../../admin/scss/_tainacan-form.scss" as _tainacan-form;
+    @use "../../../admin/scss/_filters-menu-modal.scss" as _filters-menu-modal;
 
     // These have to be outside of the scoped context
-    @import "./theme-search/scss/_layout.scss";
-    @import '../../../admin/scss/_animations.scss';
-    @import "../../../admin/scss/_tooltips.scss";
-    @import "../../../admin/scss/_notices.scss";
-    @import "../../../admin/scss/_modals.scss";
+    @use "./theme-search/scss/_layout.scss";
+    @use '../../../admin/scss/_animations.scss';
+    @use "../../../admin/scss/_tooltips.scss";
+    @use "../../../admin/scss/_notices.scss";
+    @include _modals.tainacan-modals;
+
+    //Vue Tooltip
+    @import "floating-vue/dist/style.css";
 
     // Scoped, to avoid conflicts with theme's css 
     .tainacan-modal,
     .theme-items-list {
 
         // Vue Blurhash transtition effect
-        @import '../../../../../node_modules/another-vue3-blurhash/dist/style.css';
+        @import url('../../../../../node_modules/another-vue3-blurhash/dist/style.css');
         canvas.child {
             max-width: 100%;
         }
 
-        // Tainacan imports
-        @import "../../../admin/scss/_modals.scss";
-        @import "../../../admin/scss/_buttons.scss"; 
-        @import "../../../admin/scss/_inputs.scss";
-        @import "../../../admin/scss/_checkboxes.scss";
-        @import "../../../admin/scss/_pagination.scss";
-        @import "../../../admin/scss/_tags.scss";
-        @import "../../../admin/scss/_tabs.scss";
-        @import "../../../admin/scss/_selects.scss";
-        @import "../../../admin/scss/_dropdown-and-autocomplete.scss";
-        @import "../../../admin/scss/_control.scss";
-        @import "../../../admin/scss/_tainacan-form.scss";
-        @import "../../../admin/scss/_filters-menu-modal.scss";
-
+        // Include nested imports using mixins
+        @include _tainacan-form.tainacan-form;
+        @include _buttons.tainacan-buttons;
+        @include _inputs.tainacan-inputs;
+        @include _checkboxes.tainacan-checkboxes;
+        @include _pagination.tainacan-pagination;
+        @include _tags.tainacan-tags;
+        @include _tabs.tainacan-tabs;
+        @include _selects.tainacan-selects;
+        @include _dropdown-and-autocomplete.tainacan-dropdown-and-autocomplete;
+        @include _control.tainacan-control;
+        @include _filters-menu-modal.tainacan-filters-menu-modal;
+        
         &:not(.tainacan-modal) {
             background: var(--tainacan-background-color, inherit);
             position: relative;

@@ -102,7 +102,7 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"   
                                         class="metadata-description"
-                                        v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />                                                        
+                                        v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-grey is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />                                                        
                                 <br>
 
                             </div>
@@ -143,7 +143,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    @import "../../../../../admin/scss/_view-mode-cards.scss";
+    @use "../../../../../admin/scss/_view-mode-cards.scss";
     
     .tainacan-cards-container .tainacan-card .metadata-title {
         padding: 0.6em 0.75em;

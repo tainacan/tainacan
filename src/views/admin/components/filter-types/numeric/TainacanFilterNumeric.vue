@@ -37,6 +37,9 @@
                 :aria-plus-label="$i18n.get('label_increase')"
                 :placeholder="filter.placeholder ? filter.placeholder : ''"
                 size="is-small"
+                controls-position="compact"
+                controls-alignment="right"
+                expanded
                 :step="Number(filterTypeOptions.step)"
                 @update:model-value="($event) => { resetPage($event); emit($event); }" />
     </div>
@@ -177,7 +180,7 @@
             }
         }
 
-        .b-numberinput.is-grouped {
+        .b-numberinput {
             flex-grow: 1;
 
             :deep(input.input) {

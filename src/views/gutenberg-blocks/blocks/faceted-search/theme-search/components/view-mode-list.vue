@@ -60,13 +60,13 @@
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
+                                        content: item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
-                                    v-html="item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
+                                    v-html="item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                             <span 
                                     v-if="isSlideshowViewModeEnabled"
                                     v-tooltip="{
@@ -147,7 +147,7 @@ export default {
 
 <style  lang="scss" scoped>
 
-    @import "../../../../../admin/scss/view-mode-list.scss";
+    @use "../../../../../admin/scss/view-mode-list.scss";
 
     .tainacan-list-container .tainacan-list .metadata-title {
         padding: 0.5em 0.875em;

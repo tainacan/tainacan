@@ -1,31 +1,31 @@
 // Tainacan custom colors and bulma's core
-@import "../../tainacan-basics.scss";
 
 // Import Bulma and Buefy styles
-@import "../../assets/css/materialdesignicons.css";
-@import "../../../../node_modules/bulma/bulma.sass";
-@import "../../../../node_modules/buefy/src/scss/buefy.scss";
+@use "../scss/_bulma-config.scss";
+@use "../scss/_buefy-config.scss";
 
 // Import Tainacan custom styles
-@import "../scss/_animations.scss";
-@import "../scss/_tainacan-form.scss";
-@import "../scss/_control.scss";
-@import "../scss/_buttons.scss";
-@import "../scss/_selects.scss";
-@import "../scss/_inputs.scss";
-@import "../scss/_checkboxes.scss";
-@import "../scss/_upload.scss";
-@import "../scss/_radios.scss";
-@import "../scss/_switches.scss";
-@import "../scss/_dropdown-and-autocomplete.scss";
-@import "../scss/_tabs.scss";
-@import "../scss/_tooltips.scss";
-@import "../scss/_pagination.scss";
-@import "../scss/_modals.scss";
-@import "../scss/_tags.scss";
-@import "../scss/_notices.scss";
-@import "../scss/_filters-menu-modal.scss";
-@import "../scss/_repository-level-overrides.scss";
+@use "../scss/_animations.scss";
+@use "../scss/_tooltips.scss";
+@use "../scss/_notices.scss";
+@use "../scss/_repository-level-overrides.scss";
+
+// Import Tainacan mixins
+@use "../scss/_tainacan-form.scss" as _tainacan-form;
+@use "../scss/_control.scss" as _control;
+@use "../scss/_buttons.scss" as _buttons;
+@use "../scss/_selects.scss" as _selects;
+@use "../scss/_inputs.scss" as _inputs;
+@use "../scss/_checkboxes.scss" as _checkboxes;
+@use "../scss/_upload.scss" as _upload;
+@use "../scss/_radios.scss" as _radios;
+@use "../scss/_switches.scss" as _switches;
+@use "../scss/_dropdown-and-autocomplete.scss" as _dropdown-and-autocomplete;
+@use "../scss/_tabs.scss" as _tabs;
+@use "../scss/_pagination.scss" as _pagination;
+@use "../scss/_modals.scss" as _modals;
+@use "../scss/_tags.scss" as _tags;
+@use "../scss/_filters-menu-modal.scss" as _filters-menu-modal;
 
 #tainacan-admin-app {
     background: var(--tainacan-background-color);
@@ -367,3 +367,20 @@ audio, video {
         z-index: 0 !important;
     }
 }
+
+// Include Tainacan mixins
+@include _tainacan-form.tainacan-form;
+@include _control.tainacan-control;
+@include _buttons.tainacan-buttons;
+@include _selects.tainacan-selects;
+@include _inputs.tainacan-inputs;
+@include _checkboxes.tainacan-checkboxes;
+@include _upload.tainacan-upload;
+@include _radios.tainacan-radios;
+@include _switches.tainacan-switches;
+@include _dropdown-and-autocomplete.tainacan-dropdown-and-autocomplete;
+@include _tabs.tainacan-tabs;
+@include _pagination.tainacan-pagination;
+@include _modals.tainacan-modals;
+@include _tags.tainacan-tags;
+@include _filters-menu-modal.tainacan-filters-menu-modal;

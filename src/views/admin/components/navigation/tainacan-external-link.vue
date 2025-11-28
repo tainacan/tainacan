@@ -23,6 +23,7 @@ export default {
 
 <style lang="scss" scoped>
     .tainacan-external-link {
+        border-color: transparent;
         border-radius: 0 var(--tainacan-page-container-border-radius, 12px) 0 var(--tainacan-admin-button-border-radius, 8px) !important;
         position: fixed;
         right: var(--tainacan-page-container--inner-padding-x, 1rem);

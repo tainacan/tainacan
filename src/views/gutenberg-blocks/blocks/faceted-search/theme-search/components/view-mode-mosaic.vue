@@ -130,7 +130,7 @@ export default {
 
 <style  lang="scss" scoped>
 
-    @import "../../../../../admin/scss/_view-mode-mosaic.scss";
+    @use "../../../../../admin/scss/_view-mode-mosaic.scss";
 
 </style>
 

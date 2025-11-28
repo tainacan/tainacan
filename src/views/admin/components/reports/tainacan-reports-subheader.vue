@@ -10,7 +10,7 @@
                         :key="index">
                     <span 
                             v-if="$statusHelper.hasIcon(statusOption.slug)"
-                            class="icon has-text-gray">
+                            class="icon has-text-dark">
                         <i 
                                 class="tainacan-icon tainacan-icon-1-125em"
                                 :class="$statusHelper.getIcon(statusOption.slug)"

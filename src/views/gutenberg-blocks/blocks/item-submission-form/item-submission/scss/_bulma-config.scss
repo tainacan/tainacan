@@ -1,0 +1,58 @@
+@use "../../../../../tainacan-variables.scss" as tainacan-variables;
+
+@use "bulma/sass/utilities" as * with (
+    $family-sans-serif: tainacan-variables.$family-sans-serif,
+    $primary: tainacan-variables.$turquoise2,
+    $success: tainacan-variables.$green2,
+    $warning: tainacan-variables.$yellow2,
+    $danger: tainacan-variables.$red2,
+    $dark: tainacan-variables.$gray4,
+    $grey: tainacan-variables.$gray3,
+    $link: tainacan-variables.$secondary,
+    $size-small: 0.875em, // 0.75em on Bulma.
+);
+
+@use "bulma/sass/form/input-textarea" with (
+    $textarea-max-height: 6lh,
+    $textarea-min-height: 4lh
+);
+@forward "bulma/sass/form/index";
+@forward "bulma/sass/components/pagination";
+@forward "bulma/sass/components/card";
+@use "bulma/sass/elements/icon" with (
+    $icon-dimensions: 1.5em,
+    $icon-dimensions-small: 1em,
+    $icon-dimensions-medium: 2em,
+    $icon-dimensions-large: 3em
+);
+@forward "bulma/sass/elements/tag";
+@forward "bulma/sass/elements/image";
+@forward "bulma/sass/elements/notification";
+@forward "bulma/sass/components/tabs";
+@forward "bulma/sass/elements/button";
+@forward "bulma/sass/grid/columns";
+@forward "bulma/sass/components/dropdown";
+@use "bulma/sass/components/modal" with (
+    $modal-z: 9999999,
+    $modal-background-background-color: tainacan-variables.$tainacan-backdrop-background-color
+);
+@forward "bulma/sass/helpers";
+
+@use "bulma/sass/themes/light" as light;
+@use "bulma/sass/themes/setup" as setup;
+
+// Apply light theme once to :root
+#{$variables-host} {
+  @include light.light-theme;
+  @include setup.setup-theme;
+}
+
+.has-text-secondary {
+    color: var(--tainacan-secondary, tainacan-variables.$secondary) !important;
+}
+.is-secondary {
+    background-color: var(--tainacan-secondary, tainacan-variables.$secondary) !important;
+}
+
+$body-background-color: #fff;
+$body-color: #fff;

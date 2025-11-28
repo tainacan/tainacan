@@ -36,7 +36,7 @@
                 </span>
                 <span
                         v-if="$adminOptions.itemEditionStatusOptionOnFooterDropdown && (item != null && item != undefined && item.status != undefined && item.status != 'autodraft' && !isLoading)"
-                        class="icon has-text-gray4"
+                        class="icon has-text-dark"
                         style="margin-left: 0.5em;"
                         @mouseenter="$emit('toggleItemEditionFooterDropdown')">
                     <i 
@@ -210,13 +210,13 @@
                                             class="swiper-slide"
                                             @click="activeTab = tab.slug">
                                         <a>
-                                            <span class="icon has-text-gray4">
+                                            <span class="icon has-text-dark">
                                                 <i :class="'tainacan-icon tainacan-icon-18px tainacan-icon-' + tab.icon" />
                                             </span>
                                             <span>{{ tab.name }}</span>
                                             <span 
                                                     v-if="tab.total"
-                                                    class="has-text-gray">
+                                                    class="has-text-dark">
                                                 &nbsp;({{ tab.total }})
                                             </span>
                                         </a>
@@ -407,7 +407,7 @@
                                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                                                 </span>
                                                 <label>
-                                                    <span class="icon has-text-gray4">
+                                                    <span class="icon has-text-dark">
                                                         <i class="tainacan-icon tainacan-icon-metadata" />
                                                     </span>
                                                     <span
@@ -419,7 +419,7 @@
                                                     {{ metadataSection.name }}&nbsp;
                                                     <span 
                                                             v-if="metadataSection.metadata_object_list && metadataSection.metadata_object_list.length"
-                                                            class="has-text-gray has-text-weight-normal"
+                                                            class="has-text-dark has-text-weight-normal"
                                                             style="font-size: 0.875em;">
                                                         ({{ metadataSection.metadata_object_list.length }})
                                                     </span>
@@ -678,7 +678,7 @@
             <!-- In case user enters this page whithout having permission -->
             <template v-if="!isLoading && ((isCreatingNewItem && collection && collection.current_user_can_edit_items == false) || (!isCreatingNewItem && item && item.current_user_can_edit != undefined && collection && collection.current_user_can_edit_items == false))">
                 <section class="section">
-                    <div class="content has-text-gray has-text-centered">
+                    <div class="content has-text-dark has-text-centered">
                         <p>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />

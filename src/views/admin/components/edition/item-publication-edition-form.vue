@@ -4,7 +4,7 @@
                 v-if="!isStatusTheOnlyField && !$adminOptions.itemEditionPublicationSectionInsideTabs"
                 class="section-label">
             <label>
-                <span class="icon has-text-gray4">
+                <span class="icon has-text-dark">
                     <i class="tainacan-icon tainacan-icon-item" />
                 </span>
                 {{ collection && collection.item_publication_label ? collection.item_publication_label : $i18n.get('label_publication_data') }}
@@ -136,7 +136,7 @@
                         <label class="label">
                             <span 
                                     v-if="isStatusTheOnlyField"
-                                    class="icon has-text-gray4">
+                                    class="icon has-text-dark">
                                 <i class="tainacan-icon tainacan-icon-item" />
                             </span>
                             {{ $i18n.get('label_status') }}
@@ -169,7 +169,7 @@
                                             class="button is-outlined"
                                             :class="{ 'disabled': item.status === 'auto-draft' || ( hasSomeError && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) ) }"
                                             style="width: auto;">
-                                        <span class="icon has-text-gray">
+                                        <span class="icon has-text-dark">
                                             <i 
                                                     class="tainacan-icon tainacan-icon-18px"
                                                     :class="$statusHelper.getIcon(form.status)" />
@@ -205,7 +205,7 @@
                                             statusOption.slug,
                                             'current'
                                         )">
-                                    <span class="icon has-text-gray">
+                                    <span class="icon has-text-dark">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-18px"
                                                 :class="$statusHelper.getIcon(statusOption.slug)" />

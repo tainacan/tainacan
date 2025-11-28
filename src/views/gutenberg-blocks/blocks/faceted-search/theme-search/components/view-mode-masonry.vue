@@ -153,7 +153,7 @@ export default {
 
 <style  lang="scss" scoped>
 
-    @import "../../../../../admin/scss/_view-mode-masonry.scss";
+    @use "../../../../../admin/scss/_view-mode-masonry.scss";
 
     .tainacan-masonry-container .tainacan-masonry-item .metadata-title {
         margin: 0px 3px;

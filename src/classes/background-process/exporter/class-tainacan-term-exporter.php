@@ -86,7 +86,7 @@ class Term_Exporter extends Exporter {
             <label class="label" style="position: relative">
                 <?php _e('CSV Delimiter', 'tainacan'); ?>
                 <span class="help-wrapper">
-					<a class="help-button has-text-secondary">
+					<a class="help-button">
 						<span class="icon is-small">
 							<i class="tainacan-icon tainacan-icon-help" ></i>
 						</span>
@@ -110,7 +110,7 @@ class Term_Exporter extends Exporter {
             <label class="label" style="position: relative">
                 <?php _e('Source Taxonomy:', 'tainacan'); ?>
                 <span class="help-wrapper">
-					<a class="help-button has-text-secondary">
+					<a class="help-button">
 						<span class="icon is-small">
 							<i class="tainacan-icon tainacan-icon-help" ></i>
 						</span>

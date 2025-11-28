@@ -40,7 +40,7 @@
                 <div 
                         v-if="collections.length <= 0"
                         class="block">
-                    <p class="has-text-gray">
+                    <p class="has-text-dark">
                         {{ $i18n.get('info_no_collection_created') }}
                     </p>
                 </div>
@@ -105,7 +105,7 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import '../../scss/_cards.scss';
+    @use '../../scss/_cards.scss';
 
 </style>
 

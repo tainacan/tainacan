@@ -468,7 +468,7 @@ export default {
                         duration: 3000,
                         message: this.$i18n.get('info_url_copied'),
                         position: 'is-bottom',
-                        type: 'is-secondary',
+                        type: 'is-dark',
                         queue: true
                     });
                 }, 
@@ -492,7 +492,7 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import '../../scss/_cards.scss';
+    @use '../../scss/_cards.scss';
 
     .tainacan-modal-title {
         margin-bottom: 24px;
@@ -536,7 +536,7 @@ export default {
                     white-space: nowrap;
                     overflow: hidden;
                 }
-                .has-text-gray {
+                .has-text-dark {
                     font-size: 0.75em;
                     text-overflow: ellipsis;
                     white-space: nowrap;
@@ -606,12 +606,14 @@ export default {
                 animation-name: appear-from-top-tooltip;
                 animation-duration: 0.3s;
                 position: absolute;
+                box-shadow: 0 0 8px -6px rgba(0, 0, 0, 0.5);
                 background: var(--tainacan-item-hover-background-color);
                 padding: 0.5em 0.875em 0.75em 0.875em;
                 border-radius: 4px;
                 top: 44px;
                 right: 12px;
                 z-index: 99999;
+                min-width: 300px;
 
                 .exposer-copy-popup-close {
                     position: absolute;

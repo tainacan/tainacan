@@ -169,7 +169,7 @@
                             @click="onChangeTab('')">
                         <a style="font-weight: bold;">
                             {{ `${$i18n.get('label_all_taxonomies')}` }}
-                            <span class="has-text-gray">&nbsp;{{ repositoryTotalTaxonomies ? `(${Number(repositoryTotalTaxonomies.private) + Number(repositoryTotalTaxonomies.publish) + Number(repositoryTotalTaxonomies.draft)})` : '' }}</span>
+                            <span class="has-text-dark">&nbsp;{{ repositoryTotalTaxonomies ? `(${Number(repositoryTotalTaxonomies.private) + Number(repositoryTotalTaxonomies.publish) + Number(repositoryTotalTaxonomies.draft)})` : '' }}</span>
                         </a>
                     </li>
                     <li 
@@ -187,14 +187,14 @@
                         <a>
                             <span 
                                     v-if="$statusHelper.hasIcon(statusOption.slug)"
-                                    class="icon has-text-gray">
+                                    class="icon has-text-dark">
                                 <i 
                                         class="tainacan-icon tainacan-icon-1-125em"
                                         :class="$statusHelper.getIcon(statusOption.slug)"
                                     />
                             </span>
                             {{ statusOption.name }}
-                            <span class="has-text-gray">&nbsp;{{ repositoryTotalTaxonomies ? `(${repositoryTotalTaxonomies[statusOption.slug]})` : '' }}</span>
+                            <span class="has-text-dark">&nbsp;{{ repositoryTotalTaxonomies ? `(${repositoryTotalTaxonomies[statusOption.slug]})` : '' }}</span>
                         </a>
                     </li>
                 </ul>
@@ -211,7 +211,7 @@
                 <!-- Empty state image -->
                 <div v-if="taxonomies.length <= 0 && !isLoading">
                     <section class="section">
-                        <div class="content has-text-gray has-text-centered">
+                        <div class="content has-text-dark has-text-centered">
                             <p>
                                 <span class="icon is-medium">
                                     <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms" />

@@ -282,7 +282,7 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"
                                         class="icon">
-                                    <i class="has-text-gray4 tainacan-icon tainacan-icon-1-25em tainacan-icon-cancel" />
+                                    <i class="has-text-dark tainacan-icon tainacan-icon-1-25em tainacan-icon-cancel" />
                                 </span>
                             </button>
 
@@ -321,7 +321,7 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"
                                         class="icon">
-                                    <i class="has-text-gray4 tainacan-icon tainacan-icon-1-25em tainacan-icon-play" />
+                                    <i class="has-text-dark tainacan-icon tainacan-icon-1-25em tainacan-icon-play" />
                                 </span>
                             </button>
 
@@ -975,7 +975,7 @@
             margin-left: 10px;
             flex-direction: row-reverse;
 
-            .icon.has-text-gray4:hover {
+            .icon.has-text-dark:hover {
                 color: var(--tainacan-heading-color) !important;
             }
         }

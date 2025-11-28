@@ -58,7 +58,12 @@ new_md5_sass=$(<last-sass-build.md5)
 if [ "$current_md5_sass" != "$new_md5_sass" ]
 then
     ## Compile SASS
-    sh compile-sass.sh
+    if [ "$is_prod_build" == true ]
+    then
+        sh compile-sass.sh --prod
+    else
+        sh compile-sass.sh
+    fi
 fi
 
 new_md5_js=$(<last-js-build.md5)

@@ -14,7 +14,7 @@
                     {{ $i18n.get('label_all_items') }}
                     <span 
                             v-if="!$adminOptions.hideItemsListStatusTabsTotalItems && !$route.query.authorid"
-                            class="has-text-gray">
+                            class="has-text-dark">
                         &nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.pending + repositoryTotalItems.publish + repositoryTotalItems.draft })` : (collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.pending) + Number(collection.total_items.publish) + Number(collection.total_items.draft)})` : '') }}
                     </span>
                 </a>
@@ -35,7 +35,7 @@
                     <a>
                         <span 
                                 v-if="$statusHelper.hasIcon(statusOption.slug)"
-                                class="icon has-text-gray">
+                                class="icon has-text-dark">
                             <i 
                                     class="tainacan-icon tainacan-icon-1-125em"
                                     :class="$statusHelper.getIcon(statusOption.slug)"
@@ -44,7 +44,7 @@
                         {{ statusOption.name }}
                         <span 
                                 v-if="!$adminOptions.hideItemsListStatusTabsTotalItems && !$route.query.authorid"
-                                class="has-text-gray">
+                                class="has-text-dark">
                             &nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems[statusOption.slug] })` : (collection && collection.total_items ? ` (${collection.total_items[statusOption.slug]})` : '') }}
                         </span>
                     </a>

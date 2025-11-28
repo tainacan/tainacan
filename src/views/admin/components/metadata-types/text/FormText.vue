@@ -12,6 +12,9 @@
                     name="maxlength"
                     step="1"
                     min="0"
+                    controls-position="compact"
+                    controls-alignment="right"
+                    expanded
                     @update:model-value="onUpdateMaxlength" />
         </b-field> 
         <b-field

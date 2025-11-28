@@ -237,7 +237,7 @@
         <section 
                 v-if="( termColumns instanceof Array ? termColumns.length <= 0 : !termColumns ) && !isColumnLoading"
                 class="section">
-            <div class="content has-text-gray has-text-centered">
+            <div class="content has-text-dark has-text-centered">
                 <p>
                     <span class="icon is-medium">
                         <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms" />

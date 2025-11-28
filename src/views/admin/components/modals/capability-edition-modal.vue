@@ -41,7 +41,7 @@
                 </template>
                 <p 
                         v-else
-                        class="is-italic has-text-gray">
+                        class="is-italic has-text-dark">
                     {{ $i18n.get('info_no_role_associated_capability') }}
                 </p>
             </div>
@@ -64,7 +64,7 @@
                                     :key="roleIndex">
                                 <b-checkbox
                                         v-if="capability.roles_inherited[role.slug]"
-                                        class="has-text-yellow2"
+                                        class="has-text-warning"
                                         :model-value="capability.roles[role.slug] || capability.roles_inherited[role.slug] ? true : false"
                                         name="roles_inherited"
                                         disabled>
@@ -76,7 +76,7 @@
                 </template>
                 <p 
                         v-else
-                        class="is-italic has-text-gray">
+                        class="is-italic has-text-dark">
                     {{ $i18n.get('info_no_role_associated_capability') }}
                 </p>
             </div>

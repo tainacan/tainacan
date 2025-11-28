@@ -71,7 +71,7 @@
                                                 type="button"
                                                 class="button is-outlined"
                                                 style="width: auto">
-                                            <span class="icon has-text-gray">
+                                            <span class="icon has-text-dark">
                                                 <i 
                                                         class="tainacan-icon tainacan-icon-18px"
                                                         :class="$statusHelper.getIcon(form.status)" />
@@ -95,7 +95,7 @@
                                             @click="form.status = statusOption.slug"
                                             @keydown.enter.prevent="form.status = statusOption.slug"
                                             @keydown.space.prevent="form.status = statusOption.slug">
-                                        <span class="icon has-text-gray">
+                                        <span class="icon has-text-dark">
                                             <i 
                                                     class="tainacan-icon tainacan-icon-18px"
                                                     :class="$statusHelper.getIcon(statusOption.slug)" />
@@ -283,6 +283,9 @@
                                                 name="cardinality"
                                                 step="1"
                                                 min="2"
+                                                controls-position="compact"
+                                                controls-alignment="right"
+                                                expanded
                                                 :placeholder="$i18n.get('instruction_2_or_more')"
                                                 :model-value="form.cardinality ? Number(form.cardinality) : null"
                                                 @update:model-value="(newCardinalty) => form.cardinality = newCardinalty ? Number(newCardinalty) : ''" />

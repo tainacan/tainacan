@@ -103,7 +103,7 @@
                     </div>
                     <div v-else>
                         <p
-                                class="has-text-gray"
+                                class="has-text-dark"
                                 style="font-size: 0.875em;">
                             {{ $i18n.get('info_no_item_found') }}
                         </p>

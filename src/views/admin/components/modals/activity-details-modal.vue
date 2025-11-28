@@ -51,9 +51,9 @@
                         <div
                                 v-if="attributeName == 'thumbnail'"
                                 class="content">
-                            <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                            <p class="is-capitalized has-text-weight-bold">
                                 {{ attributeName }}
-                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                                <small class="has-text-dark has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
                             </p>
                             <div>
                                 <picture>
@@ -68,9 +68,9 @@
                         <div
                                 v-if="attributeName == 'attachments'"
                                 class="content">
-                            <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                            <p class="is-capitalized has-text-weight-bold">
                                 {{ attributeName }}
-                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                                <small class="has-text-dark has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
                             </p>
                             <div
                                     v-if="diff.old.length"
@@ -95,9 +95,9 @@
                         <div
                                 v-if="!['thumbnail', 'attachments'].includes(attributeName)"
                                 class="content">
-                            <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                            <p class="is-capitalized has-text-weight-bold">
                                 {{ attributeName.replace(/_/g, ' ') }}
-                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                                <small class="has-text-dark has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
                             </p>
 
                             <!-- Is array with length 1 -->
@@ -159,9 +159,9 @@
                         <div
                                 v-if="attributeName == 'thumbnail'"
                                 class="content">
-                            <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                            <p class="is-capitalized has-text-weight-bold">
                                 {{ attributeName }}
-                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
+                                <small class="has-text-dark has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                             </p>
                             <div>
                                 <picture>
@@ -176,9 +176,9 @@
                         <div
                                 v-if="attributeName == 'attachments'"
                                 class="content">
-                            <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                            <p class="is-capitalized has-text-weight-bold">
                                 {{ attributeName }}
-                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
+                                <small class="has-text-dark has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                             </p>
                             <div
                                     v-if="diff.new.length"
@@ -203,9 +203,9 @@
                         <div
                                 v-if="!['thumbnail', 'attachments'].includes(attributeName)"
                                 class="content">
-                            <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                            <p class="is-capitalized has-text-weight-bold">
                                 {{ attributeName.replace(/_/g, ' ') }}
-                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
+                                <small class="has-text-dark has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                             </p>
 
                             <!-- Is array with length 1 -->
@@ -271,9 +271,9 @@
                         <div
                                 v-if="activity.action == 'update-thumbnail'"
                                 class="content">
-                            <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                            <p class="is-capitalized has-text-weight-bold">
                                 {{ $i18n.get('label_thumbnail') }}
-                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                                <small class="has-text-dark has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
                             </p>
                             <p 
                                     v-if="activity.old_value && activity.old_value.thumb && activity.old_value.thumb[0]"
@@ -291,9 +291,9 @@
                         <div
                                 v-if="activity.action == 'new-attachment'"
                                 class="content">
-                            <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                            <p class="is-capitalized has-text-weight-bold">
                                 {{ $i18n.get('label_attachment') }}
-                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                                <small class="has-text-dark has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
                             </p>
                             <div v-if="activity.old_value.url">
                                 <file-item 
@@ -314,9 +314,9 @@
                         <div
                                 v-if="activity.action == 'update-document'"
                                 class="content">
-                            <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                            <p class="is-capitalized has-text-weight-bold">
                                 {{ $i18n.get('label_document') }}
-                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                                <small class="has-text-dark has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
                             </p>
                             <div
                                     v-for="(attributeValue, attributeName, index) of activity.old_value"
@@ -342,9 +342,9 @@
                             <div 
                                     v-for="(attributeValue, attributeName, index) in activity.old_value"
                                     :key="index">
-                                <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                                <p class="is-capitalized has-text-weight-bold">
                                     {{ attributeName }}
-                                    <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                                    <small class="has-text-dark has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
                                 </p>
 
                                 <div class="content">
@@ -363,9 +363,9 @@
                             <div 
                                     v-for="(attributeValue, attributeName, index) in activity.old_value"
                                     :key="index">
-                                <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                                <p class="is-capitalized has-text-weight-bold">
                                     {{ attributeName }}
-                                    <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                                    <small class="has-text-dark has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
                                 </p>
 
                                 <!-- Is array with length 1 -->
@@ -399,9 +399,9 @@
                         <div
                                 v-if="activity.action == 'update-metadata-value'"
                                 class="content">
-                            <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                            <p class="is-capitalized has-text-weight-bold">
                                 {{ activity.metadata && activity.metadata.name ? activity.metadata.name : $i18n.get('metadatum') }}
-                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
+                                <small class="has-text-dark has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
                             </p>
                             <p
                                     class="tainacan-p-break"
@@ -415,9 +415,9 @@
                         <div
                                 v-if="activity.action == 'update-thumbnail'"
                                 class="content">
-                            <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                            <p class="is-capitalized has-text-weight-bold">
                                 {{ $i18n.get('label_thumbnail') }}
-                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
+                                <small class="has-text-dark has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                             </p>
                             <p 
                                     v-if="activity.new_value && activity.new_value.thumb && activity.new_value.thumb[0]"
@@ -435,9 +435,9 @@
                         <div
                                 v-if="activity.action == 'new-attachment'"
                                 class="content">
-                            <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                            <p class="is-capitalized has-text-weight-bold">
                                 {{ $i18n.get('label_attachment') }}
-                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
+                                <small class="has-text-dark has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                             </p>
                             <div v-if="activity.new_value.url">
                                 <file-item 
@@ -458,9 +458,9 @@
                         <div
                                 v-if="activity.action == 'update-document'"
                                 class="content">
-                            <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                            <p class="is-capitalized has-text-weight-bold">
                                 {{ $i18n.get('label_document') }}
-                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
+                                <small class="has-text-dark has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                             </p>
                             <div
                                     v-for="(attributeValue, attributeName, index) of activity.new_value"
@@ -486,9 +486,9 @@
                             <div 
                                     v-for="(attributeValue, attributeName, index) in activity.new_value"
                                     :key="index">
-                                <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                                <p class="is-capitalized has-text-weight-bold">
                                     {{ attributeName }}
-                                    <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
+                                    <small class="has-text-dark has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                                 </p>
 
                                 <div class="content">
@@ -507,9 +507,9 @@
                             <div
                                     v-if="activity.action == 'update'"
                                     class="content">
-                                <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                                <p class="is-capitalized has-text-weight-bold">
                                     {{ attributeName }}
-                                    <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
+                                    <small class="has-text-dark has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                                 </p>
 
                                 <div
@@ -548,9 +548,9 @@
                         <div
                                 v-if="activity.action == 'update-metadata-value'"
                                 class="content">
-                            <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                            <p class="is-capitalized has-text-weight-bold">
                                 {{ activity.metadata && activity.metadata.name ? activity.metadata.name : $i18n.get('metadatum') }}
-                                <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
+                                <small class="has-text-dark has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                             </p>
                             <p
                                     class="tainacan-p-break"
@@ -609,31 +609,31 @@
                     case 'Tainacan\\Entities\\Collection':
                         return `${ this.$i18n.get('collection') } 
                                 <a href="${ this.$routerHelper.getAbsoluteAdminPath() + this.$routerHelper.getCollectionPath(this.activity.object_id) }">${ this.activity.object.name }</a>
-                                <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-collections"/></span>`;
+                                <span class="icon has-text-grey">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-collections"/></span>`;
                     case 'Tainacan\\Entities\\Taxonomy':
                         return `${ this.$i18n.get('taxonomy') } 
                                 <a href="${ this.$routerHelper.getAbsoluteAdminPath() + this.$routerHelper.getTaxonomyPath(this.activity.object_id) }">${ this.activity.object.name }</a>
-                                <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-taxonomies"/></span>`;
+                                <span class="icon has-text-grey">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-taxonomies"/></span>`;
                     case 'Tainacan\\Entities\\Metadatum':
                         return `${ this.$i18n.get('metadatum') } 
                                 <a href="${ this.$routerHelper.getAbsoluteAdminPath() + (this.activity.object.collection_id == 'default' ? this.$routerHelper.getMetadataEditPath(this.activity.object_id) : this.$routerHelper.getCollectionMetadataEditPath(this.activity.object.collection_id, this.activity.object_id)) }">${ this.activity.object.name }</a>
-                                <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata"/></span>`;
+                                <span class="icon has-text-grey">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata"/></span>`;
                     case 'Tainacan\\Entities\\Filter':
                         return `${ this.$i18n.get('filter') } 
                                 <a href="${ this.$routerHelper.getAbsoluteAdminPath() + (this.activity.object.collection_id == 'default' ? this.$routerHelper.getFilterEditPath(this.activity.object_id) : this.$routerHelper.getCollectionFilterEditPath(this.activity.object.collection_id, this.activity.object_id)) }">${ this.activity.object.name }</a>
-                                <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/></span>`;
+                                <span class="icon has-text-grey">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/></span>`;
                     case 'Tainacan\\Entities\\Term':
                         return `${ this.$i18n.get('term') } 
                                 <a href="${ this.$routerHelper.getAbsoluteAdminPath() + this.$routerHelper.getTermEditPath(this.activity.object.taxonomy.replace( /^\D+/g, ''), this.activity.object_id) }">${ this.activity.object.name }</a>
-                                <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-terms"/></span>`;
+                                <span class="icon has-text-grey">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-terms"/></span>`;
                     case 'Tainacan\\Entities\\Item':
                         return `${ this.$i18n.get('item') } 
                                 <a href="${ this.$routerHelper.getAbsoluteAdminPath() + this.$routerHelper.getItemEditPath(this.activity.object.collection_id, this.activity.object_id) }">${ this.activity.object.title }</a>
-                                <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/></span>`;
+                                <span class="icon has-text-grey">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/></span>`;
                     case 'Tainacan\\Entities\\Item_Metadata_Entity':
                         return `${ this.$i18n.get('item') } 
                                 <a href="${ this.$routerHelper.getAbsoluteAdminPath() + this.$routerHelper.getItemEditPath(this.activity.item.collection_id, this.activity.item.id) }">${ this.activity.item.title }</a>
-                                <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/></span>`;
+                                <span class="icon has-text-grey">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/></span>`;
                     default: 
                         return '';
                 }

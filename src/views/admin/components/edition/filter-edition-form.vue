@@ -50,7 +50,7 @@
                                     type="button"
                                     class="button is-outlined"
                                     style="width: auto">
-                                <span class="icon has-text-gray">
+                                <span class="icon has-text-dark">
                                     <i 
                                             class="tainacan-icon tainacan-icon-18px"
                                             :class="$statusHelper.getIcon(form.status)" />
@@ -74,7 +74,7 @@
                                 @click="form.status = statusOption.slug"
                                 @keydown.enter.prevent="form.status = statusOption.slug"
                                 @keydown.space.prevent="form.status = statusOption.slug">
-                            <span class="icon has-text-gray">
+                            <span class="icon has-text-dark">
                                 <i 
                                         class="tainacan-icon tainacan-icon-18px"
                                         :class="$statusHelper.getIcon(statusOption.slug)" />

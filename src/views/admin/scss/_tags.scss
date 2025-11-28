@@ -1,87 +1,89 @@
-.tags {
-    font-family: var(--tainacan-font-family, inherit);
-    border: solid 1px var(--tainacan-input-border-color) !important;
-    background-color: var(--tainacan-input-background-color);
-    border-radius: 20px;
-    flex-wrap: nowrap;
-    margin-bottom: 0.375em !important;
-    margin-right: 0.375em;
-    max-width: 100%;
-    overflow: hidden;
-    transition: all 0.2s ease;
-    animation-name: appear;
-    animation-duration: 0.3s;
-
-    .tag {
-        background-color: transparent;
-        margin-bottom: 0 !important;
-        margin-right: 4px !important;
-        max-width: calc(100% - 21px);
-        justify-content: flex-start;
+@mixin tainacan-tags {
+    .tags {
+        font-family: var(--tainacan-font-family, inherit);
+        border: solid 1px var(--tainacan-input-border-color) !important;
+        background-color: var(--tainacan-input-background-color);
+        border-radius: 20px;
+        flex-wrap: nowrap;
+        margin-bottom: 0.375em !important;
+        margin-right: 0.375em;
+        max-width: 100%;
         overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        transition: all 0.2s ease;
         animation-name: appear;
         animation-duration: 0.3s;
 
-        &.is-delete, 
-        &.is-delete:hover, 
-        &.is-delete:focus, 
-        &.is-delete:active {
-            border-radius: 50px !important;
-            border-radius: 50px !important;
-            margin-right: 0px !important;
-            color: var(--tainacan-info-color);
-            background-color: var(--tainacan-input-background-color);
-            transition: border-width 0.15s linear, background-color 0.15s linear;
+        .tag {
+            background-color: transparent;
+            margin-bottom: 0 !important;
+            margin-right: 4px !important;
+            max-width: calc(100% - 21px);
+            justify-content: flex-start;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            animation-name: appear;
+            animation-duration: 0.3s;
 
-            &:after,
-            &:before {
-                transition: transform 0.15s linear;
-            }
+            &.is-delete, 
+            &.is-delete:hover, 
+            &.is-delete:focus, 
+            &.is-delete:active {
+                border-radius: 50px !important;
+                border-radius: 50px !important;
+                margin-right: 0px !important;
+                color: var(--tainacan-info-color);
+                background-color: var(--tainacan-input-background-color);
+                transition: border-width 0.15s linear, background-color 0.15s linear;
 
-            &:hover,
-            &:focus {
-                border: 1px solid var(--tainacan-input-border-color) !important;
-                background-color: var(--tainacan-item-hover-background-color);
-                color: var(--tainacan-secondary);
-
-                &:after {
-                    transform: translateX(-50%) translateY(-50%) rotate(45deg) scale(1.15);
-                }
+                &:after,
                 &:before {
-                    transform: translateX(-50%) translateY(-50%) rotate(45deg) scale(1.15);
+                    transition: transform 0.15s linear;
                 }
+
+                &:hover,
+                &:focus {
+                    border: 1px solid var(--tainacan-input-border-color) !important;
+                    background-color: var(--tainacan-item-hover-background-color);
+                    color: var(--tainacan-secondary);
+
+                    &:after {
+                        transform: translateX(-50%) translateY(-50%) rotate(45deg) scale(1.15);
+                    }
+                    &:before {
+                        transform: translateX(-50%) translateY(-50%) rotate(45deg) scale(1.15);
+                    }
+                }
+            }
+
+            &.is-danger, 
+            &.is-danger:hover, 
+            &.is-danger:focus, 
+            &.is-danger:active {
+                border-color: var(--tainacan-danger) !important;
+                background-color: var(--tainacan-red1) !important;
+                color: var(--tainacan-danger) !important;
             }
         }
 
-        &.is-danger, 
-        &.is-danger:hover, 
-        &.is-danger:focus, 
-        &.is-danger:active {
+        &.is-danger {
             border-color: var(--tainacan-danger) !important;
             background-color: var(--tainacan-red1) !important;
             color: var(--tainacan-danger) !important;
-        }
-    }
 
-    &.is-danger {
-        border-color: var(--tainacan-danger) !important;
-        background-color: var(--tainacan-red1) !important;
-        color: var(--tainacan-danger) !important;
+            .tag, 
+            .tag:hover, 
+            .tag:focus, 
+            .tag:active {
+                border-color: var(--tainacan-danger) !important;
+                background-color: var(--tainacan-red1) !important;
+                color: var(--tainacan-danger) !important;
+            }
 
-        .tag, 
-        .tag:hover, 
-        .tag:focus, 
-        .tag:active {
-            border-color: var(--tainacan-danger) !important;
-            background-color: var(--tainacan-red1) !important;
-            color: var(--tainacan-danger) !important;
-        }
-
-        &:hover .tag.is-delete:hover,
-        .tag.is-delete:hover {
-            border-color: var(--tainacan-danger) !important;
+            &:hover .tag.is-delete:hover,
+            .tag.is-delete:hover {
+                border-color: var(--tainacan-danger) !important;
+            }
         }
     }
 }

@@ -28,17 +28,53 @@ class Admin_Bar_Items {
 	}
 
 	/**
-	 * Enqueues styles for admin bar items.
+	 * Gets the CSS styles for admin bar items. (Too small to be a separate file)
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string CSS content for admin bar items.
+	 */
+	private static function get_admin_bar_css() {
+		return <<<'CSS'
+/* Styles Tainacan links in the WordPress admin top bar */
+#wpadminbar .tainacan-admin-bar-link.tainacan-admin-bar-link--repository a,
+#wpadminbar .tainacan-admin-bar-link.tainacan-admin-bar-link--repository:hover a,
+#wpadminbar .tainacan-admin-bar-link.tainacan-admin-bar-link--repository:focus a {
+	background-color: #1d3968 !important;
+}
+#wpadminbar .tainacan-admin-bar-link a,
+#wpadminbar .tainacan-admin-bar-link:hover a,
+#wpadminbar .tainacan-admin-bar-link:focus a {
+	background-color: #187181 !important;
+}
+#wpadminbar .tainacan-admin-bar-link a::before,
+#wpadminbar .tainacan-admin-bar-link:hover a::before,
+#wpadminbar .tainacan-admin-bar-link:focus a::before {
+	color: white !important;
+	content: '\f464';
+    top: 2px;
+}
+#wpadminbar .tainacan-admin-bar-link:hover a,
+#wpadminbar .tainacan-admin-bar-link:focus a {
+	color: white !important;
+}
+CSS;
+	}
+
+	/**
+	 * Adds inline styles for admin bar items.
 	 *
 	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
 	function add_admin_bar_items_styles() {
-		global $TAINACAN_BASE_URL;
-
-		if ( is_user_logged_in() )
-			wp_enqueue_style( 'tainacan-admin-bar', $TAINACAN_BASE_URL . '/assets/css/tainacan-admin-bar.css', [], TAINACAN_VERSION );
+		if ( is_user_logged_in() ) {
+			// Register a minimal style handle and add inline CSS
+			wp_register_style( 'tainacan-admin-bar-inline', false );
+			wp_enqueue_style( 'tainacan-admin-bar-inline' );
+			wp_add_inline_style( 'tainacan-admin-bar-inline', self::get_admin_bar_css() );
+		}
 	}
 
 	/**
@@ -77,7 +113,8 @@ class Admin_Bar_Items {
 							'title' => __( 'Edit item', 'tainacan' ),
 							'href'  => $url,
 							'meta' => [
-								'title' => __( 'Edit this item on Tainacan Admin', 'tainacan' )
+								'title' => __( 'Edit this item on Tainacan Admin', 'tainacan' ),
+								'class' => 'tainacan-admin-bar-link'
 							]
 						) );
 					}
@@ -97,7 +134,8 @@ class Admin_Bar_Items {
 							'title' => __( 'Edit taxonomy', 'tainacan' ),
 							'href'  => $url,
 							'meta' => [
-								'title' => __( 'Edit this taxonomy on Tainacan Admin', 'tainacan' )
+								'title' => __( 'Edit this taxonomy on Tainacan Admin', 'tainacan' ),
+								'class' => 'tainacan-admin-bar-link tainacan-admin-bar-link--repository'
 							]
 						) );
 					}
@@ -125,7 +163,8 @@ class Admin_Bar_Items {
 								'title' => __( 'Edit taxonomy', 'tainacan' ),
 								'href'  => $url,
 								'meta' => [
-									'title' => __( 'Edit this taxonomy on Tainacan Admin', 'tainacan' )
+									'title' => __( 'Edit this taxonomy on Tainacan Admin', 'tainacan' ),
+									'class' => 'tainacan-admin-bar-link tainacan-admin-bar-link--repository'
 								]
 							) );
 						}
@@ -149,7 +188,8 @@ class Admin_Bar_Items {
 						'title' => __( 'Edit collection', 'tainacan' ),
 						'href'  => $url,
 						'meta' => [
-							'title' => __( 'Edit this collection on Tainacan Admin', 'tainacan' )
+							'title' => __( 'Edit this collection on Tainacan Admin', 'tainacan' ),
+							'class' => 'tainacan-admin-bar-link'
 						]
 					) );
 
@@ -165,7 +205,8 @@ class Admin_Bar_Items {
 						'title' => __( 'Edit collections', 'tainacan' ),
 						'href'  => $url,
 						'meta' => [
-							'title' => __( 'Edit the collections on Tainacan Admin', 'tainacan' )
+							'title' => __( 'Edit the collections on Tainacan Admin', 'tainacan' ),
+							'class' => 'tainacan-admin-bar-link'
 						]
 					) );
 
@@ -180,7 +221,8 @@ class Admin_Bar_Items {
 						'title' => __( 'Edit taxonomies', 'tainacan' ),
 						'href'  => $url,
 						'meta' => [
-							'title' => __( 'Edit the taxonomies on Tainacan Admin', 'tainacan' )
+							'title' => __( 'Edit the taxonomies on Tainacan Admin', 'tainacan' ),
+							'class' => 'tainacan-admin-bar-link tainacan-admin-bar-link--repository'
 						]
 					) );
 				} else {
@@ -197,7 +239,8 @@ class Admin_Bar_Items {
 							'title' => __( 'Edit items', 'tainacan' ),
 							'href'  => $url,
 							'meta' => [
-								'title' => __( 'Edit the items on Tainacan Admin', 'tainacan' )
+								'title' => __( 'Edit the items on Tainacan Admin', 'tainacan' ),
+								'class' => 'tainacan-admin-bar-link tainacan-admin-bar-link--repository'
 							]
 						) );
 					}

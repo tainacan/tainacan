@@ -1,4 +1,4 @@
-@import '../../scss/gutenberg-blocks-variables.scss';
+@use '../../scss/gutenberg-blocks-variables.scss';
 
 #metadata-checkbox-list {
     margin: 8px 12px 18px 12px;
@@ -13,14 +13,14 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        color: var(--tainacan-block-gray4, $gray4);
+        color: var(--tainacan-block-gray4, gutenberg-blocks-variables.$gray4);
     }
     
     .preview-warning {
         width: 100%;
         font-size: 0.875rem;
         font-style: italic;
-        color: var(--tainacan-block-gray4, $gray4);
+        color: var(--tainacan-block-gray4, gutenberg-blocks-variables.$gray4);
         text-align: center;
         margin: 4px auto;
     }

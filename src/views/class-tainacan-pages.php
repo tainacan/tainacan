@@ -381,7 +381,7 @@ abstract class Pages {
 
 		wp_enqueue_style(
 			'tainacan-fonts',
-			$TAINACAN_BASE_URL . '/assets/css/tainacanicons.css',
+			$TAINACAN_BASE_URL . '/assets/fonts/tainacanicons.css',
 			[],
 			TAINACAN_VERSION
 		);
