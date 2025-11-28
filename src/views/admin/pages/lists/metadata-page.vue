@@ -45,7 +45,7 @@
             <section 
                     v-else
                     class="section">
-                <div class="content has-text-gray has-text-centered">
+                <div class="content has-text-dark has-text-centered">
                     <p>
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-metadata" />
