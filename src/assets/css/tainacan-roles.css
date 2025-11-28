@@ -36560,6 +36560,7 @@ textarea.textarea[rows="7"],
 }
 .datepicker .datepicker-header .pagination .pagination-previous {
   border: none;
+  box-shadow: none;
   flex-grow: 0;
 }
 .datepicker .datepicker-header .pagination .pagination-previous > span > i:before {
@@ -36568,6 +36569,7 @@ textarea.textarea[rows="7"],
 }
 .datepicker .datepicker-header .pagination .pagination-next {
   border: none;
+  box-shadow: none;
   flex-grow: 0;
 }
 .datepicker .datepicker-header .pagination .pagination-next > span > i:before {
@@ -36638,18 +36640,12 @@ textarea.textarea[rows="7"],
   }
   .datepicker .datepicker-header .pagination .pagination-previous {
     margin: 0;
-    height: 1.5em;
     padding: 0;
     order: 3;
-    min-height: 24px;
-    margin-bottom: 0.35em;
   }
   .datepicker .datepicker-header .pagination .pagination-next {
     margin: 0;
-    height: 1.5em;
     padding: 0;
-    min-height: 24px;
-    margin-bottom: 0.35em;
   }
   .datepicker .dropdown-item {
     padding: 0.8em !important;
