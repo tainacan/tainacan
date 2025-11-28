@@ -27,10 +27,6 @@
 @use "../scss/_tags.scss" as _tags;
 @use "../scss/_filters-menu-modal.scss" as _filters-menu-modal;
 
-// TAINACAN ICON FONT
-@import "../../assets/css/materialdesignicons.css";
-@import "../../assets/css/tainacanicons.css";
-
 #tainacan-admin-app {
     background: var(--tainacan-background-color);
     overflow-y: auto;
