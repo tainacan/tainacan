@@ -40,7 +40,9 @@
                         </p>
                     </span>
                     <span class="exposer-item-actions">
-                        <a 
+                        <button 
+                                type="button"
+                                class="button link-style"
                                 v-tooltip="{
                                     delay: {
                                         show: 500,
@@ -51,28 +53,34 @@
                                     placement: 'bottom',
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }" 
-                                target="_blank"
+                                :aria-label="$i18n.get('label_copy_link_url')"
                                 @click="siteLinkCopied = true; copyTextToClipboard(itemURL ? itemURL : collectionURL)">
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url" />
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url" aria-hidden="true" />
                             </span>
-                        </a>
+                        </button>
                         <div 
                                 v-if="siteLinkCopied == true"
-                                class="exposer-copy-popup">
+                                class="exposer-copy-popup"
+                                role="status"
+                                aria-live="polite"
+                                aria-atomic="true">
                             <p>{{ $i18n.get('info_url_copied') }}</p>
-                            <a 
+                            <button 
+                                    type="button"
                                     class="exposer-copy-popup-close"
+                                    :aria-label="$i18n.get('close')"
                                     @click="siteLinkCopied = false">
                                 <span class="icon has-text-secondary">
-                                    <i class="tainacan-icon tainacan-icon-close" />
+                                    <i class="tainacan-icon tainacan-icon-close" aria-hidden="true" />
                                 </span>
-                            </a>
+                            </button>
                             <input 
                                     readonly
                                     autofocus
                                     type="text"
-                                    :value="itemURL ? itemURL : collectionURL">
+                                    :value="itemURL ? itemURL : collectionURL"
+                                    :aria-label="$i18n.get('info_url_copied')">
                         </div>
                         <a 
                                 v-tooltip="{
@@ -172,7 +180,9 @@
                                     </p>
                                 </span>
                                 <span class="exposer-item-actions">
-                                    <a 
+                                    <button 
+                                            type="button"
+                                            class="button link-style"
                                             v-tooltip="{
                                                 delay: {
                                                     show: 500,
@@ -183,28 +193,35 @@
                                                 placement: 'bottom',
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
+                                            :aria-label="$i18n.get('label_copy_link_url')"
                                             @click="exposerMapper.linkCopied = pagedLink; copyTextToClipboard(getExposerFullURL(pagedLink, exposerMapper))">
                                         <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url" />
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url" aria-hidden="true" />
                                         </span>
-                                    </a>
+                                    </button>
                                     <div 
                                             v-if="exposerMapper.linkCopied == pagedLink"
-                                            class="exposer-copy-popup">
+                                            class="exposer-copy-popup"
+                                            role="status"
+                                            aria-live="polite"
+                                            aria-atomic="true">
                                         <p>{{ $i18n.get('info_url_copied') }}</p>
-                                        <a 
+                                        <button 
+                                                type="button"
                                                 class="exposer-copy-popup-close"
+                                                :aria-label="$i18n.get('close')"
                                                 @click="exposerMapper.linkCopied = undefined">
                                             <span class="icon has-text-secondary">
-                                                <i class="tainacan-icon tainacan-icon-close" />
+                                                <i class="tainacan-icon tainacan-icon-close" aria-hidden="true" />
                                             </span>
-                                        </a>
+                                        </button>
                                         <input 
                                                 v-focus
                                                 readonly
                                                 autofocus
                                                 type="text"
-                                                :value="getExposerFullURL(pagedLink, exposerMapper)">
+                                                :value="getExposerFullURL(pagedLink, exposerMapper)"
+                                                :aria-label="$i18n.get('info_url_copied')">
                                     </div>
                                     <a 
                                             v-tooltip="{
@@ -619,6 +636,11 @@ export default {
                     position: absolute;
                     top: 6px;
                     right: 4px;
+                    background: none;
+                    border: none;
+                    padding: 0;
+                    cursor: pointer;
+                    color: inherit;
                 }
                 p { padding: 0 0 0.5em 0; }
                 input {
