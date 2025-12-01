@@ -578,12 +578,12 @@
                 id="filters-modal"
                 ref="filters-modal"     
                 v-model="isFiltersModalActive"       
-                role="dialog"
                 :width="736"
-                :tabindex="-1"
+                :tabindex="isMobileScreen ? -1 : 0"
                 animation="slide-menu"
-                trap-focus
-                aria-modal
+                :trap-focus="isMobileScreen"
+                :aria-modal="isMobileScreen"
+                :role="isMobileScreen ? 'dialog' : ''"
                 aria-labelledby="filters-label-landmark"
                 custom-class="tainacan-modal tainacan-form filters-menu"
                 :close-button-aria-label="$i18n.get('close')"
@@ -797,6 +797,7 @@
     import CollectionsModal from '../../components/modals/collections-modal.vue';
     import CustomDialog from '../../components/other/custom-dialog.vue';
     import { mapActions, mapGetters } from 'vuex';
+import { isMoment } from 'moment';
 
     export default {
         name: 'ItemsPage',
