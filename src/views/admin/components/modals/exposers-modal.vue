@@ -41,8 +41,6 @@
                     </span>
                     <span class="exposer-item-actions">
                         <button 
-                                type="button"
-                                class="button link-style"
                                 v-tooltip="{
                                     delay: {
                                         show: 500,
@@ -52,11 +50,15 @@
                                     autoHide: false,
                                     placement: 'bottom',
                                     popperClass: ['tainacan-tooltip', 'tooltip']
-                                }" 
+                                }"         
+                                type="button"
+                                class="button link-style"
                                 :aria-label="$i18n.get('label_copy_link_url')"
                                 @click="siteLinkCopied = true; copyTextToClipboard(itemURL ? itemURL : collectionURL)">
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url" aria-hidden="true" />
+                                <i
+                                        class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"
+                                        aria-hidden="true" />
                             </span>
                         </button>
                         <div 
@@ -72,7 +74,9 @@
                                     :aria-label="$i18n.get('close')"
                                     @click="siteLinkCopied = false">
                                 <span class="icon has-text-secondary">
-                                    <i class="tainacan-icon tainacan-icon-close" aria-hidden="true" />
+                                    <i
+                                            class="tainacan-icon tainacan-icon-close"
+                                            aria-hidden="true" />
                                 </span>
                             </button>
                             <input 
@@ -181,8 +185,6 @@
                                 </span>
                                 <span class="exposer-item-actions">
                                     <button 
-                                            type="button"
-                                            class="button link-style"
                                             v-tooltip="{
                                                 delay: {
                                                     show: 500,
@@ -193,10 +195,14 @@
                                                 placement: 'bottom',
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
+                                            type="button"
+                                            class="button link-style"
                                             :aria-label="$i18n.get('label_copy_link_url')"
                                             @click="exposerMapper.linkCopied = pagedLink; copyTextToClipboard(getExposerFullURL(pagedLink, exposerMapper))">
                                         <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url" aria-hidden="true" />
+                                            <i
+                                                    class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"
+                                                    aria-hidden="true" />
                                         </span>
                                     </button>
                                     <div 
@@ -212,7 +218,9 @@
                                                 :aria-label="$i18n.get('close')"
                                                 @click="exposerMapper.linkCopied = undefined">
                                             <span class="icon has-text-secondary">
-                                                <i class="tainacan-icon tainacan-icon-close" aria-hidden="true" />
+                                                <i
+                                                        class="tainacan-icon tainacan-icon-close"
+                                                        aria-hidden="true" />
                                             </span>
                                         </button>
                                         <input 
