@@ -324,14 +324,9 @@
             .tags {
                 display: none !important;
             }
-        }
-
-        .input {
-            overflow: hidden;
-            display: unset;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            height: auto;
+            .autocomplete {
+                width: 100%;
+            }
         }
 
         .control:not(.taginput) {
