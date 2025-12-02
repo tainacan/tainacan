@@ -797,7 +797,6 @@
     import CollectionsModal from '../../components/modals/collections-modal.vue';
     import CustomDialog from '../../components/other/custom-dialog.vue';
     import { mapActions, mapGetters } from 'vuex';
-import { isMoment } from 'moment';
 
     export default {
         name: 'ItemsPage',
@@ -1649,8 +1648,16 @@ import { isMoment } from 'moment';
         transform: translateY(18px);
         transition: top 0.3s;
 
-        &:focus {
+        &:focus:not(:focus-visible) {
             outline: none !important;
+        }
+        &:focus-visible {
+            outline-width: 2px;
+            outline-offset: -1px;
+            outline-color: var(--tainacan-secondary);
+            outline-color: color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
+            outline-style: solid;
+            box-shadow: none;
         }
 
         @media screen and (max-width: 768px) {

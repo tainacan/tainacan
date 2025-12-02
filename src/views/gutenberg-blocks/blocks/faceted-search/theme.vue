@@ -1966,8 +1966,16 @@
         display: flex;
         align-items: center;
 
-        &:focus {
+        &:focus:not(:focus-visible) {
             outline: none !important;
+        }
+        &:focus-visible {
+            outline-width: 2px;
+            outline-offset: -1px;
+            outline-color: var(--tainacan-secondary);
+            outline-color: color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
+            outline-style: solid;
+            box-shadow: none;
         }
 
         @media screen and (max-width: 768px) {
