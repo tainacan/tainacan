@@ -183,14 +183,14 @@
                         </button>
                     </b-field>
                     <li v-if="column.children.length">
-                        <div
+                        <button
                                 v-if="shouldShowMoreButton(columnIndex)"
                                 class="tainacan-show-more"
                                 @click="fetchMoreTerms(column, columnIndex)">
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore" />
                             </span>
-                        </div>
+                        </button>
                     </li>
                 </ul>
                 <div
@@ -790,13 +790,23 @@ export default {
         width: 100%;
         display: flex;
         justify-content: center;
+        box-shadow: none;
         cursor: pointer;
         border: 1px solid var(--tainacan-gray1);
         margin-top: 10px;
         margin-bottom: -0.2em;
 
-        &:hover {
-            background-color: var(--tainacan-blue1);
+        
+        &:hover,
+        &:focus {
+            outline: none;
+            box-shadow: none;
+            background-color: var(--tainacan-item-hover-background-color);
+        }
+        &:focus-visible {
+            outline: 2px solid var(--tainacan-secondary);
+            outline-offset: 2px;
+            box-shadow: none;
         }
     }
 
@@ -858,7 +868,10 @@ export default {
             height: 100%;
         }
 
-        &:hover {
+        &:hover,
+        &:focus,
+        &:focus-within,
+        &:focus-visible {
             background-color: var(--tainacan-gray1);
 
             &>a:not(.add-link),

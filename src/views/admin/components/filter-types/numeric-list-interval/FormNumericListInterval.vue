@@ -55,6 +55,7 @@
                     <p class="control">
                         <a
                                 role="button"
+                                tabindex="0"
                                 class="add-link"
                                 :title="$i18n.get('add_value')"
                                 @click="addInterval(index)">
@@ -69,6 +70,7 @@
                             class="control">
                         <a
                                 role="button"
+                                tabindex="0"
                                 class="add-link"
                                 :title="$i18n.get('remove_value')"
                                 @click="removeInterval(index)">

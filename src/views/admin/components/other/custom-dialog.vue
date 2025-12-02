@@ -11,7 +11,8 @@
                 style="width: auto">
             <div 
                     v-if="icon != undefined && icon != ''"
-                    class="modal-custom-icon">
+                    class="modal-custom-icon"
+                    aria-hidden="true">
                 <span class="icon is-large">
                     <i 
                             :style="{ color: icon == 'alert' ? 'var(--tainacan-red2)' : ( icon == 'approved' ? '#1a745c' : 'inherit' ) }"
@@ -19,9 +20,7 @@
                             class="tainacan-icon" />
                 </span>
             </div>
-            <section 
-                    tabindex="1"
-                    class="modal-card-body">
+            <section class="modal-card-body">
                 <header 
                         class="modal-card-head">
                     <h1 

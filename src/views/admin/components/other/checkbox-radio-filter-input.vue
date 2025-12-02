@@ -50,6 +50,7 @@
                         <a
                                 v-if="isUsingElasticSearch ? previousLastTerms.length && previousLastTerms[0] != checkboxListOffset : checkboxListOffset"
                                 role="button"
+                                tabindex="0"
                                 :aria-label="$i18n.get('previous')"
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="previousSearchPage">
@@ -95,6 +96,7 @@
                         <a
                                 v-if="!noMoreSearchPage"
                                 role="button"
+                                tabindex="0"
                                 :aria-label="$i18n.get('next')"
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="nextSearchPage">
@@ -110,7 +112,8 @@
                             class="modal-card-body tainacan-checkbox-list-container">
                         <a
                                 v-if="isUsingElasticSearch ? previousLastTerms.length && previousLastTerms[0] != checkboxListOffset : checkboxListOffset"
-                                role="button"
+                                role="button"   
+                                tabindex="0"
                                 :aria-label="$i18n.get('previous')"
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="previousPage">
@@ -160,6 +163,7 @@
                         <a
                                 v-if="!noMorePage"
                                 role="button"
+                                tabindex="0"
                                 :aria-label="$i18n.get('next')"
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="nextPage">
@@ -219,7 +223,11 @@
                                     </label>
                                     <a
                                             v-if="option.total_children > 0"
-                                            @click="getOptionChildren(option, key, index)">
+                                            :tabindex="0"
+                                            role="button"
+                                            @click="getOptionChildren(option, key, index)"
+                                            @keydown.enter.prevent="getOptionChildren(option, key, index)"
+                                            @keydown.space.prevent="getOptionChildren(option, key, index)">
                                         <span 
                                                 v-if="finderColumns.length <= 1 "
                                                 class="is-hidden-mobile">
@@ -238,14 +246,15 @@
                                     </a>
                                 </b-field>
                                 <li v-if="finderColumn.children.length">
-                                    <div
+                                    <button
                                             v-if="shouldShowMoreButton(key)"
+                                            :aria-label="$i18n.get('label_show_more_options')"
                                             class="tainacan-show-more"
                                             @click="getMoreOptions(finderColumn, key)">
                                         <span class="icon">
                                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore" />
                                         </span>
-                                    </div>
+                                    </button>
                                     <div 
                                             v-else
                                             class="warning-no-more-terms">
@@ -901,11 +910,20 @@
         justify-content: center;
         cursor: pointer;
         border: 1px solid var(--tainacan-input-border-color);
+        box-shadow: none;
         margin-top: 10px;
         margin-bottom: 0.1em;
 
-        &:hover {
+        &:hover,
+        &:focus {
+            outline: none;
+            box-shadow: none;
             background-color: var(--tainacan-item-hover-background-color);
+        }
+        &:focus-visible {
+            outline: 2px solid var(--tainacan-secondary);
+            outline-offset: 2px;
+            box-shadow: none;
         }
     }
 

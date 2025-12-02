@@ -139,6 +139,7 @@
                                         </option>
                                         <option
                                                 role="button"
+                                                tabindex="0"
                                                 :class="{ 'is-active': form.default_order == 'ASC' }"
                                                 :value="'ASC'">
                                             {{ $i18n.get('label_ascending') }}
@@ -188,7 +189,8 @@
                                                 <button
                                                         class="button is-white"
                                                         position="is-top-right"
-                                                        type="button">
+                                                        type="button"
+                                                        :disabled="Object.keys(registeredAndNotDisabledViewModes).length < 0">
                                                     <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
                                                     <span class="icon">
                                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />

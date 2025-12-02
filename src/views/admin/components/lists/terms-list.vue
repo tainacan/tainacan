@@ -83,6 +83,7 @@
                     <template #trigger>
                         <button
                                 type="button"
+                                :disabled="amountOfTermsSelected <= 1"
                                 class="button is-white">
                             <span>{{ $i18n.get('label_actions_for_the_selection') }}</span>
                             <span class="icon">

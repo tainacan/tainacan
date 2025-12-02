@@ -32,6 +32,7 @@
                         <template #trigger>
                             <button
                                     :aria-label="$i18n.get('label_filter_by_metadata_type')"
+                                    :disabled="activeMetadataSectionsList.length <= 0"
                                     class="button is-white">
                                 <span>{{ $i18n.get('label_filter_by_type') }}</span>
                                 <span class="icon">
@@ -214,6 +215,7 @@
                                                 ? 'hidden' : 'visible'
                                         }" 
                                         role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('edit')"
                                         @click.prevent="toggleMetadataSectionEdition(metadataSection)">
                                     <span 
@@ -232,6 +234,7 @@
                                         :disabled="metadataSection.metadata_object_list.length > 0"
                                         :style="{ visibility: metadataSection.collection_id != collectionId || metadataSection.id === 'default_section' || metadataSection.metadata_object_list.length ? 'hidden' : 'visible' }"
                                         role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('delete')"
                                         @click.prevent="removeMetadataSection(metadataSection)">
                                     <span
@@ -439,6 +442,7 @@
                                                             ? 'hidden' : 'visible'
                                                     }"
                                                     role="button"
+                                                    tabindex="0"
                                                     :aria-label="$i18n.get('edit')" 
                                                     @click.prevent="toggleMetadatumEdition(metadatum)">
                                                 <span 
@@ -456,6 +460,7 @@
                                                     v-if="metadatum.current_user_can_delete"
                                                     :style="{ visibility: metadatum.collection_id != collectionId || metadatum.metadata_type_object.core ? 'hidden' : 'visible' }"
                                                     role="button"
+                                                    tabindex="0"
                                                     :aria-label="$i18n.get('delete')"
                                                     @click.prevent="removeMetadatum(metadatum, sectionIndex)">
                                                 <span

@@ -54,6 +54,7 @@
                     <a
                             v-if="checkboxListOffset"
                             role="button"
+                            tabindex="0"
                             :aria-label="$i18n.get('previous')"
                             class="tainacan-checkbox-list-page-changer"
                             @click="previousSearchPage">
@@ -131,6 +132,7 @@
                     <a
                             v-if="checkboxListOffset"
                             role="button"
+                            tabindex="0"
                             :aria-label="$i18n.get('previous')"
                             class="tainacan-checkbox-list-page-changer"
                             @click="previousPage">
@@ -176,6 +178,7 @@
                     <a
                             v-if="!noMorePage"
                             role="button"
+                            tabindex="0"
                             :aria-label="$i18n.get('next')"
                             class="tainacan-checkbox-list-page-changer"
                             @click="nextPage">
@@ -239,7 +242,11 @@
                                 </label>
                                 <a
                                         v-if="option.total_children > 0"
-                                        @click="getOptionChildren(option, key, index)">
+                                        :tabindex="0"
+                                        role="button"
+                                        @click="getOptionChildren(option, key, index)"
+                                        @keydown.enter.prevent="getOptionChildren(option, key, index)"
+                                        @keydown.space.prevent="getOptionChildren(option, key, index)">
                                     <span 
                                             v-if="finderColumns.length <= 1 "
                                             class="is-hidden-mobile">
@@ -258,14 +265,14 @@
                                 </a>
                             </b-field>
                             <li v-if="finderColumn.children.length">
-                                <div
+                                <button
                                         v-if="shouldShowMoreButton(key)"
                                         class="tainacan-show-more"
                                         @click="getMoreOptions(finderColumn, key)">
                                     <span class="icon">
                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore" />
                                     </span>
-                                </div>
+                                </button>
                             </li>
                         </ul>
                     </div>
@@ -964,13 +971,22 @@
         width: 100%;
         display: flex;
         justify-content: center;
+        box-shadow: none;
         cursor: pointer;
         border: 1px solid var(--tainacan-gray1);
         margin-top: 10px;
         margin-bottom: -0.2em;
 
-        &:hover {
+        &:hover,
+        &:focus {
+            outline: none;
+            box-shadow: none;
             background-color: var(--tainacan-blue1);
+        }
+        &:focus-visible {
+            outline: 2px solid var(--tainacan-blue5);
+            outline-offset: 2px;
+            box-shadow: none;
         }
     }
 

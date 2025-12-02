@@ -77,6 +77,7 @@
                                     placement: 'auto-start',
                                     popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
                                 }"
+                                :disabled="taxonomies.length <= 0 || isLoading"
                                 :aria-label="$i18n.get('label_sorting')"
                                 class="button is-white">
                             <span class="is-small gray-icon">

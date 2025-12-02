@@ -177,6 +177,7 @@
                                             ? 'hidden' : 'visible'
                                     }"
                                     role="button"
+                                    tabindex="0"
                                     :aria-label="$i18n.get('edit')" 
                                     @click.prevent="toggleMetadatumEdition(metadatum.id)">
                                 <span 
@@ -199,6 +200,7 @@
                                             ? 'hidden' : 'visible'
                                     }" 
                                     role="button"
+                                    tabindex="0"
                                     :aria-label="$i18n.get('delete')"
                                     @click.prevent="removeMetadatum(metadatum)">
                                 <span

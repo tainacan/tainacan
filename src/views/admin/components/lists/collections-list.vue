@@ -23,7 +23,9 @@
                         :disabled="!isSelectingCollections"
                         trap-focus>
                     <template #trigger>
-                        <button class="button is-white">
+                        <button 
+                                :disabled="!isSelectingCollections"
+                                class="button is-white">
                             <span>{{ $i18n.get('label_bulk_actions') }}</span>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
@@ -376,6 +378,7 @@
                                         :id="'button-delete-' + collection.id"
                                         class="button-delete"
                                         role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneCollection(collection)">
                                     <span 

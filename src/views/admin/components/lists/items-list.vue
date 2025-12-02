@@ -70,7 +70,9 @@
                         :disabled="selectedItems.length <= 1"
                         trap-focus>
                     <template #trigger>
-                        <button class="button is-white">
+                        <button 
+                                :disabled="selectedItems.length <= 1"
+                                class="button is-white">
                             <span>{{ $i18n.get('label_actions_for_the_selection') }}</span>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
@@ -288,6 +290,7 @@
                                 :id="'button-untrash-' + item.id"
                                 class="button-untrash" 
                                 role="button"
+                                tabindex="0"
                                 :aria-label="$i18n.get('label_button_untrash')"
                                 @click.prevent.stop="untrashOneItem(item.id)">
                             <span
@@ -306,6 +309,7 @@
                                 :id="'button-delete-' + item.id"
                                 class="button-delete" 
                                 role="button"
+                                tabindex="0"
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item)">
                             <span
@@ -460,6 +464,7 @@
                                     :id="'button-untrash-' + item.id"
                                     class="button-untrash" 
                                     role="button"
+                                    tabindex="0"
                                     :aria-label="$i18n.get('label_button_untrash')"
                                     @click.prevent.stop="untrashOneItem(item.id)">
                                 <span
@@ -478,6 +483,7 @@
                                     :id="'button-delete-' + item.id"
                                     class="button-delete" 
                                     role="button"
+                                    tabindex="0"
                                     :aria-label="$i18n.get('label_button_delete')" 
                                     @click.prevent.stop="deleteOneItem(item)">
                                 <span
@@ -616,6 +622,7 @@
                                 :id="'button-untrash-' + item.id"
                                 class="button-untrash" 
                                 role="button"
+                                tabindex="0"
                                 :aria-label="$i18n.get('label_button_untrash')"
                                 @click.prevent.stop="untrashOneItem(item.id)">
                             <span
@@ -634,6 +641,7 @@
                                 :id="'button-delete-' + item.id"
                                 class="button-delete" 
                                 role="button"
+                                tabindex="0"
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item)">
                             <span
@@ -866,6 +874,7 @@
                                     :id="'button-untrash-' + item.id"
                                     class="button-untrash" 
                                     role="button"
+                                    tabindex="0"
                                     :aria-label="$i18n.get('label_button_untrash')"
                                     @click.prevent.stop="untrashOneItem(item.id)">
                                 <span
@@ -884,6 +893,7 @@
                                     :id="'button-delete-' + item.id"
                                     class="button-delete" 
                                     role="button"
+                                    tabindex="0"
                                     :aria-label="$i18n.get('label_button_delete')" 
                                     @click.prevent.stop="deleteOneItem(item)">
                                 <span
@@ -1249,6 +1259,7 @@
                                         :id="'button-untrash-' + item.id"
                                         class="button-untrash" 
                                         role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('label_button_untrash')"
                                         @click.prevent.stop="untrashOneItem(item.id)">
                                     <span
@@ -1267,6 +1278,7 @@
                                         :id="'button-delete-' + item.id"
                                         class="button-delete" 
                                         role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneItem(item)">
                                     <span
@@ -1431,6 +1443,7 @@
                                 :id="'button-untrash-' + item.id"
                                 class="button-untrash" 
                                 role="button"
+                                tabindex="0"
                                 :aria-label="$i18n.get('label_button_untrash')"
                                 @click.prevent.stop="untrashOneItem(item.id)">
                             <span
@@ -1449,6 +1462,7 @@
                                 :id="'button-delete-' + item.id"
                                 class="button-delete" 
                                 role="button"
+                                tabindex="0"
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item)">
                             <span
@@ -1679,6 +1693,7 @@
                                         :id="'button-untrash-' + item.id"
                                         class="button-untrash" 
                                         role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('label_button_untrash')"
                                         @click.prevent.stop="untrashOneItem(item.id)">
                                     <span
@@ -1697,6 +1712,7 @@
                                         :id="'button-delete-' + item.id"
                                         class="button-delete" 
                                         role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneItem(item)">
                                     <span
@@ -1904,6 +1920,7 @@
                                                 :id="'button-show-location-' + item.id"
                                                 class="button-show-location"
                                                 role="button"
+                                                tabindex="0"
                                                 :aria-label="$i18n.get('label_show_item_location_on_map')"
                                                 @click.prevent.stop="showLocationsByItem(item)">
                                             <span
@@ -1947,6 +1964,7 @@
                                                 :id="'button-untrash-' + item.id"
                                                 class="button-untrash" 
                                                 role="button"
+                                                tabindex="0"
                                                 :aria-label="$i18n.get('label_button_untrash')"
                                                 @click.prevent.stop="untrashOneItem(item.id)">
                                             <span
@@ -1965,6 +1983,7 @@
                                                 :id="'button-delete-' + item.id"
                                                 class="button-delete" 
                                                 role="button"
+                                                tabindex="0"
                                                 :aria-label="$i18n.get('label_button_delete')" 
                                                 @click.prevent.stop="deleteOneItem(item)">
                                             <span
@@ -2184,6 +2203,7 @@
                                     :id="'button-untrash-' + item.id"
                                     class="button-untrash" 
                                     role="button"
+                                    tabindex="0"
                                     :aria-label="$i18n.get('label_button_untrash')"
                                     @click.prevent.stop="untrashOneItem(item.id)">
                                 <span
@@ -2202,6 +2222,7 @@
                                     :id="'button-delete-' + item.id"
                                     class="button-delete" 
                                     role="button"
+                                    tabindex="0"
                                     :aria-label="$i18n.get('label_button_delete')" 
                                     @click.prevent.stop="deleteOneItem(item)">
                                 <span

@@ -34,6 +34,7 @@
                         <template #trigger>
                             <button
                                     :aria-label="$i18n.get('label_filter_by_metadata_type')"
+                                    :disabled="activeMetadatumList.length <= 0"
                                     class="button is-white">
                                 <span>{{ $i18n.get('label_filter_by_type') }}</span>
                                 <span class="icon">
@@ -211,6 +212,7 @@
                                                     ? 'hidden' : 'visible'
                                             }"
                                             role="button"
+                                            tabindex="0"
                                             :aria-label="$i18n.get('edit')" 
                                             @click.prevent="toggleMetadatumEdition(metadatum)">
                                         <span 
@@ -228,6 +230,7 @@
                                             v-if="metadatum.current_user_can_delete"
                                             :style="{ visibility: metadatum.collection_id != collectionId || metadatum.metadata_type_object.core ? 'hidden' : 'visible' }"
                                             role="button"
+                                            tabindex="0"
                                             :aria-label="$i18n.get('delete')"
                                             @click.prevent="removeMetadatum(metadatum)">
                                         <span

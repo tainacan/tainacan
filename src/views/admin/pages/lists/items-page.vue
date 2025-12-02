@@ -250,6 +250,7 @@
                         trap-focus>
                     <template #trigger>
                         <button
+                                :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry' || adminViewMode == 'mosaic'"
                                 :aria-label="$i18n.get('label_displayed_metadata')"
                                 class="button is-white">
                             <span class="gray-icon is-small">

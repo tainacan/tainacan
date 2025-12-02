@@ -18,7 +18,9 @@
                             id="bulk-actions-dropdown"
                             trap-focus>
                         <template #trigger>
-                            <button class="button is-white">
+                            <button
+                                    :disabled="!isSelecting"
+                                    class="button is-white">
                                 <span>{{ $i18n.get('label_bulk_actions') }}</span>
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>

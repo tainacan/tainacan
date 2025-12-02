@@ -188,6 +188,7 @@
                 <template #trigger>
                     <button
                             :aria-label="$i18n.get('label_displayed_metadata')"
+                            :disabled="totalItems <= 0"
                             class="button is-white">
                         <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_displayed_metadata') }}</span>
                         <span class="is-hidden-widescreen">{{ $i18n.get('metadata') }}</span>

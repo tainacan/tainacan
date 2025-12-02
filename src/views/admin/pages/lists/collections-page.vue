@@ -116,6 +116,7 @@
                             trap-focus>
                         <template #trigger>
                             <button
+                                    :disabled="(totalCollections && totalCollections.length && totalCollections.length <= 0) || isLoading"
                                     :aria-label="collectionTaxonomy['name']"
                                     class="button is-white">
                                 <span>{{ collectionTaxonomy['name'] }}</span>
@@ -205,6 +206,7 @@
                                     placement: 'auto-start',
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
+                                :disabled="collections.length <= 0 || isLoading"
                                 :aria-label="$i18n.get('label_sorting')"
                                 class="button is-white">
                             <span class="is-small gray-icon">
