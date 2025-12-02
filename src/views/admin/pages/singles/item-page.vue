@@ -35,20 +35,29 @@
                         :class="shouldDisplayItemSingleDocument || shouldDisplayItemSingleThumbnail || shouldDisplayItemSingleAttachments ? 'is-12 is-6-desktop is-7-widescreen' : 'is-12'">
 
                     <div class="b-tabs">
-                        <nav 
+                        <div 
                                 v-if="tabs.length >= 2 "
-                                role="list"
                                 class="tabs">
-                            <ul>
+                            <ul
+                                    v-a11y-tabs        
+                                    data-orientation="horizontal"
+                                    role="tablist">
                                 <li 
                                         v-for="(tab, tabIndex) of tabs"
-                                        :id="tab.slug + '-tab-label'"
                                         :key="tabIndex"
-                                        :class="{ 'is-active': activeTab === tab.slug }"
-                                        @click="activeTab = tab.slug">
-                                    <a>
+                                        :tabindex="-1"
+                                        :class="{ 'is-active': activeTab === tab.slug }">
+                                    <a
+                                            :id="tab.slug + '-tab-label'"
+                                            role="tab"
+                                            :aria-selected="activeTab === tab.slug"
+                                            :aria-controls="tab.slug + '-tab-content'"
+                                            :tabindex="activeTab === tab.slug ? 0 : -1"
+                                            @click="activeTab = tab.slug">
                                         <span class="icon has-text-dark">
-                                            <i :class="'tainacan-icon tainacan-icon-18px tainacan-icon-' + tab.icon" />
+                                            <i
+                                                    :class="'tainacan-icon tainacan-icon-18px tainacan-icon-' + tab.icon"
+                                                    aria-hidden="true" />
                                         </span>
                                         <span>{{ tab.name }}</span>
                                         <span 
@@ -59,7 +68,7 @@
                                     </a>
                                 </li>
                             </ul>
-                        </nav>
+                        </div>
 
                         <section 
                                 :style="tabs.length < 2 ? 'border-top: none; padding-top: 0;' : ''"
@@ -67,6 +76,7 @@
 
                             <div 
                                     v-if="activeTab === 'metadata'"
+                                    id="metadata-tab-content"
                                     class="tab-item"
                                     role="tabpanel"
                                     aria-labelledby="metadata-tab-label">
@@ -136,6 +146,7 @@
                             <!-- Related items -->
                             <div 
                                     v-if="totalRelatedItems && activeTab === 'related'"
+                                    id="related-tab-content"
                                     class="tab-item"
                                     role="tabpanel"
                                     aria-labelledby="related-tab-label"

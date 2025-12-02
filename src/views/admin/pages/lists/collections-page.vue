@@ -203,7 +203,7 @@
                                     autoHide: false,
                                     html: true,
                                     placement: 'auto-start',
-                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 :aria-label="$i18n.get('label_sorting')"
                                 class="button is-white">
@@ -275,17 +275,26 @@
 
         <div class="above-subheader">
             <div class="tabs">
-                <ul>
+                <ul
+                        v-a11y-tabs
+                        role="tablist"
+                        data-orientation="horizontal">
                     <li 
-                            v-tooltip="{
-                                content: $i18n.get('info_collections_tab_all'),
-                                autoHide: true,
-                                placement: 'auto',
-                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
-                            }"
-                            :class="{ 'is-active': status == undefined || status == '' || status == 'publish,private,pending,draft' }"
-                            @click="onChangeTab('')">
-                        <a style="font-weight: bold;">
+                            tabindex="-1"
+                            :class="{ 'is-active': status == undefined || status == '' || status == 'publish,private,pending,draft' }">
+                        <a
+                                id="collections-status-tab-all"
+                                v-tooltip="{
+                                    content: $i18n.get('info_collections_tab_all'),
+                                    autoHide: true,
+                                    placement: 'auto',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
+                                }"
+                                role="tab"
+                                :aria-selected="status == undefined || status == '' || status == 'publish,private,pending,draft'"
+                                :tabindex="(status == undefined || status == '' || status == 'publish,private,pending,draft') ? 0 : -1"
+                                style="font-weight: bold;"
+                                @click="onChangeTab('')">
                             {{ `${$i18n.get('label_all_collections')}` }}
                             <span class="has-text-dark">&nbsp;{{ `${` ${repositoryTotalCollections ? `(${Number(repositoryTotalCollections.pending) + Number(repositoryTotalCollections.private) + Number(repositoryTotalCollections.publish)})` : '' }`}` }}</span>
                         </a>
@@ -293,23 +302,28 @@
                     <li 
                             v-for="(statusOption, index) of statusOptionsForCollections"
                             :key="index"
-                            v-tooltip="{
-                                content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('collections')]),
-                                autoHide: true,
-                                placement: 'auto',
-                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
-                            }"
+                            tabindex="-1"
                             :class="{ 'is-active': status == statusOption.slug}"
-                            :style="{ marginRight: statusOption.slug == 'pending' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
-                            @click="onChangeTab(statusOption.slug)">
-                        <a>
+                            :style="{ marginRight: statusOption.slug == 'pending' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }">
+                        <a
+                                :id="'collections-status-tab-' + statusOption.slug"
+                                v-tooltip="{
+                                    content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('collections')]),
+                                    autoHide: true,
+                                    placement: 'auto',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
+                                }"
+                                role="tab"
+                                :aria-selected="status == statusOption.slug"
+                                :tabindex="status == statusOption.slug ? 0 : -1"
+                                @click="onChangeTab(statusOption.slug)">
                             <span 
                                     v-if="$statusHelper.hasIcon(statusOption.slug)"
                                     class="icon has-text-dark">
                                 <i 
                                         class="tainacan-icon tainacan-icon-1-125em"
                                         :class="$statusHelper.getIcon(statusOption.slug)"
-                                    />
+                                        aria-hidden="true" />
                             </span>
                             {{ statusOption.name }}
                             <span class="has-text-dark">&nbsp;{{ `${` ${repositoryTotalCollections ? `(${repositoryTotalCollections[statusOption.slug]})` : '' }`}` }}</span>

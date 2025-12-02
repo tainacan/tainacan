@@ -62,26 +62,52 @@
 
             <div id="capabilities-tabs">
                 <div class="tabs">
-                    <ul>
-                        <li :class="{ 'is-active': capabilitiesTab == 'repository'}">
-                            <a @click="capabilitiesTab = 'repository'">
+                    <ul
+                            v-a11y-tabs
+                            role="tablist"
+                            data-orientation="horizontal">
+                        <li 
+                                :tabindex="-1"
+                                :class="{ 'is-active': capabilitiesTab == 'repository'}">
+                            <a 
+                                    role="tab"
+                                    :tabindex="capabilitiesTab == 'repository' ? 0 : -1"
+                                    :aria-selected="capabilitiesTab == 'repository'"
+                                    @click="capabilitiesTab = 'repository'">
                                 {{ $i18n.get('Repository') }}
                             </a>
                         </li>
-                        <li :class="{ 'is-active': capabilitiesTab == 'collections'}">
-                            <a @click="capabilitiesTab = 'collections'">
+                        <li 
+                                :tabindex="-1"
+                                :class="{ 'is-active': capabilitiesTab == 'collections'}">
+                            <a 
+                                    role="tab"
+                                    :tabindex="capabilitiesTab == 'collections' ? 0 : -1"
+                                    :aria-selected="capabilitiesTab == 'collections'"
+                                    @click="capabilitiesTab = 'collections'">
                                 {{ $i18n.get('Collections') }}
                             </a>
                         </li>
-                        <li :class="{ 'is-active': capabilitiesTab == 'admin-ui'}">
-                            <a @click="capabilitiesTab = 'admin-ui'">
+                        <li 
+                                :tabindex="-1"
+                                :class="{ 'is-active': capabilitiesTab == 'admin-ui'}">
+                            <a 
+                                    role="tab"
+                                    :tabindex="capabilitiesTab == 'admin-ui' ? 0 : -1"
+                                    :aria-selected="capabilitiesTab == 'admin-ui'"
+                                    @click="capabilitiesTab = 'admin-ui'">
                                 {{ $i18n.get('Admin Appearance') }}
                             </a>
                         </li>
                         <li 
                                 v-if="hasBeginRightForm || hasEndRightForm"
+                                :tabindex="-1"
                                 :class="{ 'is-active': capabilitiesTab == 'extra'}">
-                            <a @click="capabilitiesTab = 'extra'">
+                            <a 
+                                    role="tab"
+                                    :tabindex="capabilitiesTab == 'extra' ? 0 : -1"
+                                    :aria-selected="capabilitiesTab == 'extra'"
+                                    @click="capabilitiesTab = 'extra'">
                                 {{ $i18n.get('Others') }}
                             </a>
                         </li>
@@ -90,7 +116,9 @@
                 <div 
                         v-if="capabilitiesTab === 'repository'"
                         id="tab-repository"
-                        class="tabs-content">
+                        class="tabs-content"
+                        role="tabpanel"
+                        :aria-labelledby="capabilitiesTab == 'repository' ? 'repository-tab-label' : ''">
                     <!-- <h3>{{ $i18n.get('Role\'s Repository Related Capabilities List') }}</h3> -->
                     <div 
                             v-if="!isLoadingCapabilities"
@@ -139,7 +167,9 @@
                 <div 
                         v-else-if="capabilitiesTab === 'collections'"
                         id="tab-collections"
-                        class="tabs-content">
+                        class="tabs-content"
+                        role="tabpanel"
+                        :aria-labelledby="capabilitiesTab == 'collections' ? 'collections-tab-label' : ''">
                     <span 
                             v-if="isLoadingCollections"
                             class="spinner is-active"
@@ -222,7 +252,9 @@
                 <div
                         v-else-if="capabilitiesTab === 'admin-ui'"
                         id="tab-admin-ui"
-                        class="tabs-content">
+                        class="tabs-content"
+                        role="tabpanel"
+                        :aria-labelledby="capabilitiesTab == 'admin-ui' ? 'admin-ui-tab-label' : ''">
                     <p>{{ $i18n.get('The following capabilities are related to the admin interface appearance.') }}</p>
 
                     <p v-if="roleSlug === 'new'">
@@ -282,7 +314,9 @@
                 <div
                         v-show="capabilitiesTab === 'extra'"
                         id="tab-extra"
-                        class="tabs-content">
+                        class="tabs-content"
+                        role="tabpanel"
+                        :aria-labelledby="capabilitiesTab == 'extra' ? 'extra-tab-label' : ''">
                     <br>
                     
                     <!-- Hook for extra Form options -->

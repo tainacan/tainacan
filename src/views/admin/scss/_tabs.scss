@@ -21,11 +21,21 @@
             transition: border-bottom-color ease 0.3s;
             cursor: pointer !important;
 
-            &:hover{
+            &:hover,
+            &:focus-visible {
                 border-bottom-color: transparent;
                 text-decoration: none;
                 color: var(--tainacan-secondary) !important;
             }
+        }
+        li:focus-visible,
+        li:has(a:focus-visible) {
+            outline-width: 2px;
+            outline-offset: -2px;
+            outline-color: var(--tainacan-secondary);
+            outline-color: color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
+            outline-style: solid;
+            box-shadow: none;
         }
         li.is-active a,
         li.is-active a:hover,

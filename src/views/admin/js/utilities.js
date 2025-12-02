@@ -234,3 +234,12 @@ export const A11yDropdownPlugin = {};
 A11yDropdownPlugin.install = function (app, options = {}) {
     app.directive('a11y-dropdown', a11yDropdownDirective);
 };
+
+// A11Y TABS DIRECTIVE PLUGIN - Adds keyboard navigation to tab components
+import a11yTabsDirective from './directives/a11y-tabs.js';
+
+export const A11yTabsPlugin = {};
+
+A11yTabsPlugin.install = function (app, options = {}) {
+    app.directive('a11y-tabs', a11yTabsDirective);
+};
