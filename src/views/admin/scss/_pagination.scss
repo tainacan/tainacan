@@ -31,13 +31,13 @@
             font-size: 0.85em; 
         }
 
-        .go-to-page .dropdown-menu {
-            min-width: 3.5em;
-
-            .dropdown-content{
-                max-height: 160px;
-                overflow: scroll;
-                padding: 0;
+        .go-to-page {
+            .select {
+                select {
+                    min-width: 3.5em;
+                    font-size: 0.85em;
+                    border: none !important;
+                } 
             }
         }
     
