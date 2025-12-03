@@ -82,7 +82,7 @@
                                         :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
                                         :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
                                         :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
-                                        :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                        :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
                                         :transition-duration="500"
                                     />
                             </div>
