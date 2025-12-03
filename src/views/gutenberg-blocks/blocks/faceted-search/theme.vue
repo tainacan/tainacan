@@ -227,7 +227,11 @@
                 v-if="!hideSortingArea"
                 class="search-control-item search-control-item--sorting-area sorting-area">
             <b-field>
-                <label class="label">{{ $i18n.get('label_sort') }}</label>
+                <label 
+                        id="tainacanLabelSortingDirection"
+                        class="label">
+                    {{ $i18n.get('label_sort') }}
+                </label>
                 <b-dropdown
                         v-a11y-dropdown
                         :mobile-modal="true"
@@ -236,9 +240,12 @@
                         @update:model-value="onChangeOrder">
                     <template #trigger>
                         <button
-                                :aria-label="$i18n.get('label_sorting_direction')"
-                                class="button is-white">
-                            <span class="icon is-small gray-icon">
+                                id="tainacanSortingDirectionButton"
+                                class="button is-white"
+                                aria-labelledby="tainacanLabelSortingDirection tainacanSortingDirectionButton">
+                            <span 
+                                    class="icon is-small gray-icon"
+                                    aria-hidden="true">
                                 <i 
                                         :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
                                         class="tainacan-icon" />
@@ -273,6 +280,7 @@
                 </b-dropdown>
                 <template v-if="!hideSortByButton">
                     <span
+                            id="tainacanLabelSortingMetadata"
                             class="label"
                             style="padding-left: 2px !important;">
                         {{ $i18n.get('info_by_inner') }}
@@ -286,8 +294,9 @@
                             @update:model-value="onChangeOrderBy($event)">
                         <template #trigger>
                             <button
-                                    :aria-label="$i18n.get('label_sorting')"
-                                    class="button is-white">
+                                    id="tainacanSortingMetadataButton"
+                                    class="button is-white"
+                                    aria-labelledby="tainacanLabelSortingMetadata tainacanSortingMetadataButton">
                                 <span>{{ orderByName }}</span>
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
@@ -319,13 +328,15 @@
                 class="search-control-item search-control-item--view-modes-dropdown">
             <b-field>
                 <label 
+                        id="tainacanLabelViewModes"
                         class="label is-hidden-touch is-hidden-desktop-only"
                         :style="{ marginRight: showInlineViewModeOptions ? '' : '-10px'}">
                     {{ $i18n.get('label_visualization') + ':&nbsp; ' }}
                 </label>
                 <label 
                         class="label is-hidden-widescreen"
-                        :style="{ marginRight: showInlineViewModeOptions ? '' : '-10px'}">
+                        :style="{ marginRight: showInlineViewModeOptions ? '' : '-10px'}"
+                        aria-hidden="true">
                     {{ $i18n.get('label_view_on') + ':&nbsp; ' }}
                 </label>
                 <b-dropdown
@@ -338,8 +349,9 @@
                         @change="onChangeViewMode($event)">
                     <template #trigger>
                         <button 
+                                id="tainacanViewModesButton"
                                 class="button is-white" 
-                                :aria-label="$i18n.get('label_view_mode') + (registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : '')">
+                                aria-labelledby="tainacanLabelViewModes tainacanViewModesButton">
                             <span 
                                     v-if="registeredViewModes[viewMode] != undefined"
                                     class="gray-icon view-mode-icon"
