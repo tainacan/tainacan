@@ -12,6 +12,8 @@
             <b-datepicker
                     v-model="min"
                     aria-labelledby="metadatum-form-min-label"
+                    :aria-next-label="$i18n.get('label_next_month')"
+                    :aria-previous-label="$i18n.get('label_previous_month')"
                     :placeholder="$i18n.get('instruction_select_a_date')"
                     editable
                     position="is-top-left"
@@ -57,6 +59,8 @@
             <b-datepicker
                     v-model="max"
                     aria-labelledby="metadatum-form-max-label"
+                    :aria-next-label="$i18n.get('label_next_month')"
+                    :aria-previous-label="$i18n.get('label_previous_month')"
                     :placeholder="$i18n.get('instruction_select_a_date')"
                     editable
                     position="is-top-left"

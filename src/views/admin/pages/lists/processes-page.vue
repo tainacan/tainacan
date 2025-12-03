@@ -25,7 +25,9 @@
                 <b-datepicker
                         ref="datepicker"
                         v-model="searchDates"
-                        :placeholder="$i18n.get('label_range_of_dates')"
+                        :aria-next-label="$i18n.get('label_next_month')"
+                        :aria-previous-label="$i18n.get('label_previous_month')"
+                        :placeholder="$i18n.get('label_range_of_dates')"    
                         range
                         position="is-bottom-left"
                         icon="calendar-today"

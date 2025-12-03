@@ -277,8 +277,6 @@ return apply_filters( 'tainacan-i18n', [
 	'label_default_section'                             => __( 'Default Section', 'tainacan' ),
 	/* translators: noun, not the verb. This comes after options to be sorted by */
 	'label_sorting'                                  => __( 'Sorting', 'tainacan' ),
-	/* translators: noun, not the verb. This comes after options 'ASC' and 'DESC' */
-	'label_sorting_direction'                        => __( 'Sorting direction', 'tainacan' ),
 	/* translators: shorter version of the 'sorting' noun label */
 	'label_sort'	                                 => __( 'Sort', 'tainacan' ),
 	'label_activity_date'                            => __( 'Activity date', 'tainacan' ),
@@ -799,6 +797,8 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_drag_and_drop_metadata_sections_sort' => __( 'Drag and drop to change metadata sections order', 'tainacan' ),
 	'instruction_select_a_date' 				     => __( 'Select a date', 'tainacan' ),
 	'instruction_select_a_month' 				     => __( 'Select a month', 'tainacan' ),
+	'label_next_month' 				     			 => __( 'Next month', 'tainacan' ),
+	'label_previous_month' 				     		 => __( 'Previous month', 'tainacan' ),
 	'instruction_type_value_year' 				     => __( 'Type year value', 'tainacan' ),
 	'instruction_select_the_amount_of_copies'		 => __( 'Select the amount of copies of the item that you want to create', 'tainacan'),
 	'instruction_select_a_interval'		 			 => __( 'Select an interval', 'tainacan'),

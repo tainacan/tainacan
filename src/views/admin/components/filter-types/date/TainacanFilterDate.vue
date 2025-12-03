@@ -34,6 +34,8 @@
                 v-model="value"
                 position="is-bottom-right"
                 :aria-labelledby="'filter-label-id-' + filter.id"
+                :aria-next-label="$i18n.get('label_next_month')"
+                :aria-previous-label="$i18n.get('label_previous_month')"
                 :placeholder="filter.placeholder ? filter.placeholder : $i18n.get('instruction_select_a_date')"
                 editable
                 :trap-focus="false"
