@@ -1,5 +1,10 @@
 <template>
     <div 
+            ref="slideshowContainer"
+            tabindex="-1"
+            role="dialog"
+            aria-modal="true"
+            :aria-label="$i18n.get('label_slides')"
             :class="{ 
                 'hide-controls': hideControls
             }">
@@ -17,8 +22,13 @@
                     placement: 'auto-start',
                     popperClass: ['tainacan-tooltip', 'tooltip']
                 }"
+                type="button"
+                tabindex="0"
+                :aria-label="$i18n.get('label_slides_help')"
                 class="is-hidden-mobile"
-                @click="openSlidesHelpModal">
+                @click="openSlidesHelpModal"
+                @keydown.enter.prevent="openSlidesHelpModal"
+                @keydown.space.prevent="openSlidesHelpModal">
             <span class="icon">
                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-help" />
             </span>
@@ -37,8 +47,15 @@
                     placement: 'auto-start',
                     popperClass: ['tainacan-tooltip', 'tooltip']
                 }"
+                type="button"
+                tabindex="0"
+                :aria-label="isMetadataCompressed ? $i18n.get('label_show_metadata') : $i18n.get('label_hide_metadata')"
+                :aria-expanded="isMetadataCompressed"
+                aria-controls="tainacan-slideshow-metadata-list"
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
-                @click="isMetadataCompressed = !isMetadataCompressed">
+                @click="isMetadataCompressed = !isMetadataCompressed"
+                @keydown.enter.prevent="isMetadataCompressed = !isMetadataCompressed"
+                @keydown.space.prevent="isMetadataCompressed = !isMetadataCompressed">
             <span class="icon">
                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata" />
             </span>
@@ -58,6 +75,8 @@
                     placement: 'auto-start',
                     popperClass: ['tainacan-tooltip', 'tooltip']
                 }"
+                tabindex="0"
+                :aria-label="$i18n.get('label_item_page')"
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
                 :href="getItemLink(slideItems[swiper.activeIndex].url, swiper.activeIndex)">
             <span class="icon">
@@ -79,7 +98,9 @@
                     popperClass: ['tainacan-tooltip', 'tooltip']
                 }"
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
-                @click="closeSlideViewMode()">
+                @click="closeSlideViewMode()"
+                @keydown.enter.prevent="closeSlideViewMode()"
+                @keydown.space.prevent="closeSlideViewMode()">
             <span class="icon">
                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close" />
             </span>
@@ -98,7 +119,14 @@
                     placement: 'auto-start',
                     popperClass: ['tainacan-tooltip', 'tooltip']
                 }"
-                @click="isMetadataCompressed = !isMetadataCompressed">
+                type="button"
+                tabindex="0"
+                :aria-label="isMetadataCompressed ? $i18n.get('label_show_metadata') : $i18n.get('label_hide_metadata')"
+                :aria-expanded="isMetadataCompressed"
+                aria-controls="tainacan-slideshow-metadata-list"
+                @click="isMetadataCompressed = !isMetadataCompressed"
+                @keydown.enter.prevent="isMetadataCompressed = !isMetadataCompressed"
+                @keydown.space.prevent="isMetadataCompressed = !isMetadataCompressed">
             <span class="icon">
                 <i 
                         :class="{ 'tainacan-icon-arrowleft' : isMetadataCompressed, 'tainacan-icon-arrowright' : !isMetadataCompressed }"
@@ -230,6 +258,11 @@
                         <button 
                                 :disabled="(swiper.activeIndex == slideItems.length - 1 && page == totalPages)"
                                 class="play-button"
+                                tabindex="0"
+                                :aria-label="isPlaying ? $i18n.get('label_pause_slide_transition') : $i18n.get('label_begin_slide_transition')"
+                                :aria-pressed="isPlaying"
+                                :aria-expanded="isPlaying"
+                                aria-controls="tainacan-slide-container"
                                 @click.stop.prevent="isPlaying = !isPlaying">
                             <span 
                                     v-tooltip="{
@@ -271,13 +304,21 @@
 
         <aside
                 v-if="!isMetadataCompressed"
+                id="tainacan-slideshow-metadata-list"
                 class="metadata-menu tainacan-form">
 
             <div class="metadata-menu-header is-hidden-tablet">
                 <h2>{{ item.title }}</h2>
                 <button
                         id="close-metadata-button"
-                        @click="isMetadataCompressed = true">
+                        type="button"
+                        tabindex="0"
+                        :aria-label="$i18n.get('close')"
+                        aria-controls="tainacan-slideshow-metadata-list"
+                        :aria-expanded="isMetadataCompressed"
+                        @click="isMetadataCompressed = true"
+                        @keydown.enter.prevent="isMetadataCompressed = true"
+                        @keydown.space.prevent="isMetadataCompressed = true">
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close" />
                     </span>
@@ -501,12 +542,12 @@ export default {
             virtual: {
                 slides: self.slideItems,
                 renderSlide(slideItem) {
-                    return `<div data-tainacan-item-id="`+ slideItem.id + `" role="listitem" class="swiper-slide tainacan-slide-item">
+                    return `<button type="button" tabindex="0" data-tainacan-item-id="`+ slideItem.id + `" role="listitem" class="swiper-slide tainacan-slide-item" aria-label="` + slideItem.title + `">
                             <img 
-                                    alt="` + (slideItem['thumbnail_alt'] ? slideItem['thumbnail_alt'] : (self.$i18n.get('label_thumbnail') + ': ' + slideItem.title) ) + `"
+                                    alt="` + (slideItem['thumbnail_alt'] ? slideItem['thumbnail_alt'] : '' ) + `"
                                     class="thumbnail" 
                                     src="` + self.$thumbHelper.getSrc(slideItem['thumbnail'], 'tainacan-medium', slideItem.document_mimetype) + `">  
-                        </div>`;
+                        </button>`;
                 },
                 addSlidesBefore: 2,
                 addSlidesAfter: 2
@@ -523,6 +564,13 @@ export default {
         // Adds clipped class to root html
         document.documentElement.scrollTo(0,0);
         document.documentElement.classList.add('is-clipped');
+
+        // Move keyboard focus to the slideshow container for a11y
+        nextTick(() => {
+            if (this.$refs.slideshowContainer) {
+                this.$refs.slideshowContainer.focus();
+            }
+        });
     },
     beforeUnmount() {
         // Remove clipped class from root html
@@ -564,25 +612,70 @@ export default {
                 this.swiper.slidePrev();
         },
         handleKeyboardKeys(event) {
-
-            // Keys up and down toggle controls display
-            if (event.keyCode === 38 || event.keyCode === 40 )
-                this.onHideControls();
+            const target = event.target;
+            const container = this.$refs.slideshowContainer;
             
-            // Space toggles play state
-            else if (event.keyCode === 32 && !(this.swiper.activeIndex == this.slideItems.length - 1 && this.page == this.totalPages))
-                this.isPlaying = !this.isPlaying;
+            // Don't handle shortcuts if focus is on an interactive element
+            // This prevents conflicts with screen readers and form inputs
+            const isInteractiveElement = target.tagName === 'INPUT' || 
+                                         target.tagName === 'TEXTAREA' || 
+                                         target.tagName === 'SELECT' ||
+                                         target.tagName === 'BUTTON' ||
+                                         target.tagName === 'A' ||
+                                         target.isContentEditable ||
+                                         target.closest('button') ||
+                                         target.closest('a') ||
+                                         target.closest('input') ||
+                                         target.closest('textarea') ||
+                                         target.closest('[contenteditable="true"]');
+            
+            // Only handle shortcuts when focus is within the slideshow container
+            const isWithinContainer = container && container.contains(target);
+            
+            // Skip handling if focus is on interactive elements or outside container
+            if (isInteractiveElement || !isWithinContainer) {
+                // Exception: ESC should always work to close the modal
+                if (event.key === 'Escape' || event.keyCode === 27) {
+                    this.closeSlideViewMode();
+                }
+                return;
+            }
+            
+            // For Space key, be extra careful - don't prevent default if it might be used by screen reader
+            if (event.key === ' ' || event.keyCode === 32) {
+                // Only toggle play if we're not at the end and not on an interactive element
+                if (!(this.swiper.activeIndex == this.slideItems.length - 1 && this.page == this.totalPages)) {
+                    event.preventDefault(); // Only prevent default after we've confirmed it's safe
+                    this.isPlaying = !this.isPlaying;
+                }
+                return;
+            }
+            
+            // Keys up and down toggle controls display
+            if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.keyCode === 38 || event.keyCode === 40) {
+                event.preventDefault();
+                this.onHideControls();
+                return;
+            }
             
             // Next and previous arrows navigate
-            else if (event.keyCode === 39)
+            if (event.key === 'ArrowRight' || event.keyCode === 39) {
+                event.preventDefault();
                 this.nextSlide();
-            else if (event.keyCode === 37)
-                this.prevSlide();
-
-            // ESC leaves the fullscreen viewmode
-            else if (event.keyCode === 27)
-                this.closeSlideViewMode(); 
+                return;
+            }
             
+            if (event.key === 'ArrowLeft' || event.keyCode === 37) {
+                event.preventDefault();
+                this.prevSlide();
+                return;
+            }
+            
+            // ESC leaves the fullscreen viewmode (always works)
+            if (event.key === 'Escape' || event.keyCode === 27) {
+                event.preventDefault();
+                this.closeSlideViewMode();
+            }
         },
         updateSliderBasedOnIndex(currentIndex, previousIndex) {
 
@@ -662,6 +755,7 @@ export default {
                 width: 680,
                 ariaRole: 'alertdialog',
                 ariaModal: true,
+                trapFocus: true,
                 customClass: 'tainacan-modal slides-help-modal',
                 onCancel: () => {
                     setTimeout(() => document.documentElement.classList.add('is-clipped'), 500); 
