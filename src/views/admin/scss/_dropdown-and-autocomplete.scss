@@ -81,11 +81,15 @@
                 &.dropdown-header { color: var(--tainacan-info-color) !important; }
                 &:not(.dropdown-header):not(.is-active):hover,
                 &:not(.dropdown-header):not(.is-active):focus,
+                &:not(.dropdown-header):not(.is-active).is-hovered,
+                &:not(.dropdown-header):not(.is-active):focus-visible,
                 &:has(:focus) {
                     background-color: var(--tainacan-dropdownmenu-item-background-hover, var(--tainacan-input-border-color));
                 }
                 &:not(.dropdown-header):hover,
                 &:not(.dropdown-header):focus,
+                &:not(.dropdown-header):not(.is-active).is-hovered,
+                &:not(.dropdown-header):not(.is-active):focus-visible,
                 &:has(:focus) {
                     color: var(--tainacan-secondary) !important;
                 }
