@@ -57,7 +57,11 @@
                         <a 
                                 :style="!column.children.length ? 'opacity: 0; visibility: hidden;' : ''"
                                 class="add-link"
-                                @click="onAddNewChildTerm(column.id)">
+                                role="button"
+                                tabindex="0"
+                                @click="onAddNewChildTerm(column.id)"
+                                @keydown.enter.prevent="onAddNewChildTerm(column.id)"
+                                @keydown.space.prevent="onAddNewChildTerm(column.id)">
                             <span class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
@@ -66,7 +70,11 @@
                         <a 
                                 :style="!column.children.length ? 'opacity: 0; visibility: hidden;' : 'position: relative;'"
                                 class="add-link"
-                                @click="multipleInsertion({ parentId: column.id, parentName: column.name })">
+                                role="button"
+                                tabindex="0"
+                                @click="multipleInsertion({ parentId: column.id, parentName: column.name })"
+                                @keydown.enter.prevent="multipleInsertion({ parentId: column.id, parentName: column.name })"
+                                @keydown.space.prevent="multipleInsertion({ parentId: column.id, parentName: column.name })">
                             <span 
                                     style="position: absolute;margin-left: -5px;margin-top: 5px;"
                                     class="icon is-small">
@@ -205,7 +213,11 @@
                     <p>
                         <a 
                                 class="add-link"
-                                @click="onAddNewChildTerm(column.id)">
+                                role="button"
+                                tabindex="0"
+                                @click="onAddNewChildTerm(column.id)"
+                                @keydown.enter.prevent="onAddNewChildTerm(column.id)"
+                                @keydown.space.prevent="onAddNewChildTerm(column.id)">
                             <span class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
@@ -247,7 +259,11 @@
                 <p>
                     <a 
                             class="add-link"
-                            @click="onAddNewChildTerm(0)">
+                            role="button"
+                            tabindex="0"
+                            @click="onAddNewChildTerm(0)"
+                            @keydown.enter.prevent="onAddNewChildTerm(0)"
+                            @keydown.space.prevent="onAddNewChildTerm(0)">
                         <span class="icon is-small">
                             <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                         </span>

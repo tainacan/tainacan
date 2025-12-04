@@ -5,9 +5,12 @@
                 type="text"
                 aria-hidden="true"
                 class="is-special-hidden-for-mobile"
+                tabindex="-1"
                 autocomplete="on"
                 @focus="onMobileSpecialFocus">
-        <div class="b-tabs is-small">
+        <div 
+                :class="{ 'hidden-tabs-section': !shouldShowTabs }"
+                class="b-tabs is-small">
             <nav
                     v-if="shouldShowTabs"
                     class="tabs is-small">
@@ -1012,27 +1015,18 @@
             padding: 0;
         }
     }
-    .hidden-tabs-section :deep(.tabs) {
-        display: none;
-        visibility: hidden;
-    }
-    .hidden-tabs-section :deep(.tab-content) {
+
+    .hidden-tabs-section .tab-content {
         padding-top: 0 !important;
 
         .tainacan-finder-columns-container {
             border: none;
         }
     }
-    :deep(.tab-content) {
+    .tab-content {
         transition: height 0.2s ease;
         padding: 0.5em 0px !important;
-    }
-
-    // In theme, the bootstrap removes the style of <a> without href
-    a {
-        cursor: pointer;
-        color: var(--tainacan-turquoise5);
-    }
+    }   
 
     .tainacan-form {
         margin-top: 12px;

@@ -334,7 +334,11 @@
                     v-if="!isLoadingItem && Object.keys(item.metadata).length > 0"
                     style="font-size: 0.75em;"
                     class="collapse-all"
-                    @click="collapseAll = !collapseAll">
+                    role="button"
+                    tabindex="0"
+                    @click="collapseAll = !collapseAll"
+                    @keydown.enter.prevent="collapseAll = !collapseAll"
+                    @keydown.space.prevent="collapseAll = !collapseAll">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                 <span class="icon">
                     <i 

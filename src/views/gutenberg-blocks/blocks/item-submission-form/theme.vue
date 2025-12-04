@@ -410,7 +410,11 @@
             <a
                     v-if="!showSteppedLayout && !hideCollapses"
                     class="collapse-all"
-                    @click="toggleCollapseAll()">
+                    role="button"
+                    tabindex="0"
+                    @click="toggleCollapseAll()"
+                    @keydown.enter.prevent="toggleCollapseAll()"
+                    @keydown.space.prevent="toggleCollapseAll()">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                 <span class="icon">
                     <i
@@ -455,7 +459,14 @@
                             class="metadata-section-header section-label">
                         <span   
                                 class="collapse-handle"
-                                @click="!hideCollapses && !isSectionHidden(metadataSection.id) ? toggleMetadataSectionCollapse(sectionIndex) : ''">
+                                role="button"
+                                :tabindex="!hideCollapses && !isSectionHidden(metadataSection.id) ? 0 : -1"
+                                :aria-label="!hideCollapses ? $i18n.get('label_collapse') : $i18n.get('label_expand')"
+                                :aria-expanded="!metadataSectionCollapses[sectionIndex]"
+                                :aria-controls="'metadata-section-id-' + metadataSection.id"
+                                @click="!hideCollapses && !isSectionHidden(metadataSection.id) ? toggleMetadataSectionCollapse(sectionIndex) : ''"
+                                @keydown.enter.prevent="!hideCollapses && !isSectionHidden(metadataSection.id) ? toggleMetadataSectionCollapse(sectionIndex) : ''"
+                                @keydown.space.prevent="!hideCollapses && !isSectionHidden(metadataSection.id) ? toggleMetadataSectionCollapse(sectionIndex) : ''">
                             <span 
                                     v-if="!hideCollapses"
                                     class="icon"

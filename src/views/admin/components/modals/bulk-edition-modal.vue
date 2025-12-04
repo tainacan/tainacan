@@ -334,7 +334,11 @@
                 <a 
                         :disabled="dones.every((item) => item === true) === false"
                         class="has-text-right is-inline-block add-link"
-                        @click="addEditionCriterion()">
+                        role="button"
+                        tabindex="0"
+                        @click="addEditionCriterion()"
+                        @keydown.enter.prevent="addEditionCriterion()"
+                        @keydown.space.prevent="addEditionCriterion()">
                     <span class="icon is-small">
                         <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                     </span>

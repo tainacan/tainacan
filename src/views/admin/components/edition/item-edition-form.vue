@@ -386,7 +386,11 @@
                                     <a
                                             v-if="!isMetadataNavigation && !$adminOptions.hideItemEditionCollapses"
                                             class="collapse-all"
-                                            @click="toggleCollapseAll()">
+                                            role="button"
+                                            tabindex="0"
+                                            @click="toggleCollapseAll()"
+                                            @keydown.enter.prevent="toggleCollapseAll()"
+                                            @keydown.space.prevent="toggleCollapseAll()">
                                         <span class="icon">
                                             <i
                                                     :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"

@@ -12,7 +12,11 @@
                 class="add-new-term">
             <a
                     class="add-link"
-                    @click="previewHtml">
+                    role="button"
+                    tabindex="0"
+                    @click="previewHtml"
+                    @keydown.enter.prevent="previewHtml"
+                    @keydown.space.prevent="previewHtml">
                 <span class="icon">
                     <i class="tainacan-icon has-text-secondary tainacan-icon-see" />
                 </span>

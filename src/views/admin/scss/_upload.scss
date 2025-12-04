@@ -4,10 +4,16 @@
     }
     .upload .upload-draggable:hover.is-primary,
     .upload-draggable:hover.is-primary, 
-    .upload .upload-draggable.is-hovered.is-primary {
+    .upload .upload-draggable.is-hovered.is-primary,
+    .upload .upload-draggable:focus.is-primary,
+    .upload .upload-draggable.is-primary:has(+input[type="file"]:focus),
+    .upload .upload-draggable.is-primary:has(+input[type="file"]:focus-visible) {
         border-color: var(--tainacan-secondary) !important;
         background: var(--tainacan-primary) !important;
         color: var(--tainacan-secondary) !important;
         border-radius: var(--tainacan-input-border-radius, 2px) !important;
+    }
+    .upload .upload-draggable.is-primary:has(+input[type="file"]:focus-visible) {
+        outline: 2px solid var(--tainacan-secondary) !important;
     }
 }

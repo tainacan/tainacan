@@ -17,7 +17,9 @@
         <div 
                 :style="isModal ? '' : 'margin-top: 12px'"
                 class="tainacan-form">
-            <div class="b-tabs is-small">
+            <div 
+                    :class="{ 'hidden-tabs-section': !shouldShowTabs }"
+                    class="b-tabs is-small">
                 <nav
                         v-if="shouldShowTabs"
                         class="tabs is-small">
@@ -969,25 +971,11 @@
             padding: 0;
         }
     }
-    .hidden-tabs-section :deep(.tabs) {
-        display: none;
-        visibility: hidden;
-    }
-    /* Hide tabs navigation from screen readers and keyboard when aria-hidden is set */
-    .hidden-tabs-section[aria-hidden="true"] :deep(.tabs),
-    .hidden-tabs-section[aria-hidden="true"] :deep([role="tab"]),
-    .hidden-tabs-section[aria-hidden="true"] :deep([role="tablist"]) {
-        display: none !important;
-        visibility: hidden !important;
-    }
-    .hidden-tabs-section[aria-hidden="true"] :deep(.tab-content) {
+    .hidden-tabs-section .tab-content {
         display: block;
     }
-    .hidden-tabs-section[aria-hidden="true"] :deep(a[role="tab"]),
-    .hidden-tabs-section[aria-hidden="true"] :deep(button[role="tab"]) {
-        pointer-events: none;
-    }
-    :deep(.tab-content) {
+ 
+    .tab-content {
         transition: height 0.2s ease;
         padding: 0px !important;
         min-height: 86px;
@@ -997,12 +985,6 @@
         align-self: baseline;
         margin-bottom: 1rem;
         width: 100%;
-    }
-
-    // In theme, the bootstrap removes the style of <a> without href
-    a {
-        cursor: pointer;
-        color: var(--tainacan-turquoise5);
     }
 
     .tainacan-form {

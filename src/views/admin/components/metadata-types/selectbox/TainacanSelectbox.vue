@@ -3,6 +3,7 @@
         <input 
                 type="text"
                 aria-hidden="true"
+                tabindex="-1"
                 class="is-special-hidden-for-mobile"
                 autocomplete="on"
                 @focus="onMobileSpecialFocus">

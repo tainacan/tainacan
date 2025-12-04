@@ -120,7 +120,11 @@
                         (itemMetadatum.metadatum.multiple === 'yes' || !selected.length )"
                     :disabled="$adminOptions.itemEditionMode && !$adminOptions.allowItemEditionModalInsideModal"
                     class="add-link"
-                    @click="editItemModalOpen = !editItemModalOpen">
+                    role="button"
+                    tabindex="0"
+                    @click="editItemModalOpen = !editItemModalOpen"
+                    @keydown.enter.prevent="editItemModalOpen = !editItemModalOpen"
+                    @keydown.space.prevent="editItemModalOpen = !editItemModalOpen">
                 <span class="icon is-small">
                     <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                 </span>
