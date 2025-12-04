@@ -139,6 +139,7 @@
                             :total="totalProcesses"
                             order="is-centered"
                             size="is-small"
+                            :aria-label="$i18n.get('label_pagination')"
                             :per-page="processesPerPage"
                             :aria-next-label="$i18n.get('label_next_page')"
                             :aria-previous-label="$i18n.get('label_previous_page')"

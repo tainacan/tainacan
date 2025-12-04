@@ -463,6 +463,7 @@
                     <div class="pagination"> 
                         <b-pagination
                                 v-model="page"
+                                :aria-label="$i18n.get('label_pagination')"
                                 :total="totalCollections"
                                 order="is-centered"
                                 size="is-small"

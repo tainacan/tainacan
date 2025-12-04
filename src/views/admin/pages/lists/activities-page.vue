@@ -189,6 +189,7 @@
                 <div class="pagination">
                     <b-pagination
                             v-model="activitiesPage"
+                            :aria-label="$i18n.get('label_pagination')"
                             :total="totalActivities"
                             order="is-centered"
                             size="is-small"

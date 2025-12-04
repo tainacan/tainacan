@@ -89,6 +89,7 @@
         <div class="pagination"> 
             <b-pagination
                     :model-value="page"
+                    :aria-label="$i18n.get('label_pagination')"
                     aria-controls="items-list-results"
                     :total="totalItems"
                     order="is-centered"

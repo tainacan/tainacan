@@ -526,6 +526,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_next_page'								 => __( 'Next page', 'tainacan' ),
 	'label_previous_page'						 	 => __( 'Previous page', 'tainacan' ),
 	'label_page'								 	 => __( 'Page', 'tainacan' ),
+	'label_pagination'								 => __( 'Pagination', 'tainacan' ),
 	'label_current_page'							 => __( 'Current page', 'tainacan' ),
 	'label_shrink_menu'								 => __( 'Shrink menu', 'tainacan' ),
 	'label_expand_menu'								 => __( 'Expand menu', 'tainacan' ),

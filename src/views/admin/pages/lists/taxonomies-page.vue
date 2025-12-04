@@ -292,6 +292,7 @@
                                 :total="total"
                                 order="is-centered"
                                 size="is-small"
+                                :aria-label="$i18n.get('label_pagination')"
                                 :per-page="taxonomiesPerPage"
                                 :aria-next-label="$i18n.get('label_next_page')"
                                 :aria-previous-label="$i18n.get('label_previous_page')"
