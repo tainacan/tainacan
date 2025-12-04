@@ -360,22 +360,17 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function create_item_permissions_check( $request ) {
-		return true;
-		if( isset($request['collection_id']) ) {
-			$collection = $this->collection_repository->fetch( $request['collection_id'] );
 
-			if ( $collection instanceof Entities\Collection ) {
-				return $collection->user_can( 'edit_metadata_section' );
-			}
+		if ( !isset($request['collection_id']) ) 
+			return false;
 
-		} else {
+		$collection = $this->collection_repository->fetch($request['collection_id']);
 
-			return current_user_can( 'tnc_rep_edit_metadata_section' );
-
+		if ( $collection instanceof Entities\Collection ) {
+			return $collection->user_can( 'edit_metasection' );
 		}
 
 		return false;
-
 	}
 
 	/**
@@ -605,11 +600,18 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function update_item_permissions_check( $request ) {
-		return true;
-		$metadatum = $this->metadata_sections_repository->fetch($request['metadatum_id']);
+		$metadata_section = $this->metadata_sections_repository->fetch( $request['metadata_section_id'] );
+		
+		if ( $metadata_section instanceof Entities\Metadata_Section ) 
+			return $metadata_section->can_edit();
 
-		if ($metadatum instanceof Entities\Metadatum) {
-			return $metadatum->can_edit();
+
+		if ( isset($request['collection_id']) && $request['metadata_section_id'] == \Tainacan\Entities\Metadata_Section::$default_section_slug ) {
+
+			$collection = $this->collection_repository->fetch( $request['collection_id'] );
+
+			if ( $collection instanceof Entities\Collection )
+				return $collection->user_can( 'edit_metasection' );
 		}
 
 		return false;
