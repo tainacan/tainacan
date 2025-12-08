@@ -181,6 +181,8 @@ function tainacan_autoload($class_name) {
 
 \Tainacan\Admin_Bar_Items::get_instance();
 
+\Tainacan\Admin_Commands::get_instance();
+
 $Tainacan_Search_Engine = new \Tainacan\Search_Engine();
 
 \Tainacan\Elastic_Press::get_instance();

@@ -372,6 +372,10 @@ abstract class Pages {
 	public function render_page() {
 		global $TAINACAN_BASE_URL;
 
+
+		/**
+		 * Basic styles for every page container in a Tainacan admin page
+		 */
 		wp_enqueue_style( 
 			'tainacan-page-container',
 			$TAINACAN_BASE_URL . '/assets/css/tainacan-pages.css',
@@ -379,6 +383,9 @@ abstract class Pages {
 			TAINACAN_VERSION
 		);
 
+		/**
+		 * Enqueues the Tainacan icons font
+		 */
 		wp_enqueue_style(
 			'tainacan-fonts',
 			$TAINACAN_BASE_URL . '/assets/fonts/tainacanicons.css',
@@ -386,6 +393,9 @@ abstract class Pages {
 			TAINACAN_VERSION
 		);
 		
+		/**
+		 * Enqueues the script for the navigation menu
+		 */
 		wp_enqueue_script(
 			'tainacan-admin-navigation-menu',
 			$TAINACAN_BASE_URL . '/assets/js/tainacan_admin_navigation_menu.js',
@@ -838,6 +848,7 @@ abstract class Pages {
 
 		return $current . $extra_screen_options_html;
 	}
+
 
 }
 
