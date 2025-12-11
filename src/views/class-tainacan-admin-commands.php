@@ -61,6 +61,9 @@ class Admin_Commands {
 	/**
 	 * Enqueues scripts and localizes data for the command palette.
 	 *
+	 * Command Palette API is only available in WordPress 6.9+.
+	 * This method checks the WordPress version before enqueuing scripts.
+	 *
 	 * @since 1.0.2
 	 *
 	 * @return void
@@ -70,6 +73,12 @@ class Admin_Commands {
 
 		// Only enqueue in admin area
 		if ( ! is_admin() ) {
+			return;
+		}
+
+		// Command Palette API is only available in WordPress 6.9+
+		// Check WordPress version to prevent errors on older installations
+		if ( version_compare( get_bloginfo( 'version' ), '6.9', '<' ) ) {
 			return;
 		}
 
