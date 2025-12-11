@@ -138,7 +138,7 @@ class TestUtilities extends TAINACAN_UnitTestCase {
 		$this->assertEquals($text_no_links_expected, $text_no_links_response);
 
 		$text_simple_link = "Lorem https://www.tainacan.org/ ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra sapien quis nunc vulputate dictum. Pellentesque id euismod mauris.";
-		$text_simple_link_expected = 'Lorem <a href="https://www.tainacan.org/" target="_blank" title="https://www.tainacan.org/">https://www.tainacan.org/</a> ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra sapien quis nunc vulputate dictum. Pellentesque id euismod mauris.';
+		$text_simple_link_expected = 'Lorem <a href="https://www.tainacan.org/" target="_blank">https://www.tainacan.org/</a> ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra sapien quis nunc vulputate dictum. Pellentesque id euismod mauris.';
 		$text_simple_link_response = $text->make_clickable_links($text_simple_link);
 		$this->assertEquals($text_simple_link_expected, $text_simple_link_response);
 
@@ -149,23 +149,23 @@ class TestUtilities extends TAINACAN_UnitTestCase {
 													' www.simple.org ' .
 													' Pellentesque id //ww.lair.com.br of a http://wwwliar.com.br euismod mauris. //pegadinha.com.br ';
 		
-		$text_multiple_links_expected =  'Lorem <a href="https://www.tainacan.org" target="_blank" title="https://www.tainacan.org">https://www.tainacan.org</a> ipsum dolor sit amet <a href="http://www.tainacan.org" target="_blank" title="http://www.tainacan.org">http://www.tainacan.org</a>' .
-													' <a href="ftp://www.teste.com.br" target="_blank" title="ftp://www.teste.com.br">ftp://www.teste.com.br</a> consectetur adipiscing elit. <a href="ftps://www.teste.com.br" target="_blank" title="ftps://www.teste.com.br">ftps://www.teste.com.br</a> Sed pharetra sapien quis nunc vulputate dictum.' .
-													' <a href="http://www.simple.com.br" target="_blank" title="www.simple.com.br">www.simple.com.br</a> ' . 
-													' <a href="http://www.simple.com" target="_blank" title="www.simple.com">www.simple.com</a> ' .
-													' <a href="http://www.simple.org" target="_blank" title="www.simple.org">www.simple.org</a> ' .
-													' Pellentesque id //ww.lair.com.br of a <a href="http://wwwliar.com.br" target="_blank" title="http://wwwliar.com.br">http://wwwliar.com.br</a> euismod mauris. //pegadinha.com.br ';
+		$text_multiple_links_expected =  'Lorem <a href="https://www.tainacan.org" target="_blank">https://www.tainacan.org</a> ipsum dolor sit amet <a href="http://www.tainacan.org" target="_blank">http://www.tainacan.org</a>' .
+													' <a href="ftp://www.teste.com.br" target="_blank">ftp://www.teste.com.br</a> consectetur adipiscing elit. <a href="ftps://www.teste.com.br" target="_blank">ftps://www.teste.com.br</a> Sed pharetra sapien quis nunc vulputate dictum.' .
+													' <a href="http://www.simple.com.br" target="_blank">www.simple.com.br</a> ' . 
+													' <a href="http://www.simple.com" target="_blank">www.simple.com</a> ' .
+													' <a href="http://www.simple.org" target="_blank">www.simple.org</a> ' .
+													' Pellentesque id //ww.lair.com.br of a <a href="http://wwwliar.com.br" target="_blank">http://wwwliar.com.br</a> euismod mauris. //pegadinha.com.br ';
 
 		$text_multiple_links_response = $text->make_clickable_links($text_multiple_links);
 		$this->assertEquals($text_multiple_links_expected, $text_multiple_links_response);
 
-		$text_multiple_links = 'Lorem <a href="https://www.tainacan.org" target="_blank" title="https://www.tainacan.org">https://www.tainacan.org</a> Lorem https://tainacan.org hahahahahahhttps://tainacan.org hahaha ';
-		$text_multiple_links_expected = 'Lorem <a href="https://www.tainacan.org" target="_blank" title="https://www.tainacan.org">https://www.tainacan.org</a> Lorem <a href="https://tainacan.org" target="_blank" title="https://tainacan.org">https://tainacan.org</a> hahahahahah<a href="https://tainacan.org" target="_blank" title="https://tainacan.org">https://tainacan.org</a> hahaha ';
+		$text_multiple_links = 'Lorem <a href="https://www.tainacan.org" target="_blank">https://www.tainacan.org</a> Lorem https://tainacan.org hahahahahahhttps://tainacan.org hahaha ';
+		$text_multiple_links_expected = 'Lorem <a href="https://www.tainacan.org" target="_blank">https://www.tainacan.org</a> Lorem <a href="https://tainacan.org" target="_blank">https://tainacan.org</a> hahahahahah<a href="https://tainacan.org" target="_blank">https://tainacan.org</a> hahaha ';
 		$text_multiple_links_response = $text->make_clickable_links($text_multiple_links);
 		$this->assertEquals($text_multiple_links_expected, $text_multiple_links_response);
 
 		$text_input = 'If you type only www.abc.com without the http the link.';
-		$text_input_expected = 'If you type only <a href="http://www.abc.com" target="_blank" title="www.abc.com">www.abc.com</a> without the http the link.';
+		$text_input_expected = 'If you type only <a href="http://www.abc.com" target="_blank">www.abc.com</a> without the http the link.';
 		$text_input_response = $text->make_clickable_links($text_input);
 		$this->assertEquals($text_input_expected, $text_input_response);
 	}
