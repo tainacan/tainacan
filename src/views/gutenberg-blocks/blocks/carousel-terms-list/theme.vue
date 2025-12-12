@@ -8,12 +8,10 @@
                 class="swiper">
             <ul 
                     v-if="isLoading"
-                    role="list"
                     class="swiper-wrapper">
                 <li 
                         v-for="index in 18"
                         :key="index"
-                        role="listitem"
                         :style="variableTermsWidth && showTermThumbnail ? 'width: auto;' : ''"
                         class="swiper-slide term-list-item skeleton">
                     <a>
@@ -24,12 +22,10 @@
             </ul>
             <ul 
                     v-else
-                    role="list"
                     class="swiper-wrapper">
                 <li 
                         v-for="(term, index) of terms"
                         :key="index"
-                        role="listitem"
                         :style="variableTermsWidth && showTermThumbnail ? 'width: auto;' : ''"
                         :class="'swiper-slide term-list-item ' + (!showTermThumbnail ? 'term-list-item-grid' : '')">      
                     <a 
@@ -277,6 +273,7 @@ export default {
                 autoplay: (self.autoPlay && !self.isLoading) ? { delay: self.autoPlaySpeed*1000 } : false,
                 loop: self.loopSlides && !self.isLoading,
                 a11y: {
+                    slideRole: '',
                     prevSlideMessage: wp.i18n.__( 'Previous slide', 'tainacan'),
                     nextSlideMessage: wp.i18n.__( 'Next slide', 'tainacan'),
                     firstSlideMessage: wp.i18n.__('This is the first slide', 'tainacan'),

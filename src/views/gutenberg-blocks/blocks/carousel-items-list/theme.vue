@@ -53,7 +53,6 @@
                 class="swiper">
             <ul 
                     v-if="isLoading"
-                    role="list"
                     class="swiper-wrapper"
                     :style="{
                         marginTop: showCollectionHeader ? '1.35em' : '0px'
@@ -61,7 +60,6 @@
                 <li 
                         v-for="index in 18"
                         :key="index"
-                        role="listitem"
                         :style="variableItemsWidth ? 'width: auto;' : ''"
                         class="swiper-slide collection-list-item skeleton">
                     <a>
@@ -72,7 +70,6 @@
             </ul>
             <ul 
                     v-else
-                    role="list"
                     class="swiper-wrapper"
                     :style="{
                         marginTop: showCollectionHeader ? '1.35em' : '0px'
@@ -80,7 +77,6 @@
                 <li
                         v-for="(item, index) of items"
                         :key="index"
-                        role="listitem"
                         :style="variableItemsWidth ? 'width: auto;' : ''"
                         class="swiper-slide item-list-item"
                         :class="{ 'is-forced-square': ['tainacan-medium', 'tainacan-small'].indexOf(imageSize) > -1 }">
@@ -361,6 +357,7 @@ export default {
                 autoplay: self.autoPlay ? { delay: self.autoPlaySpeed*1000 } : false,
                 loop: self.loopSlides ? self.loopSlides : false,
                 a11y: {
+                    slideRole: '',
                     prevSlideMessage: wp.i18n.__( 'Previous slide', 'tainacan'),
                     nextSlideMessage: wp.i18n.__( 'Next slide', 'tainacan'),
                     firstSlideMessage: wp.i18n.__('This is the first slide', 'tainacan'),
