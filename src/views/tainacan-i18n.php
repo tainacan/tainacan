@@ -830,7 +830,8 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_filter_processes_date'				 => __( 'Select the date range for the processes', 'tainacan' ),
 	'instruction_go_to_metadata_mapping_%s'		     => __( 'To use a mapping standard, you must first configure it in the <a href="%s" target="_blank">collection metadata mapping screen</a>.', 'tainacan' ),
 	'instruction_2_or_more'						     => __( '2 or more', 'tainacan' ),
-	
+	'instruction_click_to_load_filter_%s'			 => __( 'Click to load the filter "%s"', 'tainacan' ),
+
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),
 	'info_items_tab_publish'                         => __( 'Only items that are visible to everyone.', 'tainacan' ),
