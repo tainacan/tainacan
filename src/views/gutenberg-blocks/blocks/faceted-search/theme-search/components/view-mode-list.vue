@@ -60,13 +60,13 @@
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
+                                        content: item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
-                                    v-html="item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
+                                    v-html="item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                             <span 
                                     v-if="isSlideshowViewModeEnabled"
                                     v-tooltip="{
@@ -98,11 +98,11 @@
                                         :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium-full')"
                                         :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                         :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
-                                        :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                        :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
                                         :transition-duration="500"
                                     />
                                 <!-- <img 
-                                        :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                        :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
                                         :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)">   -->
                             </div>
                             <div class="list-metadata media-body">
@@ -147,7 +147,7 @@ export default {
 
 <style  lang="scss" scoped>
 
-    @import "../../../../../admin/scss/view-mode-list.scss";
+    @use "../../../../../admin/scss/view-mode-list.scss";
 
     .tainacan-list-container .tainacan-list .metadata-title {
         padding: 0.5em 0.875em;

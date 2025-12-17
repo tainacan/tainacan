@@ -4,8 +4,7 @@
             :class="{ 
                 'is-filters-menu-open': isFiltersModalActive && !openAdvancedSearch
             }"
-            class="admin-items-list page-container"
-            aria-live="polite">
+            class="admin-items-list page-container">
 
         <tainacan-external-link
                 v-if="isRepositoryLevel" 
@@ -55,8 +54,9 @@
                 <b-dropdown
                         v-else
                         id="item-creation-options-dropdown"
+                        v-a11y-dropdown
+                        :trigger-tabindex="-1"
                         :mobile-modal="true"
-                        aria-role="list"
                         trap-focus>
                     <template #trigger>
                         <button class="button is-secondary">
@@ -67,9 +67,7 @@
                             </span>
                         </button>
                     </template>
-                    <b-dropdown-item 
-                            v-if="!isRepositoryLevel"
-                            aria-role="listitem">
+                    <b-dropdown-item v-if="!isRepositoryLevel">
                         <router-link
                                 v-slot="{ navigate }"
                                 :to="{ path: $routerHelper.getNewItemPath(collectionId) }"
@@ -77,23 +75,26 @@
                             <div
                                     id="a-create-item"
                                     role="link"
-                                    @click="navigate()">
+                                    tabindex="0"
+                                    @click="navigate()"
+                                    @keydown.enter.prevent="navigate()"
+                                    @keydown.space.prevent="navigate()">
                                 {{ $i18n.get('add_one_item') }}
                             </div>
                         </router-link>
                     </b-dropdown-item>
-                    <b-dropdown-item 
-                            v-if="isRepositoryLevel"
-                            aria-role="listitem">
+                    <b-dropdown-item v-if="isRepositoryLevel">
                         <div
                                 id="a-create-item"
-                                @click="onOpenCollectionsModal">
+                                role="button"
+                                tabindex="0"
+                                @click="onOpenCollectionsModal"
+                                @keydown.enter.prevent="onOpenCollectionsModal"
+                                @keydown.space.prevent="onOpenCollectionsModal">
                             {{ $i18n.get('add_one_item') }}
                         </div>
                     </b-dropdown-item>
-                    <b-dropdown-item 
-                            v-if="!isRepositoryLevel && !$adminOptions.hideItemsListCreationDropdownBulkAdd"
-                            aria-role="listitem">
+                    <b-dropdown-item v-if="!isRepositoryLevel && !$adminOptions.hideItemsListCreationDropdownBulkAdd">
                         <router-link
                                 v-slot="{ navigate }"
                                 :to="{ path: $routerHelper.getNewItemBulkAddPath(collectionId) }"
@@ -101,20 +102,24 @@
                             <div
                                     id="a-item-add-bulk"
                                     role="link"
-                                    @click="navigate()">
+                                    tabindex="0"
+                                    @click="navigate()"
+                                    @keydown.enter.prevent="navigate()"
+                                    @keydown.space.prevent="navigate()">
                                 {{ $i18n.get('add_items_bulk') }}
                                 <br> 
                                 <small class="is-small">{{ $i18n.get('info_bulk_add_items') }}</small>
                             </div>
                         </router-link>
                     </b-dropdown-item>
-                    <b-dropdown-item 
-                            v-if="!$adminOptions.hideItemsListCreationDropdownImport && $userCaps.hasCapability('manage_tainacan')"
-                            aria-role="listitem">
+                    <b-dropdown-item v-if="!$adminOptions.hideItemsListCreationDropdownImport && $userCaps.hasCapability('manage_tainacan')">
                         <div
                                 id="a-import-items"
-                                tag="div"
-                                @click="onOpenImportersModal">
+                                role="button"
+                                tabindex="0"
+                                @click="onOpenImportersModal"
+                                @keydown.enter.prevent="onOpenImportersModal"
+                                @keydown.space.prevent="onOpenImportersModal">
                             {{ $i18n.get('label_import_items') }}
                             <br>
                             <small class="is-small">{{ $i18n.get('info_import_items') }}</small>
@@ -144,8 +149,9 @@
                         class="search-area">
                     <b-dropdown
                             ref="tainacan-textual-search-input"
+                            v-a11y-dropdown
+                            :trigger-tabindex="-1"
                             class="tainacan-textual-search-input"
-                            aria-role="dialog"
                             :mobile-modal="false"
                             :disabled="openAdvancedSearch"
                             :triggers="hasSearchByMoreThanOneWord ? ['click','contextmenu','focus'] : []">
@@ -187,19 +193,34 @@
                                 @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
                             {{ $i18n.get('info_for_more_metadata_search_options_use') }}&nbsp; 
                             <a 
-                                    class="has-text-secondary"
-                                    @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
+                                    role="button"
+                                    tabindex="0"
+                                    :aria-expanded="openAdvancedSearch"
+                                    :aria-controls="openAdvancedSearch ? 'advanced-search-container' : undefined"
+                                    :aria-label="openAdvancedSearch ? $i18n.get('label_close_advanced_search') : $i18n.get('label_open_advanced_search')"
+                                    @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
+                                    @keydown.enter.prevent="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
+                                    @keydown.space.prevent="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
                                 {{ $i18n.get('advanced_search') }}
                             </a>
                         </b-dropdown-item>
                     </b-dropdown>
                     <a
                             v-if="!$adminOptions.hideItemsListAdvancedSearch"
-                            class="advanced-search-toggle has-text-secondary"
+                            role="button"
+                            tabindex="0"
+                            class="advanced-search-toggle"
                             :class="openAdvancedSearch ? 'is-open' : 'is-closed'"
-                            @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
+                            :aria-expanded="openAdvancedSearch"
+                            :aria-controls="openAdvancedSearch ? 'advanced-search-container' : undefined"
+                            :aria-label="openAdvancedSearch ? $i18n.get('label_close_advanced_search') : $i18n.get('label_open_advanced_search')"
+                            @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
+                            @keydown.enter.prevent="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
+                            @keydown.space.prevent="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
                         {{ $i18n.get('advanced_search') }}
-                        <span class="icon">
+                        <span
+                                class="icon"
+                                aria-hidden="true">
                             <i class="tainacan-icon tainacan-icon-search" />
                         </span>
                     </a>
@@ -222,13 +243,14 @@
                             placement: 'auto-start',
                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                         }"
+                        v-a11y-dropdown
                         :mobile-modal="true"
                         :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry' || adminViewMode == 'mosaic'"
                         class="show metadata-options-dropdown"
-                        aria-role="list"
                         trap-focus>
                     <template #trigger>
                         <button
+                                :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry' || adminViewMode == 'mosaic'"
                                 :aria-label="$i18n.get('label_displayed_metadata')"
                                 class="button is-white">
                             <span class="gray-icon is-small">
@@ -247,8 +269,7 @@
                                 :key="index"
                                 class="control"
                                 :class="{ 'is-active': column.display }"
-                                custom
-                                aria-role="listitem">
+                                custom>
                             <b-checkbox
                                     v-model="column.display"
                                     :native-value="column.display">
@@ -271,10 +292,11 @@
             <div class="search-control-item">
                 <b-dropdown
                         ref="sortingDropdown" 
+                        v-a11y-dropdown
+                        :trigger-tabindex="-1"
                         :mobile-modal="true"
                         :multiple="false"
                         class="show sorting-options-dropdown"
-                        aria-role="list"
                         trap-focus
                         :close-on-click="false"
                         @active-change="() => { newOrder = order; newOrderBy = orderBy; }">
@@ -313,7 +335,6 @@
                                     role="button"
                                     :class="{ 'is-active': newOrder == 'DESC' }"
                                     :value="'DESC'"
-                                    aria-role="listitem"
                                     @click="newOrder = 'DESC'">
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-sortdescending" />
@@ -325,7 +346,6 @@
                                     role="button"
                                     :class="{ 'is-active': newOrder == 'ASC' }"
                                     :value="'ASC'"
-                                    aria-role="listitem"
                                     @click="newOrder = 'ASC'">
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-sortascending" />
@@ -343,7 +363,6 @@
                                         role="button"
                                         :class="{ 'is-active': (newOrderBy != 'meta_value' && newOrderBy != 'meta_value_num' && (JSON.stringify(newOrderBy) == JSON.stringify($orderByHelper.getOrderByForMetadatum(metadatum)))) || ((newOrderBy == 'meta_value' || newOrderBy == 'meta_value_num') && metaKey == metadatum.id) }"
                                         :value="metadatum"
-                                        aria-role="listitem"
                                         @click="newOrderBy = $orderByHelper.getOrderByForMetadatum(metadatum);">
                                     {{ metadatum.name }}
                                 </b-dropdown-item>
@@ -364,10 +383,10 @@
             <div class="search-control-item search-control-item-visualization">
                 <b-field>
                     <b-dropdown
+                            v-a11y-dropdown
                             :mobile-modal="true"
                             position="is-bottom-left"
                             :aria-label="$i18n.get('label_view_mode')"
-                            aria-role="list"
                             trap-focus
                             @change="onChangeAdminViewMode($event)">
                         <template #trigger>
@@ -421,8 +440,7 @@
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'table' }"
-                                :value="'table'"
-                                aria-role="listitem">
+                                :value="'table'">
                             <span class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewtable" />
                             </span>
@@ -432,8 +450,7 @@
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'cards' }"
-                                :value="'cards'"
-                                aria-role="listitem">
+                                :value="'cards'">
                             <span class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewcards" />
                             </span>
@@ -443,8 +460,7 @@
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'mosaic' }"
-                                :value="'mosaic'"
-                                aria-role="listitem">
+                                :value="'mosaic'">
                             <span class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewmasonry tainacan-icon-rotate-90" />
                             </span>
@@ -455,8 +471,7 @@
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'grid' }"
-                                :value="'grid'"
-                                aria-role="listitem">
+                                :value="'grid'">
                             <span class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewminiature" />
                             </span>
@@ -466,8 +481,7 @@
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'records' }"
-                                :value="'records'"
-                                aria-role="listitem">
+                                :value="'records'">
                             <span class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewrecords" />
                             </span>
@@ -478,8 +492,7 @@
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'masonry' }"
-                                :value="'masonry'"
-                                aria-role="listitem">
+                                :value="'masonry'">
                             <span class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewmasonry" />
                             </span>
@@ -489,8 +502,7 @@
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'list' }"
-                                :value="'list'"
-                                aria-role="listitem">
+                                :value="'list'">
                             <span class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewlist" />
                             </span>
@@ -500,8 +512,7 @@
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'map' }"
-                                :value="'map'"
-                                aria-role="listitem">
+                                :value="'map'">
                             <span 
                                     style="width: 2em; margin-left: -0.45em; padding-right: 6px;"
                                     class="icon gray-icon">
@@ -568,12 +579,12 @@
                 id="filters-modal"
                 ref="filters-modal"     
                 v-model="isFiltersModalActive"       
-                role="dialog"
                 :width="736"
+                :tabindex="isMobileScreen ? -1 : 0"
                 animation="slide-menu"
-                trap-focus
-                aria-modal
-                aria-role="dialog"
+                :trap-focus="isMobileScreen"
+                :aria-modal="isMobileScreen"
+                :role="isMobileScreen ? 'dialog' : ''"
                 aria-labelledby="filters-label-landmark"
                 custom-class="tainacan-modal tainacan-form filters-menu"
                 :close-button-aria-label="$i18n.get('close')"
@@ -588,7 +599,7 @@
                     @update-is-loading-items-state="(state) => isLoadingItems = state" />
         </b-modal>
 
-        <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
+        <!-- ITEMS LIST AREA ------------------------- -->
         <div 
                 id="items-list-area"
                 class="items-list-area"
@@ -623,6 +634,8 @@
                     id="items-list-results"
                     :aria-busy="isLoadingItems"
                     aria-labelledby="items-list-landmark"
+                    aria-live="polite"
+                    aria-atomic="false"
                     role="region"
                     class="above-search-control">
 
@@ -632,9 +645,22 @@
                     {{ $i18n.get('label_items_list') }}
                 </h2>
 
+                <!-- Loading announcement for screen readers - always in DOM -->
+                <div 
+                        class="sr-only"
+                        role="status"
+                        aria-live="polite"
+                        aria-atomic="true"
+                        aria-relevant="text">
+                    <span v-if="showLoading">
+                        {{ $i18n.get('label_loading_items') }}
+                    </span>
+                </div>
+                
                 <div 
                         v-show="showLoading"
-                        class="loading-container">
+                        class="loading-container"
+                        :aria-label="$i18n.get('label_loading_items')">
 
                     <!--  Default loading, to be used view modes without any skeleton-->
                     <b-loading 
@@ -687,10 +713,15 @@
                 <!-- Empty Placeholder -->
                 <section
                         v-if="!isLoadingItems && totalItems == 0"
-                        class="section">
-                    <div class="content has-text-gray has-text-centered">
+                        class="section"
+                        role="status"
+                        aria-live="polite"
+                        aria-atomic="true">
+                    <div class="content has-text-dark has-text-centered">
                         <p>
-                            <span class="icon is-large">
+                            <span
+                                    class="icon is-large"
+                                    aria-hidden="true">
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
                             </span>
                         </p>
@@ -1037,7 +1068,7 @@
             });
 
         },
-        mounted() {            
+        mounted() {  
             this.prepareMetadata();
             this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
 
@@ -1589,6 +1620,7 @@
         }
         @media screen and (min-width: 769px) {
             top: calc(0.5rem + var(--tainacan-container-padding) + 1.25em + 0.5rem) !important;
+            bottom: unset;
             position: relative;
             position: sticky;
             
@@ -1617,8 +1649,16 @@
         transform: translateY(18px);
         transition: top 0.3s;
 
-        &:focus {
+        &:focus:not(:focus-visible) {
             outline: none !important;
+        }
+        &:focus-visible {
+            outline-width: 2px;
+            outline-offset: -1px;
+            outline-color: var(--tainacan-secondary);
+            outline-color: color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
+            outline-style: solid;
+            box-shadow: none;
         }
 
         @media screen and (max-width: 768px) {

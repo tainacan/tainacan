@@ -35,31 +35,40 @@
                         :class="shouldDisplayItemSingleDocument || shouldDisplayItemSingleThumbnail || shouldDisplayItemSingleAttachments ? 'is-12 is-6-desktop is-7-widescreen' : 'is-12'">
 
                     <div class="b-tabs">
-                        <nav 
+                        <div 
                                 v-if="tabs.length >= 2 "
-                                role="list"
                                 class="tabs">
-                            <ul>
+                            <ul
+                                    v-a11y-tabs        
+                                    data-orientation="horizontal"
+                                    role="tablist">
                                 <li 
                                         v-for="(tab, tabIndex) of tabs"
-                                        :id="tab.slug + '-tab-label'"
                                         :key="tabIndex"
-                                        :class="{ 'is-active': activeTab === tab.slug }"
-                                        @click="activeTab = tab.slug">
-                                    <a>
-                                        <span class="icon has-text-gray4">
-                                            <i :class="'tainacan-icon tainacan-icon-18px tainacan-icon-' + tab.icon" />
+                                        :tabindex="-1"
+                                        :class="{ 'is-active': activeTab === tab.slug }">
+                                    <a
+                                            :id="tab.slug + '-tab-label'"
+                                            role="tab"
+                                            :aria-selected="activeTab === tab.slug"
+                                            :aria-controls="tab.slug + '-tab-content'"
+                                            :tabindex="activeTab === tab.slug ? 0 : -1"
+                                            @click="activeTab = tab.slug">
+                                        <span class="icon has-text-dark">
+                                            <i
+                                                    :class="'tainacan-icon tainacan-icon-18px tainacan-icon-' + tab.icon"
+                                                    aria-hidden="true" />
                                         </span>
                                         <span>{{ tab.name }}</span>
                                         <span 
                                                 v-if="tab.total"
-                                                class="has-text-gray">
+                                                class="has-text-dark">
                                             &nbsp;({{ tab.total }})
                                         </span>
                                     </a>
                                 </li>
                             </ul>
-                        </nav>
+                        </div>
 
                         <section 
                                 :style="tabs.length < 2 ? 'border-top: none; padding-top: 0;' : ''"
@@ -67,6 +76,7 @@
 
                             <div 
                                     v-if="activeTab === 'metadata'"
+                                    id="metadata-tab-content"
                                     class="tab-item"
                                     role="tabpanel"
                                     aria-labelledby="metadata-tab-label">
@@ -78,13 +88,13 @@
                                             :key="sectionIndex">
                                         <div class="metadata-section-header section-label">
                                             <label>
-                                                <span class="icon has-text-gray4">
+                                                <span class="icon has-text-dark">
                                                     <i class="tainacan-icon tainacan-icon-metadata" />
                                                 </span>
                                                 {{ metadataSection.name }}&nbsp;
                                                 <span 
                                                         v-if="metadataSection.metadata_object_list && metadataSection.metadata_object_list.length"
-                                                        class="has-text-gray has-text-weight-normal"
+                                                        class="has-text-dark has-text-weight-normal"
                                                         style="font-size: 0.875em;">
                                                     ({{ metadataSection.metadata_object_list.length }})
                                                 </span>
@@ -101,7 +111,7 @@
                                                     {{ itemMetadatum.metadatum.name }}
                                                     <span 
                                                             v-if="itemMetadatum.metadatum.status !== 'publish'"
-                                                            class="icon has-text-gray">
+                                                            class="icon has-text-dark">
                                                         <i 
                                                                 class="tainacan-icon tainacan-icon-1em"
                                                                 :class="$statusHelper.getIcon(itemMetadatum.metadatum.status)"
@@ -123,7 +133,7 @@
                                                                         itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata &&
                                                                         itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata.length > 1
                                                                     ) ? 'div' : 'p'" 
-                                                            v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_provided') + `</span></p>`" />
+                                                            v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-dark is-italic'>` + $i18n.get('label_value_not_provided') + `</span></p>`" />
                                                 </div>
                                             </div>
                                             <br>
@@ -136,6 +146,7 @@
                             <!-- Related items -->
                             <div 
                                     v-if="totalRelatedItems && activeTab === 'related'"
+                                    id="related-tab-content"
                                     class="tab-item"
                                     role="tabpanel"
                                     aria-labelledby="related-tab-label"
@@ -167,7 +178,7 @@
                         <!-- Publication area -->
                         <div class="section-label">
                             <label>
-                                <span class="icon has-text-gray4">
+                                <span class="icon has-text-dark">
                                     <i class="tainacan-icon tainacan-icon-item" />
                                 </span>
                                 {{ collection && collection.item_publication_label ? collection.item_publication_label : $i18n.get('label_publication_data') }}
@@ -185,7 +196,7 @@
                                     <div class="field-body">
                                         <div class="field has-addons">
                                             <div>
-                                                <span class="icon has-text-gray4">
+                                                <span class="icon has-text-dark">
                                                     <i class="tainacan-icon tainacan-icon-userfill tainacan-icon-1-25em " />
                                                 </span>
                                                 &nbsp;{{ item.author_name }}
@@ -226,7 +237,7 @@
                                     </div>
                                     <div class="field-body">
                                         <div class="field has-addons">
-                                            <span class="icon has-text-gray">
+                                            <span class="icon has-text-dark">
                                                 <i 
                                                         class="tainacan-icon tainacan-icon-18px"
                                                         :class="$statusHelper.getIcon(item.status)" />
@@ -256,7 +267,7 @@
                                     </div>
                                     <div class="field-body">
                                         <div class="field has-addons">
-                                            <span class="icon has-text-gray4">
+                                            <span class="icon has-text-dark">
                                                 <i class="tainacan-icon tainacan-icon-comment" />
                                             </span>
                                             &nbsp;
@@ -275,7 +286,7 @@
                                 v-if="shouldDisplayItemSingleDocument"
                                 class="section-label">
                             <label>
-                                <span class="icon has-text-gray4 tainacan-icon-1-125em">
+                                <span class="icon has-text-dark tainacan-icon-1-125em">
                                     <i :class="'tainacan-icon tainacan-icon-' + ( (!item.document_type || item.document_type == 'empty' ) ? 'item' : (item.document_type == 'attachment' ? 'attachments' : item.document_type))" />
                                 </span>
                                 {{ collection && collection.item_document_label ? collection.item_document_label : ( (item.document != undefined && item.document != null && item.document != '') ? $i18n.get('label_document') : $i18n.get('label_document_empty') ) }}
@@ -302,7 +313,7 @@
                                 v-if="shouldDisplayItemSingleThumbnail"
                                 class="section-label">
                             <label>
-                                <span class="icon has-text-gray4">
+                                <span class="icon has-text-dark">
                                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-image" />
                                 </span>
                                 {{ collection && collection.item_thumbnail_label ? collection.item_thumbnail_label : $i18n.get('label_thumbnail') }}
@@ -353,14 +364,14 @@
                                 v-if="shouldDisplayItemSingleAttachments"
                                 class="section-label">
                             <label>
-                                <span class="icon has-text-gray4">
+                                <span class="icon has-text-dark">
                                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-attachments" />
                                 </span>
                                 <span>
                                     {{ collection && collection.item_attachment_label ? collection.item_attachment_label : $i18n.get('label_attachments') }}&nbsp;
                                     <span
                                             v-if="totalAttachments"
-                                            class="has-text-gray has-text-weight-normal">
+                                            class="has-text-dark has-text-weight-normal">
                                         ({{ totalAttachments }})
                                     </span>
                                 </span>
@@ -390,7 +401,7 @@
                     </div>
                     <div class="field has-addons">
                         <span style="display: flex;">
-                            <span class="icon has-text-gray4">
+                            <span class="icon has-text-dark">
                                 <i 
                                         v-if="itemVisibility == 'open_access'"
                                         class="tainacan-icon tainacan-icon-see" />
@@ -669,7 +680,7 @@
             openExposersModal() {
                 this.$buefy.modal.open({
                     component: ExposersModal,
-                    hasModalCard: true,
+                    hasModalCard: false,
                     props: { 
                         collectionId: this.collectionId,
                         itemId: this.itemId,

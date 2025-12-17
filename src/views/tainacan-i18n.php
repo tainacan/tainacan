@@ -124,6 +124,9 @@ return apply_filters( 'tainacan-i18n', [
 	'status_auto-draft'                              => __( 'Automatic draft', 'tainacan' ),
 	'label_open_access'                              => __( 'Open access', 'tainacan' ),
 	'label_restrict_access'                          => __( 'Restrict access', 'tainacan' ),
+	'label_open_advanced_search'                     => __( 'Open advanced search', 'tainacan' ),
+	'label_close_advanced_search'                    => __( 'Close advanced search', 'tainacan' ),
+	'label_show_more_options'                        => __( 'Show more options', 'tainacan' ),
 
 	// Page Titles (used mainly on Router)
 	'title_repository_collections_page'              => __( 'Collections', 'tainacan' ),
@@ -274,8 +277,6 @@ return apply_filters( 'tainacan-i18n', [
 	'label_default_section'                             => __( 'Default Section', 'tainacan' ),
 	/* translators: noun, not the verb. This comes after options to be sorted by */
 	'label_sorting'                                  => __( 'Sorting', 'tainacan' ),
-	/* translators: noun, not the verb. This comes after options 'ASC' and 'DESC' */
-	'label_sorting_direction'                        => __( 'Sorting direction', 'tainacan' ),
 	/* translators: shorter version of the 'sorting' noun label */
 	'label_sort'	                                 => __( 'Sort', 'tainacan' ),
 	'label_activity_date'                            => __( 'Activity date', 'tainacan' ),
@@ -525,6 +526,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_next_page'								 => __( 'Next page', 'tainacan' ),
 	'label_previous_page'						 	 => __( 'Previous page', 'tainacan' ),
 	'label_page'								 	 => __( 'Page', 'tainacan' ),
+	'label_pagination'								 => __( 'Pagination', 'tainacan' ),
 	'label_current_page'							 => __( 'Current page', 'tainacan' ),
 	'label_shrink_menu'								 => __( 'Shrink menu', 'tainacan' ),
 	'label_expand_menu'								 => __( 'Expand menu', 'tainacan' ),
@@ -796,6 +798,8 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_drag_and_drop_metadata_sections_sort' => __( 'Drag and drop to change metadata sections order', 'tainacan' ),
 	'instruction_select_a_date' 				     => __( 'Select a date', 'tainacan' ),
 	'instruction_select_a_month' 				     => __( 'Select a month', 'tainacan' ),
+	'label_next_month' 				     			 => __( 'Next month', 'tainacan' ),
+	'label_previous_month' 				     		 => __( 'Previous month', 'tainacan' ),
 	'instruction_type_value_year' 				     => __( 'Type year value', 'tainacan' ),
 	'instruction_select_the_amount_of_copies'		 => __( 'Select the amount of copies of the item that you want to create', 'tainacan'),
 	'instruction_select_a_interval'		 			 => __( 'Select an interval', 'tainacan'),
@@ -826,7 +830,8 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_filter_processes_date'				 => __( 'Select the date range for the processes', 'tainacan' ),
 	'instruction_go_to_metadata_mapping_%s'		     => __( 'To use a mapping standard, you must first configure it in the <a href="%s" target="_blank">collection metadata mapping screen</a>.', 'tainacan' ),
 	'instruction_2_or_more'						     => __( '2 or more', 'tainacan' ),
-	
+	'instruction_click_to_load_filter_%s'			 => __( 'Click to load the filter "%s"', 'tainacan' ),
+
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),
 	'info_items_tab_publish'                         => __( 'Only items that are visible to everyone.', 'tainacan' ),

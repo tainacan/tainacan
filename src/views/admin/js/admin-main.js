@@ -29,7 +29,7 @@ import {
     Toast,
     Numberinput
 } from 'buefy';
-import FloatingVue from 'floating-vue';
+import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
 import VueBlurHash from 'another-vue3-blurhash';
 import VueApexCharts from 'vue3-apexcharts';
@@ -56,7 +56,9 @@ import {
 } from './admin-utilities';
 import { 
     ThumbnailHelperPlugin,
-    OrderByHelperPlugin
+    OrderByHelperPlugin,
+    A11yDropdownPlugin,
+    A11yTabsPlugin
 } from './utilities';
 import mitt from 'mitt';
 
@@ -118,7 +120,8 @@ export default (element) => {
             app.use(Snackbar);
             app.use(Toast);
             app.use(Numberinput);
-            app.use(FloatingVue, {
+            app.use(VTooltip, {
+                noAutoFocus: true,
                 popperTriggers: ['hover', 'touch'],
                 themes: {
                     'tainacan-tooltip': {
@@ -131,19 +134,19 @@ export default (element) => {
                         '$extend': 'tainacan-tooltip',
                         triggers: ['hover', 'focus', 'touch'],
                         autoHide: true,
-                        html: true,
+                        html: true
                     },
                     'tainacan-repository-header-tooltip': {
                         '$extend': 'tainacan-repository-tooltip',
                         triggers: ['hover', 'focus', 'touch'],
                         autoHide: true,
-                        html: true,
+                        html: true
                     },
                     'tainacan-helper-tooltip': {
                         '$extend': 'tainacan-tooltip',
                         triggers: ['hover', 'focus', 'touch'],
                         autoHide: true,
-                        html: true,
+                        html: true
                     }
                 }
             });
@@ -154,6 +157,8 @@ export default (element) => {
             app.use(UserCapabilitiesPlugin);
             app.use(ThumbnailHelperPlugin);
             app.use(OrderByHelperPlugin);
+            app.use(A11yDropdownPlugin);
+            app.use(A11yTabsPlugin);
             app.use(StatusHelperPlugin);
             app.use(HtmlSanitizerPlugin);
             app.use(ConsolePlugin, {visual: false});

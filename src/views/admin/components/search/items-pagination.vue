@@ -5,7 +5,12 @@
             class="pagination-area">
         <div 
                 style="flex-grow: 1;"
-                class="shown-items is-hidden-mobile">
+                class="shown-items is-hidden-mobile"
+                role="status"
+                aria-live="polite"
+                aria-atomic="false"
+                aria-relevant="text"
+                :aria-label="$i18n.get('label_list_pagination')">
             {{ 
                 $i18n.get('info_showing_items') +
                     getFirstItem() +
@@ -36,12 +41,14 @@
             <b-field 
                     id="items-per-page-select"
                     horizontal 
-                    :label="$i18n.get('label_items_per_page')"> 
+                    :label="$i18n.get('label_items_per_page')"
+                    label-for="items-per-page-select-input"> 
                 <b-select 
+                        id="items-per-page-select-input"
                         :model-value="itemsPerPage"
                         aria-controls="items-list-results"
-                        aria-labelledby="items-per-page-select"
                         :disabled="itemsPerPageOptions.length <= 1"
+                        :compat-fallthrough="false"
                         @update:model-value="onChangeItemsPerPage">
                     <template 
                             v-for="(itemsPerPageOption, index) of itemsPerPageOptions"
@@ -59,40 +66,30 @@
                 id="tainacanGoToPageButton"
                 class="go-to-page items-per-page">
             <b-field 
-                    id="go-to-page-dropdown" 
+                    id="go-to-page-dropdown"
                     horizontal
-                    :label="$i18n.get('label_go_to_page')"> 
-                <b-dropdown 
-                        position="is-top-right"
-                        aria-role="list"
-                        trap-focus
-                        @change="onPageChange">
-                    <template #trigger>
-                        <button
-                                aria-labelledby="go-to-page-dropdown"
-                                class="button is-white">
-                            <span>{{ page }}</span>
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                            </span>
-                        </button>
-                    </template>
-                    <b-dropdown-item
+                    :label="$i18n.get('label_go_to_page')"
+                    label-for="go-to-page-select-input">
+                <b-select 
+                        id="go-to-page-select-input"
+                        :model-value="page"
+                        aria-controls="items-list-results"
+                        :compat-fallthrough="false"
+                        @update:model-value="onPageChange">
+                    <option
                             v-for="pageNumber in totalPages"
-                            :key="pageNumber" 
-                            aria-controls="items-list-results"
-                            role="button"
-                            :value="Number(pageNumber)"
-                            aria-role="listitem">
+                            :key="pageNumber"
+                            :value="Number(pageNumber)">
                         {{ pageNumber }}
-                    </b-dropdown-item>
-                </b-dropdown>
+                    </option>
+                </b-select>
             </b-field>
         </div>
         
         <div class="pagination"> 
             <b-pagination
                     :model-value="page"
+                    :aria-label="$i18n.get('label_pagination')"
                     aria-controls="items-list-results"
                     :total="totalItems"
                     order="is-centered"

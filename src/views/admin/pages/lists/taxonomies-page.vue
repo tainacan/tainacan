@@ -54,10 +54,11 @@
                     class="header-item">
                 <b-dropdown
                         ref="sortingDropdown" 
+                        v-a11y-dropdown
+                        :trigger-tabindex="-1"
                         :mobile-modal="true"
                         :multiple="false"
                         class="show sorting-options-dropdown"
-                        aria-role="list"
                         trap-focus
                         position="is-bottom-left"
                         :close-on-click="false"
@@ -76,6 +77,7 @@
                                     placement: 'auto-start',
                                     popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
                                 }"
+                                :disabled="taxonomies.length <= 0 || isLoading"
                                 :aria-label="$i18n.get('label_sorting')"
                                 class="button is-white">
                             <span class="is-small gray-icon">
@@ -98,8 +100,9 @@
                                     role="button"
                                     :class="{ 'is-active': newOrder == 'desc' }"
                                     :value="'desc'"
-                                    aria-role="listitem"
-                                    @click="newOrder = 'desc'">
+                                    @click="newOrder = 'desc'"
+                                    @keydown.enter.prevent="newOrder = 'desc'"
+                                    @keydown.space.prevent="newOrder = 'desc'">
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-sortdescending" />
                                 </span>
@@ -110,8 +113,9 @@
                                     role="button"
                                     :class="{ 'is-active': newOrder == 'asc' }"
                                     :value="'asc'"
-                                    aria-role="listitem"
-                                    @click="newOrder = 'asc'">
+                                    @click="newOrder = 'asc'"
+                                    @keydown.enter.prevent="newOrder = 'asc'"
+                                    @keydown.space.prevent="newOrder = 'asc'">
                                 <span class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-sortascending" />
                                 </span>
@@ -127,8 +131,9 @@
                                         role="button"
                                         :class="{ 'is-active': newOrderBy == option.value }"
                                         :value="option.value"
-                                        aria-role="listitem"
-                                        @click="newOrderBy = option.value">
+                                        @click="newOrderBy = option.value"
+                                        @keydown.enter.prevent="newOrderBy = option.value"
+                                        @keydown.space.prevent="newOrderBy = option.value">
                                     {{ option.label }}
                                 </b-dropdown-item>
                             </template>
@@ -153,44 +158,58 @@
                     :is-full-page="true" 
                     :can-cancel="false" />
             <div class="tabs">
-                <ul>
+                <ul
+                        v-a11y-tabs
+                        role="tablist"
+                        data-orientation="horizontal">
                     <li 
-                            v-tooltip="{
-                                content: $i18n.get('info_taxonomies_tab_all'),
-                                autoHide: true,
-                                placement: 'auto',
-                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
-                            }"
-                            :class="{ 'is-active': status == undefined || status == ''|| status == 'publish,private,pending,draft'}"
-                            @click="onChangeTab('')">
-                        <a style="font-weight: bold;">
+                            :tabindex="-1"
+                            :class="{ 'is-active': status == undefined || status == ''|| status == 'publish,private,pending,draft'}">
+                        <a
+                                id="taxonomies-status-tab-all"
+                                v-tooltip="{
+                                    content: $i18n.get('info_taxonomies_tab_all'),
+                                    autoHide: true,
+                                    placement: 'auto',
+                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
+                                }"
+                                role="tab"
+                                :aria-selected="status == undefined || status == '' || status == 'publish,private,pending,draft'"
+                                :tabindex="(status == undefined || status == '' || status == 'publish,private,pending,draft') ? 0 : -1"
+                                style="font-weight: bold;"
+                                @click="onChangeTab('')">
                             {{ `${$i18n.get('label_all_taxonomies')}` }}
-                            <span class="has-text-gray">&nbsp;{{ repositoryTotalTaxonomies ? `(${Number(repositoryTotalTaxonomies.private) + Number(repositoryTotalTaxonomies.publish) + Number(repositoryTotalTaxonomies.draft)})` : '' }}</span>
+                            <span class="has-text-dark">&nbsp;{{ repositoryTotalTaxonomies ? `(${Number(repositoryTotalTaxonomies.private) + Number(repositoryTotalTaxonomies.publish) + Number(repositoryTotalTaxonomies.draft)})` : '' }}</span>
                         </a>
                     </li>
                     <li 
                             v-for="(statusOption, index) of statusOptionsForTaxonomies"
                             :key="index"
-                            v-tooltip="{
-                                content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('taxonomies')]),
-                                autoHide: true,
-                                placement: 'auto',
-                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
-                            }"
+                            :tabindex="-1"
                             :class="{ 'is-active': status == statusOption.slug}"
-                            :style="{ marginRight: statusOption.slug == 'draft' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
-                            @click="onChangeTab(statusOption.slug)">
-                        <a>
+                            :style="{ marginRight: statusOption.slug == 'draft' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }">
+                        <a
+                                :id="'taxonomies-status-tab-' + statusOption.slug"
+                                v-tooltip="{
+                                    content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('taxonomies')]),
+                                    autoHide: true,
+                                    placement: 'auto',
+                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
+                                }"
+                                role="tab"
+                                :aria-selected="status == statusOption.slug"
+                                :tabindex="status == statusOption.slug ? 0 : -1"
+                                @click="onChangeTab(statusOption.slug)">
                             <span 
                                     v-if="$statusHelper.hasIcon(statusOption.slug)"
-                                    class="icon has-text-gray">
+                                    class="icon has-text-dark">
                                 <i 
                                         class="tainacan-icon tainacan-icon-1-125em"
                                         :class="$statusHelper.getIcon(statusOption.slug)"
-                                    />
+                                        aria-hidden="true" />
                             </span>
                             {{ statusOption.name }}
-                            <span class="has-text-gray">&nbsp;{{ repositoryTotalTaxonomies ? `(${repositoryTotalTaxonomies[statusOption.slug]})` : '' }}</span>
+                            <span class="has-text-dark">&nbsp;{{ repositoryTotalTaxonomies ? `(${repositoryTotalTaxonomies[statusOption.slug]})` : '' }}</span>
                         </a>
                     </li>
                 </ul>
@@ -207,7 +226,7 @@
                 <!-- Empty state image -->
                 <div v-if="taxonomies.length <= 0 && !isLoading">
                     <section class="section">
-                        <div class="content has-text-gray has-text-centered">
+                        <div class="content has-text-dark has-text-centered">
                             <p>
                                 <span class="icon is-medium">
                                     <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms" />
@@ -273,6 +292,7 @@
                                 :total="total"
                                 order="is-centered"
                                 size="is-small"
+                                :aria-label="$i18n.get('label_pagination')"
                                 :per-page="taxonomiesPerPage"
                                 :aria-next-label="$i18n.get('label_next_page')"
                                 :aria-previous-label="$i18n.get('label_previous_page')"

@@ -4,7 +4,7 @@
                 v-if="!isStatusTheOnlyField && !$adminOptions.itemEditionPublicationSectionInsideTabs"
                 class="section-label">
             <label>
-                <span class="icon has-text-gray4">
+                <span class="icon has-text-dark">
                     <i class="tainacan-icon tainacan-icon-item" />
                 </span>
                 {{ collection && collection.item_publication_label ? collection.item_publication_label : $i18n.get('label_publication_data') }}
@@ -136,7 +136,7 @@
                         <label class="label">
                             <span 
                                     v-if="isStatusTheOnlyField"
-                                    class="icon has-text-gray4">
+                                    class="icon has-text-dark">
                                 <i class="tainacan-icon tainacan-icon-item" />
                             </span>
                             {{ $i18n.get('label_status') }}
@@ -154,7 +154,8 @@
                             <!-- Update dropdown with -->
                             <b-dropdown
                                     ref="item-edition-status-dropdown"
-                                    aria-role="list"
+                                    v-a11y-dropdown="{ appendToBody: true }"
+                                    :trigger-tabindex="-1"
                                     class="item-edition-status-dropdown"
                                     :triggers="[ 'click' ]"
                                     :append-to-body="true"
@@ -168,7 +169,7 @@
                                             class="button is-outlined"
                                             :class="{ 'disabled': item.status === 'auto-draft' || ( hasSomeError && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) ) }"
                                             style="width: auto;">
-                                        <span class="icon has-text-gray">
+                                        <span class="icon has-text-dark">
                                             <i 
                                                     class="tainacan-icon tainacan-icon-18px"
                                                     :class="$statusHelper.getIcon(form.status)" />
@@ -189,13 +190,22 @@
                                 <b-dropdown-item 
                                         v-for="(statusOption, index) of getAvailableStatus()"
                                         :key="index"
-                                        aria-role="listitem"
                                         @click="$emit(
                                             'on-submit',
                                             statusOption.slug,
                                             'current'
+                                        )"
+                                        @keydown.enter.prevent="$emit(
+                                            'on-submit',
+                                            statusOption.slug,
+                                            'current'
+                                        )"
+                                        @keydown.space.prevent="$emit(
+                                            'on-submit',
+                                            statusOption.slug,
+                                            'current'
                                         )">
-                                    <span class="icon has-text-gray">
+                                    <span class="icon has-text-dark">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-18px"
                                                 :class="$statusHelper.getIcon(statusOption.slug)" />

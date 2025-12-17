@@ -6,7 +6,7 @@
         <section 
                 v-if="childrenMetadata.length <= 0"
                 class="field is-grouped-centered section not-sortable-item">
-            <div class="content has-text-gray has-text-centered">
+            <div class="content has-text-dark has-text-centered">
                 <p>
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata" />
@@ -47,7 +47,7 @@
                             'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadatum.parent == 0 || metadatum.collection_id != collectionId || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied,
                             'not-focusable-item': openedMetadatumId == metadatum.id,
                             'disabled-metadatum': parent.enabled == false,
-                            'inherited-metadatum': (metadatum.collection_id != collectionId && metadatum.parent == 0) || isRepositoryLevel
+                            'inherited-metadatum tainacan-repository-level-colors': (metadatum.collection_id != collectionId && metadatum.parent == 0) || isRepositoryLevel
                         }">
                     <div 
                             :ref="'metadatum-handler-' + metadatum.id"
@@ -157,9 +157,9 @@
                                         :class="{ 
                                             'tainacan-icon-collection': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
                                             'tainacan-icon-repository': (metadatum.collection_id == 'default') || isRepositoryLevel,
-                                            'has-text-turquoise5': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
-                                            'has-text-blue5': (metadatum.collection_id == 'default' || isRepositoryLevel),
-                                            'has-text-gray3': !parent.enabled
+                                            'has-text-secondary': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
+                                            'has-text-secondary': (metadatum.collection_id == 'default' || isRepositoryLevel),
+                                            'has-text-grey': !parent.enabled
                                         }"
                                         class="tainacan-icon" />
                             </span>
@@ -177,6 +177,7 @@
                                             ? 'hidden' : 'visible'
                                     }"
                                     role="button"
+                                    tabindex="0"
                                     :aria-label="$i18n.get('edit')" 
                                     @click.prevent="toggleMetadatumEdition(metadatum.id)">
                                 <span 
@@ -199,6 +200,7 @@
                                             ? 'hidden' : 'visible'
                                     }" 
                                     role="button"
+                                    tabindex="0"
                                     :aria-label="$i18n.get('delete')"
                                     @click.prevent="removeMetadatum(metadatum)">
                                 <span

@@ -94,7 +94,7 @@
                         style="margin-top: 2em;"
                         class="column is-narrow is-hidden-mobile">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-pointer tainacan-icon-36px has-text-gray2" />
+                        <i class="tainacan-icon tainacan-icon-pointer tainacan-icon-36px has-text-grey" />
                     </span>
                 </div>
 

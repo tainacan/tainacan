@@ -25,7 +25,9 @@
                 <b-datepicker
                         ref="datepicker"
                         v-model="searchDates"
-                        :placeholder="$i18n.get('label_range_of_dates')"
+                        :aria-next-label="$i18n.get('label_next_month')"
+                        :aria-previous-label="$i18n.get('label_previous_month')"
+                        :placeholder="$i18n.get('label_range_of_dates')"    
                         range
                         position="is-bottom-left"
                         icon="calendar-today"
@@ -88,7 +90,7 @@
             <!-- Empty state processes image -->
             <div v-if="processes.length <= 0 && !isLoading">
                 <section class="section">
-                    <div class="content has-text-gray has-text-centered">
+                    <div class="content has-text-dark has-text-centered">
                         <p>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-processes" />
@@ -137,6 +139,7 @@
                             :total="totalProcesses"
                             order="is-centered"
                             size="is-small"
+                            :aria-label="$i18n.get('label_pagination')"
                             :per-page="processesPerPage"
                             :aria-next-label="$i18n.get('label_next_page')"
                             :aria-previous-label="$i18n.get('label_previous_page')"

@@ -8,6 +8,7 @@ const TainacanPluginConfig = {
     entry: {
         tainacan_pages_common_scripts: './src/views/tainacan-pages-common-scripts.js',
         tainacan_admin_navigation_menu: './src/views/tainacan-admin-navigation-menu.js',
+        tainacan_command_palette: './src/views/tainacan-command-palette.js',
         tainacan_dashboard: './src/views/dashboard/tainacan-dashboard.js',
         tainacan_blocks_common_scripts: './src/views/gutenberg-blocks/tainacan-blocks-common-scripts.js',
         tainacan_blocks_category_icon: './src/views/gutenberg-blocks/js/tainacan-blocks-category-icon.js',
@@ -86,11 +87,17 @@ const TainacanPluginConfig = {
                         loader: 'css-loader'
                     },
                     {
+                        loader: 'postcss-loader',
+                    },
+                    {
                         loader: 'sass-loader',
                         options: {
+                            implementation: require('sass'),
                             sassOptions: {
-                                implementation: require('sass'),
-                                includePaths: [path.resolve(__dirname, './src/views/tainacan-basics.scss')]
+                                loadPaths: [
+                                    path.resolve(__dirname, 'node_modules')
+                                ],
+                                silenceDeprecations: ['global-builtin']
                             }
                         }
                     },

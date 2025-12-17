@@ -57,8 +57,9 @@
                 <b-dropdown
                         v-if="!$adminOptions.hideItemEditionStatusOption && $adminOptions.itemEditionStatusOptionOnFooterDropdown"
                         ref="item-edition-footer-dropdown"
+                        v-a11y-dropdown
+                        :trigger-tabindex="-1"
                         :triggers="['contextmenu']"
-                        aria-role="list"
                         animation="item-appear"
                         :mobile-modal="false"
                         position="is-top-left"
@@ -96,13 +97,12 @@
                     </template>
                     <b-dropdown-item 
                             :class="{ 'is-forced-last-option': status == 'draft' }"
-                            aria-role="listitem"
                             @click="$emit(
                                 'on-submit',
                                 'draft',
                                 ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                             )">
-                        <span class="icon has-text-gray4">
+                        <span class="icon has-text-dark">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-draft" />
                         </span>
                         {{ status == 'draft' ? $i18n.get('label_update_draft') : $i18n.get('label_change_to_draft') }}
@@ -117,13 +117,12 @@
                     <b-dropdown-item
                             v-if="!$adminOptions.hideItemEditionStatusPendingOption"
                             :class="{ 'is-forced-last-option': status == 'pending' }"
-                            aria-role="listitem"
                             @click="$emit(
                                 'on-submit',
                                 'pending',
                                 ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                             )">
-                        <span class="icon has-text-gray4">
+                        <span class="icon has-text-dark">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting" />
                         </span>
                         {{ status == 'pending' ? $i18n.get('label_update_pending') : $i18n.get('label_send_to_review') }}
@@ -138,13 +137,12 @@
                     <b-dropdown-item
                             v-if="currentUserCanPublish && !$adminOptions.hideItemEditionStatusPrivateOption"
                             :class="{ 'is-forced-last-option': status == 'private' }"
-                            aria-role="listitem"
                             @click="$emit(
                                 'on-submit',
                                 'private',
                                 ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                             )">
-                        <span class="icon has-text-gray4">
+                        <span class="icon has-text-dark">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-private" />
                         </span>
                         {{ status == 'private' ? $i18n.get('label_update_as_private') : ( status == 'draft' ? $i18n.get('label_verb_publish_privately') : $i18n.get('label_change_to_private') ) }}
@@ -158,13 +156,12 @@
                     </b-dropdown-item>
                     <b-dropdown-item 
                             v-if="currentUserCanPublish && !$adminOptions.hideItemEditionStatusPublishOption"
-                            aria-role="listitem"
                             @click="$emit(
                                 'on-submit',
                                 'publish',
                                 ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                             )">
-                        <span class="icon has-text-gray4">
+                        <span class="icon has-text-dark">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-public" />
                         </span>
                         {{ status == 'publish' ? $i18n.get('label_update_as_public') : $i18n.get('label_verb_publish') }}

@@ -119,7 +119,7 @@ class Test_Importer extends Importer {
 					<label class="label" style="position: relative">
 						<?php _e('Number of items in collection 1', 'tainacan'); ?>
 						<span class="help-wrapper">
-							<a class="help-button has-text-secondary">
+							<a class="help-button">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
 								</span>
@@ -145,7 +145,7 @@ class Test_Importer extends Importer {
 					<label class="label" style="position: relative">
 						<?php _e('Number of extra metadata to create in first collection', 'tainacan'); ?>
 						<span class="help-wrapper">
-							<a class="help-button has-text-secondary">
+							<a class="help-button">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
 								</span>
@@ -171,7 +171,7 @@ class Test_Importer extends Importer {
 					<label class="label" style="position: relative">
 						<?php _e('Create second collection with a relationship', 'tainacan'); ?>
 						<span class="help-wrapper">
-							<a class="help-button has-text-secondary">
+							<a class="help-button">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
 								</span>
@@ -204,7 +204,7 @@ class Test_Importer extends Importer {
 					<label class="label" style="position: relative">
 						<?php _e('Number of items in collection 2', 'tainacan'); ?>
 						<span class="help-wrapper">
-							<a class="help-button has-text-secondary">
+							<a class="help-button">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
 								</span>
@@ -239,7 +239,7 @@ class Test_Importer extends Importer {
 					<label class="label" style="position: relative">
 						<?php _e('Add random images from flickr', 'tainacan'); ?>
 						<span class="help-wrapper">
-							<a class="help-button has-text-secondary">
+							<a class="help-button">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
 								</span>
@@ -270,7 +270,7 @@ class Test_Importer extends Importer {
 					<label class="label" style="position: relative">
 						<?php _e('Keyword Search', 'tainacan'); ?>
 						<span class="help-wrapper">
-							<a class="help-button has-text-secondary">
+							<a class="help-button">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
 								</span>
@@ -296,7 +296,7 @@ class Test_Importer extends Importer {
 					<label class="label" style="position: relative">
 						<?php _e('Horizontal image size (0 for random)', 'tainacan'); ?>
 						<span class="help-wrapper">
-							<a class="help-button has-text-secondary">
+							<a class="help-button">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
 								</span>
@@ -320,7 +320,7 @@ class Test_Importer extends Importer {
 					<label class="label" style="position: relative">
 						<?php _e('Vertical image size (0 for random)', 'tainacan'); ?>
 						<span class="help-wrapper">
-							<a class="help-button has-text-secondary">
+							<a class="help-button">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
 								</span>

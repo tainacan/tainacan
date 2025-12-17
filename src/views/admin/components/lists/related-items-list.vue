@@ -68,7 +68,7 @@
                                                 placement: 'top',
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
-                                            class="icon has-text-gray">
+                                            class="icon has-text-dark">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-1em"
                                                 :class="$statusHelper.getIcon(relatedItem.status)"
@@ -96,13 +96,13 @@
                                                     show: 500,
                                                     hide: 300,
                                                 },
-                                                content: relatedItem.title != undefined && relatedItem.title != '' ? relatedItem.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
+                                                content: relatedItem.title != undefined && relatedItem.title != '' ? relatedItem.title : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                                 html: true,
                                                 autoHide: false,
                                                 placement: 'top',
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
-                                            v-html="(relatedItem.title != undefined && relatedItem.title != '') ? relatedItem.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`" />
+                                            v-html="(relatedItem.title != undefined && relatedItem.title != '') ? relatedItem.title : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`" />
                                 </div>
                                 <div 
                                         v-if="isEditable && relatedItem.current_user_can_edit"

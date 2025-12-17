@@ -18,7 +18,7 @@
                 {{ getUnescapedLabel(option.label) }}
                 <span 
                         v-if="option.total_items != undefined"
-                        class="has-text-gray">{{ "(" + option.total_items + ")" }}</span>    
+                        class="has-text-dark">{{ "(" + option.total_items + ")" }}</span>    
             </option>
         </b-select>
     </div>

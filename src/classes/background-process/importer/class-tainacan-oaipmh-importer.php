@@ -851,7 +851,7 @@ class Oaipmh_Importer extends Importer {
 					<label class="label" style="position: relative">
 						<?php _e('Create set as', 'tainacan'); ?>
 						<span class="help-wrapper">
-							<a class="help-button has-text-secondary">
+							<a class="help-button">
 								<span class="icon is-small">
 									<i class="tainacan-icon tainacan-icon-help" ></i>
 								</span>

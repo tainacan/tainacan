@@ -18,12 +18,15 @@
             <div class="field is-pulled-right">
                 <b-dropdown
                         id="bulk-actions-dropdown"
+                        v-a11y-dropdown
+                        :trigger-tabindex="-1"
                         position="is-bottom-left"
                         :disabled="!isSelecting"
-                        aria-role="list"
                         trap-focus>
                     <template #trigger>
-                        <button class="button is-white">
+                        <button
+                                :disabled="!isSelecting"
+                                class="button is-white">
                             <span>{{ $i18n.get('label_bulk_actions') }}</span>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
@@ -32,13 +35,13 @@
                     </template>
                     <b-dropdown-item
                             id="item-delete-selected-items"
-                            aria-role="listitem"
-                            @click="deleteSelected()">
+                            @click="deleteSelected()"
+                            @keydown.enter.prevent="deleteSelected()"
+                            @keydown.space.prevent="deleteSelected()">
                         {{ $i18n.get('label_delete_selected_taxonomies') }}
                     </b-dropdown-item>
-                    <b-dropdown-item 
-                            disabled
-                            aria-role="listitem">{{ $i18n.get('label_edit_selected_taxonomies') + ' (Not ready)' }}
+                    <b-dropdown-item disabled>
+                        {{ $i18n.get('label_edit_selected_taxonomies') + ' (Not ready)' }}
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
@@ -124,7 +127,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    class="icon has-text-gray">
+                                    class="icon has-text-dark">
                                 <i 
                                         class="tainacan-icon tainacan-icon-1em"
                                         :class="$statusHelper.getIcon(taxonomy.status)"
@@ -154,7 +157,7 @@
                         <td
                                 class="column-large-width" 
                                 :label="$i18n.get('label_description')"
-                                :aria-label="$i18n.get('label_description') + ': ' + taxonomy.description != undefined && taxonomy.description != '' ? taxonomy.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" 
+                                :aria-label="$i18n.get('label_description') + ': ' + taxonomy.description != undefined && taxonomy.description != '' ? taxonomy.description : `<span class='has-text-dark is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" 
                                 @click="onClickTaxonomy($event, taxonomy.id, index)">
                             <p
                                     v-tooltip="{
@@ -162,12 +165,12 @@
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: taxonomy.description != undefined && taxonomy.description != '' ? taxonomy.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`,
+                                        content: taxonomy.description != undefined && taxonomy.description != '' ? taxonomy.description : `<span class='has-text-dark is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`,
                                         autoHide: false,
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    v-html="(taxonomy.description != undefined && taxonomy.description != '') ? taxonomy.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />
+                                    v-html="(taxonomy.description != undefined && taxonomy.description != '') ? taxonomy.description : `<span class='has-text-dark is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />
                         </td>
                         <!-- Total terms -->
                         <td
@@ -192,7 +195,7 @@
                         </td>
                         <!-- Collections using -->
                         <td
-                                class="column-large-width has-text-gray "
+                                class="column-large-width has-text-dark "
                                 :class="{ 'is-italic' : !(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) }" 
                                 :label="$i18n.get('label_collections_using')" 
                                 :aria-label="(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? taxonomy.collections.toString() : $i18n.get('label_no_collections_using_taxonomy')">
@@ -480,7 +483,7 @@
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_tables.scss";
+    @use "../../scss/_tables.scss";
 
     .selection-control {
         

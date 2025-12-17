@@ -7,7 +7,14 @@
             :type="errorMessage ? 'is-danger' : ''">
         <span   
                 class="collapse-handle"
-                @click="(!hideCollapses && !isMetadataNavigation) ? $emit('change-collapse', errorMessage ? true : !isCollapsed ) : ''">
+                :role="!hideCollapses ? 'button' : ''"
+                :tabindex="!hideCollapses ? 0 : -1"
+                :aria-label="!hideCollapses ? $i18n.get('label_collapse') : $i18n.get('label_expand')"
+                :aria-expanded="!isCollapsed"
+                :aria-controls="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
+                @click="(!hideCollapses && !isMetadataNavigation) ? $emit('change-collapse', errorMessage ? true : !isCollapsed ) : ''"
+                @keydown.enter.prevent="(!hideCollapses && !isMetadataNavigation) ? $emit('change-collapse', errorMessage ? true : !isCollapsed ) : ''"
+                @keydown.space.prevent="(!hideCollapses && !isMetadataNavigation) ? $emit('change-collapse', errorMessage ? true : !isCollapsed ) : ''">
             <span 
                     v-if="!hideCollapses"
                     class="icon"
@@ -21,7 +28,8 @@
             </span>
             <label 
                     class="label"
-                    :class="{ 'has-text-danger': errorMessage }">
+                    :class="{ 'has-text-danger': errorMessage }"
+                    :for="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')">
                 <span
                         v-if="enumerateMetadatum"
                         style="opacity: 0.65;"
@@ -109,7 +117,11 @@
                                     v-if="index > 0" 
                                     :key="index"
                                     class="add-link"
-                                    @click="removeValue(index)">
+                                    role="button"
+                                    tabindex="0"
+                                    @click="removeValue(index)"
+                                    @keydown.enter.prevent="removeValue(index)"
+                                    @keydown.space.prevent="removeValue(index)">
                                 <span class="icon is-small">
                                     <i class="tainacan-icon has-text-secondary tainacan-icon-remove" />
                                 </span>
@@ -121,7 +133,11 @@
                 <template v-if="isMultiple && (maxMultipleValues === undefined || maxMultipleValues === 0 || (maxMultipleValues !== 1 && maxMultipleValues > values.length))">
                     <a 
                             class="is-inline-block add-link"
-                            @click="addValue">
+                            role="button"
+                            tabindex="0"
+                            @click="addValue"
+                            @keydown.enter.prevent="addValue"
+                            @keydown.space.prevent="addValue">
                         <span class="icon is-small">
                             <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                         </span>

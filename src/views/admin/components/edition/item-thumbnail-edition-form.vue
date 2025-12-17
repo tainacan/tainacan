@@ -4,7 +4,7 @@
                 v-if="!$adminOptions.hideItemEditionThumbnail"
                 class="section-label">
             <label>
-                <span class="icon has-text-gray4">
+                <span class="icon has-text-dark">
                     <i class="tainacan-icon tainacan-icon-image" />
                 </span>
                 {{ collection && collection.item_thumbnail_label ? collection.item_thumbnail_label : $i18n.get('label_thumbnail') }}

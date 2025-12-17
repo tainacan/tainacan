@@ -6,7 +6,7 @@
                 :is-full-page="false" />
 
         <div class="tainacan-form sub-header">
-            <!-- <h3>{{ $i18n.get('metadata') }}<span class="has-text-gray">{{ ( activeMetadatumList && activeMetadatumList.length ? (' (' + activeMetadatumList.length + ')') : '' ) }}</span></h3> -->
+            <!-- <h3>{{ $i18n.get('metadata') }}<span class="has-text-dark">{{ ( activeMetadatumList && activeMetadatumList.length ? (' (' + activeMetadatumList.length + ')') : '' ) }}</span></h3> -->
 
             <template v-if="activeMetadatumList && !isLoadingMetadata">
                 <button
@@ -25,14 +25,16 @@
                 </button>
                 <b-field class="header-item">
                     <b-dropdown
+                            v-a11y-dropdown
+                            :trigger-tabindex="-1"
                             :mobile-modal="true"
                             :disabled="activeMetadatumList.length <= 0"
                             class="show metadata-options-dropdown"
-                            aria-role="list"
                             trap-focus>
                         <template #trigger>
                             <button
                                     :aria-label="$i18n.get('label_filter_by_metadata_type')"
+                                    :disabled="activeMetadatumList.length <= 0"
                                     class="button is-white">
                                 <span>{{ $i18n.get('label_filter_by_type') }}</span>
                                 <span class="icon">
@@ -46,7 +48,6 @@
                                     :key="index"
                                     class="control"
                                     custom
-                                    aria-role="listitem"
                                     :class="{ 'is-active': metadataType.enabled }">
                                 <b-checkbox
                                         v-model="metadataType.enabled"
@@ -73,7 +74,7 @@
         <section 
                 v-if="activeMetadatumList.length <= 0 && !isLoadingMetadata"
                 class="field is-grouped-centered section">
-            <div class="content has-text-gray has-text-centered">
+            <div class="content has-text-dark has-text-centered">
                 <p>
                     <span class="icon is-large">
                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
@@ -113,7 +114,7 @@
                                     'not-sortable-item': true,
                                     'not-focusable-item': openedMetadatumId == metadatum.id,
                                     'disabled-metadatum': metadatum.enabled == false,
-                                    'inherited-metadatum': true,
+                                    'inherited-metadatum tainacan-repository-level-colors': true,
                                     'child-metadatum': metadatum.parent > 0
                                 }">
                             <div 
@@ -192,8 +193,8 @@
                                             class="icon icon-level-identifier">
                                         <i 
                                                 :class="{
-                                                    'has-text-blue5': metadatum.enabled,
-                                                    'has-text-gray3': !metadatum.enabled
+                                                    'has-text-secondary': metadatum.enabled,
+                                                    'has-text-grey': !metadatum.enabled
                                                 }"
                                                 class="tainacan-icon tainacan-icon-repository" />
                                     </span>
@@ -211,6 +212,7 @@
                                                     ? 'hidden' : 'visible'
                                             }"
                                             role="button"
+                                            tabindex="0"
                                             :aria-label="$i18n.get('edit')" 
                                             @click.prevent="toggleMetadatumEdition(metadatum)">
                                         <span 
@@ -228,6 +230,7 @@
                                             v-if="metadatum.current_user_can_delete"
                                             :style="{ visibility: metadatum.collection_id != collectionId || metadatum.metadata_type_object.core ? 'hidden' : 'visible' }"
                                             role="button"
+                                            tabindex="0"
                                             :aria-label="$i18n.get('delete')"
                                             @click.prevent="removeMetadatum(metadatum)">
                                         <span

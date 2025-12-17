@@ -33,8 +33,9 @@
                     class="field selected-terms-info">
                 <b-dropdown
                         id="selected-terms-dropdown"
+                        v-a11y-dropdown
+                        :trigger-tabindex="-1"
                         :mobile-modal="true"
-                        aria-role="list"
                         trap-focus
                         position="is-bottom-left">
                     <template #trigger>
@@ -50,8 +51,7 @@
                     <b-dropdown-item
                             v-for="term of selected"
                             :key="term.id"
-                            custom
-                            aria-role="list-item">
+                            custom>
                         <label class="b-checkbox checkbox">
                             <input
                                     type="checkbox"
@@ -74,14 +74,16 @@
                     class="field">
                 <b-dropdown
                         id="bulk-actions-dropdown"
+                        v-a11y-dropdown
+                        :trigger-tabindex="-1"
                         :mobile-modal="true"
                         position="is-bottom-left"
                         :disabled="amountOfTermsSelected <= 1"
-                        aria-role="list"
                         trap-focus>
                     <template #trigger>
                         <button
                                 type="button"
+                                :disabled="amountOfTermsSelected <= 1"
                                 class="button is-white">
                             <span>{{ $i18n.get('label_actions_for_the_selection') }}</span>
                             <span class="icon">
@@ -91,15 +93,17 @@
                     </template>
                     <b-dropdown-item
                             id="item-delete-selected-terms"
-                            aria-role="listitem"
-                            @click="$emitter.emit('deleteSelectedTerms')">
+                            @click="$emitter.emit('deleteSelectedTerms')"
+                            @keydown.enter.prevent="$emitter.emit('deleteSelectedTerms')"
+                            @keydown.space.prevent="$emitter.emit('deleteSelectedTerms')">
                         {{ $i18n.get('label_delete_permanently') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="isHierarchical"
                             id="item-update-selected-terms"
-                            aria-role="listitem"
-                            @click="$emitter.emit('updateSelectedTermsParent')">
+                            @click="$emitter.emit('updateSelectedTermsParent')"
+                            @keydown.enter.prevent="$emitter.emit('updateSelectedTermsParent')"
+                            @keydown.space.prevent="$emitter.emit('updateSelectedTermsParent')">
                         {{ $i18n.get('label_update_parent') }}
                     </b-dropdown-item>
                 </b-dropdown>

@@ -1,0 +1,82 @@
+/**
+ * Tainacan Command Palette
+ * 
+ * Registers navigation commands for Tainacan internal pages using the WordPress Command Palette API.
+ * 
+ * @since 1.0.2
+ */
+
+(function() {
+	'use strict';
+
+	// Initialize command palette
+	function initCommandPalette() {
+		// Basic check - dependencies should ensure these are available, but verify just in case
+		if (typeof wp === 'undefined' || typeof wp.data === 'undefined' || typeof wp.data.dispatch === 'undefined') {
+			console.warn('Tainacan Command Palette: WordPress data API not available');
+			return;
+		}
+
+		// Get the commands store dispatcher
+		let registerCommand;
+		try {
+			const commandsStore = wp.data.dispatch('core/commands');
+			if (!commandsStore || typeof commandsStore.registerCommand !== 'function') {
+				console.warn('Tainacan Command Palette: Commands store not available');
+				return;
+			}
+			registerCommand = commandsStore.registerCommand;
+		} catch (e) {
+			console.warn('Tainacan Command Palette: Error accessing commands store:', e);
+			return;
+		}
+
+		// Create Tainacan icon component 
+		const el = wp.element.createElement;
+		const tainacanPath = el('path', {
+			d: 'm0 0c-1e-3 -1e-3 -2e-3 -2e-3 -2e-3 -3e-3 -1e-3 -1e-3 -1e-3 -2e-3 -2e-3 -4e-3 -2.406-5.124-8.984-6.038-18.168-1.738 0.562 2.707 1.173 6.318 1.271 8.865 1e-3 6e-3 0 0.01 0 0.016 2.814 1.819 5.724 4.096 8.638 6.943-0.126 0.069-0.104 0.058 0 0 7.672-4.168 10.486-9.346 8.263-14.079m-10.813 15.346s-1e-3 0-1e-3 1e-3c-2.065-1.992-4.106-3.673-6.085-5.092-0.079 2.372-0.35 4.969-0.911 7.759 2.214-0.673 4.551-1.547 6.996-2.667 0.051 0.049 0.036 0.035 0 0 0-1e-3 1e-3 -1e-3 1e-3 -1e-3m-11.14 15.11c6.71 6.204 12.731 7.242 16.526 3.459 1e-3 0 2e-3 -1e-3 3e-3 -2e-3s1e-3 -2e-3 2e-3 -3e-3c3.809-3.795 2.773-9.847-3.463-16.604-0.03-0.033-0.037-0.039 0 0-0.038 0.018-3.636 1.888-9.577 3.533-0.446 2.465-3.067 8.994-3.491 9.617m2.612-21.846c-3.239-2.04-6.259-3.395-8.876-4.297-0.936 0.721-1.804 1.445-2.61 2.165v1e-3c-1.341 1.31-2.72 2.834-4.09 4.604 0.905 2.643 2.27 5.691 4.327 8.962 2.826 0.221 10.007-1.139 10.026-1.278 0.209-0.031 1.366-7.279 1.223-10.157m-1.147-9.207c-0.304-0.025-4.05 2.071-5.35 3.189v1e-3c2.01 0.761 6.373 2.992 6.373 2.992s7e-3 4e-3 0.01 6e-3c0-5e-3 -0.607-4.211-1.033-6.188m-16.205 3.133c0.059 1.056 0.24 2.919 0.836 5.352 0.639-0.775 3.704-3.826 4.496-4.505-2.413-0.597-4.267-0.782-5.332-0.847m-3.212 16.383c2.028 0.435 4.568 0.908 6.308 1.032 0 1e-3 1e-3 2e-3 1e-3 3e-3 0-1e-3 -1e-3 -2e-3 -1e-3 -3e-3 -1.292-2.246-2.298-4.41-3.081-6.441-1.1 1.616-3.221 5.398-3.227 5.409m0.59 20.584 2e-3 2e-3 3e-3 1e-3c4.788 2.234 10.015-0.674 14.185-8.533-2.828-2.867-5.1-5.73-6.921-8.501 0-1e-3 0-2e-3 -1e-3 -2e-3 1e-3 0 1e-3 1e-3 1e-3 2e-3 -2.581-0.078-5.827-0.743-8.992-1.265-4.441 9.396-3.417 15.899 1.723 18.296m18.017-17.993c-2.755 0.567-5.322 0.853-7.672 0.946 1.409 1.97 3.075 4 5.046 6.053-4e-3 8e-3 1.966-4.785 2.626-6.999m14.909-5.493c6.966 7.825 7.662 14.758 2.855 19.592l-6e-3 6e-3c-4.812 4.838-11.969 4.092-19.629-2.766v-1e-3 1e-3c-4.765 8.608-11.06 11.582-17.108 8.781l-4e-3 -2e-3c-1e-3 0-3e-3 -1e-3 -4e-3 -2e-3 -8.152-3.418-8.996-14.826 2.483-31.416h1e-3c-1e-3 0-1e-3 -1e-3 -1e-3 -1e-3 -1.403-4.747-1.592-8.448-1.596-10.265 1.794-5e-3 5.505 0.165 10.28 1.551 18.709-12.724 28.428-9.343 31.325-2.592 0 1e-3 1e-3 2e-3 2e-3 4e-3 0 1e-3 1e-3 3e-3 2e-3 4e-3 2.822 6.011-0.366 12.678-8.6 17.106',
+			fill: 'currentColor'
+		});
+		// Apply the same transformations as in the original SVG
+		const g1 = el('g', { transform: 'translate(-75.911 -118.89)' }, 
+			el('g', { transform: 'matrix(.35278 0 0 -.35278 92.287 133.94)' }, tainacanPath)
+		);
+		const tainacanIcon = el('svg', {
+			width: 24,
+			height: 24,
+			viewBox: '0 0 17.51 17.554'
+		}, g1);
+
+		// Register commands from menu data passed from PHP
+		try {
+			if (typeof tainacan_commands !== 'undefined' && Array.isArray(tainacan_commands)) {
+				tainacan_commands.forEach(function(command) {
+					if (!command.name || !command.label || !command.url) {
+						return;
+					}
+
+					registerCommand({
+						name: command.name,
+						label: command.label,
+						icon: tainacanIcon,
+						context: 'tainacan',
+						callback: (args) => {
+							const close = args && args.close ? args.close : null;
+							window.location.href = command.url;
+							if (close && typeof close === 'function') {
+								close();
+							}
+						}
+					});
+				});
+			}
+		} catch (e) {
+			console.error('Tainacan Command Palette: Error registering commands:', e);
+		}
+	}
+
+	// Initialize - dependencies ensure wp-commands and wp-i18n are loaded
+	initCommandPalette();
+
+})();
+

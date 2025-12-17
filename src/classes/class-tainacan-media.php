@@ -116,9 +116,70 @@ class Media {
 		);
 	}
 
+	/**
+	 * Gets the CSS styles for media attachment pages.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string CSS content for media attachment pages.
+	 */
+	private static function get_media_page_css() {
+		return <<<'CSS'
+body:not([class]){ 
+  margin: auto; 
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center; 
+  width: 100%;
+  height: 100%;
+}
+body:not([class]) > img {
+  width: auto;
+}
+body:not([class]) > iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 80vh;
+  border: none;
+}
+body:not([class]) > video {
+  width: 100%;
+  height: auto;
+  min-height: 54px;
+  max-height: 100%;
+}
+body:not([class]) > audio {
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+  background: black;
+  min-height: 38px;
+  max-height: 100%;
+}
+body:not([class]) > a,
+body:not([class]) > p {
+  z-index: 99;
+  padding: 1rem 4.33337vw;
+  background: white;
+  border-radius: 3px;
+  word-wrap: break-word;
+}
+CSS;
+	}
+
+	/**
+	 * Adds inline CSS for media attachment pages. (Too small to be a separate file)
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
 	public function add_css() {
-		global $TAINACAN_BASE_URL;
-		wp_enqueue_style( 'tainacan-media-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-media-page.css', [], TAINACAN_VERSION );
+		// Register a minimal style handle and add inline CSS
+		wp_register_style( 'tainacan-media-page', false );
+		wp_enqueue_style( 'tainacan-media-page' );
+		wp_add_inline_style( 'tainacan-media-page', self::get_media_page_css() );
 	}
 
 	public function attachment_page_add_var($vars) {

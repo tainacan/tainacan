@@ -7,7 +7,7 @@
                 class="selection-control">
             <div class="field select-all is-pulled-left">
                 <span>
-                    <b-checkbox 
+                    <b-checkbox
                             :model-value="allCollectionsOnPageSelected" 
                             @update:model-value="selectAllCollectionsOnPage()">
                         {{ $i18n.get('label_select_all_collections_page') }}
@@ -17,12 +17,15 @@
             <div class="field is-pulled-right">
                 <b-dropdown
                         id="bulk-actions-dropdown"
+                        v-a11y-dropdown
+                        :trigger-tabindex="-1"
                         position="is-bottom-left"
                         :disabled="!isSelectingCollections"
-                        aria-role="list"
                         trap-focus>
                     <template #trigger>
-                        <button class="button is-white">
+                        <button 
+                                :disabled="!isSelectingCollections"
+                                class="button is-white">
                             <span>{{ $i18n.get('label_bulk_actions') }}</span>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
@@ -31,13 +34,12 @@
                     </template>
                     <b-dropdown-item
                             id="item-delete-selected-items"
-                            aria-role="listitem"
-                            @click="deleteSelectedCollections()">
+                            @click="deleteSelectedCollections()"
+                            @keydown.enter.prevent="deleteSelectedCollections()"
+                            @keydown.space.prevent="deleteSelectedCollections()">
                         {{ $i18n.get('label_delete_selected_collections') }}
                     </b-dropdown-item>
-                    <!-- <b-dropdown-item 
-                            disabled
-                            aria-role="listitem">{{ $i18n.get('label_edit_selected_collections') + ' (Not ready)' }}
+                    <!-- <b-dropdown-item disabled>{{ $i18n.get('label_edit_selected_collections') + ' (Not ready)' }}
                     </b-dropdown-item> -->
                 </b-dropdown>
             </div>
@@ -56,32 +58,43 @@
                         @click.right="clearContextMenu()" /> 
 
                 <b-dropdown 
+                        v-a11y-dropdown
                         inline
                         :style="{ top: cursorPosY + 'px', left: cursorPosX + 'px' }"
                         trap-focus>
                     <b-dropdown-item
                             v-if="!isOnTrash" 
-                            @click="openCollection()">
+                            @click="openCollection()"
+                            @keydown.enter.prevent="openCollection()"
+                            @keydown.space.prevent="openCollection()">
                         {{ $i18n.getFrom('collections', 'view_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="!isOnTrash"
-                            @click="openCollectionOnNewTab()">
+                            @click="openCollectionOnNewTab()"
+                            @keydown.enter.prevent="openCollectionOnNewTab()"
+                            @keydown.space.prevent="openCollectionOnNewTab()">
                         {{ $i18n.get('label_open_collection_new_tab') }}
                     </b-dropdown-item>
                     <b-dropdown-item 
                             v-if="contextMenuIndex != null"
-                            @click="selectCollection()">
+                            @click="selectCollection()"
+                            @keydown.enter.prevent="selectCollection()"
+                            @keydown.space.prevent="selectCollection()">
                         {{ !selectedCollections[contextMenuIndex] ? $i18n.get('label_select_collection') : $i18n.get('label_unselect_collection') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="contextMenuCollection != null && (collections[contextMenuIndex] && collections[contextMenuIndex].current_user_can_edit)"
-                            @click="goToCollectionEditPage(contextMenuCollection)">
+                            @click="goToCollectionEditPage(contextMenuCollection)"
+                            @keydown.enter.prevent="goToCollectionEditPage(contextMenuCollection)"
+                            @keydown.space.prevent="goToCollectionEditPage(contextMenuCollection)">
                         {{ $i18n.getFrom('collections', 'edit_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="contextMenuCollection != null && (collections[contextMenuIndex] && collections[contextMenuIndex].current_user_can_delete)"
-                            @click="deleteOneCollection(collections[contextMenuIndex])">
+                            @click="deleteOneCollection(collections[contextMenuIndex])"
+                            @keydown.enter.prevent="deleteOneCollection(collections[contextMenuIndex])"
+                            @keydown.space.prevent="deleteOneCollection(collections[contextMenuIndex])">
                         {{ $i18n.get('label_delete_collection') }}
                     </b-dropdown-item>
                 </b-dropdown>
@@ -180,10 +193,10 @@
                                         content: $i18n.get('status_' + collection.status),
                                         autoHide: true,
                                         html: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                        popperClass: ['tainacan-tooltip', 'tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    class="icon has-text-gray">
+                                    class="icon has-text-dark">
                                 <i 
                                         class="tainacan-icon tainacan-icon-1em"
                                         :class="$statusHelper.getIcon(collection.status)"
@@ -220,7 +233,7 @@
                                         content: collection.name,
                                         autoHide: false,
                                         html: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                        popperClass: ['tainacan-tooltip', 'tooltip'],
                                         placement: 'auto-start'
                                     }">
                                 {{ collection.name }}</p>
@@ -229,7 +242,7 @@
                         <td
                                 class="column-large-width" 
                                 :label="$i18n.get('label_description')"
-                                :aria-label="$i18n.get('label_description') + ': ' + (collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`"
+                                :aria-label="$i18n.get('label_description') + ': ' + (collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-dark is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`"
                                 @click.left="onClickCollection($event, collection.id, index)" 
                                 @click.right="onRightClickCollection($event, collection.id, index)">
                             <p
@@ -238,13 +251,13 @@
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: (collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`,
+                                        content: (collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-dark is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`,
                                         autoHide: false,
                                         html: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                        popperClass: ['tainacan-tooltip', 'tooltip'],
                                         placement: 'auto-start'
                                     }" 
-                                    v-html="(collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />
+                                    v-html="(collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-dark is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />
                         </td>
                         <!-- Total items -->
                         <td
@@ -263,7 +276,7 @@
                                         content: getTotalItemsDetailed(collection.total_items),
                                         autoHide: false,
                                         html: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                        popperClass: ['tainacan-tooltip', 'tooltip'],
                                         placement: 'auto-start'
                                     }" 
                                     v-html="getTotalItems(collection.total_items)" />
@@ -284,7 +297,7 @@
                                         content: collection.modification_date,
                                         autoHide: false,
                                         html: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                        popperClass: ['tainacan-tooltip', 'tooltip'],
                                         placement: 'auto-start'
                                     }" 
                                     v-html="collection.modification_date" />
@@ -305,7 +318,7 @@
                                         content: collection.creation_date,
                                         autoHide: false,
                                         html: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                        popperClass: ['tainacan-tooltip', 'tooltip'],
                                         placement: 'auto-start'
                                     }" 
                                     v-html="collection.creation_date" />
@@ -326,7 +339,7 @@
                                         content: collection.author_name,
                                         autoHide: false,
                                         html: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                        popperClass: ['tainacan-tooltip', 'tooltip'],
                                         placement: 'auto-start'
                                     }" 
                                     v-html="collection.author_name" />
@@ -352,7 +365,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
                                                 autoHide: true,
-                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                                popperClass: ['tainacan-tooltip', 'tooltip'],
                                                 placement: 'auto',
                                                 html: true
                                             }"
@@ -365,13 +378,14 @@
                                         :id="'button-delete-' + collection.id"
                                         class="button-delete"
                                         role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneCollection(collection)">
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
                                                 autoHide: true,
-                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                                popperClass: ['tainacan-tooltip', 'tooltip'],
                                                 placement: 'auto'
                                             }"
                                             class="icon">
@@ -391,7 +405,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('label_view_collection_on_website'),
                                                 autoHide: true,
-                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                                popperClass: ['tainacan-tooltip', 'tooltip'],
                                                 placement: 'auto',
                                                 html: true
                                             }"
@@ -630,7 +644,7 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_tables.scss";
+    @use "../../scss/_tables.scss";
 
     .selection-control {
         padding: 6px 0px 0px 12px;

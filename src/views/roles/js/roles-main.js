@@ -15,7 +15,7 @@ import {
 } from 'buefy';
 
 import { I18NPlugin } from './wp-i18n-plugin';
-
+import { A11yDropdownPlugin, A11yTabsPlugin } from '../../admin/js/utilities';
 import RolesPage from '../roles.vue';
 
 // import { configureCompat } from 'vue'
@@ -58,7 +58,8 @@ export default (element) => {
             VueRoles.use(Dropdown);
             VueRoles.use(Checkbox);
             VueRoles.use(Dialog);
-            
+            VueRoles.use(A11yDropdownPlugin);
+            VueRoles.use(A11yTabsPlugin);
             // Changing title of pages
             router.beforeEach((to, from, next) => {
                 document.title = to.meta.title;

@@ -4,8 +4,7 @@
  * This file contains the styles for the Tainacan Admin Pages.
  * 
  */
-@import "./tainacan-basics.scss";
-@import "./tainacan-variables.scss";
+@use "tainacan-basics.scss";
 
 // Basic reset-like rule that appears in Bulma and must exist on other pages
 *, ::before, ::after {

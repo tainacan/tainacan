@@ -10,6 +10,9 @@
             :min="getMin"
             :max="getMax"
             :step="getStep"
+            controls-position="compact"
+            controls-alignment="right"
+            expanded
             @update:model-value="$event =>onInput($event)"
             @blur="onBlur"
             @focus="onMobileSpecialFocus" />

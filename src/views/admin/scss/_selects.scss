@@ -1,84 +1,94 @@
-.select {
-    padding-top: 0px !important;
-    border-radius: var(--tainacan-input-border-radius, 2px);
-    
-    &, 
-    &:not(.is-multiple) {
-        height: auto;
+@mixin tainacan-selects {
+    .select {
+        padding-top: 0px !important;
+        border-radius: var(--tainacan-input-border-radius, 2px);
+        
+        &, 
+        &:not(.is-multiple) {
+            height: auto;
+        }
+        &.is-small select {
+            min-height: 24px !important;
+        }
+        select {
+            background: transparent; // WordPress 5.3 adds arrows here
+            border: none;
+            border-radius: var(--tainacan-input-border-radius, 2px) !important;
+            font-weight: normal;
+            font-size: 0.875em !important;
+            font-family: var(--tainacan-font-family, inherit);
+            line-height: 1.938em !important;
+            height: auto !important;
+            padding: calc(0.375em - 1px) 24px calc(0.375em - 1px) 10px !important;
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            color: var(--tainacan-input-color);
+            option:checked, option:hover {
+                background: var(--tainacan-input-border-color) !important;
+            }
+            &:not(.is-danger):focus,
+            &:not(.is-danger):focus-visible,
+            &:not(.is-danger):active {
+                box-shadow: none !important;
+                text-decoration: none !important;
+                border-color: var(--tainacan-secondary) !important;
+            }
+            &[disabled=disabled],
+            &:disabled {
+                opacity: 0.75;
+                border-color: var(--tainacan-input-disabled-color,var(--tainacan-input-border-color));
+                background: var(--tainacan-input-disabled-color,var(--tainacan-input-border-color)) !important;
+            }
+            &:hover,
+            &:focus {
+                color: var(--tainacan-input-color) !important;
+            }
+            &:hover {
+                border-color: var(--tainacan-input-color) !important;
+            }
+            &:focus-visible {
+                outline-width: 2px;
+                outline-offset: -1px;
+                outline-color: var(--tainacan-secondary);
+                outline-color: color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
+                outline-style: solid;
+                box-shadow: none;
+            }
+            &.has-placeholder-selected,
+            &.has-placeholder-selected:hover,
+            &.has-placeholder-selected:focus {
+                color: var(--tainacan-info-color) !important;
+            }
+        }
+        &:not(.is-loading)::after {
+            content: "arrowdown" !important;
+            font: normal normal normal 20px/1 "TainacanIcons";
+            border: none !important;
+            transform: none !important;
+            right: 10px !important;
+            color: var(--tainacan-secondary) !important;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            margin-top: -0.275em !important;
+            text-transform: none !important;
+            letter-spacing: normal !important;
+            font-size: 1.2em;
+            line-height: 1.5em;
+        }  
+        &.is-loading.is-small::after {
+            font-size: 0.875em;
+        }
+        optgroup,
+        optgroup[label],
+        optgroup::before {
+            font-weight: normal;
+            font-style: italic;
+        }     
     }
-    &.is-small select {
-        min-height: 24px !important;
-    }
-    select {
-        background: transparent; // WordPress 5.3 adds arrows here
-        border: none;
-        border-radius: var(--tainacan-input-border-radius, 2px) !important;
-        font-weight: normal;
-        font-size: 0.875em !important;
-        font-family: var(--tainacan-font-family, inherit);
-        line-height: 1.938em !important;
-        height: auto !important;
-        padding: calc(0.375em - 1px) 24px calc(0.375em - 1px) 10px !important;
-        margin-top: 0px !important;
-        margin-bottom: 0px !important;
-        color: var(--tainacan-input-color);
-        option:checked, option:hover {
-            background: var(--tainacan-input-border-color) !important;
+    @media screen and (max-width: 782px) {
+        .select select {
+            line-height: 2em !important;
         }
-        &:not(.is-danger):focus,
-        &:not(.is-danger):focus-visible,
-        &:not(.is-danger):active {
-            box-shadow: none !important;
-            text-decoration: none !important;
-            border-color: var(--tainacan-secondary) !important;
-        }
-        &[disabled=disabled],
-        &:disabled {
-            opacity: 0.75;
-            border-color: var(--tainacan-input-disabled-color,var(--tainacan-input-border-color));
-            background: var(--tainacan-input-disabled-color,var(--tainacan-input-border-color)) !important;
-        }
-        &:hover,
-        &:focus {
-            color: var(--tainacan-input-color) !important;
-        }
-        &:hover {
-            border-color: var(--tainacan-input-color) !important;
-        }
-        &.has-placeholder-selected,
-        &.has-placeholder-selected:hover,
-        &.has-placeholder-selected:focus {
-            color: var(--tainacan-info-color) !important;
-        }
-    }
-    &:not(.is-loading)::after {
-        content: "arrowdown" !important;
-        font: normal normal normal 20px/1 "TainacanIcons";
-        border: none !important;
-        transform: none !important;
-        right: 10px !important;
-        color: var(--tainacan-secondary) !important;
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        margin-top: -0.275em !important;
-        text-transform: none !important;
-        letter-spacing: normal !important;
-        font-size: 1.2em;
-        line-height: 1.5em;
-    }  
-    &.is-loading.is-small::after {
-        font-size: 0.875em;
-    }
-    optgroup,
-    optgroup[label],
-    optgroup::before {
-        font-weight: normal;
-        font-style: italic;
-    }     
-}
-@media screen and (max-width: 782px) {
-    .select select {
-        line-height: 2em !important;
     }
 }

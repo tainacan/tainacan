@@ -105,7 +105,6 @@ class Embed {
 	 */
 	public function filter_audio_embed($audio, $attr, $url, $rawattr) {
 		
-		
 		if ( ! empty( $attr['width'] ) ) {
 			$dimensions = sprintf( 'width="%d" ', (int) $attr['width'] );
 		}
@@ -184,15 +183,102 @@ class Embed {
 	}
 
 	/**
-	 * Enqueues CSS for responsive embeds.
+	 * Adds inline CSS for responsive embeds.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
+	/**
+	 * Gets the CSS styles for responsive embeds. (Too small to be a separate file)
+	 *
+	 * This CSS copies most of Gutenberg's logic for responsive blocks,
+	 * but uses different classes to avoid future conflicts.
+	 * Check their original css: /packages/block-library/src/embed/style.scss
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string CSS content for responsive embeds.
+	 */
+	private static function get_embeds_css() {
+		return <<<'CSS'
+/* TAINACAN EMBEDS 
+ * This file copies most of Gutenberg's logic for responsive blocks,
+ * but uses different classes to avoid future conflicts.
+ * Check their original css: /packages/block-library/src/embed/style.scss
+ */
+
+/* 
+ * The embed container is in a `figure` element, and many themes zero this out.
+ * This rule explicitly sets it, to ensure at least some bottom-margin in the flow.
+ */
+:not(.wp-block-embed__wrapper)>.tainacan-content-embed {
+	margin-bottom: 1em;
+	margin-left: 0;
+	margin-right: 0;
+	clear: both;
+}
+/* Don't allow iframe to overflow it's container. */
+:not(.wp-block-embed__wrapper)>.tainacan-content-embed iframe {
+  max-width: 100%;
+}
+:not(.wp-block-embed__wrapper)>.tainacan-content-embed .tainacan-content-embed__wrapper {
+	position: relative;
+}
+/* Add responsiveness to embeds with aspect ratios. */
+:not(.wp-block-embed__wrapper)>.tainacan-has-aspect-ratio .tainacan-content-embed__wrapper::before {
+	content: "";
+	display: block;
+	padding-top: 50%; /* Default to 2:1 aspect ratio. */
+}
+:not(.wp-block-embed__wrapper)>.tainacan-has-aspect-ratio iframe {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+}
+:not(.wp-block-embed__wrapper)>.tainacan-embed-aspect-21-9 .tainacan-content-embed__wrapper::before {
+	padding-top: 42.85%; /* 9 / 21 * 100 */
+}
+:not(.wp-block-embed__wrapper)>.tainacan-embed-aspect-18-9 .tainacan-content-embed__wrapper::before {
+	padding-top: 50%; /* 9 / 18 * 100 */
+}
+:not(.wp-block-embed__wrapper)>.tainacan-embed-aspect-16-9 .tainacan-content-embed__wrapper::before {
+	padding-top: 56.25%; /* 9 / 16 * 100 */
+}
+:not(.wp-block-embed__wrapper)>.tainacan-embed-aspect-4-3 .tainacan-content-embed__wrapper::before {
+	padding-top: 75%; /* 3 / 4 * 100 */
+}
+:not(.wp-block-embed__wrapper)>.tainacan-embed-aspect-1-1 .tainacan-content-embed__wrapper::before {
+	padding-top: 100%; /* 1 / 1 * 100 */
+}
+:not(.wp-block-embed__wrapper)>.tainacan-embed-aspect-9-16 .tainacan-content-embed__wrapper::before {
+	padding-top: 177.77%; /* 16 / 9 * 100 */
+}
+:not(.wp-block-embed__wrapper)>.tainacan-embed-aspect-3-4 .tainacan-content-embed__wrapper::before {
+	padding-top: 133.33%; /* 4 / 3 * 100 */
+}
+:not(.wp-block-embed__wrapper)>.tainacan-embed-aspect-1-2 .tainacan-content-embed__wrapper::before {
+	padding-top: 200%; /* 2 / 1 * 100 */
+}
+CSS;
+	}
+
+	/**
+	 * Adds inline CSS for responsive embeds.
 	 *
 	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
 	public function add_css() {
-		global $TAINACAN_BASE_URL;
-		wp_enqueue_style( 'tainacan-embeds', $TAINACAN_BASE_URL . '/assets/css/tainacan-embeds.css', [], TAINACAN_VERSION );
+		// Register a minimal style handle and add inline CSS
+		wp_register_style( 'tainacan-embeds-inline', false );
+		wp_enqueue_style( 'tainacan-embeds-inline' );
+		wp_add_inline_style( 'tainacan-embeds-inline', self::get_embeds_css() );
 	}
 
 	/**

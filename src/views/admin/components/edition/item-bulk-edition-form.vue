@@ -61,12 +61,12 @@
                     </p>
                     <p    
                             v-if="uploadedItems.length > 0 && (uploadedItems.length - amountFinished) > 1"
-                            class="has-text-gray">
+                            class="has-text-dark">
                         {{ $i18n.getWithVariables('label_%s_files_remaining', [(uploadedItems.length - amountFinished)]) }}
                     </p>
                     <p    
                             v-if="uploadedItems.length > 0 && (uploadedItems.length - amountFinished) == 1"
-                            class="has-text-gray">
+                            class="has-text-dark">
                         {{ $i18n.get('label_one_file_remaining') }}
                     </p>
                 </div>
@@ -177,7 +177,7 @@
         </form>
         <template v-else-if="!isLoading && collection && !collection.current_user_can_bulk_edit">
             <section class="section">
-                <div class="content has-text-gray has-text-centered">
+                <div class="content has-text-dark has-text-centered">
                     <p>
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-collection" />

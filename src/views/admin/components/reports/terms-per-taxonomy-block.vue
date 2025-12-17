@@ -13,7 +13,7 @@
             class="report-card is-full">
         <div class="empty-report-card-placeholder">
             <p class="title is-4">
-                <span class="icon has-text-gray">
+                <span class="icon has-text-dark">
                     <i class="tainacan-icon tainacan-icon-taxonomies tainacan-icon-1-125em" />
                 </span>
                 &nbsp;{{ $i18n.get('taxonomies') }}

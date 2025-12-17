@@ -63,13 +63,16 @@
                 <b-dropdown
                         v-if="Array.isArray(items) && items.length > 0"
                         id="bulk-actions-dropdown"
+                        v-a11y-dropdown
+                        :trigger-tabindex="-1"
                         :mobile-modal="true"
                         position="is-bottom-left"
                         :disabled="selectedItems.length <= 1"
-                        aria-role="list"
                         trap-focus>
                     <template #trigger>
-                        <button class="button is-white">
+                        <button 
+                                :disabled="selectedItems.length <= 1"
+                                class="button is-white">
                             <span>{{ $i18n.get('label_actions_for_the_selection') }}</span>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
@@ -78,39 +81,45 @@
                     </template>
                     <b-dropdown-item
                             v-if="!isAllItemsSelected && selectedItems.length"
-                            aria-role="listitem"
-                            @click="filterBySelectedItems()">
+                            @click="filterBySelectedItems()"
+                            @keydown.enter.prevent="filterBySelectedItems()"
+                            @keydown.space.prevent="filterBySelectedItems()">
                         {{ $i18n.get('label_view_only_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="$route.params.collectionId && !isOnTrash"
-                            aria-role="listitem"
-                            @click="openBulkEditionModal()">
+                            @click="openBulkEditionModal()"
+                            @keydown.enter.prevent="openBulkEditionModal()"
+                            @keydown.space.prevent="openBulkEditionModal()">
                         {{ $i18n.get('label_bulk_edit_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="$route.params.collectionId && !isOnTrash"
-                            aria-role="listitem"
-                            @click="sequenceEditSelectedItems()">
+                            @click="sequenceEditSelectedItems()"
+                            @keydown.enter.prevent="sequenceEditSelectedItems()"
+                            @keydown.space.prevent="sequenceEditSelectedItems()">
                         {{ $i18n.get('label_sequence_edit_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="collectionId && collection && collection.current_user_can_delete_items"
                             id="item-delete-selected-items"
-                            aria-role="listitem"
-                            @click="deleteSelectedItems()">
+                            @click="deleteSelectedItems()"
+                            @keydown.enter.prevent="deleteSelectedItems()"
+                            @keydown.space.prevent="deleteSelectedItems()">
                         {{ isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('label_send_to_trash') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="collectionId && isOnTrash"
-                            aria-role="listitem"
-                            @click="untrashSelectedItems();">
+                            @click="untrashSelectedItems()"
+                            @keydown.enter.prevent="untrashSelectedItems()"
+                            @keydown.space.prevent="untrashSelectedItems()">
                         {{ $i18n.get('label_untrash_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             :disabled="isAllItemsSelected"
-                            aria-role="listitem"
-                            @click="$parent.openExposersModal(selectedItems)">
+                            @click="$parent.openExposersModal(selectedItems)"
+                            @keydown.enter.prevent="$parent.openExposersModal(selectedItems)"
+                            @keydown.space.prevent="$parent.openExposersModal(selectedItems)">
                         {{ $i18n.get('label_view_selected_items_as') }}
                     </b-dropdown-item>
                 </b-dropdown>
@@ -131,6 +140,7 @@
                         @click.right="clearContextMenu()" />
 
                 <b-dropdown
+                        v-a11y-dropdown
                         inline
                         :style="{ top: cursorPosY + 'px', left: cursorPosX + 'px' }"
                         trap-focus>
@@ -210,7 +220,7 @@
                                         show: 500,
                                         hide: 300,
                                     },
-                                    content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
+                                    content: item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
                                     html: true,
                                     autoHide: false,
                                     placement: 'auto-start',
@@ -226,7 +236,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }"
-                                    class="icon has-text-gray">
+                                    class="icon has-text-dark">
                                 <i 
                                         class="tainacan-icon tainacan-icon-1em"
                                         :class="$statusHelper.getIcon(item.status)"
@@ -247,7 +257,7 @@
                                 :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 255)"
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
                                 :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
-                                :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
                                 :transition-duration="500"
                             />
                     </a>
@@ -280,6 +290,7 @@
                                 :id="'button-untrash-' + item.id"
                                 class="button-untrash" 
                                 role="button"
+                                tabindex="0"
                                 :aria-label="$i18n.get('label_button_untrash')"
                                 @click.prevent.stop="untrashOneItem(item.id)">
                             <span
@@ -298,6 +309,7 @@
                                 :id="'button-delete-' + item.id"
                                 class="button-delete" 
                                 role="button"
+                                tabindex="0"
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item)">
                             <span
@@ -401,7 +413,7 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             placement: 'auto-start'
                                         }"
-                                        class="icon has-text-gray">
+                                        class="icon has-text-dark">
                                     <i 
                                             class="tainacan-icon tainacan-icon-1em"
                                             :class="$statusHelper.getIcon(item.status)"
@@ -420,7 +432,7 @@
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full')"
                                 :src="$thumbHelper.getSrc(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', item.document_mimetype)"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', item.document_mimetype)"
-                                :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
                                 :transition-duration="500"
                             />
 
@@ -452,6 +464,7 @@
                                     :id="'button-untrash-' + item.id"
                                     class="button-untrash" 
                                     role="button"
+                                    tabindex="0"
                                     :aria-label="$i18n.get('label_button_untrash')"
                                     @click.prevent.stop="untrashOneItem(item.id)">
                                 <span
@@ -470,6 +483,7 @@
                                     :id="'button-delete-' + item.id"
                                     class="button-delete" 
                                     role="button"
+                                    tabindex="0"
                                     :aria-label="$i18n.get('label_button_delete')" 
                                     @click.prevent.stop="deleteOneItem(item)">
                                 <span
@@ -555,7 +569,7 @@
                                         show: 500,
                                         hide: 300,
                                     },
-                                    content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
+                                    content: item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
                                     html: true,
                                     autoHide: false,
                                     placement: 'auto-start',
@@ -571,7 +585,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }"
-                                    class="icon has-text-gray">
+                                    class="icon has-text-dark">
                                 <i 
                                         class="tainacan-icon tainacan-icon-1em"
                                         :class="$statusHelper.getIcon(item.status)"
@@ -608,6 +622,7 @@
                                 :id="'button-untrash-' + item.id"
                                 class="button-untrash" 
                                 role="button"
+                                tabindex="0"
                                 :aria-label="$i18n.get('label_button_untrash')"
                                 @click.prevent.stop="untrashOneItem(item.id)">
                             <span
@@ -626,6 +641,7 @@
                                 :id="'button-delete-' + item.id"
                                 class="button-delete" 
                                 role="button"
+                                tabindex="0"
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item)">
                             <span
@@ -678,7 +694,7 @@
                                     :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 120)"
                                     :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
                                     :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
-                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
                                     :transition-duration="500"
                                 />
                         </div>
@@ -692,14 +708,14 @@
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`,
+                                        content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-grey is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`,
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start',
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="metadata-description"
-                                    v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />
+                                    v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-grey is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />
                             <!-- Author-->
                             <p
                                     v-tooltip="{
@@ -791,7 +807,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }"
-                                    class="icon has-text-gray">
+                                    class="icon has-text-dark">
                                 <i 
                                         class="tainacan-icon tainacan-icon-1em"
                                         :class="$statusHelper.getIcon(item.status)"
@@ -820,7 +836,7 @@
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
+                                        content: item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start',
@@ -828,7 +844,7 @@
                                     }"
                                     @click.left="onClickItem($event, item)"
                                     @click.right="onRightClickItem($event, item)"
-                                    v-html="item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
+                                    v-html="item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                         </div>
                         <!-- Actions -->
                         <div
@@ -858,6 +874,7 @@
                                     :id="'button-untrash-' + item.id"
                                     class="button-untrash" 
                                     role="button"
+                                    tabindex="0"
                                     :aria-label="$i18n.get('label_button_untrash')"
                                     @click.prevent.stop="untrashOneItem(item.id)">
                                 <span
@@ -876,6 +893,7 @@
                                     :id="'button-delete-' + item.id"
                                     class="button-delete" 
                                     role="button"
+                                    tabindex="0"
                                     :aria-label="$i18n.get('label_button_delete')" 
                                     @click.prevent.stop="deleteOneItem(item)">
                                 <span
@@ -928,7 +946,7 @@
                                             :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium-full')"
                                             :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                             :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
-                                            :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                            :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
                                             :transition-duration="500"
                                             @click.left="onClickItem($event, item)"
                                             @click.right="onRightClickItem($event, item)"
@@ -1064,7 +1082,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }"
-                                    class="icon has-text-gray">
+                                    class="icon has-text-dark">
                                 <i 
                                         class="tainacan-icon tainacan-icon-1em"
                                         :class="$statusHelper.getIcon(item.status)"
@@ -1104,13 +1122,13 @@
                                                 show: 500,
                                                 hide: 300,
                                             },
-                                            content: item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
+                                            content: item.title != undefined && item.title != '' ? item.title : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                             html: true,
                                             autoHide: false,
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             placement: 'auto-start'
                                         }"
-                                        v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.title != undefined && item.title != '') ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
+                                        v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.title != undefined && item.title != '') ? item.title : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                                 <p
                                         v-if="collectionId == undefined &&
                                             column.metadata_type_object != undefined &&
@@ -1120,13 +1138,13 @@
                                                 show: 500,
                                                 hide: 300,
                                             },
-                                            content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
+                                            content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                             html: true,
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
-                                        v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.description != undefined && item.description) != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
+                                        v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.description != undefined && item.description) != '' ? item.description : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                                 <p
                                         v-if="item.metadata != undefined &&
                                             column.metadatum !== 'row_thumbnail' &&
@@ -1142,12 +1160,12 @@
                                                 hide: 300,
                                             },
                                             popperClass: [ 'tainacan-tooltip', 'tooltip', column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
-                                            content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
+                                            content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                             html: true,
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
-                                        v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`" />
+                                        v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`" />
 
                                 <span 
                                         v-if="column.metadatum == 'row_thumbnail'"
@@ -1241,6 +1259,7 @@
                                         :id="'button-untrash-' + item.id"
                                         class="button-untrash" 
                                         role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('label_button_untrash')"
                                         @click.prevent.stop="untrashOneItem(item.id)">
                                     <span
@@ -1259,6 +1278,7 @@
                                         :id="'button-delete-' + item.id"
                                         class="button-delete" 
                                         role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneItem(item)">
                                     <span
@@ -1355,7 +1375,7 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }"
-                                class="icon has-text-gray">
+                                class="icon has-text-dark">
                             <i 
                                     class="tainacan-icon tainacan-icon-1em"
                                     :class="$statusHelper.getIcon(item.status)"
@@ -1384,7 +1404,7 @@
                                         show: 500,
                                         hide: 300,
                                     },
-                                    content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
+                                    content: item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
                                     html: true,
                                     autoHide: false,
                                     placement: 'auto-start',
@@ -1392,7 +1412,7 @@
                                 }"
                                 @click.left="onClickItem($event, item)"
                                 @click.right="onRightClickItem($event, item)"
-                                v-html="item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />                 
+                                v-html="item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />                 
                     </div>
 
                     <!-- Actions -->
@@ -1423,6 +1443,7 @@
                                 :id="'button-untrash-' + item.id"
                                 class="button-untrash" 
                                 role="button"
+                                tabindex="0"
                                 :aria-label="$i18n.get('label_button_untrash')"
                                 @click.prevent.stop="untrashOneItem(item.id)">
                             <span
@@ -1441,6 +1462,7 @@
                                 :id="'button-delete-' + item.id"
                                 class="button-delete" 
                                 role="button"
+                                tabindex="0"
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item)">
                             <span
@@ -1494,7 +1516,7 @@
                                     :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium-full')"
                                     :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                     :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
-                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
                                     :transition-duration="500"
                                     @click.left="onClickItem($event, item)"
                                     @click.right="onRightClickItem($event, item)"
@@ -1595,7 +1617,7 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             placement: 'auto-start'
                                         }"
-                                        class="icon has-text-gray">
+                                        class="icon has-text-dark">
                                     <i 
                                             class="tainacan-icon tainacan-icon-1em"
                                             :class="$statusHelper.getIcon(item.status)"
@@ -1614,7 +1636,7 @@
                                             placement: 'auto-start',
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                         }"
-                                        v-html="item.metadata != undefined ? renderMetadata(item.metadata, titleItemMetadatum) : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
+                                        v-html="item.metadata != undefined ? renderMetadata(item.metadata, titleItemMetadatum) : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                                 <p
                                         v-if="collectionId == undefined && titleItemMetadatum"
                                         v-tooltip="{
@@ -1622,13 +1644,13 @@
                                                 show: 500,
                                                 hide: 300,
                                             },
-                                            content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
+                                            content: item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
                                             html: true,
                                             autoHide: false,
                                             placement: 'auto-start',
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                         }"
-                                        v-html="item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
+                                        v-html="item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                                 <div class="tainacan-map-card-thumbnail">
                                     <blur-hash-image
                                             v-if="item.thumbnail != undefined"
@@ -1638,7 +1660,7 @@
                                             :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-small')"
                                             :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)"
                                             :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-small', item.document_mimetype)"
-                                            :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                            :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
                                             :transition-duration="500"
                                         />
                                 </div>
@@ -1671,6 +1693,7 @@
                                         :id="'button-untrash-' + item.id"
                                         class="button-untrash" 
                                         role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('label_button_untrash')"
                                         @click.prevent.stop="untrashOneItem(item.id)">
                                     <span
@@ -1689,6 +1712,7 @@
                                         :id="'button-delete-' + item.id"
                                         class="button-delete" 
                                         role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneItem(item)">
                                     <span
@@ -1787,7 +1811,7 @@
                             <section 
                                     v-else
                                     class="section">
-                                <div class="content has-text-gray has-text-centered">
+                                <div class="content has-text-dark has-text-centered">
                                     <p style="margin-bottom: 0px">
                                         <span class="icon is-large">
                                             <i>
@@ -1846,7 +1870,7 @@
                                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                     placement: 'auto-start'
                                                 }"
-                                                class="icon has-text-gray">
+                                                class="icon has-text-dark">
                                             <i 
                                                     class="tainacan-icon tainacan-icon-1em"
                                                     :class="$statusHelper.getIcon(item.status)"
@@ -1875,7 +1899,7 @@
                                                         show: 500,
                                                         hide: 300,
                                                     },
-                                                    content: item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
+                                                    content: item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`),
                                                     html: true,
                                                     autoHide: false,
                                                     placement: 'auto-start',
@@ -1883,7 +1907,7 @@
                                                 }"
                                                 @click.left="onClickItem($event, item)"
                                                 @click.right="onRightClickItem($event, item)"
-                                                v-html="item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
+                                                v-html="item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                                     </div>
 
                                     <!-- Actions -->
@@ -1896,6 +1920,7 @@
                                                 :id="'button-show-location-' + item.id"
                                                 class="button-show-location"
                                                 role="button"
+                                                tabindex="0"
                                                 :aria-label="$i18n.get('label_show_item_location_on_map')"
                                                 @click.prevent.stop="showLocationsByItem(item)">
                                             <span
@@ -1939,6 +1964,7 @@
                                                 :id="'button-untrash-' + item.id"
                                                 class="button-untrash" 
                                                 role="button"
+                                                tabindex="0"
                                                 :aria-label="$i18n.get('label_button_untrash')"
                                                 @click.prevent.stop="untrashOneItem(item.id)">
                                             <span
@@ -1957,6 +1983,7 @@
                                                 :id="'button-delete-' + item.id"
                                                 class="button-delete" 
                                                 role="button"
+                                                tabindex="0"
                                                 :aria-label="$i18n.get('label_button_delete')" 
                                                 @click.prevent.stop="deleteOneItem(item)">
                                             <span
@@ -2009,7 +2036,7 @@
                                                         :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium-full')"
                                                         :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                                         :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
-                                                        :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                                        :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
                                                         :transition-duration="500"
                                                         @click.left="onClickItem($event, item)"
                                                         @click.right="onRightClickItem($event, item)"
@@ -2086,7 +2113,7 @@
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-large-full')"
                                 :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-large-full', item.document_mimetype)"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-large-full', item.document_mimetype)"
-                                :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
                                 :transition-duration="500"
                             />
 
@@ -2138,7 +2165,7 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             placement: 'auto-start'
                                         }"
-                                        class="icon has-text-gray">
+                                        class="icon has-text-dark">
                                     <i 
                                             class="tainacan-icon tainacan-icon-1em"
                                             :class="$statusHelper.getIcon(item.status)"
@@ -2176,6 +2203,7 @@
                                     :id="'button-untrash-' + item.id"
                                     class="button-untrash" 
                                     role="button"
+                                    tabindex="0"
                                     :aria-label="$i18n.get('label_button_untrash')"
                                     @click.prevent.stop="untrashOneItem(item.id)">
                                 <span
@@ -2194,6 +2222,7 @@
                                     :id="'button-delete-' + item.id"
                                     class="button-delete" 
                                     role="button"
+                                    tabindex="0"
                                     :aria-label="$i18n.get('label_button_delete')" 
                                     @click.prevent.stop="deleteOneItem(item)">
                                 <span
@@ -2997,17 +3026,17 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_tables.scss";
-    @import "../../scss/_view-mode-cards.scss";
-    @import "../../scss/_view-mode-masonry.scss";
-    @import "../../scss/_view-mode-mosaic.scss";
-    @import "../../scss/_view-mode-grid.scss";
-    @import "../../scss/_view-mode-records.scss";
-    @import "../../scss/_view-mode-list.scss";
-    @import "../../scss/_view-mode-map.scss";
+    @use "../../scss/_tables.scss";
+    @use "../../scss/_view-mode-cards.scss";
+    @use "../../scss/_view-mode-masonry.scss";
+    @use "../../scss/_view-mode-mosaic.scss";
+    @use "../../scss/_view-mode-grid.scss";
+    @use "../../scss/_view-mode-records.scss";
+    @use "../../scss/_view-mode-list.scss";
+    @use "../../scss/_view-mode-map.scss";
     
     // Vue Blurhash transtition effect
-    @import '../../../../../node_modules/another-vue3-blurhash/dist/style.css';
+    @import url('../../../../../node_modules/another-vue3-blurhash/dist/style.css');
     :deep(canvas.child) {
         max-width: 100%;
     }

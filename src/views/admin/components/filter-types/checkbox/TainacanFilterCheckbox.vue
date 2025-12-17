@@ -35,7 +35,7 @@
                             </span> 
                             <span 
                                     v-if="option.total_items != undefined"
-                                    class="facet-item-count has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
+                                    class="facet-item-count has-text-dark">&nbsp;{{ "(" + option.total_items + ")" }}</span>
                         </span>
                     </label>
                     <button
@@ -235,7 +235,6 @@
     
     .view-all-button {
         font-size: 0.75em !important;
-        padding: 0.1em 1em;
     }
 
     .is-loading:after {

@@ -45,7 +45,7 @@
             <section 
                     v-else
                     class="section">
-                <div class="content has-text-gray has-text-centered">
+                <div class="content has-text-dark has-text-centered">
                     <p>
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-metadata" />
@@ -216,7 +216,7 @@ export default {
             display: inline-flex;
             align-items: center;
             margin-left: -0.875em;
-            margin-right: auto;
+            margin-right: auto !important;
         }
         .loading-spinner {
             animation: spinAround 500ms infinite linear;

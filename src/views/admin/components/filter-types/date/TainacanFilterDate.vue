@@ -2,8 +2,9 @@
     <div class="date-filter-container">
         <b-dropdown
                 v-if="filterTypeOptions.comparators.length > 1"
+                v-a11y-dropdown
+                :trigger-tabindex="-1"
                 :mobile-modal="true"
-                aria-role="list"
                 trap-focus
                 @update:model-value="($event) => { resetPage(); onChangeComparator($event) }">
             <template #trigger>
@@ -26,7 +27,6 @@
                         role="button"
                         :class="{ 'is-active': comparator == comparatorKey }"
                         :value="comparatorKey"
-                        aria-role="listitem"
                         v-html="comparatorObject.symbol + '&nbsp;' + comparatorObject.label" />
             </template>
         </b-dropdown>
@@ -34,6 +34,8 @@
                 v-model="value"
                 position="is-bottom-right"
                 :aria-labelledby="'filter-label-id-' + filter.id"
+                :aria-next-label="$i18n.get('label_next_month')"
+                :aria-previous-label="$i18n.get('label_previous_month')"
                 :placeholder="filter.placeholder ? filter.placeholder : $i18n.get('instruction_select_a_date')"
                 editable
                 :trap-focus="false"

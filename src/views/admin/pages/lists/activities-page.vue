@@ -82,6 +82,8 @@
                 <b-datepicker
                         ref="datepicker"
                         v-model="searchDates"
+                        :aria-next-label="$i18n.get('label_next_month')"
+                        :aria-previous-label="$i18n.get('label_previous_month')"
                         :placeholder="$i18n.get('label_range_of_dates')"
                         range
                         position="is-bottom-left"
@@ -143,7 +145,7 @@
                     :activities="activities" />
             <template v-if="!$userCaps.hasCapability('tnc_rep_read_logs')">
                 <section class="section">
-                    <div class="content has-text-gray has-text-centered">
+                    <div class="content has-text-dark has-text-centered">
                         <p>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities" />
@@ -187,6 +189,7 @@
                 <div class="pagination">
                     <b-pagination
                             v-model="activitiesPage"
+                            :aria-label="$i18n.get('label_pagination')"
                             :total="totalActivities"
                             order="is-centered"
                             size="is-small"

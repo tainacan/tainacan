@@ -60,9 +60,11 @@
                 class="collapse show disabled-filter">
             <div class="collapse-trigger">
                 <button
+                        :id="'filter-load-button-id-' + filter.id"
                         :for="'filter-input-id-' + filter.id"
+                        :aria-label="loadFilterAriaLabel"
                         class="label"
-                        @click="displayFilter = true">
+                        @click="appendRealFilter">
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-arrowright tainacan-icon-1-25em" />
                     </span>
@@ -165,6 +167,9 @@
         computed: {
             beginWithFilterCollapsed() {
                 return this.filter && this.filter.begin_with_filter_collapsed && this.filter.begin_with_filter_collapsed === 'yes';
+            },
+            loadFilterAriaLabel() {
+                return this.$i18n.getWithVariables('instruction_click_to_load_filter_%s', [this.filter.name]);
             }
         },
         watch: {
@@ -200,6 +205,17 @@
                         })
                     }
                 }
+            },
+            appendRealFilter() {
+                this.displayFilter = true;
+                // Wait for Vue to update the DOM and render the collapse component
+                this.$nextTick(() => {
+                    // Focus on the newly revealed collapse trigger button
+                    const collapseButton = document.getElementById('filter-label-id-' + this.filter.id);
+                    if (collapseButton) {
+                        collapseButton.focus();
+                    }
+                });
             }
         }
     }
@@ -220,6 +236,15 @@
             button {
                 background-color: inherit !important;
                 color: inherit !important;
+
+                &:focus-visible {
+                    outline-width: 2px;
+                    outline-offset: -1px;
+                    outline-color: var(--tainacan-secondary);
+                    outline-color: color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
+                    outline-style: solid;
+                    box-shadow: none;
+                }
             }
             .icon {
                 margin-right: 5px;
@@ -315,14 +340,9 @@
             .tags {
                 display: none !important;
             }
-        }
-
-        .input {
-            overflow: hidden;
-            display: unset;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            height: auto;
+            .autocomplete {
+                width: 100%;
+            }
         }
 
         .control:not(.taginput) {

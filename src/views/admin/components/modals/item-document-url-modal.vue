@@ -31,7 +31,10 @@
                         :aria-minus-label="$i18n.get('label_decrease')"
                         :aria-plus-label="$i18n.get('label_increase')" 
                         min="1"
-                        step="1" />
+                        step="1"
+                        controls-position="compact"
+                        controls-alignment="right"
+                        expanded />
             </b-field>
             <b-field :label="$i18n.get('label_document_option_iframe_height')">
                 <b-numberinput
@@ -39,10 +42,12 @@
                         :aria-minus-label="$i18n.get('label_decrease')"
                         :aria-plus-label="$i18n.get('label_increase')" 
                         min="1"
-                        step="1" />
+                        step="1"
+                        controls-position="compact"
+                        controls-alignment="right"
+                        expanded />
             </b-field>
         </b-field>
-        <br v-if="localUrlForcedIframe">
         <p 
                 v-if="localUrlForcedIframe"
                 class="help">

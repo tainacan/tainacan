@@ -1,9 +1,15 @@
 <template>
     <form 
-            tabindex="0"
+            id="advanced-search-form"
+            ref="advancedSearchForm"
+            tabindex="-1"
             class="tnc-advanced-search-container"
+            role="search"
+            aria-labelledby="advanced-search-heading"
             @submit.prevent.stop="performAdvancedSearch">
-        <h3>{{ $i18n.get('advanced_search') }}</h3>
+        <h3 id="advanced-search-heading">
+            {{ $i18n.get('advanced_search') }}
+        </h3>
         <transition-group name="filter-item">
             <b-field
                     v-for="(searchCriterion, index) in searchCriteria"
@@ -146,8 +152,11 @@
                     <button
                             class="button button-remove-criterion is-pulled-right has-text-secondary"
                             type="button"
+                            tabindex="0"
                             :aria-label="$i18n.get('remove_search_criterion')"
-                            @click.prevent="removeCriterion(searchCriterion)">
+                            @click.prevent="removeCriterion(searchCriterion)"
+                            @keydown.enter.prevent="removeCriterion(searchCriterion)"
+                            @keydown.space.prevent="removeCriterion(searchCriterion)">
                         <span 
                                 v-tooltip="{
                                     content: $i18n.get('remove_search_criterion'),
@@ -166,8 +175,12 @@
         <!-- Add button -->
         <div class="add-link-advanced-search">
             <a 
+                    ref="addCriterionButton"
                     role="button"
-                    @click="addSearchCriteria">
+                    tabindex="0"
+                    @click="addSearchCriteria"
+                    @keydown.enter.prevent="addSearchCriteria"
+                    @keydown.space.prevent="addSearchCriteria">
                 <span class="icon">
                     <i class="has-text-secondary tainacan-icon tainacan-icon-add" />
                 </span>
@@ -179,7 +192,10 @@
             <a
                     v-if="Object.keys(advancedSearchQuery.taxquery).length > 0 || Object.keys(advancedSearchQuery.metaquery).length > 0"
                     role="button"
-                    @click="clearSearch();">
+                    tabindex="0"
+                    @click="clearSearch();"
+                    @keydown.enter.prevent="clearSearch();"
+                    @keydown.space.prevent="clearSearch();">
                 <span class="icon">
                     <i class="has-text-secondary tainacan-icon tainacan-icon-remove" />
                 </span>
@@ -217,7 +233,7 @@
         <section
                 v-if="!isLoadingMetadata && metadataAsArray && metadataAsArray.length <= 0"
                 class="field is-grouped-centered section">
-            <div class="content has-text-gray has-text-centered">
+            <div class="content has-text-dark has-text-centered">
                 <p>
                     <span class="icon is-large">
                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
@@ -292,6 +308,20 @@
             }
         },
         mounted() {
+            // Focus the first interactive element when component is mounted
+            this.$nextTick(() => {
+                if (this.$refs.advancedSearchForm) {
+                    // Try to find and focus the first select element
+                    const firstSelect = this.$refs.advancedSearchForm.querySelector('select:not([disabled])');
+                    if (firstSelect) {
+                        firstSelect.focus();
+                    } else {
+                        // Fallback: focus the form itself
+                        this.$refs.advancedSearchForm.focus();
+                    }
+                }
+            });
+
             this.isLoadingMetadata = true;
 
             this.fetchMetadata({

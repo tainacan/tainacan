@@ -3,7 +3,11 @@
         <a
                 v-if="!hideCollapses && childItemMetadataGroups.length > 0"
                 class="collapse-all"
-                @click="toggleCollapseAllChildren()">
+                role="button"
+                tabindex="0"
+                @click="toggleCollapseAllChildren()"
+                @keydown.enter.prevent="toggleCollapseAllChildren()"
+                @keydown.space.prevent="toggleCollapseAllChildren()">
             <span class="icon">
                 <i
                         :class="{ 'tainacan-icon-arrowdown' : collapseAllChildren, 'tainacan-icon-arrowright' : !collapseAllChildren }"
@@ -86,7 +90,11 @@
                 <a 
                         v-if="isMultiple" 
                         class="add-link"
-                        @click="removeGroup(groupIndex)">
+                        role="button"
+                        tabindex="0"
+                        @click="removeGroup(groupIndex)"
+                        @keydown.enter.prevent="removeGroup(groupIndex)"
+                        @keydown.space.prevent="removeGroup(groupIndex)">
                     <span class="icon is-small">
                         <i class="tainacan-icon has-text-secondary tainacan-icon-remove" />
                     </span>
@@ -111,7 +119,11 @@
                 v-if="isMultiple && (maxMultipleValues === undefined || maxMultipleValues === 0 || (maxMultipleValues !== 1 && maxMultipleValues > childItemMetadataGroups.length))"
                 :disabled="itemMetadatum.item.id && (childItemMetadataGroups.length > 0 && !someValueOnLastInput)"
                 class="is-inline-block add-link"
-                @click="addGroup">
+                role="button"
+                tabindex="0"
+                @click="addGroup"
+                @keydown.enter.prevent="addGroup"
+                @keydown.space.prevent="addGroup">
             <span class="icon is-small">
                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
             </span>

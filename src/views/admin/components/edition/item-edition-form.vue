@@ -36,7 +36,7 @@
                 </span>
                 <span
                         v-if="$adminOptions.itemEditionStatusOptionOnFooterDropdown && (item != null && item != undefined && item.status != undefined && item.status != 'autodraft' && !isLoading)"
-                        class="icon has-text-gray4"
+                        class="icon has-text-dark"
                         style="margin-left: 0.5em;"
                         @mouseenter="$emit('toggleItemEditionFooterDropdown')">
                     <i 
@@ -197,26 +197,36 @@
                         </template>
 
                         <div class="b-tabs">
-                            <nav 
+                            <div 
                                     v-if="tabs.length >= 2"
                                     id="tainacanTabsSwiper"       
                                     class="swiper tabs">
-                                <ul class="swiper-wrapper">
+                                <ul 
+                                        v-a11y-tabs        
+                                        class="swiper-wrapper"
+                                        role="tablist">
                                     <li 
                                             v-for="(tab, tabIndex) of tabs"
-                                            :id="tab.slug + '-tab-label'"
                                             :key="tabIndex"
+                                            :tabindex="-1"
                                             :class="{ 'is-active': activeTab === tab.slug }"
-                                            class="swiper-slide"
-                                            @click="activeTab = tab.slug">
-                                        <a>
-                                            <span class="icon has-text-gray4">
-                                                <i :class="'tainacan-icon tainacan-icon-18px tainacan-icon-' + tab.icon" />
+                                            class="swiper-slide">
+                                        <a
+                                                :id="tab.slug + '-tab-label'"
+                                                role="tab"
+                                                :aria-selected="activeTab === tab.slug"
+                                                :aria-controls="tab.slug + '-tab-content'"
+                                                :tabindex="activeTab === tab.slug ? 0 : -1"
+                                                @click="activeTab = tab.slug">
+                                            <span class="icon has-text-dark">
+                                                <i
+                                                        :class="'tainacan-icon tainacan-icon-18px tainacan-icon-' + tab.icon"
+                                                        aria-hidden="true" />
                                             </span>
                                             <span>{{ tab.name }}</span>
                                             <span 
                                                     v-if="tab.total"
-                                                    class="has-text-gray">
+                                                    class="has-text-dark">
                                                 &nbsp;({{ tab.total }})
                                             </span>
                                         </a>
@@ -224,11 +234,13 @@
                                 </ul>
                                 <button 
                                         id="tainacan-tabs-prev" 
-                                        class="swiper-button-prev">
+                                        class="swiper-button-prev"
+                                        :aria-label="$i18n.get('label_previous')">
                                     <svg
                                             width="24"
                                             height="24"
-                                            viewBox="0 0 32 32">
+                                            viewBox="0 0 32 32"
+                                            aria-hidden="true">
                                         <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
                                         <path
                                                 d="M0 0h24v24H0z"
@@ -237,18 +249,20 @@
                                 </button>
                                 <button 
                                         id="tainacan-tabs-next"
-                                        class="swiper-button-next">
+                                        class="swiper-button-next"
+                                        :aria-label="$i18n.get('label_next')">
                                     <svg
                                             width="24"
                                             height="24"
-                                            viewBox="0 0 24 24">
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true">
                                         <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
                                         <path
                                                 d="M0 0h24v24H0z"
                                                 fill="none" />
                                     </svg>
                                 </button>
-                            </nav>
+                            </div>
                         
                             <section 
                                     :style="tabs.length < 2 ? 'border-top: none; padding-top: 0;' : ''"
@@ -257,6 +271,7 @@
                                 <!-- Metadata from Collection-------------------------------- -->
                                 <div    
                                         v-if="activeTab === 'metadata'"
+                                        id="metadata-tab-content"
                                         class="tab-item"
                                         role="tabpanel"
                                         aria-labelledby="metadata-tab-label"
@@ -371,7 +386,11 @@
                                     <a
                                             v-if="!isMetadataNavigation && !$adminOptions.hideItemEditionCollapses"
                                             class="collapse-all"
-                                            @click="toggleCollapseAll()">
+                                            role="button"
+                                            tabindex="0"
+                                            @click="toggleCollapseAll()"
+                                            @keydown.enter.prevent="toggleCollapseAll()"
+                                            @keydown.space.prevent="toggleCollapseAll()">
                                         <span class="icon">
                                             <i
                                                     :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
@@ -407,7 +426,7 @@
                                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                                                 </span>
                                                 <label>
-                                                    <span class="icon has-text-gray4">
+                                                    <span class="icon has-text-dark">
                                                         <i class="tainacan-icon tainacan-icon-metadata" />
                                                     </span>
                                                     <span
@@ -419,7 +438,7 @@
                                                     {{ metadataSection.name }}&nbsp;
                                                     <span 
                                                             v-if="metadataSection.metadata_object_list && metadataSection.metadata_object_list.length"
-                                                            class="has-text-gray has-text-weight-normal"
+                                                            class="has-text-dark has-text-weight-normal"
                                                             style="font-size: 0.875em;">
                                                         ({{ metadataSection.metadata_object_list.length }})
                                                     </span>
@@ -483,6 +502,7 @@
                                 <!-- Related items -->
                                 <div    
                                         v-if="totalRelatedItems && activeTab === 'related'"
+                                        id="related-tab-content"
                                         class="tab-item"
                                         role="tabpanel"
                                         aria-labelledby="related-tab-label"
@@ -506,6 +526,7 @@
                                 <!-- Publication section -->
                                 <div    
                                         v-if="activeTab === 'publication' && !$adminOptions.hideItemEditionPublicationSection && $adminOptions.itemEditionPublicationSectionInsideTabs"
+                                        id="publication-tab-content"
                                         class="tab-item"
                                         role="tabpanel"
                                         aria-labelledby="publication-tab-label"
@@ -528,6 +549,7 @@
                                 <!-- Document and thumbnail on mobile modal -->
                                 <div    
                                         v-if="activeTab === 'document' && $adminOptions.itemEditionDocumentInsideTabs"
+                                        id="document-tab-content"
                                         class="tab-item"
                                         role="tabpanel"
                                         aria-labelledby="document-tab-label"
@@ -554,6 +576,7 @@
                                 <!-- Attachments on mobile modal -->
                                 <div    
                                         v-if="activeTab === 'attachments' && shouldDisplayItemEditionAttachments && $adminOptions.itemEditionAttachmentsInsideTabs"
+                                        id="attachments-tab-content"
                                         class="tab-item"
                                         role="tabpanel"
                                         aria-labelledby="attachments-tab-label"
@@ -678,7 +701,7 @@
             <!-- In case user enters this page whithout having permission -->
             <template v-if="!isLoading && ((isCreatingNewItem && collection && collection.current_user_can_edit_items == false) || (!isCreatingNewItem && item && item.current_user_can_edit != undefined && collection && collection.current_user_can_edit_items == false))">
                 <section class="section">
-                    <div class="content has-text-gray has-text-centered">
+                    <div class="content has-text-dark has-text-centered">
                         <p>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />

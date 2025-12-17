@@ -1,4 +1,5 @@
-.dropdown, .autocomplete {
+@mixin tainacan-dropdown-and-autocomplete {
+    .dropdown, .autocomplete {
     .dropdown-trigger{
         .button {
             border: none;
@@ -68,12 +69,28 @@
                     background-color: var(--tainacan-primary); 
                     box-shadow: none;
                 }
+                &:focus-visible {
+                    outline-width: 2px;
+                    outline-offset: -1px;
+                    outline-color: var(--tainacan-secondary);
+                    outline-color: color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
+                    outline-style: solid;
+                    box-shadow: none;
+                }
                 &.control { font-size: 0.8125em !important; }
                 &.dropdown-header { color: var(--tainacan-info-color) !important; }
-                &:not(.dropdown-header):not(.is-active):hover {
+                &:not(.dropdown-header):not(.is-active):hover,
+                &:not(.dropdown-header):not(.is-active):focus,
+                &:not(.dropdown-header):not(.is-active).is-hovered,
+                &:not(.dropdown-header):not(.is-active):focus-visible,
+                &:has(:focus) {
                     background-color: var(--tainacan-dropdownmenu-item-background-hover, var(--tainacan-input-border-color));
                 }
-                &:not(.dropdown-header):hover {
+                &:not(.dropdown-header):hover,
+                &:not(.dropdown-header):focus,
+                &:not(.dropdown-header):not(.is-active).is-hovered,
+                &:not(.dropdown-header):not(.is-active):focus-visible,
+                &:has(:focus) {
                     color: var(--tainacan-secondary) !important;
                 }
                 
@@ -323,6 +340,7 @@
 
             .pagination-previous {
                 border: none;
+                box-shadow: none;
                 flex-grow: 0;
 
                 &>span>i:before {
@@ -333,6 +351,7 @@
 
             .pagination-next {
                 border: none;
+                box-shadow: none;
                 flex-grow: 0;
 
                 &>span>i:before {
@@ -422,19 +441,13 @@
 
                 .pagination-previous {
                     margin: 0;
-                    height: 1.5em;
                     padding: 0;
                     order: 3;
-                    min-height: 24px;
-                    margin-bottom: 0.35em;
                 }
 
                 .pagination-next {
                     margin: 0;
-                    height: 1.5em;
                     padding: 0;
-                    min-height: 24px;
-                    margin-bottom: 0.35em;
                 }
             }
         }
@@ -466,10 +479,11 @@
             padding: 0px;
             max-height: inherit !important;
         }
+        }
     }
-}
 
-/* This makes sure dropdown autocomplete inside a modal that is appended to body appears in front of the modal. */
-body.tainacan-admin-page>.control.autocomplete {
-    z-index: 9999999;
+    /* This makes sure dropdown autocomplete inside a modal that is appended to body appears in front of the modal. */
+    body.tainacan-admin-page>.control.autocomplete {
+        z-index: 9999999;
+    }
 }

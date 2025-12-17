@@ -1,263 +1,261 @@
 // Input components used in forms are gray in Tainacan
-.tainacan-form {
-    color: var(--tainacan-input-color);
-    width: 100%;
-    padding: 0;
-
-    .form-submit {
-        justify-content: space-between !important;
-        padding: 12px 0px ;
-        margin-bottom: 0px;
+@mixin tainacan-form {
+    .tainacan-form {
+        color: var(--tainacan-input-color);
         width: 100%;
+        padding: 0;
 
-        .button {
-            border-width: 1px;
-            padding: 2px 30px !important;
+        .form-submit {
+            justify-content: space-between !important;
+            padding: 12px 0px ;
+            margin-bottom: 0px;
+            width: 100%;
+
+            .button {
+                border-width: 1px;
+                padding: 2px 30px !important;
+            }
+            &.has-only-save {
+                justify-content: end !important;
+            }
         }
-        &.has-only-save {
-            justify-content: end !important;
+        .field:not(:last-child) {
+            margin-bottom: 1.5em;
         }
-    }
-    .field:not(:last-child) {
-        margin-bottom: 1.5em;
-    }
-    .field>.field:not(:last-child) {
-        margin-bottom: 0.5em;
-    }
-    .label { 
-        font-weight: bold;
-        text-transform: inherit;
-        font-size: 0.875em; 
-        color: var(--tainacan-label-color);
-        display: inline;
-        line-height: 2.0em;
-    }
-    .section-label>label {
-        cursor: default;
-    }
-    .required-metadatum-asterisk {
-        color: var(--tainacan-label-color);
-        position: relative;
-        top: -3px;
-        
-        &.is-danger {
-            color: var(--tainacan-danger);
+        .field>.field:not(:last-child) {
+            margin-bottom: 0.5em;
         }
-    }
-    .field.is-danger {
+        .label { 
+            font-weight: bold;
+            text-transform: inherit;
+            font-size: 0.875em; 
+            color: var(--tainacan-label-color);
+            display: inline;
+            line-height: 2.0em;
+        }
+        .section-label>label {
+            cursor: default;
+        }
+        .required-metadatum-asterisk {
+            color: var(--tainacan-label-color);
+            position: relative;
+            top: -3px;
+            
+            &.is-danger {
+                color: var(--tainacan-danger);
+            }
+        }
+        .field.is-danger {
+            .input,
+            .textarea,
+            .select,
+            .dropdown,
+            .autocomplete { 
+                --tainacan-input-border-color: var(--tainacan-danger);
+                --tainacan-input-background-color: var(--tainacan-red1);  
+            }
+        }
         .input,
         .textarea,
-        .select,
-        .dropdown,
-        .autocomplete { 
-            --tainacan-input-border-color: var(--tainacan-danger);
-            --tainacan-input-background-color: var(--tainacan-red1);  
-        }
-    }
-    .input,
-    .textarea,
-    .select {
-        &.is-danger {
+        .select {
+            &.is-danger {
+                --tainacan-input-border-color: var(--tainacan-danger);
+                --tainacan-input-background-color: var(--tainacan-red1);
+            }
+        } 
+        input[data-is-danger="true"] {
             --tainacan-input-border-color: var(--tainacan-danger);
             --tainacan-input-background-color: var(--tainacan-red1);
         }
-    } 
-    input[data-is-danger="true"] {
-        --tainacan-input-border-color: var(--tainacan-danger);
-        --tainacan-input-background-color: var(--tainacan-red1);
-    }
-    a[disabled="true"] {
-        opacity: 0.5;
-        user-select: none;
-        pointer-events: none;
-    }
-    .b-numberinput {
-        padding: 0 !important;
-        
-        .control {
-            margin-right: 0 !important;
-            margin-bottom: 0;
-            margin-top: 0;
-        }
-        div.control {
-            flex-shrink: 1;
-            order: -1;
-        }
-        p.control:first-child .button {
-            border-right-width: 0px;
-            border-left-width: 0px;
-            border-top-left-radius: 0px !important;
-            border-bottom-left-radius: 0px !important;
-        }
-        p.control:last-child .button {
-            border-left-width: 0px;
-            border-top-right-radius: var(--tainacan-input-border-radius) !important;
-            border-bottom-right-radius: var(--tainacan-input-border-radius) !important;
-        }
-        p.control button.is-primary {
-            min-height: 100% !important;
-        }
-        input.input {
-            border-top-right-radius: 0px !important;
-            border-bottom-right-radius: 0px !important;
-            text-align: start;
-        }
-        button {
-            height: auto !important;
-        }
-        button.is-primary:disabled,
-        button.is-primary:disabled:hover,
-        button.is-primary:disabled:focus,
-        button.is-primary:disabled:active {
-            background-color: var(--tainacan-input-border-color) !important;
-        }
-        button.is-primary:not(:disabled),
-        button.is-primary:not(:disabled):hover,
-        button.is-primary:not(:disabled):focus,
-        button.is-primary:not(:disabled):active {
-            background-color: var(--tainacan-input-background-color) !important;
-        }
-        button.is-primary,
-        button.is-primary:hover,
-        button.is-primary:focus,
-        button.is-primary:active {
-            border-width: 1px;
-            border-style: solid;
-            border-color: var(--tainacan-input-border-color) !important;
-            color: var(--tainacan-secondary) !important;
-            padding: 0.25em 0.6em !important;
-            border-radius: 0 !important;
-
-            &:hover {
-                background-color: var(--tainacan-primary) !important;
-            }
-
-            .mdi::before {
-                display: inline-block;
-                font: normal normal normal 20px/1 "TainacanIcons";
-                font-size: inherit;
-                text-rendering: auto;
-                vertical-align: middle;
-                line-height: inherit;
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-                transform: none !important;
-                text-transform: none !important;
-                letter-spacing: normal !important;
-                font-size: 1.3em;
-            }
-            .mdi-plus::before {
-                content: "plus" !important;
-            } 
-            .mdi-minus::before {
-                content: "minus" !important;
-            } 
-            
-        }
-    }
-    .radio, .checkbox {
-        align-items: center;
-        margin-bottom: 5px;
-
-        width: 100%;
-        
-        &.is-danger {
-            border-color: var(--tainacan-danger);
-        }   
-    }
-    .control-label { // The value part in checkbox, radio and switches
-        color: var(--tainacan-input-color);
-        padding-left: 0.8em;
-        font-size: 0.81em;
-        line-height: 1.125em;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-    }
-    .select {
-        select {
-            color: var(--tainacan-input-color);
-            background-color: var(--tainacan-input-background-color) !important;
-            border: 1px solid var(--tainacan-input-border-color) !important;
-
-            option {
-                color: inherit;
-                background-color: inherit;
-            }
-            &[disabled=disabled] {
-                border: 1px solid var(--tainacan-gray1) !important;
-            }
-        } 
-    }
-    .hidden-select-arrow .select::after {
-        color: transparent !important;
-    }   
-    .dropdown {
-        width: 100%;
-        .dropdown-trigger { width: 100% }
-        .button {
-            justify-content: space-between;
-            width: 100%;
-            border: 1px solid var(--tainacan-input-border-color) !important;
-            border-radius: var(--tainacan-input-border-radius, 2px) !important;
-            padding: calc(0.375em - 1px) 14px calc(0.375em - 1px) 18px !important;
-            height: auto !important;
-            line-height: 1.75em !important;
-        }
-    }
-    .two-columns-dropdown {
-        &>.dropdown-menu>.dropdown-content {
-            display: flex;
-            flex-wrap: wrap;
-
-            .dropdown-item {
-                width: 50%;
-                font-size: 0.875em;
-            }
-        }
-    }
-    .upload-draggable {
-        color: var(--tainacan-info-color);
-        transition: color 0.2s background-color 0.2s;
-        border-color: var(--tainacan-input-border-color);
-        padding: 1.25em;
-
-        section {
-            padding: 0;
-        }
-    }
-    .autocomplete {
-        .dropdown-menu {
-            width: 100%;
-        }
-        .dropdown-item {
-            white-space: initial !important;
-        }
-    }
-
-    .form-hook-region {
-        margin-top: 0.75em;
-        background-color: var(--tainacan-gray0);
-        border-radius: var(--tainacan-input-border-radius);
-        padding: 1em 1.5em 2em 1.5em;
-        margin-bottom: 0.75em;
-        break-inside: avoid;
-
-        h3, h4, h5 {
-            font-weight: 700;
-            color: var(--tainacan-secondary);
-            margin-bottom: 4px;
-        }
-        hr {
-            margin-top: 4px;
-            height: 1px;
-            background-color: var(--tainacan-secondary);
-        }
-
-        &:empty {
-            display: none !important;
-            visibility: hidden !important;
+        a[disabled="true"] {
+            opacity: 0.5;
+            user-select: none;
             pointer-events: none;
+        }
+        .b-numberinput {
+            padding: 0 !important;
+            
+            .control {
+                margin-right: 0 !important;
+                margin-bottom: 0;
+                margin-top: 0;
+            }
+            p.control.minus .button {
+                border-right-width: 0px;
+                border-left-width: 0px;
+                border-top-left-radius: 0px !important;
+                border-bottom-left-radius: 0px !important;
+            }
+            p.control.plus .button {
+                border-left-width: 0px;
+                border-top-right-radius: var(--tainacan-input-border-radius) !important;
+                border-bottom-right-radius: var(--tainacan-input-border-radius) !important;
+            }
+            p.control button.is-primary {
+                min-height: 100% !important;
+            }
+            input.input {
+                border-top-right-radius: 0px !important;
+                border-bottom-right-radius: 0px !important;
+                text-align: start;
+            }
+            button {
+                height: auto !important;
+            }
+            button.is-primary:disabled,
+            button.is-primary:disabled:hover,
+            button.is-primary:disabled:focus,
+            button.is-primary:disabled:active {
+                background-color: var(--tainacan-input-border-color) !important;
+            }
+            button.is-primary:not(:disabled),
+            button.is-primary:not(:disabled):hover,
+            button.is-primary:not(:disabled):focus,
+            button.is-primary:not(:disabled):active {
+                background-color: var(--tainacan-input-background-color) !important;
+            }
+            button.is-primary,
+            button.is-primary:hover,
+            button.is-primary:focus,
+            button.is-primary:active {
+                border-width: 1px;
+                border-style: solid;
+                border-color: var(--tainacan-input-border-color) !important;
+                color: var(--tainacan-secondary) !important;
+                padding: 0.25em 0.6em !important;
+                border-radius: 0 !important;
+
+                &:hover {
+                    background-color: var(--tainacan-primary) !important;
+                }
+
+                .mdi::before {
+                    display: inline-block;
+                    font: normal normal normal 20px/1 "TainacanIcons";
+                    font-size: inherit;
+                    text-rendering: auto;
+                    vertical-align: middle;
+                    line-height: inherit;
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
+                    transform: none !important;
+                    text-transform: none !important;
+                    letter-spacing: normal !important;
+                    font-size: 1.3em;
+                }
+                .mdi-plus::before {
+                    content: "plus" !important;
+                } 
+                .mdi-minus::before {
+                    content: "minus" !important;
+                } 
+                
+            }
+        }
+        .radio, .checkbox {
+            align-items: center;
+            margin-bottom: 5px;
+
+            width: 100%;
+            
+            &.is-danger {
+                border-color: var(--tainacan-danger);
+            }   
+        }
+        .control-label { // The value part in checkbox, radio and switches
+            color: var(--tainacan-input-color);
+            padding-left: 0.8em;
+            font-size: 0.81em;
+            line-height: 1.125em;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .select {
+            select {
+                color: var(--tainacan-input-color);
+                background-color: var(--tainacan-input-background-color) !important;
+                border: 1px solid var(--tainacan-input-border-color) !important;
+
+                option {
+                    color: inherit;
+                    background-color: inherit;
+                }
+                &[disabled=disabled] {
+                    border: 1px solid var(--tainacan-gray1) !important;
+                }
+            } 
+        }
+        .hidden-select-arrow .select::after {
+            color: transparent !important;
+        }   
+        .dropdown {
+            width: 100%;
+            .dropdown-trigger { width: 100% }
+            .button {
+                justify-content: space-between;
+                width: 100%;
+                border: 1px solid var(--tainacan-input-border-color) !important;
+                border-radius: var(--tainacan-input-border-radius, 2px) !important;
+                padding: calc(0.375em - 1px) 14px calc(0.375em - 1px) 18px !important;
+                height: auto !important;
+                line-height: 1.75em !important;
+            }
+        }
+        .two-columns-dropdown {
+            &>.dropdown-menu>.dropdown-content {
+                display: flex;
+                flex-wrap: wrap;
+
+                .dropdown-item {
+                    width: 50%;
+                    font-size: 0.875em;
+                }
+            }
+        }
+        .upload-draggable {
+            color: var(--tainacan-info-color);
+            transition: color 0.2s background-color 0.2s;
+            border-color: var(--tainacan-input-border-color);
+            padding: 1.25em;
+
+            section {
+                padding: 0;
+            }
+        }
+        .autocomplete {
+            .dropdown-menu {
+                width: 100%;
+            }
+            .dropdown-item {
+                white-space: initial !important;
+            }
+        }
+
+        .form-hook-region {
+            margin-top: 0.75em;
+            background-color: var(--tainacan-gray0);
+            border-radius: var(--tainacan-input-border-radius);
+            padding: 1em 1.5em 2em 1.5em;
+            margin-bottom: 0.75em;
+            break-inside: avoid;
+
+            h3, h4, h5 {
+                font-weight: 600;
+                color: var(--tainacan-secondary);
+                margin-bottom: 4px;
+            }
+            hr {
+                margin-top: 4px;
+                height: 1px;
+                background-color: var(--tainacan-secondary);
+            }
+
+            &:empty {
+                display: none !important;
+                visibility: hidden !important;
+                pointer-events: none;
+            }
         }
     }
 }

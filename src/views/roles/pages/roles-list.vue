@@ -10,7 +10,9 @@
                 style="margin-right: auto; margin-left: 0;">
             <b-dropdown
                     id="roles-page-add-new"
-                    aria-role="list"
+                    v-a11y-dropdown
+                    :trigger-tabindex="-1"
+                    :mobile-modal="true"
                     trap-focus>
                 <template #trigger>
                     <router-link
@@ -36,33 +38,47 @@
                         </button>
                     </router-link>
                 </template>
-                <b-dropdown-item 
-                        aria-role="listitem"
-                        has-link>
+                <b-dropdown-item>
                     <router-link
+                            v-slot="{ navigate }"
                             to="/roles/new"
-                            style="min-height: unset;">
-                        {{ $i18n.get('Blank') }}
+                            style="min-height: unset;"
+                            custom>
+                        <div 
+                                id="a-create-role-blank"
+                                role="link"
+                                tabindex="0"
+                                @click="navigate()"
+                                @keydown.enter.prevent="navigate()"
+                                @keydown.space.prevent="navigate()">
+                            {{ $i18n.get('Blank') }}
+                        </div>
                     </router-link>
                 </b-dropdown-item>
                 <b-dropdown-item separator />
                 <b-dropdown-item 
                         class="dropdown-item-secstion-separator"
-                        aria-role="listitem"
                         custom>
                     <em>{{ $i18n.get('Create a role based on: ') }}</em>
                 </b-dropdown-item>
                 <template 
                         v-for="role of roles"
                         :key="role.slug">
-                    <b-dropdown-item 
-                            v-if="role.slug.match('tainacan')"
-                            aria-role="listitem"
-                            has-link>
+                    <b-dropdown-item v-if="role.slug.match('tainacan')">
                         <router-link 
+                                v-slot="{ navigate }"
                                 :to="'/roles/new?template=' + role.slug"
-                                style="min-height: unset;">
-                            {{ role.name }}
+                                style="min-height: unset;"
+                                custom>
+                            <div 
+                                    :id="'a-create-role-template-' + role.slug"
+                                    role="link"
+                                    tabindex="0"
+                                    @click="navigate()"
+                                    @keydown.enter.prevent="navigate()"
+                                    @keydown.space.prevent="navigate()">
+                                {{ role.name }}
+                            </div>
                         </router-link>
                     </b-dropdown-item>
                 </template>

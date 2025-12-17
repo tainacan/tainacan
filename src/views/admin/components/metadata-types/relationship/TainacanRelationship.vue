@@ -103,7 +103,7 @@
                     </div>
                     <div v-else>
                         <p
-                                class="has-text-gray"
+                                class="has-text-dark"
                                 style="font-size: 0.875em;">
                             {{ $i18n.get('info_no_item_found') }}
                         </p>
@@ -120,7 +120,11 @@
                         (itemMetadatum.metadatum.multiple === 'yes' || !selected.length )"
                     :disabled="$adminOptions.itemEditionMode && !$adminOptions.allowItemEditionModalInsideModal"
                     class="add-link"
-                    @click="editItemModalOpen = !editItemModalOpen">
+                    role="button"
+                    tabindex="0"
+                    @click="editItemModalOpen = !editItemModalOpen"
+                    @keydown.enter.prevent="editItemModalOpen = !editItemModalOpen"
+                    @keydown.space.prevent="editItemModalOpen = !editItemModalOpen">
                 <span class="icon is-small">
                     <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                 </span>

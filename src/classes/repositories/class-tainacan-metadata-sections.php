@@ -493,15 +493,19 @@ class Metadata_Sections extends Repository {
 	 * @throws \Exception
 	 */
 	public function can_edit( Entities\Entity $entity, $user = null ) {
+
 		if ( is_null($entity) )
 			return false;
-		if ($entity instanceof Entities\Metadata_Section && $entity->get_id() == Entities\Metadata_Section::$default_section_slug ) {
+
+		if ( $entity instanceof Entities\Metadata_Section && $entity->get_id() == Entities\Metadata_Section::$default_section_slug ) {
 			$collection = $entity->get_collection();
-			if($collection instanceof Entities\Collection) {
-				return current_user_can( 'tnc_col_' . $collection->get_id() . '_edit_metasection' );
-			}
+			
+			if ($collection instanceof Entities\Collection) 
+				return $collection->user_can( 'edit_metasection' );
+			
 			return false;
 		}
+		
 		return parent::can_edit($entity, $user);
 	}
 }

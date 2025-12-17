@@ -68,8 +68,8 @@
                     class="search-area">
                 <b-dropdown
                         ref="tainacan-textual-search-input"
+                        :trigger-tabindex="-1"
                         class="tainacan-textual-search-input"
-                        aria-role="dialog"
                         :mobile-modal="false"
                         :disabled="openAdvancedSearch"
                         :triggers="hasSearchByMoreThanOneWord ? ['click','contextmenu','focus'] : []">
@@ -111,19 +111,34 @@
                             @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
                         {{ $i18n.get('info_for_more_metadata_search_options_use') }}&nbsp; 
                         <a 
-                                class="has-text-secondary"
-                                @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
+                                role="button"
+                                tabindex="0"
+                                :aria-expanded="openAdvancedSearch"
+                                :aria-controls="openAdvancedSearch ? 'advanced-search-container' : undefined"
+                                :aria-label="openAdvancedSearch ? $i18n.get('label_close_advanced_search') : $i18n.get('label_open_advanced_search')"
+                                @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
+                                @keydown.enter.prevent="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
+                                @keydown.space.prevent="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
                             {{ $i18n.get('advanced_search') }}
                         </a>
                     </b-dropdown-item>
                 </b-dropdown>
                 <a
                         v-if="!hideAdvancedSearch"
-                        class="advanced-search-toggle has-text-secondary is-pulled-right"
+                        class="advanced-search-toggle is-pulled-right"
+                        role="button"
+                        tabindex="0"
                         :class="openAdvancedSearch ? 'is-open' : 'is-closed'"
-                        @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
+                        :aria-expanded="openAdvancedSearch"
+                        :aria-controls="openAdvancedSearch ? 'advanced-search-container' : undefined"
+                        :aria-label="openAdvancedSearch ? $i18n.get('label_close_advanced_search') : $i18n.get('label_open_advanced_search')"
+                        @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
+                        @keydown.enter.prevent="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
+                        @keydown.space.prevent="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
                     {{ $i18n.get('advanced_search') }}
-                    <span class="icon">
+                    <span
+                            class="icon"
+                            aria-hidden="true">
                         <i class="tainacan-icon tainacan-icon-search" />
                     </span>
                 </a>
@@ -164,14 +179,16 @@
                         placement: 'auto-start',
                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                     }"
+                    v-a11y-dropdown
+                    :trigger-tabindex="-1"
                     :mobile-modal="true"
                     :disabled="totalItems <= 0"
                     class="show metadata-options-dropdown"
-                    aria-role="list"
                     trap-focus>
                 <template #trigger>
                     <button
                             :aria-label="$i18n.get('label_displayed_metadata')"
+                            :disabled="totalItems <= 0"
                             class="button is-white">
                         <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_displayed_metadata') }}</span>
                         <span class="is-hidden-widescreen">{{ $i18n.get('metadata') }}</span>
@@ -186,7 +203,6 @@
                             :key="index"
                             class="control"
                             custom
-                            aria-role="listitem"
                             :class="{ 'is-active': column.display }">
                         <b-checkbox
                                 v-model="column.display"
@@ -211,17 +227,25 @@
                 v-if="!hideSortingArea"
                 class="search-control-item search-control-item--sorting-area sorting-area">
             <b-field>
-                <label class="label">{{ $i18n.get('label_sort') }}</label>
+                <label 
+                        id="tainacanLabelSortingDirection"
+                        class="label">
+                    {{ $i18n.get('label_sort') }}
+                </label>
                 <b-dropdown
+                        v-a11y-dropdown
                         :mobile-modal="true"
-                        aria-role="list"
                         trap-focus
+                        :trigger-tabindex="-1"
                         @update:model-value="onChangeOrder">
                     <template #trigger>
                         <button
-                                :aria-label="$i18n.get('label_sorting_direction')"
-                                class="button is-white">
-                            <span class="icon is-small gray-icon">
+                                id="tainacanSortingDirectionButton"
+                                class="button is-white"
+                                aria-labelledby="tainacanLabelSortingDirection tainacanSortingDirectionButton">
+                            <span 
+                                    class="icon is-small gray-icon"
+                                    aria-hidden="true">
                                 <i 
                                         :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
                                         class="tainacan-icon" />
@@ -236,7 +260,7 @@
                             role="button"
                             :class="{ 'is-active': order == 'DESC' }"
                             :value="'DESC'"
-                            aria-role="listitem">
+                            tag="button">
                         <span class="icon gray-icon">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending" />
                         </span>
@@ -247,7 +271,7 @@
                             role="button"
                             :class="{ 'is-active': order == 'ASC' }"
                             :value="'ASC'"
-                            aria-role="listitem">
+                            tag="button">
                         <span class="icon gray-icon">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending" />
                         </span>
@@ -256,20 +280,23 @@
                 </b-dropdown>
                 <template v-if="!hideSortByButton">
                     <span
+                            id="tainacanLabelSortingMetadata"
                             class="label"
                             style="padding-left: 2px !important;">
                         {{ $i18n.get('info_by_inner') }}
                     </span>
                     <b-dropdown
                             id="tainacanSortByDropdown"
+                            v-a11y-dropdown
+                            :trigger-tabindex="-1"
                             :mobile-modal="true"
-                            aria-role="list"
                             trap-focus
                             @update:model-value="onChangeOrderBy($event)">
                         <template #trigger>
                             <button
-                                    :aria-label="$i18n.get('label_sorting')"
-                                    class="button is-white">
+                                    id="tainacanSortingMetadataButton"
+                                    class="button is-white"
+                                    aria-labelledby="tainacanLabelSortingMetadata tainacanSortingMetadataButton">
                                 <span>{{ orderByName }}</span>
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
@@ -285,7 +312,6 @@
                                     role="button"
                                     :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
                                     :value="metadatum"
-                                    aria-role="listitem"
                                     :data-metadatum-slug="metadatum.slug ? metadatum.slug : ''">
                                 {{ metadatum.name }}
                             </b-dropdown-item>
@@ -302,26 +328,30 @@
                 class="search-control-item search-control-item--view-modes-dropdown">
             <b-field>
                 <label 
+                        id="tainacanLabelViewModes"
                         class="label is-hidden-touch is-hidden-desktop-only"
                         :style="{ marginRight: showInlineViewModeOptions ? '' : '-10px'}">
                     {{ $i18n.get('label_visualization') + ':&nbsp; ' }}
                 </label>
                 <label 
                         class="label is-hidden-widescreen"
-                        :style="{ marginRight: showInlineViewModeOptions ? '' : '-10px'}">
+                        :style="{ marginRight: showInlineViewModeOptions ? '' : '-10px'}"
+                        aria-hidden="true">
                     {{ $i18n.get('label_view_on') + ':&nbsp; ' }}
                 </label>
                 <b-dropdown
+                        v-a11y-dropdown
+                        :trigger-tabindex="-1"
                         :inline="showInlineViewModeOptions"
                         :mobile-modal="true"
                         position="is-bottom-left"
-                        aria-role="list"
                         trap-focus
                         @change="onChangeViewMode($event)">
                     <template #trigger>
                         <button 
+                                id="tainacanViewModesButton"
                                 class="button is-white" 
-                                :aria-label="$i18n.get('label_view_mode') + (registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : '')">
+                                aria-labelledby="tainacanLabelViewModes tainacanViewModesButton">
                             <span 
                                     v-if="registeredViewModes[viewMode] != undefined"
                                     class="gray-icon view-mode-icon"
@@ -340,8 +370,7 @@
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': viewModeOption == viewMode }"
-                                :value="viewModeOption"
-                                aria-role="listitem">
+                                :value="viewModeOption">
                             <span 
                                     v-if="!showInlineViewModeOptions"
                                     class="gray-icon"
@@ -503,7 +532,7 @@
         </b-modal>
     </template>
 
-    <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
+    <!-- ITEMS LIST AREA ------------------------- -->
     <div 
             id="items-list-area"
             ref="items-list-area"
@@ -558,6 +587,7 @@
             <filters-tags-list
                     class="filter-tags-list"
                     :is-inside-modal="filtersAsModal"
+                    :aria-label="$i18n.get('label_active_filters')"
                 />
 
             <!-- JS-side hook for extra form content -->
@@ -573,6 +603,8 @@
                 id="items-list-results"
                 :aria-busy="isLoadingItems"
                 aria-labelledby="items-list-landmark"
+                aria-live="polite"
+                aria-atomic="false"
                 role="region"
                 class="above-search-control">
             
@@ -588,10 +620,23 @@
                     ref="items-list-results-top"
                     class="sr-only" />
 
+            <!-- Loading announcement for screen readers - always in DOM -->
+            <div 
+                    class="sr-only"
+                    role="status"
+                    aria-live="polite"
+                    aria-atomic="true"
+                    aria-relevant="text">
+                <span v-if="showLoading">
+                    {{ $i18n.get('label_loading_items') }}
+                </span>
+            </div>
+            
             <div 
                     v-show="(showLoading && 
                         !(registeredViewModes[viewMode] != undefined && (registeredViewModes[viewMode].full_screen == true || registeredViewModes[viewMode].implements_skeleton == true)))"
-                    class="loading-container">
+                    class="loading-container"
+                    :aria-label="$i18n.get('label_loading_items')">
 
                 <!--  Default loading, to be used view modes without any skeleton-->
                 <b-loading 
@@ -665,10 +710,16 @@
                 <!-- Empty Placeholder, rendered in a slot inside the view modes -->
                 <section
                         v-if="!showLoading && totalItems == 0"
-                        class="section">
-                    <div class="content has-text-gray has-text-centered">
+                        class="section"
+                        role="status"
+                        aria-live="polite"
+                        aria-atomic="true"
+                        aria-relevant="text">
+                    <div class="content has-text-dark has-text-centered">
                         <p>
-                            <span class="icon is-large">
+                            <span
+                                    class="icon is-large"
+                                    aria-hidden="true">
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
                             </span>
                         </p>
@@ -1325,7 +1376,7 @@
             openExposersModal() {
                 this.$buefy.modal.open({
                     component: defineAsyncComponent(() => import('../../../admin/components/modals/exposers-modal.vue')),
-                    hasModalCard: true,
+                    hasModalCard: false,
                     props: { 
                         collectionId: this.collectionId,
                         totalItems: this.totalItems
@@ -1670,63 +1721,62 @@
 
 <style lang="scss">
 
-    // TAINACAN Variables
-    @import '../../../tainacan-basics.scss';
-
-    //Vue Tooltip
-    @import "../../../../../node_modules/floating-vue/dist/style.css";
+    // Block level custom variables
+    @use "../../../tainacan-basics.scss";
 
     // Bulma imports
-    @import "./theme-search/scss/theme-basics.sass";
+    @use "./theme-search/scss/_bulma-config.scss";
 
     // Buefy imports
-    @import "../../../../../node_modules/buefy/src/scss/utils/_all.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_form.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_datepicker.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_checkbox.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_radio.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_tag.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_loading.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_dropdown.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_modal.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_dialog.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_notices.scss";
-    @import "../../../../../node_modules/buefy/src/scss/components/_numberinput.scss";
+    @use "./theme-search/scss/_buefy-config.scss";
 
-    // Block level custom variables
-    @import "../../../tainacan-variables.scss";
+    // Nested Tainacan imports (now mixins)
+    @use "../../../admin/scss/_modals.scss" as _modals;
+    @use "../../../admin/scss/_buttons.scss" as _buttons; 
+    @use "../../../admin/scss/_inputs.scss" as _inputs;
+    @use "../../../admin/scss/_checkboxes.scss" as _checkboxes;
+    @use "../../../admin/scss/_pagination.scss" as _pagination;
+    @use "../../../admin/scss/_tags.scss" as _tags;
+    @use "../../../admin/scss/_tabs.scss" as _tabs;
+    @use "../../../admin/scss/_selects.scss" as _selects;
+    @use "../../../admin/scss/_dropdown-and-autocomplete.scss" as _dropdown-and-autocomplete;
+    @use "../../../admin/scss/_control.scss" as _control;
+    @use "../../../admin/scss/_tainacan-form.scss" as _tainacan-form;
+    @use "../../../admin/scss/_filters-menu-modal.scss" as _filters-menu-modal;
 
     // These have to be outside of the scoped context
-    @import "./theme-search/scss/_layout.scss";
-    @import '../../../admin/scss/_animations.scss';
-    @import "../../../admin/scss/_tooltips.scss";
-    @import "../../../admin/scss/_notices.scss";
-    @import "../../../admin/scss/_modals.scss";
+    @use "./theme-search/scss/_layout.scss";
+    @use '../../../admin/scss/_animations.scss';
+    @use "../../../admin/scss/_tooltips.scss";
+    @use "../../../admin/scss/_notices.scss";
+    @include _modals.tainacan-modals;
+
+    //Vue Tooltip
+    @import "floating-vue/dist/style.css";
 
     // Scoped, to avoid conflicts with theme's css 
     .tainacan-modal,
     .theme-items-list {
 
         // Vue Blurhash transtition effect
-        @import '../../../../../node_modules/another-vue3-blurhash/dist/style.css';
+        @import url('../../../../../node_modules/another-vue3-blurhash/dist/style.css');
         canvas.child {
             max-width: 100%;
         }
 
-        // Tainacan imports
-        @import "../../../admin/scss/_modals.scss";
-        @import "../../../admin/scss/_buttons.scss"; 
-        @import "../../../admin/scss/_inputs.scss";
-        @import "../../../admin/scss/_checkboxes.scss";
-        @import "../../../admin/scss/_pagination.scss";
-        @import "../../../admin/scss/_tags.scss";
-        @import "../../../admin/scss/_tabs.scss";
-        @import "../../../admin/scss/_selects.scss";
-        @import "../../../admin/scss/_dropdown-and-autocomplete.scss";
-        @import "../../../admin/scss/_control.scss";
-        @import "../../../admin/scss/_tainacan-form.scss";
-        @import "../../../admin/scss/_filters-menu-modal.scss";
-
+        // Include nested imports using mixins
+        @include _tainacan-form.tainacan-form;
+        @include _buttons.tainacan-buttons;
+        @include _inputs.tainacan-inputs;
+        @include _checkboxes.tainacan-checkboxes;
+        @include _pagination.tainacan-pagination;
+        @include _tags.tainacan-tags;
+        @include _tabs.tainacan-tabs;
+        @include _selects.tainacan-selects;
+        @include _dropdown-and-autocomplete.tainacan-dropdown-and-autocomplete;
+        @include _control.tainacan-control;
+        @include _filters-menu-modal.tainacan-filters-menu-modal;
+        
         &:not(.tainacan-modal) {
             background: var(--tainacan-background-color, inherit);
             position: relative;
@@ -1929,8 +1979,16 @@
         display: flex;
         align-items: center;
 
-        &:focus {
+        &:focus:not(:focus-visible) {
             outline: none !important;
+        }
+        &:focus-visible {
+            outline-width: 2px;
+            outline-offset: -1px;
+            outline-color: var(--tainacan-secondary);
+            outline-color: color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
+            outline-style: solid;
+            box-shadow: none;
         }
 
         @media screen and (max-width: 768px) {

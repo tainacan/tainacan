@@ -98,6 +98,9 @@
                     v-model="min"
                     name="min"
                     step="1"
+                    controls-position="compact"
+                    controls-alignment="right"
+                    expanded
                     @update:model-value="onUpdateMin" />
         </b-field>
         <b-field :addons="false">
@@ -111,6 +114,9 @@
                     v-model="max"
                     name="max"
                     step="1"
+                    controls-position="compact"
+                    controls-alignment="right"
+                    expanded
                     @update:model-value="onUpdateMax" />
         </b-field>
     </section>

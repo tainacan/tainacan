@@ -139,6 +139,7 @@
                                         </option>
                                         <option
                                                 role="button"
+                                                tabindex="0"
                                                 :class="{ 'is-active': form.default_order == 'ASC' }"
                                                 :value="'ASC'">
                                             {{ $i18n.get('label_ascending') }}
@@ -177,17 +178,19 @@
                                     <div class="control">
                                         <b-dropdown
                                                 ref="enabledViewModesDropdown"
-                                                class="enabled-view-modes-dropdown"
+                                                v-a11y-dropdown
+                                                :trigger-tabindex="-1"
                                                 :mobile-modal="true"
                                                 :disabled="Object.keys(registeredAndNotDisabledViewModes).length < 0"
-                                                aria-role="list"
+                                                class="enabled-view-modes-dropdown"
                                                 trap-focus
                                                 position="is-top-right">
                                             <template #trigger>
                                                 <button
                                                         class="button is-white"
                                                         position="is-top-right"
-                                                        type="button">
+                                                        type="button"
+                                                        :disabled="Object.keys(registeredAndNotDisabledViewModes).length < 0">
                                                     <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
                                                     <span class="icon">
                                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
@@ -197,8 +200,7 @@
                                             <b-dropdown-item
                                                     v-for="(viewMode, index) in Object.keys(registeredAndNotDisabledViewModes)"
                                                     :key="index"
-                                                    custom
-                                                    aria-role="listitem">
+                                                    custom>
                                                 <b-checkbox
                                                         v-if="registeredAndNotDisabledViewModes[viewMode] != undefined"
                                                         :model-value="checkIfViewModeEnabled(viewMode)"
@@ -210,7 +212,7 @@
                                                                     class="gray-icon"
                                                                     :class="{ 
                                                                         'has-text-secondary' : checkIfViewModeEnabled(viewMode),
-                                                                        'has-text-gray4' : !checkIfViewModeEnabled(viewMode)  
+                                                                        'has-text-dark' : !checkIfViewModeEnabled(viewMode)  
                                                                     }"
                                                                     v-html="registeredAndNotDisabledViewModes[viewMode].icon" />
                                                             &nbsp;{{ registeredAndNotDisabledViewModes[viewMode].label }}
@@ -560,7 +562,7 @@
                                                     :key="index"
                                                     v-model="form.submission_default_status"
                                                     :native-value="statusOption.slug">
-                                                <span class="icon has-text-gray">
+                                                <span class="icon has-text-dark">
                                                     <i 
                                                             class="tainacan-icon tainacan-icon-18px"
                                                             :class="$statusHelper.getIcon(statusOption.slug)" />
@@ -648,7 +650,8 @@
                                     :message="$i18n.getHelperMessage('collections', 'status')" />
                             <b-dropdown
                                     ref="collection-edition-status-dropdown"
-                                    aria-role="list"
+                                    v-a11y-dropdown
+                                    :trigger-tabindex="-1"
                                     class="collection-edition-status-dropdown"
                                     position="is-bottom-left"
                                     :triggers="[ 'click' ]"
@@ -661,7 +664,7 @@
                                             class="button is-outlined"
                                             :class="{ 'disabled': editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) }"
                                             style="width: auto">
-                                        <span class="icon has-text-gray">
+                                        <span class="icon has-text-dark">
                                             <i 
                                                     class="tainacan-icon tainacan-icon-18px"
                                                     :class="$statusHelper.getIcon(form.status)" />
@@ -682,9 +685,10 @@
                                 <b-dropdown-item 
                                         v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft' && (collection.status != 'auto-draft' || status.slug != 'trash'))"
                                         :key="index"
-                                        aria-role="listitem"
-                                        @click="form.status = statusOption.slug">
-                                    <span class="icon has-text-gray">
+                                        @click="form.status = statusOption.slug"
+                                        @keydown.enter.prevent="form.status = statusOption.slug"
+                                        @keydown.space.prevent="form.status = statusOption.slug">
+                                    <span class="icon has-text-dark">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-18px"
                                                 :class="$statusHelper.getIcon(statusOption.slug)" />
@@ -1010,7 +1014,7 @@
 
         <div v-if="!isLoading && ((isNewCollection && !$userCaps.hasCapability('tnc_rep_edit_collections')) || (!isNewCollection && collection && collection.current_user_can_edit != undefined && collection.current_user_can_edit == false))">
             <section class="section">
-                <div class="content has-text-gray has-text-centered">
+                <div class="content has-text-dark has-text-centered">
                     <p>
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />

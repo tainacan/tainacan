@@ -46,7 +46,10 @@ class Numeric extends Filter_Type {
 								</div>
 							</div>
 						</div>
-					<div class="b-numberinput field is-grouped">
+					<div class="b-numberinput field has-addons is-expanded">
+						<div class="control is-small is-clearfix">
+							<input type="number" step="0.01" class="input is-small" value="1.5">
+						</div>
 						<p class="control">
 							<button type="button" class="button is-primary is-small">
 								<span class="icon is-small">
@@ -54,9 +57,6 @@ class Numeric extends Filter_Type {
 								</span>
 							</button>
 						</p>
-						<div class="control is-small is-clearfix">
-							<input type="number" step="0.01" class="input is-small" value="1.5">
-						</div>
 						<p class="control">
 							<button type="button" class="button is-primary is-small">
 								<span class="icon is-small">

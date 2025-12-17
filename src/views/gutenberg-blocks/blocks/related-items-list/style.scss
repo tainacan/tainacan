@@ -1,4 +1,4 @@
-@import '../../scss/gutenberg-blocks-variables.scss';
+@use '../../scss/gutenberg-blocks-variables.scss';
 
 .wp-block-tainacan-related-items {
     margin: 0.5em auto;
@@ -11,7 +11,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        color: var(--tainacan-block-gray4, $gray4);
+        color: var(--tainacan-block-gray4, gutenberg-blocks-variables.$gray4);
     }
 
     // Skeleton loading
@@ -37,7 +37,7 @@
     }
     .skeleton {
         border-radius: 2px;
-        background: var(--tainacan-block-gray1, $gray1);
+        background: var(--tainacan-block-gray1, gutenberg-blocks-variables.$gray1);
 
         -webkit-animation: skeleton-animation 1.8s ease infinite;
         -moz-animation: skeleton-animation 1.8s ease infinite;

@@ -56,7 +56,8 @@
                             </label>
                             <b-dropdown
                                     ref="metadatum-edition-status-dropdown"
-                                    aria-role="list"
+                                    v-a11y-dropdown
+                                    :trigger-tabindex="-1"
                                     class="metadatum-edition-status-dropdown"
                                     position="is-bottom-left"
                                     :triggers="[ 'click' ]">
@@ -65,7 +66,7 @@
                                             type="button"
                                             class="button is-outlined"
                                             style="width: auto">
-                                        <span class="icon has-text-gray">
+                                        <span class="icon has-text-dark">
                                             <i 
                                                     class="tainacan-icon tainacan-icon-18px"
                                                     :class="$statusHelper.getIcon(form.status)" />
@@ -86,9 +87,10 @@
                                 <b-dropdown-item 
                                         v-for="(statusOption, statusOptionIndex) of $statusHelper.getStatuses().filter((status) => status.slug != 'trash' && status.slug != 'draft' && status.slug != 'pending' && (form.status != 'auto-draft' || status.slug != 'trash'))"
                                         :key="statusOptionIndex"
-                                        aria-role="listitem"
-                                        @click="form.status = statusOption.slug">
-                                    <span class="icon has-text-gray">
+                                        @click="form.status = statusOption.slug"
+                                        @keydown.enter.prevent="form.status = statusOption.slug"
+                                        @keydown.space.prevent="form.status = statusOption.slug">
+                                    <span class="icon has-text-dark">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-18px"
                                                 :class="$statusHelper.getIcon(statusOption.slug)" />

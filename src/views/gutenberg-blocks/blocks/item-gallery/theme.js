@@ -68,6 +68,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 slideToClickedSlide: true,
                 watchOverflow: true,
                 a11y: {
+                    slideRole: '',
                     prevSlideMessage: __( 'Previous slide', 'tainacan'),
                     nextSlideMessage: __( 'Next slide', 'tainacan'),
                     firstSlideMessage: __('This is the first slide', 'tainacan'),
@@ -102,6 +103,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 slidesPerGroup: 1,
                 watchOverflow: true,
                 a11y: {
+                    slideRole: '',
                     prevSlideMessage: __( 'Previous slide', 'tainacan'),
                     nextSlideMessage: __( 'Next slide', 'tainacan'),
                     firstSlideMessage: __('This is the first slide', 'tainacan'),
@@ -133,6 +135,14 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 this.mainSwiper.on('slideChangeTransitionStart', function() {
                     refToThumbSwiper.slideTo(refToMainSwiper.activeIndex);
                 });
+                
+                // When both carousels are present, hide thumbnails from screen readers
+                // The main slider already provides complete navigation (arrows, keyboard, pagination)
+                // Thumbnails are primarily a visual navigation aid and would be redundant
+                const thumbsElement = document.querySelector(this.thumbs_gallery_selector);
+                if (thumbsElement) {
+                    thumbsElement.setAttribute('aria-hidden', 'true');
+                }
             }
         }
         
@@ -147,6 +157,9 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         
         const self = this;
 
+        // Enhance links for accessibility before parsing items
+        this.enhanceLinksForAccessibility(galleryElement);
+
         let items = this.parseThumbnailElements(galleryElement);
         let photoswipeOptions = {
             loop: false,
@@ -160,6 +173,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             arrowNextTitle: __( 'Next slide', 'tainacan'),
             errorMsg: __('The image cannot be loaded', 'tainacan'),
             wheelToZoom: true,
+            returnFocus: true,
             getClickedIndexFn: (clickedElement) => {
                 return items.findIndex(anItem => anItem.el.contains(clickedElement.target));
             },
@@ -182,6 +196,9 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             ...photoswipeOptions
         });
         this.lightbox.init();
+        
+        // Setup keyboard accessibility for links
+        this.setupKeyboardAccessibility(galleryElement);
         
         /* Updates Swiper instance from Photoswipe */
         const swiperInstance = this.mainSwiper ? this.mainSwiper : this.thumbsSwiper;    
@@ -404,6 +421,199 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             params.pid = parseInt(params.pid, 10);
     
         return params;
+    }
+
+    /**
+     * Enhances accessibility for slides that open the lightbox
+     * PhotoSwipe works with any direct child of galleryElement, not just links
+     * Some slides have links (images), others don't (PDFs, videos with iframe)
+     * This makes all slides accessible via keyboard
+     * @param {HTMLElement} galleryElement - The gallery container element (.swiper-wrapper)
+     */
+    enhanceLinksForAccessibility(galleryElement) {
+        const slides = [];
+        const galleryElements = galleryElement.childNodes;
+        
+        // Get all slide elements (<li>) - same approach as parseThumbnailElements
+        Array.prototype.forEach.call(galleryElements, (liElement) => {
+            if (liElement.nodeType === 1 && liElement.classList.contains('swiper-slide')) {
+                slides.push(liElement);
+            }
+        });
+        
+        const totalSlides = slides.length;
+        
+        slides.forEach((slide, index) => {
+            const slideContent = slide.querySelector('.swiper-slide-content');
+            if (!slideContent) return;
+            
+            // Find all links in slide content, excluding those in metadata or download buttons
+            const allLinks = slideContent.querySelectorAll('a[href]');
+            const metadataElement = slideContent.querySelector('.swiper-slide-metadata');
+            
+            // Find the main link (first link that's not in metadata or download button)
+            let mainLink = null;
+            for (let i = 0; i < allLinks.length; i++) {
+                const link = allLinks[i];
+                // Skip links inside metadata or download buttons
+                if (metadataElement && metadataElement.contains(link)) continue;
+                if (link.closest('.tainacan-item-file-download')) continue;
+                
+                mainLink = link;
+                break;
+            }
+            
+            // Get descriptive information from the slide (check in link or slideContent)
+            const img = mainLink ? mainLink.querySelector('img') : slideContent.querySelector('img');
+            const video = mainLink ? mainLink.querySelector('video') : slideContent.querySelector('video');
+            const iframe = mainLink ? mainLink.querySelector('iframe') : slideContent.querySelector('iframe');
+            const audio = mainLink ? mainLink.querySelector('audio') : slideContent.querySelector('audio');
+            const figure = slideContent.querySelector('figure');
+            const titleElement = slide.querySelector('.swiper-slide-metadata__name');
+            
+            // Build aria-label based on media type
+            let ariaLabelParts = [];
+            let mediaDescription = '';
+            
+            // Identify media type and get description
+            if (img && img.alt && img.alt.trim()) {
+                mediaDescription = img.alt.trim();
+            } else if (video) {
+                const videoTitle = video.getAttribute('title') || video.getAttribute('aria-label');
+                mediaDescription = videoTitle || __('Video', 'tainacan');
+            } else if (audio) {
+                const audioTitle = audio.getAttribute('title') || audio.getAttribute('aria-label');
+                mediaDescription = audioTitle || __('Audio', 'tainacan');
+            } else if (iframe) {
+                // Check if it's a PDF, etc.
+                const iframeSrc = iframe.getAttribute('src') || '';
+                if (iframeSrc.includes('.pdf') || iframeSrc.includes('pdf')) {
+                    mediaDescription = __('PDF document', 'tainacan');
+                } else {
+                    mediaDescription = __('Embedded content', 'tainacan');
+                }
+            }
+            
+            // Add media description if available
+            if (mediaDescription) {
+                ariaLabelParts.push(mediaDescription);
+            }
+            
+            // Add title if no media description is available
+            if (ariaLabelParts.length === 0 && titleElement && titleElement.textContent.trim()) {
+                ariaLabelParts.push(titleElement.textContent.trim());
+            }
+            
+            // Add lightbox information
+            const lightboxInfo = __('Opens media gallery in lightbox', 'tainacan');
+            if (totalSlides > 1) {
+                const slideInfo = (index + 1) + ' ' + __('of', 'tainacan') + ' ' + totalSlides;
+                ariaLabelParts.push(lightboxInfo + ' (' + slideInfo + ')');
+            } else {
+                ariaLabelParts.push(lightboxInfo);
+            }
+            
+            const ariaLabel = ariaLabelParts.join('. ');
+            
+            // If there's a link, enhance it
+            if (mainLink) {
+                mainLink.setAttribute('aria-haspopup', 'dialog');
+                mainLink.setAttribute('aria-label', ariaLabel);
+                if (!mainLink.hasAttribute('tabindex')) {
+                    mainLink.setAttribute('tabindex', '0');
+                }
+            } else {
+                // No link exists - make the slide content focable and interactive
+                // Use the figure if available, otherwise use slideContent
+                const focusableElement = figure || slideContent;
+                
+                focusableElement.setAttribute('role', 'button');
+                focusableElement.setAttribute('aria-haspopup', 'dialog');
+                focusableElement.setAttribute('aria-label', ariaLabel);
+                focusableElement.setAttribute('tabindex', '0');
+                
+                // Add cursor style to indicate it's clickable (for visual users)
+                if (!focusableElement.style.cursor) {
+                    focusableElement.style.cursor = 'pointer';
+                }
+            }
+        });
+    }
+
+    /**
+     * Sets up keyboard accessibility for slides (Enter and Space keys)
+     * Works with both links and non-link elements (like figures with iframes)
+     * @param {HTMLElement} galleryElement - The gallery container element (.swiper-wrapper)
+     */
+    setupKeyboardAccessibility(galleryElement) {
+        const slides = [];
+        const galleryElements = galleryElement.childNodes;
+        const self = this;
+        
+        // Get all slide elements (<li>) - same approach as parseThumbnailElements
+        Array.prototype.forEach.call(galleryElements, (liElement) => {
+            if (liElement.nodeType === 1 && liElement.classList.contains('swiper-slide')) {
+                slides.push(liElement);
+            }
+        });
+        
+        slides.forEach((slide) => {
+            const slideContent = slide.querySelector('.swiper-slide-content');
+            if (!slideContent) return;
+            
+            // Find all links in slide content, excluding those in metadata or download buttons
+            const allLinks = slideContent.querySelectorAll('a[href]');
+            const metadataElement = slideContent.querySelector('.swiper-slide-metadata');
+            
+            // Find the main link (first link that's not in metadata)
+            let mainLink = null;
+            for (let i = 0; i < allLinks.length; i++) {
+                const link = allLinks[i];
+                // Skip links inside metadata or download buttons
+                if (metadataElement && metadataElement.contains(link)) continue;
+                if (link.closest('.tainacan-item-file-download')) continue;
+                
+                mainLink = link;
+                break;
+            }
+            
+            // Determine the focusable element (link or figure/slideContent)
+            let focusableElement = mainLink;
+            if (!focusableElement) {
+                const figure = slideContent.querySelector('figure');
+                focusableElement = figure || slideContent;
+            }
+            
+            if (!focusableElement) return;
+            
+            // Handle keyboard events (Enter and Space)
+            focusableElement.addEventListener('keydown', function(e) {
+                // Enter or Space should open the lightbox
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Trigger click to open PhotoSwipe
+                    // PhotoSwipe works with any direct child of galleryElement (the <li> slides)
+                    // getClickedIndexFn finds which slide contains the clicked element
+                    const clickEvent = new MouseEvent('click', {
+                        bubbles: true,
+                        cancelable: true,
+                        view: window
+                    });
+                    
+                    // If it's a link, click the link (PhotoSwipe will find the containing slide)
+                    // Otherwise, click directly on the slide (<li>) to ensure PhotoSwipe recognizes it
+                    if (mainLink) {
+                        mainLink.dispatchEvent(clickEvent);
+                    } else {
+                        // For non-link elements, click on the slide itself
+                        // This ensures getClickedIndexFn can find the correct slide
+                        slide.dispatchEvent(clickEvent);
+                    }
+                }
+            });
+        });
     }
 }
 

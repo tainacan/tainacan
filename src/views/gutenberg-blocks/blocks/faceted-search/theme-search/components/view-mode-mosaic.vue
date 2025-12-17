@@ -53,7 +53,7 @@
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-large-full')"
                                 :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-large-full', item.document_mimetype)"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-large-full', item.document_mimetype)"
-                                :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
                                 :transition-duration="500"
                             />
 
@@ -130,7 +130,7 @@ export default {
 
 <style  lang="scss" scoped>
 
-    @import "../../../../../admin/scss/_view-mode-mosaic.scss";
+    @use "../../../../../admin/scss/_view-mode-mosaic.scss";
 
 </style>
 

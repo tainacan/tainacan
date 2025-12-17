@@ -57,7 +57,11 @@
                         <a 
                                 :style="!column.children.length ? 'opacity: 0; visibility: hidden;' : ''"
                                 class="add-link"
-                                @click="onAddNewChildTerm(column.id)">
+                                role="button"
+                                tabindex="0"
+                                @click="onAddNewChildTerm(column.id)"
+                                @keydown.enter.prevent="onAddNewChildTerm(column.id)"
+                                @keydown.space.prevent="onAddNewChildTerm(column.id)">
                             <span class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
@@ -66,7 +70,11 @@
                         <a 
                                 :style="!column.children.length ? 'opacity: 0; visibility: hidden;' : 'position: relative;'"
                                 class="add-link"
-                                @click="multipleInsertion({ parentId: column.id, parentName: column.name })">
+                                role="button"
+                                tabindex="0"
+                                @click="multipleInsertion({ parentId: column.id, parentName: column.name })"
+                                @keydown.enter.prevent="multipleInsertion({ parentId: column.id, parentName: column.name })"
+                                @keydown.space.prevent="multipleInsertion({ parentId: column.id, parentName: column.name })">
                             <span 
                                     style="position: absolute;margin-left: -5px;margin-top: 5px;"
                                     class="icon is-small">
@@ -183,14 +191,14 @@
                         </button>
                     </b-field>
                     <li v-if="column.children.length">
-                        <div
+                        <button
                                 v-if="shouldShowMoreButton(columnIndex)"
                                 class="tainacan-show-more"
                                 @click="fetchMoreTerms(column, columnIndex)">
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore" />
                             </span>
-                        </div>
+                        </button>
                     </li>
                 </ul>
                 <div
@@ -205,7 +213,11 @@
                     <p>
                         <a 
                                 class="add-link"
-                                @click="onAddNewChildTerm(column.id)">
+                                role="button"
+                                tabindex="0"
+                                @click="onAddNewChildTerm(column.id)"
+                                @keydown.enter.prevent="onAddNewChildTerm(column.id)"
+                                @keydown.space.prevent="onAddNewChildTerm(column.id)">
                             <span class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
@@ -237,7 +249,7 @@
         <section 
                 v-if="( termColumns instanceof Array ? termColumns.length <= 0 : !termColumns ) && !isColumnLoading"
                 class="section">
-            <div class="content has-text-gray has-text-centered">
+            <div class="content has-text-dark has-text-centered">
                 <p>
                     <span class="icon is-medium">
                         <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms" />
@@ -247,7 +259,11 @@
                 <p>
                     <a 
                             class="add-link"
-                            @click="onAddNewChildTerm(0)">
+                            role="button"
+                            tabindex="0"
+                            @click="onAddNewChildTerm(0)"
+                            @keydown.enter.prevent="onAddNewChildTerm(0)"
+                            @keydown.space.prevent="onAddNewChildTerm(0)">
                         <span class="icon is-small">
                             <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                         </span>
@@ -790,13 +806,23 @@ export default {
         width: 100%;
         display: flex;
         justify-content: center;
+        box-shadow: none;
         cursor: pointer;
         border: 1px solid var(--tainacan-gray1);
         margin-top: 10px;
         margin-bottom: -0.2em;
 
-        &:hover {
-            background-color: var(--tainacan-blue1);
+        
+        &:hover,
+        &:focus {
+            outline: none;
+            box-shadow: none;
+            background-color: var(--tainacan-item-hover-background-color);
+        }
+        &:focus-visible {
+            outline: 2px solid var(--tainacan-secondary);
+            outline-offset: 2px;
+            box-shadow: none;
         }
     }
 
@@ -858,7 +884,10 @@ export default {
             height: 100%;
         }
 
-        &:hover {
+        &:hover,
+        &:focus,
+        &:focus-within,
+        &:focus-visible {
             background-color: var(--tainacan-gray1);
 
             &>a:not(.add-link),

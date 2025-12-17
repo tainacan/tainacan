@@ -1,5 +1,8 @@
 <template>
-    <aside :aria-busy="isLoadingFilters">
+    <component 
+            :is="filtersAsModal ? 'div' : 'section'"
+            :aria-busy="isLoadingFilters"
+            :aria-label="filtersAsModal ? undefined : $i18n.get('filters')">
         <b-loading
                 v-model="isLoadingFilters"
                 :is-full-page="false" />
@@ -260,7 +263,7 @@
                     ( !isRepositoryLevel && !taxonomy && filters && filters.length <= 0 )
                 )"
                 class="is-grouped-centered">
-            <div class="content has-text-gray has-text-centered">
+            <div class="content has-text-dark has-text-centered">
                 <p>
                     <span class="icon is-large">
                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters" />
@@ -286,7 +289,7 @@
                 </router-link>
             </div>
         </section>
-    </aside>    
+    </component>    
 </template> 
 
 <script>

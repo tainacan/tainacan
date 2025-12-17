@@ -582,20 +582,20 @@ export default {
 
 <style lang="scss">
 
-    @import './style.scss';
+    @use './style.scss';
 
-    @import '../../../tainacan-basics.scss';
-    @import '../../../tainacan-variables.scss';
-    
-    // Tooltips
-    @import url('floating-vue/dist/style.css');
-    @import '../../../admin/scss/_tooltips.scss';
+    // Block level custom variables
+    @use '../../../tainacan-basics.scss';
 
     // Animations
-    @import '../../../admin/scss/_animations.scss';
+    @use '../../../admin/scss/_animations.scss';
+    
+    // Tooltips
+    @use '../../../admin/scss/_tooltips.scss';
+    @import url('floating-vue/dist/style.css');
 
     // Vue Blurhash transtition effect
-    @import '../../../../../node_modules/another-vue3-blurhash/dist/style.css';
+    @import url('../../../../../node_modules/another-vue3-blurhash/dist/style.css');
 
     .metadata-value {
         .tainacan-compound-group {

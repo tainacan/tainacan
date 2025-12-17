@@ -38,7 +38,11 @@
             <a
                     class="add-link"
                     :class="{ 'is-loading': isAddingNewTermVaue }"
-                    @click="openTermCreationModal">
+                    role="button"
+                    tabindex="0"
+                    @click="openTermCreationModal"
+                    @keydown.enter.prevent="openTermCreationModal"
+                    @keydown.space.prevent="openTermCreationModal">
                 <span class="icon is-small">
                     <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                 </span>

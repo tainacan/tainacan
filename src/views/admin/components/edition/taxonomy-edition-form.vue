@@ -99,7 +99,8 @@
                                 :message="$i18n.getHelperMessage('taxonomies', 'status')" />
                         <b-dropdown
                                 ref="item-edition-status-dropdown"
-                                aria-role="list"
+                                v-a11y-dropdown
+                                :trigger-tabindex="-1"
                                 class="item-edition-status-dropdown"
                                 :triggers="[ 'click' ]"
                                 :disabled="editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' )"
@@ -111,7 +112,7 @@
                                         class="button is-outlined"
                                         :class="{ 'disabled': editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) }"
                                         style="width: auto">
-                                    <span class="icon has-text-gray">
+                                    <span class="icon has-text-dark">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-18px"
                                                 :class="$statusHelper.getIcon(form.status)" />
@@ -132,9 +133,8 @@
                             <b-dropdown-item 
                                     v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft' && (taxonomy.status != 'auto-draft' || status.slug != 'trash'))"
                                     :key="index"
-                                    aria-role="listitem"
                                     @click="form.status = statusOption.slug">
-                                <span class="icon has-text-gray">
+                                <span class="icon has-text-dark">
                                     <i 
                                             class="tainacan-icon tainacan-icon-18px"
                                             :class="$statusHelper.getIcon(statusOption.slug)" />
@@ -284,7 +284,7 @@
 
         <div v-if="!isLoadingTaxonomy && (($route.name == 'TaxonomyCreationForm' && !$userCaps.hasCapability('tnc_rep_edit_taxonomies')) || ($route.name == 'TaxonomyEditionForm' && taxonomy && taxonomy.current_user_can_edit != undefined && !taxonomy.current_user_can_edit))">
             <section class="section">
-                <div class="content has-text-gray has-text-centered">
+                <div class="content has-text-dark has-text-centered">
                     <p>
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-taxonomies" />

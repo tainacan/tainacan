@@ -2,8 +2,9 @@
     <div class="numeric-filter-container">
         <b-dropdown
                 v-if="filterTypeOptions.comparators.length > 1"
+                v-a11y-dropdown
+                :trigger-tabindex="-1"
                 :mobile-modal="true"
-                aria-role="list"
                 trap-focus
                 @update:model-value="($event) => { resetPage(); onChangeComparator($event) }">
             <template #trigger>
@@ -26,7 +27,6 @@
                         role="button"
                         :class="{ 'is-active': comparator == comparatorKey }"
                         :value="comparatorKey"
-                        aria-role="listitem"
                         v-html="comparatorObject.symbol + '&nbsp;' + comparatorObject.label" />
             </template>
         </b-dropdown>
@@ -37,6 +37,9 @@
                 :aria-plus-label="$i18n.get('label_increase')"
                 :placeholder="filter.placeholder ? filter.placeholder : ''"
                 size="is-small"
+                controls-position="compact"
+                controls-alignment="right"
+                expanded
                 :step="Number(filterTypeOptions.step)"
                 @update:model-value="($event) => { resetPage($event); emit($event); }" />
     </div>
@@ -177,7 +180,7 @@
             }
         }
 
-        .b-numberinput.is-grouped {
+        .b-numberinput {
             flex-grow: 1;
 
             :deep(input.input) {

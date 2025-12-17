@@ -47,6 +47,9 @@
                     :step="1"
                     :max="19"
                     :min="1"
+                    controls-position="compact"
+                    controls-alignment="right"
+                    expanded
                     @update:model-value="emitValues()" />
         </b-field>
 
@@ -65,6 +68,9 @@
                     :step="1"
                     :max="19"
                     :min="1"
+                    controls-position="compact"
+                    controls-alignment="right"
+                    expanded
                     @update:model-value="emitValues()" />
         </b-field>
 
