@@ -16,7 +16,7 @@ class CSV extends Importer {
 		$this->set_default_options([
 			'delimiter' => ',',
 			'multivalued_delimiter' => '||',
-			'encode' => 'utf8',
+			'encode' => 'automatic',
 			'enclosure' => '',
 			'escape_empty_value' => '[empty value]'
 		]);
@@ -468,6 +468,7 @@ class CSV extends Importer {
 					<div class="control is-clearfix">
 						<div class="select is-fullwidth">
 							<select name="encode">
+								<option value="automatic" <?php selected($this->get_option('encode'), 'automatic'); ?> ><?php _e('Automatic', 'tainacan'); ?> </option>
 								<option value="utf8" <?php selected($this->get_option('encode'), 'utf8'); ?> >UTF-8</option>
 								<option value="iso88591" <?php selected($this->get_option('encode'), 'iso88591'); ?> >ISO-88591</option>
 							</select>
@@ -545,13 +546,17 @@ class CSV extends Importer {
 	 */
 	private function handle_encoding($string) {
 		switch( $this->get_option('encode') ) {
+			case 'automatic':
+				$encoding = mb_detect_encoding($string, ['UTF-8', 'ISO-8859-1', 'Windows-1252'], true);
+				if ($encoding && $encoding !== 'UTF-8') {
+					return mb_convert_encoding($value, 'UTF-8', $encoding);
+				}
 			case 'utf8':
 				return $string;
 			case 'iso88591':
 				return mb_convert_encoding($string, 'UTF-8', 'ISO-8859-1');
-			default:
-				return $string;
 		}
+		return $string;
 	}
 
 	/**
