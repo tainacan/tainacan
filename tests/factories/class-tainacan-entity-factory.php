@@ -93,19 +93,19 @@ class Entity_Factory {
 
 			} elseif (empty($args) && !$is_validated_and_in_db) {
 				try {
-					$this->entity->set_name( "$type " . rand( 0, 10000 ) . " for test" );
+					$this->entity->set_name( "$type " . wp_rand( 0, 10000 ) . " for test" );
 					$this->entity->set_description( 'It is only for test' );
 				} catch (\Exception $exception){
-					$this->entity->set_title( "$type " . rand( 0, 10000 ) . " for test" );
+					$this->entity->set_title( "$type " . wp_rand( 0, 10000 ) . " for test" );
 					$this->entity->set_description( 'It is only for test' );
 				}
 
 			} elseif (empty($args) && $is_validated_and_in_db) {
 				try {
-					$this->entity->set_name( "$type " . rand( 0, 10000 ) . " for test" );
+					$this->entity->set_name( "$type " . wp_rand( 0, 10000 ) . " for test" );
 					$this->entity->set_description( 'It is only for test' );
 				} catch (\Exception $exception){
-					$this->entity->set_title( "$type " . rand( 0, 10000 ) . " for test" );
+					$this->entity->set_title( "$type " . wp_rand( 0, 10000 ) . " for test" );
 					$this->entity->set_description( 'It is only for test' );
 				}
 

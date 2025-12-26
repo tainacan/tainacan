@@ -3251,9 +3251,9 @@ class Theme_Helper {
 					<div style="width: 50%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>
 					<div style="width: 65%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>' .
 					array_reduce( range(0,6), function($item, $m) {
-						$should_appear = rand(0,1);
+						$should_appear = wp_rand(0,1);
 						if ($should_appear)
-							$item .= '<div style="width: ' . rand(65,100). '%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>';
+							$item .= '<div style="width: ' . wp_rand(65,100). '%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>';
 						return $item;	
 					}) .
 				'</li>';
@@ -3302,9 +3302,9 @@ class Theme_Helper {
 						<div style="width: 100%; height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 0 0 8px 0;"></div>
 						<div style="width: 64px; height: 64px; background-color: var(--tainacan-block-gray2, #dbdbdb);float:left;margin-right:10px;"></div>
 						<div style="margin-left: 74px;">
-							<div style="width: ' . rand(85,100) . '%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>
-							<div style="width: ' . rand(75,90) . '%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>
-							<div style="width: ' . rand(30,65) . '%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>
+							<div style="width: ' . wp_rand(85,100) . '%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>
+							<div style="width: ' . wp_rand(75,90) . '%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>
+							<div style="width: ' . wp_rand(30,65) . '%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>
 						</div>	
 					</li>';
 					return $container;
@@ -3331,7 +3331,7 @@ class Theme_Helper {
 			'placeholder_template' => '<ul style="list-style: none;width: 100%; height: auto; column-width: 120px; gap: 15px;padding: 0;">' .
 				array_reduce( range(0,11), function($container, $i) {
 					$container .= '<li style="break-inside: avoid; width: calc(100% - 20px); height: auto; background-color: var(--tainacan-block-gray1, #f2f2f2); margin: 0 0 15px 0; padding: 10px;">
-						<div style="width: 100%;height: ' . ($i % 2 == 0 ? rand(80, 120) : rand(60, 100)) . 'px; background-color: var(--tainacan-block-gray2, #dbdbdb);margin-bottom: 10px;"></div>	
+						<div style="width: 100%;height: ' . ($i % 2 == 0 ? wp_rand(80, 120) : wp_rand(60, 100)) . 'px; background-color: var(--tainacan-block-gray2, #dbdbdb);margin-bottom: 10px;"></div>	
 						<div style="width: 100%;height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
 					</li>';
 					return $container;
@@ -3373,12 +3373,12 @@ class Theme_Helper {
 				array_reduce( range(0,5), function($container, $i) {
 					$container .= '<li style="height: auto; background-color: var(--tainacan-block-gray1, #f2f2f2);padding: 20px;">
 						<div style="width: 100%; height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 0 0 8px 0;"></div>
-						<div style="width: 64px; height:' . rand(60,100) . 'px; background-color: var(--tainacan-block-gray2, #dbdbdb);float:left;margin-right:10px;"></div>
+						<div style="width: 64px; height:' . wp_rand(60,100) . 'px; background-color: var(--tainacan-block-gray2, #dbdbdb);float:left;margin-right:10px;"></div>
 						<div style="margin-left: 74px; column-width: 200px;">' .
 							array_reduce( range(0,11), function($item, $m) {
-								$should_appear = rand(0,1);
+								$should_appear = wp_rand(0,1);
 								if ($should_appear)
-									$item .= '<div style="break-inside: avoid;width: ' . rand(45,100). '%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>';
+									$item .= '<div style="break-inside: avoid;width: ' . wp_rand(45,100). '%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>';
 								return $item;	
 							}) .
 						'</div>	
@@ -3396,7 +3396,7 @@ class Theme_Helper {
 					<?php echo array_reduce( range(0,5), function($container, $i) {
 							$container .= '<li style="height: 40px; background-color: var(--tainacan-block-gray1, #f2f2f2);display: flex;flex-direction:row;align-items: center;padding: 3px 6px;gap: 6px">
 								<div style="min-width: 32px; height: 32px; background-color: var(--tainacan-block-gray2, #dbdbdb);"></div>		
-								<div style="width: ' . rand(40, 80) . '%; height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
+								<div style="width: ' . wp_rand(40, 80) . '%; height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
 							</li>';
 							return $container;
 						})
@@ -3433,7 +3433,7 @@ class Theme_Helper {
 			'implements_skeleton' => true,
 			'placeholder_template' => '<ul style="list-style: none;width: 100%; height: auto; display: flex; gap: 24px 0; flex-wrap: wrap;">' .
 				array_reduce( range(0,11), function($container, $i) {
-					$container .= '<li style="flex-grow: 1; max-width: 35%; width: ' . ($i % 2 == 0 ? rand(100, 180) : rand(90, 170)) . 'px; height: 120px ; background-color: var(--tainacan-block-gray1, #f2f2f2); margin: 0; padding: 5px;">
+					$container .= '<li style="flex-grow: 1; max-width: 35%; width: ' . ($i % 2 == 0 ? wp_rand(100, 180) : wp_rand(90, 170)) . 'px; height: 120px ; background-color: var(--tainacan-block-gray1, #f2f2f2); margin: 0; padding: 5px;">
 						<div style="width: 100%;height: 100%; background-color: var(--tainacan-block-gray2, #dbdbdb);margin-bottom: 10px;"></div>
 						<div style="width: 100%;height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
 					</li>';
