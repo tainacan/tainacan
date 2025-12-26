@@ -300,7 +300,7 @@ class Compound extends Metadata_Type {
 		if ($meta instanceof Item_Metadata_Entity && !empty($meta->get_value_as_html())) {
 			ob_start();
 			?>
-				<div class="tainacan-metadatum metadata-type-<?php echo $meta->get_metadatum()->get_metadata_type_object()->get_slug(); ?> metadata-slug-<?php echo $meta->get_metadatum()->get_slug(); ?>">
+				<div class="tainacan-metadatum metadata-type-<?php echo esc_attr( $meta->get_metadatum()->get_metadata_type_object()->get_slug() ); ?> metadata-slug-<?php echo esc_attr( $meta->get_metadatum()->get_slug() ); ?>">
 					<?php
 						$child_label = $meta->get_metadatum()->get_name();
 						$child_label_before = apply_filters('tainacan-get-child-item-metadatum-as-html-before-label', '<h4 class="label child-metadatum-label">', $meta);

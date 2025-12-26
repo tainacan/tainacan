@@ -159,7 +159,7 @@ class System_Check extends Pages {
 
 	public function check_max_upload_size() {
 		$upload_max_size = ini_get('upload_max_filesize');
-		echo $upload_max_size;
+		echo esc_html($upload_max_size);
 	}
 
 
@@ -380,7 +380,7 @@ class System_Check extends Pages {
 			foreach ( $failures as $failure ) {
 				printf(
 					'<li>%s</li>',
-					$failure
+					wp_kses_post($failure)
 				);
 			}
 
@@ -433,14 +433,17 @@ class System_Check extends Pages {
 			);
 		}
 
+		$notice_output = '';
+		if ( ! empty( $notice ) ) {
+			$notice_output = '<br> - ' . implode( '<br> - ', $notice );
+		}
+
+		$output = esc_html( $this->mysql_server_version ) . $notice_output;
+
 		printf(
 			'<span class="%s"></span> %s',
 			esc_attr( $status ),
-			sprintf(
-				'%s%s',
-				esc_html( $this->mysql_server_version ),
-				( ! empty( $notice ) ? '<br> - ' . implode( '<br>', $notice ) : '' )
-			)
+			wp_kses_post( $output )
 		);
 	}
 

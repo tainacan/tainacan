@@ -545,17 +545,17 @@ abstract class Pages {
 								
 								if ( isset( $submenu[$tainacan_root_link[2]] ) ) : ?>
 
-									<li class="menu-item-has-children <?php echo $current_page_parent === $tainacan_root_link[2] ? 'is-open' : ''; ?>">
+									<li class="menu-item-has-children <?php echo esc_attr($current_page_parent === $tainacan_root_link[2] ? 'is-open' : ''); ?>">
 										<div class="menu-item-backdrop"></div>
-										<button type="button" aria-expanded="<?php echo $current_page_parent === $tainacan_root_link[2] ?>"><?php echo $tainacan_root_link[0]; ?></button>
+										<button type="button" aria-expanded="<?php echo esc_attr($current_page_parent === $tainacan_root_link[2] ? 'true' : 'false'); ?>"><?php echo tainacan_wp_kses($tainacan_root_link[0], 'tainacan_menu_link'); ?></button>
 										
 										<?php if ( count( $submenu[$tainacan_root_link[2]] ) ) : ?>
-											<ul id="<?php echo $tainacan_root_link[2]; ?>">
+											<ul id="<?php echo esc_attr($tainacan_root_link[2]); ?>">
 												<?php foreach( $submenu[$tainacan_root_link[2]] as $link ) : 
 													if ( !current_user_can( $link[1] ) ) continue;
 												?>
 													<li>
-														<a href="<?php echo add_query_arg( 'page', $link[2] ); ?>" <?php echo $current_page_slug === 'admin_page_' . $link[2] ? 'aria-current="page"' : ''; ?>><?php echo $link[0]; ?></a>
+														<a href="<?php echo esc_url(add_query_arg( 'page', $link[2] )); ?>" <?php echo $current_page_slug === 'admin_page_' . $link[2] ? 'aria-current="page"' : ''; ?>><?php echo tainacan_wp_kses($link[0], 'tainacan_menu_link'); ?></a>
 													</li>
 												<?php endforeach; ?>
 											</ul>
@@ -564,7 +564,7 @@ abstract class Pages {
 
 								<?php elseif ( isset( $tainacan_root_link[2] ) && $tainacan_root_link[2] !== $this->tainacan_other_links_slug ) : ?>
 									<li>
-										<a href="<?php echo add_query_arg( 'page', $tainacan_root_link[2] ); ?>"  <?php echo $current_page_slug === 'admin_page_' . $tainacan_root_link[2] ? 'aria-current="page"' : ''; ?>><?php echo $tainacan_root_link[0]; ?></a>
+										<a href="<?php echo esc_url(add_query_arg( 'page', $tainacan_root_link[2] )); ?>"  <?php echo $current_page_slug === 'admin_page_' . $tainacan_root_link[2] ? 'aria-current="page"' : ''; ?>><?php echo tainacan_wp_kses($tainacan_root_link[0], 'tainacan_menu_link'); ?></a>
 									</li>
 								<?php endif; 
 							}
@@ -641,9 +641,9 @@ abstract class Pages {
 					<ul id="tainacan-breadcrumbs-list">
 						<?php foreach( $breadcrumbs as $breadcrumb ) : ?>
 							<?php if ( isset( $breadcrumb['url'] ) ) : ?>
-								<li><a href="<?php echo $breadcrumb['url']; ?>"><?php echo $breadcrumb['label']; ?></a></li>
+								<li><a href="<?php echo esc_url($breadcrumb['url']); ?>"><?php echo esc_html($breadcrumb['label']); ?></a></li>
 							<?php else : ?>
-								<li><?php echo $breadcrumb['label']; ?></li>
+								<li><?php echo esc_html($breadcrumb['label']); ?></li>
 							<?php endif; ?>
 						<?php endforeach; ?>
 					</ul>

@@ -472,28 +472,37 @@ class Settings extends Pages {
 				id="<?php echo esc_attr( $option_name ); ?>" 
 				name="<?php echo esc_attr( $option_name ); ?>"
 				<?php echo ' ' . esc_attr( $args['input_attrs'] ) . ' '; ?>
-				<?php echo $disabled; ?>>
+				<?php echo esc_attr( $disabled ); ?>>
 				<?php echo str_replace( 'value="' . $value . '"', 'value="' . $value . '" selected'  , $args['input_inner_html'] ); ?>
 			</select>
 		<?php elseif ( $args['input_type'] === 'checkbox' && is_array($args['label']) ) : ?>
 			<div class="multiple-options">
 				<?php
-					foreach ( $label as $key => $option_label ) {
-						$checked = is_array($value) && in_array( $key, $value ) ? 'checked' : '';
-						echo '<label>';
-						echo '<input type="checkbox" name="' . esc_attr( $option_name ) . '[]" value="' . esc_attr( $key ) . '" ' . $checked . ' />' . esc_html($option_label);
-						echo '</label><br>';
-					}
+				foreach ( $label as $key => $option_label ) {
+					$checked = is_array($value) && in_array( $key, $value ) ? 'checked' : '';
+					echo '<label>';
+					echo '<input type="checkbox" name="' . esc_attr( $option_name ) . '[]" value="' . esc_attr( $key ) . '" ' . esc_attr( $checked ) . ' />' . esc_html($option_label);
+					echo '</label><br>';
+				}
 				?>
 			<div>
 		<?php else : ?>
+			<?php
+			// Build checkbox attributes separately for clarity
+			$checkbox_attrs = '';
+			if ( $input_type === 'checkbox' ) {
+				$checkbox_attrs = ( $value == true || $value == "1" ) ? ' checked value="1"' : ' value="1"';
+			} else {
+				$checkbox_attrs = ' value="' . esc_attr( $value ) . '"';
+			}
+			?>
 			<input 
 				id="<?php echo esc_attr( $option_name ); ?>" 
 				name="<?php echo esc_attr( $option_name ); ?>"
-				type="<?php echo $input_type; ?>" 
-				<?php echo ($input_type === 'checkbox' ? ( $value == true || $value == "1" ? ' checked value="1"' : ' value="1"' ) : ' value="' . $value . '"'); ?> 
+				type="<?php echo esc_attr( $input_type ); ?>" 
+				<?php echo $checkbox_attrs; ?>
 				<?php echo ' ' . esc_attr( $args['input_attrs'] ) . ' '; ?>
-				<?php echo $disabled; ?> />
+				<?php echo esc_attr( $disabled ); ?> />
 		<?php endif; ?>
 
 		<?php if ( $label && !is_array($label) ) : ?>

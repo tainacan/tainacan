@@ -39,7 +39,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
         <?php
             $tainacan_dashboard_welcome_message = __('Welcome to Tainacan, your digital repository platform for WordPress.', 'tainacan');
             $tainacan_dashboard_welcome_message = apply_filters('tainacan-dashboard-welcome-message', $tainacan_dashboard_welcome_message);
-            echo $tainacan_dashboard_welcome_message;
+            // Use wp_kses_post() to allow basic post formatting (bold, italic, links, etc.)
+            echo wp_kses_post($tainacan_dashboard_welcome_message);
         ?>
         </p>
     </div>

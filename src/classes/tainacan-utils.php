@@ -90,6 +90,48 @@ add_filter('wp_kses_allowed_html', function($allowedposttags, $context) {
 					'allowfullscreen' => true,
 				)]
 			);
+		case 'tainacan_menu_link':
+			$post_allowed_html = wp_kses_allowed_html('post');
+			return array_merge(
+				$post_allowed_html,
+				[
+					'svg' => array(
+						'xmlns'   => true,
+						'width'   => true,
+						'height'  => true,
+						'viewbox' => true,
+						'fill'    => true,
+						'class'   => true,
+						'role'    => true,
+						'aria-hidden' => true,
+					),
+					'path' => array(
+						'd'       => true,
+						'fill'    => true,
+						'stroke'  => true,
+						'stroke-width' => true,
+						'stroke-linecap' => true,
+						'stroke-linejoin' => true,
+					),
+					'g' => array(
+						'transform' => true,
+						'fill'      => true,
+					),
+					'circle' => array(
+						'cx' => true,
+						'cy' => true,
+						'r'  => true,
+						'fill' => true,
+					),
+					'rect' => array(
+						'x'      => true,
+						'y'      => true,
+						'width'  => true,
+						'height' => true,
+						'fill'   => true,
+					)
+				]
+			);
 		default:
 			return $allowedposttags;
 	}

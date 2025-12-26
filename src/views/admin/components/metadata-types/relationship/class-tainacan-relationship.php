@@ -390,7 +390,7 @@ class Relationship extends Metadata_Type {
 						$metadata_wrapper_class .= ' metadata-slug-' . $metadata_slug;
 				}
 				?>
-					<div class="<?php echo $metadata_wrapper_class; ?>">
+					<div class="<?php echo esc_attr( $metadata_wrapper_class ); ?>">
 						<h5 class="label related-metadadum-label">
 							<?php echo esc_html($meta->get_metadatum()->get_name()); ?>
 						</h5>

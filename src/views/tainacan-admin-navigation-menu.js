@@ -1,13 +1,17 @@
 function handleMenuCollapses() {
     const tainacanRootMenu = document.getElementById('tainacan-root-menu');
 
-    if ( tainacanRootMenu && tainacanRootMenu.childNodes.length ) {
+    if ( tainacanRootMenu && tainacanRootMenu.children.length ) {
 
-        const tainacanRootMenuItems = tainacanRootMenu.childNodes;
+        const tainacanRootMenuItems = Array.from(tainacanRootMenu.children);
 
         tainacanRootMenuItems.forEach( item => {
             if ( item.classList && item.classList.contains('menu-item-has-children') ) {
                 const itemButton = item.querySelector( 'button' );
+
+                if ( !itemButton ) {
+                    return;
+                }
 
                 itemButton.addEventListener( 'click', function() {
                     item.classList.toggle('is-open');
@@ -19,8 +23,10 @@ function handleMenuCollapses() {
                         tainacanRootMenuItems.forEach( otherItem => {
                             if ( otherItem !== item && otherItem.classList && otherItem.classList.contains('menu-item-has-children') ) {
                                 const otherItemButton = otherItem.querySelector( 'button' );
-                                otherItem.classList.remove('is-open');
-                                otherItemButton.setAttribute( 'aria-expanded', false );
+                                if ( otherItemButton ) {
+                                    otherItem.classList.remove('is-open');
+                                    otherItemButton.setAttribute( 'aria-expanded', false );
+                                }
                             }
                         });
                     }
@@ -36,8 +42,10 @@ function handleMenuCollapses() {
                 tainacanRootMenuItems.forEach( item => {
                     if ( item.classList && item.classList.contains('menu-item-has-children') ) {
                         const itemButton = item.querySelector( 'button' );
-                        item.classList.remove('is-open');
-                        itemButton.setAttribute( 'aria-expanded', false );
+                        if ( itemButton ) {
+                            item.classList.remove('is-open');
+                            itemButton.setAttribute( 'aria-expanded', false );
+                        }
                     }
                 });
             });
