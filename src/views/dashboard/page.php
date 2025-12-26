@@ -11,35 +11,35 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
                 /**
                  * Tweaks the dashboard logo to use white, monochrome version
                  * 
-                 * @param boolean $dashboard_logo_use_white The boolean to indicate if the white logo should be used
+                 * @param boolean $tainacan_dashboard_logo_use_white The boolean to indicate if the white logo should be used
                  * 
                  * @return boolean The boolean to indicate if the white logo should be used
                  */
-                $dashboard_logo_use_white = apply_filters('tainacan-dashboard-logo-use-white', false);
+                $tainacan_dashboard_logo_use_white = apply_filters('tainacan-dashboard-logo-use-white', false);
 
                 /**
                  * Filter the dashboard logo
                  * 
-                 * @param string $dashboard_logo The dashboard logo
+                 * @param string $tainacan_dashboard_logo The dashboard logo
                  * 
                  * @return string The dashboard logo
                  */
-                $dashboard_logo = apply_filters(
+                $tainacan_dashboard_logo = apply_filters(
                     'tainacan-dashboard-logo',
-                    plugin_dir_url( dirname( __FILE__, 2 ) ) . '/assets/images/' . ($dashboard_logo_use_white ? 'tainacan_logo_dashboard_white.svg' : 'tainacan_logo_dashboard.svg')
+                    plugin_dir_url( dirname( __FILE__, 2 ) ) . '/assets/images/' . ($tainacan_dashboard_logo_use_white ? 'tainacan_logo_dashboard_white.svg' : 'tainacan_logo_dashboard.svg')
                 );
 
             ?>
             <img 
                     alt="<?php _e('Tainacan', 'tainacan'); ?>" 
                     width="300" 
-                    src="<?php echo esc_attr( $dashboard_logo ); ?>" />
+                    src="<?php echo esc_attr( $tainacan_dashboard_logo ); ?>" />
         </h1>
         <p>
         <?php
-            $welcome_message = __('Welcome to Tainacan, your digital repository platform for WordPress.', 'tainacan');
-            $welcome_message = apply_filters('tainacan-dashboard-welcome-message', $welcome_message);
-            echo $welcome_message;
+            $tainacan_dashboard_welcome_message = __('Welcome to Tainacan, your digital repository platform for WordPress.', 'tainacan');
+            $tainacan_dashboard_welcome_message = apply_filters('tainacan-dashboard-welcome-message', $tainacan_dashboard_welcome_message);
+            echo $tainacan_dashboard_welcome_message;
         ?>
         </p>
     </div>
