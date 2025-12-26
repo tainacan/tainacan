@@ -28,8 +28,8 @@ function tainacan_get_api_postdata() {
  * @param string|\WP_Post_Status $post_status Post status name or object.
  * @return bool True if the post status is viewable, false otherwise.
  */
-if ( !function_exists("is_post_status_viewable") ) {
-	function is_post_status_viewable( $post_status ) {
+if ( !function_exists("tainacan_is_post_status_viewable") ) {
+	function tainacan_is_post_status_viewable( $post_status ) {
 		if ( is_scalar( $post_status ) ) {
 			$post_status = \get_post_status_object( $post_status );
 			if ( ! $post_status ) {
@@ -51,13 +51,13 @@ if ( !function_exists("is_post_status_viewable") ) {
 
 /**
  * DEV Interface utility, used for debugging.
- * This functions checks if the TNC_ENABLE_DEV_WP_INTERFACE constant is defined and true.
+ * This functions checks if the tainacan_enable_dev_wp_interface constant is defined and true.
  * If this returns true, Tainacan post types will be displayed in the WP Admin interface.
  *
  * @return boolean
  */
-function tnc_enable_dev_wp_interface() {
-    return defined('TNC_ENABLE_DEV_WP_INTERFACE') && true === TNC_ENABLE_DEV_WP_INTERFACE ? true : false;
+function tainacan_enable_dev_wp_interface() {
+    return defined('tainacan_enable_dev_wp_interface') && true === tainacan_enable_dev_wp_interface ? true : false;
 }
 
 /**
@@ -72,7 +72,7 @@ function tnc_enable_dev_wp_interface() {
  * @param string $context The kses context to use. Default 'tainacan_content'.
  * @return string Sanitized content.
  */
-function wp_kses_tainacan($content, $context = 'tainacan_content') {
+function tainacan_wp_kses($content, $context = 'tainacan_content') {
 	$allowed_html = wp_kses_allowed_html($context);
 	return wp_kses($content, $allowed_html);
 }

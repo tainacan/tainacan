@@ -749,7 +749,7 @@ class Item extends Entity {
 		}
 
 		// Returns the html content created by the function
-		return wp_kses_tainacan($return);
+		return tainacan_wp_kses($return);
 	}
 
 	/**
@@ -928,7 +928,7 @@ class Item extends Entity {
 			$output = $this->get_attachment_as_html($this->get_document(), $img_size);
 		}
 
-		return apply_filters("tainacan-item-get-document-as-html", wp_kses_tainacan($output), $img_size, $this);
+		return apply_filters("tainacan-item-get-document-as-html", tainacan_wp_kses($output), $img_size, $this);
 	}
 
 	/**
@@ -961,7 +961,7 @@ class Item extends Entity {
 				$output .= $embed;
 			}
 		}
-		return apply_filters("tainacan-item-get-attachment-as-html", wp_kses_tainacan($output), $img_size, $this);
+		return apply_filters("tainacan-item-get-attachment-as-html", tainacan_wp_kses($output), $img_size, $this);
 
 	}
 

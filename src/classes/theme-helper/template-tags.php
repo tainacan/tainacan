@@ -423,7 +423,7 @@ function tainacan_get_the_media_component(
 						<?php foreach($media_items_main as $media_item) { ?>
 							<li class="swiper-slide <?php echo esc_attr($args['class_main_li']) ?>">
 								<?php 
-									echo wp_kses_tainacan($media_item);
+									echo tainacan_wp_kses($media_item);
 								 ?>
 							</li>
 						<?php }; ?>
@@ -479,7 +479,7 @@ function tainacan_get_the_media_component(
 					<ul class="swiper-wrapper <?php echo esc_attr($args['class_thumbs_ul']) ?>">
 						<?php foreach($media_items_thumbs as $media_item) { ?>
 							<li class="swiper-slide <?php echo esc_attr($args['class_thumbs_li']) ?>">
-								<?php echo wp_kses_tainacan($media_item); ?>
+								<?php echo tainacan_wp_kses($media_item); ?>
 							</li>
 						<?php }; ?>
 					</ul>
@@ -584,7 +584,7 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 	<div class="swiper-slide-content <?php echo esc_attr($args['class_slide_content']) ?>">
 
 		<?php if ( isset($args['media_content']) && !empty($args['media_content']) && $args['media_content'] !== false ) :?>
-			<?php echo wp_kses_tainacan($args['media_content']) ?>
+			<?php echo tainacan_wp_kses($args['media_content']) ?>
 		<?php else: ?>
 			<img src="<?php echo esc_url(tainacan_get_the_mime_type_icon($args['media_type'])) ?>" alt="<?php echo ( !empty($args['media_title']) ? esc_attr($args['media_title']) : __('File', 'tainacan') ) ?>" >
 		<?php endif; ?>
@@ -613,7 +613,7 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 
 		<?php if ( !empty($args['media_content_full']) ) : ?>
 			<div class="media-full-content" style="display: none; position: absolute; visibility: hidden;">
-				<?php echo wp_kses_tainacan($args['media_content_full']) ?>
+				<?php echo tainacan_wp_kses($args['media_content_full']) ?>
 			</div>
 		<?php endif; ?>
 

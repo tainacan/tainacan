@@ -264,8 +264,8 @@ class Relationship extends Metadata_Type {
 			$item instanceof \Tainacan\Entities\Item && (
 				is_user_logged_in() ||
 				(
-					\is_post_status_viewable( $item->get_status() ) &&
-					($item->get_collection() != null && \is_post_status_viewable( $item->get_collection()->get_status() ))
+					\tainacan_is_post_status_viewable( $item->get_status() ) &&
+					($item->get_collection() != null && \tainacan_is_post_status_viewable( $item->get_collection()->get_status() ))
 				)
 			)
 		);
@@ -395,7 +395,7 @@ class Relationship extends Metadata_Type {
 							<?php echo esc_html($meta->get_metadatum()->get_name()); ?>
 						</h5>
 						<p>
-							<?php echo wp_kses_tainacan(($value_link === false ? $meta->get_value_as_html() : $value_link)); ?> 
+							<?php echo tainacan_wp_kses(($value_link === false ? $meta->get_value_as_html() : $value_link)); ?> 
 						</p>
 					</div>
 				<?php

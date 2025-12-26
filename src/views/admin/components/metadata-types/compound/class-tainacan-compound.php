@@ -310,7 +310,7 @@ class Compound extends Metadata_Type {
 						$child_value = $meta->get_value_as_html();
 						$child_value_before = apply_filters('tainacan-get-child-item-metadatum-as-html-before-value', '<p class="child-metadatum-value">', $meta);
 						$child_value_after = apply_filters('tainacan-get-child-item-metadatum-as-html-after-value', '</p>', $meta);
-						echo $child_value_before . wp_kses_tainacan($child_value) . $child_value_after;
+						echo $child_value_before . tainacan_wp_kses($child_value) . $child_value_after;
 					?>
 				</div>
 			<?php
