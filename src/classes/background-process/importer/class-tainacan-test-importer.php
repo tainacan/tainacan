@@ -668,8 +668,8 @@ class Test_Importer extends Importer {
 		
 		if( $collection_definition['source_id'] === 'col1' && $this->get_option('add_random_images') === 'yes' ){
 
-			$horizontal_size = ( $this->get_option('horizontal_image_size') > 0 ) ? $this->get_option('horizontal_image_size') : rand ( 100 , 600 );
-			$vertical_size = ( $this->get_option('vertical_image_size') > 0 ) ? $this->get_option('vertical_image_size') : rand ( 100 , 600 );
+			$horizontal_size = ( $this->get_option('horizontal_image_size') > 0 ) ? $this->get_option('horizontal_image_size') : wp_rand( 100 , 600 );
+			$vertical_size = ( $this->get_option('vertical_image_size') > 0 ) ? $this->get_option('vertical_image_size') : wp_rand( 100 , 600 );
 			$keyword = ( $this->get_option('keyword_images') ) ? $this->get_option('keyword_images') : '';
 
 			$url = "https://loremflickr.com/$horizontal_size/$vertical_size/$keyword";
