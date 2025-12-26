@@ -1385,7 +1385,8 @@ class Theme_Helper {
 			$args['perpage'] = '1';
 			$current_position = (int)$args['pos'] + 1;
 			unset($args['pos']);
-			$args = (new \Tainacan\API\EndPoints\REST_Items_Controller())->process_request_filters($args);
+			global $tainacan_rest_items_controller;
+			$args = $tainacan_rest_items_controller->process_request_filters($args);
 
 			// Fetch Previous Item
 			if($current_position > 1) {
