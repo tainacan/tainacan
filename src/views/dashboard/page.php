@@ -31,7 +31,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
             ?>
             <img 
-                    alt="<?php _e('Tainacan', 'tainacan'); ?>" 
+                    alt="<?php esc_attr_e('Tainacan', 'tainacan'); ?>" 
                     width="300" 
                     src="<?php echo esc_attr( $tainacan_dashboard_logo ); ?>" />
         </h1>
@@ -64,9 +64,10 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
     </div><!-- wrap -->
 
     <span class="plugin-version">
-        <?php echo sprintf(
+        <?php echo esc_html( sprintf(
+            // translators: %s: The Tainacan plugin version number.
             __( 'Version %s' , 'tainacan' ),
             TAINACAN_VERSION
-        ); ?>
+        ) ); ?>
     </span>
 </div>
