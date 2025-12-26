@@ -203,7 +203,7 @@ class OAIPMH_List_Identifiers extends OAIPMH_Expose {
             }
             $this->cursor = (int) $this->deliveredrecords + $this->MAXRECORDS;
             $this->restoken = $this->createResumToken($this->cursor, $this->from,$this->until,$this->sets, $this->metadataPrefix);
-            $this->expirationdatetime = date("Y-m-d\TH:i:s\Z", time() * $this->token_valid);
+            $this->expirationdatetime = date("Y-m-d\TH:i:s\Z", time() + $this->token_valid);
         }
     }
 
