@@ -217,7 +217,7 @@ class URL extends Metadata_Type {
 			 * 
 			 * @return string The STRING representation of the item metadatum value
 			 */
-			apply_filters( 'tainacan-item-metadata-get-value-as-string--type-url', strip_tags($return), $item_metadata );
+			apply_filters( 'tainacan-item-metadata-get-value-as-string--type-url', wp_strip_all_tags($return), $item_metadata );
 	}
 
 	/**

@@ -753,7 +753,7 @@ class Elastic_Press_lte4 {
 		if( empty($aggregations) )
 			return $formated_aggs;
 
-		$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
+		$separator = wp_strip_all_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 		foreach($aggregations as $key => $aggregation) {
 			$description_types = \explode(".", $key);
 			$filter_id = $description_types[0];
@@ -834,7 +834,7 @@ class Elastic_Press_lte4 {
 		if( empty($aggregations) )
 			return $formated_aggs;
 
-		$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
+		$separator = wp_strip_all_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 		foreach($aggregations as $key => $aggregation) {
 			$description_types = \explode(".", $key);
 			if($description_types[0] == 'taxonomy') {

@@ -1224,7 +1224,7 @@ class Theme_Helper {
 			$content = wp_trim_words( $post->post_content, 28, '[...]' );
 
 			if ( $content ) {
-				$excerpt = strip_tags( $content );
+				$excerpt = wp_strip_all_tags( $content );
 				$excerpt = str_replace( '', "'", $excerpt );
 			} 
 
@@ -1240,7 +1240,7 @@ class Theme_Helper {
 					$img_info = wp_get_attachment_image_src( get_post_thumbnail_id( tainacan_get_collection_id() ), 'full' );
 				}
 				$url_src = home_url( $wp->request );
-				$excerpt = strip_tags(tainacan_get_the_collection_description());
+				$excerpt = wp_strip_all_tags(tainacan_get_the_collection_description());
 
 			} elseif ( is_post_type_archive('tainacan-collection') ) {
 				$title = __('Collections', 'tainacan');
@@ -1258,7 +1258,7 @@ class Theme_Helper {
 			$tainacan_term = tainacan_get_term();
 			
 			$title = $term->name;
-			$excerpt = strip_tags($term->description);
+			$excerpt = wp_strip_all_tags($term->description);
 			
 			$url_src = get_term_link($term->term_id, $term->taxonomy);
 

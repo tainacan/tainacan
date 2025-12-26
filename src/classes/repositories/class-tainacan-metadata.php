@@ -1392,7 +1392,7 @@ class Metadata extends Repository {
 			} else {
 				$pages = ceil( $total / $number );
 			}
-			$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
+			$separator = wp_strip_all_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 			$values = [];
 			foreach ($results as $r) {
 

@@ -215,7 +215,7 @@ class Item_Metadata_Entity extends Entity {
 			 * 
 			 * @return string the item metadatum value string 
 			 */
-			apply_filters( 'tainacan-item-metadata-get-value-as-string', strip_tags($this->get_value_as_html()), $this );
+			apply_filters( 'tainacan-item-metadata-get-value-as-string', wp_strip_all_tags($this->get_value_as_html()), $this );
 	}
 	
 	/**

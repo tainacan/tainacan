@@ -67,7 +67,7 @@ class Term extends Entity {
 
 		$term_id = $term_array['term_id'];
 		$taxonomy_slug = $this->get_taxonomy();
-		$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
+		$separator = wp_strip_all_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 
 		unset($term_array['term_id']);
 		unset($term_array['status']);

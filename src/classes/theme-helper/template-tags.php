@@ -1425,7 +1425,7 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 
 		$content = $args['before_terms_list_container'] . $content;
 
-		$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
+		$separator = wp_strip_all_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 
 		if ( !$args['hide_hierarchy_header'] && isset($current_args['termsparent']) && $current_args['termsparent'] ) {
 			$content .= '<div class="terms-hierarachy-header"><p>' . __('Showing terms children of', 'tainacan') . '&nbsp;';
