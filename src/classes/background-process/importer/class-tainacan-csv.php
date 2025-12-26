@@ -591,7 +591,7 @@ class CSV extends Importer {
 				$this->add_log('Deleted previous Item Documents ... ');
 			}
 
-			if (isset(parse_url($correct_value)['scheme'] )) {
+			if (isset(wp_parse_url($correct_value)['scheme'] )) {
 				$id = $TainacanMedia->insert_attachment_from_url($correct_value, $item_inserted->get_id());
 
 				if (!$id){
@@ -649,7 +649,7 @@ class CSV extends Importer {
 			$this->add_log('Deleted previous Item Thumbnail ... ');
 		}
 
-		if (isset(parse_url($column_value)['scheme'] )) {
+		if (isset(wp_parse_url($column_value)['scheme'] )) {
 			$id = $TainacanMedia->insert_attachment_from_url($column_value);
 
 			if (!$id){
@@ -705,7 +705,7 @@ class CSV extends Importer {
 		if ( $attachments ) {
 			foreach( $attachments as $attachment ) {
 				if (empty($attachment)) continue;
-				if (isset(parse_url($attachment)['scheme'])) {
+				if (isset(wp_parse_url($attachment)['scheme'])) {
 					$id = $TainacanMedia->insert_attachment_from_url($attachment, $item_inserted->get_id());
 					if (!$id) {
 						$this->add_error_log('Error in Attachment file imported from URL ' . $attachment);

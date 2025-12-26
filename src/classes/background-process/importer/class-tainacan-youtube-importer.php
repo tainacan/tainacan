@@ -157,7 +157,7 @@ class Youtube_Importer extends Importer {
                 }
             } else {
                 if ( FALSE === strpos($url, 'youtu.be/') ) {
-                    parse_str(parse_url($url, PHP_URL_QUERY), $id);
+                    parse_str(wp_parse_url($url, PHP_URL_QUERY), $id);
                     $id = isset($id['v']) ? $id['v'] : false;
 
                     if(!$id)
