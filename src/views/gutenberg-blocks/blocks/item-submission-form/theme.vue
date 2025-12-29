@@ -583,7 +583,6 @@
                 <div class="form-error-area-messages">
                     <strong>{{ formErrorMessage }}</strong>
                     <template v-if="errors.length && errors[0].errors && errors[0].errors.length">
-                        <p>{{ $i18n.get('instruction_click_error_to_go_to_metadata') }}</p>
                         <ol>
                             <template 
                                     v-for="(error, index) of errors"
@@ -592,7 +591,11 @@
                                     <a 
                                             v-if="['thumbnail', 'attachments', 'document'].includes(error.metadatum_id) || metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')]"
                                             class="has-text-danger"
-                                            @click="goToErrorMetadatum(error)">
+                                            role="button"
+                                            tabindex="0"
+                                            @click="goToErrorMetadatum(error)"
+                                            @keydown.enter.prevent="goToErrorMetadatum(error)"
+                                            @keydown.space.prevent="goToErrorMetadatum(error)">
                                         {{ getErrorMessage(error.errors) }}
                                     </a>                           
                                     <p v-else>
