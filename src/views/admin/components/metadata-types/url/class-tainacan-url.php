@@ -241,6 +241,7 @@ class URL extends Metadata_Type {
 
 					// If this seems to be a markdown link, we check if the url inside it is ok as well
 					if ( !preg_match($reg_url, $url_value) && !preg_match($reg_full, $url_value) ) {
+						/* translators: %s is the value given to the URL metadatum */
 						$this->add_error( sprintf( __('"%s" is invalid. Please provide a valid, full URL or a Markdown link in the form of [label](url).', 'tainacan'), $url_value ) );
 						return false;
 					}
@@ -257,6 +258,7 @@ class URL extends Metadata_Type {
 
 			// If this seems to be a markdown link, we check if the url inside it is ok as well
 			if ( !preg_match($reg_url, $value) && !preg_match($reg_full, $value) ) {
+				/* translators: %s is the value given to the URL metadatum */
 				$this->add_error( sprintf( __('"%s" is invalid. Please provide a valid, full URL or a Markdown link in the form of [label](url).', 'tainacan'), $value ) );
 				return false;
 			}

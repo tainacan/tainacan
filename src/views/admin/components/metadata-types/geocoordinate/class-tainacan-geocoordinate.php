@@ -89,6 +89,7 @@ class GeoCoordinate extends Metadata_Type {
 		foreach ($value as $coordinate) {
 			$arr_coordinate = explode(",", $coordinate);
 			if ( count($arr_coordinate) != 2 || !$this->validateLatLong($arr_coordinate[0], $arr_coordinate[1])) {
+				/* translators: %s is the value of the geo coordinate */
 				$this->add_error( sprintf(__('The value (%s) is not a valid geo coordinate', 'tainacan'), $coordinate ) );
 				return false;
 			}
@@ -236,6 +237,7 @@ class GeoCoordinate extends Metadata_Type {
 
         if ( !$this->validateLatLong( $this->get_option('initial_latitude'), $this->get_option('initial_longitude') ) ) {
             return [
+                /* translators: %s is the value of the geo coordinate */
                 'initial_position' => sprintf(__('The value (%s) is not a valid geo coordinate', 'tainacan'), ('' . $this->get_option('initial_latitude') . ',' . $this->get_option('initial_longitude')) )
             ];
         }

@@ -88,21 +88,20 @@ class System_Check extends Pages {
 
 		$settings = get_option( 'permalink_structure' );
 
+		$class = 'good';
+		$text = 'Ok';
+
 		if ( empty($settings) ) {
 			$class = 'error';
 			$text =  sprintf(
+				/* translators: %1$s is the link to the permalink settings page, %2$s is the closing link tag */
 				__('Tainacan requires your Permalink settings to be configured. Please visit %1$sPermalink settings%2$s and configure it.', 'tainacan'),
 				'<a href="'.admin_url('options-permalink.php').'">',
 				'</a>'
 			);
-		} else {
-
-			$class = 'good';
-			$text = 'Ok';
-
 		}
 
-		printf( '<span class="%1$s"></span> %2$s', esc_attr( $class ), $text );
+		printf( '<span class="%1$s"></span> %2$s', esc_attr( $class ), wp_kses_post( $text ) );
 
 	}
 
@@ -115,24 +114,27 @@ class System_Check extends Pages {
 		if ( $time < $min ) {
 			$class = 'error';
 			$text =  sprintf(
+				/* translators: %s is the current value of the maximum execution time */
 				__('Your current configuration is %ds. This is too little. Please increase it to at least 30s', 'tainacan'),
 				$time
 			);
 		} elseif ( $time < $rec ) {
 			$class = 'warning';
 			$text =  sprintf(
+				/* translators: %s is the current value of the maximum execution time */
 				__('Your current configuration is %d seconds. This is fine, but you should consider increase it to at least 240 seconds if possible', 'tainacan'),
 				$time
 			);
 		} else {
 			$class = 'good';
 			$text =  sprintf(
+				/* translators: %s is the current value of the maximum execution time */
 				__('Your current configuration is %ds. This is excellent.', 'tainacan'),
 				$time
 			);
 		}
 
-		printf( '<span class="%1$s"></span> %2$s', esc_attr( $class ), $text );
+		printf( '<span class="%1$s"></span> %2$s', esc_attr( $class ), wp_kses_post( $text ) );
 
 	}
 
@@ -153,7 +155,7 @@ class System_Check extends Pages {
 			);
 		}
 
-		printf( '<span class="%1$s"></span> %2$s', esc_attr( $class ), $text );
+		printf( '<span class="%1$s"></span> %2$s', esc_attr( $class ), wp_kses_post( $text ) );
 
 	}
 
@@ -181,6 +183,7 @@ class System_Check extends Pages {
 
 			$class = 'error';
 			$text =  sprintf(
+				/* translators: %s is the current version of WordPress */
 				__('Tainacan requires WordPress 5.9 or newer! Your version is %s. Please upgrade.', 'tainacan'),
 				$core_current_version
 			);
@@ -188,7 +191,7 @@ class System_Check extends Pages {
 		} elseif ( ! is_array( $core_updates ) ) {
 			$class = 'warning';
 			$text  = sprintf(
-				// translators: %s: Your current version of WordPress.
+				/* translators: %s is the current version of WordPress */
 				__( '%s - We were unable to check if any new versions are available.', 'tainacan' ),
 				$core_current_version
 			);
@@ -496,24 +499,14 @@ class System_Check extends Pages {
 			if ( version_compare( $mysql_client_version, '5.0.9', '<' ) ) {
 				printf(
 					'<br><span class="warning"></span> %s',
-					sprintf(
-						/* translators: %1$s: Name of the library, %2$s: Number of version. */
-						__( 'WordPress\' utf8mb4 support requires MySQL client library (%1$s) version %2$s or newer.', 'tainacan' ),
-						'mysqlnd',
-						'5.0.9'
-					)
+					__( 'WordPress\' utf8mb4 support requires MySQL client library (mysqlnd) version 5.0.9 or newer.', 'tainacan' )
 				);
 			}
 		} else {
 			if ( version_compare( $mysql_client_version, '5.5.3', '<' ) ) {
 				printf(
 					'<br><span class="warning"></span> %s',
-					sprintf(
-						/* translators: %1$s: Name of the library, %2$s: Number of version. */
-						__( 'WordPress\' utf8mb4 support requires MySQL client library (%1$s) version %2$s or newer.', 'tainacan' ),
-						'libmysql',
-						'5.5.3'
-					)
+					__( 'WordPress\' utf8mb4 support requires MySQL client library (libmysql) version 5.5.3 or newer.', 'tainacan' ),
 				);
 			}
 		}
@@ -568,10 +561,6 @@ class System_Check extends Pages {
 						$class = 'good';
 			}
 		}
-		echo "<span class='$class'></span> $current_version";
+		echo "<span class='$class'></span> " . esc_html( $current_version );
 	}
 }
-
-
-
-?>
