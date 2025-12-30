@@ -562,19 +562,22 @@ class Flickr_Importer extends Importer {
 		<div class="columns">
 			<div class="column">
 				<div class="field">
-					<label class="label"><?php _e('API ID', 'tainacan'); ?></label>
+					<label class="label"><?php esc_html_e('API ID', 'tainacan'); ?></label>
 					<p>
-						<?php printf(
-							# translators %s are for opening and closing the link
-							__('In order to import photos from Flickr you need to %1$sapply for a Flickr API Key%2$s.', 'tainacan'),
-							# translator you may get the link to the console in the current language. e.g. https://console.developers.google.com/?hl=pt-br
-							sprintf('<a target="_blank" href="%s">', __('https://www.flickr.com/services/api/misc.api_keys.html', 'tainacan') ),
-							'</a>'
-						); ?>
+						<?php
+						echo wp_kses_post(
+							sprintf(
+								// translators: %1$s: Opening <a> tag with link to Flickr API keys page, %2$s: Closing </a> tag.
+								__( 'In order to import photos from Flickr you need to %1$sapply for a Flickr API Key%2$s.', 'tainacan' ),
+								sprintf( '<a target="_blank" rel="noopener noreferrer" href="%s">', esc_url( 'https://www.flickr.com/services/api/misc.api_keys.html' ) ),
+								'</a>'
+							)
+						);
+						?>
 					</p>
 					<br/>
 					<p>
-						<?php _e('Get your API Key and paste it below:', 'tainacan'); ?>
+						<?php esc_html_e('Get your API Key and paste it below:', 'tainacan'); ?>
 					</p>
 					<div class="control is-clearfix">
 						<input class="input" type="text" name="api_id" value="">
@@ -583,19 +586,19 @@ class Flickr_Importer extends Importer {
 			</div>
 			<div class="column">
 				<div class="field">
-					<label class="label"><?php _e('Supported URLs', 'tainacan'); ?></label>
+					<label class="label"><?php esc_html_e('Supported URLs', 'tainacan'); ?></label>
 					
 					<p>
-						<?php _e('The following URL types are supported:', 'tainacan'); ?>
+						<?php esc_html_e('The following URL types are supported:', 'tainacan'); ?>
 						<br/><br/>
-						<?php _e('User profile', 'tainacan'); ?> - 
-						<?php _e('Example: ', 'tainacan'); ?> <code>https://www.flickr.com/photos/username</code>
+						<?php esc_html_e('User profile', 'tainacan'); ?> - 
+						<?php esc_html_e('Example: ', 'tainacan'); ?> <code>https://www.flickr.com/photos/username</code>
 						<br/>
-						<?php _e('Albums', 'tainacan'); ?> - 
-						<?php _e('Example: ', 'tainacan'); ?> <code>https://www.flickr.com/photos/username/albums/123456</code>
+						<?php esc_html_e('Albums', 'tainacan'); ?> - 
+						<?php esc_html_e('Example: ', 'tainacan'); ?> <code>https://www.flickr.com/photos/username/albums/123456</code>
 						<br/>
-						<?php _e('Photos', 'tainacan'); ?> - 
-						<?php _e('Example: ', 'tainacan'); ?> <code>https://www.flickr.com/photos/username/123456</code>
+						<?php esc_html_e('Photos', 'tainacan'); ?> - 
+						<?php esc_html_e('Example: ', 'tainacan'); ?> <code>https://www.flickr.com/photos/username/123456</code>
 						
 					</p>
 				</div>

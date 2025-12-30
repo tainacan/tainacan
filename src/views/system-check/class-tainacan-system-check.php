@@ -391,7 +391,7 @@ class System_Check extends Pages {
 		} else {
 			printf(
 				'<span class="good"></span> %s',
-				__( 'All required and recommended modules are installed.', 'tainacan' )
+				esc_html( 'All required and recommended modules are installed.', 'tainacan' )
 			);
 		}
 	}
@@ -423,16 +423,15 @@ class System_Check extends Pages {
 		}
 
 		if ( $db_dropin ) {
-			// translators: %s: The database engine in use (MySQL or MariaDB).
-			$notice[] = wp_kses(
-				sprintf(
-					// translators: %s: The name of the database engine being used.
+			$notice[] = sprintf(
+				wp_kses(
+				/* translators: %s: The name of the database engine being used. */
 					__( 'You are using a <code>wp-content/db.php</code> drop-in which might mean that a %s database is not being used.', 'tainacan' ),
-					( $this->mariadb ? 'MariaDB' : 'MySQL' )
+					array(
+						'code' => true,
+					)
 				),
-				array(
-					'code' => true,
-				)
+				( $this->mariadb ? 'MariaDB' : 'MySQL' )
 			);
 		}
 
@@ -499,14 +498,14 @@ class System_Check extends Pages {
 			if ( version_compare( $mysql_client_version, '5.0.9', '<' ) ) {
 				printf(
 					'<br><span class="warning"></span> %s',
-					__( 'WordPress\' utf8mb4 support requires MySQL client library (mysqlnd) version 5.0.9 or newer.', 'tainacan' )
+					esc_html__( 'WordPress\' utf8mb4 support requires MySQL client library (mysqlnd) version 5.0.9 or newer.', 'tainacan' )
 				);
 			}
 		} else {
 			if ( version_compare( $mysql_client_version, '5.5.3', '<' ) ) {
 				printf(
 					'<br><span class="warning"></span> %s',
-					__( 'WordPress\' utf8mb4 support requires MySQL client library (libmysql) version 5.5.3 or newer.', 'tainacan' ),
+					esc_html__( 'WordPress\' utf8mb4 support requires MySQL client library (libmysql) version 5.5.3 or newer.', 'tainacan' ),
 				);
 			}
 		}
@@ -561,6 +560,6 @@ class System_Check extends Pages {
 						$class = 'good';
 			}
 		}
-		echo "<span class='$class'></span> " . esc_html( $current_version );
+		echo '<span class="' . esc_attr($class) . '"></span>'  . esc_html( $current_version );
 	}
 }

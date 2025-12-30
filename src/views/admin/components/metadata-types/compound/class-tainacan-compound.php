@@ -305,12 +305,12 @@ class Compound extends Metadata_Type {
 						$child_label = $meta->get_metadatum()->get_name();
 						$child_label_before = apply_filters('tainacan-get-child-item-metadatum-as-html-before-label', '<h4 class="label child-metadatum-label">', $meta);
 						$child_label_after = apply_filters('tainacan-get-child-item-metadatum-as-html-after-label', '</h4>', $meta);
-						echo $child_label_before . esc_html($child_label) . $child_label_after;
+						echo wp_kses_post($child_label_before . esc_html($child_label) . $child_label_after);
 
 						$child_value = $meta->get_value_as_html();
 						$child_value_before = apply_filters('tainacan-get-child-item-metadatum-as-html-before-value', '<p class="child-metadatum-value">', $meta);
 						$child_value_after = apply_filters('tainacan-get-child-item-metadatum-as-html-after-value', '</p>', $meta);
-						echo $child_value_before . tainacan_wp_kses($child_value) . $child_value_after;
+						echo wp_kses_post($child_value_before . $child_value . $child_value_after);
 					?>
 				</div>
 			<?php

@@ -67,12 +67,19 @@ function tainacan_enable_dev_wp_interface() {
  * Extends the default 'post' context to include iframe elements for embedded content.
  *
  * @since 0.1.0
+ * @deprecated Use wp_kses() with wp_kses_allowed_html() directly instead.
+ *            Example: wp_kses($content, wp_kses_allowed_html('tainacan_content'))
  *
  * @param string $content The content to sanitize.
  * @param string $context The kses context to use. Default 'tainacan_content'.
  * @return string Sanitized content.
  */
 function tainacan_wp_kses($content, $context = 'tainacan_content') {
+	_deprecated_function(
+		__FUNCTION__,
+		'0.21.0',
+		'wp_kses($content, wp_kses_allowed_html($context))'
+	);
 	$allowed_html = wp_kses_allowed_html($context);
 	return wp_kses($content, $allowed_html);
 }
@@ -95,41 +102,101 @@ add_filter('wp_kses_allowed_html', function($allowedposttags, $context) {
 			return array_merge(
 				$post_allowed_html,
 				[
-					'svg' => array(
-						'xmlns'   => true,
-						'width'   => true,
-						'height'  => true,
-						'viewbox' => true,
-						'fill'    => true,
-						'class'   => true,
-						'role'    => true,
-						'aria-hidden' => true,
-					),
-					'path' => array(
-						'd'       => true,
-						'fill'    => true,
-						'stroke'  => true,
-						'stroke-width' => true,
-						'stroke-linecap' => true,
+					'svg'      => array(
+						'class'           => true,
+						'aria-hidden'     => true,
+						'aria-labelledby' => true,
+						'role'            => true,
+						'xmlns'           => true,
+						'width'           => true,
+						'height'          => true,
+						'viewbox'         => true,
+						'fill'            => true,
+						'stroke'          => true,
+						'stroke-width'    => true,
+						'stroke-linecap'  => true,
 						'stroke-linejoin' => true,
 					),
-					'g' => array(
-						'transform' => true,
-						'fill'      => true,
+					'g'       => array(
+						'fill'            => true,
+						'stroke'          => true,
+						'stroke-width'    => true,
+						'stroke-linecap'  => true,
+						'stroke-linejoin' => true,
+						'transform'       => true,
 					),
-					'circle' => array(
-						'cx' => true,
-						'cy' => true,
-						'r'  => true,
-						'fill' => true,
+					'title'   => array( 'title' => true ),
+					'path'    => array(
+						'd'               => true,
+						'fill'            => true,
+						'stroke'          => true,
+						'stroke-width'    => true,
+						'stroke-linecap'  => true,
+						'stroke-linejoin' => true,
+						'transform'       => true,
 					),
-					'rect' => array(
-						'x'      => true,
-						'y'      => true,
-						'width'  => true,
-						'height' => true,
-						'fill'   => true,
-					)
+					'rect'    => array(
+						'x'            => true,
+						'y'            => true,
+						'width'        => true,
+						'height'       => true,
+						'fill'         => true,
+						'stroke'       => true,
+						'stroke-width' => true,
+						'rx'           => true,
+						'ry'           => true,
+					),
+						'circle'  => array(
+						'cx'           => true,
+						'cy'           => true,
+						'r'            => true,
+						'fill'         => true,
+						'stroke'       => true,
+						'stroke-width' => true,
+					),
+					'ellipse' => array(
+						'cx'           => true,
+						'cy'           => true,
+						'rx'           => true,
+						'ry'           => true,
+						'fill'         => true,
+						'stroke'       => true,
+						'stroke-width' => true,
+					),
+					'line'    => array(
+						'x1'           => true,
+						'x2'           => true,
+						'y1'           => true,
+						'y2'           => true,
+						'stroke'       => true,
+						'stroke-width' => true,
+					),
+					'polyline' => array(
+						'points'       => true,
+						'fill'         => true,
+						'stroke'       => true,
+						'stroke-width' => true,
+					),
+					'polygon'  => array(
+						'points'       => true,
+						'fill'         => true,
+						'stroke'       => true,
+						'stroke-width' => true,
+					),
+					'text'     => array(
+						'x'           => true,
+						'y'           => true,
+						'fill'        => true,
+						'font-size'   => true,
+						'font-family' => true,
+						'text-anchor' => true,
+					),
+					'defs'     => array(),
+						'style'    => array( 'type' => true ),
+						'use'      => array(
+						'xlink:href' => true,
+						'href'       => true,
+					),
 				]
 			);
 		default:

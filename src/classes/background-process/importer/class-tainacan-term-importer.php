@@ -46,7 +46,7 @@ class Term_Importer extends Importer {
 				<div class="column">
 					<div class="field">
 						<label class="label" style="position: relative">
-							<?php _e('CSV Delimiter', 'tainacan'); ?>
+							<?php esc_html_e('CSV Delimiter', 'tainacan'); ?>
 							<span class="help-wrapper">
 								<a class="help-button">
 									<span class="icon is-small">
@@ -55,10 +55,10 @@ class Term_Importer extends Importer {
 								</a>
 								<div class="help-tooltip">
 									<div class="help-tooltip-header">
-										<h5><?php _e('CSV Delimiter', 'tainacan'); ?></h5>
+										<h5><?php esc_html_e('CSV Delimiter', 'tainacan'); ?></h5>
 									</div>
 									<div class="help-tooltip-body">
-										<p><?php _e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
+										<p><?php esc_html_e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
 									</div>
 								</div>
 							</span>
@@ -72,7 +72,7 @@ class Term_Importer extends Importer {
 				<div class="column">
 					<div class="field import_term_csv_taxonomies">
 						<label class="label" style="position: relative">
-							<?php _e('Target taxonomy:', 'tainacan'); ?>
+							<?php esc_html_e('Target taxonomy:', 'tainacan'); ?>
 							<span class="help-wrapper">
 								<a class="help-button">
 									<span class="icon is-small">
@@ -81,11 +81,11 @@ class Term_Importer extends Importer {
 								</a>
 								<div class="help-tooltip">
 									<div class="help-tooltip-header">
-										<h5><?php _e('Existing Taxonomy', 'tainacan'); ?></h5>
+										<h5><?php esc_html_e('Existing Taxonomy', 'tainacan'); ?></h5>
 									</div>
 									<div class="help-tooltip-body">
-										<p><?php _e('Specify the taxonomy you want to import the terms to.', 'tainacan'); ?></p>
-										<p><?php _e('Select an existing taxonomy or create a new one on the fly.', 'tainacan'); ?></p>
+										<p><?php esc_html_e('Specify the taxonomy you want to import the terms to.', 'tainacan'); ?></p>
+										<p><?php esc_html_e('Select an existing taxonomy or create a new one on the fly.', 'tainacan'); ?></p>
 									</div>
 								</div>
 							</span>
@@ -101,7 +101,7 @@ class Term_Importer extends Importer {
 						<div class="control is-clearfix">
 							<div class="select is-fullwidth">
 								<select name="select_taxonomy" class="select_taxonomy">
-									<option value="" selected><?php _e('Create a new taxonomy', 'tainacan'); ?></option>
+									<option value="" selected><?php esc_html_e('Create a new taxonomy', 'tainacan'); ?></option>
 								<?php
 									$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
 									$taxonomies  = $Tainacan_Taxonomies->fetch( ['nopaging' => true], 'OBJECT' );
@@ -115,7 +115,7 @@ class Term_Importer extends Importer {
 
 							</div>
 
-							<input class="input new_taxonomy" type="text" name="new_taxonomy" value="<?php echo esc_attr($this->get_option('new_taxonomy')); ?>" placeholder="<?php _e('New taxonomy name', 'tainacan'); ?>" >
+							<input class="input new_taxonomy" type="text" name="new_taxonomy" value="<?php echo esc_attr($this->get_option('new_taxonomy')); ?>" placeholder="<?php esc_html_e('New taxonomy name', 'tainacan'); ?>" >
 
 						</div>
 					</div>

@@ -471,6 +471,7 @@ abstract class Background_Process_Base extends Async_Request {
 		// Adds every 5 minutes to the existing schedules.
 		$schedules[ $this->identifier . '_cron_interval' ] = array(
 			'interval' => MINUTE_IN_SECONDS * $interval,
+			/* translators: %d is the number of minutes */
 			'display'  => sprintf( __( 'Every %d Minutes', 'tainacan' ), $interval ),
 		);
 

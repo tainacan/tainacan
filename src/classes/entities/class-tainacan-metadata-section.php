@@ -235,6 +235,7 @@ class Metadata_Section extends Entity {
 				if ( count($required_metadata_list) ) {
 					$no_errors = false;
 					foreach($required_metadata_list as $metadata) {
+						/* translators: %s is the metadatum name */
 						$this->add_error('is_conditional_section', sprintf(__("Metadatum %s cannot be required inside a conditional section", 'tainacan'), $metadata->get_name()));
 					}
 				}

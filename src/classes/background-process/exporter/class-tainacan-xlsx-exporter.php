@@ -103,6 +103,7 @@ class XLSX_Exporter extends Exporter {
 		}
 		$final = microtime(true);
 		$total = ($final - $init);
+		/* translators: %f is the time in seconds */
 		$time_log = sprintf( __('Processed in %f seconds', 'tainacan'), $total );
 		$this->add_log($time_log);
 
@@ -260,7 +261,7 @@ class XLSX_Exporter extends Exporter {
 	
 	public function addRowToSheet(array $rowData, $sheetIndex = 0) {
 		if (!$this->spreadsheet) {
-			throw new \Exception("Spreadsheet não inicializado. Chame initializeWriter() antes.");
+			throw new \Exception('Spreadsheet not initialized. Call initializeWriter() before.');
 		}
 
 		$sheet = $this->spreadsheet->getSheet($sheetIndex);
@@ -379,7 +380,7 @@ class XLSX_Exporter extends Exporter {
 		?>
 
 		<div class="field">
-			<label class="label"><?php _e('Multivalued metadata delimiter', 'tainacan'); ?></label>
+			<label class="label"><?php esc_html_e('Multivalued metadata delimiter', 'tainacan'); ?></label>
 			<span class="help-wrapper">
 					<a class="help-button">
 						<span class="icon is-small">
@@ -388,10 +389,10 @@ class XLSX_Exporter extends Exporter {
 					</a>
 					<div class="help-tooltip">
 						<div class="help-tooltip-header">
-							<h5><?php _e('Multivalued metadata delimiter', 'tainacan'); ?></h5>
+							<h5><?php esc_html_e('Multivalued metadata delimiter', 'tainacan'); ?></h5>
 						</div>
 						<div class="help-tooltip-body">
-							<p><?php _e('The character used to separate each value inside a cell with multiple values (e.g. ||). Note that the target metadatum must accept multiple values.', 'tainacan'); ?></p>
+							<p><?php esc_html_e('The character used to separate each value inside a cell with multiple values (e.g. ||). Note that the target metadatum must accept multiple values.', 'tainacan'); ?></p>
 						</div>
 					</div>
 			</span>
@@ -401,7 +402,7 @@ class XLSX_Exporter extends Exporter {
 		</div>
 
 		<div class="field">
-			<label class="label"><?php _e('Compound children delimiter', 'tainacan'); ?></label>
+			<label class="label"><?php esc_html_e('Compound children delimiter', 'tainacan'); ?></label>
 			<span class="help-wrapper">
 					<a class="help-button">
 						<span class="icon is-small">
@@ -410,10 +411,10 @@ class XLSX_Exporter extends Exporter {
 					</a>
 					<div class="help-tooltip">
 						<div class="help-tooltip-header">
-							<h5><?php _e('Compound children delimiter', 'tainacan'); ?></h5>
+							<h5><?php esc_html_e('Compound children delimiter', 'tainacan'); ?></h5>
 						</div>
 						<div class="help-tooltip-body">
-							<p><?php _e('The character used to separate each child of compound metadata (e.g. , or ;)', 'tainacan'); ?></p>
+							<p><?php esc_html_e('The character used to separate each child of compound metadata (e.g. , or ;)', 'tainacan'); ?></p>
 						</div>
 					</div>
 			</span>
@@ -423,7 +424,7 @@ class XLSX_Exporter extends Exporter {
 		</div>
 
 		<div class="field">
-			<label class="label"><?php _e('Enclosure for compound children', 'tainacan'); ?></label>
+			<label class="label"><?php esc_html_e('Enclosure for compound children', 'tainacan'); ?></label>
 			<span class="help-wrapper">
 					<a class="help-button">
 						<span class="icon is-small">
@@ -432,10 +433,10 @@ class XLSX_Exporter extends Exporter {
 					</a>
 					<div class="help-tooltip">
 						<div class="help-tooltip-header">
-							<h5><?php _e('Enclosure', 'tainacan'); ?></h5>
+							<h5><?php esc_html_e('Enclosure', 'tainacan'); ?></h5>
 						</div>
 						<div class="help-tooltip-body">
-							<p><?php _e('The character that wraps the content of each compound child value in the cell if necessary (e.g. ")', 'tainacan'); ?></p>
+							<p><?php esc_html_e('The character that wraps the content of each compound child value in the cell if necessary (e.g. ")', 'tainacan'); ?></p>
 						</div>
 					</div>
 			</span>
@@ -445,7 +446,7 @@ class XLSX_Exporter extends Exporter {
 		</div>
 
 		<div class="field">
-			<label class="label"><?php _e('Include metadata section name', 'tainacan'); ?></label>
+			<label class="label"><?php esc_html_e('Include metadata section name', 'tainacan'); ?></label>
 			<span class="help-wrapper">
 					<a class="help-button">
 						<span class="icon is-small">
@@ -454,10 +455,10 @@ class XLSX_Exporter extends Exporter {
 					</a>
 					<div class="help-tooltip">
 						<div class="help-tooltip-header">
-							<h5><?php _e('Include metadata section name', 'tainacan'); ?></h5>
+							<h5><?php esc_html_e('Include metadata section name', 'tainacan'); ?></h5>
 						</div>
 						<div class="help-tooltip-body">
-							<p><?php _e('Include metadatum section name after the metadatum name. Metadata inside the default section are not modified', 'tainacan'); ?></p>
+							<p><?php esc_html_e('Include metadatum section name after the metadatum name. Metadata inside the default section are not modified', 'tainacan'); ?></p>
 						</div>
 					</div> 
 			</span>
@@ -467,7 +468,7 @@ class XLSX_Exporter extends Exporter {
 						type="checkbox" 
 						name="add_section_name" checked value="yes"
 						>
-					<?php _e('Yes', 'tainacan'); ?>
+					<?php esc_html_e('Yes', 'tainacan'); ?>
 				</label>
 			</div>
 		</div>

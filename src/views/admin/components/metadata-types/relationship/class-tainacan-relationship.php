@@ -354,13 +354,14 @@ class Relationship extends Metadata_Type {
 			if ($value_link) {
 				?>
 					<div class="tainacan-relationship-metadatum-header">
-						<?php echo ($should_display_thumbnail ? $this->get_item_thumbnail($thumbnail_id, $item) : ''); ?>
+						<?php echo wp_kses_post($should_display_thumbnail ? $this->get_item_thumbnail($thumbnail_id, $item) : ''); ?>
 						<h4 class="label">
 							<?php
 							/**
 							 * Note to code reviewers: This lines doesn't need to be escaped.
 							 * The variable $value_link is escaped.
-							 */
+							 *
+							 * phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
 							echo $value_link;
 							?>
 						</h4>
@@ -395,7 +396,7 @@ class Relationship extends Metadata_Type {
 							<?php echo esc_html($meta->get_metadatum()->get_name()); ?>
 						</h5>
 						<p>
-							<?php echo tainacan_wp_kses(($value_link === false ? $meta->get_value_as_html() : $value_link)); ?> 
+							<?php echo wp_kses(($value_link === false ? $meta->get_value_as_html() : $value_link), wp_kses_allowed_html('tainacan_content')); ?> 
 						</p>
 					</div>
 				<?php

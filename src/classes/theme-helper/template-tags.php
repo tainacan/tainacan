@@ -423,7 +423,7 @@ function tainacan_get_the_media_component(
 						<?php foreach($media_items_main as $media_item) { ?>
 							<li class="swiper-slide <?php echo esc_attr($args['class_main_li']) ?>">
 								<?php 
-									echo tainacan_wp_kses($media_item);
+									echo wp_kses($media_item, wp_kses_allowed_html('tainacan_content'));
 								 ?>
 							</li>
 						<?php }; ?>
@@ -479,7 +479,7 @@ function tainacan_get_the_media_component(
 					<ul class="swiper-wrapper <?php echo esc_attr($args['class_thumbs_ul']) ?>">
 						<?php foreach($media_items_thumbs as $media_item) { ?>
 							<li class="swiper-slide <?php echo esc_attr($args['class_thumbs_li']) ?>">
-								<?php echo tainacan_wp_kses($media_item); ?>
+								<?php echo wp_kses($media_item, wp_kses_allowed_html('tainacan_content')); ?>
 							</li>
 						<?php }; ?>
 					</ul>
@@ -584,7 +584,7 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 	<div class="swiper-slide-content <?php echo esc_attr($args['class_slide_content']) ?>">
 
 		<?php if ( isset($args['media_content']) && !empty($args['media_content']) && $args['media_content'] !== false ) :?>
-			<?php echo tainacan_wp_kses($args['media_content']) ?>
+			<?php echo wp_kses($args['media_content'], wp_kses_allowed_html('tainacan_content')) ?>
 		<?php else: ?>
 			<img src="<?php echo esc_url(tainacan_get_the_mime_type_icon($args['media_type'])) ?>" alt="<?php echo ( !empty($args['media_title']) ? esc_attr($args['media_title']) : __('File', 'tainacan') ) ?>" >
 		<?php endif; ?>
@@ -613,7 +613,7 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 
 		<?php if ( !empty($args['media_content_full']) ) : ?>
 			<div class="media-full-content" style="display: none; position: absolute; visibility: hidden;">
-				<?php echo tainacan_wp_kses($args['media_content_full']) ?>
+				<?php echo wp_kses($args['media_content_full'], wp_kses_allowed_html('tainacan_content')) ?>
 			</div>
 		<?php endif; ?>
 
@@ -1601,7 +1601,7 @@ function tainacan_get_taxonomies_orderby($args = []) {
 			<?php if ( !$args['hide_order'] ): ?>
 				<?php if ( !$args['hide_order_label'] ): ?>
 					<label for="tainacan-taxonomy-order-select">
-						<?php _e( 'Sort', 'tainacan' ); ?>
+						<?php esc_html_e( 'Sort', 'tainacan' ); ?>
 					</label>
 				<?php endif; ?>
 				<select 
@@ -1609,10 +1609,10 @@ function tainacan_get_taxonomies_orderby($args = []) {
 						name="order"
 						onchange="location = this.value;">
 					<option value="<?php echo esc_url( add_query_arg( 'order', 'ASC' ) ); ?>" <?php echo $current_args['order'] == 'ASC' ? 'selected' : ''; ?>>
-						<?php _e( 'Ascending', 'tainacan' ); ?>
+						<?php esc_html_e( 'Ascending', 'tainacan' ); ?>
 					</option>
 					<option value="<?php echo esc_url( add_query_arg( 'order', 'DESC' ) ); ?>" <?php echo $current_args['order'] == 'DESC' ? 'selected' : ''; ?>>
-						<?php _e( 'Descending', 'tainacan' ); ?>
+						<?php esc_html_e( 'Descending', 'tainacan' ); ?>
 					</option>
 				</select>
 			<?php endif; ?>
@@ -1620,7 +1620,7 @@ function tainacan_get_taxonomies_orderby($args = []) {
 				<?php if ( !$args['hide_orderby_label'] ): ?>
 					<label
 							for="tainacan-taxonomy-orderby-select">
-						<?php _e( 'by', 'tainacan' ); ?>
+						<?php esc_html_e( 'by', 'tainacan' ); ?>
 					</label>
 				<?php endif; ?>
 				<select
@@ -1628,10 +1628,10 @@ function tainacan_get_taxonomies_orderby($args = []) {
 						name="orderby"
 						onchange="location = this.value;">
 					<option value="<?php echo esc_url( add_query_arg( 'orderby', 'name' ) ); ?>" <?php echo $current_args['orderby'] == 'name' ? 'selected' : ''; ?>>
-						<?php _e( 'Name', 'tainacan' ); ?>
+						<?php esc_html_e( 'Name', 'tainacan' ); ?>
 					</option>
 					<option value="<?php echo esc_url( add_query_arg( 'orderby', 'count' ) ); ?>" <?php echo $current_args['orderby'] == 'count'? 'selected' : ''; ?>>
-						<?php _e( 'Amount of items', 'tainacan' ); ?>
+						<?php esc_html_e( 'Amount of items', 'tainacan' ); ?>
 					</option>
 				</select>
 			<?php endif; ?>

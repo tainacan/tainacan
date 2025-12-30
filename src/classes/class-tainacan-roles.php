@@ -565,7 +565,7 @@ class Roles {
 	}
 
 	/**
-	 * Callback to gettext_with_context hook to translate custom ueser roles.
+	 * Callback to gettext_with_context hook to translate custom user roles.
 	 *
 	 * Since user roles are stored in the database, we have to translate them on the fly
 	 * using translate_user_role() function.

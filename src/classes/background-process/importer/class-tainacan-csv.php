@@ -342,7 +342,7 @@ class CSV extends Importer {
 			<div class="column is-6-tablet is-3-desktop">
 				<div class="field">
 					<label class="label" style="position: relative">
-						<?php _e('CSV Delimiter', 'tainacan'); ?>
+						<?php esc_html_e('CSV Delimiter', 'tainacan'); ?>
 						<span class="help-wrapper">
 							<a class="help-button">
 								<span class="icon is-small">
@@ -351,10 +351,10 @@ class CSV extends Importer {
 							</a>
 							<div class="help-tooltip">
 								<div class="help-tooltip-header">
-									<h5><?php _e('CSV Delimiter', 'tainacan'); ?></h5>
+									<h5><?php esc_html_e('CSV Delimiter', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php _e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
+									<p><?php esc_html_e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
 								</div>
 							</div>
 						</span>
@@ -367,7 +367,7 @@ class CSV extends Importer {
 			<div class="column is-6-tablet is-3-desktop">
 				<div class="field">
 					<label class="label" style="position: relative">
-						<?php _e('Multivalued metadata delimiter', 'tainacan'); ?>
+						<?php esc_html_e('Multivalued metadata delimiter', 'tainacan'); ?>
 						<span class="help-wrapper">
 							<a class="help-button">
 								<span class="icon is-small">
@@ -376,10 +376,10 @@ class CSV extends Importer {
 							</a>
 							<div class="help-tooltip">
 								<div class="help-tooltip-header">
-									<h5><?php _e('Multivalued metadata delimiter', 'tainacan'); ?></h5>
+									<h5><?php esc_html_e('Multivalued metadata delimiter', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php _e('The character used to separate each value inside a cell with multiple values (e.g. ||). Note that the target metadatum must accept multiple values.', 'tainacan'); ?></p>
+									<p><?php esc_html_e('The character used to separate each value inside a cell with multiple values (e.g. ||). Note that the target metadatum must accept multiple values.', 'tainacan'); ?></p>
 								</div>
 							</div>
 						</span>
@@ -392,7 +392,7 @@ class CSV extends Importer {
 			<div class="column is-6-tablet is-3-desktop">
 				<div class="field">
 					<label class="label" style="position: relative">
-						<?php _e('Enclosure', 'tainacan'); ?>
+						<?php esc_html_e('Enclosure', 'tainacan'); ?>
 						<span class="help-wrapper">
 							<a class="help-button">
 								<span class="icon is-small">
@@ -401,10 +401,10 @@ class CSV extends Importer {
 							</a>
 							<div class="help-tooltip">
 								<div class="help-tooltip-header">
-									<h5><?php _e('Enclosure', 'tainacan'); ?></h5>
+									<h5><?php esc_html_e('Enclosure', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php _e('The character that wraps the content of each cell in your CSV. (e.g. ")', 'tainacan'); ?></p>
+									<p><?php esc_html_e('The character that wraps the content of each cell in your CSV. (e.g. ")', 'tainacan'); ?></p>
 								</div>
 							</div>
 						</span>
@@ -418,7 +418,7 @@ class CSV extends Importer {
 			<div class="column">
 				<div class="field">
 					<label class="label" style="position: relative">
-						<?php _e('Empty value', 'tainacan'); ?>
+						<?php esc_html_e('Empty value', 'tainacan'); ?>
 						<span class="help-wrapper">
 							<a class="help-button">
 								<span class="icon is-small">
@@ -427,10 +427,10 @@ class CSV extends Importer {
 							</a>
 							<div class="help-tooltip">
 								<div class="help-tooltip-header">
-									<h5><?php _e('Empty value', 'tainacan'); ?></h5>
+									<h5><?php esc_html_e('Empty value', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php _e('The string representing a value not specified for the metadata. (e.g. \EMPTY)', 'tainacan'); ?></p>
+									<p><?php esc_html_e('The string representing a value not specified for the metadata. (e.g. \EMPTY)', 'tainacan'); ?></p>
 								</div>
 							</div>
 						</span>
@@ -448,7 +448,7 @@ class CSV extends Importer {
 			<div class="column">
 				<div class="field is-expanded">
 					<label class="label" style="position: relative">
-						<?php _e('File Encoding', 'tainacan'); ?>
+						<?php esc_html_e('File Encoding', 'tainacan'); ?>
 						<span class="help-wrapper">
 							<a class="help-button">
 								<span class="icon is-small">
@@ -457,10 +457,10 @@ class CSV extends Importer {
 							</a>
 							<div class="help-tooltip">
 								<div class="help-tooltip-header">
-									<h5><?php _e('File Encoding', 'tainacan'); ?></h5>
+									<h5><?php esc_html_e('File Encoding', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php _e('The encoding of the CSV file.', 'tainacan'); ?></p>
+									<p><?php esc_html_e('The encoding of the CSV file.', 'tainacan'); ?></p>
 								</div>
 							</div>
 						</span>
@@ -468,7 +468,7 @@ class CSV extends Importer {
 					<div class="control is-clearfix">
 						<div class="select is-fullwidth">
 							<select name="encode">
-								<option value="automatic" <?php selected($this->get_option('encode'), 'automatic'); ?> ><?php _e('Automatic', 'tainacan'); ?> </option>
+								<option value="automatic" <?php selected($this->get_option('encode'), 'automatic'); ?> ><?php esc_html_e('Automatic', 'tainacan'); ?> </option>
 								<option value="utf8" <?php selected($this->get_option('encode'), 'utf8'); ?> >UTF-8</option>
 								<option value="iso88591" <?php selected($this->get_option('encode'), 'iso88591'); ?> >ISO-88591</option>
 							</select>
@@ -480,7 +480,7 @@ class CSV extends Importer {
 			<div class="column">
 				<div class="field is-expanded">
 					<label class="label" style="position: relative">
-						<?php _e('Repeated Item', 'tainacan'); ?>
+						<?php esc_html_e('Repeated Item', 'tainacan'); ?>
 						<span class="help-wrapper">
 							<a class="help-button">
 								<span class="icon is-small">
@@ -489,10 +489,10 @@ class CSV extends Importer {
 							</a>
 							<div class="help-tooltip">
 								<div class="help-tooltip-header">
-									<h5><?php _e('Repeated Item', 'tainacan'); ?></h5>
+									<h5><?php esc_html_e('Repeated Item', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php _e('Choose the action when a repeated item is found', 'tainacan'); ?></p>
+									<p><?php esc_html_e('Choose the action when a repeated item is found', 'tainacan'); ?></p>
 								</div>
 							</div>
 						</span>
@@ -500,8 +500,8 @@ class CSV extends Importer {
 					<div class="control is-clearfix">
 						<div class="select is-fullwidth">
 							<select name="repeated_item">
-								<option value="update" <?php selected($this->get_option('repeated_item'), 'update'); ?> ><?php _e('Update', 'tainacan'); ?></option>
-								<option value="ignore" <?php selected($this->get_option('repeated_item'), 'ignore'); ?> ><?php _e('Ignore', 'tainacan'); ?></option>
+								<option value="update" <?php selected($this->get_option('repeated_item'), 'update'); ?> ><?php esc_html_e('Update', 'tainacan'); ?></option>
+								<option value="ignore" <?php selected($this->get_option('repeated_item'), 'ignore'); ?> ><?php esc_html_e('Ignore', 'tainacan'); ?></option>
 							</select>
 						</div>
 					</div>
@@ -511,7 +511,7 @@ class CSV extends Importer {
 			<div class="column is-half">
 				<div class="field is-expanded">
 					<label class="label" style="position: relative">
-						<?php _e('Server path', 'tainacan'); ?>
+						<?php esc_html_e('Server path', 'tainacan'); ?>
 						<span class="help-wrapper">
 							<a class="help-button">
 								<span class="icon is-small">
@@ -520,10 +520,10 @@ class CSV extends Importer {
 							</a>
 							<div class="help-tooltip">
 								<div class="help-tooltip-header">
-									<h5><?php _e('Server path', 'tainacan'); ?></h5>
+									<h5><?php esc_html_e('Server path', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php _e("When using CSV special field to add documents or attachments that you've uploaded to the server, specify the full path to the folder here (e.g. /home/user/files/)", 'tainacan'); ?></p>
+									<p><?php esc_html_e("When using CSV special field to add documents or attachments that you've uploaded to the server, specify the full path to the folder here (e.g. /home/user/files/)", 'tainacan'); ?></p>
 								</div>
 							</div>
 						</span>
@@ -532,7 +532,7 @@ class CSV extends Importer {
 						<input class="input" type="text" name="server_path" value="<?php echo esc_attr($this->get_option('server_path')); ?>">
 					</div>
 					<p class="help">
-						<strong><?php _e('Importing attachments', 'tainacan'); ?>: </strong><?php echo nl2br(__('Check the documentation to learn how to set up your .csv file correctly for importing files <a href="https://tainacan.github.io/tainacan-wiki/#/importers?id=importador-csv-items">on this link.</a>', 'tainacan')); ?>
+						<strong><?php esc_html_e('Importing attachments', 'tainacan'); ?>: </strong><?php echo nl2br(__('Check the documentation to learn how to set up your .csv file correctly for importing files <a href="https://tainacan.github.io/tainacan-wiki/#/importers?id=importador-csv-items">on this link.</a>', 'tainacan')); ?>
 					</p>
 				</div>
 			</div>

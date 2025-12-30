@@ -80,6 +80,7 @@ class Exporter_Handler {
 		$data = $exporter_object->_to_Array(true);
 		$exporter = $this->get_exporter_by_object($exporter_object);
 		
+		/* translators: %s is the name of the exporter */
 		$exporter_name = sprintf( __('%s Exporter', 'tainacan'), $exporter['name'] );
 		
 		$bg_process = $this->bg_exporter->data($data)->set_name($exporter_name)->save();
