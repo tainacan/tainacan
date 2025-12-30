@@ -729,7 +729,7 @@ class Collections extends Repository {
 			$collection->set_filters_order($parent_collection->get_filters_order());
 
 			if (!$collection->validate()) {
-				throw new \Exception( implode(",", $collection->get_errors()) );
+				throw new \Exception( esc_html( implode(",", array_map('esc_html', $collection->get_errors()) ) ) );
 			}
 		}
 	}

@@ -177,7 +177,7 @@ CSS;
 	 */
 	public function add_css() {
 		// Register a minimal style handle and add inline CSS
-		wp_register_style( 'tainacan-media-page', false );
+		wp_register_style( 'tainacan-media-page', false, array(), TAINACAN_VERSION );
 		wp_enqueue_style( 'tainacan-media-page' );
 		wp_add_inline_style( 'tainacan-media-page', self::get_media_page_css() );
 	}
@@ -270,7 +270,7 @@ CSS;
 
 		$filename = \download_url($url, 900);
 		if( is_wp_error($filename) ) {
-			throw new \Exception( "[save_remote_file]:" . implode("\n", $filename->get_error_messages()));
+			throw new \Exception( "[save_remote_file]:" . esc_html( implode( "\n", $filename->get_error_messages() ) ) );
 		}
 		return $filename;
 	}
@@ -542,7 +542,7 @@ CSS;
 
 		}
 
-		echo $output;
+		echo wp_kses( $output, wp_kses_allowed_html('tainacan_content') );
 
 		exit();
 

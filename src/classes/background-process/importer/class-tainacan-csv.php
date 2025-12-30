@@ -532,7 +532,7 @@ class CSV extends Importer {
 						<input class="input" type="text" name="server_path" value="<?php echo esc_attr($this->get_option('server_path')); ?>">
 					</div>
 					<p class="help">
-						<strong><?php esc_html_e('Importing attachments', 'tainacan'); ?>: </strong><?php echo nl2br(__('Check the documentation to learn how to set up your .csv file correctly for importing files <a href="https://tainacan.github.io/tainacan-wiki/#/importers?id=importador-csv-items">on this link.</a>', 'tainacan')); ?>
+						<strong><?php esc_html_e('Importing attachments', 'tainacan'); ?>: </strong><?php echo wp_kses_post(__('Check the documentation to learn how to set up your .csv file correctly for importing files <a href="https://tainacan.github.io/tainacan-wiki/#/importers?id=importador-csv-items">on this link.</a>', 'tainacan')); ?>
 					</p>
 				</div>
 			</div>

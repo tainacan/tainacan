@@ -276,7 +276,7 @@ CSS;
 	 */
 	public function add_css() {
 		// Register a minimal style handle and add inline CSS
-		wp_register_style( 'tainacan-embeds-inline', false );
+		wp_register_style( 'tainacan-embeds-inline', false, array(), TAINACAN_VERSION  );
 		wp_enqueue_style( 'tainacan-embeds-inline' );
 		wp_add_inline_style( 'tainacan-embeds-inline', self::get_embeds_css() );
 	}

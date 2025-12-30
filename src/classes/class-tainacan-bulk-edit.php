@@ -176,7 +176,7 @@ class __Bulk_Edit  {
 	public function get_item_id_by_index($index) {
 
 		if (!is_int($index)) {
-			throw new InvalidArgumentException('get_item_id_by_index function only accepts integers. Input was: '.$index);
+			throw new InvalidArgumentException('get_item_id_by_index function only accepts integers. Input was: ' . intval($index));
 		}
 
 		$options = $this->get_options();

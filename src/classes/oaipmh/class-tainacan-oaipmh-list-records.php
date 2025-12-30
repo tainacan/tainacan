@@ -180,7 +180,7 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
                 }
             }
         }catch(\Exception $e){
-            var_dump($e,$this->working_node,'dc:' . $key);
+            error_log(print_r($e, true) . ' - ' . print_r($this->working_node, true) . ' - dc:' . esc_html($key ?? ''));
         }
     }
 

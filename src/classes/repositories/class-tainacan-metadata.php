@@ -547,7 +547,9 @@ class Metadata extends Repository {
 		} elseif ( is_integer( $collection ) ) {
 			$collection_id = $collection;
 		} else {
-			throw new \InvalidArgumentException( 'fetch_ids_by_collection expects paramater 1 to be a integer or a \Tainacan\Entities\Collection object. ' . gettype( $collection ) . ' given' );
+			throw new \InvalidArgumentException(
+				'fetch_ids_by_collection expects paramater 1 to be a integer or a \Tainacan\Entities\Collection object. ' . esc_html( gettype( $collection ) ) . ' given'
+			);
 		}
 
 		//get parent collections
@@ -760,8 +762,8 @@ class Metadata extends Repository {
 				$new_value = array_diff($old_value, $collection_metadata_sections_id);
 				$new_value[] = (string)$new_metadata_section_id;
 				$metadatum->set_metadata_section_id($new_value);
-				if(!$metadatum->validate()) { 
-					throw new \Exception( $metadatum->get_errors() );
+				if (!$metadatum->validate()) { 
+					throw new \Exception( esc_html( print_r($metadatum->get_errors(), true) ) );
 				}
 			}
 		}
@@ -1147,7 +1149,7 @@ class Metadata extends Repository {
 
 			return $metadatum->get_id();
 		} else {
-			throw new \ErrorException( 'The entity wasn\'t validated.' . print_r( $metadatum->get_errors(), true ) );
+			throw new \ErrorException( 'The entity wasn\'t validated.' . esc_html( print_r( $metadatum->get_errors(), true ) ) );
 		}
 	}
 

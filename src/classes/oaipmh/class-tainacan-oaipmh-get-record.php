@@ -142,7 +142,7 @@ class OAIPMH_Get_Record extends OAIPMH_Expose {
                 }
             }
         } catch(Exception $e) {
-            var_dump($e,$this->working_node,'dc:' . $key);
+            error_log(print_r($e, true) . ' - ' . print_r($this->working_node, true) . ' - dc:' . esc_html($key));
         }
     }
 

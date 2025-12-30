@@ -360,8 +360,8 @@ class Relationship extends Metadata_Type {
 							/**
 							 * Note to code reviewers: This lines doesn't need to be escaped.
 							 * The variable $value_link is escaped.
-							 *
-							 * phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
+							 */
+							/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
 							echo $value_link;
 							?>
 						</h4>
@@ -383,7 +383,6 @@ class Relationship extends Metadata_Type {
 						if ( $metadata_type )
 							$metadata_wrapper_class .= ' metadata-type-' . $metadata_type;
 					}
-
 
 					$metadata_slug = $meta->get_metadatum()->get_slug();
 

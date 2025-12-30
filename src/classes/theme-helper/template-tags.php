@@ -60,15 +60,26 @@ function tainacan_get_the_metadata($args = array(), $item_id = 0) {
 	
 	$item = tainacan_get_item( $item_id );
 
-	if ($item instanceof \Tainacan\Entities\Item) {
+	if ( $item instanceof \Tainacan\Entities\Item ) {
 		return $item->get_metadata_as_html($args);
 	}
 
 	return '';
-
 }
 
+/**
+ * To be used inside The Loop
+ *
+ * Echo the item metadata as a HTML string to be used as output.
+ *
+ * @param array $args The arguments to pass to the tainacan_get_the_metadata function
+ */
 function tainacan_the_metadata($args = array()) {
+	/**
+	 * Note to code reviewers: This line doesn't need to be escaped.
+	 * The output is escaped by the get_metadata_as_html function.
+	 */
+	/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
 	echo tainacan_get_the_metadata($args);
 }
 
@@ -153,6 +164,11 @@ function tainacan_the_item_attachment_download_link($attachment_id) {
 }
 
 function tainacan_the_document() {
+	/**
+	 * Note to code reviewers: This line doesn't need to be escaped.
+	 * The output is escaped by the get_the_document function.
+	 */
+	/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
 	echo tainacan_get_the_document();
 }
 
@@ -162,6 +178,12 @@ function tainacan_the_document() {
  * echoes HTML display-ready version of an attachment
  */
 function tainacan_get_single_attachment_as_html($attachment_id, $item_id = 0, $img_size = 'large') {
+
+	/**
+	 * Note to code reviewers: This line doesn't need to be escaped.
+	 * The output is escaped by the get_attachment_as_html function.
+	 */
+	/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
 	echo tainacan_get_attachment_as_html($attachment_id, $item_id, $img_size);
 }
 
@@ -246,7 +268,12 @@ function tainacan_get_adjacent_items() {
  * @return void
  */
 function tainacan_the_collection_name() {
-	echo esc_html(tainacan_get_the_collection_name());
+	/**
+	 * Note to code reviewers: This line doesn't need to be escaped.
+	 * The output is escaped by the tainacan_get_the_collection_name function.
+	 */
+	/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
+	echo tainacan_get_the_collection_name();
 }
 
 /**
@@ -276,6 +303,7 @@ function tainacan_the_collection_description() {
 	/**
 	 * Note to code reviewers: This function does not need to be escaped as it is already escaped in tainacan_get_the_collection_description()
 	 */
+	/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
 	echo tainacan_get_the_collection_description();
 }
 
@@ -586,7 +614,7 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 		<?php if ( isset($args['media_content']) && !empty($args['media_content']) && $args['media_content'] !== false ) :?>
 			<?php echo wp_kses($args['media_content'], wp_kses_allowed_html('tainacan_content')) ?>
 		<?php else: ?>
-			<img src="<?php echo esc_url(tainacan_get_the_mime_type_icon($args['media_type'])) ?>" alt="<?php echo ( !empty($args['media_title']) ? esc_attr($args['media_title']) : __('File', 'tainacan') ) ?>" >
+			<img src="<?php echo esc_url(tainacan_get_the_mime_type_icon($args['media_type'])) ?>" alt="<?php echo esc_attr( !empty($args['media_title']) ? $args['media_title'] : __('File', 'tainacan') ) ?>" >
 		<?php endif; ?>
 		
 		<?php echo wp_kses_post($args['before_slide_metadata']); ?>
@@ -735,6 +763,12 @@ function tainacan_is_view_mode_enabled($view_mode_slug) {
  */
 function tainacan_the_faceted_search($args = array()) {
 	$theme_helper = \Tainacan\Theme_Helper::get_instance();
+
+	/**
+	 * Note to code reviewers: This line doesn't need to be escaped.
+	 * The output is escaped by the get_tainacan_items_list function.
+	 */
+	/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
 	echo $theme_helper->get_tainacan_items_list($args);
 }
 
@@ -782,7 +816,12 @@ function tainacan_get_the_term_name() {
  * @return void
  */
 function tainacan_the_term_name() {
-	echo esc_html(tainacan_get_the_term_name());
+	/**
+	 * Note to code reviewers: This line doesn't need to be escaped.
+	 * The output is escaped by the tainacan_get_the_term_name function.
+	 */
+	/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
+	echo tainacan_get_the_term_name();
 }
 
 /**
@@ -813,6 +852,7 @@ function tainacan_the_term_description() {
 	/**
 	 * Note to code reviewers: This function does not need to be escaped as it is already escaped in tainacan_get_the_term_description()'
 	 */
+	/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
 	echo tainacan_get_the_term_description();
 }
 
@@ -1083,6 +1123,12 @@ function tainacan_get_the_mime_type_icon($mime_type, $image_size = 'medium') {
  * @return void  The HTML div to be used for rendering the items carousel vue component
 */
 function tainacan_the_items_carousel($args = []) {
+
+	/**
+	 * Note to code reviewers: This line doesn't need to be escaped.
+	 * The output is escaped by the get_tainacan_items_carousel function.
+	 */
+	/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
 	echo \Tainacan\Theme_Helper::get_instance()->get_tainacan_items_carousel($args);
 }
 
@@ -1112,6 +1158,11 @@ function tainacan_the_items_carousel($args = []) {
  * @return string  The HTML div to be used for rendering the terms carousel vue component
  */
 function tainacan_the_terms_carousel($args = []) {
+	/**
+	 * Note to code reviewers: This line doesn't need to be escaped.
+	 * The output is escaped by the get_tainacan_terms_carousel function.
+	 */
+	/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
 	echo \Tainacan\Theme_Helper::get_instance()->get_tainacan_terms_carousel($args);
 }
 
@@ -1423,30 +1474,31 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 
 	if ( !empty( $terms ) && !is_wp_error( $terms ) ) {
 
-		$content = $args['before_terms_list_container'] . $content;
+		$content = wp_kses_post( $args['before_terms_list_container'] ) . $content;
 
 		$separator = wp_strip_all_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 
 		if ( !$args['hide_hierarchy_header'] && isset($current_args['termsparent']) && $current_args['termsparent'] ) {
-			$content .= '<div class="terms-hierarachy-header"><p>' . __('Showing terms children of', 'tainacan') . '&nbsp;';
+			$content .= '<div class="terms-hierarachy-header"><p>' . esc_html( __('Showing terms children of', 'tainacan') ) . '&nbsp;';
 			
 			$parent = get_term($current_args['termsparent']);
 			$tainacan_parent_term = new Entities\Term( $parent );
 
-			$content .= '<em>' . $tainacan_parent_term->get_name() . '</em>.&nbsp;';
+			$content .= '<em>' . esc_html( $tainacan_parent_term->get_name() ) . '</em>.&nbsp;';
 
 			if ( $tainacan_parent_term->get_parent() ) {
 				$grandparent = get_term($tainacan_parent_term->get_parent());
 				$tainacan_grandparent_term = new Entities\Term( $grandparent );
 				
-				$content .= '<a href="' . esc_url( add_query_arg( 'termsparent', $tainacan_parent_term->get_parent() ) ) . '">' . __('Return to the list of terms children of ', 'tainacan') . '<em>' . $tainacan_grandparent_term->get_name() . '</em>.</a>';
-			} else
-				$content .= '<a href="' . esc_url( remove_query_arg( 'termsparent' ) ) . '">' . __('Return to the terms list.', 'tainacan') . '</a>';
+				$content .= '<a href="' . esc_url( add_query_arg( 'termsparent', $tainacan_parent_term->get_parent() ) ) . '">' . esc_html( __('Return to the list of terms children of ', 'tainacan') ) . '<em>' . esc_html( $tainacan_grandparent_term->get_name() ) . '</em>.</a>';
+			} else {
+				$content .= '<a href="' . esc_url( remove_query_arg( 'termsparent' ) ) . '">' . esc_html( __('Return to the terms list.', 'tainacan') ) . '</a>';
+			}
 
 			$content .= '</p></div>';
 		}
 
-		$content .= $args['before_terms_list'];
+		$content .= wp_kses_post( $args['before_terms_list'] );
 
 		foreach ( $terms as $term ) {
 			$tainacan_term = new Entities\Term( $term );
@@ -1454,42 +1506,45 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 			ob_start();
 
 			$before_term = $args['before_term'];
-			$before_term = str_replace('$id', $tainacan_term->get_id(), $before_term);
+			$before_term = str_replace('$id', absint( $tainacan_term->get_id() ), $before_term);
 
-			echo $before_term;
+			echo wp_kses_post( $before_term );
 			
 			// If the term children is hidden but not the items, we set the whole area as a link for the term items list.
-			if ( !$args['hide_term_items_link'] && $args['hide_term_children_link'] ) 
-				echo '<a href="' . $tainacan_term->get_url() .'">';
+			if ( !$args['hide_term_items_link'] && $args['hide_term_children_link'] ) {
+				echo '<a href="' . esc_url( $tainacan_term->get_url() ) . '">';
+			}
 
 			if ( !$args['hide_term_thumbnail'] ) {
 				$thumbnail = wp_get_attachment_image( $tainacan_term->get_header_image_id(), $args['thumbnails_size'], false );
 				
-				if ( !$thumbnail && !$args['hide_term_thumbnail_placeholder'] )
-					echo $args['before_term_thumbnail'] . '<img src="' . esc_url(tainacan_get_the_mime_type_icon('empty', $args['thumbnails_size'])) . '">' . $args['after_term_thumbnail'];
-				else
-					echo $thumbnail ? ($args['before_term_thumbnail'] . $thumbnail . $args['after_term_thumbnail'] ) : '';
+				if ( !$thumbnail && !$args['hide_term_thumbnail_placeholder'] ) {
+					echo wp_kses_post( $args['before_term_thumbnail'] ) . '<img src="' . esc_url(tainacan_get_the_mime_type_icon('empty', $args['thumbnails_size'])) . '">' . wp_kses_post( $args['after_term_thumbnail'] );
+				} else {
+					echo $thumbnail ? ( wp_kses_post( $args['before_term_thumbnail'] ) . wp_kses_post($thumbnail) . wp_kses_post( $args['after_term_thumbnail'] ) ) : '';
+				}
 			}
 
-			echo $args['before_term_information'];
+			echo wp_kses_post( $args['before_term_information'] );
 
 			if ( !$args['hide_term_hierarchy_path'] ) {
 				$term_hierarchy_path = get_term_parents_list($tainacan_term->get_id(), 'tnc_tax_' . $post->ID, [ 'format' => 'name', 'separator' => $separator, 'link' => false, 'inclusive' => false ]);
 
-
-				if ( $tainacan_term->get_parent() )
-					echo $args['before_term_hierarchy_path'] . $term_hierarchy_path  . $args['after_term_hierarchy_path'];
-				else if ( $tainacan_term->get_parent() && !$args['hide_term_empty_hierarchy_path'] )
-					echo $args['before_term_hierarchy_path'] . $args['term_empty_hierarchy_path_message']  . $args['after_term_hierarchy_path'];
+				if ( $tainacan_term->get_parent() ) {
+					echo wp_kses_post( $args['before_term_hierarchy_path'] ) . esc_html( $term_hierarchy_path ) . wp_kses_post( $args['after_term_hierarchy_path'] );
+				} else if ( !$tainacan_term->get_parent() && !$args['hide_term_empty_hierarchy_path'] ) {
+					echo wp_kses_post( $args['before_term_hierarchy_path'] ) . esc_html( $args['term_empty_hierarchy_path_message'] ) . wp_kses_post( $args['after_term_hierarchy_path'] );
+				}
 			}
 
 			if ( !$args['hide_term_name'] ) {
 				$term_name = $tainacan_term->get_name();
 
-				if ( !empty($term_name) )
-					echo $args['before_term_name'] . $tainacan_term->get_name() . $args['after_term_name'];
-				else if ( empty($term_name) && !$args['hide_term_empty_name'] )
-					echo $args['before_term_name'] . $args['term_empty_name_message'] . $args['after_term_name'];
+				if ( !empty($term_name) ) {
+					echo wp_kses_post( $args['before_term_name'] ) . esc_html( $tainacan_term->get_name() ) . wp_kses_post( $args['after_term_name'] );
+				} else if ( empty($term_name) && !$args['hide_term_empty_name'] ) {
+					echo wp_kses_post( $args['before_term_name'] ) . esc_html( $args['term_empty_name_message'] ) . wp_kses_post( $args['after_term_name'] );
+				}
 			}
 
 			if ( !$args['hide_term_description'] ) {
@@ -1505,58 +1560,65 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 					 */
 					$term_description = \Tainacan\Metadata_Types\Textarea::make_clickable_links($term_description);
 
-					echo $args['before_term_description'] . $term_description . $args['after_term_description'];
+					echo wp_kses_post( $args['before_term_description'] ) . wp_kses_post( $term_description ) . wp_kses_post( $args['after_term_description'] );
 				} else if ( empty($term_description) && !$args['hide_term_empty_description'] ) {
-					echo $args['before_term_description'] . $args['term_empty_description_message'] . $args['after_term_description'];
+					echo wp_kses_post( $args['before_term_description'] ) . esc_html( $args['term_empty_description_message'] ) . wp_kses_post( $args['after_term_description'] );
 				}
 			}
 
-			echo $args['before_term_links'];
+			echo wp_kses_post( $args['before_term_links'] );
 
 			if ( !$args['hide_term_children_link'] ) {
 				$total_children = get_term_children( $tainacan_term->get_id(), 'tnc_tax_' . $post->ID );
 				$total_children = is_array($total_children) && count($total_children) ? count($total_children) : 0;
 
 				if ( $total_children ) {
-					echo $args['before_term_children_link'] . '<a href="' . esc_url( add_query_arg( 'termsparent', $tainacan_term->get_id() ) ) . '">';
+					echo wp_kses_post( $args['before_term_children_link'] ) . '<a href="' . esc_url( add_query_arg( 'termsparent', $tainacan_term->get_id() ) ) . '">';
 					
-					if ( !$args['hide_term_children_count'] && $args['term_children_count_position'] === 'before' )
-						echo '<span class="term-children-count">' . $total_children . '</span>&nbsp;';
-					echo ($total_children == 1 || $total_children == '1') ? __('Child', 'tainacan') : __('Children', 'tainacan');
-					if ( !$args['hide_term_children_count'] && $args['term_children_count_position'] !== 'before' )
-						echo '&nbsp;<span class="term-children-count">(' . $total_children . ')</span>';
+					if ( !$args['hide_term_children_count'] && $args['term_children_count_position'] === 'before' ) {
+						echo '<span class="term-children-count">' . absint( $total_children ) . '</span>&nbsp;';
+					}
+					echo esc_html( ($total_children == 1 || $total_children == '1') ? __('Child', 'tainacan') : __('Children', 'tainacan') );
+					if ( !$args['hide_term_children_count'] && $args['term_children_count_position'] !== 'before' ) {
+						echo '&nbsp;<span class="term-children-count">(' . absint( $total_children ) . ')</span>';
+					}
 					
-					echo '</a>' . $args['after_term_children_link'] . '&nbsp;&nbsp;';
+					echo '</a>' . wp_kses_post( $args['after_term_children_link'] ) . '&nbsp;&nbsp;';
 
-				} else if ( !$total_children && !$args['hide_term_empty_children_link'] )
-					echo $args['before_term_children_link'] . $args['term_empty_children_link_message'] . $args['after_term_children_link'] . '&nbsp;&nbsp;';
+				} else if ( !$total_children && !$args['hide_term_empty_children_link'] ) {
+					echo wp_kses_post( $args['before_term_children_link'] ) . esc_html( $args['term_empty_children_link_message'] ) . wp_kses_post( $args['after_term_children_link'] ) . '&nbsp;&nbsp;';
+				}
 			}
 
 			if ( !$args['hide_term_items_link'] && !$args['hide_term_children_link'] ) {
 
 				if ( $term->count ) {
-					echo $args['before_term_items_link'] . '<a href="' . $tainacan_term->get_url() . '">';
+					echo wp_kses_post( $args['before_term_items_link'] ) . '<a href="' . esc_url( $tainacan_term->get_url() ) . '">';
 					
-					if ( !$args['hide_term_items_count'] && $args['term_items_count_position'] === 'before' ) 
-						echo '<span class="term-items-count">' . $term->count . '</span>&nbsp;';
-					echo ($term->count == 1 || $term->count == '1') ? __('Item', 'tainacan') : __('Items', 'tainacan');
-					if ( !$args['hide_term_items_count'] && $args['term_items_count_position'] !== 'before' ) 
-						echo '&nbsp;<span class="term-items-count">(' . $term->count . ')</span>';
+					if ( !$args['hide_term_items_count'] && $args['term_items_count_position'] === 'before' ) {
+						echo '<span class="term-items-count">' . absint( $term->count ) . '</span>&nbsp;';
+					}
+					echo esc_html( ($term->count == 1 || $term->count == '1') ? __('Item', 'tainacan') : __('Items', 'tainacan') );
+					if ( !$args['hide_term_items_count'] && $args['term_items_count_position'] !== 'before' ) {
+						echo '&nbsp;<span class="term-items-count">(' . absint( $term->count ) . ')</span>';
+					}
 					
-					echo '</a>' . $args['after_term_items_link'];
+					echo '</a>' . wp_kses_post( $args['after_term_items_link'] );
 				
-				} else if ( !$term->count && !$args['hide_term_empty_items_link'] )
-					echo $args['before_term_items_link'] . $args['term_empty_items_link_message'] . $args['after_term_items_link'];
+				} else if ( !$term->count && !$args['hide_term_empty_items_link'] ) {
+					echo wp_kses_post( $args['before_term_items_link'] ) . esc_html( $args['term_empty_items_link_message'] ) . wp_kses_post( $args['after_term_items_link'] );
+				}
 			}
 
-			echo $args['after_term_links'];
+			echo wp_kses_post( $args['after_term_links'] );
 
-			echo $args['after_term_information'];
+			echo wp_kses_post( $args['after_term_information'] );
 
-			if ( !$args['hide_term_items_link'] && $args['hide_term_children_link'] )
+			if ( !$args['hide_term_items_link'] && $args['hide_term_children_link'] ) {
 				echo '</a>';
+			}
 			
-			echo $args['after_term'];
+			echo wp_kses_post( $args['after_term'] );
 
 			$html = ob_get_contents();
 			ob_end_clean();
@@ -1565,17 +1627,17 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 
 		}
 
-		$content .= $args['after_terms_list'];
+		$content .= wp_kses_post( $args['after_terms_list'] );
 
-		$content .= $args['after_terms_list_container'];
+		$content .= wp_kses_post( $args['after_terms_list_container'] );
 
 	} else {
 
-		$content = $args['before_terms_list_container'] . $content;
+		$content = wp_kses_post( $args['before_terms_list_container'] ) . $content;
 
-		$content .= '<p>' . __('No term was found.', 'tainacan') . '</p>';
+		$content .= '<p>' . esc_html( __('No term was found.', 'tainacan') ) . '</p>';
 
-		$content .= $args['after_terms_list_container'];
+		$content .= wp_kses_post( $args['after_terms_list_container'] );
 	}
 
 	return apply_filters('tainacan_get_single_taxonomy_content', ['content' => $content, 'total_terms' => $total_terms] , $post);
@@ -1608,10 +1670,10 @@ function tainacan_get_taxonomies_orderby($args = []) {
 						id="tainacan-taxonomy-order-select"
 						name="order"
 						onchange="location = this.value;">
-					<option value="<?php echo esc_url( add_query_arg( 'order', 'ASC' ) ); ?>" <?php echo $current_args['order'] == 'ASC' ? 'selected' : ''; ?>>
+					<option value="<?php echo esc_url( add_query_arg( 'order', 'ASC' ) ); ?>" <?php selected( $current_args['order'], 'ASC' ); ?>>
 						<?php esc_html_e( 'Ascending', 'tainacan' ); ?>
 					</option>
-					<option value="<?php echo esc_url( add_query_arg( 'order', 'DESC' ) ); ?>" <?php echo $current_args['order'] == 'DESC' ? 'selected' : ''; ?>>
+					<option value="<?php echo esc_url( add_query_arg( 'order', 'DESC' ) ); ?>" <?php selected( $current_args['order'], 'DESC' ); ?>>
 						<?php esc_html_e( 'Descending', 'tainacan' ); ?>
 					</option>
 				</select>
@@ -1627,10 +1689,10 @@ function tainacan_get_taxonomies_orderby($args = []) {
 						id="tainacan-taxonomy-orderby-select"
 						name="orderby"
 						onchange="location = this.value;">
-					<option value="<?php echo esc_url( add_query_arg( 'orderby', 'name' ) ); ?>" <?php echo $current_args['orderby'] == 'name' ? 'selected' : ''; ?>>
+					<option value="<?php echo esc_url( add_query_arg( 'orderby', 'name' ) ); ?>" <?php selected( $current_args['orderby'], 'name' ); ?>>
 						<?php esc_html_e( 'Name', 'tainacan' ); ?>
 					</option>
-					<option value="<?php echo esc_url( add_query_arg( 'orderby', 'count' ) ); ?>" <?php echo $current_args['orderby'] == 'count'? 'selected' : ''; ?>>
+					<option value="<?php echo esc_url( add_query_arg( 'orderby', 'count' ) ); ?>" <?php selected( $current_args['orderby'], 'count' ); ?>>
 						<?php esc_html_e( 'Amount of items', 'tainacan' ); ?>
 					</option>
 				</select>
@@ -1646,6 +1708,13 @@ function tainacan_get_taxonomies_orderby($args = []) {
 }
 
 function tainacan_the_taxonomies_orderby($args = []) {
+	/**
+	 * Note to code reviewers: This line doesn't need to be escaped.
+	 * The output is escaped by the tainacan_get_taxonomies_orderby function,
+	 * which uses esc_url(), selected(), and esc_html_e() for all dynamic content.
+	 * Filter implementers should ensure their output is properly escaped.
+	 */
+	/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
 	echo tainacan_get_taxonomies_orderby($args);
 }
 
@@ -1669,7 +1738,7 @@ function tainacan_get_taxonomies_search($args = []) {
 			<label
 					for="tainacan-taxonomy-search-field--input"
 					class="wp-block-search__label">
-				<?php echo __( 'Search', 'tainacan'); ?>
+				<?php esc_html_e( 'Search', 'tainacan' ); ?>
 			</label>
 		<?php endif; ?>
 		<div class="wp-block-search__inside-wrapper">
@@ -1679,11 +1748,11 @@ function tainacan_get_taxonomies_search($args = []) {
 					class="wp-block-search__input wp-block-search__input"
 					name="search"
 					value="<?php echo esc_attr( $current_args['search'] ); ?>"
-					placeholder="<?php echo __( 'Search by a term name', 'tainacan'); ?>">
+					placeholder="<?php echo esc_attr( __( 'Search by a term name', 'tainacan' ) ); ?>">
 			<button 
 					type="submit" 
 					class="wp-block-search__button wp-element-button">
-				<?php echo __( 'Search', 'tainacan'); ?>
+				<?php esc_html_e( 'Search', 'tainacan' ); ?>
 			</button>
 		</div>
 		<?php foreach ($_GET as $key => $value) {
@@ -1705,6 +1774,13 @@ function tainacan_get_taxonomies_search($args = []) {
 }
 
 function tainacan_the_taxonomies_search($args = []) {
+	/**
+	 * Note to code reviewers: This line doesn't need to be escaped.
+	 * The output is escaped by the tainacan_get_taxonomies_search function,
+	 * which uses esc_attr() and esc_html_e() for all dynamic content.
+	 * Filter implementers should ensure their output is properly escaped.
+	 */
+	/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
 	echo tainacan_get_taxonomies_search($args);
 }
 
@@ -1736,9 +1812,15 @@ function tainacan_get_taxonomies_pagination($total_terms, $args = []) {
 
 	$html = $args['before_pagination'] . paginate_links($paginate_links_args) . $args['after_pagination'];
 
-	return apply_filters('tainacan_get_taxonomies_pagination', $html );
+	return apply_filters('tainacan_get_taxonomies_pagination', wp_kses_post( $html ) );
 }
 
 function tainacan_the_taxonomies_pagination($total_terms, $args = []) {
+	/**
+	 * Note to code reviewers: This line doesn't need to be escaped.
+	 * The output is escaped by the tainacan_get_taxonomies_pagination function,
+	 * which uses wp_kses_post() for all dynamic content.
+	 */
+	/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
 	echo tainacan_get_taxonomies_pagination($total_terms, $args);
 }
