@@ -116,6 +116,16 @@ find $wp_plugin_dir/views/ -type d -empty -delete
 
 if [ "$is_prod_build" == true ]
 then
+    echo "Removing legacy source code that is not used in production..."
+    find $wp_plugin_dir/classes/class-tainacan-bulk-edit.php -type f -delete
+    find $wp_plugin_dir/classes/exposers/class-tainacan-oai-pmh.php -type f -delete
+    find $wp_plugin_dir/classes/exposers/class-tainacan-json-ld.php -type f -delete
+    find $wp_plugin_dir/classes/exposers/class-tainacan-txt.php -type f -delete
+    find $wp_plugin_dir/classes/exposers/class-tainacan-xml.php -type f -delete
+fi
+
+if [ "$is_prod_build" == true ]
+then
     find $wp_plugin_dir/assets/js/ -type f -name '*.js.map' -exec rm {} +
 fi
 
