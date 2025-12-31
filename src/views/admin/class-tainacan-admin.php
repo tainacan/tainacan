@@ -270,7 +270,8 @@ class Admin extends Pages {
 			'tainacan-pages-common-scripts',
 			$TAINACAN_BASE_URL . '/assets/js/tainacan_pages_common_scripts.js',
 			$deps,
-			TAINACAN_VERSION
+			TAINACAN_VERSION,
+			true
 		);
 
 		wp_localize_script( 'tainacan-pages-common-scripts', 'tainacan_user', $this->get_admin_js_user_data() );
@@ -292,7 +293,11 @@ class Admin extends Pages {
 	function admin_body_class( $classes ) {
 		$modified_classes = parent::admin_body_class( $classes );
 
-		if ( isset( $_GET['page'] ) && $_GET['page'] == $this->get_page_slug() )
+		// Sanitize the page parameter
+		/* phpcs:ignore WordPress.Security.NonceVerification.Recommended */
+		$current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+
+		if ( !empty($current_page) && $current_page == $this->get_page_slug() )
 			$modified_classes .= ' tainacan-admin-page';
 		
 		return $modified_classes;
@@ -307,9 +312,12 @@ class Admin extends Pages {
 	 */
 	function ajax_sample_permalink(){
 
-		$id = sanitize_text_field($_POST['post_id']);
-		$title = sanitize_text_field($_POST['new_title']);
-		$name = sanitize_text_field($_POST['new_slug']);
+		// Verify nonce for security
+		check_ajax_referer( 'tainacan-sample-permalink', '_ajax_nonce' );
+
+		$id = sanitize_text_field( wp_unslash( $_POST['post_id'] ) );
+		$title = sanitize_text_field( wp_unslash( $_POST['new_title'] ) );
+		$name = sanitize_text_field( wp_unslash( $_POST['new_slug'] ) );
 
 		$post = get_post( $id );
 		if ( ! $post )

@@ -204,6 +204,7 @@ abstract class Pages {
 			'prefs' => $prefs,
 			'data' => $user_data,
 			'nonce'                  	=> is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : false,
+			'ajax_nonce'                => is_user_logged_in() ? wp_create_nonce( 'tainacan-sample-permalink' ) : false,
 			'tainacan_api_url'         	=> esc_url_raw( rest_url() ) . 'tainacan/v2',
 			'wp_api_url'            	=> esc_url_raw( rest_url() ) . 'wp/v2/',
 			'wp_ajax_url'            	=> admin_url( 'admin-ajax.php' ),
@@ -400,7 +401,8 @@ abstract class Pages {
 			'tainacan-admin-navigation-menu',
 			$TAINACAN_BASE_URL . '/assets/js/tainacan_admin_navigation_menu.js',
 			[ 'wp-hooks', 'wp-i18n' ],
-			TAINACAN_VERSION
+			TAINACAN_VERSION,
+			true
 		);
 		wp_set_script_translations( 'tainacan-admin-navigation-menu', 'tainacan' );
 		wp_localize_script( 'tainacan-admin-navigation-menu', 'tainacan_user', $this->get_admin_js_user_data() );
@@ -718,6 +720,7 @@ abstract class Pages {
 	function admin_init_ui_options() {
 
 		// Sanitize the page parameter
+		/* phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading URL parameter for page identification (read-only operation), similar to WordPress core admin page handling. */
 		$current_page = isset($_GET['page']) ? sanitize_key($_GET['page']) : '';
 
 		if ( !is_admin() && !$this->get_page_slug() || empty($current_page) || $current_page !== $this->get_page_slug() )
@@ -744,6 +747,7 @@ abstract class Pages {
 
 		// Sanitize $_GET parameters using WordPress's built-in boolean sanitization
 		$sanitized_get = array();
+		/* phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading URL query parameters to configure UI display options (read-only operation). All values are sanitized before use. Similar to WordPress core admin page parameter handling. */
 		foreach ( $_GET as $key => $value ) {
 			$sanitized_key = sanitize_text_field($key); // Not using sanitize_key because it puts all in lowercase
 			
@@ -820,6 +824,7 @@ abstract class Pages {
 	function admin_add_screen_options($current, $screen) {
 
 		// Sanitize the page parameter
+		/* phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading URL parameter for page identification (read-only operation), similar to WordPress core admin page handling. */
 		$current_page = isset($_GET['page']) ? sanitize_key($_GET['page']) : '';
 
 		if ( !is_admin() && !$this->get_page_slug() || empty($current_page) || $current_page !== $this->get_page_slug() )

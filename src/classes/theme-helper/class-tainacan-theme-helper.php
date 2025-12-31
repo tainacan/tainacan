@@ -1377,6 +1377,7 @@ class Theme_Helper {
 		];
 
 		// Adjusts the args to obtain only on one item per request with the correct offset
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This function reads URL query parameters for navigation (read-only operation), similar to WordPress's get_adjacent_post(). Nonce verification is not needed for reading navigation parameters.
 		$args = $_GET;
 		
 		// Defines where are we getting items from
@@ -1384,13 +1385,13 @@ class Theme_Helper {
 		if ( isset($args['source_list'] ) ) {
 
 			if ( $args['source_list'] == 'collection' ) { 
-				$collection_id = isset($args['source_entity_id']) && is_numeric($args['source_entity_id']) ? $args['source_entity_id'] : tainacan_get_collection_id();
+				$collection_id = isset($args['source_entity_id']) && is_numeric($args['source_entity_id']) ? absint( $args['source_entity_id'] ) : tainacan_get_collection_id();
 				
 				if ( $collection_id )
 					$entity = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_id);
 
 			} else if ( $args['source_list'] == 'term' ) {
-				$term_id =  isset($args['source_entity_id']) && is_numeric($args['source_entity_id']) ? $args['source_entity_id'] : false;
+				$term_id = isset($args['source_entity_id']) && is_numeric($args['source_entity_id']) ? absint( $args['source_entity_id'] ) : false;
 				$term = $term_id ? tainacan_get_term(['term_id' => $term_id]) : tainacan_get_term();
 				
 				if ( $term ) {
@@ -1411,7 +1412,7 @@ class Theme_Helper {
 
 			// Sets Page based on position
 			$args['perpage'] = '1';
-			$current_position = (int)$args['pos'] + 1;
+			$current_position = absint( $args['pos'] ) + 1;
 			unset($args['pos']);
 			global $tainacan_rest_items_controller;
 			$args = $tainacan_rest_items_controller->process_request_filters($args);
@@ -1427,6 +1428,7 @@ class Theme_Helper {
 
 					if (!empty($item)  && $item instanceof \Tainacan\Entities\Item) {
 						$adjacent_items['previous'] = [
+							// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Building navigation URL from original query parameters (read-only operation)
 							'url' => get_permalink( $item->get_id() ) . '?' . http_build_query(array_merge($_GET, ['pos'=> $current_position-2])),
 							'title' => $item->get_title(),
 							'thumbnail' => $item->get_thumbnail()
@@ -1446,6 +1448,7 @@ class Theme_Helper {
 
 				if (!empty($item) && $item instanceof \Tainacan\Entities\Item) {
 					$adjacent_items['next'] = [
+						// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Building navigation URL from original query parameters (read-only operation)
 						'url' => get_permalink( $item->get_id() ) . '?' . http_build_query(array_merge($_GET, ['pos'=> $current_position])),
 						'title' => $item->get_title(),
 						'thumbnail' => $item->get_thumbnail()

@@ -29,10 +29,22 @@ class Component_Hooks {
 			$deps = isset($component['args']['deps']) ? $component['args']['deps'] : [];
 
 			if ( is_admin() ) {
-				wp_enqueue_script($handle, $component['script_path'], $deps, TAINACAN_VERSION);
+				wp_enqueue_script(
+					$handle, 
+					$component['script_path'], 
+					$deps, 
+					TAINACAN_VERSION,
+					true
+				);
 			} else {
 				if (isset($component['args']['public']) == true && $component['args']['public'] != false) {
-					wp_enqueue_script($handle, $component['script_path'], $deps, TAINACAN_VERSION);
+					wp_enqueue_script(
+						$handle, 
+						$component['script_path'], 
+						$deps, 
+						TAINACAN_VERSION,
+						true
+					);
 				}
 			}
 		}

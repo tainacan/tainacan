@@ -1755,7 +1755,10 @@ function tainacan_get_taxonomies_search($args = []) {
 				<?php esc_html_e( 'Search', 'tainacan' ); ?>
 			</button>
 		</div>
-		<?php foreach ($_GET as $key => $value) {
+
+		<?php
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a GET form that preserves existing URL query parameters as hidden fields. Reading URL parameters for form preservation is a read-only operation and doesn't require nonce verification, similar to WordPress's own search and filter forms.
+		foreach ($_GET as $key => $value) {
 			if ($key !== 'search' && $key !== 'termspaged') {
 				// Handle array values by converting to string
 				if ( is_array( $value ) ) {
@@ -1763,7 +1766,8 @@ function tainacan_get_taxonomies_search($args = []) {
 				}
 				echo '<input type="hidden" name="' . esc_attr( $key ) . '" value="' . esc_attr( $value ) . '"/>';
 			}
-		} ?>
+		}
+		?>
 	</form>
 	<?php
 
