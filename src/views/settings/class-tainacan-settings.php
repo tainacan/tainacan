@@ -472,37 +472,51 @@ class Settings extends Pages {
 		<select 
 			id="<?php echo esc_attr( $option_name ); ?>" 
 			name="<?php echo esc_attr( $option_name ); ?>"
-			<?php echo ! empty( $args['input_attrs'] ) ? ' ' . $args['input_attrs'] . ' ' : ''; ?>
+			<?php echo ! empty( $args['input_attrs'] ) ? ' ' . esc_attr( $args['input_attrs'] ) . ' ' : ''; ?>
 			<?php echo esc_attr( $disabled ); ?>>
-				<?php echo str_replace( 'value="' . esc_attr( $value ) . '"', 'value="' . esc_attr( $value ) . '" selected'  , $args['input_inner_html'] ); ?>
-			</select>
+			<?php
+			// Add 'selected' attribute to the option matching the current value
+			$options_html = str_replace( 'value="' . esc_attr( $value ) . '"', 'value="' . esc_attr( $value ) . '" selected', $args['input_inner_html'] );
+			// Sanitize HTML output - allow option and optgroup tags with their common attributes
+			$allowed_html = array(
+				'option' => array(
+					'value' => true,
+					'selected' => true,
+					'disabled' => true,
+					'class' => true,
+					'id' => true,
+				),
+				'optgroup' => array(
+					'label' => true,
+					'disabled' => true,
+					'class' => true,
+					'id' => true,
+				),
+			);
+			echo wp_kses( $options_html, $allowed_html );
+			?>
+		</select>
 		<?php elseif ( $args['input_type'] === 'checkbox' && is_array($args['label']) ) : ?>
 			<div class="multiple-options">
 			<?php
 			foreach ( $label as $key => $option_label ) {
-				$checked = is_array($value) && in_array( $key, $value ) ? ' checked' : '';
+				$is_checked = is_array($value) && in_array( $key, $value );
 				echo '<label>';
-				echo '<input type="checkbox" name="' . esc_attr( $option_name ) . '[]" value="' . esc_attr( $key ) . '"' . $checked . ' />' . esc_html($option_label);
+				echo '<input type="checkbox" name="' . esc_attr( $option_name ) . '[]" value="' . esc_attr( $key ) . '"';
+				checked( $is_checked, true );
+				echo ' />' . esc_html($option_label);
 				echo '</label><br>';
 			}
 			?>
 			<div>
 		<?php else : ?>
-			<?php
-			// Build checkbox attributes separately for clarity
-			$checkbox_attrs = '';
-			if ( $input_type === 'checkbox' ) {
-				$checkbox_attrs = ( $value == true || $value == "1" ) ? ' checked value="1"' : ' value="1"';
-			} else {
-				$checkbox_attrs = ' value="' . esc_attr( $value ) . '"';
-			}
-			?>
 			<input 
 				id="<?php echo esc_attr( $option_name ); ?>" 
 				name="<?php echo esc_attr( $option_name ); ?>"
 				type="<?php echo esc_attr( $input_type ); ?>" 
-				<?php echo $checkbox_attrs; ?>
-				<?php echo ! empty( $args['input_attrs'] ) ? ' ' . $args['input_attrs'] . ' ' : ''; ?>
+				value="<?php echo esc_attr( $input_type === 'checkbox' ? '1' : $value ); ?>"
+				<?php $input_type === 'checkbox' ? checked( $value, '1' ) : ''; ?>
+				<?php echo ! empty( $args['input_attrs'] ) ? ' ' . esc_attr( $args['input_attrs'] ) . ' ' : ''; ?>
 				<?php echo esc_attr( $disabled ); ?> />
 		<?php endif; ?>
 
