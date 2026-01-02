@@ -1875,11 +1875,14 @@ class Theme_Helper {
 						' . esc_html(sprintf( $args['viewMoreLinkText'], $related_group['total_items'] )) . '
 					</a>';
 
-				$output .= '<div class="wp-block-group has-view-more-link--' . esc_attr($args['viewMoreLinkPosition']) . '" data-related-collection-id="' . $related_group['collection_id'] . '" data-related-metadata-id="' . $related_group['metadata_id'] . '">
+				$output .= '<div class="wp-block-group has-view-more-link--' . esc_attr($args['viewMoreLinkPosition']) . '" data-related-collection-id="' . esc_attr($related_group['collection_id']) . '" data-related-metadata-id="' . esc_attr($related_group['metadata_id']) . '">
 					<div class="wp-block-group__inner-container">' .
 						/**
-						 * Note to code reviewers: These lines doesn't need to be escaped.
-						 * Functions get_tainacan_items_carousel() and get_tainacan_dynamic_items_list used here escape the return value.
+						 * Note to code reviewers: These variables don't need additional escaping:
+						 * - $collection_heading: escaped with wp_kses_post() at line 1781
+						 * - $view_more_link: all dynamic values escaped with esc_url(), esc_attr(), esc_html()
+						 * - $metadata_label: escaped with wp_kses_post() at line 1787
+						 * - $items_list_div: escaped by get_tainacan_items_carousel(), get_tainacan_items_gallery(), or get_tainacan_dynamic_items_list()
 						 */
 						$collection_heading .
 						( $args['viewMoreLinkPosition'] === 'top-right' && $related_group['total_items'] > 1 ? $view_more_link : '' ) .
@@ -1894,7 +1897,7 @@ class Theme_Helper {
 		}
 		
 		$output .= '</div>';
-		
+
 		return $output;
 	}
 
@@ -2242,27 +2245,38 @@ class Theme_Helper {
 		/**
 		 * Filters the Media Component HTML
 		 */
+		$gallery_html = tainacan_get_the_media_component(
+			'tainacan-item-gallery-block_id-' . $block_id,
+			$layout_elements['thumbnails'] ? $media_items_thumbnails : null,
+			$layout_elements['main'] ? $media_items_main : null,
+			array(
+				'wrapper_attributes' => $wrapper_attributes,
+				'class_main_div' => '',
+				'class_thumbs_div' => '',
+				'class_thumbs_li' => $thumbs_have_fixed_height ? 'has-fixed-height' : '',
+				'swiper_main_options' => $swiper_main_options,
+				'swiper_thumbs_options' => $swiper_thumbs_options,
+				'swiper_arrows_as_svg' => $show_arrows_as_svg,
+				'disable_lightbox' => !$open_lightbox_on_click,
+				'hide_media_name' => $hide_file_name_lightbox,
+				'hide_media_caption' => $hide_file_caption_lightbox,
+				'hide_media_description' => $hide_file_description_lightbox,
+				'lightbox_has_light_background' => $lightbox_has_light_background
+			)
+		);
+		
+		// Apply wp_kses to ensure safety while preserving necessary HTML elements and attributes
+		// The content is already escaped in tainacan_get_the_media_component(), but we apply
+		// wp_kses here to satisfy plugin check requirements and ensure filter output is safe
+		// The 'tainacan_content' context now includes data-module and SVG support
+		// Temporarily add safe_style_css filter to allow CSS properties needed for .media-full-content
+		add_filter('safe_style_css', 'tainacan_get_default_allowed_styles', 10, 1);
+		$gallery_html = wp_kses($gallery_html, wp_kses_allowed_html('tainacan_content'));
+		remove_filter('safe_style_css', 'tainacan_get_default_allowed_styles', 10);
+		
 		return apply_filters(
 			'get_tainacan_item_gallery',
-			tainacan_get_the_media_component(
-				'tainacan-item-gallery-block_id-' . $block_id,
-				$layout_elements['thumbnails'] ? $media_items_thumbnails : null,
-				$layout_elements['main'] ? $media_items_main : null,
-				array(
-					'wrapper_attributes' => $wrapper_attributes,
-					'class_main_div' => '',
-					'class_thumbs_div' => '',
-					'class_thumbs_li' => $thumbs_have_fixed_height ? 'has-fixed-height' : '',
-					'swiper_main_options' => $swiper_main_options,
-					'swiper_thumbs_options' => $swiper_thumbs_options,
-					'swiper_arrows_as_svg' => $show_arrows_as_svg,
-					'disable_lightbox' => !$open_lightbox_on_click,
-					'hide_media_name' => $hide_file_name_lightbox,
-					'hide_media_caption' => $hide_file_caption_lightbox,
-					'hide_media_description' => $hide_file_description_lightbox,
-					'lightbox_has_light_background' => $lightbox_has_light_background
-				)
-			),
+			$gallery_html,
 			$args,
 		);
 	}
@@ -2558,27 +2572,38 @@ class Theme_Helper {
 		/**
 		 * Filters the Media Component HTML
 		 */
+		$gallery_html = tainacan_get_the_media_component(
+			'tainacan-items-gallery-block_id-' . $block_id,
+			$layout_elements['thumbnails'] ? $media_items_thumbnails : null,
+			$layout_elements['main'] ? $media_items_main : null,
+			array(
+				'wrapper_attributes' => $wrapper_attributes,
+				'class_main_div' => '',
+				'class_thumbs_div' => '',
+				'class_thumbs_li' => $thumbs_have_fixed_height ? 'has-fixed-height' : '',
+				'swiper_main_options' => $swiper_main_options,
+				'swiper_thumbs_options' => $swiper_thumbs_options,
+				'swiper_arrows_as_svg' => $show_arrows_as_svg,
+				'disable_lightbox' => !$open_lightbox_on_click,
+				'hide_media_name' => $hide_item_title_lightbox,
+				'hide_media_caption' => $hide_item_link_lightbox,
+				'hide_media_description' => $hide_item_description_lightbox,
+				'lightbox_has_light_background' => $lightbox_has_light_background
+			)
+		);
+		
+		// Apply wp_kses to ensure safety while preserving necessary HTML elements and attributes
+		// The content is already escaped in tainacan_get_the_media_component(), but we apply
+		// wp_kses here to satisfy plugin check requirements and ensure filter output is safe
+		// The 'tainacan_content' context now includes data-module and SVG support
+		// Temporarily add safe_style_css filter to allow CSS properties needed for .media-full-content
+		add_filter('safe_style_css', 'tainacan_get_default_allowed_styles', 10, 1);
+		$gallery_html = wp_kses($gallery_html, wp_kses_allowed_html('tainacan_content'));
+		remove_filter('safe_style_css', 'tainacan_get_default_allowed_styles', 10);
+		
 		return apply_filters(
 			'get_tainacan_items_gallery',
-			tainacan_get_the_media_component(
-				'tainacan-items-gallery-block_id-' . $block_id,
-				$layout_elements['thumbnails'] ? $media_items_thumbnails : null,
-				$layout_elements['main'] ? $media_items_main : null,
-				array(
-					'wrapper_attributes' => $wrapper_attributes,
-					'class_main_div' => '',
-					'class_thumbs_div' => '',
-					'class_thumbs_li' => $thumbs_have_fixed_height ? 'has-fixed-height' : '',
-					'swiper_main_options' => $swiper_main_options,
-					'swiper_thumbs_options' => $swiper_thumbs_options,
-					'swiper_arrows_as_svg' => $show_arrows_as_svg,
-					'disable_lightbox' => !$open_lightbox_on_click,
-					'hide_media_name' => $hide_item_title_lightbox,
-					'hide_media_caption' => $hide_item_link_lightbox,
-					'hide_media_description' => $hide_item_description_lightbox,
-					'lightbox_has_light_background' => $lightbox_has_light_background
-				)
-			),
+			$gallery_html,
 			$args,
 		);
 	}

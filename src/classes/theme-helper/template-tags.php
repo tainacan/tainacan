@@ -54,7 +54,7 @@ use \Tainacan\Repositories;
  * @param int|string $item_id       (Optional) The item ID to retrive the metadatum as a HTML string to be used as output. Default is the global $post
  * 
  * 
- * @return string        The HTML output
+ * @return string The HTML output
  */
 function tainacan_get_the_metadata($args = array(), $item_id = 0) {
 	
@@ -94,10 +94,12 @@ function tainacan_the_metadata($args = array()) {
  * @return string        The HTML output
  */
 function tainacan_get_the_document($item_id = 0, $img_size = 'large') {
+
 	$item = tainacan_get_item($item_id);
 
-	if (!$item)
-		return;
+	if ( ! $item instanceof \Tainacan\Entities\Item ) {
+		return '';
+	}
 
 	return apply_filters('tainacan-get-the-document', $item->get_document_as_html($item_id, $img_size), $item);
 }
@@ -109,60 +111,107 @@ function tainacan_get_the_document($item_id = 0, $img_size = 'large') {
  *
  * @param int|string $item_id   (Optional) The item ID. Default is the global $post
  *
- * @return string        The raw output
+ * @return string The raw output
  */
 function tainacan_get_the_document_raw($item_id = 0) {
 	$item = tainacan_get_item($item_id);
 
-	if (!$item)
-		return;
+	if ( ! $item instanceof \Tainacan\Entities\Item ) {
+		return '';
+	}
 
 	return apply_filters('tainacan_get_the_document_raw', $item->get_document($item_id), $item);
 }
 
+/**
+ * To be used inside The Loop
+ *
+ * Return the item document download URL.
+ *
+ * @param int|string $item_id (Optional) The item ID. Default is the global $post
+ *
+ * @return string The document download URL, or empty string if item is not found or has no document
+ */
 function tainacan_get_the_item_document_url($item_id = 0) {
 	$item = tainacan_get_item($item_id);
 
-	if (!$item)
-		return;
+	if ( ! $item instanceof \Tainacan\Entities\Item ) {
+		return '';
+	}
 
 	return apply_filters('tainacan_get_the_item_document_url', $item->get_document_download_url(), $item);
 }
 
+/**
+ * To be used inside The Loop
+ *
+ * Return the item document type (e.g., 'attachment', 'url', 'text').
+ *
+ * @param int|string $item_id (Optional) The item ID. Default is the global $post
+ *
+ * @return string The document type, or empty string if item is not found
+ */
 function tainacan_get_the_document_type($item_id = 0) {
 	$item = tainacan_get_item($item_id);
 
-	if (!$item)
-		return;
+	if ( ! $item instanceof \Tainacan\Entities\Item ) {
+		return '';
+	}
 
 	return apply_filters('tainacan_get_the_document_type', $item->get_document_type(), $item);
 }
 
+/**
+ * To be used inside The Loop
+ *
+ * Return the item document download link as HTML.
+ *
+ * Only returns a link for attachment-type documents. Returns empty string for text or URL documents.
+ *
+ * @param int|string $item_id (Optional) The item ID. Default is the global $post
+ *
+ * @return string The HTML download link, or empty string if item is not found, has no document, or document is not downloadable
+ */
 function tainacan_the_item_document_download_link($item_id = 0) {
 	$item = tainacan_get_item($item_id);
 
-	if (!$item)
-		return;
+	if ( ! $item instanceof \Tainacan\Entities\Item ) {
+		return '';
+	}
 
 	$link = $item->get_document_download_url();
 	
-	if (!$link || $item->get_document_type() == 'text' || $item->get_document_type() == 'url')
-		return;
+	if ( ! $link || $item->get_document_type() == 'text' || $item->get_document_type() == 'url' ) {
+		return '';
+	}
 
 	return '<a name="' . __('Download the item document', 'tainacan') . '" download="'. esc_url($link) . '" href="' . esc_url($link) . '" target="_blank">' . __('Download', 'tainacan') . '</a>';
 }
 
 
+/**
+ * Return the item attachment download link as HTML.
+ *
+ * @param int $attachment_id The attachment ID
+ *
+ * @return string The HTML download link, or empty string if attachment is not found or has no URL
+ */
 function tainacan_the_item_attachment_download_link($attachment_id) {
 
-	if ( !$attachment_id || !wp_get_attachment_url($attachment_id) )
-		return;
+	if ( ! $attachment_id || ! wp_get_attachment_url($attachment_id) ) {
+		return '';
+	}
 
 	$link = wp_get_attachment_url($attachment_id);
 
 	return '<a name="' . __('Download the item attachment', 'tainacan') . '" download="'. esc_url($link) . '" href="' . esc_url($link) . '">' . __('Download', 'tainacan') . '</a>';
 }
 
+/**
+ * To be used inside The Loop
+ * 
+ * echoes HTML display-ready version of the item document
+ */
 function tainacan_the_document() {
 	/**
 	 * Note to code reviewers: This line doesn't need to be escaped.
@@ -189,12 +238,22 @@ function tainacan_get_single_attachment_as_html($attachment_id, $item_id = 0, $i
 
 /**
  * Return HTML display-ready version of an attachment
+ *
+ * @param int        $attachment_id The attachment ID
+ * @param int|string $item_id       (Optional) The item ID. Default is the global $post
+ * @param string     $img_size      (Optional) The image size. Default is 'large'
+ *
+ * @return string The HTML output, or empty string if attachment ID is invalid or item is not found
  */
 function tainacan_get_attachment_as_html($attachment_id, $item_id = 0, $img_size = 'large') {
 
 	$item = tainacan_get_item($item_id);
 
-	if (!$attachment_id) {
+	if ( ! $attachment_id ) {
+		return '';
+	}
+
+	if ( ! $item instanceof \Tainacan\Entities\Item ) {
 		return '';
 	}
 
@@ -220,6 +279,8 @@ function tainacan_has_document() {
  * When visiting a collection archive or single, returns the current collection id
  *
  * @uses get_post_type() WordPress function via Theme Helper, which looks for the global $wp_query variable
+ *
+ * @return int|false The collection ID, or false if not found
  */
 function tainacan_get_collection_id() {
 	return \Tainacan\Theme_Helper::get_instance()->tainacan_get_collection_id();
@@ -242,10 +303,10 @@ function tainacan_get_collection($args = []) {
  */
 function tainacan_get_the_collection_name() {
 	$collection = tainacan_get_collection();
-	$name = '';
-	if ( $collection ) {
-		$name = $collection->get_name();
+	if ( ! $collection instanceof \Tainacan\Entities\Collection ) {
+		return apply_filters('tainacan-get-collection-name', '', $collection);
 	}
+	$name = $collection->get_name();
 	return apply_filters('tainacan-get-collection-name', esc_html($name), $collection);
 }					
 
@@ -255,10 +316,11 @@ function tainacan_get_the_collection_name() {
  * @return array containing next and previous items with basic url, title and thumbnail information
  */
 function tainacan_get_adjacent_items() {
-	if ( is_single() ) {
-		return \Tainacan\Theme_Helper::get_instance()->get_adjacent_items();
+	if ( !is_single() ) {
+		return false;
 	}
-	return false;
+	
+	return \Tainacan\Theme_Helper::get_instance()->get_adjacent_items();
 }
 
 
@@ -283,14 +345,14 @@ function tainacan_the_collection_name() {
  */
 function tainacan_get_the_collection_description() {
 	$collection = tainacan_get_collection();
-	$description = '';
-	if ( $collection ) {
-		/**
-		 * Reuses the Trait Formatter_Text method that is used in the Textarea metadata type class
-		 * to generate links. Might be a good idea to move this to a helper function in the future.
-		 */
-		$description = nl2br(\Tainacan\Metadata_Types\Textarea::make_clickable_links($collection->get_description()));
+	if ( ! $collection ) {
+		return apply_filters('tainacan-get-collection-description', '', $collection);
 	}
+	/**
+	 * Reuses the Trait Formatter_Text method that is used in the Textarea metadata type class
+	 * to generate links. Might be a good idea to move this to a helper function in the future.
+	 */
+	$description = nl2br(\Tainacan\Metadata_Types\Textarea::make_clickable_links($collection->get_description()));
 	return apply_filters('tainacan-get-collection-description', wp_kses_post( $description ), $collection);
 }
 
@@ -310,9 +372,23 @@ function tainacan_the_collection_description() {
 /**
  * Tainacan Gallery component, used to render document, attachments and other files
  *
- * @return string
+ * @param string       $media_id           ID to be added to the gallery div
+ * @param array        $media_items_thumbs Array of media items for thumbnails carousel
+ * @param array        $media_items_main   Array of media items for main carousel
+ * @param array|string $args               Optional. Array of arguments. See tainacan_get_the_media_component() for details.
+ * @return void
  */
 function tainacan_the_media_component($media_id, $media_items_thumbs, $media_items_main, $args) {
+	/**
+	 * Note to code reviewers: This function outputs HTML that is already escaped
+	 * in tainacan_get_the_media_component(). All HTML attributes, content, and
+	 * user-provided data are properly escaped using esc_attr(), wp_kses_post(),
+	 * and wp_kses(). JavaScript configuration is handled separately via
+	 * wp_add_inline_script() with proper escaping (esc_js() and wp_json_encode()).
+	 * 
+	 * @see tainacan_get_the_media_component() for escaping implementation details
+	 */
+	/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
 	echo tainacan_get_the_media_component($media_id, $media_items_thumbs, $media_items_main, $args);
 }
 
@@ -349,7 +425,12 @@ function tainacan_the_media_component($media_id, $media_items_thumbs, $media_ite
  *     @type bool        show_share_button        		Shows share button on lightbox
  *	   @type bool	 	 lightbox_has_light_background  Show a light background instead of dark in the lightbox 
  * }
- * @return string
+ * @return string HTML output that is already escaped and safe to output directly.
+ *               All HTML attributes, content, and user-provided data are properly escaped
+ *               using esc_attr(), wp_kses_post(), and wp_kses(). JavaScript configuration
+ *               is added via wp_add_inline_script() with proper escaping (esc_js() and
+ *               wp_json_encode()) and does not appear in the returned HTML string.
+ * @since 1.0.0
  */
 	
 function tainacan_get_the_media_component(
@@ -392,14 +473,6 @@ function tainacan_get_the_media_component(
 	$args['media_thumbs_id'] = $media_id . '-thumbs';
 	$args['media_id'] = $media_id;
 
-	if (!function_exists('tainacan_get_default_allowed_styles')) {
-		function tainacan_get_default_allowed_styles ( $styles ) {
-			$styles[] = 'display';
-			$styles[] = 'position';		// Adding position to this list will not be necessary anymore from WP 6.2 on... but lets keep for backwards.
-			$styles[] = 'visibility';
-			return $styles;
-		}
-	}
 	$allowed_html = array(
 		'svg' => array(
 			'xmlns' => true,
@@ -426,17 +499,25 @@ function tainacan_get_the_media_component(
 		if ( !isset($args['swiper_arrows_as_svg']) || !$args['swiper_arrows_as_svg'] )
 			wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/fonts/tainacanicons.css', array(), TAINACAN_VERSION );
 		
-		?>
+		// Register/enqueue a script handle for inline scripts
+		$script_handle = 'tainacan-media-component-config';
+		if (!wp_script_is($script_handle, 'registered')) {
+			wp_register_script($script_handle, '', [], TAINACAN_VERSION, false);
+			wp_enqueue_script($script_handle);
+		}
 
-		<script>
-			try {
-				tainacan_plugin = (typeof tainacan_plugin != undefined) ? tainacan_plugin : {};
-			} catch(err) {
-				tainacan_plugin = {};
-			}
-			tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin.tainacan_media_components != "undefined") ? tainacan_plugin.tainacan_media_components : {};
-			tainacan_plugin.tainacan_media_components['<?php echo esc_attr($args['media_id']) ?>'] = <?php echo json_encode($args) ?>;
-		</script>	
+		// Build the inline script content
+		$inline_script = sprintf(
+			"if (typeof tainacan_plugin === 'undefined') { tainacan_plugin = {}; }\n" .
+			"tainacan_plugin.tainacan_media_components = tainacan_plugin.tainacan_media_components || {};\n" .
+			"tainacan_plugin.tainacan_media_components['%s'] = %s;",
+			esc_js($args['media_id']),
+			wp_json_encode($args, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+		);
+
+		wp_add_inline_script($script_handle, $inline_script);
+
+		?>
 
 		<div id="<?php echo esc_attr($media_id) ?>" data-module="item-gallery" <?php echo wp_kses_post($args['wrapper_attributes']); ?>>
 			<?php if ( $args['has_media_main'] ) : ?>
@@ -666,11 +747,10 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
  */
 function tainacan_get_the_collection_url() {
 	$collection = tainacan_get_collection();
-	$url = '';
-	
-	if ( $collection ) {
-		$url = $collection->get_url();
+	if ( ! $collection instanceof \Tainacan\Entities\Collection ) {
+		return apply_filters('tainacan-get-collection-url', '', $collection);
 	}
+	$url = $collection->get_url();
 	return apply_filters('tainacan-get-collection-url', esc_url($url), $collection);
 }					
 
@@ -803,10 +883,10 @@ function tainacan_get_term($args = []) {
  */
 function tainacan_get_the_term_name() {
 	$term = tainacan_get_term();
-	$name = '';
-	if ( $term ) {
-		$name = $term->name;
+	if ( ! $term instanceof \WP_Term ) {
+		return apply_filters('tainacan-get-term-name', '', $term);
 	}
+	$name = $term->name;
 	return apply_filters('tainacan-get-term-name', esc_html($name), $term);
 }
 
@@ -831,15 +911,14 @@ function tainacan_the_term_name() {
  */
 function tainacan_get_the_term_description() {
 	$term = tainacan_get_term();
-	$description = '';
-	if ( $term ) {
-		
-		/**
-		 * Reuses the Trait Formatter_Text method that is used in the Textarea metadata type class
-		 * to generate links. Might be a good idea to move this to a helper function in the future.
-		 */
-		$description = nl2br(\Tainacan\Metadata_Types\Textarea::make_clickable_links($term->description));
+	if ( ! $term instanceof \WP_Term ) {
+		return apply_filters('tainacan-get-term-description', '', $term);
 	}
+	/**
+	 * Reuses the Trait Formatter_Text method that is used in the Textarea metadata type class
+	 * to generate links. Might be a good idea to move this to a helper function in the future.
+	 */
+	$description = nl2br(\Tainacan\Metadata_Types\Textarea::make_clickable_links($term->description));
 	return apply_filters('tainacan-get-term-description', wp_kses_post( $description ), $term);
 }
 
@@ -868,19 +947,34 @@ function tainacan_the_term_description() {
 function tainacan_get_the_attachments($exclude = null, $item_id = 0) {
 	$item = tainacan_get_item($item_id);
 
-	if (!$item)
+	if ( ! $item instanceof \Tainacan\Entities\Item ) {
 		return [];
+	}
 
 	return apply_filters('tainacan-get-the-attachments', $item->get_attachments($exclude), $item);
 
 }
 
+/**
+ * Get the HTML URL for an attachment
+ *
+ * @param int $attachment_id The attachment ID
+ *
+ * @return string The HTML URL for the attachment
+ */
 function tainacan_get_attachment_html_url($attachment_id) {
 	return \Tainacan\Media::get_instance()->get_attachment_html_url($attachment_id);
 }
 
 /**
+ * Register a view mode for items list
+ *
  * @see \Tainacan\Theme_Helper->register_view_mode()
+ *
+ * @param string $slug The view mode slug
+ * @param array  $args Optional. Array of arguments for the view mode
+ *
+ * @return void
  */
 function tainacan_register_view_mode($slug, $args = []) {
 	\Tainacan\Theme_Helper::get_instance()->register_view_mode($slug, $args);
@@ -890,22 +984,25 @@ function tainacan_register_view_mode($slug, $args = []) {
  * Gets the Tainacan Item Entity object
  *
  * If used inside the Loop of items, will get the Item object for the current post
+ *
+ * @param int|string $post_id (Optional) The post ID. Default is 0 (uses global $post)
+ *
+ * @return \Tainacan\Entities\Item|null The Item object, or null if not found or not a valid item
  */
 function tainacan_get_item($post_id = 0) {
 	return \Tainacan\Theme_Helper::get_instance()->tainacan_get_item($post_id);
 }
 
 /**
- * To be used inside The Loop of a faceted serach view mode template.
+ * To be used inside The Loop of a faceted search view mode template.
  *
  * Returns true or false indicating whether a certain property or metadata is
  * selected to be displayed
  *
- * @param string|integer The property to be checked. If a string is passed, it will check against
- * 	one of the native property of the item, such as title, description and creation_date.
- *  If an integer is passed, it will check against the IDs of the metadata.
- * 
- * @param int|string $item_id       (Optional) The item ID. Default is the global $post
+ * @param string|int  $property The property to be checked. If a string is passed, it will check against
+ *                              one of the native property of the item, such as title, description and creation_date.
+ *                              If an integer is passed, it will check against the IDs of the metadata.
+ * @param int|string  $item_id  (Optional) The item ID. Default is the global $post
  *
  * @return bool
  */
@@ -936,12 +1033,13 @@ function tainacan_current_view_displays($property, $item_id = 0) {
  * The same as edit_post_link() (@see https://developer.wordpress.org/reference/functions/edit_post_link/) but for
  * Tainacan Items
  *
- * @param string $text 	(optional) Anchor text. If null, default is 'Edit this item'.
- * @param string $before 	(optional) Display before edit link
- * @param string $afer 	(optional) Display after edit link
- * @param int|WP_Post $id 	(optional) Post ID or post object. Default is the global $post.
- * @param string $class 	(optional) Add custom class to link
+ * @param string      $text   (optional) Anchor text. If null, default is 'Edit this item'.
+ * @param string      $before (optional) Display before edit link
+ * @param string      $after  (optional) Display after edit link
+ * @param int|WP_Post $id     (optional) Post ID or post object. Default is the global $post.
+ * @param string      $class  (optional) Add custom class to link
  *
+ * @return void
  */
 function tainacan_the_item_edit_link( $text = null, $before = '', $after = '', $id = 0, $class = 'post-edit-link' ) {
 	if ( ! $item = tainacan_get_item( $id ) ) {
@@ -1177,6 +1275,15 @@ function tainacan_the_terms_carousel($args = []) {
  * @return void
  */
 function tainacan_the_related_items($args = []) {
+	/**
+	 * Note to code reviewers: This line doesn't need to be escaped.
+	 * All output is properly escaped in get_tainacan_related_items_list():
+	 * - Database content (collection names, metadata names) escaped with wp_kses_post()
+	 * - URLs and attributes escaped with esc_url(), esc_attr()
+	 * - Link text escaped with esc_html()
+	 * - Items list output escaped by get_tainacan_items_carousel(), get_tainacan_items_gallery(), or get_tainacan_dynamic_items_list()
+	 */
+	/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
 	echo \Tainacan\Theme_Helper::get_instance()->get_tainacan_related_items_list($args);
 }
 
@@ -1190,28 +1297,44 @@ function tainacan_the_related_items($args = []) {
  * @return void
  */
 function tainacan_the_related_items_carousel($args = []) {
+	/**
+	 * Note to code reviewers: This line doesn't need to be escaped.
+	 * This function calls get_tainacan_related_items_list() which properly escapes all output:
+	 * - Database content (collection names, metadata names) escaped with wp_kses_post()
+	 * - URLs and attributes escaped with esc_url(), esc_attr()
+	 * - Link text escaped with esc_html()
+	 * - Items list output escaped by get_tainacan_items_carousel(), get_tainacan_items_gallery(), or get_tainacan_dynamic_items_list()
+	 */
+	/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
 	echo \Tainacan\Theme_Helper::get_instance()->get_tainacan_related_items_carousel($args);
 }
 
 
 /**
  * Checks if the current item has or not related items
+ *
+ * @param int|string|false $item_id (Optional) The item ID. Default is false (uses current item from loop)
+ *
+ * @return bool True if item has related items, false otherwise
  */
 function tainacan_has_related_items($item_id = false) {
 	// Gets the current Item
 	$item = $item_id ? \Tainacan\Theme_Helper::get_instance()->tainacan_get_item($item_id) : \Tainacan\Theme_Helper::get_instance()->tainacan_get_item();
-	if (!$item)
-		return;
+	if ( ! $item instanceof \Tainacan\Entities\Item ) {
+		return false;
+	}
 	
 	// Then fetches related ones
 	$related_items = $item->get_related_items();// TODO: handle this inside the item so we don't have to load things here.
-	if ( !$related_items || !is_array($related_items) || !count($related_items) )
+	if ( ! $related_items || ! is_array($related_items) || ! count($related_items) ) {
 		return false;
+	}
 
 	// If we have at least one total_items, there are related items
 	foreach($related_items as $related_group) {
-		if ( isset($related_group['total_items']) && (int)$related_group['total_items'] > 0 )
+		if ( isset($related_group['total_items']) && (int)$related_group['total_items'] > 0 ) {
 			return true;
+		}
 	}
 	return false;
 }
@@ -1248,6 +1371,7 @@ function tainacan_has_related_items($item_id = false) {
 	* @return void
  */
 function tainacan_the_item_gallery($args = []) {
+	/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML is escaped in get_tainacan_item_gallery() */
 	echo \Tainacan\Theme_Helper::get_instance()->get_tainacan_item_gallery($args);
 }
 
@@ -1313,6 +1437,12 @@ function tainacan_get_the_metadata_sections($args = array(), $item_id = 0) {
 }
 
 function tainacan_the_metadata_sections($args = array()) {
+	/**
+	 * Note to code reviewers: This line doesn't need to be escaped.
+	 * Untrusted database content (names, descriptions) is escaped in get_metadata_sections_as_html().
+	 * Filter output and $args values are trusted (for plugin/theme extensibility).
+	 */
+	/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
 	echo tainacan_get_the_metadata_sections($args);
 }
 

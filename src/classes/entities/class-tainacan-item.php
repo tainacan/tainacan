@@ -1326,13 +1326,13 @@ class Item extends Entity {
 					$after_name = apply_filters( 'tainacan-get-metadata-section-as-html-after-name--index-' . $section_index, $after_name, $metadata_section );	
 				}
 
-				// Renders the metadata section name
-				$return .= $before_name . $metadata_section->get_name() . $after_name;
+				// Renders the metadata section name (escaped for safety)
+				$return .= $before_name . wp_kses_post($metadata_section->get_name()) . $after_name;
 			}
 
-			// Adds section description
+			// Adds section description (escaped for safety)
 			if ( !$args['hide_description'] ) {
-				$return .= $args['before_description'] . $metadata_section->get_description() . $args['after_description'];
+				$return .= $args['before_description'] . wp_kses_post($metadata_section->get_description()) . $args['after_description'];
 			}
 
 			// Gets the section metadata list wrapper
@@ -1401,6 +1401,9 @@ class Item extends Entity {
 		}
 
 		// Returns the html content created by the function
+		// Note: We trust filter output and $args values (they come from plugins/themes)
+		// Only untrusted database content (name, description) is escaped above
+		// Metadata list is already escaped via get_metadata_as_html()
 		return $return;
 	}
 }
