@@ -584,7 +584,7 @@ class Media {
 			$components_y = 4;
 			$blurhash = \kornrunner\Blurhash\Blurhash::encode($pixels, $components_x, $components_y);
 			return $blurhash;
-		} catch (\Exception $e) {
+		} catch (\Throwable $e) {
 			return $this->get_default_image_blurhash();
 		}
 	}
