@@ -2,6 +2,8 @@
 
 namespace Tainacan\Metadata_Types;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 class URL extends Metadata_Type {
 	use \Tainacan\Traits\Formatter_Text;
 

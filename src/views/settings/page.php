@@ -1,3 +1,8 @@
+<?php 
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
+?>
 <div class="wrap tainacan-page-container-content">
 	<div class="tainacan-fixed-subheader">
 		<h1 class="tainacan-page-title">
