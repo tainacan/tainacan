@@ -562,7 +562,8 @@ class Theme_Helper {
 			
 			if ( ! $collection->is_cover_page_enabled() ) {
 				
-				wp_redirect(get_post_type_archive_link( $collection->get_db_identifier() ));
+				wp_safe_redirect(get_post_type_archive_link( $collection->get_db_identifier() ));
+				exit;
 				
 			} else {
 				
