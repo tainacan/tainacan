@@ -37,7 +37,6 @@ do
     case $i in
         --prod)
             is_prod_build=true
-            rm -r ./src/assets/js/*
         ;;
     esac
 done
@@ -76,6 +75,7 @@ then
         npm run build
     else
         echo "$(tput setab 4)  $(tput sgr 0) $(tput setab 4) $(tput sgr 0) Building in production mode $(tput setab 4) $(tput sgr 0) $(tput setab 4)  $(tput sgr 0)"
+        rm -r ./src/assets/js/*
         npm run build-prod
     fi
 fi
