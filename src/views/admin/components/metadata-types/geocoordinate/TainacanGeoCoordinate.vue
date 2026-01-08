@@ -5,7 +5,7 @@
         <l-map 
                 :id="'map--' + itemMetadatumIdentifier"
                 :ref="'map--' + itemMetadatumIdentifier"
-                style="height: 320px; width:100%;"
+                style="height: 320px; width:100%; min-width: 320px;"
                 :zoom="initialZoom"
                 :max-zoom="maxZoom"
                 :center="[initialLatitude, initialLongitude]"

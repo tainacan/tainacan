@@ -942,17 +942,16 @@
         }
 
         .tainacan-bulk-edition-field {
-            flex-direction: column;
             flex-grow: 1;
             flex-shrink: 1;
             padding-bottom: 9px;
             flex-basis: 10%;
 
             &:not(:first-child) {
-                padding-left: 13px;
+                padding-left: 13px !important;
             }
 
-            :deep(.is-special-hidden-for-mobile) {
+            .is-special-hidden-for-mobile {
                 &,
                 &:focus,
                 &:focus-visible {
