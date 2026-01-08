@@ -108,6 +108,7 @@
                 class="report-last-cached-on">
             <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(taxonomyTermsLatestCachedOn).toLocaleString() }}</span>
             <button 
+                    type="button"
                     @click="loadTaxonomyTerms(true)">
                 <span class="sr-only">
                     {{ $i18n.get('label_get_latest_report') }}

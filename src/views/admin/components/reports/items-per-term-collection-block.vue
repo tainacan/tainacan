@@ -150,7 +150,8 @@
                         :options="chartOptions"
                         @data-point-selection="handleDataPointClick" />
                 <button 
-                        v-if=" !isFetchingData && !isFetchingMetadatumTerms && selectedMetadatum"
+                        v-if="!isFetchingData && !isFetchingMetadatumTerms && selectedMetadatum"
+                        type="button"
                         class="button is-outlined hide-column-button"
                         @click="isChildColumnCollapsed = !isChildColumnCollapsed">
                     <span class="icon">
@@ -272,7 +273,9 @@
                 style="left: calc(1px + 0.75rem); right: auto;"
                 class="report-last-cached-on">
             <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(metadatumTermsLatestCachedOn).toLocaleString() }}</span>
-            <button @click="loadMetadatumTerms(true)">
+            <button 
+                    type="button"
+                    @click="loadMetadatumTerms(true)">
                 <span class="sr-only">
                     {{ $i18n.get('label_get_latest_report') }}
                 </span>
@@ -286,6 +289,7 @@
                 class="report-last-cached-on">
             <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(metadatumChildTermsLatestCachedOn).toLocaleString() }}</span>
             <button 
+                    type="button"
                     @click="loadMetadatumChildTerms(true)">
                 <span class="sr-only">
                     {{ $i18n.get('label_get_latest_report') }}

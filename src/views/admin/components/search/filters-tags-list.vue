@@ -57,6 +57,7 @@
                 </ul>
                 <button 
                         id="tainacan-filter-tags-prev" 
+                        type="button"
                         class="swiper-button-prev"
                         :aria-label="$i18n.get('previous')">
                     <svg
@@ -71,6 +72,7 @@
                 </button>
                 <button 
                         id="tainacan-filter-tags-next" 
+                        type="button"
                         class="swiper-button-next"
                         :aria-label="$i18n.get('next')">
                     <svg

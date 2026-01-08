@@ -194,6 +194,7 @@
                         <button
                                 v-if="shouldShowMoreButton(columnIndex)"
                                 class="tainacan-show-more"
+                                type="button"
                                 @click="fetchMoreTerms(column, columnIndex)">
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore" />

@@ -20,6 +20,7 @@
                 v-if="!hideFilterCollapses && !isLoadingFilters && (
                     ( filters.length >= 0 && isRepositoryLevel ) || filters.length > 0
                 )"
+                type="button"
                 aria-controls="filters-items-list"
                 :aria-expanded="!collapseAll"
                 class="button link-style collapse-all"

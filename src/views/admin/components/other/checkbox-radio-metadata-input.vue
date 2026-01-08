@@ -311,6 +311,7 @@
                                     <button
                                             v-if="shouldShowMoreButton(key)"
                                             class="tainacan-show-more"
+                                            type="button"
                                             @click="getMoreOptions(finderColumn, key)">
                                         <span class="icon">
                                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore" />

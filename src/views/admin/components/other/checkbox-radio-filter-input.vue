@@ -292,6 +292,7 @@
                                                 v-if="shouldShowMoreButton(key)"
                                                 :aria-label="$i18n.get('label_show_more_options')"
                                                 class="tainacan-show-more"
+                                                type="button"
                                                 @click="getMoreOptions(finderColumn, key)">
                                             <span class="icon">
                                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore" />
