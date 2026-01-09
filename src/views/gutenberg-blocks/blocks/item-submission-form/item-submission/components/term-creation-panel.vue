@@ -91,7 +91,7 @@
                     style="gap: 1rem;">
                 <div
                         class="wp-block-button is-style-outline"
-                        style="margin-right: auto;">
+                        style="margin-inline-end: auto;">
                     <button
                             type="button"
                             class="wp-block-button__link wp-element-button"
@@ -265,7 +265,7 @@
     }
     &>div {
         padding: 0 16px 16px;
-        border-left: 1px solid var(--tainacan-input-border-color, #dbdbdb);
+        border-inline-start: 1px solid var(--tainacan-input-border-color, #dbdbdb);
         border-bottom: 1px solid var(--tainacan-input-border-color, #dbdbdb);
         column-count: 2;
     
@@ -275,8 +275,8 @@
 
         .field {
             break-inside: avoid;
-            padding-left: 0;
-            margin-left: 0;
+            padding-inline-start: 0;
+            margin-inline-start: 0;
         }
         .form-submit {
             padding-top: 1rem;

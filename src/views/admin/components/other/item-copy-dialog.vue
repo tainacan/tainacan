@@ -211,7 +211,7 @@
     }
 
     button.is-success {
-        margin-left: auto;
+        margin-inline-end: auto;
     }
 
     .field.is-horizontal {

@@ -44,8 +44,8 @@
             color: var(--tainacan-heading-color) !important;
         }
         .icon:first-child {
-            margin-right: 0.2em;
-            margin-left: -3px;
+            margin-inline-end: 0.2em;
+            margin-inline-start: -3px;
         }
     }
     .b-tabs {
@@ -59,8 +59,8 @@
         }
         @media screen and (max-width: 768px) {
             .tab-content {         
-                padding-left: 0.5em;
-                padding-right: 00.5em;
+                padding-inline-start: 0.5em;
+                padding-inline-end: 0.5em;
             }
         }
     }

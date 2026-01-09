@@ -624,7 +624,7 @@ class Dashboard extends Pages {
 					</li>
 				<?php endforeach; ?>
 
-				<li style="margin-left: auto;">
+				<li style="margin-inline-start: auto;">
 					<a href="<?php echo esc_url($feed_options['view_all_link']);?>" target="_blank" rel="noopener noreferrer">
 						<?php esc_html_e('See all news', 'tainacan'); ?>
 						<span class="screen-reader-text"><?php esc_html_e(' (open in a new tab)', 'tainacan'); ?></span>

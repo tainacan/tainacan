@@ -168,9 +168,9 @@
                 padding: 2px 0.5em 2px 0.5em !important;
                 min-height: 100% !important;
                 height: var(--tainacan-button-min-height, 2.571em) !important;
-                border-top-right-radius: 0 !important;
-                border-bottom-right-radius: 0 !important;
-                border-right-width: 0px !important;
+                border-start-end-radius: 0 !important;
+                border-end-end-radius: 0 !important;
+                border-inline-end-width: 0px !important;
                 
                 i:not(.tainacan-icon-arrowdown) {
                     font-size: 1.25em;
@@ -184,8 +184,8 @@
             flex-grow: 1;
 
             :deep(input.input) {
-                border-top-left-radius: 0 !important;
-                border-bottom-left-radius: 0 !important;
+                border-start-start-radius: 0 !important;
+                border-end-start-radius: 0 !important;
             }
         }
 
@@ -204,7 +204,7 @@
                 flex-grow: 2 !important;
 
                 .dropdown-trigger button {
-                    border-right-width: 1px !important;
+                    border-inline-end-width: 1px !important;
                 }
             }
         }

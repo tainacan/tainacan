@@ -130,7 +130,7 @@
             <span class="icon">
                 <i 
                         :class="{ 'tainacan-icon-arrowleft' : isMetadataCompressed, 'tainacan-icon-arrowright' : !isMetadataCompressed }"
-                        class="tainacan-icon tainacan-icon-1-25em" />
+                        class="tainacan-icon tainacan-icon-1-25em tainacan-icon-is-rtl-mirrored" />
             </span>
         </button>
 
@@ -157,7 +157,7 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-previous" />
+                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-previous tainacan-icon-is-rtl-mirrored" />
                         </span> 
                     </button>
                     <div     
@@ -242,8 +242,8 @@
                                     placement: 'auto',
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
-                                class="icon is-large has-text-turoquoise5">
-                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-next" />
+                                class="icon is-large has-text-secondary">
+                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-next tainacan-icon-is-rtl-mirrored" />
                         </span>
                     </button>
                 </section>
@@ -342,7 +342,7 @@
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                 <span class="icon">
                     <i 
-                            :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll}"
+                            :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !collapseAll}"
                             class="tainacan-icon tainacan-icon-1-25em" />
                 </span>
             </a>
@@ -367,7 +367,7 @@
                             <label class="label has-text-white">
                                 <span class="icon">
                                     <i 
-                                            :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open}"
+                                            :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !props.open}"
                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                                 </span>
                                 <span 

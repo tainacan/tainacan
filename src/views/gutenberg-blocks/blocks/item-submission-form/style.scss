@@ -169,11 +169,11 @@
             width: 10%;
             max-width: 3.45em;
             min-width: 1em;
-            margin-left: 6px;
+            margin-inline-start: 6px;
             border-radius: var(--tainacan-button-border-radius, 4px);
             display: flex;
             align-items: center;
-            margin-right: auto;
+            margin-inline-end: auto;
             
             .fake-text {
                 background-color: white;
@@ -186,7 +186,7 @@
                 margin: 0 2px;
             }
             &.outline {
-                margin-left: 0px !important;
+                margin-inline-start: 0px !important;
                 border: 2px solid var(--tainacan-input-border-color, rgba(200,200,200, 0.3));
                 background-color: var(--tainacan-background-color, white);
 
@@ -209,7 +209,7 @@
                 max-width: 1em;
             }
             .fake-text {
-                margin-left: 0.5em;
+                margin-inline-start: 0.5em;
                 width: 24%;
                 max-width: 4em;
             }
@@ -228,7 +228,7 @@
                 min-width: 0.875em;
                 max-height: 0.875em;
                 max-width: 0.875em;
-                margin-right: 0.5em;
+                margin-inline-end: 0.5em;
                 border-radius: 1px;
                 display: inline-block;
             }
@@ -251,7 +251,7 @@
             padding: 0.5em;
 
             .fake-circle {
-                margin-right: 1.75em;
+                margin-inline-end: 1.75em;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -276,7 +276,7 @@
                 max-width: 0.85em;
                 min-width: 0.85em;
                 margin-top: -1em;
-                margin-left: 2rem;
+                margin-inline-start: 2rem;
                 border-radius: 100%;
                 z-index: 99;
                 padding: 4px;

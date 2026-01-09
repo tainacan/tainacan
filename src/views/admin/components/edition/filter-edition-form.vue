@@ -62,7 +62,7 @@
                                     {{ $i18n.get('status_auto-draft') }}
                                 </template>
                                 <span 
-                                        style="margin-left: 0.5em;"
+                                        style="margin-inline-start: 0.5em;"
                                         class="icon is-small">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                 </span>

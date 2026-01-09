@@ -260,7 +260,7 @@ export default class ItemsModal extends React.Component {
                     {__('Switch collection', 'tainacan')}
                 </Button>
                 <Button
-                    style={{ marginLeft: 'auto' }} 
+                    style={{ marginInlineStart: 'auto' }} 
                     isPrimary
                     onClick={ () => this.applySelectedItems() }>
                     {__('Add the selected items', 'tainacan')}

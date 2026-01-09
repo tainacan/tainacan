@@ -27,7 +27,7 @@
                 @click="collapseAll = !collapseAll">
             <span class="icon">
                 <i 
-                        :class="{ 'tainacan-icon-arrowdown' : !collapseAll, 'tainacan-icon-arrowright' : collapseAll }"
+                        :class="{ 'tainacan-icon-arrowdown' : !collapseAll, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : collapseAll }"
                         class="has-text-secondary tainacan-icon tainacan-icon-1-125em" />
             </span>
             <span class="collapse-all__text">
@@ -498,7 +498,7 @@
     .collapse-all {
         display: inline-flex;
         align-items: center;
-        margin-left: -0.875em !important;
+        margin-inline-start: -0.875em !important;
         margin-bottom: 12px !important;
     }
     .filters-components-list {
@@ -524,7 +524,7 @@
     .is-loading:after {
         border: 2px solid white !important;
         border-top-color: var(--tainacan-gray2) !important;
-        border-right-color: var(--tainacan-gray2) !important;
+        border-inline-end-color: var(--tainacan-gray2) !important;
     }
 
 </style>

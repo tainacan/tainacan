@@ -247,7 +247,7 @@ export default {
     }
     .document-buttons-row {
         bottom: -12px;
-        left: 0.875em;
+        inset-inline-start: 0.875em;
         position: absolute;
     }
 

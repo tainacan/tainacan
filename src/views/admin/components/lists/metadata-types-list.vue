@@ -215,7 +215,10 @@ export default {
 
 <style lang="scss">
     .available-metadata-types-area {
-        padding: 10px 0px 10px 10px !important;
+        padding-inline-start: 10px !important;
+        padding-inline-end: 0 !important;
+        padding-block-start: 10px !important;
+        padding-block-end: 10px !important;
         margin: 0;
         max-width: 260px;
         min-width: 20.8333333%;
@@ -252,12 +255,12 @@ export default {
             margin: 4px 4px 4px 1.2em;
             background-color: var(--tainacan-white);
             cursor: pointer;
-            left: 0;
+            inset-inline-start: 0;
             height: 2.8571em;
             border-radius: var(--tainacan-button-border-radius, 0px);
             position: relative;
             border: 1px solid var(--tainacan-gray2);
-            transition: left 0.2s ease;
+            transition: inset-inline-start 0.2s ease;
             
             .grip-icon { 
                 color: var(--tainacan-gray3);
@@ -277,7 +280,7 @@ export default {
                 overflow-x: hidden;
                 white-space: nowrap;
                 font-weight: bold;
-                margin-left: 0.4em;
+                margin-inline-start: 0.4em;
                 display: inline-block;
                 max-width: 180px;
                 width: 60%;
@@ -287,7 +290,7 @@ export default {
                 content: '';
                 display: block;
                 position: absolute;
-                right: 100%;
+                inset-inline-end: 100%;
                 width: 0;
                 height: 0;
                 border-style: solid;
@@ -296,18 +299,18 @@ export default {
             &::after {
                 top: -1px;
                 border-color: transparent white transparent transparent;
-                border-right-width: 16px;
+                border-inline-end-width: 16px;
                 border-top-width: 1.4286em;
                 border-bottom-width: 1.4286em;
-                left: calc( -19px + (var(--tainacan-button-border-radius, 0px) / 2));
+                inset-inline-start: calc( -19px + (var(--tainacan-button-border-radius, 0px) / 2));
             }
             &::before {
                 top: -1px;
                 border-color: transparent var(--tainacan-gray2) transparent transparent;
-                border-right-width: 16px;
+                border-inline-end-width: 16px;
                 border-top-width: 1.4286em;
                 border-bottom-width: 1.4286em;
-                left: calc( -20px + (var(--tainacan-button-border-radius, 0px) / 2));
+                inset-inline-start: calc( -20px + (var(--tainacan-button-border-radius, 0px) / 2));
             }
         }
 
@@ -379,7 +382,7 @@ export default {
         .highlighted-metadatum {
             background-color: var(--tainacan-white);
             position: relative;
-            left: 0px;
+            inset-inline-start: 0px;
             animation-name: hightlighten;
             animation-duration: 1.0s;
             animation-iteration-count: 2;
@@ -402,7 +405,7 @@ export default {
             background-color: var(--tainacan-turquoise1);
             border-color: var(--tainacan-turquoise2);
             position: relative;
-            left: -4px;
+            inset-inline-start: -4px;
 
             &:after {
                 border-color: transparent var(--tainacan-turquoise1) transparent transparent;

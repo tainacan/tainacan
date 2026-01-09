@@ -233,7 +233,7 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
                 </Button>
                 { this.props.loadStrategy == 'selection' ? 
                     <Button
-                        style={{ marginLeft: 'auto' }} 
+                        style={{ marginInlineStart: 'auto' }} 
                         isPrimary
                         onClick={ () => this.applySelectedItems() }>
                         {__('Add the selected items', 'tainacan')}

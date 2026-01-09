@@ -390,17 +390,20 @@
     .field {
         display: flex;
         gap: 0.5em;
-        margin: 0 -0.5em 0.5em 0em;
+        margin-inline-start: 0em;
+        margin-inline-end: -0.5em;
+        margin-block-start: 0em;
+        margin-block-end: 0.5em;
         align-items: center;
 
         strong {
-            margin-left: 0.75em;
+            margin-inline-start: 0.75em;
         }
     }
 
     button {
         border-radius: 100em !important;
-        margin-left: auto;
+        margin-inline-start: auto;
     }
 
     .logic-divider {

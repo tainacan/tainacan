@@ -568,7 +568,7 @@
             <span class="icon">
                 <i 
                         :class="{ 'tainacan-icon-arrowleft' : isFiltersModalActive, 'tainacan-icon-arrowright' : !isFiltersModalActive }"
-                        class="tainacan-icon tainacan-icon-1-25em" />
+                        class="tainacan-icon tainacan-icon-1-25em tainacan-icon-is-rtl-mirrored" />
             </span>
             <span class="text is-hidden-tablet">{{ $i18n.get('filters') }}</span>
         </button>
@@ -1604,14 +1604,14 @@
         min-height: 100%;
         height: auto;
         max-height: calc(100% - 5.875em);
-        float: left;
+        float: inline-start;
         overflow-y: auto;
         overflow-x: hidden;
         visibility: visible;
         display: block;
 
         :deep(.filters-components-list) {
-            margin-left: 3px;
+            margin-inline-start: 3px;
         }
        
         @media screen and (max-width: 768px) {
@@ -1625,15 +1625,15 @@
             position: sticky;
             
             :deep(.modal-content) {
-                padding-left: 0 !important;
-                padding-right: 28px !important;
+                padding-inline-start: 0 !important;
+                padding-inline-end: 28px !important;
             }
         }
     }
     #filter-menu-compress-button {
         position: absolute;
         z-index: 99;
-        left: 0;
+        inset-inline-start: 0;
         max-width: 1.625em;
         height: 1.625em;
         width: 1.625em;
@@ -1641,8 +1641,8 @@
         background-color: var(--tainacan-primary);
         color: var(--tainacan-secondary);
         padding: 0;
-        border-top-right-radius: var(--tainacan-button-border-radius);
-        border-bottom-right-radius: var(--tainacan-button-border-radius);
+        border-end-end-radius: var(--tainacan-button-border-radius);
+        border-start-end-radius: var(--tainacan-button-border-radius);
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -1664,7 +1664,9 @@
         @media screen and (max-width: 768px) {
             max-width: 100%;
             width: auto;
-            padding: 3px 6px 3px 0px;
+            padding-inline-start: 3px;
+            padding-inline-end: 6px;
+            padding-block: 3px;
             height: 1.625em;
             transform: translateY(-18px);
         }
@@ -1785,7 +1787,7 @@
             .gray-icon, 
             .gray-icon .icon {
                 color: var(--tainacan-info-color) !important;
-                padding-right: 10px;
+                padding-inline-end: 10px;
             }
             .gray-icon .icon i::before, 
             .gray-icon i::before {
@@ -1818,12 +1820,12 @@
                             border: 1px solid var(--tainacan-primary);
 
                             &:first-child {
-                                border-top-left-radius: var(--tainacan-button-border-radius);
-                                border-bottom-left-radius: var(--tainacan-button-border-radius);
+                                border-end-start-radius: var(--tainacan-button-border-radius);
+                                border-start-start-radius: var(--tainacan-button-border-radius);
                             }
                             &:last-child {
-                                border-top-right-radius: var(--tainacan-button-border-radius);
-                                border-bottom-right-radius: var(--tainacan-button-border-radius);
+                                border-end-end-radius: var(--tainacan-button-border-radius);
+                                border-start-end-radius: var(--tainacan-button-border-radius);
                             }
                         }
                     }
@@ -1851,7 +1853,7 @@
                 align-items: center;
                 width: 100%;
                 min-width: 120px;
-                padding-right: 15px;
+                padding-inline-end: 15px;
 
                 .tainacan-textual-search-input {
                     width: 100%;

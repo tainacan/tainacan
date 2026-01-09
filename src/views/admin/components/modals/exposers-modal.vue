@@ -150,7 +150,7 @@
                             @click="collapse(index)">
                         <span class="icon">
                             <i 
-                                    :class="{ 'tainacan-icon-arrowdown' : !exposerMapper.collapsed, 'tainacan-icon-arrowright' : exposerMapper.collapsed }"
+                                    :class="{ 'tainacan-icon-arrowdown' : !exposerMapper.collapsed, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : exposerMapper.collapsed }"
                                     class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                         </span>
                         <label 
@@ -530,10 +530,10 @@ export default {
     .exposer-types-container {
 
         .exposer-item-link {
-            padding-left: 0em;
+            padding-inline-start: 0em;
             
             p {
-                padding-left: 0.5em;
+                padding-inline-start: 0.5em;
             }
         }
     }
@@ -593,7 +593,7 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-left: 0.125em;
+        padding-inline-start: 0.125em;
         height: 42px;
         border-bottom: 1px solid var(--tainacan-lists-separator-color, var(--tainacan-item-hover-background-color));            
 

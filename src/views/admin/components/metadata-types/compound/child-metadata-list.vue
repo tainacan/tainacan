@@ -1,7 +1,7 @@
 <template>
     <div class="child-metadata-list-container">    
         <span class="icon children-icon not-sortable-item">
-            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-nextlevel" />
+            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-nextlevel tainacan-icon-is-rtl-mirrored" />
         </span> 
         <section 
                 v-if="childrenMetadata.length <= 0"
@@ -104,7 +104,7 @@
                                 class="gray-icon icon"
                                 :style="{ cursor: 'pointer', opacity: openedMetadatumId != metadatum.id ? '1.0' : '0.0' }"
                                 @click="Object.assign( collapses, { [metadatum.id]: !isCollapseOpen(metadatum.id) })">
-                            <i :class="'tainacan-icon tainacan-icon-1-25em tainacan-icon-' + (isCollapseOpen(metadatum.id) ? 'arrowdown' : 'arrowright')" />
+                            <i :class="'tainacan-icon tainacan-icon-1-25em tainacan-icon-' + (isCollapseOpen(metadatum.id) ? 'arrowdown' : 'arrowright tainacan-icon-is-rtl-mirrored')" />
                         </span>
                         <span class="metadatum-name">
                             {{ metadatum.name }}
@@ -509,8 +509,8 @@
 
 .child-metadata-list-container {
     position: relative;
-    margin-left: 42px;
-    border-left: 1px solid var(--tainacan-gray2);
+    margin-inline-start: 42px;
+    border-inline-start: 1px solid var(--tainacan-gray2);
 
     section.field {
         padding: 0.5em 1em 0 1em !important;
@@ -520,7 +520,7 @@
     .children-icon {
         position: absolute;
         top: 0;
-        left: -22px;
+        inset-inline-start: -22px;
 
         .icon {
             color: var(--tainacan-info-color) !important;
@@ -536,7 +536,7 @@
             padding: 0.5em 1em;
         }
         .active-metadatum-item {
-            margin-left: 0;
+            margin-inline-start: 0;
         }
     }
 }

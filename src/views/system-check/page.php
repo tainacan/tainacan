@@ -10,20 +10,20 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 	}
 
 	.tainacan-system-check .error {
-		border-left: 5px solid red;
-		margin-right: 10px;
+		border-inline-start: 5px solid red;
+		margin-inline-end: 10px;
 	}
 	.tainacan-system-check .warning {
-		border-left: 5px solid orange;
-		margin-right: 10px;
+		border-inline-start: 5px solid orange;
+		margin-inline-end: 10px;
 	}
 	.tainacan-system-check .good {
-		border-left: 5px solid green;
-		margin-right: 10px;
+		border-inline-start: 5px solid green;
+		margin-inline-end: 10px;
 	}
 	.tainacan-system-check .impartial {
-		border-left: 5px solid gray;
-		margin-right: 10px;
+		border-inline-start: 5px solid gray;
+		margin-inline-end: 10px;
 	}
 
 

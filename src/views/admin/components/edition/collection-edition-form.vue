@@ -70,7 +70,7 @@
                         <span class="icon">
                             <i 
                                     class="tainacan-icon"
-                                    :class="showCollectionsTaxonomiesOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                                    :class="showCollectionsTaxonomiesOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
                         </span>
                         <strong>{{ $i18n.get('label_collections_taxonomies') }}</strong>
                         <hr>
@@ -106,7 +106,7 @@
                         <span class="icon">
                             <i 
                                     class="tainacan-icon"
-                                    :class="showItemsListOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                                    :class="showItemsListOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
                         </span>
                         <strong>{{ $i18n.get('label_items_list_options') }}</strong>
                         <hr>
@@ -278,7 +278,7 @@
                         <span class="icon">
                             <i 
                                     class="tainacan-icon"
-                                    :class="showItemEditionFormOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                                    :class="showItemEditionFormOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
                         </span>
                         <strong>{{ $i18n.get('label_item_edition_form_options') }}</strong>
                         <hr>
@@ -495,7 +495,7 @@
                         <span class="icon">
                             <i 
                                     class="tainacan-icon"
-                                    :class="showItemSubmissionOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                                    :class="showItemSubmissionOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
                         </span>
                         <strong>{{ $i18n.get('label_item_submission_options') }}</strong>
                         <hr>
@@ -676,7 +676,7 @@
                                             {{ $i18n.get('status_auto-draft') }}
                                         </template>
                                         <span 
-                                                style="margin-left: 0.5em;"
+                                                style="margin-inline-start: 0.5em;"
                                                 class="icon is-small">
                                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                         </span>
@@ -988,7 +988,7 @@
                     {{ formErrorMessage }}
                 </p>
                 <div 
-                        style="margin-left: auto;"
+                        style="margin-inline-end: auto;"
                         class="control is-hidden-mobile">
                     <button
                             v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata') && !fromImporter"
@@ -1766,7 +1766,7 @@ export default {
 
     @media screen and (min-width: 1025px) {
         .column:last-of-type {
-            padding-left: var(--tainacan-one-column) !important;
+            padding-inline-start: var(--tainacan-one-column) !important;
         }
     }
 
@@ -1792,7 +1792,7 @@ export default {
         min-width: 2.125em !important;
         padding: 0 !important;
         z-index: 99;
-        margin-left: 12px !important;
+        margin-inline-start: 12px !important;
         
         .icon {
             display: inherit;
@@ -1820,7 +1820,7 @@ export default {
             font-size: 0.875em;
             z-index: 1;
             position: relative;
-            padding-right: 12px;
+            padding-inline-end: 12px;
         }
         hr {
             position: absolute;
@@ -1828,7 +1828,7 @@ export default {
             width: calc(100% - 42px);
             height: 1px;
             background-color: var(--tainacan-gray2);
-            margin-left: 42px;
+            margin-inline-start: 42px;
             transition: background-color 0.2s ease, height 0.2s ease;
         }
         
@@ -1845,10 +1845,11 @@ export default {
     }
 
     .options-columns {
-        margin-left: 0.25rem;
-        padding-left: 1.25em;
-        padding-right: 0.25em;
-        padding-bottom: 1.25em;border-left: 1px solid var(--tainacan-gray2);
+        margin-inline-start: 0.25rem;
+        padding-inline-start: 1.25em;
+        padding-inline-end: 0.25em;
+        padding-bottom: 1.25em;
+        border-inline-start: 1px solid var(--tainacan-gray2);
 
         & .field,
         &>div {
@@ -1882,7 +1883,7 @@ export default {
 
         @container headerandthumbnailfield (max-width: 395px) {
             .header-field .image-placeholder {
-                right: 18%;
+                inset-inline-end: 18%;
                 top: 34%;
             }
             .thumbnail-field {
@@ -1894,7 +1895,7 @@ export default {
                     border: none;
                 }
                 .thumbnail-buttons-row {
-                    left: 61px;
+                    inset-inline-start: 61px;
                     bottom: calc(1em + 0px);
                 }
             }
@@ -1906,8 +1907,8 @@ export default {
 
         .image-placeholder {
             position: absolute;
-            left: unset;
-            right: 10%;
+            inset-inline-start: unset;
+            inset-inline-end: 10%;
             top: 38%;
             font-size: 0.875em;
             font-weight: bold;
@@ -1921,7 +1922,7 @@ export default {
             }
         }
         .header-buttons-row {
-            text-align: right;
+            text-align: end;
             top: -15px;
             position: relative;
         }
@@ -1983,7 +1984,7 @@ export default {
         }
         .thumbnail-buttons-row {
             position: relative;
-            left: 52px;
+            inset-inline-start: 52px;
             bottom: calc(1.0em + 12px);
         }
     }
@@ -2006,11 +2007,11 @@ export default {
         .span { vertical-align: middle;}
 
         .selected-cover-page-control {
-            float: right;
+            float: inline-end;
         }
     }
     .selected-cover-page-buttons {
-        float: right;
+        float: inline-end;
         padding: 4px 6px;  
         &.disabled {
             pointer-events: none;
@@ -2096,10 +2097,10 @@ export default {
         }
     }
     .item-submission-options {
-        padding-left: 1em;
+        padding-inline-start: 1em;
         padding-top: 1.0em;
         margin-top: -1.5em;
-        border-left: 1px solid var(--tainacan-gray2);
+        border-inline-start: 1px solid var(--tainacan-gray2);
     }
     .enabled-view-modes-dropdown {
         position: relative;
@@ -2112,7 +2113,7 @@ export default {
             white-space: normal;
         }
         :deep(svg) {
-            margin-left: -2px;
+            margin-inline-start: -2px;
             overflow: hidden;
             vertical-align: middle;
         }
@@ -2129,7 +2130,7 @@ export default {
         z-index: 9999;
         background-color: var(--tainacan-gray1);
         width: 100%;
-        margin-left: calc(-1 * var(--tainacan-one-column));
+        margin-inline-start: calc(-1 * var(--tainacan-one-column));
         height: 3.5rem;
         display: flex;
         justify-content: flex-end;
@@ -2166,7 +2167,7 @@ export default {
 
         .update-info-section {
             color: var(--tainacan-info-color);
-            margin-right: auto;
+            margin-inline-end: auto;
             display: flex;
             flex-wrap: nowrap;
         }
@@ -2175,10 +2176,10 @@ export default {
             display: inline-flex;
             font-size: 1.0em;
             margin-top: 0;
-            margin-left: 24px;
+            margin-inline-start: 24px;
 
             .tainacan-help-tooltip-trigger {
-                margin-left: 0.25em;
+                margin-inline-start: 0.25em;
             }
         }
 
@@ -2190,14 +2191,14 @@ export default {
     @media screen and (max-width: 768px) {
         .footer {
             padding: 13px 0.5em;
-            margin-left: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
+            margin-inline-start: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
             width: 100%;
             flex-wrap: wrap;
             height: auto;
             position: fixed;
 
             .update-info-section {
-                margin-left: auto;
+                margin-inline-start: auto;
                 margin-bottom: 0.75em;
                 margin-top: -0.25em;
             }

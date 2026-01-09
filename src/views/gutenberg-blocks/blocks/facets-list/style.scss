@@ -167,7 +167,7 @@
         } 
 
         button {
-            margin-right: 0.75em;
+            margin-inline-end: 0.75em;
             padding: 0 0.35em;
             min-height: 28px;
             z-index: 2;
@@ -185,14 +185,14 @@
                 fill: #545758;
             }
             &.next-button {
-                margin-right: 0em;
+                margin-inline-end: 0em;
                 padding: 0;
 
                 svg { fill: var(--tainacan-block-primary, gutenberg-blocks-variables.$primary); }
             }
             &.previous-button {
-                margin-left: auto;
-                margin-right: 1em;
+                margin-inline-start: auto;
+                margin-inline-end: 1em;
                 padding: 0;
 
                 svg { fill: var(--tainacan-block-primary, gutenberg-blocks-variables.$primary); }
@@ -206,7 +206,7 @@
             height: 32px;
             width: 20%;
             border-radius: 0;
-            margin-left: -52px;
+            margin-inline-start: -52px;
             padding-left: 52px;
             border: 1px solid white;
             transition: border-color 0.7s ease, width 0.5s ease-in;
@@ -235,12 +235,12 @@
             background-color: rgba(255, 255, 255, 0.75);
             color: var(--tainacan-block-gray5, gutenberg-blocks-variables.$gray5);
             padding: 2px;
-            margin-left: 5px;
+            margin-inline-start: 5px;
             min-width: 14px;
             visibility: hidden;
             position: relative;
             opacity: 0;
-            right: -14px;
+            inset-inline-end: -14px;
             top: 0px;
             justify-content: center;
             z-index: 999;
@@ -251,11 +251,11 @@
             visibility: visible;
             background-color: rgba(255, 255, 255, 1) !important;
             opacity: 1;
-            right: -8px;
+            inset-inline-end: -8px;
             top: -8px;
             border: 1px solid var(--tainacan-block-gray3, gutenberg-blocks-variables.$gray3);
             border-radius: 100em;
-            transition: opacity linear 0.15s, right linear 0.15s;
+            transition: opacity linear 0.15s, inset-inline-end linear 0.15s;
         }
         &:hover button:hover {
             background-color: rgba(255, 255, 255, 1) !important;
@@ -438,7 +438,7 @@
 
             svg {
                 fill: var(--tainacan-block-gray4, gutenberg-blocks-variables.$gray4);
-                margin-left: auto;
+                margin-inline-start: auto;
                 overflow: visible;
             }
         }
@@ -536,7 +536,7 @@
 
             svg {
                 fill: var(--tainacan-block-gray4, gutenberg-blocks-variables.$gray4);
-                margin-left: auto;
+                margin-inline-start: auto;
                 overflow: visible;
             }
 
@@ -633,12 +633,12 @@
                 width: 54px;
                 min-width: 54px;
                 padding: 0px;
-                margin-right: 20px;
+                margin-inline-end: 20px;
             }
 
             svg {
                 fill: var(--tainacan-block-gray4, gutenberg-blocks-variables.$gray4);
-                margin-left: auto;
+                margin-inline-start: auto;
                 overflow: visible;
                 margin-bottom: -12px;
             }

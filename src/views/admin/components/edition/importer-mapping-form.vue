@@ -884,8 +884,8 @@ export default {
 
     .child-source-metadatum {
         flex-basis: 100%;
-        border-left: 1px solid var(--tainacan-gray2);
-        padding-left: 1em;
+        border-inline-start: 1px solid var(--tainacan-gray2);
+        padding-inline-start: 1em;
         opacity: 1;
         transition: border-left 0.2s ease, opacity 0.2s ease;
 
@@ -898,7 +898,7 @@ export default {
         }
 
         &.disabled-child-source-metadatum {
-            border-left: 1px solid var(--tainacan-gray1);
+            border-inline-start: 1px solid var(--tainacan-gray1);
             opacity: 0.70;
         }
     }
@@ -992,7 +992,7 @@ export default {
             font-size: 0.875em;
             color: var(--tainacan-gray5);
             margin: 4px 8px;
-            text-align: left;
+            text-align: start;
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;

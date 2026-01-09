@@ -336,7 +336,7 @@
         }
 
         #button-clear-all {
-            margin-left: auto;
+            margin-inline-start: auto;
             font-size: 1em !important;
             white-space: nowrap;
         }

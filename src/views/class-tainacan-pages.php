@@ -694,7 +694,7 @@ abstract class Pages {
 						aria-label=""
 						aria-pressed="<?php echo $is_menu_collapsed ? 'true' : 'false'; ?>"
 						title="<?php esc_attr_e('Toggle menu', 'tainacan'); ?>">
-					<span class="icon"><?php echo wp_kses($this->get_svg_icon( 'arrowleft' ), wp_kses_allowed_html('tainacan_menu_link')); ?></span>
+					<span class="icon tainacan-icon-is-rtl-mirrored"><?php echo wp_kses($this->get_svg_icon( 'arrowleft' ), wp_kses_allowed_html('tainacan_menu_link')); ?></span>
 					<span class="menu-text"><?php esc_html_e('Collapse menu', 'tainacan'); ?></span>
 				</button>
 			<?php endif; ?>

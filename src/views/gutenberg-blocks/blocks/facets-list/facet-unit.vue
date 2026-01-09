@@ -73,7 +73,7 @@
                         :style="{ 
                             minHeight: getSkeletonHeight(),
                             marginTop: layout == 'list' ? '4px' : '',
-                            marginLeft: layout == 'list' ? '7px' : '',
+                            marginInlineStart: layout == 'list' ? '7px' : '',
                             marginBottom: layout == 'grid' && showImage ? gridMargin + 'px' : ''
                         }" />
             </ul>

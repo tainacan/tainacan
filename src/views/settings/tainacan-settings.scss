@@ -19,7 +19,7 @@
     .form-footer {
         position: sticky;
         bottom: 0;
-        right: 0;
+        inset-inline-end: 0;
         z-index: 9999;
         background-color: var(--tainacan-gray1);
         width: calc(100% + 2 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column)));
@@ -28,7 +28,8 @@
         align-items: center;
         transition: bottom 0.5s ease, width 0.2s linear;
         box-shadow: 0px 0px 12px -8px var(--tainacan-black);
-        margin-left: calc( -1 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column)));
+        margin-inline-start: calc( -1 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column)));
+        margin-inline-end: calc( -1 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column)));
         margin-top: 3.5rem;
         padding: 10px var(--tainacan-one-column);
     

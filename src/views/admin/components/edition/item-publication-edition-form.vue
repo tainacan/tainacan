@@ -181,7 +181,7 @@
                                             {{ $i18n.get('status_auto-draft') }}
                                         </template>
                                         <span 
-                                                style="margin-left: 0.5em;"
+                                                style="margin-inline-start: 0.5em;"
                                                 class="icon is-small">
                                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                         </span>
@@ -419,11 +419,11 @@ export default {
 
         .field-label {
             white-space: nowrap;
-            text-align: left;
+            text-align: start;
             text-align: start;
             min-width: 9ch;
             max-width: 9ch;
-            margin-right: 1rem;
+            margin-inline-end: 1rem;
             margin-bottom: 0;
         }
         .field.has-addons {
@@ -442,7 +442,7 @@ export default {
             }
         }
         .tainacan-help-tooltip-trigger {
-            margin-left: 0.5rem;
+            margin-inline-start: 0.5rem;
         }
         #tainacan-text-slug #url-prefix-indicator {
             pointer-events: initial;
@@ -452,7 +452,7 @@ export default {
             font-family: var(--tainacan-font-family);
             font-size: 1.125em;
             opacity: 0.5;
-            margin-right: -0.35em;
+            margin-inline-end: -0.35em;
             color: var(--tainacan-info-color);
             cursor: pointer;
         }

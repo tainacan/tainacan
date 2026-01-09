@@ -486,8 +486,10 @@
     @use "../../scss/_tables.scss";
 
     .selection-control {
-        
-        padding: 6px 0px 0px 12px;
+        padding-inline-start: 12px;
+        padding-inline-end: 0px;
+        padding-block-start: 6px;
+        padding-block-end: 0px;
         background: var(--tainacan-background-color);
         height: 40px;
 
@@ -504,7 +506,7 @@
     }
 
     .total-terms-header {
-        text-align: right;
+        text-align: end;
     }
 
 </style>

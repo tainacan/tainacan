@@ -158,7 +158,7 @@ export default {
         }
     }
     .tainacan-modal-title {
-        text-align: left;
+        text-align: start;
     }
     .rendered-content {
         justify-content: center !important;
