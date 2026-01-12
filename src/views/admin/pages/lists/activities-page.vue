@@ -161,13 +161,7 @@
                     v-if="totalActivities > 0"
                     class="pagination-area">
                 <div class="shown-items">
-                    {{
-                        $i18n.get('info_showing_activities') + ' ' +
-                            (activitiesPerPage * (activitiesPage - 1) + 1) +
-                            $i18n.get('info_to') +
-                            getLastActivityNumber() +
-                            $i18n.get('info_of') + totalActivities + '.'
-                    }}
+                    {{ showingActivitiesText }}
                 </div>
                 <div class="items-per-page">
                     <b-field
@@ -248,6 +242,13 @@
                         moment(activity['date'], 'YYYY-MM-DD h:mm:ss').format('DD/MM/YYYY, hh:mm:ss');
 
                 return activitiesList;
+            },
+            showingActivitiesText() {
+                const first = this.activitiesPerPage * (this.activitiesPage - 1) + 1;
+                const last = this.getLastActivityNumber();
+                const total = this.totalActivities;
+                
+                return this.$i18n.getWithVariables('info_showing_activities_range', [first, last, total]);
             },
             activitiesPerPageOptions() {
                 const defaultActivitiesPerPageOptions = [];

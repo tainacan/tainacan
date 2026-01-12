@@ -434,13 +434,7 @@
                         v-if="collections.length > 0"
                         class="pagination-area">
                     <div class="shown-items"> 
-                        {{ 
-                            $i18n.get('info_showing_collections') + 
-                                (collectionsPerPage*(page - 1) + 1) + 
-                                $i18n.get('info_to') + 
-                                getLastCollectionNumber() + 
-                                $i18n.get('info_of') + totalCollections + '.'
-                        }} 
+                        {{ showingCollectionsText }}
                     </div> 
                     <div class="items-per-page">
                         <b-field 
@@ -543,6 +537,13 @@ export default {
                 return selectedOrderOption.label;
 
             return this.orderBy;
+        },
+        showingCollectionsText() {
+            const first = this.collectionsPerPage * (this.page - 1) + 1;
+            const last = this.getLastCollectionNumber();
+            const total = this.totalCollections;
+            
+            return this.$i18n.getWithVariables('info_showing_collections_range', [first, last, total]);
         },
         collectionsPerPageOptions() {
             const defaultCollectionsPerPageOptions = [];

@@ -260,13 +260,7 @@
                         v-if="taxonomies.length > 0" 
                         class="pagination-area">
                     <div class="shown-items">
-                        {{
-                            $i18n.get('info_showing_taxonomies') + ' ' +
-                                (taxonomiesPerPage * (page - 1) + 1) +
-                                $i18n.get('info_to') +
-                                getLastTaxonomyNumber() +
-                                $i18n.get('info_of') + total + '.'
-                        }}
+                        {{ showingTaxonomiesText }}
                     </div>
                     <div class="items-per-page">
                         <b-field 
@@ -350,6 +344,13 @@
                     return selectedOrderOption.label;
 
                 return this.orderBy;
+            },
+            showingTaxonomiesText() {
+                const first = this.taxonomiesPerPage * (this.page - 1) + 1;
+                const last = this.getLastTaxonomyNumber();
+                const total = this.total;
+                
+                return this.$i18n.getWithVariables('info_showing_taxonomies_range', [first, last, total]);
             },
             taxonomiesPerPageOptions() {
                 const defaultTaxonomiesPerPageOptions = [];

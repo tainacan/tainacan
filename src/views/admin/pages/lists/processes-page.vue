@@ -108,13 +108,7 @@
                     v-if="processes.length > 0" 
                     class="pagination-area">
                 <div class="shown-items">
-                    {{
-                        $i18n.get('info_showing_processes') + ' ' +
-                            (processesPerPage * (processesPage - 1) + 1) +
-                            $i18n.get('info_to') +
-                            getLastProcessesNumber() +
-                            $i18n.get('info_of') + totalProcesses + '.'
-                    }}
+                    {{ showingProcessesText }}
                 </div>
                 <div class="items-per-page">
                     <b-field 
@@ -179,6 +173,13 @@
             ...mapGetters('bgprocess', {
                'processes': 'getProcesses'
             }),
+            showingProcessesText() {
+                const first = this.processesPerPage * (this.processesPage - 1) + 1;
+                const last = this.getLastProcessesNumber();
+                const total = this.totalProcesses;
+                
+                return this.$i18n.getWithVariables('info_showing_processes_range', [first, last, total]);
+            },
             processesPerPageOptions() {
                 const defaultProcessesPerPageOptions = [];
                 

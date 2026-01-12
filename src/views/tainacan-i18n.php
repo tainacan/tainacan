@@ -961,6 +961,24 @@ return apply_filters( 'tainacan-i18n', [
 	'info_associated_roles'							 => __( 'These are the roles that have this capability set. You may add or remove the capability to customize the role.', 'tainacan' ),
 	'info_inherited_roles'							 => __( 'These are the roles that have greater capabilities, which inherit this one. You cannot edit this as it will not have precedence over the greater capability.', 'tainacan' ),
 	'info_showing_terms'                        	 => __( 'Showing terms ', 'tainacan' ),
+	/* translators: %1$s is the first item number, %2$s is the last item number, %3$s is the total count. The period is included for proper internationalization. */
+	'info_showing_items_range'                       => __( 'Showing items %1$s to %2$s of %3$s.', 'tainacan' ),
+	/* translators: %1$s is the first attachment number, %2$s is the last attachment number, %3$s is the total count. The period is included for proper internationalization. */
+	'info_showing_attachments_range'                 => __( 'Showing attachments %1$s to %2$s of %3$s.', 'tainacan' ),
+	/* translators: %1$s is the entity name (e.g., "attachments"), %2$s is the first item number, %3$s is the last item number, %4$s is the total count. The period is included for proper internationalization. */
+	'info_showing_%s_range'                           => __( 'Showing %1$s %2$s to %3$s of %4$s.', 'tainacan' ),
+	/* translators: %1$s is the first collection number, %2$s is the last collection number, %3$s is the total count. The period is included for proper internationalization. */
+	'info_showing_collections_range'                 => __( 'Showing collections %1$s to %2$s of %3$s.', 'tainacan' ),
+	/* translators: %1$s is the first taxonomy number, %2$s is the last taxonomy number, %3$s is the total count. The period is included for proper internationalization. */
+	'info_showing_taxonomies_range'                  => __( 'Showing taxonomies %1$s to %2$s of %3$s.', 'tainacan' ),
+	/* translators: %1$s is the first activity number, %2$s is the last activity number, %3$s is the total count. The period is included for proper internationalization. */
+	'info_showing_activities_range'                  => __( 'Showing activities %1$s to %2$s of %3$s.', 'tainacan' ),
+	/* translators: %1$s is the first process number, %2$s is the last process number, %3$s is the total count. The period is included for proper internationalization. */
+	'info_showing_processes_range'                   => __( 'Showing processes %1$s to %2$s of %3$s.', 'tainacan' ),
+	/* translators: %1$s is the first capability number, %2$s is the last capability number, %3$s is the total count. The period is included for proper internationalization. */
+	'info_showing_capabilities_range'                => __( 'Showing capabilities %1$s to %2$s of %3$s.', 'tainacan' ),
+	/* translators: %1$s is the page number, %2$s is the first item number, %3$s is the last item number, %4$s is the total count. Used in exposer modal labels. */
+	'info_page_items_range'                          => __( 'Page %1$s (items %2$s to %3$s of %4$s)', 'tainacan' ),
 	'info_warning_remove_from_trash_first'           => __( 'Remove this item from trash first', 'tainacan' ),
 	/* translators: This is displayed before sentences like "Showing items 2 to 8 of 12 */
 	'info_to'                                        => __( ' to ', 'tainacan' ),

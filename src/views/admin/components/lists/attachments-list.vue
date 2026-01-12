@@ -62,13 +62,7 @@
                 v-if="attachments.length > 0" 
                 class="pagination-area">
             <div class="shown-items">
-                {{
-                    $i18n.getWithVariables('info_showing_%s', [ collection && collection.item_attachment_label ? collection.item_attachment_label : $i18n.get('label_attachments') ]) + ' ' +
-                        (attachmentsPerPage * (attachmentsPage - 1) + 1) +
-                        $i18n.get('info_to') +
-                        getLastAttachmentsNumber() +
-                        $i18n.get('info_of') + totalAttachments + '.'
-                }}
+                {{ showingAttachmentsText }}
             </div>
             <div class="pagination">
                 <b-pagination
@@ -117,7 +111,17 @@
             ...mapGetters('item', {
                 'attachments': 'getAttachments',
                 'totalAttachments': 'getTotalAttachments'
-            })
+            }),
+            showingAttachmentsText() {
+                const entityLabel = this.collection && this.collection.item_attachment_label 
+                    ? this.collection.item_attachment_label 
+                    : this.$i18n.get('label_attachments');
+                const first = this.attachmentsPerPage * (this.attachmentsPage - 1) + 1;
+                const last = this.getLastAttachmentsNumber();
+                const total = this.totalAttachments;
+                
+                return this.$i18n.getWithVariables('info_showing_%s_range', [entityLabel, first, last, total]);
+            }
         },
         watch: {
             shouldLoadAttachments() {

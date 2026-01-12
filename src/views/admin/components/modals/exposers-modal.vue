@@ -446,10 +446,11 @@ export default {
             if (this.itemId != undefined && this.itemId != null) {
                 return this.$i18n.get('label_item_page');
             } else {
-                return  this.$i18n.get('label_page') + " " + pagedLink + " (" + 
-                        this.$i18n.get('items') + " " + this.getFirstItemNumber(pagedLink) + " " +
-                        this.$i18n.get('info_to') + " " + this.getLastItemNumber(pagedLink) + " " + 
-                        this.$i18n.get('info_of') + " " + this.totalItems + ")";
+                const first = this.getFirstItemNumber(pagedLink);
+                const last = this.getLastItemNumber(pagedLink);
+                const total = this.totalItems;
+                
+                return this.$i18n.getWithVariables('info_page_items_range', [pagedLink, first, last, total]);
             }
 
         },

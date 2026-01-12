@@ -11,16 +11,7 @@
                 aria-atomic="false"
                 aria-relevant="text"
                 :aria-label="$i18n.get('label_list_pagination')">
-            {{ 
-                $i18n.get('info_showing_items') +
-                    getFirstItem() +
-                    $i18n.get('info_to') + 
-                    getLastItemNumber() +
-                    $i18n.get('info_of')
-            }} 
-            <span :class="{ 'has-text-warning': isSortingByCustomMetadata }">
-                {{ totalItems + '.' }}
-            </span>
+            <span v-html="showingItemsText"></span>
             <span 
                     v-if="isSortingByCustomMetadata"
                     v-tooltip="{
@@ -147,6 +138,23 @@ export default {
                 defaultItemsPerPageOptions.push(Number(this.itemsPerPage));
             
             return defaultItemsPerPageOptions.sort((a,b) => a - b);
+        },
+        showingItemsText() {
+            const first = this.getFirstItem();
+            const last = this.getLastItemNumber();
+            const total = this.totalItems;
+            
+            let text = this.$i18n.getWithVariables('info_showing_items_range', [first, last, total]);
+            
+            // Wrap the total number in a span with conditional warning class
+            // Replace "of X." with "of <span>X</span>." to wrap just the number
+            if (this.isSortingByCustomMetadata) {
+                const totalStr = String(total);
+                const regex = new RegExp('( of )(' + totalStr + ')(\\.)', 'g');
+                text = text.replace(regex, '$1<span class="has-text-warning">$2</span>$3');
+            }
+            
+            return text;
         }
     },
     watch: {
