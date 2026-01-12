@@ -946,21 +946,10 @@ return apply_filters( 'tainacan-i18n', [
 	'info_warning_selected_taxonomies_delete'        => __( 'Do you really want to delete the selected taxonomies?', 'tainacan' ),
 	'info_warning_collection_related'                => __( 'The metadata Collection related is required', 'tainacan' ),
 	'info_warning_no_metadata_found'                 => __( 'No metadata found in this collection', 'tainacan' ),
-	/* translators: This is displayed before sentences like "Showing items 2 to 8 of 12 */
-	'info_showing_items'                             => __( 'Showing items ', 'tainacan' ),
-	'info_showing_attachments'                       => __( 'Showing attachments ', 'tainacan' ),
-	/* translators: This is displayed before sentences like "Showing attachments 2 to 8 of 12 */
-	'info_showing_%s'                       		 => __( 'Showing %s ', 'tainacan' ),
-	'info_showing_collections'                       => __( 'Showing collections ', 'tainacan' ),
-	'info_showing_taxonomies'                        => __( 'Showing taxonomies ', 'tainacan' ),
-	'info_showing_activities'                        => __( 'Showing activities ', 'tainacan' ),
-	'info_showing_processes'                         => __( 'Showing processes ', 'tainacan' ),
-	'info_showing_capabilities'                      => __( 'Showing capabilities ', 'tainacan' ),
 	'info_no_capabilities_found'					 => __( 'No capabilities found.', 'tainacan' ),
 	'info_no_role_associated_capability'             => __( 'No role associated to this capability', 'tainacan' ),
 	'info_associated_roles'							 => __( 'These are the roles that have this capability set. You may add or remove the capability to customize the role.', 'tainacan' ),
 	'info_inherited_roles'							 => __( 'These are the roles that have greater capabilities, which inherit this one. You cannot edit this as it will not have precedence over the greater capability.', 'tainacan' ),
-	'info_showing_terms'                        	 => __( 'Showing terms ', 'tainacan' ),
 	/* translators: %1$s is the first item number, %2$s is the last item number, %3$s is the total count. The period is included for proper internationalization. */
 	'info_showing_items_range'                       => __( 'Showing items %1$s to %2$s of %3$s.', 'tainacan' ),
 	/* translators: %1$s is the first attachment number, %2$s is the last attachment number, %3$s is the total count. The period is included for proper internationalization. */
@@ -980,8 +969,6 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: %1$s is the page number, %2$s is the first item number, %3$s is the last item number, %4$s is the total count. Used in exposer modal labels. */
 	'info_page_items_range'                          => __( 'Page %1$s (items %2$s to %3$s of %4$s)', 'tainacan' ),
 	'info_warning_remove_from_trash_first'           => __( 'Remove this item from trash first', 'tainacan' ),
-	/* translators: This is displayed before sentences like "Showing items 2 to 8 of 12 */
-	'info_to'                                        => __( ' to ', 'tainacan' ),
 	/* translators: This is displayed before sentences like "Showing items 2 to 8 of 12 */
 	'info_of'                                        => __( ' of ', 'tainacan' ),
 	'info_created_by'                                => __( 'Created by: ', 'tainacan' ),
