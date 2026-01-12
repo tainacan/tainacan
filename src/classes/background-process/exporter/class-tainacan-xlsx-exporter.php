@@ -136,7 +136,7 @@ class XLSX_Exporter extends Exporter {
 			'paged'   => $page,
 			'order'   => 'DESC',
 			'orderby' => 'ID',
-			'post_status' => ["private", "publish", "draft"]
+			'post_status' => ['publish','private','pending', 'draft']
 		];
 
 		parent::add_log("Retrieving $per_page items on page index: $page , item index: $index, in collection " . $collection_definition['id'] );
