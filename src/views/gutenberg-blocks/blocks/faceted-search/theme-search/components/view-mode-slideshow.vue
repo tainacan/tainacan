@@ -29,7 +29,9 @@
                 @click="openSlidesHelpModal"
                 @keydown.enter.prevent="openSlidesHelpModal"
                 @keydown.space.prevent="openSlidesHelpModal">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-help" />
             </span>
         </button>
@@ -56,7 +58,9 @@
                 @click="isMetadataCompressed = !isMetadataCompressed"
                 @keydown.enter.prevent="isMetadataCompressed = !isMetadataCompressed"
                 @keydown.space.prevent="isMetadataCompressed = !isMetadataCompressed">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata" />
             </span>
         </button>
@@ -79,7 +83,9 @@
                 :aria-label="$i18n.get('label_item_page')"
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
                 :href="getItemLink(slideItems[swiper.activeIndex].url, swiper.activeIndex)">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see" />
             </span>
         </a>
@@ -101,7 +107,9 @@
                 @click="closeSlideViewMode()"
                 @keydown.enter.prevent="closeSlideViewMode()"
                 @keydown.space.prevent="closeSlideViewMode()">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close" />
             </span>
         </button>
@@ -127,7 +135,9 @@
                 @click="isMetadataCompressed = !isMetadataCompressed"
                 @keydown.enter.prevent="isMetadataCompressed = !isMetadataCompressed"
                 @keydown.space.prevent="isMetadataCompressed = !isMetadataCompressed">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i 
                         :class="{ 'tainacan-icon-arrowleft' : isMetadataCompressed, 'tainacan-icon-arrowright' : !isMetadataCompressed }"
                         class="tainacan-icon tainacan-icon-1-25em tainacan-icon-is-rtl-mirrored" />
@@ -156,6 +166,7 @@
                                     placement: 'auto',
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
+                                aria-hidden="true"
                                 class="icon is-large">
                             <i class="tainacan-icon tainacan-icon-48px tainacan-icon-previous tainacan-icon-is-rtl-mirrored" />
                         </span> 
@@ -271,6 +282,7 @@
                                         placement: 'auto',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
+                                    aria-hidden="true"
                                     class="icon">
                                 <i 
                                         :class="{ 'tainacan-icon-pausefill' : isPlaying, 'tainacan-icon-playfill' : !isPlaying }"
@@ -295,6 +307,7 @@
                     <span 
                             v-if="isLoading"
                             :style="{ left: !goingRight ? '' : '25%', right: !goingRight ? '25%' : '' }"
+                            aria-hidden="true"
                             class="icon loading-icon">
                         <div class="control has-icons-right is-loading is-clearfix" />
                     </span>
@@ -319,7 +332,9 @@
                         @click="isMetadataCompressed = true"
                         @keydown.enter.prevent="isMetadataCompressed = true"
                         @keydown.space.prevent="isMetadataCompressed = true">
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close" />
                     </span>
                 </button>
@@ -340,7 +355,9 @@
                     @keydown.enter.prevent="collapseAll = !collapseAll"
                     @keydown.space.prevent="collapseAll = !collapseAll">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                <span class="icon">
+                <span 
+                        aria-hidden="true"
+                        class="icon">
                     <i 
                             :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !collapseAll}"
                             class="tainacan-icon tainacan-icon-1-25em" />
@@ -365,7 +382,9 @@
                             :model-value="!collapseAll">
                         <template #trigger="props">
                             <label class="label has-text-white">
-                                <span class="icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
                                     <i 
                                             :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !props.open}"
                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />

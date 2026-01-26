@@ -47,7 +47,9 @@
                 }"
                 :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
                 @click="isFiltersModalActive = !isFiltersModalActive">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i 
                         :class="{
                             'tainacan-icon-arrowdown': isFiltersModalActive && displayFiltersHorizontally,
@@ -156,7 +158,8 @@
                     @click="isFiltersModalActive = !isFiltersModalActive">
                 <span 
                         :class="{ 'has-text-secondary': hasFiltered }"
-                        class="gray-icon">
+                        class="gray-icon"
+                        aria-hidden="true">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters" />
                 </span>
                 <span class="is-hidden-touch">{{ $i18n.get('filters') }}</span>
@@ -192,7 +195,9 @@
                             class="button is-white">
                         <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_displayed_metadata') }}</span>
                         <span class="is-hidden-widescreen">{{ $i18n.get('metadata') }}</span>
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                         </span>
                     </button>
@@ -250,7 +255,9 @@
                                         :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
                                         class="tainacan-icon" />
                             </span>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
@@ -261,7 +268,9 @@
                             :class="{ 'is-active': order == 'DESC' }"
                             :value="'DESC'"
                             tag="button">
-                        <span class="icon gray-icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon gray-icon">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending" />
                         </span>
                         <span>{{ $i18n.get('label_descending') }}</span>
@@ -272,7 +281,9 @@
                             :class="{ 'is-active': order == 'ASC' }"
                             :value="'ASC'"
                             tag="button">
-                        <span class="icon gray-icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon gray-icon">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending" />
                         </span>
                         <span>{{ $i18n.get('label_ascending') }}</span>
@@ -298,7 +309,9 @@
                                     class="button is-white"
                                     aria-labelledby="tainacanLabelSortingMetadata tainacanSortingMetadataButton">
                                 <span>{{ orderByName }}</span>
-                                <span class="icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                 </span>
                             </button>
@@ -355,9 +368,12 @@
                             <span 
                                     v-if="registeredViewModes[viewMode] != undefined"
                                     class="gray-icon view-mode-icon"
+                                    aria-hidden="true"
                                     v-html="registeredViewModes[viewMode].icon" />
                             <span class="is-hidden-touch">&nbsp;&nbsp;&nbsp;{{ registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : $i18n.get('label_visualization') }}</span>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
@@ -374,6 +390,7 @@
                             <span 
                                     v-if="!showInlineViewModeOptions"
                                     class="gray-icon"
+                                    aria-hidden="true"
                                     v-html="registeredViewModes[viewModeOption].icon" />
                             <span 
                                     v-else 
@@ -388,6 +405,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="gray-icon"
+                                    aria-hidden="true"
                                     v-html="registeredViewModes[viewModeOption].icon" />
                             <span v-if="!showInlineViewModeOptions">{{ registeredViewModes[viewModeOption].label }}</span>
                         </b-dropdown-item>
@@ -411,6 +429,7 @@
                         @click="onChangeViewMode(viewModeOption)">
                     <span 
                             class="gray-icon view-mode-icon"
+                            aria-hidden="true"
                             v-html="registeredViewModes[viewModeOption].icon" />
                     <span class="is-hidden-tablet-only">{{ registeredViewModes[viewModeOption].label }}</span>
                 </button>
@@ -427,7 +446,9 @@
                     :aria-label="$i18n.get('label_view_as')"
                     :disabled="totalItems == undefined || totalItems <= 0"
                     @click="openExposersModal()">
-                <span class="gray-icon">
+                <span 
+                        aria-hidden="true"
+                        class="gray-icon">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas" />
                 </span>
                 <span class="is-hidden-tablet-only is-hidden-desktop-only ">{{ $i18n.get('label_view_as') }}</span>

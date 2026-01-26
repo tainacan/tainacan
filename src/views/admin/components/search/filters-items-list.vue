@@ -10,7 +10,9 @@
         <h3 
                 id="filters-label-landmark"
                 class="has-text-weight-semibold">
-            <span class="gray-icon is-hidden">
+            <span 
+                    aria-hidden="true"
+                    class="gray-icon is-hidden">
                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters" />
             </span>
             <span>{{ $i18n.get('filters') }}</span>

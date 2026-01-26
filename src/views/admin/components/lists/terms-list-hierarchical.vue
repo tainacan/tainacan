@@ -62,7 +62,9 @@
                                 @click="onAddNewChildTerm(column.id)"
                                 @keydown.enter.prevent="onAddNewChildTerm(column.id)"
                                 @keydown.space.prevent="onAddNewChildTerm(column.id)">
-                            <span class="icon is-small">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
                             &nbsp;{{ $i18n.get('label_new_term') }}
@@ -77,11 +79,13 @@
                                 @keydown.space.prevent="multipleInsertion({ parentId: column.id, parentName: column.name })">
                             <span 
                                     style="position: absolute;margin-inline-start: -5px;margin-top: 5px;"
+                                    aria-hidden="true"
                                     class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
                             <span 
                                     style="margin-top: -5px;"
+                                    aria-hidden="true"
                                     class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
@@ -171,6 +175,7 @@
                                 @click="fetchTerms(term, columnIndex)">
                             <span 
                                     style="margin-inline-end: 0.25rem; opacity: 1.0;"
+                                    aria-hidden="true"
                                     class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-nextlevel tainacan-icon-is-rtl-mirrored" />
                             </span>
@@ -193,10 +198,13 @@
                     <li v-if="column.children.length">
                         <button
                                 v-if="shouldShowMoreButton(columnIndex)"
+                                :aria-label="$i18n.get('label_show_more_terms')"
                                 class="tainacan-show-more"
                                 type="button"
                                 @click="fetchMoreTerms(column, columnIndex)">
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore" />
                             </span>
                         </button>
@@ -206,7 +214,9 @@
                         v-else
                         class="warning-no-more-terms">
                     <p>
-                        <span class="icon is-medium">
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-medium">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms" />
                         </span>
                     </p>
@@ -219,7 +229,9 @@
                                 @click="onAddNewChildTerm(column.id)"
                                 @keydown.enter.prevent="onAddNewChildTerm(column.id)"
                                 @keydown.space.prevent="onAddNewChildTerm(column.id)">
-                            <span class="icon is-small">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
                             &nbsp;{{ $i18n.get('label_new_term') }}
@@ -232,11 +244,13 @@
                                 @click="multipleInsertion({ parentId: column.id, parentName: column.name })">
                             <span 
                                     style="position: absolute;margin-inline-start: -5px;margin-top: 5px;"
+                                    aria-hidden="true"
                                     class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
                             <span 
                                     style="margin-top: -5px;"
+                                    aria-hidden="true"
                                     class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
@@ -252,7 +266,9 @@
                 class="section">
             <div class="content has-text-dark has-text-centered">
                 <p>
-                    <span class="icon is-medium">
+                    <span 
+                            aria-hidden="true"
+                            class="icon is-medium">
                         <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms" />
                     </span>
                 </p>
@@ -265,7 +281,9 @@
                             @click="onAddNewChildTerm(0)"
                             @keydown.enter.prevent="onAddNewChildTerm(0)"
                             @keydown.space.prevent="onAddNewChildTerm(0)">
-                        <span class="icon is-small">
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-small">
                             <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                         </span>
                         &nbsp;{{ $i18n.get('label_new_term') }}

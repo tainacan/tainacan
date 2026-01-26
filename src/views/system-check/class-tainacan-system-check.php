@@ -31,7 +31,7 @@ class System_Check extends Pages {
 			$system_check_page_suffix = add_submenu_page(
 				!$this->has_admin_ui_option('hideNavigationOtherMenu') ? $this->tainacan_other_links_slug : $this->tainacan_root_menu_slug,
 				__('System check', 'tainacan'),
-				'<span class="icon">' . $this->get_svg_icon( 'finish' ) . '</span><span class="menu-text">' .__( 'System check', 'tainacan' ) . '</span>',
+				'<span class="icon" aria-hidden="true">' . $this->get_svg_icon( 'finish' ) . '</span><span class="menu-text">' .__( 'System check', 'tainacan' ) . '</span>',
 				'manage_options',
 				$this->get_page_slug(),
 				array( &$this, 'render_page' )

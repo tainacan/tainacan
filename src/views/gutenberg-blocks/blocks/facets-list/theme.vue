@@ -5,7 +5,9 @@
         <button
                 :label="wpI18n('Search', 'tainacan')"
                 class="search-button">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i>
                     <svg    
                             width="24"
@@ -141,7 +143,9 @@
                 class="show-more-button"
                 :label="wpI18n('Show more', 'tainacan')"
                 @click="loadMore()">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i>
                     <svg
                             width="24"

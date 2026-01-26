@@ -14,7 +14,9 @@
                     <span class="icon is-small">
                         <i v-html="comparatorsObject[comparator].symbol" />
                     </span>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                     </span>
                 </button>

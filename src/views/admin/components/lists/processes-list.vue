@@ -131,7 +131,8 @@
                         <div class="actions-container">
                             <span
                                     v-if="bgProcess.status == 'running'"
-                                    class="icon has-text-success loading-icon">
+                                    class="icon has-text-success loading-icon"
+                                    aria-hidden="true">
                                 <div class="control has-icons-right is-loading is-clearfix" />
                             </span>
                             <span
@@ -282,7 +283,9 @@
                                 <a
                                         v-if="bgProcess.log"
                                         :href="bgProcess.log">
-                                    <span class="icon is-small">
+                                    <span 
+                                            aria-hidden="true"
+                                            class="icon is-small">
                                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl" />
                                     </span>
                                     {{ $i18n.get('label_log_file') }}
@@ -292,7 +295,9 @@
                                         v-if="bgProcess.error_log"
                                         class="has-text-danger"
                                         :href="bgProcess.error_log">
-                                    <span class="icon is-small">
+                                    <span 
+                                            aria-hidden="true"
+                                            class="icon is-small">
                                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl" />
                                     </span>
                                     {{ $i18n.get('label_error_log_file') }}

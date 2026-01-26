@@ -10,6 +10,7 @@
                         :key="index">
                     <span 
                             v-if="$statusHelper.hasIcon(statusOption.slug)"
+                            aria-hidden="true"
                             class="icon has-text-dark">
                         <i 
                                 class="tainacan-icon tainacan-icon-1-125em"
@@ -29,7 +30,9 @@
             </div>
             <ul class="tainacan-reports-subheader-box__content">
                 <li>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see" />
                     </span>
                     <span>
@@ -37,7 +40,9 @@
                     </span>
                 </li>
                 <li>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i
                                 class="tainacan-icon tainacan-icon-svg"
                                 style="display: flex;">
@@ -67,7 +72,9 @@
                             </svg>
                         </i>
                     </span>
-                    <span>
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         {{ $i18n.get('label_restrict_access') }}
                     </span>
                 </li>
@@ -80,7 +87,9 @@
             </div>
             <ul class="tainacan-reports-subheader-box__content tainacan-reports-subheader-box__content--three-columns">
                 <li>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <div
                                 class="apexcharts-zoomin-icon"
                                 :title="$i18n.get('label_increase_zoom')">
@@ -101,7 +110,9 @@
                     </span>
                 </li>
                 <li>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <div
                                 class="apexcharts-zoomout-icon"
                                 :title="$i18n.get('label_decrease_zoom')">
@@ -122,7 +133,9 @@
                     </span>
                 </li>
                 <li>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <div
                                 class="apexcharts-zoom-icon"
                                 :title="$i18n.get('label_zoom_by_selection')">
@@ -144,7 +157,9 @@
                     </span>
                 </li>
                 <li>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <div 
                                 class="apexcharts-pan-icon" 
                                 :title="$i18n.get('label_zoom_by_selection')">
@@ -174,7 +189,9 @@
                     </span>
                 </li>
                 <li>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <div 
                                 class="apexcharts-reset-icon" 
                                 :title="$i18n.get('label_reset_zoom')">
@@ -195,7 +212,9 @@
                     </span>
                 </li>
                 <li>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <div
                                 class="apexcharts-menu-icon"
                                 :title="$i18n.get('label_chart_export_options')">

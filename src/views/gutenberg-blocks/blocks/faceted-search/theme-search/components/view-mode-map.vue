@@ -186,7 +186,9 @@
                                     class="section">
                                 <div class="content has-text-dark has-text-centered">
                                     <p style="margin-bottom: 0px">
-                                        <span class="icon is-large">
+                                        <span 
+                                                aria-hidden="true"
+                                                class="icon is-large">
                                             <i>
                                                 <svg
                                                         xmlns="http://www.w3.org/2000/svg"

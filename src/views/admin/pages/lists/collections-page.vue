@@ -28,7 +28,9 @@
                     <template #trigger>
                         <button class="button is-secondary">
                             <div>{{ $i18n.getFrom('collections', 'new_item') }}</div>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>

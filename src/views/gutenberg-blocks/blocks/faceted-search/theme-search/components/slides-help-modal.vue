@@ -6,7 +6,9 @@
                     class="button is-medium is-white is-align-self-flex-start"
                     :aria-label="$i18n.get('close')"
                     @click="$emit('close')">
-                <span class="icon">
+                <span 
+                        aria-hidden="true"
+                        class="icon">
                     <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-125em" />
                 </span>
             </button>

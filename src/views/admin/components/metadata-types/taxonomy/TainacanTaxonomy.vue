@@ -43,7 +43,9 @@
                     @click="openTermCreationModal"
                     @keydown.enter.prevent="openTermCreationModal"
                     @keydown.space.prevent="openTermCreationModal">
-                <span class="icon is-small">
+                <span 
+                        aria-hidden="true"
+                        class="icon is-small">
                     <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                 </span>
                 &nbsp;{{ $i18n.get('label_create_new_term') }}

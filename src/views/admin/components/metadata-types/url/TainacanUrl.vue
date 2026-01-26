@@ -17,7 +17,9 @@
                     @click="previewHtml"
                     @keydown.enter.prevent="previewHtml"
                     @keydown.space.prevent="previewHtml">
-                <span class="icon">
+                <span 
+                        aria-hidden="true"
+                        class="icon">
                     <i class="tainacan-icon has-text-secondary tainacan-icon-see" />
                 </span>
                 <span style="font-size: 0.75em">&nbsp;{{ $i18n.get('label_preview', 'tainacan') }}</span>

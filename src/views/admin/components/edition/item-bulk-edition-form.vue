@@ -33,7 +33,9 @@
                     <section class="drop-inner">
                         <div class="content has-text-centered">
                             <p>
-                                <span class="icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
                                     <i class="tainacan-icon tainacan-icon-30px tainacan-icon-upload" />
                                 </span>
                             </p>
@@ -48,13 +50,17 @@
                 <!-- Sequence Progress Info -->
                 <div class="sequence-progress-info">
                     <p v-if="uploadedItems.length > 0 && uploadedItems.length != amountFinished">
-                        <span class="icon is-small has-text-secondary">
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-small has-text-secondary">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-updating" />
                         </span>
                         {{ $i18n.get('label_upload_file_prepare_items') }}
                     </p>
                     <p v-if="uploadedItems.length > 0 && uploadedItems.length == amountFinished">
-                        <span class="icon is-small has-text-success">
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-small has-text-success">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approvedcircle" />
                         </span>
                         {{ $i18n.get('label_process_completed') }}
@@ -102,7 +108,8 @@
                         <div class="document-process-state">
                             <span 
                                     v-if="(item.errorMessage == undefined) && (item.document == '' || item.document_type == 'empty')"
-                                    class="icon has-text-success loading-icon">
+                                    class="icon has-text-success loading-icon"
+                                    aria-hidden="true">
                                 <div class="control has-icons-right is-loading is-clearfix" />
                             </span>  
                             <span 

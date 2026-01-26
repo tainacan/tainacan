@@ -15,7 +15,9 @@
                                 <div class="section-status">
                                     <div class="field has-addons">
                                         <span>
-                                            <span class="icon">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-collection" />
                                             </span>
                                             {{ relatedItemGroup.collection_name ? relatedItemGroup.collection_name : '' }}
@@ -27,7 +29,9 @@
                                 <div class="section-status">
                                     <div class="field has-addons">
                                         <span>
-                                            <span class="icon">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-metadata" />
                                             </span>
                                             {{ relatedItemGroup.metadata_name ? relatedItemGroup.metadata_name : '' }}

@@ -20,7 +20,9 @@
                     type="button"
                     class="button sequence-button"
                     @click="$emit('on-prev-in-sequence')">
-                <span class="icon is-large">
+                <span 
+                        aria-hidden="true"
+                        class="icon is-large">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-previous tainacan-icon-is-rtl-mirrored" />
                 </span>
                 <span>{{ $i18n.get('previous') }}</span>
@@ -82,6 +84,7 @@
                             {{ $i18n.get('label_update') }}
                             <span 
                                     v-if="isOnSequenceEdit && !isLastItemOnSequenceEdit"
+                                    aria-hidden="true"
                                     class="icon is-large"
                                     style="margin-inline-start: 0em;">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next tainacan-icon-is-rtl-mirrored" />
@@ -89,6 +92,7 @@
                             <span 
                                     v-if="!$adminOptions.mobileAppMode"
                                     style="margin-inline-start: 0.5em;"
+                                    aria-hidden="true"
                                     class="icon is-small"
                                     @mouseenter="$refs && $refs['item-edition-footer-dropdown'] && !$refs['item-edition-footer-dropdown'].isActive ? $refs['item-edition-footer-dropdown'].toggle() : null">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowup" />
@@ -102,7 +106,9 @@
                                 'draft',
                                 ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                             )">
-                        <span class="icon has-text-dark">
+                        <span 
+                                aria-hidden="true"
+                                class="icon has-text-dark">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-draft" />
                         </span>
                         {{ status == 'draft' ? $i18n.get('label_update_draft') : $i18n.get('label_change_to_draft') }}
@@ -122,7 +128,9 @@
                                 'pending',
                                 ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                             )">
-                        <span class="icon has-text-dark">
+                        <span 
+                                aria-hidden="true"
+                                class="icon has-text-dark">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting" />
                         </span>
                         {{ status == 'pending' ? $i18n.get('label_update_pending') : $i18n.get('label_send_to_review') }}
@@ -142,7 +150,9 @@
                                 'private',
                                 ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                             )">
-                        <span class="icon has-text-dark">
+                        <span 
+                                aria-hidden="true"
+                                class="icon has-text-dark">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-private" />
                         </span>
                         {{ status == 'private' ? $i18n.get('label_update_as_private') : ( status == 'draft' ? $i18n.get('label_verb_publish_privately') : $i18n.get('label_change_to_private') ) }}
@@ -161,7 +171,9 @@
                                 'publish',
                                 ( (isOnSequenceEdit && !isLastItemOnSequenceEdit) ? 'next' : null)
                             )">
-                        <span class="icon has-text-dark">
+                        <span 
+                                aria-hidden="true"
+                                class="icon has-text-dark">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-public" />
                         </span>
                         {{ status == 'publish' ? $i18n.get('label_update_as_public') : $i18n.get('label_verb_publish') }}
@@ -199,7 +211,9 @@
                     class="button is-success"
                     @click="$emit('on-next-in-sequence')">
                 <span>{{ $i18n.get('next') }}</span>
-                <span class="icon is-large">
+                <span 
+                        aria-hidden="true"
+                        class="icon is-large">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next tainacan-icon-is-rtl-mirrored" />
                 </span>
             </button>
@@ -210,7 +224,9 @@
                     type="button"
                     class="button sequence-button is-success"
                     @click="$router.push($routerHelper.getCollectionPath(collectionId))">
-                <span class="icon is-large">
+                <span 
+                        aria-hidden="true"
+                        class="icon is-large">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approved" />
                 </span>
                 <span>{{ $i18n.get('finish') }}</span>

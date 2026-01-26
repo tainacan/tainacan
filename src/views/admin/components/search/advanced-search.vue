@@ -163,6 +163,7 @@
                                     autoHide: true,
                                     placement: 'auto-end'
                                 }"
+                                aria-hidden="true"
                                 class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-cancel" />
                         </span>
@@ -181,7 +182,9 @@
                     @click="addSearchCriteria"
                     @keydown.enter.prevent="addSearchCriteria"
                     @keydown.space.prevent="addSearchCriteria">
-                <span class="icon">
+                <span 
+                        aria-hidden="true"
+                        class="icon">
                     <i class="has-text-secondary tainacan-icon tainacan-icon-add" />
                 </span>
                 {{ searchCriteria.length <= 0 ?
@@ -196,7 +199,9 @@
                     @click="clearSearch();"
                     @keydown.enter.prevent="clearSearch();"
                     @keydown.space.prevent="clearSearch();">
-                <span class="icon">
+                <span 
+                        aria-hidden="true"
+                        class="icon">
                     <i class="has-text-secondary tainacan-icon tainacan-icon-remove" />
                 </span>
                 {{ $i18n.get('label_remove_all_criteria') }}
@@ -235,7 +240,9 @@
                 class="field is-grouped-centered section">
             <div class="content has-text-dark has-text-centered">
                 <p>
-                    <span class="icon is-large">
+                    <span 
+                            aria-hidden="true"
+                            class="icon is-large">
                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
                     </span>
                 </p>

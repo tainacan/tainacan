@@ -51,7 +51,9 @@
                 :class="localOrder == 'asc' ? 'sorting-button-selected' : ''"
                 :label="wpI18n('Sort ascending', 'tainacan')"
                 @click="localOrder = 'asc'; fetchItems()">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i>
                     <svg
                             width="24"
@@ -66,7 +68,9 @@
                 :class="localOrder == 'desc' ? 'sorting-button-selected' : ''"
                 :label="wpI18n('Sort descending', 'tainacan')"
                 @click="localOrder = 'desc'; fetchItems(); ">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i>
                     <svg
                             width="24"
@@ -82,7 +86,9 @@
                 :label="wpI18n('Search', 'tainacan')"
                 class="search-button"
                 @click="fetchItems()">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i>
                     <svg    
                             width="24"
@@ -110,7 +116,9 @@
                 class="previous-button"
                 :label="wpI18n('Previous page', 'tainacan')"
                 @click="paged--; fetchItems()">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i>
                     <svg
                             width="30"
@@ -130,7 +138,9 @@
                 class="next-button"
                 :label="wpI18n('Next page', 'tainacan')"
                 @click="paged++; fetchItems()">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i>
                     <svg
                             width="30"

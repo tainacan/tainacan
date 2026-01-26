@@ -38,7 +38,9 @@
                             style="margin-left: 2rem; font-size: 0.875em;"
                             class="is-inline is-pulled-right add-link has-text-secondary"
                             @click="createAllMetadata()">
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-approvedcircle" />
                         </span>
                         {{ $i18n.get('label_set_all_create_metadata') }}
@@ -48,7 +50,9 @@
                             style="font-size: 0.875em;"
                             class="is-inline is-pulled-right add-link has-text-secondary"
                             @click="createNewMetadatum()">
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-add" />
                         </span>
                         {{ $i18n.get('label_add_more_metadata') }}
@@ -59,7 +63,9 @@
                         class="mapping-header">
                     <p>{{ $i18n.get('label_from_source_collection') }}</p>
                     <hr>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-pointer tainacan-icon-1-25em" />
                     </span>
                     <hr>

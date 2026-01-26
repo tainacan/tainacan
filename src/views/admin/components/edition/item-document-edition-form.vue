@@ -63,7 +63,9 @@
                     <button
                             type="button"
                             @click.prevent="($event) => $emit('on-set-file-document', $event)">
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-upload" />
                         </span>
                         <p>{{ $i18n.get('label_file') }}</p>
@@ -73,7 +75,9 @@
                     <button
                             type="button"
                             @click.prevent="$emit('on-set-text-document')">
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text" />
                         </span>
                         <p>{{ $i18n.get('label_text') }}</p>
@@ -83,7 +87,9 @@
                     <button
                             type="button"
                             @click.prevent="$emit('on-set-url-document')">
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url" />
                         </span>
                         <p>{{ $i18n.get('label_url') }}</p>

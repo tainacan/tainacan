@@ -8,7 +8,9 @@
                 @click="toggleCollapseAllChildren()"
                 @keydown.enter.prevent="toggleCollapseAllChildren()"
                 @keydown.space.prevent="toggleCollapseAllChildren()">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i
                         :class="{ 'tainacan-icon-arrowdown' : collapseAllChildren, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !collapseAllChildren }"
                         class="tainacan-icon tainacan-icon-1-25em" />
@@ -31,7 +33,9 @@
                             v-if="isRemovingGroup"
                             class="field">
                         <span class="collapse-handle">
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                             <label class="label has-tooltip">
@@ -124,7 +128,9 @@
                 @click="addGroup"
                 @keydown.enter.prevent="addGroup"
                 @keydown.space.prevent="addGroup">
-            <span class="icon is-small">
+            <span 
+                    aria-hidden="true"
+                    class="icon is-small">
                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
             </span>
             &nbsp;{{ $i18n.get('label_add_value') }}

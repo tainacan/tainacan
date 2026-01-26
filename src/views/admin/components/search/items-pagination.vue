@@ -11,7 +11,7 @@
                 aria-atomic="false"
                 aria-relevant="text"
                 :aria-label="$i18n.get('label_list_pagination')">
-            <span v-html="showingItemsText"></span>
+            <span v-html="showingItemsText" />
             <span 
                     v-if="isSortingByCustomMetadata"
                     v-tooltip="{

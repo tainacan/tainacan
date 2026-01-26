@@ -88,7 +88,9 @@
                                             :key="sectionIndex">
                                         <div class="metadata-section-header section-label">
                                             <label>
-                                                <span class="icon has-text-dark">
+                                                <span 
+                                                        aria-hidden="true"
+                                                        class="icon has-text-dark">
                                                     <i class="tainacan-icon tainacan-icon-metadata" />
                                                 </span>
                                                 {{ metadataSection.name }}&nbsp;
@@ -111,6 +113,7 @@
                                                     {{ itemMetadatum.metadatum.name }}
                                                     <span 
                                                             v-if="itemMetadatum.metadatum.status !== 'publish'"
+                                                            aria-hidden="true"
                                                             class="icon has-text-dark">
                                                         <i 
                                                                 class="tainacan-icon tainacan-icon-1em"
@@ -178,7 +181,9 @@
                         <!-- Publication area -->
                         <div class="section-label">
                             <label>
-                                <span class="icon has-text-dark">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon has-text-dark">
                                     <i class="tainacan-icon tainacan-icon-item" />
                                 </span>
                                 {{ collection && collection.item_publication_label ? collection.item_publication_label : $i18n.get('label_publication_data') }}
@@ -196,7 +201,9 @@
                                     <div class="field-body">
                                         <div class="field has-addons">
                                             <div>
-                                                <span class="icon has-text-dark">
+                                                <span 
+                                                        aria-hidden="true"
+                                                        class="icon has-text-dark">
                                                     <i class="tainacan-icon tainacan-icon-userfill tainacan-icon-1-25em " />
                                                 </span>
                                                 &nbsp;{{ item.author_name }}
@@ -218,7 +225,9 @@
                                                     target="_blank"
                                                     :href="item.url">
                                                 <strong>.../{{ item.slug }}</strong>&nbsp;
-                                                <span class="icon">
+                                                <span 
+                                                        aria-hidden="true"
+                                                        class="icon">
                                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl" />
                                                 </span>
                                             </a>
@@ -237,7 +246,9 @@
                                     </div>
                                     <div class="field-body">
                                         <div class="field has-addons">
-                                            <span class="icon has-text-dark">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon has-text-dark">
                                                 <i 
                                                         class="tainacan-icon tainacan-icon-18px"
                                                         :class="$statusHelper.getIcon(item.status)" />
@@ -267,7 +278,9 @@
                                     </div>
                                     <div class="field-body">
                                         <div class="field has-addons">
-                                            <span class="icon has-text-dark">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon has-text-dark">
                                                 <i class="tainacan-icon tainacan-icon-comment" />
                                             </span>
                                             &nbsp;
@@ -286,7 +299,9 @@
                                 v-if="shouldDisplayItemSingleDocument"
                                 class="section-label">
                             <label>
-                                <span class="icon has-text-dark tainacan-icon-1-125em">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon has-text-dark tainacan-icon-1-125em">
                                     <i :class="'tainacan-icon tainacan-icon-' + ( (!item.document_type || item.document_type == 'empty' ) ? 'item' : (item.document_type == 'attachment' ? 'attachments' : item.document_type))" />
                                 </span>
                                 {{ collection && collection.item_document_label ? collection.item_document_label : ( (item.document != undefined && item.document != null && item.document != '') ? $i18n.get('label_document') : $i18n.get('label_document_empty') ) }}
@@ -313,7 +328,9 @@
                                 v-if="shouldDisplayItemSingleThumbnail"
                                 class="section-label">
                             <label>
-                                <span class="icon has-text-dark">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon has-text-dark">
                                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-image" />
                                 </span>
                                 {{ collection && collection.item_thumbnail_label ? collection.item_thumbnail_label : $i18n.get('label_thumbnail') }}
@@ -364,7 +381,9 @@
                                 v-if="shouldDisplayItemSingleAttachments"
                                 class="section-label">
                             <label>
-                                <span class="icon has-text-dark">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon has-text-dark">
                                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-attachments" />
                                 </span>
                                 <span>
@@ -401,7 +420,9 @@
                     </div>
                     <div class="field has-addons">
                         <span style="display: flex;">
-                            <span class="icon has-text-dark">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon has-text-dark">
                                 <i 
                                         v-if="itemVisibility == 'open_access'"
                                         class="tainacan-icon tainacan-icon-see" />
@@ -456,7 +477,9 @@
                             :aria-label="$i18n.get('label_view_activity_logs')"
                             :disabled="isLoading"
                             @click="openActivitiesModal()">
-                        <span class="icon is-large">
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-large">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities" />
                         </span>
                         <span class="is-hidden-touch">{{ $i18n.get('label_view_activity_logs') }}</span>
@@ -467,7 +490,9 @@
                             :aria-label="$i18n.get('label_view_as')"
                             :disabled="isLoading"
                             @click="openExposersModal()">
-                        <span class="icon is-large">
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-large">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas" />
                         </span>
                         <span class="is-hidden-touch">{{ $i18n.get('label_view_as') }}</span>
@@ -476,7 +501,9 @@
                             v-if="item.current_user_can_edit"
                             class="button is-secondary"
                             :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
-                        <span class="icon is-large">
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-large">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                         </span>
                         <span>{{ $i18n.getFrom('items','edit_item') }}</span>

@@ -37,7 +37,7 @@ class Admin extends Pages {
 		$tainacan_page_suffix = add_submenu_page(
 			$should_hide_repository_menu ? 'tainacan-no-show-menu' : $this->tainacan_root_menu_slug,
 			__( 'Repository', 'tainacan' ),
-			'<span class="icon" style="color: var(--tainacan-blue5)">' . $this->get_svg_icon( 'repository' ) . '</span><span class="menu-text">' .__( 'Repository', 'tainacan' ) . '</span>',
+			'<span class="icon" style="color: var(--tainacan-blue5)" aria-hidden="true">' . $this->get_svg_icon( 'repository' ) . '</span><span class="menu-text">' .__( 'Repository', 'tainacan' ) . '</span>',
 			'read',
 			$this->repository_links_slug,
 			array( &$this, 'render_page' ),
@@ -53,7 +53,7 @@ class Admin extends Pages {
 			add_submenu_page(
 				$this->has_admin_ui_option('hideNavigationRepositoryMenu') ? $this->tainacan_root_menu_slug : $this->repository_links_slug,
 				__('Metadata', 'tainacan'),
-				'<span class="icon">' . $this->get_svg_icon( 'metadata' ) . '</span><span class="menu-text">' . __('Metadata', 'tainacan') . '</span>',
+				'<span class="icon" aria-hidden="true">' . $this->get_svg_icon( 'metadata' ) . '</span><span class="menu-text">' . __('Metadata', 'tainacan') . '</span>',
 				'tnc_rep_edit_metadata',
 				$this->get_page_slug() . '#/metadata',
 				array( &$this, 'render_page' )
@@ -65,7 +65,7 @@ class Admin extends Pages {
 			add_submenu_page(
 				$this->has_admin_ui_option('hideNavigationRepositoryMenu') ? $this->tainacan_root_menu_slug : $this->repository_links_slug,
 				__('Filters', 'tainacan'),
-				'<span class="icon">' . $this->get_svg_icon( 'filters' ) . '</span><span class="menu-text">' . __('Filters', 'tainacan') . '</span>',
+				'<span class="icon" aria-hidden="true">' . $this->get_svg_icon( 'filters' ) . '</span><span class="menu-text">' . __('Filters', 'tainacan') . '</span>',
 				'tnc_rep_edit_filters',
 				$this->get_page_slug() . '#/filters',
 				array( &$this, 'render_page' )
@@ -77,7 +77,7 @@ class Admin extends Pages {
 			add_submenu_page(
 				$this->has_admin_ui_option('hideNavigationRepositoryMenu') ? $this->tainacan_root_menu_slug : $this->repository_links_slug,
 				__('Taxonomies', 'tainacan'),
-				'<span class="icon">' . $this->get_svg_icon( 'taxonomies' ) . '</span><span class="menu-text">' . __('Taxonomies', 'tainacan') . '</span>',
+				'<span class="icon" aria-hidden="true">' . $this->get_svg_icon( 'taxonomies' ) . '</span><span class="menu-text">' . __('Taxonomies', 'tainacan') . '</span>',
 				'read',
 				$this->get_page_slug() . '#/taxonomies',
 				array( &$this, 'render_page' )
@@ -89,7 +89,7 @@ class Admin extends Pages {
 			add_submenu_page(
 				$this->has_admin_ui_option('hideNavigationRepositoryMenu') ? $this->tainacan_root_menu_slug : $this->repository_links_slug,
 				__('Activities', 'tainacan'),
-				'<span class="icon">' . $this->get_svg_icon( 'activities' ) . '</span><span class="menu-text">' . __('Activities', 'tainacan') . '</span>',
+				'<span class="icon" aria-hidden="true">' . $this->get_svg_icon( 'activities' ) . '</span><span class="menu-text">' . __('Activities', 'tainacan') . '</span>',
 				'tnc_rep_read_logs',
 				$this->get_page_slug() . '#/activities',
 				array( &$this, 'render_page' )
@@ -101,7 +101,7 @@ class Admin extends Pages {
 			add_submenu_page(
 				$this->has_admin_ui_option('hideNavigationRepositoryMenu') ? $this->tainacan_root_menu_slug : $this->repository_links_slug,
 				__('Processes', 'tainacan'),
-				'<span class="icon">' . $this->get_svg_icon( 'processes' ) . '</span><span class="menu-text">' . __('Processes', 'tainacan') . '</span>',
+				'<span class="icon" aria-hidden="true">' . $this->get_svg_icon( 'processes' ) . '</span><span class="menu-text">' . __('Processes', 'tainacan') . '</span>',
 				'read',
 				$this->get_page_slug() . '#/processes',
 				array( &$this, 'render_page' )
@@ -113,7 +113,7 @@ class Admin extends Pages {
 			add_submenu_page(
 				$this->has_admin_ui_option('hideNavigationRepositoryMenu') ? $this->tainacan_root_menu_slug : $this->repository_links_slug,
 				__('Capabilities', 'tainacan'),
-				'<span class="icon">' . $this->get_svg_icon( 'capability' ) . '</span><span class="menu-text">' . __('Capabilities', 'tainacan') . '</span>',
+				'<span class="icon" aria-hidden="true">' . $this->get_svg_icon( 'capability' ) . '</span><span class="menu-text">' . __('Capabilities', 'tainacan') . '</span>',
 				'tnc_rep_edit_users',
 				$this->get_page_slug() . '#/capabilities',
 				array( &$this, 'render_page' )
@@ -125,7 +125,7 @@ class Admin extends Pages {
 			add_submenu_page(
 				$this->has_admin_ui_option('hideNavigationRepositoryMenu') ? $this->tainacan_root_menu_slug : $this->repository_links_slug,
 				__('Reports', 'tainacan'),
-				'<span class="icon">' . $this->get_svg_icon( 'reports' ) . '</span><span class="menu-text">' . __('Reports', 'tainacan') . '</span>',
+				'<span class="icon" aria-hidden="true">' . $this->get_svg_icon( 'reports' ) . '</span><span class="menu-text">' . __('Reports', 'tainacan') . '</span>',
 				'manage_tainacan',
 				$this->get_page_slug() . '#/reports',
 				array( &$this, 'render_page' )
@@ -137,7 +137,7 @@ class Admin extends Pages {
 			add_submenu_page(
 				$this->has_admin_ui_option('hideNavigationRepositoryMenu') ? $this->tainacan_root_menu_slug : $this->repository_links_slug,
 				__('Importers', 'tainacan'),
-				'<span class="icon">' . $this->get_svg_icon( 'importers' ) . '</span><span class="menu-text">' . __('Importers', 'tainacan') . '</span>',
+				'<span class="icon" aria-hidden="true">' . $this->get_svg_icon( 'importers' ) . '</span><span class="menu-text">' . __('Importers', 'tainacan') . '</span>',
 				'manage_tainacan',
 				$this->get_page_slug() . '#/importers',
 				array( &$this, 'render_page' )
@@ -149,7 +149,7 @@ class Admin extends Pages {
 			add_submenu_page(
 				$this->has_admin_ui_option('hideNavigationRepositoryMenu') ? $this->tainacan_root_menu_slug : $this->repository_links_slug,
 				__('Exporters', 'tainacan'),
-				'<span class="icon">' . $this->get_svg_icon( 'export' ) . '</span><span class="menu-text">' . __('Exporters', 'tainacan') . '</span>',
+				'<span class="icon" aria-hidden="true">' . $this->get_svg_icon( 'export' ) . '</span><span class="menu-text">' . __('Exporters', 'tainacan') . '</span>',
 				'manage_tainacan',
 				$this->get_page_slug() . '#/exporters',
 				array( &$this, 'render_page' )
@@ -181,7 +181,7 @@ class Admin extends Pages {
 			add_submenu_page(
 				$this->collections_links_slug,
 				__('Collections list', 'tainacan'),
-				'<span class="icon">' . $this->get_svg_icon( 'collection' ) . '</span><span class="menu-text">' . __('Collections list', 'tainacan') . '</span>',
+				'<span class="icon" aria-hidden="true">' . $this->get_svg_icon( 'collection' ) . '</span><span class="menu-text">' . __('Collections list', 'tainacan') . '</span>',
 				'read',
 				$this->get_page_slug() . '#/collections',
 				array( &$this, 'render_page' )
@@ -193,7 +193,7 @@ class Admin extends Pages {
 			add_submenu_page(
 				$this->collections_links_slug,
 				__('All Items', 'tainacan'),
-				'<span class="icon">' . $this->get_svg_icon( 'items' ) . '</span><span class="menu-text">' . __('All Items', 'tainacan') . '</span>',
+				'<span class="icon" aria-hidden="true">' . $this->get_svg_icon( 'items' ) . '</span><span class="menu-text">' . __('All Items', 'tainacan') . '</span>',
 				'read',
 				'tainacan_admin#/items',
 				array( &$this, 'render_page' )
@@ -205,7 +205,7 @@ class Admin extends Pages {
 			add_submenu_page(
 				$this->collections_links_slug,
 				__('My Items', 'tainacan'),
-				'<span class="icon">' . $this->get_svg_icon( 'userfill' ) . '</span><span class="menu-text">' . __('My Items', 'tainacan') . '</span>',
+				'<span class="icon" aria-hidden="true">' . $this->get_svg_icon( 'userfill' ) . '</span><span class="menu-text">' . __('My Items', 'tainacan') . '</span>',
 				'read',
 				'tainacan_admin#/my-items?' . http_build_query(['authorid' => get_current_user_id()]),
 				array( &$this, 'render_page' )

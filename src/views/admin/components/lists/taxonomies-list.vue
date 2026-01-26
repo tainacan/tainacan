@@ -28,7 +28,9 @@
                                 :disabled="!isSelecting"
                                 class="button is-white">
                             <span>{{ $i18n.get('label_bulk_actions') }}</span>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button> 

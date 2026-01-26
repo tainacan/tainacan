@@ -253,7 +253,9 @@
                                 :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry' || adminViewMode == 'mosaic'"
                                 :aria-label="$i18n.get('label_displayed_metadata')"
                                 class="button is-white">
-                            <span class="gray-icon is-small">
+                            <span 
+                                    aria-hidden="true"
+                                    class="gray-icon is-small">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata" />
                             </span>
                             &nbsp;&nbsp;
@@ -315,7 +317,9 @@
                                 }"
                                 :aria-label="$i18n.get('label_sorting')"
                                 class="button is-white">
-                            <span class="is-small gray-icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="is-small gray-icon">
                                 <i 
                                         :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
                                         class="tainacan-icon" />
@@ -336,7 +340,9 @@
                                     :class="{ 'is-active': newOrder == 'DESC' }"
                                     :value="'DESC'"
                                     @click="newOrder = 'DESC'">
-                                <span class="icon gray-icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-sortdescending" />
                                 </span>
                                 <span>{{ $i18n.get('label_descending') }}</span>
@@ -347,7 +353,9 @@
                                     :class="{ 'is-active': newOrder == 'ASC' }"
                                     :value="'ASC'"
                                     @click="newOrder = 'ASC'">
-                                <span class="icon gray-icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-sortascending" />
                                 </span>
                                 <span>{{ $i18n.get('label_ascending') }}</span>
@@ -403,7 +411,9 @@
                                     }"
                                     :aria-label="$i18n.get('label_view_mode')"
                                     class="button is-white">
-                                <span class="view-mode-icon is-small gray-icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="view-mode-icon is-small gray-icon">
                                     <i 
                                             v-if="adminViewMode !== 'map'"
                                             :class="{
@@ -441,7 +451,9 @@
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'table' }"
                                 :value="'table'">
-                            <span class="icon gray-icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewtable" />
                             </span>
                             <span>{{ $i18n.get('label_table') }}</span>
@@ -451,7 +463,9 @@
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'cards' }"
                                 :value="'cards'">
-                            <span class="icon gray-icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewcards" />
                             </span>
                             <span>{{ $i18n.get('label_cards') }}</span>
@@ -461,7 +475,9 @@
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'mosaic' }"
                                 :value="'mosaic'">
-                            <span class="icon gray-icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewmasonry tainacan-icon-rotate-90" />
                             </span>
                             <span>{{ $i18n.get('label_mosaic') }}</span>
@@ -472,7 +488,9 @@
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'grid' }"
                                 :value="'grid'">
-                            <span class="icon gray-icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewminiature" />
                             </span>
                             <span>{{ $i18n.get('label_thumbnails') }}</span>
@@ -482,7 +500,9 @@
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'records' }"
                                 :value="'records'">
-                            <span class="icon gray-icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewrecords" />
                             </span>
                             <span>{{ $i18n.get('label_records') }}</span>
@@ -493,7 +513,9 @@
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'masonry' }"
                                 :value="'masonry'">
-                            <span class="icon gray-icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewmasonry" />
                             </span>
                             <span>{{ $i18n.get('label_masonry') }}</span>
@@ -503,7 +525,9 @@
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'list' }"
                                 :value="'list'">
-                            <span class="icon gray-icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewlist" />
                             </span>
                             <span>{{ $i18n.get('label_list') }}</span>
@@ -515,6 +539,7 @@
                                 :value="'map'">
                             <span 
                                     style="width: 2em; margin-left: -0.45em; padding-right: 6px;"
+                                    aria-hidden="true"
                                     class="icon gray-icon">
                                 <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -538,7 +563,9 @@
                         :aria-label="$i18n.get('label_view_as')"
                         :disabled="totalItems == undefined || totalItems <= 0"
                         @click="openExposersModal()">
-                    <span class="gray-icon">
+                    <span 
+                            aria-hidden="true"
+                            class="gray-icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas" />
                     </span>
                     <span>{{ $i18n.get('label_view_as') }}</span>
@@ -565,7 +592,9 @@
                 :aria-expanded="isFiltersModalActive"
                 :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
                 @click="isFiltersModalActive = !isFiltersModalActive">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i 
                         :class="{ 'tainacan-icon-arrowleft' : isFiltersModalActive, 'tainacan-icon-arrowright' : !isFiltersModalActive }"
                         class="tainacan-icon tainacan-icon-1-25em tainacan-icon-is-rtl-mirrored" />

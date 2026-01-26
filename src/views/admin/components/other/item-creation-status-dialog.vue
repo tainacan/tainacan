@@ -13,7 +13,9 @@
             <div 
                     v-if="icon != undefined && icon != ''"
                     class="modal-custom-icon">
-                <span class="icon is-large">
+                <span 
+                        aria-hidden="true"
+                        class="icon is-large">
                     <i 
                             :class="'tainacan-icon-' + icon"
                             class="tainacan-icon" />

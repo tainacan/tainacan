@@ -21,9 +21,12 @@
                 {{ selectedColumnIndex == 0 ? $i18n.get('label_all_root_terms_selected') : $i18n.getWithVariables('label_terms_child_of_%s_selected', [ selectedColumnObject.name ]) }}
                 <button
                         type="button"
+                        :aria-label="$i18n.get('label_clean')"
                         class="link-style"
                         @click="selectedColumnIndex = -1">
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-close" />
                     </span>
                 </button>
@@ -43,7 +46,9 @@
                                 type="button"
                                 class="button is-white">
                             <span>{{ selected.length == 1 ? $i18n.get('label_one_selected_term') : $i18n.getWithVariables('label_%s_selected_terms', [ selected.length ]) }}</span>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>

@@ -12,7 +12,9 @@
                     }
                 }"
                 :class="forcedIconColor ? 'has-text-' + forcedIconColor : ''">
-            <span class="icon is-small">
+            <span 
+                    aria-hidden="true"
+                    class="icon is-small">
                 <i class="tainacan-icon tainacan-icon-help" />
             </span>
         </a>

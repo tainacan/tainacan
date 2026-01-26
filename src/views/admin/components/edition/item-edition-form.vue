@@ -40,6 +40,7 @@
                         style="margin-inline-start: 0.5em;"
                         @mouseenter="$emit('toggleItemEditionFooterDropdown')">
                     <i 
+                            aria-hidden="true"
                             class="tainacan-icon tainacan-icon-1em"
                             :class="$statusHelper.getIcon(item.status)"
                         />
@@ -55,8 +56,11 @@
                 v-if="$adminOptions.mobileAppMode"
                 class="tainacan-mobile-app-header">
             <button
+                    :aria-label="$i18n.get('label_return_to_list')"
                     @click="exitToMobileApp">
-                <span class="icon">
+                <span 
+                        aria-hidden="true"
+                        class="icon">
                     <i class="tainacan-icon">
                         <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -89,11 +93,13 @@
                     @click="isMobileSubheaderOpen = !isMobileSubheaderOpen">
                 <span 
                         v-if="isUpdatingValues"
+                        aria-hidden="true"
                         class="icon">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-spin" />
                 </span>
                 <span 
                         v-else
+                        aria-hidden="true"
                         class="icon">
                     <i class="tainacan-icon">
                         <svg
@@ -311,6 +317,7 @@
                                                     outlined 
                                                     @click="focusPreviousMetadatum">
                                                 <span
+                                                        aria-hidden="true"
                                                         class="icon">
                                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore tainacan-icon-rotate-180" />
                                                 </span>
@@ -322,6 +329,7 @@
                                                     outlined
                                                     @click="focusNextMetadatum">
                                                 <span
+                                                        aria-hidden="true"
                                                         class="icon">
                                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore" />
                                                 </span>
@@ -332,6 +340,7 @@
                                                     outlined
                                                     @click="setMetadatumFocus({ index: 0, scrollIntoView: true }); isMetadataNavigation = false;">
                                                 <span
+                                                        aria-hidden="true"
                                                         class="icon has-success-color">
                                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-finish" />
                                                 </span>
@@ -342,7 +351,9 @@
                                         <span 
                                                 v-if="isUpdatingValues && isMetadataNavigation && !$adminOptions.mobileAppMode"
                                                 class="update-warning">
-                                            <span class="icon">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-updating" />
                                             </span>
                                         </span>
@@ -391,7 +402,9 @@
                                             @click="toggleCollapseAll()"
                                             @keydown.enter.prevent="toggleCollapseAll()"
                                             @keydown.space.prevent="toggleCollapseAll()">
-                                        <span class="icon">
+                                        <span 
+                                                aria-hidden="true"
+                                                class="icon">
                                             <i
                                                     :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !collapseAll }"
                                                     class="tainacan-icon tainacan-icon-1-25em" />
@@ -417,6 +430,7 @@
                                                     @click="(isMetadataNavigation || $adminOptions.hideItemEditionCollapses || isSectionHidden(metadataSection.id)) ? null : toggleMetadataSectionCollapse(sectionIndex)">
                                                 <span 
                                                         v-if="!$adminOptions.hideItemEditionCollapses && !isMetadataNavigation"
+                                                        aria-hidden="true"
                                                         class="icon">
                                                     <i 
                                                             :class="{
@@ -426,7 +440,9 @@
                                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                                                 </span>
                                                 <label>
-                                                    <span class="icon has-text-dark">
+                                                    <span 
+                                                            aria-hidden="true"
+                                                            class="icon has-text-dark">
                                                         <i class="tainacan-icon tainacan-icon-metadata" />
                                                     </span>
                                                     <span
@@ -703,7 +719,9 @@
                 <section class="section">
                     <div class="content has-text-dark has-text-centered">
                         <p>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
                             </span>
                         </p>
@@ -740,7 +758,9 @@
                     <span 
                             v-if="isUpdatingValues"
                             class="update-warning">
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating" />
                         </span>
                         <span>{{ $i18n.get('info_updating_metadata_values') }}</span>

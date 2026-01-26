@@ -5,7 +5,9 @@
                 v-if="!$adminOptions.hideItemEditionAttachments"
                 class="section-label">
             <label>
-                <span class="icon has-text-dark">
+                <span 
+                        aria-hidden="true"
+                        class="icon has-text-dark">
                     <i class="tainacan-icon tainacan-icon-attachments" />
                 </span>
                 {{ collection && collection.item_attachment_label ? collection.item_attachment_label : $i18n.get('label_attachments') }}&nbsp;
@@ -25,7 +27,9 @@
                     class="link-style"
                     :disabled="isLoading"
                     @click.prevent="($event) => $emit('open-attachments-media-frame', $event)">
-                <span class="icon">
+                <span 
+                        aria-hidden="true"
+                        class="icon">
                     <i class="tainacan-icon tainacan-icon-edit" />
                 </span>
                 {{ $i18n.get('label_add_or_update') }}

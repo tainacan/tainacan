@@ -54,7 +54,9 @@
                                 <section class="section">
                                     <div class="content has-text-centered">
                                         <p>
-                                            <span class="icon">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-upload" />
                                             </span>
                                         </p>
@@ -166,7 +168,9 @@
                             <button
                                     type="button"
                                     @click.prevent="form.document_type = 'attachment'">
-                                <span class="icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-upload" />
                                 </span>
                             </button>
@@ -176,7 +180,9 @@
                             <button
                                     type="button"
                                     @click.prevent="form.document_type = 'text'">
-                                <span class="icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text" />
                                 </span>
                             </button>
@@ -186,7 +192,9 @@
                             <button
                                     type="button"
                                     @click.prevent="form.document_type = 'url'">
-                                <span class="icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url" />
                                 </span>
                             </button>
@@ -250,7 +258,9 @@
                         <section class="section">
                             <div class="content has-text-centered">
                                 <p>
-                                    <span class="icon">
+                                    <span 
+                                            aria-hidden="true"
+                                            class="icon">
                                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-upload" />
                                     </span>
                                 </p>
@@ -306,7 +316,9 @@
                 <div class="section-label">
                     <label v-if="attachmentsSectionLabel">
                         <span>{{ attachmentsSectionLabel }}</span>
-                        <span class="icon has-text-dark">
+                        <span 
+                                aria-hidden="true"
+                                class="icon has-text-dark">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments" />
                         </span>
                     </label>
@@ -324,7 +336,9 @@
                         <section class="section">
                             <div class="content has-text-centered">
                                 <p>
-                                    <span class="icon">
+                                    <span 
+                                            aria-hidden="true"
+                                            class="icon">
                                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-upload" />
                                     </span>
                                 </p>
@@ -401,7 +415,9 @@
             <div class="section-label">
                 <label v-if="metadataSectionLabel">
                     <span>{{ metadataSectionLabel }}</span>
-                    <span class="icon has-text-dark">
+                    <span 
+                            aria-hidden="true"
+                            class="icon has-text-dark">
                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata" />
                     </span>
                 </label>
@@ -416,7 +432,9 @@
                     @keydown.enter.prevent="toggleCollapseAll()"
                     @keydown.space.prevent="toggleCollapseAll()">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                <span class="icon">
+                <span 
+                        aria-hidden="true"
+                        class="icon">
                     <i
                             :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !collapseAll }"
                             class="tainacan-icon tainacan-icon-1-25em" />
@@ -469,6 +487,7 @@
                                 @keydown.space.prevent="!hideCollapses && !isSectionHidden(metadataSection.id) ? toggleMetadataSectionCollapse(sectionIndex) : ''">
                             <span 
                                     v-if="!hideCollapses"
+                                    aria-hidden="true"
                                     class="icon"
                                     @click="toggleMetadataSectionCollapse(sectionIndex)">
                                 <i 
@@ -575,7 +594,9 @@
                     class="form-error-area is-danger">
                 <div class="form-error-area-icon">
                     <a class="help-button has-text-danger">
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-alertcircle" />
                         </span>
                     </a>
@@ -704,7 +725,9 @@
             <div class="content has-text-dark has-text-centered">
                 <br>
                 <p>
-                    <span class="icon is-medium">
+                    <span 
+                            aria-hidden="true"
+                            class="icon is-medium">
                         <i class="tainacan-icon tainacan-icon-30px tainacan-icon-updating tainacan-icon-spin" />
                     </span>
                 </p>
@@ -733,7 +756,9 @@
             <div class="content has-text-dark has-text-centered">
                 <br>
                 <p>
-                    <span class="icon is-medium">
+                    <span 
+                            aria-hidden="true"
+                            class="icon is-medium">
                         <i class="tainacan-icon tainacan-icon-30px tainacan-icon-approvedcircle" />
                     </span>
                 </p>

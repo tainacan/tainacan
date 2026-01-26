@@ -49,6 +49,7 @@
                             @click="onChangeTab(statusOption.slug)">
                         <span 
                                 v-if="$statusHelper.hasIcon(statusOption.slug)"
+                                aria-hidden="true"
                                 class="icon has-text-dark">
                             <i 
                                     class="tainacan-icon tainacan-icon-1-125em"

@@ -272,7 +272,9 @@
                                     :aria-controls="'admin-ui-group--' + groupIndex"
                                     :aria-expanded="openedAdminUIOptionCollapse == 'admin-ui-group--' + groupIndex"
                                     @click="openedAdminUIOptionCollapse = ( openedAdminUIOptionCollapse == 'admin-ui-group--' + groupIndex ? '' : 'admin-ui-group--' + groupIndex)">
-                                <span class="icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
                                     <i 
                                             :class="{
                                                 'tainacan-icon-arrowdown' : openedAdminUIOptionCollapse == 'admin-ui-group--' + groupIndex,

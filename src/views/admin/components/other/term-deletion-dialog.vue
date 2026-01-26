@@ -10,7 +10,9 @@
                 class="modal-card" 
                 style="width: auto; max-width: 560px;">
             <div class="modal-custom-icon">
-                <span class="icon is-large">
+                <span 
+                        aria-hidden="true"
+                        class="icon is-large">
                     <i 
                             style="color: var(--tainacan-red2);"
                             class="tainacan-icon tainacan-icon-alert" />

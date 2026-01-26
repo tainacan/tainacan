@@ -112,7 +112,9 @@
                                         class="button is-outlined"
                                         :class="{ 'disabled': editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) }"
                                         style="width: auto">
-                                    <span class="icon has-text-dark">
+                                    <span 
+                                            aria-hidden="true"
+                                            class="icon has-text-dark">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-18px"
                                                 :class="$statusHelper.getIcon(form.status)" />
@@ -125,7 +127,8 @@
                                     </template>
                                     <span 
                                             style="margin-inline-start: 0.5em;"
-                                            class="icon is-small">
+                                            class="icon is-small"
+                                            aria-hidden="true">
                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                     </span>
                                 </button>
@@ -134,7 +137,9 @@
                                     v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft' && (taxonomy.status != 'auto-draft' || status.slug != 'trash'))"
                                     :key="index"
                                     @click="form.status = statusOption.slug">
-                                <span class="icon has-text-dark">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon has-text-dark">
                                     <i 
                                             class="tainacan-icon tainacan-icon-18px"
                                             :class="$statusHelper.getIcon(statusOption.slug)" />
@@ -286,7 +291,9 @@
             <section class="section">
                 <div class="content has-text-dark has-text-centered">
                     <p>
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-taxonomies" />
                         </span>
                     </p>

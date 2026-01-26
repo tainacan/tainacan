@@ -474,7 +474,7 @@ abstract class Pages {
 								title="<?php esc_attr_e('Visit the site', 'tainacan'); ?>"
 								href="<?php echo esc_url(site_url()); ?>"
 								target="_blank">
-							<span class="menu-text"><?php echo esc_html(get_bloginfo( 'name' )); ?> </span><span class="icon"></span>
+							<span class="menu-text"><?php echo esc_html(get_bloginfo( 'name' )); ?> </span><span class="icon" aria-hidden="true"></span>
 						</a>
 					<?php endif; ?>
 					<h1>
@@ -531,7 +531,7 @@ abstract class Pages {
 					<?php if ( !$this->has_admin_ui_option('hideNavigationHomeButton') ) : ?>
 						<li>
 							<a href="admin.php?page=tainacan_dashboard" <?php echo $current_page_slug === 'toplevel_page_tainacan_dashboard' ? 'aria-current="page"' : ''; ?>>
-								<span class="icon"><?php echo wp_kses($this->get_svg_icon( 'home' ), wp_kses_allowed_html('tainacan_menu_link')); ?></span>
+								<span class="icon" aria-hidden="true"><?php echo wp_kses($this->get_svg_icon( 'home' ), wp_kses_allowed_html('tainacan_menu_link')); ?></span>
 								<span class="menu-text"><?php esc_html_e('Home', 'tainacan'); ?></span>
 							</a>
 						</li>
@@ -694,7 +694,7 @@ abstract class Pages {
 						aria-label=""
 						aria-pressed="<?php echo $is_menu_collapsed ? 'true' : 'false'; ?>"
 						title="<?php esc_attr_e('Toggle menu', 'tainacan'); ?>">
-					<span class="icon tainacan-icon-is-rtl-mirrored"><?php echo wp_kses($this->get_svg_icon( 'arrowleft' ), wp_kses_allowed_html('tainacan_menu_link')); ?></span>
+					<span class="icon tainacan-icon-is-rtl-mirrored" aria-hidden="true"><?php echo wp_kses($this->get_svg_icon( 'arrowleft' ), wp_kses_allowed_html('tainacan_menu_link')); ?></span>
 					<span class="menu-text"><?php esc_html_e('Collapse menu', 'tainacan'); ?></span>
 				</button>
 			<?php endif; ?>

@@ -120,9 +120,14 @@
                         v-if="searchDates && searchDates.length != 0"
                         class="control">
                     <button 
+                            :aria-label="$i18n.get('label_clean')"
                             class="button"
                             @click="clearSearchDates()">
-                        <span class="icon"><i class="tainacan-icon tainacan-icon-close" /></span>
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
+                            <i class="tainacan-icon tainacan-icon-close" />
+                        </span>
                     </button>
                 </p>
             </b-field>

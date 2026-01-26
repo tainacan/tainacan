@@ -34,7 +34,9 @@
                 class="field is-grouped-centered section">
             <div class="content has-text-dark has-text-centered">
                 <p>
-                    <span class="icon is-large">
+                    <span 
+                            aria-hidden="true"
+                            class="icon is-large">
                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
                     </span>
                 </p>
@@ -55,7 +57,9 @@
                             v-if="collectionId != null && collectionId != undefined"
                             class="is-inline is-pulled-right add-link"
                             @click="onNewMetadataMapperMetadata()">
-                        <span class="icon is-small">
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-small">
                             <i class="tainacan-icon tainacan-icon-add" />
                         </span>
                         {{ $i18n.get('label_add_more_mapper_metadata') }}
@@ -67,7 +71,9 @@
                     class="mapping-header">
                 <p>{{ $i18n.get('label_from_source_mapper') }}</p>
                 <hr>
-                <span class="icon">
+                <span 
+                        aria-hidden="true"
+                        class="icon">
                     <i class="tainacan-icon tainacan-icon-pointer tainacan-icon-1-25em" />
                 </span>
                 <hr>

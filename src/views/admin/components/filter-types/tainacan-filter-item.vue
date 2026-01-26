@@ -18,7 +18,9 @@
                         :aria-expanded="singleCollapseOpen"
                         :aria-label="filter.name"
                         class="label">
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i 
                                 :class="{
                                     'tainacan-icon-arrowdown' : props && props.open,
@@ -65,7 +67,9 @@
                         :aria-label="loadFilterAriaLabel"
                         class="label"
                         @click="appendRealFilter">
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored tainacan-icon-1-25em" />
                     </span>
                     <span 

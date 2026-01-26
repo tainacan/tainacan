@@ -37,9 +37,12 @@
                     class="selected-items-info">
                 {{ selectedItems.length != 1 ? $i18n.getWithVariables('label_%s_selected_items', [selectedItems.length]) : $i18n.get('label_one_selected_item') }}<span v-if="selectedItems.length != amountOfSelectedItemsOnThisPage && amountOfSelectedItemsOnThisPage > 0">&nbsp;({{ $i18n.getWithVariables('label_%s_on_this_page', [ amountOfSelectedItemsOnThisPage ]) }})</span>
                 <button
+                        :aria-label="$i18n.get('label_clean')"
                         class="link-style"
                         @click="cleanSelectedItems()">
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-close" />
                     </span>
                 </button>
@@ -49,9 +52,12 @@
                     class="selected-items-info">
                 {{ $i18n.get('label_all_items_selected') }}
                 <button
+                        :aria-label="$i18n.get('label_clean')"
                         class="link-style"
                         @click="cleanSelectedItems()">
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-close" />
                     </span>
                 </button>
@@ -74,7 +80,9 @@
                                 :disabled="selectedItems.length <= 1"
                                 class="button is-white">
                             <span>{{ $i18n.get('label_actions_for_the_selection') }}</span>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
@@ -1813,7 +1821,9 @@
                                     class="section">
                                 <div class="content has-text-dark has-text-centered">
                                     <p style="margin-bottom: 0px">
-                                        <span class="icon is-large">
+                                        <span 
+                                                aria-hidden="true"
+                                                class="icon is-large">
                                             <i>
                                                 <svg
                                                         xmlns="http://www.w3.org/2000/svg"
@@ -1847,7 +1857,9 @@
                                 :aria-label="$i18n.get('label_clean')"
                                 class="tainacan-records-close-button"
                                 @click="clearSelectedMarkers()">
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-close" />
                             </span>
                         </button>

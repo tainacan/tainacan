@@ -42,7 +42,9 @@
                             class="field is-grouped-centered section">
                         <div class="content has-text-dark has-text-centered">
                             <p>
-                                <span class="icon is-large">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon is-large">
                                     <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters" />
                                 </span>
                             </p>
@@ -87,7 +89,9 @@
                                                 class="link-button"
                                                 :aria-label="$i18n.get('label_move_up')"
                                                 @click="moveFilterUpViaButton(index)">
-                                            <span class="icon">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-previous tainacan-icon-rotate-90" />
                                             </span>
                                         </button>
@@ -96,7 +100,9 @@
                                                 class="link-button"
                                                 :aria-label="$i18n.get('label_move_down')"
                                                 @click="moveFilterDownViaButton(index)">
-                                            <span class="icon">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-next tainacan-icon-rotate-90" />
                                             </span>
                                         </button>
@@ -348,7 +354,9 @@
                                 class="field is-grouped-centered section">
                             <div class="content has-text-dark has-text-centered">
                                 <p>
-                                    <span class="icon is-large">
+                                    <span 
+                                            aria-hidden="true"
+                                            class="icon is-large">
                                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
                                     </span>
                                 </p>
@@ -377,7 +385,9 @@
                     class="section">
                 <div class="content has-text-dark has-text-centered">
                     <p>
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-filters" />
                         </span>
                     </p>
@@ -435,7 +445,9 @@
                                                 v-if="currentFilterTypePreview != undefined && currentFilterTypePreview.template != ''"
                                                 class="field">
                                             <span class="collapse-handle">
-                                                <span class="icon">
+                                                <span 
+                                                        aria-hidden="true"
+                                                        class="icon">
                                                     <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                                 </span> 
                                                 <label class="label has-tooltip">

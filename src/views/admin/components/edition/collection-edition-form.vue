@@ -67,7 +67,9 @@
                             v-if="!isLoading && !isLoadingCollectionTaxonomies && Object.values(getCollectionTaxonomies) && Object.values(getCollectionTaxonomies).length > 0"
                             class="collection-form-section"
                             @click="showCollectionsTaxonomiesOptions = !showCollectionsTaxonomiesOptions;">
-                        <span class="icon">
+                        <span
+                                aria-hidden="true"
+                                class="icon">
                             <i 
                                     class="tainacan-icon"
                                     :class="showCollectionsTaxonomiesOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
@@ -103,7 +105,9 @@
                     <div 
                             class="collection-form-section"
                             @click="showItemsListOptions = !showItemsListOptions;">
-                        <span class="icon">
+                        <span
+                                aria-hidden="true"
+                                class="icon">
                             <i 
                                     class="tainacan-icon"
                                     :class="showItemsListOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
@@ -192,7 +196,9 @@
                                                         type="button"
                                                         :disabled="Object.keys(registeredAndNotDisabledViewModes).length < 0">
                                                     <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
-                                                    <span class="icon">
+                                                    <span
+                                                            aria-hidden="true"
+                                                            class="icon">
                                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                                     </span>
                                                 </button>
@@ -214,6 +220,7 @@
                                                                         'has-text-secondary' : checkIfViewModeEnabled(viewMode),
                                                                         'has-text-dark' : !checkIfViewModeEnabled(viewMode)  
                                                                     }"
+                                                                    aria-hidden="true"
                                                                     v-html="registeredAndNotDisabledViewModes[viewMode].icon" />
                                                             &nbsp;{{ registeredAndNotDisabledViewModes[viewMode].label }}
                                                         </strong>
@@ -275,7 +282,9 @@
                     <div 
                             class="collection-form-section"
                             @click="showItemEditionFormOptions = !showItemEditionFormOptions;">
-                        <span class="icon">
+                        <span
+                                aria-hidden="true"
+                                class="icon">
                             <i 
                                     class="tainacan-icon"
                                     :class="showItemEditionFormOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
@@ -304,7 +313,9 @@
                                                 v-model="documentType.enabled"
                                                 true-value="yes"
                                                 false-value="no">
-                                            <span class="icon">
+                                            <span
+                                                    aria-hidden="true"
+                                                    class="icon">
                                                 <i :class="'tainacan-icon tainacan-icon-' + documentType.icon" />
                                             </span>
                                             {{ documentType.label }}
@@ -492,7 +503,9 @@
                     <div 
                             class="collection-form-section"
                             @click="showItemSubmissionOptions = !showItemSubmissionOptions;">
-                        <span class="icon">
+                        <span
+                                aria-hidden="true"
+                                class="icon">
                             <i 
                                     class="tainacan-icon"
                                     :class="showItemSubmissionOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
@@ -562,7 +575,9 @@
                                                     :key="index"
                                                     v-model="form.submission_default_status"
                                                     :native-value="statusOption.slug">
-                                                <span class="icon has-text-dark">
+                                                <span
+                                                        aria-hidden="true"
+                                                        class="icon has-text-dark">
                                                     <i 
                                                             class="tainacan-icon tainacan-icon-18px"
                                                             :class="$statusHelper.getIcon(statusOption.slug)" />
@@ -664,7 +679,9 @@
                                             class="button is-outlined"
                                             :class="{ 'disabled': editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) }"
                                             style="width: auto">
-                                        <span class="icon has-text-dark">
+                                        <span
+                                                aria-hidden="true"
+                                                class="icon has-text-dark">
                                             <i 
                                                     class="tainacan-icon tainacan-icon-18px"
                                                     :class="$statusHelper.getIcon(form.status)" />
@@ -677,7 +694,8 @@
                                         </template>
                                         <span 
                                                 style="margin-inline-start: 0.5em;"
-                                                class="icon is-small">
+                                                class="icon is-small"
+                                                aria-hidden="true">
                                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                         </span>
                                     </button>
@@ -688,7 +706,9 @@
                                         @click="form.status = statusOption.slug"
                                         @keydown.enter.prevent="form.status = statusOption.slug"
                                         @keydown.space.prevent="form.status = statusOption.slug">
-                                    <span class="icon has-text-dark">
+                                    <span
+                                            aria-hidden="true"
+                                            class="icon has-text-dark">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-18px"
                                                 :class="$statusHelper.getIcon(statusOption.slug)" />
@@ -928,7 +948,9 @@
                                     :class="{'disabled': form.enable_cover_page != 'yes'}"
                                     target="_blank"  
                                     :href="newPagePath">
-                                <span class="icon is-small">
+                                <span   
+                                        aria-hidden="true"
+                                        class="icon is-small">
                                     <i class="tainacan-icon tainacan-icon-add" />
                                 </span>
                                 {{ $i18n.get('label_create_new_page') }}
@@ -1016,7 +1038,9 @@
             <section class="section">
                 <div class="content has-text-dark has-text-centered">
                     <p>
-                        <span class="icon">
+                        <span
+                                class="icon"
+                                aria-hidden="true">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
                         </span>
                     </p>

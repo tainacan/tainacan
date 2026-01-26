@@ -88,7 +88,9 @@
                             &nbsp;
                             <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_sorting') }}</span>
                             <span class="is-hidden-widescreen">{{ $i18n.get('label_sort') }}</span>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
@@ -103,7 +105,9 @@
                                     @click="newOrder = 'desc'"
                                     @keydown.enter.prevent="newOrder = 'desc'"
                                     @keydown.space.prevent="newOrder = 'desc'">
-                                <span class="icon gray-icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-sortdescending" />
                                 </span>
                                 <span>{{ $i18n.get('label_descending') }}</span>
@@ -116,7 +120,9 @@
                                     @click="newOrder = 'asc'"
                                     @keydown.enter.prevent="newOrder = 'asc'"
                                     @keydown.space.prevent="newOrder = 'asc'">
-                                <span class="icon gray-icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-sortascending" />
                                 </span>
                                 <span>{{ $i18n.get('label_ascending') }}</span>
@@ -228,7 +234,9 @@
                     <section class="section">
                         <div class="content has-text-dark has-text-centered">
                             <p>
-                                <span class="icon is-medium">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon is-medium">
                                     <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms" />
                                 </span>
                             </p>

@@ -24,7 +24,9 @@
                     class="button is-medium is-white is-align-self-flex-start"
                     :aria-label="$i18n.get('close')"
                     @click="$emit('close')">
-                <span class="icon">
+                <span 
+                        aria-hidden="true"
+                        class="icon">
                     <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-125em" />
                 </span>
             </button>
@@ -55,7 +57,9 @@
                                 class="button link-style"
                                 :aria-label="$i18n.get('label_copy_link_url')"
                                 @click="siteLinkCopied = true; copyTextToClipboard(itemURL ? itemURL : collectionURL)">
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i
                                         class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"
                                         aria-hidden="true" />
@@ -73,7 +77,9 @@
                                     class="exposer-copy-popup-close"
                                     :aria-label="$i18n.get('close')"
                                     @click="siteLinkCopied = false">
-                                <span class="icon has-text-secondary">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon has-text-secondary">
                                     <i
                                             class="tainacan-icon tainacan-icon-close"
                                             aria-hidden="true" />
@@ -148,7 +154,9 @@
                     <span 
                             class="collapse-handle"
                             @click="collapse(index)">
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i 
                                     :class="{ 'tainacan-icon-arrowdown' : !exposerMapper.collapsed, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : exposerMapper.collapsed }"
                                     class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />

@@ -4,7 +4,9 @@
                 v-if="!isStatusTheOnlyField && !$adminOptions.itemEditionPublicationSectionInsideTabs"
                 class="section-label">
             <label>
-                <span class="icon has-text-dark">
+                <span 
+                        class="icon has-text-dark"
+                        aria-hidden="true">
                     <i class="tainacan-icon tainacan-icon-item" />
                 </span>
                 {{ collection && collection.item_publication_label ? collection.item_publication_label : $i18n.get('label_publication_data') }}
@@ -136,7 +138,8 @@
                         <label class="label">
                             <span 
                                     v-if="isStatusTheOnlyField"
-                                    class="icon has-text-dark">
+                                    class="icon has-text-dark"
+                                    aria-hidden="true">
                                 <i class="tainacan-icon tainacan-icon-item" />
                             </span>
                             {{ $i18n.get('label_status') }}
@@ -169,7 +172,9 @@
                                             class="button is-outlined"
                                             :class="{ 'disabled': item.status === 'auto-draft' || ( hasSomeError && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) ) }"
                                             style="width: auto;">
-                                        <span class="icon has-text-dark">
+                                        <span 
+                                                aria-hidden="true"
+                                                class="icon has-text-dark">
                                             <i 
                                                     class="tainacan-icon tainacan-icon-18px"
                                                     :class="$statusHelper.getIcon(form.status)" />
@@ -182,7 +187,8 @@
                                         </template>
                                         <span 
                                                 style="margin-inline-start: 0.5em;"
-                                                class="icon is-small">
+                                                class="icon is-small"
+                                                aria-hidden="true">
                                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                         </span>
                                     </button>
@@ -205,7 +211,9 @@
                                             statusOption.slug,
                                             'current'
                                         )">
-                                    <span class="icon has-text-dark">
+                                    <span 
+                                            aria-hidden="true"
+                                            class="icon has-text-dark">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-18px"
                                                 :class="$statusHelper.getIcon(statusOption.slug)" />

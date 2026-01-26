@@ -151,7 +151,9 @@
                                 @click="nextSearchPage"
                                 @keydown.enter.prevent="nextSearchPage"
                                 @keydown.space.prevent="nextSearchPage">
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-next tainacan-icon-is-rtl-mirrored" />
                             </span>
                         </a>
@@ -171,7 +173,9 @@
                                 @click="previousPage"
                                 @keydown.enter.prevent="previousPage"
                                 @keydown.space.prevent="previousPage">
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-previous tainacan-icon-is-rtl-mirrored" />
                             </span>
                         </a>
@@ -219,7 +223,9 @@
                                 @click="nextPage"
                                 @keydown.enter.prevent="nextPage"
                                 @keydown.space.prevent="nextPage">
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-next tainacan-icon-is-rtl-mirrored" />
                             </span>
                         </a>

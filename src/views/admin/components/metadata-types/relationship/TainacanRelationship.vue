@@ -84,15 +84,31 @@
                             <a 
                                     v-if="currentUserCanEditItems && (!$adminOptions.itemEditionMode || $adminOptions.allowItemEditionModalInsideModal)"
                                     class="relationship-value-button--edit"
+                                    :v-tooltip="{
+                                        content: $i18n.get('label_edit'),
+                                        autoHide: true,
+                                        placement: 'bottom',
+                                        popperClass: ['tainacan-tooltip', 'tooltip']
+                                    }"
                                     @click="editSelected(itemValue.value)">
-                                <span class="icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
                                     <i class="tainacan-icon tainacan-icon-edit" />
                                 </span>
                             </a>
                             <a 
                                     class="relationship-value-button--remove"
+                                    :v-tooltip="{
+                                        content: $i18n.get('label_remove'),
+                                        autoHide: true,
+                                        placement: 'bottom',
+                                        popperClass: ['tainacan-tooltip', 'tooltip']
+                                    }"
                                     @click="removeFromSelected(itemValue.value)">
-                                <span class="icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
                                     <i class="tainacan-icon tainacan-icon-close" />
                                 </span>
                             </a>
@@ -125,7 +141,9 @@
                     @click="editItemModalOpen = !editItemModalOpen"
                     @keydown.enter.prevent="editItemModalOpen = !editItemModalOpen"
                     @keydown.space.prevent="editItemModalOpen = !editItemModalOpen">
-                <span class="icon is-small">
+                <span 
+                        aria-hidden="true"
+                        class="icon is-small">
                     <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                 </span>
                 &nbsp;{{ $i18n.get('label_create_new_item') }}

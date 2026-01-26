@@ -4,7 +4,9 @@
             :href="linkUrl"
             target="_blank"
             class="button is-primary tainacan-external-link">
-        <span class="icon">
+        <span 
+                aria-hidden="true"
+                class="icon">
             <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
         </span>
         <span class="is-hidden-mobile">{{ linkLabel }}</span>

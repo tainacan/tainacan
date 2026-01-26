@@ -66,7 +66,9 @@
                                             type="button"
                                             class="button is-outlined"
                                             style="width: auto">
-                                        <span class="icon has-text-dark">
+                                        <span 
+                                                aria-hidden="true"
+                                                class="icon has-text-dark">
                                             <i 
                                                     class="tainacan-icon tainacan-icon-18px"
                                                     :class="$statusHelper.getIcon(form.status)" />
@@ -79,7 +81,8 @@
                                         </template>
                                         <span 
                                                 style="margin-inline-start: 0.5em;"
-                                                class="icon is-small">
+                                                class="icon is-small"
+                                                aria-hidden="true">
                                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                         </span>
                                     </button>
@@ -90,7 +93,9 @@
                                         @click="form.status = statusOption.slug"
                                         @keydown.enter.prevent="form.status = statusOption.slug"
                                         @keydown.space.prevent="form.status = statusOption.slug">
-                                    <span class="icon has-text-dark">
+                                    <span 
+                                            aria-hidden="true"
+                                            class="icon has-text-dark">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-18px"
                                                 :class="$statusHelper.getIcon(statusOption.slug)" />
@@ -161,7 +166,9 @@
                         v-if="form.id !== 'default_section'"
                         class="metadata-form-section"
                         @click="hideConditionalSectionSettings = !hideConditionalSectionSettings;">
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i 
                                 class="tainacan-icon"
                                 :class="!hideConditionalSectionSettings ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
