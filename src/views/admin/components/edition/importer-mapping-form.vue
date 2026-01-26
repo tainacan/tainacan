@@ -887,7 +887,7 @@ export default {
         border-inline-start: 1px solid var(--tainacan-gray2);
         padding-inline-start: 1em;
         opacity: 1;
-        transition: border-left 0.2s ease, opacity 0.2s ease;
+        transition: border-inline-start 0.2s ease, opacity 0.2s ease;
 
         .source-metadatum {
             border-bottom: none;
