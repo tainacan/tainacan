@@ -83,7 +83,7 @@
                                                 {{ $i18n.get('status_auto-draft') }}
                                             </template>
                                             <span 
-                                                    style="margin-left: 0.5em;"
+                                                    style="margin-inline-start: 0.5em;"
                                                     class="icon is-small">
                                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                             </span>
@@ -266,7 +266,7 @@
                                         <span class="icon">
                                             <i 
                                                     class="tainacan-icon"
-                                                    :class="showCardinalityOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                                                    :class="showCardinalityOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
                                         </span>
                                         <strong>
                                             {{ $i18n.getHelperTitle('metadata', 'cardinality') }}
@@ -358,7 +358,7 @@
                     <span class="icon">
                         <i 
                                 class="tainacan-icon"
-                                :class="!hideMetadataTypeOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                                :class="!hideMetadataTypeOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
                     </span>
                     <strong>{{ $i18n.getWithVariables('label_options_of_the_%s_metadata_type', [ form.metadata_type_object.name ]) }}</strong>
                     <hr>
@@ -394,7 +394,7 @@
                     <span class="icon">
                         <i 
                                 class="tainacan-icon"
-                                :class="showAdvancedOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                                :class="showAdvancedOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
                     </span>
                     <strong>{{ $i18n.get('label_advanced_metadata_options') }}</strong>
                     <hr>
@@ -725,7 +725,7 @@
                 font-size: 0.875em;
                 z-index: 1;
                 position: relative;
-                padding-right: 12px;
+                padding-inline-end: 12px;
             }
             hr {
                 position: absolute;
@@ -733,7 +733,7 @@
                 width: calc(100% - 42px);
                 height: 1px;
                 background-color: var(--tainacan-gray2);
-                margin-left: 42px;
+                margin-inline-start: 42px;
                 transition: background-color 0.2s ease, height 0.2s ease;
             }
 

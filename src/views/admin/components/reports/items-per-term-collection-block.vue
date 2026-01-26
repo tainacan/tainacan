@@ -4,7 +4,7 @@
             :class="{ 'skeleton': isFetchingData || isBuildingChart || isFetchingMetadatumTerms || !selectedMetadatum || !selectedMetadatum.id }"
             class="report-card is-full">
         <div 
-                :style="!isChildColumnCollapsed ? 'margin-left: 0px;' : ''"
+                :style="!isChildColumnCollapsed ? 'margin-inline-start: 0px;' : ''"
                 :class="!isChildColumnCollapsed ? 'columns is-6' : ''">
             <div 
                     :class="!isChildColumnCollapsed ? 'column is-half is-full-tablet' : ''"
@@ -131,7 +131,7 @@
                                     aria-hidden="true"
                                     class="icon next-page button is-outlined"
                                     @click="(!isBuildingChart && termsDisplayedPage < Math.ceil(currentTotalTerms/maxTermsToDisplay)) ? termsDisplayedPage++ : null">
-                                <i class="tainacan-icon tainacan-icon-previous tainacan-icon-1-25em" />
+                                <i class="tainacan-icon tainacan-icon-previous tainacan-icon-is-rtl-mirrored tainacan-icon-1-25em" />
                             </span>
                             <span
                                     :class="{'tablenav-pages-navspan disabled': isBuildingChart || termsDisplayedPage >= Math.ceil(currentTotalTerms/maxTermsToDisplay) }"
@@ -157,7 +157,7 @@
                     <span class="icon">
                         <i 
                                 :class="isChildColumnCollapsed ? 'tainacan-icon-arrowleft' : 'tainacan-icon-arrowright'"
-                                class="tainacan-icon tainacan-icon-1-25em" />
+                                class="tainacan-icon tainacan-icon-1-25em tainacan-icon-is-rtl-mirrored" />
                     </span>
                 </button>
             </div>
@@ -802,18 +802,18 @@ export default {
 
 <style lang="scss" scoped>
 .child-term-column {
-    border-left: 1px dashed var(--tainacan-gray3, #a5a5a5);
+    border-inline-start: 1px dashed var(--tainacan-gray3, #a5a5a5);
 
     &>* {
-        margin-left: 1.25rem;
+        margin-inline-start: 1.25rem;
     }
 }
 .hide-column-button {
     position: absolute;
-    right: 0;
+    inset-inline-end: 0;
     top: calc(50% - 1rem);
     margin: 0;
-    margin-right: -0.875rem;
+    margin-inline-end: -0.875rem;
     padding: 0px;
     border: 1px solid;
     background-color: var(--tainacan-gray1) !important;

@@ -124,7 +124,7 @@
                                         {{ $i18n.get('status_auto-draft') }}
                                     </template>
                                     <span 
-                                            style="margin-left: 0.5em;"
+                                            style="margin-inline-start: 0.5em;"
                                             class="icon is-small">
                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                     </span>
@@ -254,7 +254,7 @@
                 </div>
                 <div    
                         v-if="!$route.query.recent"
-                        style="margin-right: auto;"
+                        style="margin-inline-end: auto;"
                         class="control">
                     <button
                             id="button-cancel-taxonomy-creation"
@@ -680,7 +680,7 @@
         padding: 10px var(--tainacan-one-column);
         position: absolute;
         bottom: 0;
-        right: 0;
+        inset-inline-end: 0;
         z-index: 9999;
         background-color: var(--tainacan-gray1);
         width: 100%;
@@ -720,7 +720,7 @@
 
         .update-info-section {
             color: var(--tainacan-info-color);
-            margin-right: auto;
+            margin-inline-end: auto;
             display: flex;
             flex-wrap: nowrap;
         }
@@ -729,10 +729,10 @@
             display: inline-flex;
             font-size: 1.0em;
             margin-top: 0;
-            margin-left: 24px;
+            margin-inline-start: 24px;
 
             .tainacan-help-tooltip-trigger {
-                margin-left: 0.25em;
+                margin-inline-start: 0.25em;
             }
         }
 
@@ -747,14 +747,14 @@
         }
         .footer {
             padding: 13px 0.5em;
-            margin-left: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
+            margin-inline-start: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
             width: 100%;
             flex-wrap: wrap;
             height: auto;
             position: fixed;
 
             .update-info-section {
-                margin-left: auto;
+                margin-inline-start: auto;
                 margin-bottom: 0.75em;
                 margin-top: -0.25em;
             }

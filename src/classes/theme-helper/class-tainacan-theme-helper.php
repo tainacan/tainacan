@@ -3450,7 +3450,7 @@ class Theme_Helper {
 		ob_start();
 		?>
 			<div style="display: flex; gap: 4px;">
-				<ul style="float: left;list-style: none;width: 180px; height: auto;display: flex;flex-direction:column;gap: 4px;margin:0px;padding: 0;">
+				<ul style="float: inline-start;list-style: none;width: 180px; height: auto;display: flex;flex-direction:column;gap: 4px;margin:0px;padding: 0;">
 					<?php echo wp_kses_post(array_reduce( range(0,5), function($container, $i) {
 							$container .= '<li style="height: 40px; background-color: var(--tainacan-block-gray1, #f2f2f2);display: flex;flex-direction:row;align-items: center;padding: 3px 6px;gap: 6px">
 								<div style="min-width: 32px; height: 32px; background-color: var(--tainacan-block-gray2, #dbdbdb);"></div>		

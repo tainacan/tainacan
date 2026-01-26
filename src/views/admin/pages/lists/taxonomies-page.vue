@@ -187,7 +187,7 @@
                             :key="index"
                             :tabindex="-1"
                             :class="{ 'is-active': status == statusOption.slug}"
-                            :style="{ marginRight: statusOption.slug == 'draft' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }">
+                            :style="{ marginInlineEnd: statusOption.slug == 'draft' ? 'auto' : '', marginInlineStart: statusOption.slug == 'trash' ? 'auto' : '' }">
                         <a
                                 :id="'taxonomies-status-tab-' + statusOption.slug"
                                 v-tooltip="{
@@ -491,10 +491,10 @@
             min-height: 1.875em;
 
             &:first-child {
-                margin-right: auto;
+                margin-inline-end: auto;
             }
             &:not(:last-child) {
-                padding-right: 0.875em;
+                padding-inline-end: 0.875em;
             }
 
             .label {

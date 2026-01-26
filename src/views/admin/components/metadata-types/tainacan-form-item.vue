@@ -22,7 +22,7 @@
                 <i 
                         :class="{
                             'tainacan-icon-arrowdown' : isCollapsed || errorMessage,
-                            'tainacan-icon-arrowright' : !(isCollapsed || errorMessage)
+                            'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !(isCollapsed || errorMessage)
                         }"
                         class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
             </span>
@@ -445,11 +445,11 @@
             padding: 10px !important;
 
             .child-metadata-inputs {
-                margin-left: 0.25em;
+                margin-inline-start: 0.25em;
             }
             @media screen and (min-width: 770px) {
                 .collapse-handle {
-                    margin-left: -15px;
+                    margin-inline-start: -15px;
                 }
             }
         }
@@ -475,11 +475,11 @@
         }
         .collapse-handle {
             cursor: pointer;
-            margin-left: -42px;
+            margin-inline-start: -42px;
             line-height: 1.5em;
 
             .tainacan-help-tooltip-trigger {
-                margin-right: auto;
+                margin-inline-end: auto;
             }
         }
         .collapse-handle+div {
@@ -492,8 +492,8 @@
         @media screen and (max-width: 768px) {
             .collapse-handle {
                 font-size: 1em;
-                margin-left: 0;
-                margin-right: 22px;
+                margin-inline-start: 0;
+                margin-inline-end: 22px;
                 width: 100%;
                 display: flex;
                 position: relative;
@@ -501,11 +501,11 @@
                 align-items: center;
 
                 .label {
-                    margin-left: 2px;
-                    margin-right: 0.5em;
+                    margin-inline-start: 2px;
+                    margin-inline-end: 0.5em;
                 }
                 .icon {
-                    margin-left: auto;
+                    margin-inline-start: auto;
                     order: 3;
                     width: 2em;
                     justify-content: flex-end;

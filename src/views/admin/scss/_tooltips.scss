@@ -161,10 +161,10 @@
                 font-size: 0.75em;
             }
             .child-metadata-inputs {
-                margin-left: 5px;
-                padding-left: 16px;
+                margin-inline-start: 5px;
+                padding-inline-start: 16px;
                 padding-top: 2px;
-                border-left: 1px solid var(--tainacan-gray3);
+                border-inline-start: 1px solid var(--tainacan-gray3);
 
                 .is-last-input {
                     margin-top: -14px;
@@ -196,19 +196,19 @@
     }
     
     .tainacan-compound-group {
-        text-align: left;
-        margin-left: 2px;
-        padding-left: 0.875em;
-        border-left: 1px solid var(--tainacan-gray2);
+        text-align: start;
+        margin-inline-start: 2px;
+        padding-inline-start: 0.875em;
+        border-inline-start: 1px solid var(--tainacan-gray2);
 
         .tainacan-compound-metadatum .label {
-            text-align: left;
+            text-align: start;
             margin-bottom: 0.25em;
             font-size: 1em !important;
             color: var(--tainacan-info-color);
         }
         .tainacan-compound-metadatum p {
-            text-align: left;
+            text-align: start;
             margin-bottom: 0.75em;
             font-size: 1em;
         }
@@ -219,19 +219,20 @@
             background: var(--tainacan-gray2);
             content: none;
             color: transparent;
-            margin: 1em auto 1em -0.875em;
+            margin: 1em auto;
+            margin-inline-start: -0.875em;
         }
     }
     .tainacan-relationship-group {
-        text-align: left;
+        text-align: start;
         .tainacan-relationship-metadatum {
-            text-align: left;
+            text-align: start;
             .tainacan-relationship-metadatum-header {
-                text-align: left;
+                text-align: start;
                 display: flex;
                 align-items: center;
                 img {
-                    margin-right: 12px;
+                    margin-inline-end: 12px;
                     max-width: 28px !important;
                     max-height: 28px;
                 }
@@ -245,7 +246,7 @@
                 }
             }
              .tainacan-metadatum {
-                text-align: left;
+                text-align: start;
                 margin-left: 40px;
                 .label {
                     color: var(--tainacan-gray4);
@@ -266,7 +267,10 @@
             background: var(--tainacan-gray2);
             content: none;
             color: transparent;
-            margin: 0.5em 0 0.5em 40px;
+            margin-inline-start: 40px;
+            margin-inline-end: 0;
+            margin-block-start: 0.5em;
+            margin-block-end: 0.5em;
         }
     }
 }
@@ -275,7 +279,7 @@
 .help-wrapper {
     position: absolute;
     margin-top: -4px;
-    margin-left: 4px;
+    margin-inline-start: 4px;
     font-size: 1.125em;
 
     a.help-button .icon {
@@ -283,7 +287,7 @@
     }
     &:hover .help-tooltip {
         margin-bottom: 10px;
-        margin-left: -37px;
+        margin-inline-start: -37px;
         visibility: visible;
         opacity: 1; 
     }
@@ -298,14 +302,17 @@
         transition: margin-bottom 0.2s ease, opacity 0.3s ease;
         position: absolute;
         bottom: calc(100% - 6px);
-        left: 0%;            
+        inset-inline-start: 0%;            
         margin-bottom: -27px;
         visibility: hidden;
         opacity: 0;
         font-size: 0.875em;
 
         .help-tooltip-header {
-            padding: 0.8em 0.8em 0em 0.8em;
+            padding-inline-start: 0.8em;
+            padding-inline-end: 0.8em;
+            padding-block-start: 0.8em;
+            padding-block-end: 0em;
             h5,
             p {
                 font-size: 0.875em !important;
@@ -317,9 +324,15 @@
             }
         }
         .help-tooltip-body {
-            padding: 0.5em 0.8em 0.75em 0.8em;
+            padding-inline-start: 0.8em;
+            padding-inline-end: 0.8em;
+            padding-block-start: 0.5em;
+            padding-block-end: 0.75em;
             p {
-                margin: 0 0 0.125em 0;
+                margin-inline-start: 0;
+                margin-inline-end: 0;
+                margin-block-start: 0;
+                margin-block-end: 0.125em;
                 font-size: 0.9375em !important;
                 font-weight: normal !important;
                 white-space: normal !important;

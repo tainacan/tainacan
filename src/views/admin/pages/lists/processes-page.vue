@@ -7,7 +7,7 @@
 
             <b-field 
                     class="header-item"
-                    style="margin-right: auto; margin-left: 0;">
+                    style="margin-inline-end: auto; margin-inline-start: 0;">
                 <b-input
                         v-model="searchQuery"
                         :placeholder="$i18n.get('instruction_search')"
@@ -318,7 +318,7 @@
             .gray-icon,
             .gray-icon .icon {
                 color: var(--tainacan-info-color) !important;
-                padding-right: 10px;
+                padding-inline-end: 10px;
                 height: 1.125em !important;
             }
             .gray-icon .icon i::before, 
@@ -342,7 +342,7 @@
             padding-top: 0.9em;
 
             .header-item:not(:last-child) {
-                padding-right: 0.2em;
+                padding-inline-end: 0.2em;
             }
         }
     }

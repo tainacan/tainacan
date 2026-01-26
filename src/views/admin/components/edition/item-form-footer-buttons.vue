@@ -21,7 +21,7 @@
                     class="button sequence-button"
                     @click="$emit('on-prev-in-sequence')">
                 <span class="icon is-large">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-previous" />
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-previous tainacan-icon-is-rtl-mirrored" />
                 </span>
                 <span>{{ $i18n.get('previous') }}</span>
             </button>
@@ -36,7 +36,7 @@
                 <button
                         type="button"
                         class="button is-secondary"
-                        :style="{ marginLeft: $adminOptions.mobileAppMode ? 'auto' : '0.5em' }"
+                        :style="{ marginInlineStart: $adminOptions.mobileAppMode ? 'auto' : '0.5em' }"
                         @click="openItemCreationStatusDialog">{{ $i18n.get('label_create_item') }}</button>
             </template>
 
@@ -64,7 +64,7 @@
                         :mobile-modal="false"
                         position="is-top-left"
                         class="item-edition-footer-dropdown"
-                        :style="{ marginLeft: $adminOptions.mobileAppMode ? 'auto' : '0.5em' }">
+                        :style="{ marginInlineStart: $adminOptions.mobileAppMode ? 'auto' : '0.5em' }">
                     <template #trigger>
                         <button 
                                 :disabled="hasSomeError && (status == 'publish' || status == 'private' || status == 'pending')"
@@ -83,12 +83,12 @@
                             <span 
                                     v-if="isOnSequenceEdit && !isLastItemOnSequenceEdit"
                                     class="icon is-large"
-                                    style="margin-left: 0em;">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next" />
+                                    style="margin-inline-start: 0em;">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next tainacan-icon-is-rtl-mirrored" />
                             </span>
                             <span 
                                     v-if="!$adminOptions.mobileAppMode"
-                                    style="margin-left: 0.5em;"
+                                    style="margin-inline-start: 0.5em;"
                                     class="icon is-small"
                                     @mouseenter="$refs && $refs['item-edition-footer-dropdown'] && !$refs['item-edition-footer-dropdown'].isActive ? $refs['item-edition-footer-dropdown'].toggle() : null">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowup" />
@@ -110,7 +110,7 @@
                         <small 
                                 v-if="$statusHelper.hasDescription('draft')"
                                 class="is-small"
-                                style="margin-left: 2px;">
+                                style="margin-inline-start: 2px;">
                             {{ $statusHelper.getDescription('draft') }}
                         </small>
                     </b-dropdown-item>
@@ -130,7 +130,7 @@
                         <small 
                                 v-if="$statusHelper.hasDescription('pending')"
                                 class="is-small"
-                                style="margin-left: 2px;">
+                                style="margin-inline-start: 2px;">
                             {{ $statusHelper.getDescription('pending') }}
                         </small>
                     </b-dropdown-item>
@@ -150,7 +150,7 @@
                         <small 
                                 v-if="$statusHelper.hasDescription('private')"
                                 class="is-small"
-                                style="margin-left: 2px;">
+                                style="margin-inline-start: 2px;">
                             {{ $statusHelper.getDescription('private') }}
                         </small>
                     </b-dropdown-item>
@@ -169,7 +169,7 @@
                         <small 
                                 v-if="$statusHelper.hasDescription('publish')"
                                 class="is-small"
-                                style="margin-left: 2px;">
+                                style="margin-inline-start: 2px;">
                             {{ $statusHelper.getDescription('publish') }}
                         </small>
                     </b-dropdown-item>
@@ -200,7 +200,7 @@
                     @click="$emit('on-next-in-sequence')">
                 <span>{{ $i18n.get('next') }}</span>
                 <span class="icon is-large">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next" />
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next tainacan-icon-is-rtl-mirrored" />
                 </span>
             </button>
 
@@ -280,17 +280,17 @@ export default {
         flex-wrap: nowrap;
         
         .button {
-            margin-left: 16px;
-            margin-right: 6px;
+            margin-inline-start: 16px;
+            margin-inline-end: 6px;
         }
         .button:last-of-type {
-            margin-right: 0px;
+            margin-inline-end: 0px;
         }
 
         :deep(.item-edition-footer-dropdown) {
             .dropdown-trigger .button>.icon.is-small {
-                border-left: 1px solid rgba(255,255,255,0.6);
-                margin-left: 0.5em;
+                border-inline-start: 1px solid rgba(255,255,255,0.6);
+                margin-inline-start: 0.5em;
             }
             .dropdown-menu>.dropdown-content {
                 display: flex;
@@ -310,14 +310,14 @@ export default {
             width: 100%;
 
             .button {
-                margin-left: 6px;
-                margin-right: 6px;
+                margin-inline-start: 6px;
+                margin-inline-end: 6px;
             }
             .button:first-of-type {
-                margin-left: 0px;
+                margin-inline-start: 0px;
             }
             .button.is-success {
-                margin-left: auto;
+                margin-inline-start: auto;
             }
         }
     }

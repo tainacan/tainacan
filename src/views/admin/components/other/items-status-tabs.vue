@@ -34,7 +34,7 @@
                 <li 
                         :tabindex="-1"
                         :class="{ 'is-active': status == statusOption.slug}"
-                        :style="{ marginRight: statusOption.slug == 'draft' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }">
+                        :style="{ marginInlineEnd: statusOption.slug == 'draft' ? 'auto' : '', marginInlineStart: statusOption.slug == 'trash' ? 'auto' : '' }">
                     <a
                             :id="'items-status-tab-' + statusOption.slug"
                             v-tooltip="{

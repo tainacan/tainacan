@@ -20,7 +20,7 @@
                     :title="collection && collection.item_attachment_label ? collection.item_attachment_label : $i18n.get('label_attachments')"
                     :message="$i18n.get('info_edit_attachments')" />
             <button
-                    style="float: right; font-size: 0.875em; margin: 2px 5px;"
+                    style="float: inline-end; font-size: 0.875em; margin: 2px 5px;"
                     type="button"
                     class="link-style"
                     :disabled="isLoading"

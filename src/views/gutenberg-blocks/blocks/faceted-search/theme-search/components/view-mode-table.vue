@@ -326,15 +326,15 @@ export default {
                         font-weight: normal;
                         color: var(--tainacan-info-color);
                         display: inline-block;
-                        margin-right: 0.35em;
-                        margin-left: -0.15em;
+                        margin-inline-end: 0.35em;
+                        margin-inline-start: -0.15em;
                     }
                     &::after {
                         content: ': ';
                         font-size: 1em;
                         color: var(--tainacan-info-color);
                         display: inline-block;
-                        margin-right: 0.15em;
+                        margin-inline-end: 0.15em;
                     }
                 }
                 p {

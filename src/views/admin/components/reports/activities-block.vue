@@ -15,7 +15,7 @@
                             class="icon prev-page button is-outlined"
                             aria-hidden="true"
                             @click="(!isBuildingChart && currentStart.getFullYear() > (minYear + 1)) ? decreaseYear() : null">
-                        <i class="tainacan-icon tainacan-icon-previous tainacan-icon-1-25em" />
+                        <i class="tainacan-icon tainacan-icon-previous tainacan-icon-is-rtl-mirrored tainacan-icon-1-25em" />
                     </span>
                     <span class="select">
                         <select
@@ -38,7 +38,7 @@
                             aria-hidden="true"
                             class="icon next-page button is-outlined"
                             @click="(!isBuildingChart && currentStart.getFullYear() <= (maxYear - 1)) ? increaseYear() : null">
-                        <i class="tainacan-icon tainacan-icon-next tainacan-icon-1-25em" />
+                        <i class="tainacan-icon tainacan-icon-next tainacan-icon-is-rtl-mirrored tainacan-icon-1-25em" />
                     </span>
                 </span>
             </div>

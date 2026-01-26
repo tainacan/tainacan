@@ -122,11 +122,11 @@ export default {
 
 <style lang="scss" scoped>
     .section-thumbnaill {
-        padding-right: 0;
+        padding-inline-end: 0;
     }
     .thumbnail-buttons-row {
         bottom: -6px;
-        left: 0.875em;
+        inset-inline-start: 0.875em;
         position: absolute;
     }
     .thumbnail-field {
@@ -157,7 +157,7 @@ export default {
         }
 
         .field {
-            margin-left: 1em;
+            margin-inline-start: 1em;
             width: 100%;
         }
         .content {

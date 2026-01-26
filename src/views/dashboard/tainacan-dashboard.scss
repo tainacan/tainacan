@@ -48,7 +48,7 @@
     @media only screen and (min-width: 1280px) and (max-width: 1920px) {
         .postbox-container {
             width: 33% !important;
-            float: left !important;
+            float: inline-start !important;
         }
     }
     @media only screen and (min-width: 800px) and (max-width: 1280px) {
@@ -56,7 +56,7 @@
         .postbox-container#postbox-container-2,
         .postbox-container#postbox-container-3,
         .postbox-container#postbox-container-4 {
-            float: right;
+            float: inline-end;
             width: 49.5%;
         }
     }
@@ -230,7 +230,7 @@
             text-decoration: none;
             visibility: visible;
             opacity: 1;
-            left: 0;
+            inset-inline-start: 0;
         }
 
         .tainacan-dashboard-card-list {

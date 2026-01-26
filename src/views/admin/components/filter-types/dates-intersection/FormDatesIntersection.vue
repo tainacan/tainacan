@@ -302,13 +302,13 @@
         align-items: center;
 
         strong {
-            margin-left: 0.75em;
+            margin-inline-start: 0.75em;
         }
     }
 
     button {
         border-radius: 100em !important;
-        margin-left: auto;
+        margin-inline-start: auto;
     }
 
     .logic-divider {

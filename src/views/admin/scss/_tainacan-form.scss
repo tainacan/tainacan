@@ -76,28 +76,30 @@
             padding: 0 !important;
             
             .control {
-                margin-right: 0 !important;
+                margin-inline-end: 0 !important;
                 margin-bottom: 0;
                 margin-top: 0;
             }
+            // Minus button - border cleanup for both LTR and RTL
             p.control.minus .button {
-                border-right-width: 0px;
-                border-left-width: 0px;
-                border-top-left-radius: 0px !important;
-                border-bottom-left-radius: 0px !important;
+                border-inline-end-width: 0px;
+                border-inline-start-width: 0px;
+                border-start-start-radius: 0px !important;
+                border-end-start-radius: 0px !important;
             }
+            // Plus button - border cleanup for both LTR and RTL
             p.control.plus .button {
-                border-left-width: 0px;
-                border-top-right-radius: var(--tainacan-input-border-radius) !important;
-                border-bottom-right-radius: var(--tainacan-input-border-radius) !important;
+                border-inline-start-width: 0px;
+                border-start-end-radius: var(--tainacan-input-border-radius) !important;
+                border-end-end-radius: var(--tainacan-input-border-radius) !important;
             }
             p.control button.is-primary {
                 min-height: 100% !important;
             }
             input.input {
-                border-top-right-radius: 0px !important;
-                border-bottom-right-radius: 0px !important;
-                text-align: start;
+                border-start-end-radius: 0px !important;
+                border-end-end-radius: 0px !important;
+                text-align: start; // 'start' is RTL-aware
             }
             button {
                 height: auto !important;
@@ -122,7 +124,8 @@
                 border-style: solid;
                 border-color: var(--tainacan-input-border-color) !important;
                 color: var(--tainacan-secondary) !important;
-                padding: 0.25em 0.6em !important;
+                padding-block: 0.25em !important;
+                padding-inline: 0.6em !important;
                 border-radius: 0 !important;
 
                 &:hover {
@@ -164,7 +167,7 @@
         }
         .control-label { // The value part in checkbox, radio and switches
             color: var(--tainacan-input-color);
-            padding-left: 0.8em;
+            padding-inline-start: 0.8em;
             font-size: 0.81em;
             line-height: 1.125em;
             text-overflow: ellipsis;

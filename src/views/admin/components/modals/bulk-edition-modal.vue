@@ -266,7 +266,7 @@
                         <!-- FOURTH FIELD - ICONS AND BUTTONS -->
                         <div
                                 :style="{
-                                    marginRight: !bulkEditionProcedures[criterion].isDone && !bulkEditionProcedures[criterion].isExecuting ? '-7.4px': 0
+                                    marginInlineEnd: !bulkEditionProcedures[criterion].isDone && !bulkEditionProcedures[criterion].isExecuting ? '-7.4px': 0
                                 }"
                                 class="field bulk-last-field">
 
@@ -806,11 +806,11 @@
             flex-direction: column !important;
 
             .tainacan-bulk-edition-field:not(:first-child) {
-                padding-left: 0 !important;
+                padding-inline-start: 0 !important;
             }
 
             .bulk-last-field {
-                margin-left: 0 !important;
+                margin-inline-start: 0 !important;
                 justify-content: center !important;
             }
         }
@@ -975,7 +975,7 @@
             display: flex;
             align-items: center;
             height: 32px;
-            margin-left: 10px;
+            margin-inline-start: 10px;
             flex-direction: row-reverse;
 
             .icon.has-text-dark:hover {

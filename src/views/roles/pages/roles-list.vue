@@ -7,7 +7,7 @@
         <!-- New Role Button -->
         <div 
                 class="header-item"
-                style="margin-right: auto; margin-left: 0;">
+                style="margin-inline-end: auto; margin-inline-start: 0;">
             <b-dropdown
                     id="roles-page-add-new"
                     v-a11y-dropdown

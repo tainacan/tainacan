@@ -443,7 +443,7 @@
                     <router-link
                             v-if="item.current_user_can_edit && $route.query.recent == true"
                             class="button is-secondary"
-                            style="margin-right: auto;"
+                            style="margin-inline-end: auto;"
                             :to="{ path: $routerHelper.getNewItemPath(collectionId)}">
                         <!-- <span class="icon is-large">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-add"/>
@@ -799,16 +799,16 @@
                         
                         :deep(.collapse-handle) {
                             font-size: 1em;
-                            margin-left: 0;
-                            margin-right: 22px;
+                            margin-inline-start: 0;
+                            margin-inline-end: 22px;
                             width: 100%;
                             display: block;
 
                             .label {
-                                margin-left: 2px;
+                                margin-inline-start: 2px;
                             }
                             .icon {
-                                float: right;
+                                float: inline-end;
                                 width: 3em;
                                 justify-content: flex-end;
                             }
@@ -866,7 +866,7 @@
                 align-items: center;
 
                 span {
-                    margin-right: 18px;
+                    margin-inline-end: 18px;
                 }
             }
             p:empty {
@@ -932,9 +932,9 @@
 
         .field-label {
             white-space: nowrap;
-            text-align: left;
             text-align: start;
-            margin-right: 1rem;
+            text-align: start;
+            margin-inline-end: 1rem;
             margin-bottom: 0;
         }
         .field.has-addons {
@@ -953,7 +953,7 @@
             }
         }
         .tainacan-help-tooltip-trigger {
-            margin-left: 1rem;
+            margin-inline-start: 1rem;
         }
         #tainacan-text-slug #url-prefix-indicator {
             pointer-events: initial;
@@ -963,7 +963,7 @@
             font-family: var(--tainacan-font-family);
             font-size: 1.125em;
             opacity: 0.5;
-            margin-right: -0.35em;
+            margin-inline-end: -0.35em;
             color: var(--tainacan-info-color);
             cursor: pointer;
         }
@@ -981,7 +981,7 @@
         display: flex;
         
         .thumbnail-alt-input {
-            margin-left: 1em;
+            margin-inline-start: 1em;
         }
     }
 
@@ -1101,7 +1101,7 @@
         padding: 10px var(--tainacan-one-column);
         position: absolute;
         bottom: 0;
-        right: 0;
+        inset-inline-end: 0;
         z-index: 1001;
         background-color: var(--tainacan-gray1);
         width: 100%;
@@ -1140,12 +1140,12 @@
             justify-content: flex-end;
 
             .button {
-                margin-left: 16px;
-                margin-right: 6px;
+                margin-inline-start: 16px;
+                margin-inline-end: 6px;
             }
             .button.is-outlined {
-                margin-left: 0px;
-                margin-right: auto;
+                margin-inline-start: 0px;
+                margin-inline-end: auto;
             }
         }
 
@@ -1155,7 +1155,7 @@
             border: none;
 
             .icon {
-                margin-right: 5px !important;
+                margin-inline-end: 5px !important;
             }
 
             &:hover,
@@ -1173,7 +1173,7 @@
         }
         .footer {
             padding: 13px 0.5em;
-            margin-left: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
+            margin-inline-start: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
             width: 100%;
             flex-wrap: wrap;
             height: auto;

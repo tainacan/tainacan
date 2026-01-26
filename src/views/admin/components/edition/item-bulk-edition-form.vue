@@ -154,7 +154,7 @@
                         </button>
                     </div>
                     <div 
-                            style="margin-left: auto;"
+                            style="margin-inline-start: auto;"
                             class="control">
                         <button 
                                 :disabled="!(uploadedItems.length > 0 && uploadedItems.length == amountFinished)"
@@ -386,7 +386,7 @@ export default {
                 .document-thumb {
                     max-height: 42px;
                     max-width: 42px;
-                    margin-right: 1em;
+                    margin-inline-end: 1em;
                 }
 
                 .document-name {
@@ -397,7 +397,7 @@ export default {
                 }
 
                 .document-process-state {
-                    margin-left: auto;
+                    margin-inline-start: auto;
                     
                     .loading-icon .control.is-loading::after {
                         position: relative !important;
@@ -408,7 +408,7 @@ export default {
 
                 .document-actions {
                     position: absolute;
-                    right: 0;
+                    inset-inline-end: 0;
                     background: var(--tainacan-gray2);
                     height: 100%;
                     display: none;
@@ -432,9 +432,9 @@ export default {
                 }
 
                 .help.is-danger {
-                    margin-left: auto;
+                    margin-inline-end: auto;
                     width: 100%;
-                    text-align: right;
+                    text-align: end;
                 }
             }
             .sequence-progress-info {

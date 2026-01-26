@@ -37,7 +37,7 @@
                 <span
                         v-if="$adminOptions.itemEditionStatusOptionOnFooterDropdown && (item != null && item != undefined && item.status != undefined && item.status != 'autodraft' && !isLoading)"
                         class="icon has-text-dark"
-                        style="margin-left: 0.5em;"
+                        style="margin-inline-start: 0.5em;"
                         @mouseenter="$emit('toggleItemEditionFooterDropdown')">
                     <i 
                             class="tainacan-icon tainacan-icon-1em"
@@ -357,7 +357,7 @@
                                                     placement: 'auto',
                                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                                 }"
-                                                :style="'font-size: 0.625em;' + (isMobileScreen ? 'margin-right: 2rem;' : '')"
+                                                :style="'font-size: 0.625em;' + (isMobileScreen ? 'margin-inline-end: 2rem;' : '')"
                                                 size="is-small">
                                             {{ $i18n.get('label_required') }} *
                                         </b-switch>
@@ -393,7 +393,7 @@
                                             @keydown.space.prevent="toggleCollapseAll()">
                                         <span class="icon">
                                             <i
-                                                    :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
+                                                    :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !collapseAll }"
                                                     class="tainacan-icon tainacan-icon-1-25em" />
                                         </span>
                                         <template v-if="isMobileScreen">{{ collapseAll ? $i18n.get('label_collapse') : $i18n.get('label_expand') }}</template>
@@ -421,7 +421,7 @@
                                                     <i 
                                                             :class="{
                                                                 'tainacan-icon-arrowdown' : (metadataSectionCollapses[sectionIndex] || formErrorMessage) && !isSectionHidden(metadataSection.id),
-                                                                'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || formErrorMessage) || isSectionHidden(metadataSection.id)
+                                                                'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !(metadataSectionCollapses[sectionIndex] || formErrorMessage) || isSectionHidden(metadataSection.id)
                                                             }"
                                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                                                 </span>
@@ -2123,8 +2123,8 @@ export default {
             
             .column.secondary-column {
                 padding-top: 0;
-                padding-left: var(--tainacan-one-column);
-                padding-right: 0;
+                padding-inline-start: var(--tainacan-one-column);
+                padding-inline-end: 0;
                 padding-bottom: 0;
 
                 @media screen and (min-width: 770px) {
@@ -2142,8 +2142,8 @@ export default {
             }
             .column.main-column {
                 padding-top: 0;
-                padding-left: 0;
-                padding-right: 0;
+                padding-inline-start: 0;
+                padding-inline-end: 0;
 
                 .columns {
                     flex-wrap: wrap;
@@ -2158,19 +2158,24 @@ export default {
                     margin-bottom: 2rem;
                     
                     .field {
-                        padding: 12px 0px 12px 42px;
-                        margin-left: 10px;
+                        padding: 12px;
+                        padding-inline-start: 42px;
+                        padding-inline-end: 0;
+                        margin-inline-start: 10px;
                     }
                 }
                 .metadata-section-description-help-info {
-                    margin: 0.25em 0 0 1.125rem;
+                    margin-block-start: 0.25em;
+                    margin-block-end: 0;
+                    margin-inline-start: 1.125rem;
+                    margin-inline-end: 0;
                 }
                 .item-edition-tab-content .tab-item>.field:last-child {
                     margin-bottom: 187px;
                 }
 
                 @media screen and (max-width: 768px) {
-                    padding-right: var(--tainacan-one-column);
+                    padding-inline-end: var(--tainacan-one-column);
                     max-width: 100%;
 
                     #tainacanTabsSwiper.tabs a {
@@ -2180,12 +2185,12 @@ export default {
             }
 
             @media screen and (max-width: 768px) {
-                margin-left: 0;
-                margin-right: 0;
+                margin-inline-start: 0;
+                margin-inline-end: 0;
 
                 &>.column.main-column {
-                    padding-left: 0;
-                    padding-right: 0;
+                    padding-inline-start: 0;
+                    padding-inline-end: 0;
                     max-width: 100%;
                     width: 100%;
 
@@ -2223,11 +2228,14 @@ export default {
                 &>.column:not(.main-column) {
                     max-width: 100%;
                     width: 100%;
-                    padding-left: 0;
-                    padding-right: 0;
+                    padding-inline-start: 0;
+                    padding-inline-end: 0;
 
                     .section-box {
-                        padding: 0 1em 0 1.875em;
+                        padding-block-start: 0;
+                        padding-block-end: 0;
+                        padding-inline-start: 1.875em;
+                        padding-inline-end: 1em;
                         margin-top: 10px;
                     }
                 }
@@ -2236,7 +2244,10 @@ export default {
 
         .section-label {
             position: relative;
-            padding: 0.5em 0.75em 0.5em 0em;
+            padding-block-start: 0.5em;
+            padding-block-end: 0.5em;
+            padding-inline-start: 0;
+            padding-inline-end: 0.75em;
             label {
                 font-size: 1em !important;
                 font-weight: 500 !important;
@@ -2266,9 +2277,12 @@ export default {
                 position: fixed;
                 z-index: 99999;
                 bottom: 0;
-                padding: 0.5em 0.5em 0.25em 0.5em;
-                border-top-right-radius: 3px;
-                border-top-left-radius: 3px;
+                padding-block-start: 0.5em;
+                padding-block-end: 0.25em;
+                padding-inline-start: 0.5em;
+                padding-inline-end: 0.5em;
+                border-start-end-radius: 3px;
+                border-start-start-radius: 3px;
                 overflow: hidden;
                 transition: top 0.3s ease, bottom 0.3s ease, background-color 0.3s ease;
                 background-color: var(--tainacan-gray1);
@@ -2284,14 +2298,14 @@ export default {
             }
 
             .metadata-navigation {
-                margin-right: auto;
+                margin-inline-end: auto;
                 .field {
                     gap: 0.5em;
                 }
             }
             .metadata-navigation :deep(.button) {
                 border-radius: 0 !important;
-                margin-left: 0;
+                margin-inline-start: 0;
                 min-height: 2.25em;
                 background-color: var(--tainacan-background-color) !important;
 
@@ -2301,7 +2315,7 @@ export default {
                 }
 
                 &:last-of-type {
-                    margin-left: 0;
+                    margin-inline-start: 0;
                 }
             }
             .metadata-name-search-icon {
@@ -2321,7 +2335,7 @@ export default {
             @media screen and (max-width: 768px) {
                 .metadata-name-search {
                     position: absolute;
-                    right: 0.5em;
+                    inset-inline-end: 0.5em;
                     z-index: 999;
                     padding-left: 0 !important;
                 }
@@ -2436,7 +2450,7 @@ export default {
             min-width: 2.125em !important;
             padding: 0 !important;
             z-index: 99;
-            margin-right: 6px !important;
+            margin-inline-end: 6px !important;
 
             .icon {
                 display: inherit;
@@ -2471,7 +2485,7 @@ export default {
             width: 0%;
             position: absolute;
             top: 0;
-            left: 0;
+            inset-inline-start: 0;
             transition: width 0.2s;
         }
         .sequence-progress-background {
@@ -2480,7 +2494,7 @@ export default {
             width: 100%;
             position: absolute;
             top: 0;
-            left: 0;
+            inset-inline-start: 0;
         }
 
         .update-warning {
@@ -2539,7 +2553,7 @@ export default {
 
             .update-info-section {
                 color: var(--tainacan-info-color);
-                margin-right: auto;
+                margin-inline-end: auto;
                 display: flex;
                 flex-wrap: nowrap;
             }
@@ -2548,10 +2562,10 @@ export default {
                 display: inline-flex;
                 font-size: 1.0em;
                 margin-top: 0;
-                margin-left: 24px;
+                margin-inline-start: 24px;
 
                 .tainacan-help-tooltip-trigger {
-                    margin-left: 0.25em;
+                    margin-inline-start: 0.25em;
                 }
             }
 
@@ -2561,7 +2575,7 @@ export default {
                 border: none;
 
                 .icon {
-                    margin-right: 5px !important;
+                    margin-inline-end: 5px !important;
                 }
 
                 &:hover,
@@ -2583,13 +2597,13 @@ export default {
             }
             .footer {
                 padding: 13px 0.5em;
-                margin-left: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
+                margin-inline-start: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
                 width: 100%;
                 flex-wrap: wrap;
                 height: auto;
                 position: fixed;
                 .update-info-section {
-                    margin-left: auto;margin-bottom: 0.75em;
+                    margin-inline-start: auto;margin-bottom: 0.75em;
                     margin-top: -0.25em;
                 }
             }
@@ -2654,7 +2668,7 @@ export default {
 
             .tainacan-mobile-app-header_panel-shortcuts-area {
                 margin-top: 1.25em;
-                text-align: left;
+                text-align: start;
                 
                 h2 {
                     font-size: 1.125em;

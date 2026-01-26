@@ -276,7 +276,7 @@
                                     <i 
                                             :class="{
                                                 'tainacan-icon-arrowdown' : openedAdminUIOptionCollapse == 'admin-ui-group--' + groupIndex,
-                                                'tainacan-icon-arrowright' : openedAdminUIOptionCollapse != 'admin-ui-group--' + groupIndex 
+                                                'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : openedAdminUIOptionCollapse != 'admin-ui-group--' + groupIndex 
                                             }"
                                             class="tainacan-icon tainacan-icon-1-25em" />
                                 </span>
@@ -850,7 +850,7 @@
         align-items: center;
         transition: bottom 0.5s ease, width 0.2s linear;
         box-shadow: 0px 0px 12px -8px var(--tainacan-black);
-        margin-left: calc( -1 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column)));
+        margin-inline-start: calc( -1 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column)));
         margin-top: auto;
         padding: 10px var(--tainacan-page-container-padding-x, var(--tainacan-one-column));
 
@@ -914,7 +914,7 @@
 
         .capability-group {
             padding: 1em 1em 1em 0em;
-            margin-right: auto;
+            margin-inline-end: auto;
             break-inside: avoid;
             
             h3 {

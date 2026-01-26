@@ -699,7 +699,7 @@
 
     .tainacan-modal-title {
         p {
-            margin-right: auto;
+            margin-inline-end: auto;
         }
     }
 

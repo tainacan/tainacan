@@ -177,7 +177,7 @@ export default {
             break-inside: avoid;
 
             label {
-                margin-left: 12px;
+                margin-inline-start: 12px;
 
                 :deep(.control-label) {
                     white-space: normal;
