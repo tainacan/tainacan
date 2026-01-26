@@ -1076,7 +1076,7 @@
         display: flex;
         justify-content: space-between;
         align-items: stretch;
-        margin-left: 0px !important;
+        margin-inline-start: 0px !important;
         padding: 2px 0 !important;
         -webkit-break-inside: avoid;
         break-inside: avoid;
@@ -1321,7 +1321,7 @@
         } 
         :deep(.field-body>.field) {
             padding: 0px !important;
-            margin-left: 0px !important;
+            margin-inline-start: 0px !important;
         }
         :deep(.field-body>.field>p.control+.control>.input) {
             border-radius: 0 var(--tainacan-input-border-radius, 0) var(--tainacan-input-border-radius, 0) 0 !important;
