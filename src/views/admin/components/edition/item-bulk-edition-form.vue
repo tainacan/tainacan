@@ -154,7 +154,7 @@
                         </button>
                     </div>
                     <div 
-                            style="margin-inline-end: auto;"
+                            style="margin-inline-start: auto;"
                             class="control">
                         <button 
                                 :disabled="!(uploadedItems.length > 0 && uploadedItems.length == amountFinished)"
@@ -397,7 +397,7 @@ export default {
                 }
 
                 .document-process-state {
-                    margin-inline-end: auto;
+                    margin-inline-start: auto;
                     
                     .loading-icon .control.is-loading::after {
                         position: relative !important;
