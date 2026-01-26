@@ -7,7 +7,7 @@
 
             <b-field 
                     class="header-item"
-                    style="margin-right: auto; margin-left: 0;">
+                    style="margin-inline-end: auto; margin-inline-start: 0;">
                 <b-input
                         v-model="searchQuery"
                         :placeholder="$i18n.get('instruction_search')"
@@ -63,9 +63,14 @@
                         v-if="searchDates && searchDates.length != 0"
                         class="control">
                     <button
+                            :aria-label="$i18n.get('label_clean')"
                             class="button"
                             @click="clearSearchDates()">
-                        <span class="icon"><i class="tainacan-icon tainacan-icon-close" /></span>
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
+                            <i class="tainacan-icon tainacan-icon-close" />
+                        </span>
                     </button>
                 </p>
             </b-field>
@@ -108,13 +113,7 @@
                     v-if="processes.length > 0" 
                     class="pagination-area">
                 <div class="shown-items">
-                    {{
-                        $i18n.get('info_showing_processes') + ' ' +
-                            (processesPerPage * (processesPage - 1) + 1) +
-                            $i18n.get('info_to') +
-                            getLastProcessesNumber() +
-                            $i18n.get('info_of') + totalProcesses + '.'
-                    }}
+                    {{ showingProcessesText }}
                 </div>
                 <div class="items-per-page">
                     <b-field 
@@ -179,6 +178,13 @@
             ...mapGetters('bgprocess', {
                'processes': 'getProcesses'
             }),
+            showingProcessesText() {
+                const first = this.processesPerPage * (this.processesPage - 1) + 1;
+                const last = this.getLastProcessesNumber();
+                const total = this.totalProcesses;
+                
+                return this.$i18n.getWithVariables('info_showing_processes_range', [first, last, total]);
+            },
             processesPerPageOptions() {
                 const defaultProcessesPerPageOptions = [];
                 
@@ -317,7 +323,7 @@
             .gray-icon,
             .gray-icon .icon {
                 color: var(--tainacan-info-color) !important;
-                padding-right: 10px;
+                padding-inline-end: 10px;
                 height: 1.125em !important;
             }
             .gray-icon .icon i::before, 
@@ -341,7 +347,7 @@
             padding-top: 0.9em;
 
             .header-item:not(:last-child) {
-                padding-right: 0.2em;
+                padding-inline-end: 0.2em;
             }
         }
     }

@@ -8,7 +8,7 @@
 
         <div class="sub-header tainacan-sub-header--sticky">
             <b-field 
-                    style="margin-left: 0; margin-right: auto;"
+                    style="margin-inline-start: 0; margin-inline-end: auto;"
                     class="header-item">
                 <div class="control has-icons-right  is-small is-clearfix">
                     <b-autocomplete
@@ -68,13 +68,7 @@
                     v-if="capabilities.length > 0" 
                     class="pagination-area">
                 <div class="shown-items">
-                    {{
-                        $i18n.get('info_showing_capabilities') +
-                            (capabilitiesPerPage * (page - 1) + 1) +
-                            $i18n.get('info_to') +
-                            capabilities.length + 
-                            $i18n.get('info_of') + total + '.'
-                    }}
+                    {{ showingCapabilitiesText }}
                 </div>
             </div>
 
@@ -142,6 +136,14 @@
                 } else {
                     return []
                 }
+            },
+            showingCapabilitiesText() {
+                const allCapabilities = this.getCapabilities();
+                const total = allCapabilities ? Object.keys(allCapabilities).length : 0;
+                const first = this.capabilities.length > 0 ? 1 : 0;
+                const last = this.capabilities.length;
+                
+                return this.$i18n.getWithVariables('info_showing_capabilities_range', [first, last, total]);
             }
         },
         mounted() {
@@ -196,10 +198,10 @@
             min-height: 1.875em;
 
             &:first-child {
-                margin-right: auto;
+                margin-inline-end: auto;
             }
             &:not(:last-child) {
-                padding-right: 0.5em;
+                padding-inline-end: 0.5em;
             }
 
             .label {
@@ -226,7 +228,7 @@
             .gray-icon,
             .gray-icon .icon {
                 color: var(--tainacan-info-color) !important;
-                padding-right: 10px;
+                padding-inline-end: 10px;
                 height: 1.125em !important;
             }
             .gray-icon .icon i::before, 
@@ -246,7 +248,7 @@
 
         @media screen and (max-width: 768px) {
             .header-item:not(:last-child) {
-                padding-right: 0.2em;
+                padding-inline-end: 0.2em;
             }
         }
     }

@@ -28,7 +28,9 @@
                     <template #trigger>
                         <button class="button is-secondary">
                             <div>{{ $i18n.getFrom('collections', 'new_item') }}</div>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
@@ -306,7 +308,7 @@
                             :key="index"
                             tabindex="-1"
                             :class="{ 'is-active': status == statusOption.slug}"
-                            :style="{ marginRight: statusOption.slug == 'pending' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }">
+                            :style="{ marginInlineEnd: statusOption.slug == 'pending' ? 'auto' : '', marginInlineStart: statusOption.slug == 'trash' ? 'auto' : '' }">
                         <a
                                 :id="'collections-status-tab-' + statusOption.slug"
                                 v-tooltip="{
@@ -434,13 +436,7 @@
                         v-if="collections.length > 0"
                         class="pagination-area">
                     <div class="shown-items"> 
-                        {{ 
-                            $i18n.get('info_showing_collections') + 
-                                (collectionsPerPage*(page - 1) + 1) + 
-                                $i18n.get('info_to') + 
-                                getLastCollectionNumber() + 
-                                $i18n.get('info_of') + totalCollections + '.'
-                        }} 
+                        {{ showingCollectionsText }}
                     </div> 
                     <div class="items-per-page">
                         <b-field 
@@ -543,6 +539,13 @@ export default {
                 return selectedOrderOption.label;
 
             return this.orderBy;
+        },
+        showingCollectionsText() {
+            const first = this.collectionsPerPage * (this.page - 1) + 1;
+            const last = this.getLastCollectionNumber();
+            const total = this.totalCollections;
+            
+            return this.$i18n.getWithVariables('info_showing_collections_range', [first, last, total]);
         },
         collectionsPerPageOptions() {
             const defaultCollectionsPerPageOptions = [];
@@ -750,10 +753,10 @@ export default {
             min-height: 1.875em;
 
             &:first-child {
-                margin-right: auto;
+                margin-inline-end: auto;
             }
             &:not(:last-child) {
-                padding-right: 0.875em;
+                padding-inline-end: 0.875em;
             }
 
             .label {
@@ -847,7 +850,7 @@ export default {
             padding-top: 0.9em;
 
             .header-item:not(:last-child) {
-                padding-right: 0.2em;
+                padding-inline-end: 0.2em;
             }
         }
     }

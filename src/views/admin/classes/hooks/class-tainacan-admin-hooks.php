@@ -2,6 +2,8 @@
 
 namespace Tainacan;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 class Admin_Hooks {
 	use \Tainacan\Traits\Singleton_Instance;
 

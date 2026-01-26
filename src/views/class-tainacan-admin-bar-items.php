@@ -35,30 +35,28 @@ class Admin_Bar_Items {
 	 * @return string CSS content for admin bar items.
 	 */
 	private static function get_admin_bar_css() {
-		return <<<'CSS'
-/* Styles Tainacan links in the WordPress admin top bar */
-#wpadminbar .tainacan-admin-bar-link.tainacan-admin-bar-link--repository a,
-#wpadminbar .tainacan-admin-bar-link.tainacan-admin-bar-link--repository:hover a,
-#wpadminbar .tainacan-admin-bar-link.tainacan-admin-bar-link--repository:focus a {
-	background-color: #1d3968 !important;
-}
-#wpadminbar .tainacan-admin-bar-link a,
-#wpadminbar .tainacan-admin-bar-link:hover a,
-#wpadminbar .tainacan-admin-bar-link:focus a {
-	background-color: #187181 !important;
-}
-#wpadminbar .tainacan-admin-bar-link a::before,
-#wpadminbar .tainacan-admin-bar-link:hover a::before,
-#wpadminbar .tainacan-admin-bar-link:focus a::before {
-	color: white !important;
-	content: '\f464';
-    top: 2px;
-}
-#wpadminbar .tainacan-admin-bar-link:hover a,
-#wpadminbar .tainacan-admin-bar-link:focus a {
-	color: white !important;
-}
-CSS;
+		return '/* Styles Tainacan links in the WordPress admin top bar */
+		#wpadminbar .tainacan-admin-bar-link.tainacan-admin-bar-link--repository a,
+		#wpadminbar .tainacan-admin-bar-link.tainacan-admin-bar-link--repository:hover a,
+		#wpadminbar .tainacan-admin-bar-link.tainacan-admin-bar-link--repository:focus a {
+			background-color: #1d3968 !important;
+		}
+		#wpadminbar .tainacan-admin-bar-link a,
+		#wpadminbar .tainacan-admin-bar-link:hover a,
+		#wpadminbar .tainacan-admin-bar-link:focus a {
+			background-color: #187181 !important;
+		}
+		#wpadminbar .tainacan-admin-bar-link a::before,
+		#wpadminbar .tainacan-admin-bar-link:hover a::before,
+		#wpadminbar .tainacan-admin-bar-link:focus a::before {
+			color: white !important;
+			content: \'\\f464\';
+			top: 2px;
+		}
+		#wpadminbar .tainacan-admin-bar-link:hover a,
+		#wpadminbar .tainacan-admin-bar-link:focus a {
+			color: white !important;
+		}';
 	}
 
 	/**
@@ -71,7 +69,7 @@ CSS;
 	function add_admin_bar_items_styles() {
 		if ( is_user_logged_in() ) {
 			// Register a minimal style handle and add inline CSS
-			wp_register_style( 'tainacan-admin-bar-inline', false );
+			wp_register_style( 'tainacan-admin-bar-inline', false, array(), TAINACAN_VERSION );
 			wp_enqueue_style( 'tainacan-admin-bar-inline' );
 			wp_add_inline_style( 'tainacan-admin-bar-inline', self::get_admin_bar_css() );
 		}

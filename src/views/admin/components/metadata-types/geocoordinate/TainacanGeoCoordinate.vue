@@ -5,7 +5,7 @@
         <l-map 
                 :id="'map--' + itemMetadatumIdentifier"
                 :ref="'map--' + itemMetadatumIdentifier"
-                style="height: 320px; width:100%;"
+                style="height: 320px; width:100%; min-width: 320px;"
                 :zoom="initialZoom"
                 :max-zoom="maxZoom"
                 :center="[initialLatitude, initialLongitude]"
@@ -41,7 +41,9 @@
                             v-if="editingMarkerIndex >= 0"
                             outlined
                             @click="onMarkerRemove(editingMarkerIndex)">
-                        <span class="icon is-small">
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-small">
                             <i class="tainacan-icon has-text-secondary tainacan-icon-remove" />
                         </span>
                         &nbsp;{{ $i18n.get('remove_point') }}
@@ -50,7 +52,9 @@
                             v-if="editingMarkerIndex < 0 && shouldAddMore"
                             outlined
                             @click="addLocation(latitude + ',' + longitude)">
-                        <span class="icon is-small">
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-small">
                             <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                         </span>
                         &nbsp;{{ $i18n.get('add') }}

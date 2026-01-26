@@ -57,7 +57,7 @@
                     <!-- Collapse -->
                     <span class="icon">
                         <i
-                                :class="{ 'tainacan-icon-arrowdown' : collapses[index], 'tainacan-icon-arrowright' : !collapses[index] }"
+                                :class="{ 'tainacan-icon-arrowdown' : collapses[index], 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !collapses[index] }"
                                 class="tainacan-icon tainacan-icon-1-25em" />
                     </span>
                     <!-- Checking list -->
@@ -131,7 +131,8 @@
                         <div class="actions-container">
                             <span
                                     v-if="bgProcess.status == 'running'"
-                                    class="icon has-text-success loading-icon">
+                                    class="icon has-text-success loading-icon"
+                                    aria-hidden="true">
                                 <div class="control has-icons-right is-loading is-clearfix" />
                             </span>
                             <span
@@ -282,7 +283,9 @@
                                 <a
                                         v-if="bgProcess.log"
                                         :href="bgProcess.log">
-                                    <span class="icon is-small">
+                                    <span 
+                                            aria-hidden="true"
+                                            class="icon is-small">
                                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl" />
                                     </span>
                                     {{ $i18n.get('label_log_file') }}
@@ -292,7 +295,9 @@
                                         v-if="bgProcess.error_log"
                                         class="has-text-danger"
                                         :href="bgProcess.error_log">
-                                    <span class="icon is-small">
+                                    <span 
+                                            aria-hidden="true"
+                                            class="icon is-small">
                                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl" />
                                     </span>
                                     {{ $i18n.get('label_error_log_file') }}
@@ -520,8 +525,10 @@
 <style lang="scss" scoped>
 
     .selection-control {
-        
-        padding: 6px 0px 0px 12px;
+        padding-inline-start: 12px;
+        padding-inline-end: 0px;
+        padding-block-start: 6px;
+        padding-block-end: 0px;
         background: var(--tainacan-background-color);
         height: 40px;
 
@@ -614,11 +621,11 @@
                     font-size: 0.875em !important;
                 }
                 width: 20.833333%;
-                margin-right: var(--tainacan-one-column) !important;
+                margin-inline-end: var(--tainacan-one-column) !important;
             }
             .process-progress {
                 width: auto;
-                margin-right: var(--tainacan-one-column) !important;
+                margin-inline-end: var(--tainacan-one-column) !important;
                 flex-grow: 2;
 
                 .occluding-content {
@@ -643,7 +650,7 @@
 
             .process-queued-on {
                 width: 16.6666667%;
-                margin-right: var(--tainacan-one-column) !important;
+                margin-inline-end: var(--tainacan-one-column) !important;
             }
         }
         &>.process-collapse {
@@ -663,7 +670,7 @@
 
             .process-output {
                 margin-left: 1.75em !important;
-                margin-right: var(--tainacan-one-column) !important;
+                margin-inline-end: var(--tainacan-one-column) !important;
                 width: 20.83%;
 
                 ul {
@@ -684,8 +691,8 @@
             }
 
             .process-last-processed-on {
-                margin-left: auto !important;
-                margin-right: calc(var(--tainacan-one-column) + 72px) !important;
+                margin-inline-start: auto !important;
+                margin-inline-end: calc(var(--tainacan-one-column) + 72px) !important;
             }
         }
     }

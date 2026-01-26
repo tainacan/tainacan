@@ -111,7 +111,7 @@
     }
 
     button.is-success {
-        margin-left: auto;
+        margin-inline-start: auto;
     }
 
     .b-checkbox.checkbox {

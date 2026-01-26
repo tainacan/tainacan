@@ -14,9 +14,11 @@
                         :aria-expanded="!collapseAll"
                         class="button link-style collapse-all"
                         @click="collapseAll = !collapseAll">
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i 
-                                :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
+                                :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !collapseAll }"
                                 class="has-text-secondary tainacan-icon tainacan-icon-1-125em" />
                     </span>
                     <span class="collapse-all__text">
@@ -37,7 +39,9 @@
                                     :disabled="activeMetadatumList.length <= 0"
                                     class="button is-white">
                                 <span>{{ $i18n.get('label_filter_by_type') }}</span>
-                                <span class="icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                 </span>
                             </button>
@@ -76,7 +80,9 @@
                 class="field is-grouped-centered section">
             <div class="content has-text-dark has-text-centered">
                 <p>
-                    <span class="icon is-large">
+                    <span 
+                            aria-hidden="true"
+                            class="icon is-large">
                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
                     </span>
                 </p>
@@ -149,9 +155,10 @@
                                             placement: 'auto-start'
                                         }"
                                         class="gray-icon icon"
+                                        aria-hidden="true"
                                         :style="{ cursor: 'pointer', opacity: openedMetadatumId != metadatum.id ? '1.0' : '0.0' }"
                                         @click="Object.assign( collapses, { [metadatum.id]: !isCollapseOpen(metadatum.id) })">
-                                    <i :class="'tainacan-icon tainacan-icon-1-25em tainacan-icon-' + (isCollapseOpen(metadatum.id) ? 'arrowdown' : 'arrowright')" />
+                                    <i :class="'tainacan-icon tainacan-icon-1-25em tainacan-icon-' + (isCollapseOpen(metadatum.id) ? 'arrowdown' : 'arrowright tainacan-icon-is-rtl-mirrored')" />
                                 </span>
 
                                 <span class="metadatum-name">

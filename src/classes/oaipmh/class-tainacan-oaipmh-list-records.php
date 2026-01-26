@@ -180,7 +180,7 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
                 }
             }
         }catch(\Exception $e){
-            var_dump($e,$this->working_node,'dc:' . $key);
+            error_log(print_r($e, true) . ' - ' . print_r($this->working_node, true) . ' - dc:' . esc_html($key ?? ''));
         }
     }
 
@@ -287,7 +287,7 @@ class OAIPMH_List_Records extends OAIPMH_Expose {
             }
             $this->cursor = (int) $this->deliveredrecords + $this->MAXRECORDS;
             $this->restoken = $this->createResumToken($this->cursor, $this->from,$this->until,$this->sets, $this->metadataPrefix);
-            $this->expirationdatetime = date("Y-m-d\TH:i:s\Z", time() * $this->token_valid);
+            $this->expirationdatetime = date("Y-m-d\TH:i:s\Z", time() + $this->token_valid);
         }
     }
 

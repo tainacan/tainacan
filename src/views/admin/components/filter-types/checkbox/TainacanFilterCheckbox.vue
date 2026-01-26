@@ -244,7 +244,7 @@
     }
 
     .no-options-placeholder {
-        margin-left: 0.5em;
+        margin-inline-start: 0.5em;
         font-size: 0.75em;
         color: var(--tainacan-info-color);
     }
@@ -268,7 +268,7 @@
     }
 
     .facet-item-count {
-        margin-left: auto;
+        margin-inline-end: auto;
     }
     .b-checkbox:hover .facet-item-count,
     .b-checkbox:focus .facet-item-count {

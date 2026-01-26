@@ -147,14 +147,18 @@ class Private_Files {
 	function change_upload_dir($path) {
 		$post_id = false;
 
-		// regular ajax uploads via Admin Panel will send post_id
+		// Regular ajax uploads via Admin Panel will send post_id
+		/* phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a filter hook called by WordPress core after upload validation. WordPress core already handles nonce verification for uploads in wp_handle_upload() and wp_ajax_upload_attachment(). */
 		if ( isset($_REQUEST['post_id']) && $_REQUEST['post_id'] ) {
-			$post_id = sanitize_text_field($_REQUEST['post_id']);
+			/* phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a filter hook called by WordPress core after upload validation. WordPress core already handles nonce verification for uploads in wp_handle_upload() and wp_ajax_upload_attachment(). */
+			$post_id = sanitize_text_field( wp_unslash( $_REQUEST['post_id'] ) );
 		}
 
 		// API requests to media endpoint will send post
+		/* phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a filter hook called by WordPress core after upload validation. REST API uploads use authentication tokens, not nonces. */
 		if ( false === $post_id && isset($_REQUEST['post']) && is_numeric($_REQUEST['post']) ) {
-			$post_id = sanitize_text_field($_REQUEST['post']);
+			/* phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a filter hook called by WordPress core after upload validation. REST API uploads use authentication tokens, not nonces. */
+			$post_id = sanitize_text_field( wp_unslash( $_REQUEST['post'] ) );
 		}
 
 		// tainacan internals, scripts and tests, will set this global

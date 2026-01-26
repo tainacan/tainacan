@@ -47,7 +47,9 @@
                     class="section">
                 <div class="content has-text-dark has-text-centered">
                     <p>
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-metadata" />
                         </span>
                     </p>
@@ -155,11 +157,11 @@ export default {
             }
 
             &:not(.available-metadata-types-area){
-                margin-right: var(--tainacan-one-column);
+                margin-inline-end: var(--tainacan-one-column);
                 flex-grow: 2;
 
                 @media screen and (max-width: 768px) {
-                    margin-right: 0;
+                    margin-inline-end: 0;
                 }
             }
             h3 {
@@ -183,12 +185,12 @@ export default {
             padding: 0.5em 1em 0.5em 0em;
 
             .header-item {
-                margin-left: 0.75rem;
+                margin-inline-start: 0.75rem;
                 margin-bottom: 0px;
             }
 
             h3 {
-                margin-right: auto;
+                margin-inline-end: auto;
             }
 
             .dropdown-menu {
@@ -215,14 +217,14 @@ export default {
         .collapse-all {
             display: inline-flex;
             align-items: center;
-            margin-left: -0.875em;
-            margin-right: auto !important;
+            margin-inline-start: -0.875em;
+            margin-inline-end: auto !important;
         }
         .loading-spinner {
             animation: spinAround 500ms infinite linear;
             border: 2px solid var(--tainacan-gray2);
             border-radius: 290486px;
-            border-right-color: transparent;
+            border-inline-end-color: transparent;
             border-top-color: transparent;
             content: "";
             display: inline-block;
@@ -242,7 +244,7 @@ export default {
             @media screen and (max-width: 768px) {
                 min-height: 45px;
                 margin: 0; 
-                padding-right: 0em;
+                padding-inline-end: 0em;
             }
             &.metadata-area-receive {
                 border: 1px dashed var(--tainacan-gray4);
@@ -254,8 +256,8 @@ export default {
 
             &.active-metadata-sections-area {
                 font-size: 0.875em;
-                margin-left: 1em;
-                padding-right: 1em;
+                margin-inline-start: 1em;
+                padding-inline-end: 1em;
                 min-height: 330px;
             }
 
@@ -275,7 +277,10 @@ export default {
                 }
                 
                 .handle {
-                    padding: 0.813em 6.9em 0.813em 0.9em;
+                    padding-inline-end: 6.9em;
+                    padding-inline-start: 0.9em;
+                    padding-block-start: 0.813em;
+                    padding-block-end: 0.813em;
                     border-radius: var(--tainacan-button-border-radius, 0px);
                     white-space: nowrap;
                     display: flex;
@@ -288,8 +293,8 @@ export default {
                 .metadatum-name {
                     white-space: nowrap;
                     font-weight: bold;
-                    margin-left: 0.4em;
-                    margin-right: 0.4em;
+                    margin-inline-start: 0.4em;
+                    margin-inline-end: 0.4em;
                     color: var(--tainacan-gray4);
 
                     &.is-danger {
@@ -298,7 +303,7 @@ export default {
                     
                 }
                 &.active-metadata-sections-item {
-                    padding-left: 0;
+                    padding-inline-start: 0;
                     margin-top: 1rem;
                     border-bottom: 1px solid var(--tainacan-gray2);
 
@@ -327,12 +332,12 @@ export default {
                     font-style: italic;
                     font-weight: bold;
                     color: var(--tainacan-danger);
-                    margin-left: 0.5em;
+                    margin-inline-start: 0.5em !important;
                 }
                 .controls { 
                     font-size: 0.875em;
                     position: absolute;
-                    right: 11px;
+                    inset-inline-end: 11px;
                     top: 11px;
                     display: flex;
                     align-items: center;
@@ -348,16 +353,16 @@ export default {
                     flex-direction: column;
                     position: absolute;
                     overflow: hidden;
-                    border-top-right-radius: 0;
-                    border-bottom-right-radius: 0;
-                    border-top-left-radius: var(--tainacan-button-border-radius, 3px);
-                    border-bottom-left-radius: var(--tainacan-button-border-radius, 3px);
+                    border-start-end-radius: 0;
+                    border-end-end-radius: 0;
+                    border-start-start-radius: var(--tainacan-button-border-radius, 3px);
+                    border-end-start-radius: var(--tainacan-button-border-radius, 3px);
                     font-size: 0.938em;
-                    left: 0em; 
+                    inset-inline-start: 0em; 
                     top: 0px;
                     opacity: 0;
                     visibility: hidden;
-                    transition: opacity 0.2s ease, left 0.2s ease;
+                    transition: opacity 0.2s ease, inset-inline-start 0.2s ease;
 
                     button {
                         border: none;
@@ -370,7 +375,7 @@ export default {
                 &:not(.not-sortable-item) .handle:hover >.sorting-buttons {
                     opacity: 1.0;
                     visibility: visible;
-                    left: -1.062em
+                    inset-inline-start: -1.062em
                 }
 
                 &.is-compact-item .metadatum-name {
@@ -463,18 +468,18 @@ export default {
             .sub-header,
             .active-metadata-area.active-metadata-sections-area,
             .active-metadata-sections-area.active-metadata-sections-area {
-                padding-right: 0;
+                padding-inline-end: 0;
             }
         }
     }
 
     .tainacan-repository-level-colors {
         .tainacan-form.sub-header {
-            padding-left: 2.75em !important;
+            padding-inline-start: 2.75em !important;
         }
         .active-metadata-sections-area,
         .active-metadata-area {
-            margin-left: 0px !important;
+            margin-inline-start: 0px !important;
         }
     }
 </style>

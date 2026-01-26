@@ -20,7 +20,7 @@
         transition: border ease 0.5s, opacity ease 0.5;
 
         &.term-carousel-view-mode-grid {
-            margin-right: 6px;
+            margin-inline-end: 6px;
             div {
                 flex-wrap: wrap;
                 display: flex;
@@ -53,7 +53,7 @@
             }
         }
         &.term-carousel-view-mode-thumbnail {
-            margin-left: 6px;
+            margin-inline-start: 6px;
 
             div {
                 display: block;
@@ -281,13 +281,13 @@
             display: none;
         }
         &.has-arrows-left .swiper-button-next {
-            left: 0px;
-            right: auto;
+            inset-inline-start: 0px;
+            inset-inline-end: auto;
             top: calc(50% + 12px) !important;
         }
         &.has-arrows-right .swiper-button-prev {
-            right: 20px;
-            left: auto;
+            inset-inline-end: 20px;
+            inset-inline-start: auto;
         }
         &.has-arrows-right .swiper-button-next {
             top: calc(50% + 12px) !important;
@@ -301,13 +301,13 @@
             margin: 0 -24px;
         }
         &.has-large-arrows.has-arrows-left .swiper-button-next {
-            left: 10px;
-            right: auto;
+            inset-inline-start: 10px;
+            inset-inline-end: auto;
             top: calc(50% + 30px) !important;
         }
         &.has-large-arrows.has-arrows-right .swiper-button-prev {
-            right: 10px;
-            left: auto;
+            inset-inline-end: 10px;
+            inset-inline-start: auto;
         }
         &.has-large-arrows.has-arrows-right .swiper-button-next {
             top: calc(50% + 30px) !important;

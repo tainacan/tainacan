@@ -47,7 +47,7 @@
         }
     }
     .tainacan-media-component__swiper-thumbs li.swiper-slide.has-fixed-height {
-        margin-right: 12px;
+        margin-inline-end: 12px;
     }
 }
 .tainacan-media-component {
@@ -430,7 +430,7 @@
         width: calc(32px + var(--swiper-navigation-size, 44px));
         background-image: linear-gradient(90deg, var(--tainacan-media-background, #ffffff) 25%, transparent);
         top: 0;
-        left: 0;
+        inset-inline-start: 0;
         z-index: 1;
     }
     .swiper-end-border {
@@ -439,7 +439,7 @@
         width: calc(32px + var(--swiper-navigation-size, 44px));
         background-image: linear-gradient(90deg, transparent, var(--tainacan-media-background, #ffffff) 75%);
         top: 0;
-        right: 0;
+        inset-inline-end: 0;
         z-index: 1;
     }
 }

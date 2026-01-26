@@ -14,7 +14,9 @@
                     <span class="icon is-small">
                         <i v-html="comparatorsObject[comparator].symbol" />
                     </span>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                     </span>
                 </button>
@@ -216,9 +218,9 @@
                 padding: 2px 0.5em !important;
                 height: var(--tainacan-button-min-height, 2.571em) !important;
                 min-height: 100% !important;
-                border-top-right-radius: 0 !important;
-                border-bottom-right-radius: 0 !important;
-                border-right-width: 0px !important;
+                border-start-end-radius: 0 !important;
+                border-end-end-radius: 0 !important;
+                border-inline-end-width: 0px !important;
 
                 i:not(.tainacan-icon-arrowdown) {
                     margin-top: -3px;
@@ -231,8 +233,8 @@
         .datepicker {
             
             :deep(input.input) {
-                border-top-left-radius: 0 !important;
-                border-bottom-left-radius: 0 !important;
+                border-start-start-radius: 0 !important;
+                border-end-start-radius: 0 !important;
             }
         }
 
@@ -249,7 +251,7 @@
 
             :deep(.dropdown) {
                 .dropdown-trigger button {
-                    border-right-width: 1px !important;
+                    border-inline-end-width: 1px !important;
                 }
             }
         }

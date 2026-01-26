@@ -17,7 +17,9 @@
                     class="button is-medium is-white is-align-self-flex-start"
                     :aria-label="$i18n.get('close')"
                     @click="$emit('close')">
-                <span class="icon">
+                <span 
+                        aria-hidden="true"
+                        class="icon">
                     <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-125em" />
                 </span>
             </button>
@@ -266,7 +268,7 @@
                         <!-- FOURTH FIELD - ICONS AND BUTTONS -->
                         <div
                                 :style="{
-                                    marginRight: !bulkEditionProcedures[criterion].isDone && !bulkEditionProcedures[criterion].isExecuting ? '-7.4px': 0
+                                    marginInlineEnd: !bulkEditionProcedures[criterion].isDone && !bulkEditionProcedures[criterion].isExecuting ? '-7.4px': 0
                                 }"
                                 class="field bulk-last-field">
 
@@ -806,11 +808,11 @@
             flex-direction: column !important;
 
             .tainacan-bulk-edition-field:not(:first-child) {
-                padding-left: 0 !important;
+                padding-inline-start: 0 !important;
             }
 
             .bulk-last-field {
-                margin-left: 0 !important;
+                margin-inline-start: 0 !important;
                 justify-content: center !important;
             }
         }
@@ -942,17 +944,16 @@
         }
 
         .tainacan-bulk-edition-field {
-            flex-direction: column;
             flex-grow: 1;
             flex-shrink: 1;
             padding-bottom: 9px;
             flex-basis: 10%;
 
             &:not(:first-child) {
-                padding-left: 13px;
+                padding-left: 13px !important;
             }
 
-            :deep(.is-special-hidden-for-mobile) {
+            .is-special-hidden-for-mobile {
                 &,
                 &:focus,
                 &:focus-visible {
@@ -976,7 +977,7 @@
             display: flex;
             align-items: center;
             height: 32px;
-            margin-left: 10px;
+            margin-inline-start: 10px;
             flex-direction: row-reverse;
 
             .icon.has-text-dark:hover {

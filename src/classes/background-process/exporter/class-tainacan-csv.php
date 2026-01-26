@@ -188,7 +188,7 @@ class CSV extends Exporter {
 		?>
 		<div class="field">
 			<label class="label" style="position: relative">
-				<?php _e('CSV Delimiter', 'tainacan'); ?>
+				<?php esc_html_e('CSV Delimiter', 'tainacan'); ?>
 				<span class="help-wrapper">
 					<a class="help-button">
 						<span class="icon is-small">
@@ -197,10 +197,10 @@ class CSV extends Exporter {
 					</a>
 					<div class="help-tooltip">
 						<div class="help-tooltip-header">
-							<h5><?php _e('CSV Delimiter', 'tainacan'); ?></h5>
+							<h5><?php esc_html_e('CSV Delimiter', 'tainacan'); ?></h5>
 						</div>
 						<div class="help-tooltip-body">
-							<p><?php _e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
+							<p><?php esc_html_e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
 						</div>
 					</div>
 				</span>
@@ -211,7 +211,7 @@ class CSV extends Exporter {
 		</div>
 
 		<div class="field">
-			<label class="label"><?php _e('Enclosure', 'tainacan'); ?></label>
+			<label class="label"><?php esc_html_e('Enclosure', 'tainacan'); ?></label>
 			<span class="help-wrapper">
 					<a class="help-button">
 						<span class="icon is-small">
@@ -220,10 +220,10 @@ class CSV extends Exporter {
 					</a>
 					<div class="help-tooltip">
 						<div class="help-tooltip-header">
-							<h5><?php _e('Enclosure', 'tainacan'); ?></h5>
+							<h5><?php esc_html_e('Enclosure', 'tainacan'); ?></h5>
 						</div>
 						<div class="help-tooltip-body">
-							<p><?php _e('The character that wraps the content of each cell in your CSV, if necessary (e.g. ")', 'tainacan'); ?></p>
+							<p><?php esc_html_e('The character that wraps the content of each cell in your CSV, if necessary (e.g. ")', 'tainacan'); ?></p>
 						</div>
 					</div>
 			</span>
@@ -233,7 +233,7 @@ class CSV extends Exporter {
 		</div>
 
 		<div class="field">
-			<label class="label"><?php _e('Multivalued metadata delimiter', 'tainacan'); ?></label>
+			<label class="label"><?php esc_html_e('Multivalued metadata delimiter', 'tainacan'); ?></label>
 			<span class="help-wrapper">
 					<a class="help-button">
 						<span class="icon is-small">
@@ -242,10 +242,10 @@ class CSV extends Exporter {
 					</a>
 					<div class="help-tooltip">
 						<div class="help-tooltip-header">
-							<h5><?php _e('Multivalued metadata delimiter', 'tainacan'); ?></h5>
+							<h5><?php esc_html_e('Multivalued metadata delimiter', 'tainacan'); ?></h5>
 						</div>
 						<div class="help-tooltip-body">
-							<p><?php _e('The character used to separate each value inside a cell with multiple values (e.g. ||). Note that the target metadatum must accept multiple values.', 'tainacan'); ?></p>
+							<p><?php esc_html_e('The character used to separate each value inside a cell with multiple values (e.g. ||). Note that the target metadatum must accept multiple values.', 'tainacan'); ?></p>
 						</div>
 					</div>
 				</span>
@@ -257,7 +257,7 @@ class CSV extends Exporter {
 		</div>
 
 		<div class="field">
-			<label class="label"><?php _e('Include metadata section name', 'tainacan'); ?></label>
+			<label class="label"><?php esc_html_e('Include metadata section name', 'tainacan'); ?></label>
 			<span class="help-wrapper">
 					<a class="help-button">
 						<span class="icon is-small">
@@ -266,10 +266,10 @@ class CSV extends Exporter {
 					</a>
 					<div class="help-tooltip">
 						<div class="help-tooltip-header">
-							<h5><?php _e('Include metadata section name', 'tainacan'); ?></h5>
+							<h5><?php esc_html_e('Include metadata section name', 'tainacan'); ?></h5>
 						</div>
 						<div class="help-tooltip-body">
-							<p><?php _e('Include metadatum section name after the metadatum name. Metadata inside the default section are not modified', 'tainacan'); ?></p>
+							<p><?php esc_html_e('Include metadatum section name after the metadatum name. Metadata inside the default section are not modified', 'tainacan'); ?></p>
 						</div>
 					</div> 
 				</span>
@@ -281,7 +281,7 @@ class CSV extends Exporter {
 						name="add_section_name" checked value="yes"
 						>
 					<span class="check"></span>
-					<span class="control-label"><?php _e('Yes', 'tainacan'); ?></span>
+					<span class="control-label"><?php esc_html_e('Yes', 'tainacan'); ?></span>
 				</label>
 			</div>
 		</div>

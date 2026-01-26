@@ -145,6 +145,23 @@
             margin: 0.125rem;
         }
     }
+
+    // RTL support
+    [dir="rtl"] & {
+        .tainacan-icon-is-rtl-mirrored,
+        .mdi-chevron-right,
+        .mdi-chevron-left {
+            transform: scaleX(-1);
+        }
+        .is-pulled-left,
+        .is-float-left {
+            float: inline-start !important;
+        }
+        .is-pulled-right,
+        .is-float-right {
+            float: inline-end !important;
+        }
+    }
 }
 
 // A copy of bootstrap's screen reader only class to be used for accessibility.

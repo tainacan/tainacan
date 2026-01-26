@@ -55,14 +55,14 @@
                 min-width: 38px;
                 width: 38px;
                 padding: 0;
-                left: 0;
+                inset-inline-start: 0;
                 top: auto;
                 display: table-cell;
     
                 label.checkbox,
                 label.radio {  
-                    border-top-left-radius: var(--tainacan-item-border-radius, 0px);
-                    border-bottom-left-radius: var(--tainacan-item-border-radius, 0px);
+                    border-start-start-radius: var(--tainacan-item-border-radius, 0px);
+                    border-end-start-radius: var(--tainacan-item-border-radius, 0px);
                     background-color: var(--tainacan-item-background-color);
                     padding: 0;
                     width: 100%;
@@ -146,7 +146,7 @@
                 max-width: unset !important;
             }
             .column-align-right {
-                text-align: right !important;
+                text-align: end !important;
             }
 
             th {
@@ -195,12 +195,12 @@
                         border: none !important;
 
                         &:first-child {
-                            border-top-left-radius: var(--tainacan-item-border-radius, 0px);
-                            border-bottom-left-radius: var(--tainacan-item-border-radius, 0px);
+                            border-start-start-radius: var(--tainacan-item-border-radius, 0px);
+                            border-end-start-radius: var(--tainacan-item-border-radius, 0px);
                         }
                         &:last-child {
-                            border-top-right-radius: var(--tainacan-item-border-radius, 0px);
-                            border-bottom-right-radius: var(--tainacan-item-border-radius, 0px);
+                            border-start-end-radius: var(--tainacan-item-border-radius, 0px);
+                            border-end-end-radius: var(--tainacan-item-border-radius, 0px);
                         }
 
                         &.thumbnail-cell .skeleton {
@@ -248,12 +248,12 @@
                                     .tainacan-metadatum {
                                         display: inline-flex;
                                         align-items: baseline;
-                                        margin-left: 0.75em;
+                                        margin-inline-start: 0.75em;
 
                                         .label {
                                             margin-top: 0;
                                             margin-bottom: 0;
-                                            margin-right: 0.5em;
+                                            margin-inline-end: 0.5em;
                                             font-size: 0.95em;
                                         }
                                         p {
@@ -287,15 +287,15 @@
                                     font-weight: normal;
                                     color: var(--tainacan-info-color);
                                     display: inline-block;
-                                    margin-right: 0.35em;
-                                    margin-left: -0.15em;
+                                    margin-inline-end: 0.35em;
+                                    margin-inline-start: -0.15em;
                                 }
                                 &::after {
                                     content: ': ';
                                     font-size: 1em;
                                     color: var(--tainacan-info-color);
                                     display: inline-block;
-                                    margin-right: 0.15em;
+                                    margin-inline-end: 0.15em;
                                 }
                             }
                             p {
@@ -329,13 +329,13 @@
                         padding: 0px;
                         position: sticky !important;
                         position: -webkit-sticky !important;
-                        right: 0px;
+                        inset-inline-end: 0px;
                         top: auto;
                         width: 100px;
     
                         .actions-container {
-                            border-top-right-radius: var(--tainacan-item-border-radius, 0px);
-                            border-bottom-right-radius: var(--tainacan-item-border-radius, 0px);
+                            border-start-end-radius: var(--tainacan-item-border-radius, 0px);
+                            border-end-end-radius: var(--tainacan-item-border-radius, 0px);
                             display: flex;
                             position: relative;
                             padding: 0;
@@ -343,7 +343,7 @@
                             width: 100px;
                             z-index: 9;
                             background-color: var(--tainacan-item-background-color); 
-                            float: right;
+                            float: inline-end;
                             justify-content: center;
                             align-items: center;
                             transition: background-color 0.15s ease;

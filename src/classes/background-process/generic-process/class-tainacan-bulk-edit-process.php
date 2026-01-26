@@ -153,6 +153,7 @@ class Bulk_Edit_Process extends Generic_Process {
 			$this->add_log( __('Bulk edit control metadata has already been created', 'tainacan') );
 			return false;
 		} elseif( is_numeric($params['control_metadata']) && $params['control_metadata'] != $this->get_id() ) {
+			/* translators: %d is the ID of the process that is creating the control metadata */
 			$this->add_log( sprintf( __( 'Waiting creating bulk edit control metadata by process ID: "%d"', 'tainacan' ), $params['control_metadata'] ) );
 			return true;
 		}
@@ -184,6 +185,7 @@ class Bulk_Edit_Process extends Generic_Process {
 				return false;
 			}
 			$item_id = $item_query->get_posts()[0];
+			/* translators: %d is the ID of the item that the control metadata is being created for */
 			$this->add_log( sprintf( __( 'Creating bulk edit control metadata for item: "%d"', 'tainacan' ), $item_id ) );
 			add_post_meta($item_id, $this->meta_key, $this->get_group_id());
 			return $count;
@@ -192,6 +194,7 @@ class Bulk_Edit_Process extends Generic_Process {
 
 			$count = $this->get_in_step_count();
 			if( isset($items_ids[$count]) ) {
+				/* translators: %d is the ID of the item that the control metadata is being created for */
 				$this->add_log( sprintf( __( 'Creating bulk edit control metadata for item: "%d"', 'tainacan' ), $items_ids[$count] ) );
 				add_post_meta($items_ids[$count++], $this->meta_key, $this->get_group_id());
 				return $count;
@@ -250,6 +253,7 @@ class Bulk_Edit_Process extends Generic_Process {
 			return false;
 		}
 
+		/* translators: %d is the ID of the item that the bulk edit is being processed for */
 		$this->add_log( sprintf( __('Bulk edit has processed the item ID: "%d"', 'tainacan'), $item->get_id() ) );
 		$add_steps = $this->$method($item);
 		if ( is_int($add_steps) ) {
@@ -261,6 +265,7 @@ class Bulk_Edit_Process extends Generic_Process {
 	public function finished() {
 		$total = $this->get_transient('total_process') == null ? 0 : $this->get_transient('total_process');
 		$this->add_log('finished');
+		/* translators: %d is the total number of items processed */
 		$this->add_log( sprintf( __('Total items processed: %d', 'tainacan'), $total ) );
 	}
 
@@ -269,10 +274,12 @@ class Bulk_Edit_Process extends Generic_Process {
 			if( $item->can_edit() ) {
 				$updated_item_metadata = $this->item_metadata_repository->update( $item_metadata );
 			} else {
+				/* translators: %d is the ID of the item that the bulk edit is being processed for */
 				$this->add_error_log( sprintf( __('do not have permission to edit item ID: "%d"', 'tainacan'), $item->get_id() ) );
 				return false;
 			}
 		} else {
+			/* translators: %d is the ID of the item that the bulk edit is being processed for */
 			$this->add_error_log( sprintf( __( 'Please verify, invalid value(s) to edit item ID: "%d"', 'tainacan' ), $item->get_id() ) );
 
 			$serialized_error = (object) array('err' => array());
@@ -481,6 +488,7 @@ class Bulk_Edit_Process extends Generic_Process {
 
 	private function trash_items(\Tainacan\Entities\Item $item) {
 		if ( !$this->items_repository->trash($item) ) {
+			/* translators: %d is the ID of the item that the bulk edit is being processed for */
 			$this->add_error_log( sprintf( __('Error on send to trash, item ID: "%d"', 'tainacan'), $item->get_id() ) );
 			return false;
 		}
@@ -489,6 +497,7 @@ class Bulk_Edit_Process extends Generic_Process {
 
 	private function untrash_items(\Tainacan\Entities\Item $item) {
 		if ( !wp_untrash_post( $item->get_id() ) ) {
+			/* translators: %d is the ID of the item that the bulk edit is being processed for */
 			$this->add_error_log( sprintf( __('Error on untrash, item ID: "%d"', 'tainacan'), $item->get_id() ) );
 			return false;
 		}
@@ -497,11 +506,13 @@ class Bulk_Edit_Process extends Generic_Process {
 
 	private function delete_items(\Tainacan\Entities\Item $item) {
 		if ('trash' != $item->get_status() ) {
+			/* translators: %d is the ID of the item that the bulk edit is being processed for */
 			$this->add_error_log( sprintf( __('Items must be on trash to be deleted, item ID: "%d"', 'tainacan'), $item->get_id() ) );
 			return false;
 		}
 
 		if ( !$this->items_repository->delete($item) ) {
+			/* translators: %d is the ID of the item that the bulk edit is being processed for */
 			$this->add_error_log( sprintf( __('error on send to trash, item ID: "%d"', 'tainacan'), $item->get_id() ) );
 			return false;
 		}
@@ -523,6 +534,7 @@ class Bulk_Edit_Process extends Generic_Process {
 			return true;
 		}
 
+		/* translators: %d is the ID of the item that the bulk edit is being processed for */
 		$this->add_error_log( sprintf( __( 'Please verify, invalid value(s) to edit item ID: "%d"', 'tainacan' ), $item->get_id() ) );
 		$serialized_error = (object) array('err' => array());
 		array_walk_recursive(
@@ -551,6 +563,7 @@ class Bulk_Edit_Process extends Generic_Process {
 			return true;
 		}
 
+		/* translators: %d is the ID of the item that the bulk edit is being processed for */
 		$this->add_error_log( sprintf( __( 'Please verify, invalid value(s) to edit item ID: "%d"', 'tainacan' ), $item->get_id() ) );
 		$serialized_error = (object) array('err' => array());
 		array_walk_recursive(
@@ -579,6 +592,7 @@ class Bulk_Edit_Process extends Generic_Process {
 			return true;
 		}
 
+		/* translators: %d is the ID of the item that the bulk edit is being processed for */
 		$this->add_error_log( sprintf( __( 'Please verify, invalid value(s) to edit item ID: "%d"', 'tainacan' ), $item->get_id() ) );
 		$serialized_error = (object) array('err' => array());
 		array_walk_recursive(

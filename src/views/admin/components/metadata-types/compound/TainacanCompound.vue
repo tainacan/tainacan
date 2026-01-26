@@ -8,9 +8,11 @@
                 @click="toggleCollapseAllChildren()"
                 @keydown.enter.prevent="toggleCollapseAllChildren()"
                 @keydown.space.prevent="toggleCollapseAllChildren()">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i
-                        :class="{ 'tainacan-icon-arrowdown' : collapseAllChildren, 'tainacan-icon-arrowright' : !collapseAllChildren }"
+                        :class="{ 'tainacan-icon-arrowdown' : collapseAllChildren, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !collapseAllChildren }"
                         class="tainacan-icon tainacan-icon-1-25em" />
             </span>
             {{ collapseAllChildren ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
@@ -31,7 +33,9 @@
                             v-if="isRemovingGroup"
                             class="field">
                         <span class="collapse-handle">
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                             <label class="label has-tooltip">
@@ -124,7 +128,9 @@
                 @click="addGroup"
                 @keydown.enter.prevent="addGroup"
                 @keydown.space.prevent="addGroup">
-            <span class="icon is-small">
+            <span 
+                    aria-hidden="true"
+                    class="icon is-small">
                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
             </span>
             &nbsp;{{ $i18n.get('label_add_value') }}
@@ -488,17 +494,17 @@
 <style lang="scss" scoped>
 
     .child-metadata-inputs {
-        margin-left: -30px;
-        padding-left: 38px;
+        margin-inline-start: -30px;
+        padding-inline-start: 38px;
         padding-top: 5px;
-        border-left: 1px solid var(--tainacan-gray2);
+        border-inline-start: 1px solid var(--tainacan-gray2);
 
         .skeleton {
             width: 100%;
             min-height: 30px;
         }
         .collapse-all {
-            margin-left: -13px;
+            margin-inline-start: -13px;
             font-size: 0.75em;
 
             .icon {
@@ -506,8 +512,8 @@
             }
         }
         .field {
-            padding-right: 0;
-            margin-left: 3px;
+            padding-inline-end: 0;
+            margin-inline-start: 3px;
             margin-bottom: 0em !important;
         }
         .is-last-input.field {
@@ -515,11 +521,14 @@
         }
         .add-link {
             font-size: 0.75em;
-            margin-left: -1.25rem;
+            margin-inline-start: -1.25rem;
         }
         .multiple-inputs hr {
             background-color: var(--tainacan-gray2);
-            margin: 6px 0px 12px -38px;
+            margin-inline-start: -38px;
+            margin-inline-end: 0;
+            margin-block-start: 6px;
+            margin-block-end: 12px;
             width: calc(100% + 38px);
             height: 1px;
         }
@@ -530,17 +539,17 @@
         }
 
         @media screen and (max-width: 768px) {
-            margin-left: 0px;
-            padding-left: 22px;
+            margin-inline-start: 0px;
+            padding-inline-start: 22px;
 
             .field {
-                padding-left: 12px;
+                padding-inline-start: 12px;
                 
                 :deep(.label) {
-                    margin-left: 0;
+                    margin-inline-start: 0;
                 }
                 :deep(.collapse-handle) {
-                    margin-left: -28px;
+                    margin-inline-start: -28px;
                 }
             }
         }

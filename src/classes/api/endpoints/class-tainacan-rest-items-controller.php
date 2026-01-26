@@ -1339,7 +1339,7 @@ class REST_Items_Controller extends REST_Controller {
 
 				if ($item->validate()) {
 					$item = $this->items_repository->insert( $item );
-					$fake_id = md5(uniqid(mt_rand(), true));
+					$fake_id = md5(uniqid(wp_rand(), true));
 					$id = $item->get_id();
 					if (set_transient('tnc_transient_submission_' . $fake_id, $id, 300) == true) {
 						set_transient('tnc_transient_submission_' . $fake_id . '_new_terms_ids', $this->new_terms_ids, 300);

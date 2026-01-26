@@ -38,7 +38,9 @@
                             style="margin-left: 2rem; font-size: 0.875em;"
                             class="is-inline is-pulled-right add-link has-text-secondary"
                             @click="createAllMetadata()">
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-approvedcircle" />
                         </span>
                         {{ $i18n.get('label_set_all_create_metadata') }}
@@ -48,7 +50,9 @@
                             style="font-size: 0.875em;"
                             class="is-inline is-pulled-right add-link has-text-secondary"
                             @click="createNewMetadatum()">
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-add" />
                         </span>
                         {{ $i18n.get('label_add_more_metadata') }}
@@ -59,7 +63,9 @@
                         class="mapping-header">
                     <p>{{ $i18n.get('label_from_source_collection') }}</p>
                     <hr>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-pointer tainacan-icon-1-25em" />
                     </span>
                     <hr>
@@ -884,10 +890,10 @@ export default {
 
     .child-source-metadatum {
         flex-basis: 100%;
-        border-left: 1px solid var(--tainacan-gray2);
-        padding-left: 1em;
+        border-inline-start: 1px solid var(--tainacan-gray2);
+        padding-inline-start: 1em;
         opacity: 1;
-        transition: border-left 0.2s ease, opacity 0.2s ease;
+        transition: border-inline-start 0.2s ease, opacity 0.2s ease;
 
         .source-metadatum {
             border-bottom: none;
@@ -898,7 +904,7 @@ export default {
         }
 
         &.disabled-child-source-metadatum {
-            border-left: 1px solid var(--tainacan-gray1);
+            border-inline-start: 1px solid var(--tainacan-gray1);
             opacity: 0.70;
         }
     }
@@ -992,7 +998,7 @@ export default {
             font-size: 0.875em;
             color: var(--tainacan-gray5);
             margin: 4px 8px;
-            text-align: left;
+            text-align: start;
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;

@@ -11,7 +11,9 @@
                 style="width: auto">
 
             <div class="modal-custom-icon">
-                <span class="icon is-large">
+                <span 
+                        aria-hidden="true"
+                        class="icon is-large">
                     <i 
                             style="color: var(--tainacan-blue5);"
                             class="tainacan-icon tainacan-icon-taxonomies" />
@@ -247,7 +249,7 @@
     }
 
     button.is-success {
-        margin-left: auto;
+        margin-inline-start: auto;
     }
 
     .b-checkbox.checkbox {

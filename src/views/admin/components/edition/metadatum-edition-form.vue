@@ -71,7 +71,9 @@
                                                 type="button"
                                                 class="button is-outlined"
                                                 style="width: auto">
-                                            <span class="icon has-text-dark">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon has-text-dark">
                                                 <i 
                                                         class="tainacan-icon tainacan-icon-18px"
                                                         :class="$statusHelper.getIcon(form.status)" />
@@ -83,8 +85,9 @@
                                                 {{ $i18n.get('status_auto-draft') }}
                                             </template>
                                             <span 
-                                                    style="margin-left: 0.5em;"
-                                                    class="icon is-small">
+                                                    style="margin-inline-start: 0.5em;"
+                                                    class="icon is-small"
+                                                    aria-hidden="true">
                                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                             </span>
                                         </button>
@@ -95,7 +98,9 @@
                                             @click="form.status = statusOption.slug"
                                             @keydown.enter.prevent="form.status = statusOption.slug"
                                             @keydown.space.prevent="form.status = statusOption.slug">
-                                        <span class="icon has-text-dark">
+                                        <span 
+                                                aria-hidden="true"
+                                                class="icon has-text-dark">
                                             <i 
                                                     class="tainacan-icon tainacan-icon-18px"
                                                     :class="$statusHelper.getIcon(statusOption.slug)" />
@@ -263,10 +268,12 @@
                                             style="margin-top: 0;"
                                             class="metadata-form-section"
                                             @click="showCardinalityOptions = !showCardinalityOptions;">
-                                        <span class="icon">
+                                        <span 
+                                                aria-hidden="true"
+                                                class="icon">
                                             <i 
                                                     class="tainacan-icon"
-                                                    :class="showCardinalityOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                                                    :class="showCardinalityOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
                                         </span>
                                         <strong>
                                             {{ $i18n.getHelperTitle('metadata', 'cardinality') }}
@@ -355,10 +362,12 @@
                         v-if="(form.metadata_type_object && form.metadata_type_object.form_component && form.metadata_type_object.component != 'tainacan-compound') || form.edit_form != ''"
                         class="metadata-form-section"
                         @click="hideMetadataTypeOptions = !hideMetadataTypeOptions;">
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i 
                                 class="tainacan-icon"
-                                :class="!hideMetadataTypeOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                                :class="!hideMetadataTypeOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
                     </span>
                     <strong>{{ $i18n.getWithVariables('label_options_of_the_%s_metadata_type', [ form.metadata_type_object.name ]) }}</strong>
                     <hr>
@@ -391,10 +400,12 @@
                 <div 
                         class="metadata-form-section"
                         @click="showAdvancedOptions = !showAdvancedOptions;">
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i 
                                 class="tainacan-icon"
-                                :class="showAdvancedOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                                :class="showAdvancedOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
                     </span>
                     <strong>{{ $i18n.get('label_advanced_metadata_options') }}</strong>
                     <hr>
@@ -725,7 +736,7 @@
                 font-size: 0.875em;
                 z-index: 1;
                 position: relative;
-                padding-right: 12px;
+                padding-inline-end: 12px;
             }
             hr {
                 position: absolute;
@@ -733,7 +744,7 @@
                 width: calc(100% - 42px);
                 height: 1px;
                 background-color: var(--tainacan-gray2);
-                margin-left: 42px;
+                margin-inline-start: 42px;
                 transition: background-color 0.2s ease, height 0.2s ease;
             }
 

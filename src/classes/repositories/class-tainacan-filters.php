@@ -157,8 +157,8 @@ class Filters extends Repository {
 			'labels'              => $labels,
 			'hierarchical'        => true,
 			'public'              => true,
-			'show_ui'             => tnc_enable_dev_wp_interface(),
-			'show_in_menu'        => tnc_enable_dev_wp_interface(),
+			'show_ui'             => tainacan_enable_dev_wp_interface(),
+			'show_in_menu'        => tainacan_enable_dev_wp_interface(),
 			'publicly_queryable'  => true,
 			'exclude_from_search' => true,
 			'has_archive'         => true,
@@ -483,7 +483,7 @@ class Filters extends Repository {
 		} elseif ( is_integer( $collection ) ) {
 			$collection_id = $collection;
 		} else {
-			throw new \InvalidArgumentException( 'fetch_ids_by_collection expects paramater 1 to be a integer or a \Tainacan\Entities\Collection object. ' . gettype( $collection ) . ' given' );
+			throw new \InvalidArgumentException( 'fetch_ids_by_collection expects paramater 1 to be a integer or a \Tainacan\Entities\Collection object. ' . esc_html( gettype( $collection ) ) . ' given' );
 		}
 
 		//get parent collections

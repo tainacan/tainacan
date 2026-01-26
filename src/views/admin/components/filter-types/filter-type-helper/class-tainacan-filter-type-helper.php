@@ -43,7 +43,13 @@ class Filter_Type_Helper {
 
 	public function register_filter_type_compoment() {
 		foreach($this->registered_filter_type as $handle => $component) {
-			wp_enqueue_script($handle, $component['script_path'], [], TAINACAN_VERSION);
+			wp_enqueue_script(
+				$handle, 
+				$component['script_path'], 
+				array(), 
+				TAINACAN_VERSION,
+				true
+			);
 		}
 	}
 

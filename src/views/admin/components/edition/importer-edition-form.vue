@@ -40,7 +40,9 @@
                             <section class="drop-inner">
                                 <div class="content has-text-centered">
                                     <p>
-                                        <span class="icon">
+                                        <span 
+                                                aria-hidden="true"
+                                                class="icon">
                                             <i class="tainacan-icon tainacan-icon-36px tainacan-icon-upload" />
                                         </span>
                                     </p>
@@ -93,7 +95,9 @@
                         v-if="importer.manual_collection"
                         style="margin-top: 2em;"
                         class="column is-narrow is-hidden-mobile">
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-pointer tainacan-icon-36px has-text-grey" />
                     </span>
                 </div>
@@ -130,7 +134,9 @@
                                     style="font-size: 0.875em;"
                                     class="add-link"     
                                     :to="{ path: $routerHelper.getNewCollectionPath(), query: { fromImporter: true }}">
-                                <span class="icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
                                     <i class="tainacan-icon tainacan-icon-add" />
                                 </span>
                                 {{ $i18n.get('new_blank_collection') }}

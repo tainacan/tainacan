@@ -33,7 +33,9 @@
                     <section class="drop-inner">
                         <div class="content has-text-centered">
                             <p>
-                                <span class="icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
                                     <i class="tainacan-icon tainacan-icon-30px tainacan-icon-upload" />
                                 </span>
                             </p>
@@ -48,13 +50,17 @@
                 <!-- Sequence Progress Info -->
                 <div class="sequence-progress-info">
                     <p v-if="uploadedItems.length > 0 && uploadedItems.length != amountFinished">
-                        <span class="icon is-small has-text-secondary">
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-small has-text-secondary">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-updating" />
                         </span>
                         {{ $i18n.get('label_upload_file_prepare_items') }}
                     </p>
                     <p v-if="uploadedItems.length > 0 && uploadedItems.length == amountFinished">
-                        <span class="icon is-small has-text-success">
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-small has-text-success">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approvedcircle" />
                         </span>
                         {{ $i18n.get('label_process_completed') }}
@@ -102,7 +108,8 @@
                         <div class="document-process-state">
                             <span 
                                     v-if="(item.errorMessage == undefined) && (item.document == '' || item.document_type == 'empty')"
-                                    class="icon has-text-success loading-icon">
+                                    class="icon has-text-success loading-icon"
+                                    aria-hidden="true">
                                 <div class="control has-icons-right is-loading is-clearfix" />
                             </span>  
                             <span 
@@ -154,7 +161,7 @@
                         </button>
                     </div>
                     <div 
-                            style="margin-left: auto;"
+                            style="margin-inline-start: auto;"
                             class="control">
                         <button 
                                 :disabled="!(uploadedItems.length > 0 && uploadedItems.length == amountFinished)"
@@ -386,7 +393,7 @@ export default {
                 .document-thumb {
                     max-height: 42px;
                     max-width: 42px;
-                    margin-right: 1em;
+                    margin-inline-end: 1em;
                 }
 
                 .document-name {
@@ -397,7 +404,7 @@ export default {
                 }
 
                 .document-process-state {
-                    margin-left: auto;
+                    margin-inline-start: auto;
                     
                     .loading-icon .control.is-loading::after {
                         position: relative !important;
@@ -408,7 +415,7 @@ export default {
 
                 .document-actions {
                     position: absolute;
-                    right: 0;
+                    inset-inline-end: 0;
                     background: var(--tainacan-gray2);
                     height: 100%;
                     display: none;
@@ -432,9 +439,9 @@ export default {
                 }
 
                 .help.is-danger {
-                    margin-left: auto;
+                    margin-inline-end: auto;
                     width: 100%;
-                    text-align: right;
+                    text-align: end;
                 }
             }
             .sequence-progress-info {

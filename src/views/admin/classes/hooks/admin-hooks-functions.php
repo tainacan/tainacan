@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 /**
  * @see \Tainacan\Admin_Hooks->register()
  */

@@ -10,7 +10,9 @@
         <h3 
                 id="filters-label-landmark"
                 class="has-text-weight-semibold">
-            <span class="gray-icon is-hidden">
+            <span 
+                    aria-hidden="true"
+                    class="gray-icon is-hidden">
                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters" />
             </span>
             <span>{{ $i18n.get('filters') }}</span>
@@ -20,13 +22,14 @@
                 v-if="!hideFilterCollapses && !isLoadingFilters && (
                     ( filters.length >= 0 && isRepositoryLevel ) || filters.length > 0
                 )"
+                type="button"
                 aria-controls="filters-items-list"
                 :aria-expanded="!collapseAll"
                 class="button link-style collapse-all"
                 @click="collapseAll = !collapseAll">
             <span class="icon">
                 <i 
-                        :class="{ 'tainacan-icon-arrowdown' : !collapseAll, 'tainacan-icon-arrowright' : collapseAll }"
+                        :class="{ 'tainacan-icon-arrowdown' : !collapseAll, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : collapseAll }"
                         class="has-text-secondary tainacan-icon tainacan-icon-1-125em" />
             </span>
             <span class="collapse-all__text">
@@ -497,7 +500,7 @@
     .collapse-all {
         display: inline-flex;
         align-items: center;
-        margin-left: -0.875em !important;
+        margin-inline-start: -0.875em !important;
         margin-bottom: 12px !important;
     }
     .filters-components-list {
@@ -523,7 +526,7 @@
     .is-loading:after {
         border: 2px solid white !important;
         border-top-color: var(--tainacan-gray2) !important;
-        border-right-color: var(--tainacan-gray2) !important;
+        border-inline-end-color: var(--tainacan-gray2) !important;
     }
 
 </style>

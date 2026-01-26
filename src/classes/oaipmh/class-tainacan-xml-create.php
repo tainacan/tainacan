@@ -111,6 +111,6 @@ class Xml_Create {
         $pr->preserveWhiteSpace = false;
         $pr->formatOutput = true;
         $pr->loadXML($this->doc->saveXML());
-        echo $pr->saveXML();
+        echo esc_xml($pr->saveXML());
     }
 }

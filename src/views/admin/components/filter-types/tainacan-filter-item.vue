@@ -18,11 +18,13 @@
                         :aria-expanded="singleCollapseOpen"
                         :aria-label="filter.name"
                         class="label">
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i 
                                 :class="{
                                     'tainacan-icon-arrowdown' : props && props.open,
-                                    'tainacan-icon-arrowright' : props && !props.open
+                                    'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : props && !props.open
                                 }"
                                 class="tainacan-icon tainacan-icon-1-25em" />
                     </span>
@@ -65,8 +67,10 @@
                         :aria-label="loadFilterAriaLabel"
                         class="label"
                         @click="appendRealFilter">
-                    <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-arrowright tainacan-icon-1-25em" />
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
+                        <i class="tainacan-icon tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored tainacan-icon-1-25em" />
                     </span>
                     <span 
                             v-tooltip="{
@@ -247,7 +251,7 @@
                 }
             }
             .icon {
-                margin-right: 5px;
+                margin-inline-end: 5px;
             }
             .collapse-label {
                 display: inline;
@@ -268,7 +272,10 @@
             margin-right: 0px;
         }
         .column {
-            padding: 0.75em 1px 0.75em 0 !important;
+            padding-inline-start: 0 !important;
+            padding-inline-end: 1px !important;
+            padding-block-start: 0.75em !important;
+            padding-block-end: 0.75em !important;
         }
         & > .label {
             display: block !important;
@@ -279,7 +286,7 @@
             border: none;
             background-color: transparent;
             color: var(--tainacan-label-color);
-            text-align: left;
+            text-align: start;
             outline: none;
             padding: 0 !important;
             margin: 0 0 8px 0;
@@ -288,8 +295,8 @@
                 font-size: 1.188em;
 
                 .icon {
-                    margin-right: 0px;
-                    margin-left: 6px;
+                    margin-inline-end: 0px;
+                    margin-inline-start: 6px;
                 }
             }
         }
@@ -300,7 +307,7 @@
                 border: none;
                 background-color: transparent;
                 color: var(--tainacan-label-color);
-                text-align: left;
+                text-align: start;
                 cursor: pointer;
                 outline: none;
                 padding: 0 !important;
@@ -310,8 +317,8 @@
                     font-size: 1.188em;
 
                     .icon {
-                        margin-right: 0px;
-                        margin-left: 6px;
+                        margin-inline-end: 0px;
+                        margin-inline-start: 6px;
                     }
                 }
             }
@@ -369,7 +376,7 @@
         .b-checkbox.checkbox  {
             font-weight: normal;
             font-size: 1em !important;
-            margin-right: 2px;
+            margin-inline-end: 2px;
 
             @media screen and (max-width: 768px) {
                 font-size: 1.125em !important;
@@ -383,7 +390,7 @@
 
         .datepicker {
             .dropdown-menu {
-                right: 0;
+                inset-inline-end: 0;
                 min-width: calc(100% + 18px) !important;
             }
             @media screen and (min-width: 769px) {

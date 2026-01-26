@@ -127,7 +127,8 @@ function tainacan_blocks_register_block($block_slug, $options = [], $block_setti
 			'tainacan-chunks-' . $block_slug . '-theme',
 			$TAINACAN_BASE_URL . '/assets/js/tainacan-chunks-' . $block_slug . '-theme.js',
 			array('wp-i18n'),
-			$TAINACAN_VERSION
+			$TAINACAN_VERSION,
+			true
 		);
 		wp_set_script_translations( 'tainacan-chunks-' . $block_slug . '-theme', 'tainacan' );
 		wp_add_inline_script( 'wp-i18n', wp_scripts()->print_translations('tainacan-chunks-' . $block_slug . '-theme', false) );
@@ -164,7 +165,8 @@ function tainacan_blocks_register_block($block_slug, $options = [], $block_setti
 		$block_slug,
 		$TAINACAN_BASE_URL . '/assets/js/block_' . str_replace('-', '_' , $block_slug) . '.js',
 		$editor_script_deps,
-		$TAINACAN_VERSION
+		$TAINACAN_VERSION,
+		true
 	);
 	wp_set_script_translations( $block_slug, 'tainacan' );
 	$register_params['editor_script'] = $block_slug;
@@ -269,7 +271,8 @@ function tainacan_blocks_add_common_theme_scripts() {
 		'tainacan-blocks-common-scripts',
 		$TAINACAN_BASE_URL . '/assets/js/tainacan_blocks_common_scripts.js',
 		array('wp-i18n', 'underscore'),
-		$TAINACAN_VERSION
+		$TAINACAN_VERSION,
+		true
 	);
 
 	wp_set_script_translations( 'tainacan-blocks-common-scripts', 'tainacan' );
@@ -303,11 +306,13 @@ function tainacan_blocks_add_extra_item_submission_assets() {
 	wp_register_script(
 		'tainacan-google-recaptcha-script',
 		'https://www.google.com/recaptcha/api.js',
-		[], TAINACAN_VERSION, true 
+		array(),
+		TAINACAN_VERSION,
+		true 
 	);
 	
 	wp_enqueue_script('tainacan-google-recaptcha-script');	
-	wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/fonts/tainacanicons.css', [], TAINACAN_VERSION );
+	wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/fonts/tainacanicons.css', array(), TAINACAN_VERSION );
 		
 	// Registers extra metadata type forms
 	$theme_helper = \Tainacan\Metadata_Types\Metadata_Type_Helper::get_instance();
@@ -320,7 +325,7 @@ function tainacan_blocks_add_extra_item_submission_assets() {
  */
 function tainacan_blocks_add_extra_faceted_search_assets() {
 	global $TAINACAN_BASE_URL;
-	wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/fonts/tainacanicons.css', [], TAINACAN_VERSION );
+	wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/fonts/tainacanicons.css', array(), TAINACAN_VERSION );
 }
 
 /** 
@@ -334,7 +339,8 @@ function tainacan_blocks_get_category_icon_script() {
 		'tainacan-blocks-register-category-icon',
 		$TAINACAN_BASE_URL . '/assets/js/tainacan_blocks_category_icon.js',
 		array('wp-blocks', 'wp-element'),
-		$TAINACAN_VERSION
+		$TAINACAN_VERSION,
+		true
 	);
 }
 
@@ -349,7 +355,8 @@ function tainacan_blocks_get_variations_script() {
 		'tainacan-blocks-query-variations',
 		$TAINACAN_BASE_URL . '/assets/js/tainacan_blocks_query_variations.js',
 		array('wp-blocks', 'wp-components', 'wp-i18n'),
-		$TAINACAN_VERSION
+		$TAINACAN_VERSION,
+		true
 	);
 
 	$block_settings = tainacan_blocks_get_plugin_js_settings();

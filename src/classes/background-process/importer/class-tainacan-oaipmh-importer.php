@@ -849,7 +849,7 @@ class Oaipmh_Importer extends Importer {
 			<div class="column">
 				<div class="field">
 					<label class="label" style="position: relative">
-						<?php _e('Create set as', 'tainacan'); ?>
+						<?php esc_html_e('Create set as', 'tainacan'); ?>
 						<span class="help-wrapper">
 							<a class="help-button">
 								<span class="icon is-small">
@@ -858,10 +858,10 @@ class Oaipmh_Importer extends Importer {
 							</a>
 							<vdiv class="help-tooltip">
 								<div class="help-tooltip-header">
-									<h5><?php _e('Create set as', 'tainacan'); ?></h5>
+									<h5><?php esc_html_e('Create set as', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php _e('Choose the action to manipulate sets', 'tainacan'); ?></p>
+									<p><?php esc_html_e('Choose the action to manipulate sets', 'tainacan'); ?></p>
 								</div>
 							</vdiv>
 						</span>
@@ -869,8 +869,8 @@ class Oaipmh_Importer extends Importer {
 					<div class="control is-clearfix">
 						<div class="select">
 							<select name="using_set">
-								<option value="collection" <?php selected($this->get_option('using_set'), 'collection'); ?> ><?php _e('Collections', 'tainacan'); ?></option>
-								<option value="taxonomy" <?php selected($this->get_option('using_set'), 'taxonomy'); ?> ><?php _e('Taxonomies', 'tainacan'); ?></option>
+								<option value="collection" <?php selected($this->get_option('using_set'), 'collection'); ?> ><?php esc_html_e('Collections', 'tainacan'); ?></option>
+								<option value="taxonomy" <?php selected($this->get_option('using_set'), 'taxonomy'); ?> ><?php esc_html_e('Taxonomies', 'tainacan'); ?></option>
 							</select>
 						</div>
 					</div>

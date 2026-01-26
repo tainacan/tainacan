@@ -7,7 +7,7 @@
         <!-- New Role Button -->
         <div 
                 class="header-item"
-                style="margin-right: auto; margin-left: 0;">
+                style="margin-inline-end: auto; margin-inline-start: 0;">
             <b-dropdown
                     id="roles-page-add-new"
                     v-a11y-dropdown
@@ -32,7 +32,9 @@
                             <span>
                                 {{ $i18n.get('New role') }}
                             </span>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>

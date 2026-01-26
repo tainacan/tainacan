@@ -567,8 +567,8 @@ class Collections extends Repository {
 			'labels'              => $labels,
 			'hierarchical'        => true,
 			'public'              => true,
-			'show_ui'             => tnc_enable_dev_wp_interface(),
-			'show_in_menu'        => tnc_enable_dev_wp_interface(),
+			'show_ui'             => tainacan_enable_dev_wp_interface(),
+			'show_in_menu'        => tainacan_enable_dev_wp_interface(),
 			'publicly_queryable'  => true,
 			'exclude_from_search' => true,
 			'has_archive'         => true,
@@ -729,7 +729,7 @@ class Collections extends Repository {
 			$collection->set_filters_order($parent_collection->get_filters_order());
 
 			if (!$collection->validate()) {
-				throw new \Exception( implode(",", $collection->get_errors()) );
+				throw new \Exception( esc_html( implode(",", array_map('esc_html', $collection->get_errors()) ) ) );
 			}
 		}
 	}

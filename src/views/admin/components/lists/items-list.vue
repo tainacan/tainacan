@@ -25,7 +25,7 @@
                 
                 <span
                         v-if="totalPages > 1 && allItemsOnPageSelected && Array.isArray(items) && items.length > 1"
-                        style="margin-left: 10px">
+                        style="margin-inline-start: 10px">
                     <b-checkbox
                             v-model="isAllItemsSelected">
                         {{ $i18n.getWithVariables('label_select_all_%s_items', [totalItems]) }}
@@ -37,9 +37,12 @@
                     class="selected-items-info">
                 {{ selectedItems.length != 1 ? $i18n.getWithVariables('label_%s_selected_items', [selectedItems.length]) : $i18n.get('label_one_selected_item') }}<span v-if="selectedItems.length != amountOfSelectedItemsOnThisPage && amountOfSelectedItemsOnThisPage > 0">&nbsp;({{ $i18n.getWithVariables('label_%s_on_this_page', [ amountOfSelectedItemsOnThisPage ]) }})</span>
                 <button
+                        :aria-label="$i18n.get('label_clean')"
                         class="link-style"
                         @click="cleanSelectedItems()">
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-close" />
                     </span>
                 </button>
@@ -49,16 +52,19 @@
                     class="selected-items-info">
                 {{ $i18n.get('label_all_items_selected') }}
                 <button
+                        :aria-label="$i18n.get('label_clean')"
                         class="link-style"
                         @click="cleanSelectedItems()">
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-close" />
                     </span>
                 </button>
             </span>
             <div 
                     v-if="!$adminOptions.hideItemsListBulkActionsButton"
-                    style="margin-left: auto;"
+                    style="margin-inline-start: auto;"
                     class="field">
                 <b-dropdown
                         v-if="Array.isArray(items) && items.length > 0"
@@ -74,7 +80,9 @@
                                 :disabled="selectedItems.length <= 1"
                                 class="button is-white">
                             <span>{{ $i18n.get('label_actions_for_the_selection') }}</span>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
@@ -212,7 +220,7 @@
 
                     <!-- Title -->
                     <div
-                            :style="{ 'padding-left': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $adminOptions.itemsSearchSelectionMode ? '0.5em !important' : (isOnAllItemsTabs ? '1.875em' : '2.75em') }"
+                            :style="{ 'padding-inline-start': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $adminOptions.itemsSearchSelectionMode ? '0.5em !important' : (isOnAllItemsTabs ? '1.875em' : '2.75em') }"
                             class="metadata-title">
                         <p
                                 v-tooltip="{
@@ -401,7 +409,7 @@
                         <!-- Title -->
                         <div
                                 :style="{
-                                    'padding-left': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $adminOptions.itemsSearchSelectionMode ? '0 !important' : (isOnAllItemsTabs ? '0.5em' : '1em')
+                                    'padding-inline-start': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $adminOptions.itemsSearchSelectionMode ? '0 !important' : (isOnAllItemsTabs ? '0.5em' : '1em')
                                 }"
                                 class="metadata-title">
                             <p>
@@ -560,7 +568,7 @@
                     <!-- Title -->
                     <div
                             :style="{
-                                'padding-left': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $adminOptions.itemsSearchSelectionMode ? '0.5em !important' : (isOnAllItemsTabs ? '2.125em' : '2.75em'),
+                                'padding-inline-start': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $adminOptions.itemsSearchSelectionMode ? '0.5em !important' : (isOnAllItemsTabs ? '2.125em' : '2.75em'),
                             }"
                             class="metadata-title">
                         <p
@@ -797,7 +805,7 @@
                         <div
                                 class="metadata-title"
                                 :style="{
-                                    'padding-left': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $adminOptions.itemsSearchSelectionMode ? '1.5em !important' : '2.75em'
+                                    'padding-inline-start': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $adminOptions.itemsSearchSelectionMode ? '1.5em !important' : '2.75em'
                                 }">
                             <span 
                                     v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
@@ -1364,7 +1372,7 @@
                     <!-- Title -->
                     <div 
                             :style="{
-                                'padding-left': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $route.query.itemsSearchSelectionMode ? '1.5em !important' : (isOnAllItemsTabs ? '2.0em' : '2.75em'),    
+                                'padding-inline-start': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $route.query.itemsSearchSelectionMode ? '1.5em !important' : (isOnAllItemsTabs ? '2.0em' : '2.75em'),    
                             }"
                             class="metadata-title">
                         <span 
@@ -1605,7 +1613,7 @@
                                     class="metadata-title"
                                     :style="{
                                         'cursor': !itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id) ? 'auto' : 'pointer',
-                                        'padding-left': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $adminOptions.itemsSearchSelectionMode ? '1.5em !important' : '2.75em'
+                                        'padding-inline-start': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $adminOptions.itemsSearchSelectionMode ? '1.5em !important' : '2.75em'
                                     }"
                                     @click.prevent.stop.left="showLocationsByItem(item)"
                                     @click.right="onRightClickItem($event, item)">
@@ -1813,7 +1821,9 @@
                                     class="section">
                                 <div class="content has-text-dark has-text-centered">
                                     <p style="margin-bottom: 0px">
-                                        <span class="icon is-large">
+                                        <span 
+                                                aria-hidden="true"
+                                                class="icon is-large">
                                             <i>
                                                 <svg
                                                         xmlns="http://www.w3.org/2000/svg"
@@ -1847,7 +1857,9 @@
                                 :aria-label="$i18n.get('label_clean')"
                                 class="tainacan-records-close-button"
                                 @click="clearSelectedMarkers()">
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-close" />
                             </span>
                         </button>
@@ -2120,7 +2132,7 @@
                         <!-- Title -->
                         <div
                                 class="metadata-title"
-                                :style="{ 'padding-left': collectionId && !$adminOptions.hideItemsListSelection && ($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) ? '1.75em' : '1.0em' }">
+                                :style="{ 'padding-inline-start': collectionId && !$adminOptions.hideItemsListSelection && ($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) ? '1.75em' : '1.0em' }">
                             <!-- Checkbox -->
                             <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                             <div
@@ -3043,7 +3055,10 @@ export default {
 
     .selection-control {
         margin-bottom: 6px;
-        padding: 6px 0px 0px 12px;
+        padding-inline-start: 12px;
+        padding-inline-end: 0px;
+        padding-block-start: 6px;
+        padding-block-end: 0px;
         background: var(--tainacan-background-color);
         height: 42px;
         display: flex;
@@ -3053,7 +3068,7 @@ export default {
         .select-all {
             color: var(--tainacan-info-color);
             font-size: 0.875em;
-            margin-right: auto;
+            margin-inline-end: auto;
             margin-bottom: 0;
 
             &:hover {

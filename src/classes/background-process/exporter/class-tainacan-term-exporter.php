@@ -84,7 +84,7 @@ class Term_Exporter extends Exporter {
         ?>
         <div class="field">
             <label class="label" style="position: relative">
-                <?php _e('CSV Delimiter', 'tainacan'); ?>
+                <?php esc_html_e('CSV Delimiter', 'tainacan'); ?>
                 <span class="help-wrapper">
 					<a class="help-button">
 						<span class="icon is-small">
@@ -93,10 +93,10 @@ class Term_Exporter extends Exporter {
 					</a>
 					<div class="help-tooltip">
 						<div class="help-tooltip-header">
-							<h5><?php _e('CSV Delimiter', 'tainacan'); ?></h5>
+							<h5><?php esc_html_e('CSV Delimiter', 'tainacan'); ?></h5>
 						</div>
 						<div class="help-tooltip-body">
-							<p><?php _e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
+							<p><?php esc_html_e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
 						</div>
 					</div>
 				</span>
@@ -108,7 +108,7 @@ class Term_Exporter extends Exporter {
 
         <div class="field export_term_csv_taxonomies">
             <label class="label" style="position: relative">
-                <?php _e('Source Taxonomy:', 'tainacan'); ?>
+                <?php esc_html_e('Source Taxonomy:', 'tainacan'); ?>
                 <span class="help-wrapper">
 					<a class="help-button">
 						<span class="icon is-small">
@@ -117,10 +117,10 @@ class Term_Exporter extends Exporter {
 					</a>
 					<div class="help-tooltip">
 						<div class="help-tooltip-header">
-							<h5><?php _e('Source Taxonomy', 'tainacan'); ?></h5>
+							<h5><?php esc_html_e('Source Taxonomy', 'tainacan'); ?></h5>
 						</div>
 						<div class="help-tooltip-body">
-							<p><?php _e('Specify the taxonomy you want to export the terms from.', 'tainacan'); ?></p>
+							<p><?php esc_html_e('Specify the taxonomy you want to export the terms from.', 'tainacan'); ?></p>
 						</div>
 					</div>
 				</span>

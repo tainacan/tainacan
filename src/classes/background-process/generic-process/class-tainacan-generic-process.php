@@ -207,6 +207,7 @@ abstract class Generic_Process {
 		}
 
 		if ( sizeof($steps) > 1 ) {
+			/* translators: %1$d is the current step, %2$d is the total number of steps */
 			$preLabel = sprintf( __('Step %1$d of %2$d', 'tainacan'), $current_step + 1, sizeof($steps) );
 			$label = $preLabel . ': ' . $label;
 		}

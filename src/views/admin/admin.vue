@@ -136,26 +136,6 @@
         }
     }
 
-    #menu-compress-button {
-        position: absolute;
-        z-index: 999;
-        top: calc(10.125em + 12px);
-        left: 0px;
-        max-width: 1.5625em;
-        height: 1.5625em;
-        width: 1.5625em;
-        border: none;
-        background-color: var(--tainacan-blue5);
-        color: var(--tainacan-white);
-        padding: 0px;
-        border-top-right-radius: 2px;
-        border-bottom-right-radius: 2px;
-        cursor: pointer;
-
-        .icon {
-            margin-top: -2px;
-        }
-    }
     .filter-tags-list {
         padding-top: 0;
     }

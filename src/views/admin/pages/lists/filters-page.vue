@@ -42,7 +42,9 @@
                             class="field is-grouped-centered section">
                         <div class="content has-text-dark has-text-centered">
                             <p>
-                                <span class="icon is-large">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon is-large">
                                     <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters" />
                                 </span>
                             </p>
@@ -87,7 +89,9 @@
                                                 class="link-button"
                                                 :aria-label="$i18n.get('label_move_up')"
                                                 @click="moveFilterUpViaButton(index)">
-                                            <span class="icon">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-previous tainacan-icon-rotate-90" />
                                             </span>
                                         </button>
@@ -96,7 +100,9 @@
                                                 class="link-button"
                                                 :aria-label="$i18n.get('label_move_down')"
                                                 @click="moveFilterDownViaButton(index)">
-                                            <span class="icon">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-next tainacan-icon-rotate-90" />
                                             </span>
                                         </button>
@@ -348,7 +354,9 @@
                                 class="field is-grouped-centered section">
                             <div class="content has-text-dark has-text-centered">
                                 <p>
-                                    <span class="icon is-large">
+                                    <span 
+                                            aria-hidden="true"
+                                            class="icon is-large">
                                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
                                     </span>
                                 </p>
@@ -377,7 +385,9 @@
                     class="section">
                 <div class="content has-text-dark has-text-centered">
                     <p>
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-filters" />
                         </span>
                     </p>
@@ -435,7 +445,9 @@
                                                 v-if="currentFilterTypePreview != undefined && currentFilterTypePreview.template != ''"
                                                 class="field">
                                             <span class="collapse-handle">
-                                                <span class="icon">
+                                                <span 
+                                                        aria-hidden="true"
+                                                        class="icon">
                                                     <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                                 </span> 
                                                 <label class="label has-tooltip">
@@ -971,11 +983,11 @@ export default {
             }
 
             &:not(.available-metadata-area){
-                margin-right: 30px;
+                margin-inline-end: 30px;
                 flex-grow: 2;
 
                 @media screen and (max-width: 1023px) {
-                    margin-right: 0;
+                    margin-inline-end: 0;
                 }
             }
             h2,
@@ -988,16 +1000,19 @@ export default {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.5em 1em 0.5em 0.5em;
+            margin-block-start: 0.5em;
+            margin-block-end: 0.5em;
+            margin-inline-start: 0.5em;
+            margin-inline-end: 0.5em;
 
             .header-item {
-                margin-left: 0.75rem;
+                margin-inline-start: 0.75rem;
                 margin-bottom: 0px;
             }
 
             h2,
             h3 {
-                margin-right: auto;
+                margin-inline-end: auto;
             }
         }
 
@@ -1005,7 +1020,7 @@ export default {
             animation: spinAround 500ms infinite linear;
             border: 2px solid var(--tainacan-gray2);
             border-radius: 290486px;
-            border-right-color: transparent;
+            border-inline-end-color: transparent;
             border-top-color: transparent;
             content: "";
             display: inline-block;
@@ -1015,18 +1030,18 @@ export default {
 
         .active-filters-area {
             font-size: 0.875em;
-            margin-left: 1.5em;
-            padding-right: 1em;
+            margin-inline-start: 1.5em;
+            padding-inline-end: 1em;
             padding-top: 1em;
             min-height: 330px;
 
             @media screen and (max-width: 1024px) {
                 min-height: 45px;
                 margin: 0; 
-                padding-right: 0em;
+                padding-inline-end: 0em;
             }
             @media screen and (max-width: 1216px) {
-                padding-right: 1em;
+                padding-inline-end: 1em;
             }
 
             &.filters-area-receive {
@@ -1064,16 +1079,16 @@ export default {
                     flex-direction: column;
                     position: absolute;
                     overflow: hidden;
-                    border-top-right-radius: 0;
-                    border-bottom-right-radius: 0;
+                    border-start-end-radius: 0;
+                    border-end-end-radius: 0;
                     border-top-left-radius: var(--tainacan-button-border-radius, 3px);
                     border-bottom-left-radius: var(--tainacan-button-border-radius, 3px);
                     font-size: 0.938em;
-                    left: 0em; 
+                    inset-inline-start: 0em; 
                     top: 0px;
                     opacity: 0;
                     visibility: hidden;
-                    transition: opacity 0.2s ease, left 0.2s ease;
+                    transition: opacity 0.2s ease, inset-inline-start 0.2s ease;
 
                     button {
                         border: none;
@@ -1087,11 +1102,11 @@ export default {
                     .sorting-buttons {
                         opacity: 1.0;
                         visibility: visible;
-                        left: -1.062em
+                        inset-inline-start: -1.062em
                     }
                 }
                 .handle {
-                    padding-right: 6em;
+                    padding-inline-end: 6em;
                     border-radius: var(--tainacan-button-border-radius, 0px);
                     white-space: nowrap;
                     display: flex;
@@ -1106,8 +1121,8 @@ export default {
                     overflow-x: hidden;
                     white-space: nowrap;
                     font-weight: bold;
-                    margin-left: 0.4em;
-                    margin-right: 0.4em;
+                    margin-inline-start: 0.4em;
+                    margin-inline-end: 0.4em;
 
                     &.is-danger {
                         color: var(--tainacan-danger) !important;
@@ -1130,12 +1145,12 @@ export default {
                     font-style: italic;
                     font-weight: bold;
                     color: var(--tainacan-danger);
-                    margin-left: 0.5em;
+                    margin-inline-start: 0.5em;
                 }
                 .controls { 
                     font-size: 0.875em;
                     position: absolute;
-                    right: 11px;
+                    inset-inline-end: 11px;
                     top: 11px;
                     display: flex;
                     align-items: center;
@@ -1203,7 +1218,10 @@ export default {
         }
 
         .available-metadata-area {
-            padding: 0px 0px 10px 10px;
+            padding-inline-start: 10px;
+            padding-inline-end: 0;
+            padding-block-start: 0px;
+            padding-block-end: 10px;
             margin: 0;
             max-width: 600px;
             min-width: 41.66666667%;
@@ -1236,10 +1254,11 @@ export default {
 
             .available-metadatum-item {
                 padding: 0.6em;
-                margin: 4px 4px 4px 1.2em;
+                margin: 4px;
+                margin-inline-start: 1.2em;
                 background-color: var(--tainacan-white);
                 cursor: pointer;
-                left: 0;
+                inset-inline-start: 0;
                 height: 2.8571em;
                 position: relative;
                 border: 1px solid var(--tainacan-gray2);
@@ -1260,7 +1279,7 @@ export default {
                     overflow-x: hidden;
                     white-space: nowrap;
                     font-weight: bold;
-                    margin-left: 0.4em;
+                    margin-inline-start: 0.4em;
                     display: inline-block;
                     width: calc(100% - 60px);
                 }
@@ -1269,7 +1288,7 @@ export default {
                     content: '';
                     display: block;
                     position: absolute;
-                    right: 100%;
+                    inset-inline-end: 100%;
                     width: 0;
                     height: 0;
                     border-style: solid;
@@ -1278,18 +1297,18 @@ export default {
                 &:after {
                     top: -1px;
                     border-color: transparent white transparent transparent;
-                    border-right-width: 16px;
+                    border-inline-end-width: 16px;
                     border-top-width: 1.4286em;
                     border-bottom-width: 1.4286em;
-                    left: calc( -19px + (var(--tainacan-button-border-radius, 0px) / 2));
+                    inset-inline-start: calc( -19px + (var(--tainacan-button-border-radius, 0px) / 2));
                 }
                 &:before {
                     top: -1px;
                     border-color: transparent var(--tainacan-gray2) transparent transparent;
-                    border-right-width: 16px;
+                    border-inline-end-width: 16px;
                     border-top-width: 1.4286em;
                     border-bottom-width: 1.4286em;
-                    left: calc( -20px + (var(--tainacan-button-border-radius, 0px) / 2));
+                    inset-inline-start: calc( -20px + (var(--tainacan-button-border-radius, 0px) / 2));
                 }
                 .label-details {
                     font-weight: normal;
@@ -1318,7 +1337,7 @@ export default {
                 background-color: var(--tainacan-turquoise1);
                 border-color: var(--tainacan-turquoise2);
                 position: relative;
-                left: -4px;
+                inset-inline-start: -4px;
 
                 &:after {
                     border-color: transparent var(--tainacan-turquoise1) transparent transparent;
@@ -1370,7 +1389,7 @@ export default {
             }
         }
         .child-metadatum {
-            margin-left: 42px !important;
+            margin-inline-start: 42px !important;
         }
         .tainacan-modal-content {
 
@@ -1432,7 +1451,7 @@ export default {
                     color: var(--tainacan-info-color);
                     width: 100%;
                     font-size: 1em;
-                    margin-left: -16px;
+                    margin-inline-start: -16px;
                 }
                 
                 .field .collapse-handle {
@@ -1506,10 +1525,10 @@ export default {
     }
     .tainacan-repository-level-colors {
         .tainacan-form.sub-header {
-            padding-left: 0 !important;
+            padding-inline-start: 0 !important;
         }
         .filters-list-page .active-filters-area {
-            margin-left: 0 !important;
+            margin-inline-start: 0 !important;
         }
     }
 </style>

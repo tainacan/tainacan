@@ -4,7 +4,9 @@
                 v-if="!$adminOptions.hideItemEditionThumbnail"
                 class="section-label">
             <label>
-                <span class="icon has-text-dark">
+                <span 
+                        class="icon has-text-dark"
+                        aria-hidden="true">
                     <i class="tainacan-icon tainacan-icon-image" />
                 </span>
                 {{ collection && collection.item_thumbnail_label ? collection.item_thumbnail_label : $i18n.get('label_thumbnail') }}
@@ -68,7 +70,8 @@
                                     placement: 'bottom',
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
-                                class="icon">
+                                class="icon"
+                                aria-hidden="true">
                             <i class="tainacan-icon tainacan-icon-edit" />
                         </span>
                     </a>
@@ -85,7 +88,8 @@
                                     placement: 'bottom',
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
-                                class="icon">
+                                class="icon"
+                                aria-hidden="true">
                             <i class="tainacan-icon tainacan-icon-delete" />
                         </span>
                     </a>
@@ -122,11 +126,11 @@ export default {
 
 <style lang="scss" scoped>
     .section-thumbnaill {
-        padding-right: 0;
+        padding-inline-end: 0;
     }
     .thumbnail-buttons-row {
         bottom: -6px;
-        left: 0.875em;
+        inset-inline-start: 0.875em;
         position: absolute;
     }
     .thumbnail-field {
@@ -157,7 +161,7 @@ export default {
         }
 
         .field {
-            margin-left: 1em;
+            margin-inline-start: 1em;
             width: 100%;
         }
         .content {

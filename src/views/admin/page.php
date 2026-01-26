@@ -2,9 +2,9 @@
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-$admin_options = json_encode(self::$admin_ui_options);
+$tainacan_page_admin_options = json_encode(self::$admin_ui_options);
 
-$allowed_html = [
+$tainacan_page_admin_allowed_html = [
     'div' => [
         'id' => true,
         'style' => true,
@@ -13,4 +13,4 @@ $allowed_html = [
         'data-options' => true
     ]
 ];
-echo wp_kses( "<div id='tainacan-admin-app' class='tainacan-page-container-content' data-module='admin' data-options='$admin_options'></div>", $allowed_html );
+echo wp_kses( "<div id='tainacan-admin-app' class='tainacan-page-container-content' data-module='admin' data-options='$tainacan_page_admin_options'></div>", $tainacan_page_admin_allowed_html );

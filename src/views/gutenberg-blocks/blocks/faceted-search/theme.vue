@@ -47,14 +47,16 @@
                 }"
                 :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
                 @click="isFiltersModalActive = !isFiltersModalActive">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i 
                         :class="{
                             'tainacan-icon-arrowdown': isFiltersModalActive && displayFiltersHorizontally,
                             'tainacan-icon-arrowleft': isFiltersModalActive && !displayFiltersHorizontally,
                             'tainacan-icon-arrowright' : !isFiltersModalActive
                         }"
-                        class="tainacan-icon tainacan-icon-1-25em" />
+                        class="tainacan-icon tainacan-icon-1-25em tainacan-icon-is-rtl-mirrored" />
             </span>
             <span class="text is-hidden-tablet">{{ $i18n.get('filters') }}</span>
         </button>
@@ -156,7 +158,8 @@
                     @click="isFiltersModalActive = !isFiltersModalActive">
                 <span 
                         :class="{ 'has-text-secondary': hasFiltered }"
-                        class="gray-icon">
+                        class="gray-icon"
+                        aria-hidden="true">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters" />
                 </span>
                 <span class="is-hidden-touch">{{ $i18n.get('filters') }}</span>
@@ -192,7 +195,9 @@
                             class="button is-white">
                         <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_displayed_metadata') }}</span>
                         <span class="is-hidden-widescreen">{{ $i18n.get('metadata') }}</span>
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                         </span>
                     </button>
@@ -250,7 +255,9 @@
                                         :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
                                         class="tainacan-icon" />
                             </span>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
@@ -261,7 +268,9 @@
                             :class="{ 'is-active': order == 'DESC' }"
                             :value="'DESC'"
                             tag="button">
-                        <span class="icon gray-icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon gray-icon">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending" />
                         </span>
                         <span>{{ $i18n.get('label_descending') }}</span>
@@ -272,7 +281,9 @@
                             :class="{ 'is-active': order == 'ASC' }"
                             :value="'ASC'"
                             tag="button">
-                        <span class="icon gray-icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon gray-icon">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending" />
                         </span>
                         <span>{{ $i18n.get('label_ascending') }}</span>
@@ -298,7 +309,9 @@
                                     class="button is-white"
                                     aria-labelledby="tainacanLabelSortingMetadata tainacanSortingMetadataButton">
                                 <span>{{ orderByName }}</span>
-                                <span class="icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                 </span>
                             </button>
@@ -330,12 +343,12 @@
                 <label 
                         id="tainacanLabelViewModes"
                         class="label is-hidden-touch is-hidden-desktop-only"
-                        :style="{ marginRight: showInlineViewModeOptions ? '' : '-10px'}">
+                        :style="{ marginInlineEnd: showInlineViewModeOptions ? '' : '-10px'}">
                     {{ $i18n.get('label_visualization') + ':&nbsp; ' }}
                 </label>
                 <label 
                         class="label is-hidden-widescreen"
-                        :style="{ marginRight: showInlineViewModeOptions ? '' : '-10px'}"
+                        :style="{ marginInlineEnd: showInlineViewModeOptions ? '' : '-10px'}"
                         aria-hidden="true">
                     {{ $i18n.get('label_view_on') + ':&nbsp; ' }}
                 </label>
@@ -355,9 +368,12 @@
                             <span 
                                     v-if="registeredViewModes[viewMode] != undefined"
                                     class="gray-icon view-mode-icon"
+                                    aria-hidden="true"
                                     v-html="registeredViewModes[viewMode].icon" />
                             <span class="is-hidden-touch">&nbsp;&nbsp;&nbsp;{{ registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : $i18n.get('label_visualization') }}</span>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
@@ -374,6 +390,7 @@
                             <span 
                                     v-if="!showInlineViewModeOptions"
                                     class="gray-icon"
+                                    aria-hidden="true"
                                     v-html="registeredViewModes[viewModeOption].icon" />
                             <span 
                                     v-else 
@@ -388,6 +405,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="gray-icon"
+                                    aria-hidden="true"
                                     v-html="registeredViewModes[viewModeOption].icon" />
                             <span v-if="!showInlineViewModeOptions">{{ registeredViewModes[viewModeOption].label }}</span>
                         </b-dropdown-item>
@@ -411,6 +429,7 @@
                         @click="onChangeViewMode(viewModeOption)">
                     <span 
                             class="gray-icon view-mode-icon"
+                            aria-hidden="true"
                             v-html="registeredViewModes[viewModeOption].icon" />
                     <span class="is-hidden-tablet-only">{{ registeredViewModes[viewModeOption].label }}</span>
                 </button>
@@ -427,7 +446,9 @@
                     :aria-label="$i18n.get('label_view_as')"
                     :disabled="totalItems == undefined || totalItems <= 0"
                     @click="openExposersModal()">
-                <span class="gray-icon">
+                <span 
+                        aria-hidden="true"
+                        class="gray-icon">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas" />
                 </span>
                 <span class="is-hidden-tablet-only is-hidden-desktop-only ">{{ $i18n.get('label_view_as') }}</span>
@@ -1875,9 +1896,9 @@
 
         .metadata-value {
             .tainacan-compound-group {
-                margin-left: 2px;
-                padding-left: 0.875em;
-                border-left: 1px solid var(--tainacan-gray3);
+                margin-inline-start: 2px;
+                padding-inline-start: 0.875em;
+                border-inline-start: 1px solid var(--tainacan-gray3);
 
                 .tainacan-compound-metadatum .label {
                     margin-bottom: 0.25em;
@@ -1898,7 +1919,10 @@
                     background: var(--tainacan-gray3);
                     content: none;
                     color: transparent;
-                    margin: 1em auto 1em -0.875em;
+                    margin-inline-start: -0.875em;
+                    margin-inline-end: auto;
+                    margin-block-start: 1em;
+                    margin-block-end: 1em;
                 }
             }
             .tainacan-relationship-group {
@@ -1957,14 +1981,14 @@
         padding-left: var(--tainacan-one-column);
         margin-bottom: 1em;
 
-        p { margin-left: 0.75em; }
+        p { margin-inline-start: 0.75em; }
     }
     
     #filter-menu-compress-button {
         position: absolute;
         z-index: 99;
         bottom: 0px;
-        left: 0;
+        inset-inline-start: 0;
         max-width: 1.625em;
         height: 1.625em;
         width: 1.625em;
@@ -1972,8 +1996,8 @@
         background-color: var(--tainacan-primary);
         color: var(--tainacan-secondary);
         padding: 0;
-        border-top-right-radius: 2px;
-        border-bottom-right-radius: 2px;
+        border-start-end-radius: 2px;
+        border-end-end-radius: 2px;
         cursor: pointer;
         transition: top 0.3s;
         display: flex;
@@ -2014,7 +2038,7 @@
         .view-mode-icon {
             margin-right: 0px !important;
             margin-top: -2px;
-            margin-left: 4px;
+            margin-inline-start: 4px;
             width: 1.25em;
 
             &.icon i::before, 
@@ -2029,12 +2053,12 @@
             max-width: 100%;
             display: inline-block;
             margin-bottom: 12px;
-            margin-right: auto;
-            padding-right: 10px;
+            margin-inline-end: auto;
+            padding-inline-end: 10px;
 
             @media screen and (max-width: 768px) {            
                 margin-right: 0;
-                padding-right: 0;
+                padding-inline-end: 0;
 
                  &:first-of-type {
                     min-width: 100%;
@@ -2046,7 +2070,7 @@
             }
 
             &:last-child {
-                margin-right: 0;
+                margin-inline-end: 0;
             }
 
             .label {
@@ -2079,7 +2103,7 @@
             .gray-icon, 
             .gray-icon .icon {
                 color: var(--tainacan-info-color) !important;
-                padding-right: 10px;
+                padding-inline-end: 10px;
                 justify-content: space-between;
                 &.is-small {
                     width: 1em;
@@ -2168,12 +2192,12 @@
                     margin: -2px 0 5px 0;
                 }
                 a.advanced-search-toggle {
-                    margin-left: 12px;
+                    margin-inline-start: 12px;
                     white-space: nowrap; 
                     position: absolute;
                     font-size: 0.75em;
-                    right: 15px;
-                    left: unset;
+                    inset-inline-end: 15px;
+                    inset-inline-start: unset;
                     top: 100%;
                     transition: font-size 0.2s ease, right 0.3s ease, left 0.3s ease, top 0.4s ease;
                     
@@ -2264,7 +2288,7 @@
         overflow-y: hidden;
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
-        margin-left: 0;
+        margin-inline-start: 0;
 
         // Metadata type textarea has different separators in different spots on interface
         .multivalue-separator {

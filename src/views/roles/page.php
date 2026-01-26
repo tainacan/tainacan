@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-$allowed_html = [
+$tainacan_page_roles_allowed_html = [
     'div' => [
         'id' => true,
         'style' => true,
@@ -10,4 +10,4 @@ $allowed_html = [
         'data-module' => true
     ]
 ];
-echo wp_kses( "<div id='tainacan-roles-app' class='tainacan-page-container-content' data-module='roles'></div>", $allowed_html );
+echo wp_kses( "<div id='tainacan-roles-app' class='tainacan-page-container-content' data-module='roles'></div>", $tainacan_page_roles_allowed_html );

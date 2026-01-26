@@ -507,8 +507,8 @@
         .tainacan-modal-content {
 
             .field {
-                padding-left: 0;
-                margin-left: 0;
+                padding-inline-start: 0;
+                margin-inline-start: 0;
             }
 
             .tainacan-modal-title {
@@ -518,7 +518,7 @@
                 max-width: 120px;
             }
             .image-placeholder {
-                left: 2px;
+                inset-inline-start: 2px;
             }
             .modal-card-body {
                 padding-bottom: 0px;
@@ -569,7 +569,7 @@
             margin-bottom: 0px;
 
             .column:first-of-type {
-                margin-right: 24px;
+                margin-inline-end: 24px;
             }
             .column:last-of-type {
                 flex-grow: 3;
@@ -592,8 +592,8 @@
             }
             .image-placeholder {
                 position: absolute;
-                margin-left: auto;
-                margin-right: auto;
+                margin-inline-start: auto;
+                margin-inline-end: auto;
                 width: 100%;
                 top: 35%;
                 padding: 0 8px;
@@ -619,7 +619,7 @@
                 min-width: 2.125em !important;
                 padding: 0 !important;
                 z-index: 99;
-                margin-left: 10px !important;
+                margin-inline-end: 10px !important;
                 
                 .icon {
                     color: var(--tainacan-white) !important;
@@ -632,7 +632,7 @@
             }
                 
             .thumbnail-buttons-row {
-                text-align: right;
+                text-align: end;
                 top: -0.9375em;
                 position: relative;
             }

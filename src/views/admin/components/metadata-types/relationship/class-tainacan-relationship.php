@@ -264,8 +264,8 @@ class Relationship extends Metadata_Type {
 			$item instanceof \Tainacan\Entities\Item && (
 				is_user_logged_in() ||
 				(
-					\is_post_status_viewable( $item->get_status() ) &&
-					($item->get_collection() != null && \is_post_status_viewable( $item->get_collection()->get_status() ))
+					\tainacan_is_post_status_viewable( $item->get_status() ) &&
+					($item->get_collection() != null && \tainacan_is_post_status_viewable( $item->get_collection()->get_status() ))
 				)
 			)
 		);
@@ -354,13 +354,14 @@ class Relationship extends Metadata_Type {
 			if ($value_link) {
 				?>
 					<div class="tainacan-relationship-metadatum-header">
-						<?php echo ($should_display_thumbnail ? $this->get_item_thumbnail($thumbnail_id, $item) : ''); ?>
+						<?php echo wp_kses_post($should_display_thumbnail ? $this->get_item_thumbnail($thumbnail_id, $item) : ''); ?>
 						<h4 class="label">
 							<?php
 							/**
 							 * Note to code reviewers: This lines doesn't need to be escaped.
 							 * The variable $value_link is escaped.
 							 */
+							/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
 							echo $value_link;
 							?>
 						</h4>
@@ -383,19 +384,18 @@ class Relationship extends Metadata_Type {
 							$metadata_wrapper_class .= ' metadata-type-' . $metadata_type;
 					}
 
-
 					$metadata_slug = $meta->get_metadatum()->get_slug();
 
 					if ( $metadata_slug )
 						$metadata_wrapper_class .= ' metadata-slug-' . $metadata_slug;
 				}
 				?>
-					<div class="<?php echo $metadata_wrapper_class; ?>">
+					<div class="<?php echo esc_attr( $metadata_wrapper_class ); ?>">
 						<h5 class="label related-metadadum-label">
 							<?php echo esc_html($meta->get_metadatum()->get_name()); ?>
 						</h5>
 						<p>
-							<?php echo wp_kses_tainacan(($value_link === false ? $meta->get_value_as_html() : $value_link)); ?> 
+							<?php echo wp_kses(($value_link === false ? $meta->get_value_as_html() : $value_link), wp_kses_allowed_html('tainacan_content')); ?> 
 						</p>
 					</div>
 				<?php

@@ -265,8 +265,8 @@ class Metadata extends Repository {
 			'labels'              => $labels,
 			'hierarchical'        => true,
 			'public'              => true,
-			'show_ui'             => tnc_enable_dev_wp_interface(),
-			'show_in_menu'        => tnc_enable_dev_wp_interface(),
+			'show_ui'             => tainacan_enable_dev_wp_interface(),
+			'show_in_menu'        => tainacan_enable_dev_wp_interface(),
 			'publicly_queryable'  => false,
 			'exclude_from_search' => true,
 			'has_archive'         => false,
@@ -547,7 +547,9 @@ class Metadata extends Repository {
 		} elseif ( is_integer( $collection ) ) {
 			$collection_id = $collection;
 		} else {
-			throw new \InvalidArgumentException( 'fetch_ids_by_collection expects paramater 1 to be a integer or a \Tainacan\Entities\Collection object. ' . gettype( $collection ) . ' given' );
+			throw new \InvalidArgumentException(
+				'fetch_ids_by_collection expects paramater 1 to be a integer or a \Tainacan\Entities\Collection object. ' . esc_html( gettype( $collection ) ) . ' given'
+			);
 		}
 
 		//get parent collections
@@ -760,8 +762,8 @@ class Metadata extends Repository {
 				$new_value = array_diff($old_value, $collection_metadata_sections_id);
 				$new_value[] = (string)$new_metadata_section_id;
 				$metadatum->set_metadata_section_id($new_value);
-				if(!$metadatum->validate()) { 
-					throw new \Exception( $metadatum->get_errors() );
+				if (!$metadatum->validate()) { 
+					throw new \Exception( esc_html( print_r($metadatum->get_errors(), true) ) );
 				}
 			}
 		}
@@ -1147,7 +1149,7 @@ class Metadata extends Repository {
 
 			return $metadatum->get_id();
 		} else {
-			throw new \ErrorException( 'The entity wasn\'t validated.' . print_r( $metadatum->get_errors(), true ) );
+			throw new \ErrorException( 'The entity wasn\'t validated.' . esc_html( print_r( $metadatum->get_errors(), true ) ) );
 		}
 	}
 
@@ -1392,7 +1394,7 @@ class Metadata extends Repository {
 			} else {
 				$pages = ceil( $total / $number );
 			}
-			$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
+			$separator = wp_strip_all_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 			$values = [];
 			foreach ($results as $r) {
 

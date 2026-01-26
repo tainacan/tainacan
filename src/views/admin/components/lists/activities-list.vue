@@ -100,7 +100,9 @@
             <section class="section">
                 <div class="content has-text-dark has-text-centered">
                     <p>
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities" />
                         </span>
                     </p>

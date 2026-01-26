@@ -1,13 +1,17 @@
 function handleMenuCollapses() {
     const tainacanRootMenu = document.getElementById('tainacan-root-menu');
 
-    if ( tainacanRootMenu && tainacanRootMenu.childNodes.length ) {
+    if ( tainacanRootMenu && tainacanRootMenu.children.length ) {
 
-        const tainacanRootMenuItems = tainacanRootMenu.childNodes;
+        const tainacanRootMenuItems = Array.from(tainacanRootMenu.children);
 
         tainacanRootMenuItems.forEach( item => {
             if ( item.classList && item.classList.contains('menu-item-has-children') ) {
                 const itemButton = item.querySelector( 'button' );
+
+                if ( !itemButton ) {
+                    return;
+                }
 
                 itemButton.addEventListener( 'click', function() {
                     item.classList.toggle('is-open');
@@ -19,8 +23,10 @@ function handleMenuCollapses() {
                         tainacanRootMenuItems.forEach( otherItem => {
                             if ( otherItem !== item && otherItem.classList && otherItem.classList.contains('menu-item-has-children') ) {
                                 const otherItemButton = otherItem.querySelector( 'button' );
-                                otherItem.classList.remove('is-open');
-                                otherItemButton.setAttribute( 'aria-expanded', false );
+                                if ( otherItemButton ) {
+                                    otherItem.classList.remove('is-open');
+                                    otherItemButton.setAttribute( 'aria-expanded', false );
+                                }
                             }
                         });
                     }
@@ -36,8 +42,10 @@ function handleMenuCollapses() {
                 tainacanRootMenuItems.forEach( item => {
                     if ( item.classList && item.classList.contains('menu-item-has-children') ) {
                         const itemButton = item.querySelector( 'button' );
-                        item.classList.remove('is-open');
-                        itemButton.setAttribute( 'aria-expanded', false );
+                        if ( itemButton ) {
+                            item.classList.remove('is-open');
+                            itemButton.setAttribute( 'aria-expanded', false );
+                        }
                     }
                 });
             });
@@ -219,9 +227,9 @@ function handleDynamicMenusAndBreadcrumbs() {
                             link.innerHTML = '';
                             
                             if ( element.icon )
-                                link.innerHTML += '<span class="icon"><i class="tainacan-icon tainacan-icon-' + element.icon + '"></i></span>';
+                                link.innerHTML += '<span class="icon" aria-hidden="true"><i class="tainacan-icon tainacan-icon-' + element.icon + '"></i></span>';
                             else if ( element.svgIcon )
-                                link.innerHTML += '<span class="icon"><i class="tainacan-icon tainacan-icon-svg">' + element.svgIcon + '</i></span>';
+                                link.innerHTML += '<span class="icon" aria-hidden="true"><i class="tainacan-icon tainacan-icon-svg">' + element.svgIcon + '</i></span>';
 
                             link.innerHTML += '<span class="menu-text">' + element.label + '</span>';
 
@@ -238,7 +246,7 @@ function handleDynamicMenusAndBreadcrumbs() {
                         if ( adminOptions.hideNavigationCollectionName !== 'true' && adminOptions.hideNavigationCollectionName !== true ) {
                             const collectionName = document.createElement( 'li' );
                             collectionName.setAttribute( 'class', 'separator-list-item' );
-                            collectionName.innerHTML = '<span class="icon"><i class="tainacan-icon tainacan-icon-collection tainacan-icon-1-125em"></i></span><span class="menu-text">' + collection.name + '</span>';
+                            collectionName.innerHTML = '<span class="icon" aria-hidden="true"><i class="tainacan-icon tainacan-icon-collection tainacan-icon-1-125em"></i></span><span class="menu-text">' + collection.name + '</span>';
                             tainacanCollectionLinks.insertBefore( collectionName, tainacanCollectionLinks.children[1] );
                         }
                     } else {

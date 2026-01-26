@@ -354,6 +354,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 			foreach ($keys as $key) {
 				if (!isset($body[$key])) {
 					return new \WP_REST_Response([
+						/* translators: %s may be different fields from that the API expects, such as the value */
 						'error_message' => sprintf(__('%s must be provided', 'tainacan'), $key),
 					], 400);
 				}

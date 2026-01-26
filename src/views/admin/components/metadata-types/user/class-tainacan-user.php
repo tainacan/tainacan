@@ -110,12 +110,14 @@ class User extends Metadata_Type {
 		if ( is_array($value) ) {
 			foreach($value as $user) {
 				if ( !empty($user) && !$this->user_exists((int)$user) ) {
+					/* translators: %s is the ID of the user */
 					$this->add_error( sprintf(__('User does not exist (ID: %s).', 'tainacan'), $user ) );
 					return false;
 				}
 			}
 		} else {
 			if ( !empty($value) && !$this->user_exists((int)$value) ) {
+				/* translators: %s is the ID of the user */
 				$this->add_error( sprintf( __('User does not exist (ID: %s).', 'tainacan'), $value ) );
 				return false;
 			}

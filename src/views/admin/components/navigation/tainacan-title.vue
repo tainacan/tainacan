@@ -122,7 +122,7 @@ export default {
 
     @media screen and (min-width: 769px) {
         .tainacan-external-link + .tainacan-page-title--sticky {
-            padding-right: 200px;
+            padding-inline-end: 200px;
         }
     }
 

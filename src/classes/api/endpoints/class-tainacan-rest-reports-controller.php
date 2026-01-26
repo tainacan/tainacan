@@ -302,7 +302,7 @@ class REST_Reports_Controller extends REST_Controller {
 				$response['totals']['items']['private'] = intval($total_items->private);
 				$response['totals']['items']['pending'] = intval($total_items->pending);
 
-				if ( \is_post_status_viewable( $collection->get_status() ) === true ) {
+				if ( \tainacan_is_post_status_viewable( $collection->get_status() ) === true ) {
 					$response['totals']['items']['not_restrict'] += isset($total_items->publish) ? intval($total_items->publish) : 0;
 				} else {
 					$response['totals']['items']['restrict'] += (
@@ -341,7 +341,7 @@ class REST_Reports_Controller extends REST_Controller {
 					$response['totals']['items']['private'] += isset($total_items->private)? intval($total_items->private) : 0;
 					$response['totals']['items']['pending'] += isset($total_items->pending)? intval($total_items->pending) : 0;
 					
-					if ( \is_post_status_viewable( $collection->get_status() ) === true ) {
+					if ( \tainacan_is_post_status_viewable( $collection->get_status() ) === true ) {
 						$response['totals']['items']['not_restrict'] += isset($total_items->publish) ? intval($total_items->publish) : 0;
 					} else {
 						$response['totals']['items']['restrict'] += (

@@ -41,7 +41,8 @@ class Roles_Editor extends Pages {
 			'tainacan-pages-common-scripts',
 			$TAINACAN_BASE_URL . '/assets/js/tainacan_pages_common_scripts.js',
 			['underscore', 'wp-i18n'],
-			TAINACAN_VERSION
+			TAINACAN_VERSION,
+			true
 		);
 		wp_set_script_translations('tainacan-pages-common-scripts', 'tainacan');
 

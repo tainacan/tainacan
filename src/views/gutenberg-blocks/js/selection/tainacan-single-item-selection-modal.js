@@ -215,7 +215,7 @@ export default class TainacanSingleItemSelectionModal extends React.Component {
                         {__('Switch collection', 'tainacan')}
                     </Button>
                     <Button
-                        style={{ marginLeft: 'auto' }} 
+                        style={{ marginInlineStart: 'auto' }} 
                         isPrimary
                         onClick={ () => this.applySelectedItem() }>
                         { this.props.applyButtonLabel ? this.props.applyButtonLabel : __('Use this item', 'tainacan') }

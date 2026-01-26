@@ -89,7 +89,7 @@
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="previousSearchPage">
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-previous" />
+                                <i class="tainacan-icon tainacan-icon-previous tainacan-icon-is-rtl-mirrored" />
                             </span>
                         </a>
                         <ul class="tainacan-modal-checkbox-list-body">
@@ -151,8 +151,10 @@
                                 @click="nextSearchPage"
                                 @keydown.enter.prevent="nextSearchPage"
                                 @keydown.space.prevent="nextSearchPage">
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-next" />
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
+                                <i class="tainacan-icon tainacan-icon-next tainacan-icon-is-rtl-mirrored" />
                             </span>
                         </a>
                     </div>
@@ -171,8 +173,10 @@
                                 @click="previousPage"
                                 @keydown.enter.prevent="previousPage"
                                 @keydown.space.prevent="previousPage">
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-previous" />
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
+                                <i class="tainacan-icon tainacan-icon-previous tainacan-icon-is-rtl-mirrored" />
                             </span>
                         </a>
                         <ul class="tainacan-modal-checkbox-list-body">
@@ -219,8 +223,10 @@
                                 @click="nextPage"
                                 @keydown.enter.prevent="nextPage"
                                 @keydown.space.prevent="nextPage">
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-next" />
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
+                                <i class="tainacan-icon tainacan-icon-next tainacan-icon-is-rtl-mirrored" />
                             </span>
                         </a>
                     </div>
@@ -303,7 +309,7 @@
                                             <span class="sr-only">{{ $i18n.get('label_children_terms') }}</span>
                                         </span>
                                         <span class="icon is-pulled-right">
-                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowright" />
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored" />
                                         </span>
                                     </a>
                                 </b-field>
@@ -311,6 +317,7 @@
                                     <button
                                             v-if="shouldShowMoreButton(key)"
                                             class="tainacan-show-more"
+                                            type="button"
                                             @click="getMoreOptions(finderColumn, key)">
                                         <span class="icon">
                                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore" />
@@ -1042,7 +1049,7 @@
             z-index: 9999999;
             position: fixed;
             top: 0;
-            left: 0;
+            inset-inline-start: 0;
             width: 100%;
             height: 100%;
         }
@@ -1075,7 +1082,7 @@
         display: flex;
         justify-content: space-between;
         align-items: stretch;
-        margin-left: 0px !important;
+        margin-inline-start: 0px !important;
         padding: 2px 0 !important;
         -webkit-break-inside: avoid;
         break-inside: avoid;
@@ -1083,7 +1090,7 @@
         :deep(.b-checkbox), :deep(.b-radio) {
             max-width: 100%;
             min-height: 1.75em;
-            margin-left: 0.7em;
+            margin-inline-start: 0.7em;
             margin-bottom: 0px !important;
             height: auto;
             padding-top: 0px;
@@ -1100,7 +1107,7 @@
                 .control-label {
                     padding-top: 0.8125em;
                     padding-bottom: 0.8125em;
-                    padding-left: calc(0.875em - 1px);
+                    padding-inline-start: calc(0.875em - 1px);
                     width: 100%;
                     border-bottom: 1px solid var(--tainacan-gray1);
                 }
@@ -1122,13 +1129,13 @@
         flex-grow: 0;
         flex-shrink: 1;
         max-width: calc(100% - 0.5em);
-        padding-left: 0.5em;
+        padding-inline-start: 0.5em;
         margin: 0;
         -webkit-break-inside: avoid;
         break-inside: avoid;
 
         :deep(.b-checkbox), :deep(.b-radio) {
-            margin-right: 0px;
+            margin-inline-end: 0px;
             margin-bottom: 0;
             -webkit-break-inside: avoid;
             break-inside: avoid;
@@ -1145,7 +1152,7 @@
                 .control-label {
                     padding-top: 0.8125em;
                     padding-bottom: 0.8125em;
-                    padding-left: calc(0.875em - 1px);
+                    padding-inline-start: calc(0.875em - 1px);
                     width: 100%;
                     border-bottom: 1px solid var(--tainacan-gray1);
                 }
@@ -1320,7 +1327,7 @@
         } 
         :deep(.field-body>.field) {
             padding: 0px !important;
-            margin-left: 0px !important;
+            margin-inline-start: 0px !important;
         }
         :deep(.field-body>.field>p.control+.control>.input) {
             border-radius: 0 var(--tainacan-input-border-radius, 0) var(--tainacan-input-border-radius, 0) 0 !important;
@@ -1338,8 +1345,8 @@
         padding: 0 20px !important;
 
         &>ul+.tainacan-checkbox-list-page-changer {
-            right: 0;
-            left: auto;
+            inset-inline-end: 0;
+            inset-inline-start: auto;
         }
     }
 
@@ -1347,8 +1354,8 @@
         height: calc(100% - 1px);
         top: 1px;
         position: absolute;
-        left: 0;
-        right: auto;
+        inset-inline-start: 0;
+        inset-inline-end: auto;
         align-items: center;
         display: flex;
         background-color: var(--tainacan-gray1);
@@ -1480,7 +1487,7 @@
             }
             .tainacan-finder-column a {
                 width: 3.5em;
-                border-left: 1px solid var(--tainacan-gray1);
+                border-inline-start: 1px dashed var(--tainacan-gray1);
                 border-bottom: 1px solid var(--tainacan-gray1);
                 display: flex;
                 justify-content: center;

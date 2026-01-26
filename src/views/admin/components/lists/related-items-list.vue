@@ -15,7 +15,9 @@
                                 <div class="section-status">
                                     <div class="field has-addons">
                                         <span>
-                                            <span class="icon">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-collection" />
                                             </span>
                                             {{ relatedItemGroup.collection_name ? relatedItemGroup.collection_name : '' }}
@@ -27,7 +29,9 @@
                                 <div class="section-status">
                                     <div class="field has-addons">
                                         <span>
-                                            <span class="icon">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-metadata" />
                                             </span>
                                             {{ relatedItemGroup.metadata_name ? relatedItemGroup.metadata_name : '' }}
@@ -37,7 +41,7 @@
                             </div>
                             <div 
                                     v-if="relatedItemGroup.total_items && relatedItemGroup.total_items > 1"
-                                    style="margin-left: auto;"
+                                    style="margin-inline-end: auto;"
                                     class="column is-narrow">
                                 <div class="section-status">
                                     <div class="field">
@@ -250,7 +254,7 @@
         .related-item-group {
 
             .related-item-group__items-list {
-                margin-top: 0.25em;
+                margin-top: 0.5em;
             }
             
             &:not(:last-child) {

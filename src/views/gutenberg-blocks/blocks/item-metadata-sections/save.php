@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 /**
  * Renders the content of the item metadata sections
  * using Tainacan template functions

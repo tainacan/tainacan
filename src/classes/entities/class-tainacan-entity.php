@@ -112,7 +112,7 @@ class Entity {
 			if ($post instanceof \WP_Post) {
 				$this->WP_Post = get_post($which);
 			} else {
-				throw new \Exception( 'No entity was found with ID ' . $which );
+				throw new \Exception( sprintf( 'No entity was found with ID %d', intval( $which ) ) );
 			}
 			
 		} elseif ($which instanceof \WP_Post) {
@@ -141,15 +141,19 @@ class Entity {
 				( $this->get_post_type() === false && $this->WP_Post->post_type && ! preg_match($collection_pt_pattern, $this->WP_Post->post_type) ) 
 			)
 		) {
-			if($this->get_post_type() === false) {
-				
-				throw new \Exception('the returned post is not the same type of the entity! expected: '.Collection::$db_identifier_prefix.$this->get_db_identifier().Collection::$db_identifier_sufix.' and actual: '.$this->WP_Post->post_type );
-			}
-			else {
-				throw new \Exception('the returned post is not the same type of the entity! expected: '.$this->get_post_type().' and actual: '.$this->WP_Post->post_type );
-			}
+			throw new \Exception(
+				sprintf(
+					'the returned post is not the same type of the entity! expected: %s and actual: %s',
+					esc_html(
+						$this->get_post_type() === false
+							? Collection::$db_identifier_prefix . $this->get_db_identifier() . Collection::$db_identifier_sufix
+							: $this->get_post_type()
+					),
+					esc_html( $this->WP_Post->post_type )
+				)
+			);
 		}
-		if($this->get_post_type() !== false) {
+		if ( $this->get_post_type() !== false ) {
 			$this->cap = $this->get_capabilities();
 		} elseif ($this instanceof Item) {
 			$item_collection = $this->get_collection();

@@ -1,7 +1,12 @@
+<?php 
+
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
+?>
 <div class="wrap tainacan-page-container-content">
 	<div class="tainacan-fixed-subheader">
 		<h1 class="tainacan-page-title">
-			<?php _e('Settings', 'tainacan'); ?>
+			<?php esc_html_e('Settings', 'tainacan'); ?>
 		</h1>
 		<?php settings_errors(); ?>
 	</div>

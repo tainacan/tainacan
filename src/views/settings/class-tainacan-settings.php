@@ -2,6 +2,8 @@
 
 namespace Tainacan;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 class Settings extends Pages {
 	use \Tainacan\Traits\Singleton_Instance;
 
@@ -20,7 +22,7 @@ class Settings extends Pages {
 			add_submenu_page(
 				$this->tainacan_root_menu_slug,
 				__('Other', 'tainacan'),
-				'<span class="icon">' . $this->get_svg_icon( 'viewminiature' ) . '</span><span class="menu-text">' .__( 'Other', 'tainacan' ) . '</span>',
+				'<span class="icon" aria-hidden="true">' . $this->get_svg_icon( 'viewminiature' ) . '</span><span class="menu-text">' .__( 'Other', 'tainacan' ) . '</span>',
 				'read',
 				$this->tainacan_other_links_slug,
 				'#'
@@ -30,7 +32,7 @@ class Settings extends Pages {
 			$tainacan_page_suffix = add_submenu_page(
 				!$this->has_admin_ui_option('hideNavigationOtherMenu') ? $this->tainacan_other_links_slug : $this->tainacan_root_menu_slug,
 				__('Settings', 'tainacan'),
-				'<span class="icon">' . $this->get_svg_icon( 'settings' ) . '</span><span class="menu-text">' .__( 'Settings', 'tainacan' ) . '</span>',
+				'<span class="icon" aria-hidden="true">' . $this->get_svg_icon( 'settings' ) . '</span><span class="menu-text">' .__( 'Settings', 'tainacan' ) . '</span>',
 				'manage_options',
 				$this->get_page_slug(),
 				array( &$this, 'render_page' )
@@ -68,6 +70,7 @@ class Settings extends Pages {
 			'input_type' => 'number',
 			'input_attrs' => 'min=12 required="required"',
 			'input_disabled' => defined('TAINACAN_API_MAX_ITEMS_PER_PAGE'),
+			// translators: %s: The default number of items to show in search results.
 			'description' => sprintf( __( 'Number of items to show in search results. The default is %s and larger numbers should be avoided as it impacts in your server load time.', 'tainacan' ), ( defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? max(TAINACAN_API_MAX_ITEMS_PER_PAGE, 12) : 96 ) ),
 			'sanitize_callback' => 'absint',
 			'default' => defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? max(TAINACAN_API_MAX_ITEMS_PER_PAGE, 12) : 12,
@@ -468,32 +471,55 @@ class Settings extends Pages {
 		<?php endif; ?>
 
 		<?php if ( $args['input_type'] === 'select' ) : ?>
-			<select 
-				id="<?php echo esc_attr( $option_name ); ?>" 
-				name="<?php echo esc_attr( $option_name ); ?>"
-				<?php echo ' ' . esc_attr( $args['input_attrs'] ) . ' '; ?>
-				<?php echo $disabled; ?>>
-				<?php echo str_replace( 'value="' . $value . '"', 'value="' . $value . '" selected'  , $args['input_inner_html'] ); ?>
-			</select>
+		<select 
+			id="<?php echo esc_attr( $option_name ); ?>" 
+			name="<?php echo esc_attr( $option_name ); ?>"
+			<?php echo ! empty( $args['input_attrs'] ) ? ' ' . esc_attr( $args['input_attrs'] ) . ' ' : ''; ?>
+			<?php echo esc_attr( $disabled ); ?>>
+			<?php
+			// Add 'selected' attribute to the option matching the current value
+			$options_html = str_replace( 'value="' . esc_attr( $value ) . '"', 'value="' . esc_attr( $value ) . '" selected', $args['input_inner_html'] );
+			// Sanitize HTML output - allow option and optgroup tags with their common attributes
+			$allowed_html = array(
+				'option' => array(
+					'value' => true,
+					'selected' => true,
+					'disabled' => true,
+					'class' => true,
+					'id' => true,
+				),
+				'optgroup' => array(
+					'label' => true,
+					'disabled' => true,
+					'class' => true,
+					'id' => true,
+				),
+			);
+			echo wp_kses( $options_html, $allowed_html );
+			?>
+		</select>
 		<?php elseif ( $args['input_type'] === 'checkbox' && is_array($args['label']) ) : ?>
 			<div class="multiple-options">
-				<?php
-					foreach ( $label as $key => $option_label ) {
-						$checked = is_array($value) && in_array( $key, $value ) ? 'checked' : '';
-						echo '<label>';
-						echo '<input type="checkbox" name="' . esc_attr( $option_name ) . '[]" value="' . esc_attr( $key ) . '" ' . $checked . ' />' . esc_html($option_label);
-						echo '</label><br>';
-					}
-				?>
+			<?php
+			foreach ( $label as $key => $option_label ) {
+				$is_checked = is_array($value) && in_array( $key, $value );
+				echo '<label>';
+				echo '<input type="checkbox" name="' . esc_attr( $option_name ) . '[]" value="' . esc_attr( $key ) . '"';
+				checked( $is_checked, true );
+				echo ' />' . esc_html($option_label);
+				echo '</label><br>';
+			}
+			?>
 			<div>
 		<?php else : ?>
 			<input 
 				id="<?php echo esc_attr( $option_name ); ?>" 
 				name="<?php echo esc_attr( $option_name ); ?>"
-				type="<?php echo $input_type; ?>" 
-				<?php echo ($input_type === 'checkbox' ? ( $value == true || $value == "1" ? ' checked value="1"' : ' value="1"' ) : ' value="' . $value . '"'); ?> 
-				<?php echo ' ' . esc_attr( $args['input_attrs'] ) . ' '; ?>
-				<?php echo $disabled; ?> />
+				type="<?php echo esc_attr( $input_type ); ?>" 
+				value="<?php echo esc_attr( $input_type === 'checkbox' ? '1' : $value ); ?>"
+				<?php $input_type === 'checkbox' ? checked( $value, '1' ) : ''; ?>
+				<?php echo ! empty( $args['input_attrs'] ) ? ' ' . esc_attr( $args['input_attrs'] ) . ' ' : ''; ?>
+				<?php echo esc_attr( $disabled ); ?> />
 		<?php endif; ?>
 
 		<?php if ( $label && !is_array($label) ) : ?>
@@ -502,7 +528,7 @@ class Settings extends Pages {
 		<?php endif;
 
 		if ( ! empty( $description ) ) : ?>
-			<p class="description"><?php echo esc_html( $description ); ?></p>
+			<p class="description"><?php echo wp_kses_post( $description ); ?></p>
 		<?php endif;
 	}	
 
@@ -510,7 +536,7 @@ class Settings extends Pages {
 	public function search_and_performance_section_description() {
 	?>
 		<p class="settings-section-description">
-			<?php echo _e('Options that may impact on your servers response. Some may be disabled by your server settings. Use with caution!', 'tainacan');?>
+			<?php esc_html_e('Options that may impact on your servers response. Some may be disabled by your server settings. Use with caution!', 'tainacan');?>
 		</p>
 	<?php
 	}
@@ -518,7 +544,7 @@ class Settings extends Pages {
 	public function theme_templates_section_description() {
 	?>
 		<p class="settings-section-description">
-			<?php echo _e('Options related to theme compatibility. If your theme does not implements its own versions of Tainacan templates you can enable some options that will override WordPress default templates. Extra customization might required at least some knowledge of CSS.', 'tainacan');?>
+			<?php esc_html_e('Options related to theme compatibility. If your theme does not implements its own versions of Tainacan templates you can enable some options that will override WordPress default templates. Extra customization might required at least some knowledge of CSS.', 'tainacan');?>
 		</p>
 	<?php
 	}
@@ -526,7 +552,7 @@ class Settings extends Pages {
 	public function items_list_defaults_section_description() {
 	?>
 		<p class="settings-section-description">
-			<?php echo _e('Options that will be used as default for items list in the collection and repository pages. They might be overridden by collection settings or theme options.', 'tainacan');?>
+			<?php esc_html_e('Options that will be used as default for items list in the collection and repository pages. They might be overridden by collection settings or theme options.', 'tainacan');?>
 		</p>
 	<?php
 	}
@@ -534,7 +560,15 @@ class Settings extends Pages {
 	public function print_section_info() {
 	?>
 		<p class="settings-section-description">
-			<?php echo _e('When using the Item\'s Submission block, you can enable Google reCAPTCHA for increasing security. For that you must configure your site and key settings here.', 'tainacan');?>
+			<?php
+			echo wp_kses_post(
+				sprintf(
+					// translators: %s: Link to Google reCAPTCHA setup page.
+					__( 'When using the Item\'s Submission block, you can enable Google reCAPTCHA for increasing security. For that you must configure your site and key settings <a href="%s" target="_blank" rel="noopener noreferrer">here</a>.', 'tainacan' ),
+					esc_url( 'https://www.google.com/recaptcha/admin/create' )
+				)
+			);
+			?>
 		</p>
 	<?php
 	}
