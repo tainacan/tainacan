@@ -988,7 +988,7 @@
                     {{ formErrorMessage }}
                 </p>
                 <div 
-                        style="margin-inline-end: auto;"
+                        style="margin-inline-start: auto;"
                         class="control is-hidden-mobile">
                     <button
                             v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata') && !fromImporter"
