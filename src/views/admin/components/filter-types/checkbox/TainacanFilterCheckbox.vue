@@ -195,6 +195,7 @@
                 this.selected = index >= 0 ? this.query.metaquery.slice()[ index ].value : [];
             },
             openCheckboxModal() {
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: CheckboxRadioFilterInput,
                     props: {
@@ -219,7 +220,8 @@
                                 this.selected.splice(existingValue, 1);
                             else
                                 this.selected.push(newSelected);
-                        } 
+                        },
+                        beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',

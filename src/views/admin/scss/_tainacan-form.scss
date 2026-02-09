@@ -259,6 +259,9 @@
                 visibility: hidden !important;
                 pointer-events: none;
             }
+            & > div:not(:last-child):not(:only-child):not(:empty) {
+                margin-bottom: 1.5em;
+            }
         }
     }
 }

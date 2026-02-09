@@ -58,7 +58,9 @@
                                 tabindex="0"
                                 class="add-link"
                                 :title="$i18n.get('add_value')"
-                                @click="addInterval(index)">
+                                @click="addInterval(index)"
+                                @keydown.enter.prevent="addInterval(index)"
+                                @keydown.space.prevent="addInterval(index)">
                             <span 
                                     aria-hidden="true"
                                     class="icon is-small">
@@ -75,7 +77,9 @@
                                 tabindex="0"
                                 class="add-link"
                                 :title="$i18n.get('remove_value')"
-                                @click="removeInterval(index)">
+                                @click="removeInterval(index)"
+                                @keydown.enter.prevent="removeInterval(index)"
+                                @keydown.space.prevent="removeInterval(index)">
                             <span 
                                     aria-hidden="true"
                                     class="icon is-small">

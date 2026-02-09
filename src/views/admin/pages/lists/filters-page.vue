@@ -151,8 +151,11 @@
                                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                     placement: 'auto-start'
                                                 }"
-                                                class="icon">
-                                            <i class="tainacan-icon tainacan-icon-private" />
+                                                class="icon"
+                                                :aria-label="$i18n.get('status_private')">
+                                            <i 
+                                                    aria-hidden="true"
+                                                    class="tainacan-icon tainacan-icon-private" />
                                         </span>
                                         <span 
                                                 v-tooltip="{
@@ -161,7 +164,8 @@
                                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                     placement: 'auto-start'
                                                 }"
-                                                class="icon icon-level-identifier">
+                                                class="icon icon-level-identifier"
+                                                :aria-label="filter.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter')">
                                             <i 
                                                     :class="{ 
                                                         'tainacan-icon-collection': filter.collection_id == collectionId, 
@@ -170,7 +174,8 @@
                                                         'has-text-secondary': filter.enabled && filter.collection_id == 'default',
                                                         'has-text-grey': !filter.enabled  
                                                     }"
-                                                    class="tainacan-icon" />
+                                                    class="tainacan-icon"
+                                                    aria-hidden="true" />
                                         </span> 
                                     </span>
                                     <span 
@@ -188,7 +193,12 @@
                                         <a 
                                                 v-if="filter.current_user_can_edit"
                                                 :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel? 'hidden' : 'visible' }"
-                                                @click.prevent="toggleFilterEdition(filter.id)">
+                                                role="button"
+                                                tabindex="0"
+                                                :aria-label="$i18n.get('edit')"
+                                                @click.prevent="toggleFilterEdition(filter.id)"
+                                                @keydown.enter.prevent="toggleFilterEdition(filter.id)"
+                                                @keydown.space.prevent="toggleFilterEdition(filter.id)">
                                             <span 
                                                     v-tooltip="{
                                                         content: $i18n.get('edit'),
@@ -203,7 +213,12 @@
                                         <a 
                                                 v-if="filter.current_user_can_delete"
                                                 :style="{ visibility: (filter.collection_id != collectionId && !isRepositoryLevel) || (filter.id == openedFilterId) ? 'hidden' : 'visible' }"
-                                                @click.prevent="removeFilter(filter)">
+                                                role="button"
+                                                tabindex="0"
+                                                :aria-label="$i18n.get('delete')"
+                                                @click.prevent="removeFilter(filter)"
+                                                @keydown.enter.prevent="removeFilter(filter)"
+                                                @keydown.space.prevent="removeFilter(filter)">
                                             <span
                                                     v-tooltip="{
                                                         content: $i18n.get('delete'),
@@ -281,7 +296,12 @@
                                             'inherited-metadatum': metadatum.inherited || isRepositoryLevel,
                                             'disabled-metadatum': isSelectingFilterType
                                         }"
-                                        @click.prevent="addMetadatumViaButton(metadatum, index)">
+                                        role="button"
+                                        tabindex="0"
+                                        :aria-label="$i18n.get('instruction_click_or_drag_filter_create')"
+                                        @click.prevent="addMetadatumViaButton(metadatum, index)"
+                                        @keydown.enter.prevent="addMetadatumViaButton(metadatum, index)"
+                                        @keydown.space.prevent="addMetadatumViaButton(metadatum, index)">
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('instruction_click_or_drag_filter_create'),
@@ -368,9 +388,11 @@
                                     <button
                                             id="button-create-metadatum" 
                                             role="link"
-                                            ttype="button" 
+                                            type="button" 
                                             class="button is-secondary is-centered"
-                                            @click="navigate()">
+                                            @click="navigate()"
+                                            @keydown.enter="navigate()"
+                                            @keydown.space="navigate()">
                                         {{ $i18n.getFrom('metadata', 'new_item') }}
                                     </button>
                                 </router-link>
@@ -404,7 +426,8 @@
                     aria-role="dialog"
                     custom-class="tainacan-modal"
                     :can-cancel="['escape', 'outside']"
-                    :close-button-aria-label="$i18n.get('close')">
+                    :close-button-aria-label="$i18n.get('close')"
+                    @close="onFilterTypeModalClose()">
                 <div 
                         autofocus
                         role="dialog"
@@ -420,14 +443,14 @@
                             <div class="columns">
                                 <div class="column">
                                     <div 
-                                            role="list"
+                                            :role="allowedFilterTypes.length > 1 ? 'list' : undefined"
                                             class="filter-types-container">
                                         <p>{{ $i18n.get('instruction_click_to_select_a_filter_type') }}</p>
                                         <br>
                                         <div
                                                 v-for="(filterType, index) in allowedFilterTypes"
                                                 :key="index"
-                                                role="listitem"
+                                                :role="allowedFilterTypes.length > 1 ? 'listitem' : undefined"
                                                 class="filter-type"
                                                 @click="onFilterTypeSelected(filterType)"
                                                 @mouseover="currentFilterTypePreview = { name: filterType.name, template: filterType.preview_template }"
@@ -678,6 +701,7 @@ export default {
                 }
             }
 
+            this._filterTypeModalTrigger = this.$modalFocusA11y.captureTrigger();
             this.isSelectingFilterType = true;
         },
         addMetadatumViaButton(metadatum, metadatumIndex) {
@@ -708,13 +732,15 @@ export default {
             this.allowedFilterTypes = [];
             this.currentFilterTypePreview = undefined;
             this.selectedFilterType = {};
-
-            // Puts element back to metadata list
-            this.availableMetadata.splice(this.oldMetadatumIndex, 0, this.choosenMetadatum)
+            // Puts element back to metadata list (guard so safe when called from @close after Cancel button)
+            if (this.choosenMetadatum && Object.keys(this.choosenMetadatum).length) {
+                this.availableMetadata.splice(this.oldMetadatumIndex, 0, this.choosenMetadatum);
+            }
             this.choosenMetadatum = {};
-
-            // Removes element from filters list
-            this.activeFiltersList.splice(this.newFilterIndex, 1);
+        },
+        onFilterTypeModalClose() {
+            this.onCancelFilterTypeSelection();
+            this.$modalFocusA11y.restoreFocus(this._filterTypeModalTrigger, this);
         },
         handleChangeOnMetadata($event) {
             if ( $event.type == 'removed' )
@@ -817,6 +843,7 @@ export default {
                 [ filterName ]
             );
             
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
@@ -840,7 +867,10 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
         },
         confirmSelectedFilterType() {
@@ -1219,7 +1249,7 @@ export default {
 
         .available-metadata-area {
             padding-inline-start: 10px;
-            padding-inline-end: 0;
+            padding-inline-end: 10px;
             padding-block-start: 0px;
             padding-block-end: 10px;
             margin: 0;
@@ -1333,7 +1363,9 @@ export default {
             .available-filter-item:hover.not-sortable-item .icon-level-identifier .tainacan-icon::before {
                 color: var(--tainacan-gray3) !important;
             }
-            .available-metadatum-item:not(.disabled-metadatum):hover{
+            .available-metadatum-item:not(.disabled-metadatum):hover,
+            .available-metadatum-item:not(.disabled-metadatum):focus,
+            .available-metadatum-item:not(.disabled-metadatum):focus-within {
                 background-color: var(--tainacan-turquoise1);
                 border-color: var(--tainacan-turquoise2);
                 position: relative;

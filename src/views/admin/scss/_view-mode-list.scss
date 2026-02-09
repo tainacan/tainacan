@@ -58,7 +58,7 @@
             margin-bottom: -25px;
             display: flex;
             justify-content: space-between;
-            visibility: hidden;
+            //visibility: hidden; Removed as it prevents focus to return to the area when coming from modals
             opacity: 0;
             transition: visibility 0.2s, opacity 0.3s ease, top 0.2s ease;
 
@@ -68,7 +68,9 @@
                 transition: opacity 0.3s ease;
             }
         }
-        &:hover .actions-area {
+        &:hover .actions-area,
+        &:focus .actions-area,
+        &:focus-within .actions-area {
             visibility: visible;
             opacity: 1.0;
             top:  calc(-1 * 0.5em - var(--tainacan-container-padding));

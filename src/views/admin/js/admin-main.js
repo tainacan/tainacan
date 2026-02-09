@@ -52,7 +52,8 @@ import {
     CommentsStatusHelperPlugin,
     AdminOptionsHelperPlugin,
     HtmlSanitizerPlugin,
-    AxiosErrorHandlerPlugin 
+    AxiosErrorHandlerPlugin,
+    ModalFocusReturnPlugin
 } from './admin-utilities';
 import { 
     ThumbnailHelperPlugin,
@@ -165,6 +166,7 @@ export default (element) => {
             app.use(CommentsStatusHelperPlugin);
             app.use(AxiosErrorHandlerPlugin);
             app.use(AdminOptionsHelperPlugin, pageElement.dataset['options']);
+            app.use(ModalFocusReturnPlugin);
 
             /* Reports-related */
             Apex.colors = [

@@ -14,7 +14,7 @@
             <button 
                     class="button is-medium is-white is-align-self-flex-start"
                     :aria-label="$i18n.get('close')"
-                    @click="$emit('close')">
+                    @click="closeModal()">
                 <span 
                         aria-hidden="true"
                         class="icon">
@@ -567,7 +567,7 @@
                 <button
                         class="button is-outlined"
                         type="button"
-                        @click="$emit('close')">
+                        @click="closeModal()">
                     {{ $i18n.get('close') }}
                 </button>
             </div>
@@ -591,6 +591,7 @@
         emits: [
             'approveActivity',
             'notApproveActivity',
+            'beforeClose',
             'close'
         ],
         data() {
@@ -645,7 +646,7 @@
             '$route': {
                 handler(to, from) {
                     if (to !== from)
-                        this.$emit('close');
+                        this.closeModal();
                 },
                 deep: true
             }
@@ -662,6 +663,10 @@
             ...mapActions('activity', [
                 'fetchActivity'
             ]),
+            closeModal() {
+                this.$emit('beforeClose');
+                this.$emit('close');
+            },
             approveActivity(){
                 this.$emit('approveActivity', this.activity.id);
             },

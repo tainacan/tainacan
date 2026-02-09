@@ -651,3 +651,34 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
         app.config.globalProperties.$adminOptions = {};
     }
 };
+
+// MODAL FOCUS RETURN - Capture trigger and restore focus when modal closes (a11y).
+export const ModalFocusReturnPlugin = {};
+ModalFocusReturnPlugin.install = function (app) {
+    function captureTrigger(explicitTrigger) {
+        return explicitTrigger ? explicitTrigger : document.activeElement;
+    }
+    function restoreFocus(trigger, vm) {
+        if (!trigger || !vm) return;
+        const el = trigger.$el != null ? trigger.$el : trigger;
+        if (el && typeof el.focus === 'function' && document.contains(el)) {
+            vm.$nextTick(() => { el.focus(); });
+        }
+    }
+    /**
+     * Returns the focusable trigger element of a Buefy dropdown component ref.
+     * Use when opening a modal from a dropdown item so focus can return to the dropdown trigger.
+     */
+    function getDropdownTrigger(dropdownRef) {
+        const trigger = dropdownRef?.$refs?.trigger;
+        if (!trigger) return undefined;
+        const el = trigger.$el != null ? trigger.$el : trigger;
+        return el?.querySelector?.('button') || el;
+    }
+
+    app.config.globalProperties.$modalFocusA11y = {
+        captureTrigger,
+        restoreFocus,
+        getDropdownTrigger
+    };
+};

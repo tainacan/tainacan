@@ -324,6 +324,7 @@ export default {
            if ( !nextAuthor || nextAuthor.id == this.item.author_id )
                 return;
 
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
@@ -339,6 +340,9 @@ export default {
                 customClass: 'tainacan-modal authorship-modal',
                 canCancel: ['escape', 'outside'],
                 width: 620,
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });   
         },
         fetchUsersForAuthor: _.debounce(function (search) {

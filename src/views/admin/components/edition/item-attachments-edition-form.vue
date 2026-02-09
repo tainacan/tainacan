@@ -25,8 +25,11 @@
                     style="float: inline-end; font-size: 0.875em; margin: 2px 5px;"
                     type="button"
                     class="link-style"
+                    tabindex="0"
                     :disabled="isLoading"
-                    @click.prevent="($event) => $emit('open-attachments-media-frame', $event)">
+                    @click.prevent="($event) => $emit('open-attachments-media-frame', $event)"
+                    @keydown.enter.prevent="($event) => $emit('open-attachments-media-frame', $event)"
+                    @keydown.space.prevent="($event) => $emit('open-attachments-media-frame', $event)">
                 <span 
                         aria-hidden="true"
                         class="icon">

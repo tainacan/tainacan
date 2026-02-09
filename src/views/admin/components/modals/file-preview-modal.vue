@@ -12,7 +12,7 @@
             <button         
                     class="button is-medium is-white is-align-self-flex-start"
                     :aria-label="$i18n.get('close')"
-                    @click="$emit('close')">
+                    @click="closeModal()">
                 <span 
                         aria-hidden="true"
                         class="icon">
@@ -22,7 +22,7 @@
         </header>
         <div    
                 class="is-flex rendered-content"
-                v-html="file.description ? file.description : `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + file.url + `'/>`" />
+                v-html="file.description ? file.description : `<img src='` + file.url + `'/>`" />
         <iframe
                 v-if="file.url != undefined && file.url != undefined && file.mime_type != undefined && file.mime_type == 'application/pdf'"    
                 style="width: 100%; min-height: 50vh;"
@@ -33,7 +33,7 @@
                         id="button-cancel-file-preview"
                         class="button is-outlined"
                         type="button"
-                        @click="$emit('close')">
+                        @click="closeModal()">
                     {{ $i18n.get('exit') }}</button>
             </div>
         </div>
@@ -47,7 +47,14 @@ export default {
         file: Object
     },
     emits: [
+        'beforeClose',
         'close'
-    ]
+    ],
+    methods: {
+        closeModal() {
+            this.$emit('beforeClose');
+            this.$emit('close');
+        }
+    }
 }
 </script>

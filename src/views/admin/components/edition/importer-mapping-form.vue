@@ -37,7 +37,11 @@
                             v-if="importerSourceInfo.source_metadata && importerSourceInfo.source_metadata.length > 0"
                             style="margin-left: 2rem; font-size: 0.875em;"
                             class="is-inline is-pulled-right add-link has-text-secondary"
-                            @click="createAllMetadata()">
+                            role="button"
+                            tabindex="0"
+                            @click="createAllMetadata()"
+                            @keydown.enter.prevent="createAllMetadata()"
+                            @keydown.space.prevent="createAllMetadata()">
                         <span 
                                 aria-hidden="true"
                                 class="icon">
@@ -49,7 +53,11 @@
                             v-if="collectionId != null && collectionId != undefined && importerSourceInfo.source_metadata &&importerSourceInfo.source_metadata.length > 0 && collection && collection.current_user_can_edit_metadata"
                             style="font-size: 0.875em;"
                             class="is-inline is-pulled-right add-link has-text-secondary"
-                            @click="createNewMetadatum()">
+                            role="button"
+                            tabindex="0"
+                            @click="createNewMetadatum()"
+                            @keydown.enter.prevent="createNewMetadatum()"
+                            @keydown.space.prevent="createNewMetadatum()">
                         <span 
                                 aria-hidden="true"
                                 class="icon">
@@ -241,14 +249,19 @@
                         <h2>{{ $i18n.get('instruction_select_metadatum_type') }}</h2>
                     </div>
                     <section class="tainacan-form">
-                        <div class="metadata-types-container">
-                            <div
+                        <div 
+                                role="listbox"
+                                class="metadata-types-container">
+                            <button
                                     v-for="(metadatumType, index) of metadatumTypes"
                                     :key="index"
+                                    role="option"
                                     class="metadata-type"
-                                    @click="onSelectMetadatumType(metadatumType)">
+                                    @click="onSelectMetadatumType(metadatumType)"
+                                    @keydown.enter.prevent="onSelectMetadatumType(metadatumType)"
+                                    @keydown.space.prevent="onSelectMetadatumType(metadatumType)">
                                 <h4>{{ metadatumType.name }}</h4>
-                            </div>
+                            </button>
                         </div>
                         <div class="field is-grouped form-submit">
                             <div class="control">
@@ -297,7 +310,8 @@
                 role="dialog"
                 tabindex="-1"
                 aria-modal
-                custom-class="tainacan-modal">
+                custom-class="tainacan-modal"
+                @close="onTitlePromptModalClose()">
             <form class="tainacan-modal-content tainacan-form">
                 <div class="tainacan-modal-title tainacan-page-title">
                     <h2>{{ $i18n.get('instruction_select_title_mapping') }}</h2>
@@ -340,7 +354,7 @@
                         <button 
                                 class="button is-outlined" 
                                 type="button"
-                                @click="selectedTitle = ''; showTitlePromptModal = false;">
+                                @click="selectedTitle = ''; showTitlePromptModal = false; onTitlePromptModalClose();">
                             {{ $i18n.get('cancel') }}
                         </button>
                     </div>
@@ -622,6 +636,7 @@ export default {
                     this.mappedCollection.mapping &&
                     !this.mappedCollection.mapping[this.collectionMetadata[coreTitleIndex].id]
                 ) {
+                    this._titlePromptModalTrigger = this.$modalFocusA11y.captureTrigger();
                     this.showTitlePromptModal = true;
                     return;     
                 }
@@ -734,6 +749,7 @@ export default {
             });
         },
         createNewMetadatum() {
+            this._newMetadatumModalTrigger = this.$modalFocusA11y.captureTrigger();
             this.fetchMetadatumTypes()
                 .then(() => {
                     this.isLoadingMetadatumTypes = false;
@@ -784,6 +800,10 @@ export default {
             this.isEditingMetadatum = false;
             this.isNewMetadatumModalActive = false;
             this.selectedMetadatumType = undefined;
+            this.$modalFocusA11y.restoreFocus(this._newMetadatumModalTrigger, this);
+        },
+        onTitlePromptModalClose() {
+            this.$modalFocusA11y.restoreFocus(this._titlePromptModalTrigger, this);
         },
         onConfirmTitleSelection(event) {
             event.preventDefault();
@@ -973,6 +993,10 @@ export default {
     .metadata-types-container {
 
         .metadata-type {
+            border: none;
+            box-shadow: none;
+            width: 100%;
+            text-align: start;
             border-bottom: 1px solid var(--tainacan-gray2);
             padding: 15px calc(2 * var(--tainacan-one-column));
             cursor: pointer;
@@ -983,8 +1007,14 @@ export default {
             &:last-child {
                 border-bottom: none;
             }
-            &:hover {
+            &:hover,
+            &:focus,
+            &:focus-visible {
                 background-color: var(--tainacan-gray1);
+            }
+            &:focus-visible {
+                outline: 2px solid var(--tainacan-secondary);
+                outline-offset: -1px;
             }
         }
     }

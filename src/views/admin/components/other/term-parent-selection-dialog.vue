@@ -19,9 +19,7 @@
                             class="tainacan-icon tainacan-icon-taxonomies" />
                 </span>
             </div>
-            <section 
-                    tabindex="1"
-                    class="modal-card-body">
+            <section class="modal-card-body">
                 <header 
                         class="modal-card-head">
                     <h1 
@@ -120,7 +118,8 @@
             excludeTree: ''
         },
         emits: [
-            'close'
+            'close',
+            'beforeClose'
         ],
         data() {
             return {
@@ -137,6 +136,9 @@
         mounted() {
             if (this.$refs.termParentSelectionDialog)
                 this.$refs.termParentSelectionDialog.focus();
+        },
+        beforeUnmount() {
+            this.$emit('beforeClose');
         },
         methods: {
             ...mapActions('taxonomy', [

@@ -760,8 +760,12 @@
                                 <a 
                                         id="button-edit-header-image"
                                         class="button is-rounded is-secondary" 
+                                        role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('label_button_edit_header_image')"
-                                        @click="headerImageMediaFrame.openFrame($event)">
+                                        @click="onOpenHeaderImageFrame($event)"
+                                        @keydown.enter.prevent="onOpenHeaderImageFrame($event)"
+                                        @keydown.space.prevent="onOpenHeaderImageFrame($event)">
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
@@ -769,15 +773,21 @@
                                                 placement: 'bottom',
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i class="tainacan-icon tainacan-icon-edit" />
                                     </span>
                                 </a>
                                 <a 
+                                        v-if="collection.header_image != undefined && collection.header_image != false"
                                         id="button-delete-header-image"
                                         class="button is-rounded is-secondary" 
+                                        role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('label_button_delete_thumb')" 
-                                        @click="deleteHeaderImage()">
+                                        @click="deleteHeaderImage()"
+                                        @keydown.enter.prevent="deleteHeaderImage()"
+                                        @keydown.space.prevent="deleteHeaderImage()">
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
@@ -785,7 +795,8 @@
                                                 placement: 'bottom',
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i class="tainacan-icon tainacan-icon-delete" />
                                     </span>
                                 </a>
@@ -817,8 +828,12 @@
                                 <a 
                                         id="button-edit-thumbnail"
                                         class="button is-rounded is-secondary" 
+                                        role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('label_button_edit_thumb')"
-                                        @click.prevent="thumbnailMediaFrame.openFrame($event)">
+                                        @click.prevent="onOpenThumbnailFrame($event)"
+                                        @keydown.enter.prevent="onOpenThumbnailFrame($event)"
+                                        @keydown.space.prevent="onOpenThumbnailFrame($event)">
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
@@ -831,10 +846,15 @@
                                     </span>
                                 </a>
                                 <a 
-                                        id="button-delete-header-image"
-                                        class="button is-rounded is-secondary" 
+                                        v-if="collection.thumbnail != undefined && collection.thumbnail != false && collection.thumbnail != undefined && collection.thumbnail['tainacan-medium'] != undefined && collection.thumbnail['tainacan-medium'] != false"
+                                        id="button-delete-thumbnail"
+                                        class="button is-rounded is-secondary"
+                                        role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('label_button_delete_thumb')" 
-                                        @click="deleteThumbnail()">
+                                        @click="deleteThumbnail()"
+                                        @keydown.enter.prevent="deleteThumbnail()"
+                                        @keydown.space.prevent="deleteThumbnail()">
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
@@ -947,6 +967,8 @@
                                     style="font-size: 0.875em;" 
                                     :class="{'disabled': form.enable_cover_page != 'yes'}"
                                     target="_blank"  
+                                    role="button"
+                                    tabindex="0"
                                     :href="newPagePath">
                                 <span   
                                         aria-hidden="true"
@@ -1670,6 +1692,7 @@ export default {
                         frame_button: this.$i18n.get('label_select_file'),
                     },
                     relatedPostId: this.collectionId,
+                    onClose: () => this.$modalFocusA11y.restoreFocus(this._mediaTrigger, this),
                     onSave: (media) => {
                         this.updateThumbnail({
                             collectionId: this.collectionId, thumbnailId: media.id
@@ -1689,6 +1712,7 @@ export default {
                         frame_button: this.$i18n.get('label_select_file'),
                     },
                     relatedPostId: this.collectionId,
+                    onClose: () => this.$modalFocusA11y.restoreFocus(this._mediaTrigger, this),
                     onSave: (media) => {
                         this.updateHeaderImage({collectionId: this.collectionId, headerImageId: media.id})
                         .then((res) => {
@@ -1698,6 +1722,14 @@ export default {
                     }
                 }
             );
+        },
+        onOpenThumbnailFrame(event) {
+            this._mediaTrigger = this.$modalFocusA11y.captureTrigger();
+            this.thumbnailMediaFrame.openFrame(event);
+        },
+        onOpenHeaderImageFrame(event) {
+            this._mediaTrigger = this.$modalFocusA11y.captureTrigger();
+            this.headerImageMediaFrame.openFrame(event);
         },
         getMetadataForSorting() {
 
@@ -1816,7 +1848,10 @@ export default {
         min-width: 2.125em !important;
         padding: 0 !important;
         z-index: 99;
-        margin-inline-start: 12px !important;
+
+        &:not(:only-child):not(:first-child) {
+            margin-inline-start: 12px !important;
+        }
         
         .icon {
             display: inherit;
@@ -1919,7 +1954,6 @@ export default {
                     border: none;
                 }
                 .thumbnail-buttons-row {
-                    inset-inline-start: 61px;
                     bottom: calc(1em + 0px);
                 }
             }
@@ -2008,7 +2042,7 @@ export default {
         }
         .thumbnail-buttons-row {
             position: relative;
-            inset-inline-start: 52px;
+            text-align: end;
             bottom: calc(1.0em + 12px);
         }
     }

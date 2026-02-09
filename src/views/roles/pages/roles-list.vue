@@ -203,7 +203,12 @@
                                     </router-link>
                                     <a 
                                             v-if="role.slug.match('tainacan')"
-                                            @click.prevent.stop="removeRole(role.slug)">
+                                            role="button"
+                                            tabindex="0"
+                                            :aria-label="$i18n.get('delete')"
+                                            @click.prevent.stop="removeRole(role.slug)"
+                                            @keydown.enter.prevent="removeRole(role.slug)"
+                                            @keydown.space.prevent="removeRole(role.slug)">
                                         <span
                                                 v-tooltip="{
                                                     content: $i18n.get('Delete'),
@@ -211,6 +216,7 @@
                                                     popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                     placement: 'bottom'
                                                 }"
+                                                aria-hidden="true"
                                                 class="icon">
                                             <i class="tainacan-icon-delete has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                                         </span>
@@ -313,6 +319,7 @@
                 }
             },
             removeRole(roleSlug) {
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: CustomDialog,
                     props: {
@@ -329,7 +336,10 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    canCancel: ['escape', 'outside']
+                    canCancel: ['escape', 'outside'],
+                    events: {
+                        beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                    }
                 });
             }
         }

@@ -255,6 +255,7 @@
                 });
             },
             openCheckboxModal(parent) {
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: CheckboxRadioFilterInput,
                     props: {
@@ -278,7 +279,8 @@
                                 this.selected.splice(existingValue, 1);
                             else
                                 this.selected.push(newSelected);
-                        } 
+                        },
+                        beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
                     },
                     width: 'max(768px, calc(100% - (4 * var(--tainacan-one-column))))',
                     trapFocus: true,

@@ -55,6 +55,7 @@
                                 class="icon is-small has-text-secondary">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-updating" />
                         </span>
+                        &nbsp;
                         {{ $i18n.get('label_upload_file_prepare_items') }}
                     </p>
                     <p v-if="uploadedItems.length > 0 && uploadedItems.length == amountFinished">
@@ -87,24 +88,13 @@
                         class="sequence-progress-background" />
                 
                 <!-- Uploaded Items -->
-                <transition-group name="item-appear">
-                    <div 
+                <transition-group 
+                        name="item-appear"
+                        tag="ul">
+                    <li 
                             v-for="(item, index) of uploadedItems"
                             :key="item.id"
                             class="document-item">
-                        <img 
-                                v-if="item.document != undefined && item.document != '' && item.document_type != 'empty'"
-                                class="document-thumb"
-                                :alt="$i18n.get('label_thumbnail') + ': ' + item.title"
-                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)"> 
-                        <span 
-                                class="document-name"
-                                v-html="item.title" />                            
-                        <span 
-                                v-if="item.errorMessage != undefined" 
-                                class="help is-danger">
-                            {{ item.errorMessage }}
-                        </span>                       
                         <div class="document-process-state">
                             <span 
                                     v-if="(item.errorMessage == undefined) && (item.document == '' || item.document_type == 'empty')"
@@ -124,10 +114,27 @@
                                         placement: 'auto-start',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
+                                    :aria-label="$i18n.get('label_document_uploaded')"
                                     class="icon has-text-success">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle" />
+                                <i 
+                                        aria-hidden="true"
+                                        class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle" />
                             </span>  
                         </div>   
+                        <img 
+                                v-if="item.document != undefined && item.document != '' && item.document_type != 'empty'"
+                                class="document-thumb"
+                                :alt="$i18n.get('label_thumbnail') + ': ' + item.title"
+                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)"> 
+                        <span 
+                                class="document-name"
+                                v-html="item.title" />                            
+                        <span 
+                                v-if="item.errorMessage != undefined" 
+                                class="help is-danger">
+                            {{ item.errorMessage }}
+                        </span>                       
+
                         <div 
                                 v-if="item.document != '' && item.document_type != 'empty'"
                                 class="document-actions">
@@ -142,12 +149,19 @@
                                         placement: 'auto-start',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
+                                    :aria-label="$i18n.get('label_button_delete_document')"
                                     class="icon has-text-secondary action-icon"
-                                    @click="deleteOneItem(item.id, index)">
-                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-delete" />
+                                    role="button"
+                                    tabindex="0"
+                                    @click="deleteOneItem(item.id, index)"
+                                    @keydown.enter.prevent="deleteOneItem(item.id, index)"
+                                    @keydown.space.prevent="deleteOneItem(item.id, index)">
+                                <i 
+                                        aria-hidden="true"
+                                        class="tainacan-icon tainacan-icon-18px tainacan-icon-delete" />
                             </span>
                         </div>                 
-                    </div>
+                    </li>
                 </transition-group>
             </div>
             <footer class="footer">
@@ -319,6 +333,7 @@ export default {
 
             let onlyItemIds = this.uploadedItems.map(item => item.id);
 
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: BulkEditionModal,
                 props: {
@@ -331,10 +346,16 @@ export default {
                 width: 'calc(100% - (2 * var(--tainacan-one-column)))',
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: false,
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
         },
         deleteOneItem(itemId, index) {
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
+
+            console.log('deleteOneItem', modalTrigger);
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
@@ -352,7 +373,10 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
         },
     }
@@ -388,12 +412,15 @@ export default {
                 align-items: center;
                 padding: 0.5em 0.75em;
                 position: relative;
+                border-radius: var(--tainacan-item-border-radius, 0px);
+                background-color: var(--tainacan-background-color);
                 cursor: default;
 
                 .document-thumb {
-                    max-height: 42px;
-                    max-width: 42px;
+                    max-height: 38px;
+                    max-width: 38px;
                     margin-inline-end: 1em;
+                    border-radius: var(--tainacan-item-border-radius, 0px);
                 }
 
                 .document-name {
@@ -404,7 +431,7 @@ export default {
                 }
 
                 .document-process-state {
-                    margin-inline-start: auto;
+                    margin-inline-end: 1em;
                     
                     .loading-icon .control.is-loading::after {
                         position: relative !important;
@@ -414,13 +441,12 @@ export default {
                 }
 
                 .document-actions {
+                    margin-inline-start: auto;
                     position: absolute;
                     inset-inline-end: 0;
-                    background: var(--tainacan-gray2);
                     height: 100%;
-                    display: none;
+                    display: flex;
                     justify-content: center;
-                    visibility: hidden;
                     align-items: center;
                     width: 42px;
 
@@ -429,12 +455,14 @@ export default {
                     }
                 }
 
-                &:hover {
+                &:hover,
+                &:focus-visible,
+                &:focus,
+                &:focus-within {
                     background-color: var(--tainacan-gray1);
 
                     .document-actions {
-                        display: flex;
-                        visibility: visible;
+                        background: var(--tainacan-gray2);
                     }
                 }
 
@@ -448,6 +476,7 @@ export default {
                 display: flex;
                 justify-content: space-between;
                 margin-bottom: 0.25em;
+                padding: 0.5em 1em;
 
                 .i::before {
                     font-size: 1.125em;

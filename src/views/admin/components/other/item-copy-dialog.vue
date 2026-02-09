@@ -21,9 +21,7 @@
                             class="tainacan-icon" />
                 </span>
             </div>
-            <section 
-                    tabindex="1"
-                    class="modal-card-body">
+            <section class="modal-card-body">
                 <header 
                         class="modal-card-head">
                     <h1 
@@ -111,7 +109,7 @@
                 default: () => {}
             },
             collectionId: [String, Number],
-            itemId: String
+            itemId: [String, Number]
         },
         emits: [
             'close'
@@ -184,6 +182,7 @@
 
                 let onlyItemIds = this.newItems.map(item => item.id);
 
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: BulkEditionModal,
                     props: {
@@ -196,8 +195,11 @@
                     width: 'calc(100% - (2 * var(--tainacan-one-column)))',
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    canCancel: ['escape', 'outside']
-                }); 
+                    canCancel: ['escape', 'outside'],
+                    events: {
+                        beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                    }
+                });
 
                 this.$emit('close');
             },
@@ -213,7 +215,7 @@
     }
 
     button.is-success {
-        margin-inline-end: auto;
+        margin-inline-start: auto;
     }
 
     .field.is-horizontal {

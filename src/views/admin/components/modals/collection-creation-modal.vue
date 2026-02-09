@@ -27,7 +27,7 @@
             <button         
                     class="button is-medium is-white is-align-self-flex-start"
                     :aria-label="$i18n.get('close')"
-                    @click="$emit('close')">
+                    @click="closeModal()">
                 <span 
                         aria-hidden="true"
                         class="icon">
@@ -38,22 +38,38 @@
         <section class="tainacan-form">
             <div 
                     v-if="selectedEstrategy == undefined"
-                    class="collection-creation-options-container tainacan-clickable-cards">
+                    class="collection-creation-options-container tainacan-clickable-cards"
+                    role="list">
                 
                 <button
                         class="collection-creation-option tainacan-clickable-card"
                         role="listitem"
-                        @click="selectedEstrategy = 'mappers'">
-                    <h3>{{ $i18n.get('label_from_a_mapper') }}</h3>
-                    <p>{{ $i18n.get('info_create_collection_from_mapper') }}</p>
+                        type="button"
+                        @click="selectedEstrategy = 'mappers'"
+                        @keydown.enter="selectedEstrategy = 'mappers'"
+                        @keydown.space="selectedEstrategy = 'mappers'">
+                    <dl class="collection-creation-option-definition">
+                        <dt class="collection-creation-option-name">
+                            {{ $i18n.get('label_from_a_mapper') }}
+                        </dt>
+                        <dd class="collection-creation-option-description">
+                            {{ $i18n.get('info_create_collection_from_mapper') }}
+                        </dd>
+                    </dl>
                 </button>
 
                 <button
                         class="collection-creation-option tainacan-clickable-card"
                         role="listitem"
                         @click="selectedEstrategy = 'presets'">
-                    <h3>{{ $i18n.get('label_using_a_preset') }}</h3>
-                    <p>{{ $i18n.get('info_create_collection_from_preset') }}</p>
+                    <dl class="collection-creation-option-definition">
+                        <dt class="collection-creation-option-name">
+                            {{ $i18n.get('label_using_a_preset') }}
+                        </dt>
+                        <dd class="collection-creation-option-description">
+                            {{ $i18n.get('info_create_collection_from_preset') }}
+                        </dd>
+                    </dl>
                 </button>
 
             </div>
@@ -61,19 +77,28 @@
             <div 
                     v-if="selectedEstrategy == 'mappers'"
                     class="collection-creation-options-container tainacan-clickable-cards"
-                    role="list">
+                    :role="visibleMappersCount > 1 ? 'list' : undefined">
                 <template 
                         v-for="metadatumMapper in metadatumMappers"
                         :key="metadatumMapper.slug">
                     <button
                             v-if="metadatumMapper.metadata != false"
                             class="collection-creation-option tainacan-clickable-card"
-                            role="listitem"
-                            @click="$router.push($routerHelper.getNewMappedCollectionPath(metadatumMapper.slug)); $emit('close');">
-                        <h3>{{ metadatumMapper.name }}</h3>
-                        <p v-if="metadatumMapper.description">
-                            {{ metadatumMapper.description }}
-                        </p>
+                            :role="visibleMappersCount > 1 ? 'listitem' : undefined"
+                            type="button"
+                            @click="$router.push($routerHelper.getNewMappedCollectionPath(metadatumMapper.slug)); closeModal();"
+                            @keydown.enter="$router.push($routerHelper.getNewMappedCollectionPath(metadatumMapper.slug)); closeModal();"
+                            @keydown.space="$router.push($routerHelper.getNewMappedCollectionPath(metadatumMapper.slug)); closeModal();">
+                        <dl class="collection-creation-option-definition">
+                            <dt class="collection-creation-option-name">
+                                {{ metadatumMapper.name }}
+                            </dt>
+                            <dd 
+                                    v-if="metadatumMapper.description"
+                                    class="collection-creation-option-description">
+                                {{ metadatumMapper.description }}
+                            </dd>
+                        </dl>
                     </button>
                 </template>
             </div>
@@ -81,17 +106,26 @@
             <div 
                     v-if="selectedEstrategy == 'presets'"
                     class="collection-creation-options-container tainacan-clickable-cards"
-                    role="list">
+                    :role="presetsCount > 1 ? 'list' : undefined">
                 <button
                         v-for="collectionPreset in getPresetsHook"
                         :key="collectionPreset.slug"
                         class="collection-creation-option tainacan-clickable-card"
-                        role="listitem"
-                        @click="onNewCollectionPreset(collectionPreset)">
-                    <h3>{{ collectionPreset.name }}</h3>
-                    <p v-if="collectionPreset.description">
-                        {{ collectionPreset.description }}
-                    </p>
+                        :role="presetsCount > 1 ? 'listitem' : undefined"
+                        type="button"
+                        @click="onNewCollectionPreset(collectionPreset)"
+                        @keydown.enter="onNewCollectionPreset(collectionPreset)"
+                        @keydown.space="onNewCollectionPreset(collectionPreset)">
+                    <dl class="collection-creation-option-definition">
+                        <dt class="collection-creation-option-name">
+                            {{ collectionPreset.name }}
+                        </dt>
+                        <dd
+                                v-if="collectionPreset.description"
+                                class="collection-creation-option-description">
+                            {{ collectionPreset.description }}
+                        </dd>
+                    </dl>
                 </button>
             </div>
 
@@ -110,7 +144,9 @@
                     <button 
                             class="button is-outlined" 
                             type="button" 
-                            @click="$emit('close')">{{ $i18n.get('close') }}</button>
+                            @click="closeModal()">
+                        {{ $i18n.get('close') }}
+                    </button>
                 </div>
             </footer>
         </section>
@@ -126,7 +162,8 @@ import { tainacanErrorHandler } from '../../js/axios';
 export default {
     name: 'CollectionCreationModal',
     emits: [
-        'close'
+        'close',
+        'beforeClose'
     ],
     data(){
         return {
@@ -140,6 +177,13 @@ export default {
         ...mapGetters('metadata', {
             'metadatumMappers': 'getMetadatumMappers'
         }),
+        visibleMappersCount() {
+            return (this.metadatumMappers || []).filter(m => m.metadata != false).length;
+        },
+        presetsCount() {
+            const presets = this.getPresetsHook;
+            return Array.isArray(presets) ? presets.length : 0;
+        },
         hasPresetsHook() {
             if (wp !== undefined && wp.hooks !== undefined)
                 return wp.hooks.hasFilter(`tainacan_collections_presets`);
@@ -179,6 +223,10 @@ export default {
         ...mapActions('metadata', [
             'fetchMetadatumMappers'
         ]),
+        closeModal() {
+            this.$emit('beforeClose');
+            this.$emit('close');
+        },
         onNewCollectionPreset(collectionPreset) {
             this.isCreatingCollectionPreset = true;
             axios.post(collectionPreset.endpoint)
@@ -195,7 +243,7 @@ export default {
                     });
                     this.isCreatingCollectionPreset = false;
                     this.$router.push(this.$routerHelper.getCollectionsPath());
-                    this.$emit('close');
+                    this.closeModal();
                 })
                 .catch((error) =>{
                     if (typeof collectionPreset.onError === 'function') {

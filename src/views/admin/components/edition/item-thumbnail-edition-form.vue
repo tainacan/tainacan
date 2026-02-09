@@ -61,8 +61,12 @@
                     <a
                             id="button-edit-thumbnail"
                             class="button is-rounded is-secondary"
+                            role="button"
+                            tabindex="0"
                             :aria-label="$i18n.get('label_button_edit_thumb')"
-                            @click.prevent="($event) => $emit('open-thumbnail-media-frame', $event)">
+                            @click.prevent="($event) => $emit('open-thumbnail-media-frame', $event)"
+                            @keydown.enter.prevent="($event) => $emit('open-thumbnail-media-frame', $event)"
+                            @keydown.space.prevent="($event) => $emit('open-thumbnail-media-frame', $event)">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('edit'),
@@ -79,8 +83,12 @@
                             v-if="item.thumbnail && item.thumbnail.thumbnail != undefined && item.thumbnail.thumbnail != false"
                             id="button-delete-thumbnail"
                             class="button is-rounded is-secondary"
+                            role="button"
+                            tabindex="0"
                             :aria-label="$i18n.get('label_button_delete_thumb')"
-                            @click="$emit('on-delete-thumbnail')">
+                            @click="$emit('on-delete-thumbnail')"
+                            @keydown.enter.prevent="$emit('on-delete-thumbnail')"
+                            @keydown.space.prevent="$emit('on-delete-thumbnail')">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('delete'),

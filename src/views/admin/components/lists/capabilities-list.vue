@@ -103,9 +103,13 @@
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
                                 <a 
-                                        id="button-edit" 
+                                        id="button-edit"
+                                        role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('edit')" 
-                                        @click="openCapabilitiyEditModal(index)">                      
+                                        @click="openCapabilitiyEditModal(index)"
+                                        @keydown.enter="openCapabilitiyEditModal(index)"
+                                        @keydown.space="openCapabilitiyEditModal(index)">                      
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
@@ -147,6 +151,7 @@
         },
         methods: {
             openCapabilitiyEditModal(capabilityKey) {
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: CapabilityEditionModal,
                     props: {
@@ -155,7 +160,10 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    canCancel: ['escape', 'outside']
+                    canCancel: false,
+                    events: {
+                        beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                    }
                 });
             },
             getCompleteRolesList(roles, rolesInherited) {

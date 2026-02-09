@@ -23,7 +23,9 @@
                             type="button"
                             role="link" 
                             class="button is-secondary"
-                            @click="navigate()">
+                            @click="navigate()"
+                            @keydown.enter="navigate()"
+                            @keydown.space="navigate()">
                         {{ $i18n.getFrom('taxonomies', 'new_item') }}
                     </button>
                 </router-link>
@@ -37,10 +39,10 @@
             <b-field class="header-item">
                 <b-input 
                         v-model="searchQuery"
-                        :placeholder="$i18n.get('instruction_search')"
+                        :placeholder="$i18n.get('instruction_search_and_press_enter')"
                         type="search"
                         size="is-small"
-                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('taxonomies')"
+                        :aria-label="$i18n.get('instruction_search_and_press_enter')"
                         autocomplete="on"
                         icon-right="magnify"
                         icon-right-clickable
@@ -256,7 +258,9 @@
                                         role="link"
                                         type="button"
                                         class="button is-secondary"
-                                        @click="navigate()">
+                                        @click="navigate()"
+                                        @keydown.enter="navigate()"
+                                        @keydown.space="navigate()">
                                     {{ $i18n.getFrom('taxonomies', 'new_item') }}
                                 </button>
                             </router-link>

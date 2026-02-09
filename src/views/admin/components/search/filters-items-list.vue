@@ -2,7 +2,7 @@
     <component 
             :is="filtersAsModal ? 'div' : 'section'"
             :aria-busy="isLoadingFilters"
-            :aria-label="filtersAsModal ? undefined : $i18n.get('filters')">
+            :aria-labelledby="filtersAsModal ? undefined : 'filters-label-landmark'">
         <b-loading
                 v-model="isLoadingFilters"
                 :is-full-page="false" />
@@ -27,7 +27,9 @@
                 :aria-expanded="!collapseAll"
                 class="button link-style collapse-all"
                 @click="collapseAll = !collapseAll">
-            <span class="icon">
+            <span
+                    aria-hidden="true"
+                    class="icon">
                 <i 
                         :class="{ 'tainacan-icon-arrowdown' : !collapseAll, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : collapseAll }"
                         class="has-text-secondary tainacan-icon tainacan-icon-1-125em" />
@@ -286,7 +288,9 @@
                             type="button"
                             role="button"
                             class="button is-secondary is-centered"
-                            @click="navigate()">         
+                            @click="navigate()"
+                            @keydown.enter="navigate()"
+                            @keydown.space="navigate()">         
                         {{ $i18n.getFrom('filters', 'new_item') }}
                     </button>
                 </router-link>

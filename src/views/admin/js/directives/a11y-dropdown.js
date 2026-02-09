@@ -11,6 +11,7 @@
  * - Home/End: Jump to first/last item
  * - Enter/Space: Select focused item
  * - Escape: Focus trigger to close dropdown
+ * - aria-expanded: Keeps trigger button's aria-expanded in sync with open/closed state
  */
 export default {
     mounted(el, binding) {
@@ -20,6 +21,18 @@ export default {
         
         let currentFocusedIndex = -1;
         let dropdownMenu = null;
+
+        /**
+         * Sync aria-expanded on the trigger button so screen readers announce expanded/collapsed state.
+         */
+        const syncTriggerAriaExpanded = () => {
+            const trigger = el.querySelector('.dropdown-trigger');
+            if (!trigger) return;
+            const triggerButton = trigger.querySelector('button, [role="button"]');
+            if (!triggerButton) return;
+            const isActive = el.classList.contains('is-active');
+            triggerButton.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+        };
         
         /**
          * Find the dropdown menu - handles both normal and append-to-body cases
@@ -261,9 +274,11 @@ export default {
         // Store handler for cleanup
         el._a11yKeydownHandler = handleKeydown;
         
-        // Focus first item when dropdown opens
+        // Focus first item when dropdown opens; keep trigger aria-expanded in sync
         const observer = new MutationObserver(() => {
             const isActive = el.classList.contains('is-active');
+
+            syncTriggerAriaExpanded();
             
             if (isActive) {
                 // Give Buefy a moment to render the menu first
@@ -286,6 +301,9 @@ export default {
         });
         
         el._a11yObserver = observer;
+
+        // Set initial aria-expanded (dropdown starts closed)
+        setTimeout(syncTriggerAriaExpanded, 0);
     },
     
     unmounted(el) {

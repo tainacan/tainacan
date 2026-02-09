@@ -23,7 +23,7 @@
             <button         
                     class="button is-medium is-white is-align-self-flex-start"
                     :aria-label="$i18n.get('close')"
-                    @click="$emit('close')">
+                    @click="closeModal()">
                 <span 
                         aria-hidden="true"
                         class="icon">
@@ -31,6 +31,13 @@
                 </span>
             </button>
         </header>
+        <div
+                class="sr-only"
+                role="status"
+                aria-live="polite"
+                aria-atomic="true">
+            {{ copyStatusAnnouncement }}
+        </div>
         <section class="tainacan-form">
             <div 
                     v-if="selectedExposer == undefined"
@@ -56,7 +63,7 @@
                                 type="button"
                                 class="button link-style"
                                 :aria-label="$i18n.get('label_copy_link_url')"
-                                @click="siteLinkCopied = true; copyTextToClipboard(itemURL ? itemURL : collectionURL)">
+                                @click="copyTextToClipboard(itemURL ? itemURL : collectionURL, { skipToast: true }).then(ok => { if (ok) siteLinkCopied = true; })">
                             <span 
                                     aria-hidden="true"
                                     class="icon">
@@ -68,15 +75,16 @@
                         <div 
                                 v-if="siteLinkCopied == true"
                                 class="exposer-copy-popup"
-                                role="status"
-                                aria-live="polite"
-                                aria-atomic="true">
-                            <p>{{ $i18n.get('info_url_copied') }}</p>
+                                aria-hidden="true">
+                            <p aria-hidden="true">{{ $i18n.get('info_url_copied') }}</p>
                             <button 
+                                    aria-hidden="true"
+                                    tabindex="-1"
                                     type="button"
                                     class="exposer-copy-popup-close"
-                                    :aria-label="$i18n.get('close')"
-                                    @click="siteLinkCopied = false">
+                                    @click="siteLinkCopied = false"
+                                    @keydown.enter="siteLinkCopied = false"
+                                    @keydown.space="siteLinkCopied = false">
                                 <span 
                                         aria-hidden="true"
                                         class="icon has-text-secondary">
@@ -87,10 +95,10 @@
                             </button>
                             <input 
                                     readonly
-                                    autofocus
+                                    tabindex="-1"
                                     type="text"
                                     :value="itemURL ? itemURL : collectionURL"
-                                    :aria-label="$i18n.get('info_url_copied')">
+                                    aria-hidden="true">
                         </div>
                         <a 
                                 v-tooltip="{
@@ -104,56 +112,86 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }" 
                                 target="_blank"
+                                :aria-label="$i18n.get('label_open_externally')"
                                 :href="itemURL ? itemURL : collectionURL">
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl" />
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
+                                <i
+                                        class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"
+                                        aria-hidden="true" />
                             </span>
                         </a>
                     </span>
                 </div>
-                <p style="font-size: 1em; padding: 0em 1.25em; margin-top: 0.75em;">
+                <h3 class="exposer-other-options-heading">
                     {{ itemId ? $i18n.get('info_other_options') : $i18n.get('info_other_item_listing_options') }}
-                </p>
+                </h3>
                 <div 
-                        role="list"
+                        :role="availableExposers.length > 1 ? 'list' : undefined"
                         class="exposer-types-list tainacan-clickable-cards">
                     <button
                             v-for="(exposerType, index ) in availableExposers"
                             :key="index"
                             class="exposer-type tainacan-clickable-card"
-                            role="listitem"
-                            @click="siteLinkCopied = false; selectExposer(exposerType)">
-                        <h4>{{ exposerType.name }}</h4>
-                        <p>{{ exposerType.description }}</p>            
+                            :role="availableExposers.length > 1 ? 'listitem' : undefined"
+                            type="button"
+                            @click="siteLinkCopied = false; selectExposer(exposerType)"
+                            @keydown.enter="siteLinkCopied = false; selectExposer(exposerType)"
+                            @keydown.space="siteLinkCopied = false; selectExposer(exposerType)">
+                        <dl class="exposer-type-definition">
+                            <dt class="exposer-type-name">
+                                {{ exposerType.name }}
+                            </dt>
+                            <dd class="exposer-type-description">
+                                {{ exposerType.description }}
+                            </dd>
+                        </dl>
                     </button>
                 </div>
             </div>
             
+            <div
+                    v-if="selectedExposer != undefined && (itemId == undefined || itemId == null)"
+                    class="exposed-metadata-control">
+                <b-checkbox
+                        v-model="shouldRespectFetchOnly" 
+                        v-tooltip="{
+                            content: $i18n.get('info_expose_only_displayed_metadata'),
+                            autoHide: true,
+                            placement: 'bottom',
+                            popperClass: ['tainacan-tooltip', 'tooltip']
+                        }">
+                    {{ $i18n.get('label_expose_only_displayed_metadata') }}
+                </b-checkbox>
+            </div>
             <div 
                     v-if="selectedExposer != undefined"
                     class="exposer-item-container"
-                    role="list">
-                <div
-                        v-if="itemId == undefined || itemId == null"
-                        class="exposed-metadata-control">
-                    <b-checkbox
-                            v-model="shouldRespectFetchOnly" 
-                            v-tooltip="{
-                                content: $i18n.get('info_expose_only_displayed_metadata'),
-                                autoHide: true,
-                                placement: 'bottom',
-                                popperClass: ['tainacan-tooltip', 'tooltip']
-                            }">{{ $i18n.get('label_expose_only_displayed_metadata') }}</b-checkbox>
-                </div>
+                    :role="selectedExposerMappers.length > 1 ? 'list' : undefined">
                 <b-field 
                         v-for="(exposerMapper, index) in selectedExposerMappers"
                         :key="index"
                         :addons="false"
                         class="exposer-item"
-                        role="listitem">
+                        :role="selectedExposerMappers.length > 1 ? 'listitem' : undefined">
                     <span 
+                            v-tooltip="{
+                                delay: { show: 500, hide: 300 },
+                                content: selectedExposer.name + (exposerMapper.name != undefined ? ': ' + exposerMapper.name + ' ' + $i18n.get('label_mapper') : ''),
+                                autoHide: false,
+                                placement: 'auto-end',
+                                popperClass: ['tainacan-tooltip', 'tooltip']
+                            }"
+                            role="button"
+                            tabindex="0"
                             class="collapse-handle"
-                            @click="collapse(index)">
+                            :aria-expanded="!exposerMapper.collapsed"
+                            :aria-controls="'exposer-mapper-region-' + index"
+                            :aria-label="selectedExposer.name + (exposerMapper.name != undefined ? ': ' + exposerMapper.name + ' ' + $i18n.get('label_mapper') : '')"
+                            @click="collapse(index)"
+                            @keydown.enter.prevent="collapse(index)"
+                            @keydown.space.prevent="collapse(index)">
                         <span 
                                 aria-hidden="true"
                                 class="icon">
@@ -161,30 +199,23 @@
                                     :class="{ 'tainacan-icon-arrowdown' : !exposerMapper.collapsed, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : exposerMapper.collapsed }"
                                     class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                         </span>
-                        <label 
-                                v-tooltip="{
-                                    delay: {
-                                        show: 500,
-                                        hide: 300,
-                                    },
-                                    content: selectedExposer.name + (exposerMapper.name != undefined ? ': ' + exposerMapper.name + ' ' + $i18n.get('label_mapper') : ''),
-                                    autoHide: false,
-                                    placement: 'auto-end',
-                                    popperClass: ['tainacan-tooltip', 'tooltip']
-                                }" 
+                        <span 
+                                aria-hidden="true"
                                 class="label">
                             {{ selectedExposer.name + (exposerMapper.name != undefined ? ": " + exposerMapper.name + " " + $i18n.get('label_mapper') : '') }}
-                        </label>
+                        </span>
                     </span>
                     <transition name="filter-item">
                         <div 
                                 v-show="!exposerMapper.collapsed"
-                                role="list"
-                                class="exposer-item-links-list">    
+                                :id="'exposer-mapper-region-' + index"
+                                :role="totalPages > 1 ? 'list' : undefined"
+                                class="exposer-item-links-list"
+                                :aria-hidden="exposerMapper.collapsed">    
                             <div
                                     v-for="pagedLink in totalPages"
                                     :key="pagedLink"
-                                    role="listitem"
+                                    :role="totalPages > 1 ? 'listitem' : undefined"
                                     class="exposer-item-link">
                                 <span>
                                     <p>
@@ -206,38 +237,38 @@
                                             type="button"
                                             class="button link-style"
                                             :aria-label="$i18n.get('label_copy_link_url')"
-                                            @click="exposerMapper.linkCopied = pagedLink; copyTextToClipboard(getExposerFullURL(pagedLink, exposerMapper))">
-                                        <span class="icon">
-                                            <i
-                                                    class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"
-                                                    aria-hidden="true" />
+                                            @click="copyTextToClipboard(getExposerFullURL(pagedLink, exposerMapper), { skipToast: true }).then(ok => { if (ok) exposerMapper.linkCopied = pagedLink; })">
+                                        <span 
+                                                aria-hidden="true"
+                                                class="icon">
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url" />
                                         </span>
                                     </button>
                                     <div 
                                             v-if="exposerMapper.linkCopied == pagedLink"
                                             class="exposer-copy-popup"
-                                            role="status"
-                                            aria-live="polite"
-                                            aria-atomic="true">
-                                        <p>{{ $i18n.get('info_url_copied') }}</p>
+                                            aria-hidden="true">
+                                        <p aria-hidden="true">{{ $i18n.get('info_url_copied') }}</p>
                                         <button 
+                                                aria-hidden="true"
+                                                tabindex="-1"
                                                 type="button"
                                                 class="exposer-copy-popup-close"
-                                                :aria-label="$i18n.get('close')"
                                                 @click="exposerMapper.linkCopied = undefined">
-                                            <span class="icon has-text-secondary">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon has-text-secondary">
                                                 <i
                                                         class="tainacan-icon tainacan-icon-close"
                                                         aria-hidden="true" />
                                             </span>
                                         </button>
                                         <input 
-                                                v-focus
+                                                tabindex="-1"
+                                                aria-hidden="true"
                                                 readonly
-                                                autofocus
                                                 type="text"
-                                                :value="getExposerFullURL(pagedLink, exposerMapper)"
-                                                :aria-label="$i18n.get('info_url_copied')">
+                                                :value="getExposerFullURL(pagedLink, exposerMapper)">
                                     </div>
                                     <a 
                                             v-tooltip="{
@@ -250,10 +281,15 @@
                                                 placement: 'bottom',
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
-                                            target="_blank" 
+                                            target="_blank"
+                                            :aria-label="$i18n.get('label_open_externally')"
                                             :href="getExposerFullURL(pagedLink, exposerMapper)">
-                                        <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl" />
+                                        <span 
+                                                aria-hidden="true"
+                                                class="icon">
+                                            <i
+                                                    class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"
+                                                    aria-hidden="true" />
                                         </span>
                                     </a>
                                 </span>  
@@ -273,7 +309,11 @@
                     <button 
                             class="button is-outlined" 
                             type="button" 
-                            @click="$emit('close')">Close</button>
+                            @click="closeModal()"
+                            @keydown.enter="closeModal()"
+                            @keydown.space="closeModal()">
+                        {{ $i18n.get('close') }}
+                    </button>
                 </div>
             </footer>
         </section>
@@ -304,7 +344,8 @@ export default {
         selectedItems: Array
     },
     emits: [
-        'close'
+        'close',
+        'beforeClose'
     ],
     data(){
         return {
@@ -314,7 +355,9 @@ export default {
             selectedExposerMappers: [],
             maxItemsPerPage: tainacan_plugin.api_max_items_per_page,
             shouldRespectFetchOnly: false,
-            collectionURL: undefined
+            collectionURL: undefined,
+            copyStatusAnnouncement: '',
+            copyStatusAnnouncementTimeout: null
         }
     },
     computed: {
@@ -396,6 +439,11 @@ export default {
         if (this.$refs.exposersModal)
             this.$refs.exposersModal.focus()
     },
+    beforeUnmount() {
+        if (this.copyStatusAnnouncementTimeout) {
+            clearTimeout(this.copyStatusAnnouncementTimeout);
+        }
+    },
     methods: {
         ...mapActions('exposer', [
             'fetchAvailableExposers'
@@ -406,6 +454,10 @@ export default {
         ...mapActions('collection', [
             'fetchCollectionForExposer'
         ]),
+        closeModal() {
+            this.$emit('beforeClose');
+            this.$emit('close');
+        },
         collapse(index) {
             let exposerMapper = this.selectedExposerMappers[index];
             Object.assign( exposerMapper, { 'collapsed': !exposerMapper.collapsed });
@@ -462,23 +514,23 @@ export default {
             }
 
         },
-        fallbackCopyTextToClipboard(text) {
+        fallbackCopyTextToClipboard(text, skipToast = false) {
             let textArea = document.createElement("textarea");
             textArea.value = text;
             document.body.appendChild(textArea);
             textArea.focus();
             textArea.select();
 
+            let successful = false;
             try {
-                let successful = document.execCommand('copy');
-                let msg = successful ? 'successful' : 'unsuccessful';
-                this.$console.log('Fallback: Copying text command was ' + msg);
-                if (msg == 'successful') {
+                successful = document.execCommand('copy');
+                this.$console.log('Fallback: Copying text command was ' + (successful ? 'successful' : 'unsuccessful'));
+                if (successful && !skipToast) {
                     this.$buefy.toast.open({
                         duration: 3000,
                         message: this.$i18n.get('info_url_copied'),
                         position: 'is-bottom',
-                        type: 'is-secondary',
+                        type: 'is-primary',
                         queue: true
                     });
                 }
@@ -487,27 +539,68 @@ export default {
             }
 
             document.body.removeChild(textArea);
+            return successful;
         },
-        copyTextToClipboard(text) {
+        announceCopyStatus(message) {
+            if (this.copyStatusAnnouncementTimeout) {
+                clearTimeout(this.copyStatusAnnouncementTimeout);
+            }
+            this.copyStatusAnnouncement = '';
+            this.$nextTick(() => {
+                this.copyStatusAnnouncement = message;
+                this.copyStatusAnnouncementTimeout = setTimeout(() => {
+                    this.copyStatusAnnouncement = '';
+                    this.copyStatusAnnouncementTimeout = null;
+                }, 2000);
+            });
+        },
+        copyTextToClipboard(text, options = {}) {
+            const skipToast = options.skipToast === true;
 
             if (!navigator.clipboard) {
-                this.fallbackCopyTextToClipboard(text);
-                return;
-            }
-            
-            navigator.clipboard.writeText(text)
-                .then(() => {
-                    this.$console.log('Async: Copying to clipboard was successful!');
+                const successful = this.fallbackCopyTextToClipboard(text, skipToast);
+                if (!successful) {
+                    this.announceCopyStatus(this.$i18n.get('info_copy_to_clipboard_failed'));
                     this.$buefy.toast.open({
-                        duration: 3000,
-                        message: this.$i18n.get('info_url_copied'),
+                        duration: 4000,
+                        message: this.$i18n.get('info_copy_to_clipboard_failed'),
                         position: 'is-bottom',
-                        type: 'is-dark',
+                        type: 'is-warning',
                         queue: true
                     });
-                }, 
-                (err) => {
+                } else if (skipToast) {
+                    this.announceCopyStatus(this.$i18n.get('info_url_copied'));
+                }
+                return Promise.resolve(successful);
+            }
+
+            return navigator.clipboard.writeText(text)
+                .then(() => {
+                    this.$console.log('Async: Copying to clipboard was successful!');
+                    if (skipToast) {
+                        this.announceCopyStatus(this.$i18n.get('info_url_copied'));
+                    } else {
+                        this.$buefy.toast.open({
+                            duration: 3000,
+                            message: this.$i18n.get('info_url_copied'),
+                            position: 'is-bottom',
+                            type: 'is-dark',
+                            queue: true
+                        });
+                    }
+                    return true;
+                })
+                .catch((err) => {
                     this.$console.error('Async: Could not copy text: ', err);
+                    this.announceCopyStatus(this.$i18n.get('info_copy_to_clipboard_failed'));
+                    this.$buefy.toast.open({
+                        duration: 4000,
+                        message: this.$i18n.get('info_copy_to_clipboard_failed'),
+                        position: 'is-bottom',
+                        type: 'is-warning',
+                        queue: true
+                    });
+                    return false;
                 });
         },
         getLastItemNumber(page) {
@@ -534,6 +627,17 @@ export default {
         h2 {
             margin-bottom: 0;
         }
+    }
+
+    .exposer-other-options-heading {
+        font-size: 1.125em !important;
+        font-weight: normal;
+        color: var(--tainacan-heading-color);
+        display: inline-block;
+        margin-inline-start: 0;
+        margin-inline-end: auto;
+        margin-block-start: 1em;
+        margin-block-end: 0.5em;
     }
 
     .exposer-types-container {
@@ -603,7 +707,7 @@ export default {
         justify-content: space-between;
         align-items: center;
         padding-inline-start: 0.125em;
-        height: 42px;
+        height: 3em;
         border-bottom: 1px solid var(--tainacan-lists-separator-color, var(--tainacan-item-hover-background-color));            
 
         &:first-of-type {
@@ -665,6 +769,7 @@ export default {
                     border: 1px solid var(--tainacan-input-border-color);
                     border-radius: 0;
                     padding: 2px 8px;
+                    width: 100%;
                 }
                 &:before {
                     content: "";

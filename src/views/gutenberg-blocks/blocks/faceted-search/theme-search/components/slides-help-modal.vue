@@ -37,6 +37,16 @@
     </div>
 </template>
 
+<script>
+export default {
+    name: 'SlidesHelpModal',
+    emits: ['close', 'beforeClose'],
+    beforeUnmount() {
+        this.$emit('beforeClose');
+    }
+};
+</script>
+
 <style lang="scss">
     .tainacan-modal.slides-help-modal {
         z-index: 9999999999;

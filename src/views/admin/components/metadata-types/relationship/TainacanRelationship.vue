@@ -62,7 +62,12 @@
                     <template
                             v-if="currentUserCanEditItems && (!$adminOptions.itemEditionMode || $adminOptions.allowItemEditionModalInsideModal)" 
                             #footer>
-                        <a @click="editItemModalOpen = true">
+                        <a 
+                                tabindex="0"
+                                role="button"
+                                @click="openEditItemModal()"
+                                @keydown.enter.prevent="openEditItemModal()"
+                                @keydown.space.prevent="openEditItemModal()">
                             {{ $i18n.get('label_create_new_item') + ' "' + searchQuery + '"' }}
                         </a>
                     </template>
@@ -90,7 +95,11 @@
                                         placement: 'bottom',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
-                                    @click="editSelected(itemValue.value)">
+                                    tabindex="0"
+                                    role="button"
+                                    @click="editSelected(itemValue.value)"
+                                    @keydown.enter.prevent="editSelected(itemValue.value)"
+                                    @keydown.space.prevent="editSelected(itemValue.value)">
                                 <span 
                                         aria-hidden="true"
                                         class="icon">
@@ -105,7 +114,11 @@
                                         placement: 'bottom',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
-                                    @click="removeFromSelected(itemValue.value)">
+                                    tabindex="0"
+                                    role="button"
+                                    @click="removeFromSelected(itemValue.value)"
+                                    @keydown.enter.prevent="removeFromSelected(itemValue.value)"
+                                    @keydown.space.prevent="removeFromSelected(itemValue.value)">
                                 <span 
                                         aria-hidden="true"
                                         class="icon">
@@ -153,7 +166,8 @@
                     :width="1200"
                     :can-cancel="['escape', 'outside']"
                     :custom-class="'tainacan-modal' + (collection && collection.id ? ' tainacan-modal-item-edition--collection-' + collection.id : '')"
-                    :close-button-aria-label="$i18n.get('close')">
+                    :close-button-aria-label="$i18n.get('close')"
+                    @close="onEditItemModalClose()">
                 <iframe 
                         :id="relationshipInputId + '_item-edition-modal'"
                         width="100%"
@@ -525,8 +539,17 @@
 
                 return valuesAsHtml;
             },
+            openEditItemModal() {
+                this._modalTrigger = this.$modalFocusA11y.captureTrigger();
+                this.editItemModalOpen = true;
+            },
+            onEditItemModalClose() {
+                this.editItemModalOpen = false;
+                this.$modalFocusA11y.restoreFocus(this._modalTrigger, this);
+            },
             editSelected(itemId) {
                 this.editingItemId = itemId;
+                this._modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.editItemModalOpen = true;
             },
             removeFromSelected(itemId) {

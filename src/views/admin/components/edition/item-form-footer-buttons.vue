@@ -271,7 +271,7 @@ export default {
     },
     methods: {
         openItemCreationStatusDialog() {
-
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: ItemCreationStatusDialog,
                 canCancel: false,
@@ -283,7 +283,12 @@ export default {
                     }
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                events: {
+                    close: () => {
+                        this.$modalFocusA11y.restoreFocus(modalTrigger, this);
+                    }
+                }
             });
         },
     }

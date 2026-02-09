@@ -14,7 +14,7 @@
                 <button     
                         class="button is-medium is-white is-align-self-flex-start"
                         :aria-label="$i18n.get('close')"
-                        @click="$emit('close')">
+                        @click="closeModal()">
                     <span 
                             aria-hidden="true"
                             class="icon">
@@ -25,19 +25,25 @@
             <section class="tainacan-form">
                 <p>{{ $i18n.get('instruction_select_an_importer_type') }}</p>
                 <div 
-                        role="list"
+                        :role="visibleImportersCount > 1 ? 'list' : undefined"
                         class="importer-types-container tainacan-clickable-cards">
                     <template 
                             v-for="importerType in availableImporters"
                             :key="importerType.slug">
                         <router-link
                                 v-if="!(hideWhenManualCollection && !importerType.manual_collection)"
-                                role="listitem"
+                                :role="visibleImportersCount > 1 ? 'listitem' : undefined"
                                 class="importer-type tainacan-clickable-card"
                                 :to="{ path: $routerHelper.getImporterEditionPath(importerType.slug), query: { targetCollection: targetCollection } }"
-                                @click="$emit('close')">
-                            <h4>{{ importerType.name }}</h4>
-                            <p>{{ importerType.description }}</p>            
+                                @click="closeModal()">
+                            <dl class="importer-type-definition">
+                                <dt class="importer-type-name">
+                                    {{ importerType.name }}
+                                </dt>
+                                <dd class="importer-type-description">
+                                    {{ importerType.description }}
+                                </dd>
+                            </dl>
                         </router-link>
                     </template>
 
@@ -52,7 +58,7 @@
                         <button 
                                 class="button is-outlined" 
                                 type="button" 
-                                @click="$emit('close')">Close</button>
+                                @click="closeModal()">Close</button>
                     </div>
                     <!-- <div class="control">
                         <button class="button is-success">Confirm</button>
@@ -73,12 +79,21 @@ export default {
         hideWhenManualCollection: false
     },
     emits: [
-        'close'
+        'close',
+        'beforeClose'
     ],
     data(){
         return {
             availableImporters: [],
             isLoading: false
+        }
+    },
+    computed: {
+        visibleImportersCount() {
+            const list = Array.isArray(this.availableImporters)
+                ? this.availableImporters
+                : Object.values(this.availableImporters || {});
+            return list.filter(importerType => !(this.hideWhenManualCollection && !importerType.manual_collection)).length;
         }
     },
     mounted() {
@@ -99,9 +114,13 @@ export default {
         ...mapActions('importer', [
             'fetchAvailableImporters'
         ]),
+        closeModal() {
+            this.$emit('beforeClose');
+            this.$emit('close');
+        },
         onSelectImporter(importerType) {
             this.$router.push({ path: this.$routerHelper.getImporterEditionPath(importerType.slug), query: { targetCollection: this.targetCollection } });
-            this.$emit('close');
+            this.closeModal();
         }
     }
 }

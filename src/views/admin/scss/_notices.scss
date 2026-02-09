@@ -1,6 +1,8 @@
 .notices {
     z-index: 99999999;
-
+    .toast {
+        flex-basis: auto; // Small fix for Bootstrap conflicts.
+    }
     .toast, .snackbar {
         min-width: auto !important;
         font-size: 0.75em;
@@ -10,8 +12,8 @@
         &.is-dark,
         &.is-dark .button,
         &.is-dark .button:hover {
-            background-color: var(--tainacan-dark) !important;
-            color: var(--tainacan-info-color) !important;
+            background-color: var(--tainacan-gray5) !important;
+            color: var(--tainacan-white) !important;
             font-size: 0.875em;
         }
         &.is-warning,

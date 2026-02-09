@@ -19,6 +19,7 @@
                     v-if="!$adminOptions.hideCollectionsListCreationDropdown && $userCaps.hasCapability('tnc_rep_edit_collections')"
                     class="header-item">
                 <b-dropdown
+                        ref="collectionCreationOptionsDropdown"
                         id="collection-creation-options-dropdown"
                         v-a11y-dropdown="{ appendToBody: true }"
                         :trigger-tabindex="-1"
@@ -91,10 +92,10 @@
                     class="header-item">
                 <b-input 
                         v-model="searchQuery"
-                        :placeholder="$i18n.get('instruction_search')"
+                        :placeholder="$i18n.get('instruction_search_and_press_enter')"
                         type="search"
                         size="is-small"
-                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('collections')"
+                        :aria-label="$i18n.get('instruction_search_and_press_enter')"
                         autocomplete="on"
                         icon-right="magnify"
                         icon-right-clickable
@@ -717,21 +718,31 @@ export default {
             return last > this.totalCollections ? this.totalCollections : last;
         },
         onOpenImportersModal() {
+            const dropdownTrigger = this.$modalFocusA11y.getDropdownTrigger(this.$refs.collectionCreationOptionsDropdown);
+            const modalTrigger = this.$modalFocusA11y.captureTrigger(dropdownTrigger);
             this.$buefy.modal.open({
                 component: AvailableImportersModal,
                 hasModalCard: true,
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
         },
         onOpenCollectionCreationModal() {
+            const dropdownTrigger = this.$modalFocusA11y.getDropdownTrigger(this.$refs.collectionCreationOptionsDropdown);
+            const modalTrigger = this.$modalFocusA11y.captureTrigger(dropdownTrigger);
             this.$buefy.modal.open({
                 component: CollectionCreationModal,
                 hasModalCard: true,
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
         },
         searchCollections() {

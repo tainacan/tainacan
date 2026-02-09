@@ -139,7 +139,7 @@
             height: 0px;
             display: flex;
             justify-content: flex-end;
-            visibility: hidden;
+            //visibility: hidden; Removed as it prevents focus to return to the area when coming from modals
             overflow: hidden;
             opacity: 0;
             padding: 2px 8px;
@@ -156,7 +156,9 @@
                 transition: opacity 0.3s ease-in;
             }
         }
-        &:hover .actions-area { 
+        &:hover .actions-area,
+        &:focus .actions-area,
+        &:focus-within .actions-area { 
             visibility: visible;
             opacity: 1.0;
             height: 32px;

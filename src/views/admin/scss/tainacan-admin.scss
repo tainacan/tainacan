@@ -315,14 +315,19 @@ audio, video {
         p {
             line-height: normal;
         }
-
-        &:hover {
+        a {
+            display: flex;
+            align-items: center;
+        }
+        &:hover,
+        &:focus,
+        &:focus-within,
+        &:focus-visible {
             cursor: pointer;
             background-color: var(--tainacan-item-hover-background-color);
 
             .actions-area {
                 opacity: 1;
-                visibility: 1;
                 inset-inline-end: 0;
             }
         }
@@ -334,7 +339,6 @@ audio, video {
         min-height: 28px;
         min-width: 28px;
         opacity: 0;
-        visibility: 0;
         transition: inset-inline-end 0.3s ease;
     }
     .item-thumb {

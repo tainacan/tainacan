@@ -362,7 +362,9 @@
                                         class="button-edit"
                                         :aria-label="$i18n.getFrom('collections','edit_item')" 
                                         :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getCollectionEditPath(collection.id)"
-                                        @click.prevent.stop="goToCollectionEditPage(collection.id)">                      
+                                        @click.prevent.stop="goToCollectionEditPage(collection.id)"
+                                        @keydown.enter.prevent="goToCollectionEditPage(collection.id)"
+                                        @keydown.space.prevent="goToCollectionEditPage(collection.id)">                      
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
@@ -371,6 +373,7 @@
                                                 placement: 'auto',
                                                 html: true
                                             }"
+                                            aria-hidden="true"
                                             class="icon">
                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-settings" />
                                     </span>
@@ -382,7 +385,9 @@
                                         role="button"
                                         tabindex="0"
                                         :aria-label="$i18n.get('label_button_delete')" 
-                                        @click.prevent.stop="deleteOneCollection(collection)">
+                                        @click.prevent.stop="deleteOneCollection(collection)"
+                                        @keydown.enter.prevent="deleteOneCollection(collection)"
+                                        @keydown.space.prevent="deleteOneCollection(collection)">
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
@@ -390,7 +395,8 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip'],
                                                 placement: 'auto'
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i 
                                                 :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                                 class="tainacan-icon tainacan-icon-1-25em" />
@@ -411,7 +417,8 @@
                                                 placement: 'auto',
                                                 html: true
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                                     </span>
                                 </a>
@@ -515,6 +522,7 @@ export default {
                 [ collectionName ]
             );
             
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
@@ -548,7 +556,10 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
             this.clearContextMenu();
         },
@@ -559,6 +570,7 @@ export default {
             
             // For multiple collections, we don't add individual names
             // The message already indicates multiple collections are being deleted
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
@@ -595,7 +607,10 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
         },
         openCollection() {

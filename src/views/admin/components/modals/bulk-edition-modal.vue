@@ -16,7 +16,7 @@
             <button         
                     class="button is-medium is-white is-align-self-flex-start"
                     :aria-label="$i18n.get('close')"
-                    @click="$emit('close')">
+                    @click="closeModal()">
                 <span 
                         aria-hidden="true"
                         class="icon">
@@ -355,7 +355,7 @@
                                 bulkEditionProcedures[editionCriteria[editionCriteria.length-1]].isExecuting) || false"
                             type="button"
                             class="button is-outlined"
-                            @click="$eventBusSearch.loadItems(); $emit('close')">
+                            @click="$eventBusSearch.loadItems(); closeModal()">
                         {{ $i18n.get('close') }}
                     </button>
                 </p>
@@ -400,6 +400,7 @@
             collectionId: [String, Number]
         },
         emits: [
+            'beforeClose',
             'close'
         ],
         data() {
@@ -509,6 +510,10 @@
             ...mapActions('activity', [
                 'fetchUsers'
             ]),
+            closeModal() {
+                this.$emit('beforeClose');
+                this.$emit('close');
+            },
             finalizeProcedure(criterion){
 
                 Object.assign(this.bulkEditionProcedures[criterion], { 'isDone': true });
@@ -795,7 +800,7 @@
                     }
                 });
                 this.$eventBusSearch.loadItems();
-                this.$emit('close');
+                this.closeModal();
             }
         }
     }

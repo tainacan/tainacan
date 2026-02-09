@@ -24,8 +24,12 @@
                             id="button-edit-document"
                             class="button is-rounded is-secondary"
                             size="is-small"
+                            role="button"
+                            tabindex="0"
                             :aria-label="$i18n.get('label_button_edit_document')"
-                            @click.prevent="($event) => $emit('on-set-document', $event, form.document_type)">
+                            @click.prevent="($event) => $emit('on-set-document', $event, form.document_type)"
+                            @keydown.enter.prevent="($event) => $emit('on-set-document', $event, form.document_type)"
+                            @keydown.space.prevent="($event) => $emit('on-set-document', $event, form.document_type)">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('edit'),
@@ -33,7 +37,8 @@
                                     placement: 'bottom',
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
-                                class="icon">
+                                class="icon"
+                                aria-hidden="true">
                             <i class="tainacan-icon tainacan-icon-edit" />
                         </span>
                     </a>
@@ -42,7 +47,11 @@
                             class="button is-rounded is-secondary"
                             size="is-small"
                             :aria-label="$i18n.get('label_button_delete_document')"
-                            @click.prevent="$emit('on-remove-document')">
+                            role="button"
+                            tabindex="0"
+                            @click.prevent="$emit('on-remove-document')"
+                            @keydown.enter.prevent="$emit('on-remove-document')"
+                            @keydown.space.prevent="$emit('on-remove-document')">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('delete'),
@@ -50,7 +59,8 @@
                                     placement: 'bottom',
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
-                                class="icon">
+                                class="icon"
+                                aria-hidden="true">
                             <i class="tainacan-icon tainacan-icon-delete" />
                         </span>
                     </a>
@@ -62,7 +72,10 @@
                 <li v-if="!$adminOptions.hideItemEditionDocumentFileInput && (collection && collection.item_enabled_document_types && collection.item_enabled_document_types['attachment'] && collection.item_enabled_document_types['attachment']['enabled'] === 'yes')">
                     <button
                             type="button"
-                            @click.prevent="($event) => $emit('on-set-file-document', $event)">
+                            tabindex="0"
+                            @click.prevent="($event) => $emit('on-set-file-document', $event)"
+                            @keydown.enter.prevent="($event) => $emit('on-set-file-document', $event)"
+                            @keydown.space.prevent="($event) => $emit('on-set-file-document', $event)">
                         <span 
                                 aria-hidden="true"
                                 class="icon">
@@ -74,7 +87,10 @@
                 <li v-if="!$adminOptions.hideItemEditionDocumentTextInput && (collection && collection.item_enabled_document_types && collection.item_enabled_document_types['text'] && collection.item_enabled_document_types['text']['enabled'] === 'yes')">
                     <button
                             type="button"
-                            @click.prevent="$emit('on-set-text-document')">
+                            tabindex="0"
+                            @click.prevent="$emit('on-set-text-document')"
+                            @keydown.enter.prevent="$emit('on-set-text-document')"
+                            @keydown.space.prevent="$emit('on-set-text-document')">
                         <span 
                                 aria-hidden="true"
                                 class="icon">
@@ -86,7 +102,10 @@
                 <li v-if="!$adminOptions.hideItemEditionDocumentUrlInput && (collection && collection.item_enabled_document_types && collection.item_enabled_document_types['url'] && collection.item_enabled_document_types['url']['enabled'] === 'yes')">
                     <button
                             type="button"
-                            @click.prevent="$emit('on-set-url-document')">
+                            tabindex="0"
+                            @click.prevent="$emit('on-set-url-document')"
+                            @keydown.enter.prevent="$emit('on-set-url-document')"
+                            @keydown.space.prevent="$emit('on-set-url-document')">
                         <span 
                                 aria-hidden="true"
                                 class="icon">

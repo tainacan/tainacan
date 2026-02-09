@@ -30,26 +30,34 @@
                     </h1>
                 </header>
                 <span v-html="message" />
-                <div v-if="showNeverShowAgainOption">
-                    <b-checkbox
-                            :native-value="neverShowAgain"
-                            @update:model-value="changeNeverShowMessageAgain($event)">
+                <label 
+                        v-if="showNeverShowAgainOption"
+                        class="b-checkbox checkbox">
+                    <input
+                            type="checkbox"
+                            :checked="neverShowAgain"
+                            :aria-label="$i18n.get('instruction_never_show_message_again')"
+                            @input="changeNeverShowMessageAgain($event)">
+                    <span class="check" /> 
+                    <span 
+                            aria-hidden="true"
+                            class="control-label">
                         {{ $i18n.get('instruction_never_show_message_again') }}
-                    </b-checkbox>
-                </div>
+                    </span>
+                </label>
             </section>
             <footer class="modal-card-foot form-submit">
                 <button 
                         v-if="!hideCancel"
                         class="button is-outlined" 
                         type="button"
-                        @click="$emit('close')">
+                        @click="closeModal()">
                     {{ $i18n.get('cancel') }}
                 </button>
                 <button 
                         type="submit"
                         class="button is-success"
-                        @click="onConfirm(); $emit('close');">
+                        @click="onConfirm(); closeModal();">
                     {{ confirmText ? confirmText : $i18n.get('continue') }}
                 </button>
             </footer>
@@ -84,6 +92,7 @@
             messageKeyForUserPrefs: ''
         },
         emits: [
+            'beforeClose',
             'close'
         ],
         data() {
@@ -96,6 +105,10 @@
                 this.$refs.customDialog.focus();
         },
         methods: {
+            closeModal() {
+                this.$emit('beforeClose');
+                this.$emit('close');
+            },
             changeNeverShowMessageAgain($event) {
                 this.$userPrefs.set('neverShow' + this.messageKeyForUserPrefs + 'Dialog', $event);
             }
@@ -107,7 +120,7 @@
    
     i.tainacan-icon,
     i.tainacan-icon::before {
-        font-size: 56px;
+        font-size: 42px;
     }
 
     button.is-success {

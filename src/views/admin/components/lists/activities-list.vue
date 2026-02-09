@@ -31,13 +31,17 @@
                 <tbody>
                     <tr
                             v-for="(activity, index) of activities"
-                            :key="index">
+                            :key="index"
+                            role="button"
+                            tabindex="0"
+                            @click="openActivityDetailsModal(activity)"
+                            @keydown.enter.prevent="openActivityDetailsModal(activity)"
+                            @keydown.space.prevent="openActivityDetailsModal(activity)">
                         <!-- Name -->
                         <td
                                 class="column-default-width column-main-content"
                                 :label="$i18n.get('label_activity_title')"
-                                :aria-label="$i18n.get('label_activity_title') + ': ' + activity.title"
-                                @click="openActivityDetailsModal(activity)">
+                                :aria-label="$i18n.get('label_activity_title') + ': ' + activity.title">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -56,8 +60,7 @@
                         <td
                                 class="table-creation column-small-width"
                                 :label="$i18n.get('label_created_by')"
-                                :aria-label="$i18n.get('label_created_by') + ': ' + activity.user_name"
-                                @click="openActivityDetailsModal(activity)">
+                                :aria-label="$i18n.get('label_created_by') + ': ' + activity.user_name">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -75,8 +78,7 @@
                         <td
                                 class="table-creation column-small-width"
                                 :label="$i18n.get('label_activity_date')"
-                                :aria-label="$i18n.get('label_activity_date') + ': ' + activity.date"
-                                @click="openActivityDetailsModal(activity)">
+                                :aria-label="$i18n.get('label_activity_date') + ': ' + activity.date">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -156,6 +158,7 @@
                 this.notApprove(activity.id);
             },
             openActivityDetailsModal(activity) {
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: ActivityDetailsModal,
                     props: {
@@ -163,7 +166,8 @@
                     },
                     events: {
                         approveActivity: (activityId) => this.approveActivity(activityId),
-                        notApproveActivity: (activityId) => this.notApproveActivity(activityId)
+                        notApproveActivity: (activityId) => this.notApproveActivity(activityId),
+                        beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
                     },
                     width: 840,
                     trapFocus: true,

@@ -68,6 +68,7 @@
                     class="field">
                 <b-dropdown
                         v-if="Array.isArray(items) && items.length > 0"
+                        ref="bulkActionsDropdown"
                         id="bulk-actions-dropdown"
                         v-a11y-dropdown
                         :trigger-tabindex="-1"
@@ -154,32 +155,44 @@
                         trap-focus>
                     <b-dropdown-item
                             v-if="!isOnTrash && !$adminOptions.hideItemsListContextMenuOpenItemOption"
-                            @click="openItem()">
+                            @click="openItem()"
+                            @keydown.enter.prevent="openItem()"
+                            @keydown.space.prevent="openItem()">
                         {{ $i18n.getFrom('items','view_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="!isOnTrash && !$adminOptions.hideItemsListContextMenuOpenItemOnNewTabOption"
-                            @click="openItemOnNewTab()">
+                            @click="openItemOnNewTab()"
+                            @keydown.enter.prevent="openItemOnNewTab()"
+                            @keydown.space.prevent="openItemOnNewTab()">
                         {{ $i18n.get('label_open_item_new_tab') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="contextMenuItem != null"
-                            @click="selectItem()">
+                            @click="selectItem()"
+                            @keydown.enter.prevent="selectItem()"
+                            @keydown.space.prevent="selectItem()">
                         {{ getSelectedItemChecked(contextMenuItem.id) == true ? $i18n.get('label_unselect_item') : $i18n.get('label_select_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.hideItemsListContextMenuEditItemOption"
-                            @click="goToItemEditPage(contextMenuItem)">
+                            @click="goToItemEditPage(contextMenuItem)"
+                            @keydown.enter.prevent="goToItemEditPage(contextMenuItem)"
+                            @keydown.space.prevent="goToItemEditPage(contextMenuItem)">
                         {{ $i18n.getFrom('items','edit_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.hideItemsListContextMenuCopyItemOption"
-                            @click="makeCopiesOfOneItem(contextMenuItem.id)">
+                            @click="makeCopiesOfOneItem(contextMenuItem.id)"
+                            @keydown.enter.prevent="makeCopiesOfOneItem(contextMenuItem.id)"
+                            @keydown.space.prevent="makeCopiesOfOneItem(contextMenuItem.id)">
                         {{ $i18n.get('label_make_copies_of_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.hideItemsListContextMenuDeleteItemOption"
-                            @click="deleteOneItem(contextMenuItem)">
+                            @click="deleteOneItem(contextMenuItem)"
+                            @keydown.enter.prevent="deleteOneItem(contextMenuItem)"
+                            @keydown.space.prevent="deleteOneItem(contextMenuItem)">
                         {{ $i18n.get('label_delete_item') }}
                     </b-dropdown-item>
                 </b-dropdown>
@@ -188,13 +201,13 @@
             <!-- GRID (THUMBNAILS) VIEW MODE -->
             <div
                     v-if="viewMode == 'grid'"
-                    role="list"
+                    :role="items.length > 1 ? 'list' : undefined"
                     class="tainacan-grid-container"
                     :class="{ 'hide-items-selection': $adminOptions.hideItemsListSelection }">
                 <div
                         v-for="(item, index) of items"
                         :key="index"
-                        role="listitem"
+                        :role="items.length > 1 ? 'listitem' : undefined"
                         :data-tainacan-item-id="item.id"
                         :class="{ 'selected-grid-item': getSelectedItemChecked(item.id) == true }"
                         class="tainacan-grid-item">
@@ -279,9 +292,13 @@
                                 v-if="!isOnTrash && item.current_user_can_edit"
                                 :id="'button-edit-' + item.id"
                                 class="button-edit"
+                                role="button"
+                                tabindex="0"
                                 :aria-label="$i18n.getFrom('items','edit_item')"
                                 :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getItemEditPath(item.collection_id, item.id)"
-                                @click.prevent.stop="goToItemEditPage(item)">
+                                @click.prevent.stop="goToItemEditPage(item)"
+                                @keydown.enter.prevent="goToItemEditPage(item)"
+                                @keydown.space.prevent="goToItemEditPage(item)">
                             <span
                                     v-tooltip="{
                                         content: $i18n.get('edit'),
@@ -289,7 +306,8 @@
                                         placement: 'auto',
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
-                                    class="icon">
+                                    class="icon"
+                                    aria-hidden="true">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                             </span>
                         </a>
@@ -308,7 +326,8 @@
                                         placement: 'auto',
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
-                                    class="icon">
+                                    class="icon"
+                                    aria-hidden="true">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo" />
                             </span>
                         </a>
@@ -319,7 +338,9 @@
                                 role="button"
                                 tabindex="0"
                                 :aria-label="$i18n.get('label_button_delete')" 
-                                @click.prevent.stop="deleteOneItem(item)">
+                                @click.prevent.stop="deleteOneItem(item)"
+                                @keydown.enter.prevent="deleteOneItem(item)"
+                                @keydown.space.prevent="deleteOneItem(item)">
                             <span
                                     v-tooltip="{
                                         content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
@@ -327,7 +348,8 @@
                                         placement: 'auto',
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
-                                    class="icon">
+                                    class="icon"
+                                    aria-hidden="true">
                                 <i
                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                         class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
@@ -349,7 +371,8 @@
                                         placement: 'auto',
                                         html: true
                                     }"
-                                    class="icon">
+                                    class="icon"
+                                    aria-hidden="true">
                                 <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                             </span>
                         </a>
@@ -453,9 +476,13 @@
                                     v-if="!isOnTrash && item.current_user_can_edit"
                                     :id="'button-edit-' + item.id"
                                     class="button-edit"
+                                    role="button"
+                                    tabindex="0"
                                     :aria-label="$i18n.getFrom('items','edit_item')"
                                     :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getItemEditPath(item.collection_id, item.id)"
-                                    @click.prevent.stop="goToItemEditPage(item)">
+                                    @click.prevent.stop="goToItemEditPage(item)"
+                                    @keydown.enter.prevent="goToItemEditPage(item)"
+                                    @keydown.space.prevent="goToItemEditPage(item)">
                                 <span
                                         v-tooltip="{
                                             content: $i18n.get('edit'),
@@ -463,7 +490,8 @@
                                             placement: 'auto',
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                         }"
-                                        class="icon">
+                                        class="icon"
+                                        aria-hidden="true">
                                     <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                 </span>
                             </a>
@@ -474,7 +502,9 @@
                                     role="button"
                                     tabindex="0"
                                     :aria-label="$i18n.get('label_button_untrash')"
-                                    @click.prevent.stop="untrashOneItem(item.id)">
+                                    @click.prevent.stop="untrashOneItem(item.id)"
+                                    @keydown.enter.prevent="untrashOneItem(item.id)"
+                                    @keydown.space.prevent="untrashOneItem(item.id)">
                                 <span
                                         v-tooltip="{
                                             content: $i18n.get('label_recover_from_trash'),
@@ -482,7 +512,8 @@
                                             placement: 'auto',
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                         }"
-                                        class="icon">
+                                        class="icon"
+                                        aria-hidden="true">
                                     <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo" />
                                 </span>
                             </a>
@@ -493,7 +524,9 @@
                                     role="button"
                                     tabindex="0"
                                     :aria-label="$i18n.get('label_button_delete')" 
-                                    @click.prevent.stop="deleteOneItem(item)">
+                                    @click.prevent.stop="deleteOneItem(item)"
+                                    @keydown.enter.prevent="deleteOneItem(item)"
+                                    @keydown.space.prevent="deleteOneItem(item)">
                                 <span
                                         v-tooltip="{
                                             content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
@@ -501,7 +534,8 @@
                                             placement: 'auto',
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                         }"
-                                        class="icon">
+                                        class="icon"
+                                        aria-hidden="true">
                                     <i
                                             :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
@@ -523,7 +557,8 @@
                                             placement: 'auto',
                                             html: true
                                         }"
-                                        class="icon">
+                                        class="icon"
+                                        aria-hidden="true">
                                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                                 </span>
                             </a>
@@ -535,13 +570,13 @@
             <!-- CARDS VIEW MODE -->
             <div
                     v-if="viewMode == 'cards'"
-                    role="list"
+                    :role="items.length > 1 ? 'list' : undefined"
                     :class="{ 'hide-items-selection': $adminOptions.hideItemsListSelection }"
                     class="tainacan-cards-container">
                 <div
                         v-for="(item, index) of items"
                         :key="index"
-                        role="listitem"
+                        :role="items.length > 1 ? 'listitem' : undefined"
                         :data-tainacan-item-id="item.id"
                         :class="{ 'selected-card': getSelectedItemChecked(item.id) == true }"
                         class="tainacan-card">
@@ -611,9 +646,13 @@
                                 v-if="!isOnTrash && item.current_user_can_edit"
                                 :id="'button-edit-' + item.id"
                                 class="button-edit"
+                                role="button"
+                                tabindex="0"
                                 :aria-label="$i18n.getFrom('items','edit_item')"
                                 :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getItemEditPath(item.collection_id, item.id)"
-                                @click.prevent.stop="goToItemEditPage(item)">
+                                @click.prevent.stop="goToItemEditPage(item)"
+                                @keydown.enter.prevent="goToItemEditPage(item)"
+                                @keydown.space.prevent="goToItemEditPage(item)">
                             <span
                                     v-tooltip="{
                                         content: $i18n.get('edit'),
@@ -621,7 +660,8 @@
                                         placement: 'auto',
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
-                                    class="icon">
+                                    class="icon"
+                                    aria-hidden="true">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                             </span>
                         </a>
@@ -640,7 +680,8 @@
                                         placement: 'auto',
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
-                                    class="icon">
+                                    class="icon"
+                                    aria-hidden="true">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo" />
                             </span>
                         </a>
@@ -651,7 +692,9 @@
                                 role="button"
                                 tabindex="0"
                                 :aria-label="$i18n.get('label_button_delete')" 
-                                @click.prevent.stop="deleteOneItem(item)">
+                                @click.prevent.stop="deleteOneItem(item)"
+                                @keydown.enter.prevent="deleteOneItem(item)"
+                                @keydown.space.prevent="deleteOneItem(item)">
                             <span
                                     v-tooltip="{
                                         content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
@@ -659,7 +702,8 @@
                                         placement: 'auto',
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
-                                    class="icon">
+                                    class="icon"
+                                    aria-hidden="true">
                                 <i
                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                         class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
@@ -681,7 +725,8 @@
                                         placement: 'auto',
                                         html: true
                                     }"
-                                    class="icon">
+                                    class="icon"
+                                    aria-hidden="true">
                                 <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                             </span>
                         </a>
@@ -863,9 +908,13 @@
                                     v-if="!isOnTrash && item.current_user_can_edit"
                                     :id="'button-edit-' + item.id"
                                     class="button-edit"
+                                    role="button"
+                                    tabindex="0"
                                     :aria-label="$i18n.getFrom('items','edit_item')"
                                     :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getItemEditPath(item.collection_id, item.id)"
-                                    @click.prevent.stop="goToItemEditPage(item)">
+                                    @click.prevent.stop="goToItemEditPage(item)"
+                                    @keydown.enter.prevent="goToItemEditPage(item)"
+                                    @keydown.space.prevent="goToItemEditPage(item)">
                                 <span
                                         v-tooltip="{
                                             content: $i18n.get('edit'),
@@ -873,7 +922,8 @@
                                             placement: 'auto',
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                         }"
-                                        class="icon">
+                                        class="icon"
+                                        aria-hidden="true">
                                     <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                 </span>
                             </a>
@@ -884,7 +934,9 @@
                                     role="button"
                                     tabindex="0"
                                     :aria-label="$i18n.get('label_button_untrash')"
-                                    @click.prevent.stop="untrashOneItem(item.id)">
+                                    @click.prevent.stop="untrashOneItem(item.id)"
+                                    @keydown.enter.prevent="untrashOneItem(item.id)"
+                                    @keydown.space.prevent="untrashOneItem(item.id)">
                                 <span
                                         v-tooltip="{
                                             content: $i18n.get('label_recover_from_trash'),
@@ -892,7 +944,8 @@
                                             placement: 'auto',
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                         }"
-                                        class="icon">
+                                        class="icon"
+                                        aria-hidden="true">
                                     <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo" />
                                 </span>
                             </a>
@@ -903,7 +956,9 @@
                                     role="button"
                                     tabindex="0"
                                     :aria-label="$i18n.get('label_button_delete')" 
-                                    @click.prevent.stop="deleteOneItem(item)">
+                                    @click.prevent.stop="deleteOneItem(item)"
+                                    @keydown.enter.prevent="deleteOneItem(item)"
+                                    @keydown.space.prevent="deleteOneItem(item)">
                                 <span
                                         v-tooltip="{
                                             content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
@@ -911,7 +966,8 @@
                                             placement: 'auto',
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                         }"
-                                        class="icon">
+                                        class="icon"
+                                        aria-hidden="true">
                                     <i
                                             :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
@@ -933,7 +989,8 @@
                                             placement: 'auto',
                                             html: true
                                         }"
-                                        class="icon">
+                                        class="icon"
+                                        aria-hidden="true">
                                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                                 </span>
                             </a>
@@ -1051,7 +1108,7 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody role="list">
+                <tbody :role="items.length > 1 ? 'list' : undefined">
                     <tr
                             v-for="(item, index) of items"
                             :key="index"
@@ -1059,7 +1116,7 @@
                                 'selected-row': getSelectedItemChecked(item.id) == true,
                                 'highlighted-item': highlightedItem == item.id
                             }"
-                            role="listitem"
+                            :role="items.length > 1 ? 'listitem' : undefined"
                             :data-tainacan-item-id="item.id">
                         <!-- Checking list -->
                         <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
@@ -1248,9 +1305,13 @@
                                         v-if="!isOnTrash && item.current_user_can_edit"
                                         :id="'button-edit-' + item.id"
                                         class="button-edit"
+                                        role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.getFrom('items','edit_item')"
                                         :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getItemEditPath(item.collection_id, item.id)"
-                                        @click.prevent.stop="goToItemEditPage(item)">
+                                        @click.prevent.stop="goToItemEditPage(item)"
+                                        @keydown.enter.prevent="goToItemEditPage(item)"
+                                        @keydown.space.prevent="goToItemEditPage(item)">
                                     <span
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
@@ -1258,7 +1319,8 @@
                                                 placement: 'auto',
                                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                     </span>
                                 </a>
@@ -1269,7 +1331,9 @@
                                         role="button"
                                         tabindex="0"
                                         :aria-label="$i18n.get('label_button_untrash')"
-                                        @click.prevent.stop="untrashOneItem(item.id)">
+                                        @click.prevent.stop="untrashOneItem(item.id)"
+                                        @keydown.enter.prevent="untrashOneItem(item.id)"
+                                        @keydown.space.prevent="untrashOneItem(item.id)">
                                     <span
                                             v-tooltip="{
                                                 content: $i18n.get('label_recover_from_trash'),
@@ -1277,7 +1341,8 @@
                                                 placement: 'auto',
                                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo" />
                                     </span>
                                 </a>
@@ -1288,7 +1353,9 @@
                                         role="button"
                                         tabindex="0"
                                         :aria-label="$i18n.get('label_button_delete')" 
-                                        @click.prevent.stop="deleteOneItem(item)">
+                                        @click.prevent.stop="deleteOneItem(item)"
+                                        @keydown.enter.prevent="deleteOneItem(item)"
+                                        @keydown.space.prevent="deleteOneItem(item)">
                                     <span
                                             v-tooltip="{
                                                 content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
@@ -1296,7 +1363,8 @@
                                                 placement: 'auto',
                                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i
                                                 :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                                 class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
@@ -1318,7 +1386,8 @@
                                                 placement: 'auto',
                                                 html: true
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                                     </span>
                                 </a>
@@ -1331,13 +1400,13 @@
             <!-- LIST VIEW MODE -->
             <div
                     v-if="viewMode == 'list'"
-                    role="list"
+                    :role="items.length > 1 ? 'list' : undefined"
                     :class="{ 'hide-items-selection': $adminOptions.hideItemsListSelection }"
                     class="tainacan-list-container">
                 <div 
                         v-for="(item, index) of items"
                         :key="index"
-                        role="listitem"
+                        :role="items.length > 1 ? 'listitem' : undefined"
                         :href="item.url"
                         :data-tainacan-item-id="item.id"
                         class="tainacan-list"
@@ -1432,9 +1501,13 @@
                                 v-if="!isOnTrash"
                                 :id="'button-edit-' + item.id"
                                 class="button-edit"
+                                role="button"
+                                tabindex="0"
                                 :aria-label="$i18n.getFrom('items','edit_item')"
                                 :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getItemEditPath(item.collection_id, item.id)"
-                                @click.prevent.stop="goToItemEditPage(item)">
+                                @click.prevent.stop="goToItemEditPage(item)"
+                                @keydown.enter.prevent="goToItemEditPage(item)"
+                                @keydown.space.prevent="goToItemEditPage(item)">
                             <span
                                     v-tooltip="{
                                         content: $i18n.get('edit'),
@@ -1442,7 +1515,8 @@
                                         placement: 'auto',
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
-                                    class="icon">
+                                    class="icon"
+                                    aria-hidden="true">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                             </span>
                         </a>
@@ -1453,7 +1527,9 @@
                                 role="button"
                                 tabindex="0"
                                 :aria-label="$i18n.get('label_button_untrash')"
-                                @click.prevent.stop="untrashOneItem(item.id)">
+                                @click.prevent.stop="untrashOneItem(item.id)"
+                                @keydown.enter.prevent="untrashOneItem(item.id)"
+                                @keydown.space.prevent="untrashOneItem(item.id)">
                             <span
                                     v-tooltip="{
                                         content: $i18n.get('label_recover_from_trash'),
@@ -1461,7 +1537,8 @@
                                         placement: 'auto',
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
-                                    class="icon">
+                                    class="icon"
+                                    aria-hidden="true">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo" />
                             </span>
                         </a>
@@ -1472,7 +1549,9 @@
                                 role="button"
                                 tabindex="0"
                                 :aria-label="$i18n.get('label_button_delete')" 
-                                @click.prevent.stop="deleteOneItem(item)">
+                                @click.prevent.stop="deleteOneItem(item)"
+                                @keydown.enter.prevent="deleteOneItem(item)"
+                                @keydown.space.prevent="deleteOneItem(item)">
                             <span
                                     v-tooltip="{
                                         content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
@@ -1502,7 +1581,8 @@
                                         placement: 'auto',
                                         html: true
                                     }"
-                                    class="icon">
+                                    class="icon"
+                                    aria-hidden="true">
                                 <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                             </span>
                         </a>
@@ -1682,9 +1762,13 @@
                                         v-if="!isOnTrash && item.current_user_can_edit"
                                         :id="'button-edit-' + item.id"
                                         class="button-edit"
+                                        role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.getFrom('items','edit_item')"
                                         :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getItemEditPath(item.collection_id, item.id)"
-                                        @click.prevent.stop="goToItemEditPage(item)">
+                                        @click.prevent.stop="goToItemEditPage(item)"
+                                        @keydown.enter.prevent="goToItemEditPage(item)"
+                                        @keydown.space.prevent="goToItemEditPage(item)">
                                     <span
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
@@ -1692,7 +1776,8 @@
                                                 placement: 'auto',
                                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                     </span>
                                 </a>
@@ -1703,7 +1788,9 @@
                                         role="button"
                                         tabindex="0"
                                         :aria-label="$i18n.get('label_button_untrash')"
-                                        @click.prevent.stop="untrashOneItem(item.id)">
+                                        @click.prevent.stop="untrashOneItem(item.id)"
+                                        @keydown.enter.prevent="untrashOneItem(item.id)"
+                                        @keydown.space.prevent="untrashOneItem(item.id)">
                                     <span
                                             v-tooltip="{
                                                 content: $i18n.get('label_recover_from_trash'),
@@ -1711,7 +1798,8 @@
                                                 placement: 'auto',
                                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo" />
                                     </span>
                                 </a>
@@ -1722,7 +1810,9 @@
                                         role="button"
                                         tabindex="0"
                                         :aria-label="$i18n.get('label_button_delete')" 
-                                        @click.prevent.stop="deleteOneItem(item)">
+                                        @click.prevent.stop="deleteOneItem(item)"
+                                        @keydown.enter.prevent="deleteOneItem(item)"
+                                        @keydown.space.prevent="deleteOneItem(item)">
                                     <span
                                             v-tooltip="{
                                                 content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
@@ -1730,7 +1820,8 @@
                                                 placement: 'auto',
                                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i
                                                 :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                                 class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
@@ -1934,7 +2025,9 @@
                                                 role="button"
                                                 tabindex="0"
                                                 :aria-label="$i18n.get('label_show_item_location_on_map')"
-                                                @click.prevent.stop="showLocationsByItem(item)">
+                                                @click.prevent.stop="showLocationsByItem(item)"
+                                                @keydown.enter.prevent="showLocationsByItem(item)"
+                                                @keydown.space.prevent="showLocationsByItem(item)">
                                             <span
                                                     v-if="selectedGeocoordinateMetadatum.slug"
                                                     v-tooltip="{
@@ -1943,7 +2036,8 @@
                                                         placement: 'auto',
                                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                                     }"
-                                                    class="icon">
+                                                    class="icon"
+                                                    aria-hidden="true">
                                                 <svg
                                                         style="width:24px;height:24px"
                                                         viewBox="0 0 24 24">
@@ -1957,9 +2051,13 @@
                                                 v-if="!isOnTrash && item.current_user_can_edit"
                                                 :id="'button-edit-' + item.id"
                                                 class="button-edit"
+                                                role="button"
+                                                tabindex="0"
                                                 :aria-label="$i18n.getFrom('items','edit_item')"
                                                 :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getItemEditPath(item.collection_id, item.id)"
-                                                @click.prevent.stop="goToItemEditPage(item)">
+                                                @click.prevent.stop="goToItemEditPage(item)"
+                                                @keydown.enter.prevent="goToItemEditPage(item)"
+                                                @keydown.space.prevent="goToItemEditPage(item)">
                                             <span
                                                     v-tooltip="{
                                                         content: $i18n.get('edit'),
@@ -1967,7 +2065,8 @@
                                                         placement: 'auto',
                                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                                     }"
-                                                    class="icon">
+                                                    class="icon"
+                                                    aria-hidden="true">
                                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                             </span>
                                         </a>
@@ -1978,7 +2077,9 @@
                                                 role="button"
                                                 tabindex="0"
                                                 :aria-label="$i18n.get('label_button_untrash')"
-                                                @click.prevent.stop="untrashOneItem(item.id)">
+                                                @click.prevent.stop="untrashOneItem(item.id)"
+                                                @keydown.enter.prevent="untrashOneItem(item.id)"
+                                                @keydown.space.prevent="untrashOneItem(item.id)">
                                             <span
                                                     v-tooltip="{
                                                         content: $i18n.get('label_recover_from_trash'),
@@ -1986,7 +2087,8 @@
                                                         placement: 'auto',
                                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                                     }"
-                                                    class="icon">
+                                                    class="icon"
+                                                    aria-hidden="true">
                                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo" />
                                             </span>
                                         </a>
@@ -1997,7 +2099,9 @@
                                                 role="button"
                                                 tabindex="0"
                                                 :aria-label="$i18n.get('label_button_delete')" 
-                                                @click.prevent.stop="deleteOneItem(item)">
+                                                @click.prevent.stop="deleteOneItem(item)"
+                                                @keydown.enter.prevent="deleteOneItem(item)"
+                                                @keydown.space.prevent="deleteOneItem(item)">
                                             <span
                                                     v-tooltip="{
                                                         content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
@@ -2005,7 +2109,8 @@
                                                         placement: 'auto',
                                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                                     }"
-                                                    class="icon">
+                                                    class="icon"
+                                                    aria-hidden="true">
                                                 <i
                                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                                         class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
@@ -2027,7 +2132,8 @@
                                                         placement: 'auto',
                                                         html: true
                                                     }"
-                                                    class="icon">
+                                                    class="icon"
+                                                    aria-hidden="true">
                                                 <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                                             </span>
                                         </a>
@@ -2196,9 +2302,13 @@
                                     v-if="!isOnTrash && item.current_user_can_edit"
                                     :id="'button-edit-' + item.id"
                                     class="button-edit"
+                                    role="button"
+                                    tabindex="0"
                                     :aria-label="$i18n.getFrom('items','edit_item')"
                                     :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getItemEditPath(item.collection_id, item.id)"
-                                    @click.prevent.stop="goToItemEditPage(item)">
+                                    @click.prevent.stop="goToItemEditPage(item)"
+                                    @keydown.enter.prevent="goToItemEditPage(item)"
+                                    @keydown.space.prevent="goToItemEditPage(item)">
                                 <span
                                         v-tooltip="{
                                             content: $i18n.get('edit'),
@@ -2206,7 +2316,8 @@
                                             placement: 'auto',
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                         }"
-                                        class="icon">
+                                        class="icon"
+                                        aria-hidden="true">
                                     <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                 </span>
                             </a>
@@ -2217,7 +2328,9 @@
                                     role="button"
                                     tabindex="0"
                                     :aria-label="$i18n.get('label_button_untrash')"
-                                    @click.prevent.stop="untrashOneItem(item.id)">
+                                    @click.prevent.stop="untrashOneItem(item.id)"
+                                    @keydown.enter.prevent="untrashOneItem(item.id)"
+                                    @keydown.space.prevent="untrashOneItem(item.id)">
                                 <span
                                         v-tooltip="{
                                             content: $i18n.get('label_recover_from_trash'),
@@ -2225,7 +2338,8 @@
                                             placement: 'auto',
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                         }"
-                                        class="icon">
+                                        class="icon"
+                                        aria-hidden="true">
                                     <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo" />
                                 </span>
                             </a>
@@ -2236,7 +2350,9 @@
                                     role="button"
                                     tabindex="0"
                                     :aria-label="$i18n.get('label_button_delete')" 
-                                    @click.prevent.stop="deleteOneItem(item)">
+                                    @click.prevent.stop="deleteOneItem(item)"
+                                    @keydown.enter.prevent="deleteOneItem(item)"
+                                    @keydown.space.prevent="deleteOneItem(item)">
                                 <span
                                         v-tooltip="{
                                             content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
@@ -2266,7 +2382,8 @@
                                             placement: 'auto',
                                             html: true
                                         }"
-                                        class="icon">
+                                        class="icon"
+                                        aria-hidden="true">
                                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                                 </span>
                             </a>
@@ -2628,6 +2745,8 @@ export default {
             return this.$adminOptions.itemsSingleSelectionMode ? this.singleItemSelection == itemId : this.selectedItems.find(item => item == itemId) != undefined;
         },
         openBulkEditionModal(){
+            const dropdownTrigger = this.$modalFocusA11y.getDropdownTrigger(this.$refs.bulkActionsDropdown);
+            const modalTrigger = this.$modalFocusA11y.captureTrigger(dropdownTrigger);
             this.$buefy.modal.open({
                 component: defineAsyncComponent(() => import('../modals/bulk-edition-modal.vue')),
                 props: {
@@ -2640,7 +2759,10 @@ export default {
                 width: 'calc(100% - (2 * var(--tainacan-one-column)))',
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
         },
         sequenceEditSelectedItems() {
@@ -2662,7 +2784,7 @@ export default {
             }
         },
         makeCopiesOfOneItem(itemId) {
-
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: defineAsyncComponent(() => import('../other/item-copy-dialog.vue')),
                 canCancel: false,
@@ -2676,12 +2798,18 @@ export default {
                     }
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                events: {
+                    close: () => {
+                        this.$modalFocusA11y.restoreFocus(modalTrigger, this);
+                    }
+                }
             });
 
             this.clearContextMenu();
         },
         untrashOneItem(itemId) {
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
@@ -2704,7 +2832,10 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
         },
         deleteOneItem(item) {
@@ -2724,6 +2855,7 @@ export default {
                 [ itemTitle ]
             );
             
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
@@ -2741,11 +2873,15 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
             this.clearContextMenu();
         },
         untrashSelectedItems(){
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
@@ -2779,7 +2915,10 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
         },
         deleteSelectedItems() {
@@ -2789,7 +2928,7 @@ export default {
             
             // For multiple items, we don't add individual names
             // The message already indicates multiple items are being deleted
-            
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
@@ -2841,7 +2980,10 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
         },
         filterBySelectedItems() {

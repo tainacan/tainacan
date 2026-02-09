@@ -9,7 +9,7 @@
     <div
             v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
             ref="search-control"
-            :aria-label="$i18n.get('label_sort_visualization')"
+            aria-labelledby="search-control-landmark"
             role="region"
             class="search-control">
         
@@ -46,7 +46,7 @@
                     'is-hidden': shouldNotHideFiltersOnMobile && hideHideFiltersButton
                 }"
                 :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
-                @click="isFiltersModalActive = !isFiltersModalActive">
+                @click="toggleFiltersModal()">
             <span 
                     aria-hidden="true"
                     class="icon">
@@ -65,9 +65,7 @@
         <div 
                 v-if="!hideSearch"
                 class="search-control-item search-control-item--search">
-            <div 
-                    role="search" 
-                    class="search-area">
+            <div class="search-area">
                 <b-dropdown
                         ref="tainacan-textual-search-input"
                         :trigger-tabindex="-1"
@@ -78,9 +76,8 @@
                     <template #trigger>
                         <b-input
                                 size="is-small"
-                                :placeholder="$i18n.get('instruction_search')"
+                                :placeholder="$i18n.get('instruction_search_and_press_enter')"
                                 type="search"
-                                :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
                                 :model-value="searchQuery"
                                 icon-right="magnify"
                                 icon-right-clickable
@@ -155,7 +152,7 @@
             <button 
                     class="button is-white"
                     :aria-label="$i18n.get('filters')"
-                    @click="isFiltersModalActive = !isFiltersModalActive">
+                    @click="toggleFiltersModal()">
                 <span 
                         :class="{ 'has-text-secondary': hasFiltered }"
                         class="gray-icon"
@@ -297,11 +294,13 @@
                         {{ $i18n.get('info_by_inner') }}
                     </span>
                     <b-dropdown
-                            id="tainacanSortByDropdown"
+                            id="tainacanSortByDropdown"        
+                            ref="sortByDropdown"
                             v-a11y-dropdown
                             :trigger-tabindex="-1"
                             :mobile-modal="true"
                             trap-focus
+                            @active-change="onSortByDropdownActiveChange"
                             @update:model-value="onChangeOrderBy($event)">
                         <template #trigger>
                             <button
@@ -511,7 +510,7 @@
                 :tabindex="filtersAsModal ? -1 : 0"
                 :aria-modal="filtersAsModal"
                 :role="filtersAsModal ? 'dialog' : ''"
-                aria-labelledby="filters-label-landmark"
+                :aria-labelledby="filtersAsModal ? 'filters-label-landmark' : undefined"
                 :width="736"
                 :auto-focus="filtersAsModal"
                 :trap-focus="filtersAsModal"
@@ -521,7 +520,8 @@
                 :can-cancel="hideHideFiltersButton || !filtersAsModal ? ['x', 'outside'] : ['x', 'escape', 'outside']"
                 :close-button-aria-label="$i18n.get('close')"
                 @after-leave="filtersModalStateHasChanged = !filtersModalStateHasChanged"
-                @after-enter="filtersModalStateHasChanged = !filtersModalStateHasChanged">
+                @after-enter="filtersModalStateHasChanged = !filtersModalStateHasChanged"
+                @close="onFiltersModalClose()">
                 
             <!-- JS-side hook for extra form content -->
             <div 
@@ -624,8 +624,6 @@
                 id="items-list-results"
                 :aria-busy="isLoadingItems"
                 aria-labelledby="items-list-landmark"
-                aria-live="polite"
-                aria-atomic="false"
                 role="region"
                 class="above-search-control">
             
@@ -822,7 +820,7 @@
     import { nextTick, defineAsyncComponent } from 'vue';
     import { mapActions, mapGetters } from 'vuex';
     import qs from 'qs';
-    import ItemsPagination from '../../../admin/components/search/items-pagination.vue'
+    import ItemsPagination from '../../../admin/components/search/items-pagination.vue';
 
     export default {
         name: 'ThemeSearch',
@@ -1394,9 +1392,19 @@
                         this.hooks['items_list_area_after'] = itemsListAreaAfterFiltersCollection;
                 }
             },
-            openExposersModal() {
+            toggleFiltersModal() {
+                if (!this.isFiltersModalActive)
+                    this._filtersModalTrigger = this.$modalFocusA11y.captureTrigger();
+                this.isFiltersModalActive = !this.isFiltersModalActive;
+            },
+            onFiltersModalClose() {
+                this.$modalFocusA11y.restoreFocus(this._filtersModalTrigger, this);
+            },
+            async openExposersModal() {
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
+                const ExposersModal = (await import('../../../admin/components/modals/exposers-modal.vue')).default;
                 this.$buefy.modal.open({
-                    component: defineAsyncComponent(() => import('../../../admin/components/modals/exposers-modal.vue')),
+                    component: ExposersModal,
                     hasModalCard: false,
                     props: { 
                         collectionId: this.collectionId,
@@ -1405,7 +1413,12 @@
                     trapFocus: true,
                     customClass: 'tainacan-modal',
                     canCancel: ['escape', 'outside'],
-                    width: 786
+                    width: 786,
+                    events: {
+                        beforeClose: () => {
+                            this.$modalFocusA11y.restoreFocus(modalTrigger, this);
+                        }
+                    }
                 });
             },
             updateSearch() {
@@ -1661,10 +1674,7 @@
             showItemsHiddingDueSortingDialog() {
 
                 if (this.isSortingByCustomMetadata &&
-                    this.$userPrefs.get('neverShowItemsHiddenDueSortingDialog') != true) {     
-
-                    this.hasAnOpenModal = true;
-
+                    this.$userPrefs.get('neverShowItemsHiddenDueSortingDialog') != true) {
                     this.openMetatadaSortingWarningDialog({ offerCheckbox: true });
                 }
             },
@@ -1679,19 +1689,50 @@
                 if ( !this.hasSearchByMoreThanOneWord && this.$refs['tainacan-textual-search-input'] && this.$refs['tainacan-textual-search-input'].isActive && typeof this.$refs['tainacan-textual-search-input'].toggle === 'function' )
                     this.$refs['tainacan-textual-search-input'].toggle();
             },
-            openMetatadaSortingWarningDialog({ offerCheckbox }) {
+            /**
+             * When the sort by dropdown is closed, we need to keep it open for the modal
+             * to avoid the screen reader from announcing the dropdown as closed.
+             */
+            onSortByDropdownActiveChange(isActive) {
+                if (!isActive && this.hasAnOpenModal) {
+                    this.$nextTick(() => {
+                        const el = this.$refs.sortByDropdown?.$el || document.getElementById('tainacanSortByDropdown');
+                        if (el) el.classList.add('is-active', 'tainacan-sort-dropdown-held-open');
+                    });
+                }
+            },
+            /**
+             * When the modal is closed, we need to close the sort by dropdown
+             * to avoid the screen reader from announcing the dropdown as open.
+             */
+            closeSortDropdownHeldOpenForModal() {
+                this.hasAnOpenModal = false;
+                const el = this.$refs.sortByDropdown?.$el || document.getElementById('tainacanSortByDropdown');
+                if (el) el.classList.remove('is-active', 'tainacan-sort-dropdown-held-open');
+            },
+            async openMetatadaSortingWarningDialog({ offerCheckbox }) {
+                this.hasAnOpenModal = true;
+                const dropdownTrigger = this.$modalFocusA11y.getDropdownTrigger(this.$refs.sortByDropdown);
+                const modalTrigger = this.$modalFocusA11y.captureTrigger(dropdownTrigger);
+                const CustomDialog = (await import('../../../admin/components/other/custom-dialog.vue')).default;
                 this.$buefy.modal.open({
-                        component: defineAsyncComponent(() => import('../../../admin/components/other/custom-dialog.vue')),
+                        component: CustomDialog,
                         props: {
                             icon: 'alert',
                             title: this.$i18n.get('label_warning'),
                             message: this.$i18n.get('info_items_hidden_due_sorting'),
                             onConfirm: () => {
-                                this.hasAnOpenModal = false;
+                                this.closeSortDropdownHeldOpenForModal();
                             },
                             hideCancel: true,
                             showNeverShowAgainOption: offerCheckbox && tainacan_user.caps != undefined && Object.keys(tainacan_user.caps).length != undefined && Object.keys(tainacan_user.caps).length > 0,
                             messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
+                        },
+                        events: {
+                            beforeClose: () => {
+                                this.closeSortDropdownHeldOpenForModal();
+                                this.$modalFocusA11y.restoreFocus(modalTrigger, this);
+                            }
                         },
                         trapFocus: true,
                         customClass: 'tainacan-modal',
@@ -2227,6 +2268,9 @@
                 #tainacanSortByDropdown .dropdown-trigger .button > span {
                     max-width: 180px;
                 }
+            }
+            #tainacanSortByDropdown.tainacan-sort-dropdown-held-open .dropdown-menu {
+                visibility: hidden !important;
             }
         }
     }

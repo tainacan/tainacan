@@ -92,14 +92,14 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody role="list">
+                <tbody :role="items.length > 1 ? 'list' : undefined">
                     <tr     
                             v-for="(item, index) of items"
                             :key="index"
                             :data-tainacan-item-id="item.id"
                             :aria-setsize="totalItems"
                             :aria-posinset="getPosInSet(index)"
-                            role="listitem">
+                            :role="items.length > 1 ? 'listitem' : undefined">
                         
                         <!-- JS-side hook for extra content -->
                         <td 
@@ -210,10 +210,17 @@
                                             content: $i18n.get('label_see_on_fullscreen'),
                                             placement: 'auto-start',
                                             popperClass: ['tainacan-tooltip', 'tooltip']
-                                        }"          
+                                        }"
+                                        role="button"
+                                        tabindex="0"
+                                        :aria-label="$i18n.get('label_see_on_fullscreen')"
                                         class="icon slideshow-icon"
-                                        @click.prevent="starSlideshowFromHere(index)">
-                                    <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em" />
+                                        @click.prevent="starSlideshowFromHere(index)"
+                                        @keydown.enter.prevent="starSlideshowFromHere(index)"
+                                        @keydown.space.prevent="starSlideshowFromHere(index)">
+                                    <i
+                                            class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"
+                                            aria-hidden="true" />
                                 </span> 
                             </div>
                         </td>

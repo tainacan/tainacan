@@ -43,7 +43,9 @@
                             type="button"
                             role="link"
                             class="button is-secondary"
-                            @click="navigate()">
+                            @click="navigate()"
+                            @keydown.enter="navigate()"
+                            @keydown.space="navigate()">
                         <span class="is-hidden-touch">{{ $i18n.getFrom('items','add_new') }}</span>
                         <span class="is-hidden-desktop">{{ $i18n.get('add') }}</span>
                         <span class="icon">
@@ -53,6 +55,7 @@
                 </router-link>
                 <b-dropdown
                         v-else
+                        ref="itemCreationOptionsDropdown"
                         id="item-creation-options-dropdown"
                         v-a11y-dropdown
                         :trigger-tabindex="-1"
@@ -144,9 +147,7 @@
 
             <!-- Text simple search -->
             <div class="search-control-item search-control-item--search">
-                <div 
-                        role="search"
-                        class="search-area">
+                <div class="search-area">
                     <b-dropdown
                             ref="tainacan-textual-search-input"
                             v-a11y-dropdown
@@ -158,9 +159,9 @@
                         <template #trigger>
                             <b-input
                                     size="is-small"
-                                    :placeholder="$i18n.get('instruction_search')"
+                                    :placeholder="$i18n.get('instruction_search_and_press_enter')"
                                     type="search"
-                                    :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
+                                    :aria-label="$i18n.get('instruction_search_and_press_enter')"
                                     :model-value="searchQuery"
                                     icon-right="magnify"
                                     icon-right-clickable
@@ -591,7 +592,7 @@
                 aria-controls="filters-modal"
                 :aria-expanded="isFiltersModalActive"
                 :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
-                @click="isFiltersModalActive = !isFiltersModalActive">
+                @click="toggleFiltersModal()">
             <span 
                     aria-hidden="true"
                     class="icon">
@@ -618,7 +619,8 @@
                 custom-class="tainacan-modal tainacan-form filters-menu"
                 :close-button-aria-label="$i18n.get('close')"
                 @after-leave="filtersModalStateHasChanged = !filtersModalStateHasChanged"
-                @after-enter="filtersModalStateHasChanged = !filtersModalStateHasChanged">
+                @after-enter="filtersModalStateHasChanged = !filtersModalStateHasChanged"
+                @close="onFiltersModalClose()">
             <filters-items-list
                     id="filters-items-list"
                     :is-loading-items="isLoadingItems"
@@ -663,15 +665,13 @@
                     id="items-list-results"
                     :aria-busy="isLoadingItems"
                     aria-labelledby="items-list-landmark"
-                    aria-live="polite"
-                    aria-atomic="false"
                     role="region"
                     class="above-search-control">
 
                 <h2 
                         id="items-list-landmark"
                         class="sr-only">
-                    {{ $i18n.get('label_items_list') }}
+                    {{ $i18n.get('label_items_list_results') }}
                 </h2>
 
                 <!-- Loading announcement for screen readers - always in DOM -->
@@ -771,7 +771,9 @@
                                     type="button"
                                     role="link"
                                     class="button is-secondary"
-                                    @click="navigate()">
+                                    @click="navigate()"
+                                    @keydown.enter="navigate()"
+                                    @keydown.space="navigate()">
                                 {{ $i18n.getFrom('items', 'add_new') }}
                             </button>
                         </router-link> 
@@ -1149,6 +1151,8 @@
                 'getAdminViewMode',
             ]),
             onOpenImportersModal() {
+                const dropdownTrigger = this.$modalFocusA11y.getDropdownTrigger(this.$refs.itemCreationOptionsDropdown);
+                const modalTrigger = this.$modalFocusA11y.captureTrigger(dropdownTrigger);
                 this.$buefy.modal.open({
                     component: AvailableImportersModal,
                     hasModalCard: true,
@@ -1158,10 +1162,14 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    canCancel: ['escape', 'outside']
+                    canCancel: ['escape', 'outside'],
+                    events: {
+                        beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                    }
                 });
             },
             openExposersModal(selectedItems) {
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: ExposersModal,
                     hasModalCard: true,
@@ -1173,16 +1181,36 @@
                     trapFocus: true,
                     customClass: 'tainacan-modal',
                     canCancel: ['escape', 'outside'],
-                    width: 786
+                    width: 786,
+                    events: {
+                        beforeClose: () => {
+                            this.$modalFocusA11y.restoreFocus(modalTrigger, this);
+                        }
+                    }
                 })
             },
+            toggleFiltersModal() {
+                if (!this.isFiltersModalActive)
+                    this._filtersModalTrigger = this.$modalFocusA11y.captureTrigger();
+                this.isFiltersModalActive = !this.isFiltersModalActive;
+            },
+            onFiltersModalClose() {
+                this.$modalFocusA11y.restoreFocus(this._filtersModalTrigger, this);
+            },
             onOpenCollectionsModal() {
+                const dropdownTrigger = this.$modalFocusA11y.getDropdownTrigger(this.$refs.itemCreationOptionsDropdown);
+                const modalTrigger = this.$modalFocusA11y.captureTrigger(dropdownTrigger);
                 this.$buefy.modal.open({
                     component: CollectionsModal,
                     hasModalCard: true,
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    canCancel: ['escape', 'outside']
+                    canCancel: ['escape', 'outside'],
+                    events: {
+                        beforeClose: () => {
+                            this.$modalFocusA11y.restoreFocus(modalTrigger, this);
+                        }
+                    }
                 });
             },
             updateSearch() {
@@ -1504,6 +1532,7 @@
                     this.$refs['tainacan-textual-search-input'].toggle();
             },
             openMetatadaSortingWarningDialog({ offerCheckbox }) {
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                         component: CustomDialog,
                         props: {
@@ -1519,7 +1548,10 @@
                         },
                         trapFocus: true,
                         customClass: 'tainacan-modal',
-                        canCancel: ['escape', 'outside']
+                        canCancel: ['escape', 'outside'],
+                        events: {
+                            beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                        }
                     });
             },
             hideFiltersOnMobile: _.debounce( function() {

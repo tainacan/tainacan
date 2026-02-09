@@ -35,7 +35,11 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
                                     class="icon"
-                                    @click="onDeleteAttachment(attachment)">
+                                    role="button"
+                                    tabindex="0"
+                                    @click="onDeleteAttachment(attachment)"
+                                    @keydown.enter.prevent="onDeleteAttachment(attachment)"
+                                    @keydown.space.prevent="onDeleteAttachment(attachment)">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
                             </a>
                         </span>
@@ -199,10 +203,10 @@
             display: inline-block;
             position: relative;
 
-            &:hover .file-item-control {
-                display: block;
-                visibility: visible;
-                opacity: 1;
+            &:hover .file-item-control,
+            &:focus-within .file-item-control,
+            &:focus-visible .file-item-control {
+                opacity: 1.0;
             }
 
             .file-attachment-document-tag {
@@ -221,7 +225,9 @@
                 opacity: 0.25;
                 transition: opacity 0.2s ease;
             }
-            &:hover .file-attachment-document-tag {
+            &:hover .file-attachment-document-tag,
+            &:focus-within .file-attachment-document-tag,
+            &:focus-visible .file-attachment-document-tag {
                 opacity: 1.0;
             }
 
@@ -235,10 +241,8 @@
                 border-bottom-left-radius: var(--tainacan-item-border-radius, 3px);
                 padding: 2px 8px 4px 8px;
                 text-align: right;
-                display: none;
-                visibility: hidden;
                 opacity: 0;
-                transition: opacity ease 0.2s, visibility ease 0.2s, display ease 0.2s;
+                transition: opacity ease 0.2s;
 
                 .icon {
                     cursor: pointer;

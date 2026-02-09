@@ -28,7 +28,12 @@
                             :data-metadatum-type="metadatum.component"
                             class="available-metadatum-item"
                             :class="{ 'highlighted-metadatum' : highlightedMetadatum == metadatum.name, 'inherited-metadatum': metadatum.inherited || isRepositoryLevel }"
-                            @click.prevent="addMetadatumViaButton(metadatum)">
+                            role="button"
+                            tabindex="0"
+                            :aria-label="$i18n.get('instruction_click_or_drag_metadatum_create')"
+                            @click.prevent="addMetadatumViaButton(metadatum)"
+                            @keydown.enter.prevent="addMetadatumViaButton(metadatum)"
+                            @keydown.space.prevent="addMetadatumViaButton(metadatum)">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('instruction_click_or_drag_metadatum_create'),
@@ -36,6 +41,7 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }"   
+                                aria-hidden="true"
                                 class="icon grip-icon">
                             <!-- <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/> -->
                             <svg 
@@ -93,7 +99,12 @@
                     <div 
                             :id="metadataSection.id"
                             class="available-metadata-section-item"
-                            @click="addMetadataSectionViaButton()">
+                            role="button"
+                            tabindex="0"
+                            :aria-label="$i18n.get('instruction_click_or_drag_metadatum_create')"
+                            @click="addMetadataSectionViaButton()"
+                            @keydown.enter.prevent="addMetadataSectionViaButton()"
+                            @keydown.space.prevent="addMetadataSectionViaButton()">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('instruction_click_or_drag_metadatum_create'),
@@ -101,6 +112,7 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }"   
+                                aria-hidden="true"
                                 class="icon grip-icon">
                             <!-- <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/> -->
                             <svg 
@@ -401,7 +413,11 @@ export default {
             }
         }
         .available-metadatum-item:hover,
-        .available-metadata-section-item:hover {
+        .available-metadata-section-item:hover,
+        .available-metadatum-item:focus,
+        .available-metadata-section-item:focus,
+        .available-metadatum-item:focus-within,
+        .available-metadata-section-item:focus-within {
             background-color: var(--tainacan-turquoise1);
             border-color: var(--tainacan-turquoise2);
             position: relative;
@@ -420,7 +436,11 @@ export default {
     }
     .inherited-metadatum {
         &.available-metadatum-item:hover,
-        &.available-metadata-section-item:hover {
+        &.available-metadata-section-item:hover,
+        &.available-metadatum-item:focus,
+        &.available-metadata-section-item:focus,
+        &.available-metadatum-item:focus-within,
+        &.available-metadata-section-item:focus-within {
             background-color: var(--tainacan-blue1) !important;
             border-color: var(--tainacan-blue2) !important;
 

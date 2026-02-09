@@ -186,7 +186,9 @@
                                     role="button"
                                     tabindex="0"
                                     :aria-label="$i18n.get('edit')" 
-                                    @click.prevent="toggleMetadatumEdition(metadatum.id)">
+                                    @click.prevent="toggleMetadatumEdition(metadatum.id)"
+                                    @keydown.enter.prevent="toggleMetadatumEdition(metadatum.id)"
+                                    @keydown.space.prevent="toggleMetadatumEdition(metadatum.id)">
                                 <span 
                                         v-tooltip="{
                                             content: $i18n.get('edit'),
@@ -194,7 +196,8 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             placement: 'auto-start'
                                         }"
-                                        class="icon">
+                                        class="icon"
+                                        aria-hidden="true">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                 </span>
                             </a>
@@ -209,7 +212,9 @@
                                     role="button"
                                     tabindex="0"
                                     :aria-label="$i18n.get('delete')"
-                                    @click.prevent="removeMetadatum(metadatum)">
+                                    @click.prevent="removeMetadatum(metadatum)"
+                                    @keydown.enter.prevent="removeMetadatum(metadatum)"
+                                    @keydown.space.prevent="removeMetadatum(metadatum)">
                                 <span
                                         v-tooltip="{
                                             content: $i18n.get('delete'),
@@ -217,7 +222,8 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             placement: 'auto-start'
                                         }"
-                                        class="icon">
+                                        class="icon"
+                                        aria-hidden="true">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
                                 </span>
                             </a>
@@ -422,6 +428,7 @@
                     [ metadatumName ]
                 );
 
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: CustomDialog,
                     props: {
@@ -444,7 +451,10 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    canCancel: ['escape', 'outside']
+                    canCancel: ['escape', 'outside'],
+                    events: {
+                        beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                    }
                 }); 
             },
             toggleMetadatumEdition(metadatumId) {
@@ -459,6 +469,7 @@
                 }
             },
             editMetadatum(metadatum) {
+                this._modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.openedMetadatumId = metadatum.id;
             },
             onEditionFinished() {
@@ -468,6 +479,7 @@
             onEditionCanceled() {
                 this.openedMetadatumId = '';
                 this.$router.push({ query: {}});
+                this.$modalFocusA11y.restoreFocus(this._modalTrigger, this);
             },
             moveMetadatumUpViaButton(index) {
                 this.childrenMetadata.splice(index - 1, 0, this.childrenMetadata.splice(index, 1)[0]);

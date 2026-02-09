@@ -187,8 +187,11 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                 placement: 'auto-start'
                                             }"
-                                            class="icon">
-                                        <i class="tainacan-icon tainacan-icon-private" />
+                                            class="icon"
+                                            :aria-label="$i18n.get('status_private')">
+                                        <i 
+                                                aria-hidden="true"
+                                                class="tainacan-icon tainacan-icon-private" />
                                     </span>
                                     <span 
                                             v-tooltip="{
@@ -197,13 +200,15 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                 placement: 'auto-start'
                                             }"
-                                            class="icon icon-level-identifier">
+                                            class="icon icon-level-identifier"
+                                            :aria-label="$i18n.get('label_repository_metadatum')">
                                         <i 
                                                 :class="{
                                                     'has-text-secondary': metadatum.enabled,
                                                     'has-text-grey': !metadatum.enabled
                                                 }"
-                                                class="tainacan-icon tainacan-icon-repository" />
+                                                class="tainacan-icon tainacan-icon-repository"
+                                                aria-hidden="true" />
                                     </span>
                                 </span>
                                 <span 
@@ -221,7 +226,9 @@
                                             role="button"
                                             tabindex="0"
                                             :aria-label="$i18n.get('edit')" 
-                                            @click.prevent="toggleMetadatumEdition(metadatum)">
+                                            @click.prevent="toggleMetadatumEdition(metadatum)"
+                                            @keydown.enter.prevent="toggleMetadatumEdition(metadatum)"
+                                            @keydown.space.prevent="toggleMetadatumEdition(metadatum)">
                                         <span 
                                                 v-tooltip="{
                                                     content: $i18n.get('edit'),
@@ -229,7 +236,8 @@
                                                     popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                     placement: 'auto-start'
                                                 }"
-                                                class="icon">
+                                                class="icon"
+                                                aria-hidden="true">
                                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                         </span>
                                     </a>
@@ -239,7 +247,9 @@
                                             role="button"
                                             tabindex="0"
                                             :aria-label="$i18n.get('delete')"
-                                            @click.prevent="removeMetadatum(metadatum)">
+                                            @click.prevent="removeMetadatum(metadatum)"
+                                            @keydown.enter.prevent="removeMetadatum(metadatum)"
+                                            @keydown.space.prevent="removeMetadatum(metadatum)">
                                         <span
                                                 v-tooltip="{
                                                     content: $i18n.get('delete'),
@@ -247,7 +257,8 @@
                                                     popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                     placement: 'auto-start'
                                                 }"
-                                                class="icon">
+                                                class="icon"
+                                                aria-hidden="true">
                                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
                                         </span>
                                     </a>
@@ -438,6 +449,7 @@ export default {
                 [ metadatumName ]
             );
             
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
@@ -457,13 +469,17 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             }); 
         },
         toggleMetadatumEdition(metadatum) {
             this.$router.push({ query: { edit: metadatum.id } });
         },
         editMetadatum(metadatum) {
+            this._modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.openedMetadatumId = metadatum.id;
         },
         onEditionFinished() {
@@ -473,6 +489,7 @@ export default {
         onEditionCanceled() {
             this.openedMetadatumId = '';
             this.$router.push({ query: {}});
+            this.$modalFocusA11y.restoreFocus(this._modalTrigger, this);
         },
         loadMetadata() {
             

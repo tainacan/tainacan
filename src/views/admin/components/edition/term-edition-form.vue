@@ -73,8 +73,12 @@
                                     <a
                                             id="button-edit-header"
                                             class="button is-rounded is-secondary"
+                                            role="button"
+                                            tabindex="0"
                                             :aria-label="$i18n.get('label_button_edit_header_image')"
-                                            @click="headerImageMediaFrame.openFrame($event)">
+                                            @click.prevent="onOpenHeaderImageFrame($event)"
+                                            @keydown.enter.prevent="onOpenHeaderImageFrame($event)"
+                                            @keydown.space.prevent="onOpenHeaderImageFrame($event)">
                                         <span 
                                                 v-tooltip="{
                                                     content: $i18n.get('edit'),
@@ -87,10 +91,15 @@
                                         </span>
                                     </a>
                                     <a
+                                            v-if="form.header_image !== undefined && form.header_image !== false"
                                             id="button-delete-header"
                                             class="button is-rounded is-secondary"
                                             :aria-label="$i18n.get('label_button_delete_thumb')"
-                                            @click="deleteHeaderImage()">
+                                            role="button"
+                                            tabindex="0"
+                                            @click="deleteHeaderImage()"
+                                            @keydown.enter.prevent="deleteHeaderImage()"
+                                            @keydown.space.prevent="deleteHeaderImage()">
                                         <span 
                                                 v-tooltip="{
                                                     content: $i18n.get('delete'),
@@ -238,11 +247,16 @@
             isHierarchical: Boolean,
             isTermInsertionFlow: false,
             metadatumId: [String, Number],
-            itemId: [String, Number]
+            itemId: [String, Number],
+            isModal: {
+                type: Boolean,
+                default: false
+            }
         },
         emits: [
             'on-edition-finished',
-            'close'
+            'close',
+            'beforeClose'
         ],
         data() {
             return {
@@ -265,6 +279,11 @@
         },
         created() {
             this.form = JSON.parse(JSON.stringify(this.originalForm));
+        },
+        beforeUnmount() {
+            if (this.isModal) {
+                this.$emit('beforeClose');
+            }
         },
         mounted() {
 
@@ -392,6 +411,7 @@
                             frame_button: this.$i18n.get('label_select_file')
                         },
                         relatedPostId: this.form.id,
+                        onClose: () => this.$modalFocusA11y.restoreFocus(this._mediaTrigger, this),
                         onSave: (croppedImage) => {
 
                            this.form = Object.assign({},
@@ -404,6 +424,10 @@
                         }
                     }
                 );
+            },
+            onOpenHeaderImageFrame(event) {
+                this._mediaTrigger = this.$modalFocusA11y.captureTrigger();
+                this.headerImageMediaFrame.openFrame(event);
             },
             clearErrors(attributes) {
                 if(attributes instanceof Object){
@@ -611,7 +635,6 @@
             }
             #button-delete-header,
             #button-edit-header {
-
                 border-radius: 100px !important;
                 max-height: 2.125em !important;
                 max-width: 2.125em !important;
@@ -619,7 +642,10 @@
                 min-width: 2.125em !important;
                 padding: 0 !important;
                 z-index: 99;
-                margin-inline-end: 10px !important;
+
+                &:not(:only-child):not(:last-child) {
+                    margin-inline-end: 10px !important;
+                }
                 
                 .icon {
                     color: var(--tainacan-white) !important;

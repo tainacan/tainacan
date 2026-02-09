@@ -586,7 +586,7 @@
                                             :is-loading="isLoading"
                                             @on-delete-thumbnail="deleteThumbnail"
                                             @on-update-thumbnail-alt="($event) => onUpdateThumbnailAlt($event)"
-                                            @open-thumbnail-media-frame="thumbnailMediaFrame.openFrame($event)" />
+                                            @open-thumbnail-media-frame="onOpenThumbnailFrame($event)" />
                                 </div>
 
                                 <!-- Attachments on mobile modal -->
@@ -604,7 +604,7 @@
                                             :is-loading="isLoading"
                                             :total-attachments="totalAttachments"
                                             :should-load-attachments="shouldLoadAttachments"
-                                            @open-attachments-media-frame="($event) => attachmentsMediaFrame.openFrame($event)"
+                                            @open-attachments-media-frame="onOpenAttachmentsFrame($event)"
                                             @on-delete-attachment="deleteAttachment($event)" />
                                 </div>
 
@@ -674,7 +674,7 @@
                                     :is-loading="isLoading"
                                     @on-delete-thumbnail="deleteThumbnail"
                                     @on-update-thumbnail-alt="($event) => onUpdateThumbnailAlt($event)"
-                                    @open-thumbnail-media-frame="thumbnailMediaFrame.openFrame($event)" />
+                                    @open-thumbnail-media-frame="onOpenThumbnailFrame($event)" />
 
                             <hr v-if="shouldDisplayItemEditionThumbnail && !$adminOptions.itemEditionDocumentInsideTabs">
 
@@ -687,7 +687,7 @@
                                     :is-loading="isLoading"
                                     :total-attachments="totalAttachments"
                                     :should-load-attachments="shouldLoadAttachments"
-                                    @open-attachments-media-frame="($event) => attachmentsMediaFrame.openFrame($event)"
+                                    @open-attachments-media-frame="onOpenAttachmentsFrame($event)"
                                     @on-delete-attachment="deleteAttachment($event)" />
 
                             <hr v-if="(shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs) || hasEndLeftForm">
@@ -848,6 +848,7 @@ export default {
     mixins: [ formHooks, permalinkGetter, itemMetadataMixin ],
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
@@ -860,7 +861,10 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
         } else {
             next()
@@ -968,7 +972,7 @@ export default {
             return (this.item && this.item.related_items) ? Object.values(this.item.related_items).reduce((totalItems, aRelatedItemsGroup) => totalItems + parseInt(aRelatedItemsGroup.total_items), 0) : false;
         },
         isEditingItemMetadataInsideIframe() {
-            return this.$route.query && this.$route.query.editingmetadata;
+            return this.$route.query && this.$route.query.editingmetadata !== undefined && this.$route.query.editingmetadata != 'false' && this.$route.query.editingmetadata != false;
         },
         tabs() {
             let pageTabs = [{
@@ -1536,9 +1540,19 @@ export default {
                 this.setURLDocument();
         },
         setFileDocument(event) {
+            this._mediaTrigger = this.$modalFocusA11y.captureTrigger();
             this.fileMediaFrame.openFrame(event);
         },
+        onOpenThumbnailFrame(event) {
+            this._mediaTrigger = this.$modalFocusA11y.captureTrigger();
+            this.thumbnailMediaFrame.openFrame(event);
+        },
+        onOpenAttachmentsFrame(event) {
+            this._mediaTrigger = this.$modalFocusA11y.captureTrigger();
+            this.attachmentsMediaFrame.openFrame(event);
+        },
         setTextDocument() {
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: ItemDocumentTextModal,
                 canCancel: false,
@@ -1553,6 +1567,7 @@ export default {
                     textContent: this.textContent
                 },
                 events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this),
                     confirmTextWriting: this.confirmTextWriting
                 }
             });
@@ -1575,6 +1590,7 @@ export default {
                 });
         },
         setURLDocument() {
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: ItemDocumentURLModal,
                 canCancel: false,
@@ -1593,6 +1609,7 @@ export default {
                     urlIsImage: this.urlIsImage
                 },
                 events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this),
                     confirmURLSelection: this.confirmURLSelection
                 }
             });
@@ -1675,6 +1692,7 @@ export default {
                 });
         },
         deleteAttachment(attachment) {
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
@@ -1693,7 +1711,10 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
 
         },
@@ -1706,6 +1727,7 @@ export default {
                         frame_button: this.$i18n.get('label_select_file'),
                     },
                     relatedPostId: this.itemId,
+                    onClose: () => this.$modalFocusA11y.restoreFocus(this._mediaTrigger, this),
                     onSave: (file) => {
                         this.isLoading = true;
                         this.form.document_type = 'attachment';
@@ -1741,6 +1763,7 @@ export default {
                     },
                     thumbnail: this.form.thumbnail_id,
                     relatedPostId: this.itemId,
+                    onClose: () => this.$modalFocusA11y.restoreFocus(this._mediaTrigger, this),
                     onSave: (media) => {
                         this.updateThumbnail({ itemId: this.itemId, thumbnailId: media.id})
                             .then((res) => {
@@ -1765,6 +1788,7 @@ export default {
                     relatedPostId: this.itemId,
                     document: this.form.document_type == 'attachment' ? this.form.document : null, 
                     thumbnailId: this.form.thumbnail_id ? this.form.thumbnail_id : null, 
+                    onClose: () => this.$modalFocusA11y.restoreFocus(this._mediaTrigger, this),
                     onSave: () => {
                         // Fetch current existing attachments
                         this.shouldLoadAttachments = !this.shouldLoadAttachments;
@@ -1801,6 +1825,7 @@ export default {
                 Object.assign( this.metadataSectionCollapses, { [sectionIndex]: (this.formErrorMessage ? true : !this.metadataSectionCollapses[sectionIndex]) });
         },
         onDeletePermanently() {
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
@@ -1814,7 +1839,10 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
         },
         loadExistingItem() {
@@ -2470,7 +2498,10 @@ export default {
             min-width: 2.125em !important;
             padding: 0 !important;
             z-index: 99;
-            margin-inline-end: 6px !important;
+
+            &:not(:only-child):not(:first-child) {  
+                margin-inline-start: 6px !important;
+            }
 
             .icon {
                 display: inherit;

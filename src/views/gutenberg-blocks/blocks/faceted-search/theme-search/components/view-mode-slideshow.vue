@@ -92,7 +92,7 @@
 
         <!-- CLOSE BUTTON -->
         <button
-                id="close-fullscren-button"  
+                id="close-fullscren-button"
                 v-tooltip="{
                     delay: {
                         show: 500,
@@ -103,6 +103,8 @@
                     placement: 'auto-start',
                     popperClass: ['tainacan-tooltip', 'tooltip']
                 }"
+                type="button"
+                :aria-label="$i18n.get('close')"
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
                 @click="closeSlideViewMode()"
                 @keydown.enter.prevent="closeSlideViewMode()"
@@ -110,7 +112,9 @@
             <span 
                     aria-hidden="true"
                     class="icon">
-                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close" />
+                <i
+                        class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close"
+                        aria-hidden="true" />
             </span>
         </button>
 
@@ -773,6 +777,7 @@ export default {
             }
         },
         openSlidesHelpModal() {
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: SlidesHelpModal,
                 width: 680,
@@ -780,10 +785,13 @@ export default {
                 ariaModal: true,
                 trapFocus: true,
                 customClass: 'tainacan-modal slides-help-modal',
-                onCancel: () => {
-                    setTimeout(() => document.documentElement.classList.add('is-clipped'), 500); 
-                },
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => {
+                        setTimeout(() => document.documentElement.classList.add('is-clipped'), 500);
+                        this.$modalFocusA11y.restoreFocus(modalTrigger, this);
+                    }
+                }
             });
         }
     }

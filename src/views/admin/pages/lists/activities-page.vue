@@ -16,7 +16,7 @@
                     v-if="isItemLevel"        
                     class="button is-medium is-white is-align-self-flex-start"
                     :aria-label="$i18n.get('close')"
-                    @click="$emit('close')">
+                    @click="closeModal()">
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-125em" />
                 </span>
@@ -30,10 +30,10 @@
                     style="margin-inline-end: auto; margin-inline-start: 0;">
                 <b-input 
                         v-model="searchQuery"
-                        :placeholder="$i18n.get('instruction_search')"
+                        :placeholder="$i18n.get('instruction_search_and_press_enter')"
                         type="search"
                         size="is-small"
-                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
+                        :aria-label="$i18n.get('instruction_search_and_press_enter')"
                         autocomplete="on"
                         icon-right="magnify"
                         icon-right-clickable
@@ -217,7 +217,7 @@
             ActivitiesList,
         },
         mixins: [ dateInter ],
-        emits: [ 'close' ],
+        emits: [ 'close', 'beforeClose' ],
         data() {
             return {
                 isLoading: false,
@@ -292,6 +292,10 @@
             this.loadActivities();
         },
         methods: {
+            closeModal() {
+                this.$emit('beforeClose');
+                this.$emit('close');
+            },
             ...mapActions('activity', [
                 'fetchActivities',
                 'fetchCollectionActivities',

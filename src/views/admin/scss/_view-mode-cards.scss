@@ -68,7 +68,10 @@
             }
         }
 
-        &:hover {
+        &:hover,
+        &:focus,
+        &:focus-within,
+        &:focus-visible {
             background-color: var(--tainacan-item-hover-background-color) !important;
         }
 
@@ -87,7 +90,7 @@
             padding-inline-end: 12px;
             display: flex;
             justify-content: space-between;
-            visibility: hidden;
+            // visibility: hidden; // Removed as it prevents focus to return to the area when coming from modals
             opacity: 0;
             transition: visibility 0.2s ease, opacity 0.3s ease, top 0.2s ease;
 
@@ -97,7 +100,9 @@
                 transition: opacity 0.3s ease;
             }
         }
-        &:hover .actions-area {
+        &:hover .actions-area,
+        &:focus .actions-area,
+        &:focus-within .actions-area {
             visibility: visible;
             opacity: 1.0;
             top: calc(-1 * 0.5em - var(--tainacan-container-padding));
@@ -178,7 +183,9 @@
             }
         }
         &:hover,
-        &:focus {
+        &:focus,
+        &:focus-within,
+        &:focus-visible {
             .metadata-title {
                 background-color: var(--tainacan-item-heading-hover-background-color) !important;
                 p { text-decoration: none !important; }
@@ -194,7 +201,9 @@
             margin: 0 !important;
 
             &:hover,
-            &:focus {
+            &:focus,
+            &:focus-within,
+            &:focus-visible {
                 background: var(--tainacan-item-hover-background-color);
             }
 
@@ -229,9 +238,20 @@
 
     &.hide-items-selection {
         .tainacan-card {
-            &:hover { background-color: transparent !important; cursor: default; }
+            &:hover,
+            &:focus,
+            &:focus-within,
+            &:focus-visible {
+                background-color: transparent !important;
+                cursor: default;
+            }
             .metadata-title { padding-inline-start: 1.5em !important; margin-bottom: 0; }
-            &:hover .metadata-title { background-color: transparent !important }
+            &:hover,
+            &:focus,
+            &:focus-within,
+            &:focus-visible {
+                .metadata-title { background-color: transparent !important }
+            }
         }
     }
 }

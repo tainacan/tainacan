@@ -778,8 +778,8 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_write_text'                         => __( 'Write Text', 'tainacan' ),
 	/* translators: The verb to search, used in search box placeholder */
 	'instruction_search'                             => __( 'Search', 'tainacan' ),
-	/* translators: The verb to search, used in search box placeholder */
-	'instruction_search_in_repository'               => __( 'Search in repository', 'tainacan' ),
+	/* translators: Search box placeholder when results update on Enter key */
+	'instruction_search_and_press_enter'             => __( 'Type and press Enter...', 'tainacan' ),
 	'instruction_select_a_target_collection'         => __( 'Select a target collection.', 'tainacan' ),
 	'instruction_select_a_mapper'                    => __( 'Select a mapper', 'tainacan' ),
 	'instruction_select_an_importer_type'            => __( 'Select an importer from the options below:', 'tainacan' ),
@@ -1059,6 +1059,7 @@ return apply_filters( 'tainacan-i18n', [
   	'info_warning_process_cancelled'                 => __( 'Are you sure? This process will be cancelled.', 'tainacan' ),
 	'info_empty'                                     => __( 'empty', 'tainacan' ),
 	'info_url_copied'	         	    	    	 => __( 'URL link copied', 'tainacan' ),
+	'info_copy_to_clipboard_failed'			 		 => __( 'Copy to clipboard failed.', 'tainacan' ),
 	'info_other_options'				 			 => __( 'Other options: ', 'tainacan'),
 	'info_other_item_listing_options'				 => __( 'Other items listing options: ', 'tainacan'),
 	'info_send_email'				 				 => __( 'The exporter may take a while. Check this option to receive an e-mail when the process is done. You can also check the process status visiting the', 'tainacan'),

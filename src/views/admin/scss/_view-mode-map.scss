@@ -48,7 +48,9 @@
             transition: opacity ease 0.3s, box-shadow ease 0.3s;
 
             &:hover,
-            &:focus {
+            &:focus,
+            &:focus-within,
+            &:focus-visible {
                 opacity: 1.0;
                 box-shadow: 4px 0px 18px -12px var(--tainacan-black, #000);
             }
@@ -109,7 +111,10 @@
             justify-content: center;
             align-content: center;
 
-            &:hover {
+            &:hover,
+            &:focus,
+            &:focus-within,
+            &:focus-visible {
                 background-color: var(--tainacan-item-hover-background-color);
             }
 
@@ -203,7 +208,9 @@
                     opacity: 0.35;
 
                     &:hover,
-                    &:focus {
+                    &:focus,
+                    &:focus-within,
+                    &:focus-visible {
                         opacity: 1.0;
                     } 
                 }
@@ -243,7 +250,7 @@
                     margin-bottom: -25px;
                     display: flex;
                     justify-content: space-between;
-                    visibility: hidden;
+                    //visibility: hidden;
                     opacity: 0;
                     transition: visibility 0.2s, opacity 0.3s ease, top 0.2s ease;
         
@@ -253,7 +260,9 @@
                         transition: opacity 0.3s ease;
                     }
                 }
-                &:hover .actions-area {
+                &:hover .actions-area,
+                &:focus .actions-area,
+                &:focus-within .actions-area {
                     visibility: visible;
                     opacity: 1.0;
                     top:  calc(-0.875em - var(--tainacan-container-padding));
@@ -313,7 +322,9 @@
                     }
                 }
                 &:hover,
-                &:focus {
+                &:focus,
+                &:focus-within,
+                &:focus-visible {
                     background-color: var(--tainacan-item-hover-background-color);
 
                     .tainacan-map-card-item-thumbnail {

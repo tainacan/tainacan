@@ -125,7 +125,11 @@
                                 <button 
                                         v-if="currentUserCanEditTaxonomy"
                                         type="button"
-                                        @click.prevent="() => { onEditTerm(term); removeLevelsAfterTerm(term); }">
+                                        :aria-label="$i18n.get('edit')"
+                                        tabindex="0"
+                                        @click.prevent="() => { onEditTerm(term); removeLevelsAfterTerm(term); }"
+                                        @keydown.enter.prevent="() => { onEditTerm(term); removeLevelsAfterTerm(term); }"
+                                        @keydown.space.prevent="() => { onEditTerm(term); removeLevelsAfterTerm(term); }">
                                     <span
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
@@ -133,14 +137,18 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                 placement: 'bottom'
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                     </span>
                                 </button>
                                 <button 
                                         v-if="currentUserCanEditTaxonomy"
                                         type="button"
-                                        @click.prevent="removeTerm(term)">
+                                        :aria-label="$i18n.get('delete')"
+                                        @click.prevent="removeTerm(term)"
+                                        @keydown.enter.prevent="removeTerm(term)"
+                                        @keydown.space.prevent="removeTerm(term)">
                                     <span
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
@@ -148,13 +156,17 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                 placement: 'bottom'
                                             }"
+                                            aria-hidden="true"
                                             class="icon">
                                         <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-delete" />
                                     </span>
                                 </button>
                                 <a 
                                         target="_blank"
-                                        :href="term.url">
+                                        :href="term.url"
+                                        role="button"
+                                        tabindex="0"
+                                        :aria-label="$i18n.get('label_term_page_on_website')">
                                     <span
                                             v-tooltip="{
                                                 content: $i18n.get('label_term_page_on_website'),
@@ -162,7 +174,8 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                 placement: 'bottom'
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                                     </span>
                                 </a>
@@ -172,7 +185,9 @@
                                 v-if="isHierarchical && !searchString.length"
                                 class="load-children-button"
                                 type="button"
-                                @click="fetchTerms(term, columnIndex)">
+                                @click="fetchTerms(term, columnIndex)"
+                                @keydown.enter.prevent="fetchTerms(term, columnIndex)"
+                                @keydown.space.prevent="fetchTerms(term, columnIndex)">
                             <span 
                                     style="margin-inline-end: 0.25rem; opacity: 1.0;"
                                     aria-hidden="true"
@@ -201,7 +216,9 @@
                                 :aria-label="$i18n.get('label_show_more_terms')"
                                 class="tainacan-show-more"
                                 type="button"
-                                @click="fetchMoreTerms(column, columnIndex)">
+                                @click="fetchMoreTerms(column, columnIndex)"
+                                @keydown.enter.prevent="fetchMoreTerms(column, columnIndex)"
+                                @keydown.space.prevent="fetchMoreTerms(column, columnIndex)">
                             <span 
                                     aria-hidden="true"
                                     class="icon">
@@ -240,8 +257,12 @@
                     <p>
                         <a 
                                 class="add-link"
+                                role="button"
+                                tabindex="0"
                                 style="position: relative;"
-                                @click="multipleInsertion({ parentId: column.id, parentName: column.name })">
+                                @click="multipleInsertion({ parentId: column.id, parentName: column.name })"
+                                @keydown.enter.prevent="multipleInsertion({ parentId: column.id, parentName: column.name })"
+                                @keydown.space.prevent="multipleInsertion({ parentId: column.id, parentName: column.name })">
                             <span 
                                     style="position: absolute;margin-inline-start: -5px;margin-top: 5px;"
                                     aria-hidden="true"
@@ -300,13 +321,15 @@
                 aria-modal
                 :can-cancel="['outside', 'escape']"
                 custom-class="tainacan-modal"
-                :close-button-aria-label="$i18n.get('close')">
+                :close-button-aria-label="$i18n.get('close')"
+                @close="onTermEditionModalClose()">
             <term-edition-form
                     :is-hierarchical="isHierarchical"
                     :taxonomy-id="taxonomyId"
                     :is-modal="true"
                     :original-form="editTerm"
                     @on-edition-finished="onTermEditionFinished($event.term, $event.hasChangedParent, $event.initialParent)"
+                    @before-close="restoreTermEditionFocus()"
                     @close="isEditingTerm = false" />
         </b-modal>
     </div>
@@ -352,7 +375,7 @@ export default {
     computed: {
         amountOfTermsSelected() {
             if ( this.selectedColumnIndex >= 0 )
-                return this.termColumns[this.selectedColumnIndex].total_children;
+                return this.termColumns[this.selectedColumnIndex].total_children ? Number(this.termColumns[this.selectedColumnIndex].total_children) : 0;
             else if ( this.selected.length )
                 return this.selected.length;
             else
@@ -404,6 +427,7 @@ export default {
         },
         onEditTerm(term) {
             this.editTerm = term;
+            this._modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.isEditingTerm = true;
         },
         shouldShowMoreButton(columnIndex) {
@@ -555,7 +579,7 @@ export default {
             this.$emit('on-update-selected-column-index', { index: newIndex, object: this.termColumns[newIndex] ? this.termColumns[newIndex] : null });
         },
         removeTerm(term) {
-
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: TermDeletionDialog,
                 props: {
@@ -580,17 +604,20 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });  
         },
         deleteSelectedTerms() {
-
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: TermDeletionDialog,
                 props: {
                     message: this.$i18n.get('info_warning_some_terms_with_child'),
                     showDescendantsDeleteButton: true,
-                    amountOfTerms: this.amountOfTermsSelected,
+                    amountOfTerms: Number(this.amountOfTermsSelected),
                     onConfirm: (typeOfDelete) => { 
                         
                         this.deleteTerms({
@@ -609,15 +636,18 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });  
         },
         updateSelectedTermsParent() {
-
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: TermParentSelectionDialog,
                 props: {
-                    amountOfTerms: this.amountOfTermsSelected,
+                    amountOfTerms: Number(this.amountOfTermsSelected),
                     excludeTree: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : this.selected.map((aTerm) => aTerm.id), 
                     taxonomyId: this.taxonomyId,
                     onConfirm: (selectedParentTerm) => {
@@ -637,7 +667,10 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });  
         },
         updateSelectedTerms(selectedTerm) {
@@ -678,6 +711,13 @@ export default {
                         this.resetTermsListUI();
                 }
             }
+        },
+        onTermEditionModalClose() {
+            this.isEditingTerm = false;
+            this.$modalFocusA11y.restoreFocus(this._modalTrigger, this);
+        },
+        restoreTermEditionFocus() {
+            this.$modalFocusA11y.restoreFocus(this._modalTrigger, this);
         },
         onTermEditionFinished(term, hasChangedParent, initialParent) {
             const updatedTermParentColumn = this.termColumns.findIndex((aFinderColumn) => aFinderColumn.id == term.parent);
@@ -757,7 +797,7 @@ export default {
             this.removeLevelsAfterTerm(newTerm);
         },
         multipleInsertion({ parentId, parentName }) {
-
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: TermMultipleInsertionDialog,
                 props: {
@@ -805,7 +845,10 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });      
         },
         resetTermsListUI() {

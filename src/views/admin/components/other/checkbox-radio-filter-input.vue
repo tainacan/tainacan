@@ -382,7 +382,7 @@
                     <button
                             class="button is-outlined"
                             type="button"
-                            @click="$emit('close')">{{ $i18n.get('cancel') }}
+                            @click="closeModal">{{ $i18n.get('cancel') }}
                     </button>
                 </div>
                 <div class="control">
@@ -430,7 +430,8 @@
         emits: [
             'input',
             'close',
-            'appliedCheckBoxModal'
+            'appliedCheckBoxModal',
+            'beforeClose'
         ],
         data() {
             return {
@@ -514,6 +515,8 @@
                 this.$refs.CheckboxRadioFilterInput.focus();
         },
         beforeUnmount() {
+            if (this.isModal)
+                this.$emit('beforeClose');
             // Cancels previous Request
             if (this.getOptionsValuesCancel != undefined)
                 this.getOptionsValuesCancel.cancel('Get options request canceled.');
@@ -935,10 +938,13 @@
                 else
                     return optionValue == this.selected;
             },
+            closeModal() {
+                this.$emit('close');
+            },
             applyFilter() {
                 if (this.isModal)
                     this.$emit('close');
-                else    
+                else
                     this.initializeValues();
 
                 this.$eventBusSearch.resetPageOnStore();

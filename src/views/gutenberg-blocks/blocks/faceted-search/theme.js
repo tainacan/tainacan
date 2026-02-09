@@ -17,9 +17,9 @@ import {
     Loading,
     Dropdown,
     Modal,
+    Toast,
     Dialog,
     Snackbar,
-    Toast,
     Pagination,
     Numberinput
 } from 'buefy';
@@ -40,7 +40,8 @@ import {
     UserPrefsPlugin,
     ConsolePlugin,
     AdminOptionsHelperPlugin,
-    AxiosErrorHandlerPlugin
+    AxiosErrorHandlerPlugin,
+    ModalFocusReturnPlugin
 } from '../../../admin/js/admin-utilities';
 import { 
     ThumbnailHelperPlugin,
@@ -201,6 +202,7 @@ export default (element) => {
             VueItemsList.use(A11yTabsPlugin);
             VueItemsList.use(ConsolePlugin, {visual: false});
             VueItemsList.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
+            VueItemsList.use(ModalFocusReturnPlugin);
             VueItemsList.component('help-button', HelpButton);
 
             /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */

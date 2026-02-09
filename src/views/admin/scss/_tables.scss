@@ -356,7 +356,10 @@
     
                     }
     
-                    &:hover {
+                    &:hover,
+                    &:focus-visible,
+                    &:focus,
+                    &:focus-within {
                         background-color: var(--tainacan-item-hover-background-color) !important;
                         cursor: pointer;
     
@@ -384,7 +387,13 @@
                 }
             }
             &.hide-items-selection {
-                tr:hover { background-color: transparent !important; cursor: default; }
+                tr:hover,
+                tr:focus-visible,
+                tr:focus,
+                tr:focus-within {
+                    background-color: transparent !important;
+                    cursor: default;
+                }
             }
         }
     }
