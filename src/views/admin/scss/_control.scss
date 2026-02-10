@@ -31,20 +31,25 @@
                 }
                 .mdi-alert-circle::before {
                     content: "close";
+                    content: "close" / ""; /* where supported: show icon, expose "" to a11y */
                     color: inherit;
                 }
                 .mdi-magnify::before {
                     content: 'search';
+                    content: 'search' / ''; /* where supported: show icon, expose "" to a11y */
                 }
                 .mdi-close-circle::before {
                     content: 'close';
+                    content: 'close' / ''; /* where supported: show icon, expose "" to a11y */
                     font-size: 1em;
                 }
                 .mdi-account::before {
                     content: 'userfill';
+                    content: 'userfill' / ''; /* where supported: show icon, expose "" to a11y */
                 }
                 .mdi-calendar-today::before {
                     content: 'calendar';
+                    content: 'calendar' / ''; /* where supported: show icon, expose "" to a11y */
                 }
             }
         }

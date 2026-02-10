@@ -2456,6 +2456,7 @@ export default {
             .swiper-button-prev::after,
             .swiper-rtl .swiper-button-next::after {
                 content: 'previous';
+                content: 'previous' / '' !important; /* where supported: show arrow, expose "" to a11y */
             }
             .swiper-button-next,
             .swiper-rtl .swiper-button-prev {

@@ -146,10 +146,12 @@
             }
             .mdi-chevron-left::before {
                 content: "arrowleft" !important;
+                content: "arrowleft" / "" !important; /* where supported: show arrow, expose "" to a11y */
                 transform: none !important;
             }
             .mdi-chevron-right::before {
                 content: "arrowright" !important;
+                content: "arrowright" / "" !important; /* where supported: show arrow, expose "" to a11y */
                 transform: none !important;
             }
             .mdi-24px::before {

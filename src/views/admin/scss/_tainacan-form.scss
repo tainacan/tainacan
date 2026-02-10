@@ -148,9 +148,11 @@
                 }
                 .mdi-plus::before {
                     content: "plus" !important;
+                    content: "plus" / "" !important; /* where supported: show icon, expose "" to a11y */
                 } 
                 .mdi-minus::before {
                     content: "minus" !important;
+                    content: "minus" / "" !important; /* where supported: show icon, expose "" to a11y */
                 } 
                 
             }

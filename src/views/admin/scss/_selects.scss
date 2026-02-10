@@ -64,7 +64,8 @@
             }
         }
         &:not(.is-loading)::after {
-            content: "arrowdown" !important;
+            content: "arrowdown" !important;      /* fallback: always show arrow */
+            content: "arrowdown" / "" !important; /* where supported: show arrow, expose "" to a11y */
             font: normal normal normal 20px/1 "TainacanIcons";
             border: none !important;
             transform: none !important;

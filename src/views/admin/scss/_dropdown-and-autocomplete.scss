@@ -305,6 +305,7 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             content: 'calendar';
+            content: 'calendar' / ''; /* where supported: show icon, expose "" to a11y */
             text-transform: none !important;
             letter-spacing: normal !important;
         }

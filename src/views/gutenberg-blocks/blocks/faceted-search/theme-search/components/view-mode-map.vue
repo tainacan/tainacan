@@ -684,7 +684,8 @@ export default {
         transform: rotate(-45deg);
         transform-origin: center;
         width: 0.625em;
-        content: "arrowdown" !important;
+        content: "arrowdown" !important;      /* fallback: always show arrow */
+        content: "arrowdown" / "" !important; /* where supported: show arrow, expose "" to a11y */
         font: normal normal normal 20px/1 "TainacanIcons";
             font-size: 20px;
             line-height: 1;
