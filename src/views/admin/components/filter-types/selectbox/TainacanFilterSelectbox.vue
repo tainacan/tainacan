@@ -15,10 +15,7 @@
                     v-for="(option, index) in options"
                     :key="index"
                     :value="option.value">
-                {{ getUnescapedLabel(option.label) }}
-                <span 
-                        v-if="option.total_items != undefined"
-                        class="has-text-dark">{{ "(" + option.total_items + ")" }}</span>    
+                {{ getUnescapedLabel(option.label) + ( option.total_items ? (' (' + option.total_items + ')') : '' ) }}
             </option>
         </b-select>
     </div>

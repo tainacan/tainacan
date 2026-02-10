@@ -14,12 +14,9 @@
             <option
                     v-for="(option, index) in options"
                     :key="index"
-                    :label="option.label + ( option.total_items ? (' (' + option.total_items + ')') : '' )"
                     :value="option.value">
-                <span 
-                        v-if="option.total_items != undefined"
-                        class="has-text-dark">{{ "(" + option.total_items + ")" }}</span>  
-            </option>
+                {{ getUnescapedLabel(option.label) + ( option.total_items ? (' (' + option.total_items + ')') : '' ) }}
+                </option>
         </b-select>
     </div>
 </template>
@@ -100,6 +97,9 @@
             this.$eventBusSearchEmitter.off('hasToReloadFacets', this.reloadOptions); 
         },
         methods: {
+            getUnescapedLabel(label) {
+                return typeof _.unescape === 'function' ? _.unescape(label) : label;
+            },
             reloadOptions(shouldReload) {
                 if ( !this.isUsingElasticSearch && shouldReload )
                     this.loadOptions();
