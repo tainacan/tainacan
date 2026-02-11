@@ -56,9 +56,38 @@ export const dynamicFilterTypeMixin = {
                     this.isLoadingOptions = this.isLoadingItems;
             },
             immediate: true
+        },
+        isLoadingOptions: {
+            handler(newVal, oldVal) {
+                if (oldVal === true && newVal === false)
+                    this.$nextTick(() => this.tryRestoreFocus());
+            }
         }
     },
     methods: {
+        tryRestoreFocus() {
+            if (!this.$eventBusSearch || !this.filter || !this.filter.id)
+                return;
+            const value = this.$eventBusSearch.getAndClearFocusRestoreRequest(this.filter.id);
+            if (value === undefined)
+                return;
+            this.$nextTick(() => {
+                let el = null;
+                if (typeof this.getFocusRestoreElement === 'function')
+                    el = this.getFocusRestoreElement(value);
+                else if (this.$el) {
+                    const candidates = this.$el.querySelectorAll('[data-filter-option-value]');
+                    for (let i = 0; i < candidates.length; i++) {
+                        if (candidates[i].getAttribute('data-filter-option-value') === value) {
+                            el = candidates[i];
+                            break;
+                        }
+                    }
+                }
+                if (el && typeof el.focus === 'function')
+                    el.focus();
+            });
+        },
         getValuesPlainText({ metadatumId, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0', countItems = true }) {
 
             if (isInCheckboxModal || search || !this.isUsingElasticSearch) {
@@ -144,6 +173,101 @@ export const dynamicFilterTypeMixin = {
                     request: callback
                 });
             }
+        },
+        getValuesTaxonomy({ metadatumId, isRepositoryLevel, number, search, offset, valuesToIgnore }) {
+            const isSearchMode = (search !== undefined && search !== null) || offset !== undefined;
+
+            if (isSearchMode) {
+                const source = axios.CancelToken.source();
+                let currentQuery = JSON.parse(JSON.stringify(this.query));
+                if (currentQuery.fetch_only != undefined)
+                    delete currentQuery.fetch_only;
+                const query_items = { 'current_query': currentQuery };
+                if (search !== undefined && search !== null)
+                    query_items.search = search;
+                if (offset !== undefined)
+                    query_items.offset = offset;
+                if (number !== undefined)
+                    query_items.number = number;
+                let url = '';
+                if (isRepositoryLevel)
+                    url = `/facets/${metadatumId}?order=asc&` + qs.stringify(query_items);
+                else {
+                    if (this.filter.collection_id == 'default' && this.currentCollectionId)
+                        url = `/collection/${this.currentCollectionId}/facets/${metadatumId}?order=asc&` + qs.stringify(query_items);
+                    else
+                        url = `/collection/${this.filter.collection_id}/facets/${metadatumId}?order=asc&` + qs.stringify(query_items);
+                }
+                this.isLoadingOptions = true;
+                return {
+                    request: new Promise((resolve, reject) => {
+                        axios.tainacanApi.get(url, { cancelToken: source.token })
+                            .then(res => {
+                                this.isLoadingOptions = false;
+                                if (typeof this.prepareOptionsForTaxonomySearch === 'function')
+                                    this.prepareOptionsForTaxonomySearch(res, search, valuesToIgnore);
+                                resolve(res);
+                            })
+                            .catch((thrown) => {
+                                if (!axios.isCancel(thrown))
+                                    this.isLoadingOptions = false;
+                                reject(thrown);
+                            });
+                    }),
+                    source: source
+                };
+            }
+
+            if (!this.isUsingElasticSearch) {
+                const source = axios.CancelToken.source();
+                let currentQuery = JSON.parse(JSON.stringify(this.query));
+                if (currentQuery.fetch_only != undefined)
+                    delete currentQuery.fetch_only;
+                const query_items = { 'current_query': currentQuery };
+                let url = '';
+                if (isRepositoryLevel)
+                    url = `/facets/${metadatumId}?getSelected=1&order=asc&parent=0&number=${number}&` + qs.stringify(query_items);
+                else {
+                    if (this.filter.collection_id == 'default' && this.currentCollectionId)
+                        url = `/collection/${this.currentCollectionId}/facets/${metadatumId}?getSelected=1&order=asc&parent=0&number=${number}&` + qs.stringify(query_items);
+                    else
+                        url = `/collection/${this.filter.collection_id}/facets/${metadatumId}?getSelected=1&order=asc&parent=0&number=${number}&` + qs.stringify(query_items);
+                }
+                this.isLoadingOptions = true;
+                return {
+                    request: new Promise((resolve, reject) => {
+                        axios.tainacanApi.get(url, { cancelToken: source.token })
+                            .then(res => {
+                                this.isLoadingOptions = false;
+                                this.prepareOptionsForTaxonomy(res.data.values ? res.data.values : res.data);
+                                resolve(res);
+                            })
+                            .catch((thrown) => {
+                                if (!axios.isCancel(thrown))
+                                    this.isLoadingOptions = false;
+                                reject(thrown);
+                            });
+                    }),
+                    source: source
+                };
+            }
+            const callback = new Promise((resolve) => {
+                for (const facet in this.facetsFromItemSearch) {
+                    if (facet == this.filter.id) {
+                        const facetData = this.facetsFromItemSearch[facet];
+                        if (Array.isArray(facetData)) {
+                            this.prepareOptionsForTaxonomy(facetData);
+                            this.$emit('update-parent-collapse', facetData.length > 0);
+                        } else {
+                            const arr = Object.values(facetData);
+                            this.prepareOptionsForTaxonomy(arr);
+                            this.$emit('update-parent-collapse', arr.length > 0);
+                        }
+                    }
+                }
+                resolve();
+            });
+            return { request: callback };
         },
         getValuesRelationship({ search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0', countItems = true }) {
             
@@ -285,14 +409,6 @@ export const dynamicFilterTypeMixin = {
             if ( this.options.length < this.maxNumOptionsCheckboxList && !search )
                 this.noMorePage = 1;
             
-            if ( ( this.filter.filter_type_object && this.filter.filter_type_object.use_max_options == true && this.filter.max_options ) && this.options.length >= this.filter.max_options ) {
-                let showViewAllButton = true;
-
-                if ( this.options.length === this.filter.max_options )
-                    this.options[this.filter.max_options-1].showViewAllButton = showViewAllButton;
-                else 
-                    this.options[this.options.length-1].showViewAllButton = showViewAllButton;
-            }
         },
         prepareOptionsForRelationship(items, search, valuesToIgnore, isInCheckboxModal) {
 
@@ -356,15 +472,7 @@ export const dynamicFilterTypeMixin = {
 
             if ( this.options.length < this.maxNumOptionsCheckboxList )
                 this.noMorePage = 1;
-            
-            if ( ( this.filter.filter_type_object && this.filter.filter_type_object.use_max_options == true && this.filter.max_options ) && this.options.length >= this.filter.max_options ) {
-                let showViewAllButton = true;
-
-                if ( this.options.length === this.filter.max_options )
-                    this.options[this.filter.max_options-1].showViewAllButton = showViewAllButton;
-                else
-                    this.options[this.options.length-1].showViewAllButton = showViewAllButton;
-            }
+        
         },
     },
     beforeUnmount() {

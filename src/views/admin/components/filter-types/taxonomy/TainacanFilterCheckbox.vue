@@ -1,14 +1,12 @@
 <template>
-    <div 
-            :style="{ 'height': isLoadingOptions && !filtersAsModal ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
-            :class="{ 'skeleton': isLoadingOptions && !filtersAsModal }"
-            class="block">
+    <div class="block">
         <template v-if="!filtersAsModal">
-            <template v-if="!isLoadingOptions">
+            <div
+                    :class="{ 'skeleton': isLoadingOptions }"
+                    class="filter-options-wrap">
                 <div
-                        v-for="(option, index) in options.slice(0, filter.max_options)"
-                        :key="index"
-                        :value="index"
+                        v-for="option in options"
+                        :key="option.value"
                         class="metadatum">
                     <label 
                             v-if="!option.isChild"
@@ -16,6 +14,7 @@
                         <input 
                                 v-model="selected"
                                 :value="option.value"
+                                :data-filter-option-value="String(option.value)"
                                 type="checkbox"
                                 @input="resetPage"> 
                         <span class="check" /> 
@@ -39,19 +38,19 @@
                                     class="facet-item-count has-text-dark">&nbsp;{{ "(" + option.total_items + ")" }}</span>
                         </span>
                     </label>
-                    <button
-                            v-if="option.showViewAllButton"
-                            class="view-all-button link-style"
-                            @click="openCheckboxModal(option.parent)"> 
-                        {{ $i18n.get('label_view_all') }}
-                    </button>
                 </div>
+                <button
+                        v-if="(filter.max_options && (options.length >= filter.max_options)) || someOptionHasChildren"
+                        class="view-all-button link-style"
+                        @click="openCheckboxModal()"> 
+                    {{ $i18n.get('label_view_all') }}
+                </button>
                 <p 
                         v-if="options.length != undefined && options.length <= 0"
                         class="no-options-placeholder">
                     {{ $i18n.get('info_no_options_available_filtering') }}
                 </p>
-            </template>
+            </div>
         </template>
         <template v-else>
             <checkbox-radio-filter-input
@@ -77,15 +76,13 @@
 </template>
 
 <script>
-    import qs from 'qs';
-    import { tainacanApi, CancelToken, isCancel } from '../../../js/axios';
-    import { mapGetters } from 'vuex';
+    import { isCancel } from '../../../js/axios';
     import CheckboxRadioFilterInput from '../../../components/other/checkbox-radio-filter-input.vue';
-    import { filterTypeMixin } from '../../../js/filter-types-mixin';
-    
+    import { filterTypeMixin, dynamicFilterTypeMixin } from '../../../js/filter-types-mixin';
+
     export default {
         components: { CheckboxRadioFilterInput },
-        mixins: [ filterTypeMixin ],
+        mixins: [ filterTypeMixin, dynamicFilterTypeMixin ],
         props: {
             isRepositoryLevel: Boolean,
             filtersAsModal: Boolean
@@ -97,7 +94,6 @@
         data(){
             return {
                 isLoadingOptions: true,
-                getOptionsValuesCancel: undefined,
                 options: [],
                 selected: [],
                 taxonomy: '',
@@ -105,9 +101,9 @@
             }
         },
         computed: {
-            ...mapGetters('search', {
-                'facetsFromItemSearch': 'getFacets'
-            }),
+            someOptionHasChildren() {
+                return this.options.some(option => option.total_children > 0);
+            }
         },
         watch: {
             selected: {
@@ -165,76 +161,27 @@
                     this.loadOptions();
             },
             loadOptions() {
-                if (!this.isUsingElasticSearch) {
-                    let promise = null;
-                    const source = CancelToken.source();
+                if (this.getOptionsValuesCancel != undefined)
+                    this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                    // Cancels previous Request
-                    if (this.getOptionsValuesCancel != undefined)
-                        this.getOptionsValuesCancel.cancel('Facet search Canceled.');
+                const promise = this.getValuesTaxonomy({
+                    metadatumId: this.metadatumId,
+                    isRepositoryLevel: this.isRepositoryLevel,
+                    number: this.filter.max_options
+                });
 
-                    this.isLoadingOptions = true;
-                    let query_items = { 'current_query': this.query };
-
-                    let route = '';
-                    
-                    if (this.isRepositoryLevel)
-                        route = `/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
-                    else {
-                        if (this.filter.collection_id == 'default' && this.currentCollectionId)
-                            route = `/collection/${this.currentCollectionId}/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
-                        else
-                            route = `/collection/${this.filter.collection_id}/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
-                    }
-
-                    this.options = [];
-
-                    promise = new Object({
-                        request:
-                            new Promise((resolve, reject) => {
-                                tainacanApi.get(route, { cancelToken: source.token})
-                                    .then( res => {
-                                        resolve(res)
-                                    })
-                                    .catch(error => {
-                                        reject(error)
-                                    });
-                            }),
-                        source: source
+                promise.request
+                    .then((res) => {
+                        if (res && res.data && res.data.values)
+                            this.$emit('update-parent-collapse', res.data.values.length > 0);
+                        this.$nextTick(() => this.tryRestoreFocus());
+                    })
+                    .catch((error) => {
+                        if (!isCancel(error))
+                            this.$console.log('Error on facets request: ', error);
                     });
-                    promise.request
-                        .then((res) => {
-                            this.isLoadingOptions = false;
-                            this.prepareOptionsForTaxonomy(res.data.values ? res.data.values : res.data);
 
-                            if (res && res.data && res.data.values)
-                                this.$emit('update-parent-collapse', res.data.values.length > 0 );
-                        })
-                        .catch( error => {
-                            if (isCancel(error)) {
-                                this.$console.log('Request canceled: ' + error.message);
-                            } else {
-                                this.$console.log('Error on facets request: ', error);
-                                this.isLoadingOptions = false;
-                            }
-                        });
-                    
-                    // Search Request Token for cancelling
-                    this.getOptionsValuesCancel = promise.source;  
-
-                } else {
-                    for (const facet in this.facetsFromItemSearch) {
-                        if (facet == this.filter.id) {
-                            if (Array.isArray(this.facetsFromItemSearch[facet])) {
-                                this.prepareOptionsForTaxonomy(this.facetsFromItemSearch[facet]);
-                                this.$emit('update-parent-collapse', this.facetsFromItemSearch[facet].length > 0 );
-                            } else {
-                                this.prepareOptionsForTaxonomy(Object.values(this.facetsFromItemSearch[facet]));
-                                this.$emit('update-parent-collapse', Object.values(this.facetsFromItemSearch[facet]).length > 0 );
-                            }
-                        }    
-                    }
-                }
+                this.getOptionsValuesCancel = promise.source;
             },
             updateSelectedValues() {
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
@@ -254,12 +201,11 @@
                     terms: this.selected
                 });
             },
-            openCheckboxModal(parent) {
+            openCheckboxModal() {
                 const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: CheckboxRadioFilterInput,
                     props: {
-                        parent: parent,
                         filter: this.filter,
                         taxonomyId: this.taxonomyId,
                         selected: this.selected,
@@ -289,30 +235,8 @@
                 });
             },
             prepareOptionsForTaxonomy(items) {
-
                 this.options = [];
                 this.options = items.slice(); // copy array.
-
-                if (this.options) {
-                    let hasChildren = false;
-
-                    for( let term of this.options ){
-                        if (term.total_children > 0){
-                            hasChildren = true;
-                            break;
-                        }
-                    }
-
-                    if (this.filter.max_options && (this.options.length >= this.filter.max_options || hasChildren)) {
-                        let showViewAllButton = true;
-
-                        if (this.options.length > this.filter.max_options){
-                            this.options[this.filter.max_options - 1].showViewAllButton = showViewAllButton;
-                        } else {
-                            this.options[this.options.length - 1].showViewAllButton = showViewAllButton;
-                        }
-                    }
-                }
                 this.updateSelectedValues();
             }
         }
@@ -320,6 +244,19 @@
 </script>
 
 <style lang="scss" scoped>
+
+    .block {
+        position: relative;
+    }
+
+    .skeleton * {
+        // position: absolute;
+        // inset: 0;
+        // width: 100%;
+        opacity: 0;
+        pointer-events: none;
+        //z-index: -1;
+    }
 
     .view-all-button {
         font-size: 0.75em !important;

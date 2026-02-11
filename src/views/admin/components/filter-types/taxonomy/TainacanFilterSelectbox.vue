@@ -1,6 +1,7 @@
 <template>
     <div class="block">
         <b-select
+                ref="filterSelect"
                 :loading="isLoadingOptions"
                 :disabled="!isLoadingOptions && options.length <= 0"
                 :model-value="selected"
@@ -22,31 +23,22 @@
 </template>
 
 <script>
-    import qs from 'qs';
-    import { tainacanApi, CancelToken, isCancel } from '../../../js/axios';
-    import { mapGetters } from 'vuex';
-    import { filterTypeMixin } from '../../../js/filter-types-mixin';
-    
+    import { isCancel } from '../../../js/axios';
+    import { filterTypeMixin, dynamicFilterTypeMixin } from '../../../js/filter-types-mixin';
+
     export default {
-        mixins: [ filterTypeMixin ],
+        mixins: [ filterTypeMixin, dynamicFilterTypeMixin ],
         emits: [
             'input',
             'update-parent-collapse'
         ],
         data(){
             return {
-                isLoadingOptions: false,
-                getOptionsValuesCancel: undefined,
                 selected: '',
                 options: [],
                 taxonomy: '',
                 taxonomyId: ''
             }
-        },
-        computed: {
-            ...mapGetters('search', {
-                'facetsFromItemSearch': 'getFacets'
-            }),
         },
         watch: {
             facetsFromItemSearch: {
@@ -97,6 +89,10 @@
             this.$eventBusSearchEmitter.off('hasToReloadFacets', this.reloadOptions); 
         },
         methods: {
+            getFocusRestoreElement() {
+                const root = this.$refs.filterSelect && this.$refs.filterSelect.$el;
+                return root ? (root.querySelector('select') || root) : null;
+            },
             getUnescapedLabel(label) {
                 return typeof _.unescape === 'function' ? _.unescape(label) : label;
             },
@@ -105,76 +101,27 @@
                     this.loadOptions();
             },
             loadOptions() {
-                if (!this.isUsingElasticSearch) {
-                    let promise = null;
-                    const source = CancelToken.source();
+                if (this.getOptionsValuesCancel != undefined)
+                    this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                    // Cancels previous Request
-                    if (this.getOptionsValuesCancel != undefined)
-                        this.getOptionsValuesCancel.cancel('Facet search Canceled.');
+                const promise = this.getValuesTaxonomy({
+                    metadatumId: this.metadatumId,
+                    isRepositoryLevel: this.isRepositoryLevel,
+                    number: this.filter.max_options
+                });
 
-                    this.isLoadingOptions = true;
-                    let query_items = { 'current_query': this.query };
-
-                    let route = '';
-                    
-                    if (this.isRepositoryLevel)
-                        route = `/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
-                    else {
-                        if (this.filter.collection_id == 'default' && this.currentCollectionId)
-                            route = `/collection/${this.currentCollectionId}/facets/${this.metadatumId}?getSelected=1&order=asc&number=${this.filter.max_options}&` + qs.stringify(query_items);
-                        else
-                            route = `/collection/${this.filter.collection_id}/facets/${this.metadatumId}?getSelected=1&order=asc&number=${this.filter.max_options}&` + qs.stringify(query_items);
-                    }
-
-                    this.options = [];
-
-                    promise = new Object({
-                        request:
-                            new Promise((resolve, reject) => {
-                                tainacanApi.get(route, { cancelToken: source.token})
-                                    .then( res => {
-                                        resolve(res)
-                                    })
-                                    .catch(error => {
-                                        reject(error)
-                                    });
-                            }),
-                        source: source
+                promise.request
+                    .then((res) => {
+                        if (res && res.data && res.data.values)
+                            this.$emit('update-parent-collapse', res.data.values.length > 0);
+                        this.$nextTick(() => this.tryRestoreFocus());
+                    })
+                    .catch((error) => {
+                        if (!isCancel(error))
+                            this.$console.log('Error on facets request: ', error);
                     });
-                    promise.request
-                        .then((res) => {
-                            this.isLoadingOptions = false;
-                            this.prepareOptionsForTaxonomy(res.data.values ? res.data.values : res.data);
 
-                            if (res && res.data && res.data.values)
-                                this.$emit('update-parent-collapse', res.data.values.length > 0 );
-                        })
-                        .catch( error => {
-                            if (isCancel(error)) {
-                                this.$console.log('Request canceled: ' + error.message);
-                            } else {
-                                this.$console.log('Error on facets request: ', error);
-                                this.isLoadingOptions = false;
-                            }
-                        });
-                    
-                    // Search Request Token for cancelling
-                    this.getOptionsValuesCancel = promise.source;  
-
-                } else {
-                    for (const facet in this.facetsFromItemSearch) {
-                        if (facet == this.filter.id) {
-                            if (Array.isArray(this.facetsFromItemSearch[facet])) {
-                                this.prepareOptionsForTaxonomy(this.facetsFromItemSearch[facet]);
-                                this.$emit('update-parent-collapse', this.facetsFromItemSearch[facet].length > 0 );
-                            } else {
-                                this.prepareOptionsForTaxonomy(Object.values(this.facetsFromItemSearch[facet]));
-                                this.$emit('update-parent-collapse', Object.values(this.facetsFromItemSearch[facet]).length > 0 );
-                            }
-                        }    
-                    }
-                }
+                this.getOptionsValuesCancel = promise.source;
             },
             updateSelectedValues() {
                 

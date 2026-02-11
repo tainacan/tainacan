@@ -1,20 +1,18 @@
 <template>
-    <div 
-            :style="{ 'height': isLoadingOptions && !filtersAsModal ? (Number(filter.max_options)*1.375) + 'rem' : 'auto' }"
-            :class="{ 'skeleton': isLoadingOptions && !filtersAsModal }"
-            class="block">
+    <div class="block">
         <template v-if="!filtersAsModal">
-            <template v-if="!isLoadingOptions">
+            <div
+                    :class="{ 'skeleton': isLoadingOptions }"
+                    class="filter-options-wrap">
                 <div
-                        v-for="(option, index) in options.slice(0, filter.max_options)"
-                        :key="index"
+                        v-for="option in options"
+                        :key="option.value"
                         class="metadatum">
-                    <label 
-                            v-if="index <= filter.max_options - 1"
-                            class="b-checkbox checkbox is-small">
+                    <label class="b-checkbox checkbox is-small">
                         <input 
                                 v-model="selected"
                                 :value="option.value"
+                                :data-filter-option-value="String(option.value)"
                                 type="checkbox"
                                 @input="resetPage()"> 
                         <span class="check" /> 
@@ -38,19 +36,20 @@
                                     class="facet-item-count has-text-dark">&nbsp;{{ "(" + option.total_items + ")" }}</span>
                         </span>
                     </label>
-                    <button
-                            v-if="option.showViewAllButton && index == options.slice(0, filter.max_options).length - 1"
-                            class="view-all-button link-style"
-                            @click="openCheckboxModal(option.parent)"> 
-                        {{ $i18n.get('label_view_all') }}
-                    </button>
+                   
                 </div>
+                <button
+                        v-if="filter.max_options && (options.length >= filter.max_options)"
+                        class="view-all-button link-style"
+                        @click="openCheckboxModal(option.parent)"> 
+                    {{ $i18n.get('label_view_all') }}
+                </button>
                 <p 
                         v-if="options.length != undefined && options.length <= 0"
                         class="no-options-placeholder">
                     {{ $i18n.get('info_no_options_available_filtering') }}
                 </p>
-            </template>
+            </div>
         </template>
         <template v-else>
             <checkbox-radio-filter-input
@@ -165,6 +164,7 @@
                         
                         if (res && res.data && res.data.values)
                             this.$emit('update-parent-collapse', res.data.values.length > 0 );
+                        this.$nextTick(() => this.tryRestoreFocus());
                     })
                     .catch( (error) => {
                         if (isCancel(error)) {
@@ -234,7 +234,19 @@
 
 <style lang="scss" scoped>
 
-    
+    .block {
+        position: relative;
+    }
+
+    .skeleton * {
+        // position: absolute;
+        // inset: 0;
+        // width: 100%;
+        opacity: 0;
+        pointer-events: none;
+        //z-index: -1;
+    }
+
     .view-all-button {
         font-size: 0.75em !important;
     }

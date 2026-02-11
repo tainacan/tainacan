@@ -13,7 +13,6 @@
             <template #trigger="props">
                 <button
                         :id="'filter-label-id-' + filter.id"
-                        :for="'filter-input-id-' + filter.id"
                         :aria-controls="'filter-input-id-' + filter.id"
                         :aria-expanded="singleCollapseOpen"
                         :aria-label="filter.name"
@@ -63,7 +62,6 @@
             <div class="collapse-trigger">
                 <button
                         :id="'filter-load-button-id-' + filter.id"
-                        :for="'filter-input-id-' + filter.id"
                         :aria-label="loadFilterAriaLabel"
                         class="label"
                         @click="appendRealFilter">
@@ -190,7 +188,28 @@
             }
         },
         methods: {
+            extractFocusValue(inputEvent) {
+                const active = document.activeElement;
+                if (active && this.$el && this.$el.contains(active)) {
+                    const fromActive = active.getAttribute && active.getAttribute('data-filter-option-value');
+                    if (fromActive != null)
+                        return fromActive;
+                    if (active.value !== undefined && active.value !== null && active.value !== '')
+                        return String(active.value);
+                    const inner = active.querySelector && active.querySelector('input, select');
+                    if (inner && inner.value !== undefined && inner.value !== null && inner.value !== '')
+                        return String(inner.value);
+                }
+                if (inputEvent.terms && Array.isArray(inputEvent.terms) && inputEvent.terms.length > 0)
+                    return String(inputEvent.terms[inputEvent.terms.length - 1]);
+                if (inputEvent.value !== undefined && Array.isArray(inputEvent.value) && inputEvent.value.length > 0)
+                    return String(inputEvent.value[inputEvent.value.length - 1]);
+                return inputEvent.value != null ? String(inputEvent.value) : undefined;
+            },
             onInput(inputEvent) {
+                const focusValue = this.extractFocusValue(inputEvent);
+                if (focusValue !== undefined)
+                    this.$eventBusSearch.setFocusRestoreRequest(this.filter.id, focusValue);
                 this.$eventBusSearchEmitter.emit('input', inputEvent);
             },
             onFilterUpdateParentCollapse(open) {

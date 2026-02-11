@@ -1,6 +1,7 @@
 <template>
     <div class="block">
         <b-taginput
+                ref="filterTaginput"
                 icon="magnify"
                 size="is-small"
                 :data="options"
@@ -100,6 +101,10 @@
             this.updateSelectedValues();
         },
         methods: {
+            getFocusRestoreElement() {
+                const root = this.$refs.filterTaginput && this.$refs.filterTaginput.$el;
+                return root ? (root.querySelector('input') || root) : null;
+            },
             performSearch(query) {
                 // String update
                 if (query != this.searchQuery) {

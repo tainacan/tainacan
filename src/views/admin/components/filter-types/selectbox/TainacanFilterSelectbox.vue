@@ -1,6 +1,7 @@
 <template>
     <div class="block">
         <b-select
+                ref="filterSelect"
                 :loading="isLoadingOptions"
                 :disabled="!isLoadingOptions && options.length <= 0"
                 :model-value="selected"
@@ -58,6 +59,10 @@
             this.$eventBusSearchEmitter.off('hasToReloadFacets', this.reloadOptions); 
         },
         methods: {
+            getFocusRestoreElement() {
+                const root = this.$refs.filterSelect && this.$refs.filterSelect.$el;
+                return root ? (root.querySelector('select') || root) : null;
+            },
             getUnescapedLabel(label) {
                 return typeof _.unescape === 'function' ? _.unescape(label) : label;
             },
@@ -84,6 +89,7 @@
                         
                         if (res && res.data && res.data.values)
                             this.$emit('update-parent-collapse', res.data.values.length > 0 );
+                        this.$nextTick(() => this.tryRestoreFocus());
                     })
                     .catch( error => {
                         if (isCancel(error))

@@ -12,6 +12,18 @@ export default {
             taxonomy: undefined,
             termId: undefined,
             searchCancel: undefined,
+            pendingFocusRestore: null,
+            setFocusRestoreRequest(filterId, value) {
+                this.pendingFocusRestore = { filterId, value: value != null ? String(value) : undefined };
+            },
+            getAndClearFocusRestoreRequest(filterId) {
+                if (this.pendingFocusRestore && this.pendingFocusRestore.filterId === filterId) {
+                    const value = this.pendingFocusRestore.value;
+                    this.pendingFocusRestore = null;
+                    return value;
+                }
+                return undefined;
+            },
             performAdvancedSearch(data) {
                 app.config.globalProperties.$store.dispatch('search/setAdvancedQuery', data);
                 this.updateURLQueries();

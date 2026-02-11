@@ -1,6 +1,7 @@
 <template>
     <div class="block">
         <b-taginput
+                ref="filterTaginput"
                 size="is-small"
                 icon="magnify"
                 :data="options"
@@ -42,18 +43,16 @@
 </template>
 
 <script>
-    import qs from 'qs';
-    import { tainacanApi } from '../../../js/axios';
-    import { filterTypeMixin } from '../../../js/filter-types-mixin';
+    import { isCancel } from '../../../js/axios';
+    import { filterTypeMixin, dynamicFilterTypeMixin } from '../../../js/filter-types-mixin';
     
     export default {
-        mixins: [ filterTypeMixin ],
+        mixins: [ filterTypeMixin, dynamicFilterTypeMixin ],
         emits: [
             'input',
         ],
         data(){
             return {
-                isLoadingOptions: false,
                 results:'',
                 selected:[], // Simple array of IDs, no more objects and not bound to the taginput
                 options: [],
@@ -65,12 +64,6 @@
             }
         },
         watch: {
-            isLoadingItems: {
-                handler() {
-                    this.isLoadingOptions = this.isLoadingItems;
-                },
-                immediate: true
-            },
             'query': {
                 handler() {
                     this.updateSelectedValues();
@@ -92,83 +85,65 @@
             this.updateSelectedValues();
         },
         methods: {
+            getFocusRestoreElement() {
+                const root = this.$refs.filterTaginput && this.$refs.filterTaginput.$el;
+                return root ? (root.querySelector('input') || root) : null;
+            },
             performSearch(query) {
-                // String update
                 if (query != this.searchQuery) {
                     this.searchQuery = query;
                     this.options = [];
                     this.offset = 0;
-                } 
-                
-                // String cleared
+                }
                 if (!query.length) {
                     this.searchQuery = query;
                     this.options = [];
                     this.offset = 0;
                 }
 
-                // No need to load more
                 if (this.offset > 0 && this.options.length >= this.totalFacets)
-                    return
+                    return;
 
-                this.isLoadingOptions = true;
-                
-                let query_items = { 
-                    'current_query': this.query, 
-                    'search': this.searchQuery,
-                    'offset': this.offset,
-                    'number': 12
-                };
+                if (this.getOptionsValuesCancel != undefined)
+                    this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                let endpoint = '';
-                
-                if (this.isRepositoryLevel) 
-                    endpoint += '/facets/' + this.metadatumId;
-                else {
-                    if (this.filter.collection_id == 'default' && this.currentCollectionId)
-                        endpoint += '/collection/' + this.currentCollectionId +'/facets/' + this.metadatumId;
-                    else
-                        endpoint += '/collection/' + this.filter.collection_id + '/facets/' + this.metadatumId;
-                }
-
-                endpoint += '?order=asc&' + qs.stringify(query_items);
-                
-                const valuesToIgnore = JSON.parse(JSON.stringify(this.selected));
-
-                return tainacanApi.get(endpoint).then( res => {
-                    for (let term of res.data.values) {   
-
-                        if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
-                            let indexToIgnore = valuesToIgnore.findIndex(value => value == term.value);
-                            if (indexToIgnore < 0) {
-                                if (term.label.toLowerCase().indexOf( query.toLowerCase() ) >= 0){
-                                    this.options.push({
-                                        label: term.label, 
-                                        value: term.value,
-                                        total_items: term.total_items
-                                    });
-                                }
-                            }
-                        } else {
-                            if (term.label.toLowerCase().indexOf( query.toLowerCase() ) >= 0){
-                                this.options.push({
-                                    label: term.label,
-                                    value: term.value,    
-                                    total_items: term.total_items
-                                });
-                            }
-                        } 
-                        
-                    }
-                    
-                    this.totalFacets = res.headers['x-wp-total'];
-                    this.offset += 12;
-                    this.isLoadingOptions = false;
-                })
-                .catch(error => {
-                    this.isLoadingOptions = false;
-                    this.$console.log(error);
+                const promise = this.getValuesTaxonomy({
+                    metadatumId: this.metadatumId,
+                    isRepositoryLevel: this.isRepositoryLevel,
+                    number: 12,
+                    search: this.searchQuery,
+                    offset: this.offset,
+                    valuesToIgnore: this.selected
                 });
+
+                promise.request
+                    .then((res) => {
+                        this.totalFacets = res.headers['x-wp-total'];
+                        this.offset += 12;
+                    })
+                    .catch((error) => {
+                        if (!isCancel(error))
+                            this.$console.log(error);
+                    });
+
+                this.getOptionsValuesCancel = promise.source;
+            },
+            prepareOptionsForTaxonomySearch(res, search, valuesToIgnore) {
+                const query = (search != null && search !== undefined) ? String(search).toLowerCase() : '';
+                const values = res.data && res.data.values ? res.data.values : (Array.isArray(res.data) ? res.data : []);
+                for (const term of values) {
+                    const skipByIgnore = valuesToIgnore && valuesToIgnore.length > 0 &&
+                        valuesToIgnore.findIndex((value) => value == term.value) >= 0;
+                    if (skipByIgnore)
+                        continue;
+                    const matchesSearch = !query || (term.label && term.label.toLowerCase().indexOf(query) >= 0);
+                    if (matchesSearch)
+                        this.options.push({
+                            label: term.label,
+                            value: term.value,
+                            total_items: term.total_items
+                        });
+                }
             },
             search: _.debounce( function(query) {
                 this.performSearch(query);

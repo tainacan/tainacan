@@ -407,7 +407,6 @@
         mixins: [ dynamicFilterTypeMixin ],
         props: {
             filter: '',
-            parent: [Number, String],
             taxonomyId: [Number, String],
             taxonomy: String,
             collectionId: [String, Number],
