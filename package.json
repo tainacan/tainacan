@@ -11,7 +11,7 @@
     "@vue-leaflet/vue-leaflet": "^0.10.1",
     "another-vue3-blurhash": "^0.0.1",
     "apexcharts": "^5.3.6",
-    "axios": "^1.13.3",
+    "axios": "^1.13.5",
     "blurhash": "^2.0.5",
     "buefy": "^3.0.4",
     "bulma": "^1.0.4",
