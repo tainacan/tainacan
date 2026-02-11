@@ -638,6 +638,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_get_latest_report'						 => __( 'Get latest report', 'tainacan'),
 	'label_decrease'								 => __( 'Decrease', 'tainacan'),
 	'label_increase'								 => __( 'Increase', 'tainacan'),
+	/* translators: %1$s is an action label (e.g. Comparator, Increase, Decrease), %2$s is the filter name */
+	'label_%s_for_%s'								 => __( '%1$s for %2$s', 'tainacan'),
 	'label_set_all_create_metadata'					 => __( 'Set every metadata to be created', 'tainacan'),
 	'label_manage_collection'						 => __( 'Manage collection', 'tainacan'),
 	'label_chart_controls'							 => __( 'Chart controls', 'tainacan'),

@@ -1,5 +1,8 @@
 <template>
-    <div class="numeric-filter-container">
+    <div
+            class="numeric-filter-container"
+            role="group"
+            :aria-labelledby="filterLabelId">
         <b-dropdown
                 v-if="filterTypeOptions.comparators.length > 1"
                 v-a11y-dropdown
@@ -9,7 +12,7 @@
                 @update:model-value="($event) => { resetPage(); onChangeComparator($event) }">
             <template #trigger>
                 <button
-                        :aria-label="$i18n.get('label_comparator')"
+                        :aria-label="comparatorAriaLabel"
                         class="button is-white">
                     <span class="icon is-small">
                         <i v-html="comparatorsObject[comparator].symbol" />
@@ -34,9 +37,9 @@
         </b-dropdown>
         <b-numberinput
                 v-model="value"
-                :aria-labelledby="'filter-label-id-' + filter.id"
-                :aria-minus-label="$i18n.get('label_decrease')"
-                :aria-plus-label="$i18n.get('label_increase')"
+                :aria-labelledby="filterLabelId"
+                :aria-minus-label="decreaseAriaLabel"
+                :aria-plus-label="increaseAriaLabel"
                 :placeholder="filter.placeholder ? filter.placeholder : ''"
                 size="is-small"
                 controls-position="compact"
@@ -70,6 +73,36 @@
                     this.updateSelectedValues();
                 },
                 deep: true
+            }
+        },
+        computed: {
+            filterLabelId() {
+                return this.filter && this.filter.id ? ('filter-label-id-' + this.filter.id) : null;
+            },
+            filterName() {
+                if (this.filter && this.filter.name)
+                    return this.filter.name;
+                if (this.metadatumName)
+                    return this.metadatumName;
+                return '';
+            },
+            comparatorAriaLabel() {
+                const comparatorLabel = this.$i18n.get('label_comparator');
+                return this.filterName
+                    ? this.$i18n.getWithVariables('label_%s_for_%s', [comparatorLabel, this.filterName])
+                    : comparatorLabel;
+            },
+            increaseAriaLabel() {
+                const increaseLabel = this.$i18n.get('label_increase');
+                return this.filterName
+                    ? this.$i18n.getWithVariables('label_%s_for_%s', [increaseLabel, this.filterName])
+                    : increaseLabel;
+            },
+            decreaseAriaLabel() {
+                const decreaseLabel = this.$i18n.get('label_decrease');
+                return this.filterName
+                    ? this.$i18n.getWithVariables('label_%s_for_%s', [decreaseLabel, this.filterName])
+                    : decreaseLabel;
             }
         },
         created() {

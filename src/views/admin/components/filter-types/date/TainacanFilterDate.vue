@@ -1,5 +1,8 @@
 <template>
-    <div class="date-filter-container">
+    <div
+            class="date-filter-container"
+            role="group"
+            :aria-labelledby="filterLabelId">
         <b-dropdown
                 v-if="filterTypeOptions.comparators.length > 1"
                 v-a11y-dropdown
@@ -9,7 +12,7 @@
                 @update:model-value="($event) => { resetPage(); onChangeComparator($event) }">
             <template #trigger>
                 <button
-                        :aria-label="$i18n.get('label_comparator')"
+                        :aria-label="comparatorAriaLabel"
                         class="button is-white">
                     <span class="icon is-small">
                         <i v-html="comparatorsObject[comparator].symbol" />
@@ -35,7 +38,7 @@
         <b-datepicker
                 v-model="value"
                 position="is-bottom-right"
-                :aria-labelledby="'filter-label-id-' + filter.id"
+                :aria-labelledby="filterLabelId"
                 :aria-next-label="$i18n.get('label_next_month')"
                 :aria-previous-label="$i18n.get('label_previous_month')"
                 :placeholder="filter.placeholder ? filter.placeholder : $i18n.get('instruction_select_a_date')"
@@ -94,6 +97,22 @@
         computed: {
             yearsOnlyValue() {
                 return this.value && typeof this.value.getUTCFullYear === 'function' ? this.value.getUTCFullYear() : null
+            },
+            filterLabelId() {
+                return this.filter && this.filter.id ? ('filter-label-id-' + this.filter.id) : null;
+            },
+            filterName() {
+                if (this.filter && this.filter.name)
+                    return this.filter.name;
+                if (this.metadatumName)
+                    return this.metadatumName;
+                return '';
+            },
+            comparatorAriaLabel() {
+                const comparatorLabel = this.$i18n.get('label_comparator');
+                return this.filterName
+                    ? this.$i18n.getWithVariables('label_%s_for_%s', [comparatorLabel, this.filterName])
+                    : comparatorLabel;
             }
         },
         watch: {

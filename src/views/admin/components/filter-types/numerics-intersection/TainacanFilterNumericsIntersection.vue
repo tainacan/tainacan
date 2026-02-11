@@ -1,10 +1,12 @@
 <template>
-    <div>
+    <div
+            role="group"
+            :aria-labelledby="filterLabelId">
         <b-numberinput
                 v-model="valueInit"
-                :aria-labelledby="'filter-label-id-' + filter.id"
-                :aria-minus-label="$i18n.get('label_decrease')"
-                :aria-plus-label="$i18n.get('label_increase')"
+                :aria-labelledby="filterLabelId"
+                :aria-minus-label="decreaseAriaLabel"
+                :aria-plus-label="increaseAriaLabel"
                 :placeholder="filter.placeholder ? filter.placeholder : ''"
                 size="is-small"
                 controls-position="compact"
@@ -15,6 +17,7 @@
             />
         <p 
                 v-if="filterTypeOptions.accept_numeric_interval === 'yes'"
+                :id="untilLabelId"
                 style="font-size: 0.75em; margin-bottom: 0.125em;"
                 class="has-text-centered is-marginless">
             {{ $i18n.get('label_until') }}
@@ -22,9 +25,9 @@
         <b-numberinput
                 v-if="filterTypeOptions.accept_numeric_interval === 'yes'"
                 v-model="valueEnd"
-                :aria-labelledby="'filter-label-id-' + filter.id"
-                :aria-minus-label="$i18n.get('label_decrease')"
-                :aria-plus-label="$i18n.get('label_increase')"
+                :aria-labelledby="untilInputAriaLabelledBy"
+                :aria-minus-label="decreaseAriaLabel"
+                :aria-plus-label="increaseAriaLabel"
                 :placeholder="filter.placeholder ? filter.placeholder : ''"
                 size="is-small"
                 controls-position="compact"
@@ -55,6 +58,38 @@
                     this.updateSelectedValues();
                 },
                 deep: true
+            }
+        },
+        computed: {
+            filterLabelId() {
+                return this.filter && this.filter.id ? ('filter-label-id-' + this.filter.id) : null;
+            },
+            untilLabelId() {
+                return this.filter && this.filter.id ? ('filter-until-label-id-' + this.filter.id) : null;
+            },
+            untilInputAriaLabelledBy() {
+                if (this.filterLabelId && this.untilLabelId)
+                    return `${this.filterLabelId} ${this.untilLabelId}`;
+                return this.filterLabelId;
+            },
+            filterName() {
+                if (this.filter && this.filter.name)
+                    return this.filter.name;
+                if (this.metadatumName)
+                    return this.metadatumName;
+                return '';
+            },
+            increaseAriaLabel() {
+                const increaseLabel = this.$i18n.get('label_increase');
+                return this.filterName
+                    ? this.$i18n.getWithVariables('label_%s_for_%s', [increaseLabel, this.filterName])
+                    : increaseLabel;
+            },
+            decreaseAriaLabel() {
+                const decreaseLabel = this.$i18n.get('label_decrease');
+                return this.filterName
+                    ? this.$i18n.getWithVariables('label_%s_for_%s', [decreaseLabel, this.filterName])
+                    : decreaseLabel;
             }
         },
         mounted() {

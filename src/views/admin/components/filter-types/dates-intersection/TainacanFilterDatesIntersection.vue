@@ -1,8 +1,10 @@
 <template>
-    <div>
+    <div
+            role="group"
+            :aria-labelledby="filterLabelId">
         <b-datepicker
                 v-model="dateInit"
-                :aria-labelledby="'filter-label-id-' + filter.id"
+                :aria-labelledby="filterLabelId"
                 :aria-next-label="$i18n.get('label_next_month')"
                 :aria-previous-label="$i18n.get('label_previous_month')"
                 :placeholder="filter.placeholder ? filter.placeholder : $i18n.get('instruction_select_a_date')"
@@ -39,6 +41,7 @@
                 @update:model-value="($event) => { resetPage(); validadeValues($event) }" />
         <p 
                 v-if="filterTypeOptions.accept_date_interval === 'yes'"
+                :id="untilLabelId"
                 style="font-size: 0.75em; margin-bottom: 0.125em;"
                 class="has-text-centered is-marginless">
             {{ $i18n.get('label_until') }}
@@ -46,7 +49,7 @@
         <b-datepicker
                 v-if="filterTypeOptions.accept_date_interval === 'yes'"
                 v-model="dateEnd"
-                :aria-labelledby="'filter-label-id-' + filter.id"
+                :aria-labelledby="untilDateAriaLabelledBy"
                 :aria-next-label="$i18n.get('label_next_month')"
                 :aria-previous-label="$i18n.get('label_previous_month')"
                 :placeholder="filter.placeholder ? filter.placeholder : $i18n.get('instruction_select_a_date')"
@@ -117,6 +120,19 @@
                     this.updateSelectedValues();
                 },
                 deep: true
+            }
+        },
+        computed: {
+            filterLabelId() {
+                return this.filter && this.filter.id ? ('filter-label-id-' + this.filter.id) : null;
+            },
+            untilLabelId() {
+                return this.filter && this.filter.id ? ('filter-until-label-id-' + this.filter.id) : null;
+            },
+            untilDateAriaLabelledBy() {
+                if (this.filterLabelId && this.untilLabelId)
+                    return `${this.filterLabelId} ${this.untilLabelId}`;
+                return this.filterLabelId;
             }
         },
         mounted() {
