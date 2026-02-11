@@ -1381,10 +1381,11 @@ class Metadata extends Repository {
 					$to_include = $wpdb->get_results($query_to_include);
 
 					// remove terms that will be included at the begining
-					$results = array_filter($results, function($t) use($args) { return !in_array($t->term_id, $args['include']); });
+					$total_included = count($to_include) > $args['number'] ? count($to_include) : $args['number'];
+					$results = array_filter($results, function($t) use($args, $total_included) { return !in_array($t->term_id, $args['include']) && $total_included > 0; });
 
 					$results = array_merge($to_include, $results);
-
+					$results = array_slice($results, 0, $total_included);
 				}
 			}
 
@@ -1464,7 +1465,9 @@ class Metadata extends Repository {
 			// add selected to the result
 			if ( !empty($args['include']) ) {
 				if ( is_array($args['include']) ) {
+					$total_included = count($args['include']) > $number ? count($args['include']) : $number;
 					$results = array_unique( array_merge($args['include'], $results) );
+					$results = array_slice($results, 0, $total_included);
 				}
 			}
 
