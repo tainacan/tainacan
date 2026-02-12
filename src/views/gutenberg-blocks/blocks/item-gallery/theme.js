@@ -72,7 +72,8 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                     prevSlideMessage: __( 'Previous slide', 'tainacan'),
                     nextSlideMessage: __( 'Next slide', 'tainacan'),
                     firstSlideMessage: __('This is the first slide', 'tainacan'),
-                    lastSlideMessage: __('This is the last slide', 'tainacan')
+                    lastSlideMessage: __('This is the last slide', 'tainacan'),
+                    slideLabelMessage: '' // Screenreaders already know the 1/x slide number due to <ul>/<li> structure
                 },
                 modules: [Navigation, A11y, Pagination],
                 on: {
@@ -107,7 +108,8 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                     prevSlideMessage: __( 'Previous slide', 'tainacan'),
                     nextSlideMessage: __( 'Next slide', 'tainacan'),
                     firstSlideMessage: __('This is the first slide', 'tainacan'),
-                    lastSlideMessage: __('This is the last slide', 'tainacan')
+                    lastSlideMessage: __('This is the last slide', 'tainacan'),
+                    slideLabelMessage: '' // Screenreaders already know the 1/x slide number due to <ul>/<li> structure
                 },
                 pagination: {
                     el: '.swiper-pagination_' + this.main_gallery_selector,
@@ -476,9 +478,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             let mediaDescription = '';
             
             // Identify media type and get description
-            if (img && img.alt && img.alt.trim()) {
-                mediaDescription = img.alt.trim();
-            } else if (video) {
+            if (video) {
                 const videoTitle = video.getAttribute('title') || video.getAttribute('aria-label');
                 mediaDescription = videoTitle || __('Video', 'tainacan');
             } else if (audio) {
@@ -499,18 +499,9 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 ariaLabelParts.push(mediaDescription);
             }
             
-            // Add title if no media description is available
-            if (ariaLabelParts.length === 0 && titleElement && titleElement.textContent.trim()) {
+            // Add title if no media description is available unless it is an img with alt text (those will be read from the img tag)
+            if ( !img.alt && ariaLabelParts.length === 0 && titleElement && titleElement.textContent.trim() ) {
                 ariaLabelParts.push(titleElement.textContent.trim());
-            }
-            
-            // Add lightbox information
-            const lightboxInfo = __('Opens media gallery in lightbox', 'tainacan');
-            if (totalSlides > 1) {
-                const slideInfo = (index + 1) + ' ' + __('of', 'tainacan') + ' ' + totalSlides;
-                ariaLabelParts.push(lightboxInfo + ' (' + slideInfo + ')');
-            } else {
-                ariaLabelParts.push(lightboxInfo);
             }
             
             const ariaLabel = ariaLabelParts.join('. ');
@@ -518,10 +509,9 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             // If there's a link, enhance it
             if (mainLink) {
                 mainLink.setAttribute('aria-haspopup', 'dialog');
-                mainLink.setAttribute('aria-label', ariaLabel);
-                if (!mainLink.hasAttribute('tabindex')) {
-                    mainLink.setAttribute('tabindex', '0');
-                }
+                mainLink.removeAttribute('target');
+                if ( ariaLabel )
+                    mainLink.setAttribute('aria-label', ariaLabel);
             } else {
                 // No link exists - make the slide content focable and interactive
                 // Use the figure if available, otherwise use slideContent
@@ -529,7 +519,8 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 
                 focusableElement.setAttribute('role', 'button');
                 focusableElement.setAttribute('aria-haspopup', 'dialog');
-                focusableElement.setAttribute('aria-label', ariaLabel);
+                if ( ariaLabel )
+                    focusableElement.setAttribute('aria-label', ariaLabel);
                 focusableElement.setAttribute('tabindex', '0');
                 
                 // Add cursor style to indicate it's clickable (for visual users)
