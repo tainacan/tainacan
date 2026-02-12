@@ -1,6 +1,7 @@
 <template>
     <div :class="{ 'is-flex': itemMetadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
         <b-taginput
+                v-a11y-autocomplete
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 expanded
                 :disabled="disabled"

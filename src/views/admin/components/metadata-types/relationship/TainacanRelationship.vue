@@ -6,6 +6,7 @@
                 animated>
             <b-tab-item :label="( itemMetadatum.value && itemMetadatum.value.length == 1 || itemMetadatum.metadatum.multiple != 'yes' ) ? $i18n.get('label_select_item') : $i18n.get('label_insert_items')">
                 <b-taginput
+                        v-a11y-autocomplete
                         :id="relationshipInputId"
                         expanded
                         :disabled="disabled"

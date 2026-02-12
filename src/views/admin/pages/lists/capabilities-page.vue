@@ -12,6 +12,7 @@
                     class="header-item">
                 <div class="control has-icons-right  is-small is-clearfix">
                     <b-autocomplete
+                            v-a11y-autocomplete
                             v-model="filteredRole"
                             clearable
                             :data="filteredRoles"

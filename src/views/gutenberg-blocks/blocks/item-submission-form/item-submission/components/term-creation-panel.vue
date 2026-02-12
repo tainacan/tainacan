@@ -52,6 +52,7 @@
                             :message="$i18n.get('info_help_parent_term')" />
                 </label>
                 <b-autocomplete
+                        v-a11y-autocomplete
                         id="tainacan-add-parent-field"
                         v-model="parentTermName"
                         :placeholder="$i18n.get('instruction_parent_term')"

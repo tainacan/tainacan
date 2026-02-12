@@ -59,6 +59,7 @@ import {
     ThumbnailHelperPlugin,
     OrderByHelperPlugin,
     A11yDropdownPlugin,
+    A11yAutocompletePlugin,
     A11yTabsPlugin
 } from './utilities';
 import mitt from 'mitt';
@@ -159,6 +160,7 @@ export default (element) => {
             app.use(ThumbnailHelperPlugin);
             app.use(OrderByHelperPlugin);
             app.use(A11yDropdownPlugin);
+            app.use(A11yAutocompletePlugin);
             app.use(A11yTabsPlugin);
             app.use(StatusHelperPlugin);
             app.use(HtmlSanitizerPlugin);

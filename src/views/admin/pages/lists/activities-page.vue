@@ -43,6 +43,7 @@
 
             <b-field class="header-item">
                 <b-autocomplete
+                        v-a11y-autocomplete
                         clearable
                         :data="users"
                         :placeholder="$i18n.get('instruction_type_search_users_filter')"

@@ -37,6 +37,7 @@
                             class="field-body">
                         <div class="field has-addons">
                             <b-autocomplete
+                                    v-a11y-autocomplete="{ appendToBody: true }"
                                     :clearable="item.status !== 'auto-draft'"
                                     :clear-on-select="true"
                                     :model-value="usersSearch ? usersSearch : item.author_name"

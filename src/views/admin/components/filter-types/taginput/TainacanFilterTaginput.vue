@@ -2,6 +2,7 @@
     <div class="block">
         <b-taginput
                 ref="filterTaginput"
+                v-a11y-autocomplete
                 icon="magnify"
                 size="is-small"
                 :data="options"

@@ -1,6 +1,7 @@
 <template>
     <div class="block">
         <b-autocomplete
+                v-a11y-autocomplete
                 v-model="selected"
                 icon="magnify"
                 size="is-small"

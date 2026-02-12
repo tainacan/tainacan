@@ -155,6 +155,7 @@
                                 <template
                                         v-else-if="bulkEditionProcedures[criterion].metadatum.id == 'author_id'">
                                     <b-autocomplete
+                                            v-a11y-autocomplete="{ appendToBody: true }"
                                             :class="{ 'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': bulkEditionProcedures[criterion].isDone }"
                                             :clearable="!bulkEditionProcedures[criterion].isDone"
                                             :clear-on-select="false"

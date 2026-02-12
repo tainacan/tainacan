@@ -37,6 +37,7 @@
                     </label>
 
                     <b-taginput
+                            v-a11y-autocomplete
                             v-model="termNames"
                             attached
                             :confirm-keys="termNamesSeparator"
@@ -76,6 +77,7 @@
                     </b-radio>
                     <b-autocomplete
                             v-if="hasParent"
+                            v-a11y-autocomplete="{ appendToBody: true }"
                             id="tainacan-add-parent-field"
                             v-model="parentTermName"
                             :placeholder="$i18n.get('instruction_parent_term')"

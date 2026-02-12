@@ -888,6 +888,7 @@
                                 :message="$i18n.getHelperMessage('collections', 'cover_page_id')" />
                         <template v-if="form.enable_cover_page == 'yes'">
                             <b-autocomplete
+                                    v-a11y-autocomplete
                                     v-if="coverPage == undefined || coverPage.title == undefined"
                                     id="tainacan-text-cover-page"
                                     v-model="coverPageTitle"

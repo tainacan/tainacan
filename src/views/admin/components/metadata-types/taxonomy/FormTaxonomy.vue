@@ -140,6 +140,7 @@
                         :message="$i18n.getHelperMessage('tainacan-taxonomy', 'link_filtered_by_collections')" />
             </label>
             <b-taginput
+                    v-a11y-autocomplete
                     :model-value="getSelectedTaxonomyCollections()"
                     autocomplete
                     :open-on-focus="true"
@@ -162,7 +163,8 @@
                                 class="media-left">
                             <img 
                                     width="24"
-                                    :alt="$i18n.get('label_thumbnail')"
+                                    alt=""
+                                    aria-hidden="true"
                                     :src="$thumbHelper.getSrc(props.option['thumbnail'], 'tainacan-small')">
                         </div>
                         <div class="media-content">

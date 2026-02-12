@@ -50,7 +50,7 @@ import TermCreationPanel from './item-submission/components/term-creation-panel.
 import HelpButton from '../../../admin/components/other/help-button.vue';
 import store from '../../../admin/js/store/store';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, StatusHelperPlugin, CommentsStatusHelperPlugin, AdminOptionsHelperPlugin } from '../../../admin/js/admin-utilities';
-import { ThumbnailHelperPlugin, A11yDropdownPlugin, A11yTabsPlugin } from '../../../admin/js/utilities';
+import { ThumbnailHelperPlugin, A11yDropdownPlugin, A11yAutocompletePlugin, A11yTabsPlugin } from '../../../admin/js/utilities';
 
 const isParameterTrue = function(value) {
     return (value == true || value == 'true' || value == '1' || value == 1) ? true : false;
@@ -161,6 +161,7 @@ export default (element) => {
             VueItemSubmission.use(ThumbnailHelperPlugin);
             VueItemSubmission.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
             VueItemSubmission.use(A11yDropdownPlugin);
+            VueItemSubmission.use(A11yAutocompletePlugin);
             VueItemSubmission.use(A11yTabsPlugin);
             /* Registers Extra VueItemSubmission Components passed to the window.tainacan_extra_components  */
             if ( typeof window.tainacan_extra_components != "undefined" ) {
