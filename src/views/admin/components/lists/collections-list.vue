@@ -214,8 +214,8 @@
                                 @click.right="onRightClickCollection($event, collection.id, index)">
                             <span>
                                 <img 
-                                        :alt="$i18n.get('label_thumbnail')"
                                         class="table-thumb" 
+                                        alt=""
                                         :src="$thumbHelper.getSrc(collection['thumbnail'], 'tainacan-small')">
                             </span>
                         </td>

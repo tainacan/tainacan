@@ -1240,7 +1240,7 @@
                                             :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-small', 40)"
                                             :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-small')"
                                             :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)"
-                                            :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                            :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
                                             :transition-duration="500"
                                         />
                                 </span>

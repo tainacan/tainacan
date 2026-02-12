@@ -116,7 +116,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                             width={ thumbHelper.getWidth(item['thumbnail'], imageSize) }
                             src={ thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype']) }
                             srcSet={ thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype']) }
-                            alt={ item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : __( 'Thumbnail', 'tainacan' )) }/>
+                            alt={ item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : '') }/>
                     </div>
                     { !hideTitle ? <span style={{ maxWidth: variableItemsWidth ? thumbHelper.getWidth(item['thumbnail'], imageSize) + 'px' : 'unset' }}>{ item.title ? item.title : '' }</span> : null }
                 </a>

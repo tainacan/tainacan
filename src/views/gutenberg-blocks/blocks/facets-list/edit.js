@@ -142,7 +142,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                 : 
                             `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`)
                         }
-                        alt={ facet.label ? facet.label : __( 'Thumbnail', 'tainacan' ) }/>
+                        alt={ facet.label ? facet.label : '' }/>
                     <div className={ 'facet-label-and-count' + (itemsCountStyle === 'below' ? ' is-style-facet-label-and-count--below' : '') }>
                         <span>{ facet.label ? facet.label : '' }</span>
                         {

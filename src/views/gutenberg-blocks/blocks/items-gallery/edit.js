@@ -106,7 +106,7 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                     <img
                         src={ thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item['document_mimetype']) }
                         srcSet={ thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-small', item['document_mimetype']) }
-                        alt={ item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : __( 'Thumbnail', 'tainacan' )) }/>
+                        alt={ item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : '') }/>
                     { item.title ?
                         <span>{ item.title }</span>
                     : null }

@@ -89,7 +89,7 @@
                                 :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype'])"
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], imageSize)"
-                                :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : wpI18n( 'Thumbnail', 'tainacan' ))"
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : '')"
                                 :transition-duration="500" />
                         <span 
                                 v-if="!hideTitle"

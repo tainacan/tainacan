@@ -89,7 +89,7 @@
                                                     :height="$thumbHelper.getHeight(relatedItem['thumbnail'], 'tainacan-small', 40)"
                                                     :hash="$thumbHelper.getBlurhashString(relatedItem['thumbnail'], 'tainacan-small')"
                                                     :src="$thumbHelper.getSrc(relatedItem['thumbnail'], 'tainacan-small', relatedItem.document_mimetype)"
-                                                    :alt="relatedItem.thumbnail_alt ? relatedItem.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                                    :alt="relatedItem.thumbnail_alt ? relatedItem.thumbnail_alt : ''"
                                                     :transition-duration="500"
                                                 />
                                         </span>

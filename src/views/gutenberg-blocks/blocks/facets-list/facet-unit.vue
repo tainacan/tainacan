@@ -19,7 +19,7 @@
                                     : 
                                         $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
                     "
-                    :alt="facet.thumbnail_alt ? facet.thumbnail_alt : (facet.label ? facet.label : wpI18n('Thumbnail', 'tainacan'))">
+                    :alt="facet.thumbnail_alt ? facet.thumbnail_alt : (facet.label ? facet.label : '')">
             <div :class=" 'facet-label-and-count' + (itemsCountStyle === 'below' ? ' is-style-facet-label-and-count--below' : '')">
                 <span>{{ facet.label ? facet.label : '' }}</span>
                 <span 

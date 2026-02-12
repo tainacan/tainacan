@@ -29,8 +29,8 @@
                             v-if="props.option.img"
                             class="media-left">
                         <img
-                                :alt="$i18n.get('label_thumbnail')"
                                 width="24"
+                                alt=""
                                 :src="`${props.option.img}`">
                     </div>
                     <div class="media-content">

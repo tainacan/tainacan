@@ -55,7 +55,7 @@
                                                 : 
                                                     $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
                                 "
-                                :alt="term.thumbnail_alt ? term.thumbnail_alt : (term.name ? term.name : wpI18n('Thumbnail', 'tainacan'))">
+                                :alt="term.thumbnail_alt ? term.thumbnail_alt : (term.name ? term.name : '')">
                         <span 
                                 v-if="!hideName"
                                 :style="variableTermsWidth && showTermThumbnail ? ('max-width: ' + $thumbHelper.getWidth(term.thumbnail['thumbnail'], imageSize) + 'px') : ''">
@@ -73,7 +73,7 @@
                                     :src="termItems[term.id][0] ? $thumbHelper.getSrc(termItems[term.id][0]['thumbnail'], 'tainacan-medium', termItems[term.id][0]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
                                     :srcset="termItems[term.id][0] ? $thumbHelper.getSrcSet(termItems[term.id][0]['thumbnail'], 'tainacan-medium', termItems[term.id][0]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
                                     :hash="termItems[term.id][0] ? $thumbHelper.getBlurhashString(termItems[term.id][0]['thumbnail'], 'tainacan-medium') : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
-                                    :alt="termItems[term.id][0] && termItems[term.id][0].thumbnail_alt ? termItems[term.id][0].thumbnail_alt : (termItems[term.id][0] && termItems[term.id][0].name ? termItems[term.id][0].name : wpI18n( 'Thumbnail', 'tainacan' ))"
+                                    :alt="termItems[term.id][0] && termItems[term.id][0].thumbnail_alt ? termItems[term.id][0].thumbnail_alt : (termItems[term.id][0] && termItems[term.id][0].name ? termItems[term.id][0].name : '')"
                                     :transition-duration="500" />
                             <blur-hash-image
                                     :height="termItems[term.id][1] ? $thumbHelper.getHeight(termItems[term.id][1]['thumbnail'], 'tainacan-medium') : 275"
@@ -81,7 +81,7 @@
                                     :src="termItems[term.id][1] ? $thumbHelper.getSrc(termItems[term.id][1]['thumbnail'], 'tainacan-medium', termItems[term.id][1]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
                                     :srcset="termItems[term.id][1] ? $thumbHelper.getSrcSet(termItems[term.id][1]['thumbnail'], 'tainacan-medium', termItems[term.id][1]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
                                     :hash="termItems[term.id][1] ? $thumbHelper.getBlurhashString(termItems[term.id][1]['thumbnail'], 'tainacan-medium') : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
-                                    :alt="termItems[term.id][1] && termItems[term.id][1].thumbnail_alt ? termItems[term.id][1].thumbnail_alt : (termItems[term.id][1] && termItems[term.id][1].name ? termItems[term.id][1].name : wpI18n( 'Thumbnail', 'tainacan' ))"
+                                    :alt="termItems[term.id][1] && termItems[term.id][1].thumbnail_alt ? termItems[term.id][1].thumbnail_alt : (termItems[term.id][1] && termItems[term.id][1].name ? termItems[term.id][1].name : '')"
                                     :transition-duration="500" />
                             <blur-hash-image
                                     :height="termItems[term.id][2] ? $thumbHelper.getHeight(termItems[term.id][2]['thumbnail'], 'tainacan-medium') : 275"
@@ -89,7 +89,7 @@
                                     :src="termItems[term.id][2] ? $thumbHelper.getSrc(termItems[term.id][2]['thumbnail'], 'tainacan-medium', termItems[term.id][2]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
                                     :srcset="termItems[term.id][2] ? $thumbHelper.getSrcSet(termItems[term.id][2]['thumbnail'], 'tainacan-medium', termItems[term.id][2]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
                                     :hash="termItems[term.id][2] ? $thumbHelper.getBlurhashString(termItems[term.id][2]['thumbnail'], 'tainacan-medium') : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
-                                    :alt="termItems[term.id][2] && termItems[term.id][2].thumbnail_alt ? termItems[term.id][2].thumbnail_alt : (termItems[term.id][2] && termItems[term.id][2].name ? termItems[term.id][2].name : wpI18n( 'Thumbnail', 'tainacan' ))"
+                                    :alt="termItems[term.id][2] && termItems[term.id][2].thumbnail_alt ? termItems[term.id][2].thumbnail_alt : (termItems[term.id][2] && termItems[term.id][2].name ? termItems[term.id][2].name : '')"
                                     :transition-duration="500" />
                         </div>
                         <span v-if="!hideName">{{ term.name ? term.name : '' }}</span>

@@ -53,7 +53,7 @@
                                                 : 
                                                     $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
                                 "
-                                :alt="collection.name ? collection.name : wpI18n('Thumbnail', 'tainacan')">
+                                :alt="collection.name ? collection.name : ''">
                         <span v-if="!hideName">{{ collection.name ? collection.name : '' }}</span>
                     </a>
                     <a 
@@ -67,7 +67,7 @@
                                     :src="collectionItems[collection.id][0] ? $thumbHelper.getSrc(collectionItems[collection.id][0]['thumbnail'], imageSize, collectionItems[collection.id][0]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
                                     :srcset="collectionItems[collection.id][0] ? $thumbHelper.getSrcSet(collectionItems[collection.id][0]['thumbnail'], imageSize, collectionItems[collection.id][0]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
                                     :hash="collectionItems[collection.id][0] ? $thumbHelper.getBlurhashString(collectionItems[collection.id][0]['thumbnail'], imageSize) : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
-                                    :alt="collectionItems[collection.id][0] && collectionItems[collection.id][0].thumbnail_alt ? collectionItems[collection.id][0].thumbnail_alt : (collectionItems[collection.id][0] && collectionItems[collection.id][0].name ? collectionItems[collection.id][0].name : wpI18n( 'Thumbnail', 'tainacan' ))"
+                                    :alt="collectionItems[collection.id][0] && collectionItems[collection.id][0].thumbnail_alt ? collectionItems[collection.id][0].thumbnail_alt : (collectionItems[collection.id][0] && collectionItems[collection.id][0].name ? collectionItems[collection.id][0].name : '')"
                                     :transition-duration="500" />
                             <blur-hash-image
                                     :height="collectionItems[collection.id][1] ? $thumbHelper.getHeight(collectionItems[collection.id][1]['thumbnail'], imageSize) : 275"
@@ -75,7 +75,7 @@
                                     :src="collectionItems[collection.id][1] ? $thumbHelper.getSrc(collectionItems[collection.id][1]['thumbnail'], imageSize, collectionItems[collection.id][1]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
                                     :srcset="collectionItems[collection.id][1] ? $thumbHelper.getSrcSet(collectionItems[collection.id][1]['thumbnail'], imageSize, collectionItems[collection.id][1]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
                                     :hash="collectionItems[collection.id][1] ? $thumbHelper.getBlurhashString(collectionItems[collection.id][1]['thumbnail'], imageSize) : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
-                                    :alt="collectionItems[collection.id][1] && collectionItems[collection.id][1].thumbnail_alt ? collectionItems[collection.id][1].thumbnail_alt : (collectionItems[collection.id][1] && collectionItems[collection.id][1].name ? collectionItems[collection.id][1].name : wpI18n( 'Thumbnail', 'tainacan' ))"
+                                    :alt="collectionItems[collection.id][1] && collectionItems[collection.id][1].thumbnail_alt ? collectionItems[collection.id][1].thumbnail_alt : (collectionItems[collection.id][1] && collectionItems[collection.id][1].name ? collectionItems[collection.id][1].name : '')"
                                     :transition-duration="500" />
                             <blur-hash-image
                                     :height="collectionItems[collection.id][2] ? $thumbHelper.getHeight(collectionItems[collection.id][2]['thumbnail'], imageSize) : 275"
@@ -83,7 +83,7 @@
                                     :src="collectionItems[collection.id][2] ? $thumbHelper.getSrc(collectionItems[collection.id][2]['thumbnail'], imageSize, collectionItems[collection.id][2]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
                                     :srcset="collectionItems[collection.id][2] ? $thumbHelper.getSrcSet(collectionItems[collection.id][2]['thumbnail'], imageSize, collectionItems[collection.id][2]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
                                     :hash="collectionItems[collection.id][2] ? $thumbHelper.getBlurhashString(collectionItems[collection.id][2]['thumbnail'], imageSize) : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
-                                    :alt="collectionItems[collection.id][2] && collectionItems[collection.id][2].thumbnail_alt ? collectionItems[collection.id][2].thumbnail_alt : (collectionItems[collection.id][2] && collectionItems[collection.id][2].name ? collectionItems[collection.id][2].name : wpI18n( 'Thumbnail', 'tainacan' ))"
+                                    :alt="collectionItems[collection.id][2] && collectionItems[collection.id][2].thumbnail_alt ? collectionItems[collection.id][2].thumbnail_alt : (collectionItems[collection.id][2] && collectionItems[collection.id][2].name ? collectionItems[collection.id][2].name : '')"
                                     :transition-duration="500" />
                         </div>
                         <span v-if="!hideName">{{ collection.name ? collection.name : '' }}</span>

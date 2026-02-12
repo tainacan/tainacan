@@ -186,7 +186,7 @@
 
                                     <span v-if="column.metadatum == 'row_thumbnail'">
                                         <img 
-                                                :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                                :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
                                                 class="table-thumb" 
                                                 :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)">
                                         <div class="skeleton" />
