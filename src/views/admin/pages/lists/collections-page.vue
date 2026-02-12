@@ -468,7 +468,6 @@
                                 :aria-next-label="$i18n.get('label_next_page')"
                                 :aria-previous-label="$i18n.get('label_previous_page')"
                                 :aria-page-label="$i18n.get('label_page')"
-                                :aria-current-label="$i18n.get('label_current_page')"
                                 @change="onPageChange" /> 
                     </div>
                 </div>    
