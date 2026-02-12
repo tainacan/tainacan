@@ -41,7 +41,7 @@
                 <button
                         v-if="filter.max_options && (options.length >= filter.max_options)"
                         class="view-all-button link-style"
-                        @click="openCheckboxModal(option.parent)"> 
+                        @click="openCheckboxModal()"> 
                     {{ $i18n.get('label_view_all') }}
                 </button>
                 <p 
