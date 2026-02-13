@@ -109,7 +109,7 @@ abstract class Pages {
 	 * @return void
 	 */
 	function admin_enqueue_js() {}
-	
+
 	/**
 	 * admin_body_class is called from the 'admin_body_class' filter and should add the page's class to the body. 
 	 * 
@@ -877,6 +877,23 @@ abstract class Pages {
 		return $current . $extra_screen_options_html;
 	}
 
+	/**
+	 * Registers the lazy-loaded chunk for this page and sets up its translations.
+	 *
+	 * Call this from admin_enqueue_js() when the page uses tainacan-pages-common-scripts with a data-module.
+	 * The chunk path is ./{name}/js/{name}-main.js, so the built handle is tainacan-chunks-{name}-js-{name}-main.
+	 * Translation file resolution is handled by the load_script_translation_file filter in tainacan-utils.
+	 *
+	 * @param string $name The module name (e.g. 'roles', 'admin'), matching the data-module value and the folder under views/.
+	 * @return void
+	 */
+	protected function register_pages_chunk_translations( $name ) {
+		$handle = 'tainacan-chunks-' . sanitize_key( $name ) . '-js-' . sanitize_key( $name ) . '-main';
+		global $TAINACAN_BASE_URL;
+		wp_register_script( $handle, $TAINACAN_BASE_URL . '/assets/js/' . $handle . '.js', array( 'wp-i18n' ), TAINACAN_VERSION, true );
+		wp_set_script_translations( $handle, 'tainacan' );
+		wp_add_inline_script( 'wp-i18n', wp_scripts()->print_translations( $handle, false ) );
+	}
 
 }
 

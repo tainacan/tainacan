@@ -37,6 +37,8 @@ class Roles_Editor extends Pages {
 	function admin_enqueue_js() {
 		global $TAINACAN_BASE_URL;
 
+		$this->register_pages_chunk_translations( 'roles' );
+
 		wp_enqueue_script(
 			'tainacan-pages-common-scripts',
 			$TAINACAN_BASE_URL . '/assets/js/tainacan_pages_common_scripts.js',

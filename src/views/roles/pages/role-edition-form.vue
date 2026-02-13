@@ -11,13 +11,13 @@
             <h1 
                     v-else
                     class="tainacan-page-title">
-                {{ $i18n.get('Add new role') }}
+                {{ __("Add new role", "tainacan") }}
             </h1>
             <transition name="appear-from-right">
                 <div 
                         v-if="showNotice"
                         class="notice notice-success notice-alt">
-                    <p>{{ $i18n.get('User Role Saved') }}</p>
+                    <p>{{ __("User Role Saved", "tainacan") }}</p>
                 </div>
             </transition>
             <transition name="appear-from-right">
@@ -33,12 +33,12 @@
             <b-field
                     class="name-edition-input"
                     :addons="false"
-                    :label="$i18n.get('Role name')">
+                    :label="__('Role name', 'tainacan')">
                 <b-input
                         v-model="form.name" 
                         type="text"
                         name="name"
-                        :placeholder="$i18n.get('Insert the role name...')" 
+                        :placeholder="__('Insert the role name...', 'tainacan')" 
                         @update:model-value="showNotice = false" />
             </b-field>
 
@@ -74,7 +74,7 @@
                                     :tabindex="capabilitiesTab == 'repository' ? 0 : -1"
                                     :aria-selected="capabilitiesTab == 'repository'"
                                     @click="capabilitiesTab = 'repository'">
-                                {{ $i18n.get('Repository') }}
+                                {{ __("Repository", "tainacan") }}
                             </a>
                         </li>
                         <li 
@@ -85,7 +85,7 @@
                                     :tabindex="capabilitiesTab == 'collections' ? 0 : -1"
                                     :aria-selected="capabilitiesTab == 'collections'"
                                     @click="capabilitiesTab = 'collections'">
-                                {{ $i18n.get('Collections') }}
+                                {{ __("Collections", "tainacan") }}
                             </a>
                         </li>
                         <li 
@@ -96,7 +96,7 @@
                                     :tabindex="capabilitiesTab == 'admin-ui' ? 0 : -1"
                                     :aria-selected="capabilitiesTab == 'admin-ui'"
                                     @click="capabilitiesTab = 'admin-ui'">
-                                {{ $i18n.get('Admin Appearance') }}
+                                {{ __("Admin Appearance", "tainacan") }}
                             </a>
                         </li>
                         <li 
@@ -108,7 +108,7 @@
                                     :tabindex="capabilitiesTab == 'extra' ? 0 : -1"
                                     :aria-selected="capabilitiesTab == 'extra'"
                                     @click="capabilitiesTab = 'extra'">
-                                {{ $i18n.get('Others') }}
+                                {{ __("Others", "tainacan") }}
                             </a>
                         </li>
                     </ul>
@@ -119,7 +119,7 @@
                         class="tabs-content"
                         role="tabpanel"
                         :aria-labelledby="capabilitiesTab == 'repository' ? 'repository-tab-label' : ''">
-                    <!-- <h3>{{ $i18n.get('Role\'s Repository Related Capabilities List') }}</h3> -->
+                    <!-- <h3>{{ __("Role's Repository Related Capabilities List", "tainacan") }}</h3> -->
                     <div 
                             v-if="!isLoadingCapabilities"
                             class="capabilities-list">
@@ -151,7 +151,7 @@
                                                         popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
                                                     }"        
                                                     class="name column-name"
-                                                    :data-colname="$i18n.get('Capability name')">
+                                                    :data-colname="__('Capability name', 'tainacan')">
                                                 {{ repositoryCapabilities[capability].display_name }}
                                             </span>
                                         </label>
@@ -161,7 +161,7 @@
                             </ul>
                         </div>
                     </div>
-                    <p><span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('The capability "Manage Tainacan" may affect other capabilities related to repository and collections.') }}</p>
+                    <p><span class="dashicons dashicons-info" />&nbsp; {{ __("The capability \"Manage Tainacan\" may affect other capabilities related to repository and collections.", "tainacan") }}</p>
                 </div> <!-- End of Repository Tab -->
 
                 <div 
@@ -175,12 +175,12 @@
                             class="spinner is-active"
                             style="float: none; margin: 0 auto;" />
                     <template v-if="!isLoadingCollections"> 
-                        <!-- <h3>{{ $i18n.get('Role\'s Collection Related Capabilities List') }}</h3> -->
+                        <!-- <h3>{{ __("Role's Collection Related Capabilities List", "tainacan") }}</h3> -->
                         <div class="alignleft collection-selector">
                             <label 
                                     for="bulk-action-selector-top" 
                                     class="sr-only">
-                                {{ $i18n.get('Select the collection to change capabilities') }}
+                                {{ __("Select the collection to change capabilities", "tainacan") }}
                             </label>
                             <span class="select">
                                 <select 
@@ -189,7 +189,7 @@
                                         :value="selectedCollection"
                                         @input="selectedCollection = $event.target.value">
                                     <option value="all">
-                                        {{ $i18n.get('All Collections') }}
+                                        {{ __("All Collections", "tainacan") }}
                                     </option>
                                     <option 
                                             v-for="(collection, index) of collections"
@@ -234,7 +234,7 @@
                                                             popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
                                                         }"
                                                         class="name column-name"
-                                                        :data-colname="$i18n.get('Capability name')">
+                                                        :data-colname="__('Capability name', 'tainacan')">
                                                     {{ collectionCapabilities[capability].display_name }}
                                                 </span>
                                             </label>
@@ -245,8 +245,8 @@
                             </div>
                         </div>
                     </template>
-                    <p><span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('The capability "Manage Tainacan" may affect other capabilities related to repository and collections.') }}</p>
-                    <p><span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('Capabilities related to All Collections shall affect other Collections capabilities.') }}</p>
+                    <p><span class="dashicons dashicons-info" />&nbsp; {{ __("The capability \"Manage Tainacan\" may affect other capabilities related to repository and collections.", "tainacan") }}</p>
+                    <p><span class="dashicons dashicons-info" />&nbsp; {{ __("Capabilities related to All Collections shall affect other Collections capabilities.", "tainacan") }}</p>
                 </div> <!-- End of Collections Tab -->
 
                 <div
@@ -255,10 +255,10 @@
                         class="tabs-content"
                         role="tabpanel"
                         :aria-labelledby="capabilitiesTab == 'admin-ui' ? 'admin-ui-tab-label' : ''">
-                    <p>{{ $i18n.get('The following capabilities are related to the admin interface appearance.') }}</p>
+                    <p>{{ __("The following capabilities are related to the admin interface appearance.", "tainacan") }}</p>
 
                     <p v-if="roleSlug === 'new'">
-                        <span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('You must first create the slug before defining apperaence options for it.') }}
+                        <span class="dashicons dashicons-info" />&nbsp; {{ __("You must first create the slug before defining apperaence options for it.", "tainacan") }}
                     </p>
                     
                     <div class="capabilities-list">
@@ -365,7 +365,7 @@
                         type="button"
                         name="cancel"
                         class="button is-outlined" 
-                        :value="$i18n.get('Cancel')"
+                        :value="__('Cancel', 'tainacan')"
                         @click="$router.go(-1)">
             </div>
             <div class="control">
@@ -379,7 +379,7 @@
                         name="submit"
                         :disabled="!form.name || showNotice" 
                         class="is-success button"
-                        :value="roleSlug === 'new' ? $i18n.get('Create Role') : $i18n.get('Save Changes')">
+                        :value="roleSlug === 'new' ? __('Create Role', 'tainacan') : __('Save Changes', 'tainacan')">
             </div>
         </div>
     </form>
@@ -488,7 +488,7 @@
                                 adminOptions: this.$adminOptions,
                                 parentEntity: {
                                     rootLink: 'roles',
-                                    label: this.$i18n.get('Tainacan User Roles')
+                                    label: this.__('Tainacan User Roles', 'tainacan')
                                 }
                             }
                         );
@@ -504,7 +504,7 @@
                 this.fetchRole(this.$route.query.template)
                     .then((originalRole) => {
                         this.form = JSON.parse(JSON.stringify(originalRole));
-                        this.form.name = this.form.name + ' ' + this.$i18n.get('(Copy)');
+                        this.form.name = this.form.name + ' ' + this.__('(Copy)', 'tainacan');
                         this.form.slug = undefined;
 
                         this.isLoadingRole = false;
@@ -516,7 +516,7 @@
                                 adminOptions: this.$adminOptions,
                                 parentEntity: {
                                     rootLink: 'roles',
-                                    label: this.$i18n.get('Tainacan User Roles')
+                                    label: this.__('Tainacan User Roles', 'tainacan')
                                 }
                             }
                         );
@@ -657,23 +657,23 @@
             },
             getCapabilityRelatedEntity(capabilitySlug) {
                 if (capabilitySlug.match('collection'))
-                    return this.$i18n.get('Collection')
+                    return this.__('Collection', 'tainacan');
                 else if (capabilitySlug.match('metadata') || capabilitySlug.match('metadatum'))
-                    return this.$i18n.get('Metadata')
+                    return this.__('Metadata', 'tainacan');
                 else if (capabilitySlug.match('metasection'))
-                    return this.$i18n.get('Metadata Sections')
+                    return this.__('Metadata Sections', 'tainacan');
                 else if (capabilitySlug.match('filter'))
-                    return this.$i18n.get('Filters')
+                    return this.__('Filters', 'tainacan');
                 else if (capabilitySlug.match('log'))
-                    return this.$i18n.get('Activities')
+                    return this.__('Activities', 'tainacan');
                 else if (capabilitySlug.match('taxonomy') || capabilitySlug.match('taxonomies'))
-                    return this.$i18n.get('Taxonomies')
+                    return this.__('Taxonomies', 'tainacan');
                 else if (capabilitySlug.match('item'))
-                    return this.$i18n.get('Items')
+                    return this.__('Items', 'tainacan');
                 else if (capabilitySlug.match('%d'))
-                    return this.$i18n.get('Collection')
+                    return this.__('Collection', 'tainacan');
                 else
-                    return this.$i18n.get('Repository')
+                    return this.__('Repository', 'tainacan');
             },
             getAdminUIOptionValue(optionSlug) {
                 return this.localAdminUIOptions[this.roleSlug] && this.localAdminUIOptions[this.roleSlug][optionSlug] ? this.localAdminUIOptions[this.roleSlug][optionSlug] : false;

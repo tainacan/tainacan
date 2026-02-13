@@ -259,6 +259,13 @@ class Admin extends Pages {
 		global $TAINACAN_BASE_URL;
 		global $TAINACAN_EXTRA_SCRIPTS;
 
+		/**
+		 * TODO: Call this function when we have translations for the admin page
+		 * coming from wp.__ functions instead of the i18n global object
+		 * https://github.com/tainacan/tainacan/issues/909
+		 */
+		// $this->register_pages_chunk_translations( 'admin' );
+
 		$deps = ['underscore', 'media-editor', 'media-views', 'customize-controls', 'wp-i18n', 'wp-hooks' ];
 		if ( !empty($TAINACAN_EXTRA_SCRIPTS) ) {
 			foreach($TAINACAN_EXTRA_SCRIPTS as $dep) {

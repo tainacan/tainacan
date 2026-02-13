@@ -121,17 +121,17 @@ function tainacan_blocks_register_block($block_slug, $options = [], $block_setti
 	global $TAINACAN_BASE_URL;
 	global $TAINACAN_VERSION;
 
-	// Makes sure translations that use wp.i18n work with our lazy loading strategy
+	// Makes sure translations that use wp.i18n work with our lazy loading strategy (handle matches build: tainacan-chunks-blocks-{slug}-theme)
 	if ( isset($options['set_script_translations']) && $options['set_script_translations'] ) {
 		wp_register_script(
-			'tainacan-chunks-' . $block_slug . '-theme',
+			'tainacan-chunks-blocks-' . $block_slug . '-theme',
 			$TAINACAN_BASE_URL . '/assets/js/tainacan-chunks-' . $block_slug . '-theme.js',
 			array('wp-i18n'),
 			$TAINACAN_VERSION,
 			true
 		);
-		wp_set_script_translations( 'tainacan-chunks-' . $block_slug . '-theme', 'tainacan' );
-		wp_add_inline_script( 'wp-i18n', wp_scripts()->print_translations('tainacan-chunks-' . $block_slug . '-theme', false) );
+		wp_set_script_translations( 'tainacan-chunks-blocks-' . $block_slug . '-theme', 'tainacan' );
+		wp_add_inline_script( 'wp-i18n', wp_scripts()->print_translations('tainacan-chunks-blocks-' . $block_slug . '-theme', false) );
 	}
 
 	// Creates Register params based on registered scripts and styles

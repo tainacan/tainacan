@@ -21,7 +21,7 @@
                         <button 
                                 id="button-create-role"
                                 v-tooltip="{
-                                    content: $i18n.get('Create a role based on: '),
+                                    content: __('Create a role based on: ', 'tainacan'),
                                     autoHide: true,
                                     placement: 'top',
                                     popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
@@ -30,7 +30,7 @@
                                 role="link" 
                                 class="button is-secondary">
                             <span>
-                                {{ $i18n.get('New role') }}
+                                {{ __("New role", "tainacan") }}
                             </span>
                             <span 
                                     aria-hidden="true"
@@ -53,7 +53,7 @@
                                 @click="navigate()"
                                 @keydown.enter.prevent="navigate()"
                                 @keydown.space.prevent="navigate()">
-                            {{ $i18n.get('Blank') }}
+                            {{ __("Blank", "tainacan") }}
                         </div>
                     </router-link>
                 </b-dropdown-item>
@@ -61,7 +61,7 @@
                 <b-dropdown-item 
                         class="dropdown-item-secstion-separator"
                         custom>
-                    <em>{{ $i18n.get('Create a role based on: ') }}</em>
+                    <em>{{ __("Create a role based on: ", "tainacan") }}</em>
                 </b-dropdown-item>
                 <template 
                         v-for="role of roles"
@@ -95,7 +95,7 @@
                 class="header-item">
             <b-input 
                     v-model="searchString"
-                    :placeholder="$i18n.get('Type to search by Role Name')"
+                    :placeholder="__('Type to search by Role Name', 'tainacan')"
                     type="search"
                     size="is-small"
                     icon-right="magnify"
@@ -115,14 +115,14 @@
                                     id="name"
                                     scope="col">
                                 <div class="th-wrap">
-                                    {{ $i18n.get('Role\'s Name') }}
+                                    {{ __("Role's Name", "tainacan") }}
                                 </div>
                             </th>
                             <th
                                     id="role"
                                     scope="col">
                                 <div class="th-wrap">
-                                    {{ $i18n.get('Slug') }}
+                                    {{ __("Slug", "tainacan") }}
                                 </div>
                             </th>
                             <th
@@ -130,7 +130,7 @@
                                     scope="col"
                                     class="column-capabilities">
                                 <div class="th-wrap">
-                                    {{ $i18n.get('Number of Capabilities') }}
+                                    {{ __("Number of Capabilities", "tainacan") }}
                                 </div>
                             </th>
                             <!-- Actions -->
@@ -152,7 +152,7 @@
                                 <label
                                         class="sr-only"
                                         :for="'role_' + role.slug">
-                                    {{ $i18n.get('Selecionar') + ' ' + role.name }}
+                                    {{ __("Selecionar", "tainacan") + ' ' + role.name }}
                                 </label>
                                 <input
                                     type="checkbox"
@@ -162,7 +162,7 @@
                             </th> -->
                             <td 
                                     class="column-default-width column-main-content"
-                                    :data-colname="$i18n.get('Role name')">
+                                    :data-colname="__('Role name', 'tainacan')">
                                 <p>
                                     <router-link :to="'/roles/' + role.slug">
                                         {{ role.name }}
@@ -171,7 +171,7 @@
                             </td>
                             <td
                                     class="slug column-slug"
-                                    :data-colname="$i18n.get('Slug')">
+                                    :data-colname="__('Slug', 'tainacan')">
                                 <p>
                                     <router-link :to="'/roles/' + role.slug">
                                         <code>{{ role.slug }}</code>
@@ -180,7 +180,7 @@
                             </td>
                             <td
                                     class="column-small-width column-align-right"
-                                    :data-colname="$i18n.get('Number of capabilities')">
+                                    :data-colname="__('Number of capabilities', 'tainacan')">
                                 <p>
                                     <router-link :to="'/roles/' + role.slug">
                                         {{ Object.values(role.capabilities).filter((capability) => capability == true).length }}
@@ -192,7 +192,7 @@
                                     <router-link :to="'/roles/' + role.slug">
                                         <span
                                                 v-tooltip="{
-                                                    content: $i18n.get('Edit'),
+                                                    content: __('Edit', 'tainacan'),
                                                     autoHide: true,
                                                     popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'], 
                                                     placement: 'bottom'
@@ -205,13 +205,13 @@
                                             v-if="role.slug.match('tainacan')"
                                             role="button"
                                             tabindex="0"
-                                            :aria-label="$i18n.get('delete')"
+                                            :aria-label="__('delete', 'tainacan')"
                                             @click.prevent.stop="removeRole(role.slug)"
                                             @keydown.enter.prevent="removeRole(role.slug)"
                                             @keydown.space.prevent="removeRole(role.slug)">
                                         <span
                                                 v-tooltip="{
-                                                    content: $i18n.get('Delete'),
+                                                    content: __('Delete', 'tainacan'),
                                                     autoHide: true,
                                                     popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                     placement: 'bottom'
@@ -234,7 +234,7 @@
 <script>
     import { mapActions, mapGetters } from 'vuex';
     import CustomDialog from '../../admin/components/other/custom-dialog.vue';
-     
+
     export default { 
         name: "RolesList",
         data() {
@@ -324,9 +324,9 @@
                     component: CustomDialog,
                     props: {
                         icon: 'alert',
-                        confirmText: this.$i18n.get('Delete'),
-                        title: this.$i18n.get('Warning'),
-                        message: this.$i18n.get('Do you really want to permanently delete this user role?'),
+                        confirmText: this.__('Delete', 'tainacan'),
+                        title: this.__('Warning', 'tainacan'),
+                        message: this.__('Do you really want to permanently delete this user role?', 'tainacan'),
                         onConfirm: () => {
                             this.deleteRole(roleSlug)
                                 .then(() => {

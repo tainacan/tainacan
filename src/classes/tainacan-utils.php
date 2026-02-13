@@ -247,3 +247,53 @@ add_filter('wp_kses_allowed_html', function($allowedposttags, $context) {
 add_filter( 'wp_untrash_post_status', function( $new_status, $post_id, $previous_status ) {
 	return $previous_status;
 }, 10, 3 );
+
+/**
+ * Filter callback for load_script_translation_file: resolves lazy-loaded chunk handles to the translation JSON.
+ * Handles are aligned with build output (e.g. tainacan-chunks-blocks-{slug}-theme, tainacan-chunks-{name}-js-{name}-main),
+ * so the pattern is always the handle. Finds the language-pack JSON whose comment.reference contains it.
+ * Returns $file when no match (same as default WordPress behavior).
+ *
+ * @param string|false $file   Path to the translation file to load.
+ * @param string       $handle Script handle.
+ * @param string       $domain Text domain.
+ * @return string|false
+ */
+function tainacan_load_script_translation_file_for_chunk( $file, $handle, $domain ) {
+	if ( $domain !== 'tainacan' || strpos( $handle, 'tainacan-chunks-' ) !== 0 ) {
+		return $file;
+	}
+	$pattern = $handle;
+	static $cache = array();
+	$locale = get_locale();
+	$cache_key = $handle . '-' . $locale;
+	if ( isset( $cache[ $cache_key ] ) ) {
+		return $cache[ $cache_key ];
+	}
+	$lang_dir = WP_LANG_DIR . '/plugins/';
+	if ( ! is_dir( $lang_dir ) ) {
+		return $file;
+	}
+	$json_files = glob( $lang_dir . 'tainacan-' . $locale . '-*.json' );
+	if ( $json_files === false || empty( $json_files ) ) {
+		return $file;
+	}
+	foreach ( $json_files as $path ) {
+		$content = @file_get_contents( $path );
+		if ( $content === false ) {
+			continue;
+		}
+		$data = json_decode( $content, true );
+		if ( ! is_array( $data ) ) {
+			continue;
+		}
+		$ref = isset( $data['comment']['reference'] ) ? $data['comment']['reference'] : '';
+		if ( $ref !== '' && strpos( $ref, $pattern ) !== false ) {
+			$cache[ $cache_key ] = $path;
+			return $path;
+		}
+	}
+	return $file;
+}
+
+add_filter( 'load_script_translation_file', 'tainacan_load_script_translation_file_for_chunk', 10, 3 );
