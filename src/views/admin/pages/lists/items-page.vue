@@ -55,8 +55,8 @@
                 </router-link>
                 <b-dropdown
                         v-else
-                        ref="itemCreationOptionsDropdown"
                         id="item-creation-options-dropdown"
+                        ref="itemCreationOptionsDropdown"
                         v-a11y-dropdown
                         :trigger-tabindex="-1"
                         :mobile-modal="true"

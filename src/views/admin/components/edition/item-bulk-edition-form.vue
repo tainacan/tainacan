@@ -355,7 +355,6 @@ export default {
         deleteOneItem(itemId, index) {
             const modalTrigger = this.$modalFocusA11y.captureTrigger();
 
-            console.log('deleteOneItem', modalTrigger);
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {

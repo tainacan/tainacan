@@ -12,8 +12,8 @@
                     class="header-item">
                 <div class="control has-icons-right  is-small is-clearfix">
                     <b-autocomplete
-                            v-a11y-autocomplete
                             v-model="filteredRole"
+                            v-a11y-autocomplete
                             clearable
                             :data="filteredRoles"
                             :placeholder="$i18n.get('instruction_type_search_roles_filter')"

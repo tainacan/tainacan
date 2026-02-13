@@ -24,8 +24,8 @@
         </div>
         <b-autocomplete
                 v-else
-                v-a11y-autocomplete
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
+                v-a11y-autocomplete
                 :disabled="disabled"
                 :model-value="localValue"
                 :data="options"

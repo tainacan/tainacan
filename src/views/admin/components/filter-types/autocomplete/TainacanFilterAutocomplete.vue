@@ -1,8 +1,8 @@
 <template>
     <div class="block">
         <b-autocomplete
-                v-a11y-autocomplete
                 v-model="selected"
+                v-a11y-autocomplete
                 icon="magnify"
                 size="is-small"
                 :aria-labelledby="'filter-label-id-' + filter.id"

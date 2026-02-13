@@ -23,8 +23,8 @@
             </label>
 
             <b-taginput
-                    v-a11y-autocomplete
                     v-model="options"
+                    v-a11y-autocomplete
                     attached
                     :confirm-keys="optionsSeparator"
                     :on-paste-separators="optionsSeparator"

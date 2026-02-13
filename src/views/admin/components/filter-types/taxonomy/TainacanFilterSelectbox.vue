@@ -17,7 +17,7 @@
                     :key="index"
                     :value="option.value">
                 {{ getUnescapedLabel(option.label) + ( option.total_items ? (' (' + option.total_items + ')') : '' ) }}
-                </option>
+            </option>
         </b-select>
     </div>
 </template>

@@ -105,6 +105,19 @@
                 isTouched: false
             }
         },
+        computed: {
+            filterLabelId() {
+                return this.filter && this.filter.id ? ('filter-label-id-' + this.filter.id) : null;
+            },
+            untilLabelId() {
+                return this.filter && this.filter.id ? ('filter-until-label-id-' + this.filter.id) : null;
+            },
+            untilDateAriaLabelledBy() {
+                if (this.filterLabelId && this.untilLabelId)
+                    return `${this.filterLabelId} ${this.untilLabelId}`;
+                return this.filterLabelId;
+            }
+        },
         watch: {
             isTouched( val ){
               if ( val && this.dateInit === null)
@@ -118,19 +131,6 @@
                     this.updateSelectedValues();
                 },
                 deep: true
-            }
-        },
-        computed: {
-            filterLabelId() {
-                return this.filter && this.filter.id ? ('filter-label-id-' + this.filter.id) : null;
-            },
-            untilLabelId() {
-                return this.filter && this.filter.id ? ('filter-until-label-id-' + this.filter.id) : null;
-            },
-            untilDateAriaLabelledBy() {
-                if (this.filterLabelId && this.untilLabelId)
-                    return `${this.filterLabelId} ${this.untilLabelId}`;
-                return this.filterLabelId;
             }
         },
         mounted() {

@@ -19,8 +19,8 @@
                     v-if="!$adminOptions.hideCollectionsListCreationDropdown && $userCaps.hasCapability('tnc_rep_edit_collections')"
                     class="header-item">
                 <b-dropdown
-                        ref="collectionCreationOptionsDropdown"
                         id="collection-creation-options-dropdown"
+                        ref="collectionCreationOptionsDropdown"
                         v-a11y-dropdown="{ appendToBody: true }"
                         :trigger-tabindex="-1"
                         :mobile-modal="true"

@@ -150,10 +150,10 @@
                                     class="icon has-text-dark action-icon"
                                     tabindex="0"
                                     aria-role="button"
+                                    :aria-label="$i18n.get('label_stop_process')"
                                     @click.prevent.stop="pauseProcess(index)"
                                     @keydown.enter.prevent="pauseProcess(index)"
-                                    @keydown.space.prevent="pauseProcess(index)"
-                                    :aria-label="$i18n.get('label_stop_process')">
+                                    @keydown.space.prevent="pauseProcess(index)">
                                 <i 
                                         aria-hidden="true"
                                         class="tainacan-icon tainacan-icon-1-25em tainacan-icon-stop" />

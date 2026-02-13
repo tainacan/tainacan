@@ -50,14 +50,6 @@
                 valueEnd: null
             }
         },
-        watch: {
-            'query': {
-                handler() {
-                    this.updateSelectedValues();
-                },
-                deep: true
-            }
-        },
         computed: {
             filterLabelId() {
                 return this.filter && this.filter.id ? ('filter-label-id-' + this.filter.id) : null;
@@ -88,6 +80,14 @@
                 return this.filterName
                     ? this.$i18n.getWithVariables('label_%s_for_%s', [decreaseLabel, this.filterName])
                     : decreaseLabel;
+            }
+        },
+        watch: {
+            'query': {
+                handler() {
+                    this.updateSelectedValues();
+                },
+                deep: true
             }
         },
         mounted() {

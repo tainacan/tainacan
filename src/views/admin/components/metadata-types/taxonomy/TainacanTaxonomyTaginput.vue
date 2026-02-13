@@ -1,8 +1,8 @@
 <template>
     <b-taginput
-            v-a11y-autocomplete="{ appendToBody: !itemMetadatum.item }"
             :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
             v-model="selected"
+            v-a11y-autocomplete="{ appendToBody: !itemMetadatum.item }"
             expanded
             :disabled="disabled"
             size="is-small"

@@ -68,8 +68,8 @@
                     class="field">
                 <b-dropdown
                         v-if="Array.isArray(items) && items.length > 0"
-                        ref="bulkActionsDropdown"
                         id="bulk-actions-dropdown"
+                        ref="bulkActionsDropdown"
                         v-a11y-dropdown
                         :trigger-tabindex="-1"
                         :mobile-modal="true"
