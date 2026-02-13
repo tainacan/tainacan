@@ -259,6 +259,7 @@ export default {
         h2,
         h3 {
             margin: 0.875em 0em 1em 0em;
+            color: var(--tainacan-label-color);
         }
 
         .available-metadatum-item,
@@ -288,6 +289,7 @@ export default {
                 top: 6px;
             }
             .metadatum-name {
+                color: var(--tainacan-label-color);
                 text-overflow: ellipsis;
                 overflow-x: hidden;
                 white-space: nowrap;

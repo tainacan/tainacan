@@ -295,7 +295,7 @@ export default {
                     font-weight: bold;
                     margin-inline-start: 0.4em;
                     margin-inline-end: 0.4em;
-                    color: var(--tainacan-gray4);
+                    color: var(--tainacan-info-color);
 
                     &.is-danger {
                         color: var(--tainacan-danger) !important;
@@ -309,7 +309,7 @@ export default {
 
                     .metadatum-name {
                         h3 {
-                            color: var(--tainacan-gray4) !important;
+                            color: var(--tainacan-info-color) !important;
                             font-size: 1.25em;
                             line-height: normal;
                         }

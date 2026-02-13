@@ -61,6 +61,7 @@
                 font-size: 0.825em;
                 color: var(--tainacan-input-color) !important;
                 border: none;
+                background-color: var(--tainacan-input-background-color);
                 transition: background-color 0.3s ease;
                 min-height: var(--tainacan-button-min-height, 2.571em) !important;
                 line-height: 1.75em;
@@ -186,7 +187,7 @@
 }
 .taginput .taginput-container {
     padding: 0px !important;
-    background-color: var(--tainacan-input-background-color);
+    background-color: var(--tainacan-input-background-color) !important;
     border: 1px solid var(--tainacan-input-border-color) !important;
     border-radius: var(--tainacan-input-border-radius, 2px) !important;
 

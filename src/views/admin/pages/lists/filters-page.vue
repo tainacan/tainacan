@@ -1032,8 +1032,8 @@ export default {
             justify-content: space-between;
             margin-block-start: 0.5em;
             margin-block-end: 0.5em;
-            margin-inline-start: 0.5em;
-            margin-inline-end: 0.5em;
+            padding-inline-start: .5em;
+            padding-inline-end: .5em;
 
             .header-item {
                 margin-inline-start: 0.75rem;
@@ -1147,6 +1147,7 @@ export default {
                     flex-shrink: 0;
                 }
                 .filter-name {
+                    color: var(--tainacan-label-color);
                     text-overflow: ellipsis;
                     overflow-x: hidden;
                     white-space: nowrap;
@@ -1305,6 +1306,7 @@ export default {
                     bottom: 6px;
                 }
                 .metadatum-name {
+                    color: var(--tainacan-label-color);
                     text-overflow: ellipsis;
                     overflow-x: hidden;
                     white-space: nowrap;
