@@ -353,6 +353,7 @@
 
                 &>span>i:before {
                     content: 'previous';
+                    content: 'previous' / ''; /* where supported: show icon, expose "" to a11y */
                     font-size: 1.25em;
                 }
             }
@@ -364,6 +365,7 @@
 
                 &>span>i:before {
                     content: 'next';
+                    content: 'next' / ''; /* where supported: show icon, expose "" to a11y */
                     font-size: 1.25em;
                 }
             }
