@@ -302,7 +302,7 @@ class Admin extends Pages {
 
 		// Sanitize the page parameter
 		/* phpcs:ignore WordPress.Security.NonceVerification.Recommended */
-		$current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+		$current_page = isset($_GET['page']) ? sanitize_text_field( wp_unslash( $_GET['page']) ) : '';
 
 		if ( !empty($current_page) && $current_page == $this->get_page_slug() )
 			$modified_classes .= ' tainacan-admin-page';
@@ -322,9 +322,9 @@ class Admin extends Pages {
 		// Verify nonce for security
 		check_ajax_referer( 'tainacan-sample-permalink', '_ajax_nonce' );
 
-		$id = sanitize_text_field( wp_unslash( $_POST['post_id'] ) );
-		$title = sanitize_text_field( wp_unslash( $_POST['new_title'] ) );
-		$name = sanitize_text_field( wp_unslash( $_POST['new_slug'] ) );
+		$id = isset($_POST['post_id']) ? sanitize_text_field( wp_unslash( $_POST['post_id'] ) ) : '';
+		$title = isset($_POST['new_title']) ? sanitize_text_field( wp_unslash( $_POST['new_title'] ) ) : '';
+		$name = isset($_POST['new_slug']) ? sanitize_text_field( wp_unslash( $_POST['new_slug'] ) ) : null;
 
 		$post = get_post( $id );
 		if ( ! $post )
