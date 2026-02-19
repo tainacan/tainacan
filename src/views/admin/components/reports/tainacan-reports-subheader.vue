@@ -72,9 +72,7 @@
                             </svg>
                         </i>
                     </span>
-                    <span 
-                            aria-hidden="true"
-                            class="icon">
+                    <span>
                         {{ $i18n.get('label_restrict_access') }}
                     </span>
                 </li>
