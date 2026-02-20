@@ -56,6 +56,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 slidesPerView: 'auto',
                 watchSlidesProgress: true,
                 navigation: {
+                    addIcons: false,
                     nextEl: '.swiper-navigation-next_' + this.thumbs_gallery_selector,
                     prevEl: '.swiper-navigation-prev_' + this.thumbs_gallery_selector,
                 },

@@ -1,8 +1,8 @@
-@use 'swiper/swiper.scss';
-@use 'swiper/modules/navigation.scss';
-@use 'swiper/modules/a11y.scss';
-@use 'swiper/modules/autoplay.scss';
-@use 'swiper/modules/pagination.scss';
+@use 'swiper/swiper.css';
+@use 'swiper/modules/navigation.css';
+@use 'swiper/modules/a11y.css';
+@use 'swiper/modules/autoplay.css';
+@use 'swiper/modules/pagination.css';
 
 .item-gallery-edit-container {
     .tainacan-media-component {
@@ -51,7 +51,7 @@
     }
 }
 .tainacan-media-component {
-    --swiper-theme-color: var(--tainacan-secondary, #187181);
+    --swiper-theme-color: var(--tainacan-block-primary, var(--tainacan-secondary, #187181));
     --swiper-navigation-size: 44px;
     --tainacan-media-metadata-color: var(--tainacan-label-color, #373839); 
     --tainacan-media-background: var(--tainacan-background-color, transparent);
@@ -86,8 +86,17 @@
         content: 'previous';
     }
     .swiper-button-next:not(.swiper-button-has-svg)::after,
+    .swiper-rtl .swiper-button-prev:not(.swiper-button-has-svg)::after {
+        content: 'next';
+    }
+    .swiper-button-next:not(.swiper-button-has-svg)::after,
     .swiper-button-prev:not(.swiper-button-has-svg)::after {
         font-family: "TainacanIcons";
+        font-size: var(--swiper-navigation-size);
+        text-transform: none !important;
+        letter-spacing: 0;
+        font-variant: initial;
+        line-height: 1;
         opacity: 0.7;
         transition: opacity ease 0.2s;
     }

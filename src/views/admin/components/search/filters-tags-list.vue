@@ -174,6 +174,7 @@
                     slideToClickedSlide: true,
                     slidesPerView: 'auto',
                     navigation: {
+                        addIcons: false,
                         nextEl: '#tainacan-filter-tags-next',
                         prevEl: '#tainacan-filter-tags-prev',
                     },
@@ -301,7 +302,7 @@
             }
             .swiper-button-next,
             .swiper-button-prev {
-                padding: 34px 26px;
+                padding: 2.25rem 26px;
                 border: none;
                 background-color: transparent;
                 position: absolute;
@@ -311,6 +312,12 @@
             .swiper-button-prev::after,
             .swiper-rtl .swiper-button-next::after {
                 content: 'previous';
+                content: 'previous' / '' !important; /* where supported: show arrow, expose "" to a11y */
+            }
+            .swiper-button-next::after,
+            .swiper-rtl .swiper-button-prev::after {
+                content: 'next';
+                content: 'next' / '' !important; /* where supported: show arrow, expose "" to a11y */
             }
             .swiper-button-next,
             .swiper-rtl .swiper-button-prev {
@@ -332,6 +339,11 @@
                 font-family: "TainacanIcons";
                 opacity: 0.7;
                 transition: opacity ease 0.2s;
+                font-size: var(--swiper-navigation-size);
+                text-transform: none !important;
+                letter-spacing: 0;
+                font-variant: initial;
+                line-height: 1;
             }
         }
 

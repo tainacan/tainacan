@@ -93,8 +93,7 @@
         </div>
         <button 
                 :id="blockId + '-prev'" 
-                class="swiper-button-prev" 
-                :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
+                class="swiper-button-prev">
             <svg
                     :width="largeArrows ? 60 : 42"
                     :height="largeArrows ? 60 : 42"
@@ -112,8 +111,7 @@
         </button>
         <button 
                 :id="blockId + '-next'" 
-                class="swiper-button-next" 
-                :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
+                class="swiper-button-next">
             <svg
                     :width="largeArrows ? 60 : 42"
                     :height="largeArrows ? 60 : 42"
@@ -141,10 +139,6 @@
 import { nextTick } from 'vue';
 import axios from 'axios';
 import qs from 'qs';
-import 'swiper/css';
-import 'swiper/css/a11y';
-import 'swiper/css/autoplay';
-import 'swiper/css/navigation';
 import Swiper from 'swiper';
 import { Autoplay, Navigation, A11y } from 'swiper/modules';
 
@@ -258,6 +252,7 @@ export default {
                 spaceBetween: spaceBetween,
                 slideToClickedSlide: true,
                 navigation: {
+                    addIcons: false,
                     nextEl: '#' + self.blockId + '-next',
                     prevEl: '#' + self.blockId + '-prev',
                 },

@@ -2217,7 +2217,8 @@ class Theme_Helper {
 					'nextEl' => sprintf('.swiper-navigation-next_tainacan-item-gallery-block_id-%s-main', $block_id),
 					'prevEl' => sprintf('.swiper-navigation-prev_tainacan-item-gallery-block_id-%s-main', $block_id),
 					'preloadImages' => false,
-					'lazy' => true
+					'lazy' => true,
+					'addIcons' => false,
 				)
 			) : []
 		);
@@ -2238,7 +2239,8 @@ class Theme_Helper {
 					'nextEl' => sprintf('.swiper-navigation-next_tainacan-item-gallery-block_id-%s-thumbs', $block_id),
 					'prevEl' => sprintf('.swiper-navigation-prev_tainacan-item-gallery-block_id-%s-thumbs', $block_id),
 					'preloadImages' => false,
-					'lazy' => true
+					'lazy' => true,
+					'addIcons' => false,
 				)
 			) : []
 		);
@@ -2544,7 +2546,8 @@ class Theme_Helper {
 					'nextEl' => sprintf('.swiper-navigation-next_tainacan-items-gallery-block_id-%s-main', $block_id),
 					'prevEl' => sprintf('.swiper-navigation-prev_tainacan-items-gallery-block_id-%s-main', $block_id),
 					'preloadImages' => false,
-					'lazy' => true
+					'lazy' => true,
+					'addIcons' => false,
 				)
 			) : []
 		);
@@ -2565,7 +2568,8 @@ class Theme_Helper {
 					'nextEl' => sprintf('.swiper-navigation-next_tainacan-items-gallery-block_id-%s-thumbs', $block_id),
 					'prevEl' => sprintf('.swiper-navigation-prev_tainacan-items-gallery-block_id-%s-thumbs', $block_id),
 					'preloadImages' => false,
-					'lazy' => true
+					'lazy' => true,
+					'addIcons' => false,
 				)
 			) : []
 		);

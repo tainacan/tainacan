@@ -1,8 +1,8 @@
 @use '../../scss/gutenberg-blocks-variables.scss';
-@use 'swiper/swiper.scss';
-@use 'swiper/modules/navigation.scss';
-@use 'swiper/modules/a11y.scss';
-@use 'swiper/modules/autoplay.scss';
+@use 'swiper/swiper.css';
+@use 'swiper/modules/navigation.css';
+@use 'swiper/modules/a11y.css';
+@use 'swiper/modules/autoplay.css';
 
 .components-panel__body .term-carousel-view-modes {
     display: flex;
@@ -138,8 +138,8 @@
     // Tainacan Carousel
     .tainacan-carousel {
         position: relative;
-        width: calc(100% + 40px);
-        left: -20px;
+        width: calc(100% + calc( 2 * (var(--spaceAroundCarousel, 50px) - var(--swiper-navigation-sides-offset, 4px) ) ));
+        left: calc( -1 * (var(--spaceAroundCarousel, 50px) - var(--swiper-navigation-sides-offset, 4px) ));
 
         .swiper {
             margin: 0 var(--spaceAroundCarousel, 50px);
@@ -236,16 +236,13 @@
 
     // Next and previous buttons
     .swiper-button-prev, .swiper-button-next {
-        top: calc(50% - 42px);
-        bottom: initial;
         background: none;
         background-color: transparent !important;
         border: none;
-        min-width: 42px;
-        width: calc(var(--spaceAroundCarousel) - 8px);
-        height: 42px;
+        min-width: var(--swiper-navigation-size, 42px);
+        width: calc(var(--spaceAroundCarousel, 50px) - var(--swiper-navigation-sides-offset, 4px));
+        height: var(--swiper-navigation-size, 42px);
         padding: 0;
-        margin: 0;
 
         svg {
             border-radius: 100%;
@@ -276,41 +273,26 @@
             max-height: 260px;
         }
 
-        &.has-arrows-none .swiper-button-prev,
-        &.has-arrows-none .swiper-button-next {
-            display: none;
-        }
         &.has-arrows-left .swiper-button-next {
-            inset-inline-start: 0px;
-            inset-inline-end: auto;
-            top: calc(50% + 12px) !important;
+            left: var(--swiper-navigation-sides-offset, 4px);
+            right: auto;
+            top: calc(50% + (var(--swiper-navigation-size, 12px) / 2)) !important;
+        }
+        &.has-arrows-left .swiper-button-prev {
+            top: calc(50% - (var(--swiper-navigation-size, 12px) / 2)) !important;
         }
         &.has-arrows-right .swiper-button-prev {
-            inset-inline-end: 20px;
-            inset-inline-start: auto;
+            right: var(--swiper-navigation-sides-offset, 4px);
+            top: calc(50% - (var(--swiper-navigation-size, 12px) / 2)) !important;
+            left: auto;
         }
         &.has-arrows-right .swiper-button-next {
-            top: calc(50% + 12px) !important;
+            top: calc(50% + (var(--swiper-navigation-size, 12px) / 2)) !important;
         }
         &.has-large-arrows .swiper-button-prev, 
         &.has-large-arrows .swiper-button-next {
-            top: calc(50% - 60px);
-            min-width: 60px;
-            width: calc(var(--spaceAroundCarousel) + 10px);
-            height: 60px;
-            margin: 0 -24px;
-        }
-        &.has-large-arrows.has-arrows-left .swiper-button-next {
-            inset-inline-start: 10px;
-            inset-inline-end: auto;
-            top: calc(50% + 30px) !important;
-        }
-        &.has-large-arrows.has-arrows-right .swiper-button-prev {
-            inset-inline-end: 10px;
-            inset-inline-start: auto;
-        }
-        &.has-large-arrows.has-arrows-right .swiper-button-next {
-            top: calc(50% + 30px) !important;
+            --swiper-navigation-size: 60px;
+            --swiper-navigation-sides-offset: -10px;
         }
     }
     ul.terms-list-edit {

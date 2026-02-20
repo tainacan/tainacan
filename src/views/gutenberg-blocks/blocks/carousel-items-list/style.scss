@@ -1,8 +1,8 @@
 @use '../../scss/gutenberg-blocks-variables.scss';
-@use 'swiper/swiper.scss';
-@use 'swiper/modules/navigation.scss';
-@use 'swiper/modules/a11y.scss';
-@use 'swiper/modules/autoplay.scss';
+@use 'swiper/swiper.css';
+@use 'swiper/modules/navigation.css';
+@use 'swiper/modules/a11y.css';
+@use 'swiper/modules/autoplay.css';
 
 .wp-block-tainacan-carousel-items-list {
     margin: 2em auto;
@@ -147,8 +147,8 @@
     // Tainacan Carousel
     .tainacan-carousel {
         position: relative;
-        width: calc(100% + 40px);
-        left: -20px;
+        width: calc(100% + calc( 2 * (var(--spaceAroundCarousel, 50px) - var(--swiper-navigation-sides-offset, 4px) ) ));
+        left: calc( -1 * (var(--spaceAroundCarousel, 50px) - var(--swiper-navigation-sides-offset, 4px) ));
 
         .swiper {
             margin: 0 var(--spaceAroundCarousel, 50px);
@@ -205,16 +205,13 @@
 
     // Next and previous buttons
     .swiper-button-prev, .swiper-button-next {
-        top: calc(50% - 42px);
-        bottom: initial;
         background: none;
         background-color: transparent !important;
         border: none;
-        min-width: 42px;
-        width: calc(var(--spaceAroundCarousel) - 8px);
-        height: 42px;
+        min-width: var(--swiper-navigation-size, 42px);
+        width: calc(var(--spaceAroundCarousel) - var(--swiper-navigation-sides-offset, 4px));
+        height: var(--swiper-navigation-size, 42px);
         padding: 0;
-        margin: 0;
 
         svg {
             border-radius: 100%;
@@ -250,36 +247,25 @@
             display: none;
         }
         &.has-arrows-left .swiper-button-next {
-            left: 10px;
+            left: var(--swiper-navigation-sides-offset, 4px);
             right: auto;
-            top: calc(50% + 12px) !important;
+            top: calc(50% + (var(--swiper-navigation-size, 12px) / 2)) !important;
+        }
+        &.has-arrows-left .swiper-button-prev {
+            top: calc(50% - (var(--swiper-navigation-size, 12px) / 2)) !important;
         }
         &.has-arrows-right .swiper-button-prev {
-            right: 10px;
+            right: var(--swiper-navigation-sides-offset, 4px);
+            top: calc(50% - (var(--swiper-navigation-size, 12px) / 2)) !important;
             left: auto;
         }
         &.has-arrows-right .swiper-button-next {
-            top: calc(50% + 12px) !important;
+            top: calc(50% + (var(--swiper-navigation-size, 12px) / 2)) !important;
         }
         &.has-large-arrows .swiper-button-prev, 
         &.has-large-arrows .swiper-button-next {
-            top: calc(50% - 60px);
-            min-width: 60px;
-            width: calc(var(--spaceAroundCarousel) + 10px);
-            height: 60px;
-            margin: 0 -24px;
-        }
-        &.has-large-arrows.has-arrows-left .swiper-button-next {
-            left: 30px;
-            right: auto;
-            top: calc(50% + 30px) !important;
-        }
-        &.has-large-arrows.has-arrows-right .swiper-button-prev {
-            right: 30px;
-            left: auto;
-        }
-        &.has-large-arrows.has-arrows-right .swiper-button-next {
-            top: calc(50% + 30px) !important;
+            --swiper-navigation-size: 60px;
+            --swiper-navigation-sides-offset: -10px;
         }
     }
     ul.items-list-edit {
