@@ -212,5 +212,6 @@ require_once(__DIR__ . '/theme-helper/template-tags.php');
 \Tainacan\Theme_Helper::get_instance();
 
 require_once(__DIR__ . '/../views/gutenberg-blocks/class-tainacan-gutenberg-block.php');
+\Tainacan\Gutenberg_Block::get_instance();
 
 include_once('tainacan-loaders.php');

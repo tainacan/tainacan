@@ -319,6 +319,64 @@ class Settings extends Pages {
 		) );
 
 		/**
+		 * Gutenberg blocks -----------------------------------------------------
+		 */
+		add_settings_section(
+			'tainacan_settings_gutenberg_blocks',
+			__( 'Gutenberg blocks', 'tainacan' ),
+			array( $this, 'gutenberg_blocks_section_description' ),
+			'tainacan_settings'
+		);
+
+		$gutenberg_block = \Tainacan\Gutenberg_Block::get_instance();
+		$this->create_tainacan_setting( array(
+			'id' => 'enabled_blocks',
+			'section' => 'tainacan_settings_gutenberg_blocks',
+			'title' => __( 'Enabled blocks', 'tainacan' ),
+			'label' => $gutenberg_block->get_block_labels(),
+			'type' => 'array',
+			'input_type' => 'checkbox',
+			'default' => array_keys( $gutenberg_block->get_blocks() ),
+			'sanitize_callback' => array( $this, 'sanitize_enabled_blocks' ),
+		) );
+
+		$this->create_tainacan_setting( array(
+			'id' => 'enabled_variation_items',
+			'section' => 'tainacan_settings_gutenberg_blocks',
+			'title' => __( 'Tainacan collection items', 'tainacan' ),
+			'label' => __( 'Show the Query loop variations for Tainacan collection items', 'tainacan' ),
+			'description' => __( 'These variations will display a list of Tainacan items from each collection using the WordPress Core Query loop.', 'tainacan' ),
+			'type' => 'boolean',
+			'input_type' => 'checkbox',
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'default' => true,
+		) );
+
+		$this->create_tainacan_setting( array(
+			'id' => 'enabled_variation_collections',
+			'section' => 'tainacan_settings_gutenberg_blocks',
+			'title' => __( 'Tainacan collections', 'tainacan' ),
+			'label' => __( 'Show the Query loop variation for Tainacan collections', 'tainacan' ),
+			'description' => __( 'This variation will display a list of Tainacan collections using the WordPress Core Query loop.', 'tainacan' ),
+			'type' => 'boolean',
+			'input_type' => 'checkbox',
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'default' => true,
+		) );
+
+		$this->create_tainacan_setting( array(
+			'id' => 'enabled_variation_taxonomies',
+			'section' => 'tainacan_settings_gutenberg_blocks',
+			'title' => __( 'Tainacan taxonomies', 'tainacan' ),
+			'label' => __( 'Show the Query loop variation for Tainacan taxonomies', 'tainacan' ),
+			'description' => __( 'This variation will display a list of Tainacan taxonomies using the WordPress Core Query loop.', 'tainacan' ),
+			'type' => 'boolean',
+			'input_type' => 'checkbox',
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'default' => true,
+		) );
+
+		/**
 		 * Google reCAPTCHA -----------------------------------------------------
 		 */
 		add_settings_section(
@@ -555,6 +613,28 @@ class Settings extends Pages {
 			<?php esc_html_e('Options that will be used as default for items list in the collection and repository pages. They might be overridden by collection settings or theme options.', 'tainacan');?>
 		</p>
 	<?php
+	}
+
+	public function gutenberg_blocks_section_description() {
+	?>
+		<p class="settings-section-description">
+			<?php esc_html_e( 'Disabling blocks or Query loop variations can make the block editor lighter and reduce the number of options in the inserter.', 'tainacan' ); ?>
+		</p>
+	<?php
+	}
+
+	/**
+	 * Sanitizes the enabled_blocks setting: ensures value is an array of strings and only allows known block slugs.
+	 *
+	 * @param mixed $input
+	 * @return array
+	 */
+	public function sanitize_enabled_blocks( $input ) {
+		$allowed = array_keys( \Tainacan\Gutenberg_Block::get_instance()->get_blocks() );
+		if ( ! is_array( $input ) ) {
+			return [];
+		}
+		return array_values( array_intersect( array_map( 'sanitize_text_field', $input ), $allowed ) );
 	}
 
 	public function print_section_info() {
