@@ -550,6 +550,7 @@
                 }
                 :deep(.collapse-handle) {
                     margin-inline-start: -28px;
+                    width: calc(100% + 28px);
                 }
             }
         }
