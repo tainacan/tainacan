@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Handles registration of Tainacan Gutenberg blocks and Query loop variations.
  * Not a page; provides block list and labels for Settings and filters registration by options.
  */
-class Gutenberg_Block {
+class Gutenberg_Blocks {
 	use \Tainacan\Traits\Singleton_Instance;
 
 	/**
