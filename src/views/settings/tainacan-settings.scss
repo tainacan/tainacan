@@ -15,7 +15,16 @@
     td .description {
         font-size: 0.875em;
     }
+    // Only apply column layout if there are more than 8 children
+    .multiple-options:has(label:nth-child(9)) {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 320px);
+        gap: .5em var(--tainacan-one-column);
 
+        br {
+            display: none;
+        }
+    }
     .form-footer {
         position: sticky;
         bottom: 0;
