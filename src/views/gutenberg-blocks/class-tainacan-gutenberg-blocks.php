@@ -16,7 +16,7 @@ class Gutenberg_Blocks {
 	 *
 	 * @var array<string, array>
 	 */
-	public static $blocks = [
+	private static $blocks = [
 		'items-list' => [],
 		'collections-list' => [],
 		'search-bar' => [],
@@ -127,7 +127,7 @@ class Gutenberg_Blocks {
 		$plugin_settings = \Tainacan\Admin::get_instance()->get_admin_js_localization_params();
 
 		$enabled = get_option( 'tainacan_option_enabled_blocks', [] );
-		$blocks  = self::$blocks;
+		$blocks  = $this->get_blocks();
 		if ( ! empty( $enabled ) && is_array( $enabled ) ) {
 			$blocks = array_intersect_key( $blocks, array_flip( $enabled ) );
 		}
@@ -268,7 +268,7 @@ class Gutenberg_Blocks {
 	 */
 	public function get_block_labels() {
 		$labels = [];
-		foreach ( array_keys( self::$blocks ) as $slug ) {
+		foreach ( array_keys( $this->get_blocks() ) as $slug ) {
 			$path = $this->blocks_dir . '/' . $slug . '/block.json';
 			if ( is_readable( $path ) ) {
 				$json = json_decode( (string) file_get_contents( $path ), true );
