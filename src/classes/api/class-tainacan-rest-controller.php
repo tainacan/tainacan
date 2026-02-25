@@ -377,12 +377,14 @@ abstract class REST_Controller extends \WP_REST_Controller {
 		);
 
 		$query_params['status'] = array(
+			'default'     => 'publish',
 			'description' => __("Limit result set to objects assigned one or more statuses.", 'tainacan'),
 			'type'        => 'array',
 			'items'       => array(
 				'enum'    => array_merge(array_keys(get_post_stati()), array('any')),
 				'type'    => 'string',
 			),
+			'sanitize_callback' => array( $this, 'tainacan_sanitize_post_statuses' ),
 		);
 
 		$query_params['offset'] = array(
@@ -729,6 +731,17 @@ abstract class REST_Controller extends \WP_REST_Controller {
 			'tags' => [$this->rest_base],
 		];
 		return $schema;
+	}
+
+	public function tainacan_sanitize_post_statuses( $statuses, $request, $parameter ) {
+		$statuses = wp_parse_slug_list( $statuses );
+		foreach ( $statuses as $status ) {
+			if ( $status === 'any' ) {
+				$allstatuses = get_post_stati();
+				return array_values($allstatuses);
+			}
+		}
+		return $statuses;
 	}
 
 }
