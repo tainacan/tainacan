@@ -377,7 +377,6 @@ abstract class REST_Controller extends \WP_REST_Controller {
 		);
 
 		$query_params['status'] = array(
-			'default'     => 'publish',
 			'description' => __("Limit result set to objects assigned one or more statuses.", 'tainacan'),
 			'type'        => 'array',
 			'items'       => array(

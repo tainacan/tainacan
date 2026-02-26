@@ -958,7 +958,7 @@ class Facets extends TAINACAN_UnitApiTestCase {
 			]
 		] );
 		$values = $this->get_values($values);
-		$this->assertEquals(3, sizeof($values));
+		$this->assertEquals(2, sizeof($values));
 		
 		// test parent 
 		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
