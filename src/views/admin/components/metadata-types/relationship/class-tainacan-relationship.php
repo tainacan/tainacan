@@ -216,21 +216,45 @@ class Relationship extends Metadata_Type {
 		$return = '';
 
 		if ( $item_metadata->is_multiple() ) {
-			$prefix = $item_metadata->get_multivalue_prefix();
-			$suffix = $item_metadata->get_multivalue_suffix();
-			$separator = $item_metadata->get_multivalue_separator();
-			
-			foreach ( $value as $item_id ) {
-				try {
-					$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-					$item = $Tainacan_Items->fetch( (int) $item_id);
-					if ( $this->can_display_item($item) ) {
-						$return .= empty($return)
-							? ($prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix)
-							: ($separator . $prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix);
+			$value_markup = $item_metadata->get_metadatum()->get_value_markup();
+			if ( $value_markup === 'list' ) {
+				$list_items = [];
+				foreach ( $value as $item_id ) {
+					try {
+						$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+						$item = $Tainacan_Items->fetch( (int) $item_id);
+						if ( $this->can_display_item($item) ) {
+							$list_items[] = $this->get_item_html($item, $search_meta_id, $display_metas);
+						}
+					} catch (\Exception $e) {
+						// item not found
 					}
-				} catch (\Exception $e) {
-					// item not found
+				}
+				if ( count( $list_items ) === 1 ) {
+					$return .= $list_items[0];
+				} else {
+					$return .= '<ul>';
+					foreach ( $list_items as $item ) {
+						$return .= '<li>' . $item . '</li>';
+					}
+					$return .= '</ul>';
+				}
+			} else {
+				$prefix = $item_metadata->get_multivalue_prefix();
+				$suffix = $item_metadata->get_multivalue_suffix();
+				$separator = $item_metadata->get_multivalue_separator();
+				foreach ( $value as $item_id ) {
+					try {
+						$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+						$item = $Tainacan_Items->fetch( (int) $item_id);
+						if ( $this->can_display_item($item) ) {
+							$return .= empty($return)
+								? ($prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix)
+								: ($separator . $prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix);
+						}
+					} catch (\Exception $e) {
+						// item not found
+					}
 				}
 			}
 		} else {

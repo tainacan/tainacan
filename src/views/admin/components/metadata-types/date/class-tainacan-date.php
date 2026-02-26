@@ -75,24 +75,42 @@ class Date extends Metadata_Type {
 		$return = '';
 
 		if ( $item_metadata->is_multiple() ) {
-			$total = sizeof($value);
-			$count = 0;
-			$prefix = $item_metadata->get_multivalue_prefix();
-			$suffix = $item_metadata->get_multivalue_suffix();
-			$separator = $item_metadata->get_multivalue_separator();
-
-			foreach ( $value as $el ) {
-
-				if( empty( $el ) ) 
-					continue;
-
-				$return .= $prefix;
-				$return .= $this->format_date_value($el);
-				$return .= $suffix;
-				$count ++;
-
-				if ($count < $total)
-					$return .= $separator;
+			$value_markup = $item_metadata->get_metadatum()->get_value_markup();
+			if ( $value_markup === 'list' ) {
+				$list_items = [];
+				foreach ( $value as $el ) {
+					if ( empty( $el ) ) {
+						continue;
+					}
+					$list_items[] = $this->format_date_value($el);
+				}
+				if ( count( $list_items ) === 1 ) {
+					$return .= $list_items[0];
+				} else {
+					$return .= '<ul>';
+					foreach ( $list_items as $item ) {
+						$return .= '<li>' . $item . '</li>';
+					}
+					$return .= '</ul>';
+				}
+			} else {
+				$total = sizeof($value);
+				$count = 0;
+				$prefix = $item_metadata->get_multivalue_prefix();
+				$suffix = $item_metadata->get_multivalue_suffix();
+				$separator = $item_metadata->get_multivalue_separator();
+				foreach ( $value as $el ) {
+					if ( empty( $el ) ) {
+						continue;
+					}
+					$return .= $prefix;
+					$return .= $this->format_date_value($el);
+					$return .= $suffix;
+					$count++;
+					if ( $count < $total ) {
+						$return .= $separator;
+					}
+				}
 			}
 		} else {
 			$return = $this->format_date_value($value);

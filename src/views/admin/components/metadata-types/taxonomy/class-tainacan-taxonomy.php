@@ -366,26 +366,44 @@ class Taxonomy extends Metadata_Type {
 		if ( isset($value) ) {
 
 			if ( $item_metadata->is_multiple() ) {
-				$count = 1;
-				$total = sizeof($value);
-				$prefix = $item_metadata->get_multivalue_prefix();
-				$suffix = $item_metadata->get_multivalue_suffix();
-				$separator = $item_metadata->get_multivalue_separator();
-
-				foreach ( $value as $term ) {
-					$count++;
-
-					if ( is_integer($term) ) {
-						$term = \Tainacan\Repositories\Terms::get_instance()->fetch($term, $this->get_option('taxonomy_id'));
+				$value_markup = $item_metadata->get_metadatum()->get_value_markup();
+				if ( $value_markup === 'list' ) {
+					$list_items = [];
+					foreach ( $value as $term ) {
+						if ( is_integer($term) ) {
+							$term = \Tainacan\Repositories\Terms::get_instance()->fetch($term, $this->get_option('taxonomy_id'));
+						}
+						if ( $term instanceof \Tainacan\Entities\Term ) {
+							$list_items[] = $this->get_term_hierarchy_html($term, $item_metadata->get_item());
+						}
 					}
-
-					if ( $term instanceof \Tainacan\Entities\Term ) {
-						$return .= $prefix;
-						$return .= $this->get_term_hierarchy_html($term, $item_metadata->get_item());
-						$return .= $suffix;
-
-						if ( $count <= $total ) {
-							$return .= $separator;
+					if ( count( $list_items ) === 1 ) {
+						$return .= $list_items[0];
+					} else {
+						$return .= '<ul>';
+						foreach ( $list_items as $item ) {
+							$return .= '<li>' . $item . '</li>';
+						}
+						$return .= '</ul>';
+					}
+				} else {
+					$count = 1;
+					$total = sizeof($value);
+					$prefix = $item_metadata->get_multivalue_prefix();
+					$suffix = $item_metadata->get_multivalue_suffix();
+					$separator = $item_metadata->get_multivalue_separator();
+					foreach ( $value as $term ) {
+						$count++;
+						if ( is_integer($term) ) {
+							$term = \Tainacan\Repositories\Terms::get_instance()->fetch($term, $this->get_option('taxonomy_id'));
+						}
+						if ( $term instanceof \Tainacan\Entities\Term ) {
+							$return .= $prefix;
+							$return .= $this->get_term_hierarchy_html($term, $item_metadata->get_item());
+							$return .= $suffix;
+							if ( $count <= $total ) {
+								$return .= $separator;
+							}
 						}
 					}
 				}

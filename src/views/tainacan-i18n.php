@@ -292,6 +292,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_display_default'                          => __( 'Display by default', 'tainacan' ),
 	'label_display_never'                            => __( 'Never displayed', 'tainacan' ),
 	'label_not_display'                              => __( 'Do not display by default', 'tainacan' ),
+	'label_value_markup_inline'                      => __( 'Inline', 'tainacan' ),
+	'label_value_markup_list'                        => __( 'List', 'tainacan' ),
 	'label_no_terms_selected'                        => __( 'No terms selected', 'tainacan' ),
 	'label_attach_to_item'                           => __( 'Attach to item', 'tainacan' ),
 	/* translators: Document is the main content of the Item. It can be a file, a url link or a text */

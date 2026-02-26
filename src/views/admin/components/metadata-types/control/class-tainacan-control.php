@@ -149,18 +149,32 @@ class Control extends Metadata_Type {
 		} else {
 
 			if ( $item_metadata->is_multiple() ) {
-				$total = sizeof($value);
-				$count = 0;
-				$prefix = $item_metadata->get_multivalue_prefix();
-				$suffix = $item_metadata->get_multivalue_suffix();
-				$separator = $item_metadata->get_multivalue_separator();
-				foreach ($value as $v) {
-					$return .= $prefix;
-					$return .= (string) $v;
-					$return .= $suffix;
-					$count ++;
-					if ($count < $total)
-						$return .= $separator;
+				$value_markup = $item_metadata->get_metadatum()->get_value_markup();
+				if ( $value_markup === 'list' ) {
+					if ( count( $value ) === 1 ) {
+						$return .= esc_html( (string) reset( $value ) );
+					} else {
+						$return .= '<ul>';
+						foreach ( $value as $v ) {
+							$return .= '<li>' . esc_html( (string) $v ) . '</li>';
+						}
+						$return .= '</ul>';
+					}
+				} else {
+					$total = sizeof($value);
+					$count = 0;
+					$prefix = $item_metadata->get_multivalue_prefix();
+					$suffix = $item_metadata->get_multivalue_suffix();
+					$separator = $item_metadata->get_multivalue_separator();
+					foreach ( $value as $v ) {
+						$return .= $prefix;
+						$return .= (string) $v;
+						$return .= $suffix;
+						$count++;
+						if ( $count < $total ) {
+							$return .= $separator;
+						}
+					}
 				}
 			} else {
 				$return = (string) $value;

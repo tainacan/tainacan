@@ -162,26 +162,47 @@ class GeoCoordinate extends Metadata_Type {
 			$zoom_geo_query = isset($options['initial_zoom']) ? ('z=' . $options['initial_zoom'] ) : '' ;
 
 			if ( $item_metadata->is_multiple() ) {
-				$prefix = $item_metadata->get_multivalue_prefix();
-				$suffix = $item_metadata->get_multivalue_suffix();
-				$separator = $item_metadata->get_multivalue_separator();
-				
-				foreach ( $value as $coordinate ) {
-
-					$coordinate_as_array = explode(",", $coordinate);
-					$latitude = isset($coordinate_as_array[0]) ? $coordinate_as_array[0] : '';
-					$longitude = isset($coordinate_as_array[1]) ? $coordinate_as_array[1] : '';
-
-					$single_value = "<a class='tainacan-coordinates' data-latitude='{$latitude}' data-longitude='{$longitude}' href='geo:{$latitude},{$longitude}?q={$latitude},{$longitude}&{$zoom_geo_query}'>
-										<span>{$latitude}</span>
-										<span class='coordinates-separator'>,</span>
-										<span>{$longitude}</span>
-									</a>";
-					$return .= empty($return)
-						? $prefix . $single_value . $suffix
-						: $separator . $prefix . $single_value . $suffix;
+				$value_markup = $item_metadata->get_metadatum()->get_value_markup();
+				if ( $value_markup === 'list' ) {
+					$list_items = [];
+					foreach ( $value as $coordinate ) {
+						$coordinate_as_array = explode(",", $coordinate);
+						$latitude = isset($coordinate_as_array[0]) ? $coordinate_as_array[0] : '';
+						$longitude = isset($coordinate_as_array[1]) ? $coordinate_as_array[1] : '';
+						$single_value = "<a class='tainacan-coordinates' data-latitude='{$latitude}' data-longitude='{$longitude}' href='geo:{$latitude},{$longitude}?q={$latitude},{$longitude}&{$zoom_geo_query}'>
+											<span>{$latitude}</span>
+											<span class='coordinates-separator'>,</span>
+											<span>{$longitude}</span>
+										</a>";
+						$list_items[] = $single_value;
+					}
+					if ( count( $list_items ) === 1 ) {
+						$return .= $list_items[0];
+					} else {
+						$return .= '<ul>';
+						foreach ( $list_items as $item ) {
+							$return .= '<li>' . $item . '</li>';
+						}
+						$return .= '</ul>';
+					}
+				} else {
+					$prefix = $item_metadata->get_multivalue_prefix();
+					$suffix = $item_metadata->get_multivalue_suffix();
+					$separator = $item_metadata->get_multivalue_separator();
+					foreach ( $value as $coordinate ) {
+						$coordinate_as_array = explode(",", $coordinate);
+						$latitude = isset($coordinate_as_array[0]) ? $coordinate_as_array[0] : '';
+						$longitude = isset($coordinate_as_array[1]) ? $coordinate_as_array[1] : '';
+						$single_value = "<a class='tainacan-coordinates' data-latitude='{$latitude}' data-longitude='{$longitude}' href='geo:{$latitude},{$longitude}?q={$latitude},{$longitude}&{$zoom_geo_query}'>
+											<span>{$latitude}</span>
+											<span class='coordinates-separator'>,</span>
+											<span>{$longitude}</span>
+										</a>";
+						$return .= empty($return)
+							? $prefix . $single_value . $suffix
+							: $separator . $prefix . $single_value . $suffix;
+					}
 				}
-
 			} else {
 				$coordinate_as_array = explode(",", $value);
 				$latitude = isset($coordinate_as_array[0]) ? $coordinate_as_array[0] : '';

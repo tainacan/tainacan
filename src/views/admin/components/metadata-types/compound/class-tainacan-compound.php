@@ -191,31 +191,37 @@ class Compound extends Metadata_Type {
 		
 			if ( $item_metadata->is_multiple() ) {
 				$elements = [];
-				
 				foreach ( $value as $compound_element ) {
-					
 					if ( !empty($compound_element) ) {
 						$metadata_value =  array_fill(0, count($compound_element), null);
 						$metadata_value_not_ordinate = [];
-						
 						foreach ( $compound_element as $meta_id => $meta ) {
 							$index = array_search( $meta_id, array_column( $order, 'id' ) );
-							
 							if ( $meta instanceof Item_Metadata_Entity && $meta->get_value_as_html() != '' ) {
 								$html = $this->get_meta_html($meta);
-								
 								if ( $index !== false )
 									$metadata_value[$index] = $html;
 								else
 									$metadata_value_not_ordinate[] = $html;
 							}
 						}
-						$elements[] = '<div class="tainacan-compound-metadatum">' . implode("\n", array_merge($metadata_value, $metadata_value_not_ordinate)) . "</div> \n" ;
+						$elements[] = '<div class="tainacan-compound-metadatum">' . implode("\n", array_merge($metadata_value, $metadata_value_not_ordinate)) . "</div> \n";
 					}
 				}
-
-				$return = implode($separator, $elements);
-
+				$value_markup = $item_metadata->get_metadatum()->get_value_markup();
+				if ( $value_markup === 'list' ) {
+					if ( count( $elements ) === 1 ) {
+						$return = $elements[0];
+					} else {
+						$return = '<ul>';
+						foreach ( $elements as $el ) {
+							$return .= '<li>' . $el . '</li>';
+						}
+						$return .= '</ul>';
+					}
+				} else {
+					$return = implode($separator, $elements);
+				}
 			} else {
 				$metadata_value = array_fill(0, count($value), null);
 				$metadata_value_not_ordinate = [];
