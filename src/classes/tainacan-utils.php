@@ -240,6 +240,18 @@ add_filter('wp_kses_allowed_html', function($allowedposttags, $context) {
 }, 10, 2);
 
 /**
+ * Allow the geo: URL protocol in sanitized content (e.g. geocoordinate metadata links).
+ * WordPress's wp_kses() only allows protocols from wp_allowed_protocols(), which does not include geo:.
+ * Without this filter, href='geo:lat,lng' would be stripped when content is passed through wp_kses().
+ */
+add_filter( 'kses_allowed_protocols', function( $protocols ) {
+	if ( ! in_array( 'geo', $protocols, true ) ) {
+		$protocols[] = 'geo';
+	}
+	return $protocols;
+}, 10, 1 );
+
+/**
  * Makes untrashed posts return to their previous status instead of 'draft'.
  * 
  * @see https://core.trac.wordpress.org/ticket/23022#comment:13
