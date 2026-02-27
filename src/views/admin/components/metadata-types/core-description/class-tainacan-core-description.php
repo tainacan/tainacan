@@ -93,8 +93,8 @@ class Core_Description extends Metadata_Type {
 		$return = '';
 
 		if ( $item_metadata->is_multiple() ) {
-			$value_markup = $item_metadata->get_metadatum()->get_value_markup();
-			if ( $value_markup === 'list' ) {
+			$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+			if ( $html_formatting === 'list' ) {
 				if ( count( $value ) === 1 ) {
 					$return .= nl2br($this->make_clickable_links( reset( $value ) ));
 				} else {

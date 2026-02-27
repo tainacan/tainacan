@@ -165,11 +165,11 @@ class User extends Metadata_Type {
 				$response[] = apply_filters("tainacan-item-get-author-name", $name, $this);
 			}
 			if ( count($response) > 1 ) {
-				$value_markup = $item_metadata->get_metadatum()->get_value_markup();
-				if ( $value_markup === 'list' ) {
+				$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+				if ( $html_formatting === 'list' ) {
 					$return .= '<ul>';
 					foreach ( $response as $name ) {
-						$return .= '<li>' . esc_html( $name ) . '</li>';
+						$return .= '<li>' . ( $name ) . '</li>';
 					}
 					$return .= '</ul>';
 				} else {

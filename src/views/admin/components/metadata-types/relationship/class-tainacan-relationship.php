@@ -216,8 +216,8 @@ class Relationship extends Metadata_Type {
 		$return = '';
 
 		if ( $item_metadata->is_multiple() ) {
-			$value_markup = $item_metadata->get_metadatum()->get_value_markup();
-			if ( $value_markup === 'list' ) {
+			$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+			if ( $html_formatting === 'list' ) {
 				$list_items = [];
 				foreach ( $value as $item_id ) {
 					try {

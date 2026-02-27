@@ -312,6 +312,7 @@ export default {
         }
         .column-large-width {
             .tainacan-compound-group {
+                list-style: none;
                 display: inline-block;
                 font-size: 1.125em;
                 margin-top: -0.25em;

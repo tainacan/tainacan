@@ -114,7 +114,7 @@ export default {
                             this.masonry.destroy();
                         
                         this.masonry = new Masonry( this.containerId ? ( '#' + this.containerId + ' .tainacan-masonry-container' ) : '.tainacan-masonry-container', {
-                            itemSelector: 'li',
+                            itemSelector: '.tainacan-masonry-container>li',
                             columnWidth: '.tainacan-masonry-grid-sizer',
                             gutter: 25,
                             percentPosition: true,

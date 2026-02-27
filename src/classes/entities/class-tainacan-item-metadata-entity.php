@@ -160,14 +160,14 @@ class Item_Metadata_Entity extends Entity {
 		$return = '';
 		
 		if ( $this->is_multiple() ) {
-			$value_markup = $metadatum->get_value_markup();
-			if ( $value_markup === 'list' ) {
+			$html_formatting = $metadatum->get_html_formatting();
+			if ( $html_formatting === 'list' ) {
 				if ( count( $value ) === 1 ) {
-					$return .= esc_html( (string) reset( $value ) );
+					$return .= ( (string) reset( $value ) );
 				} else {
 					$return .= '<ul>';
 					foreach ( $value as $v ) {
-						$return .= '<li>' . esc_html( (string) $v ) . '</li>';
+						$return .= '<li>' . ( (string) $v ) . '</li>';
 					}
 					$return .= '</ul>';
 				}

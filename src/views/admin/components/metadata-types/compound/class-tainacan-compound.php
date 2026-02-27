@@ -190,7 +190,9 @@ class Compound extends Metadata_Type {
 		if ( !empty($value) ) { 
 		
 			if ( $item_metadata->is_multiple() ) {
+
 				$elements = [];
+
 				foreach ( $value as $compound_element ) {
 					if ( !empty($compound_element) ) {
 						$metadata_value =  array_fill(0, count($compound_element), null);
@@ -205,23 +207,26 @@ class Compound extends Metadata_Type {
 									$metadata_value_not_ordinate[] = $html;
 							}
 						}
-						$elements[] = '<div class="tainacan-compound-metadatum">' . implode("\n", array_merge($metadata_value, $metadata_value_not_ordinate)) . "</div> \n";
+						$elements[] = implode("\n", array_merge($metadata_value, $metadata_value_not_ordinate));
 					}
 				}
-				$value_markup = $item_metadata->get_metadatum()->get_value_markup();
-				if ( $value_markup === 'list' ) {
-					if ( count( $elements ) === 1 ) {
-						$return = $elements[0];
-					} else {
-						$return = '<ul>';
-						foreach ( $elements as $el ) {
-							$return .= '<li>' . $el . '</li>';
-						}
-						$return .= '</ul>';
+
+				$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+				$render_multiple_as_list = $html_formatting === 'list' && count( $elements ) > 1;					
+				if ( $render_multiple_as_list ) {
+					$return = '<ul class="tainacan-compound-group">';
+					foreach ( $elements as $el ) {
+						$return .= '<li class="tainacan-compound-metadatum">' . $el . '</li>';
 					}
-				} else {
-					$return = implode($separator, $elements);
+					$return .= '</ul>';
+				} else  {
+					$return = '<div class="tainacan-compound-group">';
+					foreach ( $elements as $el ) {
+						$return .= '<div class="tainacan-compound-metadatum">' . $el . "</div> \n";
+					}
+					$return .= '</div>';
 				}
+				
 			} else {
 				$metadata_value = array_fill(0, count($value), null);
 				$metadata_value_not_ordinate = [];
@@ -240,9 +245,8 @@ class Compound extends Metadata_Type {
 				}
 
 				$return = implode("\n", array_merge($metadata_value, $metadata_value_not_ordinate));
-			}
-			
-			$return = "<div class='tainacan-compound-group'> {$return} </div>";
+				$return = "<div class='tainacan-compound-group'> {$return} </div>";
+			}	
 		}
 
 		return 

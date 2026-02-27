@@ -1937,6 +1937,7 @@
 
         .metadata-value {
             .tainacan-compound-group {
+                list-style: none;
                 margin-inline-start: 2px;
                 padding-inline-start: 0.875em;
                 border-inline-start: 1px solid var(--tainacan-gray3);

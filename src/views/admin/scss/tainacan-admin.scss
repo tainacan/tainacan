@@ -139,6 +139,7 @@ html.is-clipped .page-container:not(.is-filters-menu-open) {
 .metadata-value,
 .tainacan-relationship-group .tainacan-relationship-metadatum .tainacan-metadatum {
     .tainacan-compound-group {
+        list-style: none;
         margin-inline-start: 2px;
         padding-inline-start: 0.875em;
         border-inline-start: 1px solid var(--tainacan-gray2);
@@ -188,7 +189,7 @@ html.is-clipped .page-container:not(.is-filters-menu-open) {
         display: block;
         max-height: 1px;
         width: 80px;
-        background: var(--tainacan-gray3);
+        background: var(--tainacan-gray2);
         content: none;
         color: transparent;
         margin: 1em auto;
@@ -201,6 +202,16 @@ html.is-clipped .page-container:not(.is-filters-menu-open) {
     padding-inline-start: 15px;
     margin-inline-start: 0px;
     border-inline-start: 1px solid var(--tainacan-gray2);
+
+    .tainacan-compound-group {
+        list-style: none;
+        margin-inline-start: 0;
+
+        & > .tainacan-compound-metadatum:not(:last-child) {
+            border-bottom: 1px solid var(--tainacan-gray2);
+            margin-bottom: 1em;
+        }
+    }
 
     .tainacan-metadatum {
         margin-bottom: 0.75em;

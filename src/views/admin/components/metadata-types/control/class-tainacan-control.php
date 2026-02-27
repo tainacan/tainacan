@@ -149,14 +149,14 @@ class Control extends Metadata_Type {
 		} else {
 
 			if ( $item_metadata->is_multiple() ) {
-				$value_markup = $item_metadata->get_metadatum()->get_value_markup();
-				if ( $value_markup === 'list' ) {
+				$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+				if ( $html_formatting === 'list' ) {
 					if ( count( $value ) === 1 ) {
-						$return .= esc_html( (string) reset( $value ) );
+						$return .= ( (string) reset( $value ) );
 					} else {
 						$return .= '<ul>';
 						foreach ( $value as $v ) {
-							$return .= '<li>' . esc_html( (string) $v ) . '</li>';
+							$return .= '<li>' . ( (string) $v ) . '</li>';
 						}
 						$return .= '</ul>';
 					}

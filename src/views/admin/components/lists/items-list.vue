@@ -2649,7 +2649,7 @@ export default {
                         
                         if (this.viewMode == 'masonry' || this.viewMode == 'records') {
                             this.masonry = new Masonry( '.tainacan-' + this.viewMode + '-container', {
-                                itemSelector: 'li',
+                                itemSelector: this.viewMode == 'records' ? '.tainacan-records-container>li' : '.tainacan-masonry-container>li',
                                 columnWidth: '.tainacan-' + this.viewMode + '-grid-sizer',
                                 gutter: this.viewMode == 'masonry' ? 25 : 30,
                                 percentPosition: true,

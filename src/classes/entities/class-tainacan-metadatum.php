@@ -24,7 +24,7 @@ class Metadatum extends Entity {
 		$required,
 		$multiple,
 		$display,
-		$value_markup,
+		$html_formatting,
 		$allow_advanced_search,
 		$cardinality,
 		$collection_key,
@@ -76,18 +76,17 @@ class Metadatum extends Entity {
 	}
 
 	/**
-	 * @param string $value_markup
+	 * @param string $html_formatting
 	 */
-	function set_value_markup( $value_markup ) {
-		$this->set_mapped_property('value_markup', $value_markup);
+	function set_html_formatting( $html_formatting ) {
+		$this->set_mapped_property('html_formatting', $html_formatting);
 	}
 
 	/**
 	 * @return string 'inline' or 'list'. Defaults to 'inline' when not set.
 	 */
-	function get_value_markup() {
-		$value = $this->get_mapped_property('value_markup');
-		return ( $value === '' || $value === null ) ? 'inline' : $value;
+	function get_html_formatting() {
+		return ( $this->get_metadata_type() == 'Tainacan\Metadata_Types\Compound' && $this->is_multiple() ) ? 'list' : $this->get_mapped_property('html_formatting');
 	}
 
 	/**

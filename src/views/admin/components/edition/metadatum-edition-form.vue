@@ -302,48 +302,51 @@
 
                             <transition name="filter-item">
                                 <b-field
-                                        v-if="!originalMetadatum.metadata_type_object.core && form.parent == 0 && form.multiple == 'yes'"
-                                        :type="formErrors['value_markup'] != undefined ? 'is-danger' : ''"
-                                        :message="formErrors['value_markup'] != undefined ? formErrors['value_markup'] : ''"
+                                        v-if="!originalMetadatum.metadata_type_object.core && 
+                                            originalMetadatum.metadata_type_object.component != 'tainacan-compound' &&
+                                            form.parent == 0 &&
+                                            form.multiple == 'yes'"
+                                        :type="formErrors['html_formatting'] != undefined ? 'is-danger' : ''"
+                                        :message="formErrors['html_formatting'] != undefined ? formErrors['html_formatting'] : ''"
                                         :addons="false"
                                         style="margin: 0 0 1em 1.5em;">
                                     <div 
                                             style="margin-top: 0;"
                                             class="metadata-form-section"
-                                            @click="showValueMarkupOptions = !showValueMarkupOptions;">
+                                            @click="showHTMLFormattingOptions = !showHTMLFormattingOptions;">
                                         <span 
                                                 aria-hidden="true"
                                                 class="icon">
                                             <i 
                                                     class="tainacan-icon"
-                                                    :class="showValueMarkupOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
+                                                    :class="showHTMLFormattingOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
                                         </span>
                                         <strong>
-                                            {{ $i18n.getHelperTitle('metadata', 'value_markup') }}
+                                            {{ $i18n.getHelperTitle('metadata', 'html_formatting') }}
                                             <help-button
-                                                    :title="$i18n.getHelperTitle('metadata', 'value_markup')"
-                                                    :message="$i18n.getHelperMessage('metadata', 'value_markup')"
+                                                    :title="$i18n.getHelperTitle('metadata', 'html_formatting')"
+                                                    :message="$i18n.getHelperMessage('metadata', 'html_formatting')"
                                                     :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                                         </strong>
                                         <hr>
                                     </div>
                                     <transition name="filter-item">
                                         <div 
-                                                v-if="showValueMarkupOptions && form.multiple == 'yes'"
+                                                v-if="showHTMLFormattingOptions && form.multiple == 'yes'"
                                                 style="display: inline-flex; gap: 1em;">
                                             <b-radio
-                                                    v-model="form.value_markup"
-                                                    name="value_markup"
+                                                    v-model="form.html_formatting"
+                                                    name="html_formatting"
                                                     native-value="inline"
-                                                    @update:model-value="clearErrors('value_markup')">
-                                                {{ $i18n.get('label_value_markup_inline') }}
+                                                    @update:model-value="clearErrors('html_formatting')">
+                                                {{ $i18n.get('label_html_formatting_inline') }}
                                             </b-radio>
                                             <b-radio
-                                                    v-model="form.value_markup"
-                                                    name="value_markup"
+                                                    v-model="form.html_formatting"
+                                                    name="html_formatting"
                                                     native-value="list"
-                                                    @update:model-value="clearErrors('value_markup')">
-                                                {{ $i18n.get('label_value_markup_list') }}
+                                                    @update:model-value="clearErrors('html_formatting')">
+                                                {{ $i18n.get('label_html_formatting_list') }}
                                             </b-radio>
                                         </div>
                                     </transition>
@@ -565,7 +568,7 @@
                 hideMetadataTypeOptions: false,
                 showAdvancedOptions: false,
                 showCardinalityOptions: false,
-                showValueMarkupOptions: false
+                showHTMLFormattingOptions: false
             }
         },
         watch: {
@@ -582,11 +585,11 @@
             if (this.form.cardinality && Number(this.form.cardinality) > 1)
                 this.showCardinalityOptions = true;
 
-            if (this.form.value_markup === 'list')
-                this.showValueMarkupOptions = true;
+            if (this.form.html_formatting === 'list')
+                this.showHTMLFormattingOptions = true;
 
-            if (!this.form.value_markup)
-                this.form.value_markup = 'inline';
+            if (!this.form.html_formatting)
+                this.form.html_formatting = 'inline';
 
             this.formErrors = this.form.formErrors != undefined ? this.form.formErrors : {};
             this.formErrorMessage = this.form.formErrors != undefined ? this.form.formErrorMessage : '';

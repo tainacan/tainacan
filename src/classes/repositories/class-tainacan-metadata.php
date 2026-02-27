@@ -199,7 +199,7 @@ class Metadata extends Repository {
 				'description' => __( 'Display by default on listing or do not display or never display.', 'tainacan' ),
 				'default'     => 'no'
 			],
-			'value_markup'          => [
+			'html_formatting'          => [
 				'map'         => 'meta',
 				'title'       => __( 'Value markup', 'tainacan' ),
 				'type'        => 'string',
