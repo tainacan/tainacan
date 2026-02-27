@@ -201,7 +201,7 @@ class Metadata extends Repository {
 			],
 			'html_formatting'          => [
 				'map'         => 'meta',
-				'title'       => __( 'Value markup', 'tainacan' ),
+				'title'       => __( 'HTML formatting', 'tainacan' ),
 				'type'        => 'string',
 				'validation'  => v::stringType()->in( [ 'inline', 'list' ] ),
 				'enum'        => [ 'inline', 'list' ],

@@ -194,13 +194,18 @@
             margin: 1em auto;
         }
     }
-    
+
     .tainacan-compound-group {
         text-align: start;
         list-style: none;
         margin-inline-start: 2px;
         padding-inline-start: 0.875em;
         border-inline-start: 1px solid var(--tainacan-gray2);
+
+        & > .tainacan-compound-metadatum:not(:last-child) {
+            border-bottom: 1px solid var(--tainacan-gray2);
+            margin-bottom: 1em;
+        }
 
         .tainacan-compound-metadatum .label {
             text-align: start;
@@ -226,6 +231,9 @@
     }
     .tainacan-relationship-group {
         text-align: start;
+        list-style: none;
+        margin-inline-start: 0;
+        padding-inline-start: 0;
         .tainacan-relationship-metadatum {
             text-align: start;
             .tainacan-relationship-metadatum-header {

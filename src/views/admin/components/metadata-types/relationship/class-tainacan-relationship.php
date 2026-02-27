@@ -217,6 +217,7 @@ class Relationship extends Metadata_Type {
 
 		if ( $item_metadata->is_multiple() ) {
 			$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+			$render_multiple_as_list = $html_formatting === 'list' && count( $value ) > 1;
 			if ( $html_formatting === 'list' ) {
 				$list_items = [];
 				foreach ( $value as $item_id ) {
@@ -224,21 +225,22 @@ class Relationship extends Metadata_Type {
 						$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 						$item = $Tainacan_Items->fetch( (int) $item_id);
 						if ( $this->can_display_item($item) ) {
-							$list_items[] = $this->get_item_html($item, $search_meta_id, $display_metas);
+							$list_items[] = $this->get_item_html($item, $search_meta_id, $display_metas, $render_multiple_as_list);
 						}
 					} catch (\Exception $e) {
 						// item not found
 					}
 				}
 				if ( count( $list_items ) === 1 ) {
-					$return .= $list_items[0];
+					$return = "<div class='tainacan-relationship-group'>{$list_items[0]}</div>";
 				} else {
-					$return .= '<ul>';
+					$return .= (!empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 ) ? '<ul class="tainacan-relationship-group">' : '<ul>';
 					foreach ( $list_items as $item ) {
-						$return .= '<li>' . $item . '</li>';
+						$return .= $item;
 					}
 					$return .= '</ul>';
 				}
+
 			} else {
 				$prefix = $item_metadata->get_multivalue_prefix();
 				$suffix = $item_metadata->get_multivalue_suffix();
@@ -256,6 +258,9 @@ class Relationship extends Metadata_Type {
 						// item not found
 					}
 				}
+				if ( !empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 && $return !== '' ) {
+					$return = "<div class='tainacan-relationship-group'>{$return}</div>";
+				}
 			}
 		} else {
 			try {
@@ -266,9 +271,10 @@ class Relationship extends Metadata_Type {
 			} catch (\Exception $e) {
 				// item not found 
 			}
-		}
-		if ( !empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 && $return !== '' ) {
-			$return = "<div class='tainacan-relationship-group'>{$return}</div>";
+
+			if ( !empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 && $return !== '' ) {
+				$return = "<div class='tainacan-relationship-group'>{$return}</div>";
+			}
 		}
 
 		return 
@@ -295,7 +301,7 @@ class Relationship extends Metadata_Type {
 		);
 	}
 
-	private function get_item_html($item, $search_meta_id, $display_metas) {
+	private function get_item_html($item, $search_meta_id, $display_metas, $render_as_list_item = false) {
 		$return = '';
 		$id = $item->get_id();
 		
@@ -322,7 +328,11 @@ class Relationship extends Metadata_Type {
 				}
 				$return = implode("\n", $metadata_value);
 			}
-			$return = "<div class='tainacan-relationship-metadatum' data-item-id='$id'>{$return}</div>";
+			if ( $render_as_list_item ) {
+				$return = "<li class='tainacan-relationship-metadatum' data-item-id='$id'>{$return}</li>";
+			} else {
+				$return = "<div class='tainacan-relationship-metadatum' data-item-id='$id'>{$return}</div>";
+			}
 		} else if ( $id && $search_meta_id ) {
 			$as_link = $this->get_item_link($item, $search_meta_id);
 			$return = "$as_link";
