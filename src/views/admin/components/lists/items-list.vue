@@ -998,7 +998,7 @@
 
                         <!-- Remaining metadata -->
                         <div
-                                class="media"
+                                class="media content"
                                 @click.left="onClickItem($event, item)"
                                 @click.right="onRightClickItem($event, item)">
                             <div class="list-metadata media-body">
@@ -1590,7 +1590,7 @@
 
                     <!-- Remaining metadata -->  
                     <div 
-                            class="media"
+                            class="media content"
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)">
                         <div 
