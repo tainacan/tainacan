@@ -231,9 +231,10 @@ class Relationship extends Metadata_Type {
 						// item not found
 					}
 				}
-				if ( count( $list_items ) === 1 ) {
+				$total = count( $list_items );
+				if ( $total === 1 ) {
 					$return = "<div class='tainacan-relationship-group'>{$list_items[0]}</div>";
-				} else {
+				} elseif ( $total > 1 ) {
 					$return .= (!empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 ) ? '<ul class="tainacan-relationship-group">' : '<ul>';
 					foreach ( $list_items as $item ) {
 						$return .= $item;

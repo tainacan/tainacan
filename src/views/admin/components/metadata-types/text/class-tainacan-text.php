@@ -62,9 +62,10 @@ class Text extends Metadata_Type {
 		if ( is_array($value) && $item_metadata->is_multiple() ) {
 			$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
 			if ( $html_formatting === 'list' ) {
-				if ( count( $value ) === 1 ) {
+				$total = count( $value );
+				if ( $total === 1 ) {
 					$return .= $this->make_clickable_links( reset( $value ) );
-				} else {
+				} elseif ( $total > 1 ) {
 					$return .= '<ul>';
 					foreach ( $value as $el ) {
 						$return .= '<li>' . $this->make_clickable_links($el) . '</li>';

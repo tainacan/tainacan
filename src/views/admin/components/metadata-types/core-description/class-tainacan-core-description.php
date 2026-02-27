@@ -95,9 +95,10 @@ class Core_Description extends Metadata_Type {
 		if ( $item_metadata->is_multiple() ) {
 			$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
 			if ( $html_formatting === 'list' ) {
-				if ( count( $value ) === 1 ) {
+				$total = count( $value );
+				if ( $total === 1 ) {
 					$return .= nl2br($this->make_clickable_links( reset( $value ) ));
-				} else {
+				} elseif ( $total > 1 ) {
 					$return .= '<ul>';
 					foreach ( $value as $el ) {
 						$return .= '<li>' . nl2br($this->make_clickable_links($el)) . '</li>';

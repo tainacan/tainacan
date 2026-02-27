@@ -1224,7 +1224,7 @@
                                                 show: 500,
                                                 hide: 300,
                                             },
-                                            popperClass: [ 'tainacan-tooltip', 'tooltip', column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                            popperClass: [ 'tainacan-tooltip', 'tooltip', 'content', column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                             html: true,
                                             autoHide: false,

@@ -82,9 +82,10 @@ class URL extends Metadata_Type {
 						$list_items[] = $this->get_single_value_as_html($el);
 					}
 				}
-				if ( count( $list_items ) === 1 ) {
+				$total = count( $list_items );
+				if ( $total === 1 ) {
 					$return .= $list_items[0];
-				} else {
+				} elseif ( $total > 1 ) {
 					$return .= '<ul>';
 					foreach ( $list_items as $item ) {
 						$return .= '<li>' . $item . '</li>';

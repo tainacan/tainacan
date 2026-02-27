@@ -333,6 +333,27 @@
                                 line-height: 1.25em !important;
                             }
                         }   
+                        :deep(.tainacan-taxonomy-tree-level) {
+                            list-style: none;
+                            margin-inline-start: 0;
+                            padding-inline-start: 0;
+                            margin-bottom: 0;
+                            display: inline-block;
+                            margin-inline-start: 0.25em;
+
+                            li {
+                                display: inline-block;
+                                margin-inline-end: 0.25em;
+                            }
+                            ul > li:first-child::before {
+                                content: ' > ';
+                                color: var(--tainacan-gray3);
+                            }
+                            & > li:not(:last-child)::after {
+                                content: ' | ';
+                                color: var(--tainacan-gray3);
+                            }
+                        }
                     }
                     img.table-thumb,
                     .table-thumb>div {

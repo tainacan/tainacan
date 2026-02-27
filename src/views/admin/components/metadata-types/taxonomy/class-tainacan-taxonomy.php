@@ -543,7 +543,7 @@ class Taxonomy extends Metadata_Type {
 		if ( empty( $terms ) ) {
 			return '';
 		}
-		$out = '<ul>';
+		$out = '<ul class="tainacan-taxonomy-tree-level">';
 		foreach ( $terms as $term ) {
 			$id = (int) $term->get_id();
 			$children = isset( $children_by_parent[ $id ] ) ? $children_by_parent[ $id ] : [];

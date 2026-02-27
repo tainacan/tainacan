@@ -176,9 +176,10 @@ class GeoCoordinate extends Metadata_Type {
 										</a>";
 						$list_items[] = $single_value;
 					}
-					if ( count( $list_items ) === 1 ) {
+					$total = count( $list_items );
+					if ( $total === 1 ) {
 						$return .= $list_items[0];
-					} else {
+					} elseif ( $total > 1 ) {
 						$return .= '<ul>';
 						foreach ( $list_items as $item ) {
 							$return .= '<li>' . $item . '</li>';

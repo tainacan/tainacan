@@ -162,9 +162,10 @@ class Item_Metadata_Entity extends Entity {
 		if ( $this->is_multiple() ) {
 			$html_formatting = $metadatum->get_html_formatting();
 			if ( $html_formatting === 'list' ) {
-				if ( count( $value ) === 1 ) {
+				$total = count( $value );
+				if ( $total === 1 ) {
 					$return .= ( (string) reset( $value ) );
-				} else {
+				} elseif ( $total > 1 ) {
 					$return .= '<ul>';
 					foreach ( $value as $v ) {
 						$return .= '<li>' . ( (string) $v ) . '</li>';
