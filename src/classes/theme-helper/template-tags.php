@@ -421,7 +421,9 @@ function tainacan_the_media_component($media_id, $media_items_thumbs, $media_ite
  * 	   @type bool		 swiper_arrows_as_svg	  		Uses SVG icons insetead of Tainacan Icon font for navigation arrows
  *     @type string      swiper_arrow_next_custom_svg 	Custom SVG icon to render next navigation arrow
  *     @type string      swiper_arrow_prev_custom_svg 	Custom SVG icon to render previous navigation arrow
- *     @type bool 		 disable_lightbox				Do not open Photoswiper layer on click
+ *     @type bool 		 disable_main_carousel			Disable the main carousel, removing swiper classes and wrappers
+ *     @type bool 		 disable_thumbs_carousel		Disable the thumbs carousel, removing swiper classes and wrappers
+ *     @type bool 		 disable_lightbox				Do not open photoswipe layer on click
  *     @type bool        show_share_button        		Shows share button on lightbox
  *	   @type bool	 	 lightbox_has_light_background  Show a light background instead of dark in the lightbox 
  * }
@@ -462,6 +464,8 @@ function tainacan_get_the_media_component(
 		'swiper_arrows_as_svg' => false,
 		'swiper_arrow_next_custom_svg' => '',
 		'swiper_arrow_prev_custom_svg' => '',
+		'disable_main_carousel' => false,
+		'disable_thumbs_carousel' => false,
 		'disable_lightbox' => false,
 		'show_share_button' => false,
 		'lightbox_has_light_background' => false
@@ -524,27 +528,35 @@ function tainacan_get_the_media_component(
 				
 				<!-- Slider main container -->
 				<?php echo wp_kses_post($args['before_main_div']) ?>
-				<div id="<?php echo esc_attr($args['media_main_id']) ?>" class="tainacan-media-component__swiper-main swiper <?php echo esc_attr($args['class_main_div']) ?>">
+				<div id="<?php echo esc_attr($args['media_main_id']) ?>" class="tainacan-media-component__swiper-main <?php echo esc_attr($args['class_main_div']) ?> <?php echo !$args['disable_main_carousel'] ? 'swiper' : '' ?>">
 
 					<!-- Additional required wrapper -->
 					<?php echo wp_kses_post($args['before_main_ul']) ?>
-					<ul class="swiper-wrapper <?php echo esc_attr($args['class_main_ul']) ?>">
-						<?php foreach($media_items_main as $media_item) { ?>
-							<li class="swiper-slide <?php echo esc_attr($args['class_main_li']) ?>">
-								<?php 
-									echo wp_kses($media_item, wp_kses_allowed_html('tainacan_content'));
-								 ?>
-							</li>
-						<?php }; ?>
-					</ul>
+					<?php if ( count($media_items_main) > 1 ) : ?>
+						<ul class="photoswipe-target-container <?php echo esc_attr($args['class_main_ul']) ?> <?php echo !$args['disable_main_carousel'] ? 'swiper-wrapper' : '' ?>">
+							<?php foreach($media_items_main as $media_item) { ?>
+								<li class="<?php echo esc_attr($args['class_main_li']) ?> <?php echo !$args['disable_main_carousel'] ? 'swiper-slide' : '' ?>">
+									<?php 
+										echo wp_kses($media_item, wp_kses_allowed_html('tainacan_content'));
+									?>
+								</li>
+							<?php }; ?>
+						</ul>
+					<?php elseif ( count($media_items_main) === 1 ) : ?>
+						<div class="<?php echo esc_attr($args['class_main_ul']) ?> <?php echo $args['disable_main_carousel'] ? 'swiper-wrapper' : '' ?>">
+							<div class="<?php echo esc_attr($args['class_main_li']) ?> <?php echo $args['disable_main_carousel'] ? 'swiper-slide' : '' ?>">
+								<?php echo wp_kses($media_items_main[0], wp_kses_allowed_html('tainacan_content')); ?>
+							</div>
+						</div>
+					<?php endif; ?>
 					<?php echo wp_kses_post($args['before_main_ul']) ?>
 
-					<?php if ( $args['swiper_main_options'] && isset($args['swiper_main_options']['pagination']) ) : ?>
+					<?php if ( $args['swiper_main_options'] && isset($args['swiper_main_options']['pagination']) && !$args['disable_main_carousel'] ) : ?>
 						<!-- If we need pagination -->
 						<div class="swiper-pagination swiper-pagination_<?php echo esc_attr($args['media_main_id']) ?>"></div>
 					<?php endif; ?>
 
-					<?php if ( $args['swiper_main_options'] && isset($args['swiper_main_options']['navigation']) ) : ?>
+					<?php if ( $args['swiper_main_options'] && isset($args['swiper_main_options']['navigation']) && !$args['disable_main_carousel'] ) : ?>
 
 						<!-- If we need navigation buttons -->
 						<div class="swiper-button-prev swiper-navigation-prev_<?php echo esc_attr($args['media_main_id']) ?> <?php echo ($args['swiper_arrows_as_svg'] ? 'swiper-button-has-svg' : '' ) ?>">
@@ -581,25 +593,34 @@ function tainacan_get_the_media_component(
 
 				<!-- Slider thumbs container -->
 				<?php echo wp_kses_post($args['before_thumbs_div']) ?>
-				<div id="<?php echo esc_attr($args['media_thumbs_id']) ?>" class="tainacan-media-component__swiper-thumbs swiper <?php echo esc_attr($args['class_thumbs_div']) ?>">
+				<div id="<?php echo esc_attr($args['media_thumbs_id']) ?>" class="tainacan-media-component__swiper-thumbs <?php echo esc_attr($args['class_thumbs_div']) ?> <?php echo !$args['disable_thumbs_carousel'] ? 'swiper' : '' ?>">
 
 					<!-- Additional required wrapper -->
 					<?php echo wp_kses_post($args['before_thumbs_ul']) ?>
-					<ul class="swiper-wrapper <?php echo esc_attr($args['class_thumbs_ul']) ?>">
-						<?php foreach($media_items_thumbs as $media_item) { ?>
-							<li class="swiper-slide <?php echo esc_attr($args['class_thumbs_li']) ?>">
-								<?php echo wp_kses($media_item, wp_kses_allowed_html('tainacan_content')); ?>
-							</li>
-						<?php }; ?>
-					</ul>
+
+					<?php if ( count($media_items_thumbs) > 1 ) : ?>
+						<ul class="photoswipe-target-container <?php echo esc_attr($args['class_thumbs_ul']) ?> <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-wrapper' : '' ?>">
+							<?php foreach($media_items_thumbs as $media_item) { ?>
+								<li class="<?php echo esc_attr($args['class_thumbs_li']) ?> <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-slide' : '' ?>">
+									<?php echo wp_kses($media_item, wp_kses_allowed_html('tainacan_content')); ?>
+								</li>
+							<?php }; ?>
+						</ul>
+					<?php elseif ( count($media_items_thumbs) === 1 ) : ?>
+						<div class="photoswipe-target-container <?php echo esc_attr($args['class_thumbs_ul']) ?> <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-wrapper' : '' ?>">
+							<div class="<?php echo esc_attr($args['class_thumbs_li']) ?> <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-slide' : '' ?>">
+								<?php echo wp_kses($media_items_thumbs[0], wp_kses_allowed_html('tainacan_content')); ?>
+							</div>
+						</div>
+					<?php endif; ?>
 					<?php echo wp_kses_post($args['before_thumbs_ul']) ?>
 
-					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['pagination']) ) : ?>
+					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['pagination']) && !$args['disable_thumbs_carousel'] ) : ?>
 						<!-- If we need pagination -->
 						<div class="swiper-pagination swiper-pagination_<?php echo esc_attr($args['media_thumbs_id']) ?>"></div>
 					<?php endif; ?>
 
-					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['navigation']) ) : ?>
+					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['navigation']) && !$args['disable_thumbs_carousel'] ) : ?>
 						<!-- If we need navigation buttons -->
 
 						<div class="swiper-button-prev swiper-navigation-prev_<?php echo esc_attr($args['media_thumbs_id']) ?> <?php echo ($args['swiper_arrows_as_svg'] ? 'swiper-button-has-svg' : '' ) ?>">
@@ -630,8 +651,10 @@ function tainacan_get_the_media_component(
 					<?php endif; ?>
 
 					<!-- These elements will create a gradient on the side of the carousel -->
-					<div class="swiper-start-border"></div>
-					<div class="swiper-end-border"></div>
+					<?php if ( !$args['disable_thumbs_carousel'] ) : ?>
+						<div class="swiper-start-border"></div>
+						<div class="swiper-end-border"></div>
+					<?php endif; ?>
 				</div>
 				<?php echo wp_kses_post($args['after_thumbs_div']) ?>
 			<?php endif; ?>
