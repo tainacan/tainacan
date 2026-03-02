@@ -1,4 +1,4 @@
-import itemsIcon from '../blocks/items-list/icon';
+import itemsIcon from '../blocks/related-items-list/icon';
 import collectionsIcon from '../blocks/collections-list/icon';
 import taxonomiesIcon from '../blocks/terms-list/icon';
 

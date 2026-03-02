@@ -17,7 +17,6 @@ class Gutenberg_Blocks {
 	 * @var array<string, array>
 	 */
 	private static $blocks = [
-		'items-list' => [],
 		'collections-list' => [],
 		'search-bar' => [],
 		'facets-list' => [ 'set_script_translations' => true ],

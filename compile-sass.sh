@@ -29,8 +29,6 @@ npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=glob
 
 npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/carousel-collections-list/style.scss:src/assets/css/tainacan-gutenberg-block-carousel-collections-list.css
 
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/items-list/style.scss:src/assets/css/tainacan-gutenberg-block-items-list.css
-
 npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/dynamic-items-list/style.scss:src/assets/css/tainacan-gutenberg-block-dynamic-items-list.css
 
 npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/search-bar/style.scss:src/assets/css/tainacan-gutenberg-block-search-bar.css
