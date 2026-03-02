@@ -533,9 +533,9 @@ function tainacan_get_the_media_component(
 					<!-- Additional required wrapper -->
 					<?php echo wp_kses_post($args['before_main_ul']) ?>
 					<?php if ( count($media_items_main) > 1 ) : ?>
-						<ul class="photoswipe-target-container <?php echo esc_attr($args['class_main_ul']) ?> <?php echo !$args['disable_main_carousel'] ? 'swiper-wrapper' : '' ?>">
+						<ul class="tainacan-media-items <?php echo !$args['disable_main_carousel'] ? 'swiper-wrapper ' : '' ?> <?php echo esc_attr($args['class_main_ul']) ?>">
 							<?php foreach($media_items_main as $media_item) { ?>
-								<li class="<?php echo esc_attr($args['class_main_li']) ?> <?php echo !$args['disable_main_carousel'] ? 'swiper-slide' : '' ?>">
+								<li class="tainacan-media-item <?php echo !$args['disable_main_carousel'] ? 'swiper-slide ' : '' ?> <?php echo esc_attr($args['class_main_li']) ?>">
 									<?php 
 										echo wp_kses($media_item, wp_kses_allowed_html('tainacan_content'));
 									?>
@@ -543,8 +543,8 @@ function tainacan_get_the_media_component(
 							<?php }; ?>
 						</ul>
 					<?php elseif ( count($media_items_main) === 1 ) : ?>
-						<div class="<?php echo esc_attr($args['class_main_ul']) ?> <?php echo $args['disable_main_carousel'] ? 'swiper-wrapper' : '' ?>">
-							<div class="<?php echo esc_attr($args['class_main_li']) ?> <?php echo $args['disable_main_carousel'] ? 'swiper-slide' : '' ?>">
+						<div class="tainacan-media-items <?php echo !$args['disable_main_carousel'] ? 'swiper-wrapper ' : '' ?> <?php echo esc_attr($args['class_main_ul']) ?>">
+							<div class="tainacan-media-item <?php echo !$args['disable_main_carousel'] ? 'swiper-slide ' : '' ?> <?php echo esc_attr($args['class_main_li']) ?>">
 								<?php echo wp_kses($media_items_main[0], wp_kses_allowed_html('tainacan_content')); ?>
 							</div>
 						</div>
@@ -599,16 +599,16 @@ function tainacan_get_the_media_component(
 					<?php echo wp_kses_post($args['before_thumbs_ul']) ?>
 
 					<?php if ( count($media_items_thumbs) > 1 ) : ?>
-						<ul class="photoswipe-target-container <?php echo esc_attr($args['class_thumbs_ul']) ?> <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-wrapper' : '' ?>">
+						<ul class="tainacan-media-items <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-wrapper ' : '' ?> <?php echo esc_attr($args['class_thumbs_ul']) ?>">
 							<?php foreach($media_items_thumbs as $media_item) { ?>
-								<li class="<?php echo esc_attr($args['class_thumbs_li']) ?> <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-slide' : '' ?>">
+								<li class="tainacan-media-item <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-slide ' : '' ?> <?php echo esc_attr($args['class_thumbs_li']) ?>">
 									<?php echo wp_kses($media_item, wp_kses_allowed_html('tainacan_content')); ?>
 								</li>
 							<?php }; ?>
 						</ul>
 					<?php elseif ( count($media_items_thumbs) === 1 ) : ?>
-						<div class="photoswipe-target-container <?php echo esc_attr($args['class_thumbs_ul']) ?> <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-wrapper' : '' ?>">
-							<div class="<?php echo esc_attr($args['class_thumbs_li']) ?> <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-slide' : '' ?>">
+						<div class="tainacan-media-items <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-wrapper ' : '' ?> <?php echo esc_attr($args['class_thumbs_ul']) ?>">
+							<div class="tainacan-media-item <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-slide ' : '' ?> <?php echo esc_attr($args['class_thumbs_li']) ?>">
 								<?php echo wp_kses($media_items_thumbs[0], wp_kses_allowed_html('tainacan_content')); ?>
 							</div>
 						</div>

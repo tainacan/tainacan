@@ -41,9 +41,9 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         
         if (!this.options.disable_lightbox) {
             if (this.main_gallery_selector)
-                this.initializePhotoswipe(this.main_gallery_selector + " .swiper-wrapper");
+                this.initializePhotoswipe(this.main_gallery_selector + " .tainacan-media-items");
             else if (this.thumbs_gallery_selector)
-                this.initializePhotoswipe(this.thumbs_gallery_selector + " .swiper-wrapper");
+                this.initializePhotoswipe(this.thumbs_gallery_selector + " .tainacan-media-items");
         }
     }
   
@@ -96,7 +96,9 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 }
             };
             thumbsSwiperOptions = {...thumbsSwiperOptions, ...this.options.swiper_thumbs_options };
-            this.thumbsSwiper = new Swiper(this.thumbs_gallery_selector, thumbsSwiperOptions);
+
+            if ( !this.options.disable_thumbs_carousel)
+                this.thumbsSwiper = new Swiper(this.thumbs_gallery_selector, thumbsSwiperOptions);
         }
 
         if (this.main_gallery_selector) {
@@ -128,13 +130,21 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 mainSwiperOptions.modules = [Navigation, A11y, Thumbs, Pagination];
             }
 
-            this.mainSwiper = new Swiper(this.main_gallery_selector, mainSwiperOptions);
+            if ( !this.options.disable_main_carousel)
+                this.mainSwiper = new Swiper(this.main_gallery_selector, mainSwiperOptions);
 
-            if (this.thumbs_gallery_selector && this.thumbsSwiper && this.mainSwiper) {
+            if (
+                !this.options.disable_thumbs_carousel &&
+                !this.options.disable_main_carousel &&
+                this.thumbs_gallery_selector &&
+                this.thumbsSwiper &&
+                this.mainSwiper
+            ) {
 
                 const refToMainSwiper = this.mainSwiper;
                 const refToThumbSwiper = this.thumbsSwiper;
 
+                
                 this.mainSwiper.on('slideChangeTransitionStart', function() {
                     refToThumbSwiper.slideTo(refToMainSwiper.activeIndex);
                 });
@@ -162,7 +172,6 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
 
         // Enhance links for accessibility before parsing items
         this.enhanceLinksForAccessibility(galleryElement);
-
         let items = this.parseThumbnailElements(galleryElement);
         let photoswipeOptions = {
             loop: false,
@@ -204,7 +213,11 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         this.setupKeyboardAccessibility(galleryElement);
         
         /* Updates Swiper instance from Photoswipe */
-        const swiperInstance = this.mainSwiper ? this.mainSwiper : this.thumbsSwiper;    
+        const swiperInstance = null;
+        if ( !this.options.disable_main_carousel && this.mainSwiper)
+            swiperInstance = this.mainSwiper;
+        else if ( !this.options.disable_thumbs_carousel && this.thumbsSwiper)
+            swiperInstance = this.thumbsSwiper;
 
         // Parse URL and open gallery from it if contains #&pid=3&gid=1
         const hashData = this.photoswipeParseHash();
@@ -229,7 +242,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
 
         // Swiper autoplay stop when image zoom */
         this.lightbox.on('initialZoomInEnd', () => {
-            if (swiperInstance.params && swiperInstance.params.autoplay && swiperInstance.params.autoplay.enabled && swiperInstance.autoplay.running)
+            if (swiperInstance && swiperInstance.params && swiperInstance.params.autoplay && swiperInstance.params.autoplay.enabled && swiperInstance.autoplay.running)
                 swiperInstance.autoplay.stop();
         });
 
@@ -237,7 +250,8 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         this.lightbox.on("change", () => {
             if (self.lightbox.pswp && !isNaN(self.lightbox.pswp.currIndex) && self.lightbox.pswp.currIndex >= 0) {
                 // This is the index of current photoswipe slide
-                swiperInstance.slideTo(self.lightbox.pswp.currIndex);
+                if (swiperInstance)
+                    swiperInstance.slideTo(self.lightbox.pswp.currIndex);
 
                 // Also updates URL for history navigation
                 // We only add to the history if it is the first time opening
@@ -254,7 +268,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         // Re-starts autoplay, if needed
         this.lightbox.on("close", () => {
             // Start swiper autoplay (on close - if swiper autoplay is true)
-            if (swiperInstance.params && swiperInstance.params.autoplay && swiperInstance.params.autoplay.enabled)
+            if (swiperInstance && swiperInstance.params && swiperInstance.params.autoplay && swiperInstance.params.autoplay.enabled)
                 swiperInstance.autoplay.start();
 
             // Clears URL hash as we no longer need history navigation
@@ -431,7 +445,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
      * PhotoSwipe works with any direct child of galleryElement, not just links
      * Some slides have links (images), others don't (PDFs, videos with iframe)
      * This makes all slides accessible via keyboard
-     * @param {HTMLElement} galleryElement - The gallery container element (.swiper-wrapper)
+     * @param {HTMLElement} galleryElement - The gallery container element (.tainacan-media-items)
      */
     enhanceLinksForAccessibility(galleryElement) {
         const slides = [];
@@ -535,7 +549,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
     /**
      * Sets up keyboard accessibility for slides (Enter and Space keys)
      * Works with both links and non-link elements (like figures with iframes)
-     * @param {HTMLElement} galleryElement - The gallery container element (.swiper-wrapper)
+     * @param {HTMLElement} galleryElement - The gallery container element (.tainacan-media-items)
      */
     setupKeyboardAccessibility(galleryElement) {
         const slides = [];
@@ -544,7 +558,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         
         // Get all slide elements (<li>) - same approach as parseThumbnailElements
         Array.prototype.forEach.call(galleryElements, (liElement) => {
-            if (liElement.nodeType === 1 && liElement.classList.contains('swiper-slide')) {
+            if (liElement.nodeType === 1 && liElement.classList.contains('tainacan-media-item')) {
                 slides.push(liElement);
             }
         });
