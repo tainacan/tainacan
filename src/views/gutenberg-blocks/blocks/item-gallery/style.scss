@@ -52,6 +52,7 @@
 }
 .tainacan-media-component {
     --swiper-theme-color: var(--tainacan-block-primary, var(--tainacan-secondary, #187181));
+    --swiper-navigation-sides-offset: 0px;
     --swiper-navigation-size: 44px;
     --tainacan-media-metadata-color: var(--tainacan-label-color, #373839); 
     --tainacan-media-background: var(--tainacan-background-color, transparent);
@@ -129,6 +130,7 @@
     .tainacan-media-items { 
         display: flex;
         align-items: center;
+        width: 100%;
         margin: 0;
 
         &[data-pswp-uid]:not([data-pswp-uid='']) .tainacan-media-item .swiper-slide-content {
@@ -151,7 +153,7 @@
         box-sizing: border-box;
         height: 100%;
         max-width: 100%;
-        //min-width: 100%;
+        width: 100%;
         opacity: 1.0;
         transition: opacity 0.2s linear;
 
@@ -270,8 +272,12 @@
             background: var(--tainacan-media-background, #ffffff);
             border-radius: 3px;
             word-wrap: break-word;
-            padding: 0rem 0.5rem;
+            padding: 0rem 0rem;
             display: block;
+        }
+        a:first-of-type:not(:has(img):not(:has(video)):not(:has(audio))),
+        p:first-of-type:not(:has(img):not(:has(video)):not(:has(audio))) {
+            padding: 0rem 2rem;
         }
         audio {
             background: black;

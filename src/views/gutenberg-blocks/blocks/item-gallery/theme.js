@@ -10,6 +10,12 @@ import { Navigation, A11y, Thumbs, Pagination } from 'swiper/modules';
 
 const { __ } = wp.i18n;
 
+if (typeof window.tainacan_plugin === 'undefined')
+    window.tainacan_plugin = {};
+
+if (!window.tainacan_plugin.classes)
+    window.tainacan_plugin.classes = {};
+
 tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
 
     /**
@@ -213,10 +219,10 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         this.setupKeyboardAccessibility(galleryElement);
         
         /* Updates Swiper instance from Photoswipe */
-        const swiperInstance = null;
-        if ( !this.options.disable_main_carousel && this.mainSwiper)
+        let swiperInstance = null;
+        if (!this.options.disable_main_carousel && this.mainSwiper)
             swiperInstance = this.mainSwiper;
-        else if ( !this.options.disable_thumbs_carousel && this.thumbsSwiper)
+        else if (!this.options.disable_thumbs_carousel && this.thumbsSwiper)
             swiperInstance = this.thumbsSwiper;
 
         // Parse URL and open gallery from it if contains #&pid=3&gid=1
@@ -625,8 +631,47 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
 
 /* Loads and instantiates media components passed to the global variable */
 export default (element) => {
-    if (element && element.id && tainacan_plugin?.classes?.TainacanMediaGallery && tainacan_plugin?.tainacan_media_components && tainacan_plugin.tainacan_media_components[element.id]) {
-        const component = tainacan_plugin.tainacan_media_components[element.id];
+    if (!element || !element.id || !tainacan_plugin?.classes?.TainacanMediaGallery)
+        return;
+
+    const defaultComponentConfig = {
+        media_main_id: null,
+        media_thumbs_id: null,
+        media_id: element.id,
+        has_media_main: false,
+        has_media_thumbs: false,
+        swiper_main_options: {},
+        swiper_thumbs_options: {},
+        disable_main_carousel: false,
+        disable_thumbs_carousel: false,
+        disable_lightbox: false,
+        lightbox_has_light_background: false,
+        hide_media_name: false,
+        hide_media_caption: false,
+        hide_media_description: false,
+        show_share_button: false,
+        show_download_button: false,
+    };
+
+    let component = null;
+
+    // Config embedded in markup
+    const rawConfig = element?.dataset?.tainacanMediaComponentConfig;
+    if (rawConfig) {
+        try {
+            component = { ...defaultComponentConfig, ...(JSON.parse(rawConfig) || {}) };
+        } catch (e) {
+            component = null;
+        }
+    }
+
+    if (component && (Array.isArray(component.swiper_main_options) || !component.swiper_main_options))
+        component.swiper_main_options = {};
+
+    if (component && (Array.isArray(component.swiper_thumbs_options) || !component.swiper_thumbs_options))
+        component.swiper_thumbs_options = {};
+
+    if (component) {
         new tainacan_plugin.classes.TainacanMediaGallery(
             component.has_media_thumbs ? '#' + component.media_thumbs_id : null,
             component.has_media_main ? '#' + component.media_main_id : null,
