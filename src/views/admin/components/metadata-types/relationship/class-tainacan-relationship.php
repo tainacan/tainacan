@@ -236,7 +236,10 @@ class Relationship extends Metadata_Type {
 			if ( $html_formatting === 'list' ) {
 				$total = count( $items_to_display );
 				if ( $total === 1 ) {
-					$return = "<div class='tainacan-relationship-group'>{$this->get_item_html($items_to_display[0], $search_meta_id, $display_metas, $render_multiple_as_list)}</div>";
+					$return = $this->get_item_html($items_to_display[0], $search_meta_id, $display_metas, $render_multiple_as_list);
+					if ( !empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 && $return !== '' ) {
+						$return = "<div class='tainacan-relationship-group'>{$return}</div>";
+					}
 				} elseif ( $total > 1 ) {
 					$return .= (!empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 ) ? '<ul class="tainacan-relationship-group">' : '<ul>';
 					foreach ( $items_to_display as $item ) {

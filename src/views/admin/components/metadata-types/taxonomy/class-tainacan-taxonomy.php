@@ -527,19 +527,19 @@ class Taxonomy extends Metadata_Type {
 			return strcmp( $a->get_name(), $b->get_name() );
 		} );
 
-		return $this->render_terms_tree_level( $roots, $children_by_parent, $ids_to_include, $item );
+		return $this->render_terms_tree_level( $roots, $children_by_parent, $item );
 	}
 
 	/**
 	 * Renders one level of the term tree as <ul><li>...</li></ul>.
+	 * Caller must have already filtered to the desired terms and built children_by_parent.
 	 *
 	 * @param \Tainacan\Entities\Term[] $terms Terms at this level.
 	 * @param array $children_by_parent Map parent_id => Term[].
-	 * @param array $ids_to_include Set of term IDs to include.
 	 * @param \Tainacan\Entities\Item|null $item Optional item.
 	 * @return string HTML fragment.
 	 */
-	private function render_terms_tree_level( array $terms, array $children_by_parent, array $ids_to_include, \Tainacan\Entities\Item $item = null ) {
+	private function render_terms_tree_level( array $terms, array $children_by_parent, \Tainacan\Entities\Item $item = null ) {
 		if ( empty( $terms ) ) {
 			return '';
 		}
@@ -547,7 +547,7 @@ class Taxonomy extends Metadata_Type {
 		foreach ( $terms as $term ) {
 			$id = (int) $term->get_id();
 			$children = isset( $children_by_parent[ $id ] ) ? $children_by_parent[ $id ] : [];
-			$child_html = ! empty( $children ) ? $this->render_terms_tree_level( $children, $children_by_parent, $ids_to_include, $item ) : '';
+			$child_html = ! empty( $children ) ? $this->render_terms_tree_level( $children, $children_by_parent, $item ) : '';
 			$out .= '<li>' . $this->term_to_html( $term, $item );
 			if ( $child_html !== '' ) {
 				$out .= $child_html;
