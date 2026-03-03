@@ -40,7 +40,7 @@
                     <b-button
                             v-if="editingMarkerIndex >= 0"
                             outlined
-                            @click="onMarkerRemove(editingMarkerIndex)">
+                            @click.prevent.stop="onMarkerRemove(editingMarkerIndex)">
                         <span 
                                 aria-hidden="true"
                                 class="icon is-small">
@@ -51,7 +51,7 @@
                     <b-button
                             v-if="editingMarkerIndex < 0 && shouldAddMore"
                             outlined
-                            @click="addLocation(latitude + ',' + longitude)">
+                            @click.prevent.stop="addLocation(latitude + ',' + longitude)">
                         <span 
                                 aria-hidden="true"
                                 class="icon is-small">
@@ -128,7 +128,7 @@
                 latitude: -14.4086569,
                 longitude: -51.31668,
                 selected: [],
-                mapIntersectionObserver: null
+                mapResizeObserver: null
             }
         },
         computed: {
@@ -192,7 +192,12 @@
                 handler() {
                     const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
                     nextTick(() => {
-                        if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].leafletObject && this.selectedLatLng.length != undefined) {
+                        if (
+                            this.$refs[mapComponentRef] &&
+                            this.$refs[mapComponentRef].leafletObject &&
+                            this.selectedLatLng.length != undefined &&
+                            this.selectedLatLng.length > 0
+                        ) {
                             if (this.selectedLatLng.length == 1)
                                 this.$refs[mapComponentRef].leafletObject.panInsideBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom });
                             else 
@@ -217,17 +222,24 @@
                     this.longitude = this.initialLongitude;
                 }
 
-                // Intersection Observer to handle map resize
+                // ResizeObserver to repaint map when container gets size (e.g. when section expands)
                 if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef]['$el'] ) {
-                    this.mapIntersectionObserver = new IntersectionObserver((entries) => {
+                    this.mapResizeObserver = new ResizeObserver((entries) => {
                         entries.forEach((entry) => {
-                            if (entry.isIntersecting)
+                            const { width, height } = entry.contentRect;
+                            if (width > 0 && height > 0)
                                 this.handleWindowResize(mapComponentRef);
                         });
-                    }, { threshold: 0.1 });
-                    this.mapIntersectionObserver.observe(this.$refs[mapComponentRef]['$el']);
+                    });
+                    this.mapResizeObserver.observe(this.$refs[mapComponentRef]['$el']);
                 }
             });
+        },
+        beforeUnmount() {
+            if (this.mapResizeObserver) {
+                this.mapResizeObserver.disconnect();
+                this.mapResizeObserver = null;
+            }
         },
         methods: {
             onUpdateFromLatitudeInput: _.debounce( function(value) {
@@ -336,10 +348,13 @@
             },
             handleWindowResize(mapComponentRef) {
                 setTimeout(() => {
-                    if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].leafletObject ) {
+                    if (
+                            this.$refs[mapComponentRef] &&
+                            this.$refs[mapComponentRef].leafletObject 
+                        ) {
                         this.$refs[mapComponentRef].leafletObject.invalidateSize(true);
 
-                        if ( this.selectedLatLng.length != undefined) {
+                        if ( this.selectedLatLng.length != undefined && this.selectedLatLng.length > 0 ) {
                             if (this.selectedLatLng.length == 1)
                                 this.$refs[mapComponentRef].leafletObject.panInsideBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom });
                             else 
