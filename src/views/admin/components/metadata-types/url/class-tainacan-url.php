@@ -74,27 +74,42 @@ class URL extends Metadata_Type {
 		$return .= $link_as_button ? '<div class="wp-block-buttons">' : '';
 		
 		if ( is_array($value) && $item_metadata->is_multiple() ) {
-			$total = sizeof($value);
-			$count = 0;
-			$prefix = $item_metadata->get_multivalue_prefix();
-			$suffix = $item_metadata->get_multivalue_suffix();
-			$separator = $item_metadata->get_multivalue_separator();
-
-			foreach ( $value as $el ) {
-				if ( !empty($el) ) {
-					$return .= $prefix;
-					
-					$return .= $this->get_single_value_as_html($el);
-
-					$return .= $suffix;
-					
-					$count ++;
-
-					if ($count < $total && !$link_as_button)
-						$return .= $separator;
+			$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+			if ( $html_formatting === 'list' ) {
+				$list_items = [];
+				foreach ( $value as $el ) {
+					if ( !empty($el) ) {
+						$list_items[] = $this->get_single_value_as_html($el);
+					}
+				}
+				$total = count( $list_items );
+				if ( $total === 1 ) {
+					$return .= $list_items[0];
+				} elseif ( $total > 1 ) {
+					$return .= '<ul>';
+					foreach ( $list_items as $item ) {
+						$return .= '<li>' . $item . '</li>';
+					}
+					$return .= '</ul>';
+				}
+			} else {
+				$total = sizeof($value);
+				$count = 0;
+				$prefix = $item_metadata->get_multivalue_prefix();
+				$suffix = $item_metadata->get_multivalue_suffix();
+				$separator = $item_metadata->get_multivalue_separator();
+				foreach ( $value as $el ) {
+					if ( !empty($el) ) {
+						$return .= $prefix;
+						$return .= $this->get_single_value_as_html($el);
+						$return .= $suffix;
+						$count++;
+						if ( $count < $total && !$link_as_button ) {
+							$return .= $separator;
+						}
+					}
 				}
 			}
-			
 		} else {			
 			$return .= $this->get_single_value_as_html($value);	
 		}

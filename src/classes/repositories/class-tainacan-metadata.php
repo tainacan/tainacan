@@ -199,6 +199,15 @@ class Metadata extends Repository {
 				'description' => __( 'Display by default on listing or do not display or never display.', 'tainacan' ),
 				'default'     => 'no'
 			],
+			'html_formatting'          => [
+				'map'         => 'meta',
+				'title'       => __( 'HTML formatting', 'tainacan' ),
+				'type'        => 'string',
+				'validation'  => v::stringType()->in( [ 'inline', 'list' ] ),
+				'enum'        => [ 'inline', 'list' ],
+				'description' => __( 'How to display multiple values: inline with separators or as a list. Only applies when the metadatum allows multiple values.', 'tainacan' ),
+				'default'     => 'inline'
+			],
 			'allow_advanced_search' => [
 				'map'         => 'meta',
 				'title'       => __( 'Allow advanced search', 'tainacan' ),

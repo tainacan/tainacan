@@ -603,6 +603,7 @@
         transition: height 0.5s ease, min-height 0.5s ease;
 
         .tainacan-relationship-group {
+            
             &:not(:only-child) {
                 padding-bottom: 12px;
             }

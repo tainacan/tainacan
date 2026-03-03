@@ -216,21 +216,50 @@ class Relationship extends Metadata_Type {
 		$return = '';
 
 		if ( $item_metadata->is_multiple() ) {
-			$prefix = $item_metadata->get_multivalue_prefix();
-			$suffix = $item_metadata->get_multivalue_suffix();
-			$separator = $item_metadata->get_multivalue_separator();
 			
-			foreach ( $value as $item_id ) {
+			$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+			$items_to_display = [];
+			foreach ( (array) $value as $item_id ) {
 				try {
-					$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-					$item = $Tainacan_Items->fetch( (int) $item_id);
+					$item = $Tainacan_Items->fetch( (int) $item_id );
 					if ( $this->can_display_item($item) ) {
-						$return .= empty($return)
-							? ($prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix)
-							: ($separator . $prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix);
+						$items_to_display[] = $item;
 					}
 				} catch (\Exception $e) {
-					// item not found
+					// skip invalid item
+				}
+			}
+
+			$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+			$render_multiple_as_list = $html_formatting === 'list' && count( $items_to_display ) > 1;
+			
+			if ( $html_formatting === 'list' ) {
+				$total = count( $items_to_display );
+				if ( $total === 1 ) {
+					$return = $this->get_item_html($items_to_display[0], $search_meta_id, $display_metas, $render_multiple_as_list);
+					if ( !empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 && $return !== '' ) {
+						$return = "<div class='tainacan-relationship-group'>{$return}</div>";
+					}
+				} elseif ( $total > 1 ) {
+					$return .= (!empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 ) ? '<ul class="tainacan-relationship-group">' : '<ul>';
+					foreach ( $items_to_display as $item ) {
+						$return .= $this->get_item_html($item, $search_meta_id, $display_metas, $render_multiple_as_list);
+					}
+					$return .= '</ul>';
+				}
+
+			} else {
+				$prefix = $item_metadata->get_multivalue_prefix();
+				$suffix = $item_metadata->get_multivalue_suffix();
+				$separator = $item_metadata->get_multivalue_separator();
+
+				foreach ( $items_to_display as $item ) {
+					$return .= empty($return)
+						? ($prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix)
+						: ($separator . $prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix);
+				}
+				if ( !empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 && $return !== '' ) {
+					$return = "<div class='tainacan-relationship-group'>{$return}</div>";
 				}
 			}
 		} else {
@@ -242,9 +271,10 @@ class Relationship extends Metadata_Type {
 			} catch (\Exception $e) {
 				// item not found 
 			}
-		}
-		if ( !empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 && $return !== '' ) {
-			$return = "<div class='tainacan-relationship-group'>{$return}</div>";
+
+			if ( !empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 && $return !== '' ) {
+				$return = "<div class='tainacan-relationship-group'>{$return}</div>";
+			}
 		}
 
 		return 
@@ -271,7 +301,7 @@ class Relationship extends Metadata_Type {
 		);
 	}
 
-	private function get_item_html($item, $search_meta_id, $display_metas) {
+	private function get_item_html($item, $search_meta_id, $display_metas, $render_as_list_item = false) {
 		$return = '';
 		$id = $item->get_id();
 		
@@ -298,10 +328,14 @@ class Relationship extends Metadata_Type {
 				}
 				$return = implode("\n", $metadata_value);
 			}
-			$return = "<div class='tainacan-relationship-metadatum' data-item-id='$id'>{$return}</div>";
+			if ( $render_as_list_item ) {
+				$return = "<li class='tainacan-relationship-metadatum' data-item-id='$id'>{$return}</li>";
+			} else {
+				$return = "<div class='tainacan-relationship-metadatum' data-item-id='$id'>{$return}</div>";
+			}
 		} else if ( $id && $search_meta_id ) {
 			$as_link = $this->get_item_link($item, $search_meta_id);
-			$return = "$as_link";
+			$return = $render_as_list_item ? "<li>{$as_link}</li>" : "{$as_link}";
 		}
 
 		return $return;

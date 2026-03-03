@@ -262,6 +262,10 @@
     }
     .related-items-list {
         .related-item-group {
+            text-align: start;
+            list-style: none;
+            margin-inline-start: 0;
+            padding-inline-start: 0;
 
             .related-item-group__items-list {
                 margin-top: 0.5em;

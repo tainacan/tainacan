@@ -998,7 +998,7 @@
 
                         <!-- Remaining metadata -->
                         <div
-                                class="media"
+                                class="media content"
                                 @click.left="onClickItem($event, item)"
                                 @click.right="onRightClickItem($event, item)">
                             <div class="list-metadata media-body">
@@ -1224,7 +1224,7 @@
                                                 show: 500,
                                                 hide: 300,
                                             },
-                                            popperClass: [ 'tainacan-tooltip', 'tooltip', column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                            popperClass: [ 'tainacan-tooltip', 'tooltip', 'content', column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                             html: true,
                                             autoHide: false,
@@ -1590,7 +1590,7 @@
 
                     <!-- Remaining metadata -->  
                     <div 
-                            class="media"
+                            class="media content"
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)">
                         <div 
@@ -2649,7 +2649,7 @@ export default {
                         
                         if (this.viewMode == 'masonry' || this.viewMode == 'records') {
                             this.masonry = new Masonry( '.tainacan-' + this.viewMode + '-container', {
-                                itemSelector: 'li',
+                                itemSelector: this.viewMode == 'records' ? '.tainacan-records-container>li' : '.tainacan-masonry-container>li',
                                 columnWidth: '.tainacan-' + this.viewMode + '-grid-sizer',
                                 gutter: this.viewMode == 'masonry' ? 25 : 30,
                                 percentPosition: true,

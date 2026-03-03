@@ -1394,6 +1394,7 @@ export default {
 
         .column-large-width {
             .tainacan-compound-group {
+                list-style: none;
                 display: inline-block;
                 font-size: 1.125em;
                 margin-top: -0.25em;
@@ -1434,6 +1435,7 @@ export default {
         .metadata-value {
                 
             .tainacan-compound-group {
+                list-style: none;
                 margin-inline-start: 2px;
                 padding-inline-start: 0.875em;
                 border-inline-start: 1px solid var(--tainacan-gray3);

@@ -111,7 +111,7 @@ class Taxonomy extends Metadata_Type {
 			],
 			'hide_hierarchy_path' => [
 				'title' => __( 'Hide hierarchy path', 'tainacan' ),
-				'description' => __( 'Display only the current child term when showing values that belong to a term hierarchy.', 'tainacan' ),
+				'description' => __( 'Inline: display only the current term (no "Parent > Term" path). List: show a flat list of selected terms only, without nesting or ancestor terms.', 'tainacan' ),
 			],
 			'do_not_dispaly_term_as_link' => [
 				'title' => __( 'Do not display term as link', 'tainacan' ),
@@ -366,26 +366,46 @@ class Taxonomy extends Metadata_Type {
 		if ( isset($value) ) {
 
 			if ( $item_metadata->is_multiple() ) {
-				$count = 1;
-				$total = sizeof($value);
-				$prefix = $item_metadata->get_multivalue_prefix();
-				$suffix = $item_metadata->get_multivalue_suffix();
-				$separator = $item_metadata->get_multivalue_separator();
-
-				foreach ( $value as $term ) {
-					$count++;
-
-					if ( is_integer($term) ) {
-						$term = \Tainacan\Repositories\Terms::get_instance()->fetch($term, $this->get_option('taxonomy_id'));
+				$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+				if ( $html_formatting === 'list' ) {
+					$terms_repo = \Tainacan\Repositories\Terms::get_instance();
+					$taxonomy_id = $this->get_option('taxonomy_id');
+					$resolved_terms = [];
+					foreach ( $value as $term ) {
+						if ( is_integer($term) ) {
+							$term = $terms_repo->fetch($term, $taxonomy_id);
+						}
+						if ( $term instanceof \Tainacan\Entities\Term ) {
+							$resolved_terms[] = $term;
+						}
 					}
-
-					if ( $term instanceof \Tainacan\Entities\Term ) {
-						$return .= $prefix;
-						$return .= $this->get_term_hierarchy_html($term, $item_metadata->get_item());
-						$return .= $suffix;
-
-						if ( $count <= $total ) {
-							$return .= $separator;
+					if ( count( $resolved_terms ) === 1 ) {
+						$return .= $this->get_term_hierarchy_html($resolved_terms[0], $item_metadata->get_item());
+					} elseif ( count( $resolved_terms ) > 1 ) {
+						if ( $this->get_option('hide_hierarchy_path') === 'yes' ) {
+							$return .= $this->render_terms_flat_list($resolved_terms, $item_metadata->get_item());
+						} else {
+							$return .= $this->render_terms_hierarchy_tree($resolved_terms, $item_metadata->get_item());
+						}
+					}
+				} else {
+					$count = 1;
+					$total = sizeof($value);
+					$prefix = $item_metadata->get_multivalue_prefix();
+					$suffix = $item_metadata->get_multivalue_suffix();
+					$separator = $item_metadata->get_multivalue_separator();
+					foreach ( $value as $term ) {
+						$count++;
+						if ( is_integer($term) ) {
+							$term = \Tainacan\Repositories\Terms::get_instance()->fetch($term, $this->get_option('taxonomy_id'));
+						}
+						if ( $term instanceof \Tainacan\Entities\Term ) {
+							$return .= $prefix;
+							$return .= $this->get_term_hierarchy_html($term, $item_metadata->get_item());
+							$return .= $suffix;
+							if ( $count <= $total ) {
+								$return .= $separator;
+							}
 						}
 					}
 				}
@@ -406,6 +426,136 @@ class Taxonomy extends Metadata_Type {
 			 * @return string The HTML representation of the item metadatum value
 			 */
 			apply_filters( 'tainacan-item-metadata-get-value-as-html--type-taxonomy', $return, $item_metadata );
+	}
+
+	/**
+	 * Renders a flat <ul><li> list of the given terms only (no ancestors, no nesting).
+	 * Used when html_formatting is list and hide_hierarchy_path is yes.
+	 *
+	 * @param \Tainacan\Entities\Term[] $terms Selected terms only.
+	 * @param \Tainacan\Entities\Item|null $item Optional item for link context.
+	 * @return string HTML <ul><li>...</li></ul>.
+	 */
+	private function render_terms_flat_list( array $terms, \Tainacan\Entities\Item $item = null ) {
+		$out = '<ul>';
+		foreach ( $terms as $term ) {
+			$out .= '<li>' . $this->term_to_html( $term, $item ) . '</li>';
+		}
+		$out .= '</ul>';
+		return $out;
+	}
+
+	/**
+	 * Builds and returns an HTML list tree from multiple terms, including ancestors so hierarchy is shown without repeating parents.
+	 * Uses get_ancestors() and a single get_terms() call (like wp_list_categories with 'include') to avoid N+1 queries.
+	 *
+	 * @see https://developer.wordpress.org/reference/functions/wp_list_categories/
+	 * @param \Tainacan\Entities\Term[] $terms Selected terms (may be at any level).
+	 * @param \Tainacan\Entities\Item|null $item Optional item for link context.
+	 * @return string Nested <ul>/<li> markup.
+	 */
+	private function render_terms_hierarchy_tree( array $terms, \Tainacan\Entities\Item $item = null ) {
+		$taxonomy_id = $this->get_option('taxonomy_id');
+		$taxonomy_slug = \Tainacan\Repositories\Taxonomies::get_instance()->get_db_identifier_by_id( (int) $taxonomy_id );
+		if ( ! $taxonomy_slug || ! taxonomy_exists( $taxonomy_slug ) ) {
+			return '';
+		}
+
+		$ids_to_include = [];
+		foreach ( $terms as $term ) {
+			if ( ! $term instanceof \Tainacan\Entities\Term ) {
+				continue;
+			}
+			$id = (int) $term->get_id();
+			$ids_to_include[ $id ] = true;
+			foreach ( get_ancestors( $id, $taxonomy_slug, 'taxonomy' ) as $ancestor_id ) {
+				$ids_to_include[ (int) $ancestor_id ] = true;
+			}
+		}
+		$ids_to_include = array_keys( $ids_to_include );
+		if ( empty( $ids_to_include ) ) {
+			return '';
+		}
+
+		$wp_terms = get_terms( [
+			'taxonomy'   => $taxonomy_slug,
+			'include'    => $ids_to_include,
+			'hide_empty' => false,
+			'orderby'    => 'parent',
+			'order'      => 'ASC',
+		] );
+		if ( is_wp_error( $wp_terms ) || empty( $wp_terms ) ) {
+			return '';
+		}
+
+		$term_by_id = [];
+		foreach ( $wp_terms as $wp_term ) {
+			$term_by_id[ (int) $wp_term->term_id ] = new \Tainacan\Entities\Term( $wp_term, $taxonomy_slug );
+		}
+		$ids_to_include = array_fill_keys( $ids_to_include, true );
+
+		$children_by_parent = [];
+		foreach ( $term_by_id as $id => $term ) {
+			if ( ! isset( $ids_to_include[ $id ] ) ) {
+				continue;
+			}
+			$parent_id = (int) $term->get_parent();
+			if ( isset( $ids_to_include[ $parent_id ] ) ) {
+				if ( ! isset( $children_by_parent[ $parent_id ] ) ) {
+					$children_by_parent[ $parent_id ] = [];
+				}
+				$children_by_parent[ $parent_id ][] = $term;
+			}
+		}
+		foreach ( array_keys( $children_by_parent ) as $parent_id ) {
+			usort( $children_by_parent[ $parent_id ], function ( $a, $b ) {
+				return strcmp( $a->get_name(), $b->get_name() );
+			} );
+		}
+
+		$roots = [];
+		foreach ( $term_by_id as $id => $term ) {
+			if ( ! isset( $ids_to_include[ $id ] ) ) {
+				continue;
+			}
+			$parent_id = (int) $term->get_parent();
+			if ( $parent_id === 0 || ! isset( $ids_to_include[ $parent_id ] ) ) {
+				$roots[] = $term;
+			}
+		}
+		usort( $roots, function ( $a, $b ) {
+			return strcmp( $a->get_name(), $b->get_name() );
+		} );
+
+		return $this->render_terms_tree_level( $roots, $children_by_parent, $item );
+	}
+
+	/**
+	 * Renders one level of the term tree as <ul><li>...</li></ul>.
+	 * Caller must have already filtered to the desired terms and built children_by_parent.
+	 *
+	 * @param \Tainacan\Entities\Term[] $terms Terms at this level.
+	 * @param array $children_by_parent Map parent_id => Term[].
+	 * @param \Tainacan\Entities\Item|null $item Optional item.
+	 * @return string HTML fragment.
+	 */
+	private function render_terms_tree_level( array $terms, array $children_by_parent, \Tainacan\Entities\Item $item = null ) {
+		if ( empty( $terms ) ) {
+			return '';
+		}
+		$out = '<ul class="tainacan-taxonomy-tree-level">';
+		foreach ( $terms as $term ) {
+			$id = (int) $term->get_id();
+			$children = isset( $children_by_parent[ $id ] ) ? $children_by_parent[ $id ] : [];
+			$child_html = ! empty( $children ) ? $this->render_terms_tree_level( $children, $children_by_parent, $item ) : '';
+			$out .= '<li>' . $this->term_to_html( $term, $item );
+			if ( $child_html !== '' ) {
+				$out .= $child_html;
+			}
+			$out .= '</li>';
+		}
+		$out .= '</ul>';
+		return $out;
 	}
 
 	private function get_term_hierarchy_html( \Tainacan\Entities\Term $term, \Tainacan\Entities\Item $item = null) {
