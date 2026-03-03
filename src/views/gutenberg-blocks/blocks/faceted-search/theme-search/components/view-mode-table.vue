@@ -280,6 +280,11 @@ export default {
     }
     .tainacan-table {
         .tainacan-relationship-group {
+            text-align: start;
+            list-style: none;
+            margin-inline-start: 0;
+            padding-inline-start: 0;
+            
             .tainacan-relationship-metadatum {
                 display: inline-block;
                 .tainacan-relationship-metadatum-header {
@@ -312,6 +317,7 @@ export default {
         }
         .column-large-width {
             .tainacan-compound-group {
+                list-style: none;
                 display: inline-block;
                 font-size: 1.125em;
                 margin-top: -0.25em;

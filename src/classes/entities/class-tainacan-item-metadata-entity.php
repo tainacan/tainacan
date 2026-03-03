@@ -160,21 +160,34 @@ class Item_Metadata_Entity extends Entity {
 		$return = '';
 		
 		if ( $this->is_multiple() ) {
-			$total = sizeof($value);
-			$count = 0;
-			$prefix = $this->get_multivalue_prefix();
-			$suffix = $this->get_multivalue_suffix();
-			$separator = $this->get_multivalue_separator();
-			
-			foreach ($value as $v) {
-				$return .= $prefix;
-				$return .= (string) $v;
-				$return .= $suffix;
-				$count ++;
-				if ($count < $total)
-					$return .= $separator;
+			$html_formatting = $metadatum->get_html_formatting();
+			if ( $html_formatting === 'list' ) {
+				$total = count( $value );
+				if ( $total === 1 ) {
+					$return .= ( (string) reset( $value ) );
+				} elseif ( $total > 1 ) {
+					$return .= '<ul>';
+					foreach ( $value as $v ) {
+						$return .= '<li>' . ( (string) $v ) . '</li>';
+					}
+					$return .= '</ul>';
+				}
+			} else {
+				$total = sizeof($value);
+				$count = 0;
+				$prefix = $this->get_multivalue_prefix();
+				$suffix = $this->get_multivalue_suffix();
+				$separator = $this->get_multivalue_separator();
+				foreach ( $value as $v ) {
+					$return .= $prefix;
+					$return .= (string) $v;
+					$return .= $suffix;
+					$count++;
+					if ( $count < $total ) {
+						$return .= $separator;
+					}
+				}
 			}
-
 		} else {
 			$return = (string) $value;
 		}

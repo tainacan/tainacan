@@ -609,9 +609,15 @@ export default {
 
     .metadata-value {
         .tainacan-compound-group {
+            list-style: none;
             margin-inline-start: 2px;
             padding-inline-start: 0.875em;
             border-inline-start: 1px solid var(--tainacan-gray3);
+            
+            & > .tainacan-compound-metadatum:not(:last-child) {
+                border-bottom: 1px solid var(--tainacan-gray2);
+                margin-bottom: 1em;
+            }
 
             .tainacan-compound-metadatum .label {
                 margin-bottom: 0.25em;
@@ -636,6 +642,11 @@ export default {
             }
         }
         .tainacan-relationship-group {
+            text-align: start;
+            list-style: none;
+            margin-inline-start: 0;
+            padding-inline-start: 0;
+
             .tainacan-relationship-metadatum {
                 .tainacan-relationship-metadatum-header {
                     display: flex;
@@ -644,6 +655,7 @@ export default {
                         margin-inline-end: 12px;
                         max-width: 22px;
                         max-height: 22px;
+                        border-radius: var(--tainacan-item-border-radius, 0px);
                     }
                     .label {
                         font-weight: normal;
@@ -655,7 +667,7 @@ export default {
                     }
                 }
                 .tainacan-metadatum {
-                    margin-inline-start: 40px;
+                    margin-inline-start: 34px;
                     .label {
                         color: var(--tainacan-gray4);
                         font-size: 1em !important;
@@ -668,15 +680,25 @@ export default {
             &>.multivalue-separator {
                 display: block;
                 max-height: 1px;
-                width: calc(100% - 40px);
+                width: calc(100% - 34px);
                 background: var(--tainacan-gray2);
                 content: none;
                 color: transparent;
-                margin-inline-start: 40px;
+                margin-inline-start: 34px;
                 margin-inline-end: 0;
                 margin-block-start: 0.5em;
                 margin-block-end: 0.5em;
             }
+        }
+    }
+    ul.tainacan-relationship-group {
+        list-style: none;
+        margin-inline-start: 0;
+        padding-inline-start: 0;
+
+        & > .tainacan-relationship-metadatum:not(:last-child) {
+            border-bottom: 1px solid var(--tainacan-gray2);
+            margin-bottom: 1em;
         }
     }
 </style>

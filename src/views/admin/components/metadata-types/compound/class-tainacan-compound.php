@@ -190,32 +190,49 @@ class Compound extends Metadata_Type {
 		if ( !empty($value) ) { 
 		
 			if ( $item_metadata->is_multiple() ) {
+
 				$elements = [];
-				
+
 				foreach ( $value as $compound_element ) {
-					
 					if ( !empty($compound_element) ) {
 						$metadata_value =  array_fill(0, count($compound_element), null);
 						$metadata_value_not_ordinate = [];
-						
 						foreach ( $compound_element as $meta_id => $meta ) {
 							$index = array_search( $meta_id, array_column( $order, 'id' ) );
-							
 							if ( $meta instanceof Item_Metadata_Entity && $meta->get_value_as_html() != '' ) {
 								$html = $this->get_meta_html($meta);
-								
 								if ( $index !== false )
 									$metadata_value[$index] = $html;
 								else
 									$metadata_value_not_ordinate[] = $html;
 							}
 						}
-						$elements[] = '<div class="tainacan-compound-metadatum">' . implode("\n", array_merge($metadata_value, $metadata_value_not_ordinate)) . "</div> \n" ;
+						$elements[] = implode("\n", array_merge($metadata_value, $metadata_value_not_ordinate));
 					}
 				}
 
-				$return = implode($separator, $elements);
-
+				$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+				$render_multiple_as_list = $html_formatting === 'list' && count( $elements ) > 1;					
+				if ( $render_multiple_as_list ) {
+					$return = '<ul class="tainacan-compound-group">';
+					foreach ( $elements as $el ) {
+						$return .= '<li class="tainacan-compound-metadatum">' . $el . '</li>';
+					}
+					$return .= '</ul>';
+				} else  {
+					$total = count($elements);
+					$count = 0;
+					$return = '<div class="tainacan-compound-group">';
+					foreach ( $elements as $el ) {
+						$return .= '<div class="tainacan-compound-metadatum">' . $el . "</div> \n";
+						$count++;
+						if ( $count < $total ) {
+							$return .= $separator;
+						}
+					}
+					$return .= '</div>';
+				}
+				
 			} else {
 				$metadata_value = array_fill(0, count($value), null);
 				$metadata_value_not_ordinate = [];
@@ -234,9 +251,8 @@ class Compound extends Metadata_Type {
 				}
 
 				$return = implode("\n", array_merge($metadata_value, $metadata_value_not_ordinate));
-			}
-			
-			$return = "<div class='tainacan-compound-group'> {$return} </div>";
+				$return = "<div class='tainacan-compound-group'> {$return} </div>";
+			}	
 		}
 
 		return 

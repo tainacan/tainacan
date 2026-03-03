@@ -1937,9 +1937,15 @@
 
         .metadata-value {
             .tainacan-compound-group {
+                list-style: none;
                 margin-inline-start: 2px;
                 padding-inline-start: 0.875em;
                 border-inline-start: 1px solid var(--tainacan-gray3);
+
+                & > .tainacan-compound-metadatum:not(:last-child) {
+                    border-bottom: 1px solid var(--tainacan-gray2);
+                    margin-bottom: 1em;
+                }
 
                 .tainacan-compound-metadatum .label {
                     margin-bottom: 0.25em;
@@ -1967,26 +1973,37 @@
                 }
             }
             .tainacan-relationship-group {
+                text-align: start;
+                list-style: none;
+                margin-inline-start: 0;
+                padding-inline-start: 0;
+
+                & > li.tainacan-relationship-metadatum:not(:last-child) {
+                    border-bottom: 1px solid var(--tainacan-gray2);
+                    margin-bottom: 1em;
+                }
+                
                 .tainacan-relationship-metadatum {
                     .tainacan-relationship-metadatum-header {
                         display: flex;
                         align-items: center;
                         img {
-                            margin-right: 12px;
+                            margin-inline-end: 12px;
                             max-width: 22px;
                             max-height: 22px;
+                            border-radius: var(--tainacan-item-border-radius, 0px);
                         }
                         .label {
                             font-weight: normal;
                             font-size: 1em !important;
                             margin-top: 0;
-                            margin-left: 0;
+                            margin-inline-start: 0;
                             margin-bottom: 0;
-                            margin-right: 0;
+                            margin-inline-end: 0;
                         }
                     }
                     .tainacan-metadatum {
-                        margin-left: 40px;
+                        margin-inline-start: 34px;
                         .label {
                             color: var(--tainacan-gray4);
                             font-size: 1em !important;
@@ -1999,11 +2016,11 @@
                 &>.multivalue-separator {
                     display: block;
                     max-height: 1px;
-                    width: calc(100% - 40px);
+                    width: calc(100% - 34px);
                     background: var(--tainacan-gray2);
                     content: none;
                     color: transparent;
-                    margin: 0.5em 0 0.5em 40px;
+                    margin: 0.5em 0 0.5em 34px;
                 }
             }
         }
