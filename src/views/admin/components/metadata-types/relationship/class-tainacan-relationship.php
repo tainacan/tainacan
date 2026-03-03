@@ -332,7 +332,7 @@ class Relationship extends Metadata_Type {
 			}
 		} else if ( $id && $search_meta_id ) {
 			$as_link = $this->get_item_link($item, $search_meta_id);
-			$return = "$as_link";
+			$return = $render_as_list_item ? "<li>{$as_link}</li>" : "{$as_link}";
 		}
 
 		return $return;

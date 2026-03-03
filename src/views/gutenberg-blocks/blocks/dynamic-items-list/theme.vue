@@ -648,12 +648,6 @@ export default {
             padding-inline-start: 0;
 
             .tainacan-relationship-metadatum {
-
-                & > li.tainacan-relationship-metadatum:not(:last-child) {
-                    border-bottom: 1px solid var(--tainacan-gray2);
-                    margin-bottom: 1em;
-                }
-
                 .tainacan-relationship-metadatum-header {
                     display: flex;
                     align-items: center;
@@ -695,6 +689,16 @@ export default {
                 margin-block-start: 0.5em;
                 margin-block-end: 0.5em;
             }
+        }
+    }
+    ul.tainacan-relationship-group {
+        list-style: none;
+        margin-inline-start: 0;
+        padding-inline-start: 0;
+
+        & > .tainacan-relationship-metadatum:not(:last-child) {
+            border-bottom: 1px solid var(--tainacan-gray2);
+            margin-bottom: 1em;
         }
     }
 </style>
