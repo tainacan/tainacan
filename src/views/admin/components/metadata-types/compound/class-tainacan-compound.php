@@ -220,9 +220,15 @@ class Compound extends Metadata_Type {
 					}
 					$return .= '</ul>';
 				} else  {
+					$total = count($elements);
+					$count = 0;
 					$return = '<div class="tainacan-compound-group">';
 					foreach ( $elements as $el ) {
 						$return .= '<div class="tainacan-compound-metadatum">' . $el . "</div> \n";
+						$count++;
+						if ( $count < $total ) {
+							$return .= $separator;
+						}
 					}
 					$return .= '</div>';
 				}

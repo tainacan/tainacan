@@ -216,28 +216,31 @@ class Relationship extends Metadata_Type {
 		$return = '';
 
 		if ( $item_metadata->is_multiple() ) {
-			$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
-			$render_multiple_as_list = $html_formatting === 'list' && count( $value ) > 1;
-			if ( $html_formatting === 'list' ) {
-				$list_items = [];
-				foreach ( $value as $item_id ) {
-					try {
-						$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-						$item = $Tainacan_Items->fetch( (int) $item_id);
-						if ( $this->can_display_item($item) ) {
-							$list_items[] = $this->get_item_html($item, $search_meta_id, $display_metas, $render_multiple_as_list);
-						}
-					} catch (\Exception $e) {
-						// item not found
+			
+			$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+			$items_to_display = [];
+			foreach ( (array) $value as $item_id ) {
+				try {
+					$item = $Tainacan_Items->fetch( (int) $item_id );
+					if ( $this->can_display_item($item) ) {
+						$items_to_display[] = $item;
 					}
+				} catch (\Exception $e) {
+					// skip invalid item
 				}
-				$total = count( $list_items );
+			}
+
+			$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+			$render_multiple_as_list = $html_formatting === 'list' && count( $items_to_display ) > 1;
+			
+			if ( $html_formatting === 'list' ) {
+				$total = count( $items_to_display );
 				if ( $total === 1 ) {
-					$return = "<div class='tainacan-relationship-group'>{$list_items[0]}</div>";
+					$return = "<div class='tainacan-relationship-group'>{$this->get_item_html($items_to_display[0], $search_meta_id, $display_metas, $render_multiple_as_list)}</div>";
 				} elseif ( $total > 1 ) {
 					$return .= (!empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 ) ? '<ul class="tainacan-relationship-group">' : '<ul>';
-					foreach ( $list_items as $item ) {
-						$return .= $item;
+					foreach ( $items_to_display as $item ) {
+						$return .= $this->get_item_html($item, $search_meta_id, $display_metas, $render_multiple_as_list);
 					}
 					$return .= '</ul>';
 				}
@@ -246,18 +249,11 @@ class Relationship extends Metadata_Type {
 				$prefix = $item_metadata->get_multivalue_prefix();
 				$suffix = $item_metadata->get_multivalue_suffix();
 				$separator = $item_metadata->get_multivalue_separator();
-				foreach ( $value as $item_id ) {
-					try {
-						$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-						$item = $Tainacan_Items->fetch( (int) $item_id);
-						if ( $this->can_display_item($item) ) {
-							$return .= empty($return)
-								? ($prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix)
-								: ($separator . $prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix);
-						}
-					} catch (\Exception $e) {
-						// item not found
-					}
+
+				foreach ( $items_to_display as $item ) {
+					$return .= empty($return)
+						? ($prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix)
+						: ($separator . $prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix);
 				}
 				if ( !empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 && $return !== '' ) {
 					$return = "<div class='tainacan-relationship-group'>{$return}</div>";
