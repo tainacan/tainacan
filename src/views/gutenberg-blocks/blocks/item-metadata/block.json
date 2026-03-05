@@ -58,6 +58,9 @@
 			"type": "string"
         }
     },
+    "usesContext": [
+        "tainacan/itemId"
+    ],
     "providesContext": {
         "tainacan/itemId": "itemId"
     },
@@ -80,7 +83,8 @@
             "margin": true,
             "padding": true,
             "spacing": true
-        }
+        },
+        "listView": true
     },
     "editorScript": "item-metadata",
 	"editorStyle": ["item-metadata", "tainacan-blocks-common-editor-styles" ]

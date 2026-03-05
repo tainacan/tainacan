@@ -12,7 +12,7 @@ import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainac
 import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 
-export default function ({ attributes, setAttributes, isSelected }) {
+export default function ({ attributes, setAttributes, isSelected, context }) {
     
     let {
         collectionId,
@@ -31,6 +31,16 @@ export default function ({ attributes, setAttributes, isSelected }) {
         textAlign
     } = attributes;
 
+    // When rendered inside item-metadata-sections, use parent's itemId from context so we stay in sync when parent's item selection changes (InnerBlocks template is only used on initial creation).
+    const effectiveItemId = ( dataSource === 'parent' && context && context['tainacan/itemId'] != null ) ? Number( context['tainacan/itemId'] ) : ( isNaN( itemId ) ? 0 : Number( itemId ) );
+
+    // Keep attribute in sync when we use context, so this block provides the correct itemId to its inner blocks (e.g. item-metadata) via context.
+    useEffect(() => {
+        if ( dataSource === 'parent' && context && context['tainacan/itemId'] != null && Number( context['tainacan/itemId'] ) !== ( isNaN( itemId ) ? 0 : Number( itemId ) ) ) {
+            setAttributes({ itemId: Number( context['tainacan/itemId'] ) });
+        }
+    }, [ dataSource, context, itemId ]);
+
     // Gets blocks props from hook
     const blockProps = useBlockProps( {
         className: {
@@ -41,10 +51,9 @@ export default function ({ attributes, setAttributes, isSelected }) {
 
     useEffect(() => {
         setContent();
-    }, [ itemId, collectionId, isDynamic, sectionId, templateMode ]);
+    }, [ effectiveItemId, collectionId, isDynamic, sectionId, templateMode ]);
 
     function setContent() {
-
         if ( sectionId && collectionId ) {
 
             isLoading = true;
@@ -124,7 +133,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
                 'tainacan/item-metadata',
                 {
                     sectionId: String(sectionId),
-                    itemId: isNaN(itemId) ? 0 : Number(itemId),
+                    itemId: effectiveItemId,
                     collectionId: Number(collectionId),
                     metadata: sectionMetadata,
                     dataSource: 'parent',
@@ -195,7 +204,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
                         <TainacanSingleItemMetadataSectionSelectionModal
                             modalTitle={ __('Select one item to render a metadata section of it', 'tainacan') }
                             existingCollectionId={ collectionId }
-                            existingItemId={ itemId }
+                            existingItemId={ effectiveItemId }
                             existingMetadataSectionId={ sectionId }
                             isTemplateMode={ templateMode }
                             onSelectCollection={ (selectedCollectionId) => {

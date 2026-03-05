@@ -60,7 +60,11 @@
 			"type": "string"
         }
     },
+    "usesContext": [
+        "tainacan/itemId"
+    ],
     "providesContext": {
+        "tainacan/itemId": "itemId",
         "tainacan/metadataSectionId": "sectionId",
         "tainacan/metadataSectionName": "sectionName",
         "tainacan/metadataSectionDescription": "sectionDescription"
@@ -84,7 +88,8 @@
             "margin": true,
             "padding": true,
             "spacing": true
-        }
+        },
+        "listView": true
     },
     "editorScript": "item-metadata-section",
 	"editorStyle": ["item-metadata-section", "tainacan-blocks-common-editor-styles" ]
