@@ -141,6 +141,23 @@
         "imageSize": {
             "type": "string",
             "default": "tainacan-medium"
+        },
+        "style": {
+            "type": "object",
+            "default": {
+                "elements": {
+                    "link": {
+                        "color": {
+                            "text": "currentColor"
+                        },
+                        ":hover": {
+                            "color": {
+                                "text": "currentColor"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "supports": {

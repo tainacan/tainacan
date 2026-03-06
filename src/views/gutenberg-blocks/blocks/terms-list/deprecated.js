@@ -1,4 +1,103 @@
+const { useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+
 export default [
+    /* Deprecated to improve link color support */
+    {
+        "attributes": {
+            "selectedTermsObject": {
+                "type": "array",
+                "source": "query",
+                "selector": "a",
+                "query": {
+                    "id": {
+                        "type": "string",
+                        "source": "attribute",
+                        "attribute": "id"
+                    },
+                    "url": {
+                        "type": "string",
+                        "source": "attribute",
+                        "attribute": "href"
+                    },
+                    "name": {
+                        "type": "string",
+                        "source": "text"
+                    },
+                    "header_image": {
+                        "source": "query",
+                        "selector": "img",
+                        "query": {
+                            "src": {
+                                "source": "attribute",
+                                "attribute": "src"
+                            },
+                            "alt": {
+                                "source": "attribute",
+                                "attribute": "alt"
+                            }
+                        }
+                    }
+                },
+                "default": []
+            },
+            "content": {
+                "type": "array",
+                "source": "children",
+                "selector": "div"
+            },
+            "query": {
+                "type": "Object",
+                "default": {}
+            },
+            "selectedTermsHTML": {
+                "type": "Array",
+                "default": []
+            },
+            "showImage": {
+                "type": "Boolean",
+                "default": true
+            },
+            "showName": {
+                "type": "Boolean",
+                "default": true
+            },
+            "layout": {
+                "type": "String",
+                "default": "grid"
+            },
+            "isModalOpen": {
+                "type": "Boolean",
+                "default": false
+            },
+            "taxonomyId": {
+                "type": "String",
+                "default": ""
+            },
+        },
+        "supports": {
+            "align": ["full", "wide"],
+            "html": false,
+            "typography": {
+                "fontSize": true
+            },
+            "color": {
+                "text": true,
+                "background": false,
+                "gradients": false,
+                "link": true
+            },
+            "position": {
+                "sticky": true
+            }
+        },
+        "save": function({ attributes }) {
+            const { content } = attributes;
+    
+            // Gets attributes such as style, that are automatically added by the editor hook
+            const blockProps = useBlockProps.save();
+            return <div { ...blockProps } data-module="terms-list">{ content }</div>
+        }
+    },
     /* Deprecated on Tainacan 0.18.4, due to the new block.json strategy */
     {
         attributes: {
