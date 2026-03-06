@@ -335,20 +335,14 @@ class REST_Logs_Controller extends REST_Controller {
 
 		$response = [];
 
-		if($logs->have_posts()){
-			while ($logs->have_posts()){
-				$logs->the_post();
-
-				$log = new Entities\Log($logs->post);
-
+		if($logs) {
+			foreach($logs as $log) {
 				array_push($response, $this->prepare_item_for_response($log, $request));
 			}
-
-			wp_reset_postdata();
 		}
 
-		$total_logs  = $logs->found_posts;
-		$max_pages = ceil($total_logs / (int) $logs->query_vars['posts_per_page']);
+		$total_logs  = 10; //$logs->found_posts;
+		$max_pages = 1; //ceil($total_logs / (int) $logs->query_vars['posts_per_page']);
 
 		$rest_response = new \WP_REST_Response($response, 200);
 

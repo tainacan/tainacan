@@ -536,4 +536,47 @@ class Migrations {
 	        ");
 		}
 	}
+
+	/**
+	 * Creates the custom wp_tainacan_logs table that replaces the wp_posts/wp_postmeta
+	 * approach previously used to store Tainacan activity logs.
+	 *
+	 * Each column corresponds to a field in the Log entity map:
+	 *   - title, date, description, slug, user_id  → formerly wp_posts columns
+	 *   - item_id … action, _user_edit_lastr        → formerly wp_postmeta rows
+	 */
+	static function tainacan_create_logs_table() {
+		global $wpdb;
+
+		$table_name      = $wpdb->prefix . 'tainacan_logs';
+		$charset_collate = $wpdb->get_charset_collate();
+
+		$query = "CREATE TABLE IF NOT EXISTS $table_name (
+			ID bigint(20) unsigned NOT NULL auto_increment,
+			title text NOT NULL,
+			date datetime NOT NULL default '0000-00-00 00:00:00',
+			description longtext,
+			slug varchar(200) default NULL,
+			user_id bigint(20) unsigned NOT NULL default '0',
+			item_id bigint(20) unsigned NOT NULL default '0',
+			log_diffs longtext,
+			collection_id varchar(64) default NULL,
+			object_id varchar(64) default NULL,
+			object_type varchar(255) default NULL,
+			old_value longtext,
+			new_value longtext,
+			action varchar(100) default NULL,
+			user_edit_lastr bigint(20) unsigned NOT NULL default '0',
+			PRIMARY KEY (ID),
+			KEY user_id (user_id),
+			KEY collection_id (collection_id),
+			KEY item_id (item_id),
+			KEY object_type (object_type),
+			KEY action (action)
+		) $charset_collate;\n";
+
+		error_log($query);
+
+		$wpdb->query( $query );
+	}
 }
