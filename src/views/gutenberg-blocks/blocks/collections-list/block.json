@@ -94,6 +94,9 @@
             "background": false,
             "gradients": false,
             "link": true
+        },
+        "position": {
+            "sticky": true
         }
     },
     "editorScript": "collections-list",

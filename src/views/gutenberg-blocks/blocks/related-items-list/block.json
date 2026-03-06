@@ -53,7 +53,10 @@
     "supports": {
         "align": ["full", "wide"],
         "html": false,
-        "multiple": true
+        "multiple": true,
+        "position": {
+            "sticky": true
+        }
     },
     "editorScript": "related-items-list",
 	"editorStyle": ["related-items-list", "tainacan-blocks-common-editor-styles" ]

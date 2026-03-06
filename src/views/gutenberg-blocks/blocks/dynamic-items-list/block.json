@@ -173,6 +173,9 @@
             "background": false,
             "gradients": false,
             "link": true
+        },
+        "position": {
+            "sticky": true
         }
     },
     "editorScript": "dynamic-items-list",

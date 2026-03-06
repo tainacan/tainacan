@@ -16,9 +16,13 @@
         },
         "color": {
             "text": true,
-            "background": false,
+            "background": true,
             "gradients": false,
-            "link": true
+            "link": true,
+            "button": true
+        },
+        "position": {
+            "sticky": true
         }
     },
     "example": {
@@ -119,6 +123,29 @@
         "collectionTextColor": {
             "type": "string",
             "default": "#ffffff"
+        },
+        "style": {
+            "type": "object",
+            "default": {
+                "elements": {
+                    "link": {
+                        "color": {
+                            "text": "currentColor"
+                        },
+                        ":hover": {
+                            "color": {
+                                "text": "currentColor"
+                            }
+                        }
+                    },
+                    "button": {
+                        "color": {
+                            "text": "var(--tainacan-block-primary, #187181)",
+                            "background": "transparent"
+                        }
+                    }
+                }
+            }
         }
     },
     "editorScript": "carousel-collections-list",

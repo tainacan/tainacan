@@ -483,7 +483,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                                 </ul>
                             </div>
                             <button
-                                    className="swiper-button-prev"
+                                    className="swiper-button-prev wp-element-button"
                                     slot="button-prev"
                                     style={{ cursor: 'not-allowed' }}>
                                 <svg
@@ -502,7 +502,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                                 </svg>
                             </button>
                             <button
-                                    className="swiper-button-next"
+                                    className="swiper-button-next wp-element-button"
                                     slot="button-next"
                                     style={{ cursor: 'not-allowed' }}>
                                 <svg

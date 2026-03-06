@@ -91,8 +91,18 @@
 
 .wp-block-tainacan-carousel-collections-list {
     margin: 2em auto;
-    --swiper-navigation-color: var(--tainacan-block-primary, $primary);
-    --swiper-theme-color: var(--tainacan-block-primary, $primary);
+    --swiper-navigation-sides-offset: 0px;
+    --swiper-navigation-color: var(--tainacan-block-primary, gutenberg-blocks-variables.$primary);
+    --swiper-theme-color: var(--tainacan-block-primary, gutenberg-blocks-variables.$primary);
+
+    // Link color: editor rule is .editor-styles-wrapper .wp-elements-0 a:not(.wp-element-button) and is editor-only.
+    // Frontend equivalent is not always output for static blocks, so we apply the same default here.
+    &:not([class*="wp-elements-"]) a:not(.wp-element-button) {
+        color: currentColor;
+        &:hover {
+            color: currentColor;
+        }
+    }
 
     // Spinner
     .spinner {
@@ -138,8 +148,8 @@
     // Tainacan Carousel
     .tainacan-carousel {
         position: relative;
-        width: calc(100% + calc( 2 * (var(--spaceAroundCarousel, 50px) - var(--swiper-navigation-sides-offset, 4px) ) ));
-        left: calc( -1 * (var(--spaceAroundCarousel, 50px) - var(--swiper-navigation-sides-offset, 4px) ));
+        width: calc(100% + var(--spaceAroundCarousel, 50px) - var(--swiper-navigation-sides-offset, 0px));
+        left: calc( -1 * (var(--spaceAroundCarousel, 50px) - var(--swiper-navigation-sides-offset, 0px)) / 2);
 
         .swiper {
             margin: 0 var(--spaceAroundCarousel, 50px);
@@ -153,7 +163,7 @@
 
             a>span,
             a:hover>span {
-                color: inherit;
+                //color: inherit;
                 font-weight: bold;
                 text-decoration: none;
                 padding: 8px 12px;
@@ -168,7 +178,7 @@
             }
             a,
             a:hover {
-                color: inherit;
+                //color: inherit;
                 text-decoration: none;
                 display: block;
             }
@@ -207,6 +217,7 @@
                         width: 100%;
                         height: auto;
                         margin-bottom: 0px; 
+                        line-height: 0;
                         // padding-bottom: 100% !important;
                     }
 
@@ -215,6 +226,8 @@
                         object-fit: cover;
                         object-position: center;
                         width: 100%;
+                        height: auto;
+                        aspect-ratio: 1/1;
                     }
                 }    
             }
@@ -231,24 +244,30 @@
         padding: 8px 2px 2px 2px;
     }
 
-    // Next and previous buttons
-    .swiper-button-prev, .swiper-button-next {
-        background: none;
-        background-color: transparent !important;
+    // Next and previous buttons (layout only; color/background below so custom button color can win)
+    .swiper-button-prev, .swiper-button-next,
+    .wp-element-button.swiper-button-prev,
+    .wp-element-button.swiper-button-next {
         border: none;
-        min-width: var(--swiper-navigation-size, 42px);
-        width: calc(var(--spaceAroundCarousel, 50px) - var(--swiper-navigation-sides-offset, 4px));
+        //min-width: var(--swiper-navigation-size, 42px);
+        //width: calc(var(--spaceAroundCarousel, 50px) - var(--swiper-navigation-sides-offset, 0px));
         height: var(--swiper-navigation-size, 42px);
         padding: 0;
 
         svg {
             border-radius: 100%;
-            fill: var(--tainacan-block-primary, gutenberg-blocks-variables.$primary);
+            fill: currentColor;
         }
         &::after,
         &::before {
             content: none !important;
         }
+    }
+    // Default button colors only when block has no element styles (no wp-elements-* class), so .wp-elements-xxx .wp-element-button wins when user picks a color
+    &:not([class*="wp-elements-"]) .swiper-button-prev,
+    &:not([class*="wp-elements-"]) .swiper-button-next {
+        color: var(--tainacan-block-primary, gutenberg-blocks-variables.$primary);
+        background: transparent;
     }
     .swiper-button-next.swiper-button-disabled,
     .swiper-button-prev.swiper-button-disabled {
@@ -276,7 +295,7 @@
             display: none;
         }
         &.has-arrows-left .swiper-button-next {
-            left: var(--swiper-navigation-sides-offset, 4px);
+            left: var(--swiper-navigation-sides-offset, 0px);
             right: auto;
             top: calc(50% + (var(--swiper-navigation-size, 12px) / 2)) !important;
         }
@@ -284,7 +303,7 @@
             top: calc(50% - (var(--swiper-navigation-size, 12px) / 2)) !important;
         }
         &.has-arrows-right .swiper-button-prev {
-            right: var(--swiper-navigation-sides-offset, 4px);
+            right: var(--swiper-navigation-sides-offset, 0px);
             top: calc(50% - (var(--swiper-navigation-size, 12px) / 2)) !important;
             left: auto;
         }
@@ -294,7 +313,6 @@
         &.has-large-arrows .swiper-button-prev, 
         &.has-large-arrows .swiper-button-next {
             --swiper-navigation-size: 60px;
-            --swiper-navigation-sides-offset: -10px;
         }
     }
     ul.collections-list-edit {
@@ -306,7 +324,7 @@
         padding: 0;
         scroll-snap-type: x mandatory;
         scroll-padding-left: 10px;
-        max-width: calc(100% - 2 * var(--spaceAroundCarousel));
+        max-width: calc(100% - 2 * var(--spaceAroundCarousel, 50px) - var(--swiper-navigation-sides-offset, 0px));
 
         li.collection-list-item {
             position: relative;
@@ -324,12 +342,12 @@
             }
 
             a { 
-                color: inherit; 
+                //color: inherit; 
                 font-weight: bold;
                 line-height: normal;
 
                 &>span {
-                    color: inherit;
+                    //color: inherit;
                     font-weight: bold;
                     text-decoration: none;
                     padding: 8px 12px;
@@ -349,7 +367,7 @@
             }
 
             &:hover a { 
-                color: inherit; 
+                //color: inherit; 
                 text-decoration: none;
             }
         
@@ -444,6 +462,7 @@
                     margin-bottom: 0px;
                     object-fit: cover;
                     object-position: center;
+                    aspect-ratio: 1/1;
                 }
             }
         }

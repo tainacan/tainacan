@@ -102,7 +102,7 @@
         </div>
         <button 
                 :id="blockId + '-prev'" 
-                class="swiper-button-prev">
+                class="swiper-button-prev wp-element-button">
             <svg
                     :width="largeArrows ? 60 : 42"
                     :height="largeArrows ? 60 : 42"
@@ -120,7 +120,7 @@
         </button>
         <button 
                 :id="blockId + '-next'" 
-                class="swiper-button-next">
+                class="swiper-button-next wp-element-button">
             <svg
                     :width="largeArrows ? 60 : 42"
                     :height="largeArrows ? 60 : 42"
