@@ -287,6 +287,7 @@ class REST_Logs_Controller extends REST_Controller {
 		return $item;
 	}
 
+	// @deprecated
 	private function prepare_legacy_item_for_response($item, $request) {
 		if(!isset($request['fetch_only'])) {
 			$item_array = $item->_toArray();
@@ -332,6 +333,7 @@ class REST_Logs_Controller extends REST_Controller {
 		}
 
 		$logs = Repositories\Logs::get_instance()->fetch($args);
+		$total_logs = Repositories\Logs::get_instance()->fetch_count($args);
 
 		$response = [];
 
@@ -341,8 +343,7 @@ class REST_Logs_Controller extends REST_Controller {
 			}
 		}
 
-		$total_logs  = 10; //$logs->found_posts;
-		$max_pages = 1; //ceil($total_logs / (int) $logs->query_vars['posts_per_page']);
+		$max_pages = ceil($total_logs / (int) $args['posts_per_page'] ?? 12);
 
 		$rest_response = new \WP_REST_Response($response, 200);
 

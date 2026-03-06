@@ -91,12 +91,12 @@ class Logs extends Repository {
 			// 	'description' => __( 'The actual log value' ),
 			// 	'validation'  => ''
 			// ],
-			'log_diffs'      => [ // deprecated
-				'map'         => 'meta',
-				'title'       => __( 'Log differences', 'tainacan' ),
-				'description' => __( 'Differences between old and new versions of object', 'tainacan' ),
-				'type'        => 'string',
-			],
+			// 'log_diffs'      => [ // deprecated
+			// 	'map'         => 'meta',
+			// 	'title'       => __( 'Log differences', 'tainacan' ),
+			// 	'description' => __( 'Differences between old and new versions of object', 'tainacan' ),
+			// 	'type'        => 'string',
+			// ],
 			'collection_id'  => [
 				'map'         => 'meta',
 				'title'       => __( 'Log collection relationship', 'tainacan' ),
@@ -230,29 +230,7 @@ class Logs extends Repository {
 		$args = apply_filters( 'tainacan-fetch-args', $args, 'logs' );
 
 		// --- WHERE ---------------------------------------------------------
-		// Column names come from whitelists to prevent SQL injection;
-		// values are bound via $wpdb->prepare() format specifiers.
-		$wheres = [];
-		$params = [];
-
-		$int_cols = [ 'item_id', 'user_id' ];
-		$str_cols = [ 'collection_id', 'object_type', 'object_id', 'action' ];
-
-		foreach ( $int_cols as $col ) {
-			if ( isset( $args[ $col ] ) ) {
-				$wheres[] = "`$col` = %d";
-				$params[]  = (int) $args[ $col ];
-			}
-		}
-
-		foreach ( $str_cols as $col ) {
-			if ( isset( $args[ $col ] ) ) {
-				$wheres[] = "`$col` = %s";
-				$params[]  = $args[ $col ];
-			}
-		}
-
-		$where_sql = $wheres ? 'WHERE ' . implode( ' AND ', $wheres ) : '';
+		[ $where_sql, $params ] = $this->build_where( $args );
 
 		// --- ORDER BY ------------------------------------------------------
 		$valid_orderby = [ 'ID', 'date', 'title', 'user_id', 'collection_id', 'item_id', 'action' ];
@@ -279,6 +257,74 @@ class Logs extends Repository {
 		$rows = $wpdb->get_results( $sql );
 
 		return array_map( [ $this, 'row_to_entity' ], $rows ?: [] );
+	}
+
+	/**
+	 * Count logs matching the given filters.
+	 *
+	 * Accepts the same filtering args as fetch() (item_id, user_id,
+	 * collection_id, object_type, object_id, action) but ignores
+	 * pagination and ordering — it always returns an integer.
+	 *
+	 * Typical pagination usage:
+	 *   $total      = $logs->fetch_count( $filters );
+	 *   $rows       = $logs->fetch( array_merge( $filters, [ 'posts_per_page' => 20, 'paged' => 2 ] ) );
+	 *   $total_pages = ceil( $total / 20 );
+	 *
+	 * @param array $args Same filtering keys supported by fetch().
+	 * @return int Total number of matching rows.
+	 */
+	public function fetch_count( array $args = [] ) {
+		global $wpdb;
+
+		$table  = $this->get_table_name();
+		$args   = apply_filters( 'tainacan-fetch-args', $args, 'logs' );
+
+		[ $where_sql, $params ] = $this->build_where( $args );
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$sql = "SELECT COUNT(*) FROM $table $where_sql";
+
+		if ( $params ) {
+			$sql = $wpdb->prepare( $sql, ...$params ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		}
+
+		return (int) $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	}
+
+	/**
+	 * Build a parameterized WHERE clause from a filter args array.
+	 *
+	 * Column names are taken from a whitelist, so they are never
+	 * interpolated from user input. Values are returned as a separate
+	 * $params array to be bound via $wpdb->prepare().
+	 *
+	 * @param array $args Filtering args (same keys accepted by fetch()).
+	 * @return array{ 0: string, 1: array } Tuple of [ $where_sql, $params ].
+	 *               $where_sql is either an empty string or 'WHERE col = %x AND …'.
+	 *               $params holds the corresponding values in order.
+	 */
+	private function build_where( array $args ) {
+		$wheres = [];
+		$params = [];
+
+		foreach ( [ 'item_id', 'user_id' ] as $col ) {
+			if ( isset( $args[ $col ] ) ) {
+				$wheres[] = "`$col` = %d";
+				$params[]  = (int) $args[ $col ];
+			}
+		}
+
+		foreach ( [ 'collection_id', 'object_type', 'object_id', 'action' ] as $col ) {
+			if ( isset( $args[ $col ] ) ) {
+				$wheres[] = "`$col` = %s";
+				$params[]  = $args[ $col ];
+			}
+		}
+
+		$where_sql = $wheres ? 'WHERE ' . implode( ' AND ', $wheres ) : '';
+
+		return [ $where_sql, $params ];
 	}
 
 	/**

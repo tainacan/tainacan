@@ -559,7 +559,6 @@ class Migrations {
 			slug varchar(200) default NULL,
 			user_id bigint(20) unsigned NOT NULL default '0',
 			item_id bigint(20) unsigned NOT NULL default '0',
-			log_diffs longtext,
 			collection_id varchar(64) default NULL,
 			object_id varchar(64) default NULL,
 			object_type varchar(255) default NULL,
