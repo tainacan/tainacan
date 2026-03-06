@@ -859,7 +859,7 @@ abstract class Pages {
 						</label>
 						<label>
 							<input type="radio" name="tainacan-fullscreen-state" value="0" <?php checked(!$is_fullscreen, true); ?>>
-							<?php esc_html_e('Show WorPress navigation', 'tainacan'); ?>
+							<?php esc_html_e('Show WordPress navigation', 'tainacan'); ?>
 						</label>
 					</fieldset>
 				</label>

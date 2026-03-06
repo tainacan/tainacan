@@ -214,7 +214,7 @@ export default (element) => {
                 }
             }
 
-            // Logic for dynamic importing Tainacan oficial view modes only if they are necessary
+            // Logic for dynamic importing Tainacan official view modes only if they are necessary
             possibleViewModes.forEach(viewModeSlug => {
                 if ( registeredViewModes.indexOf(viewModeSlug) >= 0 ) {
                     const componentName = 'view-mode-' + viewModeSlug;

@@ -3301,7 +3301,7 @@ class Theme_Helper {
 	}
 
 	/**
-	 * Registers Tainacan oficial View Modes and their placeholders
+	 * Registers Tainacan official View Modes and their placeholders
 	 */
 	function register_tainacan_oficial_view_modes() {
 

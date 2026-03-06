@@ -1164,7 +1164,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_autodraft_updated'						 => __( 'Autodraft updated. Please create the item to keep your changes.', 'tainacan' ),
 	'info_intersection_explainer'			 	 	 => __( 'Will show items if the selected value is:', 'tainacan' ),
 	'info_intersection_rules'				 	 	 => __( 'The value must match both rules to appear in the filter.', 'tainacan' ),
-	'info_editing_publication_authorship'			 => __( 'Warning! By changhing the item author, you may loose access to editing it. Certain types of users can only edit items that are authored by theirselves.', 'tainacan' ),		
+	'info_editing_publication_authorship'			 => __( 'Warning! By changing the item author, you may loose access to editing it. Certain types of users can only edit items that are authored by theirselves.', 'tainacan' ),		
 	/* translators: The first string is the current author name and the second is the future author name */
 	'info_change_author_from_%s_to_%s'				 => __( 'Are you sure you want to change the authorship of this item from <em>%1$s</em> to <em>%2$s</em>?', 'tainacan' ),		
 	'info_authorship'								 => __( 'The user who is credited as creator of this item and who generally have capabilities to edit it, besides administrators.', 'tainacan' ),

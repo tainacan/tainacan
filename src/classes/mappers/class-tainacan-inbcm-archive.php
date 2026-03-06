@@ -68,7 +68,7 @@ class Inbcm_Archive extends Mapper {
 				'field' => 'Existência e Localização dos Originais'
 			],
 			'inbcm:conservacao' => [
-				'label' => __( 'Conservvation Notes', 'tainacan' ),
+				'label' => __( 'Conservation', 'tainacan' ),
 				'field' => 'Notas sobre conservação',
 			],
 			'inbcm:indexacao' => [
