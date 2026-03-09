@@ -19,7 +19,10 @@ const state = {
         height: 350,
         stacked: true,
         toolbar: {
-            show: true
+            show: true,
+            export: {
+              scale: 3
+            }
         },
         zoom: {
             enabled: true,
@@ -59,7 +62,10 @@ const state = {
       chart: {
           type: 'donut',
           toolbar: {
-            show: true
+            show: true,
+            export: {
+              scale: 3
+            }
           },
           height: 350,
       },
@@ -78,7 +84,10 @@ const state = {
         stacked: true,
         stackType: '100%',
         toolbar: {
-            show: true
+            show: true,
+            export: {
+              scale: 3
+            }
         },
         zoom: {
             type: 'y',
@@ -129,6 +138,9 @@ const state = {
               zoomin: true,
               zoomout: true,
               pan: true,
+          },
+          export: {
+            scale: 3
           }
         },
       },
@@ -186,7 +198,10 @@ const state = {
         stacked: true,
         stackType: 'normal',
         toolbar: {
-            show: false
+            show: false,
+            export: {
+              scale: 3
+            }
         },
         zoom: {
             type: 'y',

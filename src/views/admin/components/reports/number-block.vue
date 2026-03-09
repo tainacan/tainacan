@@ -11,7 +11,7 @@
         <p class="subtitle is-3">
             <span class="icon has-text-dark">
                 <i
-                        class="tainacan-icon tainacan-icon-1-125em"
+                        class="tainacan-icon tainacan-icon-1em"
                         :class="'tainacan-icon-' + entityType" />
             </span>
             &nbsp;{{ $i18n.get(entityType) }}
@@ -36,7 +36,7 @@
                             class="icon has-text-dark">
                         <i 
                                 :style="(isRepositoryLevel && entityType === 'items') ? 'color: var(--tainacan-secondary, #187181);' : ''"
-                                class="tainacan-icon tainacan-icon-1-125em"
+                                class="tainacan-icon tainacan-icon-1em"
                                 :class="$statusHelper.getIcon(statusOption.slug)" />
                     </span>
                     <!-- {{ statusOption.name }} -->
@@ -53,7 +53,7 @@
                 class="visibility-charts">
             <div :style="'margin-right: 6px; background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'publish') ? '#acacac' : ';' ) + '; width: ' + visibilityChartOpenWidth + '%'">
                 <span class="icon has-text-dark">
-                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-see" />
+                    <i class="tainacan-icon tainacan-icon-1em tainacan-icon-see" />
                     &nbsp;{{ totalByVisibility['not_restrict'] }}
                 </span>
             </div>
@@ -107,7 +107,7 @@
                     &nbsp;
                 </span>
                 <span class="icon has-text-dark">
-                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-see" />
+                    <i class="tainacan-icon tainacan-icon-1em tainacan-icon-see" />
                 </span>
             </li>
              <li>

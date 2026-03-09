@@ -201,6 +201,9 @@ export default {
                             zoomin: true,
                             zoomout: true,
                             pan: true,
+                        },
+                        export: {
+                            scale: 3
                         }
                     },
                 },
@@ -262,6 +265,9 @@ export default {
                                 zoomin: true,
                                 zoomout: true,
                                 pan: true,
+                            },
+                            export: {
+                                scale: 3
                             }
                         },
                     },
