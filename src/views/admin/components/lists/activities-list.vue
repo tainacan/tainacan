@@ -22,10 +22,6 @@
                                 {{ $i18n.get('label_activity_date') }}
                             </div>
                         </th>
-                        <!--&lt;!&ndash; Approbation &ndash;&gt;-->
-                        <!--<th>-->
-                        <!--<div class="th-wrap">{{ $i18n.get('label_approbation') }}</div>-->
-                        <!--</th>-->
                     </tr>
                 </thead>
                 <tbody>
@@ -116,15 +112,10 @@
 </template>
 
 <script>
-    import { mapActions } from 'vuex';
-
     import ActivityDetailsModal from '../modals/activity-details-modal.vue';
 
     export default {
         name: 'ActivitiesList',
-        /*components: {
-            ThreeStateToggleButton
-        },*/
         props: {
             isLoading: false,
             totalActivities: 0,
@@ -132,31 +123,7 @@
             activitiesPerPage: 12,
             activities: Array
         },
-        data() {
-            return {
-                selectedActivities: [],
-                stateEvents: {
-                    yes_3tgbtn: (a) => this.approveActivity(a),
-                    //neutral_3tgbtn: (otherProp) => this.approveActivity(otherProp),
-                    no_3tgbtn: (a) => this.notApproveActivity(a)
-                }
-            }
-        },
         methods: {
-            ...mapActions('activity', [
-                'approve',
-                'notApprove'
-            ]),
-            approveActivity(activity) {
-                this.approve(activity.id)
-                    .then(data => {
-                        this.$console.info('approved!', data);
-                    })
-                    .catch(error => this.$console.error(error));
-            },
-            notApproveActivity(activity) {
-                this.notApprove(activity.id);
-            },
             openActivityDetailsModal(activity) {
                 const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
@@ -165,8 +132,6 @@
                         activityId: activity.id,
                     },
                     events: {
-                        approveActivity: (activityId) => this.approveActivity(activityId),
-                        notApproveActivity: (activityId) => this.notApproveActivity(activityId),
                         beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
                     },
                     width: 840,
