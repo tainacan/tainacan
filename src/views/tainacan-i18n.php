@@ -219,6 +219,12 @@ return apply_filters( 'tainacan-i18n', [
 	'label_attachments_per_page'                     => __( 'Attachments per Page:', 'tainacan' ),
 	'label_processes_per_page'                       => __( 'Processes per Page:', 'tainacan' ),
 	'label_go_to_page'                          	 => __( 'Go to Page:', 'tainacan' ),
+	'label_go_to_collection'                     	 => __( 'Go to collection', 'tainacan' ),
+	'label_go_to_taxonomy'                       	 => __( 'Go to taxonomy', 'tainacan' ),
+	'label_go_to_metadatum'                      	 => __( 'Go to metadatum', 'tainacan' ),
+	'label_go_to_filter'                         	 => __( 'Go to filter', 'tainacan' ),
+	'label_go_to_term'                           	 => __( 'Go to term', 'tainacan' ),
+	'label_go_to_item'                            	 => __( 'Go to item', 'tainacan' ),
 	/* translators: 'Active' here refers to a mode that the metadata are, not a verb or action */
 	'label_active_metadata'                          => __( 'Active Metadata', 'tainacan' ),
 	'label_available_metadata'                       => __( 'Available Metadata', 'tainacan' ),
@@ -676,6 +682,9 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: %1$s is the number of metadata, %2$s is the number of sections */
 	'label_metadata_%s_and_sections_%s'				 => __( 'Metadata (%1$s) and Sections (%2$s)', 'tainacan' ),
 	'label_view_activity_logs'						 => __( 'View activity logs', 'tainacan' ),
+	'label_view_changes'                               => __( 'View changes', 'tainacan' ),
+	/* translators: %s is the date */
+	'label_changes_on_%s'                              => __( 'Changes on %s', 'tainacan' ),
 	'label_item_activities'						 	 => __( 'Item activities', 'tainacan' ),
 	'label_add_new_section'							 => __( 'Add new section', 'tainacan' ),
 	'label_new_metadata_section'					 => __( 'New metadata section', 'tainacan' ),
@@ -704,7 +713,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_preset_collections'				 		 => __( 'Preset collections', 'tainacan' ),
 	'label_from_a_mapper'					 		 => __( 'From a metadata mapper', 'tainacan' ),
 	'label_using_a_preset'					 		 => __( 'Using a preset', 'tainacan' ),
-	'label_use_search_separated_words'				 => __( 'Search each word separatelly', 'tainacan' ),
+	'label_use_search_separated_words'				 => __( 'Search each word separately', 'tainacan' ),
 	'label_map'										 => __( 'Map', 'tainacan' ),
 	'label_show_item_location_on_map'				 => __( 'Show item location on map', 'tainacan' ),
 	/* translators: This appears before a select where you choose possible geocoordinate metadata */
@@ -1144,7 +1153,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_empty_geocoordinate_metadata_list'		 => __( 'No geocoordinate metadata was found. Try enabling it in the "displayed metadata" dropdown.', 'tainacan' ),
 	'info_non_located_item'							 => __( 'This item does not have any location based on this metadata.', 'tainacan' ),
 	'info_metadata_section_hidden_conditional'		 => __( 'Section disabled due to a conditional metadatum value.', 'tainacan' ),
-	'info_create_select_metadatum_for_conditional_section' => __( 'For configuring conditional sections, first create one select type metadatum to use its values as rules for displaing this section. The metadatum should be inside another metadatum section.', 'tainacan' ),
+	'info_create_select_metadatum_for_conditional_section' => __( 'For configuring conditional sections, first create one select type metadatum to use its values as rules for displaying this section. The metadatum should be inside another metadatum section.', 'tainacan' ),
 	'info_taxonomy_terms_list' 						 => __( 'The list of terms that are managed by this taxonomy. They will be used as values for the taxonomy metadata.', 'tainacan' ),
 	/* translators: %s is the parent term name */
 	'info_no_child_term_of_%s_found'				 => __( 'No child term of %s was found.', 'tainacan' ),
