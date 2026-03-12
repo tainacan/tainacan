@@ -839,7 +839,7 @@ class Theme_Helper {
 		 *     @type bool 	$start_with_filters_hidden					Loads the filters list hidden from start
 		 *     @type bool 	$filters_as_modal							Display the filters as a modal instead of a collapsible region on desktop
 		 *     @type bool 	$show_inline_view_mode_options				Display view modes as inline icon buttons instead of the dropdown
-		 *     @type bool 	$show_fullscreen_with_view_modes			Lists fullscreen viewmodes alongside with other view modes istead of separatelly
+		 *     @type bool 	$show_fullscreen_with_view_modes			Lists fullscreen viewmodes alongside with other view modes istead of separately
 		 *     @type string $default_view_mode							The default view mode
 		 *     @type bool	$is_forced_view_mode						Ignores user prefs to always render the choosen default view mode
 		 *     @type string[] $enabled_view_modes						The list os enable view modes to display
