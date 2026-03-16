@@ -16,7 +16,7 @@
                 <span 
                         aria-hidden="true"
                         class="icon has-text-dark">
-                    <i class="tainacan-icon tainacan-icon-taxonomies tainacan-icon-1-125em" />
+                    <i class="tainacan-icon tainacan-icon-taxonomies tainacan-icon-1em" />
                 </span>
                 &nbsp;{{ $i18n.get('taxonomies') }}
             </p>

@@ -8,12 +8,12 @@
         <tainacan-title 
                 v-if="!isItemLevel"
                 :is-sticky="true" />
-        <header 
+        <tainacan-title 
                 v-else
-                class="tainacan-modal-title">
+                class="tainacan-modal-title"
+                :is-sticky="true">
             <h2>{{ $i18n.get('label_item_activities') }}</h2>
-            <button 
-                    v-if="isItemLevel"        
+            <button       
                     class="button is-medium is-white is-align-self-flex-start"
                     :aria-label="$i18n.get('close')"
                     @click="closeModal()">
@@ -21,7 +21,7 @@
                     <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-125em" />
                 </span>
             </button>
-        </header>
+        </tainacan-title>
 
         <div class="sub-header tainacan-sub-header--sticky">
 
@@ -148,7 +148,8 @@
                     :total-activities="totalActivities"
                     :page="activitiesPage"
                     :activities-per-page="activitiesPerPage"
-                    :activities="activities" />
+                    :activities="activities"
+                    :is-item-level="isItemLevel" />
             <template v-if="!$userCaps.hasCapability('tnc_rep_read_logs')">
                 <section class="section">
                     <div class="content has-text-dark has-text-centered">
@@ -454,6 +455,18 @@
 
 <style lang="scss" scoped>
 
+    .tainacan-modal-content {
+        padding-top: 0;
+        overflow: visible;
+
+        @media screen and (max-width: 498px) {
+            & {
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+        }
+    }
+
     .sub-header {
 
         .header-item {
@@ -516,20 +529,10 @@
             }
         }
     }
-
-    .tainacan-modal-content .table-container {
-        max-height: calc(100vh - 412px);
-        max-height: calc(100dvh - 412px);
-        min-height: 320px;
-        overflow-y: scroll;
-        margin-bottom: 0;
-        padding-bottom: 1.5rem;
-    }
-
     .above-subheader {
         margin-bottom: 0;
         margin-top: 0;
-        min-height: 100%;
+        // min-height: 100%;
         height: auto;
     }
 </style>

@@ -32,7 +32,17 @@ import {
 import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
 import VueBlurHash from 'another-vue3-blurhash';
-import VueApexCharts from 'vue3-apexcharts';
+
+import VueApexCharts from 'vue3-apexcharts/core';
+import 'apexcharts/bar';
+import 'apexcharts/pie';
+import 'apexcharts/line';
+import 'apexcharts/treemap';
+import 'apexcharts/features/legend';
+import 'apexcharts/features/toolbar';
+import 'apexcharts/features/annotations';
+import 'apexcharts/features/exports';
+import 'apexcharts/features/keyboard';
 
 // Remaining imports
 import AdminPage from '../admin.vue'

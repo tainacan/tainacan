@@ -149,22 +149,6 @@ export const fetchActivityTitle = ({ commit }, activityId) => {
   })
 };
 
-export const approve = ({commit}, activityId) => {
-    return new Promise((resolve, reject) => {
-        axios.tainacanApi.post(`/logs/${activityId}/approve`)
-            .then(res => {
-                let activity = res.data;
-
-                resolve(activity);
-            })
-            .catch(error => reject(error))
-    });
-};
-
-export const notApprove = ({commit}, activityId) => {
-
-};
-
 // Users for filtering and core author metadata
 export const fetchUsers = ({ commit }, { search, page, exclude }) => {
     let endpoint = '/users';

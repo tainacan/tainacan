@@ -110,7 +110,7 @@ class Settings extends Pages {
 			'section' => 'tainacan_settings_search_and_performance',
 			'title' => __( 'Filters dynamic values', 'tainacan' ),
 			'label' => __( 'Narrows down filters options based on current search', 'tainacan' ),
-			'description' => __( 'Check this option to have filter values being reloaded every time a new filter is applied for displaing only options that will result in some item count. If disabled, this can increase the search results speed well.', 'tainacan' ),
+			'description' => __( 'Check this option to have filter values being reloaded every time a new filter is applied for displaying only options that will result in some item count. If disabled, this can increase the search results speed well.', 'tainacan' ),
 			'type' => 'boolean',
 			'input_type' => 'checkbox',
 			'input_disabled' => defined('TAINACAN_FACETS_DISABLE_FILTER_ITEMS'),

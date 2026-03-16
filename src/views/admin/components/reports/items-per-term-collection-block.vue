@@ -257,7 +257,7 @@
                         class="empty-report-card-placeholder">
                     <p class="title is-4">
                         <span class="icon has-text-dark">
-                            <i class="tainacan-icon tainacan-icon-taxonomies tainacan-icon-1-125em" />
+                            <i class="tainacan-icon tainacan-icon-taxonomies tainacan-icon-1em" />
                         </span>
                         &nbsp;{{ $i18n.get('label_children_terms') }}
                     </p>
@@ -308,7 +308,7 @@
         <div class="empty-report-card-placeholder">
             <p class="title is-4">
                 <span class="icon has-text-dark">
-                    <i class="tainacan-icon tainacan-icon-metadata tainacan-icon-1-125em" />
+                    <i class="tainacan-icon tainacan-icon-metadata tainacan-icon-1em" />
                 </span>
                 &nbsp;{{ $i18n.get('label_items_per_term_from_taxonomy_metadatum') }}
             </p>
@@ -521,7 +521,10 @@ export default {
                             type: 'treemap',
                             height: 350,
                             toolbar: {
-                                show: true
+                                show: true,
+                                export: {
+                                    scale: 3
+                                }
                             },
                             zoom: {
                                 enabled: false
@@ -591,7 +594,10 @@ export default {
                             height: 350,
                             stacked: false,
                             toolbar: {
-                                show: true
+                                show: true,
+                                export: {
+                                    scale: 3
+                                }
                             },
                             zoom: {
                                 enabled: true,
@@ -654,7 +660,10 @@ export default {
                             type: 'treemap',
                             height: 350,
                             toolbar: {
-                                show: true
+                                show: true,
+                                export: {
+                                    scale: 3
+                                }
                             },
                             zoom: {
                                 enabled: false
@@ -724,7 +733,10 @@ export default {
                             height: 350,
                             stacked: true,
                             toolbar: {
-                                show: true
+                                show: true,
+                                export: {
+                                    scale: 3
+                                }
                             },
                             zoom: {
                                 enabled: true,

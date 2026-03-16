@@ -589,8 +589,6 @@
             activityId: Number
         },
         emits: [
-            'approveActivity',
-            'notApproveActivity',
             'beforeClose',
             'close'
         ],
@@ -666,12 +664,6 @@
             closeModal() {
                 this.$emit('beforeClose');
                 this.$emit('close');
-            },
-            approveActivity(){
-                this.$emit('approveActivity', this.activity.id);
-            },
-            notApproveActivity(){
-                this.$emit('notApproveActivity', this.activity.id);
             },
             loadActivity() {
                 this.isLoadingActivity = true;
