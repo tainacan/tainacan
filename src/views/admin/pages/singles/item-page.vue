@@ -120,6 +120,22 @@
                                                                 :class="$statusHelper.getIcon(itemMetadatum.metadatum.status)"
                                                             />
                                                     </span>
+                                                    <button 
+                                                            v-if="!$adminOptions.hideItemSingleActivities"
+                                                            v-tooltip="{
+                                                                content: $i18n.get('label_view_activity_logs'),
+                                                                autoHide: true,
+                                                                popperClass: ['tainacan-tooltip', 'tooltip']
+                                                            }"
+                                                            class="button link-style"
+                                                            aria-label="$i18n.get('label_view_activity_logs')"
+                                                            @click="openActivitiesModal(itemMetadatum.item.id)">
+                                                       <span
+                                                                class="icon"
+                                                                style="margin: 0;">
+                                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities" />
+                                                       </span>
+                                                    </button>
                                                 </label>
                                                 <div
                                                         :class="{
@@ -899,7 +915,7 @@
                 font-size: 0.875em;
                 font-weight: 500;
                 margin-bottom: 0.5em;
-                display: inline-flex;
+                display: flex;
                 align-items: center;
 
                 span {
