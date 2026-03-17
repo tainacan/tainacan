@@ -174,7 +174,7 @@ class Tools extends Pages {
 				$html .= '>';
 			}
 
-			if ( $description ) {
+			if ( $description && ! ($name === 'collection' || $name === 'collection_id') ) {
 				$html .= '<p class="description">' . esc_html( $description ) . '</p>';
 			}
 			$html .= '</div>';

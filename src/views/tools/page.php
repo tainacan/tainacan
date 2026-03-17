@@ -15,7 +15,9 @@ $tainacan_tools = $this->get_tools_for_page();
 	<div id="tainacan-tools-running-notice" class="tainacan-tools-notice tainacan-tools-notice--running" role="alert" aria-live="polite" style="display: none;"></div>
 
 	<p class="tainacan-tools-intro">
-		<?php esc_html_e( 'Run CLI-backed operations from this screen. Results appear below each tool. Advanced users can run these via WP-CLI: wp tainacan ...', 'tainacan' ); ?>
+		<?php esc_html_e( 'Execute advanced operations affecting the database or the filesystem. Be careful when running these tools, you must know what you are doing!', 'tainacan' ); ?>
+		<br>
+		<?php echo wp_kses_post( __('They can also be invoked via <a href="https://wp-cli.org/" target="_blank">WP-CLI</a>: <code>wp tainacan ...</code>. For more information, see the <a href="https://tainacan.github.io/tainacan-wiki/#/tools" target="_blank">documentation</a>.', 'tainacan') ); ?>
 	</p>
 
 	<div id="tainacan-tools-cards" class="tainacan-tools-cards">
