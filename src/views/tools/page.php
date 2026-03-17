@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || die( 'No script kiddies please!' );
 
-$tools = $this->get_tools_for_page();
+$tainacan_tools = $this->get_tools_for_page();
 
 ?>
 <div class="wrap tainacan-page-container-content">
@@ -19,11 +19,11 @@ $tools = $this->get_tools_for_page();
 	</p>
 
 	<div id="tainacan-tools-cards" class="tainacan-tools-cards">
-		<?php if ( empty( $tools ) ) : ?>
+		<?php if ( empty( $tainacan_tools ) ) : ?>
 			<p class="tainacan-tools-loading"><?php esc_html_e( 'No tools available.', 'tainacan' ); ?></p>
 		<?php else : ?>
-			<?php foreach ( $tools as $tool ) : ?>
-				<?php $this->render_tool_card( $tool ); ?>
+			<?php foreach ( $tainacan_tools as $tainacan_tool ) : ?>
+				<?php $this->render_tool_card( $tainacan_tool ); ?>
 			<?php endforeach; ?>
 		<?php endif; ?>
 	</div>

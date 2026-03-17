@@ -145,7 +145,12 @@ class Tool_Move_Attachments implements \Tainacan\Tools\Management_Tool {
 		}
 
 		$this->output->finish_progress();
-		$message = $dry_run ? __( '%d attachments to be moved', 'tainacan' ) : __( '%d attachments moved', 'tainacan' );
+
+		$message = $dry_run ?
+			/* translators: %d: number of attachments */
+			__( '%d attachments to be moved', 'tainacan' ) :
+			/* translators: %d: number of attachments */
+			__( '%d attachments moved', 'tainacan' );
 		$this->output->success( sprintf( $message, $moved_count ) );
 	}
 

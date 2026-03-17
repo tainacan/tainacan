@@ -127,6 +127,13 @@ class Tool_Garbage_Collector implements \Tainacan\Tools\Management_Tool {
 		}
 	}
 
+	/**
+	 * Returns a prepared SQL string for selecting orphan item IDs (or a count).
+	 * Safe to pass to $wpdb->get_var, $wpdb->get_col, or $wpdb->query; call sites may use phpcs:ignore PreparedSQL.NotPrepared.
+	 *
+	 * @param string $select Column(s) to select (default 'ID').
+	 * @return string Prepared SQL.
+	 */
 	private function get_orphan_items_query( $select = 'ID' ) {
 		global $wpdb;
 		$collections = $wpdb->get_col( "SELECT ID FROM $wpdb->posts WHERE post_type = 'tainacan-collection'" );
@@ -142,13 +149,16 @@ class Tool_Garbage_Collector implements \Tainacan\Tools\Management_Tool {
 
 	private function delete_items( $dry_run, $deep ) {
 		global $wpdb;
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Prepared in get_orphan_items_query().
 		$items_found = (int) $wpdb->get_var( $this->get_orphan_items_query( 'COUNT(ID)' ) );
+		/* translators: %d: number of items */
 		$this->output->log( sprintf( __( 'Found %d items', 'tainacan' ), $items_found ), 'info' );
 
 		if ( $dry_run ) {
 			return;
 		}
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Prepared in get_orphan_items_query().
 		$items_ids = $wpdb->get_col( $this->get_orphan_items_query() );
 		$total = count( $items_ids );
 		$this->output->start_progress( $total, __( 'Deleting items', 'tainacan' ) );
@@ -168,7 +178,9 @@ class Tool_Garbage_Collector implements \Tainacan\Tools\Management_Tool {
 		global $wpdb;
 		$orphan_items_query = $this->get_orphan_items_query();
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $orphan_items_query is prepared in get_orphan_items_query().
 		$orphan_documents = $wpdb->get_col( "SELECT ID FROM $wpdb->posts WHERE post_type = 'attachment' AND ID IN (SELECT meta_value FROM $wpdb->postmeta WHERE post_id IN ($orphan_items_query) AND meta_key = 'document')" );
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $orphan_items_query is prepared in get_orphan_items_query().
 		$orphan_att = $wpdb->get_col( "SELECT ID FROM $wpdb->posts WHERE post_type = 'attachment' AND post_parent IN ($orphan_items_query)" );
 		$orphan_att_deep = [];
 		if ( $deep ) {
@@ -196,6 +208,7 @@ class Tool_Garbage_Collector implements \Tainacan\Tools\Management_Tool {
 			}
 		}
 
+		/* translators: %1$d: number of attachments, %2$s: total size */
 		$this->output->log( sprintf( __( 'Found %1$d attachments. Total of %2$s', 'tainacan' ), $number_of_files, $this->filesize_formatted( $total_bytes ) ), 'info' );
 
 		if ( ! $dry_run && count( $attachments ) > 0 ) {
@@ -221,6 +234,7 @@ class Tool_Garbage_Collector implements \Tainacan\Tools\Management_Tool {
 		$current_taxonomies = $wpdb->get_col( "SELECT DISTINCT(taxonomy) FROM $wpdb->term_taxonomy WHERE taxonomy LIKE 'tnc_tax_%'" );
 		$orphan_taxonomies = array_diff( $current_taxonomies ? $current_taxonomies : [], $existing_taxonomies );
 		$orphan_taxonomies_count = count( $orphan_taxonomies );
+		/* translators: %d: number of orphan taxonomies */
 		$this->output->log( sprintf( __( 'Found %d orphan taxonomies', 'tainacan' ), $orphan_taxonomies_count ), 'info' );
 
 		if ( $orphan_taxonomies_count < 1 ) {
@@ -230,6 +244,7 @@ class Tool_Garbage_Collector implements \Tainacan\Tools\Management_Tool {
 		$in_str = implode( ',', array_fill( 0, $orphan_taxonomies_count, '%s' ) );
 		$orphan_terms = $wpdb->get_results( $wpdb->prepare( "SELECT term_id, term_taxonomy_id FROM $wpdb->term_taxonomy WHERE taxonomy IN ($in_str)", $orphan_taxonomies ) );
 		$orphan_terms_count = count( $orphan_terms );
+		/* translators: %d: number of orphan terms */
 		$this->output->log( sprintf( __( 'Found %d orphan terms', 'tainacan' ), $orphan_terms_count ), 'info' );
 
 		if ( ! $dry_run && $orphan_terms_count > 0 ) {
@@ -264,7 +279,9 @@ class Tool_Garbage_Collector implements \Tainacan\Tools\Management_Tool {
 			$metas = $wpdb->get_col( $wpdb->prepare( "SELECT meta_id FROM $wpdb->postmeta WHERE post_id IN ($in_str)", $meta_to_delete ) );
 		}
 		$metas_count = count( $metas ? $metas : [] );
+		/* translators: %1$d: number of deleted or orphan metadata, %2$d: number of values associated */
 		$this->output->log( sprintf( __( 'Found %1$d deleted or orphan Metadata with %2$d values associated', 'tainacan' ), $meta_to_delete_count, $metas_count ), 'info' );
+		/* translators: %d: number of orphan metadata values */
 		$this->output->log( sprintf( __( 'Found %d orphan metadata values', 'tainacan' ), $orphan_values_count ), 'info' );
 
 		if ( ! $dry_run ) {
@@ -284,7 +301,8 @@ class Tool_Garbage_Collector implements \Tainacan\Tools\Management_Tool {
 	private function delete_transients( $dry_run ) {
 		global $wpdb;
 		$count = (int) $wpdb->get_var( "SELECT COUNT(option_id) FROM $wpdb->options WHERE option_name LIKE 'tnc_transient%'" );
-		$this->output->log( sprintf( __( 'Found %d tainacan transients records in the Options table', 'tainacan' ), $count ), 'info' );
+		/* translators: %d: number of tainacan transients records */
+		$this->output->log( sprintf( __( 'Found %d Tainacan transients records in the Options table', 'tainacan' ), $count ), 'info' );
 
 		if ( ! $dry_run ) {
 			$this->output->log( __( 'Deleting transients...', 'tainacan' ), 'info' );

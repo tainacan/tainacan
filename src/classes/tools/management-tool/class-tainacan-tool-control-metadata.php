@@ -137,6 +137,7 @@ class Tool_Control_Metadata implements \Tainacan\Tools\Management_Tool {
 		$total = $collection_items->found_posts;
 		$last_page = (int) ceil( $total / $per_page );
 
+		/* translators: %s: collection ID */
 		$label = sprintf( __( 'Recalculate control metadata for items in collection %s', 'tainacan' ), $collection_id );
 		$this->output->start_progress( $total, $label );
 

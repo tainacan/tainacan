@@ -279,13 +279,15 @@ class Run_Output_Collector implements Output_Collector {
 	public function tick_progress( $increment = 1 ) {
 		$this->progress_done += (int) $increment;
 		if ( $this->progress_total > 0 && $this->progress_done % self::PROGRESS_LOG_INTERVAL === 0 ) {
-			$this->log( sprintf( __( 'Processed %d / %d', 'tainacan' ), $this->progress_done, $this->progress_total ), 'info' );
+			/* translators: %1$d: number of processed items, %2$d: total items */
+			$this->log( sprintf( __( 'Processed %1$d of %2$d items', 'tainacan' ), $this->progress_done, $this->progress_total ), 'info' );
 		}
 	}
 
 	public function finish_progress() {
 		if ( $this->progress_total > 0 ) {
-			$this->log( sprintf( __( 'Processed %d / %d', 'tainacan' ), $this->progress_done, $this->progress_total ), 'info' );
+			/* translators: %1$d: number of processed items, %2$d: total items */
+			$this->log( sprintf( __( 'Processed %1$d of %2$d items', 'tainacan' ), $this->progress_done, $this->progress_total ), 'info' );
 		}
 		$this->progress_total = 0;
 		$this->progress_done  = 0;
@@ -294,6 +296,7 @@ class Run_Output_Collector implements Output_Collector {
 
 	public function output_table( array $rows, array $columns ) {
 		$this->table = [ 'rows' => $rows, 'columns' => $columns ];
+		/* translators: %d: number of rows */
 		$this->log( sprintf( __( 'Displaying %d row(s).', 'tainacan' ), count( $rows ) ), 'info' );
 	}
 
