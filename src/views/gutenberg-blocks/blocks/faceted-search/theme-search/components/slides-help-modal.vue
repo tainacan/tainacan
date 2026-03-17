@@ -16,11 +16,11 @@
         <div class="slides-help-modal-content">
             <p>{{ $i18n.get('info_slides_help_introduction') }}:</p>
             <ul>
-                <li><kbd>&larr;</kbd>&nbsp;{{ $i18n.get('info_slides_previous_item') }};</li>
-                <li><kbd>&rarr;</kbd>&nbsp;{{ $i18n.get('info_slides_next_item') }};</li>
-                <li><kbd>&uarr;</kbd>&nbsp;/&nbsp;<kbd>&darr;</kbd>&nbsp;{{ $i18n.get('info_slides_hide_controls') }};</li>
-                <li><kbd>{{ $i18n.get('label_space_key') }}</kbd>&nbsp;{{ $i18n.get('info_slides_start_transition') }};</li>
-                <li><kbd>{{ $i18n.get('label_esc_key') }}</kbd>&nbsp;{{ $i18n.get('info_slides_exit') }}.</li>
+                <li><kbd class="tainacan-kbd">&larr;</kbd>&nbsp;{{ $i18n.get('info_slides_previous_item') }};</li>
+                <li><kbd class="tainacan-kbd">&rarr;</kbd>&nbsp;{{ $i18n.get('info_slides_next_item') }};</li>
+                <li><kbd class="tainacan-kbd">&uarr;</kbd>&nbsp;/&nbsp;<kbd class="tainacan-kbd">&darr;</kbd>&nbsp;{{ $i18n.get('info_slides_hide_controls') }};</li>
+                <li><kbd class="tainacan-kbd">{{ $i18n.get('label_space_key') }}</kbd>&nbsp;{{ $i18n.get('info_slides_start_transition') }};</li>
+                <li><kbd class="tainacan-kbd">{{ $i18n.get('label_esc_key') }}</kbd>&nbsp;{{ $i18n.get('info_slides_exit') }}.</li>
             </ul>
             <p v-html="$i18n.getWithVariables('info_slides_help_end', [`<i class='tainacan-icon tainacan-icon-metadata'></i>`, `<i class='tainacan-icon tainacan-icon-see'></i>`])" />
         </div>

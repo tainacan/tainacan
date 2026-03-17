@@ -56,7 +56,7 @@
                                 name="term-multiple-insertion-separator"
                                 :native-value="separator"
                                 :disabled="separator == 'Enter'">
-                            <kbd>{{ separator }}</kbd>
+                            <kbd class="tainacan-kbd">{{ separator }}</kbd>
                         </b-checkbox>
                     </div>
                 </b-field>
