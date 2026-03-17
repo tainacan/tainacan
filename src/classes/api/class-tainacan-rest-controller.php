@@ -759,7 +759,7 @@ abstract class REST_Controller extends \WP_REST_Controller {
 				if(!in_array($status, $allowStatuses)) {
 				return new \WP_Error(
 					'rest_forbidden_status',
-					__( 'Status is forbidden.' ),
+					__( 'Status is forbidden.', 'tainacan' ),
 					array( 'status' => rest_authorization_required_code() )
 				);
 			}

@@ -45,7 +45,7 @@
                         :native-value="separator"
                         :disabled="separator == 'Enter'"
                         @update:model-value="emitValues()">
-                    <kbd>{{ separator }}</kbd>
+                    <kbd class="tainacan-kbd">{{ separator }}</kbd>
                 </b-checkbox>
             </div>
         </b-field>

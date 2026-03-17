@@ -164,6 +164,8 @@ html {
     background-position: center;
     overflow: hidden;
     transition: all 0.3s ease-in-out;
+    --wp-admin-theme-color: var(--tainacan-turquoise5);
+    --wp-admin-theme-color-darker-10: var(--tainacan-turquoise6);
   
     .tainacan-ui-tweak-button {
         border-radius: var(--tainacan-admin-button-border-radius, 8px);
