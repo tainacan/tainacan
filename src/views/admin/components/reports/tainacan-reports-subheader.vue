@@ -13,7 +13,7 @@
                             aria-hidden="true"
                             class="icon has-text-dark">
                         <i 
-                                class="tainacan-icon tainacan-icon-1-125em"
+                                class="tainacan-icon tainacan-icon-1em"
                                 :class="$statusHelper.getIcon(statusOption.slug)"
                             />
                     </span>

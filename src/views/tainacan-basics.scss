@@ -137,6 +137,7 @@
     }
     input[type="checkbox"]:checked {
         border-color: var(--tainacan-secondary);
+        background: transparent;
     }
     @media screen and (max-width: 782px) {
         input[type="checkbox"]:checked::before {

@@ -103,7 +103,10 @@ export default {
                             height: 350,
                             stacked: false,
                             toolbar: {
-                                show: true
+                                show: true,
+                                export: {
+                                    scale: 3
+                                }
                             },
                             zoom: {
                                 enabled: true,

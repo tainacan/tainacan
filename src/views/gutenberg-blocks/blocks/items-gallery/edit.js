@@ -386,6 +386,7 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                         />
                         <RangeControl
                             label={ __('Slider height (vh)', 'tainacan') }
+                            help={ __('Viewport height percentage. 100% means the slider will be as tall as the viewport.', 'tainacan') }
                             value={ mainSliderHeight }
                             onChange={ ( updatedMainSliderHeight ) => {
                                 mainSliderHeight = updatedMainSliderHeight;

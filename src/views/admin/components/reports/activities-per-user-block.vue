@@ -117,7 +117,10 @@ export default {
                             height: chartHeight,
                             stacked: true,
                             toolbar: {
-                                show: true
+                                show: true,
+                                export: {
+                                    scale: 3
+                                },
                             },
                             zoom: {
                                 type: 'y',
