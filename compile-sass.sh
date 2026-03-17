@@ -71,5 +71,7 @@ npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=glob
 
 npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/settings/tainacan-settings.scss:src/assets/css/tainacan-settings.css
 
+npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/tools/tainacan-tools.scss:src/assets/css/tainacan-tools.css
+
 echo "Sass Compilation Finished!"
 exit 0

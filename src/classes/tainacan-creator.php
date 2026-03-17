@@ -3,6 +3,7 @@
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 const TAINACAN_CLI_DIR                    = __DIR__ . '/cli/';
+const TAINACAN_TOOLS_DIR                  = __DIR__ . '/tools/';
 const TAINACAN_API_DIR     				  = __DIR__ . '/api/';
 const TAINACAN_OAIPMH_DIR                 = __DIR__ . '/oaipmh/';
 const TAINACAN_TRAITS_DIR                 = __DIR__ . '/traits/';
@@ -21,6 +22,7 @@ const TAINACAN_METADATA_TYPES_DIR         = __DIR__ . '/../views/admin/component
 
 const DIRS = [
 	TAINACAN_CLI_DIR,
+	TAINACAN_TOOLS_DIR,
 	TAINACAN_API_DIR,
 	TAINACAN_OAIPMH_DIR,
 	TAINACAN_TRAITS_DIR,
@@ -124,6 +126,9 @@ function tainacan_autoload($class_name) {
 			if ( count($class_path) > 3 ) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
 		} else if ( isset( $class_path[1] ) && substr($class_path[1], 0, 3) === 'Cli' ) {
 			$dir = TAINACAN_CLI_DIR;
+		} else if ( isset( $class_path[1] ) && $class_path[1] === 'Tools' ) {
+			$dir = TAINACAN_TOOLS_DIR;
+			if ( count( $class_path ) > 3 ) $dir .= str_replace( '_', '-', strtolower( $class_path[2] ) ) . DIRECTORY_SEPARATOR;
 		} else if ( isset( $class_path[1] ) && $class_path[1] === 'Metadata_Types' ) {
 			$dir = TAINACAN_METADATA_TYPES_DIR;
 		} else if ( isset( $class_path[1] ) && $class_path[1] === 'Filter_Types' ) {

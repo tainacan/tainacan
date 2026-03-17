@@ -19,6 +19,9 @@ $Tainacan_Roles_Page = \Tainacan\Roles_Editor::get_instance();
 require_once(__DIR__ . '/system-check/class-tainacan-system-check.php');
 $Tainacan_System_Check_Page = \Tainacan\System_Check::get_instance();
 
+require_once(__DIR__ . '/tools/class-tainacan-tools.php');
+$Tainacan_Tools_Page = \Tainacan\Tools::get_instance();
+
 require_once(__DIR__ . '/mobile-app/class-tainacan-mobile-app.php');
 $Tainacan_Mobile_App_Page = \Tainacan\Mobile_App::get_instance();
 

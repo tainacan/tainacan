@@ -1,0 +1,180 @@
+.tainacan-tools-intro {
+    margin-bottom: 1.5rem;
+    font-size: 0.9375em;
+    color: var(--tainacan-gray8, #555);
+}
+
+.tainacan-tools-notice {
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    border-inline-start: 4px solid var(--tainacan-blue5, #0073aa);
+
+    &--running {
+        background-color: var(--tainacan-gray1, #f0f0f1);
+        border-inline-start-color: var(--tainacan-blue5, #0073aa);
+    }
+}
+
+.tainacan-tools-loading {
+    color: var(--tainacan-gray6, #666);
+}
+
+.tainacan-tools-cards {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.tainacan-tools-card {
+    background: var(--tainacan-background-color, #fff);
+    border-top: 0;
+    padding: 1.25rem 0;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    display: flex;
+    gap: 1rem 1.875rem;
+    align-items: stretch;
+
+    .tainacan-tools-card-main {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .tainacan-tools-form {
+        column-width: 260px;
+    }
+
+    .tainacan-tools-card-output {
+        flex: 0 0 400px;
+    }
+
+    .tainacan-tools-card-title {
+        margin-top: 0.25em;
+        margin-bottom: 0.5rem;
+        padding: 0.875em 0 0.5em;
+        font-size: 1.125em;
+        position: sticky;
+        z-index: 1;
+        top: calc(1.5em - 0.5rem + var(--tainacan-page-container-padding-y, 1rem) + var(--tainacan-page-container-padding-y, 1rem));
+        background-color: var(--tainacan-background-color, #fff);
+        border-bottom: 1px solid var(--tainacan-gray2, #ddd);
+    }
+
+    .tainacan-tools-card-description {
+        margin: 0 0 1rem;
+        font-size: 0.875em;
+        color: var(--tainacan-gray7, #555);
+        line-height: 1.5;
+    }
+
+    .tainacan-tools-card-form {
+        margin-bottom: 1rem;
+        
+        .tainacan-tools-field {
+            margin-bottom: 1rem;
+            break-inside: avoid;
+
+            &__label {
+                display: block;
+                font-size: 0.875em;
+                font-weight: 500;
+                margin-bottom: 0.25rem;
+            }
+
+            &__checkbox {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-weight: 500;
+            }
+
+            &__checkbox-label {
+                font-size: 0.875em;
+                font-weight: 500;
+            }
+
+            input[type="text"],
+            input[type="number"],
+            select {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            input[type="checkbox"] {
+                margin: 0;
+            }
+
+            .description,
+            p.description {
+                font-size: 0.75em;
+                margin-top: 0.25rem;
+            }
+        }
+    }
+
+    .tainacan-tools-card-run {
+        margin-top: 1.5rem;
+    }
+
+    .tainacan-tools-card-output {
+        margin-top: 0;
+        padding: 0.75rem 1rem;
+        background: var(--tainacan-gray1, #f6f7f7);
+        border: 1px solid var(--tainacan-gray2, #ddd);
+        border-radius: 4px;
+        font-family: Consolas, Monaco, monospace;
+        font-size: 0.8125em;
+        line-height: 1.5;
+        height: 100%;
+        max-height: calc(100vh - 14rem - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
+        max-height: calc(100dvh - 14rem - var(--wp-admin--admin-bar--height, 32px) - var(--tainacan-page-container-margin-top, 1rem) - var(--tainacan-breadcumbs-list-height, 1rem) - var(--tainacan-page-container--inner-padding-y, 1rem));
+        overflow-y: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+
+        // Keep reserved space even before first output to avoid layout shift.
+
+        .tainacan-tools-log-line {
+            margin-bottom: 0.25rem;
+            padding-inline-start: 0.5rem;
+            border-inline-start: 3px solid transparent;
+
+            &--info {
+                border-inline-start-color: var(--tainacan-gray5, #999);
+            }
+
+            &--success {
+                border-inline-start-color: var(--tainacan-success);
+                color: var(--tainacan-success);
+            }
+
+            &--warning {
+                border-inline-start-color: var(--tainacan-warning);
+                color: var(--tainacan-warning);
+            }
+
+            &--error {
+                border-inline-start-color: var(--tainacan-danger);
+                color: var(--tainacan-danger);
+            }
+        }
+    }
+
+    .tainacan-tools-card-output-placeholder {
+        color: var(--tainacan-gray5, #999);
+        font-style: italic;
+    }
+}
+
+@media screen and (max-width: 782px) {
+    .tainacan-tools-card {
+        flex-direction: column;
+
+        .tainacan-tools-card-output {
+            flex-basis: auto;
+        }
+
+        .tainacan-tools-field {
+            line-height: 1.9;
+        }
+    }
+}
