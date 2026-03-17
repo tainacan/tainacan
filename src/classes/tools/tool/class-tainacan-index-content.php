@@ -1,25 +1,25 @@
 <?php
 
-namespace Tainacan\Tools\Management_Tool;
+namespace Tainacan\Tools\Tool;
 
 defined( 'ABSPATH' ) || die( 'No script kiddies please!' );
 
 use Tainacan\Repositories;
-use Tainacan\Tools\Output_Collector;
+use Tainacan\Tools\Output;
 
 /**
  * Index document content for items in a collection or all collections (e.g. for search).
  *
  * @since 1.0.0
  */
-class Tool_Index_Content implements \Tainacan\Tools\Management_Tool {
+class Index_Content implements \Tainacan\Tools\Tool {
 
 	private $collection_repository;
 	private $items_repository;
 	private $result_count;
 	private $dry_run = false;
 
-	/** @var Output_Collector|null */
+	/** @var Output|null */
 	private $output;
 
 	public function __construct() {
@@ -68,7 +68,7 @@ class Tool_Index_Content implements \Tainacan\Tools\Management_Tool {
 		return true;
 	}
 
-	public function run( array $args, Output_Collector $output ) {
+	public function run( array $args, Output $output ) {
 		$this->output = $output;
 		$this->dry_run = ! empty( $args['dry_run'] );
 

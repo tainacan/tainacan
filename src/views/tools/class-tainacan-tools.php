@@ -16,6 +16,13 @@ class Tools extends Pages {
 	use \Tainacan\Traits\Singleton_Instance;
 
 	/**
+	 * Cached collections list for tool form selects (fetched once per request).
+	 *
+	 * @var \Tainacan\Entities\Collection[]|null
+	 */
+	private $collections_for_tools = null;
+
+	/**
 	 * @return string
 	 */
 	protected function get_page_slug(): string {
@@ -27,9 +34,26 @@ class Tools extends Pages {
 	}
 
 	/**
+	 * Get all collections for tool form selects. Fetched once per request and reused.
+	 * Uses the same query pattern as the dashboard (optionally filter by current user).
+	 *
+	 * @return \Tainacan\Entities\Collection[]
+	 */
+	private function get_collections_for_tools() {
+		if ( $this->collections_for_tools !== null ) {
+			return $this->collections_for_tools;
+		}
+		$collections_query = [
+			'posts_per_page' => -1,
+		];
+		$this->collections_for_tools = tainacan_collections()->fetch( $collections_query, 'OBJECT' );
+		return $this->collections_for_tools;
+	}
+
+	/**
 	 * Tools to display on the page (exposed to REST only).
 	 *
-	 * @return \Tainacan\Tools\Management_Tool[]
+	 * @return \Tainacan\Tools\Tool[]
 	 */
 	public function get_tools_for_page() {
 		$all = Tools_Registry::get_all_tools();
@@ -45,7 +69,7 @@ class Tools extends Pages {
 	/**
 	 * Output one tool card: title, description, form fields, Run button, output div.
 	 *
-	 * @param \Tainacan\Tools\Management_Tool $tool
+	 * @param \Tainacan\Tools\Tool $tool
 	 */
 	public function render_tool_card( $tool ) {
 		$id = $tool->get_id();
@@ -121,13 +145,26 @@ class Tools extends Pages {
 				$html .= '<input type="checkbox" id="' . esc_attr( $input_id ) . '" name="' . esc_attr( $name ) . '" value="1"' . ( $default ? ' checked="checked"' : '' ) . '>';
 				$html .= '<span class="tainacan-tools-field__checkbox-label">' . esc_html( $label_text ) . '</span>';
 				$html .= '</label>';
+			} elseif ( $name === 'collection' || $name === 'collection_id' ) {
+				$collections = $this->get_collections_for_tools();
+				$html .= '<select id="' . esc_attr( $input_id ) . '" name="' . esc_attr( $name ) . '"';
+				if ( $required ) {
+					$html .= ' required="required"';
+				}
+				$html .= '>';
+				if ( $name === 'collection' ) {
+					$html .= '<option value="all"' . ( $default === 'all' ? ' selected="selected"' : '' ) . '>' . esc_html__( 'All collections', 'tainacan' ) . '</option>';
+				}
+				foreach ( $collections as $collection ) {
+					$coll_id = $collection->get_id();
+					$coll_name = $collection->get_name();
+					$selected = ( $default !== null && (string) $default === (string) $coll_id ) ? ' selected="selected"' : '';
+					$html .= '<option value="' . esc_attr( (string) $coll_id ) . '"' . $selected . '>' . esc_html( $coll_name ) . '</option>';
+				}
+				$html .= '</select>';
 			} else {
 				$input_type = ( $type === 'number' ) ? 'number' : 'text';
-				$placeholder = ( $name === 'collection' ) ? __( 'all or collection ID', 'tainacan' ) : '';
 				$html .= '<input type="' . esc_attr( $input_type ) . '" id="' . esc_attr( $input_id ) . '" name="' . esc_attr( $name ) . '"';
-				if ( $placeholder ) {
-					$html .= ' placeholder="' . esc_attr( $placeholder ) . '"';
-				}
 				if ( $default !== null && $default !== '' ) {
 					$html .= ' value="' . esc_attr( (string) $default ) . '"';
 				}

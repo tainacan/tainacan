@@ -1,19 +1,19 @@
 <?php
 
-namespace Tainacan\Tools\Management_Tool;
+namespace Tainacan\Tools\Tool;
 
 defined( 'ABSPATH' ) || die( 'No script kiddies please!' );
 
-use Tainacan\Tools\Output_Collector;
+use Tainacan\Tools\Output;
 
 /**
  * Clean Tainacan installation: remove unused files, orphan items, terms, metadata, and transients.
  *
  * @since 1.0.0
  */
-class Tool_Garbage_Collector implements \Tainacan\Tools\Management_Tool {
+class Garbage_Collector implements \Tainacan\Tools\Tool {
 
-	/** @var Output_Collector|null */
+	/** @var Output|null */
 	private $output;
 
 	public function get_id() {
@@ -97,7 +97,7 @@ class Tool_Garbage_Collector implements \Tainacan\Tools\Management_Tool {
 		return true;
 	}
 
-	public function run( array $args, Output_Collector $output ) {
+	public function run( array $args, Output $output ) {
 		$this->output = $output;
 		$dry_run = empty( $args['run'] );
 		$deep = ! empty( $args['deep'] );

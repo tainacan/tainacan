@@ -1,18 +1,18 @@
 <?php
 
-namespace Tainacan\Tools\Management_Tool;
+namespace Tainacan\Tools\Tool;
 
 defined( 'ABSPATH' ) || die( 'No script kiddies please!' );
 
 use Tainacan\Repositories;
-use Tainacan\Tools\Output_Collector;
+use Tainacan\Tools\Output;
 
 /**
  * Recalculate control metadata for items in a collection or all collections.
  *
  * @since 1.0.0
  */
-class Tool_Control_Metadata implements \Tainacan\Tools\Management_Tool {
+class Control_Metadata implements \Tainacan\Tools\Tool {
 
 	private $collection_repository;
 	private $items_repository;
@@ -20,7 +20,7 @@ class Tool_Control_Metadata implements \Tainacan\Tools\Management_Tool {
 	private $dry_run = false;
 
 	/**
-	 * @var Output_Collector|null
+	 * @var Output|null
 	 */
 	private $output;
 
@@ -91,10 +91,10 @@ class Tool_Control_Metadata implements \Tainacan\Tools\Management_Tool {
 	 * Run the tool. Args use canonical keys: collection, dry_run, recreate_control_metadata_definitions.
 	 *
 	 * @param array<string, mixed> $args
-	 * @param Output_Collector $output
+	 * @param Output           $output
 	 * @return void
 	 */
-	public function run( array $args, Output_Collector $output ) {
+	public function run( array $args, Output $output ) {
 		$this->output = $output;
 		$this->dry_run = ! empty( $args['dry_run'] );
 

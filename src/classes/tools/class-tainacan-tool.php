@@ -4,16 +4,16 @@ namespace Tainacan\Tools;
 
 defined( 'ABSPATH' ) || die( 'No script kiddies please!' );
 
-use Tainacan\Tools\Output_Collector;
+use Tainacan\Tools\Output;
 
 /**
- * Contract for a management tool that can be run from REST (Tools UI) or WP-CLI.
+ * Contract for a tool that can be run from REST (Tools UI) or WP-CLI.
  * Tools receive args with canonical keys (underscores). Consumers (REST controller,
  * CLI adapters) are responsible for normalizing their input to this format.
  *
- * @since 1.0.0
+ * @since 1.1.0
  */
-interface Management_Tool {
+interface Tool {
 
 	/**
 	 * Stable id used in REST and for registry lookup (e.g. 'control_metadata').
@@ -62,8 +62,9 @@ interface Management_Tool {
 	 * Run the tool. Args use canonical keys (underscores).
 	 *
 	 * @param array<string, mixed> $args   Normalized arguments (e.g. collection, dry_run).
-	 * @param Output_Collector $output Where to send log/success/warning/error output.
+	 * @param Output               $output Where to send log/success/warning/error output.
 	 * @return void
 	 */
-	public function run( array $args, Output_Collector $output );
+	public function run( array $args, Output $output );
 }
+

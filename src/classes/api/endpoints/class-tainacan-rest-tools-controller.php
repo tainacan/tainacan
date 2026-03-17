@@ -5,7 +5,7 @@ namespace Tainacan\API\EndPoints;
 defined( 'ABSPATH' ) || die( 'No script kiddies please!' );
 
 use Tainacan\API\REST_Controller;
-use Tainacan\Tools\Output_Collector;
+use Tainacan\Tools\Output;
 use Tainacan\Tools\Tools_Registry;
 
 /**
@@ -151,7 +151,7 @@ class REST_Tools_Controller extends REST_Controller {
 			'started_at' => gmdate( 'Y-m-d H:i:s' ),
 		], self::TRANSIENT_TTL );
 
-		$output = new Run_Output_Collector();
+		$output = new REST_Output();
 		try {
 			$tool->run( $args, $output );
 		} catch ( \Exception $e ) {
@@ -227,7 +227,7 @@ class REST_Tools_Controller extends REST_Controller {
  *
  * @since 1.0.0
  */
-class Run_Output_Collector implements Output_Collector {
+class REST_Output implements Output {
 
 	/** @var array<int, array{datetime: string, message: string, level: string}> */
 	private $logs = [];

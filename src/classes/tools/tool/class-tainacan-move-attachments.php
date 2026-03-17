@@ -1,24 +1,24 @@
 <?php
 
-namespace Tainacan\Tools\Management_Tool;
+namespace Tainacan\Tools\Tool;
 
 defined( 'ABSPATH' ) || die( 'No script kiddies please!' );
 
-use Tainacan\Tools\Output_Collector;
+use Tainacan\Tools\Output;
 
 /**
  * Move item documents and attachments to the collection_id/item_id directory structure (Tainacan 0.11+).
  *
  * @since 1.0.0
  */
-class Tool_Move_Attachments implements \Tainacan\Tools\Management_Tool {
+class Move_Attachments implements \Tainacan\Tools\Tool {
 
 	private $collections = [];
 
 	/** @var int[]|null Null until first load. */
 	private $documents = null;
 
-	/** @var Output_Collector|null */
+	/** @var Output|null */
 	private $output;
 
 	public function get_id() {
@@ -54,7 +54,7 @@ class Tool_Move_Attachments implements \Tainacan\Tools\Management_Tool {
 		return false;
 	}
 
-	public function run( array $args, Output_Collector $output ) {
+	public function run( array $args, Output $output ) {
 		$this->output = $output;
 		$dry_run = ! empty( $args['dry_run'] );
 

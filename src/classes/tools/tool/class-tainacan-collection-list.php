@@ -1,18 +1,18 @@
 <?php
 
-namespace Tainacan\Tools\Management_Tool;
+namespace Tainacan\Tools\Tool;
 
 defined( 'ABSPATH' ) || die( 'No script kiddies please!' );
 
 use Tainacan\Repositories;
-use Tainacan\Tools\Output_Collector;
+use Tainacan\Tools\Output;
 
 /**
  * List all collections (ID and title). Output is via output_table().
  *
  * @since 1.0.0
  */
-class Tool_Collection_List implements \Tainacan\Tools\Management_Tool {
+class Collection_List implements \Tainacan\Tools\Tool {
 
 	private $collection_repository;
 
@@ -44,7 +44,7 @@ class Tool_Collection_List implements \Tainacan\Tools\Management_Tool {
 		return false;
 	}
 
-	public function run( array $args, Output_Collector $output ) {
+	public function run( array $args, Output $output ) {
 		$rows = [];
 		$collections = $this->collection_repository->fetch( [ 'posts_per_page' => -1 ], 'OBJECT' );
 		foreach ( $collections as $collection ) {

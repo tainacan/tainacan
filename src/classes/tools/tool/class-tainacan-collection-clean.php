@@ -1,24 +1,24 @@
 <?php
 
-namespace Tainacan\Tools\Management_Tool;
+namespace Tainacan\Tools\Tool;
 
 defined( 'ABSPATH' ) || die( 'No script kiddies please!' );
 
 use Tainacan\Repositories;
-use Tainacan\Tools\Output_Collector;
+use Tainacan\Tools\Output;
 
 /**
  * Remove all items from a collection (trash or permanently delete).
  *
  * @since 1.0.0
  */
-class Tool_Collection_Clean implements \Tainacan\Tools\Management_Tool {
+class Collection_Clean implements \Tainacan\Tools\Tool {
 
 	private $items_repository;
 	private $result_count;
 	private $dry_run = false;
 
-	/** @var Output_Collector|null */
+	/** @var Output|null */
 	private $output;
 
 	public function __construct() {
@@ -74,7 +74,7 @@ class Tool_Collection_Clean implements \Tainacan\Tools\Management_Tool {
 		return true;
 	}
 
-	public function run( array $args, Output_Collector $output ) {
+	public function run( array $args, Output $output ) {
 		$this->output = $output;
 		$this->dry_run = ! empty( $args['dry_run'] );
 		$permanently = ! empty( $args['permanently'] );

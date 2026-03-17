@@ -5,12 +5,12 @@ namespace Tainacan\Tools;
 defined( 'ABSPATH' ) || die( 'No script kiddies please!' );
 
 /**
- * Contract for where management tool output goes (terminal, REST response, etc.).
+ * Contract for where tool output goes (terminal, REST response, etc.).
  * Lets the same tool logic run from WP-CLI or from the REST Tools API.
  *
- * @since 1.0.0
+ * @since 1.1.0
  */
-interface Output_Collector {
+interface Output {
 
 	/**
 	 * Log a message with optional level.
@@ -71,3 +71,4 @@ interface Output_Collector {
 	 */
 	public function output_table( array $rows, array $columns );
 }
+
