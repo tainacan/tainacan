@@ -1,5 +1,5 @@
 /**
- * Management Tools page: run commands and display status. Cards and forms are server-rendered.
+ * Management Tools page: run commands and display status. CThe tools forms are server-rendered.
  */
 'use strict';
 
@@ -42,16 +42,7 @@ function request(method, path, body) {
 	});
 }
 
-function showRunningNotice(status) {
-	const el = document.getElementById('tainacan-tools-running-notice');
-	if (!el) return;
-	if (status && status.running && status.tool_name) {
-		el.textContent = status.tool_name + ' ' + (i18n.running || 'is running…');
-		el.style.display = 'block';
-	} else {
-		el.style.display = 'none';
-	}
-}
+
 
 function renderLogLine(entry) {
 	const level = (entry.level || 'info').toLowerCase();
@@ -66,7 +57,7 @@ function renderOutput(logs) {
 	const fragment = document.createDocumentFragment();
 	if (!logs || !logs.length) {
 		const placeholder = document.createElement('div');
-		placeholder.className = 'tainacan-tools-card-output-placeholder';
+		placeholder.className = 'tainacan-tool-output-placeholder';
 		placeholder.textContent = i18n.no_output || 'No output yet.';
 		fragment.appendChild(placeholder);
 		return fragment;
@@ -78,14 +69,14 @@ function renderOutput(logs) {
 }
 
 /**
- * Build request body from server-rendered form inputs in the card.
+ * Build request body from server-rendered form inputs in the tool.
  *
- * @param {HTMLElement} card
+ * @param {HTMLElement} tool
  * @returns {Object}
  */
-function getFormBodyFromCard(card) {
+function getFormBodyFromTool(tool) {
 	const body = {};
-	const inputs = card.querySelectorAll('input[name], select[name]');
+	const inputs = tool.querySelectorAll('input[name], select[name]');
 	inputs.forEach(function (input) {
 		const name = input.getAttribute('name');
 		if (!name) return;
@@ -102,18 +93,18 @@ function getFormBodyFromCard(card) {
 }
 
 function bindRunButtons() {
-	const cards = document.querySelectorAll('.tainacan-tools-card');
-	cards.forEach(function (card) {
-		const runBtn = card.querySelector('.tainacan-tools-run-btn');
-		const output = card.querySelector('.tainacan-tools-card-output');
+	const tools = document.querySelectorAll('.tainacan-tool');
+	tools.forEach(function (tool) {
+		const runBtn = tool.querySelector('.tainacan-tool-run-btn');
+		const output = tool.querySelector('.tainacan-tool-output');
 		if (!runBtn || !output) return;
 
-		const toolId = card.dataset.toolId;
-		const destructive = card.dataset.destructive === '1';
+		const toolId = tool.dataset.toolId;
+		const destructive = tool.dataset.destructive === '1';
 		let requiredParams = [];
 		try {
-			if (card.dataset.requiredParams) {
-				requiredParams = JSON.parse(card.dataset.requiredParams);
+			if (tool.dataset.requiredParams) {
+				requiredParams = JSON.parse(tool.dataset.requiredParams);
 			}
 		} catch (e) {}
 
@@ -123,7 +114,7 @@ function bindRunButtons() {
 				if (!confirm(msg)) return;
 			}
 
-			const body = getFormBodyFromCard(card);
+			const body = getFormBodyFromTool(tool);
 			for (let i = 0; i < requiredParams.length; i++) {
 				const val = body[requiredParams[i]];
 				if (val === undefined || val === '' || (typeof val === 'string' && !val.trim())) {
@@ -155,22 +146,44 @@ function bindRunButtons() {
 				.finally(function () {
 					runBtn.disabled = false;
 					runBtn.textContent = i18n.run || 'Run';
-					request('GET', '/status').then(showRunningNotice).catch(function () { showRunningNotice({ running: false }); });
 				});
 		});
 	});
 }
 
-function loadStatus() {
+/**
+ * Update Run buttons from status: disable + "Running…" for tools in status.tools, enable + "Run" for the rest.
+ *
+ * @param {Object} status - { running: boolean, tools: Array<{ tool_id: string }> }
+ */
+function applyRunningStatus(status) {
+	var runningIds = (status && status.tools && status.tools.length)
+		? status.tools.map(function (t) { return t.tool_id; })
+		: [];
+	var toolCards = document.querySelectorAll('.tainacan-tool');
+	toolCards.forEach(function (tool) {
+		var runBtn = tool.querySelector('.tainacan-tools-run-btn');
+		if (!runBtn) return;
+		var isRunning = runningIds.indexOf(tool.dataset.toolId) !== -1;
+		runBtn.disabled = isRunning;
+		runBtn.textContent = isRunning ? (i18n.running || 'Running…') : (i18n.run || 'Run');
+	});
+}
+
+function fetchStatus() {
 	request('GET', '/status')
-		.then(showRunningNotice)
-		.catch(function () { showRunningNotice({ running: false }); });
+		.then(applyRunningStatus)
+		.catch(function () {
+			// Ignore errors; page still works without status.
+		});
 }
 
 function init() {
 	if (!apiUrl) return;
-	loadStatus();
+	fetchStatus();
 	bindRunButtons();
+	// Poll status so we re-enable buttons when a tool finishes (e.g. in another tab or after long run).
+	setInterval(fetchStatus, 5000);
 }
 
 tainacanToolsPerformWhenDocumentIsLoaded(init);

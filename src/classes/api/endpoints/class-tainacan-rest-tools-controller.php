@@ -19,8 +19,9 @@ use Tainacan\Tools\Tools_Registry;
  */
 class REST_Tools_Controller extends REST_Controller {
 
-	const TRANSIENT_RUNNING = 'tainacan_tool_running';
-	const TRANSIENT_TTL     = 3600; // 1 hour
+	const TRANSIENT_RUNNING      = 'tainacan_tool_running';
+	const TRANSIENT_RUNNING_IDS  = 'tainacan_tool_running_ids';
+	const TRANSIENT_TTL          = 3600; // 1 hour
 
 	/**
 	 * @var string
@@ -113,16 +114,40 @@ class REST_Tools_Controller extends REST_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function get_status( $request ) {
-		$data = get_transient( self::TRANSIENT_RUNNING );
-		if ( $data && is_array( $data ) && ! empty( $data['tool_id'] ) ) {
-			return new \WP_REST_Response( [
-				'running'    => true,
-				'tool_id'    => $data['tool_id'],
-				'tool_name'  => isset( $data['tool_name'] ) ? $data['tool_name'] : $data['tool_id'],
-				'started_at' => isset( $data['started_at'] ) ? $data['started_at'] : '',
-			], 200 );
+		$ids = get_transient( self::TRANSIENT_RUNNING_IDS );
+		if ( ! is_array( $ids ) ) {
+			$ids = [];
 		}
-		return new \WP_REST_Response( [ 'running' => false ], 200 );
+		$tools = [];
+		foreach ( $ids as $id ) {
+			$data = get_transient( self::TRANSIENT_RUNNING . '_' . $id );
+			if ( $data && is_array( $data ) ) {
+				$tools[] = [
+					'tool_id'    => $id,
+					'tool_name'  => isset( $data['tool_name'] ) ? $data['tool_name'] : $id,
+					'started_at' => isset( $data['started_at'] ) ? $data['started_at'] : '',
+				];
+			}
+		}
+		// Clean stale IDs (tool finished in another process).
+		if ( count( $tools ) !== count( $ids ) ) {
+			$ids = array_map( function ( $t ) {
+				return $t['tool_id'];
+			}, $tools );
+			if ( empty( $ids ) ) {
+				delete_transient( self::TRANSIENT_RUNNING_IDS );
+			} else {
+				set_transient( self::TRANSIENT_RUNNING_IDS, array_values( $ids ), self::TRANSIENT_TTL );
+			}
+		}
+		$response = new \WP_REST_Response( [
+			'running' => ! empty( $tools ),
+			'tools'   => $tools,
+		], 200 );
+		// Prevent caching so polling always gets fresh running state.
+		$response->header( 'Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0' );
+		$response->header( 'Pragma', 'no-cache' );
+		return $response;
 	}
 
 	/**
@@ -144,12 +169,19 @@ class REST_Tools_Controller extends REST_Controller {
 		}
 		$args = $this->normalize_tool_params( $tool->get_params(), $body );
 
-		// Mark as running.
-		set_transient( self::TRANSIENT_RUNNING, [
-			'tool_id'    => $id,
+		// Mark this tool as running (supports multiple tools at once).
+		set_transient( self::TRANSIENT_RUNNING . '_' . $id, [
 			'tool_name'  => $tool->get_name(),
 			'started_at' => gmdate( 'Y-m-d H:i:s' ),
 		], self::TRANSIENT_TTL );
+		$ids = get_transient( self::TRANSIENT_RUNNING_IDS );
+		if ( ! is_array( $ids ) ) {
+			$ids = [];
+		}
+		if ( ! in_array( $id, $ids, true ) ) {
+			$ids[] = $id;
+			set_transient( self::TRANSIENT_RUNNING_IDS, $ids, self::TRANSIENT_TTL );
+		}
 
 		$output = new REST_Output();
 		try {
@@ -157,7 +189,16 @@ class REST_Tools_Controller extends REST_Controller {
 		} catch ( \Exception $e ) {
 			$output->error( $e->getMessage() );
 		} finally {
-			delete_transient( self::TRANSIENT_RUNNING );
+			delete_transient( self::TRANSIENT_RUNNING . '_' . $id );
+			$ids = get_transient( self::TRANSIENT_RUNNING_IDS );
+			if ( is_array( $ids ) ) {
+				$ids = array_values( array_diff( $ids, [ $id ] ) );
+				if ( empty( $ids ) ) {
+					delete_transient( self::TRANSIENT_RUNNING_IDS );
+				} else {
+					set_transient( self::TRANSIENT_RUNNING_IDS, $ids, self::TRANSIENT_TTL );
+				}
+			}
 		}
 
 		$logs = $output->get_logs();

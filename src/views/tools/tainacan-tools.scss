@@ -20,13 +20,13 @@
     color: var(--tainacan-gray6, #666);
 }
 
-.tainacan-tools-cards {
+.tainacan-tools {
     display: grid;
     gap: 1.5rem;
     margin-bottom: 2rem;
 }
 
-.tainacan-tools-card {
+.tainacan-tool {
     background: var(--tainacan-background-color, #fff);
     border-top: 0;
     padding: 1.25rem 0;
@@ -35,7 +35,7 @@
     gap: 1rem 0rem;
     align-items: stretch;
 
-    .tainacan-tools-card-main {
+    .tainacan-tool-main {
         flex: 1 1 auto;
         min-width: 0;
 
@@ -49,11 +49,11 @@
         column-gap: 2rem;
     }
 
-    .tainacan-tools-card-output {
+    .tainacan-tool-output {
         flex: 0 0 400px;
     }
 
-    .tainacan-tools-card-title {
+    .tainacan-tool-title {
         margin-top: 0.25em;
         margin-bottom: 0.5rem;
         padding: 0.875em 0 0.5em;
@@ -65,14 +65,14 @@
         border-bottom: 1px solid var(--tainacan-gray2, #ddd);
     }
 
-    .tainacan-tools-card-description {
+    .tainacan-tool-description {
         margin: 0 0 1rem;
         font-size: 0.875em;
         color: var(--tainacan-gray7, #555);
         line-height: 1.5;
     }
 
-    .tainacan-tools-card-form {
+    .tainacan-tool-form {
         margin-bottom: 1rem;
         
         .tainacan-tools-field {
@@ -117,11 +117,11 @@
         }
     }
 
-    .tainacan-tools-card-run {
+    .tainacan-tool-run {
         margin-top: 1.5rem;
     }
 
-    .tainacan-tools-card-output {
+    .tainacan-tool-output {
         margin-top: 0.75rem;
         padding: 0.75rem 1rem;
         background: var(--tainacan-gray1, #f6f7f7);
@@ -165,17 +165,17 @@
         }
     }
 
-    .tainacan-tools-card-output-placeholder {
+    .tainacan-tool-output-placeholder {
         color: var(--tainacan-gray5, #999);
         font-style: italic;
     }
 }
 
 @media screen and (max-width: 782px) {
-    .tainacan-tools-card {
+    .tainacan-tool {
         flex-direction: column;
 
-        .tainacan-tools-card-output {
+        .tainacan-tool-output {
             flex-basis: auto;
         }
 
