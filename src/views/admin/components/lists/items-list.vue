@@ -735,7 +735,7 @@
                     <!-- Remaining metadata -->
                     <div
                             class="media"
-                            @click.left="onClickItem($event, item)"
+                            @click.left.stop.prevent="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)">
                         <div
                                 v-if="!collection || (collection && collection.hide_items_thumbnail_on_lists != 'yes')"
@@ -999,7 +999,7 @@
                         <!-- Remaining metadata -->
                         <div
                                 class="media content"
-                                @click.left="onClickItem($event, item)"
+                                @click.left.stop.prevent="onClickItem($event, item)"
                                 @click.right="onRightClickItem($event, item)">
                             <div class="list-metadata media-body">
                                 <div class="tainacan-record-thumbnail">
@@ -1013,8 +1013,6 @@
                                             :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                             :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
                                             :transition-duration="500"
-                                            @click.left="onClickItem($event, item)"
-                                            @click.right="onRightClickItem($event, item)"
                                         />
                                 </div>
                                 <span
@@ -1175,7 +1173,7 @@
                                                   column.metadata_type_object.primitive_type == 'compound' ||
                                                   column.metadata_type_object.related_mapped_prop == 'description') : false,
                                     }"
-                                    @click.left="onClickItem($event, item)"
+                                    @click.left.stop.prevent="onClickItem($event, item)"
                                     @click.right="onRightClickItem($event, item)">
 
                                 <p
@@ -1591,7 +1589,7 @@
                     <!-- Remaining metadata -->  
                     <div 
                             class="media content"
-                            @click.left="onClickItem($event, item)"
+                            @click.left.stop.prevent="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)">
                         <div 
                                 v-if="item.thumbnail != undefined"
@@ -1606,8 +1604,6 @@
                                     :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
                                     :transition-duration="500"
-                                    @click.left="onClickItem($event, item)"
-                                    @click.right="onRightClickItem($event, item)"
                                 />
                         </div>
                         <div class="list-metadata media-body">
@@ -2142,7 +2138,7 @@
                                     <!-- Remaining metadata -->
                                     <div
                                             class="media"
-                                            @click.left="onClickItem($event, item)"
+                                            @click.left.stop.prevent="onClickItem($event, item)"
                                             @click.right="onRightClickItem($event, item)">
                                         <div class="list-metadata media-body">
                                             <div class="tainacan-record-thumbnail">
@@ -2156,8 +2152,6 @@
                                                         :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
                                                         :transition-duration="500"
-                                                        @click.left="onClickItem($event, item)"
-                                                        @click.right="onRightClickItem($event, item)"
                                                     />
                                             </div>
                                             <span
