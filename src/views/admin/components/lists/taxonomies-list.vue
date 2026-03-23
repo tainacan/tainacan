@@ -42,9 +42,9 @@
                             @keydown.space.prevent="deleteSelected()">
                         {{ $i18n.get('label_delete_selected_taxonomies') }}
                     </b-dropdown-item>
-                    <b-dropdown-item disabled>
+                    <!-- <b-dropdown-item disabled>
                         {{ $i18n.get('label_edit_selected_taxonomies') + ' (Not ready)' }}
-                    </b-dropdown-item>
+                    </b-dropdown-item> -->
                 </b-dropdown>
             </div>
         </div>
