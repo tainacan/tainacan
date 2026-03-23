@@ -78,6 +78,7 @@ import mitt from 'mitt';
 import enLocaleConfig from 'apexcharts/dist/locales/en.json';
 import esLocaleConfig from 'apexcharts/dist/locales/es.json';
 import frLocaleConfig from 'apexcharts/dist/locales/fr.json';
+import deLocaleConfig from 'apexcharts/dist/locales/de.json';
 import ptBrLocaleConfig from 'apexcharts/dist/locales/pt-br.json';
 
 export default (element) => {
@@ -194,7 +195,7 @@ export default (element) => {
                 '#04a5ff',  // Tainacan Other Blue
                 '#373839'  // Tainacan Dark Gray
             ];
-            const availableLocales = ['en', 'es', 'fr', 'pt-br'];
+            const availableLocales = ['en', 'es', 'fr', 'pt-br', 'de'];
             const browserLanguage = navigator.language.toLocaleLowerCase();
 
             if (availableLocales.indexOf(browserLanguage) >= 0) {
@@ -204,6 +205,7 @@ export default (element) => {
                     case 'es': localeConfig = esLocaleConfig; break;
                     case 'fr': localeConfig = frLocaleConfig; break;
                     case 'pt-br': localeConfig = ptBrLocaleConfig; break;
+                    case 'de': localeConfig = deLocaleConfig; break;
                     case 'en': default: localeConfig = enLocaleConfig; break;
                 }
                 Apex.chart = {
