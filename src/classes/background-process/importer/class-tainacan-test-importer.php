@@ -349,7 +349,7 @@ class Test_Importer extends Importer {
 	public function create_taxonomies() {
 		
 		$tax1 = new Entities\Taxonomy();
-		$tax1->set_name('Terms for taxonomy metadata');
+		$tax1->set_name( esc_html__('Terms for taxonomy metadata', 'tainacan') );
 		$tax1->set_allow_insert('yes');
 		$tax1->set_status('publish');
 		
@@ -377,7 +377,7 @@ class Test_Importer extends Importer {
 	public function create_collections() {
 		
 		$col1 = new Entities\Collection();
-		$col1->set_name('Collection test 1');
+		$col1->set_name(esc_html__('Collection test 1', 'tainacan'));
 		$col1->set_status('publish');
 		if ($col1->validate()) {
 			$col1 = $this->col_repo->insert($col1);
@@ -498,7 +498,7 @@ class Test_Importer extends Importer {
 		// if collection 2 is allowed to be created
 		if( $this->get_option('second_collection') === 'yes' ){
 			$col2 = new Entities\Collection();
-			$col2->set_name('Collection test 2');
+			$col2->set_name(esc_html__('Collection test 2', 'tainacan'));
 			$col2->set_status('publish');
 			if ($col2->validate()) {
 				$col2 = $this->col_repo->insert($col2);
@@ -519,7 +519,7 @@ class Test_Importer extends Importer {
 			$col2_map[$col2_core_description->get_id()] = 'field2';
 			
 			$metadatum = new Entities\Metadatum();
-			$metadatum->set_name('Test Metadatum');
+			$metadatum->set_name(esc_html__('Test Metadatum', 'tainacan'));
 			$metadatum->set_collection($col2);
 			$metadatum->set_metadata_type('Tainacan\Metadata_Types\Text');
 			$metadatum->set_status('publish');
@@ -543,7 +543,7 @@ class Test_Importer extends Importer {
 
 			// Create Relationship
 			$metadatum = $this->create_metadata( [
-				'name' => 'Relationship type',
+				'name' => esc_html__('Relationship type', 'tainacan'),
 				'type' => 'Tainacan\Metadata_Types\Relationship',
 				'options' => [
 				'collection_id' => $col2->get_id(),
@@ -750,8 +750,8 @@ class Test_Importer extends Importer {
 		];
 		
 		$array = [
-			'field1' => 'Title ' . $index,
-			'field2' => 'Description ' . $index,
+			'field1' => esc_html__('Title', 'tainacan') . ' ' . $index,
+			'field2' => esc_html__('Description', 'tainacan') . ' ' . $index,
 			'field3' => $terms_for_taxonomy1[array_rand($terms_for_taxonomy1)],
 			'field4' => $this->selectbox_values[array_rand($this->selectbox_values)],
 			'field5' => $this->date_values[array_rand($this->date_values)],
@@ -777,8 +777,8 @@ class Test_Importer extends Importer {
 
 	public function get_col2_item($index) {
 		return [
-			'field1' => 'Collection 2 item ' . $index,
-			'field2' => 'Collection 2 item description ' . $index,
+			'field1' => esc_html__('Collection 2 item', 'tainacan') . ' ' . $index,
+			'field2' => esc_html__('Collection 2 item description', 'tainacan') . ' ' . $index,
 			'field3' => 'Collection 2 whatever ' . $index,
 		];
 	}
