@@ -680,14 +680,17 @@ abstract class Repository {
 		do_action( "tainacan-pre-delete-$post_type", $entity, $permanent );
 
 		if ($permanent === true) {
+			$this->delete_attachments($entity);
 			$return = wp_delete_post( $entity->get_id(), $permanent );
 		} elseif ($permanent === false) {
 			$return = wp_trash_post( $entity->get_id() );
 		}
 
 
-		if ( $return instanceof \WP_Post && $this->use_logs ) {
-
+		if ( $return instanceof \WP_Post ) {
+			// When trashing an item, we must get an updated entity object with the new post data, including status change
+			// When permanently deleting an item, that would result in null so we pass the original entity object
+			$entity->WP_Post = $permanent ? $return : get_post( $entity->get_id() );
 			$post_type = $entity->get_post_type();
 			do_action( 'tainacan-deleted', $entity, $permanent );
 			do_action( "tainacan-deleted-$post_type", $entity, $permanent );
@@ -697,6 +700,27 @@ abstract class Repository {
 		}
 
 		return $return;
+	}
+
+	/**
+	 * Delete attachments of an item or collection
+	 *
+	 * @param \Tainacan\Entities\Entity $entity
+	 * @return void
+	 */
+	private function delete_attachments ( $entity ) {
+		$attachment_list = array_values(
+			get_children(
+				array(
+					'post_parent' => $entity->get_id(),
+					'post_type' => 'attachment',
+					'numberposts'  => -1,
+				)
+			)
+		);
+		foreach ($attachment_list as $attachment) {
+			wp_delete_attachment($attachment->ID);
+		}
 	}
 
 	/**

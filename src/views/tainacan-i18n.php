@@ -934,9 +934,9 @@ return apply_filters( 'tainacan-i18n', [
 	'info_warning_collection_trash_%s'               => __( 'Do you really want to trash the collection "%s"?', 'tainacan' ),
 	/* translators: %s is the filter name */
 	'info_warning_filter_delete_%s'                  => __( 'Do you really want to delete the filter "%s"?', 'tainacan' ),
-	'info_warning_item_delete'                       => __( 'Do you really want to permanently delete this item?', 'tainacan' ),
+	'info_warning_item_delete'                       => __( 'Do you really want to permanently delete this item? The attachments will also be deleted.', 'tainacan' ),
 	/* translators: %s is the item name */
-	'info_warning_item_delete_%s'                    => __( 'Do you really want to permanently delete the item "%s"?', 'tainacan' ),
+	'info_warning_item_delete_%s'                    => __( 'Do you really want to permanently delete the item "%s"? The attachments will also be deleted.', 'tainacan' ),
 	'info_warning_remove_item_from_trash'            => __( 'Do you really want to remove this item from trash?', 'tainacan' ),
 	'info_warning_item_trash'                        => __( 'Do you really want to trash this item?', 'tainacan' ),
 	/* translators: %s is the item name */
