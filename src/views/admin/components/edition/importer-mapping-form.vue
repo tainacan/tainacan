@@ -69,7 +69,12 @@
                 <div 
                         v-if="importerSourceInfo.source_metadata.length > 0 || (importerSourceInfo.source_special_fields && importerSourceInfo.source_special_fields.length > 0)"
                         class="mapping-header">
-                    <p>{{ $i18n.get('label_from_source_collection') }}</p>
+                    <p>
+                        {{ $i18n.get('label_from_source_collection') }}
+                        <template v-if="importerSourceInfo.source_file_name">
+                            <br><em>{{ importerSourceInfo.source_file_name }}</em>
+                        </template>
+                    </p>
                     <hr>
                     <span 
                             aria-hidden="true"
@@ -77,7 +82,12 @@
                         <i class="tainacan-icon tainacan-icon-pointer tainacan-icon-1-25em" />
                     </span>
                     <hr>
-                    <p>{{ $i18n.get('label_to_target_collection') }}</p>
+                    <p style="text-align: end;">
+                        {{ $i18n.get('label_to_target_collection') }}
+                        <template v-if="collection && collection.name">
+                            <br><em>{{ collection.name }}</em>
+                        </template>
+                    </p>
                 </div>
 
                 <div
