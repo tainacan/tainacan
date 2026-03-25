@@ -176,6 +176,7 @@
                         </td>
                         <!-- Total terms -->
                         <td
+                                v-if="!isOnTrash"
                                 class="column-small-width column-align-right" 
                                 :label="$i18n.get('label_total_terms')" 
                                 :aria-label="$i18n.get('label_total_terms') + ': ' + (taxonomy.total_terms != undefined ? taxonomy.total_terms['total'] : 0)"
