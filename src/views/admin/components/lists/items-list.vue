@@ -154,14 +154,14 @@
                         :style="{ top: cursorPosY + 'px', left: cursorPosX + 'px' }"
                         trap-focus>
                     <b-dropdown-item
-                            v-if="!isOnTrash && !$adminOptions.hideItemsListContextMenuOpenItemOption"
+                            v-if="!isOnTrash && !isCollectionOnTrash && !$adminOptions.hideItemsListContextMenuOpenItemOption"
                             @click="openItem()"
                             @keydown.enter.prevent="openItem()"
                             @keydown.space.prevent="openItem()">
                         {{ $i18n.getFrom('items','view_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
-                            v-if="!isOnTrash && !$adminOptions.hideItemsListContextMenuOpenItemOnNewTabOption"
+                            v-if="!isOnTrash && !isCollectionOnTrash && !$adminOptions.hideItemsListContextMenuOpenItemOnNewTabOption"
                             @click="openItemOnNewTab()"
                             @keydown.enter.prevent="openItemOnNewTab()"
                             @keydown.space.prevent="openItemOnNewTab()">
@@ -175,7 +175,7 @@
                         {{ getSelectedItemChecked(contextMenuItem.id) == true ? $i18n.get('label_unselect_item') : $i18n.get('label_select_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
-                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.hideItemsListContextMenuEditItemOption"
+                            v-if="!isOnTrash && !isCollectionOnTrash && contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.hideItemsListContextMenuEditItemOption"
                             @click="goToItemEditPage(contextMenuItem)"
                             @keydown.enter.prevent="goToItemEditPage(contextMenuItem)"
                             @keydown.space.prevent="goToItemEditPage(contextMenuItem)">
@@ -289,7 +289,7 @@
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
-                                v-if="!isOnTrash && item.current_user_can_edit"
+                                v-if="!isOnTrash && !isCollectionOnTrash && item.current_user_can_edit"
                                 :id="'button-edit-' + item.id"
                                 class="button-edit"
                                 role="button"
@@ -356,7 +356,7 @@
                             </span>
                         </a>
                         <a 
-                                v-if="!isOnTrash"
+                                v-if="!isOnTrash && !isCollectionOnTrash"
                                 :id="'button-open-external-' + item.id"
                                 class="button-open-external" 
                                 :aria-label="$i18n.getFrom('items','view_item')"
@@ -473,7 +473,7 @@
                                 class="actions-area"
                                 :label="$i18n.get('label_actions')">
                             <a
-                                    v-if="!isOnTrash && item.current_user_can_edit"
+                                    v-if="!isOnTrash && !isCollectionOnTrash && item.current_user_can_edit"
                                     :id="'button-edit-' + item.id"
                                     class="button-edit"
                                     role="button"
@@ -542,7 +542,7 @@
                                 </span>
                             </a>
                             <a 
-                                    v-if="!isOnTrash"
+                                    v-if="!isOnTrash && !isCollectionOnTrash"
                                     :id="'button-open-external-' + item.id"
                                     class="button-open-external" 
                                     :aria-label="$i18n.getFrom('items','view_item')"
@@ -643,7 +643,7 @@
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
-                                v-if="!isOnTrash && item.current_user_can_edit"
+                                v-if="!isOnTrash && !isCollectionOnTrash && item.current_user_can_edit"
                                 :id="'button-edit-' + item.id"
                                 class="button-edit"
                                 role="button"
@@ -710,7 +710,7 @@
                             </span>
                         </a>
                         <a 
-                                v-if="!isOnTrash"
+                                v-if="!isOnTrash && !isCollectionOnTrash"
                                 :id="'button-open-external-' + item.id"
                                 class="button-open-external" 
                                 :aria-label="$i18n.getFrom('items','view_item')"
@@ -905,7 +905,7 @@
                                 class="actions-area"
                                 :label="$i18n.get('label_actions')">
                             <a
-                                    v-if="!isOnTrash && item.current_user_can_edit"
+                                    v-if="!isOnTrash && !isCollectionOnTrash && item.current_user_can_edit"
                                     :id="'button-edit-' + item.id"
                                     class="button-edit"
                                     role="button"
@@ -974,7 +974,7 @@
                                 </span>
                             </a>
                             <a 
-                                    v-if="!isOnTrash"
+                                    v-if="!isOnTrash && !isCollectionOnTrash"
                                     :id="'button-open-external-' + item.id"
                                     class="button-open-external" 
                                     :aria-label="$i18n.getFrom('items','view_item')"
@@ -1300,7 +1300,7 @@
                                     v-if="!isSelectingItems"
                                     class="actions-container">
                                 <a
-                                        v-if="!isOnTrash && item.current_user_can_edit"
+                                        v-if="!isOnTrash && !isCollectionOnTrash && item.current_user_can_edit"
                                         :id="'button-edit-' + item.id"
                                         class="button-edit"
                                         role="button"
@@ -1369,7 +1369,7 @@
                                     </span>
                                 </a>
                                 <a 
-                                        v-if="!isOnTrash"
+                                        v-if="!isOnTrash && !isCollectionOnTrash"
                                         :id="'button-open-external-' + item.id"
                                         class="button-open-external" 
                                         :aria-label="$i18n.getFrom('items','view_item')"
@@ -1496,7 +1496,7 @@
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
-                                v-if="!isOnTrash"
+                                v-if="!isOnTrash && !isCollectionOnTrash"
                                 :id="'button-edit-' + item.id"
                                 class="button-edit"
                                 role="button"
@@ -1564,7 +1564,7 @@
                             </span>
                         </a>
                         <a 
-                                v-if="!isOnTrash"
+                                v-if="!isOnTrash && !isCollectionOnTrash"
                                 :id="'button-open-external-' + item.id"
                                 class="button-open-external" 
                                 :aria-label="$i18n.getFrom('items','view_item')"
@@ -1755,7 +1755,7 @@
                                     class="actions-area"
                                     :label="$i18n.get('label_actions')">
                                 <a
-                                        v-if="!isOnTrash && item.current_user_can_edit"
+                                        v-if="!isOnTrash && !isCollectionOnTrash && item.current_user_can_edit"
                                         :id="'button-edit-' + item.id"
                                         class="button-edit"
                                         role="button"
@@ -2044,7 +2044,7 @@
                                             </span>
                                         </a>
                                         <a
-                                                v-if="!isOnTrash && item.current_user_can_edit"
+                                                v-if="!isOnTrash && !isCollectionOnTrash && item.current_user_can_edit"
                                                 :id="'button-edit-' + item.id"
                                                 class="button-edit"
                                                 role="button"
@@ -2113,7 +2113,7 @@
                                             </span>
                                         </a>
                                         <a 
-                                                v-if="!isOnTrash"
+                                                v-if="!isOnTrash && !isCollectionOnTrash"
                                                 :id="'button-open-external-' + item.id"
                                                 class="button-open-external" 
                                                 :aria-label="$i18n.getFrom('items','view_item')"
@@ -2293,7 +2293,7 @@
                                 class="actions-area"
                                 :label="$i18n.get('label_actions')">
                             <a
-                                    v-if="!isOnTrash && item.current_user_can_edit"
+                                    v-if="!isOnTrash && !isCollectionOnTrash && item.current_user_can_edit"
                                     :id="'button-edit-' + item.id"
                                     class="button-edit"
                                     role="button"
@@ -2361,7 +2361,7 @@
                                 </span>
                             </a>
                             <a 
-                                    v-if="!isOnTrash"
+                                    v-if="!isOnTrash && !isCollectionOnTrash"
                                     :id="'button-open-external-' + item.id"
                                     class="button-open-external" 
                                     :aria-label="$i18n.getFrom('items','view_item')"
@@ -2612,6 +2612,9 @@ export default {
                 return false;
             else 
                 return this.geocoordinateMetadata[this.selectedGeocoordinateMetadatumId];
+        },
+        isCollectionOnTrash() {
+            return this.collection && this.collection.status && this.collection.status === 'trash';
         }
     },
     watch: {
@@ -3014,10 +3017,14 @@ export default {
         },
         onClickItem($event, item) {
 
-            if ($event && $event.target && ($event.target.className == 'check' || $event.target.tagName == 'INPUT') )
+            if (
+                $event &&
+                $event.target &&
+                ( $event.target.className == 'check' || $event.target.tagName == 'INPUT' )
+            )
                 return;
             
-            if ($event.ctrlKey) {
+            if ( $event.ctrlKey ) {
                 this.setSelectedItemChecked(item.id);
             } else if ($event.shiftKey) {
 
@@ -3041,10 +3048,10 @@ export default {
                 if ((this.$adminOptions.itemsSingleSelectionMode || this.$adminOptions.itemsMultipleSelectionMode) && !this.$adminOptions.itemsSearchSelectionMode) {
                     this.setSelectedItemChecked(item.id)
                 } else if (!this.$adminOptions.itemsSingleSelectionMode && !this.$adminOptions.itemsMultipleSelectionMode && !this.$adminOptions.itemsSearchSelectionMode) {
-                    if (this.isOnTrash) {
+                    if (this.isOnTrash || this.isCollectionOnTrash) {
                         this.$buefy.toast.open({
                             duration: 3000,
-                            message: this.$i18n.get('info_warning_remove_from_trash_first'),
+                            message: !this.isCollectionOnTrash ? this.$i18n.get('info_warning_remove_from_trash_first') : this.$i18n.get('info_warning_remove_from_collection_trash_first'),
                             position: 'is-bottom',
                             type: 'is-warning'
                         });

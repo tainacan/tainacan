@@ -978,6 +978,7 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: %1$s is the page number, %2$s is the first item number, %3$s is the last item number, %4$s is the total count. Used in exposer modal labels. */
 	'info_page_items_range'                          => __( 'Page %1$s (items %2$s to %3$s of %4$s)', 'tainacan' ),
 	'info_warning_remove_from_trash_first'           => __( 'Remove this item from trash first', 'tainacan' ),
+	'info_warning_remove_from_collection_trash_first' => __( 'Remove the collection from trash first', 'tainacan' ),
 	/* translators: This is displayed before sentences like "Showing items 2 to 8 of 12 */
 	'info_of'                                        => __( ' of ', 'tainacan' ),
 	'info_created_by'                                => __( 'Created by: ', 'tainacan' ),
