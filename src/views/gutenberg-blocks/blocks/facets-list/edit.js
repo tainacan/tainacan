@@ -132,11 +132,11 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                         style={{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}}>
                     <img
                         src={ 
-                            facet.entity.thumbnail && facet.entity.thumbnail[imageSize][0] && facet.entity.thumbnail[imageSize][0] 
+                            facet.entity.thumbnail && facet.entity.thumbnail[imageSize] && facet.entity.thumbnail[imageSize][0] 
                                 ?
                             facet.entity.thumbnail[imageSize][0] 
                                 :
-                            (facet.entity.thumbnail && facet.entity.thumbnail['thumbnail'][0] && facet.entity.thumbnail['thumbnail'][0]
+                            (facet.entity.thumbnail && facet.entity.thumbnail['thumbnail'] && facet.entity.thumbnail['thumbnail'][0]
                                 ?    
                             facet.entity.thumbnail['thumbnail'][0] 
                                 : 
