@@ -33,7 +33,7 @@
                 </span>
             </div>
             <span
-                    v-if="selectedItems.length && items.length > 1 && !isAllItemsSelected"
+                    v-if="selectedItems.length && !isAllItemsSelected"
                     class="selected-items-info">
                 {{ selectedItems.length != 1 ? $i18n.getWithVariables('label_%s_selected_items', [selectedItems.length]) : $i18n.get('label_one_selected_item') }}<span v-if="selectedItems.length != amountOfSelectedItemsOnThisPage && amountOfSelectedItemsOnThisPage > 0">&nbsp;({{ $i18n.getWithVariables('label_%s_on_this_page', [ amountOfSelectedItemsOnThisPage ]) }})</span>
                 <button
@@ -2750,7 +2750,6 @@ export default {
                     modalTitle: this.$i18n.get('info_editing_items_in_bulk'),
                     totalItems: Object.keys(this.queryAllItemsSelected).length ? this.totalItems : this.selectedItems.length,
                     selectedForBulk: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems,
-                    objectType: this.$i18n.get('items'),
                     collectionId: this.$route.params.collectionId,
                 },
                 width: 'calc(100% - (2 * var(--tainacan-one-column)))',
