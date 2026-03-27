@@ -168,7 +168,7 @@ class Dashboard extends Pages {
 			$tainacan_dashboard_cards[] = array(
 				'id' => 'tainacan-dashboard-info-card',
 				'title' => __( 'Help content and tutorials', 'tainacan' ),
-				'description' => __('The Tainacan community provides some help resources. Below we list the main ones for you to clear your doubts.', 'tainacan'),
+				'description' => __('The Tainacan community offers a variety of support materials. Check out the main channels to get answers to your questions.', 'tainacan'),
 				'content' => array( $this, 'tainacan_help_dashboard_card' ),
 				'icon' => $this->get_svg_icon( 'info' ),
 				'color' => 'gray',

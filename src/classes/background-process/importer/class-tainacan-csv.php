@@ -89,6 +89,13 @@ class CSV extends Importer {
 		return [];
 	}
 
+	public function get_source_file_name() {
+		if (isset($this->tmp_file) && file_exists($this->tmp_file) && ($handle = fopen($this->tmp_file, "r")) !== false) {
+			return basename($this->tmp_file);
+		}
+		return false;
+	}
+
 	public function get_source_special_fields() {
 		if (($handle = fopen($this->tmp_file, "r")) !== false) {
 			if ( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ) {

@@ -83,15 +83,16 @@ return apply_filters( 'tainacan-i18n', [
 	'run'                                            => __( 'Run', 'tainacan' ),
 	'edit_search'                                    => __( 'Edit search', 'tainacan' ),
 	'apply'                                          => __( 'Apply', 'tainacan' ),
-	'add_another_bulk_edit'                  	 => __( 'Add another bulk edit criterion', 'tainacan' ),
-	'add_one_bulk_edit'                      	 => __( 'Add one bulk edit criterion', 'tainacan' ),
-	'remove_bulk_edit'                       	 => __( 'Remove bulk edit criterion', 'tainacan' ),
+	'add_another_bulk_edit'                  	 	 => __( 'Add another bulk edit criterion', 'tainacan' ),
+	'add_one_bulk_edit'                      	 	 => __( 'Add one bulk edit criterion', 'tainacan' ),
+	'remove_bulk_edit'                       	 	 => __( 'Remove bulk edit criterion', 'tainacan' ),
 	'set_new_value'                                  => __( 'Set new value', 'tainacan' ),
 	'replace_value'                                  => __( 'Replace value', 'tainacan' ),
 	'copy_value'                                  	 => __( 'Copy value from', 'tainacan' ),
 	'finish'                                         => __( 'Finish', 'tainacan' ),
 	'select_to_create'                               => __( 'select to create', 'tainacan' ),
-	'new_bulk_edit_criterion'                     => __( 'New bulk edit criterion', 'tainacan' ),
+	'new_bulk_edit_criterion'                     	 => __( 'New bulk edit criterion', 'tainacan' ),
+	'add_bulk_edit_criterion_to_process_queue'      => __( 'Add bulk edit criterion to the process queue', 'tainacan' ),
 	'undo'                                           => __( 'Undo', 'tainacan' ),
 	'delete'                                    	 => __( 'Delete', 'tainacan' ),
 	'skip'	                                    	 => __( 'Skip', 'tainacan' ),
@@ -758,6 +759,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_range_of_dates'				             => __( 'Range of dates', 'tainacan'),
 	'label_view_processes'				             => __( 'View processes', 'tainacan'),
 	'label_collections_taxonomies'				     => __( 'Collection taxonomies', 'tainacan'),
+	/* translators: %s is the number of selected items */
+	'label_apply_to_%s_items'				 		 => __( 'Apply to %s items', 'tainacan'),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -934,9 +937,9 @@ return apply_filters( 'tainacan-i18n', [
 	'info_warning_collection_trash_%s'               => __( 'Do you really want to trash the collection "%s"?', 'tainacan' ),
 	/* translators: %s is the filter name */
 	'info_warning_filter_delete_%s'                  => __( 'Do you really want to delete the filter "%s"?', 'tainacan' ),
-	'info_warning_item_delete'                       => __( 'Do you really want to permanently delete this item?', 'tainacan' ),
+	'info_warning_item_delete'                       => __( 'Do you really want to permanently delete this item? The attachments will also be deleted.', 'tainacan' ),
 	/* translators: %s is the item name */
-	'info_warning_item_delete_%s'                    => __( 'Do you really want to permanently delete the item "%s"?', 'tainacan' ),
+	'info_warning_item_delete_%s'                    => __( 'Do you really want to permanently delete the item "%s"? The attachments will also be deleted.', 'tainacan' ),
 	'info_warning_remove_item_from_trash'            => __( 'Do you really want to remove this item from trash?', 'tainacan' ),
 	'info_warning_item_trash'                        => __( 'Do you really want to trash this item?', 'tainacan' ),
 	/* translators: %s is the item name */
@@ -978,6 +981,7 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: %1$s is the page number, %2$s is the first item number, %3$s is the last item number, %4$s is the total count. Used in exposer modal labels. */
 	'info_page_items_range'                          => __( 'Page %1$s (items %2$s to %3$s of %4$s)', 'tainacan' ),
 	'info_warning_remove_from_trash_first'           => __( 'Remove this item from trash first', 'tainacan' ),
+	'info_warning_remove_from_collection_trash_first' => __( 'Remove the collection from trash first', 'tainacan' ),
 	/* translators: This is displayed before sentences like "Showing items 2 to 8 of 12 */
 	'info_of'                                        => __( ' of ', 'tainacan' ),
 	'info_created_by'                                => __( 'Created by: ', 'tainacan' ),
@@ -1186,6 +1190,9 @@ return apply_filters( 'tainacan-i18n', [
 	'info_error_date_smaller_than_min_%s'			 => __( 'Date should be after %s.', 'tainacan' ),
 	/* translators: %s is the date */
 	'info_error_date_greater_than_max_%s'			 => __( 'Date should be before %s.', 'tainacan' ),
+	/* translators: %s is the number of selected items */
+	'info_%s_selected_items_for_bulk_edition'		 => __( '<strong>%s items selected</strong> for bulk edition.', 'tainacan'),
+	'info_define_bulk_edit_criteria'				 => __( 'Define the criteria below:', 'tainacan'),
 
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),

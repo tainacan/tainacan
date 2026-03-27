@@ -391,7 +391,7 @@ class System_Check extends Pages {
 		} else {
 			printf(
 				'<span class="good"></span> %s',
-				esc_html( 'All required and recommended modules are installed.', 'tainacan' )
+				esc_html__( 'All required and recommended modules are installed.', 'tainacan' )
 			);
 		}
 	}

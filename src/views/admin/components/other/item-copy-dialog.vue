@@ -189,7 +189,6 @@
                         modalTitle: this.$i18n.get('info_editing_items_in_bulk'),
                         totalItems: onlyItemIds.length,
                         selectedForBulk: onlyItemIds,
-                        objectType: this.$i18n.get('items'),
                         collectionId: this.collectionId
                     },
                     width: 'calc(100% - (2 * var(--tainacan-one-column)))',

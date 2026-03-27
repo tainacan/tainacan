@@ -263,6 +263,7 @@
                         </td>
                         <!-- Total items -->
                         <td
+                                v-if="!isOnTrash"
                                 class="column-small-width column-align-right"
                                 :label="$i18n.get('label_total_items')" 
                                 :aria-label="$i18n.get('label_total_items') + ': ' + (collection.total_items ? getTotalItems(collection.total_items) : 0)" 

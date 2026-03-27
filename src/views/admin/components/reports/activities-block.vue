@@ -45,7 +45,7 @@
             <div class="report-card-header__item">
                 <label>{{ $i18n.get('label_range_of_dates') + ': ' }}</label>
                 <span class="paging-input">
-                    {{ currentStart.toDateString() }} - {{ currentEnd.toDateString() }}
+                    {{ currentStart.toLocaleDateString() }} - {{ currentEnd.toLocaleDateString() }}
                 </span>
             </div>
         </div>

@@ -9,11 +9,11 @@
                 @click="() => { isCollapseInsteadOfLink(facet) ? displayChildTerms(facetId) : null }">
             <img
                     :src=" 
-                        facet.entity.thumbnail && facet.entity.thumbnail[imageSize][0] && facet.entity.thumbnail[imageSize][0] 
+                        facet.entity.thumbnail && facet.entity.thumbnail[imageSize] && facet.entity.thumbnail[imageSize][0] 
                             ?
                                 facet.entity.thumbnail[imageSize][0] 
                             :
-                                (facet.entity.thumbnail && facet.entity.thumbnail['thumbnail'][0] && facet.entity.thumbnail['thumbnail'][0]
+                                (facet.entity.thumbnail && facet.entity.thumbnail['thumbnail'] && facet.entity.thumbnail['thumbnail'][0]
                                     ?    
                                         facet.entity.thumbnail['thumbnail'][0] 
                                     : 
