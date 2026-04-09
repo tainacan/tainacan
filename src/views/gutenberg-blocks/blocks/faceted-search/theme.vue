@@ -728,7 +728,7 @@
                 
                 <!-- Empty Placeholder, rendered in a slot inside the view modes -->
                 <section
-                        v-if="!showLoading && totalItems == 0"
+                        v-if="!showLoading && (totalItems == 0 || (totalItems == null && !pendingInitialLoad))"
                         class="section"
                         role="status"
                         aria-live="polite"
@@ -894,7 +894,8 @@
                 latestPerPageAfterViewModeWithoutPagination: 12,
                 latestPageAfterViewModeWithoutPagination: 1,
                 hooks: {},
-                filtersModalStateHasChanged: false
+                filtersModalStateHasChanged: false,
+                pendingInitialLoad: true
             }
         },
         computed: {
@@ -1042,9 +1043,18 @@
                         if (this.$route.query && this.$route.query.advancedSearch)
                            this.$store.dispatch('search/setAdvancedQuery', JSON.parse(JSON.stringify(this.$route.query)));
                         
-                        // Finally, loads items even berfore facets so they won't stuck them
-                        if (to.fullPath != from.fullPath)
-                            this.$eventBusSearch.loadItems();
+                        // Finally, loads items even before facets so they won't stuck them
+                        if (to.fullPath != from.fullPath) {
+                            if (this.pendingInitialLoad) {
+                                const hasFetchOnly = this.$store.getters['search/getPostQuery']['fetch_only'] != undefined;
+                                if (hasFetchOnly) {
+                                    this.pendingInitialLoad = false;
+                                    this.$eventBusSearch.loadItems();
+                                }
+                            } else {
+                                this.$eventBusSearch.loadItems();
+                            }
+                        }
 
                         // Checks current metaqueries and taxqueries to alert filters that should reload
                         // For some reason, this process is not working accessing to.query, so we need to check the path string. 
@@ -1660,6 +1670,8 @@
                                     })
                                 }
 
+                                // Initial item load runs from the $route watcher once fetch_only exists
+                                // (addFetchOnly -> updateURLQueries / router.replace).
                                 this.isLoadingMetadata = false;
                                 this.displayedMetadata = metadata;
                             })
