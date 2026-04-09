@@ -75,8 +75,7 @@
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                let promise = null;
-                promise = this.getValuesPlainText({
+                const promise = this.getValuesPlainText({
                     metadatumId: this.metadatumId,
                     search: null,
                     isRepositoryLevel: this.isRepositoryLevel,

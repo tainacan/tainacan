@@ -573,7 +573,7 @@
                 if (type === 'term') {
                     
                     // Convert fake placeholder criterion row to a tax row
-                    let totalOfTaxCriteria = this.searchCriteria.reduce((counter, { type }) => type === 'taxquery' ? counter += 1 : counter, 0);
+                    let totalOfTaxCriteria = this.searchCriteria.reduce((counter, { type }) => type === 'taxquery' ? counter + 1 : counter, 0);
                     Object.assign(this.searchCriteria[index], { 'type': 'taxquery' });
                     Object.assign(this.searchCriteria[index], { 'index': totalOfTaxCriteria });
 
@@ -586,7 +586,7 @@
                 } else {
 
                     // Convert fake placeholder criterion row to a meta row
-                    let totalOfMetaCriteria = this.searchCriteria.reduce((counter, { type }) => type === 'metaquery' ? counter += 1 : counter, 0);
+                    let totalOfMetaCriteria = this.searchCriteria.reduce((counter, { type }) => type === 'metaquery' ? counter + 1 : counter, 0);
                     Object.assign(this.searchCriteria[index], { 'type': 'metaquery' });
                     Object.assign(this.searchCriteria[index], { 'index': totalOfMetaCriteria });
 

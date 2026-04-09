@@ -175,13 +175,11 @@
 
                 if (this.searchQuery != '') {
 
-                    let promise = null;
-
                     // Cancels previous Request
                     if (this.getOptionsValuesCancel != undefined)
                         this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                    promise = this.getValuesPlainText({
+                    const promise = this.getValuesPlainText({
                         metadatumId: this.itemMetadatum.metadatum.id,
                         search: this.searchQuery,
                         isRepositoryLevel: this.currentCollectionId == 'default', 

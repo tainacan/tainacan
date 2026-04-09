@@ -723,7 +723,7 @@ export default {
             if (removedKey != '')
                 delete this.mappedCollection['mapping'][removedKey];
 
-            let mappingValue = '';
+            let mappingValue;
             if (isCompound) {
                 mappingValue = {} 
                 mappingValue[sourceMetadatum] = childSourceMetadata;

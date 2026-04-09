@@ -191,7 +191,7 @@
             },
             // emit the operation for listeners
             emit() {
-                let values = [];
+                let values;
 
                 if (this.dateInit === null && this.dateEnd === null) {
                     values = [];
