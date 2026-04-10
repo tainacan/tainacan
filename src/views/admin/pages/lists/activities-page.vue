@@ -219,6 +219,11 @@
         },
         mixins: [ dateInter ],
         emits: [ 'close', 'beforeClose' ],
+        props: {
+            metadatumId: {
+                default: null
+            }
+        },
         data() {
             return {
                 isLoading: false,
@@ -365,6 +370,7 @@
                         page: this.activitiesPage,
                         activitiesPerPage: this.activitiesPerPage,
                         itemId: this.$route.params.itemId,
+                        metadatumId: this.metadatumId,
                         search: this.searchQuery,
                         searchDates: [dataInit, dataEnd],
                         authorId: this.userIdForFiltering

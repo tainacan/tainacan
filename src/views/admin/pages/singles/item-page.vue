@@ -129,7 +129,7 @@
                                                             }"
                                                             class="button link-style"
                                                             aria-label="$i18n.get('label_view_activity_logs')"
-                                                            @click="openActivitiesModal(itemMetadatum.item.id)">
+                                                            @click="openActivitiesModal(itemMetadatum.item.id, itemMetadatum.metadatum.id)">
                                                        <span
                                                                 class="icon"
                                                                 style="margin: 0;">
@@ -741,12 +741,13 @@
                     }
                 });
             },
-            openActivitiesModal() {
+            openActivitiesModal(itemId, metadatumId = null) {
                 const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: ActivitiesPage,
                     customClass: 'tainacan-modal',
                     canCancel: ['escape', 'outside'],
+                    props: { metadatumId },
                     events: {
                         beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
                     }

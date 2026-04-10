@@ -79,9 +79,11 @@ export const fetchCollectionActivities = ({ commit }, { page, activitiesPerPage,
     });
 };
 
-export const fetchItemActivities = ({ commit }, { page, activitiesPerPage, itemId, search, searchDates, authorId }) => {
+export const fetchItemActivities = ({ commit }, { page, activitiesPerPage, itemId, metadatumId, search, searchDates, authorId }) => {
 
-    let endpoint = `/item/${itemId}/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit&orderby=id&order=desc`;
+    let endpoint = metadatumId
+        ? `/item/${itemId}/metadata/${metadatumId}/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit&orderby=id&order=desc`
+        : `/item/${itemId}/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit&orderby=id&order=desc`;
 
     if (search != undefined && search != '')
         endpoint += `&search=${search}`;
