@@ -95,6 +95,25 @@ class REST_Logs_Controller extends REST_Controller {
 				'schema'                  => [$this, 'get_list_schema']
 			)
 		);
+		register_rest_route($this->namespace, '/item/(?P<item_id>[\d]+)/metadata/(?P<metadatum_id>[\d]+)/' . $this->rest_base,
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_items'),
+					'permission_callback' => array($this, 'get_items_permissions_check'),
+					'args'                => array_merge(
+						array(
+							'item_id' => array(
+								'description' => __( 'Item ID', 'tainacan' ),
+								'required' => true,
+							),
+						),
+						$this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
+					)
+				),
+				'schema'                  => [$this, 'get_list_schema']
+			)
+		);
 		register_rest_route($this->namespace, '/filter/(?P<filter_id>[\d]+)/' . $this->rest_base,
 			array(
 				array(
@@ -174,7 +193,7 @@ class REST_Logs_Controller extends REST_Controller {
 	}
 
 	/**
-	 * @param mixed $item
+	 * @param \Tainacan\Entities\Log $item
 	 * @param \WP_REST_Request $request
 	 *
 	 * @return array|\WP_Error|\WP_REST_Response
@@ -316,6 +335,9 @@ class REST_Logs_Controller extends REST_Controller {
 
 		if ($request['item_id']) {
 			$args['item_id'] = $request['item_id'];
+			if(isset($args['metadatum_id'])) {
+				$args['object_id'] = $request['metadatum_id'];
+			}
 		} elseif ($request['collection_id']) {
 			$args['collection_id'] = $request['collection_id'];
 		} elseif ($request['filter_id']) {
@@ -333,13 +355,30 @@ class REST_Logs_Controller extends REST_Controller {
 		}
 
 		$logs = Repositories\Logs::get_instance()->fetch($args);
-		$total_logs = Repositories\Logs::get_instance()->fetch_count($args);
-
 		$response = [];
-
-		if($logs) {
-			foreach($logs as $log) {
-				array_push($response, $this->prepare_item_for_response($log, $request));
+		$total_logs = 0;
+		/**
+		 * Temporary fallback for sites that cannot run the WP-CLI log migration command.
+		 * The USE_DEPRECATED_TAINACAN_LOGS constant must be manually defined in wp-config.php to enable this behavior.
+		 * This block will be removed in future versions once legacy support is discontinued.
+		 * 
+		 */ 
+		if (!defined('USE_DEPRECATED_TAINACAN_LOGS') || USE_DEPRECATED_TAINACAN_LOGS !== false) {
+			if($logs->have_posts()){
+				while ($logs->have_posts()){
+					$logs->the_post();
+					$log = new Entities\Log($logs->post);
+					array_push($response, $this->prepare_item_for_response($log, $request));
+				}
+				wp_reset_postdata();
+			}
+			$total_logs  = $logs->found_posts;
+		} else {
+			$total_logs = Repositories\Logs::get_instance()->fetch_count($args);
+			if($logs) {
+				foreach($logs as $log) {
+					array_push($response, $this->prepare_item_for_response($log, $request));
+				}
 			}
 		}
 

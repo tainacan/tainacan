@@ -3,21 +3,12 @@
 namespace Tainacan\Repositories;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
-/**
- * Temporary fallback for sites that cannot run the WP-CLI log migration command.
- * The USE_DEPRECATED_TAINACAN_LOGS constant must be manually defined in wp-config.php to enable this behavior.
- * This block will be removed in future versions once legacy support is discontinued.
- * 
- */ 
-if (!defined('USE_DEPRECATED_TAINACAN_LOGS') || USE_DEPRECATED_TAINACAN_LOGS !== false) {
-    require_once __DIR__ . '/class-tainacan-logs-deprecated.php';
-    return;
-}
 
 use Tainacan\Entities;
 use Tainacan\Entities\Entity;
 
 /**
+ * @deprecated
  * Repository for managing Tainacan logs.
  *
  * Implements a comprehensive logging system for tracking changes
@@ -35,8 +26,9 @@ class Logs extends Repository {
 
 	protected function init() {
 
-		add_action( 'tainacan-insert', array( $this, 'insert_entity' ) );
 		add_action( 'tainacan-pre-insert', array( $this, 'pre_insert_entity' ) );
+
+		add_action( 'tainacan-insert', array( $this, 'insert_entity' ) );
 		add_action( 'tainacan-deleted', array( $this, 'delete_entity' ), 10, 2 );
 		add_action( 'tainacan-pre-delete', array( $this, 'pre_delete_entity' ), 10, 2 );
 
@@ -100,12 +92,12 @@ class Logs extends Repository {
 			// 	'description' => __( 'The actual log value' ),
 			// 	'validation'  => ''
 			// ],
-			// 'log_diffs'      => [ // deprecated
-			// 	'map'         => 'meta',
-			// 	'title'       => __( 'Log differences', 'tainacan' ),
-			// 	'description' => __( 'Differences between old and new versions of object', 'tainacan' ),
-			// 	'type'        => 'string',
-			// ],
+			'log_diffs'      => [ // deprecated
+				'map'         => 'meta',
+				'title'       => __( 'Log differences', 'tainacan' ),
+				'description' => __( 'Differences between old and new versions of object', 'tainacan' ),
+				'type'        => 'string',
+			],
 			'collection_id'  => [
 				'map'         => 'meta',
 				'title'       => __( 'Log collection relationship', 'tainacan' ),
@@ -191,267 +183,51 @@ class Logs extends Repository {
 
 
 	/**
-	 * Fetch logs from the custom wp_tainacan_logs table.
+	 * fetch logs based on ID or WP_Query args
 	 *
-	 * When an integer is passed, returns a single Log entity matching that ID,
-	 * or an empty array if not found.
+	 * Logs are stored as posts. Check WP_Query docs
+	 * to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
+	 * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
+	 * appropriate WP_Query argument
 	 *
-	 * When an array is passed, supports the following keys:
+	 * If a number is passed to $args, it will return a \Tainacan\Entities\Log object.  But if the post is not found or
+	 * does not match the entity post type, it will return an empty array
 	 *
-	 * Filtering (WHERE):
-	 *   - int    $item_id       Filter by item ID.
-	 *   - int    $user_id       Filter by user ID.
-	 *   - string $collection_id Filter by collection ID (or 'default' for repository-level).
-	 *   - string $object_type   Filter by object type (fully-qualified class name).
-	 *   - string $object_id     Filter by object ID.
-	 *   - string $action        Filter by action key (e.g. 'create', 'update', 'delete').
+	 * @param array $args WP_Query args || int $args the log id
+	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
 	 *
-	 * Ordering (ORDER BY):
-	 *   - string $orderby  Column to sort by. Allowed: ID, date, title, user_id,
-	 *                      collection_id, item_id, action. Defaults to 'ID'.
-	 *   - string $order    Sort direction: 'ASC' or 'DESC'. Defaults to 'DESC'.
-	 *
-	 * Pagination (LIMIT / OFFSET):
-	 *   - int $posts_per_page  Number of rows to return. Use -1 for all. Defaults to -1.
-	 *   - int $paged           Page number (1-based), used with posts_per_page. Defaults to 1.
-	 *   - int $offset          Raw row offset, overrides paged when provided.
-	 *
-	 * @param array|int $args Associative array of query args, or an integer log ID.
-	 *
-	 * @return Entities\Log|Entities\Log[] A single entity when $args is an ID,
-	 *                                     or an array of entities when $args is an array.
+	 * @return \WP_Query|Array an instance of wp query OR array of entities;
 	 */
-	public function fetch( $args = [], $_output = null ) {
-		global $wpdb;
-
-		$table = $this->get_table_name();
-
-		// Fetch single record by ID.
+	public function fetch( $args = [], $output = null ) {
+		error_log("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
 		if ( is_numeric( $args ) ) {
-			$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table WHERE ID = %d", (int) $args ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			return $row ? $this->row_to_entity( $row ) : [];
-		}
 
-		if ( ! is_array( $args ) ) {
-			return [];
-		}
-
-		$args = apply_filters( 'tainacan-fetch-args', $args, 'logs' );
-
-		// --- WHERE ---------------------------------------------------------
-		[ $where_sql, $params ] = $this->build_where( $args );
-
-		// --- ORDER BY ------------------------------------------------------
-		$valid_orderby = [ 'ID', 'date', 'title', 'user_id', 'collection_id', 'item_id', 'action' ];
-		$orderby = isset( $args['orderby'] ) && in_array( $args['orderby'], $valid_orderby, true )
-			? $args['orderby']
-			: 'ID';
-		$order = isset( $args['order'] ) && strtoupper( $args['order'] ) === 'ASC' ? 'ASC' : 'DESC';
-
-		// --- LIMIT / OFFSET ------------------------------------------------
-		$number = isset( $args['posts_per_page'] ) ? (int) $args['posts_per_page'] : -1;
-		$paged  = isset( $args['paged'] ) ? max( 1, (int) $args['paged'] ) : 1;
-		$offset = isset( $args['offset'] )
-			? (int) $args['offset']
-			: ( $number > 0 ? ( $paged - 1 ) * $number : 0 );
-
-		$limit_sql = $number > 0 ? sprintf( 'LIMIT %d OFFSET %d', $number, $offset ) : '';
-
-		$sql = "SELECT * FROM $table $where_sql ORDER BY `$orderby` $order $limit_sql";
-
-		if ( $params ) {
-			$sql = $wpdb->prepare( $sql, ...$params );
-		}
-
-		$rows = $wpdb->get_results( $sql );
-
-		return array_map( [ $this, 'row_to_entity' ], $rows ?: [] );
-	}
-
-	/**
-	 * Count logs matching the given filters.
-	 *
-	 * Accepts the same filtering args as fetch() (item_id, user_id,
-	 * collection_id, object_type, object_id, action) but ignores
-	 * pagination and ordering — it always returns an integer.
-	 *
-	 * Typical pagination usage:
-	 *   $total      = $logs->fetch_count( $filters );
-	 *   $rows       = $logs->fetch( array_merge( $filters, [ 'posts_per_page' => 20, 'paged' => 2 ] ) );
-	 *   $total_pages = ceil( $total / 20 );
-	 *
-	 * @param array $args Same filtering keys supported by fetch().
-	 * @return int Total number of matching rows.
-	 */
-	public function fetch_count( array $args = [] ) {
-		global $wpdb;
-
-		$table  = $this->get_table_name();
-		$args   = apply_filters( 'tainacan-fetch-args', $args, 'logs' );
-
-		[ $where_sql, $params ] = $this->build_where( $args );
-
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$sql = "SELECT COUNT(*) FROM $table $where_sql";
-
-		if ( $params ) {
-			$sql = $wpdb->prepare( $sql, ...$params ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		}
-
-		return (int) $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-	}
-
-	/**
-	 * Build a parameterized WHERE clause from a filter args array.
-	 *
-	 * Column names are taken from a whitelist, so they are never
-	 * interpolated from user input. Values are returned as a separate
-	 * $params array to be bound via $wpdb->prepare().
-	 *
-	 * @param array $args Filtering args (same keys accepted by fetch()).
-	 * @return array{ 0: string, 1: array } Tuple of [ $where_sql, $params ].
-	 *               $where_sql is either an empty string or 'WHERE col = %x AND …'.
-	 *               $params holds the corresponding values in order.
-	 */
-	private function build_where( array $args ) {
-		$wheres = [];
-		$params = [];
-
-		foreach ( [ 'item_id', 'user_id' ] as $col ) {
-			if ( isset( $args[ $col ] ) ) {
-				$wheres[] = "`$col` = %d";
-				$params[]  = (int) $args[ $col ];
+			$existing_post = get_post( $args );
+			if ( $existing_post instanceof \WP_Post ) {
+				try {
+					return new Entities\Log( $existing_post );
+				} catch (\Exception $e) {
+					return [];
+				}
+			} else {
+				return [];
 			}
+
+		} elseif ( is_array( $args ) ) {
+			$args = array_merge( [
+				'posts_per_page' => - 1,
+			], $args );
+
+			$args = $this->parse_fetch_args( $args );
+
+			$args['post_type'] = Entities\Log::get_post_type();
+
+			$args = apply_filters( 'tainacan-fetch-args', $args, 'logs' );
+
+			$wp_query = new \WP_Query( $args );
+
+			return $this->fetch_output( $wp_query, $output );
 		}
-
-		foreach ( [ 'collection_id', 'object_type', 'object_id', 'action' ] as $col ) {
-			if ( isset( $args[ $col ] ) ) {
-				$wheres[] = "`$col` = %s";
-				$params[]  = $args[ $col ];
-			}
-		}
-
-		$where_sql = $wheres ? 'WHERE ' . implode( ' AND ', $wheres ) : '';
-
-		return [ $where_sql, $params ];
-	}
-
-	/**
-	 * Build a Log entity from a custom table row.
-	 *
-	 * Fields that have setters are stored as class properties via
-	 * set_mapped_property(), so get_mapped_property() returns them
-	 * directly without hitting WP_Post or wp_postmeta.
-	 *
-	 * Fields without setters (date, slug, id, status) are written
-	 * directly onto the entity's WP_Post stub so the inherited
-	 * get_mapped_property() fallback can still find them.
-	 *
-	 * @param \stdClass $row Row returned by $wpdb->get_row() / get_results().
-	 * @return Entities\Log
-	 */
-	private function row_to_entity( \stdClass $row ) {
-		$log = new Entities\Log();
-
-		$log->WP_Post->ID          = (int) $row->ID;
-		$log->WP_Post->post_date   = $row->date;
-		$log->WP_Post->post_name   = $row->slug;
-		$log->WP_Post->post_status = 'publish';
-		$log->WP_Post->post_type   = Entities\Log::get_post_type();
-
-		$log->set_title( $row->title );
-		$log->set_description( $row->description );
-		$log->set_user_id( (int) $row->user_id );
-		$log->set_collection_id( $row->collection_id );
-		$log->set_item_id( (int) $row->item_id );
-		$log->set_object_type( $row->object_type );
-		$log->set_object_id( $row->object_id );
-		$log->set_old_value( maybe_unserialize( $row->old_value ) );
-		$log->set_new_value( maybe_unserialize( $row->new_value ) );
-		$log->set_action( $row->action );
-
-		return $log;
-	}
-
-	/**
-	 * Returns the name of the custom logs table.
-	 *
-	 * @return string
-	 */
-	public function get_table_name() {
-		global $wpdb;
-		return $wpdb->prefix . 'tainacan_logs';
-	}
-
-	/**
-	 * Persist a Log entity into the custom wp_tainacan_logs table.
-	 *
-	 * Uses $wpdb->insert() with explicit format specifiers so all values
-	 * go through wpdb's internal prepare(), preventing SQL injection.
-	 * Serializable fields (old_value, new_value) are passed through
-	 * maybe_serialize() before storage.
-	 *
-	 * @param Entities\Log $obj
-	 * @return Entities\Log|false The entity with its new ID set, or false on failure.
-	 * @throws \Exception When the entity has not been validated before insert.
-	 */
-	public function insert( $obj ) {
-		global $wpdb;
-
-		if ( ! $obj instanceof Entities\Log ) {
-			return false;
-		}
-
-		do_action( 'tainacan-pre-insert', $obj );
-		do_action( 'tainacan-pre-insert-' . Entities\Log::get_post_type(), $obj );
-
-		$old_value = $obj->get_old_value();
-		$new_value = $obj->get_new_value();
-
-		$data = [
-			'title'            => $this->sanitize_value( (string) $obj->get_title() ),
-			'date'             => $obj->get_date() ?: current_time( 'mysql' ),
-			'description'      => $this->sanitize_value( (string) $obj->get_description() ),
-			'slug'             => uniqid( Entities\Log::get_post_type() . '-' ),
-			'user_id'          => absint( $obj->get_user_id() ) ?: absint( get_current_user_id() ),
-			'collection_id'    => (string) $obj->get_collection_id(),
-			'item_id'          => absint( $obj->get_item_id() ),
-			'object_type'      => (string) $obj->get_object_type(),
-			'object_id'        => (string) $obj->get_object_id(),
-			'old_value'        => maybe_serialize( $old_value ),
-			'new_value'        => maybe_serialize( $new_value ),
-			'action'           => (string) $obj->get_action(),
-			'user_edit_lastr' => absint( get_current_user_id() ),
-		];
-
-		$formats = [
-			'%s', // title
-			'%s', // date
-			'%s', // description
-			'%s', // slug
-			'%d', // user_id
-			'%s', // collection_id ('default' or numeric string)
-			'%d', // item_id
-			'%s', // object_type
-			'%s', // object_id
-			'%s', // old_value
-			'%s', // new_value
-			'%s', // action
-			'%d', // user_edit_lastr
-		];
-
-		$result = $wpdb->insert( $this->get_table_name(), $data, $formats );
-
-		if ( false === $result ) {
-			return false;
-		}
-
-		$obj->WP_Post->ID = $wpdb->insert_id;
-
-		do_action( 'tainacan-insert', $obj, [], false );
-		do_action( 'tainacan-insert-' . Entities\Log::get_post_type(), $obj );
-
-		return $obj;
 	}
 
 	public function update( $object, $new_values = null ) {
@@ -459,16 +235,18 @@ class Logs extends Repository {
 	}
 
 	/**
-	 * Fetch most recent log.
-	 *
-	 * @return Entities\Log|null The most recent Log entity, or null if none exists.
+	 * Feth most recent log
+	 * @return Entities\Log The most recent Log entity
 	 */
 	public function fetch_last() {
-		$logs = $this->fetch( [
+		$args = [
+			'post_type'      => Entities\Log::get_post_type(),
 			'posts_per_page' => 1,
 			'orderby'        => 'ID',
-			'order'          => 'DESC',
-		] );
+			'order'          => 'DESC'
+		];
+
+		$logs = $this->fetch( $args, 'OBJECT' );
 
 		return array_pop( $logs );
 	}
@@ -490,10 +268,9 @@ class Logs extends Repository {
 
 				$collection_id = method_exists($entity, 'get_collection_id') ? $entity->get_collection_id() : 'default';
 
-				// @TODO: definir melhor forma de controlar quais logs devem ser gerados
-				// if ( method_exists($entity, 'get_repository') && !$entity->get_repository()->use_logs ) {
-				// 	return;
-				// }
+				if ( method_exists($entity, 'get_repository') && !$entity->get_repository()->use_logs ) {
+					return;
+				}
 
 				if ( $entity instanceof Entities\Collection ) {
 					$collection_id = $entity->get_id();
@@ -506,12 +283,12 @@ class Logs extends Repository {
 					$log->set_title( sprintf( __( 'New file was attached to Item "%s"', 'tainacan'), $entity->get_title() ) );
 				}
 
-				$object_type = 'attachment'; //get_class($attachment);
+				$object_type = get_class($entity);
 				$object_id = $entity->get_id();
 
 				$log->set_collection_id($collection_id);
 				$log->set_object_type($object_type);
-				$log->set_object_id($post_ID);
+				$log->set_object_id($object_id);
 				$log->set_action('new-attachment');
 
 				$prepared = [
@@ -564,8 +341,8 @@ class Logs extends Repository {
 						$log->set_title( sprintf( __( 'File attached to Item "%s" was removed' , 'tainacan'), $entity->get_title() ) );
 					}
 
-					$object_type = 'attachment'; //get_class($entity);
-					$object_id = $attachment_id; //$entity->get_id();
+					$object_type = get_class($entity);
+					$object_id = $entity->get_id();
 
 					$preapred = [
 						'id'          => $attachment_id,
@@ -611,10 +388,9 @@ class Logs extends Repository {
 	 */
 	public function pre_insert_entity( Entities\Entity $unsaved ) {
 
-		// @TODO: definir melhor forma de controlar quais logs devem ser gerados
-		// if ( ! $unsaved->get_repository()->use_logs ) {
-		// 	return;
-		// }
+		if ( ! $unsaved->get_repository()->use_logs ) {
+			return;
+		}
 
 		if ( $unsaved instanceof Entities\Item_Metadata_Entity ) {
 			return $this->prepare_item_metadata_diff($unsaved);
@@ -713,10 +489,9 @@ class Logs extends Repository {
 	 */
 	public function insert_entity( Entities\Entity $entity ) {
 
-		// @TODO: definir melhor forma de controlar quais logs devem ser gerados
-		// if ( ! $entity->get_repository()->use_logs ) {
-		// 	return;
-		// }
+		if ( ! $entity->get_repository()->use_logs ) {
+			return;
+		}
 
 		if ( $entity instanceof Entities\Item_Metadata_Entity ) {
 			return $this->insert_item_metadata($entity);
