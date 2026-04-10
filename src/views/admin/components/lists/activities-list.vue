@@ -234,9 +234,9 @@
 
                 if (!type || !objectId) return '';
 
-                let href = '';
-                let labelKey = '';
-                let iconClass = '';
+                let href;
+                let labelKey;
+                let iconClass;
 
                 switch (type) {
                     case 'Tainacan\\Entities\\Collection':

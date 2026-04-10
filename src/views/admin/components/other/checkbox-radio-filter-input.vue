@@ -654,23 +654,20 @@
                 this.autoComplete();
             },
             getOptions(offset) {
-                let promise = '';
-                
                 // Cancels previous Request
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' )
-                    promise = this.getValuesRelationship({
+                const promise = ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' )
+                    ? this.getValuesRelationship({
                         search: this.optionName,
                         isRepositoryLevel: this.isRepositoryLevel,
                         valuesToIgnore: [],
                         offset: offset,
                         number: this.maxNumOptionsCheckboxList,
                         isInCheckboxModal: true
-                    });
-                else
-                    promise = this.getValuesPlainText({
+                    })
+                    : this.getValuesPlainText({
                         metadatumId: this.metadatumId,
                         search: this.optionName,
                         isRepositoryLevel: this.isRepositoryLevel,

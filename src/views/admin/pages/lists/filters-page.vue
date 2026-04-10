@@ -55,11 +55,11 @@
 
                     <sortable
                             :list="activeFiltersList"
-                            item-key="id"
+                            :item-key="filterRowKey"
                             class="active-filters-area"
                             :class="{ 'filters-area-receive': isDraggingFromAvailable }"
                             :options="{
-                                group: { name:'filters', pull: false, put: true },
+                                group: { name: 'filters', pull: false, put: true },
                                 sort: (openedFilterId == '' || openedFilterId == undefined) && !isRepositoryLevel,
                                 handle: '.handle',
                                 hostClass: 'sortable-ghost',
@@ -151,11 +151,8 @@
                                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                     placement: 'auto-start'
                                                 }"
-                                                class="icon"
-                                                :aria-label="$i18n.get('status_private')">
-                                            <i 
-                                                    aria-hidden="true"
-                                                    class="tainacan-icon tainacan-icon-private" />
+                                                class="icon">
+                                            <i class="tainacan-icon tainacan-icon-private" />
                                         </span>
                                         <span 
                                                 v-tooltip="{
@@ -164,8 +161,7 @@
                                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                     placement: 'auto-start'
                                                 }"
-                                                class="icon icon-level-identifier"
-                                                :aria-label="filter.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter')">
+                                                class="icon icon-level-identifier">
                                             <i 
                                                     :class="{ 
                                                         'tainacan-icon-collection': filter.collection_id == collectionId, 
@@ -174,8 +170,7 @@
                                                         'has-text-secondary': filter.enabled && filter.collection_id == 'default',
                                                         'has-text-grey': !filter.enabled  
                                                     }"
-                                                    class="tainacan-icon"
-                                                    aria-hidden="true" />
+                                                    class="tainacan-icon" />
                                         </span> 
                                     </span>
                                     <span 
@@ -193,12 +188,7 @@
                                         <a 
                                                 v-if="filter.current_user_can_edit"
                                                 :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel? 'hidden' : 'visible' }"
-                                                role="button"
-                                                tabindex="0"
-                                                :aria-label="$i18n.get('edit')"
-                                                @click.prevent="toggleFilterEdition(filter.id)"
-                                                @keydown.enter.prevent="toggleFilterEdition(filter.id)"
-                                                @keydown.space.prevent="toggleFilterEdition(filter.id)">
+                                                @click.prevent="toggleFilterEdition(filter.id)">
                                             <span 
                                                     v-tooltip="{
                                                         content: $i18n.get('edit'),
@@ -213,12 +203,7 @@
                                         <a 
                                                 v-if="filter.current_user_can_delete"
                                                 :style="{ visibility: (filter.collection_id != collectionId && !isRepositoryLevel) || (filter.id == openedFilterId) ? 'hidden' : 'visible' }"
-                                                role="button"
-                                                tabindex="0"
-                                                :aria-label="$i18n.get('delete')"
-                                                @click.prevent="removeFilter(filter)"
-                                                @keydown.enter.prevent="removeFilter(filter)"
-                                                @keydown.space.prevent="removeFilter(filter)">
+                                                @click.prevent="removeFilter(filter)">
                                             <span
                                                     v-tooltip="{
                                                         content: $i18n.get('delete'),
@@ -279,14 +264,14 @@
                                     group: {
                                         name:'filters',
                                         pull: !isSelectingFilterType, 
-                                        put: false, revertClone: true
+                                        put: false,
+                                        revertClone: true
                                     },
                                     sort: false,
                                     filter: '.not-sortable-item',
                                     preventOnFilter: false,
                                     dragClass: 'sortable-drag'
-                                }"
-                                @change="handleChangeOnMetadata">
+                                }">
                             <template #item="{ element: metadatum, index }">
                                 <div 
                                         v-if="metadatum.enabled"
@@ -296,12 +281,7 @@
                                             'inherited-metadatum': metadatum.inherited || isRepositoryLevel,
                                             'disabled-metadatum': isSelectingFilterType
                                         }"
-                                        role="button"
-                                        tabindex="0"
-                                        :aria-label="$i18n.get('instruction_click_or_drag_filter_create')"
-                                        @click.prevent="addMetadatumViaButton(metadatum, index)"
-                                        @keydown.enter.prevent="addMetadatumViaButton(metadatum, index)"
-                                        @keydown.space.prevent="addMetadatumViaButton(metadatum, index)">
+                                        @click.prevent="addMetadatumViaButton(metadatum, index)">
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('instruction_click_or_drag_filter_create'),
@@ -388,11 +368,9 @@
                                     <button
                                             id="button-create-metadatum" 
                                             role="link"
-                                            type="button" 
+                                            ttype="button" 
                                             class="button is-secondary is-centered"
-                                            @click="navigate()"
-                                            @keydown.enter="navigate()"
-                                            @keydown.space="navigate()">
+                                            @click="navigate()">
                                         {{ $i18n.getFrom('metadata', 'new_item') }}
                                     </button>
                                 </router-link>
@@ -426,8 +404,7 @@
                     aria-role="dialog"
                     custom-class="tainacan-modal"
                     :can-cancel="['escape', 'outside']"
-                    :close-button-aria-label="$i18n.get('close')"
-                    @close="onFilterTypeModalClose()">
+                    :close-button-aria-label="$i18n.get('close')">
                 <div 
                         autofocus
                         role="dialog"
@@ -569,7 +546,8 @@ export default {
             filtersSearchCancel: undefined,
             metadataSearchCancel: undefined,
             filterNameFilterString: '',
-            metadatumNameFilterString: ''
+            metadatumNameFilterString: '',
+            oldMetadatumIndex: 0
         }
     },
     computed: {
@@ -665,11 +643,49 @@ export default {
         ...mapGetters('metadata', [
             'getMetadata',
         ]),
+        filterRowKey(filter) {
+            if (filter == null)
+                return '';
+            if (filter.id !== undefined && filter.id !== null)
+                return String(filter.id);
+            return filter._vuePlaceholderId || 'pending-filter';
+        },
+        pendingFilterPlaceholderFromMetadatum(choosenMetadatum) {
+            const name = choosenMetadatum.parent_name
+                ? choosenMetadatum.name + ' (' + choosenMetadatum.parent_name + ')'
+                : choosenMetadatum.name;
+            return {
+                id: undefined,
+                _vuePlaceholderId: 'pending-filter-' + Date.now() + '-' + Math.random().toString(36).slice(2),
+                name,
+                enabled: true,
+                current_user_can_edit: true,
+                current_user_can_delete: false,
+                collection_id: this.collectionId,
+                status: 'auto-draft',
+                metadatum: { metadatum_id: choosenMetadatum.id }
+            };
+        },
         handleChangeOnFilter($event) {
             switch( $event.type ) {
-                case 'add':
-                    this.prepareFilterTypeSelection(this.availableMetadata[$event.oldIndex], $event.newIndex);
+                case 'add': {
+                    const choosenMetadatum = this.availableMetadata[$event.oldIndex];
+                    if (choosenMetadatum == undefined)
+                        break;
+                    if ($event.item && $event.item.parentNode === $event.to)
+                        $event.to.removeChild($event.item);
+
+                    this.oldMetadatumIndex = $event.oldIndex;
+                    this.availableMetadata.splice($event.oldIndex, 1);
+
+                    const placeholder = this.pendingFilterPlaceholderFromMetadatum(choosenMetadatum);
+                    const newFilters = [...this.activeFiltersList];
+                    newFilters.splice($event.newIndex, 0, placeholder);
+                    this.updateFilters(newFilters);
+
+                    this.prepareFilterTypeSelection(choosenMetadatum, $event.newIndex);
                     break;
+                }
                 case 'remove':
                     this.removeFilter(this.activeFiltersList[$event.oldIndex]);
                     break;
@@ -701,23 +717,20 @@ export default {
                 }
             }
 
-            this._filterTypeModalTrigger = this.$modalFocusA11y.captureTrigger();
             this.isSelectingFilterType = true;
         },
         addMetadatumViaButton(metadatum, metadatumIndex) {
-            
             this.oldMetadatumIndex = metadatumIndex;
 
-            // Removes element from metadata list, as from button this does not happens
             this.availableMetadata.splice(metadatumIndex, 1);
-            
-            // Inserts it at the end of the list
-            let lastFilterIndex = this.activeFiltersList.length;
-            // // Updates store with temporary Filter
-            // this.addTemporaryFilter(metadatumType);
+
+            const lastFilterIndex = this.activeFiltersList.length;
+            const placeholder = this.pendingFilterPlaceholderFromMetadatum(metadatum);
+            const newFilters = [...this.activeFiltersList];
+            newFilters.splice(lastFilterIndex, 0, placeholder);
+            this.updateFilters(newFilters);
 
             this.prepareFilterTypeSelection(metadatum, lastFilterIndex);
-        
         },
         onFilterTypeSelected(filterType) {
             this.isSelectingFilterType = false;
@@ -732,19 +745,13 @@ export default {
             this.allowedFilterTypes = [];
             this.currentFilterTypePreview = undefined;
             this.selectedFilterType = {};
-            // Puts element back to metadata list (guard so safe when called from @close after Cancel button)
-            if (this.choosenMetadatum && Object.keys(this.choosenMetadatum).length) {
-                this.availableMetadata.splice(this.oldMetadatumIndex, 0, this.choosenMetadatum);
-            }
+
+            // Puts element back to metadata list
+            this.availableMetadata.splice(this.oldMetadatumIndex, 0, this.choosenMetadatum)
             this.choosenMetadatum = {};
-        },
-        onFilterTypeModalClose() {
-            this.onCancelFilterTypeSelection();
-            this.$modalFocusA11y.restoreFocus(this._filterTypeModalTrigger, this);
-        },
-        handleChangeOnMetadata($event) {
-            if ( $event.type == 'removed' )
-                this.oldMetadatumIndex = $event.removed.oldIndex;
+
+            // Removes element from filters list
+            this.activeFiltersList.splice(this.newFilterIndex, 1);
         },
         updateFiltersOrder() {
             let filtersOrder = [];
@@ -822,9 +829,19 @@ export default {
             })
             .catch((error) => {
                 this.$console.error(error);
+                const placeholderFilterIndex = this.newFilterIndex;
+                const filtersWithoutPlaceholder = [...this.activeFiltersList];
+                const placeholderRow = filtersWithoutPlaceholder[placeholderFilterIndex];
+                if (placeholderRow && placeholderRow.id === undefined) {
+                    filtersWithoutPlaceholder.splice(placeholderFilterIndex, 1);
+                    this.updateFilters(filtersWithoutPlaceholder);
+                }
+                if (this.choosenMetadatum && this.choosenMetadatum.id != null)
+                    this.availableMetadata.splice(this.oldMetadatumIndex, 0, this.choosenMetadatum);
+
                 this.newFilterIndex = 0;
                 this.choosenMetadatum = {};
-                this.selectedFilterType = {}
+                this.selectedFilterType = {};
                 this.allowedFilterTypes = [];
             });
         },
@@ -843,7 +860,6 @@ export default {
                 [ filterName ]
             );
             
-            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
@@ -867,10 +883,7 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside'],
-                events: {
-                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
-                }
+                canCancel: ['escape', 'outside']
             });
         },
         confirmSelectedFilterType() {
@@ -878,13 +891,7 @@ export default {
             this.createChoosenFilter();
         },
         cancelFilterTypeSelection() {
-            this.isSelectingFilterType = false;
-            this.availableMetadata.push(this.choosenMetadatum);
-            this.choosenMetadatum = {};
-            this.allowedFilterTypes = [];
-            this.selectedFilterType = {};
-            // this.deleteTemporaryFilter(this.newFilterIndex);
-            this.newFilterIndex = 0;
+            this.onCancelFilterTypeSelection();
         },
         toggleFilterEdition(filterId) {
             // Closing collapse
@@ -1032,8 +1039,8 @@ export default {
             justify-content: space-between;
             margin-block-start: 0.5em;
             margin-block-end: 0.5em;
-            padding-inline-start: .5em;
-            padding-inline-end: .5em;
+            margin-inline-start: 0em;
+            margin-inline-end: 0.5em;
 
             .header-item {
                 margin-inline-start: 0.75rem;
@@ -1121,6 +1128,7 @@ export default {
                     transition: opacity 0.2s ease, inset-inline-start 0.2s ease;
 
                     button {
+                        padding: 1px;
                         border: none;
                         background: var(--tainacan-turquoise1);
                         &:hover {
@@ -1147,7 +1155,6 @@ export default {
                     flex-shrink: 0;
                 }
                 .filter-name {
-                    color: var(--tainacan-label-color);
                     text-overflow: ellipsis;
                     overflow-x: hidden;
                     white-space: nowrap;
@@ -1229,17 +1236,17 @@ export default {
                 }
 
             }
-            .available-metadatum-item:not(.sortable-ghost):not(.disabled-metadatum) {
-                display: none;
-                visibility: hidden;
-            }
+            // .available-metadatum-item:not(.sortable-ghost):not(.disabled-metadatum) {
+            //     display: none;
+            //     visibility: hidden;
+            // }
             .sortable-ghost {
                 border: 1px dashed var(--tainacan-gray2);
                 background: var(--tainacan-white);
                 display: block;
-                padding: 0.7em 0.9em;
+                padding: .813em .9em;
+                min-height: 2.8571em;
                 margin: 4px;
-                height: 2.8571em;
                 position: relative;
 
                 .grip-icon { 
@@ -1250,7 +1257,7 @@ export default {
 
         .available-metadata-area {
             padding-inline-start: 10px;
-            padding-inline-end: 10px;
+            padding-inline-end: 0;
             padding-block-start: 0px;
             padding-block-end: 10px;
             margin: 0;
@@ -1306,7 +1313,6 @@ export default {
                     bottom: 6px;
                 }
                 .metadatum-name {
-                    color: var(--tainacan-label-color);
                     text-overflow: ellipsis;
                     overflow-x: hidden;
                     white-space: nowrap;
@@ -1365,9 +1371,7 @@ export default {
             .available-filter-item:hover.not-sortable-item .icon-level-identifier .tainacan-icon::before {
                 color: var(--tainacan-gray3) !important;
             }
-            .available-metadatum-item:not(.disabled-metadatum):hover,
-            .available-metadatum-item:not(.disabled-metadatum):focus,
-            .available-metadatum-item:not(.disabled-metadatum):focus-within {
+            .available-metadatum-item:not(.disabled-metadatum):hover{
                 background-color: var(--tainacan-turquoise1);
                 border-color: var(--tainacan-turquoise2);
                 position: relative;
@@ -1395,6 +1399,7 @@ export default {
                 }
             }
             .sorting-buttons button {
+                padding: 1px;
                 background: var(--tainacan-blue1);
                 &:hover {
                     color: var(--tainacan-blue5);

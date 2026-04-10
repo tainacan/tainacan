@@ -316,7 +316,7 @@
                         case 'Array': {
                             
                             let equal = [];
-                            let currentValues = [];
+                            let currentValues;
                             
                             // An array of terms
                             if (this.values.length && this.values[0] && this.values[0].constructor.name == 'Object')

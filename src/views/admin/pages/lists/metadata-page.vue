@@ -272,7 +272,7 @@ export default {
                 cursor: grab;
                 opacity: 1 !important;
                         
-                &>.field, form {
+                &>.field, form:not(.form-hook-region) {
                     background-color: var(--tainacan-white) !important;
                 }
                 
@@ -366,6 +366,7 @@ export default {
 
                     button {
                         border: none;
+                        padding: 1px;
                         background: var(--tainacan-turquoise1);
                         &:hover {
                             color: var(--tainacan-secondary);
@@ -457,6 +458,7 @@ export default {
                 }
             }
             & > .sorting-buttons button {
+                padding: 1px;
                 background: var(--tainacan-blue1);
                 &:hover {
                     color: var(--tainacan-blue5);

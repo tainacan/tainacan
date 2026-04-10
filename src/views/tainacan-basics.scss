@@ -176,3 +176,7 @@
     clip: rect(0,0,0,0);
     border: 0;
 }
+// Fix for WordPress 7.0 due to https://github.com/WordPress/gutenberg/issues/70211
+html :where([style*="--tainacan-input-border-color"]) {
+    border-style: none;
+}

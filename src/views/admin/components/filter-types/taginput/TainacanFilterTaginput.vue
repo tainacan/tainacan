@@ -125,22 +125,19 @@
                 if (this.searchOffset > 0 && this.options.length >= this.totalFacets)
                     return;
 
-                let promise = null;
-
                 // Cancels previous Request
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' || this.metadatumType === 'Tainacan\\Metadata_Types\\User' )
-                    promise = this.getValuesRelationship({
+                const promise = ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' || this.metadatumType === 'Tainacan\\Metadata_Types\\User' )
+                    ? this.getValuesRelationship({
                         search: this.searchQuery,
                         isRepositoryLevel: this.isRepositoryLevel,
                         valuesToIgnore: this.selected,
                         offset: this.searchOffset,
                         number: this.searchNumber
-                    });
-                else
-                    promise = this.getValuesPlainText({
+                    })
+                    : this.getValuesPlainText({
                         metadatumId: this.metadatumId,
                         search: this.searchQuery,
                         isRepositoryLevel: this.isRepositoryLevel,

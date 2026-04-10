@@ -1266,11 +1266,9 @@ export default {
             let data = { id: this.itemId, status: this.form.status, comment_status: this.form.comment_status };
             this.fillExtraFormData(data);
 
-            let promise = null;
-            if (status == 'trash')
-                promise = this.deleteItem({ itemId: this.itemId, isPermanently: false });
-            else
-                promise = this.updateItem(data);
+            const promise = status == 'trash'
+                ? this.deleteItem({ itemId: this.itemId, isPermanently: false })
+                : this.updateItem(data);
 
             // Clear errors so we don't have them duplicated from api
             this.errors = [];

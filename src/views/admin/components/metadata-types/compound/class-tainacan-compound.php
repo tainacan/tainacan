@@ -154,6 +154,7 @@ class Compound extends Metadata_Type {
 				$item_arr = $child->_toArray();
 				$item_arr['metadata_type_object'] = $child->get_metadata_type_object()->_toArray();
 			 	$item_arr['current_user_can_edit'] = $child->can_edit();
+			 	$item_arr['current_user_can_delete'] = $child->can_delete();
 			 	ob_start();
 			 	$child->get_metadata_type_object()->form();
 			 	$form = ob_get_clean();
