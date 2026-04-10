@@ -107,6 +107,10 @@ class REST_Logs_Controller extends REST_Controller {
 								'description' => __( 'Item ID', 'tainacan' ),
 								'required' => true,
 							),
+							'metadatum_id' => array(
+								'description' => __( 'Metadatum ID', 'tainacan' ),
+								'required' => true,
+							),
 						),
 						$this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
 					)
@@ -335,7 +339,7 @@ class REST_Logs_Controller extends REST_Controller {
 
 		if ($request['item_id']) {
 			$args['item_id'] = $request['item_id'];
-			if(isset($args['metadatum_id'])) {
+			if(isset($request['metadatum_id'])) {
 				$args['object_id'] = $request['metadatum_id'];
 			}
 		} elseif ($request['collection_id']) {
