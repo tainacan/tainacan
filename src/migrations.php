@@ -566,12 +566,14 @@ class Migrations {
 			new_value longtext,
 			action varchar(100) default NULL,
 			user_edit_lastr bigint(20) unsigned NOT NULL default '0',
+			`_wp_posts_log_migration_ref` bigint(20) DEFAULT NULL,
 			PRIMARY KEY (ID),
 			KEY user_id (user_id),
 			KEY collection_id (collection_id),
 			KEY item_id (item_id),
 			KEY object_type (object_type),
-			KEY action (action)
+			KEY action (action),
+			KEY `wp_tainacan_logs__wp_posts_log_migration_ref_IDX` (`_wp_posts_log_migration_ref`) USING BTREE
 		) $charset_collate;\n";
 
 		error_log($query);
