@@ -111,6 +111,7 @@ class Xml_Create {
         $pr->preserveWhiteSpace = false;
         $pr->formatOutput = true;
         $pr->loadXML($this->doc->saveXML());
-        echo esc_xml($pr->saveXML());
+        // Raw XML body; esc_xml() would entity-escape markup and break OAI-PMH clients.
+        echo $pr->saveXML();
     }
 }
