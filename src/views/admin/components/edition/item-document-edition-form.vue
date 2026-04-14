@@ -155,7 +155,7 @@ export default {
             :deep(img),
             :deep(video),
             :deep(figure) {
-                max-width: 100%;
+                max-width: 100% !important;
                 max-height: 32vh;
                 width: auto !important;
                 margin: 0;

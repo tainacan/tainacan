@@ -121,7 +121,9 @@
                                                             />
                                                     </span>
                                                     <button 
-                                                            v-if="!$adminOptions.hideItemSingleActivities"
+                                                            v-if="!$adminOptions.hideItemSingleActivities &&
+                                                                !isUsingDeprecatedLogs &&
+                                                                itemMetadatum.metadatum.metadata_type_object.component != 'tainacan-compound'"
                                                             v-tooltip="{
                                                                 content: $i18n.get('label_view_activity_logs'),
                                                                 autoHide: true,
@@ -556,7 +558,8 @@
                 open: true,
                 urls_open: false,
                 entityName: 'item',
-                activeTab: 'metadata'
+                activeTab: 'metadata',
+                isUsingDeprecatedLogs: tainacan_plugin.tainacan_use_deprecated_logs
             }
         },
         computed: {
@@ -1055,7 +1058,7 @@
             :deep(img),
             :deep(video),
             :deep(figure) {
-                max-width: 100%;
+                max-width: 100% !important;
                 max-height: 32vh;
                 width: auto;
                 margin: 0;
