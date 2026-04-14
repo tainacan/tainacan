@@ -273,7 +273,12 @@ abstract class Pages {
 				defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') &&
 				true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY
 			),
-			'has_permalinks_structure' => get_option('permalink_structure') !== ''
+			'has_permalinks_structure' => get_option('permalink_structure') !== '',
+			'wp_abilities_api_url'     => esc_url_raw( rest_url( 'wp-abilities/v1/' ) ),
+			'ai_alt_text_generation_available' => (bool) apply_filters(
+				'tainacan_ai_alt_text_generation_available',
+				function_exists( 'wp_has_ability' ) && wp_has_ability( 'ai/alt-text-generation' )
+			),
 		];
 		
 		$maps = [

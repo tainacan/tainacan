@@ -586,6 +586,7 @@
                                             :is-loading="isLoading"
                                             @on-delete-thumbnail="deleteThumbnail"
                                             @on-update-thumbnail-alt="($event) => onUpdateThumbnailAlt($event)"
+                                            @on-thumbnail-alt-sync="onSyncThumbnailAltFromAi"
                                             @open-thumbnail-media-frame="onOpenThumbnailFrame($event)" />
                                 </div>
 
@@ -674,6 +675,7 @@
                                     :is-loading="isLoading"
                                     @on-delete-thumbnail="deleteThumbnail"
                                     @on-update-thumbnail-alt="($event) => onUpdateThumbnailAlt($event)"
+                                    @on-thumbnail-alt-sync="onSyncThumbnailAltFromAi"
                                     @open-thumbnail-media-frame="onOpenThumbnailFrame($event)" />
 
                             <hr v-if="shouldDisplayItemEditionThumbnail && !$adminOptions.itemEditionDocumentInsideTabs">
@@ -1805,6 +1807,9 @@ export default {
                     this.isUpdatingValues = false;
                 })
                 .catch(error => this.$console.error(error));
+        },
+        onSyncThumbnailAltFromAi(altText) {
+            this.form.thumbnail_alt = altText;
         },
         toggleCollapseAll() {
             this.collapseAll = !this.collapseAll;

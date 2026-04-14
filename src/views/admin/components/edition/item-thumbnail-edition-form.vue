@@ -56,6 +56,18 @@
                             rows="4"
                             :value="form.thumbnail_alt && form.thumbnail_alt != 'false' ? form.thumbnail_alt : ''"
                             @input="updateThumbnailAlt" />
+                    <div
+                            v-if="aiAltTextAvailable"
+                            class="thumbnail-alt-ai-actions">
+                        <b-button
+                                type="button"
+                                :loading="isGeneratingAiAlt"
+                                :disabled="isGeneratingAiAlt"
+                                class="button is-secondary is-small"
+                                @click.prevent="onGenerateThumbnailAltAi">
+                            {{ hasThumbnailAltText ? $i18n.get('label_thumbnail_alt_regenerate_ai') : $i18n.get('label_thumbnail_alt_generate_ai') }}
+                        </b-button>
+                    </div>
                 </b-field>    
                 <div class="thumbnail-buttons-row">
                     <a
@@ -108,6 +120,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import FileItem from '../other/file-item.vue';
 
 export default {
@@ -122,9 +135,64 @@ export default {
     emits: [
         'open-thumbnail-media-frame',
         'on-delete-thumbnail',
-        'on-update-thumbnail-alt'
+        'on-update-thumbnail-alt',
+        'on-thumbnail-alt-sync'
     ],
+    data() {
+        return {
+            isGeneratingAiAlt: false
+        };
+    },
+    computed: {
+        aiAltTextAvailable() {
+            return typeof tainacan_plugin !== 'undefined' && !!tainacan_plugin.ai_alt_text_generation_available;
+        },
+        hasThumbnailAltText() {
+            const altText = this.form && this.form.thumbnail_alt;
+            return !!(altText && altText !== 'false' && String(altText).trim() !== '');
+        }
+    },
     methods: {
+        ...mapActions('item', [
+            'generateThumbnailAltWithAi'
+        ]),
+        onGenerateThumbnailAltAi() {
+            if (!this.item || !this.item.thumbnail_id) {
+                return;
+            }
+            this.isGeneratingAiAlt = true;
+            this.generateThumbnailAltWithAi({ thumbnailId: this.item.thumbnail_id })
+                .then((res) => {
+                    this.isGeneratingAiAlt = false;
+                    this.$emit('on-thumbnail-alt-sync', res.alt_text);
+                    this.$buefy.snackbar.open({
+                        message: this.$i18n.get('info_thumbnail_alt_ai_success'),
+                        type: 'is-success',
+                        position: 'is-bottom-right',
+                        duration: 4000,
+                        queue: false
+                    });
+                })
+                .catch((err) => {
+                    this.isGeneratingAiAlt = false;
+                    let msg = this.$i18n.get('error_thumbnail_alt_ai_failed');
+                    if (err && err.message === 'empty_alt_response') {
+                        msg = this.$i18n.get('error_thumbnail_alt_ai_empty_response');
+                    } else if (err && err.message === 'abilities_unavailable') {
+                        msg = this.$i18n.get('error_thumbnail_alt_ai_unavailable');
+                    } else if (err && err.errorMessage) {
+                        msg = err.errorMessage;
+                    }
+                    this.$buefy.snackbar.open({
+                        message: msg,
+                        type: 'is-danger',
+                        position: 'is-bottom-right',
+                        duration: 6000,
+                        queue: false
+                    });
+                    this.$console.error(err);
+                });
+        },
         updateThumbnailAlt: _.debounce(function($event) {
             this.$emit('on-update-thumbnail-alt', $event.target.value);
         }, 750)
@@ -171,6 +239,9 @@ export default {
         .field {
             margin-inline-start: 1em;
             width: 100%;
+        }
+        .thumbnail-alt-ai-actions {
+            margin-top: 0.5rem;
         }
         .content {
             padding: 10px;

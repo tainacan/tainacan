@@ -120,6 +120,7 @@ wpApi.interceptors.request.use((config) => {
     return config;
 });
 
+
 // WordPress AJAX axios
 export const wpAjax = axios.create({
     baseURL: tainacan_plugin.wp_ajax_url
@@ -132,7 +133,20 @@ wpAjax.interceptors.response.use(
     (error) => tainacanErrorHandler(error)
 );
 
+
+// WordPress Abilities API (wp-abilities/v1) — separate namespace from wp/v2
+export const wpAbilitiesApi = axios.create({
+    baseURL: typeof tainacan_plugin !== 'undefined' && tainacan_plugin.wp_abilities_api_url ? tainacan_plugin.wp_abilities_api_url : ''
+});
+if (tainacan_user.nonce) {
+    wpAbilitiesApi.defaults.headers.common['X-WP-Nonce'] = tainacan_user.nonce;
+}
+wpAbilitiesApi.interceptors.response.use(
+    (response) => response,
+    (error) => tainacanErrorHandler(error)
+);
+
 export const CancelToken = axios.CancelToken;
 export const isCancel = axios.isCancel;
 export const all = axios.all;
-export default { tainacanApi, wpApi, wpAjax, CancelToken, isCancel, all, tainacanErrorHandler };
+export default { tainacanApi, wpApi, wpAbilitiesApi, wpAjax, CancelToken, isCancel, all, tainacanErrorHandler };

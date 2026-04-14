@@ -335,6 +335,37 @@ export const updateThumbnailAlt = ({ commit }, { thumbnailId, thumbnailAlt }) =>
     }); 
 };
 
+/**
+ * Runs WordPress AI alt-text ability then persists alt text on the attachment (same as manual edit).
+ */
+export const generateThumbnailAltWithAi = ({ dispatch }, { thumbnailId }) => {
+    return new Promise((resolve, reject) => {
+        if (!thumbnailId) {
+            reject(new Error('no_thumbnail'));
+            return;
+        }
+        if (typeof tainacan_plugin === 'undefined' || !tainacan_plugin.wp_abilities_api_url) {
+            reject(new Error('abilities_unavailable'));
+            return;
+        }
+        const path = 'abilities/ai/alt-text-generation/run';
+        axios.wpAbilitiesApi.post(path, {
+            input: { attachment_id: Number(thumbnailId) }
+        }).then((res) => {
+            const altText = extractAltTextFromAbilityResponse(res.data);
+            if (altText == null || altText === '') {
+                reject(new Error('empty_alt_response'));
+                return;
+            }
+            dispatch('updateThumbnailAlt', { thumbnailId, thumbnailAlt: altText })
+                .then((media) => resolve(media))
+                .catch((err) => reject(err));
+        }).catch((err) => {
+            reject(err);
+        });
+    });
+};
+
 // Item Submission ======================================================
 export const clearItemSubmission = ({ commit }) => {
     commit('clearItemSubmission');
@@ -412,4 +443,26 @@ export const finishItemSubmission = ({ commit }, { itemSubmission, fakeItemId })
                 });
             });
     }); 
+}
+
+/**
+ * Parses Abilities API run response for alt text (WordPress AI: ai/alt-text-generation).
+ *
+ * @param {*} data Response JSON body
+ * @return {string|null}
+ */
+function extractAltTextFromAbilityResponse(data) {
+    if (data == null || typeof data !== 'object') {
+        return null;
+    }
+    if (typeof data.alt_text === 'string') {
+        return data.alt_text;
+    }
+    if (data.result != null && typeof data.result === 'object' && typeof data.result.alt_text === 'string') {
+        return data.result.alt_text;
+    }
+    if (data.output != null && typeof data.output === 'object' && typeof data.output.alt_text === 'string') {
+        return data.output.alt_text;
+    }
+    return null;
 }
