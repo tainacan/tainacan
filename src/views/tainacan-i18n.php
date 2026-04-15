@@ -687,6 +687,8 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: %s is the date */
 	'label_changes_on_%s'                              => __( 'Changes on %s', 'tainacan' ),
 	'label_item_activities'						 	 => __( 'Item activities', 'tainacan' ),
+	/* translators: %s is the metadatum name */
+	'label_item_activities_in_%s'					 => __( 'Item activities in %s', 'tainacan' ),
 	'label_add_new_section'							 => __( 'Add new section', 'tainacan' ),
 	'label_new_metadata_section'					 => __( 'New metadata section', 'tainacan' ),
 	'label_show_details'					 	 	 => __( 'Show details', 'tainacan' ),
