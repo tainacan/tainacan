@@ -24,7 +24,7 @@
                     <span 
                             v-if="!$adminOptions.hideItemsListStatusTabsTotalItems && !$route.query.authorid"
                             class="has-text-dark">
-                        &nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.pending + repositoryTotalItems.publish + repositoryTotalItems.draft })` : (collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.pending) + Number(collection.total_items.publish) + Number(collection.total_items.draft)})` : '') }}
+                        &nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ $statusHelper.sumTotalItemsByStatus(repositoryTotalItems) })` : (collection && collection.total_items ? ` (${$statusHelper.sumTotalItemsByStatus(collection.total_items)})` : '') }}
                     </span>
                 </a>
             </li>
@@ -86,23 +86,16 @@ export default {
         repositoryTotalItems() {
 
             if (!this.$adminOptions.hideItemsListStatusTabsTotalItems) {
-                let collections = this.getCollections();
+                const collections = this.getCollections();
 
-                let total_items = {
-                    trash: 0,
-                    publish: 0,
-                    draft: 0,
-                    private: 0,
-                    pending: 0
-                };
+                const total_items = {};
 
-                for (let collection of collections) {
-                    if ( collection.total_items ) {
-                        total_items.trash += Number(collection.total_items.trash);
-                        total_items.draft += Number(collection.total_items.draft);
-                        total_items.publish += Number(collection.total_items.publish);
-                        total_items.private += Number(collection.total_items.private);
-                        total_items.pending += Number(collection.total_items.pending);
+                for (const collection of collections) {
+                    if (!collection.total_items) {
+                        continue;
+                    }
+                    for (const [slug, count] of Object.entries(collection.total_items)) {
+                        total_items[slug] = (total_items[slug] || 0) + Number(count);
                     }
                 }
 

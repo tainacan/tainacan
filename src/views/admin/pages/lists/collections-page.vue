@@ -359,7 +359,7 @@
                                 {{ $i18n.get('info_no_collection_created') }}
                             </p>
                             <p v-else>
-                                {{ $i18n.get('info_no_collections_' + status) }}
+                                {{ $i18n.getNoEntitiesMessageForStatus('collections', status) }}
                             </p>
                             <p v-if="searchQuery">
                                 {{ $i18n.get('info_try_empting_the_textual_search') }}

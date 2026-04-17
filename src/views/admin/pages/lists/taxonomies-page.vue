@@ -246,7 +246,7 @@
                                 {{ $i18n.get('info_no_taxonomy_created') }}
                             </p>
                             <p v-else>
-                                {{ $i18n.get('info_no_taxonomies_' + status) }}
+                                {{ $i18n.getNoEntitiesMessageForStatus('taxonomies', status) }}
                             </p>
                             <router-link
                                     v-if="status == undefined || status == ''"

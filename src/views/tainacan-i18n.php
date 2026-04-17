@@ -890,18 +890,21 @@ return apply_filters( 'tainacan-i18n', [
 	'info_no_items_draft'			                 => __( 'No draft items found.', 'tainacan' ),
 	'info_no_items_trash'			                 => __( 'No items found on trash.', 'tainacan' ),
 	'info_no_items_pending'			                 => __( 'No pending items found.', 'tainacan' ),
+	'info_no_items_found_with_status'			     => __( 'No items found with this status.', 'tainacan' ),
 
 	'info_no_collections_publish'			         => __( 'No public collections found.', 'tainacan' ),
 	'info_no_collections_private'			         => __( 'No private collections found.', 'tainacan' ),
 	'info_no_collections_draft'			             => __( 'No draft collections found.', 'tainacan' ),
 	'info_no_collections_pending'			         => __( 'No pending collections found.', 'tainacan' ),
 	'info_no_collections_trash'			             => __( 'No collections found on trash.', 'tainacan' ),
+	'info_no_collections_found_with_status'			 => __( 'No collections found with this status.', 'tainacan' ),
 
 	'info_no_taxonomies_publish'			         => __( 'No public taxonomies found.', 'tainacan' ),
 	'info_no_taxonomies_private'			         => __( 'No private taxonomies found.', 'tainacan' ),
 	'info_no_taxonomies_draft'			             => __( 'No draft taxonomies found.', 'tainacan' ),
 	'info_no_taxonomies_pending'			         => __( 'No pending taxonomies found.', 'tainacan' ),
 	'info_no_taxonomies_trash'			             => __( 'No taxonomies found on trash.', 'tainacan' ),
+	'info_no_taxonomies_found_with_status'			 => __( 'No taxonomies found with this status.', 'tainacan' ),
 
 	'info_item_publish'			         			=> __( 'This item is published as public and will be visible to any visitor on the website, as long as its collection is also public.', 'tainacan' ),
 	'info_item_private'			         			=> __( 'This item is published as private and will be visible only for editors with the required capabilities.', 'tainacan' ),

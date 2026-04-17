@@ -22,7 +22,7 @@
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading) && !$adminOptions.hideItemSingleCurrentStatus"
                         class="status-tag is-hidden-mobile">
-                    {{ $i18n.get('status_' + item.status) }}
+                    {{ $statusHelper.getStatusLabel(item.status) }}
                 </span>
             </h1>
         </tainacan-title>
@@ -261,7 +261,7 @@
                                                 {{ $i18n.get('status_auto-draft') }}
                                             </template>
                                             <help-button
-                                                    :title="$i18n.get('status_' + item.status)"
+                                                    :title="$statusHelper.getStatusLabel(item.status)"
                                                     :message="$i18n.get('info_item_' + item.status)" />
                                         </div>
                                     </div>

@@ -188,19 +188,21 @@ class REST_Collections_Controller extends REST_Controller {
 		$rest_response->header('X-WP-Total', (int) $total_collections);
 		$rest_response->header('X-WP-TotalPages', (int) $max_pages);
 
-		$total_collections = wp_count_posts( 'tainacan-collection', 'readable' );
+		// Per https://developer.wordpress.org/reference/functions/wp_count_posts/ — one property per registered
+		// status (core and custom). Header suffix must be a safe token; values are always integers.
+		$collection_status_counts = wp_count_posts( 'tainacan-collection', 'readable' );
 
-		if (isset($total_collections->publish) ||
-			isset($total_collections->pending) ||
-			isset($total_collections->private) ||
-			isset($total_collections->trash) ||
-			isset($total_collections->draft)) {
-
-			$rest_response->header('X-Tainacan-total-collections-trash', $total_collections->trash);
-			$rest_response->header('X-Tainacan-total-collections-publish', $total_collections->publish);
-			$rest_response->header('X-Tainacan-total-collections-draft', $total_collections->draft);
-			$rest_response->header('X-Tainacan-total-collections-pending', $total_collections->pending);
-			$rest_response->header('X-Tainacan-total-collections-private', $total_collections->private);
+		if ( is_object( $collection_status_counts ) ) {
+			foreach ( get_object_vars( $collection_status_counts ) as $status_slug => $count ) {
+				$safe_slug = sanitize_key( (string) $status_slug );
+				if ( '' === $safe_slug ) {
+					continue;
+				}
+				$rest_response->header(
+					'X-Tainacan-total-collections-' . $safe_slug,
+					(int) $count
+				);
+			}
 		}
 
 		return $rest_response;
@@ -366,19 +368,20 @@ class REST_Collections_Controller extends REST_Controller {
 				$item_arr['collection_taxonomies'] = $this->get_collection_taxonomies($item, $request['fetch_collection_taxonomies']);
 			}
 
-			$total_items = wp_count_posts( $item->get_db_identifier(), 'readable' );
+			$items_status_counts = wp_count_posts( $item->get_db_identifier(), 'readable' );
 
-			if (isset($total_items->publish) ||
-				isset($total_items->private) ||
-				isset($total_items->pending) ||
-			  	isset($total_items->trash) ||
-			   	isset($total_items->draft)) {
-
-				$item_arr['total_items']['trash'] = $total_items->trash;
-				$item_arr['total_items']['publish'] = $total_items->publish;
-				$item_arr['total_items']['draft'] = $total_items->draft;
-				$item_arr['total_items']['private'] = $total_items->private;
-				$item_arr['total_items']['pending'] = $total_items->pending;
+			if ( is_object( $items_status_counts ) ) {
+				$total_items_by_status = [];
+				foreach ( get_object_vars( $items_status_counts ) as $status_slug => $count ) {
+					$safe_slug = sanitize_key( (string) $status_slug );
+					if ( '' === $safe_slug ) {
+						continue;
+					}
+					$total_items_by_status[ $safe_slug ] = (int) $count;
+				}
+				if ( ! empty( $total_items_by_status ) ) {
+					$item_arr['total_items'] = $total_items_by_status;
+				}
 			}
 
 			// Clear private metadata from metadata_order
