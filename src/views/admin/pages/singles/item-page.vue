@@ -133,11 +133,11 @@
                                                             class="button link-style"
                                                             aria-label="$i18n.get('label_view_activity_logs')"
                                                             @click="openActivitiesModal(itemMetadatum.item.id, itemMetadatum.metadatum.id)">
-                                                       <span
+                                                        <span
                                                                 class="icon"
                                                                 style="margin: 0;">
                                                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities" />
-                                                       </span>
+                                                        </span>
                                                     </button>
                                                 </label>
                                                 <div

@@ -52,8 +52,8 @@
                                 v-else
                                 class="activities-timeline-item__diff-content">
                             <div 
-                                    v-for="(attributeValue, attributeName, index) in activity.new_value"
-                                    :key="index">
+                                    v-for="(attributeValue, attributeName, attributeIndex) in activity.new_value"
+                                    :key="attributeIndex">
                                 <div v-if="activity.action == 'update'">
 
                                     <div v-if="attributeName == 'metadata_type_options'">

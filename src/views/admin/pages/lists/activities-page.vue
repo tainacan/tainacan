@@ -15,7 +15,9 @@
             <h2 v-if="metadatumName != null">
                 {{ $i18n.getWithVariables('label_item_activities_in_%s', [metadatumName]) }}
             </h2>
-            <h2 v-else>{{ $i18n.get('label_item_activities') }}</h2>
+            <h2 v-else>
+                {{ $i18n.get('label_item_activities') }}
+            </h2>
             <button       
                     class="button is-medium is-white is-align-self-flex-start"
                     :aria-label="$i18n.get('close')"
@@ -222,15 +224,17 @@
             ActivitiesList,
         },
         mixins: [ dateInter ],
-        emits: [ 'close', 'beforeClose' ],
         props: {
             metadatumId: {
-                default: null
+                default: null,
+                type: [Number, String]
             },
             metadatumName: {
-                default: null
+                default: null,
+                type: [String]
             }
         },
+        emits: [ 'close', 'beforeClose' ],
         data() {
             return {
                 isLoading: false,
@@ -547,5 +551,14 @@
         margin-top: 0;
         // min-height: 100%;
         height: auto;
+    }
+
+    .pagination-area {
+        background: white;
+        position: sticky;
+        bottom: -1px;
+        z-index: 9;
+        padding-bottom: var(--tainacan-container-padding);
+        margin-bottom: 0;
     }
 </style>
