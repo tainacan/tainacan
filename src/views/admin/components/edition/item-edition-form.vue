@@ -20,7 +20,7 @@
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
                         class="status-tag is-hidden-mobile"
                         @mouseenter="$emit('toggleItemEditionFooterDropdown')">
-                    {{ $i18n.get('status_' + item.status) }}
+                    {{ $statusHelper.getStatusLabel(item.status) }}
                 </span>
             </h1>
             <h1 v-else>
@@ -32,7 +32,7 @@
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
                         class="status-tag is-hidden-mobile"
                         @mouseenter="$emit('toggleItemEditionFooterDropdown')">
-                    {{ $i18n.get('status_' + item.status) }}
+                    {{ $statusHelper.getStatusLabel(item.status) }}
                 </span>
                 <span
                         v-if="$adminOptions.itemEditionStatusOptionOnFooterDropdown && (item != null && item != undefined && item.status != undefined && item.status != 'autodraft' && !isLoading)"
@@ -45,7 +45,7 @@
                             :class="$statusHelper.getIcon(item.status)"
                         />
                     <help-button
-                            :title="$i18n.get('status_' + item.status)"
+                            :title="$statusHelper.getStatusLabel(item.status)"
                             :message="$i18n.get('info_item_' + item.status) + ' ' + $i18n.get('instruction_edit_item_status')" />
                 </span>
                 

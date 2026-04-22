@@ -123,7 +123,7 @@ export default {
                             return `<div class="tainacan-custom-tooltip">
                                     <div class="tainacan-custom-tooltip__header">` + collectionsLabels[dataPointIndex] + `</div>
                                     <div class="tainacan-custom-tooltip__body">
-                                        <span>` + this.$i18n.get('status_' + w.config.series[seriesIndex].name) + `: <strong>` + series[seriesIndex][dataPointIndex] + `</strong></span>` +
+                                        <span>` + this.$statusHelper.getStatusLabel(w.config.series[seriesIndex].name) + `: <strong>` + series[seriesIndex][dataPointIndex] + `</strong></span>` +
                                     `</div></div>`;
                         }
                     },
@@ -131,7 +131,7 @@ export default {
                         position: 'right',
                         offsetY: 40,
                         formatter: (seriesName) => {
-                            return ['<span class="icon"><i class="tainacan-icon tainacan-icon-' + (seriesName === 'trash' ? 'delete' : ( seriesName === 'pending' ? 'waiting' : seriesName ) ) + '"></i></span>' + this.$i18n.get('status_' + seriesName) ]
+                            return ['<span class="icon"><i class="tainacan-icon tainacan-icon-' + (seriesName === 'trash' ? 'delete' : ( seriesName === 'pending' ? 'waiting' : seriesName ) ) + '"></i></span>' + this.$statusHelper.getStatusLabel(seriesName) ]
                         }
                     }
                 }

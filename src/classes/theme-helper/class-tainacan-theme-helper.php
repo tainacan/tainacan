@@ -1342,11 +1342,29 @@ class Theme_Helper {
 
 					if ( array_key_exists('dublin-core', $meta_mappings) && $item_metadatum->has_value() ) {
 						$values = $item_metadatum->get_value();
-						$values = is_array($values) ? $values : [$values];
+						$multiple_values = is_array($values) ? $values : [$values];
 
-						$values = array_map(function($value) use ($meta_mappings) {
-							echo '<meta name="' . esc_attr(str_replace('dc:' , 'dc.', $meta_mappings['dublin-core'])) . '" content="' . esc_attr($value) . '" />';
-						}, $values);
+						$multiple_values = array_map(function($single_value) use ($meta_mappings) {
+
+							// If the single value is still an array, we are in a multiple compound metadata
+							if ( is_array($single_value) ) {
+								foreach ($single_value as $child_value) {
+									if ( $child_value instanceof \Tainacan\Entities\Item_Metadata_Entity ) {
+										$child_value = $child_value->get_value_as_string();
+										echo '<meta name="' . esc_attr(str_replace('dc:' , 'dc.', $meta_mappings['dublin-core'])) . '" content="' . esc_attr($child_value) . '" />';
+									} 
+								}
+							// But we might be in a single compound metadata
+							} else if ( $single_value instanceof \Tainacan\Entities\Item_Metadata_Entity ) {
+								$child_value = $single_value->get_value_as_string();
+								echo '<meta name="' . esc_attr(str_replace('dc:' , 'dc.', $meta_mappings['dublin-core'])) . '" content="' . esc_attr($child_value) . '" />';
+							 
+							// Or a single, non-compound metadata
+						    } else {
+								echo '<meta name="' . esc_attr(str_replace('dc:' , 'dc.', $meta_mappings['dublin-core'])) . '" content="' . esc_attr($single_value) . '" />';
+							}
+							
+						}, $multiple_values);
 					}
 				}
 			}

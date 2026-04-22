@@ -660,7 +660,7 @@ html {
                     }
                 }
             }
-            .separator-list-item {
+            ul .separator-list-item {
                 width: 100%;
                 text-align: start;
                 box-sizing: border-box;
@@ -672,6 +672,14 @@ html {
                 .icon {
                     color: currentColor !important;
                     margin-inline-end: 0.5em;
+                }
+            }
+            ul .separator-list-item ~ li {
+                margin-bottom: 2px;
+                margin-inline-start: 0.5rem;
+
+                a {
+                    font-weight: 400;
                 }
             }
         }

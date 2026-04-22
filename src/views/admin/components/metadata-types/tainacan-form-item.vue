@@ -326,11 +326,15 @@
                              
                             if (Array.isArray(currentValues)) {
                                 for (let value of currentValues) {
-                                    let foundIndex = this.itemMetadatum.value.findIndex(element => value == element.id);
+                                    let foundIndex = this.itemMetadatum.value.findIndex(element => {
+                                        if (typeof element == 'object')
+                                            return value == element.id;
+                                        else
+                                            return value == element;
+                                    });
                                     if (foundIndex >= 0)
                                         equal.push(this.itemMetadatum.value[foundIndex]);
                                 }
-
                                 if (equal.length == currentValues.length && this.itemMetadatum.value.length <= equal.length)
                                     return;
                             } else { // This will happen in taxonomy single valued on item submission, as there all term values appear as array.

@@ -192,7 +192,7 @@
                             <span 
                                     v-if="$statusHelper.hasIcon(collection.status)"
                                     v-tooltip="{
-                                        content: $i18n.get('status_' + collection.status),
+                                        content: $statusHelper.getStatusLabel(collection.status),
                                         autoHide: true,
                                         html: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip'],
@@ -500,13 +500,10 @@ export default {
                 this.selectedCollections.splice(i, 1, !this.allCollectionsOnPageSelected);
         },
         getTotalItems(total_items) {
-            return Number(total_items['publish']) + Number(total_items['private']) + Number(total_items['pending']) + Number(total_items['draft']);
+            return this.$statusHelper.sumTotalItemsByStatus(total_items);
         },
         getTotalItemsDetailed(total_items) {
-            return this.$i18n.get('status_public') + ': ' + total_items['publish'] + '<br> ' +
-                   this.$i18n.get('status_private') + ': ' + total_items['private'] + '<br> ' +
-                   this.$i18n.get('status_pending') + ': ' + total_items['pending'] + '<br> ' +
-                   this.$i18n.get('status_draft') + ': ' + total_items['draft'];
+            return this.$statusHelper.getTotalItemsDetailedHtml(total_items);
         },
         deleteOneCollection(collection) {
             let collectionName = '';

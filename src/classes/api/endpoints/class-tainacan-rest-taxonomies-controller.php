@@ -366,19 +366,19 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		$rest_response->header('X-WP-Total', $total_taxonomies);
 		$rest_response->header('X-WP-TotalPages', (int) $max_pages);
 
-		$total_taxonomies = wp_count_posts( 'tainacan-taxonomy', 'readable' );
+		$taxonomy_status_counts = wp_count_posts( 'tainacan-taxonomy', 'readable' );
 
-		if (isset($total_taxonomies->publish) ||
-		    isset($total_taxonomies->private) ||
-		    isset($total_taxonomies->pending) ||
-		    isset($total_taxonomies->trash) ||
-		    isset($total_taxonomies->draft)) {
-
-			$rest_response->header('X-Tainacan-total-taxonomies-trash', $total_taxonomies->trash);
-			$rest_response->header('X-Tainacan-total-taxonomies-publish', $total_taxonomies->publish);
-			$rest_response->header('X-Tainacan-total-taxonomies-draft', $total_taxonomies->draft);
-			$rest_response->header('X-Tainacan-total-taxonomies-private', $total_taxonomies->private);
-			$rest_response->header('X-Tainacan-total-taxonomies-pending', $total_taxonomies->pending);
+		if ( is_object( $taxonomy_status_counts ) ) {
+			foreach ( get_object_vars( $taxonomy_status_counts ) as $status_slug => $count ) {
+				$safe_slug = sanitize_key( (string) $status_slug );
+				if ( '' === $safe_slug ) {
+					continue;
+				}
+				$rest_response->header(
+					'X-Tainacan-total-taxonomies-' . $safe_slug,
+					(int) $count
+				);
+			}
 		}
 
 		return $rest_response;

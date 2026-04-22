@@ -66,13 +66,16 @@ export const fetch = ({ commit }, { page, taxonomiesPerPage, status, order, orde
 
                 commit('set', taxonomies);
 
-                commit('setRepositoryTotalTaxonomies', {
-                    draft: res.headers['x-tainacan-total-taxonomies-draft'],
-                    trash: res.headers['x-tainacan-total-taxonomies-trash'],
-                    publish: res.headers['x-tainacan-total-taxonomies-publish'],
-                    private: res.headers['x-tainacan-total-taxonomies-private'],
-                    pending: res.headers['x-tainacan-total-taxonomies-pending']
+                const totalsByStatusPrefix = 'x-tainacan-total-taxonomies-';
+                const repositoryTotalTaxonomies = {};
+                Object.keys(res.headers).forEach((headerName) => {
+                    const lower = headerName.toLowerCase();
+                    if (lower.startsWith(totalsByStatusPrefix)) {
+                        const slug = lower.slice(totalsByStatusPrefix.length);
+                        repositoryTotalTaxonomies[slug] = res.headers[headerName];
+                    }
                 });
+                commit('setRepositoryTotalTaxonomies', repositoryTotalTaxonomies);
 
                 resolve({
                     'taxonomies': taxonomies,

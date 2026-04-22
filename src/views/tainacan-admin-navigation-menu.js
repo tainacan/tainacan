@@ -246,7 +246,7 @@ function handleDynamicMenusAndBreadcrumbs() {
                         if ( adminOptions.hideNavigationCollectionName !== 'true' && adminOptions.hideNavigationCollectionName !== true ) {
                             const collectionName = document.createElement( 'li' );
                             collectionName.setAttribute( 'class', 'separator-list-item' );
-                            collectionName.innerHTML = '<span class="icon" aria-hidden="true"><i class="tainacan-icon tainacan-icon-collection tainacan-icon-1-125em"></i></span><span class="menu-text">' + collection.name + '</span>';
+                            collectionName.innerHTML = '<span class="menu-text">' + collection.name + '</span>';
                             tainacanCollectionLinks.insertBefore( collectionName, tainacanCollectionLinks.children[1] );
                         }
                     } else {
