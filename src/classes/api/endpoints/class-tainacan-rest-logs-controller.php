@@ -210,8 +210,7 @@ class REST_Logs_Controller extends REST_Controller {
 				return $this->prepare_legacy_item_for_response($item, $request);
 			}
 
-			if ($request['log_id']) {
-
+			if ( isset($request['format_diffs']) && $request['format_diffs'] == true ) {
 
 				$item_array = $item->_toArray();
 

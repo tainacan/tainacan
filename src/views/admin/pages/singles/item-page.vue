@@ -121,7 +121,10 @@
                                                             />
                                                     </span>
                                                     <button 
-                                                            v-if="!$adminOptions.hideItemSingleActivities"
+                                                            v-if="!$adminOptions.hideItemSingleActivities &&
+                                                                !isUsingDeprecatedLogs &&
+                                                                $userCaps.hasCapability('tnc_rep_read_logs') &&
+                                                                itemMetadatum.metadatum.metadata_type_object.component != 'tainacan-compound'"
                                                             v-tooltip="{
                                                                 content: $i18n.get('label_view_activity_logs'),
                                                                 autoHide: true,
@@ -488,7 +491,7 @@
                         <span>{{ $i18n.get('label_create_another_item') }}</span>
                     </router-link>
                     <button 
-                            v-if="!$adminOptions.hideItemSingleActivities"
+                            v-if="!$adminOptions.hideItemSingleActivities && $userCaps.hasCapability('tnc_rep_read_logs')"
                             class="button sequence-button"
                             :aria-label="$i18n.get('label_view_activity_logs')"
                             :disabled="isLoading"
@@ -556,7 +559,8 @@
                 open: true,
                 urls_open: false,
                 entityName: 'item',
-                activeTab: 'metadata'
+                activeTab: 'metadata',
+                isUsingDeprecatedLogs: tainacan_plugin.tainacan_use_deprecated_logs
             }
         },
         computed: {
@@ -747,7 +751,7 @@
                     component: ActivitiesPage,
                     customClass: 'tainacan-modal',
                     canCancel: ['escape', 'outside'],
-                    props: { metadatumId },
+                    props: { metadatumId, metadatumName: this.itemMetadata.find(itemMetadatum => itemMetadatum.metadatum.id == metadatumId)?.metadatum.name ?? null },
                     events: {
                         beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
                     }
@@ -1055,7 +1059,7 @@
             :deep(img),
             :deep(video),
             :deep(figure) {
-                max-width: 100%;
+                max-width: 100% !important;
                 max-height: 32vh;
                 width: auto;
                 margin: 0;

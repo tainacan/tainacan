@@ -265,6 +265,10 @@ abstract class Pages {
 			'api_max_items_per_page'    => $TAINACAN_API_MAX_ITEMS_PER_PAGE,
 			'wp_elasticpress'    		=> \Tainacan\Elastic_Press::get_instance()->is_active(),
 			'item_submission_captcha_site_key' => get_option("tnc_option_recaptch_site_key"),
+			'tainacan_use_deprecated_logs' => (
+				!defined('USE_DEPRECATED_TAINACAN_LOGS') || 
+				true === USE_DEPRECATED_TAINACAN_LOGS
+			),
 			'tainacan_enable_core_metadata_on_advanced_search' => (
 				!defined('TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH') || 
 				false === TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH

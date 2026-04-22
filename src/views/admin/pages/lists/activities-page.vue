@@ -12,7 +12,10 @@
                 v-else
                 class="tainacan-modal-title"
                 :is-sticky="true">
-            <h2>{{ $i18n.get('label_item_activities') }}</h2>
+            <h2 v-if="metadatumName != null">
+                {{ $i18n.getWithVariables('label_item_activities_in_%s', [metadatumName]) }}
+            </h2>
+            <h2 v-else>{{ $i18n.get('label_item_activities') }}</h2>
             <button       
                     class="button is-medium is-white is-align-self-flex-start"
                     :aria-label="$i18n.get('close')"
@@ -149,7 +152,8 @@
                     :page="activitiesPage"
                     :activities-per-page="activitiesPerPage"
                     :activities="activities"
-                    :is-item-level="isItemLevel" />
+                    :is-item-level="isItemLevel"
+                    :filter-by-item-metadatum="metadatumId != null" />
             <template v-if="!$userCaps.hasCapability('tnc_rep_read_logs')">
                 <section class="section">
                     <div class="content has-text-dark has-text-centered">
@@ -221,6 +225,9 @@
         emits: [ 'close', 'beforeClose' ],
         props: {
             metadatumId: {
+                default: null
+            },
+            metadatumName: {
                 default: null
             }
         },
