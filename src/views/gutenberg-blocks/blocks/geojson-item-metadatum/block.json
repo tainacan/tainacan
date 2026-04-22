@@ -1,0 +1,45 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "tainacan/geojson-item-metadatum",
+    "title": "Tainacan GeoJSON Item Metadatum",
+    "apiVersion": 3,
+    "category": "tainacan-blocks",
+    "keywords": [ "item", "map", "geojson", "geographic", "metadatum", "field", "value" ],
+    "description": "A single item GeoJSON metadatum, containing map geometries.",
+    "textdomain": "tainacan",
+    "parent": [],
+    "attributes": {
+        "dataSource": {
+            "type": "string",
+            "default": "selection"
+        },
+        "templateMode": {
+            "type": "boolean",
+            "default": false
+        },
+        "collectionId": {
+            "type": "integer"
+        },
+        "itemId": {
+            "type": "integer"
+        },
+        "metadatumId": {
+            "type": "integer"
+        },
+        "isModalOpen": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "usesContext": [
+        "tainacan/itemId"
+    ],
+    "supports": {
+        "align": ["full", "wide"],
+        "multiple": true,
+        "html": true,
+        "anchor": true
+    },
+    "editorScript": "geojson-item-metadatum",
+	"editorStyle": ["geojson-item-metadatum", "tainacan-blocks-common-editor-styles" ]
+}

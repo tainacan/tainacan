@@ -199,6 +199,7 @@
             TainacanCompound: defineAsyncComponent(() => import('./compound/TainacanCompound.vue')),
             TainacanUser: defineAsyncComponent(() => import('./user/TainacanUser.vue')),
             TainacanGeocoordinate: defineAsyncComponent(() => import('./geocoordinate/TainacanGeoCoordinate.vue')),
+            TainacanGeojson: defineAsyncComponent(() => import('./geojson/TainacanGeoJSON.vue')),
             TainacanUrl: defineAsyncComponent(() => import('./url/TainacanUrl.vue'))
         },
         props: {
@@ -244,7 +245,7 @@
                 ) ? this.itemMetadatum.metadatum.cardinality : undefined;
             },
             isTextInputComponent() {
-                const array = ['tainacan-relationship','tainacan-taxonomy', 'tainacan-compound', 'tainacan-user', 'tainacan-geocoordinate'];
+                const array = ['tainacan-relationship','tainacan-taxonomy', 'tainacan-compound', 'tainacan-user', 'tainacan-geocoordinate', 'tainacan-geojson'];
                 return !(array.indexOf(this.metadatumComponent) >= 0 );
             },
             metadatumFormClasses() {

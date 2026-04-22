@@ -168,7 +168,7 @@
                         </b-field>
 
                         <b-field
-                                v-if="form.metadata_type_object.component != 'tainacan-geocoordinate' && form.metadata_type_object.component != 'tainacan-compound'"
+                                v-if="form.metadata_type_object.component != 'tainacan-geocoordinate' && form.metadata_type_object.component != 'tainacan-geojson' && form.metadata_type_object.component != 'tainacan-compound'"
                                 :addons="false"
                                 :type="formErrors['placeholder'] != undefined ? 'is-danger' : ''"
                                 :message="formErrors['placeholder'] != undefined ? formErrors['placeholder'] : ''">
@@ -386,6 +386,7 @@
 
                         <b-field
                                 v-if="form.metadata_type_object.component != 'tainacan-geocoordinate' &&
+                                    form.metadata_type_object.component != 'tainacan-geojson' &&
                                     form.metadata_type_object.component != 'tainacan-compound' &&
                                     form.metadata_type_object.component != 'tainacan-relationship' &&
                                     form.metadata_type_object.component != 'tainacan-user'" 
@@ -527,6 +528,7 @@
     import FormDate from '../metadata-types/date/FormDate.vue';
     import FormUser from '../metadata-types/user/FormUser.vue';
     import FormGeoCoordinate from '../metadata-types/geocoordinate/FormGeoCoordinate.vue';
+    import FormGeoJSON from '../metadata-types/geojson/FormGeoJSON.vue';
     import FormUrl from '../metadata-types/url/FormUrl.vue';
 
     export default {
@@ -541,6 +543,7 @@
             'tainacan-form-date': FormDate,
             'tainacan-form-user': FormUser,
             'tainacan-form-geocoordinate': FormGeoCoordinate,
+            'tainacan-form-geojson': FormGeoJSON,
             'tainacan-form-url': FormUrl
         },
         mixins: [ formHooks ],

@@ -32,6 +32,7 @@ class Metadata_Type_Helper {
 		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\User');
 		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Control');
 		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\GeoCoordinate');
+		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\GeoJSON');
 		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\URL');
 
 		// The priority should see less than on function 

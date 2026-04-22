@@ -34,6 +34,7 @@ class Gutenberg_Blocks {
 		'item-metadata' => [ 'render_callback' => 'tainacan_blocks_render_item_metadata' ],
 		'item-metadatum' => [ 'render_callback' => 'tainacan_blocks_render_item_metadatum' ],
 		'geocoordinate-item-metadatum' => [ 'render_callback' => 'tainacan_blocks_render_geocoordinate_item_metadatum' ],
+		'geojson-item-metadatum' => [ 'render_callback' => 'tainacan_blocks_render_geojson_item_metadatum' ],
 		'metadata-section-name' => [],
 		'metadata-section-description' => [],
 		'items-gallery' => [ 'set_script_translations' => true, 'render_callback' => 'tainacan_blocks_render_items_gallery' ],

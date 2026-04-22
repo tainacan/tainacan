@@ -1,0 +1,9 @@
+.tainacan-leaflet-map-container.tainacan-geojson-map {
+    display: block;
+    height: 320px;
+    width: 100%;
+
+    .tainacan-geojson-fallback-text {
+        opacity: 0;
+    }
+}

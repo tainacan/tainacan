@@ -57,6 +57,8 @@ npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=glob
 
 npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/geocoordinate-item-metadatum/style.scss:src/assets/css/tainacan-gutenberg-block-geocoordinate-item-metadatum.css
 
+npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/geojson-item-metadatum/style.scss:src/assets/css/tainacan-gutenberg-block-geojson-item-metadatum.css
+
 npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/metadata-section-name/style.scss:src/assets/css/tainacan-gutenberg-block-metadata-section-name.css
 
 npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/metadata-section-description/style.scss:src/assets/css/tainacan-gutenberg-block-metadata-section-description.css
