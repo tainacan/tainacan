@@ -247,8 +247,8 @@ class GeoJSON extends Metadata_Type {
 		}
 
 		$geojson_as_string = wp_json_encode( $feature_collection );
-		$return = '<span id="tainacan-geojsonmetadatum--' . esc_attr( $item_metadatum_id ) . '" data-module="geojson-item-metadatum" data-geojson="' . esc_attr( $geojson_as_string ) . '" ' . $options_as_strings . '>
-			<span class="tainacan-geojson-fallback-text">' . esc_html__( 'GeoJSON map', 'tainacan' ) . '</span>
+		$return = '<span id="tainacan-geojsonmetadatum--' . esc_attr( $item_metadatum_id ) . '" data-module="geojson-item-metadatum" ' . $options_as_strings . '>
+			<span class="tainacan-geojson-fallback-text">' . esc_html( $geojson_as_string ) . '</span>
 		</span>';
 
 		return apply_filters( 'tainacan-item-metadata-get-value-as-html--type-geojson', $return, $item_metadata );

@@ -127,21 +127,26 @@
                     <l-tile-layer 
                             :url="mapTileUrl" 
                             :attribution="mapTileAttribution" />
+                    <l-geo-json
+                            :key="'non-points-' + mapSelectedItemId + '-' + selectedMarkerIndexes.join('-')"
+                            :geojson="nonPointGeoJsonCollection"
+                            :options-style="nonPointGeoJsonStyle"
+                            :options="nonPointGeoJsonOptions" />
                     <l-marker 
-                            v-for="(itemLocation, index) of itemsLocations"
-                            :key="index"
-                            :lat-lng="itemLocation.location"
-                            :opacity="selectedMarkerIndexes.length > 0 && !selectedMarkerIndexes.includes(index) ? 0.35 : 1.0"
-                            @click="showItemByLocation(index)">
+                            v-for="pointLocation of pointLocations"
+                            :key="pointLocation.locationIndex"
+                            :lat-lng="pointLocation.location"
+                            :opacity="selectedMarkerIndexes.length > 0 && !selectedMarkerIndexes.includes(pointLocation.locationIndex) ? 0.35 : 1.0"
+                            @click="showItemByLocation(pointLocation.locationIndex)">
                         <l-icon 
                                 :icon-retina-url="mapIconRetinaUrl"
                                 :icon-url="mapIconUrl"
                                 :shadow-url="mapIconShadowUrl"
-                                :icon-size="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [25, 41] : [16, 28]"
-                                :shadow-size="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [41, 41] : [28, 28]"
-                                :icon-anchor="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [12, 41] : [8, 28]"
-                                :tooltip-anchor="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [16, -28] : [8, -21]"
-                                :popup-anchor="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [1, -34] : [1, -25]" />
+                                :icon-size="(pointLocation.item.id == hoveredMapCardItemId || pointLocation.item.id == mapSelectedItemId) ? [25, 41] : [16, 28]"
+                                :shadow-size="(pointLocation.item.id == hoveredMapCardItemId || pointLocation.item.id == mapSelectedItemId) ? [41, 41] : [28, 28]"
+                                :icon-anchor="(pointLocation.item.id == hoveredMapCardItemId || pointLocation.item.id == mapSelectedItemId) ? [12, 41] : [8, 28]"
+                                :tooltip-anchor="(pointLocation.item.id == hoveredMapCardItemId || pointLocation.item.id == mapSelectedItemId) ? [16, -28] : [8, -21]"
+                                :popup-anchor="(pointLocation.item.id == hoveredMapCardItemId || pointLocation.item.id == mapSelectedItemId) ? [1, -34] : [1, -25]" />
                         <l-tooltip>
                             <div
                                     v-for="(column, metadatumIndex) in displayedMetadata"
@@ -149,10 +154,10 @@
                                 <div 
                                         v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
                                         style="font-weight: bold;"
-                                        v-html="(itemLocation.item.metadata != undefined && collectionId ? renderMetadata(itemLocation.item, column) : (itemLocation.item.title ? itemLocation.item.title :`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)) + getMultivalueIndicator(itemLocation)" />
+                                        v-html="(pointLocation.item.metadata != undefined && collectionId ? renderMetadata(pointLocation.item, column) : (pointLocation.item.title ? pointLocation.item.title :`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)) + getMultivalueIndicator(pointLocation)" />
                                 <div 
                                         v-if="column.display && column.metadata_type == 'Tainacan\\Metadata_Types\\Compound' && selectedGeocoordinateMetadatum.parent == column.id"
-                                        v-html="itemLocation.item.metadata != undefined ? renderMetadata(itemLocation.item, column, itemLocation.multivalueIndex) : ''" />
+                                        v-html="pointLocation.item.metadata != undefined ? renderMetadata(pointLocation.item, column, pointLocation.multivalueIndex) : ''" />
                             </div>
                         </l-tooltip>
                     </l-marker>
@@ -168,7 +173,7 @@
                                 <label>{{ $i18n.get('label_showing_locations_for') }}&nbsp;</label>
                                 <div 
                                         id="tainacan-select-geocoordinate-metatum"
-                                        class="control">
+                                        class="control tainacan-select-map-metadatum">
                                     <!-- Not using B-Select here to avoid importing Bulme on view modes inside Gutenberg blocks -->
                                     <span class="select">
                                         <select
@@ -366,7 +371,8 @@
                                                             column.display && column.slug != 'thumbnail' &&
                                                             column.metadata_type_object != undefined &&
                                                             (column.metadata_type_object.related_mapped_prop != 'title') &&
-                                                            (column.metadata_type != 'Tainacan\\Metadata_Types\\GeoCoordinate') "
+                                                            (column.metadata_type != 'Tainacan\\Metadata_Types\\GeoCoordinate') &&
+                                                            (column.metadata_type != 'Tainacan\\Metadata_Types\\GeoJSON') "
                                                         :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }">
                                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                                     <p      
@@ -394,9 +400,9 @@
 
 <script>
 import { viewModesMixin } from '../js/view-modes-mixin.js';
-import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl, LControlZoom } from '@vue-leaflet/vue-leaflet';
+import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl, LControlZoom, LGeoJson } from '@vue-leaflet/vue-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { latLng } from 'leaflet';
+import { latLng, geoJSON } from 'leaflet';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
@@ -411,7 +417,8 @@ export default {
         LTileLayer,
         LMarker,
         LControl,
-        LControlZoom
+        LControlZoom,
+        LGeoJson
     },
     mixins: [
         viewModesMixin
@@ -479,48 +486,135 @@ export default {
                     }
 
                     // Then check if has a single or multi value
+                    const selectedType = this.selectedGeocoordinateMetadatum['metadata_type'];
                     if (
                         selectedItemMetadatum &&
                         Array.isArray(selectedItemMetadatum.value) 
                     ) {
                         for (let i = 0; i < selectedItemMetadatum.value.length; i++) {
-                            if (selectedItemMetadatum.value[i].split(',').length == 2) {
+                            if (selectedType == 'Tainacan\\Metadata_Types\\GeoCoordinate' && selectedItemMetadatum.value[i].split(',').length == 2) {
                                 locations.push({
                                     item: item,
                                     multivalueIndex: i,
                                     multivalueTotal: selectedItemMetadatum.value.length,
-                                    location: latLng(selectedItemMetadatum.value[i].split(','))
+                                    location: latLng(selectedItemMetadatum.value[i].split(',')),
+                                    isPoint: true
+                                });
+                            } else if (selectedType == 'Tainacan\\Metadata_Types\\GeoJSON') {
+                                this.parseGeoJsonValue(selectedItemMetadatum.value[i]).forEach((feature) => {
+                                    const bounds = this.getFeatureBounds(feature);
+                                    if (!bounds)
+                                        return;
+                                    const center = bounds.getCenter();
+                                    locations.push({
+                                        item: item,
+                                        multivalueIndex: i,
+                                        multivalueTotal: selectedItemMetadatum.value.length,
+                                        feature,
+                                        bounds,
+                                        location: latLng(center.lat, center.lng),
+                                        isPoint: ['Point', 'MultiPoint'].includes(feature?.geometry?.type)
+                                    });
                                 });
                             }
                         }
                     } else if (
                         selectedItemMetadatum &&
                         typeof selectedItemMetadatum.value.split == 'function' &&
+                        selectedType == 'Tainacan\\Metadata_Types\\GeoCoordinate' &&
                         selectedItemMetadatum.value.split(',').length == 2
                     ) {
                         locations.push({
                             item: item,
-                            location: latLng(selectedItemMetadatum.value.split(','))
+                            location: latLng(selectedItemMetadatum.value.split(',')),
+                            isPoint: true
+                        });
+                    } else if (
+                        selectedItemMetadatum &&
+                        typeof selectedItemMetadatum.value == 'string' &&
+                        selectedType == 'Tainacan\\Metadata_Types\\GeoJSON'
+                    ) {
+                        this.parseGeoJsonValue(selectedItemMetadatum.value).forEach((feature) => {
+                            const bounds = this.getFeatureBounds(feature);
+                            if (!bounds)
+                                return;
+                            const center = bounds.getCenter();
+                            locations.push({
+                                item: item,
+                                feature,
+                                bounds,
+                                location: latLng(center.lat, center.lng),
+                                isPoint: ['Point', 'MultiPoint'].includes(feature?.geometry?.type)
+                            });
                         });
                     }
                     
                 }   
             }
-            return locations;
+            return locations.map((location, index) => ({ ...location, locationIndex: index }));
+        },
+        pointLocations() {
+            return this.itemsLocations.filter((location) => location.isPoint);
+        },
+        nonPointGeoJsonCollection() {
+            return {
+                type: 'FeatureCollection',
+                features: this.itemsLocations
+                    .filter((location) => !location.isPoint && location.feature)
+                    .map((location) => ({
+                        ...location.feature,
+                        properties: {
+                            ...(location.feature.properties || {}),
+                            __tainacan_location_index: location.locationIndex
+                        }
+                    }))
+            };
+        },
+        nonPointGeoJsonOptions() {
+            return {
+                bubblingMouseEvents: false,
+                onEachFeature: (feature, layer) => {
+                    const locationIndex = Number(feature.properties?.__tainacan_location_index);
+                    if (!isNaN(locationIndex)) {
+                        layer.on('click', (event) => {
+                            event?.originalEvent?.preventDefault?.();
+                            event?.originalEvent?.stopPropagation?.();
+                            this.showItemByLocation(locationIndex);
+                        });
+                    }
+                }
+            };
+        },
+        nonPointGeoJsonStyle() {
+            return (feature) => {
+                const locationIndex = Number(feature.properties?.__tainacan_location_index);
+                const selected = this.selectedMarkerIndexes.includes(locationIndex);
+                const hasSelection = this.selectedMarkerIndexes.length > 0;
+                const location = this.itemsLocations[locationIndex];
+                return {
+                    color: selected ? '#5f3dc4' : '#3273dc',
+                    weight: selected ? 4 : 3,
+                    fillOpacity: selected ? 0.2 : 0.12,
+                    opacity: hasSelection && !selected ? 0.35 : 1.0,
+                    dashArray: location?.feature?.geometry?.type?.includes('Line') ? '6 4' : null
+                };
+            };
         },
         geocoordinateMetadata() {
             let geoMetadata = {};
 
             this.displayedMetadata.forEach((aMetadatum) => {
 
-                if ( aMetadatum['display'] && aMetadatum['metadata_type'] == 'Tainacan\\Metadata_Types\\GeoCoordinate' )
+                if ( aMetadatum['display'] &&
+                    (aMetadatum['metadata_type'] == 'Tainacan\\Metadata_Types\\GeoCoordinate' || aMetadatum['metadata_type'] == 'Tainacan\\Metadata_Types\\GeoJSON')
+                )
                     geoMetadata[aMetadatum.id] = aMetadatum;
                 
                 if ( aMetadatum['display'] && aMetadatum['metadata_type'] == 'Tainacan\\Metadata_Types\\Compound' &&
                     aMetadatum['metadata_type_options']['children_objects'] && aMetadatum['metadata_type_options']['children_objects'].length
                 ) {
                     for ( let i = 0; i < aMetadatum['metadata_type_options']['children_objects'].length; i++ )
-                        if ( aMetadatum['metadata_type_options']['children_objects'][i]['metadata_type'] == 'Tainacan\\Metadata_Types\\GeoCoordinate' ) {
+                        if ( ['Tainacan\\Metadata_Types\\GeoCoordinate', 'Tainacan\\Metadata_Types\\GeoJSON'].includes(aMetadatum['metadata_type_options']['children_objects'][i]['metadata_type']) ) {
                             let childMetadatum = JSON.parse(JSON.stringify(aMetadatum['metadata_type_options']['children_objects'][i]));
                             childMetadatum.name = childMetadatum.name + ' (' + aMetadatum.name + ')';
                             geoMetadata[aMetadatum.id] = childMetadatum;
@@ -576,6 +670,29 @@ export default {
         }
     },
     methods: {
+        parseGeoJsonValue(rawValue) {
+            try {
+                const parsed = JSON.parse(rawValue);
+                if (parsed?.type == 'FeatureCollection' && Array.isArray(parsed.features))
+                    return parsed.features.filter((feature) => feature?.type == 'Feature' && feature.geometry);
+                if (parsed?.type == 'Feature' && parsed.geometry)
+                    return [parsed];
+                if (parsed?.type)
+                    return [{ type: 'Feature', geometry: parsed, properties: {} }];
+            } catch (error) {
+                return [];
+            }
+            return [];
+        },
+        getFeatureBounds(feature) {
+            try {
+                const layer = geoJSON(feature);
+                const bounds = layer.getBounds();
+                return bounds?.isValid() ? bounds : null;
+            } catch (error) {
+                return null;
+            }
+        },
         onChangeSelectedGeocoordinateMetadatum(id) {
             // Setting default geocoordinate metadatum for map view mode
             const prefsGeocoordinateMetadatum = !this.isRepositoryLevel ? 'map_view_mode_selected_geocoordinate_metadatum_' + this.collectionId : 'map_view_mode_selected_geocoordinate_metadatum';
@@ -660,47 +777,6 @@ export default {
         justify-content: center;
         height: 1.5rem;
         width: 1.5rem;
-    }
-    #tainacan-select-geocoordinate-metatum select {
-        -moz-appearance: none;
-        -webkit-appearance: none;
-        align-items: center;
-        border: 1px solid transparent;
-        border-radius: 4px;
-        box-shadow: none;
-    }
-    #tainacan-select-geocoordinate-metatum .select:not(.is-loading)::after {
-        border: 3px solid transparent;
-        border-radius: 2px;
-        border-right: 0;
-        border-top: 0;
-        content: " ";
-        display: block;
-        height: 0.625em;
-        margin-top: -0.4375em;
-        pointer-events: none;
-        position: absolute;
-        top: 50%;
-        transform: rotate(-45deg);
-        transform-origin: center;
-        width: 0.625em;
-        content: "arrowdown" !important;      /* fallback: always show arrow */
-        content: "arrowdown" / "" !important; /* where supported: show arrow, expose "" to a11y */
-        font: normal normal normal 20px/1 "TainacanIcons";
-            font-size: 20px;
-            line-height: 1;
-        border: none !important;
-        transform: none !important;
-        right: 10px !important;
-        color: var(--tainacan-secondary) !important;
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        margin-top: -0.275em !important;
-        text-transform: none !important;
-        letter-spacing: normal !important;
-        font-size: 1.2em;
-        line-height: 1.5em;
     }
 </style>
 

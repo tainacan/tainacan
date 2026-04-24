@@ -1843,21 +1843,26 @@
                     <l-tile-layer 
                             :url="mapTileUrl" 
                             :attribution="mapTileAttribution" />
+                    <l-geo-json
+                            :key="'non-points-' + mapSelectedItemId + '-' + selectedMarkerIndexes.join('-')"
+                            :geojson="nonPointGeoJsonCollection"
+                            :options-style="nonPointGeoJsonStyle"
+                            :options="nonPointGeoJsonOptions" />
                     <l-marker 
-                            v-for="(itemLocation, index) of itemsLocations"
-                            :key="index"
-                            :lat-lng="itemLocation.location"
-                            :opacity="(mapSelectedItemId && itemLocation.item.id != mapSelectedItemId) ? 0.25 : 1.0"
-                            @click="showItemByLocation(index)">
+                            v-for="pointLocation of pointLocations"
+                            :key="pointLocation.locationIndex"
+                            :lat-lng="pointLocation.location"
+                            :opacity="(mapSelectedItemId && pointLocation.item.id != mapSelectedItemId) ? 0.25 : 1.0"
+                            @click="showItemByLocation(pointLocation.locationIndex)">
                         <l-icon 
                                 :icon-retina-url="mapIconRetinaUrl"
                                 :icon-url="mapIconUrl"
                                 :shadow-url="mapIconShadowUrl"
-                                :icon-size="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [25, 41] : [16, 28]"
-                                :shadow-size="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [41, 41] : [28, 28]"
-                                :icon-anchor="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [12, 41] : [8, 28]"
-                                :tooltip-anchor="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [16, -28] : [8, -21]"
-                                :popup-anchor="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [1, -34] : [1, -25]" />
+                                :icon-size="(pointLocation.item.id == hoveredMapCardItemId || pointLocation.item.id == mapSelectedItemId) ? [25, 41] : [16, 28]"
+                                :shadow-size="(pointLocation.item.id == hoveredMapCardItemId || pointLocation.item.id == mapSelectedItemId) ? [41, 41] : [28, 28]"
+                                :icon-anchor="(pointLocation.item.id == hoveredMapCardItemId || pointLocation.item.id == mapSelectedItemId) ? [12, 41] : [8, 28]"
+                                :tooltip-anchor="(pointLocation.item.id == hoveredMapCardItemId || pointLocation.item.id == mapSelectedItemId) ? [16, -28] : [8, -21]"
+                                :popup-anchor="(pointLocation.item.id == hoveredMapCardItemId || pointLocation.item.id == mapSelectedItemId) ? [1, -34] : [1, -25]" />
                         <l-tooltip>
                             <div
                                     v-for="(column, columnIndex) in displayedMetadata"
@@ -1865,10 +1870,10 @@
                                 <div 
                                         v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
                                         style="font-weight: bold;"
-                                        v-html="(itemLocation.item.metadata != undefined ? renderMetadata(itemLocation.item.metadata, column) : '') + getMultivalueIndicator(itemLocation)" />
+                                        v-html="(pointLocation.item.metadata != undefined ? renderMetadata(pointLocation.item.metadata, column) : '') + getMultivalueIndicator(pointLocation)" />
                                 <div 
                                         v-if="collectionId != undefined && column.display && column.metadata_type == 'Tainacan\\Metadata_Types\\Compound' && selectedGeocoordinateMetadatum.parent == column.id"
-                                        v-html="itemLocation.item.metadata != undefined ? renderMetadata(itemLocation.item.metadata, column, itemLocation.multivalueIndex) : ''" />
+                                        v-html="pointLocation.item.metadata != undefined ? renderMetadata(pointLocation.item.metadata, column, pointLocation.multivalueIndex) : ''" />
                             </div>
                         </l-tooltip>
                     </l-marker>
@@ -2170,7 +2175,8 @@
                                                             column.display && column.slug != 'thumbnail' &&
                                                             column.metadata_type_object != undefined && 
                                                             (column.metadata_type_object.related_mapped_prop != 'title') &&
-                                                            (column.metadata_type != 'Tainacan\\Metadata_Types\\GeoCoordinate')"
+                                                            (column.metadata_type != 'Tainacan\\Metadata_Types\\GeoCoordinate') &&
+                                                            (column.metadata_type != 'Tainacan\\Metadata_Types\\GeoJSON')"
                                                         :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }">
                                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                                     <p
@@ -2398,9 +2404,9 @@ import CustomDialog from '../other/custom-dialog.vue';
 import Masonry from 'masonry-layout';
 import { dateInter } from "../../js/mixins";
 
-import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl, LControlZoom } from '@vue-leaflet/vue-leaflet';
+import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl, LControlZoom, LGeoJson } from '@vue-leaflet/vue-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { latLng } from 'leaflet';
+import { latLng, geoJSON } from 'leaflet';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
@@ -2415,7 +2421,8 @@ export default {
         LTileLayer,
         LMarker,
         LControl,
-        LControlZoom
+        LControlZoom,
+        LGeoJson
     },
     mixins: [ dateInter ],
     props: {
@@ -2554,48 +2561,135 @@ export default {
                     }
 
                     // Then check if has a single or multi value
+                    const selectedType = this.selectedGeocoordinateMetadatum['metadata_type'];
                     if (
                         selectedItemMetadatum &&
                         Array.isArray(selectedItemMetadatum.value) 
                     ) {
                         for (let i = 0; i < selectedItemMetadatum.value.length; i++) {
-                            if (selectedItemMetadatum.value[i].split(',').length == 2) {
+                            if (selectedType == 'Tainacan\\Metadata_Types\\GeoCoordinate' && selectedItemMetadatum.value[i].split(',').length == 2) {
                                 locations.push({
                                     item: item,
                                     multivalueIndex: i,
                                     multivalueTotal: selectedItemMetadatum.value.length,
-                                    location: latLng(selectedItemMetadatum.value[i].split(','))
+                                    location: latLng(selectedItemMetadatum.value[i].split(',')),
+                                    isPoint: true
+                                });
+                            } else if (selectedType == 'Tainacan\\Metadata_Types\\GeoJSON') {
+                                this.parseGeoJsonValue(selectedItemMetadatum.value[i]).forEach((feature) => {
+                                    const bounds = this.getFeatureBounds(feature);
+                                    if (!bounds)
+                                        return;
+                                    const center = bounds.getCenter();
+                                    locations.push({
+                                        item: item,
+                                        multivalueIndex: i,
+                                        multivalueTotal: selectedItemMetadatum.value.length,
+                                        feature,
+                                        bounds,
+                                        location: latLng(center.lat, center.lng),
+                                        isPoint: ['Point', 'MultiPoint'].includes(feature?.geometry?.type)
+                                    });
                                 });
                             }
                         }
                     } else if (
                         selectedItemMetadatum &&
                         typeof selectedItemMetadatum.value.split == 'function' &&
+                        selectedType == 'Tainacan\\Metadata_Types\\GeoCoordinate' &&
                         selectedItemMetadatum.value.split(',').length == 2
                     ) {
                         locations.push({
                             item: item,
-                            location: latLng(selectedItemMetadatum.value.split(','))
+                            location: latLng(selectedItemMetadatum.value.split(',')),
+                            isPoint: true
+                        });
+                    } else if (
+                        selectedItemMetadatum &&
+                        typeof selectedItemMetadatum.value == 'string' &&
+                        selectedType == 'Tainacan\\Metadata_Types\\GeoJSON'
+                    ) {
+                        this.parseGeoJsonValue(selectedItemMetadatum.value).forEach((feature) => {
+                            const bounds = this.getFeatureBounds(feature);
+                            if (!bounds)
+                                return;
+                            const center = bounds.getCenter();
+                            locations.push({
+                                item: item,
+                                feature,
+                                bounds,
+                                location: latLng(center.lat, center.lng),
+                                isPoint: ['Point', 'MultiPoint'].includes(feature?.geometry?.type)
+                            });
                         });
                     }
                     
                 }   
             }
-            return locations;
+            return locations.map((location, index) => ({ ...location, locationIndex: index }));
+        },
+        pointLocations() {
+            return this.itemsLocations.filter((location) => location.isPoint);
+        },
+        nonPointGeoJsonCollection() {
+            return {
+                type: 'FeatureCollection',
+                features: this.itemsLocations
+                    .filter((location) => !location.isPoint && location.feature)
+                    .map((location) => ({
+                        ...location.feature,
+                        properties: {
+                            ...(location.feature.properties || {}),
+                            __tainacan_location_index: location.locationIndex
+                        }
+                    }))
+            };
+        },
+        nonPointGeoJsonOptions() {
+            return {
+                bubblingMouseEvents: false,
+                onEachFeature: (feature, layer) => {
+                    const locationIndex = Number(feature.properties?.__tainacan_location_index);
+                    if (!isNaN(locationIndex)) {
+                        layer.on('click', (event) => {
+                            event?.originalEvent?.preventDefault?.();
+                            event?.originalEvent?.stopPropagation?.();
+                            this.showItemByLocation(locationIndex);
+                        });
+                    }
+                }
+            };
+        },
+        nonPointGeoJsonStyle() {
+            return (feature) => {
+                const locationIndex = Number(feature.properties?.__tainacan_location_index);
+                const selected = this.selectedMarkerIndexes.includes(locationIndex);
+                const hasSelection = this.selectedMarkerIndexes.length > 0;
+                const location = this.itemsLocations[locationIndex];
+                return {
+                    color: selected ? '#5f3dc4' : '#3273dc',
+                    weight: selected ? 4 : 3,
+                    fillOpacity: selected ? 0.2 : 0.12,
+                    opacity: hasSelection && !selected ? 0.35 : 1.0,
+                    dashArray: location?.feature?.geometry?.type?.includes('Line') ? '6 4' : null
+                };
+            };
         },
         geocoordinateMetadata() {
             let geoMetadata = {};
 
             this.displayedMetadata.forEach((aMetadatum) => {
 
-                if ( aMetadatum['display'] && aMetadatum['metadata_type'] == 'Tainacan\\Metadata_Types\\GeoCoordinate' )
+                if ( aMetadatum['display'] &&
+                    (aMetadatum['metadata_type'] == 'Tainacan\\Metadata_Types\\GeoCoordinate' || aMetadatum['metadata_type'] == 'Tainacan\\Metadata_Types\\GeoJSON')
+                )
                     geoMetadata[aMetadatum.id] = aMetadatum;
                 
                 if ( aMetadatum['display'] && aMetadatum['metadata_type'] == 'Tainacan\\Metadata_Types\\Compound' &&
                     aMetadatum['metadata_type_options']['children_objects'] && aMetadatum['metadata_type_options']['children_objects'].length
                 ) {
                     for ( let i = 0; i < aMetadatum['metadata_type_options']['children_objects'].length; i++ )
-                        if ( aMetadatum['metadata_type_options']['children_objects'][i]['metadata_type'] == 'Tainacan\\Metadata_Types\\GeoCoordinate' ) {
+                        if ( ['Tainacan\\Metadata_Types\\GeoCoordinate', 'Tainacan\\Metadata_Types\\GeoJSON'].includes(aMetadatum['metadata_type_options']['children_objects'][i]['metadata_type']) ) {
                             let childMetadatum = JSON.parse(JSON.stringify(aMetadatum['metadata_type_options']['children_objects'][i]));
                             childMetadatum.name = childMetadatum.name + ' (' + aMetadatum.name + ')';
                             geoMetadata[aMetadatum.id] = childMetadatum;
@@ -3121,6 +3215,29 @@ export default {
         onMapReady() {
             if ( LeafletActiveArea && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].leafletObject )
                 this.$refs['tainacan-admin-view-mode-map'].leafletObject.setActiveArea('leaflet-active-area');
+        },
+        parseGeoJsonValue(rawValue) {
+            try {
+                const parsed = JSON.parse(rawValue);
+                if (parsed?.type == 'FeatureCollection' && Array.isArray(parsed.features))
+                    return parsed.features.filter((feature) => feature?.type == 'Feature' && feature.geometry);
+                if (parsed?.type == 'Feature' && parsed.geometry)
+                    return [parsed];
+                if (parsed?.type)
+                    return [{ type: 'Feature', geometry: parsed, properties: {} }];
+            } catch (error) {
+                return [];
+            }
+            return [];
+        },
+        getFeatureBounds(feature) {
+            try {
+                const layer = geoJSON(feature);
+                const bounds = layer.getBounds();
+                return bounds?.isValid() ? bounds : null;
+            } catch (error) {
+                return null;
+            }
         },
         clearSelectedMarkers() {
             this.mapSelectedItemId = false;

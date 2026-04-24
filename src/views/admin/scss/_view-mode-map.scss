@@ -74,6 +74,52 @@
                     background-color: var(--tainacan-input-background-color);
                 }
             }
+
+            .tainacan-select-map-metadatum {
+                :deep(select) {
+                    appearance: none;
+                    -moz-appearance: none;
+                    -webkit-appearance: none;
+                    align-items: center;
+                    border: 1px solid transparent;
+                    border-radius: 4px;
+                    box-shadow: none;
+                }
+
+                .select:not(.is-loading)::after {
+                    border: 3px solid transparent;
+                    border-radius: 2px;
+                    border-right: 0;
+                    border-top: 0;
+                    content: " ";
+                    display: block;
+                    height: 0.625em;
+                    margin-top: -0.4375em;
+                    pointer-events: none;
+                    position: absolute;
+                    top: 50%;
+                    transform: rotate(-45deg);
+                    transform-origin: center;
+                    width: 0.625em;
+                    content: "arrowdown" !important;      /* fallback: always show arrow */
+                    content: "arrowdown" / "" !important; /* where supported: show arrow, expose "" to a11y */
+                    font: normal normal normal 20px/1 "TainacanIcons";
+                    font-size: 20px;
+                    line-height: 1;
+                    border: none !important;
+                    transform: none !important;
+                    right: 10px !important;
+                    color: var(--tainacan-secondary) !important;
+                    display: flex !important;
+                    align-items: center;
+                    justify-content: center;
+                    margin-top: -0.275em !important;
+                    text-transform: none !important;
+                    letter-spacing: normal !important;
+                    font-size: 1.2em;
+                    line-height: 1.5em;
+                }
+            }
         }
     }
 
@@ -89,6 +135,7 @@
         font-size: 1rem;
         padding-top: 10px;
         padding-bottom: 24px;
+        margin-inline-start: 10px !important;
 
         &>ul {
             width: 100%;

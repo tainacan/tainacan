@@ -40,32 +40,43 @@ const mapObserver = new IntersectionObserver((entries) => {
     });
 }, mapObserverOptions);
 
-const parseGeoJsonAttribute = (element) => {
-    if (!element || !element.hasAttribute('data-geojson'))
+const normalizeGeoJson = (parsed) => {
+    if (!parsed || !parsed.type)
+        return null;
+
+    if (parsed.type === 'FeatureCollection' && Array.isArray(parsed.features))
+        return parsed;
+
+    if (parsed.type === 'Feature')
+        return { type: 'FeatureCollection', features: [parsed] };
+
+    return null;
+};
+
+const parseGeoJsonFromString = (rawGeoJson) => {
+    if (!rawGeoJson || typeof rawGeoJson !== 'string')
         return null;
 
     try {
-        const parsed = JSON.parse(element.getAttribute('data-geojson'));
-        if (!parsed || !parsed.type)
-            return null;
-
-        if (parsed.type === 'FeatureCollection' && Array.isArray(parsed.features))
-            return parsed;
-
-        if (parsed.type === 'Feature')
-            return { type: 'FeatureCollection', features: [parsed] };
+        return normalizeGeoJson(JSON.parse(rawGeoJson));
     } catch (error) {
         return null;
     }
+};
 
-    return null;
+const parseGeoJsonSource = (element) => {
+    if (!element)
+        return null;
+
+    const fallbackElement = element.querySelector('.tainacan-geojson-fallback-text');
+    return parseGeoJsonFromString(fallbackElement?.textContent?.trim());
 };
 
 export default (element) => {
     if (!element || !element.id)
         return;
 
-    const geojson = parseGeoJsonAttribute(element);
+    const geojson = parseGeoJsonSource(element);
     if (!geojson || !geojson.features || !geojson.features.length)
         return;
 

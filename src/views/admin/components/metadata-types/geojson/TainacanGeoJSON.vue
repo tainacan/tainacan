@@ -1,7 +1,11 @@
 <template>
     <div
             :id="itemMetadatumIdentifier"
-            class="tainacan-leaflet-map-container tainacan-geojson-map-container">
+            class="tainacan-leaflet-map-container">
+
+        <div
+                v-show="!manualJsonEditorOpen"
+                class="geojson-map-slot">
         <l-map
                 :id="'map--' + itemMetadatumIdentifier"
                 :ref="'map--' + itemMetadatumIdentifier"
@@ -10,200 +14,157 @@
                 :max-zoom="maxZoom"
                 :center="[initialLatitude, initialLongitude]"
                 :zoom-animation="true"
-                :options="{
-                    name: 'map--' + itemMetadatumIdentifier,
-                    trackResize: false,
-                    worldCopyJump: true
-                }"
+                :options="{ name: 'map--' + itemMetadatumIdentifier, trackResize: false, worldCopyJump: true }"
                 @ready="onMapReady"
                 @click="onMapClick">
-            <l-tile-layer
-                    :url="mapProvider"
-                    :attribution="attribution" />
-            <l-geo-json
-                    :key="geoJsonLayerKey"
-                    :geojson="renderedGeoJson"
-                    :options="geoJsonOptions"
-                    :options-style="geoJsonStyle" />
+            <l-tile-layer :url="mapProvider" :attribution="attribution" />
+
+            <l-geo-json :key="geoJsonLayerKey" :geojson="renderedGeoJson" :options="geoJsonOptions" :options-style="geoJsonStyle" />
+
             <l-polyline
-                    v-if="drawingPreviewLineCoordinates.length > 1 && drawingMode === 'LineString'"
-                    :lat-lngs="drawingPreviewLineCoordinates"
+                    v-if="mode === 'creating-line' && draftCoordinates.length > 1"
+                    :lat-lngs="draftLatLngs"
                     :color="'#5f3dc4'"
                     :weight="3"
                     :dash-array="'6 6'" />
             <l-polyline
-                    v-if="drawingPreviewLineCoordinates.length > 1 && drawingMode === 'Polygon'"
-                    :lat-lngs="drawingPreviewLineCoordinates"
+                    v-if="mode === 'creating-polygon' && draftCoordinates.length > 1"
+                    :lat-lngs="draftLatLngs"
                     :color="'#5f3dc4'"
                     :weight="3"
                     :dash-array="'6 6'" />
             <l-polygon
-                    v-if="drawingPreviewLineCoordinates.length > 2 && drawingMode === 'Polygon'"
-                    :lat-lngs="drawingPreviewPolygonCoordinates"
+                    v-if="mode === 'creating-polygon' && draftCoordinates.length > 2"
+                    :lat-lngs="draftPolygonLatLngs"
                     :color="'#5f3dc4'"
                     :weight="3"
                     :fill-opacity="0.12"
                     :dash-array="'6 6'" />
+
             <l-marker
-                    v-for="(drawingVertex, index) of drawingPreviewVertexMarkers"
-                    :key="'drawing-vertex-' + index"
-                    :lat-lng="drawingVertex"
-                    :icon="drawingVertexIcon"
-                    :opacity="0.85" />
+                    v-for="(draftVertex, index) of draftLatLngs"
+                    :key="'geojson-draft-' + mode + '-' + index"
+                    :lat-lng="draftVertex"
+                    :icon="draftVertexIcon" />
+
             <l-marker
-                    v-for="(vertex, index) of editableVertices"
-                    :key="'vertex-' + index"
+                    v-if="isEditingPoint && selectedPointLatLng"
+                    :key="'geojson-point-' + selectedFeatureIndex"
+                    :lat-lng="selectedPointLatLng"
+                    :draggable="true"
+                    @click="onPointMarkerClick"
+                    @dragend="onPointDragEnd" />
+
+            <l-marker
+                    v-for="(vertex, index) of editableRealVertices"
+                    :key="'geojson-real-' + selectedFeatureIndex + '-' + index"
                     :lat-lng="[vertex[1], vertex[0]]"
                     :icon="editableVertexIcon"
                     :draggable="true"
-                    @click="($event) => onEditableVertexClick($event, index)"
-                    @dragend="($event) => onVertexDrag($event, index)" />
-            <l-control position="bottomleft">
-                <div class="geojson-input-panel draw-mode-panel">
-                    <b-button
-                            :class="['icon-only-button', { 'is-active-drawing-mode': drawingMode === 'Point' }]"
+                    @click="($event) => onRealVertexClick($event, index)"
+                    @drag="($event) => onRealVertexDragMove($event, index)"
+                    @dragend="($event) => onRealVertexDrag($event, index)" />
+
+            <l-marker
+                    v-for="placeholder of editablePlaceholderVertices"
+                    :key="'geojson-ph-' + selectedFeatureIndex + '-' + placeholder.insertAfterIndex"
+                    :lat-lng="[placeholder.coordinate[1], placeholder.coordinate[0]]"
+                    :icon="placeholderVertexIcon"
+                    :opacity="0.5"
+                    @click="($event) => onPlaceholderClick($event, placeholder.insertAfterIndex)" />
+
+            <l-control
+                    v-if="isEditingFeature"
+                    position="topright"
+                    class="leaflet-bar">
+                <div class="geojson-editing-controls map-panel">
+                    <div
+                            v-if="isEditingPoint"
+                            class="geojson-point-inputs">
+                        <b-input expanded :placeholder="-14.408656999999" type="text" :step="0.000000000001" :model-value="pointLatitudeInput" @update:model-value="onUpdateFromLatitudeInput" />
+                        <b-input expanded :placeholder="-51.316689999999" type="text" :step="0.000000000001" :model-value="pointLongitudeInput" @update:model-value="onUpdateFromLongitudeInput" />
+                    </div>
+                    <a
+                            class="remove-feature-button"
+                            role="button"
+                            tabindex="0"
                             outlined
-                            :type="drawingMode === 'Point' ? 'is-primary' : ''"
-                            :disabled="!canAddFeature"
-                            :title="!canAddFeature ? 'This metadata is single-valued and already has one geometry' : 'Point'"
-                            aria-label="Point drawing mode"
-                            @click.prevent.stop="setDrawingMode('Point')">
-                        <svg
-                                class="button-icon"
-                                viewBox="0 0 24 24"
-                                aria-hidden="true">
-                            <circle cx="12" cy="12" r="5" />
-                        </svg>
-                        <span class="screen-reader-only">Point</span>
-                    </b-button>
-                    <b-button
-                            :class="['icon-only-button', { 'is-active-drawing-mode': drawingMode === 'LineString' }]"
-                            outlined
-                            :type="drawingMode === 'LineString' ? 'is-primary' : ''"
-                            :disabled="!canAddFeature"
-                            :title="!canAddFeature ? 'This metadata is single-valued and already has one geometry' : 'Line'"
-                            aria-label="Line drawing mode"
-                            @click.prevent.stop="setDrawingMode('LineString')">
-                        <svg
-                                class="button-icon"
-                                viewBox="0 0 24 24"
-                                aria-hidden="true">
-                            <line x1="5" y1="17" x2="19" y2="7" />
-                            <circle cx="5" cy="17" r="2.2" />
-                            <circle cx="19" cy="7" r="2.2" />
-                        </svg>
-                        <span class="screen-reader-only">Line</span>
-                    </b-button>
-                    <b-button
-                            :class="['icon-only-button', { 'is-active-drawing-mode': drawingMode === 'Polygon' }]"
-                            outlined
-                            :type="drawingMode === 'Polygon' ? 'is-primary' : ''"
-                            :disabled="!canAddFeature"
-                            :title="!canAddFeature ? 'This metadata is single-valued and already has one geometry' : 'Polygon'"
-                            aria-label="Polygon drawing mode"
-                            @click.prevent.stop="setDrawingMode('Polygon')">
-                        <svg
-                                class="button-icon"
-                                viewBox="0 0 24 24"
-                                aria-hidden="true">
-                            <polygon points="6,16 9,7 18,6 20,13 13,18" />
-                        </svg>
-                        <span class="screen-reader-only">Polygon</span>
-                    </b-button>
-                </div>
-            </l-control>
-            <l-control position="topright">
-                <div class="geojson-input-panel actions-panel">
-                    <b-button
-                            v-if="isDrawingModeRequiringFinish"
-                            class="icon-only-button"
-                            outlined
-                            :disabled="!canFinishCurrentDrawing"
-                            :title="$i18n.get('save')"
-                            :aria-label="$i18n.get('save')"
-                            @click.prevent.stop="finishDrawing">
-                        <svg
-                                class="button-icon"
-                                viewBox="0 0 24 24"
-                                aria-hidden="true">
-                            <polyline points="4,13 9,18 20,7" />
-                        </svg>
-                        <span class="screen-reader-only">{{ $i18n.get('save') }}</span>
-                    </b-button>
-                    <b-button
-                            v-if="isDrawingModeRequiringFinish"
-                            class="icon-only-button"
-                            outlined
-                            :disabled="!canUndoDrawingCoordinate"
-                            title="Undo last vertex"
-                            aria-label="Undo last vertex"
-                            @click.prevent.stop="undoDrawingCoordinate">
-                        <svg
-                                class="button-icon"
-                                viewBox="0 0 24 24"
-                                aria-hidden="true">
-                            <polyline points="9,7 4,12 9,17" />
-                            <path d="M20 18c0-4.2-3.4-7.5-7.5-7.5H4" />
-                        </svg>
-                        <span class="screen-reader-only">Undo last vertex</span>
-                    </b-button>
-                    <b-button
-                            class="icon-only-button"
-                            outlined
-                            :disabled="selectedFeatureIndex < 0"
-                            :type="isEditingVertices ? 'is-primary' : ''"
-                            title="Toggle vertex edit mode"
-                            aria-label="Toggle vertex edit mode"
-                            @click.prevent.stop="toggleVertexEditing">
-                        <span class="icon is-small" aria-hidden="true">
-                            <i class="tainacan-icon tainacan-icon-edit" />
-                        </span>
-                        <span class="screen-reader-only">Toggle vertex edit mode</span>
-                    </b-button>
-                    <b-button
-                            class="icon-only-button"
-                            outlined
-                            :disabled="!canRemoveSelectedVertex"
-                            title="Remove selected vertex"
-                            aria-label="Remove selected vertex"
-                            @click.prevent.stop="removeSelectedVertex">
-                        <span class="icon is-small" aria-hidden="true">
-                            <i class="tainacan-icon tainacan-icon-cancel" />
-                        </span>
-                        <span class="screen-reader-only">Remove selected vertex</span>
-                    </b-button>
-                    <b-button
-                            class="icon-only-button"
-                            outlined
-                            :disabled="selectedFeatureIndex < 0"
-                            :title="$i18n.get('label_remove_value')"
-                            :aria-label="$i18n.get('label_remove_value')"
+                            :title="removeSelectedFeatureLabel"
+                            :aria-label="removeSelectedFeatureLabel"
                             @click.prevent.stop="removeSelectedFeature">
-                        <span class="icon is-small" aria-hidden="true">
-                            <i class="tainacan-icon tainacan-icon-delete" />
-                        </span>
-                        <span class="screen-reader-only">{{ $i18n.get('label_remove_value') }}</span>
-                    </b-button>
-                    <b-button
-                            class="icon-only-button"
-                            outlined
-                            :title="$i18n.get('label_clean')"
-                            :aria-label="$i18n.get('label_clean')"
-                            @click.prevent.stop="clearAllFeatures">
-                        <span class="icon is-small" aria-hidden="true">
-                            <i class="tainacan-icon tainacan-icon-close" />
-                        </span>
-                        <span class="screen-reader-only">{{ $i18n.get('label_clean') }}</span>
-                    </b-button>
+                        <span class="icon is-small"><i class="tainacan-icon tainacan-icon-remove" /></span>
+                        <span>{{ removeSelectedFeatureLabel }}</span>
+                    </a>
                 </div>
             </l-control>
         </l-map>
+        </div>
+
+        <div
+                v-show="manualJsonEditorOpen"
+                class="geojson-manual-editor">
+            <b-field
+                    :message="manualGeoJsonError || manualGeoJsonWarning"
+                    :type="manualGeoJsonError ? 'is-danger' : (manualGeoJsonWarning ? 'is-warning' : '')">
+                <b-input
+                        type="textarea"
+                        class="geojson-manual-editor__textarea"
+                        rows="14"
+                        :disabled="disabled"
+                        :model-value="manualGeoJsonText"
+                        @update:model-value="onManualGeoJsonTextInput"
+                        @blur="onManualGeoJsonBlur" />
+            </b-field>
+        </div>
+
+        <div class="geojson-toolbar">
+            <div
+                    v-if="showAddButtons && !manualJsonEditorOpen"
+                    class="geojson-external-controls">
+                <a class="add-link" :class="{ 'is-active-mode': mode === 'creating-point' }" role="button" tabindex="0" @click.prevent="startPointCreation" @keydown.enter.prevent="startPointCreation" @keydown.space.prevent="startPointCreation">
+                    <span class="icon is-small"><i class="tainacan-icon has-text-secondary tainacan-icon-add" /></span>
+                    &nbsp;{{ $i18n.get('label_add_point') }}
+                </a>
+                <a class="add-link" :class="{ 'is-active-mode': mode === 'creating-line' }" role="button" tabindex="0" @click.prevent="startLineCreation" @keydown.enter.prevent="startLineCreation" @keydown.space.prevent="startLineCreation">
+                    <span class="icon is-small"><i class="tainacan-icon has-text-secondary tainacan-icon-add" /></span>
+                    &nbsp;{{ $i18n.get('label_add_line') }}
+                </a>
+                <a class="add-link" :class="{ 'is-active-mode': mode === 'creating-polygon' }" role="button" tabindex="0" @click.prevent="startPolygonCreation" @keydown.enter.prevent="startPolygonCreation" @keydown.space.prevent="startPolygonCreation">
+                    <span class="icon is-small"><i class="tainacan-icon has-text-secondary tainacan-icon-add" /></span>
+                    &nbsp;{{ $i18n.get('label_add_polygon') }}
+                </a>
+            </div>
+            <a
+                    v-if="!disabled"
+                    class="add-link geojson-toolbar__toggle"
+                    role="button"
+                    tabindex="0"
+                    @click.prevent="toggleManualGeoJsonEditor"
+                    @keydown.enter.prevent="toggleManualGeoJsonEditor"
+                    @keydown.space.prevent="toggleManualGeoJsonEditor">
+                <span class="icon">
+                    <i 
+                            v-if="!manualJsonEditorOpen"
+                            class="tainacan-icon has-text-secondary tainacan-icon-edit tainacan-icon-1-125em" />
+                    <i
+                            v-else
+                            class="tainacan-icon tainacan-icon-svg"
+                            style="display: flex;">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg" 
+                            viewBox="0 0 24 24">
+                        <path d="M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z" />
+                    </svg>
+                </i>
+                </span>
+                &nbsp;{{ manualJsonEditorOpen ? $i18n.get('label_geojson_back_to_map') : $i18n.get('label_geojson_edit_as_text') }}
+            </a>
+        </div>
     </div>
 </template>
 
 <script>
     import { nextTick } from 'vue';
-
     import { LMap, LTileLayer, LControl, LGeoJson, LMarker, LPolyline, LPolygon } from '@vue-leaflet/vue-leaflet';
     import 'leaflet/dist/leaflet.css';
     import * as Leaflet from 'leaflet';
@@ -212,22 +173,10 @@
     import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
     delete Leaflet.Icon.Default.prototype._getIconUrl;
-    Leaflet.Icon.Default.mergeOptions({
-        iconRetinaUrl: iconRetinaUrl,
-        iconUrl: iconUrl,
-        shadowUrl: shadowUrl
-    });
+    Leaflet.Icon.Default.mergeOptions({ iconRetinaUrl, iconUrl, shadowUrl });
 
     export default {
-        components: {
-            LMap,
-            LTileLayer,
-            LControl,
-            LGeoJson,
-            LMarker,
-            LPolyline,
-            LPolygon
-        },
+        components: { LMap, LTileLayer, LControl, LGeoJson, LMarker, LPolyline, LPolygon },
         props: {
             itemMetadatum: Object,
             value: [String, Array],
@@ -241,70 +190,93 @@
                 mapResizeObserver: null,
                 mapObject: null,
                 geoJsonLayerKey: 0,
+                mode: 'select',
                 selectedFeatureIndex: -1,
-                selectedEditableVertexIndex: -1,
-                isEditingVertices: false,
-                drawingMode: 'Point',
-                drawingCoordinates: [],
+                draftCoordinates: [],
+                pointLatitudeInput: -14.4086569,
+                pointLongitudeInput: -51.31668,
                 internalFeatureCollection: {
                     type: 'FeatureCollection',
                     features: []
-                }
+                },
+                suppressEditingExitUntil: 0,
+                internalGeometryRevision: 0,
+                manualJsonEditorOpen: false,
+                manualGeoJsonText: '',
+                manualGeoJsonError: '',
+                manualGeoJsonWarning: '',
+                manualGeoJsonValidationLimitBytes: 1048576
             };
         },
         computed: {
             mapProvider() {
-                return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.map_provider ? this.itemMetadatum.metadatum.metadata_type_options.map_provider : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+                return this.itemMetadatum?.metadatum?.metadata_type_options?.map_provider || 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
             },
             initialZoom() {
-                return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.initial_zoom ? Number(this.itemMetadatum.metadatum.metadata_type_options.initial_zoom) : 5;
+                return Number(this.itemMetadatum?.metadatum?.metadata_type_options?.initial_zoom || 5);
             },
             maxZoom() {
-                return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.maximum_zoom ? Number(this.itemMetadatum.metadatum.metadata_type_options.maximum_zoom) : 12;
+                return Number(this.itemMetadatum?.metadatum?.metadata_type_options?.maximum_zoom || 12);
             },
             initialLatitude() {
-                return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.initial_latitude ? Number(this.itemMetadatum.metadatum.metadata_type_options.initial_latitude) : -14.4086569;
+                return Number(this.itemMetadatum?.metadatum?.metadata_type_options?.initial_latitude || -14.4086569);
             },
             initialLongitude() {
-                return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.initial_longitude ? Number(this.itemMetadatum.metadatum.metadata_type_options.initial_longitude) : -51.31668;
+                return Number(this.itemMetadatum?.metadatum?.metadata_type_options?.initial_longitude || -51.31668);
             },
             attribution() {
-                return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.attribution ? this.itemMetadatum.metadatum.metadata_type_options.attribution : '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors';
+                return this.itemMetadatum?.metadatum?.metadata_type_options?.attribution || '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors';
             },
             itemMetadatumIdentifier() {
                 return 'tainacan-item-metadatum_id-' + this.itemMetadatum.metadatum.id + (this.itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + this.itemMetadatum.parent_meta_id) : '');
             },
+            isMultipleMetadata() {
+                return this.itemMetadatum?.metadatum?.multiple === 'yes';
+            },
+            canAddFeature() {
+                return this.isMultipleMetadata || this.internalFeatureCollection.features.length === 0;
+            },
+            showAddButtons() {
+                return this.canAddFeature;
+            },
             renderedGeoJson() {
+                void this.internalGeometryRevision;
+                const hideSelectedPointFromGeoJson = this.mode === 'editing'
+                    && this.selectedFeatureIndex >= 0
+                    && this.selectedGeometry?.type === 'Point';
+                const features = this.internalFeatureCollection.features
+                    .map((feature, index) => ({
+                        ...feature,
+                        properties: { ...(feature.properties || {}), __tainacan_index: index }
+                    }))
+                    .filter((_, index) => !(hideSelectedPointFromGeoJson && index === this.selectedFeatureIndex));
                 return {
                     type: 'FeatureCollection',
-                    features: this.internalFeatureCollection.features.map((feature, index) => ({
-                        ...feature,
-                        properties: {
-                            ...(feature.properties || {}),
-                            __tainacan_index: index
-                        }
-                    }))
+                    features
                 };
             },
             geoJsonOptions() {
                 return {
+                    bubblingMouseEvents: false,
                     pointToLayer: (feature, latlng) => Leaflet.marker(latlng),
                     onEachFeature: (feature, layer) => {
-                        layer.on('click', () => {
-                            const index = Number(feature.properties && feature.properties.__tainacan_index);
-                            if (!isNaN(index)) {
-                                this.selectedFeatureIndex = index;
-                                this.selectedEditableVertexIndex = -1;
-                                this.isEditingVertices = false;
+                        layer.on('click', (event) => {
+                            if (event?.originalEvent) {
+                                event.originalEvent.preventDefault();
+                                event.originalEvent.stopPropagation();
+                                event.originalEvent._stopped = true;
                             }
+                            const index = Number(feature.properties?.__tainacan_index);
+                            if (!isNaN(index))
+                                this.enterEditingMode(index);
                         });
                     }
                 };
             },
             geoJsonStyle() {
                 return (feature) => {
-                    const index = Number(feature.properties && feature.properties.__tainacan_index);
-                    const isSelected = this.selectedFeatureIndex >= 0 && this.selectedFeatureIndex === index;
+                    const index = Number(feature.properties?.__tainacan_index);
+                    const isSelected = this.isEditingFeature && this.selectedFeatureIndex === index;
                     return {
                         color: isSelected ? '#5f3dc4' : '#3273dc',
                         weight: isSelected ? 4 : 3,
@@ -312,106 +284,122 @@
                     };
                 };
             },
-            isDrawingModeRequiringFinish() {
-                return this.drawingMode === 'LineString' || this.drawingMode === 'Polygon';
-            },
-            canFinishCurrentDrawing() {
-                if (this.drawingMode === 'LineString')
-                    return this.drawingCoordinates.length >= 2;
-                if (this.drawingMode === 'Polygon')
-                    return this.drawingCoordinates.length >= 3;
-                return false;
-            },
-            canUndoDrawingCoordinate() {
-                return this.drawingCoordinates.length > 0;
-            },
-            isMultipleMetadata() {
-                return (
-                    this.itemMetadatum &&
-                    this.itemMetadatum.metadatum &&
-                    this.itemMetadatum.metadatum.multiple === 'yes'
-                );
-            },
-            canAddFeature() {
-                return this.isMultipleMetadata || this.internalFeatureCollection.features.length === 0;
-            },
-            selectedFeatureGeometry() {
-                if (this.selectedFeatureIndex < 0 || !this.internalFeatureCollection.features[this.selectedFeatureIndex])
+            selectedFeature() {
+                if (this.selectedFeatureIndex < 0)
                     return null;
-                return this.internalFeatureCollection.features[this.selectedFeatureIndex].geometry || null;
+                return this.internalFeatureCollection.features[this.selectedFeatureIndex] || null;
             },
-            canRemoveSelectedVertex() {
-                if (!this.isEditingVertices || this.selectedEditableVertexIndex < 0 || !this.selectedFeatureGeometry)
-                    return false;
+            selectedGeometry() {
+                return this.selectedFeature?.geometry || null;
+            },
+            isEditingFeature() {
+                return this.mode === 'editing' && this.selectedFeatureIndex >= 0;
+            },
+            isEditingPoint() {
+                return this.isEditingFeature && this.selectedGeometry?.type === 'Point';
+            },
+            isEditingLineOrPolygon() {
+                return this.isEditingFeature && ['LineString', 'Polygon'].includes(this.selectedGeometry?.type);
+            },
+            selectedPointLatLng() {
+                if (!this.isEditingPoint)
+                    return null;
+                return [this.selectedGeometry.coordinates[1], this.selectedGeometry.coordinates[0]];
+            },
+            editableRealVertices() {
+                if (!this.isEditingLineOrPolygon)
+                    return [];
+                if (this.selectedGeometry.type === 'LineString')
+                    return this.selectedGeometry.coordinates;
+                return this.selectedGeometry.coordinates[0].slice(0, -1);
+            },
+            editablePlaceholderVertices() {
+                if (!this.isEditingLineOrPolygon)
+                    return [];
+                const vertices = this.editableRealVertices;
+                if (vertices.length < 2)
+                    return [];
 
-                if (this.selectedFeatureGeometry.type === 'LineString')
-                    return this.selectedFeatureGeometry.coordinates.length > 2;
-
-                if (this.selectedFeatureGeometry.type === 'Polygon') {
-                    const ring = this.selectedFeatureGeometry.coordinates && this.selectedFeatureGeometry.coordinates[0] ? this.selectedFeatureGeometry.coordinates[0] : [];
-                    return ring.length > 4;
+                const placeholders = [];
+                const isPolygon = this.selectedGeometry.type === 'Polygon';
+                const segmentCount = isPolygon ? vertices.length : vertices.length - 1;
+                for (let index = 0; index < segmentCount; index++) {
+                    const start = vertices[index];
+                    const end = isPolygon ? vertices[(index + 1) % vertices.length] : vertices[index + 1];
+                    placeholders.push({
+                        coordinate: [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2],
+                        insertAfterIndex: index
+                    });
                 }
-
-                return false;
+                return placeholders;
             },
-            editableVertices() {
-                if (!this.isEditingVertices)
+            draftLatLngs() {
+                return this.draftCoordinates.map((coordinate) => [coordinate[1], coordinate[0]]);
+            },
+            draftPolygonLatLngs() {
+                if (this.draftCoordinates.length < 3)
                     return [];
-
-                if (this.selectedFeatureIndex < 0 || !this.internalFeatureCollection.features[this.selectedFeatureIndex])
-                    return [];
-
-                const selectedGeometry = this.internalFeatureCollection.features[this.selectedFeatureIndex].geometry;
-                if (!selectedGeometry)
-                    return [];
-
-                if (selectedGeometry.type === 'Point')
-                    return [selectedGeometry.coordinates];
-
-                if (selectedGeometry.type === 'LineString')
-                    return selectedGeometry.coordinates;
-
-                if (selectedGeometry.type === 'Polygon' && selectedGeometry.coordinates && selectedGeometry.coordinates[0])
-                    return selectedGeometry.coordinates[0].slice(0, selectedGeometry.coordinates[0].length - 1);
-
-                return [];
+                return [this.draftCoordinates.map((coordinate) => [coordinate[1], coordinate[0]])];
             },
-            drawingPreviewLineCoordinates() {
-                return this.drawingCoordinates.map((coordinate) => [coordinate[1], coordinate[0]]);
-            },
-            drawingPreviewVertexMarkers() {
-                return this.drawingCoordinates.map((coordinate) => [coordinate[1], coordinate[0]]);
-            },
-            drawingPreviewPolygonCoordinates() {
-                if (this.drawingCoordinates.length < 3)
-                    return [];
-                return [this.drawingCoordinates.map((coordinate) => [coordinate[1], coordinate[0]])];
-            },
-            drawingVertexIcon() {
-                return Leaflet.divIcon({
-                    className: 'tainacan-geojson-vertex-icon tainacan-geojson-vertex-icon--preview',
-                    iconSize: [14, 14],
-                    iconAnchor: [7, 7]
-                });
+            draftVertexIcon() {
+                return Leaflet.divIcon({ className: 'tainacan-geojson-vertex-icon tainacan-geojson-vertex-icon--preview', iconSize: [14, 14], iconAnchor: [7, 7] });
             },
             editableVertexIcon() {
-                return Leaflet.divIcon({
-                    className: 'tainacan-geojson-vertex-icon tainacan-geojson-vertex-icon--editable',
-                    iconSize: [14, 14],
-                    iconAnchor: [7, 7]
-                });
+                return Leaflet.divIcon({ className: 'tainacan-geojson-vertex-icon tainacan-geojson-vertex-icon--editable', iconSize: [14, 14], iconAnchor: [7, 7] });
+            },
+            placeholderVertexIcon() {
+                return Leaflet.divIcon({ className: 'tainacan-geojson-vertex-icon tainacan-geojson-vertex-icon--placeholder', iconSize: [14, 14], iconAnchor: [7, 7] });
+            },
+            removeSelectedFeatureLabel() {
+                switch (this.selectedGeometry?.type) {
+                    case 'Point':
+                    case 'MultiPoint':
+                        return this.$i18n.get('label_remove_point');
+                    case 'LineString':
+                    case 'MultiLineString':
+                        return this.$i18n.get('label_remove_line');
+                    case 'Polygon':
+                    case 'MultiPolygon':
+                        return this.$i18n.get('label_remove_polygon');
+                    default:
+                        return this.$i18n.get('label_remove_value');
+                }
+            }
+        },
+        watch: {
+            value: {
+                handler(newValue) {
+                    this.internalFeatureCollection = this.parseValueToFeatureCollection(newValue);
+                    if (!this.internalFeatureCollection.features.length) {
+                        this.mode = 'select';
+                        this.selectedFeatureIndex = -1;
+                    } else if (this.selectedFeatureIndex >= this.internalFeatureCollection.features.length) {
+                        this.leaveEditingMode();
+                    }
+                    this.geoJsonLayerKey++;
+                    if (this.manualJsonEditorOpen)
+                        this.manualGeoJsonText = this.serializeFeatureCollectionForEditor();
+                },
+                deep: true
             }
         },
         created() {
             this.internalFeatureCollection = this.parseValueToFeatureCollection(this.value);
-            if (this.internalFeatureCollection.features.length)
-                this.selectedFeatureIndex = 0;
+            this.pointLatitudeInput = this.initialLatitude;
+            this.pointLongitudeInput = this.initialLongitude;
+            this.throttledVertexDragMove = _.throttle((vertexIndex, lng, lat) => {
+                this.applyRealVertexCoordinate(vertexIndex, lng, lat);
+            }, 32);
+            this.validateManualGeoJsonDebounced = _.debounce(() => {
+                this.validateManualGeoJsonInput();
+            }, 750);
         },
         mounted() {
             nextTick(() => {
                 const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+                this.handleWindowResize(mapComponentRef);
 
-                if (this.$refs[mapComponentRef] && this.$refs[mapComponentRef].$el) {
+                if (this.$refs[mapComponentRef]?.$el) {
                     this.mapResizeObserver = new ResizeObserver((entries) => {
                         entries.forEach((entry) => {
                             const { width, height } = entry.contentRect;
@@ -428,40 +416,182 @@
                 this.mapResizeObserver.disconnect();
                 this.mapResizeObserver = null;
             }
+            if (this.throttledVertexDragMove?.cancel)
+                this.throttledVertexDragMove.cancel();
+            if (this.validateManualGeoJsonDebounced?.cancel)
+                this.validateManualGeoJsonDebounced.cancel();
         },
         methods: {
-            parseValueToFeatureCollection(value) {
-                const featureCollection = {
-                    type: 'FeatureCollection',
-                    features: []
+            serializeFeatureCollectionForEditor() {
+                return JSON.stringify(this.internalFeatureCollection, null, 2);
+            },
+            getTextSizeInBytes(text) {
+                if (typeof text !== 'string')
+                    return 0;
+                if (typeof TextEncoder !== 'undefined')
+                    return new TextEncoder().encode(text).length;
+                return text.length;
+            },
+            cloneFeatureForStorage(feature) {
+                if (!feature || feature.type !== 'Feature')
+                    return null;
+                const properties = { ...(feature.properties || {}) };
+                delete properties.__tainacan_index;
+                return {
+                    type: 'Feature',
+                    geometry: JSON.parse(JSON.stringify(feature.geometry)),
+                    properties: Object.keys(properties).length ? properties : {}
                 };
-
+            },
+            parseStrictFeatureCollectionFromString(text) {
+                let parsed;
+                try {
+                    parsed = JSON.parse(text);
+                } catch (error) {
+                    return { ok: false };
+                }
+                if (!parsed || typeof parsed !== 'object')
+                    return { ok: false };
+                const fc = { type: 'FeatureCollection', features: [] };
+                if (parsed.type === 'FeatureCollection') {
+                    if (!Array.isArray(parsed.features))
+                        return { ok: false };
+                    for (const feature of parsed.features) {
+                        if (!feature || feature.type !== 'Feature' || !feature.geometry || typeof feature.geometry !== 'object')
+                            return { ok: false };
+                        if (!this.isAllowedGeometryType(feature.geometry.type))
+                            return { ok: false };
+                        const clone = this.cloneFeatureForStorage(feature);
+                        if (!clone)
+                            return { ok: false };
+                        fc.features.push(clone);
+                    }
+                    return { ok: true, fc };
+                }
+                if (parsed.type === 'Feature') {
+                    if (!parsed.geometry || !this.isAllowedGeometryType(parsed.geometry.type))
+                        return { ok: false };
+                    const clone = this.cloneFeatureForStorage(parsed);
+                    if (!clone)
+                        return { ok: false };
+                    fc.features.push(clone);
+                    return { ok: true, fc };
+                }
+                if (this.isAllowedGeometryType(parsed.type)) {
+                    fc.features.push({
+                        type: 'Feature',
+                        geometry: JSON.parse(JSON.stringify(parsed)),
+                        properties: {}
+                    });
+                    return { ok: true, fc };
+                }
+                return { ok: false };
+            },
+            validateManualGeoJsonInput(showToast = false) {
+                const manualSize = this.getTextSizeInBytes(this.manualGeoJsonText);
+                if (manualSize > this.manualGeoJsonValidationLimitBytes) {
+                    const message = this.$i18n.get('info_warning_geojson_validation_skipped_1mb');
+                    this.manualGeoJsonError = '';
+                    this.manualGeoJsonWarning = message;
+                    if (showToast) {
+                        this.$buefy.toast.open({
+                            duration: 4000,
+                            message,
+                            position: 'is-bottom',
+                            type: 'is-warning'
+                        });
+                    }
+                    return { ok: true, skippedValidation: true };
+                }
+                const result = this.parseStrictFeatureCollectionFromString(this.manualGeoJsonText);
+                if (result.ok) {
+                    this.manualGeoJsonError = '';
+                    this.manualGeoJsonWarning = '';
+                    return result;
+                }
+                const message = this.$i18n.get('info_error_invalid_geojson');
+                this.manualGeoJsonError = message;
+                this.manualGeoJsonWarning = '';
+                if (showToast) {
+                    this.$buefy.toast.open({
+                        duration: 4000,
+                        message,
+                        position: 'is-bottom',
+                        type: 'is-danger'
+                    });
+                }
+                return result;
+            },
+            onManualGeoJsonTextInput(value) {
+                this.manualGeoJsonText = value;
+                this.manualGeoJsonError = '';
+                this.manualGeoJsonWarning = '';
+                if (this.validateManualGeoJsonDebounced)
+                    this.validateManualGeoJsonDebounced();
+            },
+            onManualGeoJsonBlur() {
+                this.validateManualGeoJsonInput();
+            },
+            toggleManualGeoJsonEditor() {
+                if (this.disabled)
+                    return;
+                if (this.manualJsonEditorOpen) {
+                    if (this.validateManualGeoJsonDebounced?.cancel)
+                        this.validateManualGeoJsonDebounced.cancel();
+                    const result = this.validateManualGeoJsonInput(true);
+                    if (!result.ok) {
+                        return;
+                    }
+                    if (result.skippedValidation) {
+                        this.leaveEditingMode();
+                        this.manualGeoJsonError = '';
+                        this.manualJsonEditorOpen = false;
+                        this.$emit('update:value', [this.manualGeoJsonText]);
+                        nextTick(() => {
+                            const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+                            this.handleWindowResize(mapComponentRef);
+                        });
+                        return;
+                    }
+                    this.internalFeatureCollection = result.fc;
+                    this.leaveEditingMode();
+                    this.internalGeometryRevision++;
+                    this.manualGeoJsonError = '';
+                    this.manualJsonEditorOpen = false;
+                    this.emitCurrentValue();
+                    nextTick(() => {
+                        const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+                        this.handleWindowResize(mapComponentRef);
+                    });
+                    return;
+                }
+                this.leaveEditingMode();
+                this.manualGeoJsonText = this.serializeFeatureCollectionForEditor();
+                this.manualGeoJsonError = '';
+                this.manualGeoJsonWarning = '';
+                this.manualJsonEditorOpen = true;
+            },
+            parseValueToFeatureCollection(value) {
+                const featureCollection = { type: 'FeatureCollection', features: [] };
                 const values = Array.isArray(value) ? value : [value];
+
                 values.forEach((singleValue) => {
                     if (typeof singleValue !== 'string' || singleValue.trim() === '')
                         return;
-
                     try {
                         const parsed = JSON.parse(singleValue);
-                        if (!parsed || !parsed.type)
+                        if (!parsed?.type)
                             return;
-
-                        if (parsed.type === 'FeatureCollection' && Array.isArray(parsed.features)) {
+                        if (parsed.type === 'FeatureCollection' && Array.isArray(parsed.features))
                             parsed.features.forEach((feature) => this.tryPushFeature(featureCollection, feature));
-                        } else if (parsed.type === 'Feature') {
+                        else if (parsed.type === 'Feature')
                             this.tryPushFeature(featureCollection, parsed);
-                        } else if (this.isAllowedGeometryType(parsed.type)) {
-                            this.tryPushFeature(featureCollection, {
-                                type: 'Feature',
-                                geometry: parsed,
-                                properties: {}
-                            });
-                        }
+                        else if (this.isAllowedGeometryType(parsed.type))
+                            this.tryPushFeature(featureCollection, { type: 'Feature', geometry: parsed, properties: {} });
                     } catch (error) {
                         return;
                     }
                 });
-
                 return featureCollection;
             },
             tryPushFeature(featureCollection, feature) {
@@ -474,280 +604,352 @@
             },
             onMapReady(leafletMap) {
                 this.mapObject = leafletMap;
-                this.fitMapToLayers();
+                if (this.internalFeatureCollection.features.length)
+                    nextTick(() => this.fitMapToLayers());
             },
-            setDrawingMode(mode) {
-                this.drawingMode = mode;
-                this.drawingCoordinates = [];
-                this.selectedFeatureIndex = -1;
-                this.selectedEditableVertexIndex = -1;
-                this.isEditingVertices = false;
-            },
-            onMapClick(event) {
-                if (!event || !event.latlng)
-                    return;
-
-                if (this.isEditingVertices && this.selectedFeatureIndex >= 0) {
-                    this.addVertexOnSelectedFeature([event.latlng.lng, event.latlng.lat]);
-                    return;
+            getCurrentMapCenterCoordinate() {
+                if (this.mapObject) {
+                    const center = this.mapObject.getCenter();
+                    return [center.lng, center.lat];
                 }
-
+                return [this.initialLongitude, this.initialLatitude];
+            },
+            startPointCreation() {
                 if (!this.canAddFeature)
                     return;
-
-                const clickedCoordinate = [event.latlng.lng, event.latlng.lat];
-
-                if (this.drawingMode === 'Point') {
-                    this.internalFeatureCollection.features.push({
-                        type: 'Feature',
-                        geometry: {
-                            type: 'Point',
-                            coordinates: clickedCoordinate
-                        },
-                        properties: {}
-                    });
-                    this.selectedFeatureIndex = this.internalFeatureCollection.features.length - 1;
-                    this.selectedEditableVertexIndex = -1;
-                    this.isEditingVertices = false;
-                    this.emitCurrentValue();
-                    return;
-                }
-
-                this.drawingCoordinates.push(clickedCoordinate);
-            },
-            finishDrawing() {
-                if (!this.canFinishCurrentDrawing)
-                    return;
-                if (!this.canAddFeature)
-                    return;
-
-                if (this.drawingMode === 'LineString') {
-                    this.internalFeatureCollection.features.push({
-                        type: 'Feature',
-                        geometry: {
-                            type: 'LineString',
-                            coordinates: this.drawingCoordinates.slice(0)
-                        },
-                        properties: {}
-                    });
-                }
-
-                if (this.drawingMode === 'Polygon') {
-                    const ring = this.drawingCoordinates.slice(0);
-                    ring.push(this.drawingCoordinates[0]);
-                    this.internalFeatureCollection.features.push({
-                        type: 'Feature',
-                        geometry: {
-                            type: 'Polygon',
-                            coordinates: [ring]
-                        },
-                        properties: {}
-                    });
-                }
-
-                this.selectedFeatureIndex = this.internalFeatureCollection.features.length - 1;
-                this.selectedEditableVertexIndex = -1;
-                this.drawingCoordinates = [];
-                this.isEditingVertices = false;
+                const centerCoordinate = this.getCurrentMapCenterCoordinate();
+                this.internalFeatureCollection.features.push({
+                    type: 'Feature',
+                    geometry: { type: 'Point', coordinates: centerCoordinate },
+                    properties: {}
+                });
+                this.enterEditingMode(this.internalFeatureCollection.features.length - 1);
                 this.emitCurrentValue();
             },
-            undoDrawingCoordinate() {
-                if (!this.drawingCoordinates.length)
+            startLineCreation() {
+                if (!this.canAddFeature)
+                    return;
+                this.selectedFeatureIndex = -1;
+                this.mode = 'creating-line';
+                this.draftCoordinates = [this.getCurrentMapCenterCoordinate()];
+            },
+            startPolygonCreation() {
+                if (!this.canAddFeature)
+                    return;
+                this.selectedFeatureIndex = -1;
+                this.mode = 'creating-polygon';
+                this.draftCoordinates = [this.getCurrentMapCenterCoordinate()];
+            },
+            enterEditingMode(featureIndex) {
+                this.mode = 'editing';
+                this.selectedFeatureIndex = featureIndex;
+                this.draftCoordinates = [];
+                this.syncPointInputsFromSelection();
+            },
+            leaveEditingMode() {
+                this.mode = 'select';
+                this.selectedFeatureIndex = -1;
+                this.draftCoordinates = [];
+            },
+            onMapClick(event) {
+                if (!event?.latlng)
                     return;
 
-                this.drawingCoordinates.pop();
-            },
-            toggleVertexEditing() {
-                if (this.selectedFeatureIndex < 0)
+                if (this.mode === 'creating-line' || this.mode === 'creating-polygon') {
+                    this.draftCoordinates.push([event.latlng.lng, event.latlng.lat]);
+                    this.finishCreationIfValid();
                     return;
+                }
 
-                this.isEditingVertices = !this.isEditingVertices;
-                this.selectedEditableVertexIndex = -1;
+                if (this.mode === 'editing') {
+                    if (Date.now() < this.suppressEditingExitUntil)
+                        return;
+                    this.leaveEditingMode();
+                    this.fitMapToLayers();
+                }
             },
-            onEditableVertexClick(event, vertexIndex) {
-                if (event && event.originalEvent) {
+            finishCreationIfValid() {
+                if (this.mode === 'creating-line' && this.draftCoordinates.length >= 2) {
+                    this.internalFeatureCollection.features.push({
+                        type: 'Feature',
+                        geometry: { type: 'LineString', coordinates: this.draftCoordinates.slice() },
+                        properties: {}
+                    });
+                } else if (this.mode === 'creating-polygon' && this.draftCoordinates.length >= 3) {
+                    const ring = this.draftCoordinates.slice();
+                    ring.push(this.draftCoordinates[0]);
+                    this.internalFeatureCollection.features.push({
+                        type: 'Feature',
+                        geometry: { type: 'Polygon', coordinates: [ring] },
+                        properties: {}
+                    });
+                } else {
+                    return;
+                }
+
+                this.enterEditingMode(this.internalFeatureCollection.features.length - 1);
+                this.emitCurrentValue();
+            },
+            removeSelectedFeature() {
+                if (!this.isEditingFeature)
+                    return;
+                this.internalFeatureCollection.features.splice(this.selectedFeatureIndex, 1);
+                this.leaveEditingMode();
+                this.emitCurrentValue();
+            },
+            onPointMarkerClick(event) {
+                if (event?.originalEvent) {
                     event.originalEvent.preventDefault();
                     event.originalEvent.stopPropagation();
                 }
-                this.selectedEditableVertexIndex = vertexIndex;
             },
-            removeSelectedVertex() {
-                if (!this.canRemoveSelectedVertex || !this.selectedFeatureGeometry)
+            onPointDragEnd(event) {
+                if (!this.isEditingPoint || !event?.target?._latlng)
                     return;
-
-                if (this.selectedFeatureGeometry.type === 'LineString') {
-                    this.selectedFeatureGeometry.coordinates.splice(this.selectedEditableVertexIndex, 1);
-                } else if (this.selectedFeatureGeometry.type === 'Polygon') {
-                    const ring = this.selectedFeatureGeometry.coordinates[0];
-                    ring.splice(this.selectedEditableVertexIndex, 1);
+                this.selectedGeometry.coordinates = [event.target._latlng.lng, event.target._latlng.lat];
+                this.syncPointInputsFromSelection();
+                this.suppressEditingExitUntil = Date.now() + 400;
+                this.emitCurrentValue();
+            },
+            onUpdateFromLatitudeInput: _.debounce(function(value) {
+                if (!this.isEditingPoint)
+                    return;
+                const parsed = Number(value);
+                if (isNaN(parsed))
+                    return;
+                this.pointLatitudeInput = parsed;
+                this.selectedGeometry.coordinates = [Number(this.pointLongitudeInput), parsed];
+                this.emitCurrentValue();
+            }, 250),
+            onUpdateFromLongitudeInput: _.debounce(function(value) {
+                if (!this.isEditingPoint)
+                    return;
+                const parsed = Number(value);
+                if (isNaN(parsed))
+                    return;
+                this.pointLongitudeInput = parsed;
+                this.selectedGeometry.coordinates = [parsed, Number(this.pointLatitudeInput)];
+                this.emitCurrentValue();
+            }, 250),
+            syncPointInputsFromSelection() {
+                if (!this.isEditingPoint)
+                    return;
+                this.pointLatitudeInput = this.selectedGeometry.coordinates[1];
+                this.pointLongitudeInput = this.selectedGeometry.coordinates[0];
+            },
+            onRealVertexClick(event, vertexIndex) {
+                if (event?.originalEvent) {
+                    event.originalEvent.preventDefault();
+                    event.originalEvent.stopPropagation();
+                }
+                this.removeRealVertex(vertexIndex);
+            },
+            applyRealVertexCoordinate(vertexIndex, lng, lat) {
+                if (!this.isEditingLineOrPolygon)
+                    return;
+                const updatedCoordinate = [lng, lat];
+                if (this.selectedGeometry.type === 'LineString') {
+                    this.selectedGeometry.coordinates.splice(vertexIndex, 1, updatedCoordinate);
+                } else {
+                    const ring = this.selectedGeometry.coordinates[0];
+                    ring.splice(vertexIndex, 1, updatedCoordinate);
                     ring[ring.length - 1] = ring[0];
                 }
-
-                this.selectedEditableVertexIndex = -1;
+                this.internalGeometryRevision++;
+            },
+            onRealVertexDragMove(event, vertexIndex) {
+                const latlng = event?.target?.getLatLng?.() ?? event?.target?._latlng;
+                if (!latlng)
+                    return;
+                this.throttledVertexDragMove(vertexIndex, latlng.lng, latlng.lat);
+            },
+            onRealVertexDrag(event, vertexIndex) {
+                if (this.throttledVertexDragMove?.cancel)
+                    this.throttledVertexDragMove.cancel();
+                const latlng = event?.target?.getLatLng?.() ?? event?.target?._latlng;
+                if (!this.isEditingLineOrPolygon || !latlng)
+                    return;
+                this.applyRealVertexCoordinate(vertexIndex, latlng.lng, latlng.lat);
+                this.suppressEditingExitUntil = Date.now() + 400;
                 this.emitCurrentValue();
             },
-            addVertexOnSelectedFeature(newCoordinate) {
-                if (!this.selectedFeatureGeometry)
+            removeRealVertex(vertexIndex) {
+                if (!this.isEditingLineOrPolygon)
                     return;
-
-                if (this.selectedFeatureGeometry.type === 'LineString') {
-                    const coords = this.selectedFeatureGeometry.coordinates;
-                    const insertionIndex = this.findNearestSegmentInsertionIndex(coords, newCoordinate, false);
-                    coords.splice(insertionIndex + 1, 0, newCoordinate);
-                    this.selectedEditableVertexIndex = insertionIndex + 1;
-                    this.emitCurrentValue();
-                    return;
+                if (this.selectedGeometry.type === 'LineString') {
+                    if (this.selectedGeometry.coordinates.length <= 2)
+                        return;
+                    this.selectedGeometry.coordinates.splice(vertexIndex, 1);
+                } else {
+                    const ring = this.selectedGeometry.coordinates[0];
+                    if (ring.length <= 4)
+                        return;
+                    ring.splice(vertexIndex, 1);
+                    ring[ring.length - 1] = ring[0];
                 }
-
-                if (this.selectedFeatureGeometry.type === 'Polygon' && this.selectedFeatureGeometry.coordinates && this.selectedFeatureGeometry.coordinates[0]) {
-                    const ring = this.selectedFeatureGeometry.coordinates[0];
-                    const editableRing = ring.slice(0, ring.length - 1);
-                    const insertionIndex = this.findNearestSegmentInsertionIndex(editableRing, newCoordinate, true);
-                    editableRing.splice(insertionIndex + 1, 0, newCoordinate);
+                this.internalGeometryRevision++;
+                this.emitCurrentValue();
+            },
+            onPlaceholderClick(event, insertAfterIndex) {
+                if (event?.originalEvent) {
+                    event.originalEvent.preventDefault();
+                    event.originalEvent.stopPropagation();
+                }
+                if (!this.isEditingLineOrPolygon)
+                    return;
+                if (this.selectedGeometry.type === 'LineString') {
+                    const coords = this.selectedGeometry.coordinates;
+                    const start = coords[insertAfterIndex];
+                    const end = coords[insertAfterIndex + 1];
+                    coords.splice(insertAfterIndex + 1, 0, [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]);
+                } else {
+                    const ring = this.selectedGeometry.coordinates[0];
+                    const editableRing = ring.slice(0, -1);
+                    const nextIndex = (insertAfterIndex + 1) % editableRing.length;
+                    const start = editableRing[insertAfterIndex];
+                    const end = editableRing[nextIndex];
+                    editableRing.splice(insertAfterIndex + 1, 0, [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]);
                     editableRing.push(editableRing[0]);
-                    this.selectedFeatureGeometry.coordinates[0] = editableRing;
-                    this.selectedEditableVertexIndex = insertionIndex + 1;
-                    this.emitCurrentValue();
+                    this.selectedGeometry.coordinates[0] = editableRing;
                 }
-            },
-            findNearestSegmentInsertionIndex(coordinates, targetCoordinate, isClosedRing = false) {
-                if (!coordinates || coordinates.length < 2)
-                    return coordinates.length - 1;
-
-                let bestSegmentStartIndex = 0;
-                let bestDistance = Number.POSITIVE_INFINITY;
-                const segmentCount = isClosedRing ? coordinates.length : coordinates.length - 1;
-
-                for (let index = 0; index < segmentCount; index++) {
-                    const start = coordinates[index];
-                    const end = isClosedRing ? coordinates[(index + 1) % coordinates.length] : coordinates[index + 1];
-                    const distance = this.distanceToSegmentSquared(targetCoordinate, start, end);
-
-                    if (distance < bestDistance) {
-                        bestDistance = distance;
-                        bestSegmentStartIndex = index;
-                    }
-                }
-
-                return bestSegmentStartIndex;
-            },
-            distanceToSegmentSquared(point, segmentStart, segmentEnd) {
-                const px = point[0];
-                const py = point[1];
-                const x1 = segmentStart[0];
-                const y1 = segmentStart[1];
-                const x2 = segmentEnd[0];
-                const y2 = segmentEnd[1];
-
-                const dx = x2 - x1;
-                const dy = y2 - y1;
-
-                if (dx === 0 && dy === 0)
-                    return (px - x1) * (px - x1) + (py - y1) * (py - y1);
-
-                const t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy)));
-                const projectedX = x1 + t * dx;
-                const projectedY = y1 + t * dy;
-
-                return (px - projectedX) * (px - projectedX) + (py - projectedY) * (py - projectedY);
-            },
-            removeSelectedFeature() {
-                if (this.selectedFeatureIndex < 0)
-                    return;
-                this.internalFeatureCollection.features.splice(this.selectedFeatureIndex, 1);
-                this.selectedFeatureIndex = this.internalFeatureCollection.features.length ? 0 : -1;
-                this.selectedEditableVertexIndex = -1;
-                this.isEditingVertices = false;
-                this.emitCurrentValue();
-            },
-            onVertexDrag(event, vertexIndex) {
-                if (!event || !event.target || !event.target._latlng || this.selectedFeatureIndex < 0)
-                    return;
-
-                const selectedFeature = this.internalFeatureCollection.features[this.selectedFeatureIndex];
-                if (!selectedFeature || !selectedFeature.geometry)
-                    return;
-
-                const updatedCoordinate = [event.target._latlng.lng, event.target._latlng.lat];
-                this.selectedEditableVertexIndex = vertexIndex;
-
-                if (selectedFeature.geometry.type === 'Point') {
-                    selectedFeature.geometry.coordinates = updatedCoordinate;
-                } else if (selectedFeature.geometry.type === 'LineString') {
-                    selectedFeature.geometry.coordinates.splice(vertexIndex, 1, updatedCoordinate);
-                } else if (selectedFeature.geometry.type === 'Polygon' && selectedFeature.geometry.coordinates && selectedFeature.geometry.coordinates[0]) {
-                    selectedFeature.geometry.coordinates[0].splice(vertexIndex, 1, updatedCoordinate);
-                    selectedFeature.geometry.coordinates[0][selectedFeature.geometry.coordinates[0].length - 1] = selectedFeature.geometry.coordinates[0][0];
-                }
-
+                this.internalGeometryRevision++;
                 this.emitCurrentValue();
             },
             emitCurrentValue() {
-                // Force GeoJSON layer recreation to reflect deep coordinate edits (e.g. dragged polygon vertices).
                 this.geoJsonLayerKey++;
-
                 if (!this.internalFeatureCollection.features.length) {
                     this.$emit('update:value', []);
-                    this.fitMapToLayers();
+                    this.resetMapToInitialView();
                     return;
                 }
-
                 this.$emit('update:value', [JSON.stringify(this.internalFeatureCollection)]);
-                this.fitMapToLayers();
             },
-            clearAllFeatures() {
-                this.internalFeatureCollection.features = [];
-                this.selectedFeatureIndex = -1;
-                this.selectedEditableVertexIndex = -1;
-                this.isEditingVertices = false;
-                this.drawingCoordinates = [];
-                this.$emit('update:value', []);
-                this.fitMapToLayers();
+            resetMapToInitialView() {
+                if (!this.mapObject)
+                    return;
+                this.mapObject.setView([this.initialLatitude, this.initialLongitude], this.initialZoom);
             },
             fitMapToLayers() {
                 if (!this.mapObject)
                     return;
-
                 if (!this.internalFeatureCollection.features.length) {
                     this.mapObject.setView([this.initialLatitude, this.initialLongitude], this.initialZoom);
                     return;
                 }
-
                 const tempLayer = Leaflet.geoJSON(this.internalFeatureCollection);
                 const bounds = tempLayer.getBounds();
-                if (bounds && bounds.isValid())
+                if (bounds?.isValid())
                     this.mapObject.flyToBounds(bounds, { animate: true, maxZoom: this.maxZoom });
             },
             handleWindowResize(mapComponentRef) {
                 setTimeout(() => {
-                    if (this.$refs[mapComponentRef] && this.$refs[mapComponentRef].leafletObject) {
+                    if (this.$refs[mapComponentRef]?.leafletObject)
                         this.$refs[mapComponentRef].leafletObject.invalidateSize(true);
-                        this.fitMapToLayers();
-                    }
                 }, 300);
             }
         }
     };
 </script>
 
-<style lang="scss">
-.tainacan-geojson-map-container .leaflet-container {
+<style lang="scss" scoped>
+.tainacan-leaflet-map-container {
+    .geojson-map-slot {
+        display: block;
+    }
+
+    .geojson-manual-editor {
+        width: 100%;
+        min-width: 320px;
+        border: 1px solid var(--tainacan-input-border-color);
+        border-radius: var(--tainacan-input-border-radius, 3px) var(--tainacan-input-border-radius, 3px) 0 0;
+        border-bottom: 0;
+        padding: 0.5rem;
+        background: var(--tainacan-input-background-color, #fff);
+        box-sizing: border-box;
+
+        .field {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        :deep(.geojson-manual-editor__textarea textarea) {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+            font-size: 0.8125rem;
+            min-height: calc(320px - 1rem);
+        }
+    }
+
+    .geojson-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem 1rem;
+        border: 1px solid var(--tainacan-input-border-color);
+        border-top: 0;
+        border-bottom-left-radius: var(--tainacan-input-border-radius, 3px);
+        border-bottom-right-radius: var(--tainacan-input-border-radius, 3px);
+        padding: 0.5rem 0.75rem;
+        background: var(--tainacan-input-background-color, #fff);
+    }
+
+    .geojson-external-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 1rem;
+        flex: 1 1 auto;
+        align-items: center;
+        min-width: 0;
+    }
+
+    .geojson-toolbar__toggle {
+        flex: 0 0 auto;
+        margin-inline-start: auto;
+    }
+
+    .add-link {
+        font-size: 0.8125rem;
+        line-height: 1.25rem;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .add-link.is-active-mode {
+        color: var(--tainacan-secondary);
+        font-weight: 600;
+    }
+}
+
+.tainacan-leaflet-map-container .leaflet-container {
     border: 1px solid var(--tainacan-input-border-color);
-    border-radius: var(--tainacan-input-border-radius, 3px);
+    border-top-left-radius: var(--tainacan-input-border-radius, 3px);
+    border-top-right-radius: var(--tainacan-input-border-radius, 3px);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
     z-index: 0;
 
     .leaflet-marker-pane {
         filter: hue-rotate(-22deg);
     }
 
-    .geojson-input-panel {
-        padding: 0;
-        margin: 0;
+    .geojson-editing-controls {
         display: flex;
+        flex-wrap: wrap;
         align-items: stretch;
-        gap: 0;
-        flex-wrap: nowrap;
+        background: rgba(0,0,0,0.2);
         font-size: 1rem;
+        min-width: auto;
+
+        .geojson-point-inputs {
+            display: flex;
+            flex: 1 1 12rem;
+            min-width: 0;
+
+            :deep(input) {
+                font-size: 0.75em;
+                min-height: 32px;
+                border-radius: 0 !important;
+            }
+        }
 
         .button:not(.is-small):not(.is-medium):not(.is-large) {
             color: var(--tainacan-secondary);
@@ -756,50 +958,23 @@
             background-color: var(--tainacan-input-background-color, #fff) !important;
         }
 
-        .icon-only-button {
-            width: 2.5rem;
-            min-width: 2.5rem;
-            height: 2.5rem;
-            padding: 0;
+        .remove-feature-button {
             display: inline-flex;
             justify-content: center;
             align-items: center;
-        }
-        .icon-only-button.is-active-drawing-mode {
-            border-color: var(--tainacan-secondary) !important;
-            background-color: var(--tainacan-secondary) !important;
-            color: var(--tainacan-white) !important;
-            box-shadow: 0 0 0 1px var(--tainacan-secondary) inset;
-        }
-        .icon-only-button.is-active-drawing-mode .button-icon {
-            stroke: var(--tainacan-white);
-        }
-
-        .button-icon {
-            width: 1.1rem;
-            height: 1.1rem;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 1.9;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .screen-reader-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            border: 0;
+            align-self: center;
+            gap: 0.375rem;
+            padding: 0 0.625rem;
+            white-space: nowrap;
+            width: auto;
+            font-size: 0.813em;
+            font-family: var(--tainacan-font-family);
         }
     }
 
-    .actions-panel {
-        flex-wrap: wrap;
-        max-width: 220px;
+    .map-panel {
+        display: flex;
+        gap: 0.125rem;
     }
 }
 
@@ -808,8 +983,8 @@
     height: 14px;
     border-radius: 999px;
     box-sizing: border-box;
-    background: #fff;
-    border: 2px solid #5f3dc4;
+    background: var(--tainacan-input-background-color, #fff);
+    border: 2px solid var(--tainacan-secondary);
 }
 
 .tainacan-geojson-vertex-icon--preview {
@@ -817,6 +992,21 @@
 }
 
 .tainacan-geojson-vertex-icon--editable {
-    box-shadow: 0 0 0 1px #fff;
+    box-shadow: 0 0 0 1px var(--tainacan-input-background-color, #fff);
+    transition: border 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+}
+
+.tainacan-geojson-vertex-icon--editable:hover {
+    border: 3px solid var(--tainacan-secondary);
+    box-shadow: 0 0 0 3px var(--tainacan-input-background-color, #fff);
+}
+
+.tainacan-geojson-vertex-icon--placeholder {
+    border-style: dashed;
+    opacity: 0.5;
+    transition: opacity 0.1s ease-in-out;
+}
+.tainacan-geojson-vertex-icon--placeholder:hover {
+    opacity: 1.0;
 }
 </style>

@@ -761,6 +761,14 @@ return apply_filters( 'tainacan-i18n', [
 	'label_collections_taxonomies'				     => __( 'Collection taxonomies', 'tainacan'),
 	/* translators: %s is the number of selected items */
 	'label_apply_to_%s_items'				 		 => __( 'Apply to %s items', 'tainacan'),
+	'label_add_point'								 => __( 'Add point', 'tainacan' ),
+	'label_add_line'								 => __( 'Add line', 'tainacan' ),
+	'label_add_polygon'							 	 => __( 'Add polygon', 'tainacan' ),
+	'label_remove_point'							 => __( 'Remove point', 'tainacan' ),
+	'label_remove_line'								 => __( 'Remove line', 'tainacan' ),
+	'label_remove_polygon'							 => __( 'Remove polygon', 'tainacan' ),
+	'label_geojson_edit_as_text'					 => __( 'Edit as GeoJSON', 'tainacan' ),
+	'label_geojson_back_to_map'					 	 => __( 'Back to map', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -929,6 +937,8 @@ return apply_filters( 'tainacan-i18n', [
 	'info_error_deleting_taxonomy'                   => __( 'Error on deleting taxonomy', 'tainacan' ),
 	'info_error_first_value_greater'                 => __( 'First value should be lower than second value', 'tainacan' ),
 	'info_error_value_must_be_number'                => __( 'Value should be a number', 'tainacan' ),
+	'info_error_invalid_geojson'					 => __( 'Invalid GeoJSON. Use a FeatureCollection of features, a single Feature, or a supported geometry (Point, LineString, Polygon, or their Multi* variants).', 'tainacan' ),
+	'info_warning_geojson_validation_skipped_1mb'	 => __( 'GeoJSON validation was skipped because this input is larger than 1 MB. The value can still be saved as typed.', 'tainacan' ),
 	'info_error_upload'							 	 => __( 'Error while uploading files.', 'tainacan' ),
 	'info_collection_deleted'                        => __( 'Collection deleted.', 'tainacan' ),
 	'info_item_deleted'                              => __( 'Item deleted.', 'tainacan' ),
