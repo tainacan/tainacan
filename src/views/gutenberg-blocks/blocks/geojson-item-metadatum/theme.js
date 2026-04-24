@@ -72,11 +72,48 @@ const parseGeoJsonSource = (element) => {
     return parseGeoJsonFromString(fallbackElement?.textContent?.trim());
 };
 
+/**
+ * Respects data-allow_point, data-allow_linestring, data-allow_polygon (default on when attribute missing, for old markup).
+ * Multi* types are grouped with their simple type, matching the GeoJSON metadatum form.
+ */
+const readAllowDataAttr = (element, name) => {
+    if (!element || !element.hasAttribute(`data-${name}`))
+        return true;
+    const v = element.getAttribute(`data-${name}`);
+    if (v === '0' || v === 'false' || v === 'no' || v === '')
+        return false;
+    return true;
+};
+
+const isGeometryTypeAllowedInTheme = (element, geometryType) => {
+    if (geometryType === 'Point' || geometryType === 'MultiPoint')
+        return readAllowDataAttr(element, 'allow_point');
+    if (geometryType === 'LineString' || geometryType === 'MultiLineString')
+        return readAllowDataAttr(element, 'allow_linestring');
+    if (geometryType === 'Polygon' || geometryType === 'MultiPolygon')
+        return readAllowDataAttr(element, 'allow_polygon');
+    return true;
+};
+
+const filterFeatureCollectionByMetadatumOptions = (fc, element) => {
+    if (!fc || !Array.isArray(fc.features) || !element)
+        return fc;
+    return {
+        type: 'FeatureCollection',
+        features: fc.features.filter(
+            (f) => f?.geometry?.type && isGeometryTypeAllowedInTheme(element, f.geometry.type)
+        )
+    };
+};
+
 export default (element) => {
     if (!element || !element.id)
         return;
 
-    const geojson = parseGeoJsonSource(element);
+    const geojsonRaw = parseGeoJsonSource(element);
+    if (!geojsonRaw || !geojsonRaw.features || !geojsonRaw.features.length)
+        return;
+    const geojson = filterFeatureCollectionByMetadatumOptions(geojsonRaw, element);
     if (!geojson || !geojson.features || !geojson.features.length)
         return;
 

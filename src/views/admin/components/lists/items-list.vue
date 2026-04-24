@@ -2667,10 +2667,10 @@ export default {
                 const hasSelection = this.selectedMarkerIndexes.length > 0;
                 const location = this.itemsLocations[locationIndex];
                 return {
-                    color: selected ? '#5f3dc4' : '#3273dc',
-                    weight: selected ? 4 : 3,
+                    color: selected ? 'var(--tainacan-blue3, #1d3968)' : 'var(--tainacan-secondary, #187181)',
+                    weight: selected ? 4 : 2,
                     fillOpacity: selected ? 0.2 : 0.12,
-                    opacity: hasSelection && !selected ? 0.35 : 1.0,
+                    opacity: hasSelection && !selected ? 0.25 : 1.0,
                     dashArray: location?.feature?.geometry?.type?.includes('Line') ? '6 4' : null
                 };
             };
@@ -3225,7 +3225,7 @@ export default {
                     return [parsed];
                 if (parsed?.type)
                     return [{ type: 'Feature', geometry: parsed, properties: {} }];
-            } catch (error) {
+            } catch {
                 return [];
             }
             return [];
@@ -3235,7 +3235,7 @@ export default {
                 const layer = geoJSON(feature);
                 const bounds = layer.getBounds();
                 return bounds?.isValid() ? bounds : null;
-            } catch (error) {
+            } catch {
                 return null;
             }
         },

@@ -4,104 +4,122 @@
             class="tainacan-leaflet-map-container">
 
         <div
-                v-show="!manualJsonEditorOpen"
+                v-if="!manualJsonEditorOpen"
                 class="geojson-map-slot">
-        <l-map
-                :id="'map--' + itemMetadatumIdentifier"
-                :ref="'map--' + itemMetadatumIdentifier"
-                style="height: 320px; width:100%; min-width: 320px;"
-                :zoom="initialZoom"
-                :max-zoom="maxZoom"
-                :center="[initialLatitude, initialLongitude]"
-                :zoom-animation="true"
-                :options="{ name: 'map--' + itemMetadatumIdentifier, trackResize: false, worldCopyJump: true }"
-                @ready="onMapReady"
-                @click="onMapClick">
-            <l-tile-layer :url="mapProvider" :attribution="attribution" />
+            <l-map
+                    :id="'map--' + itemMetadatumIdentifier"
+                    :ref="'map--' + itemMetadatumIdentifier"
+                    style="height: 320px; width:100%; min-width: 320px;"
+                    :zoom="initialZoom"
+                    :max-zoom="maxZoom"
+                    :center="[initialLatitude, initialLongitude]"
+                    :zoom-animation="true"
+                    :options="{ name: 'map--' + itemMetadatumIdentifier, trackResize: false, worldCopyJump: true }"
+                    @ready="onMapReady"
+                    @click="onMapClick">
+                <l-tile-layer
+                        :url="mapProvider"
+                        :attribution="attribution" />
 
-            <l-geo-json :key="geoJsonLayerKey" :geojson="renderedGeoJson" :options="geoJsonOptions" :options-style="geoJsonStyle" />
+                <l-geo-json
+                        :key="geoJsonLayerKey"
+                        :geojson="renderedGeoJson"
+                        :options="geoJsonOptions"
+                        :options-style="geoJsonStyle" />
 
-            <l-polyline
-                    v-if="mode === 'creating-line' && draftCoordinates.length > 1"
-                    :lat-lngs="draftLatLngs"
-                    :color="'#5f3dc4'"
-                    :weight="3"
-                    :dash-array="'6 6'" />
-            <l-polyline
-                    v-if="mode === 'creating-polygon' && draftCoordinates.length > 1"
-                    :lat-lngs="draftLatLngs"
-                    :color="'#5f3dc4'"
-                    :weight="3"
-                    :dash-array="'6 6'" />
-            <l-polygon
-                    v-if="mode === 'creating-polygon' && draftCoordinates.length > 2"
-                    :lat-lngs="draftPolygonLatLngs"
-                    :color="'#5f3dc4'"
-                    :weight="3"
-                    :fill-opacity="0.12"
-                    :dash-array="'6 6'" />
+                <l-polyline
+                        v-if="mode === 'creating-line' && draftCoordinates.length > 1"
+                        :lat-lngs="draftLatLngs"
+                        :color="'var(--tainacan-blue4, #1d3968)'"
+                        :weight="3"
+                        :dash-array="'6 6'" />
+                <l-polyline
+                        v-if="mode === 'creating-polygon' && draftCoordinates.length > 1"
+                        :lat-lngs="draftLatLngs"
+                        :color="'var(--tainacan-blue4, #1d3968)'"
+                        :weight="3"
+                        :dash-array="'6 6'" />
+                <l-polygon
+                        v-if="mode === 'creating-polygon' && draftCoordinates.length > 2"
+                        :lat-lngs="draftPolygonLatLngs"
+                        :color="'var(--tainacan-blue4, #1d3968)'"
+                        :weight="3"
+                        :fill-opacity="0.12"
+                        :dash-array="'6 6'" />
 
-            <l-marker
-                    v-for="(draftVertex, index) of draftLatLngs"
-                    :key="'geojson-draft-' + mode + '-' + index"
-                    :lat-lng="draftVertex"
-                    :icon="draftVertexIcon" />
+                <l-marker
+                        v-for="(draftVertex, index) of draftLatLngs"
+                        :key="'geojson-draft-' + mode + '-' + index"
+                        :lat-lng="draftVertex"
+                        :icon="draftVertexIcon" />
 
-            <l-marker
-                    v-if="isEditingPoint && selectedPointLatLng"
-                    :key="'geojson-point-' + selectedFeatureIndex"
-                    :lat-lng="selectedPointLatLng"
-                    :draggable="true"
-                    @click="onPointMarkerClick"
-                    @dragend="onPointDragEnd" />
+                <l-marker
+                        v-if="isEditingPoint && selectedPointLatLng"
+                        :key="'geojson-point-' + selectedFeatureIndex"
+                        :lat-lng="selectedPointLatLng"
+                        :draggable="true"
+                        @click="onPointMarkerClick"
+                        @dragend="onPointDragEnd" />
 
-            <l-marker
-                    v-for="(vertex, index) of editableRealVertices"
-                    :key="'geojson-real-' + selectedFeatureIndex + '-' + index"
-                    :lat-lng="[vertex[1], vertex[0]]"
-                    :icon="editableVertexIcon"
-                    :draggable="true"
-                    @click="($event) => onRealVertexClick($event, index)"
-                    @drag="($event) => onRealVertexDragMove($event, index)"
-                    @dragend="($event) => onRealVertexDrag($event, index)" />
+                <l-marker
+                        v-for="(vertex, index) of editableRealVertices"
+                        :key="'geojson-real-' + selectedFeatureIndex + '-' + index"
+                        :lat-lng="[vertex[1], vertex[0]]"
+                        :icon="editableVertexIcon"
+                        :draggable="true"
+                        @click="($event) => onRealVertexClick($event, index)"
+                        @drag="($event) => onRealVertexDragMove($event, index)"
+                        @dragend="($event) => onRealVertexDrag($event, index)" />
 
-            <l-marker
-                    v-for="placeholder of editablePlaceholderVertices"
-                    :key="'geojson-ph-' + selectedFeatureIndex + '-' + placeholder.insertAfterIndex"
-                    :lat-lng="[placeholder.coordinate[1], placeholder.coordinate[0]]"
-                    :icon="placeholderVertexIcon"
-                    :opacity="0.5"
-                    @click="($event) => onPlaceholderClick($event, placeholder.insertAfterIndex)" />
+                <l-marker
+                        v-for="placeholder of editablePlaceholderVertices"
+                        :key="'geojson-ph-' + selectedFeatureIndex + '-' + placeholder.insertAfterIndex"
+                        :lat-lng="[placeholder.coordinate[1], placeholder.coordinate[0]]"
+                        :icon="placeholderVertexIcon"
+                        :opacity="0.5"
+                        @click="($event) => onPlaceholderClick($event, placeholder.insertAfterIndex)" />
 
-            <l-control
-                    v-if="isEditingFeature"
-                    position="topright"
-                    class="leaflet-bar">
-                <div class="geojson-editing-controls map-panel">
-                    <div
-                            v-if="isEditingPoint"
-                            class="geojson-point-inputs">
-                        <b-input expanded :placeholder="-14.408656999999" type="text" :step="0.000000000001" :model-value="pointLatitudeInput" @update:model-value="onUpdateFromLatitudeInput" />
-                        <b-input expanded :placeholder="-51.316689999999" type="text" :step="0.000000000001" :model-value="pointLongitudeInput" @update:model-value="onUpdateFromLongitudeInput" />
+                <l-control
+                        v-if="isEditingFeature"
+                        position="topright"
+                        class="leaflet-bar">
+                    <div class="geojson-editing-controls map-panel">
+                        <div
+                                v-if="isEditingPoint"
+                                class="geojson-point-inputs">
+                            <b-input
+                                    expanded
+                                    :placeholder="-14.408656999999"
+                                    type="text"
+                                    :step="0.000000000001"
+                                    :model-value="pointLatitudeInput"
+                                    @update:model-value="onUpdateFromLatitudeInput" />
+                            <b-input
+                                    expanded
+                                    :placeholder="-51.316689999999"
+                                    type="text"
+                                    :step="0.000000000001"
+                                    :model-value="pointLongitudeInput"
+                                    @update:model-value="onUpdateFromLongitudeInput" />
+                        </div>
+                        <a
+                                class="remove-feature-button"
+                                role="button"
+                                tabindex="0"
+                                outlined
+                                :title="removeSelectedFeatureLabel"
+                                :aria-label="removeSelectedFeatureLabel"
+                                @click.prevent.stop="removeSelectedFeature">
+                            <span class="icon is-small"><i class="tainacan-icon tainacan-icon-remove" /></span>
+                            <span>{{ removeSelectedFeatureLabel }}</span>
+                        </a>
                     </div>
-                    <a
-                            class="remove-feature-button"
-                            role="button"
-                            tabindex="0"
-                            outlined
-                            :title="removeSelectedFeatureLabel"
-                            :aria-label="removeSelectedFeatureLabel"
-                            @click.prevent.stop="removeSelectedFeature">
-                        <span class="icon is-small"><i class="tainacan-icon tainacan-icon-remove" /></span>
-                        <span>{{ removeSelectedFeatureLabel }}</span>
-                    </a>
-                </div>
-            </l-control>
-        </l-map>
+                </l-control>
+            </l-map>
         </div>
 
         <div
-                v-show="manualJsonEditorOpen"
+                v-if="manualJsonEditorOpen"
                 class="geojson-manual-editor">
             <b-field
                     :message="manualGeoJsonError || manualGeoJsonWarning"
@@ -119,19 +137,70 @@
 
         <div class="geojson-toolbar">
             <div
-                    v-if="showAddButtons && !manualJsonEditorOpen"
+                    v-if="showAddButtons && !manualJsonEditorOpen && showMapGeometryAddLinks"
                     class="geojson-external-controls">
-                <a class="add-link" :class="{ 'is-active-mode': mode === 'creating-point' }" role="button" tabindex="0" @click.prevent="startPointCreation" @keydown.enter.prevent="startPointCreation" @keydown.space.prevent="startPointCreation">
-                    <span class="icon is-small"><i class="tainacan-icon has-text-secondary tainacan-icon-add" /></span>
-                    &nbsp;{{ $i18n.get('label_add_point') }}
+                <a
+                        v-if="allowMapPoint"
+                        class="add-link"
+                        :class="{ 'is-active-mode': mode === 'creating-point' }"
+                        role="button"
+                        tabindex="0"
+                        @click.prevent="startPointCreation"
+                        @keydown.enter.prevent="startPointCreation"
+                        @keydown.space.prevent="startPointCreation">
+                    <span
+                            class="icon"
+                            aria-hidden="true">
+                        <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                style="width: 1.125em; height: 1.125em; fill: currentColor;">
+                            <path d="M12,2.5A6.5,6.5 0 0,0 5.5,9C5.5,13.5 12,21.5 12,21.5C12,21.5 18.5,13.5 18.5,9A6.5,6.5 0 0,0 12,2.5M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5Z" />
+                        </svg>
+                    </span>
+                    {{ $i18n.get('label_add_point') }}
                 </a>
-                <a class="add-link" :class="{ 'is-active-mode': mode === 'creating-line' }" role="button" tabindex="0" @click.prevent="startLineCreation" @keydown.enter.prevent="startLineCreation" @keydown.space.prevent="startLineCreation">
-                    <span class="icon is-small"><i class="tainacan-icon has-text-secondary tainacan-icon-add" /></span>
-                    &nbsp;{{ $i18n.get('label_add_line') }}
+                <a
+                        v-if="allowMapLineString"
+                        class="add-link"
+                        :class="{ 'is-active-mode': mode === 'creating-line' }"
+                        role="button"
+                        tabindex="0"
+                        @click.prevent="startLineCreation"
+                        @keydown.enter.prevent="startLineCreation"
+                        @keydown.space.prevent="startLineCreation">
+                    <span
+                            class="icon"
+                            aria-hidden="true">
+                        <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                style="width: 1.125em; height: 1.125em; fill: currentColor;">
+                            <path d="M4,17A3,3 0 0,0 7,20A3,3 0 0,0 10,17C10,16.6 9.9,16.2 9.7,15.9L13.6,11.7C14,11.9 14.5,12 15,12C16.7,12 18,10.7 18,9C18,8.4 17.8,7.9 17.6,7.4L19.7,5.3C20,5.4 20.3,5.5 20.6,5.5A2.9,2.9 0 0,0 23.5,2.6A2.9,2.9 0 0,0 20.6,-0.3A2.9,2.9 0 0,0 17.7,2.6C17.7,2.9 17.8,3.2 17.9,3.5L15.7,5.7C15.5,5.6 15.2,5.6 15,5.6A3,3 0 0,0 12,8.6C12,9.1 12.1,9.5 12.3,9.9L8.3,14.1C7.9,13.8 7.5,13.7 7,13.7A3,3 0 0,0 4,16.7A3,3 0 0,0 4,17Z" />
+                        </svg>
+                    </span>
+                    {{ $i18n.get('label_add_line') }}
                 </a>
-                <a class="add-link" :class="{ 'is-active-mode': mode === 'creating-polygon' }" role="button" tabindex="0" @click.prevent="startPolygonCreation" @keydown.enter.prevent="startPolygonCreation" @keydown.space.prevent="startPolygonCreation">
-                    <span class="icon is-small"><i class="tainacan-icon has-text-secondary tainacan-icon-add" /></span>
-                    &nbsp;{{ $i18n.get('label_add_polygon') }}
+                <a
+                        v-if="allowMapPolygon"
+                        class="add-link"
+                        :class="{ 'is-active-mode': mode === 'creating-polygon' }"
+                        role="button"
+                        tabindex="0"
+                        @click.prevent="startPolygonCreation"
+                        @keydown.enter.prevent="startPolygonCreation"
+                        @keydown.space.prevent="startPolygonCreation">
+                    <span
+                            class="icon"
+                            aria-hidden="true">
+                        <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                style="width: 1.125em; height: 1.125em; fill: currentColor;">
+                            <path d="M4,6L12,3L20,8L17,18L7,21L2,13L4,6M6,7.5L4.5,12.5L8,18.5L15.5,16.2L17.8,9L11.8,5.2L6,7.5Z" />
+                        </svg>
+                    </span>
+                    {{ $i18n.get('label_add_polygon') }}
                 </a>
             </div>
             <a
@@ -151,11 +220,11 @@
                             class="tainacan-icon tainacan-icon-svg"
                             style="display: flex;">
                         <svg
-                            xmlns="http://www.w3.org/2000/svg" 
-                            viewBox="0 0 24 24">
-                        <path d="M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z" />
-                    </svg>
-                </i>
+                                xmlns="http://www.w3.org/2000/svg" 
+                                viewBox="0 0 24 24">
+                            <path d="M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z" />
+                        </svg>
+                    </i>
                 </span>
                 &nbsp;{{ manualJsonEditorOpen ? $i18n.get('label_geojson_back_to_map') : $i18n.get('label_geojson_edit_as_text') }}
             </a>
@@ -227,6 +296,21 @@
             attribution() {
                 return this.itemMetadatum?.metadatum?.metadata_type_options?.attribution || '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors';
             },
+            metadataTypeOptions() {
+                return this.itemMetadatum?.metadatum?.metadata_type_options || {};
+            },
+            allowMapPoint() {
+                return this.metadataTypeOptions.allow_point !== false;
+            },
+            allowMapLineString() {
+                return this.metadataTypeOptions.allow_linestring !== false;
+            },
+            allowMapPolygon() {
+                return this.metadataTypeOptions.allow_polygon !== false;
+            },
+            showMapGeometryAddLinks() {
+                return this.allowMapPoint || this.allowMapLineString || this.allowMapPolygon;
+            },
             itemMetadatumIdentifier() {
                 return 'tainacan-item-metadatum_id-' + this.itemMetadatum.metadatum.id + (this.itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + this.itemMetadatum.parent_meta_id) : '');
             },
@@ -278,8 +362,8 @@
                     const index = Number(feature.properties?.__tainacan_index);
                     const isSelected = this.isEditingFeature && this.selectedFeatureIndex === index;
                     return {
-                        color: isSelected ? '#5f3dc4' : '#3273dc',
-                        weight: isSelected ? 4 : 3,
+                        color: isSelected ? 'var(--tainacan-blue4, #1d3968)' : 'var(--tainacan-secondary, #187181)',
+                        weight: isSelected ? 4 : 2,
                         fillOpacity: isSelected ? 0.2 : 0.12
                     };
                 };
@@ -299,7 +383,12 @@
                 return this.isEditingFeature && this.selectedGeometry?.type === 'Point';
             },
             isEditingLineOrPolygon() {
-                return this.isEditingFeature && ['LineString', 'Polygon'].includes(this.selectedGeometry?.type);
+                return this.isEditingFeature && [
+                    'LineString',
+                    'MultiLineString',
+                    'Polygon',
+                    'MultiPolygon'
+                ].includes(this.selectedGeometry?.type);
             },
             selectedPointLatLng() {
                 if (!this.isEditingPoint)
@@ -309,9 +398,20 @@
             editableRealVertices() {
                 if (!this.isEditingLineOrPolygon)
                     return [];
-                if (this.selectedGeometry.type === 'LineString')
-                    return this.selectedGeometry.coordinates;
-                return this.selectedGeometry.coordinates[0].slice(0, -1);
+                const g = this.selectedGeometry;
+                if (g.type === 'LineString')
+                    return g.coordinates;
+                if (g.type === 'MultiLineString')
+                    return g.coordinates?.[0] || [];
+                if (g.type === 'Polygon') {
+                    const ring = g.coordinates?.[0];
+                    return ring ? ring.slice(0, -1) : [];
+                }
+                if (g.type === 'MultiPolygon') {
+                    const outer = g.coordinates?.[0]?.[0];
+                    return outer ? outer.slice(0, -1) : [];
+                }
+                return [];
             },
             editablePlaceholderVertices() {
                 if (!this.isEditingLineOrPolygon)
@@ -321,7 +421,8 @@
                     return [];
 
                 const placeholders = [];
-                const isPolygon = this.selectedGeometry.type === 'Polygon';
+                const isPolygon = this.selectedGeometry.type === 'Polygon'
+                    || this.selectedGeometry.type === 'MultiPolygon';
                 const segmentCount = isPolygon ? vertices.length : vertices.length - 1;
                 for (let index = 0; index < segmentCount; index++) {
                     const start = vertices[index];
@@ -423,7 +524,11 @@
         },
         methods: {
             serializeFeatureCollectionForEditor() {
-                return JSON.stringify(this.internalFeatureCollection, null, 2);
+                const fc = this.internalFeatureCollection;
+                const compact = JSON.stringify(fc);
+                if (this.getTextSizeInBytes(compact) > this.manualGeoJsonValidationLimitBytes)
+                    return compact;
+                return JSON.stringify(fc, null, 2);
             },
             getTextSizeInBytes(text) {
                 if (typeof text !== 'string')
@@ -447,7 +552,7 @@
                 let parsed;
                 try {
                     parsed = JSON.parse(text);
-                } catch (error) {
+                } catch {
                     return { ok: false };
                 }
                 if (!parsed || typeof parsed !== 'object')
@@ -459,7 +564,7 @@
                     for (const feature of parsed.features) {
                         if (!feature || feature.type !== 'Feature' || !feature.geometry || typeof feature.geometry !== 'object')
                             return { ok: false };
-                        if (!this.isAllowedGeometryType(feature.geometry.type))
+                        if (!this.isSupportedGeoJsonGeometryType(feature.geometry.type))
                             return { ok: false };
                         const clone = this.cloneFeatureForStorage(feature);
                         if (!clone)
@@ -469,7 +574,7 @@
                     return { ok: true, fc };
                 }
                 if (parsed.type === 'Feature') {
-                    if (!parsed.geometry || !this.isAllowedGeometryType(parsed.geometry.type))
+                    if (!parsed.geometry || !this.isSupportedGeoJsonGeometryType(parsed.geometry.type))
                         return { ok: false };
                     const clone = this.cloneFeatureForStorage(parsed);
                     if (!clone)
@@ -477,7 +582,7 @@
                     fc.features.push(clone);
                     return { ok: true, fc };
                 }
-                if (this.isAllowedGeometryType(parsed.type)) {
+                if (this.isSupportedGeoJsonGeometryType(parsed.type)) {
                     fc.features.push({
                         type: 'Feature',
                         geometry: JSON.parse(JSON.stringify(parsed)),
@@ -586,21 +691,31 @@
                             parsed.features.forEach((feature) => this.tryPushFeature(featureCollection, feature));
                         else if (parsed.type === 'Feature')
                             this.tryPushFeature(featureCollection, parsed);
-                        else if (this.isAllowedGeometryType(parsed.type))
+                        else if (this.isSupportedGeoJsonGeometryType(parsed.type))
                             this.tryPushFeature(featureCollection, { type: 'Feature', geometry: parsed, properties: {} });
-                    } catch (error) {
+                    } catch {
                         return;
                     }
                 });
                 return featureCollection;
             },
             tryPushFeature(featureCollection, feature) {
-                if (!feature || feature.type !== 'Feature' || !feature.geometry || !this.isAllowedGeometryType(feature.geometry.type))
+                if (!feature || feature.type !== 'Feature' || !feature.geometry || !this.isSupportedGeoJsonGeometryType(feature.geometry.type))
                     return;
                 featureCollection.features.push(feature);
             },
-            isAllowedGeometryType(type) {
+            isSupportedGeoJsonGeometryType(type) {
                 return ['Point', 'LineString', 'Polygon', 'MultiPoint', 'MultiLineString', 'MultiPolygon'].includes(type);
+            },
+            isGeometryTypeEnabledByMetadatumOptions(type) {
+                const o = this.metadataTypeOptions;
+                if (type === 'Point' || type === 'MultiPoint')
+                    return o.allow_point !== false;
+                if (type === 'LineString' || type === 'MultiLineString')
+                    return o.allow_linestring !== false;
+                if (type === 'Polygon' || type === 'MultiPolygon')
+                    return o.allow_polygon !== false;
+                return false;
             },
             onMapReady(leafletMap) {
                 this.mapObject = leafletMap;
@@ -615,7 +730,7 @@
                 return [this.initialLongitude, this.initialLatitude];
             },
             startPointCreation() {
-                if (!this.canAddFeature)
+                if (!this.canAddFeature || !this.allowMapPoint)
                     return;
                 const centerCoordinate = this.getCurrentMapCenterCoordinate();
                 this.internalFeatureCollection.features.push({
@@ -627,14 +742,14 @@
                 this.emitCurrentValue();
             },
             startLineCreation() {
-                if (!this.canAddFeature)
+                if (!this.canAddFeature || !this.allowMapLineString)
                     return;
                 this.selectedFeatureIndex = -1;
                 this.mode = 'creating-line';
                 this.draftCoordinates = [this.getCurrentMapCenterCoordinate()];
             },
             startPolygonCreation() {
-                if (!this.canAddFeature)
+                if (!this.canAddFeature || !this.allowMapPolygon)
                     return;
                 this.selectedFeatureIndex = -1;
                 this.mode = 'creating-polygon';
@@ -644,6 +759,7 @@
                 this.mode = 'editing';
                 this.selectedFeatureIndex = featureIndex;
                 this.draftCoordinates = [];
+                this.suppressEditingExitUntil = Date.now() + 400;
                 this.syncPointInputsFromSelection();
             },
             leaveEditingMode() {
@@ -744,14 +860,37 @@
                 }
                 this.removeRealVertex(vertexIndex);
             },
+            lineCoordsForVertexEdit() {
+                const g = this.selectedGeometry;
+                if (!g)
+                    return null;
+                if (g.type === 'LineString')
+                    return g.coordinates;
+                if (g.type === 'MultiLineString')
+                    return g.coordinates?.[0] ?? null;
+                return null;
+            },
+            outerRingForVertexEdit() {
+                const g = this.selectedGeometry;
+                if (!g)
+                    return null;
+                if (g.type === 'Polygon')
+                    return g.coordinates?.[0] ?? null;
+                if (g.type === 'MultiPolygon')
+                    return g.coordinates?.[0]?.[0] ?? null;
+                return null;
+            },
             applyRealVertexCoordinate(vertexIndex, lng, lat) {
                 if (!this.isEditingLineOrPolygon)
                     return;
                 const updatedCoordinate = [lng, lat];
-                if (this.selectedGeometry.type === 'LineString') {
-                    this.selectedGeometry.coordinates.splice(vertexIndex, 1, updatedCoordinate);
+                const line = this.lineCoordsForVertexEdit();
+                if (line) {
+                    line.splice(vertexIndex, 1, updatedCoordinate);
                 } else {
-                    const ring = this.selectedGeometry.coordinates[0];
+                    const ring = this.outerRingForVertexEdit();
+                    if (!ring)
+                        return;
                     ring.splice(vertexIndex, 1, updatedCoordinate);
                     ring[ring.length - 1] = ring[0];
                 }
@@ -776,13 +915,14 @@
             removeRealVertex(vertexIndex) {
                 if (!this.isEditingLineOrPolygon)
                     return;
-                if (this.selectedGeometry.type === 'LineString') {
-                    if (this.selectedGeometry.coordinates.length <= 2)
+                const line = this.lineCoordsForVertexEdit();
+                if (line) {
+                    if (line.length <= 2)
                         return;
-                    this.selectedGeometry.coordinates.splice(vertexIndex, 1);
+                    line.splice(vertexIndex, 1);
                 } else {
-                    const ring = this.selectedGeometry.coordinates[0];
-                    if (ring.length <= 4)
+                    const ring = this.outerRingForVertexEdit();
+                    if (!ring || ring.length <= 4)
                         return;
                     ring.splice(vertexIndex, 1);
                     ring[ring.length - 1] = ring[0];
@@ -797,20 +937,26 @@
                 }
                 if (!this.isEditingLineOrPolygon)
                     return;
-                if (this.selectedGeometry.type === 'LineString') {
-                    const coords = this.selectedGeometry.coordinates;
-                    const start = coords[insertAfterIndex];
-                    const end = coords[insertAfterIndex + 1];
-                    coords.splice(insertAfterIndex + 1, 0, [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]);
+                const g = this.selectedGeometry;
+                const line = this.lineCoordsForVertexEdit();
+                if (line) {
+                    const start = line[insertAfterIndex];
+                    const end = line[insertAfterIndex + 1];
+                    line.splice(insertAfterIndex + 1, 0, [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]);
                 } else {
-                    const ring = this.selectedGeometry.coordinates[0];
+                    const ring = this.outerRingForVertexEdit();
+                    if (!ring)
+                        return;
                     const editableRing = ring.slice(0, -1);
                     const nextIndex = (insertAfterIndex + 1) % editableRing.length;
                     const start = editableRing[insertAfterIndex];
                     const end = editableRing[nextIndex];
                     editableRing.splice(insertAfterIndex + 1, 0, [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]);
                     editableRing.push(editableRing[0]);
-                    this.selectedGeometry.coordinates[0] = editableRing;
+                    if (g.type === 'Polygon')
+                        g.coordinates[0] = editableRing;
+                    else
+                        g.coordinates[0][0] = editableRing;
                 }
                 this.internalGeometryRevision++;
                 this.emitCurrentValue();
@@ -876,6 +1022,7 @@
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
             font-size: 0.8125rem;
             min-height: calc(320px - 1rem);
+            max-height: 60vh;
         }
     }
 
@@ -919,7 +1066,7 @@
     }
 }
 
-.tainacan-leaflet-map-container .leaflet-container {
+.tainacan-leaflet-map-container :deep(.leaflet-container) {
     border: 1px solid var(--tainacan-input-border-color);
     border-top-left-radius: var(--tainacan-input-border-radius, 3px);
     border-top-right-radius: var(--tainacan-input-border-radius, 3px);
@@ -927,7 +1074,7 @@
     border-bottom-right-radius: 0;
     z-index: 0;
 
-    .leaflet-marker-pane {
+    :deep(.leaflet-marker-pane) {
         filter: hue-rotate(-22deg);
     }
 
@@ -944,7 +1091,7 @@
             flex: 1 1 12rem;
             min-width: 0;
 
-            :deep(input) {
+            input {
                 font-size: 0.75em;
                 min-height: 32px;
                 border-radius: 0 !important;
@@ -978,7 +1125,7 @@
     }
 }
 
-.tainacan-geojson-vertex-icon {
+.tainacan-leaflet-map-container :deep(.tainacan-geojson-vertex-icon) {
     width: 14px;
     height: 14px;
     border-radius: 999px;
@@ -987,26 +1134,60 @@
     border: 2px solid var(--tainacan-secondary);
 }
 
-.tainacan-geojson-vertex-icon--preview {
+.tainacan-leaflet-map-container :deep(.tainacan-geojson-vertex-icon--preview) {
     opacity: 0.85;
 }
 
-.tainacan-geojson-vertex-icon--editable {
+.tainacan-leaflet-map-container :deep(.tainacan-geojson-vertex-icon--editable) {
     box-shadow: 0 0 0 1px var(--tainacan-input-background-color, #fff);
     transition: border 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
 }
 
-.tainacan-geojson-vertex-icon--editable:hover {
+.tainacan-leaflet-map-container :deep(.tainacan-geojson-vertex-icon--editable:hover) {
     border: 3px solid var(--tainacan-secondary);
     box-shadow: 0 0 0 3px var(--tainacan-input-background-color, #fff);
 }
 
-.tainacan-geojson-vertex-icon--placeholder {
-    border-style: dashed;
+.tainacan-leaflet-map-container :deep(.tainacan-geojson-vertex-icon--placeholder) {
+    position: absolute;
+    border-style: solid;
+    border-color: var(--tainacan-secondary);
+    background: var(--tainacan-input-background-color, #fff);
     opacity: 0.5;
-    transition: opacity 0.1s ease-in-out;
+    transition: opacity 0.1s ease-in-out, background-color 0.1s ease-in-out, border-color 0.1s ease-in-out;
 }
-.tainacan-geojson-vertex-icon--placeholder:hover {
+
+.tainacan-leaflet-map-container :deep(.tainacan-geojson-vertex-icon--placeholder)::before,
+.tainacan-leaflet-map-container :deep(.tainacan-geojson-vertex-icon--placeholder)::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--tainacan-input-background-color, #fff);
+    border-radius: 1px;
+    opacity: 0;
+    transition: opacity 0.1s ease-in-out;
+    pointer-events: none;
+}
+
+.tainacan-leaflet-map-container :deep(.tainacan-geojson-vertex-icon--placeholder)::before {
+    width: 8px;
+    height: 2px;
+}
+
+.tainacan-leaflet-map-container :deep(.tainacan-geojson-vertex-icon--placeholder)::after {
+    width: 2px;
+    height: 8px;
+}
+.tainacan-leaflet-map-container :deep(.tainacan-geojson-vertex-icon--placeholder:hover) {
     opacity: 1.0;
+    background: var(--tainacan-secondary);
+    border-color: var(--tainacan-secondary);
+}
+
+.tainacan-leaflet-map-container :deep(.tainacan-geojson-vertex-icon--placeholder:hover)::before,
+.tainacan-leaflet-map-container :deep(.tainacan-geojson-vertex-icon--placeholder:hover)::after {
+    opacity: 1;
 }
 </style>

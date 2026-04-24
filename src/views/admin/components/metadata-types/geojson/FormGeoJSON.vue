@@ -107,6 +107,53 @@
                         @focus="clear()" />
             </b-field>
         </b-field>
+
+        <b-field
+                :addons="false"
+                :message="errors && errors.allowed_geometry_types"
+                :type="errors && errors.allowed_geometry_types ? 'is-danger' : ''">
+            <label class="label is-inline">
+                {{ $i18n.getHelperTitle('tainacan-geojson', 'allowed_geometry_types') }}
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-geojson', 'allowed_geometry_types')"
+                        :message="$i18n.getHelperMessage('tainacan-geojson', 'allowed_geometry_types')" />
+            </label>
+            <div class="geojson-form-allowed-geometry-types">
+                <b-checkbox
+                        v-model="allowPoint"
+                        @update:model-value="emitValues()">
+                    <span>
+                        {{ $i18n.getHelperTitle('tainacan-geojson', 'allow_point') }}
+                        <help-button
+                                class="is-inline is-small"
+                                :title="$i18n.getHelperTitle('tainacan-geojson', 'allow_point')"
+                                :message="$i18n.getHelperMessage('tainacan-geojson', 'allow_point')" />
+                    </span>
+                </b-checkbox>
+                <b-checkbox
+                        v-model="allowLineString"
+                        @update:model-value="emitValues()">
+                    <span>
+                        {{ $i18n.getHelperTitle('tainacan-geojson', 'allow_linestring') }}
+                        <help-button
+                                class="is-inline is-small"
+                                :title="$i18n.getHelperTitle('tainacan-geojson', 'allow_linestring')"
+                                :message="$i18n.getHelperMessage('tainacan-geojson', 'allow_linestring')" />
+                    </span>
+                </b-checkbox>
+                <b-checkbox
+                        v-model="allowPolygon"
+                        @update:model-value="emitValues()">
+                    <span>
+                        {{ $i18n.getHelperTitle('tainacan-geojson', 'allow_polygon') }}
+                        <help-button
+                                class="is-inline is-small"
+                                :title="$i18n.getHelperTitle('tainacan-geojson', 'allow_polygon')"
+                                :message="$i18n.getHelperMessage('tainacan-geojson', 'allow_polygon')" />
+                    </span>
+                </b-checkbox>
+            </div>
+        </b-field>
     </section>
 </template>
 
@@ -124,7 +171,10 @@
                 initialZoom: Number,
                 maximumZoom: Number,
                 initialLatitude: Number,
-                initialLongitude: Number
+                initialLongitude: Number,
+                allowPoint: true,
+                allowLineString: true,
+                allowPolygon: true
             };
         },
         computed: {
@@ -144,6 +194,9 @@
                 this.maximumZoom = Number(this.value.maximum_zoom) || 12;
                 this.initialLatitude = Number(this.value.initial_latitude) || -14.4086569;
                 this.initialLongitude = Number(this.value.initial_longitude) || -51.31668;
+                this.allowPoint = this.value.allow_point !== false;
+                this.allowLineString = this.value.allow_linestring !== false;
+                this.allowPolygon = this.value.allow_polygon !== false;
             }
         },
         methods: {
@@ -162,7 +215,10 @@
                     initial_zoom: this.initialZoom,
                     maximum_zoom: this.maximumZoom,
                     initial_latitude: this.initialLatitude,
-                    initial_longitude: this.initialLongitude
+                    initial_longitude: this.initialLongitude,
+                    allow_point: this.allowPoint,
+                    allow_linestring: this.allowLineString,
+                    allow_polygon: this.allowPolygon
                 });
             }
         }
@@ -175,5 +231,11 @@ section {
 }
 .tainacan-help-tooltip-trigger {
     font-size: 1em;
+}
+.geojson-form-allowed-geometry-types {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem 1rem;
 }
 </style>

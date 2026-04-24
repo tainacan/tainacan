@@ -25,7 +25,10 @@ class GeoJSON extends Metadata_Type {
 			'initial_zoom' => 5,
 			'maximum_zoom' => 12,
 			'initial_latitude' => -14.4086569,
-			'initial_longitude' => -51.31668
+			'initial_longitude' => -51.31668,
+			'allow_point' => true,
+			'allow_linestring' => true,
+			'allow_polygon' => true
 		] );
 		$this->set_preview_template( '
 			<div>
@@ -57,7 +60,23 @@ class GeoJSON extends Metadata_Type {
 			'initial_position' => [
 				'title' => __( 'Initial center position', 'tainacan' ),
 				'description' => __( 'Define latitude and longitude for the initial center of the map input.', 'tainacan' ),
-			]
+			],
+			'allowed_geometry_types' => [
+				'title' => __( 'Allowed geometry types', 'tainacan' ),
+				'description' => __( 'Choose which families of shape can be stored. Each option includes both the simple GeoJSON type and its Multi* variant (e.g. points includes Point and MultiPoint). The metadatum “allow multiple” setting is separate: it controls how many values the field can have for an item, not MultiPoint vs many Point features in one value.', 'tainacan' ),
+			],
+			'allow_point' => [
+				'title' => __( 'Points', 'tainacan' ),
+				'description' => __( 'Point and MultiPoint.', 'tainacan' ),
+			],
+			'allow_linestring' => [
+				'title' => __( 'Lines', 'tainacan' ),
+				'description' => __( 'LineString and MultiLineString.', 'tainacan' ),
+			],
+			'allow_polygon' => [
+				'title' => __( 'Polygons', 'tainacan' ),
+				'description' => __( 'Polygon and MultiPolygon.', 'tainacan' ),
+			],
 		];
 	}
 
@@ -72,8 +91,31 @@ class GeoJSON extends Metadata_Type {
 		return $valid_lat & $valid_long;
 	}
 
-	private function allowed_geometry_types() {
+	private function all_geometry_types() {
 		return [ 'Point', 'LineString', 'Polygon', 'MultiPoint', 'MultiLineString', 'MultiPolygon' ];
+	}
+
+	/**
+	 * Geometry types allowed by metadatum options (defaults to all when option missing).
+	 *
+	 * @return string[]
+	 */
+	private function get_enabled_geometry_types_from_options() {
+		$options  = $this->get_options();
+		$enabled  = [];
+		$families = [
+			'allow_point' => [ 'Point', 'MultiPoint' ],
+			'allow_linestring' => [ 'LineString', 'MultiLineString' ],
+			'allow_polygon' => [ 'Polygon', 'MultiPolygon' ],
+		];
+		foreach ( $families as $key => $types ) {
+			if ( !isset( $options[ $key ] ) || $options[ $key ] ) {
+				foreach ( $types as $type ) {
+					$enabled[] = $type;
+				}
+			}
+		}
+		return $enabled;
 	}
 
 	private function is_valid_geometry_object( $geometry ) {
@@ -85,7 +127,7 @@ class GeoJSON extends Metadata_Type {
 			return false;
 		}
 
-		if ( !in_array( $geometry['type'], $this->allowed_geometry_types(), true ) ) {
+		if ( !in_array( $geometry['type'], $this->all_geometry_types(), true ) ) {
 			return false;
 		}
 
@@ -147,11 +189,17 @@ class GeoJSON extends Metadata_Type {
 			return false;
 		}
 
+		$enabled_types = $this->get_enabled_geometry_types_from_options();
+
 		foreach ( $features as $feature ) {
 			if ( !is_array( $feature ) || ( $feature['type'] ?? '' ) !== 'Feature' ) {
 				return false;
 			}
 			if ( empty( $feature['geometry'] ) || !$this->is_valid_geometry_object( $feature['geometry'] ) ) {
+				return false;
+			}
+			$geom_type = $feature['geometry']['type'];
+			if ( !in_array( $geom_type, $enabled_types, true ) ) {
 				return false;
 			}
 		}
@@ -193,7 +241,7 @@ class GeoJSON extends Metadata_Type {
 		}
 
 		if ( !$this->validate_feature_collection( $feature_collection ) ) {
-			$this->add_error( __( 'The GeoJSON value must contain only Point, LineString or Polygon geometries (including multi geometries).', 'tainacan' ) );
+			$this->add_error( __( 'The GeoJSON value must use only allowed geometry types for this metadatum (Point, LineString, Polygon and/or their Multi variants).', 'tainacan' ) );
 			return false;
 		}
 
@@ -248,7 +296,7 @@ class GeoJSON extends Metadata_Type {
 
 		$geojson_as_string = wp_json_encode( $feature_collection );
 		$return = '<span id="tainacan-geojsonmetadatum--' . esc_attr( $item_metadatum_id ) . '" data-module="geojson-item-metadatum" ' . $options_as_strings . '>
-			<span class="tainacan-geojson-fallback-text">' . esc_html( $geojson_as_string ) . '</span>
+			<span class="tainacan-geojson-fallback-text" style="display: -webkit-box; line-clamp: 2; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">' . esc_html( $geojson_as_string ) . '</span>
 		</span>';
 
 		return apply_filters( 'tainacan-item-metadata-get-value-as-html--type-geojson', $return, $item_metadata );
@@ -269,6 +317,12 @@ class GeoJSON extends Metadata_Type {
 					__( 'The value (%s) is not a valid geo coordinate', 'tainacan' ),
 					( '' . $this->get_option( 'initial_latitude' ) . ',' . $this->get_option( 'initial_longitude' ) )
 				)
+			];
+		}
+
+		if ( count( $this->get_enabled_geometry_types_from_options() ) === 0 ) {
+			return [
+				'allowed_geometry_types' => __( 'Select at least one allowed geometry type.', 'tainacan' ),
 			];
 		}
 
