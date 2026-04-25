@@ -80,8 +80,8 @@ class Logs extends Repository {
 				'description' => __( 'The log slug', 'tainacan' ),
 				'validation'  => ''
 			],
-			'user_id'        => [
-				'map'         => 'post_author',
+			'author'        => [
+				'map'         => 'user_id',
 				'title'       => __( 'User ID', 'tainacan' ),
 				'type'        => 'integer',
 				'description' => __( 'Unique identifier', 'tainacan' ),
@@ -107,37 +107,37 @@ class Logs extends Repository {
 			// 	'type'        => 'string',
 			// ],
 			'collection_id'  => [
-				'map'         => 'meta',
+				'map'         => 'collection_id',
 				'title'       => __( 'Log collection relationship', 'tainacan' ),
 				'description' => __( 'The ID of the collection that this log is related to', 'tainacan' ),
 				'type'        => 'string',
 			],
 			'object_id' => [
-				'map'         => 'meta',
+				'map'         => 'object_id',
 				'title'       => __( 'Log item relationship', 'tainacan' ),
 				'description' => __( 'The ID of the object that this log is related to', 'tainacan' ),
 				'type'        => ['string', 'integer'],
 			],
 			'object_type' => [
-				'map'         => 'meta',
+				'map'         => 'object_type',
 				'title'       => __( 'Log item relationship', 'tainacan' ),
 				'description' => __( 'The type of the object that this log is related to', 'tainacan' ),
 				'type'        => 'string',
 			],
 			'old_value' => [
-				'map'         => 'meta',
+				'map'         => 'old_value',
 				'title'       => __( 'Old value', 'tainacan' ),
 				'description' => __( 'Value of the field previous to the edition registered by the log.', 'tainacan' ),
 				'type'        => 'string',
 			],
 			'new_value' => [
-				'map'         => 'meta',
+				'map'         => 'new_value',
 				'title'       => __( 'New value', 'tainacan' ),
 				'description'       => __( 'Value of the field after the edition registered by the log.', 'tainacan' ),
 				'type'        => 'string',
 			],
 			'action' => [
-				'map'         => 'meta',
+				'map'         => 'action',
 				'title'       => __( 'Action', 'tainacan' ),
 				'description' => __( 'Type of action registered by the log.', 'tainacan' ),
 				'type'        => 'string',
@@ -205,6 +205,12 @@ class Logs extends Repository {
 	 *   - string $object_type   Filter by object type (fully-qualified class name).
 	 *   - string $object_id     Filter by object ID.
 	 *   - string $action        Filter by action key (e.g. 'create', 'update', 'delete').
+	 *   - string $s             Search term matched (case-insensitive LIKE) against
+	 *                           title, old_value, and new_value columns.
+	 *   - array  $date_query    Array of date clauses. Each clause may contain:
+	 *                             'after'     (string) – lower date bound (Y-m-d or Y-m-d H:i:s),
+	 *                             'before'    (string) – upper date bound,
+	 *                             'inclusive' (bool)   – whether bounds are inclusive (default false).
 	 *
 	 * Ordering (ORDER BY):
 	 *   - string $orderby  Column to sort by. Allowed: ID, date, title, user_id,
@@ -236,6 +242,7 @@ class Logs extends Repository {
 			return [];
 		}
 
+		$args = $this->parse_fetch_args( $args );
 		$args = apply_filters( 'tainacan-fetch-args', $args, 'logs' );
 
 		// --- WHERE ---------------------------------------------------------
@@ -308,12 +315,19 @@ class Logs extends Repository {
 	 * interpolated from user input. Values are returned as a separate
 	 * $params array to be bound via $wpdb->prepare().
 	 *
+	 * Supports an optional date_query key — an array of clause arrays, each
+	 * accepting: before (string), after (string), inclusive (bool|string).
+	 * Date-only values (Y-m-d) are automatically expanded to full datetimes.
+	 * Example:
+	 *   'date_query' => [ [ 'after' => '2026-04-09', 'before' => '2026-04-11', 'inclusive' => true ] ]
+	 *
 	 * @param array $args Filtering args (same keys accepted by fetch()).
 	 * @return array{ 0: string, 1: array } Tuple of [ $where_sql, $params ].
 	 *               $where_sql is either an empty string or 'WHERE col = %x AND …'.
 	 *               $params holds the corresponding values in order.
 	 */
 	private function build_where( array $args ) {
+		global $wpdb;
 		$wheres = [];
 		$params = [];
 
@@ -331,9 +345,61 @@ class Logs extends Repository {
 			}
 		}
 
+		if ( ! empty( $args['date_query'] ) && is_array( $args['date_query'] ) ) {
+			foreach ( $args['date_query'] as $clause ) {
+				if ( ! is_array( $clause ) ) {
+					continue;
+				}
+				$inclusive = isset( $clause['inclusive'] ) && filter_var( $clause['inclusive'], FILTER_VALIDATE_BOOLEAN );
+
+				if ( ! empty( $clause['after'] ) ) {
+					if ( $inclusive ) {
+						$wheres[] = '`date` >= %s';
+						$params[] = $this->normalize_date_bound( $clause['after'], 'start' );
+					} else {
+						$wheres[] = '`date` > %s';
+						$params[] = $this->normalize_date_bound( $clause['after'], 'end' );
+					}
+				}
+
+				if ( ! empty( $clause['before'] ) ) {
+					if ( $inclusive ) {
+						$wheres[] = '`date` <= %s';
+						$params[] = $this->normalize_date_bound( $clause['before'], 'end' );
+					} else {
+						$wheres[] = '`date` < %s';
+						$params[] = $this->normalize_date_bound( $clause['before'], 'start' );
+					}
+				}
+			}
+		}
+
+		if ( ! empty( $args['s'] ) ) {
+			$like      = '%' . $wpdb->esc_like( $args['s'] ) . '%';
+			$wheres[]  = '(`title` LIKE %s OR `old_value` LIKE %s OR `new_value` LIKE %s)';
+			$params[]  = $like;
+			$params[]  = $like;
+			$params[]  = $like;
+		}
+
 		$where_sql = $wheres ? 'WHERE ' . implode( ' AND ', $wheres ) : '';
 
 		return [ $where_sql, $params ];
+	}
+
+	/**
+	 * Expands a date-only string (Y-m-d) to a full datetime for WHERE comparisons.
+	 * Datetime strings that already include a time component are returned as-is.
+	 *
+	 * @param string $date  A date or datetime string.
+	 * @param string $bound 'start' → appends 00:00:00, 'end' → appends 23:59:59.
+	 * @return string
+	 */
+	private function normalize_date_bound( string $date, string $bound ): string {
+		if ( preg_match( '/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $date ) ) {
+			return $date;
+		}
+		return $date . ( $bound === 'end' ? ' 23:59:59' : ' 00:00:00' );
 	}
 
 	/**
