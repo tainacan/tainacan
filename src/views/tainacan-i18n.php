@@ -1001,6 +1001,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_warning_taxonomy_not_saved'                => __( 'Are you sure? The taxonomy is not saved, changes will be lost.', 'tainacan' ),
 	'info_warning_terms_not_saved'                   => __( 'Are you sure? There are terms not saved, changes will be lost.', 'tainacan' ),
 	'info_no_activities'                             => __( 'No activities found.', 'tainacan' ),
+	'info_no_activities_found_with_filter'           => __( 'No activities found with the current filters.', 'tainacan' ),
 	'info_logs_before'                               => __( 'Before', 'tainacan' ),
 	'info_logs_after'                                => __( 'After', 'tainacan' ),
 	'info_there_is_no_metadatum'                     => __( 'There is no metadata here yet.', 'tainacan' ),

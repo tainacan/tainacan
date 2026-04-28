@@ -156,6 +156,24 @@
                 </div>
             </section>
         </div>
+
+        <!-- Empty state due filtering -->
+        <div v-if="activities.length <= 0 && totalActivities > 0 && !isLoading">
+            <section class="section">
+                <div class="content has-text-dark has-text-centered">
+                    <p>
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-medium">
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities" />
+                        </span>
+                    </p>
+                    <p>
+                        {{ $i18n.get('info_no_activities_found_with_filter') }}
+                    </p>
+                </div>
+            </section>
+        </div>
     </div>
 </template>
 
