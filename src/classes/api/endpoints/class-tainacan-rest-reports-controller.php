@@ -719,19 +719,39 @@ class REST_Reports_Controller extends REST_Controller {
 				'start' => $end->sub(new \DateInterval('P1Y1D'))->format('Y-m-d H:i:s')
 			];
 		}
-		$collection_from = "";
+		
 		$start = $interval['start'];
 		$end = $interval['end'];
-		if($collection_id !== false) {
-			$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key = %s AND pm.meta_value = %s)";
-			$collection_from = $wpdb->prepare($collection_from, 'collection_id', sanitize_text_field($collection_id));
+		/**
+		 * Temporary fallback for sites that cannot run the WP-CLI log migration command.
+		 * The TAINACAN_USE_DEPRECATED_LOGS constant must be manually defined in wp-config.php to enable this behavior.
+		 * This block will be removed in future versions once legacy support is discontinued.
+		 * 
+		 */ 
+		if (!defined('TAINACAN_USE_DEPRECATED_LOGS') || TAINACAN_USE_DEPRECATED_LOGS !== false) {
+			$collection_from = "";
+			if($collection_id !== false) {
+				$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key = %s AND pm.meta_value = %s)";
+				$collection_from = $wpdb->prepare($collection_from, 'collection_id', sanitize_text_field($collection_id));
+			}
+			$sql_statement = $wpdb->prepare(
+				"SELECT count(*) as total, DATE(p.post_date) as date
+				FROM $wpdb->posts p $collection_from
+				WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN '$start' AND '$end'
+				GROUP BY DATE(p.post_date)
+				ORDER BY DATE(p.post_date)", []
+			);
+			return $wpdb->get_results($sql_statement);
 		}
+
+		$tainacan_log_table = Repositories\Logs::get_instance()->get_table_name();
+		$collection_where =  $collection_id == false ? '1=1' : "collection_id=$collection_id";
 		$sql_statement = $wpdb->prepare(
-			"SELECT count(DISTINCT (unix_timestamp(p.post_date) DIV 60)) as total, DATE(p.post_date) as date
-			FROM $wpdb->posts p $collection_from
-			WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN '$start' AND '$end'
-			GROUP BY DATE(p.post_date)
-			ORDER BY DATE(p.post_date)", []
+			"SELECT count(*) as total, DATE(p.date) as date
+			FROM $tainacan_log_table p
+			WHERE p.date BETWEEN '$start' AND '$end' AND ($collection_where)
+			GROUP BY DATE(p.date)
+			ORDER BY DATE(p.date)", []
 		);
 		return $wpdb->get_results($sql_statement);
 	}
@@ -745,20 +765,36 @@ class REST_Reports_Controller extends REST_Controller {
 				'start' => $end->sub(new \DateInterval('P1Y1D'))->format('Y-m-d H:i:s')
 			];
 		}
-		$collection_from = "";
+		
 		$start = $interval['start'];
 		$end = $interval['end'];
-		if($collection_id !== false) {
-			$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key = %s AND pm.meta_value = %s)";
-			$collection_from = $wpdb->prepare($collection_from, 'collection_id', sanitize_text_field($collection_id));
+		$sql_statement = "";
+		if (!defined('TAINACAN_USE_DEPRECATED_LOGS') || TAINACAN_USE_DEPRECATED_LOGS !== false) {
+			$collection_from = "";
+			if($collection_id !== false) {
+				$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key = %s AND pm.meta_value = %s)";
+				$collection_from = $wpdb->prepare($collection_from, 'collection_id', sanitize_text_field($collection_id));
+			}
+			$sql_statement = $wpdb->prepare(
+				"SELECT p.post_author  as user_id, count(*) as total, DATE(p.post_date) as date
+				FROM $wpdb->posts p $collection_from
+				WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN '$start' AND '$end'
+				GROUP BY p.post_author, DATE(p.post_date)
+				ORDER BY DATE(p.post_date)", []
+			);
+		} else {
+			$tainacan_log_table = Repositories\Logs::get_instance()->get_table_name();
+			$collection_where =  $collection_id == false ? '1=1' : "collection_id=$collection_id";
+			$sql_statement = $wpdb->prepare(
+				"SELECT p.user_id, count(*) as total, DATE(p.date) as date
+				FROM $tainacan_log_table p
+				WHERE p.date BETWEEN '$start' AND '$end' AND ($collection_where)
+				GROUP BY p.user_id, DATE(p.date)
+				ORDER BY DATE(p.date)", []
+			);
 		}
-		$sql_statement = $wpdb->prepare(
-			"SELECT p.post_author  as user_id, count(DISTINCT (unix_timestamp(p.post_date) DIV 60)) as total, DATE(p.post_date) as date
-			FROM $wpdb->posts p $collection_from
-			WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN '$start' AND '$end'
-			GROUP BY p.post_author, DATE(p.post_date)
-			ORDER BY DATE(p.post_date)", []
-		);
+
+		
 		$data =$wpdb->get_results($sql_statement);
 		$arr = array();
 		$avatar_sizes = rest_get_avatar_sizes();
@@ -792,20 +828,34 @@ class REST_Reports_Controller extends REST_Controller {
 
 	private function get_activities_users($collection_id = false) {
 		global $wpdb;
-		$collection_from = "";
-		if($collection_id !== false) {
-			$collection_from = "INNER JOIN {$wpdb->postmeta} pm_col ON p.id = pm_col.post_id AND (pm_col.meta_key = %s AND pm_col.meta_value = %s)";
-			$collection_from = $wpdb->prepare($collection_from, 'collection_id', sanitize_text_field($collection_id));
+		$sql_statement = "";
+		if (!defined('TAINACAN_USE_DEPRECATED_LOGS') || TAINACAN_USE_DEPRECATED_LOGS !== false) {
+			$collection_from = "";
+			if($collection_id !== false) {
+				$collection_from = "INNER JOIN {$wpdb->postmeta} pm_col ON p.id = pm_col.post_id AND (pm_col.meta_key = %s AND pm_col.meta_value = %s)";
+				$collection_from = $wpdb->prepare($collection_from, 'collection_id', sanitize_text_field($collection_id));
+			}
+			$sql_statement = $wpdb->prepare(
+				"SELECT	count(*) as total, p.post_author as user, pm.meta_value as action
+				FROM $wpdb->posts p 
+				INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'action'
+				$collection_from
+				WHERE p.post_type='tainacan-log'
+				GROUP BY p.post_author, pm.meta_value 
+				ORDER BY total DESC", []
+			);
+		} else {
+			$tainacan_log_table = Repositories\Logs::get_instance()->get_table_name();
+			$collection_where =  $collection_id == false ? '1=1' : "collection_id=$collection_id";
+			$sql_statement = $wpdb->prepare(
+				"SELECT	count(*) as total, p.user_id as user, p.action as action
+				FROM $tainacan_log_table p
+				WHERE $collection_where
+				GROUP BY p.user_id, p.action
+				ORDER BY total DESC", []
+			);
 		}
-		$sql_statement = $wpdb->prepare(
-			"SELECT	count(DISTINCT (unix_timestamp(p.post_date) DIV 60)) as total, p.post_author as user, pm.meta_value as action
-			FROM $wpdb->posts p 
-			INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'action'
-			$collection_from
-			WHERE p.post_type='tainacan-log'
-			GROUP BY p.post_author, pm.meta_value 
-			ORDER BY total DESC", []
-		);
+		
 		$results = $wpdb->get_results($sql_statement);
 		$response = [];
 		$avatar_sizes = rest_get_avatar_sizes();
