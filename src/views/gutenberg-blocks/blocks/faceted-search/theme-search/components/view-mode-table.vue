@@ -92,14 +92,14 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody role="list">
+                <tbody :role="items.length > 1 ? 'list' : undefined">
                     <tr     
                             v-for="(item, index) of items"
                             :key="index"
                             :data-tainacan-item-id="item.id"
                             :aria-setsize="totalItems"
                             :aria-posinset="getPosInSet(index)"
-                            role="listitem">
+                            :role="items.length > 1 ? 'listitem' : undefined">
                         
                         <!-- JS-side hook for extra content -->
                         <td 
@@ -186,7 +186,7 @@
 
                                     <span v-if="column.metadatum == 'row_thumbnail'">
                                         <img 
-                                                :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                                :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
                                                 class="table-thumb" 
                                                 :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)">
                                         <div class="skeleton" />
@@ -210,10 +210,17 @@
                                             content: $i18n.get('label_see_on_fullscreen'),
                                             placement: 'auto-start',
                                             popperClass: ['tainacan-tooltip', 'tooltip']
-                                        }"          
+                                        }"
+                                        role="button"
+                                        tabindex="0"
+                                        :aria-label="$i18n.get('label_see_on_fullscreen')"
                                         class="icon slideshow-icon"
-                                        @click.prevent="starSlideshowFromHere(index)">
-                                    <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em" />
+                                        @click.prevent="starSlideshowFromHere(index)"
+                                        @keydown.enter.prevent="starSlideshowFromHere(index)"
+                                        @keydown.space.prevent="starSlideshowFromHere(index)">
+                                    <i
+                                            class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"
+                                            aria-hidden="true" />
                                 </span> 
                             </div>
                         </td>
@@ -273,6 +280,11 @@ export default {
     }
     .tainacan-table {
         .tainacan-relationship-group {
+            text-align: start;
+            list-style: none;
+            margin-inline-start: 0;
+            padding-inline-start: 0;
+            
             .tainacan-relationship-metadatum {
                 display: inline-block;
                 .tainacan-relationship-metadatum-header {
@@ -305,6 +317,7 @@ export default {
         }
         .column-large-width {
             .tainacan-compound-group {
+                list-style: none;
                 display: inline-block;
                 font-size: 1.125em;
                 margin-top: -0.25em;
@@ -326,15 +339,15 @@ export default {
                         font-weight: normal;
                         color: var(--tainacan-info-color);
                         display: inline-block;
-                        margin-right: 0.35em;
-                        margin-left: -0.15em;
+                        margin-inline-end: 0.35em;
+                        margin-inline-start: -0.15em;
                     }
                     &::after {
                         content: ': ';
                         font-size: 1em;
                         color: var(--tainacan-info-color);
                         display: inline-block;
-                        margin-right: 0.15em;
+                        margin-inline-end: 0.15em;
                     }
                 }
                 p {

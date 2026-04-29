@@ -53,7 +53,7 @@
     width: 46px;
     background-size: initial;
     top: calc(50% - var(--tainacan-container-padding));
-    left: calc(50% - var(--tainacan-container-padding));
+    inset-inline-start: calc(50% - var(--tainacan-container-padding));
 }
 
 // Link (hover is the same color as secondary
@@ -65,7 +65,10 @@ a:hover {
     display: inline-flex;
     align-items: center;
     font-size: 1em; 
-    margin: 3px 0 6px 0;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    margin-block-start: 3px;
+    margin-block-end: 6px;
     &.disabled {
         pointer-events: none;
         cursor: default;
@@ -113,6 +116,11 @@ html.is-clipped .page-container:not(.is-filters-menu-open) {
 // Inside one of the view modes
 .metadata-value {
     .tainacan-relationship-group {
+        text-align: start;
+        list-style: none;
+        margin-inline-start: 0;
+        padding-inline-start: 0;
+
         .tainacan-relationship-metadatum {
             .tainacan-relationship-metadatum-header {
                 .label {
@@ -121,10 +129,11 @@ html.is-clipped .page-container:not(.is-filters-menu-open) {
                 img {
                     max-width: 22px !important;
                     max-height: 22px;
+                    border-radius: var(--tainacan-item-border-radius, 0px);
                 }
             }
-            .tainacan-metadatum {
-                margin-left: 40px;
+            .tainacan-metadatum {   
+                margin-inline-start: 34px;
                 font-size: 1.125em;
                 &>*{
                     font-size: 0.875em;
@@ -136,9 +145,15 @@ html.is-clipped .page-container:not(.is-filters-menu-open) {
 .metadata-value,
 .tainacan-relationship-group .tainacan-relationship-metadatum .tainacan-metadatum {
     .tainacan-compound-group {
-        margin-left: 2px;
-        padding-left: 0.875em;
-        border-left: 1px solid var(--tainacan-gray2);
+        list-style: none;
+        margin-inline-start: 2px;
+        padding-inline-start: 0.875em;
+        border-inline-start: 1px solid var(--tainacan-gray2);
+
+        & > .tainacan-compound-metadatum:not(:last-child) {
+            border-bottom: 1px solid var(--tainacan-gray2);
+            margin-bottom: 1em;
+        }
 
         .tainacan-compound-metadatum .label {
             margin-bottom: 0.25em;
@@ -159,7 +174,10 @@ html.is-clipped .page-container:not(.is-filters-menu-open) {
             background: var(--tainacan-gray2);
             content: none;
             color: transparent;
-            margin: 1em auto 1em -0.875em;
+            margin-inline-start: -0.875em;
+            margin-block-start: 1em;
+            margin-block-end: 1em;
+            margin-inline-end: auto;
         }
     }
 }
@@ -167,7 +185,7 @@ html.is-clipped .page-container:not(.is-filters-menu-open) {
     font-size: 0.75em;
 
     .tainacan-metadatum {
-        margin-left: 20px;
+        margin-inline-start: 20px;
 
         .label {
             font-size: 1em !important;
@@ -182,7 +200,7 @@ html.is-clipped .page-container:not(.is-filters-menu-open) {
         display: block;
         max-height: 1px;
         width: 80px;
-        background: var(--tainacan-gray3);
+        background: var(--tainacan-gray2);
         content: none;
         color: transparent;
         margin: 1em auto;
@@ -192,9 +210,19 @@ html.is-clipped .page-container:not(.is-filters-menu-open) {
     width: 100%;
 }
 .metadata-type-compound {
-    padding-left: 15px;
-    margin-left: 0px;
-    border-left: 1px solid var(--tainacan-gray2);
+    padding-inline-start: 15px;
+    margin-inline-start: 0px;
+    border-inline-start: 1px solid var(--tainacan-gray2);
+
+    .tainacan-compound-group {
+        list-style: none;
+        margin-inline-start: 0;
+
+        & > .tainacan-compound-metadatum:not(:last-child) {
+            border-bottom: 1px solid var(--tainacan-gray2);
+            margin-bottom: 1em;
+        }
+    }
 
     .tainacan-metadatum {
         margin-bottom: 0.75em;
@@ -208,25 +236,30 @@ html.is-clipped .page-container:not(.is-filters-menu-open) {
     }
 }
 .tainacan-relationship-group {
+    text-align: start;
+    list-style: none;
+    margin-inline-start: 0;
+    padding-inline-start: 0;
+
     .tainacan-relationship-metadatum {
         .tainacan-relationship-metadatum-header {
             display: flex;
             align-items: center;
             img {
-                margin-right: 12px;
+                margin-inline-end: 12px;
                 max-width: 28px !important;
                 max-height: 28px;
             }
             .label {
                 font-weight: normal;
                 margin-top: 0;
-                margin-left: 0;
+                margin-inline-start: 0;
                 margin-bottom: 0;
-                margin-right: 0;
+                margin-inline-end: 0;
             }
         }
         .tainacan-metadatum {
-            margin-left: 40px;
+            margin-inline-start: 40px;
             .label {
                 font-size: 0.8125em;
                 line-height: 1em;
@@ -242,7 +275,20 @@ html.is-clipped .page-container:not(.is-filters-menu-open) {
         background: var(--tainacan-gray2);
         content: none;
         color: transparent;
-        margin: 0.5em 0 0.5em 40px;
+        margin: 0.5em;
+        margin-block-start: 0.5em;
+        margin-block-end: 0.5em;
+        margin-inline-start: 40px;
+    }
+}
+ul.tainacan-relationship-group {
+    list-style: none;
+    margin-inline-start: 0;
+    padding-inline-start: 0;
+
+    & > .tainacan-relationship-metadatum:not(:last-child) {
+        border-bottom: 1px solid var(--tainacan-gray2);
+        margin-bottom: 1em;
     }
 }
 .taginput-container .input:hover {
@@ -295,7 +341,9 @@ audio, video {
     li {
         display: flex;
         align-items: center;
-        padding: 8px 32px 8px 6px;
+        padding-block: 8px;
+        padding-inline-start: 6px;
+        padding-inline-end: 32px;
         width: 100%;
         position: relative;
         overflow-x: hidden;
@@ -304,34 +352,38 @@ audio, video {
         p {
             line-height: normal;
         }
-
-        &:hover {
+        a {
+            display: flex;
+            align-items: center;
+        }
+        &:hover,
+        &:focus,
+        &:focus-within,
+        &:focus-visible {
             cursor: pointer;
             background-color: var(--tainacan-item-hover-background-color);
 
             .actions-area {
                 opacity: 1;
-                visibility: 1;
-                right: 0;
+                inset-inline-end: 0;
             }
         }
     }
     .actions-area {
         position: absolute;
-        right: -32px;
+        inset-inline-end: -32px;
         padding: 0 6px;
         min-height: 28px;
         min-width: 28px;
         opacity: 0;
-        visibility: 0;
-        transition: right 0.3s ease;
+        transition: inset-inline-end 0.3s ease;
     }
     .item-thumb {
         display: flex;
         height: 28px;
         width: 28px;
-        margin-left: 3px;
-        margin-right: 8px;
+        margin-inline-start: 3px;
+        margin-inline-end: 8px;
         overflow: hidden;
         border-radius: var(--tainacan-item-border-radius, 0px);
 

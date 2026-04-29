@@ -9,7 +9,7 @@
     <div
             v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
             ref="search-control"
-            :aria-label="$i18n.get('label_sort_visualization')"
+            aria-labelledby="search-control-landmark"
             role="region"
             class="search-control">
         
@@ -46,15 +46,17 @@
                     'is-hidden': shouldNotHideFiltersOnMobile && hideHideFiltersButton
                 }"
                 :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
-                @click="isFiltersModalActive = !isFiltersModalActive">
-            <span class="icon">
+                @click="toggleFiltersModal()">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i 
                         :class="{
                             'tainacan-icon-arrowdown': isFiltersModalActive && displayFiltersHorizontally,
                             'tainacan-icon-arrowleft': isFiltersModalActive && !displayFiltersHorizontally,
                             'tainacan-icon-arrowright' : !isFiltersModalActive
                         }"
-                        class="tainacan-icon tainacan-icon-1-25em" />
+                        class="tainacan-icon tainacan-icon-1-25em tainacan-icon-is-rtl-mirrored" />
             </span>
             <span class="text is-hidden-tablet">{{ $i18n.get('filters') }}</span>
         </button>
@@ -63,9 +65,7 @@
         <div 
                 v-if="!hideSearch"
                 class="search-control-item search-control-item--search">
-            <div 
-                    role="search" 
-                    class="search-area">
+            <div class="search-area">
                 <b-dropdown
                         ref="tainacan-textual-search-input"
                         :trigger-tabindex="-1"
@@ -76,9 +76,8 @@
                     <template #trigger>
                         <b-input
                                 size="is-small"
-                                :placeholder="$i18n.get('instruction_search')"
+                                :placeholder="$i18n.get('instruction_search_and_press_enter')"
                                 type="search"
-                                :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
                                 :model-value="searchQuery"
                                 icon-right="magnify"
                                 icon-right-clickable
@@ -153,10 +152,11 @@
             <button 
                     class="button is-white"
                     :aria-label="$i18n.get('filters')"
-                    @click="isFiltersModalActive = !isFiltersModalActive">
+                    @click="toggleFiltersModal()">
                 <span 
                         :class="{ 'has-text-secondary': hasFiltered }"
-                        class="gray-icon">
+                        class="gray-icon"
+                        aria-hidden="true">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters" />
                 </span>
                 <span class="is-hidden-touch">{{ $i18n.get('filters') }}</span>
@@ -192,7 +192,9 @@
                             class="button is-white">
                         <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_displayed_metadata') }}</span>
                         <span class="is-hidden-widescreen">{{ $i18n.get('metadata') }}</span>
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                         </span>
                     </button>
@@ -250,7 +252,9 @@
                                         :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
                                         class="tainacan-icon" />
                             </span>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
@@ -261,7 +265,9 @@
                             :class="{ 'is-active': order == 'DESC' }"
                             :value="'DESC'"
                             tag="button">
-                        <span class="icon gray-icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon gray-icon">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending" />
                         </span>
                         <span>{{ $i18n.get('label_descending') }}</span>
@@ -272,7 +278,9 @@
                             :class="{ 'is-active': order == 'ASC' }"
                             :value="'ASC'"
                             tag="button">
-                        <span class="icon gray-icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon gray-icon">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending" />
                         </span>
                         <span>{{ $i18n.get('label_ascending') }}</span>
@@ -286,11 +294,13 @@
                         {{ $i18n.get('info_by_inner') }}
                     </span>
                     <b-dropdown
-                            id="tainacanSortByDropdown"
+                            id="tainacanSortByDropdown"        
+                            ref="sortByDropdown"
                             v-a11y-dropdown
                             :trigger-tabindex="-1"
                             :mobile-modal="true"
                             trap-focus
+                            @active-change="onSortByDropdownActiveChange"
                             @update:model-value="onChangeOrderBy($event)">
                         <template #trigger>
                             <button
@@ -298,7 +308,9 @@
                                     class="button is-white"
                                     aria-labelledby="tainacanLabelSortingMetadata tainacanSortingMetadataButton">
                                 <span>{{ orderByName }}</span>
-                                <span class="icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                 </span>
                             </button>
@@ -330,12 +342,12 @@
                 <label 
                         id="tainacanLabelViewModes"
                         class="label is-hidden-touch is-hidden-desktop-only"
-                        :style="{ marginRight: showInlineViewModeOptions ? '' : '-10px'}">
+                        :style="{ marginInlineEnd: showInlineViewModeOptions ? '' : '-10px'}">
                     {{ $i18n.get('label_visualization') + ':&nbsp; ' }}
                 </label>
                 <label 
                         class="label is-hidden-widescreen"
-                        :style="{ marginRight: showInlineViewModeOptions ? '' : '-10px'}"
+                        :style="{ marginInlineEnd: showInlineViewModeOptions ? '' : '-10px'}"
                         aria-hidden="true">
                     {{ $i18n.get('label_view_on') + ':&nbsp; ' }}
                 </label>
@@ -355,9 +367,12 @@
                             <span 
                                     v-if="registeredViewModes[viewMode] != undefined"
                                     class="gray-icon view-mode-icon"
+                                    aria-hidden="true"
                                     v-html="registeredViewModes[viewMode].icon" />
                             <span class="is-hidden-touch">&nbsp;&nbsp;&nbsp;{{ registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : $i18n.get('label_visualization') }}</span>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
@@ -374,6 +389,7 @@
                             <span 
                                     v-if="!showInlineViewModeOptions"
                                     class="gray-icon"
+                                    aria-hidden="true"
                                     v-html="registeredViewModes[viewModeOption].icon" />
                             <span 
                                     v-else 
@@ -388,6 +404,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="gray-icon"
+                                    aria-hidden="true"
                                     v-html="registeredViewModes[viewModeOption].icon" />
                             <span v-if="!showInlineViewModeOptions">{{ registeredViewModes[viewModeOption].label }}</span>
                         </b-dropdown-item>
@@ -411,6 +428,7 @@
                         @click="onChangeViewMode(viewModeOption)">
                     <span 
                             class="gray-icon view-mode-icon"
+                            aria-hidden="true"
                             v-html="registeredViewModes[viewModeOption].icon" />
                     <span class="is-hidden-tablet-only">{{ registeredViewModes[viewModeOption].label }}</span>
                 </button>
@@ -427,7 +445,9 @@
                     :aria-label="$i18n.get('label_view_as')"
                     :disabled="totalItems == undefined || totalItems <= 0"
                     @click="openExposersModal()">
-                <span class="gray-icon">
+                <span 
+                        aria-hidden="true"
+                        class="gray-icon">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas" />
                 </span>
                 <span class="is-hidden-tablet-only is-hidden-desktop-only ">{{ $i18n.get('label_view_as') }}</span>
@@ -490,7 +510,7 @@
                 :tabindex="filtersAsModal ? -1 : 0"
                 :aria-modal="filtersAsModal"
                 :role="filtersAsModal ? 'dialog' : ''"
-                aria-labelledby="filters-label-landmark"
+                :aria-labelledby="filtersAsModal ? 'filters-label-landmark' : undefined"
                 :width="736"
                 :auto-focus="filtersAsModal"
                 :trap-focus="filtersAsModal"
@@ -500,7 +520,8 @@
                 :can-cancel="hideHideFiltersButton || !filtersAsModal ? ['x', 'outside'] : ['x', 'escape', 'outside']"
                 :close-button-aria-label="$i18n.get('close')"
                 @after-leave="filtersModalStateHasChanged = !filtersModalStateHasChanged"
-                @after-enter="filtersModalStateHasChanged = !filtersModalStateHasChanged">
+                @after-enter="filtersModalStateHasChanged = !filtersModalStateHasChanged"
+                @close="onFiltersModalClose()">
                 
             <!-- JS-side hook for extra form content -->
             <div 
@@ -603,8 +624,6 @@
                 id="items-list-results"
                 :aria-busy="isLoadingItems"
                 aria-labelledby="items-list-landmark"
-                aria-live="polite"
-                aria-atomic="false"
                 role="region"
                 class="above-search-control">
             
@@ -709,7 +728,7 @@
                 
                 <!-- Empty Placeholder, rendered in a slot inside the view modes -->
                 <section
-                        v-if="!showLoading && totalItems == 0"
+                        v-if="!showLoading && (totalItems == 0 || (totalItems == null && !pendingInitialLoad))"
                         class="section"
                         role="status"
                         aria-live="polite"
@@ -801,7 +820,7 @@
     import { nextTick, defineAsyncComponent } from 'vue';
     import { mapActions, mapGetters } from 'vuex';
     import qs from 'qs';
-    import ItemsPagination from '../../../admin/components/search/items-pagination.vue'
+    import ItemsPagination from '../../../admin/components/search/items-pagination.vue';
 
     export default {
         name: 'ThemeSearch',
@@ -875,7 +894,8 @@
                 latestPerPageAfterViewModeWithoutPagination: 12,
                 latestPageAfterViewModeWithoutPagination: 1,
                 hooks: {},
-                filtersModalStateHasChanged: false
+                filtersModalStateHasChanged: false,
+                pendingInitialLoad: true
             }
         },
         computed: {
@@ -1023,9 +1043,18 @@
                         if (this.$route.query && this.$route.query.advancedSearch)
                            this.$store.dispatch('search/setAdvancedQuery', JSON.parse(JSON.stringify(this.$route.query)));
                         
-                        // Finally, loads items even berfore facets so they won't stuck them
-                        if (to.fullPath != from.fullPath)
-                            this.$eventBusSearch.loadItems();
+                        // Finally, loads items even before facets so they won't stuck them
+                        if (to.fullPath != from.fullPath) {
+                            if (this.pendingInitialLoad) {
+                                const hasFetchOnly = this.$store.getters['search/getPostQuery']['fetch_only'] != undefined;
+                                if (hasFetchOnly) {
+                                    this.pendingInitialLoad = false;
+                                    this.$eventBusSearch.loadItems();
+                                }
+                            } else {
+                                this.$eventBusSearch.loadItems();
+                            }
+                        }
 
                         // Checks current metaqueries and taxqueries to alert filters that should reload
                         // For some reason, this process is not working accessing to.query, so we need to check the path string. 
@@ -1373,9 +1402,19 @@
                         this.hooks['items_list_area_after'] = itemsListAreaAfterFiltersCollection;
                 }
             },
-            openExposersModal() {
+            toggleFiltersModal() {
+                if (!this.isFiltersModalActive)
+                    this._filtersModalTrigger = this.$modalFocusA11y.captureTrigger();
+                this.isFiltersModalActive = !this.isFiltersModalActive;
+            },
+            onFiltersModalClose() {
+                this.$modalFocusA11y.restoreFocus(this._filtersModalTrigger, this);
+            },
+            async openExposersModal() {
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
+                const ExposersModal = (await import('../../../admin/components/modals/exposers-modal.vue')).default;
                 this.$buefy.modal.open({
-                    component: defineAsyncComponent(() => import('../../../admin/components/modals/exposers-modal.vue')),
+                    component: ExposersModal,
                     hasModalCard: false,
                     props: { 
                         collectionId: this.collectionId,
@@ -1384,7 +1423,12 @@
                     trapFocus: true,
                     customClass: 'tainacan-modal',
                     canCancel: ['escape', 'outside'],
-                    width: 786
+                    width: 786,
+                    events: {
+                        beforeClose: () => {
+                            this.$modalFocusA11y.restoreFocus(modalTrigger, this);
+                        }
+                    }
                 });
             },
             updateSearch() {
@@ -1626,6 +1670,8 @@
                                     })
                                 }
 
+                                // Initial item load runs from the $route watcher once fetch_only exists
+                                // (addFetchOnly -> updateURLQueries / router.replace).
                                 this.isLoadingMetadata = false;
                                 this.displayedMetadata = metadata;
                             })
@@ -1640,10 +1686,7 @@
             showItemsHiddingDueSortingDialog() {
 
                 if (this.isSortingByCustomMetadata &&
-                    this.$userPrefs.get('neverShowItemsHiddenDueSortingDialog') != true) {     
-
-                    this.hasAnOpenModal = true;
-
+                    this.$userPrefs.get('neverShowItemsHiddenDueSortingDialog') != true) {
                     this.openMetatadaSortingWarningDialog({ offerCheckbox: true });
                 }
             },
@@ -1658,19 +1701,50 @@
                 if ( !this.hasSearchByMoreThanOneWord && this.$refs['tainacan-textual-search-input'] && this.$refs['tainacan-textual-search-input'].isActive && typeof this.$refs['tainacan-textual-search-input'].toggle === 'function' )
                     this.$refs['tainacan-textual-search-input'].toggle();
             },
-            openMetatadaSortingWarningDialog({ offerCheckbox }) {
+            /**
+             * When the sort by dropdown is closed, we need to keep it open for the modal
+             * to avoid the screen reader from announcing the dropdown as closed.
+             */
+            onSortByDropdownActiveChange(isActive) {
+                if (!isActive && this.hasAnOpenModal) {
+                    this.$nextTick(() => {
+                        const el = this.$refs.sortByDropdown?.$el || document.getElementById('tainacanSortByDropdown');
+                        if (el) el.classList.add('is-active', 'tainacan-sort-dropdown-held-open');
+                    });
+                }
+            },
+            /**
+             * When the modal is closed, we need to close the sort by dropdown
+             * to avoid the screen reader from announcing the dropdown as open.
+             */
+            closeSortDropdownHeldOpenForModal() {
+                this.hasAnOpenModal = false;
+                const el = this.$refs.sortByDropdown?.$el || document.getElementById('tainacanSortByDropdown');
+                if (el) el.classList.remove('is-active', 'tainacan-sort-dropdown-held-open');
+            },
+            async openMetatadaSortingWarningDialog({ offerCheckbox }) {
+                this.hasAnOpenModal = true;
+                const dropdownTrigger = this.$modalFocusA11y.getDropdownTrigger(this.$refs.sortByDropdown);
+                const modalTrigger = this.$modalFocusA11y.captureTrigger(dropdownTrigger);
+                const CustomDialog = (await import('../../../admin/components/other/custom-dialog.vue')).default;
                 this.$buefy.modal.open({
-                        component: defineAsyncComponent(() => import('../../../admin/components/other/custom-dialog.vue')),
+                        component: CustomDialog,
                         props: {
                             icon: 'alert',
                             title: this.$i18n.get('label_warning'),
                             message: this.$i18n.get('info_items_hidden_due_sorting'),
                             onConfirm: () => {
-                                this.hasAnOpenModal = false;
+                                this.closeSortDropdownHeldOpenForModal();
                             },
                             hideCancel: true,
                             showNeverShowAgainOption: offerCheckbox && tainacan_user.caps != undefined && Object.keys(tainacan_user.caps).length != undefined && Object.keys(tainacan_user.caps).length > 0,
                             messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
+                        },
+                        events: {
+                            beforeClose: () => {
+                                this.closeSortDropdownHeldOpenForModal();
+                                this.$modalFocusA11y.restoreFocus(modalTrigger, this);
+                            }
                         },
                         trapFocus: true,
                         customClass: 'tainacan-modal',
@@ -1875,9 +1949,15 @@
 
         .metadata-value {
             .tainacan-compound-group {
-                margin-left: 2px;
-                padding-left: 0.875em;
-                border-left: 1px solid var(--tainacan-gray3);
+                list-style: none;
+                margin-inline-start: 2px;
+                padding-inline-start: 0.875em;
+                border-inline-start: 1px solid var(--tainacan-gray3);
+
+                & > .tainacan-compound-metadatum:not(:last-child) {
+                    border-bottom: 1px solid var(--tainacan-gray2);
+                    margin-bottom: 1em;
+                }
 
                 .tainacan-compound-metadatum .label {
                     margin-bottom: 0.25em;
@@ -1898,30 +1978,44 @@
                     background: var(--tainacan-gray3);
                     content: none;
                     color: transparent;
-                    margin: 1em auto 1em -0.875em;
+                    margin-inline-start: -0.875em;
+                    margin-inline-end: auto;
+                    margin-block-start: 1em;
+                    margin-block-end: 1em;
                 }
             }
             .tainacan-relationship-group {
+                text-align: start;
+                list-style: none;
+                margin-inline-start: 0;
+                padding-inline-start: 0;
+
+                & > li.tainacan-relationship-metadatum:not(:last-child) {
+                    border-bottom: 1px solid var(--tainacan-gray2);
+                    margin-bottom: 1em;
+                }
+                
                 .tainacan-relationship-metadatum {
                     .tainacan-relationship-metadatum-header {
                         display: flex;
                         align-items: center;
                         img {
-                            margin-right: 12px;
+                            margin-inline-end: 12px;
                             max-width: 22px;
                             max-height: 22px;
+                            border-radius: var(--tainacan-item-border-radius, 0px);
                         }
                         .label {
                             font-weight: normal;
                             font-size: 1em !important;
                             margin-top: 0;
-                            margin-left: 0;
+                            margin-inline-start: 0;
                             margin-bottom: 0;
-                            margin-right: 0;
+                            margin-inline-end: 0;
                         }
                     }
                     .tainacan-metadatum {
-                        margin-left: 40px;
+                        margin-inline-start: 34px;
                         .label {
                             color: var(--tainacan-gray4);
                             font-size: 1em !important;
@@ -1934,11 +2028,11 @@
                 &>.multivalue-separator {
                     display: block;
                     max-height: 1px;
-                    width: calc(100% - 40px);
+                    width: calc(100% - 34px);
                     background: var(--tainacan-gray2);
                     content: none;
                     color: transparent;
-                    margin: 0.5em 0 0.5em 40px;
+                    margin: 0.5em 0 0.5em 34px;
                 }
             }
         }
@@ -1957,14 +2051,14 @@
         padding-left: var(--tainacan-one-column);
         margin-bottom: 1em;
 
-        p { margin-left: 0.75em; }
+        p { margin-inline-start: 0.75em; }
     }
     
     #filter-menu-compress-button {
         position: absolute;
         z-index: 99;
         bottom: 0px;
-        left: 0;
+        inset-inline-start: 0;
         max-width: 1.625em;
         height: 1.625em;
         width: 1.625em;
@@ -1972,8 +2066,8 @@
         background-color: var(--tainacan-primary);
         color: var(--tainacan-secondary);
         padding: 0;
-        border-top-right-radius: 2px;
-        border-bottom-right-radius: 2px;
+        border-start-end-radius: 2px;
+        border-end-end-radius: 2px;
         cursor: pointer;
         transition: top 0.3s;
         display: flex;
@@ -2014,7 +2108,7 @@
         .view-mode-icon {
             margin-right: 0px !important;
             margin-top: -2px;
-            margin-left: 4px;
+            margin-inline-start: 4px;
             width: 1.25em;
 
             &.icon i::before, 
@@ -2029,12 +2123,12 @@
             max-width: 100%;
             display: inline-block;
             margin-bottom: 12px;
-            margin-right: auto;
-            padding-right: 10px;
+            margin-inline-end: auto;
+            padding-inline-end: 10px;
 
             @media screen and (max-width: 768px) {            
                 margin-right: 0;
-                padding-right: 0;
+                padding-inline-end: 0;
 
                  &:first-of-type {
                     min-width: 100%;
@@ -2046,7 +2140,7 @@
             }
 
             &:last-child {
-                margin-right: 0;
+                margin-inline-end: 0;
             }
 
             .label {
@@ -2079,7 +2173,7 @@
             .gray-icon, 
             .gray-icon .icon {
                 color: var(--tainacan-info-color) !important;
-                padding-right: 10px;
+                padding-inline-end: 10px;
                 justify-content: space-between;
                 &.is-small {
                     width: 1em;
@@ -2168,12 +2262,12 @@
                     margin: -2px 0 5px 0;
                 }
                 a.advanced-search-toggle {
-                    margin-left: 12px;
+                    margin-inline-start: 12px;
                     white-space: nowrap; 
                     position: absolute;
                     font-size: 0.75em;
-                    right: 15px;
-                    left: unset;
+                    inset-inline-end: 15px;
+                    inset-inline-start: unset;
                     top: 100%;
                     transition: font-size 0.2s ease, right 0.3s ease, left 0.3s ease, top 0.4s ease;
                     
@@ -2203,6 +2297,9 @@
                 #tainacanSortByDropdown .dropdown-trigger .button > span {
                     max-width: 180px;
                 }
+            }
+            #tainacanSortByDropdown.tainacan-sort-dropdown-held-open .dropdown-menu {
+                visibility: hidden !important;
             }
         }
     }
@@ -2264,7 +2361,7 @@
         overflow-y: hidden;
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
-        margin-left: 0;
+        margin-inline-start: 0;
 
         // Metadata type textarea has different separators in different spots on interface
         .multivalue-separator {

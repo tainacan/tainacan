@@ -22,7 +22,7 @@
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading) && !$adminOptions.hideItemSingleCurrentStatus"
                         class="status-tag is-hidden-mobile">
-                    {{ $i18n.get('status_' + item.status) }}
+                    {{ $statusHelper.getStatusLabel(item.status) }}
                 </span>
             </h1>
         </tainacan-title>
@@ -88,7 +88,9 @@
                                             :key="sectionIndex">
                                         <div class="metadata-section-header section-label">
                                             <label>
-                                                <span class="icon has-text-dark">
+                                                <span 
+                                                        aria-hidden="true"
+                                                        class="icon has-text-dark">
                                                     <i class="tainacan-icon tainacan-icon-metadata" />
                                                 </span>
                                                 {{ metadataSection.name }}&nbsp;
@@ -111,12 +113,32 @@
                                                     {{ itemMetadatum.metadatum.name }}
                                                     <span 
                                                             v-if="itemMetadatum.metadatum.status !== 'publish'"
+                                                            aria-hidden="true"
                                                             class="icon has-text-dark">
                                                         <i 
                                                                 class="tainacan-icon tainacan-icon-1em"
                                                                 :class="$statusHelper.getIcon(itemMetadatum.metadatum.status)"
                                                             />
                                                     </span>
+                                                    <button 
+                                                            v-if="!$adminOptions.hideItemSingleActivities &&
+                                                                !isUsingDeprecatedLogs &&
+                                                                $userCaps.hasCapability('tnc_rep_read_logs') &&
+                                                                itemMetadatum.metadatum.metadata_type_object.component != 'tainacan-compound'"
+                                                            v-tooltip="{
+                                                                content: $i18n.get('label_view_activity_logs'),
+                                                                autoHide: true,
+                                                                popperClass: ['tainacan-tooltip', 'tooltip']
+                                                            }"
+                                                            class="button link-style"
+                                                            aria-label="$i18n.get('label_view_activity_logs')"
+                                                            @click="openActivitiesModal(itemMetadatum.item.id, itemMetadatum.metadatum.id)">
+                                                        <span
+                                                                class="icon"
+                                                                style="margin: 0;">
+                                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities" />
+                                                        </span>
+                                                    </button>
                                                 </label>
                                                 <div
                                                         :class="{
@@ -178,7 +200,9 @@
                         <!-- Publication area -->
                         <div class="section-label">
                             <label>
-                                <span class="icon has-text-dark">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon has-text-dark">
                                     <i class="tainacan-icon tainacan-icon-item" />
                                 </span>
                                 {{ collection && collection.item_publication_label ? collection.item_publication_label : $i18n.get('label_publication_data') }}
@@ -196,7 +220,9 @@
                                     <div class="field-body">
                                         <div class="field has-addons">
                                             <div>
-                                                <span class="icon has-text-dark">
+                                                <span 
+                                                        aria-hidden="true"
+                                                        class="icon has-text-dark">
                                                     <i class="tainacan-icon tainacan-icon-userfill tainacan-icon-1-25em " />
                                                 </span>
                                                 &nbsp;{{ item.author_name }}
@@ -218,7 +244,9 @@
                                                     target="_blank"
                                                     :href="item.url">
                                                 <strong>.../{{ item.slug }}</strong>&nbsp;
-                                                <span class="icon">
+                                                <span 
+                                                        aria-hidden="true"
+                                                        class="icon">
                                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl" />
                                                 </span>
                                             </a>
@@ -237,7 +265,9 @@
                                     </div>
                                     <div class="field-body">
                                         <div class="field has-addons">
-                                            <span class="icon has-text-dark">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon has-text-dark">
                                                 <i 
                                                         class="tainacan-icon tainacan-icon-18px"
                                                         :class="$statusHelper.getIcon(item.status)" />
@@ -250,7 +280,7 @@
                                                 {{ $i18n.get('status_auto-draft') }}
                                             </template>
                                             <help-button
-                                                    :title="$i18n.get('status_' + item.status)"
+                                                    :title="$statusHelper.getStatusLabel(item.status)"
                                                     :message="$i18n.get('info_item_' + item.status)" />
                                         </div>
                                     </div>
@@ -267,7 +297,9 @@
                                     </div>
                                     <div class="field-body">
                                         <div class="field has-addons">
-                                            <span class="icon has-text-dark">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon has-text-dark">
                                                 <i class="tainacan-icon tainacan-icon-comment" />
                                             </span>
                                             &nbsp;
@@ -286,7 +318,9 @@
                                 v-if="shouldDisplayItemSingleDocument"
                                 class="section-label">
                             <label>
-                                <span class="icon has-text-dark tainacan-icon-1-125em">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon has-text-dark tainacan-icon-1-125em">
                                     <i :class="'tainacan-icon tainacan-icon-' + ( (!item.document_type || item.document_type == 'empty' ) ? 'item' : (item.document_type == 'attachment' ? 'attachments' : item.document_type))" />
                                 </span>
                                 {{ collection && collection.item_document_label ? collection.item_document_label : ( (item.document != undefined && item.document != null && item.document != '') ? $i18n.get('label_document') : $i18n.get('label_document_empty') ) }}
@@ -313,7 +347,9 @@
                                 v-if="shouldDisplayItemSingleThumbnail"
                                 class="section-label">
                             <label>
-                                <span class="icon has-text-dark">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon has-text-dark">
                                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-image" />
                                 </span>
                                 {{ collection && collection.item_thumbnail_label ? collection.item_thumbnail_label : $i18n.get('label_thumbnail') }}
@@ -364,7 +400,9 @@
                                 v-if="shouldDisplayItemSingleAttachments"
                                 class="section-label">
                             <label>
-                                <span class="icon has-text-dark">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon has-text-dark">
                                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-attachments" />
                                 </span>
                                 <span>
@@ -401,7 +439,9 @@
                     </div>
                     <div class="field has-addons">
                         <span style="display: flex;">
-                            <span class="icon has-text-dark">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon has-text-dark">
                                 <i 
                                         v-if="itemVisibility == 'open_access'"
                                         class="tainacan-icon tainacan-icon-see" />
@@ -443,7 +483,7 @@
                     <router-link
                             v-if="item.current_user_can_edit && $route.query.recent == true"
                             class="button is-secondary"
-                            style="margin-right: auto;"
+                            style="margin-inline-end: auto;"
                             :to="{ path: $routerHelper.getNewItemPath(collectionId)}">
                         <!-- <span class="icon is-large">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-add"/>
@@ -451,12 +491,14 @@
                         <span>{{ $i18n.get('label_create_another_item') }}</span>
                     </router-link>
                     <button 
-                            v-if="!$adminOptions.hideItemSingleActivities"
+                            v-if="!$adminOptions.hideItemSingleActivities && $userCaps.hasCapability('tnc_rep_read_logs')"
                             class="button sequence-button"
                             :aria-label="$i18n.get('label_view_activity_logs')"
                             :disabled="isLoading"
                             @click="openActivitiesModal()">
-                        <span class="icon is-large">
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-large">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities" />
                         </span>
                         <span class="is-hidden-touch">{{ $i18n.get('label_view_activity_logs') }}</span>
@@ -467,7 +509,9 @@
                             :aria-label="$i18n.get('label_view_as')"
                             :disabled="isLoading"
                             @click="openExposersModal()">
-                        <span class="icon is-large">
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-large">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas" />
                         </span>
                         <span class="is-hidden-touch">{{ $i18n.get('label_view_as') }}</span>
@@ -476,7 +520,9 @@
                             v-if="item.current_user_can_edit"
                             class="button is-secondary"
                             :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
-                        <span class="icon is-large">
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-large">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                         </span>
                         <span>{{ $i18n.getFrom('items','edit_item') }}</span>
@@ -513,7 +559,8 @@
                 open: true,
                 urls_open: false,
                 entityName: 'item',
-                activeTab: 'metadata'
+                activeTab: 'metadata',
+                isUsingDeprecatedLogs: tainacan_plugin.tainacan_use_deprecated_logs
             }
         },
         computed: {
@@ -678,6 +725,7 @@
                 });
             },
             openExposersModal() {
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: ExposersModal,
                     hasModalCard: false,
@@ -689,14 +737,24 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    canCancel: ['escape', 'outside']
+                    canCancel: ['escape', 'outside'],
+                    events: {
+                        beforeClose: () => {
+                            this.$modalFocusA11y.restoreFocus(modalTrigger, this);
+                        }
+                    }
                 });
             },
-            openActivitiesModal() {
+            openActivitiesModal(itemId, metadatumId = null) {
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: ActivitiesPage,
                     customClass: 'tainacan-modal',
-                    canCancel: ['escape', 'outside']
+                    canCancel: ['escape', 'outside'],
+                    props: { metadatumId, metadatumName: this.itemMetadata.find(itemMetadatum => itemMetadatum.metadatum.id == metadatumId)?.metadatum.name ?? null },
+                    events: {
+                        beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                    }
                 });
             }
         }
@@ -799,16 +857,16 @@
                         
                         :deep(.collapse-handle) {
                             font-size: 1em;
-                            margin-left: 0;
-                            margin-right: 22px;
+                            margin-inline-start: 0;
+                            margin-inline-end: 22px;
                             width: 100%;
                             display: block;
 
                             .label {
-                                margin-left: 2px;
+                                margin-inline-start: 2px;
                             }
                             .icon {
-                                float: right;
+                                float: inline-end;
                                 width: 3em;
                                 justify-content: flex-end;
                             }
@@ -862,11 +920,11 @@
                 font-size: 0.875em;
                 font-weight: 500;
                 margin-bottom: 0.5em;
-                display: inline-flex;
+                display: flex;
                 align-items: center;
 
                 span {
-                    margin-right: 18px;
+                    margin-inline-end: 18px;
                 }
             }
             p:empty {
@@ -932,9 +990,9 @@
 
         .field-label {
             white-space: nowrap;
-            text-align: left;
             text-align: start;
-            margin-right: 1rem;
+            text-align: start;
+            margin-inline-end: 1rem;
             margin-bottom: 0;
         }
         .field.has-addons {
@@ -953,7 +1011,7 @@
             }
         }
         .tainacan-help-tooltip-trigger {
-            margin-left: 1rem;
+            margin-inline-start: 1rem;
         }
         #tainacan-text-slug #url-prefix-indicator {
             pointer-events: initial;
@@ -963,7 +1021,7 @@
             font-family: var(--tainacan-font-family);
             font-size: 1.125em;
             opacity: 0.5;
-            margin-right: -0.35em;
+            margin-inline-end: -0.35em;
             color: var(--tainacan-info-color);
             cursor: pointer;
         }
@@ -981,7 +1039,7 @@
         display: flex;
         
         .thumbnail-alt-input {
-            margin-left: 1em;
+            margin-inline-start: 1em;
         }
     }
 
@@ -1001,7 +1059,7 @@
             :deep(img),
             :deep(video),
             :deep(figure) {
-                max-width: 100%;
+                max-width: 100% !important;
                 max-height: 32vh;
                 width: auto;
                 margin: 0;
@@ -1101,7 +1159,7 @@
         padding: 10px var(--tainacan-one-column);
         position: absolute;
         bottom: 0;
-        right: 0;
+        inset-inline-end: 0;
         z-index: 1001;
         background-color: var(--tainacan-gray1);
         width: 100%;
@@ -1140,12 +1198,12 @@
             justify-content: flex-end;
 
             .button {
-                margin-left: 16px;
-                margin-right: 6px;
+                margin-inline-start: 16px;
+                margin-inline-end: 6px;
             }
             .button.is-outlined {
-                margin-left: 0px;
-                margin-right: auto;
+                margin-inline-start: 0px;
+                margin-inline-end: auto;
             }
         }
 
@@ -1155,7 +1213,7 @@
             border: none;
 
             .icon {
-                margin-right: 5px !important;
+                margin-inline-end: 5px !important;
             }
 
             &:hover,
@@ -1173,7 +1231,7 @@
         }
         .footer {
             padding: 13px 0.5em;
-            margin-left: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
+            margin-inline-start: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
             width: 100%;
             flex-wrap: wrap;
             height: auto;

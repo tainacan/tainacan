@@ -5,6 +5,7 @@
         <label>{{ $i18n.get('metadata_types') }}&nbsp;</label>
         <div class="graph-mode-switch">
             <button 
+                    type="button"
                     :class="{ 'current': metadataTypeChartMode == 'bar' }"
                     @click="metadataTypeChartMode = 'bar'">
                 <span class="sr-only">
@@ -15,6 +16,7 @@
                 </span>
             </button>
             <button 
+                    type="button"
                     :class="{ 'current': metadataTypeChartMode == 'circle' }"
                     @click="metadataTypeChartMode = 'circle'">
                 <span class="sr-only">
@@ -101,7 +103,10 @@ export default {
                             height: 350,
                             stacked: false,
                             toolbar: {
-                                show: true
+                                show: true,
+                                export: {
+                                    scale: 3
+                                }
                             },
                             zoom: {
                                 enabled: true,

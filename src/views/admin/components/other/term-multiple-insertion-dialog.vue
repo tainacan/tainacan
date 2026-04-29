@@ -11,15 +11,15 @@
                 style="width: auto">
 
             <div class="modal-custom-icon">
-                <span class="icon is-large">
+                <span 
+                        aria-hidden="true"
+                        class="icon is-large">
                     <i 
                             style="color: var(--tainacan-blue5);"
                             class="tainacan-icon tainacan-icon-taxonomies" />
                 </span>
             </div>
-            <section 
-                    tabindex="1"
-                    class="modal-card-body">
+            <section class="modal-card-body">
                 <header 
                         class="modal-card-head">
                     <h1 
@@ -38,6 +38,7 @@
 
                     <b-taginput
                             v-model="termNames"
+                            v-a11y-autocomplete
                             attached
                             :confirm-keys="termNamesSeparator"
                             :on-paste-separators="termNamesSeparator"
@@ -55,7 +56,7 @@
                                 name="term-multiple-insertion-separator"
                                 :native-value="separator"
                                 :disabled="separator == 'Enter'">
-                            <kbd>{{ separator }}</kbd>
+                            <kbd class="tainacan-kbd">{{ separator }}</kbd>
                         </b-checkbox>
                     </div>
                 </b-field>
@@ -78,6 +79,7 @@
                             v-if="hasParent"
                             id="tainacan-add-parent-field"
                             v-model="parentTermName"
+                            v-a11y-autocomplete="{ appendToBody: true }"
                             :placeholder="$i18n.get('instruction_parent_term')"
                             :data="parentTerms"
                             field="name"
@@ -150,7 +152,8 @@
             initialTermParentName: String
         },
         emits: [
-            'close'
+            'close',
+            'beforeClose'
         ],
         data() {
             return {
@@ -176,6 +179,9 @@
         mounted() {
             if (this.$refs.termMultipleInsertionDialog)
                 this.$refs.termMultipleInsertionDialog.focus();
+        },
+        beforeUnmount() {
+            this.$emit('beforeClose');
         },
         methods: {
             ...mapActions('taxonomy', [
@@ -247,7 +253,7 @@
     }
 
     button.is-success {
-        margin-left: auto;
+        margin-inline-start: auto;
     }
 
     .b-checkbox.checkbox {

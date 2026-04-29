@@ -10,15 +10,15 @@
                 class="modal-card" 
                 style="width: auto; max-width: 560px;">
             <div class="modal-custom-icon">
-                <span class="icon is-large">
+                <span 
+                        aria-hidden="true"
+                        class="icon is-large">
                     <i 
                             style="color: var(--tainacan-red2);"
                             class="tainacan-icon tainacan-icon-alert" />
                 </span>
             </div>
-            <section 
-                    tabindex="1"
-                    class="modal-card-body">
+            <section class="modal-card-body">
                 <header 
                         class="modal-card-head">
                     <h1 
@@ -87,7 +87,8 @@
             },
         },
         emits: [
-            'close'
+            'close',
+            'beforeClose'
         ],
         data() {
             return {
@@ -97,6 +98,9 @@
         mounted() {
             if (this.$refs.termDeletionDialog)
                 this.$refs.termDeletionDialog.focus();
+        },
+        beforeUnmount() {
+            this.$emit('beforeClose');
         }
     }
 </script>
@@ -109,7 +113,7 @@
     }
 
     button.is-success {
-        margin-left: auto;
+        margin-inline-start: auto;
     }
 
     .b-checkbox.checkbox {

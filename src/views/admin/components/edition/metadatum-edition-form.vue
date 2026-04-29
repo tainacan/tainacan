@@ -71,7 +71,9 @@
                                                 type="button"
                                                 class="button is-outlined"
                                                 style="width: auto">
-                                            <span class="icon has-text-dark">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon has-text-dark">
                                                 <i 
                                                         class="tainacan-icon tainacan-icon-18px"
                                                         :class="$statusHelper.getIcon(form.status)" />
@@ -83,8 +85,9 @@
                                                 {{ $i18n.get('status_auto-draft') }}
                                             </template>
                                             <span 
-                                                    style="margin-left: 0.5em;"
-                                                    class="icon is-small">
+                                                    style="margin-inline-start: 0.5em;"
+                                                    class="icon is-small"
+                                                    aria-hidden="true">
                                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                             </span>
                                         </button>
@@ -95,7 +98,9 @@
                                             @click="form.status = statusOption.slug"
                                             @keydown.enter.prevent="form.status = statusOption.slug"
                                             @keydown.space.prevent="form.status = statusOption.slug">
-                                        <span class="icon has-text-dark">
+                                        <span 
+                                                aria-hidden="true"
+                                                class="icon has-text-dark">
                                             <i 
                                                     class="tainacan-icon tainacan-icon-18px"
                                                     :class="$statusHelper.getIcon(statusOption.slug)" />
@@ -258,15 +263,17 @@
                                 <b-field
                                         v-if="!originalMetadatum.metadata_type_object.core && form.parent == 0 && form.multiple == 'yes'"
                                         :addons="false"
-                                        style="margin: 0 0 1em 1.5em;">
+                                        style="margin: 0 0 0 1.5em;">
                                     <div 
                                             style="margin-top: 0;"
                                             class="metadata-form-section"
                                             @click="showCardinalityOptions = !showCardinalityOptions;">
-                                        <span class="icon">
+                                        <span 
+                                                aria-hidden="true"
+                                                class="icon">
                                             <i 
                                                     class="tainacan-icon"
-                                                    :class="showCardinalityOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                                                    :class="showCardinalityOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
                                         </span>
                                         <strong>
                                             {{ $i18n.getHelperTitle('metadata', 'cardinality') }}
@@ -289,6 +296,59 @@
                                                 :placeholder="$i18n.get('instruction_2_or_more')"
                                                 :model-value="form.cardinality ? Number(form.cardinality) : null"
                                                 @update:model-value="(newCardinalty) => form.cardinality = newCardinalty ? Number(newCardinalty) : ''" />
+                                    </transition>
+                                </b-field>
+                            </transition>
+
+                            <transition name="filter-item">
+                                <b-field
+                                        v-if="!originalMetadatum.metadata_type_object.core && 
+                                            originalMetadatum.metadata_type_object.component != 'tainacan-compound' &&
+                                            form.parent == 0 &&
+                                            form.multiple == 'yes'"
+                                        :type="formErrors['html_formatting'] != undefined ? 'is-danger' : ''"
+                                        :message="formErrors['html_formatting'] != undefined ? formErrors['html_formatting'] : ''"
+                                        :addons="false"
+                                        style="margin: 0 0 1em 1.5em;">
+                                    <div 
+                                            style="margin-top: 0;"
+                                            class="metadata-form-section"
+                                            @click="showHTMLFormattingOptions = !showHTMLFormattingOptions;">
+                                        <span 
+                                                aria-hidden="true"
+                                                class="icon">
+                                            <i 
+                                                    class="tainacan-icon"
+                                                    :class="showHTMLFormattingOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
+                                        </span>
+                                        <strong>
+                                            {{ $i18n.getHelperTitle('metadata', 'html_formatting') }}
+                                            <help-button
+                                                    :title="$i18n.getHelperTitle('metadata', 'html_formatting')"
+                                                    :message="$i18n.getHelperMessage('metadata', 'html_formatting')"
+                                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                                        </strong>
+                                        <hr>
+                                    </div>
+                                    <transition name="filter-item">
+                                        <div 
+                                                v-if="showHTMLFormattingOptions && form.multiple == 'yes'"
+                                                style="display: inline-flex; gap: 1em;">
+                                            <b-radio
+                                                    v-model="form.html_formatting"
+                                                    name="html_formatting"
+                                                    native-value="inline"
+                                                    @update:model-value="clearErrors('html_formatting')">
+                                                {{ $i18n.get('label_html_formatting_inline') }}
+                                            </b-radio>
+                                            <b-radio
+                                                    v-model="form.html_formatting"
+                                                    name="html_formatting"
+                                                    native-value="list"
+                                                    @update:model-value="clearErrors('html_formatting')">
+                                                {{ $i18n.get('label_html_formatting_list') }}
+                                            </b-radio>
+                                        </div>
                                     </transition>
                                 </b-field>
                             </transition>
@@ -355,10 +415,12 @@
                         v-if="(form.metadata_type_object && form.metadata_type_object.form_component && form.metadata_type_object.component != 'tainacan-compound') || form.edit_form != ''"
                         class="metadata-form-section"
                         @click="hideMetadataTypeOptions = !hideMetadataTypeOptions;">
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i 
                                 class="tainacan-icon"
-                                :class="!hideMetadataTypeOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                                :class="!hideMetadataTypeOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
                     </span>
                     <strong>{{ $i18n.getWithVariables('label_options_of_the_%s_metadata_type', [ form.metadata_type_object.name ]) }}</strong>
                     <hr>
@@ -391,10 +453,12 @@
                 <div 
                         class="metadata-form-section"
                         @click="showAdvancedOptions = !showAdvancedOptions;">
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i 
                                 class="tainacan-icon"
-                                :class="showAdvancedOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                                :class="showAdvancedOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
                     </span>
                     <strong>{{ $i18n.get('label_advanced_metadata_options') }}</strong>
                     <hr>
@@ -503,7 +567,8 @@
                 isUpdating: false,
                 hideMetadataTypeOptions: false,
                 showAdvancedOptions: false,
-                showCardinalityOptions: false
+                showCardinalityOptions: false,
+                showHTMLFormattingOptions: false
             }
         },
         watch: {
@@ -519,6 +584,12 @@
 
             if (this.form.cardinality && Number(this.form.cardinality) > 1)
                 this.showCardinalityOptions = true;
+
+            if (this.form.html_formatting === 'list')
+                this.showHTMLFormattingOptions = true;
+
+            if (!this.form.html_formatting)
+                this.form.html_formatting = 'inline';
 
             this.formErrors = this.form.formErrors != undefined ? this.form.formErrors : {};
             this.formErrorMessage = this.form.formErrors != undefined ? this.form.formErrorMessage : '';
@@ -725,7 +796,7 @@
                 font-size: 0.875em;
                 z-index: 1;
                 position: relative;
-                padding-right: 12px;
+                padding-inline-end: 12px;
             }
             hr {
                 position: absolute;
@@ -733,7 +804,7 @@
                 width: calc(100% - 42px);
                 height: 1px;
                 background-color: var(--tainacan-gray2);
-                margin-left: 42px;
+                margin-inline-start: 42px;
                 transition: background-color 0.2s ease, height 0.2s ease;
             }
 

@@ -79,9 +79,11 @@ export const fetchCollectionActivities = ({ commit }, { page, activitiesPerPage,
     });
 };
 
-export const fetchItemActivities = ({ commit }, { page, activitiesPerPage, itemId, search, searchDates, authorId }) => {
+export const fetchItemActivities = ({ commit }, { page, activitiesPerPage, itemId, metadatumId, search, searchDates, authorId }) => {
 
-    let endpoint = `/item/${itemId}/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit&orderby=id&order=desc`;
+    let endpoint = metadatumId
+        ? `/item/${itemId}/metadata/${metadatumId}/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit&orderby=id&order=desc&format_diffs=true`
+        : `/item/${itemId}/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit&orderby=id&order=desc`;
 
     if (search != undefined && search != '')
         endpoint += `&search=${search}`;
@@ -121,7 +123,7 @@ export const fetchItemActivities = ({ commit }, { page, activitiesPerPage, itemI
 export const fetchActivity = ({ commit }, activityId) => {
     commit('clearActivity');
     return new Promise((resolve, reject) => {
-       axios.tainacanApi.get(`/logs/${activityId}?context=edit`)
+       axios.tainacanApi.get(`/logs/${activityId}?context=edit&format_diffs=true`)
            .then(res => {
                let activity = res.data;
 
@@ -135,35 +137,6 @@ export const fetchActivity = ({ commit }, activityId) => {
     });
 };
 
-export const fetchActivityTitle = ({ commit }, activityId) => {
-  return new Promise((resolve, reject) => {
-      axios.tainacanApi.get(`/logs/${activityId}?fetch_only=title`)
-          .then(res => {
-              let eventTitle = res.data;
-
-              commit('setActivityTitle', eventTitle.title);
-
-              resolve(eventTitle.title);
-          })
-          .catch(error => reject(error));
-  })
-};
-
-export const approve = ({commit}, activityId) => {
-    return new Promise((resolve, reject) => {
-        axios.tainacanApi.post(`/logs/${activityId}/approve`)
-            .then(res => {
-                let activity = res.data;
-
-                resolve(activity);
-            })
-            .catch(error => reject(error))
-    });
-};
-
-export const notApprove = ({commit}, activityId) => {
-
-};
 
 // Users for filtering and core author metadata
 export const fetchUsers = ({ commit }, { search, page, exclude }) => {

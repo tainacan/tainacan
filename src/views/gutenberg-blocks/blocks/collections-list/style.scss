@@ -3,6 +3,15 @@
 .wp-block-tainacan-collections-list {
     margin: 2em auto;
 
+    // Link color: editor rule is .editor-styles-wrapper .wp-elements-0 a:not(.wp-element-button) and is editor-only.
+    // Frontend equivalent is not always output for static blocks, so we apply the same default here.
+    &:not([class*="wp-elements-"]) a:not(.wp-element-button) {
+        color: currentColor;
+        &:hover {
+            color: currentColor;
+        }
+    }
+
     // Spinner
     .components-spinner {
         position: absolute;
@@ -58,7 +67,7 @@
             width: 185px;
 
             a { 
-                color: inherit; 
+                // color: inherit; 
                 border: none;
                 font-weight: bold;
                 line-height: normal;
@@ -80,7 +89,7 @@
 
             a,
             &:hover a { 
-                color: inherit; 
+                // color: inherit; 
                 text-decoration: none;
             }
         }
@@ -154,7 +163,7 @@
             width: calc(20% - 24px);
 
             a { 
-                color: inherit; 
+                // color: inherit; 
                 height: auto;
                 display: flex;
                 align-items: center;
@@ -168,7 +177,7 @@
                 width: 54px;
                 min-width: 54px;
                 padding: 0px;
-                margin-right: 20px;
+                margin-inline-end: 20px;
             }
 
 
@@ -179,7 +188,7 @@
 
             a,
             &:hover a { 
-                color: inherit; 
+                // color: inherit; 
                 text-decoration: none;
             }
 
@@ -205,7 +214,7 @@
         }
     }
 }
-.block-editor-block-list__block:not(.has-text-color)>.wp-block-tainacan-collections-list {
+.block-editor-block-list__block:not(.has-text-color):not(.has-link-color)>.wp-block-tainacan-collections-list {
     li.collection-list-item {
         a>span,
         a:hover>span {

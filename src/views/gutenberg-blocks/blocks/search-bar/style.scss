@@ -21,11 +21,11 @@
             transition: border-color ease 0.3s;
 
             &.is-aligned-left {
-                margin-left: 0;
+                margin-inline-start: 0;
                 justify-content: flex-start;
             }
             &.is-aligned-right {
-                margin-right: 0;
+                margin-inline-end: 0;
                 justify-content: flex-end;
             }
             &:hover,
@@ -101,11 +101,11 @@
             border: none;
 
             &.is-aligned-left {
-                margin-left: 0;
+                margin-inline-start: 0;
                 justify-content: flex-end;
             }
             &.is-aligned-right {
-                margin-right: 0;
+                margin-inline-end: 0;
                 justify-content: flex-start;
             }            
             &:focus,
@@ -116,8 +116,8 @@
             input#tainacan-search-bar-block_input  {
                 width: 35%;
                 border-radius: 0;
-                margin-left: -52px;
-                padding-left: 52px;
+                margin-inline-start: -52px;
+                padding-inline-start: 52px;
                 border: 1px solid transparent;
                 background: rgba(250, 250, 250, 0.2);
                 transition: border-color 0.4s ease, width 0.5s ease-in, background-color 0.3s ease, color 0.3s ease;
@@ -136,7 +136,7 @@
             }
 
             button {
-                margin-right: 12px;
+                margin-inline-end: 12px;
                 padding: 0 0.35em;
                 min-height: 1.75em;
                 z-index: 2;
@@ -156,8 +156,8 @@
             }
 
             @media only screen and (max-width: 768px) {
-                margin-left: 0px;
-                margin-right: 0px;
+                margin-inline-start: 0px;
+                margin-inline-end: 0px;
                 max-width: 100% !important;
 
                 input#tainacan-search-bar-block_input  {
@@ -224,8 +224,8 @@
 
             &:hover input#tainacan-search-bar-block_input {
                 width: 100%;
-                padding-right: 3.25em;
-                padding-left: 1.625em;
+                padding-inline-end: 3.25em;
+                padding-inline-start: 1.625em;
                 border-width: 0;
             }
 
@@ -233,9 +233,9 @@
                 width: 0%;
                 min-width: 0%;
                 border-radius: 3.3125em;
-                margin-right: -3.5em;
-                padding-right: 1.6875em;
-                padding-left: 1.625em;
+                margin-inline-end: -3.5em;
+                padding-inline-end: 1.6875em;
+                padding-inline-start: 1.625em;
                 font-size: 1em;
                 border-width: 0;
                 background: var(--tainacan-block-gray1, gutenberg-blocks-variables.$gray1);
@@ -245,14 +245,14 @@
                 &:active,
                 &:hover {
                     width: 100%;
-                    padding-right: 3.25em;
-                    padding-left: 1.625em;
+                    padding-inline-end: 3.25em;
+                    padding-inline-start: 1.625em;
                     border-width: 0;
                 }
             }
 
             button {
-                margin-left: 0.875em;
+                margin-inline-start: 0.875em;
                 padding: 0 0.35em;
                 min-height: 1.75em;
                 z-index: 2;
@@ -316,9 +316,9 @@
                 background: white;
                 border-width: 3px;
                 border-style: solid;
-                margin-right: -3.5em;
-                padding-right: 1.5em;
-                padding-left: 1.5em;
+                margin-inline-end: -3.5em;
+                padding-inline-end: 1.5em;
+                padding-inline-start: 1.5em;
 
                 &:hover {
                     border-width: 3px !important;
@@ -366,7 +366,7 @@
 
         &.is-aligned-left {
             min-height: 115px;
-            text-align: left;
+            text-align: start;
             flex-direction: row-reverse;
             flex-wrap: nowrap;
             justify-content: space-between;
@@ -380,7 +380,7 @@
             flex-wrap: nowrap;
             justify-content: space-between;
 
-            .search-bar-collection-header-title { text-align: left; }
+            .search-bar-collection-header-title { text-align: start; }
         }
 
         .search-bar-collection-header-title {

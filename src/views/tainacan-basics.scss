@@ -137,12 +137,30 @@
     }
     input[type="checkbox"]:checked {
         border-color: var(--tainacan-secondary);
+        background: transparent;
     }
     @media screen and (max-width: 782px) {
         input[type="checkbox"]:checked::before {
             width: 1.25rem;
             height: 1.25rem;
             margin: 0.125rem;
+        }
+    }
+
+    // RTL support
+    [dir="rtl"] & {
+        .tainacan-icon-is-rtl-mirrored,
+        .mdi-chevron-right,
+        .mdi-chevron-left {
+            transform: scaleX(-1);
+        }
+        .is-pulled-left,
+        .is-float-left {
+            float: inline-start !important;
+        }
+        .is-pulled-right,
+        .is-float-right {
+            float: inline-end !important;
         }
     }
 }
@@ -157,4 +175,8 @@
     overflow: hidden;
     clip: rect(0,0,0,0);
     border: 0;
+}
+// Fix for WordPress 7.0 due to https://github.com/WordPress/gutenberg/issues/70211
+html :where([style*="--tainacan-input-border-color"]) {
+    border-style: none;
 }

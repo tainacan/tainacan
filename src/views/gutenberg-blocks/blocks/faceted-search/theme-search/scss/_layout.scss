@@ -70,7 +70,7 @@
 
 	@media screen and (max-width: 768px) {
 		.modal-content { 
-			margin-right: 0px !important;
+			margin-inline-end: 0px !important;
 			
 			.filters-components-list {
 				column-count: 1;
@@ -80,7 +80,7 @@
 }
 .filters-menu:not(.filters-menu-modal) {
 	z-index: 40;
-	float: left;
+	float: inline-start;
 	max-width: var(--tainacan-filter-menu-width-theme);
 	min-width: 154px;
 	min-height: 100%;
@@ -200,13 +200,13 @@
 
 				@media screen and (min-width: 769px) {
 					& > div:not(:last-child) {
-						margin-right: 2.25em;
+						margin-inline-end: 2.25em;
 					}
 					.filter-item-forms {
 						width: var(--tainacan-filters-inline-width, 272px);
 					}
 					.filter-item-forms:not(:last-child) {
-						margin-right: 2.25em;
+						margin-inline-end: 2.25em;
 					}
 				}
 			}

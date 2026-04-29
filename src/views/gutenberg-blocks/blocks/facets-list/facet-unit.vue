@@ -9,17 +9,17 @@
                 @click="() => { isCollapseInsteadOfLink(facet) ? displayChildTerms(facetId) : null }">
             <img
                     :src=" 
-                        facet.entity.thumbnail && facet.entity.thumbnail[imageSize][0] && facet.entity.thumbnail[imageSize][0] 
+                        facet.entity.thumbnail && facet.entity.thumbnail[imageSize] && facet.entity.thumbnail[imageSize][0] 
                             ?
                                 facet.entity.thumbnail[imageSize][0] 
                             :
-                                (facet.entity.thumbnail && facet.entity.thumbnail['thumbnail'][0] && facet.entity.thumbnail['thumbnail'][0]
+                                (facet.entity.thumbnail && facet.entity.thumbnail['thumbnail'] && facet.entity.thumbnail['thumbnail'][0]
                                     ?    
                                         facet.entity.thumbnail['thumbnail'][0] 
                                     : 
                                         $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
                     "
-                    :alt="facet.thumbnail_alt ? facet.thumbnail_alt : (facet.label ? facet.label : wpI18n('Thumbnail', 'tainacan'))">
+                    :alt="facet.thumbnail_alt ? facet.thumbnail_alt : (facet.label ? facet.label : '')">
             <div :class=" 'facet-label-and-count' + (itemsCountStyle === 'below' ? ' is-style-facet-label-and-count--below' : '')">
                 <span>{{ facet.label ? facet.label : '' }}</span>
                 <span 
@@ -73,7 +73,7 @@
                         :style="{ 
                             minHeight: getSkeletonHeight(),
                             marginTop: layout == 'list' ? '4px' : '',
-                            marginLeft: layout == 'list' ? '7px' : '',
+                            marginInlineStart: layout == 'list' ? '7px' : '',
                             marginBottom: layout == 'grid' && showImage ? gridMargin + 'px' : ''
                         }" />
             </ul>

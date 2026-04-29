@@ -1,13 +1,23 @@
 @use '../../scss/gutenberg-blocks-variables.scss';
-@use 'swiper/swiper.scss';
-@use 'swiper/modules/navigation.scss';
-@use 'swiper/modules/a11y.scss';
-@use 'swiper/modules/autoplay.scss';
+@use 'swiper/swiper.css';
+@use 'swiper/modules/navigation.css';
+@use 'swiper/modules/a11y.css';
+@use 'swiper/modules/autoplay.css';
 
 .wp-block-tainacan-carousel-items-list {
     margin: 2em auto;
-    --swiper-navigation-color: var(--tainacan-block-primary, $primary);
-    --swiper-theme-color: var(--tainacan-block-primary, $primary);
+    --swiper-navigation-sides-offset: 0px;
+    --swiper-navigation-color: var(--tainacan-block-primary, gutenberg-blocks-variables.$primary);
+    --swiper-theme-color: var(--tainacan-block-primary, gutenberg-blocks-variables.$primary);
+
+    // Link color: editor rule is .editor-styles-wrapper .wp-elements-0 a:not(.wp-element-button) and is editor-only.
+    // Frontend equivalent is not always output for static blocks, so we apply the same default here.
+    &:not([class*="wp-elements-"]) a:not(.wp-element-button) {
+        color: currentColor;
+        &:hover {
+            color: currentColor;
+        }
+    }
 
     // Spinner
     .spinner-container {
@@ -147,8 +157,8 @@
     // Tainacan Carousel
     .tainacan-carousel {
         position: relative;
-        width: calc(100% + 40px);
-        left: -20px;
+        width: calc(100% + var(--spaceAroundCarousel, 50px) - var(--swiper-navigation-sides-offset, 0px));
+        left: calc( -1 * (var(--spaceAroundCarousel, 50px) - var(--swiper-navigation-sides-offset, 0px)) / 2);
 
         .swiper {
             margin: 0 var(--spaceAroundCarousel, 50px);
@@ -162,7 +172,7 @@
 
             a>span,
             a:hover>span {
-                color: inherit;
+                // color: inherit;
                 font-weight: bold;
                 text-decoration: none;
                 padding: 8px 12px;
@@ -177,7 +187,7 @@
             }
             a,
             a:hover {
-                color: inherit;
+                // color: inherit;
                 text-decoration: none;
                 display: block;
             }
@@ -187,6 +197,7 @@
                     object-fit: cover;
                     object-position: center;
                     height: auto;
+                    max-width: 100%;
                 }
             }
         }
@@ -203,27 +214,30 @@
         padding: 8px 2px 2px 2px;
     }
 
-    // Next and previous buttons
-    .swiper-button-prev, .swiper-button-next {
-        top: calc(50% - 42px);
-        bottom: initial;
-        background: none;
-        background-color: transparent !important;
+    // Next and previous buttons (layout only; color/background below so custom button color can win)
+    .swiper-button-prev, .swiper-button-next,
+    .wp-element-button.swiper-button-prev,
+    .wp-element-button.swiper-button-next {
         border: none;
-        min-width: 42px;
-        width: calc(var(--spaceAroundCarousel) - 8px);
-        height: 42px;
+        //min-width: var(--swiper-navigation-size, 42px);
+        //width: calc(var(--spaceAroundCarousel) - var(--swiper-navigation-sides-offset, 0px));
+        height: var(--swiper-navigation-size, 42px);
         padding: 0;
-        margin: 0;
 
         svg {
             border-radius: 100%;
-            fill: var(--tainacan-block-primary, gutenberg-blocks-variables.$primary);
+            fill: currentColor;
         }
         &::after,
         &::before {
             content: none !important;
         }
+    }
+    // Default button colors only when block has no element styles (no wp-elements-* class), so .wp-elements-xxx .wp-element-button wins when user picks a color
+    &:not([class*="wp-elements-"]) .swiper-button-prev,
+    &:not([class*="wp-elements-"]) .swiper-button-next {
+        color: var(--tainacan-block-primary, gutenberg-blocks-variables.$primary);
+        background: transparent;
     }
     .swiper-button-next.swiper-button-disabled,
     .swiper-button-prev.swiper-button-disabled {
@@ -250,36 +264,24 @@
             display: none;
         }
         &.has-arrows-left .swiper-button-next {
-            left: 10px;
+            left: var(--swiper-navigation-sides-offset, 0px);
             right: auto;
-            top: calc(50% + 12px) !important;
+            top: calc(50% + (var(--swiper-navigation-size, 12px) / 2)) !important;
+        }
+        &.has-arrows-left .swiper-button-prev {
+            top: calc(50% - (var(--swiper-navigation-size, 12px) / 2)) !important;
         }
         &.has-arrows-right .swiper-button-prev {
-            right: 10px;
+            right: var(--swiper-navigation-sides-offset, 0px);
+            top: calc(50% - (var(--swiper-navigation-size, 12px) / 2)) !important;
             left: auto;
         }
         &.has-arrows-right .swiper-button-next {
-            top: calc(50% + 12px) !important;
+            top: calc(50% + (var(--swiper-navigation-size, 12px) / 2)) !important;
         }
         &.has-large-arrows .swiper-button-prev, 
         &.has-large-arrows .swiper-button-next {
-            top: calc(50% - 60px);
-            min-width: 60px;
-            width: calc(var(--spaceAroundCarousel) + 10px);
-            height: 60px;
-            margin: 0 -24px;
-        }
-        &.has-large-arrows.has-arrows-left .swiper-button-next {
-            left: 30px;
-            right: auto;
-            top: calc(50% + 30px) !important;
-        }
-        &.has-large-arrows.has-arrows-right .swiper-button-prev {
-            right: 30px;
-            left: auto;
-        }
-        &.has-large-arrows.has-arrows-right .swiper-button-next {
-            top: calc(50% + 30px) !important;
+            --swiper-navigation-size: 60px;
         }
     }
     ul.items-list-edit {
@@ -291,7 +293,7 @@
         padding: 0;
         scroll-snap-type: x mandatory;
         scroll-padding-left: 10px;
-        max-width: calc(100% - 2 * var(--spaceAroundCarousel));
+        max-width: calc(100% - 2 * var(--spaceAroundCarousel, 50px) - var(--swiper-navigation-sides-offset, 0px));
 
         li.item-list-item {
             position: relative;
@@ -308,13 +310,13 @@
             }
 
             a { 
-                color: inherit;
+                // color: inherit;
                 font-weight: bold;
                 line-height: normal;
                 pointer-events: none;
 
                 &>span {
-                    color: inherit;
+                    // color: inherit;
                     font-weight: bold;
                     text-decoration: none;
                     padding: 8px 12px;
@@ -357,7 +359,7 @@
             }
 
             &:hover a { 
-                color: inherit;
+                // color: inherit;
                 text-decoration: none;
             }
         

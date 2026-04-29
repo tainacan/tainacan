@@ -4,7 +4,7 @@
             :class="{ 'skeleton': isFetchingData || isBuildingChart || isFetchingMetadatumTerms || !selectedMetadatum || !selectedMetadatum.id }"
             class="report-card is-full">
         <div 
-                :style="!isChildColumnCollapsed ? 'margin-left: 0px;' : ''"
+                :style="!isChildColumnCollapsed ? 'margin-inline-start: 0px;' : ''"
                 :class="!isChildColumnCollapsed ? 'columns is-6' : ''">
             <div 
                     :class="!isChildColumnCollapsed ? 'column is-half is-full-tablet' : ''"
@@ -131,7 +131,7 @@
                                     aria-hidden="true"
                                     class="icon next-page button is-outlined"
                                     @click="(!isBuildingChart && termsDisplayedPage < Math.ceil(currentTotalTerms/maxTermsToDisplay)) ? termsDisplayedPage++ : null">
-                                <i class="tainacan-icon tainacan-icon-previous tainacan-icon-1-25em" />
+                                <i class="tainacan-icon tainacan-icon-previous tainacan-icon-is-rtl-mirrored tainacan-icon-1-25em" />
                             </span>
                             <span
                                     :class="{'tablenav-pages-navspan disabled': isBuildingChart || termsDisplayedPage >= Math.ceil(currentTotalTerms/maxTermsToDisplay) }"
@@ -150,13 +150,14 @@
                         :options="chartOptions"
                         @data-point-selection="handleDataPointClick" />
                 <button 
-                        v-if=" !isFetchingData && !isFetchingMetadatumTerms && selectedMetadatum"
+                        v-if="!isFetchingData && !isFetchingMetadatumTerms && selectedMetadatum"
+                        type="button"
                         class="button is-outlined hide-column-button"
                         @click="isChildColumnCollapsed = !isChildColumnCollapsed">
                     <span class="icon">
                         <i 
                                 :class="isChildColumnCollapsed ? 'tainacan-icon-arrowleft' : 'tainacan-icon-arrowright'"
-                                class="tainacan-icon tainacan-icon-1-25em" />
+                                class="tainacan-icon tainacan-icon-1-25em tainacan-icon-is-rtl-mirrored" />
                     </span>
                 </button>
             </div>
@@ -256,7 +257,7 @@
                         class="empty-report-card-placeholder">
                     <p class="title is-4">
                         <span class="icon has-text-dark">
-                            <i class="tainacan-icon tainacan-icon-taxonomies tainacan-icon-1-125em" />
+                            <i class="tainacan-icon tainacan-icon-taxonomies tainacan-icon-1em" />
                         </span>
                         &nbsp;{{ $i18n.get('label_children_terms') }}
                     </p>
@@ -272,7 +273,9 @@
                 style="left: calc(1px + 0.75rem); right: auto;"
                 class="report-last-cached-on">
             <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(metadatumTermsLatestCachedOn).toLocaleString() }}</span>
-            <button @click="loadMetadatumTerms(true)">
+            <button 
+                    type="button"
+                    @click="loadMetadatumTerms(true)">
                 <span class="sr-only">
                     {{ $i18n.get('label_get_latest_report') }}
                 </span>
@@ -286,6 +289,7 @@
                 class="report-last-cached-on">
             <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(metadatumChildTermsLatestCachedOn).toLocaleString() }}</span>
             <button 
+                    type="button"
                     @click="loadMetadatumChildTerms(true)">
                 <span class="sr-only">
                     {{ $i18n.get('label_get_latest_report') }}
@@ -304,7 +308,7 @@
         <div class="empty-report-card-placeholder">
             <p class="title is-4">
                 <span class="icon has-text-dark">
-                    <i class="tainacan-icon tainacan-icon-metadata tainacan-icon-1-125em" />
+                    <i class="tainacan-icon tainacan-icon-metadata tainacan-icon-1em" />
                 </span>
                 &nbsp;{{ $i18n.get('label_items_per_term_from_taxonomy_metadatum') }}
             </p>
@@ -517,7 +521,10 @@ export default {
                             type: 'treemap',
                             height: 350,
                             toolbar: {
-                                show: true
+                                show: true,
+                                export: {
+                                    scale: 3
+                                }
                             },
                             zoom: {
                                 enabled: false
@@ -587,7 +594,10 @@ export default {
                             height: 350,
                             stacked: false,
                             toolbar: {
-                                show: true
+                                show: true,
+                                export: {
+                                    scale: 3
+                                }
                             },
                             zoom: {
                                 enabled: true,
@@ -650,7 +660,10 @@ export default {
                             type: 'treemap',
                             height: 350,
                             toolbar: {
-                                show: true
+                                show: true,
+                                export: {
+                                    scale: 3
+                                }
                             },
                             zoom: {
                                 enabled: false
@@ -720,7 +733,10 @@ export default {
                             height: 350,
                             stacked: true,
                             toolbar: {
-                                show: true
+                                show: true,
+                                export: {
+                                    scale: 3
+                                }
                             },
                             zoom: {
                                 enabled: true,
@@ -798,18 +814,18 @@ export default {
 
 <style lang="scss" scoped>
 .child-term-column {
-    border-left: 1px dashed var(--tainacan-gray3, #a5a5a5);
+    border-inline-start: 1px dashed var(--tainacan-gray3, #a5a5a5);
 
     &>* {
-        margin-left: 1.25rem;
+        margin-inline-start: 1.25rem;
     }
 }
 .hide-column-button {
     position: absolute;
-    right: 0;
+    inset-inline-end: 0;
     top: calc(50% - 1rem);
     margin: 0;
-    margin-right: -0.875rem;
+    margin-inline-end: -0.875rem;
     padding: 0px;
     border: 1px solid;
     background-color: var(--tainacan-gray1) !important;

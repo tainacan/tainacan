@@ -4,7 +4,9 @@
                 v-if="!$adminOptions.hideItemEditionThumbnail"
                 class="section-label">
             <label>
-                <span class="icon has-text-dark">
+                <span 
+                        class="icon has-text-dark"
+                        aria-hidden="true">
                     <i class="tainacan-icon tainacan-icon-image" />
                 </span>
                 {{ collection && collection.item_thumbnail_label ? collection.item_thumbnail_label : $i18n.get('label_thumbnail') }}
@@ -59,8 +61,12 @@
                     <a
                             id="button-edit-thumbnail"
                             class="button is-rounded is-secondary"
+                            role="button"
+                            tabindex="0"
                             :aria-label="$i18n.get('label_button_edit_thumb')"
-                            @click.prevent="($event) => $emit('open-thumbnail-media-frame', $event)">
+                            @click.prevent="($event) => $emit('open-thumbnail-media-frame', $event)"
+                            @keydown.enter.prevent="($event) => $emit('open-thumbnail-media-frame', $event)"
+                            @keydown.space.prevent="($event) => $emit('open-thumbnail-media-frame', $event)">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('edit'),
@@ -68,7 +74,8 @@
                                     placement: 'bottom',
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
-                                class="icon">
+                                class="icon"
+                                aria-hidden="true">
                             <i class="tainacan-icon tainacan-icon-edit" />
                         </span>
                     </a>
@@ -76,8 +83,12 @@
                             v-if="item.thumbnail && item.thumbnail.thumbnail != undefined && item.thumbnail.thumbnail != false"
                             id="button-delete-thumbnail"
                             class="button is-rounded is-secondary"
+                            role="button"
+                            tabindex="0"
                             :aria-label="$i18n.get('label_button_delete_thumb')"
-                            @click="$emit('on-delete-thumbnail')">
+                            @click="$emit('on-delete-thumbnail')"
+                            @keydown.enter.prevent="$emit('on-delete-thumbnail')"
+                            @keydown.space.prevent="$emit('on-delete-thumbnail')">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('delete'),
@@ -85,7 +96,8 @@
                                     placement: 'bottom',
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
-                                class="icon">
+                                class="icon"
+                                aria-hidden="true">
                             <i class="tainacan-icon tainacan-icon-delete" />
                         </span>
                     </a>
@@ -122,11 +134,11 @@ export default {
 
 <style lang="scss" scoped>
     .section-thumbnaill {
-        padding-right: 0;
+        padding-inline-end: 0;
     }
     .thumbnail-buttons-row {
         bottom: -6px;
-        left: 0.875em;
+        inset-inline-start: 0.875em;
         position: absolute;
     }
     .thumbnail-field {
@@ -157,7 +169,7 @@ export default {
         }
 
         .field {
-            margin-left: 1em;
+            margin-inline-start: 1em;
             width: 100%;
         }
         .content {

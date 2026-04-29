@@ -78,16 +78,12 @@ I18NPlugin.install = function (app, options = {}) {
             return i18nGet(key);
         },
         getFrom(entity, key) {
-            if (entity == 'taxonomies') // Temporary hack, while we decide this terminology...
-                entity = 'taxonomies'
             if (tainacan_plugin.i18n['entities_labels'][entity] == undefined)
                 return 'Invalid i18n entity: ' + entity;
             let string = tainacan_plugin.i18n['entities_labels'][entity][key];
             return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + key;
         },
         getHelperTitle(entity, key) {
-            if (entity == 'taxonomies') // Temporary hack, while we decide this terminology...
-                entity = 'taxonomies'
             if (tainacan_plugin.i18n['helpers_label'][entity] == undefined)
                 return 'Invalid i18n entity: ' + entity;
             if (tainacan_plugin.i18n['helpers_label'][entity][key] == undefined)
@@ -96,8 +92,6 @@ I18NPlugin.install = function (app, options = {}) {
             return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n helper object.";
         },
         getHelperMessage(entity, key) {
-            if (entity == 'taxonomies') // Temporary hack, while we decide this terminology...
-                entity = 'taxonomies'
             if (tainacan_plugin.i18n['helpers_label'][entity] == undefined)
                 return 'Invalid i18n entity: ' + entity;
             if (tainacan_plugin.i18n['helpers_label'][entity][key] == undefined)
@@ -130,7 +124,20 @@ I18NPlugin.install = function (app, options = {}) {
             } else {
                 "Invalid i18n key: " + tainacan_plugin.i18n[key];
             }
-        }
+        },
+        /**
+         * Empty-state message when a status filter returns no rows.
+         * Uses info_no_{entity}_{status} when present; otherwise info_no_{entity}_found_with_status (e.g. custom statuses).
+         * entity: "items" | "collections" | "taxonomies"
+         */
+        getNoEntitiesMessageForStatus(entity, status) {
+            const specificKey = `info_no_${entity}_${status}`;
+            const specific = tainacan_plugin.i18n[specificKey];
+            if (specific != null && specific !== '') {
+                return specific;
+            }
+            return i18nGet(`info_no_${entity}_found_with_status`);
+        },
     }
 
 };
@@ -419,6 +426,9 @@ UserCapabilitiesPlugin.install = function (app, options = {}) {
     }
 };
 
+/** Slugs excluded from collection total_items sums (trash + core non-content statuses). */
+const TOTAL_ITEMS_SUM_EXCLUDED_SLUGS = ['trash', 'inherit', 'auto-draft'];
+
 // STATUS ICONS PLUGIN - Sets icon for status option
 export const StatusHelperPlugin = {};
 StatusHelperPlugin.install = function (app, options = {}) {
@@ -446,6 +456,9 @@ StatusHelperPlugin.install = function (app, options = {}) {
                 slug: 'trash'
             }
         ],
+        getStatusLabel(status) {
+            return this.getStatusOption(status) ? this.getStatusOption(status).name : tainacan_plugin.i18n['status_' + status];
+        },
         getIcon(status) {
             switch (status) {
                 case 'publish': return 'tainacan-icon-public';
@@ -473,6 +486,62 @@ StatusHelperPlugin.install = function (app, options = {}) {
         },
         getStatuses() {
             return this.statuses;
+        },
+        /**
+         * Single status entry as merged from WP REST /statuses/ (slug, name, public, queryable, …) or fallback { slug, name }.
+         */
+        getStatusOption(slug) {
+            return this.statuses.find((s) => s.slug === slug);
+        },
+        /**
+         * Display label for a post status in total_items tooltips (prefers loaded status name, then i18n, else slug).
+         */
+        getTotalItemsStatusLabel(slug) {
+            const opt = this.getStatusOption(slug);
+            if (opt && opt.name) {
+                return opt.name;
+            }
+            if (slug === 'publish') {
+                return tainacan_plugin.i18n['status_public'];
+            }
+            const key = `status_${slug}`;
+            const fromI18n = tainacan_plugin.i18n[key];
+            if (fromI18n != null && fromI18n !== '') {
+                return fromI18n;
+            }
+            return slug;
+        },
+        /**
+         * Sums per-status counts from API (e.g. collection.total_items). Excludes trash and core internal rows by default.
+         */
+        sumTotalItemsByStatus(total_items, excludeSlugs) {
+            if (!excludeSlugs) {
+                excludeSlugs = TOTAL_ITEMS_SUM_EXCLUDED_SLUGS;
+            }
+            if (!total_items || typeof total_items !== 'object') {
+                return 0;
+            }
+            return Object.entries(total_items).reduce((sum, [sl, val]) => {
+                if (excludeSlugs.includes(sl)) {
+                    return sum;
+                }
+                return sum + Number(val);
+            }, 0);
+        },
+        /**
+         * HTML breakdown for tooltips: one line per status. Uses translated names from getStatuses() when available.
+         */
+        getTotalItemsDetailedHtml(total_items, excludeSlugs) {
+            if (!total_items) {
+                return '';
+            }
+            if (!excludeSlugs) {
+                excludeSlugs = ['inherit', 'auto-draft'];
+            }
+            return Object.entries(total_items)
+                .filter(([sl]) => !excludeSlugs.includes(sl))
+                .map(([sl, count]) => `${this.getTotalItemsStatusLabel(sl)}: ${count}`)
+                .join('<br> ');
         },
         loadStatuses() {
             axios.wpApi.get('/statuses/')
@@ -650,4 +719,35 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
     } catch(e) {
         app.config.globalProperties.$adminOptions = {};
     }
+};
+
+// MODAL FOCUS RETURN - Capture trigger and restore focus when modal closes (a11y).
+export const ModalFocusReturnPlugin = {};
+ModalFocusReturnPlugin.install = function (app) {
+    function captureTrigger(explicitTrigger) {
+        return explicitTrigger ? explicitTrigger : document.activeElement;
+    }
+    function restoreFocus(trigger, vm) {
+        if (!trigger || !vm) return;
+        const el = trigger.$el != null ? trigger.$el : trigger;
+        if (el && typeof el.focus === 'function' && document.contains(el)) {
+            vm.$nextTick(() => { el.focus(); });
+        }
+    }
+    /**
+     * Returns the focusable trigger element of a Buefy dropdown component ref.
+     * Use when opening a modal from a dropdown item so focus can return to the dropdown trigger.
+     */
+    function getDropdownTrigger(dropdownRef) {
+        const trigger = dropdownRef?.$refs?.trigger;
+        if (!trigger) return undefined;
+        const el = trigger.$el != null ? trigger.$el : trigger;
+        return el?.querySelector?.('button') || el;
+    }
+
+    app.config.globalProperties.$modalFocusA11y = {
+        captureTrigger,
+        restoreFocus,
+        getDropdownTrigger
+    };
 };

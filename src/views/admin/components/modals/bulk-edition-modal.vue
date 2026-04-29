@@ -8,21 +8,23 @@
             aria-modal
             class="tainacan-modal-content this-tainacan-modal-content">
         <header class="tainacan-modal-title">
-            <h2>{{ modalTitle }}
-                <small class="tainacan-total-objects-info">
-                    {{ `(${totalItems} ${objectType})` }}
-                </small>
-            </h2>
+            <h2>{{ modalTitle }}</h2>
             <button         
                     class="button is-medium is-white is-align-self-flex-start"
                     :aria-label="$i18n.get('close')"
-                    @click="$emit('close')">
-                <span class="icon">
+                    @click="closeModal()">
+                <span 
+                        aria-hidden="true"
+                        class="icon">
                     <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-125em" />
                 </span>
             </button>
         </header>
         <div class="tainacan-form">
+            <p class="tainacan-total-objects-info">
+                <span v-html="$i18n.getWithVariables('info_%s_selected_items_for_bulk_edition', [totalItems])" />&nbsp;
+                <span>{{ $i18n.get('info_define_bulk_edit_criteria') }}</span>
+            </p>
             <div class="modal-card-body no-overflow-modal-card-body">
                 <transition-group name="filter-item">
                     <div
@@ -153,6 +155,7 @@
                                 <template
                                         v-else-if="bulkEditionProcedures[criterion].metadatum.id == 'author_id'">
                                     <b-autocomplete
+                                            v-a11y-autocomplete="{ appendToBody: true }"
                                             :class="{ 'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': bulkEditionProcedures[criterion].isDone }"
                                             :clearable="!bulkEditionProcedures[criterion].isDone"
                                             :clear-on-select="false"
@@ -266,7 +269,7 @@
                         <!-- FOURTH FIELD - ICONS AND BUTTONS -->
                         <div
                                 :style="{
-                                    marginRight: !bulkEditionProcedures[criterion].isDone && !bulkEditionProcedures[criterion].isExecuting ? '-7.4px': 0
+                                    marginInlineEnd: !bulkEditionProcedures[criterion].isDone && !bulkEditionProcedures[criterion].isExecuting ? '-7.4px': 0
                                 }"
                                 class="field bulk-last-field">
 
@@ -288,16 +291,13 @@
 
                             <div
                                     v-if="bulkEditionProcedures[criterion].isDone"
-                                    class="is-pulled-right"
-                                    @mouseover="Object.assign( bulkEditionProcedures[criterion], { 'tooltipShow': !bulkEditionProcedures[criterion].tooltipShow })">
+                                    class="is-pulled-right">
                                 <span 
                                         v-tooltip="{
                                             content: $i18n.get('info_bulk_edit_process_added'),
                                             autoHide: true,
                                             placement: 'auto',
                                             popperClass: ['tainacan-tooltip', 'tooltip'],
-                                            triggers: [],
-                                            show: bulkEditionProcedures[criterion].tooltipShow
                                         }"
                                         class="icon">
                                     <i class="has-text-success tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle" />
@@ -315,13 +315,13 @@
                                     @click="executeBulkEditionProcedure(criterion)">
                                 <span 
                                         v-tooltip="{
-                                            content: $i18n.get('label_apply_changes'),
+                                            content: $i18n.get('add_bulk_edit_criterion_to_process_queue'),
                                             autoHide: true,
                                             placement: 'auto-end',
                                             popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"
                                         class="icon">
-                                    <i class="has-text-dark tainacan-icon tainacan-icon-1-25em tainacan-icon-play" />
+                                    <i class="has-text-dark tainacan-icon tainacan-icon-1-25em tainacan-icon-finish" />
                                 </span>
                             </button>
 
@@ -353,7 +353,7 @@
                                 bulkEditionProcedures[editionCriteria[editionCriteria.length-1]].isExecuting) || false"
                             type="button"
                             class="button is-outlined"
-                            @click="$eventBusSearch.loadItems(); $emit('close')">
+                            @click="$eventBusSearch.loadItems(); closeModal()">
                         {{ $i18n.get('close') }}
                     </button>
                 </p>
@@ -363,7 +363,7 @@
                             class="button is-success"
                             type="button"
                             @click="onFinish">
-                        {{ $i18n.get('finish') }}
+                        {{ $i18n.getWithVariables('label_apply_to_%s_items', [totalItems]) }}
                     </button>
                 </p>
             </footer>
@@ -398,6 +398,7 @@
             collectionId: [String, Number]
         },
         emits: [
+            'beforeClose',
             'close'
         ],
         data() {
@@ -415,8 +416,7 @@
                     1: {
                         isDone: false,
                         isExecuting: false,
-                        totalItemsEditedWithSuccess: 0,
-                        tooltipShow: true,
+                        totalItemsEditedWithSuccess: 0
                     }
                 },
                 groupId: null,
@@ -507,6 +507,10 @@
             ...mapActions('activity', [
                 'fetchUsers'
             ]),
+            closeModal() {
+                this.$emit('beforeClose');
+                this.$emit('close');
+            },
             finalizeProcedure(criterion){
 
                 Object.assign(this.bulkEditionProcedures[criterion], { 'isDone': true });
@@ -645,8 +649,7 @@
                         [`${aleatoryKey}`]: {
                             isDone: false,
                             isExecuting: false,
-                            totalItemsEditedWithSuccess: 0,
-                            tooltipShow: true,
+                            totalItemsEditedWithSuccess: 0
                         }
                     });
 
@@ -793,7 +796,7 @@
                     }
                 });
                 this.$eventBusSearch.loadItems();
-                this.$emit('close');
+                this.closeModal();
             }
         }
     }
@@ -806,11 +809,11 @@
             flex-direction: column !important;
 
             .tainacan-bulk-edition-field:not(:first-child) {
-                padding-left: 0 !important;
+                padding-inline-start: 0 !important;
             }
 
             .bulk-last-field {
-                margin-left: 0 !important;
+                margin-inline-start: 0 !important;
                 justify-content: center !important;
             }
         }
@@ -840,8 +843,10 @@
     }
 
     .tainacan-total-objects-info {
-        font-size: 0.75em;
-        font-weight: normal;
+        color: var(--tainacan-info-color);
+        font-size: .875em;
+        margin-top: -0.5em;
+        margin-bottom: 1.125em;
     }
 
     .tainacan-by-text {
@@ -942,17 +947,16 @@
         }
 
         .tainacan-bulk-edition-field {
-            flex-direction: column;
             flex-grow: 1;
             flex-shrink: 1;
             padding-bottom: 9px;
             flex-basis: 10%;
 
             &:not(:first-child) {
-                padding-left: 13px;
+                padding-left: 13px !important;
             }
 
-            :deep(.is-special-hidden-for-mobile) {
+            .is-special-hidden-for-mobile {
                 &,
                 &:focus,
                 &:focus-visible {
@@ -975,8 +979,8 @@
         .bulk-last-field {
             display: flex;
             align-items: center;
-            height: 32px;
-            margin-left: 10px;
+            height: var(--tainacan-button-min-height);
+            margin-inline-start: 10px;
             flex-direction: row-reverse;
 
             .icon.has-text-dark:hover {

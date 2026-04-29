@@ -62,7 +62,9 @@
                                 @click="onAddNewChildTerm(column.id)"
                                 @keydown.enter.prevent="onAddNewChildTerm(column.id)"
                                 @keydown.space.prevent="onAddNewChildTerm(column.id)">
-                            <span class="icon is-small">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
                             &nbsp;{{ $i18n.get('label_new_term') }}
@@ -76,12 +78,14 @@
                                 @keydown.enter.prevent="multipleInsertion({ parentId: column.id, parentName: column.name })"
                                 @keydown.space.prevent="multipleInsertion({ parentId: column.id, parentName: column.name })">
                             <span 
-                                    style="position: absolute;margin-left: -5px;margin-top: 5px;"
+                                    style="position: absolute;margin-inline-start: -5px;margin-top: 5px;"
+                                    aria-hidden="true"
                                     class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
                             <span 
                                     style="margin-top: -5px;"
+                                    aria-hidden="true"
                                     class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
@@ -121,7 +125,11 @@
                                 <button 
                                         v-if="currentUserCanEditTaxonomy"
                                         type="button"
-                                        @click.prevent="() => { onEditTerm(term); removeLevelsAfterTerm(term); }">
+                                        :aria-label="$i18n.get('edit')"
+                                        tabindex="0"
+                                        @click.prevent="() => { onEditTerm(term); removeLevelsAfterTerm(term); }"
+                                        @keydown.enter.prevent="() => { onEditTerm(term); removeLevelsAfterTerm(term); }"
+                                        @keydown.space.prevent="() => { onEditTerm(term); removeLevelsAfterTerm(term); }">
                                     <span
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
@@ -129,14 +137,18 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                 placement: 'bottom'
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                     </span>
                                 </button>
                                 <button 
                                         v-if="currentUserCanEditTaxonomy"
                                         type="button"
-                                        @click.prevent="removeTerm(term)">
+                                        :aria-label="$i18n.get('delete')"
+                                        @click.prevent="removeTerm(term)"
+                                        @keydown.enter.prevent="removeTerm(term)"
+                                        @keydown.space.prevent="removeTerm(term)">
                                     <span
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
@@ -144,13 +156,17 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                 placement: 'bottom'
                                             }"
+                                            aria-hidden="true"
                                             class="icon">
                                         <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-delete" />
                                     </span>
                                 </button>
                                 <a 
                                         target="_blank"
-                                        :href="term.url">
+                                        :href="term.url"
+                                        role="button"
+                                        tabindex="0"
+                                        :aria-label="$i18n.get('label_term_page_on_website')">
                                     <span
                                             v-tooltip="{
                                                 content: $i18n.get('label_term_page_on_website'),
@@ -158,7 +174,8 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                 placement: 'bottom'
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                                     </span>
                                 </a>
@@ -168,11 +185,14 @@
                                 v-if="isHierarchical && !searchString.length"
                                 class="load-children-button"
                                 type="button"
-                                @click="fetchTerms(term, columnIndex)">
+                                @click="fetchTerms(term, columnIndex)"
+                                @keydown.enter.prevent="fetchTerms(term, columnIndex)"
+                                @keydown.space.prevent="fetchTerms(term, columnIndex)">
                             <span 
-                                    style="margin-right: 0.25rem; opacity: 1.0;"
+                                    style="margin-inline-end: 0.25rem; opacity: 1.0;"
+                                    aria-hidden="true"
                                     class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-nextlevel" />
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-nextlevel tainacan-icon-is-rtl-mirrored" />
                             </span>
                             <span 
                                     v-if="termColumns.length <= 1"
@@ -193,9 +213,15 @@
                     <li v-if="column.children.length">
                         <button
                                 v-if="shouldShowMoreButton(columnIndex)"
+                                :aria-label="$i18n.get('label_show_more_terms')"
                                 class="tainacan-show-more"
-                                @click="fetchMoreTerms(column, columnIndex)">
-                            <span class="icon">
+                                type="button"
+                                @click="fetchMoreTerms(column, columnIndex)"
+                                @keydown.enter.prevent="fetchMoreTerms(column, columnIndex)"
+                                @keydown.space.prevent="fetchMoreTerms(column, columnIndex)">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore" />
                             </span>
                         </button>
@@ -205,7 +231,9 @@
                         v-else
                         class="warning-no-more-terms">
                     <p>
-                        <span class="icon is-medium">
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-medium">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms" />
                         </span>
                     </p>
@@ -218,7 +246,9 @@
                                 @click="onAddNewChildTerm(column.id)"
                                 @keydown.enter.prevent="onAddNewChildTerm(column.id)"
                                 @keydown.space.prevent="onAddNewChildTerm(column.id)">
-                            <span class="icon is-small">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
                             &nbsp;{{ $i18n.get('label_new_term') }}
@@ -227,15 +257,21 @@
                     <p>
                         <a 
                                 class="add-link"
+                                role="button"
+                                tabindex="0"
                                 style="position: relative;"
-                                @click="multipleInsertion({ parentId: column.id, parentName: column.name })">
+                                @click="multipleInsertion({ parentId: column.id, parentName: column.name })"
+                                @keydown.enter.prevent="multipleInsertion({ parentId: column.id, parentName: column.name })"
+                                @keydown.space.prevent="multipleInsertion({ parentId: column.id, parentName: column.name })">
                             <span 
-                                    style="position: absolute;margin-left: -5px;margin-top: 5px;"
+                                    style="position: absolute;margin-inline-start: -5px;margin-top: 5px;"
+                                    aria-hidden="true"
                                     class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
                             <span 
                                     style="margin-top: -5px;"
+                                    aria-hidden="true"
                                     class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
@@ -251,7 +287,9 @@
                 class="section">
             <div class="content has-text-dark has-text-centered">
                 <p>
-                    <span class="icon is-medium">
+                    <span 
+                            aria-hidden="true"
+                            class="icon is-medium">
                         <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms" />
                     </span>
                 </p>
@@ -264,7 +302,9 @@
                             @click="onAddNewChildTerm(0)"
                             @keydown.enter.prevent="onAddNewChildTerm(0)"
                             @keydown.space.prevent="onAddNewChildTerm(0)">
-                        <span class="icon is-small">
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-small">
                             <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                         </span>
                         &nbsp;{{ $i18n.get('label_new_term') }}
@@ -281,13 +321,15 @@
                 aria-modal
                 :can-cancel="['outside', 'escape']"
                 custom-class="tainacan-modal"
-                :close-button-aria-label="$i18n.get('close')">
+                :close-button-aria-label="$i18n.get('close')"
+                @close="onTermEditionModalClose()">
             <term-edition-form
                     :is-hierarchical="isHierarchical"
                     :taxonomy-id="taxonomyId"
                     :is-modal="true"
                     :original-form="editTerm"
                     @on-edition-finished="onTermEditionFinished($event.term, $event.hasChangedParent, $event.initialParent)"
+                    @before-close="restoreTermEditionFocus()"
                     @close="isEditingTerm = false" />
         </b-modal>
     </div>
@@ -333,7 +375,7 @@ export default {
     computed: {
         amountOfTermsSelected() {
             if ( this.selectedColumnIndex >= 0 )
-                return this.termColumns[this.selectedColumnIndex].total_children;
+                return this.termColumns[this.selectedColumnIndex].total_children ? Number(this.termColumns[this.selectedColumnIndex].total_children) : 0;
             else if ( this.selected.length )
                 return this.selected.length;
             else
@@ -385,6 +427,7 @@ export default {
         },
         onEditTerm(term) {
             this.editTerm = term;
+            this._modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.isEditingTerm = true;
         },
         shouldShowMoreButton(columnIndex) {
@@ -536,7 +579,7 @@ export default {
             this.$emit('on-update-selected-column-index', { index: newIndex, object: this.termColumns[newIndex] ? this.termColumns[newIndex] : null });
         },
         removeTerm(term) {
-
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: TermDeletionDialog,
                 props: {
@@ -561,17 +604,20 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });  
         },
         deleteSelectedTerms() {
-
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: TermDeletionDialog,
                 props: {
                     message: this.$i18n.get('info_warning_some_terms_with_child'),
                     showDescendantsDeleteButton: true,
-                    amountOfTerms: this.amountOfTermsSelected,
+                    amountOfTerms: Number(this.amountOfTermsSelected),
                     onConfirm: (typeOfDelete) => { 
                         
                         this.deleteTerms({
@@ -590,15 +636,18 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });  
         },
         updateSelectedTermsParent() {
-
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: TermParentSelectionDialog,
                 props: {
-                    amountOfTerms: this.amountOfTermsSelected,
+                    amountOfTerms: Number(this.amountOfTermsSelected),
                     excludeTree: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : this.selected.map((aTerm) => aTerm.id), 
                     taxonomyId: this.taxonomyId,
                     onConfirm: (selectedParentTerm) => {
@@ -618,7 +667,10 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });  
         },
         updateSelectedTerms(selectedTerm) {
@@ -659,6 +711,13 @@ export default {
                         this.resetTermsListUI();
                 }
             }
+        },
+        onTermEditionModalClose() {
+            this.isEditingTerm = false;
+            this.$modalFocusA11y.restoreFocus(this._modalTrigger, this);
+        },
+        restoreTermEditionFocus() {
+            this.$modalFocusA11y.restoreFocus(this._modalTrigger, this);
         },
         onTermEditionFinished(term, hasChangedParent, initialParent) {
             const updatedTermParentColumn = this.termColumns.findIndex((aFinderColumn) => aFinderColumn.id == term.parent);
@@ -738,7 +797,7 @@ export default {
             this.removeLevelsAfterTerm(newTerm);
         },
         multipleInsertion({ parentId, parentName }) {
-
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: TermMultipleInsertionDialog,
                 props: {
@@ -786,7 +845,10 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });      
         },
         resetTermsListUI() {
@@ -830,13 +892,13 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: stretch;
-        margin-left: 0px !important;
+        margin-inline-start: 0px !important;
         padding: 0 !important;
 
         :deep(.b-checkbox), :deep(.b-radio) {
             max-width: 100%;
             min-height: 1.875em;
-            margin-left: 0.7em;
+            margin-inline-start: 0.7em;
             margin-bottom: 0px !important;
             height: auto;
             padding-top: 0px;
@@ -857,7 +919,7 @@ export default {
                 .control-label {
                     padding-top: 0.8125em;
                     padding-bottom: 0.8125em;
-                    padding-left: calc(0.875em - 1px);
+                    padding-inline-start: calc(0.875em - 1px);
                     width: 100%;
                     border-bottom: 1px solid var(--tainacan-gray1);
                 }
@@ -879,7 +941,7 @@ export default {
         .actions-container {
             position: absolute;
             display: flex;
-            right: -0.5em;
+            inset-inline-end: -0.5em;
             opacity: 0.0;
             height: 100%;
         }
@@ -925,14 +987,14 @@ export default {
         .scroll-back-to-root-button {
             position: absolute;
             top: 0;
-            left: 0;
+            inset-inline-start: 0;
             z-index: 9;
             background-color: var(--tainacan-background-color);
             border: 1px solid var(--tainacan-gray2);
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 4px;
+            border-start-start-radius: 0;
+            border-end-start-radius: 0;
+            border-start-end-radius: 0;
+            border-end-end-radius: 4px;
             padding: 0.55rem 0.8rem;
             white-space: nowrap;
             display: block;
@@ -943,7 +1005,7 @@ export default {
     }
 
     .tainacan-hierarchical-list-column {
-        border-right: solid 1px var(--tainacan-gray2);        
+        border-inline-end: solid 1px var(--tainacan-gray2);        
         flex-basis: auto;
         flex-grow: 1;
         min-width: 290px;
@@ -953,11 +1015,11 @@ export default {
 
         &:only-child {
             max-width: 100%;
-            border-right: none;
+            border-inline-end: none;
         }
 
         &:last-child {
-            border-right: none;
+            border-inline-end: none;
         }
 
         ul {
@@ -967,7 +1029,7 @@ export default {
             overflow-x: hidden;
             list-style: none;
             margin: 0;
-            padding-left: 0;
+            padding-inline-start: 0;
             box-shadow: inset 0px 4px 10px -12px #000;
         }
         a:not(.add-link),
@@ -987,7 +1049,7 @@ export default {
         }
         button.load-children-button {
             opacity: 0.95;
-            border-left: 1px solid var(--tainacan-gray2);
+            border-inline-start: 1px dashed var(--tainacan-gray2);
         }
 
         .column-header {
@@ -1016,8 +1078,8 @@ export default {
                 overflow: initial;
 
                 &:not(:last-child) {
-                    margin-left: auto;
-                    margin-right: 1em;
+                    margin-inline-start: auto;
+                    margin-inline-end: 1em;
                 }
             }
 
@@ -1038,7 +1100,7 @@ export default {
         &:not(:first-child) .column-header {
 
             .column-name {
-                padding-left: calc(0.75em + 12px);
+                padding-inline-start: calc(0.75em + 12px);
             }
 
             &::after,
@@ -1046,7 +1108,7 @@ export default {
                 content: '';
                 display: block;
                 position: absolute;
-                right: 100%;
+                inset-inline-end: 100%;
                 width: 0;
                 height: 0;
                 border-style: solid;
@@ -1054,18 +1116,18 @@ export default {
             &::after {
                 top: 0px;
                 border-color: transparent transparent transparent white;
-                border-left-width: 12px;
+                border-inline-start-width: 12px;
                 border-top-width: calc(1em + 1px);
                 border-bottom-width: calc(1em + 0px);
-                left: -2px;
+                inset-inline-start: -2px;
             }
             &::before {
                 top: 0px;
                 border-color: transparent transparent transparent var(--tainacan-gray2);
-                border-left-width: 12px;
+                border-inline-start-width: 12px;
                 border-top-width: calc(1em + 1px);
                 border-bottom-width: calc(1em + 0px);
-                left: -1px;
+                inset-inline-start: -1px;
             }
         }
         
@@ -1143,7 +1205,7 @@ export default {
             }
             .tainacan-hierarchical-list-column ul a {
                 width: 4.5em;
-                border-left: 1px solid var(--tainacan-gray1);
+                border-inline-start: 1px solid var(--tainacan-gray1);
                 border-bottom: 1px solid var(--tainacan-gray1);
                 display: flex;
                 justify-content: center;

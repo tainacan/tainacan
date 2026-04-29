@@ -5,7 +5,7 @@
         <h2>{{ $i18n.get('label_available_exporters') }}</h2>
         <p>{{ $i18n.get('instruction_select_an_exporter_type') }}</p>
         <div
-                role="list"
+                :role="Object.keys(availableExporters).length > 1 ? 'list' : undefined"
                 class="exporter-types-container tainacan-clickable-cards">
             <template 
                     v-for="exporterType in availableExporters"
@@ -13,9 +13,15 @@
                 <router-link
                         class="exporter-type tainacan-clickable-card"
                         :to="$routerHelper.getExporterEditionPath(exporterType.slug) + ( selectedCollection ? ('?sourceCollection=' + selectedCollection) : '' )"
-                        role="listitem">
-                    <h4>{{ exporterType.name }}</h4>
-                    <p>{{ exporterType.description }}</p>
+                        :role="Object.keys(availableExporters).length > 1 ? 'listitem' : undefined">
+                    <dl class="exporter-type-definition">
+                        <dt class="exporter-type-name">
+                            {{ exporterType.name }}
+                        </dt>
+                        <dd class="exporter-type-description">
+                            {{ exporterType.description }}
+                        </dd>
+                    </dl>
                 </router-link>
             </template>
         </div>
@@ -33,7 +39,7 @@
         name: 'AvailableExportersPage',
         data(){
             return {
-                availableExporters: [],
+                availableExporters: {},
                 isLoading: false,
                 selectedCollection: false
             }

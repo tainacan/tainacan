@@ -35,7 +35,11 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
                                     class="icon"
-                                    @click="onDeleteAttachment(attachment)">
+                                    role="button"
+                                    tabindex="0"
+                                    @click="onDeleteAttachment(attachment)"
+                                    @keydown.enter.prevent="onDeleteAttachment(attachment)"
+                                    @keydown.space.prevent="onDeleteAttachment(attachment)">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
                             </a>
                         </span>
@@ -48,7 +52,9 @@
                 <section class="section">
                     <div class="content has-text-dark has-text-centered">
                         <p>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-attachments" />
                             </span>
                         </p>
@@ -62,13 +68,7 @@
                 v-if="attachments.length > 0" 
                 class="pagination-area">
             <div class="shown-items">
-                {{
-                    $i18n.getWithVariables('info_showing_%s', [ collection && collection.item_attachment_label ? collection.item_attachment_label : $i18n.get('label_attachments') ]) + ' ' +
-                        (attachmentsPerPage * (attachmentsPage - 1) + 1) +
-                        $i18n.get('info_to') +
-                        getLastAttachmentsNumber() +
-                        $i18n.get('info_of') + totalAttachments + '.'
-                }}
+                {{ showingAttachmentsText }}
             </div>
             <div class="pagination">
                 <b-pagination
@@ -80,7 +80,6 @@
                         :aria-next-label="$i18n.get('label_next_page')"
                         :aria-previous-label="$i18n.get('label_previous_page')"
                         :aria-page-label="$i18n.get('label_page')"
-                        :aria-current-label="$i18n.get('label_current_page')"
                         @change="onPageChange" />
             </div>
         </div>
@@ -117,7 +116,17 @@
             ...mapGetters('item', {
                 'attachments': 'getAttachments',
                 'totalAttachments': 'getTotalAttachments'
-            })
+            }),
+            showingAttachmentsText() {
+                const entityLabel = this.collection && this.collection.item_attachment_label 
+                    ? this.collection.item_attachment_label 
+                    : this.$i18n.get('label_attachments');
+                const first = this.attachmentsPerPage * (this.attachmentsPage - 1) + 1;
+                const last = this.getLastAttachmentsNumber();
+                const total = this.totalAttachments;
+                
+                return this.$i18n.getWithVariables('info_showing_%s_range', [entityLabel, first, last, total]);
+            }
         },
         watch: {
             shouldLoadAttachments() {
@@ -193,10 +202,10 @@
             display: inline-block;
             position: relative;
 
-            &:hover .file-item-control {
-                display: block;
-                visibility: visible;
-                opacity: 1;
+            &:hover .file-item-control,
+            &:focus-within .file-item-control,
+            &:focus-visible .file-item-control {
+                opacity: 1.0;
             }
 
             .file-attachment-document-tag {
@@ -215,7 +224,9 @@
                 opacity: 0.25;
                 transition: opacity 0.2s ease;
             }
-            &:hover .file-attachment-document-tag {
+            &:hover .file-attachment-document-tag,
+            &:focus-within .file-attachment-document-tag,
+            &:focus-visible .file-attachment-document-tag {
                 opacity: 1.0;
             }
 
@@ -229,10 +240,8 @@
                 border-bottom-left-radius: var(--tainacan-item-border-radius, 3px);
                 padding: 2px 8px 4px 8px;
                 text-align: right;
-                display: none;
-                visibility: hidden;
                 opacity: 0;
-                transition: opacity ease 0.2s, visibility ease 0.2s, display ease 0.2s;
+                transition: opacity ease 0.2s;
 
                 .icon {
                     cursor: pointer;

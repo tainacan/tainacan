@@ -67,10 +67,12 @@
                             v-if="!isLoading && !isLoadingCollectionTaxonomies && Object.values(getCollectionTaxonomies) && Object.values(getCollectionTaxonomies).length > 0"
                             class="collection-form-section"
                             @click="showCollectionsTaxonomiesOptions = !showCollectionsTaxonomiesOptions;">
-                        <span class="icon">
+                        <span
+                                aria-hidden="true"
+                                class="icon">
                             <i 
                                     class="tainacan-icon"
-                                    :class="showCollectionsTaxonomiesOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                                    :class="showCollectionsTaxonomiesOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
                         </span>
                         <strong>{{ $i18n.get('label_collections_taxonomies') }}</strong>
                         <hr>
@@ -103,10 +105,12 @@
                     <div 
                             class="collection-form-section"
                             @click="showItemsListOptions = !showItemsListOptions;">
-                        <span class="icon">
+                        <span
+                                aria-hidden="true"
+                                class="icon">
                             <i 
                                     class="tainacan-icon"
-                                    :class="showItemsListOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                                    :class="showItemsListOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
                         </span>
                         <strong>{{ $i18n.get('label_items_list_options') }}</strong>
                         <hr>
@@ -192,7 +196,9 @@
                                                         type="button"
                                                         :disabled="Object.keys(registeredAndNotDisabledViewModes).length < 0">
                                                     <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
-                                                    <span class="icon">
+                                                    <span
+                                                            aria-hidden="true"
+                                                            class="icon">
                                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                                     </span>
                                                 </button>
@@ -214,6 +220,7 @@
                                                                         'has-text-secondary' : checkIfViewModeEnabled(viewMode),
                                                                         'has-text-dark' : !checkIfViewModeEnabled(viewMode)  
                                                                     }"
+                                                                    aria-hidden="true"
                                                                     v-html="registeredAndNotDisabledViewModes[viewMode].icon" />
                                                             &nbsp;{{ registeredAndNotDisabledViewModes[viewMode].label }}
                                                         </strong>
@@ -275,10 +282,12 @@
                     <div 
                             class="collection-form-section"
                             @click="showItemEditionFormOptions = !showItemEditionFormOptions;">
-                        <span class="icon">
+                        <span
+                                aria-hidden="true"
+                                class="icon">
                             <i 
                                     class="tainacan-icon"
-                                    :class="showItemEditionFormOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                                    :class="showItemEditionFormOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
                         </span>
                         <strong>{{ $i18n.get('label_item_edition_form_options') }}</strong>
                         <hr>
@@ -304,7 +313,9 @@
                                                 v-model="documentType.enabled"
                                                 true-value="yes"
                                                 false-value="no">
-                                            <span class="icon">
+                                            <span
+                                                    aria-hidden="true"
+                                                    class="icon">
                                                 <i :class="'tainacan-icon tainacan-icon-' + documentType.icon" />
                                             </span>
                                             {{ documentType.label }}
@@ -492,10 +503,12 @@
                     <div 
                             class="collection-form-section"
                             @click="showItemSubmissionOptions = !showItemSubmissionOptions;">
-                        <span class="icon">
+                        <span
+                                aria-hidden="true"
+                                class="icon">
                             <i 
                                     class="tainacan-icon"
-                                    :class="showItemSubmissionOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                                    :class="showItemSubmissionOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored'" />
                         </span>
                         <strong>{{ $i18n.get('label_item_submission_options') }}</strong>
                         <hr>
@@ -562,7 +575,9 @@
                                                     :key="index"
                                                     v-model="form.submission_default_status"
                                                     :native-value="statusOption.slug">
-                                                <span class="icon has-text-dark">
+                                                <span
+                                                        aria-hidden="true"
+                                                        class="icon has-text-dark">
                                                     <i 
                                                             class="tainacan-icon tainacan-icon-18px"
                                                             :class="$statusHelper.getIcon(statusOption.slug)" />
@@ -664,7 +679,9 @@
                                             class="button is-outlined"
                                             :class="{ 'disabled': editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) }"
                                             style="width: auto">
-                                        <span class="icon has-text-dark">
+                                        <span
+                                                aria-hidden="true"
+                                                class="icon has-text-dark">
                                             <i 
                                                     class="tainacan-icon tainacan-icon-18px"
                                                     :class="$statusHelper.getIcon(form.status)" />
@@ -676,8 +693,9 @@
                                             {{ $i18n.get('status_auto-draft') }}
                                         </template>
                                         <span 
-                                                style="margin-left: 0.5em;"
-                                                class="icon is-small">
+                                                style="margin-inline-start: 0.5em;"
+                                                class="icon is-small"
+                                                aria-hidden="true">
                                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                         </span>
                                     </button>
@@ -688,7 +706,9 @@
                                         @click="form.status = statusOption.slug"
                                         @keydown.enter.prevent="form.status = statusOption.slug"
                                         @keydown.space.prevent="form.status = statusOption.slug">
-                                    <span class="icon has-text-dark">
+                                    <span
+                                            aria-hidden="true"
+                                            class="icon has-text-dark">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-18px"
                                                 :class="$statusHelper.getIcon(statusOption.slug)" />
@@ -740,8 +760,12 @@
                                 <a 
                                         id="button-edit-header-image"
                                         class="button is-rounded is-secondary" 
+                                        role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('label_button_edit_header_image')"
-                                        @click="headerImageMediaFrame.openFrame($event)">
+                                        @click="onOpenHeaderImageFrame($event)"
+                                        @keydown.enter.prevent="onOpenHeaderImageFrame($event)"
+                                        @keydown.space.prevent="onOpenHeaderImageFrame($event)">
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
@@ -749,15 +773,21 @@
                                                 placement: 'bottom',
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i class="tainacan-icon tainacan-icon-edit" />
                                     </span>
                                 </a>
                                 <a 
+                                        v-if="collection.header_image != undefined && collection.header_image != false"
                                         id="button-delete-header-image"
                                         class="button is-rounded is-secondary" 
+                                        role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('label_button_delete_thumb')" 
-                                        @click="deleteHeaderImage()">
+                                        @click="deleteHeaderImage()"
+                                        @keydown.enter.prevent="deleteHeaderImage()"
+                                        @keydown.space.prevent="deleteHeaderImage()">
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
@@ -765,7 +795,8 @@
                                                 placement: 'bottom',
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i class="tainacan-icon tainacan-icon-delete" />
                                     </span>
                                 </a>
@@ -797,8 +828,12 @@
                                 <a 
                                         id="button-edit-thumbnail"
                                         class="button is-rounded is-secondary" 
+                                        role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('label_button_edit_thumb')"
-                                        @click.prevent="thumbnailMediaFrame.openFrame($event)">
+                                        @click.prevent="onOpenThumbnailFrame($event)"
+                                        @keydown.enter.prevent="onOpenThumbnailFrame($event)"
+                                        @keydown.space.prevent="onOpenThumbnailFrame($event)">
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
@@ -811,10 +846,15 @@
                                     </span>
                                 </a>
                                 <a 
-                                        id="button-delete-header-image"
-                                        class="button is-rounded is-secondary" 
+                                        v-if="collection.thumbnail != undefined && collection.thumbnail != false && collection.thumbnail != undefined && collection.thumbnail['tainacan-medium'] != undefined && collection.thumbnail['tainacan-medium'] != false"
+                                        id="button-delete-thumbnail"
+                                        class="button is-rounded is-secondary"
+                                        role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('label_button_delete_thumb')" 
-                                        @click="deleteThumbnail()">
+                                        @click="deleteThumbnail()"
+                                        @keydown.enter.prevent="deleteThumbnail()"
+                                        @keydown.space.prevent="deleteThumbnail()">
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
@@ -851,6 +891,7 @@
                                     v-if="coverPage == undefined || coverPage.title == undefined"
                                     id="tainacan-text-cover-page"
                                     v-model="coverPageTitle"
+                                    v-a11y-autocomplete
                                     :placeholder="$i18n.get('instruction_cover_page')"
                                     :data="coverPages"
                                     :loading="isFetchingPages"
@@ -927,8 +968,12 @@
                                     style="font-size: 0.875em;" 
                                     :class="{'disabled': form.enable_cover_page != 'yes'}"
                                     target="_blank"  
+                                    role="button"
+                                    tabindex="0"
                                     :href="newPagePath">
-                                <span class="icon is-small">
+                                <span   
+                                        aria-hidden="true"
+                                        class="icon is-small">
                                     <i class="tainacan-icon tainacan-icon-add" />
                                 </span>
                                 {{ $i18n.get('label_create_new_page') }}
@@ -988,7 +1033,7 @@
                     {{ formErrorMessage }}
                 </p>
                 <div 
-                        style="margin-left: auto;"
+                        style="margin-inline-start: auto;"
                         class="control is-hidden-mobile">
                     <button
                             v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata') && !fromImporter"
@@ -1016,7 +1061,9 @@
             <section class="section">
                 <div class="content has-text-dark has-text-centered">
                     <p>
-                        <span class="icon">
+                        <span
+                                class="icon"
+                                aria-hidden="true">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
                         </span>
                     </p>
@@ -1646,6 +1693,7 @@ export default {
                         frame_button: this.$i18n.get('label_select_file'),
                     },
                     relatedPostId: this.collectionId,
+                    onClose: () => this.$modalFocusA11y.restoreFocus(this._mediaTrigger, this),
                     onSave: (media) => {
                         this.updateThumbnail({
                             collectionId: this.collectionId, thumbnailId: media.id
@@ -1665,6 +1713,7 @@ export default {
                         frame_button: this.$i18n.get('label_select_file'),
                     },
                     relatedPostId: this.collectionId,
+                    onClose: () => this.$modalFocusA11y.restoreFocus(this._mediaTrigger, this),
                     onSave: (media) => {
                         this.updateHeaderImage({collectionId: this.collectionId, headerImageId: media.id})
                         .then((res) => {
@@ -1674,6 +1723,14 @@ export default {
                     }
                 }
             );
+        },
+        onOpenThumbnailFrame(event) {
+            this._mediaTrigger = this.$modalFocusA11y.captureTrigger();
+            this.thumbnailMediaFrame.openFrame(event);
+        },
+        onOpenHeaderImageFrame(event) {
+            this._mediaTrigger = this.$modalFocusA11y.captureTrigger();
+            this.headerImageMediaFrame.openFrame(event);
         },
         getMetadataForSorting() {
 
@@ -1766,7 +1823,7 @@ export default {
 
     @media screen and (min-width: 1025px) {
         .column:last-of-type {
-            padding-left: var(--tainacan-one-column) !important;
+            padding-inline-start: var(--tainacan-one-column) !important;
         }
     }
 
@@ -1792,7 +1849,10 @@ export default {
         min-width: 2.125em !important;
         padding: 0 !important;
         z-index: 99;
-        margin-left: 12px !important;
+
+        &:not(:only-child):not(:first-child) {
+            margin-inline-start: 12px !important;
+        }
         
         .icon {
             display: inherit;
@@ -1820,7 +1880,7 @@ export default {
             font-size: 0.875em;
             z-index: 1;
             position: relative;
-            padding-right: 12px;
+            padding-inline-end: 12px;
         }
         hr {
             position: absolute;
@@ -1828,7 +1888,7 @@ export default {
             width: calc(100% - 42px);
             height: 1px;
             background-color: var(--tainacan-gray2);
-            margin-left: 42px;
+            margin-inline-start: 42px;
             transition: background-color 0.2s ease, height 0.2s ease;
         }
         
@@ -1845,10 +1905,11 @@ export default {
     }
 
     .options-columns {
-        margin-left: 0.25rem;
-        padding-left: 1.25em;
-        padding-right: 0.25em;
-        padding-bottom: 1.25em;border-left: 1px solid var(--tainacan-gray2);
+        margin-inline-start: 0.25rem;
+        padding-inline-start: 1.25em;
+        padding-inline-end: 0.25em;
+        padding-bottom: 1.25em;
+        border-inline-start: 1px solid var(--tainacan-gray2);
 
         & .field,
         &>div {
@@ -1882,7 +1943,7 @@ export default {
 
         @container headerandthumbnailfield (max-width: 395px) {
             .header-field .image-placeholder {
-                right: 18%;
+                inset-inline-end: 18%;
                 top: 34%;
             }
             .thumbnail-field {
@@ -1894,7 +1955,6 @@ export default {
                     border: none;
                 }
                 .thumbnail-buttons-row {
-                    left: 61px;
                     bottom: calc(1em + 0px);
                 }
             }
@@ -1906,8 +1966,8 @@ export default {
 
         .image-placeholder {
             position: absolute;
-            left: unset;
-            right: 10%;
+            inset-inline-start: unset;
+            inset-inline-end: 10%;
             top: 38%;
             font-size: 0.875em;
             font-weight: bold;
@@ -1921,7 +1981,7 @@ export default {
             }
         }
         .header-buttons-row {
-            text-align: right;
+            text-align: end;
             top: -15px;
             position: relative;
         }
@@ -1983,7 +2043,7 @@ export default {
         }
         .thumbnail-buttons-row {
             position: relative;
-            left: 52px;
+            text-align: end;
             bottom: calc(1.0em + 12px);
         }
     }
@@ -2006,11 +2066,11 @@ export default {
         .span { vertical-align: middle;}
 
         .selected-cover-page-control {
-            float: right;
+            float: inline-end;
         }
     }
     .selected-cover-page-buttons {
-        float: right;
+        float: inline-end;
         padding: 4px 6px;  
         &.disabled {
             pointer-events: none;
@@ -2096,10 +2156,10 @@ export default {
         }
     }
     .item-submission-options {
-        padding-left: 1em;
+        padding-inline-start: 1em;
         padding-top: 1.0em;
         margin-top: -1.5em;
-        border-left: 1px solid var(--tainacan-gray2);
+        border-inline-start: 1px solid var(--tainacan-gray2);
     }
     .enabled-view-modes-dropdown {
         position: relative;
@@ -2112,7 +2172,7 @@ export default {
             white-space: normal;
         }
         :deep(svg) {
-            margin-left: -2px;
+            margin-inline-start: -2px;
             overflow: hidden;
             vertical-align: middle;
         }
@@ -2129,7 +2189,7 @@ export default {
         z-index: 9999;
         background-color: var(--tainacan-gray1);
         width: 100%;
-        margin-left: calc(-1 * var(--tainacan-one-column));
+        margin-inline-start: calc(-1 * var(--tainacan-one-column));
         height: 3.5rem;
         display: flex;
         justify-content: flex-end;
@@ -2166,7 +2226,7 @@ export default {
 
         .update-info-section {
             color: var(--tainacan-info-color);
-            margin-right: auto;
+            margin-inline-end: auto;
             display: flex;
             flex-wrap: nowrap;
         }
@@ -2175,10 +2235,10 @@ export default {
             display: inline-flex;
             font-size: 1.0em;
             margin-top: 0;
-            margin-left: 24px;
+            margin-inline-start: 24px;
 
             .tainacan-help-tooltip-trigger {
-                margin-left: 0.25em;
+                margin-inline-start: 0.25em;
             }
         }
 
@@ -2190,14 +2250,14 @@ export default {
     @media screen and (max-width: 768px) {
         .footer {
             padding: 13px 0.5em;
-            margin-left: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
+            margin-inline-start: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
             width: 100%;
             flex-wrap: wrap;
             height: auto;
             position: fixed;
 
             .update-info-section {
-                margin-left: auto;
+                margin-inline-start: auto;
                 margin-bottom: 0.75em;
                 margin-top: -0.25em;
             }

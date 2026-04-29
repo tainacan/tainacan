@@ -28,7 +28,12 @@
                             :data-metadatum-type="metadatum.component"
                             class="available-metadatum-item"
                             :class="{ 'highlighted-metadatum' : highlightedMetadatum == metadatum.name, 'inherited-metadatum': metadatum.inherited || isRepositoryLevel }"
-                            @click.prevent="addMetadatumViaButton(metadatum)">
+                            role="button"
+                            tabindex="0"
+                            :aria-label="$i18n.get('instruction_click_or_drag_metadatum_create')"
+                            @click.prevent="addMetadatumViaButton(metadatum)"
+                            @keydown.enter.prevent="addMetadatumViaButton(metadatum)"
+                            @keydown.space.prevent="addMetadatumViaButton(metadatum)">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('instruction_click_or_drag_metadatum_create'),
@@ -36,6 +41,7 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }"   
+                                aria-hidden="true"
                                 class="icon grip-icon">
                             <!-- <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/> -->
                             <svg 
@@ -93,7 +99,12 @@
                     <div 
                             :id="metadataSection.id"
                             class="available-metadata-section-item"
-                            @click="addMetadataSectionViaButton()">
+                            role="button"
+                            tabindex="0"
+                            :aria-label="$i18n.get('instruction_click_or_drag_metadatum_create')"
+                            @click="addMetadataSectionViaButton()"
+                            @keydown.enter.prevent="addMetadataSectionViaButton()"
+                            @keydown.space.prevent="addMetadataSectionViaButton()">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('instruction_click_or_drag_metadatum_create'),
@@ -101,6 +112,7 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }"   
+                                aria-hidden="true"
                                 class="icon grip-icon">
                             <!-- <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/> -->
                             <svg 
@@ -215,7 +227,10 @@ export default {
 
 <style lang="scss">
     .available-metadata-types-area {
-        padding: 10px 0px 10px 10px !important;
+        padding-inline-start: 10px !important;
+        padding-inline-end: 0 !important;
+        padding-block-start: 10px !important;
+        padding-block-end: 10px !important;
         margin: 0;
         max-width: 260px;
         min-width: 20.8333333%;
@@ -244,6 +259,7 @@ export default {
         h2,
         h3 {
             margin: 0.875em 0em 1em 0em;
+            color: var(--tainacan-label-color);
         }
 
         .available-metadatum-item,
@@ -252,12 +268,12 @@ export default {
             margin: 4px 4px 4px 1.2em;
             background-color: var(--tainacan-white);
             cursor: pointer;
-            left: 0;
+            inset-inline-start: 0;
             height: 2.8571em;
             border-radius: var(--tainacan-button-border-radius, 0px);
             position: relative;
             border: 1px solid var(--tainacan-gray2);
-            transition: left 0.2s ease;
+            transition: inset-inline-start 0.2s ease;
             
             .grip-icon { 
                 color: var(--tainacan-gray3);
@@ -273,11 +289,12 @@ export default {
                 top: 6px;
             }
             .metadatum-name {
+                color: var(--tainacan-label-color);
                 text-overflow: ellipsis;
                 overflow-x: hidden;
                 white-space: nowrap;
                 font-weight: bold;
-                margin-left: 0.4em;
+                margin-inline-start: 0.4em;
                 display: inline-block;
                 max-width: 180px;
                 width: 60%;
@@ -287,7 +304,7 @@ export default {
                 content: '';
                 display: block;
                 position: absolute;
-                right: 100%;
+                inset-inline-end: 100%;
                 width: 0;
                 height: 0;
                 border-style: solid;
@@ -296,18 +313,18 @@ export default {
             &::after {
                 top: -1px;
                 border-color: transparent white transparent transparent;
-                border-right-width: 16px;
+                border-inline-end-width: 16px;
                 border-top-width: 1.4286em;
                 border-bottom-width: 1.4286em;
-                left: calc( -19px + (var(--tainacan-button-border-radius, 0px) / 2));
+                inset-inline-start: calc( -19px + (var(--tainacan-button-border-radius, 0px) / 2));
             }
             &::before {
                 top: -1px;
                 border-color: transparent var(--tainacan-gray2) transparent transparent;
-                border-right-width: 16px;
+                border-inline-end-width: 16px;
                 border-top-width: 1.4286em;
                 border-bottom-width: 1.4286em;
-                left: calc( -20px + (var(--tainacan-button-border-radius, 0px) / 2));
+                inset-inline-start: calc( -20px + (var(--tainacan-button-border-radius, 0px) / 2));
             }
         }
 
@@ -379,7 +396,7 @@ export default {
         .highlighted-metadatum {
             background-color: var(--tainacan-white);
             position: relative;
-            left: 0px;
+            inset-inline-start: 0px;
             animation-name: hightlighten;
             animation-duration: 1.0s;
             animation-iteration-count: 2;
@@ -398,11 +415,15 @@ export default {
             }
         }
         .available-metadatum-item:hover,
-        .available-metadata-section-item:hover {
+        .available-metadata-section-item:hover,
+        .available-metadatum-item:focus,
+        .available-metadata-section-item:focus,
+        .available-metadatum-item:focus-within,
+        .available-metadata-section-item:focus-within {
             background-color: var(--tainacan-turquoise1);
             border-color: var(--tainacan-turquoise2);
             position: relative;
-            left: -4px;
+            inset-inline-start: -4px;
 
             &:after {
                 border-color: transparent var(--tainacan-turquoise1) transparent transparent;
@@ -417,7 +438,11 @@ export default {
     }
     .inherited-metadatum {
         &.available-metadatum-item:hover,
-        &.available-metadata-section-item:hover {
+        &.available-metadata-section-item:hover,
+        &.available-metadatum-item:focus,
+        &.available-metadata-section-item:focus,
+        &.available-metadatum-item:focus-within,
+        &.available-metadata-section-item:focus-within {
             background-color: var(--tainacan-blue1) !important;
             border-color: var(--tainacan-blue2) !important;
 

@@ -565,7 +565,7 @@ class Roles {
 	}
 
 	/**
-	 * Callback to gettext_with_context hook to translate custom ueser roles.
+	 * Callback to gettext_with_context hook to translate custom user roles.
 	 *
 	 * Since user roles are stored in the database, we have to translate them on the fly
 	 * using translate_user_role() function.
@@ -573,17 +573,24 @@ class Roles {
 	 * @see https://wordpress.stackexchange.com/questions/141551/how-to-auto-translate-custom-user-roles
 	 */
 	public function translate_user_roles( $translations, $text, $context, $domain ) {
-
-		$plugin_domain = 'tainacan';
-
-		$roles_names = array_map(function($role) {
-			return $role['display_name'];
-		}, $this->get_tainacan_roles());
-
-		if ( $context === 'User role' && in_array( $text, $roles_names ) && $domain !== $plugin_domain ) {
-			return translate_with_gettext_context( $text, $context, $plugin_domain );
+    
+		// Early return - only process User role context from non-tainacan domains
+		if ( $context !== 'User role' || $domain === 'tainacan' ) {
+			return $translations;
 		}
-
+	
+		// Lazy load roles names only when needed
+		static $roles_names = null;
+		if ( $roles_names === null ) {
+			$roles_names = array_map(function($role) {
+				return $role['display_name'];
+			}, $this->get_tainacan_roles());
+		}
+	
+		if ( in_array( $text, $roles_names, true ) ) {
+			return translate_user_role( $text, 'tainacan' );
+		}
+		
 		return $translations;
 	}
 

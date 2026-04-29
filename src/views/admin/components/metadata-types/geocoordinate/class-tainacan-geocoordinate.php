@@ -89,6 +89,7 @@ class GeoCoordinate extends Metadata_Type {
 		foreach ($value as $coordinate) {
 			$arr_coordinate = explode(",", $coordinate);
 			if ( count($arr_coordinate) != 2 || !$this->validateLatLong($arr_coordinate[0], $arr_coordinate[1])) {
+				/* translators: %s is the value of the geo coordinate */
 				$this->add_error( sprintf(__('The value (%s) is not a valid geo coordinate', 'tainacan'), $coordinate ) );
 				return false;
 			}
@@ -161,26 +162,48 @@ class GeoCoordinate extends Metadata_Type {
 			$zoom_geo_query = isset($options['initial_zoom']) ? ('z=' . $options['initial_zoom'] ) : '' ;
 
 			if ( $item_metadata->is_multiple() ) {
-				$prefix = $item_metadata->get_multivalue_prefix();
-				$suffix = $item_metadata->get_multivalue_suffix();
-				$separator = $item_metadata->get_multivalue_separator();
-				
-				foreach ( $value as $coordinate ) {
-
-					$coordinate_as_array = explode(",", $coordinate);
-					$latitude = isset($coordinate_as_array[0]) ? $coordinate_as_array[0] : '';
-					$longitude = isset($coordinate_as_array[1]) ? $coordinate_as_array[1] : '';
-
-					$single_value = "<a class='tainacan-coordinates' data-latitude='{$latitude}' data-longitude='{$longitude}' href='geo:{$latitude},{$longitude}?q={$latitude},{$longitude}&{$zoom_geo_query}'>
-										<span>{$latitude}</span>
-										<span class='coordinates-separator'>,</span>
-										<span>{$longitude}</span>
-									</a>";
-					$return .= empty($return)
-						? $prefix . $single_value . $suffix
-						: $separator . $prefix . $single_value . $suffix;
+				$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+				if ( $html_formatting === 'list' ) {
+					$list_items = [];
+					foreach ( $value as $coordinate ) {
+						$coordinate_as_array = explode(",", $coordinate);
+						$latitude = isset($coordinate_as_array[0]) ? $coordinate_as_array[0] : '';
+						$longitude = isset($coordinate_as_array[1]) ? $coordinate_as_array[1] : '';
+						$single_value = "<a class='tainacan-coordinates' data-latitude='{$latitude}' data-longitude='{$longitude}' href='geo:{$latitude},{$longitude}?q={$latitude},{$longitude}&{$zoom_geo_query}'>
+											<span>{$latitude}</span>
+											<span class='coordinates-separator'>,</span>
+											<span>{$longitude}</span>
+										</a>";
+						$list_items[] = $single_value;
+					}
+					$total = count( $list_items );
+					if ( $total === 1 ) {
+						$return .= $list_items[0];
+					} elseif ( $total > 1 ) {
+						$return .= '<ul>';
+						foreach ( $list_items as $item ) {
+							$return .= '<li>' . $item . '</li>';
+						}
+						$return .= '</ul>';
+					}
+				} else {
+					$prefix = $item_metadata->get_multivalue_prefix();
+					$suffix = $item_metadata->get_multivalue_suffix();
+					$separator = $item_metadata->get_multivalue_separator();
+					foreach ( $value as $coordinate ) {
+						$coordinate_as_array = explode(",", $coordinate);
+						$latitude = isset($coordinate_as_array[0]) ? $coordinate_as_array[0] : '';
+						$longitude = isset($coordinate_as_array[1]) ? $coordinate_as_array[1] : '';
+						$single_value = "<a class='tainacan-coordinates' data-latitude='{$latitude}' data-longitude='{$longitude}' href='geo:{$latitude},{$longitude}?q={$latitude},{$longitude}&{$zoom_geo_query}'>
+											<span>{$latitude}</span>
+											<span class='coordinates-separator'>,</span>
+											<span>{$longitude}</span>
+										</a>";
+						$return .= empty($return)
+							? $prefix . $single_value . $suffix
+							: $separator . $prefix . $single_value . $suffix;
+					}
 				}
-
 			} else {
 				$coordinate_as_array = explode(",", $value);
 				$latitude = isset($coordinate_as_array[0]) ? $coordinate_as_array[0] : '';
@@ -236,6 +259,7 @@ class GeoCoordinate extends Metadata_Type {
 
         if ( !$this->validateLatLong( $this->get_option('initial_latitude'), $this->get_option('initial_longitude') ) ) {
             return [
+                /* translators: %s is the value of the geo coordinate */
                 'initial_position' => sprintf(__('The value (%s) is not a valid geo coordinate', 'tainacan'), ('' . $this->get_option('initial_latitude') . ',' . $this->get_option('initial_longitude')) )
             ];
         }

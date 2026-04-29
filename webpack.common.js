@@ -15,7 +15,6 @@ const TainacanPluginConfig = {
         tainacan_blocks_query_variations: './src/views/gutenberg-blocks/js/tainacan-blocks-query-variations.js',
 
         block_terms_list: './src/views/gutenberg-blocks/blocks/terms-list/index.js',
-        block_items_list: './src/views/gutenberg-blocks/blocks/items-list/index.js',
         block_dynamic_items_list: './src/views/gutenberg-blocks/blocks/dynamic-items-list/index.js',
         block_carousel_items_list: './src/views/gutenberg-blocks/blocks/carousel-items-list/index.js',
         block_search_bar: './src/views/gutenberg-blocks/blocks/search-bar/index.js',
@@ -121,7 +120,7 @@ const TainacanPluginConfig = {
             'PhotoSwipe': 'PhotoSwipe'
         }),
         new MomentLocalesPlugin({
-            localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'el', 'es-in', 'pt-br', 'pt', 'ca', 'es', 'es-us', 'es-mx', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv', 'sq', 'sk', 'uk'],
+            localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'el', 'es-in', 'pt-br', 'pt', 'ca', 'es', 'es-us', 'es-mx', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv', 'sq', 'sk', 'uk', 'de'],
         }),
         new ESLintPlugin({
             extensions: ['vue'],

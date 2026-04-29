@@ -14,7 +14,7 @@
                 }
             }
             .gray-icon {
-                padding-right: 0 !important;
+                padding-inline-end: 0 !important;
             }
         }
         .button.is-primary, .button.is-secondary, .button.is-success {
@@ -61,6 +61,7 @@
                 font-size: 0.825em;
                 color: var(--tainacan-input-color) !important;
                 border: none;
+                background-color: var(--tainacan-input-background-color);
                 transition: background-color 0.3s ease;
                 min-height: var(--tainacan-button-min-height, 2.571em) !important;
                 line-height: 1.75em;
@@ -106,7 +107,7 @@
                     align-items: center;
 
                     .media-left {
-                        margin-right: 0.5em;
+                        margin-inline-end: 0.5em;
                         display: flex;
                     }
                    
@@ -118,7 +119,7 @@
                             overflow-x: hidden;
                             text-overflow: ellipsis;
                             white-space: nowrap;
-                            margin-right: 3px;
+                            margin-inline-end: 3px;
                             transition: white-space .3s ease, overflow .3s ease;
                         }
                     }
@@ -186,7 +187,7 @@
 }
 .taginput .taginput-container {
     padding: 0px !important;
-    background-color: var(--tainacan-input-background-color);
+    background-color: var(--tainacan-input-background-color) !important;
     border: 1px solid var(--tainacan-input-border-color) !important;
     border-radius: var(--tainacan-input-border-radius, 2px) !important;
 
@@ -212,8 +213,8 @@
     }
     .tag {
         background: var(--tainacan-background-color);
-        padding-right: 0;
-        padding-left: 0.6em;
+        padding-inline-end: 0;
+        padding-inline-start: 0.6em;
 
         &.is-delete {
             color: var(--tainacan-info-color);
@@ -239,9 +240,15 @@
     }
 }
 .selected-list-box {
-    padding: 4px 6px 0px 6px;
+    padding-inline-start: 6px;
+    padding-inline-end: 6px;
+    padding-block-start: 4px;
+    padding-block-end: 0px;
     border-color: var(--tainacan-input-border-color);
-    border-width: 0px 1px 1px 1px;
+    border-inline-start-width: 0px;
+    border-inline-end-width: 1px;
+    border-block-start-width: 1px;
+    border-block-end-width: 1px;
     border-style: solid;
     background-color: var(--tainacan-background-color);
     display: flex;
@@ -252,8 +259,8 @@
     }
     .tag {
         background: var(--tainacan-background-color);
-        padding-right: 0;
-        padding-left: 0.5em;
+        padding-inline-end: 0;
+        padding-inline-start: 0.5em;
 
         &.is-delete {
             color: var(--tainacan-info-color);
@@ -299,6 +306,7 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             content: 'calendar';
+            content: 'calendar' / ''; /* where supported: show icon, expose "" to a11y */
             text-transform: none !important;
             letter-spacing: normal !important;
         }
@@ -345,6 +353,7 @@
 
                 &>span>i:before {
                     content: 'previous';
+                    content: 'previous' / ''; /* where supported: show icon, expose "" to a11y */
                     font-size: 1.25em;
                 }
             }
@@ -356,6 +365,7 @@
 
                 &>span>i:before {
                     content: 'next';
+                    content: 'next' / ''; /* where supported: show icon, expose "" to a11y */
                     font-size: 1.25em;
                 }
             }
@@ -430,10 +440,10 @@
                             }
                         }
                         .control:first-child {
-                            margin-right: 1px;
+                            margin-inline-end: 1px;
                             .select {
-                                border-right: 1px solid var(--tainacan-input-border-color);
-                                margin-right: 1px;
+                                border-inline-end: 1px solid var(--tainacan-input-border-color);
+                                margin-inline-end: 1px;
                             }
                         }
                     }

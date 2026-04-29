@@ -58,6 +58,9 @@ export default {
                 this.params.attachments = attachments;
 				this.params.onSave(attachments);
 			});
+			this.frame.on( 'close', () => {
+				if ( this.params.onClose ) this.params.onClose();
+			});
 		}
 	}),	
 
@@ -140,6 +143,9 @@ export default {
 			this.frame.on( 'select', this.onSelect, this );
 			this.frame.on( 'cropped', this.onCropped, this );
 			this.frame.on( 'skippedcrop', this.onSkippedCrop, this );
+			this.frame.on( 'close', () => {
+				if ( this.params.onClose ) this.params.onClose();
+			});
 		},
 		// Called on both skippedcrop and cropped states
 		setImageFromAttachment: function( attachment ) {
@@ -241,7 +247,9 @@ export default {
 			this.frame.on( 'select', this.onSelect, this );
 			this.frame.on( 'cropped', this.onCropped, this );
 			this.frame.on( 'skippedcrop', this.onSkippedCrop, this );
-			
+			this.frame.on( 'close', () => {
+				if ( this.params.onClose ) this.params.onClose();
+			});
 		},
 		// Called on both skippedcrop and cropped states
 		setImageFromAttachment: function( attachment ) {
@@ -313,6 +321,9 @@ export default {
                     this.cleanupPlayer();
                 }
             });
+			this.frame.on( 'close', () => {
+				if ( this.params.onClose ) this.params.onClose();
+			});
 		}
     }),
 }

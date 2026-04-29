@@ -73,8 +73,12 @@
                                     <a
                                             id="button-edit-header"
                                             class="button is-rounded is-secondary"
+                                            role="button"
+                                            tabindex="0"
                                             :aria-label="$i18n.get('label_button_edit_header_image')"
-                                            @click="headerImageMediaFrame.openFrame($event)">
+                                            @click.prevent="onOpenHeaderImageFrame($event)"
+                                            @keydown.enter.prevent="onOpenHeaderImageFrame($event)"
+                                            @keydown.space.prevent="onOpenHeaderImageFrame($event)">
                                         <span 
                                                 v-tooltip="{
                                                     content: $i18n.get('edit'),
@@ -87,10 +91,15 @@
                                         </span>
                                     </a>
                                     <a
+                                            v-if="form.header_image !== undefined && form.header_image !== false"
                                             id="button-delete-header"
                                             class="button is-rounded is-secondary"
                                             :aria-label="$i18n.get('label_button_delete_thumb')"
-                                            @click="deleteHeaderImage()">
+                                            role="button"
+                                            tabindex="0"
+                                            @click="deleteHeaderImage()"
+                                            @keydown.enter.prevent="deleteHeaderImage()"
+                                            @keydown.space.prevent="deleteHeaderImage()">
                                         <span 
                                                 v-tooltip="{
                                                     content: $i18n.get('delete'),
@@ -150,6 +159,7 @@
                     <b-autocomplete
                             id="tainacan-add-parent-field"
                             v-model="parentTermName"
+                            v-a11y-autocomplete="{ appendToBody: true }"
                             :placeholder="$i18n.get('instruction_parent_term')"
                             :data="parentTerms"
                             field="name"
@@ -238,11 +248,16 @@
             isHierarchical: Boolean,
             isTermInsertionFlow: false,
             metadatumId: [String, Number],
-            itemId: [String, Number]
+            itemId: [String, Number],
+            isModal: {
+                type: Boolean,
+                default: false
+            }
         },
         emits: [
             'on-edition-finished',
-            'close'
+            'close',
+            'beforeClose'
         ],
         data() {
             return {
@@ -265,6 +280,11 @@
         },
         created() {
             this.form = JSON.parse(JSON.stringify(this.originalForm));
+        },
+        beforeUnmount() {
+            if (this.isModal) {
+                this.$emit('beforeClose');
+            }
         },
         mounted() {
 
@@ -392,6 +412,7 @@
                             frame_button: this.$i18n.get('label_select_file')
                         },
                         relatedPostId: this.form.id,
+                        onClose: () => this.$modalFocusA11y.restoreFocus(this._mediaTrigger, this),
                         onSave: (croppedImage) => {
 
                            this.form = Object.assign({},
@@ -404,6 +425,10 @@
                         }
                     }
                 );
+            },
+            onOpenHeaderImageFrame(event) {
+                this._mediaTrigger = this.$modalFocusA11y.captureTrigger();
+                this.headerImageMediaFrame.openFrame(event);
             },
             clearErrors(attributes) {
                 if(attributes instanceof Object){
@@ -507,8 +532,8 @@
         .tainacan-modal-content {
 
             .field {
-                padding-left: 0;
-                margin-left: 0;
+                padding-inline-start: 0;
+                margin-inline-start: 0;
             }
 
             .tainacan-modal-title {
@@ -518,7 +543,7 @@
                 max-width: 120px;
             }
             .image-placeholder {
-                left: 2px;
+                inset-inline-start: 2px;
             }
             .modal-card-body {
                 padding-bottom: 0px;
@@ -569,7 +594,7 @@
             margin-bottom: 0px;
 
             .column:first-of-type {
-                margin-right: 24px;
+                margin-inline-end: 24px;
             }
             .column:last-of-type {
                 flex-grow: 3;
@@ -592,8 +617,8 @@
             }
             .image-placeholder {
                 position: absolute;
-                margin-left: auto;
-                margin-right: auto;
+                margin-inline-start: auto;
+                margin-inline-end: auto;
                 width: 100%;
                 top: 35%;
                 padding: 0 8px;
@@ -611,7 +636,6 @@
             }
             #button-delete-header,
             #button-edit-header {
-
                 border-radius: 100px !important;
                 max-height: 2.125em !important;
                 max-width: 2.125em !important;
@@ -619,7 +643,10 @@
                 min-width: 2.125em !important;
                 padding: 0 !important;
                 z-index: 99;
-                margin-left: 10px !important;
+
+                &:not(:only-child):not(:last-child) {
+                    margin-inline-end: 10px !important;
+                }
                 
                 .icon {
                     color: var(--tainacan-white) !important;
@@ -632,7 +659,7 @@
             }
                 
             .thumbnail-buttons-row {
-                text-align: right;
+                text-align: end;
                 top: -0.9375em;
                 position: relative;
             }

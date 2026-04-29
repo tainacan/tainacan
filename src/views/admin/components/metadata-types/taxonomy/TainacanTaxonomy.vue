@@ -43,7 +43,9 @@
                     @click="openTermCreationModal"
                     @keydown.enter.prevent="openTermCreationModal"
                     @keydown.space.prevent="openTermCreationModal">
-                <span class="icon is-small">
+                <span 
+                        aria-hidden="true"
+                        class="icon is-small">
                     <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                 </span>
                 &nbsp;{{ $i18n.get('label_create_new_term') }}
@@ -59,15 +61,18 @@
                     aria-modal
                     :can-cancel="['outside', 'escape']"
                     custom-class="tainacan-modal"
-                    :close-button-aria-label="$i18n.get('close')">
+                    :close-button-aria-label="$i18n.get('close')"
+                    @close="onTermCreationModalClose()">
                 <term-edition-form
                         :metadatum-id="itemMetadatum.metadatum.id"
                         :item-id="itemMetadatum.item.id"
                         :is-hierarchical="isHierarchical"
                         :taxonomy-id="taxonomyId"
+                        :is-modal="true"
                         :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
                         :is-term-insertion-flow="true"
                         @on-edition-finished="($event) => addRecentlyCreatedTerm($event.term)"
+                        @before-close="restoreTermCreationFocus()"
                         @close="isTermCreationModalOpen = false" />
             </b-modal>
 
@@ -104,7 +109,7 @@
         },
         props: {
             itemMetadatum: Object,
-            value: [ Number, String, Array, Object ],
+            value: [ Number, String, Array, Object, Boolean ],
             disabled: false,
             forcedComponentType: '',
             maxtags: '',
@@ -273,8 +278,17 @@
                 
                 if (this.isOnItemSubmissionForm)
                     this.isTermCreationPanelOpen = true;
-                else
+                else {
+                    this._modalTrigger = this.$modalFocusA11y.captureTrigger();
                     this.isTermCreationModalOpen = true;
+                }
+            },
+            onTermCreationModalClose() {
+                this.isTermCreationModalOpen = false;
+                this.$modalFocusA11y.restoreFocus(this._modalTrigger, this);
+            },
+            restoreTermCreationFocus() {
+                this.$modalFocusA11y.restoreFocus(this._modalTrigger, this);
             },
             onMobileSpecialFocus() {
                 this.$emit('mobile-special-focus');

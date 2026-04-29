@@ -13,7 +13,6 @@
                     <li
                             v-for="(item, index) of items"
                             :key="item.id"
-                            role="listitem"
                             :aria-setsize="totalItems"
                             :aria-posinset="getPosInSet(index)"
                             :data-tainacan-item-id="item.id"
@@ -90,10 +89,17 @@
                                             content: $i18n.get('label_see_on_fullscreen'),
                                             placement: 'auto-start',
                                             popperClass: ['tainacan-tooltip', 'tooltip']
-                                        }"          
+                                        }"
+                                        role="button"
+                                        tabindex="0"
+                                        :aria-label="$i18n.get('label_see_on_fullscreen')"
                                         class="icon slideshow-icon"
-                                        @click.prevent="starSlideshowFromHere(index)">
-                                    <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em" />
+                                        @click.prevent="starSlideshowFromHere(index)"
+                                        @keydown.enter.prevent="starSlideshowFromHere(index)"
+                                        @keydown.space.prevent="starSlideshowFromHere(index)">
+                                    <i
+                                            class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"
+                                            aria-hidden="true" />
                                 </span> 
                             </div>
 
@@ -186,7 +192,9 @@
                                     class="section">
                                 <div class="content has-text-dark has-text-centered">
                                     <p style="margin-bottom: 0px">
-                                        <span class="icon is-large">
+                                        <span 
+                                                aria-hidden="true"
+                                                class="icon is-large">
                                             <i>
                                                 <svg
                                                         xmlns="http://www.w3.org/2000/svg"
@@ -217,11 +225,16 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }"
+                                type="button"
                                 :aria-label="$i18n.get('label_clean')"
                                 class="tainacan-records-close-button"
                                 @click="clearSelectedMarkers()">
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-close" />
+                            <span
+                                    aria-hidden="true"
+                                    class="icon">
+                                <i
+                                        class="tainacan-icon tainacan-icon-close"
+                                        aria-hidden="true" />
                             </span>
                         </button>
                         <transition-group
@@ -307,10 +320,17 @@
                                                     content: $i18n.get('label_see_on_fullscreen'),
                                                     placement: 'auto-start',
                                                     popperClass: ['tainacan-tooltip', 'tooltip']
-                                                }"          
+                                                }"
+                                                role="button"
+                                                tabindex="0"
+                                                :aria-label="$i18n.get('label_see_on_fullscreen')"
                                                 class="icon slideshow-icon"
-                                                @click.prevent="starSlideshowFromHere(index)">
-                                            <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em" />
+                                                @click.prevent="starSlideshowFromHere(index)"
+                                                @keydown.enter.prevent="starSlideshowFromHere(index)"
+                                                @keydown.space.prevent="starSlideshowFromHere(index)">
+                                            <i
+                                                    class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"
+                                                    aria-hidden="true" />
                                         </span> 
                                     </div>
 
@@ -664,7 +684,8 @@ export default {
         transform: rotate(-45deg);
         transform-origin: center;
         width: 0.625em;
-        content: "arrowdown" !important;
+        content: "arrowdown" !important;      /* fallback: always show arrow */
+        content: "arrowdown" / "" !important; /* where supported: show arrow, expose "" to a11y */
         font: normal normal normal 20px/1 "TainacanIcons";
             font-size: 20px;
             line-height: 1;

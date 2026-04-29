@@ -12,9 +12,9 @@
                     aria-relevant="text">
                 <span 
                         style="margin-right: 1em"
-                        v-html="totalItems === null ? $i18n.get('label_loading_items') : totalItems == 1 ? $i18n.getWithVariables('info_item_%s_found', [totalItems]) : $i18n.getWithVariables('info_items_%s_found', [totalItems])" />
+                        v-html="totalItems === null ? $i18n.get('label_loading_items') : totalItems == 1 ? $i18n.get('info_item_one_found') : $i18n.getWithVariables('info_items_%s_found', [totalItems])" />
                 <span>
-                    <span v-html="filterTags.length == 1 ? $i18n.getWithVariables('info_%s_applied_filter', [filterTags.length]) : $i18n.getWithVariables('info_%s_applied_filters', [filterTags.length])" />
+                    <span v-html="filterTags.length == 1 ? $i18n.get('info_one_applied_filter') : $i18n.getWithVariables('info_%s_applied_filters', [filterTags.length])" />
                     &nbsp;
                     <a 
                             id="button-clear-all"
@@ -57,6 +57,7 @@
                 </ul>
                 <button 
                         id="tainacan-filter-tags-prev" 
+                        type="button"
                         class="swiper-button-prev"
                         :aria-label="$i18n.get('previous')">
                     <svg
@@ -71,6 +72,7 @@
                 </button>
                 <button 
                         id="tainacan-filter-tags-next" 
+                        type="button"
                         class="swiper-button-next"
                         :aria-label="$i18n.get('next')">
                     <svg
@@ -172,6 +174,7 @@
                     slideToClickedSlide: true,
                     slidesPerView: 'auto',
                     navigation: {
+                        addIcons: false,
                         nextEl: '#tainacan-filter-tags-next',
                         prevEl: '#tainacan-filter-tags-prev',
                     },
@@ -299,7 +302,7 @@
             }
             .swiper-button-next,
             .swiper-button-prev {
-                padding: 34px 26px;
+                padding: 2.25rem 26px;
                 border: none;
                 background-color: transparent;
                 position: absolute;
@@ -309,6 +312,12 @@
             .swiper-button-prev::after,
             .swiper-rtl .swiper-button-next::after {
                 content: 'previous';
+                content: 'previous' / '' !important; /* where supported: show arrow, expose "" to a11y */
+            }
+            .swiper-button-next::after,
+            .swiper-rtl .swiper-button-prev::after {
+                content: 'next';
+                content: 'next' / '' !important; /* where supported: show arrow, expose "" to a11y */
             }
             .swiper-button-next,
             .swiper-rtl .swiper-button-prev {
@@ -330,11 +339,16 @@
                 font-family: "TainacanIcons";
                 opacity: 0.7;
                 transition: opacity ease 0.2s;
+                font-size: var(--swiper-navigation-size);
+                text-transform: none !important;
+                letter-spacing: 0;
+                font-variant: initial;
+                line-height: 1;
             }
         }
 
         #button-clear-all {
-            margin-left: auto;
+            margin-inline-start: auto;
             font-size: 1em !important;
             white-space: nowrap;
         }

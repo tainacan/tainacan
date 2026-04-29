@@ -60,7 +60,7 @@
             input[type="checkbox"]:checked + .check {
                 border: 1.5px solid var(--tainacan-secondary);
 
-                &::before {
+                html:not([dir="rtl"]) &::before {
                     transform: translate3d(84%, 0, 0);
                 }
             }

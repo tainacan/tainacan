@@ -8,32 +8,37 @@
         <tainacan-title 
                 v-if="!isItemLevel"
                 :is-sticky="true" />
-        <header 
+        <tainacan-title 
                 v-else
-                class="tainacan-modal-title">
-            <h2>{{ $i18n.get('label_item_activities') }}</h2>
-            <button 
-                    v-if="isItemLevel"        
+                class="tainacan-modal-title"
+                :is-sticky="true">
+            <h2 v-if="metadatumName != null">
+                {{ $i18n.getWithVariables('label_item_activities_in_%s', [metadatumName]) }}
+            </h2>
+            <h2 v-else>
+                {{ $i18n.get('label_item_activities') }}
+            </h2>
+            <button       
                     class="button is-medium is-white is-align-self-flex-start"
                     :aria-label="$i18n.get('close')"
-                    @click="$emit('close')">
+                    @click="closeModal()">
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-125em" />
                 </span>
             </button>
-        </header>
+        </tainacan-title>
 
         <div class="sub-header tainacan-sub-header--sticky">
 
             <b-field 
                     class="header-item"
-                    style="margin-right: auto; margin-left: 0;">
+                    style="margin-inline-end: auto; margin-inline-start: 0;">
                 <b-input 
                         v-model="searchQuery"
-                        :placeholder="$i18n.get('instruction_search')"
+                        :placeholder="$i18n.get('instruction_search_and_press_enter')"
                         type="search"
                         size="is-small"
-                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
+                        :aria-label="$i18n.get('instruction_search_and_press_enter')"
                         autocomplete="on"
                         icon-right="magnify"
                         icon-right-clickable
@@ -43,6 +48,7 @@
 
             <b-field class="header-item">
                 <b-autocomplete
+                        v-a11y-autocomplete
                         clearable
                         :data="users"
                         :placeholder="$i18n.get('instruction_type_search_users_filter')"
@@ -120,9 +126,14 @@
                         v-if="searchDates && searchDates.length != 0"
                         class="control">
                     <button 
+                            :aria-label="$i18n.get('label_clean')"
                             class="button"
                             @click="clearSearchDates()">
-                        <span class="icon"><i class="tainacan-icon tainacan-icon-close" /></span>
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
+                            <i class="tainacan-icon tainacan-icon-close" />
+                        </span>
                     </button>
                 </p>
             </b-field>
@@ -142,7 +153,9 @@
                     :total-activities="totalActivities"
                     :page="activitiesPage"
                     :activities-per-page="activitiesPerPage"
-                    :activities="activities" />
+                    :activities="activities"
+                    :is-item-level="isItemLevel"
+                    :filter-by-item-metadatum="metadatumId != null" />
             <template v-if="!$userCaps.hasCapability('tnc_rep_read_logs')">
                 <section class="section">
                     <div class="content has-text-dark has-text-centered">
@@ -161,13 +174,7 @@
                     v-if="totalActivities > 0"
                     class="pagination-area">
                 <div class="shown-items">
-                    {{
-                        $i18n.get('info_showing_activities') + ' ' +
-                            (activitiesPerPage * (activitiesPage - 1) + 1) +
-                            $i18n.get('info_to') +
-                            getLastActivityNumber() +
-                            $i18n.get('info_of') + totalActivities + '.'
-                    }}
+                    {{ showingActivitiesText }}
                 </div>
                 <div class="items-per-page">
                     <b-field
@@ -197,7 +204,6 @@
                             :aria-next-label="$i18n.get('label_next_page')"
                             :aria-previous-label="$i18n.get('label_previous_page')"
                             :aria-page-label="$i18n.get('label_page')"
-                            :aria-current-label="$i18n.get('label_current_page')"
                             @change="onPageChange" />
                 </div>
             </div>
@@ -218,7 +224,17 @@
             ActivitiesList,
         },
         mixins: [ dateInter ],
-        emits: [ 'close' ],
+        props: {
+            metadatumId: {
+                default: null,
+                type: [Number, String]
+            },
+            metadatumName: {
+                default: null,
+                type: [String]
+            }
+        },
+        emits: [ 'close', 'beforeClose' ],
         data() {
             return {
                 isLoading: false,
@@ -248,6 +264,13 @@
                         moment(activity['date'], 'YYYY-MM-DD h:mm:ss').format('DD/MM/YYYY, hh:mm:ss');
 
                 return activitiesList;
+            },
+            showingActivitiesText() {
+                const first = this.activitiesPerPage * (this.activitiesPage - 1) + 1;
+                const last = this.getLastActivityNumber();
+                const total = this.totalActivities;
+                
+                return this.$i18n.getWithVariables('info_showing_activities_range', [first, last, total]);
             },
             activitiesPerPageOptions() {
                 const defaultActivitiesPerPageOptions = [];
@@ -286,6 +309,10 @@
             this.loadActivities();
         },
         methods: {
+            closeModal() {
+                this.$emit('beforeClose');
+                this.$emit('close');
+            },
             ...mapActions('activity', [
                 'fetchActivities',
                 'fetchCollectionActivities',
@@ -354,6 +381,7 @@
                         page: this.activitiesPage,
                         activitiesPerPage: this.activitiesPerPage,
                         itemId: this.$route.params.itemId,
+                        metadatumId: this.metadatumId,
                         search: this.searchQuery,
                         searchDates: [dataInit, dataEnd],
                         authorId: this.userIdForFiltering
@@ -444,6 +472,18 @@
 
 <style lang="scss" scoped>
 
+    .tainacan-modal-content {
+        padding-top: 0;
+        overflow: visible;
+
+        @media screen and (max-width: 498px) {
+            & {
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+        }
+    }
+
     .sub-header {
 
         .header-item {
@@ -478,7 +518,7 @@
             .gray-icon,
             .gray-icon .icon {
                 color: var(--tainacan-info-color) !important;
-                padding-right: 10px;
+                padding-inline-end: 10px;
                 height: 1.125em !important;
             }
             .gray-icon .icon i::before, 
@@ -506,20 +546,19 @@
             }
         }
     }
-
-    .tainacan-modal-content .table-container {
-        max-height: calc(100vh - 412px);
-        max-height: calc(100dvh - 412px);
-        min-height: 320px;
-        overflow-y: scroll;
-        margin-bottom: 0;
-        padding-bottom: 1.5rem;
-    }
-
     .above-subheader {
         margin-bottom: 0;
         margin-top: 0;
-        min-height: 100%;
+        // min-height: 100%;
         height: auto;
+    }
+
+    .pagination-area {
+        background: white;
+        position: sticky;
+        bottom: -1px;
+        z-index: 9;
+        padding-bottom: var(--tainacan-container-padding);
+        margin-bottom: 0;
     }
 </style>

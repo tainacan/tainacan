@@ -86,7 +86,8 @@ class Admin_Commands {
 			'tainacan-commands',
 			$TAINACAN_BASE_URL . '/assets/js/tainacan_command_palette.js',
 			[ 'wp-commands', 'wp-i18n', 'wp-element', 'wp-components' ],
-			TAINACAN_VERSION
+			TAINACAN_VERSION,
+			true
 		);
 		wp_set_script_translations( 'tainacan-commands', 'tainacan' );
 

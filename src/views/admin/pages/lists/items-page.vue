@@ -43,7 +43,9 @@
                             type="button"
                             role="link"
                             class="button is-secondary"
-                            @click="navigate()">
+                            @click="navigate()"
+                            @keydown.enter="navigate()"
+                            @keydown.space="navigate()">
                         <span class="is-hidden-touch">{{ $i18n.getFrom('items','add_new') }}</span>
                         <span class="is-hidden-desktop">{{ $i18n.get('add') }}</span>
                         <span class="icon">
@@ -54,6 +56,7 @@
                 <b-dropdown
                         v-else
                         id="item-creation-options-dropdown"
+                        ref="itemCreationOptionsDropdown"
                         v-a11y-dropdown
                         :trigger-tabindex="-1"
                         :mobile-modal="true"
@@ -144,9 +147,7 @@
 
             <!-- Text simple search -->
             <div class="search-control-item search-control-item--search">
-                <div 
-                        role="search"
-                        class="search-area">
+                <div class="search-area">
                     <b-dropdown
                             ref="tainacan-textual-search-input"
                             v-a11y-dropdown
@@ -158,9 +159,9 @@
                         <template #trigger>
                             <b-input
                                     size="is-small"
-                                    :placeholder="$i18n.get('instruction_search')"
+                                    :placeholder="$i18n.get('instruction_search_and_press_enter')"
                                     type="search"
-                                    :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
+                                    :aria-label="$i18n.get('instruction_search_and_press_enter')"
                                     :model-value="searchQuery"
                                     icon-right="magnify"
                                     icon-right-clickable
@@ -253,7 +254,9 @@
                                 :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry' || adminViewMode == 'mosaic'"
                                 :aria-label="$i18n.get('label_displayed_metadata')"
                                 class="button is-white">
-                            <span class="gray-icon is-small">
+                            <span 
+                                    aria-hidden="true"
+                                    class="gray-icon is-small">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata" />
                             </span>
                             &nbsp;&nbsp;
@@ -315,7 +318,9 @@
                                 }"
                                 :aria-label="$i18n.get('label_sorting')"
                                 class="button is-white">
-                            <span class="is-small gray-icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="is-small gray-icon">
                                 <i 
                                         :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
                                         class="tainacan-icon" />
@@ -336,7 +341,9 @@
                                     :class="{ 'is-active': newOrder == 'DESC' }"
                                     :value="'DESC'"
                                     @click="newOrder = 'DESC'">
-                                <span class="icon gray-icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-sortdescending" />
                                 </span>
                                 <span>{{ $i18n.get('label_descending') }}</span>
@@ -347,7 +354,9 @@
                                     :class="{ 'is-active': newOrder == 'ASC' }"
                                     :value="'ASC'"
                                     @click="newOrder = 'ASC'">
-                                <span class="icon gray-icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-sortascending" />
                                 </span>
                                 <span>{{ $i18n.get('label_ascending') }}</span>
@@ -403,7 +412,9 @@
                                     }"
                                     :aria-label="$i18n.get('label_view_mode')"
                                     class="button is-white">
-                                <span class="view-mode-icon is-small gray-icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="view-mode-icon is-small gray-icon">
                                     <i 
                                             v-if="adminViewMode !== 'map'"
                                             :class="{
@@ -441,7 +452,9 @@
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'table' }"
                                 :value="'table'">
-                            <span class="icon gray-icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewtable" />
                             </span>
                             <span>{{ $i18n.get('label_table') }}</span>
@@ -451,7 +464,9 @@
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'cards' }"
                                 :value="'cards'">
-                            <span class="icon gray-icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewcards" />
                             </span>
                             <span>{{ $i18n.get('label_cards') }}</span>
@@ -461,7 +476,9 @@
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'mosaic' }"
                                 :value="'mosaic'">
-                            <span class="icon gray-icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewmasonry tainacan-icon-rotate-90" />
                             </span>
                             <span>{{ $i18n.get('label_mosaic') }}</span>
@@ -472,7 +489,9 @@
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'grid' }"
                                 :value="'grid'">
-                            <span class="icon gray-icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewminiature" />
                             </span>
                             <span>{{ $i18n.get('label_thumbnails') }}</span>
@@ -482,7 +501,9 @@
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'records' }"
                                 :value="'records'">
-                            <span class="icon gray-icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewrecords" />
                             </span>
                             <span>{{ $i18n.get('label_records') }}</span>
@@ -493,7 +514,9 @@
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'masonry' }"
                                 :value="'masonry'">
-                            <span class="icon gray-icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewmasonry" />
                             </span>
                             <span>{{ $i18n.get('label_masonry') }}</span>
@@ -503,7 +526,9 @@
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'list' }"
                                 :value="'list'">
-                            <span class="icon gray-icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-viewlist" />
                             </span>
                             <span>{{ $i18n.get('label_list') }}</span>
@@ -515,6 +540,7 @@
                                 :value="'map'">
                             <span 
                                     style="width: 2em; margin-left: -0.45em; padding-right: 6px;"
+                                    aria-hidden="true"
                                     class="icon gray-icon">
                                 <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -538,7 +564,9 @@
                         :aria-label="$i18n.get('label_view_as')"
                         :disabled="totalItems == undefined || totalItems <= 0"
                         @click="openExposersModal()">
-                    <span class="gray-icon">
+                    <span 
+                            aria-hidden="true"
+                            class="gray-icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas" />
                     </span>
                     <span>{{ $i18n.get('label_view_as') }}</span>
@@ -564,11 +592,13 @@
                 aria-controls="filters-modal"
                 :aria-expanded="isFiltersModalActive"
                 :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
-                @click="isFiltersModalActive = !isFiltersModalActive">
-            <span class="icon">
+                @click="toggleFiltersModal()">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i 
                         :class="{ 'tainacan-icon-arrowleft' : isFiltersModalActive, 'tainacan-icon-arrowright' : !isFiltersModalActive }"
-                        class="tainacan-icon tainacan-icon-1-25em" />
+                        class="tainacan-icon tainacan-icon-1-25em tainacan-icon-is-rtl-mirrored" />
             </span>
             <span class="text is-hidden-tablet">{{ $i18n.get('filters') }}</span>
         </button>
@@ -589,7 +619,8 @@
                 custom-class="tainacan-modal tainacan-form filters-menu"
                 :close-button-aria-label="$i18n.get('close')"
                 @after-leave="filtersModalStateHasChanged = !filtersModalStateHasChanged"
-                @after-enter="filtersModalStateHasChanged = !filtersModalStateHasChanged">
+                @after-enter="filtersModalStateHasChanged = !filtersModalStateHasChanged"
+                @close="onFiltersModalClose()">
             <filters-items-list
                     id="filters-items-list"
                     :is-loading-items="isLoadingItems"
@@ -634,15 +665,13 @@
                     id="items-list-results"
                     :aria-busy="isLoadingItems"
                     aria-labelledby="items-list-landmark"
-                    aria-live="polite"
-                    aria-atomic="false"
                     role="region"
                     class="above-search-control">
 
                 <h2 
                         id="items-list-landmark"
                         class="sr-only">
-                    {{ $i18n.get('label_items_list') }}
+                    {{ $i18n.get('label_items_list_results') }}
                 </h2>
 
                 <!-- Loading announcement for screen readers - always in DOM -->
@@ -712,7 +741,7 @@
 
                 <!-- Empty Placeholder -->
                 <section
-                        v-if="!isLoadingItems && totalItems == 0"
+                        v-if="!isLoadingItems && (totalItems == 0 || (totalItems == null && !pendingInitialLoad))"
                         class="section"
                         role="status"
                         aria-live="polite"
@@ -729,7 +758,7 @@
                             {{ (hasFiltered || openAdvancedSearch || searchQuery) ? $i18n.get('info_no_item_found_filter') : (isSortingByCustomMetadata ? $i18n.get('info_no_item_found') : ( ($route.name == 'CollectionMyItemsPage' || $route.name == 'RepositoryMyItemsPage') ? $i18n.get('info_no_item_found_by_you') : $i18n.get('info_no_item_created') )) }}
                         </p>
                         <p v-else>
-                            {{ $i18n.get('info_no_items_' + status) }}
+                            {{ $i18n.getNoEntitiesMessageForStatus('items', status) }}
                         </p>
 
                         <router-link
@@ -742,7 +771,9 @@
                                     type="button"
                                     role="link"
                                     class="button is-secondary"
-                                    @click="navigate()">
+                                    @click="navigate()"
+                                    @keydown.enter="navigate()"
+                                    @keydown.space="navigate()">
                                 {{ $i18n.getFrom('items', 'add_new') }}
                             </button>
                         </router-link> 
@@ -829,6 +860,7 @@
                 hasAnOpenModal: false,
                 hasAnOpenAlert: true,
                 metadataSearchCancel: undefined,
+                pendingInitialLoad: true,
                 isMobileScreen: false,
                 windowWidth: null,
                 newOrder: 'DESC',
@@ -969,9 +1001,18 @@
                     if (this.$route.query && this.$route.query.advancedSearch)
                         this.$store.dispatch('search/setAdvancedQuery', JSON.parse(JSON.stringify(this.$route.query))); 
 
-                    // Finally, loads items even berfore facets so they won't stuck them 
-                    if (to.fullPath != from.fullPath)
-                        this.$eventBusSearch.loadItems();
+                    // Finally, loads items even before facets so they won't stuck them 
+                    if (to.fullPath != from.fullPath) {
+                        if (this.pendingInitialLoad) {
+                            const hasFetchOnly = this.$store.getters['search/getPostQuery']['fetch_only'] != undefined;
+                            if (hasFetchOnly) {
+                                this.pendingInitialLoad = false;
+                                this.$eventBusSearch.loadItems();
+                            }
+                        } else {
+                            this.$eventBusSearch.loadItems();
+                        }
+                    }
 
                     // Checks current metaqueries and taxqueries to alert filters that should reload
                     // For some reason, this process is not working accessing to.query, so we need to check the path string. 
@@ -1120,6 +1161,8 @@
                 'getAdminViewMode',
             ]),
             onOpenImportersModal() {
+                const dropdownTrigger = this.$modalFocusA11y.getDropdownTrigger(this.$refs.itemCreationOptionsDropdown);
+                const modalTrigger = this.$modalFocusA11y.captureTrigger(dropdownTrigger);
                 this.$buefy.modal.open({
                     component: AvailableImportersModal,
                     hasModalCard: true,
@@ -1129,10 +1172,14 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    canCancel: ['escape', 'outside']
+                    canCancel: ['escape', 'outside'],
+                    events: {
+                        beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                    }
                 });
             },
             openExposersModal(selectedItems) {
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: ExposersModal,
                     hasModalCard: true,
@@ -1144,16 +1191,36 @@
                     trapFocus: true,
                     customClass: 'tainacan-modal',
                     canCancel: ['escape', 'outside'],
-                    width: 786
+                    width: 786,
+                    events: {
+                        beforeClose: () => {
+                            this.$modalFocusA11y.restoreFocus(modalTrigger, this);
+                        }
+                    }
                 })
             },
+            toggleFiltersModal() {
+                if (!this.isFiltersModalActive)
+                    this._filtersModalTrigger = this.$modalFocusA11y.captureTrigger();
+                this.isFiltersModalActive = !this.isFiltersModalActive;
+            },
+            onFiltersModalClose() {
+                this.$modalFocusA11y.restoreFocus(this._filtersModalTrigger, this);
+            },
             onOpenCollectionsModal() {
+                const dropdownTrigger = this.$modalFocusA11y.getDropdownTrigger(this.$refs.itemCreationOptionsDropdown);
+                const modalTrigger = this.$modalFocusA11y.captureTrigger(dropdownTrigger);
                 this.$buefy.modal.open({
                     component: CollectionsModal,
                     hasModalCard: true,
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    canCancel: ['escape', 'outside']
+                    canCancel: ['escape', 'outside'],
+                    events: {
+                        beforeClose: () => {
+                            this.$modalFocusA11y.restoreFocus(modalTrigger, this);
+                        }
+                    }
                 });
             },
             updateSearch() {
@@ -1435,7 +1502,9 @@
                                     })
 
                                 }
-                                
+
+                                // Initial item load is triggered only from the $route watcher after
+                                // addFetchOnly() runs (it calls updateURLQueries / router.replace).
                                 this.isLoadingMetadata = false;
                                 this.displayedMetadata = metadata;
                             })
@@ -1475,6 +1544,7 @@
                     this.$refs['tainacan-textual-search-input'].toggle();
             },
             openMetatadaSortingWarningDialog({ offerCheckbox }) {
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                         component: CustomDialog,
                         props: {
@@ -1490,7 +1560,10 @@
                         },
                         trapFocus: true,
                         customClass: 'tainacan-modal',
-                        canCancel: ['escape', 'outside']
+                        canCancel: ['escape', 'outside'],
+                        events: {
+                            beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                        }
                     });
             },
             hideFiltersOnMobile: _.debounce( function() {
@@ -1604,14 +1677,14 @@
         min-height: 100%;
         height: auto;
         max-height: calc(100% - 5.875em);
-        float: left;
+        float: inline-start;
         overflow-y: auto;
         overflow-x: hidden;
         visibility: visible;
         display: block;
 
         :deep(.filters-components-list) {
-            margin-left: 3px;
+            margin-inline-start: 3px;
         }
        
         @media screen and (max-width: 768px) {
@@ -1625,15 +1698,15 @@
             position: sticky;
             
             :deep(.modal-content) {
-                padding-left: 0 !important;
-                padding-right: 28px !important;
+                padding-inline-start: 0 !important;
+                padding-inline-end: 28px !important;
             }
         }
     }
     #filter-menu-compress-button {
         position: absolute;
         z-index: 99;
-        left: 0;
+        inset-inline-start: 0;
         max-width: 1.625em;
         height: 1.625em;
         width: 1.625em;
@@ -1641,8 +1714,8 @@
         background-color: var(--tainacan-primary);
         color: var(--tainacan-secondary);
         padding: 0;
-        border-top-right-radius: var(--tainacan-button-border-radius);
-        border-bottom-right-radius: var(--tainacan-button-border-radius);
+        border-end-end-radius: var(--tainacan-button-border-radius);
+        border-start-end-radius: var(--tainacan-button-border-radius);
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -1664,7 +1737,9 @@
         @media screen and (max-width: 768px) {
             max-width: 100%;
             width: auto;
-            padding: 3px 6px 3px 0px;
+            padding-inline-start: 3px;
+            padding-inline-end: 6px;
+            padding-block: 3px;
             height: 1.625em;
             transform: translateY(-18px);
         }
@@ -1785,7 +1860,7 @@
             .gray-icon, 
             .gray-icon .icon {
                 color: var(--tainacan-info-color) !important;
-                padding-right: 10px;
+                padding-inline-end: 10px;
             }
             .gray-icon .icon i::before, 
             .gray-icon i::before {
@@ -1818,12 +1893,12 @@
                             border: 1px solid var(--tainacan-primary);
 
                             &:first-child {
-                                border-top-left-radius: var(--tainacan-button-border-radius);
-                                border-bottom-left-radius: var(--tainacan-button-border-radius);
+                                border-end-start-radius: var(--tainacan-button-border-radius);
+                                border-start-start-radius: var(--tainacan-button-border-radius);
                             }
                             &:last-child {
-                                border-top-right-radius: var(--tainacan-button-border-radius);
-                                border-bottom-right-radius: var(--tainacan-button-border-radius);
+                                border-end-end-radius: var(--tainacan-button-border-radius);
+                                border-start-end-radius: var(--tainacan-button-border-radius);
                             }
                         }
                     }
@@ -1851,7 +1926,7 @@
                 align-items: center;
                 width: 100%;
                 min-width: 120px;
-                padding-right: 15px;
+                padding-inline-end: 15px;
 
                 .tainacan-textual-search-input {
                     width: 100%;

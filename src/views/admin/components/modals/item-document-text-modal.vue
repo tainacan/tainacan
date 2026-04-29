@@ -18,7 +18,7 @@
                         id="button-cancel-text-content-writing"
                         class="button is-outlined"
                         type="button"
-                        @click="$emit('cancelTextWriting');$emit('close');">
+                        @click="$emit('cancelTextWriting'); closeModal();">
                     {{ $i18n.get('cancel') }}</button>
             </div>
             <div class="control">
@@ -26,7 +26,7 @@
                         id="button-submit-text-content-writing"
                         type="submit"
                         class="button is-success"
-                        @click.prevent="confirmTextWriting();$emit('close');">
+                        @click.prevent="confirmTextWriting(); closeModal();">
                     {{ $i18n.get('save') }}</button>
             </div>
         </div>
@@ -41,6 +41,7 @@ export default {
     emits: [
         'confirmTextWriting',
         'cancelTextWriting',
+        'beforeClose',
         'close'
     ],
     data(){
@@ -63,6 +64,10 @@ export default {
         }
     },
     methods: {
+        closeModal() {
+            this.$emit('beforeClose');
+            this.$emit('close');
+        },
         confirmTextWriting() {
             this.$emit('confirmTextWriting', this.localTextContent);
         }

@@ -21,9 +21,12 @@
                 {{ selectedColumnIndex == 0 ? $i18n.get('label_all_root_terms_selected') : $i18n.getWithVariables('label_terms_child_of_%s_selected', [ selectedColumnObject.name ]) }}
                 <button
                         type="button"
+                        :aria-label="$i18n.get('label_clean')"
                         class="link-style"
                         @click="selectedColumnIndex = -1">
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-close" />
                     </span>
                 </button>
@@ -43,7 +46,9 @@
                                 type="button"
                                 class="button is-white">
                             <span>{{ selected.length == 1 ? $i18n.get('label_one_selected_term') : $i18n.getWithVariables('label_%s_selected_terms', [ selected.length ]) }}</span>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
@@ -221,7 +226,7 @@ export default {
             } 
             :deep(.field-body>.field) {
                 padding: 0px !important;
-                margin-left: 0px !important;
+                margin-inline-start: 0px !important;
             }
         }
 
@@ -276,7 +281,7 @@ export default {
         flex-grow: 0;
         flex-shrink: 1;
         max-width: 100%;
-        padding-left: 0.5em;
+        padding-inline-start: 0.5em;
         margin: 0;
         -webkit-break-inside: avoid;
         break-inside: avoid;
@@ -286,7 +291,7 @@ export default {
         min-height: 1.5em;
 
         :deep(.b-checkbox), :deep(.b-radio) {
-            margin-right: 0px;
+            margin-inline-end: 0px;
             margin-bottom: 0;
             -webkit-break-inside: avoid;
             break-inside: avoid;
@@ -306,7 +311,7 @@ export default {
                 .control-label {
                     padding-top: 0.8125em;
                     padding-bottom: 0.8125em;
-                    padding-left: calc(0.875em - 1px);
+                    padding-inline-start: calc(0.875em - 1px);
                     width: 100%;
                     border-bottom: 1px solid var(--tainacan-gray1);
                 }
@@ -320,7 +325,7 @@ export default {
         }
         button.load-children-button {
             opacity: 0.95;
-            border-left: 1px dashed var(--tainacan-gray1);
+            border-inline-start: 1px dashed var(--tainacan-gray1);
         }
         &:hover:not(.result-info) {
             background-color: var(--tainacan-gray1);
@@ -367,14 +372,14 @@ export default {
         .scroll-back-to-root-button {
             position: absolute;
             top: 0;
-            left: 0;
+            inset-inline-start: 0;
             z-index: 9;
             background-color: var(--tainacan-background-color);
             border: 1px solid var(--tainacan-gray2);
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 4px;
+            border-start-start-radius: 0;
+            border-end-start-radius: 0;
+            border-start-end-radius: 0;
+            border-end-end-radius: 4px;
             padding: 0.55rem 0.8rem;
             white-space: nowrap;
             display: block;
@@ -385,7 +390,7 @@ export default {
     }
 
     .tainacan-hierarchical-list-column {
-        border-right: solid 1px var(--tainacan-gray2);        
+        border-inline-end: solid 1px var(--tainacan-gray2);        
         flex-basis: auto;
         flex-grow: 1;
        // max-width: 720px;
@@ -396,16 +401,16 @@ export default {
 
         &:only-child {
             max-width: 100%;
-            border-right: none;
+            border-inline-end: none;
         }
 
         &:last-child {
-            border-right: none;
+            border-inline-end: none;
         }
 
         &.has-only-one-column {
             max-width: 100%;
-            border-right: none;
+            border-inline-end: none;
 
             ul {
                 -moz-column-count: 2;
@@ -429,7 +434,7 @@ export default {
             overflow-x: hidden;
             list-style: none;
             margin: 0;
-            padding-left: 0;
+            padding-inline-start: 0;
             box-shadow: inset 0px 4px 10px -12px #000;
         }
         a:not(.add-link),
@@ -450,7 +455,7 @@ export default {
         }
         button.load-children-button {
             opacity: 0.95;
-            border-left: 1px solid var(--tainacan-gray2);
+            border-inline-start: 1px dashed var(--tainacan-gray2);
         }
 
         .column-header {
@@ -495,7 +500,7 @@ export default {
         &:not(:first-child) .column-header {
 
             .column-name {
-                padding-left: calc(0.75em + 12px);
+                padding-inline-start: calc(0.75em + 12px);
             }
 
             &::after,
@@ -503,7 +508,7 @@ export default {
                 content: '';
                 display: block;
                 position: absolute;
-                right: 100%;
+                inset-inline-end: 100%;
                 width: 0;
                 height: 0;
                 border-style: solid;
@@ -511,18 +516,18 @@ export default {
             &::after {
                 top: 0px;
                 border-color: transparent transparent transparent white;
-                border-left-width: 12px;
+                border-inline-start-width: 12px;
                 border-top-width: calc(1em + 1px);
                 border-bottom-width: calc(1em + 0px);
-                left: -2px;
+                inset-inline-start: -2px;
             }
             &::before {
                 top: 0px;
                 border-color: transparent transparent transparent var(--tainacan-gray2);
-                border-left-width: 12px;
+                border-inline-start-width: 12px;
                 border-top-width: calc(1em + 1px);
                 border-bottom-width: calc(1em + 0px);
-                left: -1px;
+                inset-inline-start: -1px;
             }
         }
         

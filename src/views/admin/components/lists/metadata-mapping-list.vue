@@ -34,7 +34,9 @@
                 class="field is-grouped-centered section">
             <div class="content has-text-dark has-text-centered">
                 <p>
-                    <span class="icon is-large">
+                    <span 
+                            aria-hidden="true"
+                            class="icon is-large">
                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
                     </span>
                 </p>
@@ -54,8 +56,14 @@
                     <a
                             v-if="collectionId != null && collectionId != undefined"
                             class="is-inline is-pulled-right add-link"
-                            @click="onNewMetadataMapperMetadata()">
-                        <span class="icon is-small">
+                            role="button"
+                            tabindex="0"
+                            @click="onNewMetadataMapperMetadata()"
+                            @keydown.enter.prevent="onNewMetadataMapperMetadata()"
+                            @keydown.space.prevent="onNewMetadataMapperMetadata()">
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-small">
                             <i class="tainacan-icon tainacan-icon-add" />
                         </span>
                         {{ $i18n.get('label_add_more_mapper_metadata') }}
@@ -67,7 +75,9 @@
                     class="mapping-header">
                 <p>{{ $i18n.get('label_from_source_mapper') }}</p>
                 <hr>
-                <span class="icon">
+                <span 
+                        aria-hidden="true"
+                        class="icon">
                     <i class="tainacan-icon tainacan-icon-pointer tainacan-icon-1-25em" />
                 </span>
                 <hr>
@@ -103,7 +113,11 @@
                                 mapperMetadatum.isCustom
                                     ? 'visible' : 'hidden'
                             }" 
-                            @click.prevent="editMetadatumCustomMapper(mapperMetadatum)">
+                            role="button"
+                            tabindex="0"
+                            @click.prevent="editMetadatumCustomMapper(mapperMetadatum)"
+                            @keydown.enter.prevent="editMetadatumCustomMapper(mapperMetadatum)"
+                            @keydown.space.prevent="editMetadatumCustomMapper(mapperMetadatum)">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('edit'),
@@ -111,7 +125,8 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }"
-                                class="icon">
+                                class="icon"
+                                aria-hidden="true">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                         </span>
                     </a>
@@ -120,7 +135,11 @@
                                 mapperMetadatum.isCustom
                                     ? 'visible' : 'hidden'
                             }" 
-                            @click.prevent="removeMetadatumCustomMapper(mapperMetadatum)">
+                            role="button"
+                            tabindex="0"
+                            @click.prevent="removeMetadatumCustomMapper(mapperMetadatum)"
+                            @keydown.enter.prevent="removeMetadatumCustomMapper(mapperMetadatum)"
+                            @keydown.space.prevent="removeMetadatumCustomMapper(mapperMetadatum)">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('delete'),
@@ -128,7 +147,8 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }"
-                                class="icon">
+                                class="icon"
+                                aria-hidden="true">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
                         </span>
                     </a>
@@ -403,12 +423,14 @@ export default {
             this.isMapperMetadataLoading = false;
         },
         onNewMetadataMapperMetadata() {
+            this._modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.isMapperMetadataCreating = true;
         },
         onCancelNewMetadataMapperMetadata() {
             this.isMapperMetadataCreating = false;
             this.newMetadataLabel = '';
             this.newMetadataUri = '';
+            this.$modalFocusA11y.restoreFocus(this._modalTrigger, this);
             this.new_metadata_slug = '';
         },
         onSaveNewMetadataMapperMetadata() {
@@ -465,6 +487,7 @@ export default {
             this.newMetadataLabel = customMapperMeta.label;
             this.newMetadataUri = customMapperMeta.uri;
             this.new_metadata_slug = customMapperMeta.slug;
+            this._modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.isMapperMetadataCreating = true;
         },
         removeMetadatumCustomMapper(customMapperMeta) {

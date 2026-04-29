@@ -110,12 +110,14 @@ class User extends Metadata_Type {
 		if ( is_array($value) ) {
 			foreach($value as $user) {
 				if ( !empty($user) && !$this->user_exists((int)$user) ) {
+					/* translators: %s is the ID of the user */
 					$this->add_error( sprintf(__('User does not exist (ID: %s).', 'tainacan'), $user ) );
 					return false;
 				}
 			}
 		} else {
 			if ( !empty($value) && !$this->user_exists((int)$value) ) {
+				/* translators: %s is the ID of the user */
 				$this->add_error( sprintf( __('User does not exist (ID: %s).', 'tainacan'), $value ) );
 				return false;
 			}
@@ -156,15 +158,27 @@ class User extends Metadata_Type {
 		$return = '';
 
 		if ( !empty($values) ) {
-			$values = is_array($values) ? $values: [$values];
+			$values = is_array($values) ? $values : [$values];
 			$response = [];
-			$multivalue_separator = $item_metadata->get_multivalue_separator();
-			
-			foreach($values as $value) {
+			foreach ( $values as $value ) {
 				$name = get_the_author_meta( 'display_name', $value );
 				$response[] = apply_filters("tainacan-item-get-author-name", $name, $this);
 			}
-			$return = implode($multivalue_separator, $response);
+			if ( count($response) > 1 ) {
+				$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+				if ( $html_formatting === 'list' ) {
+					$return .= '<ul>';
+					foreach ( $response as $name ) {
+						$return .= '<li>' . ( $name ) . '</li>';
+					}
+					$return .= '</ul>';
+				} else {
+					$multivalue_separator = $item_metadata->get_multivalue_separator();
+					$return = implode($multivalue_separator, $response);
+				}
+			} else {
+				$return = implode('', $response);
+			}
 		}
 
 		return 

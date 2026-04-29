@@ -10,9 +10,10 @@
                         :key="index">
                     <span 
                             v-if="$statusHelper.hasIcon(statusOption.slug)"
+                            aria-hidden="true"
                             class="icon has-text-dark">
                         <i 
-                                class="tainacan-icon tainacan-icon-1-125em"
+                                class="tainacan-icon tainacan-icon-1em"
                                 :class="$statusHelper.getIcon(statusOption.slug)"
                             />
                     </span>
@@ -29,7 +30,9 @@
             </div>
             <ul class="tainacan-reports-subheader-box__content">
                 <li>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see" />
                     </span>
                     <span>
@@ -37,7 +40,9 @@
                     </span>
                 </li>
                 <li>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i
                                 class="tainacan-icon tainacan-icon-svg"
                                 style="display: flex;">
@@ -80,7 +85,9 @@
             </div>
             <ul class="tainacan-reports-subheader-box__content tainacan-reports-subheader-box__content--three-columns">
                 <li>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <div
                                 class="apexcharts-zoomin-icon"
                                 :title="$i18n.get('label_increase_zoom')">
@@ -101,7 +108,9 @@
                     </span>
                 </li>
                 <li>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <div
                                 class="apexcharts-zoomout-icon"
                                 :title="$i18n.get('label_decrease_zoom')">
@@ -122,7 +131,9 @@
                     </span>
                 </li>
                 <li>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <div
                                 class="apexcharts-zoom-icon"
                                 :title="$i18n.get('label_zoom_by_selection')">
@@ -144,7 +155,9 @@
                     </span>
                 </li>
                 <li>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <div 
                                 class="apexcharts-pan-icon" 
                                 :title="$i18n.get('label_zoom_by_selection')">
@@ -174,7 +187,9 @@
                     </span>
                 </li>
                 <li>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <div 
                                 class="apexcharts-reset-icon" 
                                 :title="$i18n.get('label_reset_zoom')">
@@ -195,7 +210,9 @@
                     </span>
                 </li>
                 <li>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <div
                                 class="apexcharts-menu-icon"
                                 :title="$i18n.get('label_chart_export_options')">
@@ -240,19 +257,21 @@ export default { }
         }
 
         .tainacan-reports-subheader-box {
-            padding-left: 14px;
-            border-left: 1px solid var(--tainacan-input-border-color, #a5a5a5);
+            padding-inline-start: 14px;
+            border-inline-start: 1px solid var(--tainacan-input-border-color, #a5a5a5);
         }
 
         .tainacan-reports-subheader-box__title {
             font-weight: bold;
-            margin-left: 2px;
+            margin-inline: 2px;
         }
 
         .tainacan-reports-subheader-box__content {
             display: flex;
             align-items: center;
-            margin: 0px 14px 0px 0px;
+            margin: 0px 0px;
+            margin-inline-end: 14px;
+            margin-inline-start: 0px;
             flex-wrap: wrap;
             gap: 0.25em 0;
 
@@ -278,7 +297,10 @@ export default { }
         .tainacan-reports-subheader-box__content li {
             display: flex;
             align-items: center;
-            margin: 0px 8px 0px 0px;
+            margin-inline-start: 0px;
+            margin-inline-end: 8px;
+            margin-block-start: 0px;
+            margin-block-end: 0px;
             flex-basis: 100%;
 
             span {
@@ -287,7 +309,7 @@ export default { }
         }
         .icon svg {
             fill: var(--tainacan-gray4, #505253);
-            margin-left: -0.5rem;
+            margin-inline-start: -0.5rem;   
             cursor: default;
         }
         .apexcharts-pan-icon svg {
@@ -295,7 +317,7 @@ export default { }
             stroke: var(--tainacan-gray4, #505253);
         }
         .apexcharts-reset-icon {
-            margin-left: 0;
+            margin-inline-start: 0;
         }
     }
 </style>

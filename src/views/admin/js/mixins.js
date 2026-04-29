@@ -6,12 +6,17 @@ import moment from 'moment';
 export const permalinkGetter = {
     methods: {
         getSamplePermalink(id, newTitle, newSlug) {
-            return wpAjax.post('', qs.stringify({
+            const params = {
                 action: 'tainacan-sample-permalink',
                 post_id: id,
                 new_title: newTitle,
                 new_slug: newSlug,
-            }));
+            };
+            // Add nonce for security verification
+            if (typeof tainacan_user !== 'undefined' && tainacan_user.ajax_nonce) {
+                params._ajax_nonce = tainacan_user.ajax_nonce;
+            }
+            return wpAjax.post('', qs.stringify(params));
         }
     }
 };

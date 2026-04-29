@@ -37,8 +37,14 @@
                             v-if="importerSourceInfo.source_metadata && importerSourceInfo.source_metadata.length > 0"
                             style="margin-left: 2rem; font-size: 0.875em;"
                             class="is-inline is-pulled-right add-link has-text-secondary"
-                            @click="createAllMetadata()">
-                        <span class="icon">
+                            role="button"
+                            tabindex="0"
+                            @click="createAllMetadata()"
+                            @keydown.enter.prevent="createAllMetadata()"
+                            @keydown.space.prevent="createAllMetadata()">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-approvedcircle" />
                         </span>
                         {{ $i18n.get('label_set_all_create_metadata') }}
@@ -47,8 +53,14 @@
                             v-if="collectionId != null && collectionId != undefined && importerSourceInfo.source_metadata &&importerSourceInfo.source_metadata.length > 0 && collection && collection.current_user_can_edit_metadata"
                             style="font-size: 0.875em;"
                             class="is-inline is-pulled-right add-link has-text-secondary"
-                            @click="createNewMetadatum()">
-                        <span class="icon">
+                            role="button"
+                            tabindex="0"
+                            @click="createNewMetadatum()"
+                            @keydown.enter.prevent="createNewMetadatum()"
+                            @keydown.space.prevent="createNewMetadatum()">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-add" />
                         </span>
                         {{ $i18n.get('label_add_more_metadata') }}
@@ -57,13 +69,25 @@
                 <div 
                         v-if="importerSourceInfo.source_metadata.length > 0 || (importerSourceInfo.source_special_fields && importerSourceInfo.source_special_fields.length > 0)"
                         class="mapping-header">
-                    <p>{{ $i18n.get('label_from_source_collection') }}</p>
+                    <p>
+                        {{ $i18n.get('label_from_source_collection') }}
+                        <template v-if="importerSourceInfo.source_file_name">
+                            <br><em>{{ importerSourceInfo.source_file_name }}</em>
+                        </template>
+                    </p>
                     <hr>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-pointer tainacan-icon-1-25em" />
                     </span>
                     <hr>
-                    <p>{{ $i18n.get('label_to_target_collection') }}</p>
+                    <p style="text-align: end;">
+                        {{ $i18n.get('label_to_target_collection') }}
+                        <template v-if="collection && collection.name">
+                            <br><em>{{ collection.name }}</em>
+                        </template>
+                    </p>
                 </div>
 
                 <div
@@ -235,14 +259,19 @@
                         <h2>{{ $i18n.get('instruction_select_metadatum_type') }}</h2>
                     </div>
                     <section class="tainacan-form">
-                        <div class="metadata-types-container">
-                            <div
+                        <div 
+                                role="listbox"
+                                class="metadata-types-container">
+                            <button
                                     v-for="(metadatumType, index) of metadatumTypes"
                                     :key="index"
+                                    role="option"
                                     class="metadata-type"
-                                    @click="onSelectMetadatumType(metadatumType)">
+                                    @click="onSelectMetadatumType(metadatumType)"
+                                    @keydown.enter.prevent="onSelectMetadatumType(metadatumType)"
+                                    @keydown.space.prevent="onSelectMetadatumType(metadatumType)">
                                 <h4>{{ metadatumType.name }}</h4>
-                            </div>
+                            </button>
                         </div>
                         <div class="field is-grouped form-submit">
                             <div class="control">
@@ -291,7 +320,8 @@
                 role="dialog"
                 tabindex="-1"
                 aria-modal
-                custom-class="tainacan-modal">
+                custom-class="tainacan-modal"
+                @close="onTitlePromptModalClose()">
             <form class="tainacan-modal-content tainacan-form">
                 <div class="tainacan-modal-title tainacan-page-title">
                     <h2>{{ $i18n.get('instruction_select_title_mapping') }}</h2>
@@ -334,7 +364,7 @@
                         <button 
                                 class="button is-outlined" 
                                 type="button"
-                                @click="selectedTitle = ''; showTitlePromptModal = false;">
+                                @click="selectedTitle = ''; showTitlePromptModal = false; onTitlePromptModalClose();">
                             {{ $i18n.get('cancel') }}
                         </button>
                     </div>
@@ -616,6 +646,7 @@ export default {
                     this.mappedCollection.mapping &&
                     !this.mappedCollection.mapping[this.collectionMetadata[coreTitleIndex].id]
                 ) {
+                    this._titlePromptModalTrigger = this.$modalFocusA11y.captureTrigger();
                     this.showTitlePromptModal = true;
                     return;     
                 }
@@ -692,7 +723,7 @@ export default {
             if (removedKey != '')
                 delete this.mappedCollection['mapping'][removedKey];
 
-            let mappingValue = '';
+            let mappingValue;
             if (isCompound) {
                 mappingValue = {} 
                 mappingValue[sourceMetadatum] = childSourceMetadata;
@@ -728,6 +759,7 @@ export default {
             });
         },
         createNewMetadatum() {
+            this._newMetadatumModalTrigger = this.$modalFocusA11y.captureTrigger();
             this.fetchMetadatumTypes()
                 .then(() => {
                     this.isLoadingMetadatumTypes = false;
@@ -778,6 +810,10 @@ export default {
             this.isEditingMetadatum = false;
             this.isNewMetadatumModalActive = false;
             this.selectedMetadatumType = undefined;
+            this.$modalFocusA11y.restoreFocus(this._newMetadatumModalTrigger, this);
+        },
+        onTitlePromptModalClose() {
+            this.$modalFocusA11y.restoreFocus(this._titlePromptModalTrigger, this);
         },
         onConfirmTitleSelection(event) {
             event.preventDefault();
@@ -884,10 +920,10 @@ export default {
 
     .child-source-metadatum {
         flex-basis: 100%;
-        border-left: 1px solid var(--tainacan-gray2);
-        padding-left: 1em;
+        border-inline-start: 1px solid var(--tainacan-gray2);
+        padding-inline-start: 1em;
         opacity: 1;
-        transition: border-left 0.2s ease, opacity 0.2s ease;
+        transition: border-inline-start 0.2s ease, opacity 0.2s ease;
 
         .source-metadatum {
             border-bottom: none;
@@ -898,7 +934,7 @@ export default {
         }
 
         &.disabled-child-source-metadatum {
-            border-left: 1px solid var(--tainacan-gray1);
+            border-inline-start: 1px solid var(--tainacan-gray1);
             opacity: 0.70;
         }
     }
@@ -967,6 +1003,10 @@ export default {
     .metadata-types-container {
 
         .metadata-type {
+            border: none;
+            box-shadow: none;
+            width: 100%;
+            text-align: start;
             border-bottom: 1px solid var(--tainacan-gray2);
             padding: 15px calc(2 * var(--tainacan-one-column));
             cursor: pointer;
@@ -977,8 +1017,14 @@ export default {
             &:last-child {
                 border-bottom: none;
             }
-            &:hover {
+            &:hover,
+            &:focus,
+            &:focus-visible {
                 background-color: var(--tainacan-gray1);
+            }
+            &:focus-visible {
+                outline: 2px solid var(--tainacan-secondary);
+                outline-offset: -1px;
             }
         }
     }
@@ -992,7 +1038,7 @@ export default {
             font-size: 0.875em;
             color: var(--tainacan-gray5);
             margin: 4px 8px;
-            text-align: left;
+            text-align: start;
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;

@@ -37,7 +37,7 @@ html {
 
 /* Removal of some padding that would conflict on how we color the page background */
 .tainacan-pages-container #wpcontent {
-    padding-left: 0;
+    padding-inline-start: 0;
 }
 .tainacan-pages-container #wpbody-content {
     padding-bottom: 0;
@@ -53,7 +53,7 @@ html {
 .tainacan-pages-container #screen-meta-links {
     margin: 0px;
     position: absolute;
-    right: 0;
+    inset-inline-end: 0;
     
     &:has(+#tainacan-page-container > #tainacan-navigation-menu.is-active) {
         z-index: 0;
@@ -64,7 +64,10 @@ html {
         height: auto !important;
         margin-bottom: 0 !important;
         padding: 3px 6px 3px 16px !important;
-        border-radius: 0 0 var(--tainacan-admin-button-border-radius, 8px) var(--tainacan-admin-button-border-radius, 8px) !important;
+        border-end-end-radius: var(--tainacan-admin-button-border-radius, 8px) !important;
+        border-end-start-radius: var(--tainacan-admin-button-border-radius, 8px) !important;
+        border-start-end-radius: 0 !important;
+        border-start-start-radius: 0 !important;
         box-shadow: 0 0 0 transparent !important;
         font-size: 13px !important;
         display: inline-block !important;
@@ -82,7 +85,7 @@ html {
         }
     }
     .screen-meta-toggle:last-child .button {
-        border-bottom-right-radius: 0px !important;
+        border-end-end-radius: 0px !important;
     }
 }
 @media screen and (max-width: 768px) {
@@ -93,10 +96,10 @@ html {
     }
 }
 .tainacan-pages-container #screen-meta {
-    margin-right: 0;
+    margin-inline-end: 0;
 
     @media screen and (min-width: 769px) {
-        left: 0;//calc(var(--tainacan-admin-navigation-sidebar-width, 14rem) + var(--tainacan-page-container--inner-padding-x, 1rem));
+        inset-inline-start: 0;//calc(var(--tainacan-admin-navigation-sidebar-width, 14rem) + var(--tainacan-page-container--inner-padding-x, 1rem));
         width: 100%;//calc(100% - var(--tainacan-admin-navigation-sidebar-width, 14rem) - (2 * var(--tainacan-page-container--inner-padding-x, 1rem)));
     }
 
@@ -161,6 +164,8 @@ html {
     background-position: center;
     overflow: hidden;
     transition: all 0.3s ease-in-out;
+    --wp-admin-theme-color: var(--tainacan-turquoise5);
+    --wp-admin-theme-color-darker-10: var(--tainacan-turquoise6);
   
     .tainacan-ui-tweak-button {
         border-radius: var(--tainacan-admin-button-border-radius, 8px);
@@ -198,36 +203,36 @@ html {
         .menu-text {
             font-size: 0.813em;
             transition: font-size 0.25s ease-in-out, opacity 0.25s ease-in-out;
-            margin-right: 1em;
+            margin-inline-end: 1em;
             opacity: 0.9;
         }
     }
 
     #tainacan-menu-toggler {
-        border-top-left-radius: 0px;
-        border-bottom-left-radius: 0px;
+        border-start-start-radius: 0px;
+        border-end-start-radius: 0px;
         display: none;
         visibility: hidden;
         position: absolute;
-        margin-left: calc( -1 * var(--tainacan-page-container--inner-padding-x, 1rem) );
+        margin-inline-start: calc( -1 * var(--tainacan-page-container--inner-padding-x, 1rem) );
         z-index: 9999;
         box-shadow: var(--tainacan-blue2);
     }
     #tainacan-menu-collapser {
         position: absolute;
         max-width: var(--tainacan-admin-navigation-sidebar-width, 14rem);
-        left: 0;
+        inset-inline-start: 0;
         bottom: 0;
-        border-top-left-radius: 0px;
-        border-bottom-left-radius: 0px;
-        border-bottom-right-radius: 0px;
+        border-start-start-radius: 0px;
+        border-end-start-radius: 0px;
+        border-end-end-radius: 0px;
         display: inline-flex;
         align-items: center;
         padding: 0.125rem 0;
     }
     #tainacan-fullscreen-toggler {
         position: absolute;
-        right: var(--tainacan-page-container--inner-padding-x, 1rem);
+        inset-inline-end: var(--tainacan-page-container--inner-padding-x, 1rem);
 
         &[aria-pressed="true"] svg {
             #fullscreen-on {
@@ -292,7 +297,8 @@ html {
 
                 &:not(:last-child)::after {
                     content: '>';
-                    margin: 0 0 0 var(--tainacan-breadcumbs-list-gap, 0.5rem);
+                    margin: 0;
+                    margin-inline-start: var(--tainacan-breadcumbs-list-gap, 0.5rem);
                     opacity: 0.75;
                 }
             }
@@ -390,14 +396,18 @@ html {
                             padding: 0.5rem !important;
 
                             .icon {
-                                margin-right: 0;
+                                margin-inline-end: 0;
                             }
                         }
                     }
                     .menu-item-has-children {
                         button::after {
                             transform: rotate(-90deg) !important;
-                            right: -1rem !important;
+                            inset-inline-end: -1rem !important;
+
+                            [dir="rtl"] & {
+                                transform: rotate(90deg) !important;
+                            }
                         } 
                         &.is-open {
 
@@ -420,8 +430,8 @@ html {
                                 .menu-text {
                                     padding: 0.75rem;
                                     z-index: 99999999;
-                                    border-top-left-radius: var(--tainacan-admin-button-border-radius, 8px);
-                                    border-top-right-radius: var(--tainacan-admin-button-border-radius, 8px);
+                                    border-start-start-radius: var(--tainacan-admin-button-border-radius, 8px);
+                                    border-start-end-radius: var(--tainacan-admin-button-border-radius, 8px);
                                     border-bottom: 1px solid var(--tainacan-turquoise3);
                                     border-bottom: 1px solid color-mix(in srgb, var(--tainacan-admin-navigation-sidebar-separator-color) 50%, transparent);
                                 }
@@ -429,19 +439,19 @@ html {
 
                             button::after {
                                 transform: skewY(90deg) !important;
-                                right: -0.875rem;
+                                inset-inline-end: -0.875rem;
                                 background-image: url('data:image/svg+xml,<svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.976713 0H9.01734C9.57359 0 9.85171 0.671875 9.45796 1.06563L5.43921 5.0875C5.19546 5.33125 4.79859 5.33125 4.55484 5.0875L0.536088 1.06563C0.142338 0.671875 0.420463 0 0.976713 0Z" fill="white" fill-opacity="1.0"/></svg>');
                             }
                             button {
-                                border-top-right-radius: 0;
-                                border-bottom-right-radius: 0;
+                                border-end-start-radius: 0;
+                                border-end-end-radius: 0;
                             }
                             ul {
                                 padding: 0.5rem 0.75rem;
                                 z-index: 99999998;
                                 border: none;
-                                border-bottom-right-radius: var(--tainacan-admin-button-border-radius, 8px);
-                                border-bottom-left-radius: var(--tainacan-admin-button-border-radius, 8px);
+                                border-end-end-radius: var(--tainacan-admin-button-border-radius, 8px);
+                                border-end-start-radius: var(--tainacan-admin-button-border-radius, 8px);
                                 box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px --tainacan-blue3);
                                 box-shadow: var(--tainacan-page-container-box-shadow, 0px 0px 8px 0px color-mix(in srgb, var(--tainacan-blue3) 20%, transparent) );
                                 margin-top: -1px;
@@ -452,16 +462,21 @@ html {
                                 border-bottom: 1px solid var(--tainacan-gray2);
                                 box-shadow: var(--tainacan-page-container-box-shadow, 4px -4px 8px -4px --tainacan-blue3);
                                 box-shadow: var(--tainacan-page-container-box-shadow, 4px -4px 8px -4px color-mix(in srgb, var(--tainacan-blue3) 20%, transparent) );
+                                
+                                [dir="rtl"] & {
+                                    box-shadow: var(--tainacan-page-container-box-shadow, -4px -4px 8px -4px --tainacan-blue3);
+                                    box-shadow: var(--tainacan-page-container-box-shadow, -4px -4px 8px -4px color-mix(in srgb, var(--tainacan-blue3) 20%, transparent) );
+                                }    
                             }
                             & > button > .menu-text,
                             ul {
                                 position: absolute;
-                                left: 100%;
+                                inset-inline-start: 100%;
                                 min-width: 180px;
                                 max-width: 180px;
                                 max-height: calc(100vh - var(--wp-admin--admin-bar--height, 32px) - 280px);
                                 overflow-y: auto;
-                                border-top-left-radius: 0;
+                                border-start-start-radius: 0;
                                 box-sizing: border-box;
                                 margin: 0;
                                 background-color: var(--tainacan-admin-navigation-sidebar-floating-menu-background-color);
@@ -554,7 +569,7 @@ html {
                     justify-content: center;
                     width: 1.25em;
                     height: 1.25em;
-                    margin-right: 0.5rem;
+                    margin-inline-end: 0.5rem;
                     font-size: 1.25rem;
                     color: var(--tainacan-gray5);
 
@@ -582,11 +597,11 @@ html {
                     overflow: clip;
                 }
                 button {
-                    padding-right: 1.5rem;
+                    padding-inline-end: 1.5rem;
                 }
                 button::after {
                     position: absolute;
-                    right: 0;
+                    inset-inline-end: 0;
                     content: '';
                     font-size: 1rem;
                     content: '';
@@ -608,10 +623,13 @@ html {
                     // transition-property: opacity, max-height;
                     // transition-duration: 0.3s;
                     // transition-timing-function: ease-in-out;
-                    border-left: 1px dashed var(--tainacan-admin-navigation-sidebar-separator-color);
-                    border-left: 1px dashed color-mix(in srgb, var(--tainacan-admin-navigation-sidebar-separator-color) 50%, transparent);
-                    margin: 0.5em 0 1em 0.75rem;
-                    padding-left: 0.5rem;
+                    border-inline-start: 1px dashed var(--tainacan-admin-navigation-sidebar-separator-color);
+                    border-inline-start: 1px dashed color-mix(in srgb, var(--tainacan-admin-navigation-sidebar-separator-color) 50%, transparent);
+                    margin-inline-start: 0.75rem;
+                    margin-inline-end: 0;
+                    margin-block-start: 0.5em;
+                    margin-block-end: 1em;
+                    padding-inline-start: 0.5rem;
     
                     li {
                         margin-bottom: 4px;
@@ -642,18 +660,27 @@ html {
                     }
                 }
             }
-            .separator-list-item {
+            ul .separator-list-item {
                 width: 100%;
                 text-align: start;
                 box-sizing: border-box;
                 font-size: 0.75em;
                 font-weight: 500;
                 color: var(--tainacan-admin-navigation-sidebar-separator-color);
+                border-top: 1px dashed color-mix(in srgb, var(--tainacan-admin-navigation-sidebar-separator-color) 50%, transparent);
                 padding: 0.5rem;
     
                 .icon {
                     color: currentColor !important;
-                    margin-right: 0.5em;
+                    margin-inline-end: 0.5em;
+                }
+            }
+            ul .separator-list-item ~ li {
+                margin-bottom: 2px;
+                margin-inline-start: 0.5rem;
+
+                a {
+                    font-weight: 400;
                 }
             }
         }
@@ -661,10 +688,10 @@ html {
         #tainacan-wordpress-shortcut {
             box-sizing: border-box;
             position: relative;
-            left: calc( -1 * var(--tainacan-admin-navigation-sidebar-padding-x, 0.75rem) );
+            inset-inline-start: calc( -1 * var(--tainacan-admin-navigation-sidebar-padding-x, 0.75rem) );
             top: -1rem;
             border-radius: 0;
-            border-bottom-right-radius: var(--tainacan-admin-button-border-radius);
+            border-end-end-radius: var(--tainacan-admin-button-border-radius);
             border: none;
             font-size: 1em;
             color: #f0f0f1;
@@ -702,7 +729,7 @@ html {
         #tainacan-site-shortcut {
             box-sizing: border-box;
             position: relative;
-            left: -0.5rem;
+            inset-inline-start: -0.5rem;
             top: -0.875rem;
             align-self: center;
             font-size: 0.875em;
@@ -726,7 +753,7 @@ html {
                 visibility: hidden;
                 opacity: 0;
                 position: relative;
-                left: -0.5em;
+                inset-inline-start: -0.5em;
                 transition: left 0.3s ease, opacity 0.3s ease;
 
                 &::after {
@@ -738,7 +765,7 @@ html {
                 text-decoration: none;
                 visibility: visible;
                 opacity: 1;
-                left: 0;
+                inset-inline-start: 0;
             }
         }
     }
@@ -872,11 +899,11 @@ html {
         #tainacan-menu-toggler {
             display: block;
             visibility: visible;
-            left: 0;
+            inset-inline-start: 0;
             top: 0;
             margin-top: 0px;
-            border-top-right-radius: 0px;
-            transition: left 0.2s ease-in-out;
+            border-start-end-radius: 0px;
+            transition: inset-inline-start 0.2s ease-in-out;
         }
         #tainacan-menu-collapser,
         #tainacan-breadcrumbs {
@@ -914,7 +941,7 @@ html {
     height: calc(100% + var(--wp-admin--admin-bar--height, 32px));
     position: fixed;
     top:0;
-    left: 0;
+    inset-inline-start: 0;
     height: 100dvh;
     width: 100%;
 
@@ -923,7 +950,7 @@ html {
     }
     #wpcontent,
     #wpfooter {
-        margin-left: 0;
+        margin-inline-start: 0;
     }
     #wpadminbar,
     #adminmenumain {
@@ -932,7 +959,7 @@ html {
     #tainacan-page-container {
         position: fixed;
         top: 0;
-        left: 0;
+        inset-inline-start: 0;
         height: 100dvh;
         width: 100%;
         --wp-admin--admin-bar--height: 0px;
@@ -1146,7 +1173,7 @@ html {
     --tainacan-admin-button-hover-color: white;
     --tainacan-admin-button-active-color: white;
     --tainacan-admin-button-hover-background-color: #2f2f2f;
-    --tainacan-admin-button-active-background-color: #2271b1;
+    --tainacan-admin-button-active-background-color: var(--wp-admin-theme-color, #3858e9);
     --tainacan-admin-button-font-weight: 400;
     --tainacan-admin-navigation-sidebar-background-color: #1e1e1e;
     --tainacan-admin-navigation-sidebar-background-image: none;
@@ -1155,7 +1182,7 @@ html {
 
     --tainacan-page-container-border-radius: 8px;
 
-    --tainacan-dashboard-card-border-radius: 4px;
+    --tainacan-dashboard-card-border-radius: 8px;
     --tainacan-dashboard-card-border: 1px solid #e5e5e5;
     --tainacan-dashboard-card-box-shadow: none;
 

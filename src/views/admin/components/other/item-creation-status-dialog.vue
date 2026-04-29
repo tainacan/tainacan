@@ -13,15 +13,15 @@
             <div 
                     v-if="icon != undefined && icon != ''"
                     class="modal-custom-icon">
-                <span class="icon is-large">
+                <span 
+                        aria-hidden="true"
+                        class="icon is-large">
                     <i 
                             :class="'tainacan-icon-' + icon"
                             class="tainacan-icon" />
                 </span>
             </div>
-            <section 
-                    tabindex="1"
-                    class="modal-card-body">
+            <section class="modal-card-body">
                 <header 
                         class="modal-card-head">
                     <h1 
@@ -45,7 +45,7 @@
                                     class="tainacan-icon tainacan-icon-18px"
                                     :class="$statusHelper.getIcon(statusOption.slug)" />
                         </span>
-                        <span style="line-height: 1.5em; margin-left: 0.25em;">
+                        <span style="line-height: 1.5em; margin-inline-start: 0.25em;">
                             {{ statusOption.name }}
                         </span>
                     </b-radio>
@@ -54,7 +54,7 @@
             <footer class="modal-card-foot form-submit">
                 <button 
                         type="button"
-                        style="margin-right: auto"
+                        style="margin-inline-end: auto"
                         class="button is-outlined"
                         @click="$emit('close');">
                     {{ $i18n.get('cancel') }}
@@ -127,7 +127,7 @@
     }
 
     button.is-success {
-        margin-left: auto;
+        margin-inline-start: auto;
     }
 
     .field.is-horizontal {

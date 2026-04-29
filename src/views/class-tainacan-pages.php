@@ -109,7 +109,7 @@ abstract class Pages {
 	 * @return void
 	 */
 	function admin_enqueue_js() {}
-	
+
 	/**
 	 * admin_body_class is called from the 'admin_body_class' filter and should add the page's class to the body. 
 	 * 
@@ -204,6 +204,7 @@ abstract class Pages {
 			'prefs' => $prefs,
 			'data' => $user_data,
 			'nonce'                  	=> is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : false,
+			'ajax_nonce'                => is_user_logged_in() ? wp_create_nonce( 'tainacan-sample-permalink' ) : false,
 			'tainacan_api_url'         	=> esc_url_raw( rest_url() ) . 'tainacan/v2',
 			'wp_api_url'            	=> esc_url_raw( rest_url() ) . 'wp/v2/',
 			'wp_ajax_url'            	=> admin_url( 'admin-ajax.php' ),
@@ -264,6 +265,10 @@ abstract class Pages {
 			'api_max_items_per_page'    => $TAINACAN_API_MAX_ITEMS_PER_PAGE,
 			'wp_elasticpress'    		=> \Tainacan\Elastic_Press::get_instance()->is_active(),
 			'item_submission_captcha_site_key' => get_option("tnc_option_recaptch_site_key"),
+			'tainacan_use_deprecated_logs' => (
+				!defined('TAINACAN_USE_DEPRECATED_LOGS') || 
+				true === TAINACAN_USE_DEPRECATED_LOGS
+			),
 			'tainacan_enable_core_metadata_on_advanced_search' => (
 				!defined('TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH') || 
 				false === TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH
@@ -400,7 +405,8 @@ abstract class Pages {
 			'tainacan-admin-navigation-menu',
 			$TAINACAN_BASE_URL . '/assets/js/tainacan_admin_navigation_menu.js',
 			[ 'wp-hooks', 'wp-i18n' ],
-			TAINACAN_VERSION
+			TAINACAN_VERSION,
+			true
 		);
 		wp_set_script_translations( 'tainacan-admin-navigation-menu', 'tainacan' );
 		wp_localize_script( 'tainacan-admin-navigation-menu', 'tainacan_user', $this->get_admin_js_user_data() );
@@ -462,17 +468,17 @@ abstract class Pages {
 					<?php if ( !$this->has_admin_ui_option( 'hideWordPressShorcutButton' ) || !$this->has_admin_ui_option( 'hideSiteShorcutButton' ) ) : ?>
 						<a
 								id="tainacan-wordpress-shortcut"
-								title="<?php _e('Return to WordPress Admin', 'tainacan'); ?>"
-								href="<?php echo admin_url(); ?>">
-							<span class="icon"><?php echo $this->get_svg_icon( 'wordpress' ); ?></span>
+								title="<?php esc_attr_e('Return to WordPress Admin', 'tainacan'); ?>"
+								href="<?php echo esc_url(admin_url()); ?>">
+							<span class="icon"><?php echo wp_kses($this->get_svg_icon( 'wordpress' ), wp_kses_allowed_html('tainacan_menu_link')); ?></span>
 						</a>
 
 						<a
 								id="tainacan-site-shortcut"
-								title="<?php _e('Visit the site', 'tainacan'); ?>"
-								href="<?php echo site_url(); ?>"
+								title="<?php esc_attr_e('Visit the site', 'tainacan'); ?>"
+								href="<?php echo esc_url(site_url()); ?>"
 								target="_blank">
-							<span class="menu-text"><?php echo get_bloginfo( 'name' ); ?> </span><span class="icon"></span>
+							<span class="menu-text"><?php echo esc_html(get_bloginfo( 'name' )); ?> </span><span class="icon" aria-hidden="true"></span>
 						</a>
 					<?php endif; ?>
 					<h1>
@@ -514,12 +520,12 @@ abstract class Pages {
 							?>
 							<img
 									id="tainacan-menu-logo-full" 
-									alt="<?php _e('Tainacan', 'tainacan'); ?>" 
+									alt="<?php esc_attr_e('Tainacan', 'tainacan'); ?>" 
 									width="170" 
 									src="<?php echo esc_attr( $navigation_logo_full ); ?>" />
 							<img 
 									id="tainacan-menu-logo-icon"
-									alt="<?php _e('Tainacan', 'tainacan'); ?>" 
+									alt="<?php esc_attr_e('Tainacan', 'tainacan'); ?>" 
 									width="28" 
 									src="<?php echo esc_attr( $navigation_logo_icon ); ?>" />
 						</a>
@@ -529,8 +535,8 @@ abstract class Pages {
 					<?php if ( !$this->has_admin_ui_option('hideNavigationHomeButton') ) : ?>
 						<li>
 							<a href="admin.php?page=tainacan_dashboard" <?php echo $current_page_slug === 'toplevel_page_tainacan_dashboard' ? 'aria-current="page"' : ''; ?>>
-								<span class="icon"><?php echo $this->get_svg_icon( 'home' ); ?></span>
-								<span class="menu-text"><?php _e('Home', 'tainacan'); ?></span>
+								<span class="icon" aria-hidden="true"><?php echo wp_kses($this->get_svg_icon( 'home' ), wp_kses_allowed_html('tainacan_menu_link')); ?></span>
+								<span class="menu-text"><?php esc_html_e('Home', 'tainacan'); ?></span>
 							</a>
 						</li>
 					<?php endif; ?>
@@ -545,17 +551,17 @@ abstract class Pages {
 								
 								if ( isset( $submenu[$tainacan_root_link[2]] ) ) : ?>
 
-									<li class="menu-item-has-children <?php echo $current_page_parent === $tainacan_root_link[2] ? 'is-open' : ''; ?>">
+									<li class="menu-item-has-children <?php echo esc_attr($current_page_parent === $tainacan_root_link[2] ? 'is-open' : ''); ?>">
 										<div class="menu-item-backdrop"></div>
-										<button type="button" aria-expanded="<?php echo $current_page_parent === $tainacan_root_link[2] ?>"><?php echo $tainacan_root_link[0]; ?></button>
+										<button type="button" aria-expanded="<?php echo esc_attr($current_page_parent === $tainacan_root_link[2] ? 'true' : 'false'); ?>"><?php echo wp_kses($tainacan_root_link[0], wp_kses_allowed_html('tainacan_menu_link')); ?></button>
 										
 										<?php if ( count( $submenu[$tainacan_root_link[2]] ) ) : ?>
-											<ul id="<?php echo $tainacan_root_link[2]; ?>">
+											<ul id="<?php echo esc_attr($tainacan_root_link[2]); ?>">
 												<?php foreach( $submenu[$tainacan_root_link[2]] as $link ) : 
 													if ( !current_user_can( $link[1] ) ) continue;
 												?>
 													<li>
-														<a href="<?php echo add_query_arg( 'page', $link[2] ); ?>" <?php echo $current_page_slug === 'admin_page_' . $link[2] ? 'aria-current="page"' : ''; ?>><?php echo $link[0]; ?></a>
+														<a href="<?php echo esc_url(add_query_arg( 'page', $link[2] )); ?>" <?php echo $current_page_slug === 'admin_page_' . $link[2] ? 'aria-current="page"' : ''; ?>><?php echo wp_kses($link[0], wp_kses_allowed_html('tainacan_menu_link')); ?></a>
 													</li>
 												<?php endforeach; ?>
 											</ul>
@@ -564,7 +570,7 @@ abstract class Pages {
 
 								<?php elseif ( isset( $tainacan_root_link[2] ) && $tainacan_root_link[2] !== $this->tainacan_other_links_slug ) : ?>
 									<li>
-										<a href="<?php echo add_query_arg( 'page', $tainacan_root_link[2] ); ?>"  <?php echo $current_page_slug === 'admin_page_' . $tainacan_root_link[2] ? 'aria-current="page"' : ''; ?>><?php echo $tainacan_root_link[0]; ?></a>
+										<a href="<?php echo esc_url(add_query_arg( 'page', $tainacan_root_link[2] )); ?>"  <?php echo $current_page_slug === 'admin_page_' . $tainacan_root_link[2] ? 'aria-current="page"' : ''; ?>><?php echo wp_kses($tainacan_root_link[0], wp_kses_allowed_html('tainacan_menu_link')); ?></a>
 									</li>
 								<?php endif; 
 							}
@@ -641,9 +647,9 @@ abstract class Pages {
 					<ul id="tainacan-breadcrumbs-list">
 						<?php foreach( $breadcrumbs as $breadcrumb ) : ?>
 							<?php if ( isset( $breadcrumb['url'] ) ) : ?>
-								<li><a href="<?php echo $breadcrumb['url']; ?>"><?php echo $breadcrumb['label']; ?></a></li>
+								<li><a href="<?php echo esc_url($breadcrumb['url']); ?>"><?php echo esc_html($breadcrumb['label']); ?></a></li>
 							<?php else : ?>
-								<li><?php echo $breadcrumb['label']; ?></li>
+								<li><?php echo esc_html($breadcrumb['label']); ?></li>
 							<?php endif; ?>
 						<?php endforeach; ?>
 					</ul>
@@ -680,10 +686,10 @@ abstract class Pages {
 			<button
 					id="tainacan-menu-toggler"
 					class="tainacan-ui-tweak-button"
-					aria-label="<?php _e('Toggle menu', 'tainacan'); ?>"
+					aria-label="<?php esc_attr_e('Toggle menu', 'tainacan'); ?>"
 					aria-pressed="<?php echo $is_menu_toggled ? 'true' : 'false'; ?>"
-					title="<?php _e('Toggle menu', 'tainacan'); ?>">
-				<span class="icon"><?php echo $this->get_svg_icon( 'menu' ); ?></span>
+					title="<?php esc_attr_e('Toggle menu', 'tainacan'); ?>">
+				<span class="icon"><?php echo wp_kses($this->get_svg_icon( 'menu' ), wp_kses_allowed_html('tainacan_menu_link')); ?></span>
 			</button>
 			<?php if ( !$this->has_admin_ui_option('hideMenuCollapserButton') ) : ?>
 				<button
@@ -691,9 +697,9 @@ abstract class Pages {
 						class="tainacan-ui-tweak-button"
 						aria-label=""
 						aria-pressed="<?php echo $is_menu_collapsed ? 'true' : 'false'; ?>"
-						title="<?php _e('Toggle menu', 'tainacan'); ?>">
-					<span class="icon"><?php echo $this->get_svg_icon( 'arrowleft' ); ?></span>
-					<span class="menu-text"><?php _e('Collapse menu', 'tainacan'); ?></span>
+						title="<?php esc_attr_e('Toggle menu', 'tainacan'); ?>">
+					<span class="icon tainacan-icon-is-rtl-mirrored" aria-hidden="true"><?php echo wp_kses($this->get_svg_icon( 'arrowleft' ), wp_kses_allowed_html('tainacan_menu_link')); ?></span>
+					<span class="menu-text"><?php esc_html_e('Collapse menu', 'tainacan'); ?></span>
 				</button>
 			<?php endif; ?>
 		<?php endif;
@@ -716,10 +722,14 @@ abstract class Pages {
 	 * based on his/her role.
 	 */
 	function admin_init_ui_options() {
-		
-		if ( !is_admin() && !$this->get_page_slug() || !isset($_GET['page']) || ( isset($_GET['page']) && $_GET['page'] !== $this->get_page_slug() ) )
+
+		// Sanitize the page parameter
+		/* phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading URL parameter for page identification (read-only operation), similar to WordPress core admin page handling. */
+		$current_page = isset($_GET['page']) ? sanitize_key($_GET['page']) : '';
+
+		if ( !is_admin() && !$this->get_page_slug() || empty($current_page) || $current_page !== $this->get_page_slug() )
 			return;
-		
+	
 		/**
 		 * Presets the current admin_ui_options with user role options stored on the database
 		 */
@@ -738,22 +748,40 @@ abstract class Pages {
 				}
 			}
 		}
+
+		// Sanitize $_GET parameters using WordPress's built-in boolean sanitization
+		$sanitized_get = array();
+		/* phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading URL query parameters to configure UI display options (read-only operation). All values are sanitized before use. Similar to WordPress core admin page parameter handling. */
+		foreach ( $_GET as $key => $value ) {
+			$sanitized_key = sanitize_text_field($key); // Not using sanitize_key because it puts all in lowercase
+			
+			if ( is_array($value) ) {
+				$sanitized_get[$sanitized_key] = array_map(function($item) {
+					// rest_sanitize_boolean returns the value as-is if it's not boolean-like
+					$sanitized = rest_sanitize_boolean($item);
+					return is_bool($sanitized) ? $sanitized : sanitize_text_field($item);
+				}, $value);
+			} else {
+				$sanitized = rest_sanitize_boolean($value);
+				$sanitized_get[$sanitized_key] = is_bool($sanitized) ? $sanitized : sanitize_text_field($value);
+			}
+		}
 		
 		// Gets filtered options, offering a chance to define them via URL parameters
-		self::$admin_ui_options = apply_filters('tainacan-admin-ui-options', array_merge( self::$admin_ui_options, $_GET ));
+		self::$admin_ui_options = apply_filters('tainacan-admin-ui-options', array_merge( self::$admin_ui_options, $sanitized_get ));
 
 		/** 
 		 * Preset common 'modes', which group certain admin options
 		 */
-
+		
 		// For all these special modes, we want to render a shell-like, contained version inside the iframe, where navigation is hidden 
 		if (
-			( isset($_GET[ 'itemEditionMode' ]) && $_GET[ 'itemEditionMode' ] ) ||
-			( isset($_GET[ 'itemCreationMode' ]) && $_GET[ 'itemCreationMode' ] ) ||
-			( isset($_GET[ 'itemsSingleSelectionMode' ]) && $_GET[ 'itemsSingleSelectionMode' ] ) ||
-			( isset($_GET[ 'itemsMultipleSelectionMode' ]) && $_GET[ 'itemsMultipleSelectionMode' ] ) ||
-			( isset($_GET[ 'itemsSearchSelectionMode' ]) && $_GET[ 'itemsSearchSelectionMode' ] ) ||
-			( isset($_GET[ 'mobileAppMode' ]) && $_GET[ 'mobileAppMode' ] )
+			( !empty($sanitized_get['itemEditionMode']) ) ||
+			( !empty($sanitized_get['itemCreationMode']) ) ||
+			( !empty($sanitized_get['itemsSingleSelectionMode']) ) ||
+			( !empty($sanitized_get['itemsMultipleSelectionMode']) ) ||
+			( !empty($sanitized_get['itemsSearchSelectionMode']) ) ||
+			( !empty($sanitized_get['mobileAppMode']) )
 		) {
 			self::$admin_ui_options['hideNavigationSidebar'] = true;
 			self::$admin_ui_options['hideBreadcrumbs'] = true;
@@ -776,13 +804,13 @@ abstract class Pages {
 		}
 
 		// When selecting a search-like query, we want to hide the context menu and the selection area
-		if (isset($_GET['itemsSearchSelectionMode']) && $_GET['itemsSearchSelectionMode']) {
+		if ( !empty($sanitized_get['itemsSearchSelectionMode']) ) {
 			self::$admin_ui_options['hideItemsListContextMenu'] = true;
 			self::$admin_ui_options['hideItemsListSelection'] = true;
 		}
 
 		// In mobile app mode, we change a portion of the item edtion page
-		if ( isset($_GET[ 'mobileAppMode' ]) && $_GET[ 'mobileAppMode' ] ) {
+		if ( !empty($sanitized_get['mobileAppMode']) ) {
 			self::$admin_ui_options['hideItemEditionPageTitle'] = true;
 			self::$admin_ui_options['hideBulkEditionPageTitle'] = true;
 			self::$admin_ui_options['hideItemEditionCollapses'] = true;
@@ -799,7 +827,11 @@ abstract class Pages {
 	 */
 	function admin_add_screen_options($current, $screen) {
 
-		if ( !is_admin() && !$this->get_page_slug() || !isset($_GET['page']) || ( isset($_GET['page']) && $_GET['page'] !== $this->get_page_slug() ) )
+		// Sanitize the page parameter
+		/* phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading URL parameter for page identification (read-only operation), similar to WordPress core admin page handling. */
+		$current_page = isset($_GET['page']) ? sanitize_key($_GET['page']) : '';
+
+		if ( !is_admin() && !$this->get_page_slug() || empty($current_page) || $current_page !== $this->get_page_slug() )
 			return $current;
 
 		$is_fullscreen = false;
@@ -821,23 +853,23 @@ abstract class Pages {
 		if ( !$this->has_admin_ui_option('forceFullscreenAdminMode') && !$this->has_admin_ui_option('hideFullscreenTogglerButton') ) {
 			?>
 			<div class="metabox-prefs custom-options-wrap">
-				<h5><?php _e('Integration with WordPress Admin UI', 'tainacan'); ?></h5>
+				<h5><?php esc_html_e('Integration with WordPress Admin UI', 'tainacan'); ?></h5>
 				<label for="tainacan-fullscreen-toggler">
 					<fieldset>
-						<legend class="screen-reader-text"><?php _e('Fullscreen mode options', 'tainacan'); ?></legend>
+						<legend class="screen-reader-text"><?php esc_html_e('Fullscreen mode options', 'tainacan'); ?></legend>
 						<label>
 							<input type="radio" name="tainacan-fullscreen-state" value="1" <?php checked($is_fullscreen, true); ?>>
-							<?php _e('Hide WordPress navigation', 'tainacan'); ?>
+							<?php esc_html_e('Hide WordPress navigation', 'tainacan'); ?>
 						</label>
 						<label>
 							<input type="radio" name="tainacan-fullscreen-state" value="0" <?php checked(!$is_fullscreen, true); ?>>
-							<?php _e('Show WorPress navigation', 'tainacan'); ?>
+							<?php esc_html_e('Show WordPress navigation', 'tainacan'); ?>
 						</label>
 					</fieldset>
 				</label>
 				<p class="submit">
 					<button type="button" class="button-primary" id="tainacan-fullscreen-toggler">
-						<?php _e('Apply', 'tainacan'); ?>
+						<?php esc_html_e('Apply', 'tainacan'); ?>
 					</button>
 				</p>
 			</div>
@@ -849,6 +881,23 @@ abstract class Pages {
 		return $current . $extra_screen_options_html;
 	}
 
+	/**
+	 * Registers the lazy-loaded chunk for this page and sets up its translations.
+	 *
+	 * Call this from admin_enqueue_js() when the page uses tainacan-pages-common-scripts with a data-module.
+	 * The chunk path is ./{name}/js/{name}-main.js, so the built handle is tainacan-chunks-{name}-js-{name}-main.
+	 * Translation file resolution is handled by the load_script_translation_file filter in tainacan-utils.
+	 *
+	 * @param string $name The module name (e.g. 'roles', 'admin'), matching the data-module value and the folder under views/.
+	 * @return void
+	 */
+	protected function register_pages_chunk_translations( $name ) {
+		$handle = 'tainacan-chunks-' . sanitize_key( $name ) . '-js-' . sanitize_key( $name ) . '-main';
+		global $TAINACAN_BASE_URL;
+		wp_register_script( $handle, $TAINACAN_BASE_URL . '/assets/js/' . $handle . '.js', array( 'wp-i18n' ), TAINACAN_VERSION, true );
+		wp_set_script_translations( $handle, 'tainacan' );
+		wp_add_inline_script( 'wp-i18n', wp_scripts()->print_translations( $handle, false ) );
+	}
 
 }
 

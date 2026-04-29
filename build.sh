@@ -37,7 +37,6 @@ do
     case $i in
         --prod)
             is_prod_build=true
-            rm -r ./src/assets/js/*
         ;;
     esac
 done
@@ -76,6 +75,7 @@ then
         npm run build
     else
         echo "$(tput setab 4)  $(tput sgr 0) $(tput setab 4) $(tput sgr 0) Building in production mode $(tput setab 4) $(tput sgr 0) $(tput setab 4)  $(tput sgr 0)"
+        rm -r ./src/assets/js/*
         npm run build-prod
     fi
 fi
@@ -113,6 +113,16 @@ find $wp_plugin_dir/views/ -type f -name '*.scss' -exec rm {} +
 find $wp_plugin_dir/views/ -type f -name '*.sass' -exec rm {} +
 find $wp_plugin_dir/views/ -type f -name '*.js' -exec rm {} +
 find $wp_plugin_dir/views/ -type d -empty -delete
+
+if [ "$is_prod_build" == true ]
+then
+    echo "Removing legacy source code that is not used in production..."
+    find $wp_plugin_dir/classes/class-tainacan-bulk-edit.php -type f -delete
+    find $wp_plugin_dir/classes/exposers/class-tainacan-oai-pmh.php -type f -delete
+    find $wp_plugin_dir/classes/exposers/class-tainacan-json-ld.php -type f -delete
+    find $wp_plugin_dir/classes/exposers/class-tainacan-txt.php -type f -delete
+    find $wp_plugin_dir/classes/exposers/class-tainacan-xml.php -type f -delete
+fi
 
 if [ "$is_prod_build" == true ]
 then

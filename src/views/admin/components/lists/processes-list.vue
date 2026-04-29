@@ -57,7 +57,7 @@
                     <!-- Collapse -->
                     <span class="icon">
                         <i
-                                :class="{ 'tainacan-icon-arrowdown' : collapses[index], 'tainacan-icon-arrowright' : !collapses[index] }"
+                                :class="{ 'tainacan-icon-arrowdown' : collapses[index], 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !collapses[index] }"
                                 class="tainacan-icon tainacan-icon-1-25em" />
                     </span>
                     <!-- Checking list -->
@@ -131,7 +131,8 @@
                         <div class="actions-container">
                             <span
                                     v-if="bgProcess.status == 'running'"
-                                    class="icon has-text-success loading-icon">
+                                    class="icon has-text-success loading-icon"
+                                    aria-hidden="true">
                                 <div class="control has-icons-right is-loading is-clearfix" />
                             </span>
                             <span
@@ -147,8 +148,15 @@
                                         placement: 'auto-start'
                                     }"
                                     class="icon has-text-dark action-icon"
-                                    @click.prevent.stop="pauseProcess(index)">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-stop" />
+                                    tabindex="0"
+                                    aria-role="button"
+                                    :aria-label="$i18n.get('label_stop_process')"
+                                    @click.prevent.stop="pauseProcess(index)"
+                                    @keydown.enter.prevent="pauseProcess(index)"
+                                    @keydown.space.prevent="pauseProcess(index)">
+                                <i 
+                                        aria-hidden="true"
+                                        class="tainacan-icon tainacan-icon-1-25em tainacan-icon-stop" />
                             </span>
                             <span
                                     v-if=" ( bgProcess.status === 'finished' && !bgProcess.error_log ) || bgProcess.status === null"
@@ -162,8 +170,11 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    class="icon has-text-success">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle" />
+                                    class="icon has-text-success"
+                                    :aria-label="$i18n.get('label_process_completed')">
+                                <i 
+                                        aria-hidden="true"
+                                        class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle" />
                             </span>
                             <span
                                     v-if=" bgProcess.status === 'finished-errors' || ( bgProcess.done > 0 && bgProcess.error_log && bgProcess.status === 'finished' ) "
@@ -177,8 +188,11 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    class="icon has-text-success">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alertcircle has-text-warning" />
+                                    class="icon has-text-success"
+                                    :aria-label="$i18n.get('label_process_completed_with_errors')">
+                                <i 
+                                        aria-hidden="true"
+                                        class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alertcircle has-text-warning" />
                             </span>
                             <span
                                     v-if=" bgProcess.status === 'cancelled' "
@@ -192,8 +206,11 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    class="icon has-text-success">
-                                <i class="tainacan-icon has-text-danger tainacan-icon-1-25em tainacan-icon-repprovedcircle" />
+                                    class="icon has-text-success"
+                                    :aria-label="$i18n.get('label_process_cancelled')">
+                                <i 
+                                        aria-hidden="true"
+                                        class="tainacan-icon has-text-danger tainacan-icon-1-25em tainacan-icon-repprovedcircle" />
                             </span>
                             <span
                                     v-if=" bgProcess.status === 'paused' "
@@ -207,8 +224,11 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    class="icon has-text-dark">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-pause" />
+                                    class="icon has-text-dark"
+                                    :aria-label="$i18n.get('label_process_paused')">
+                                <i 
+                                        aria-hidden="true"
+                                        class="tainacan-icon tainacan-icon-1-25em tainacan-icon-pause" />
                             </span>
                             <span
                                     v-if=" bgProcess.status === 'waiting' "
@@ -222,8 +242,11 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    class="icon has-text-dark">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting" />
+                                    class="icon has-text-dark"
+                                    :aria-label="$i18n.get('label_process_waiting')">
+                                <i 
+                                        aria-hidden="true"
+                                        class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting" />
                             </span>
                             <span
                                     v-if=" bgProcess.status === 'waiting' "
@@ -238,8 +261,15 @@
                                         placement: 'auto-start'
                                     }"
                                     class="icon has-text-dark"
-                                    @click.prevent.stop="deleteOneProcess(index)">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
+                                    role="button"
+                                    tabindex="0"
+                                    :aria-label="$i18n.get('label_delete_process')"
+                                    @click.prevent.stop="deleteOneProcess(index)"
+                                    @keydown.enter.prevent="deleteOneProcess(index)"
+                                    @keydown.space.prevent="deleteOneProcess(index)">
+                                <i 
+                                        aria-hidden="true"
+                                        class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
                             </span>
                             <span
                                     v-if="bgProcess.status === 'errored'"
@@ -253,8 +283,11 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    class="icon has-text-danger">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processerror" />
+                                    class="icon has-text-danger"
+                                    :aria-label="$i18n.get('label_process_failed')">
+                                <i 
+                                        aria-hidden="true"
+                                        class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processerror" />
                             </span>
                         </div>
                     </span>
@@ -282,7 +315,9 @@
                                 <a
                                         v-if="bgProcess.log"
                                         :href="bgProcess.log">
-                                    <span class="icon is-small">
+                                    <span 
+                                            aria-hidden="true"
+                                            class="icon is-small">
                                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl" />
                                     </span>
                                     {{ $i18n.get('label_log_file') }}
@@ -292,7 +327,9 @@
                                         v-if="bgProcess.error_log"
                                         class="has-text-danger"
                                         :href="bgProcess.error_log">
-                                    <span class="icon is-small">
+                                    <span 
+                                            aria-hidden="true"
+                                            class="icon is-small">
                                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl" />
                                     </span>
                                     {{ $i18n.get('label_error_log_file') }}
@@ -421,6 +458,7 @@
                     this.selected.splice(i, 1, !this.allOnPageSelected);
             },
             deleteOneProcess(index) {
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: CustomDialog,
                     props: {
@@ -434,10 +472,14 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    canCancel: ['escape', 'outside']
+                    canCancel: ['escape', 'outside'],
+                    events: {
+                        beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                    }
                 });
             },
             deleteSelected() {
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: CustomDialog,
                     props: {
@@ -474,7 +516,10 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    canCancel: ['escape', 'outside']
+                    canCancel: ['escape', 'outside'],
+                    events: {
+                        beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                    }
                 });
             },
             getDate(rawDate) {
@@ -487,7 +532,7 @@
                 }
             },
             pauseProcess(index) {
-
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: CustomDialog,
                     props: {
@@ -500,7 +545,10 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    canCancel: ['escape', 'outside']
+                    canCancel: ['escape', 'outside'],
+                    events: {
+                        beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                    }
                 });
             },
             onHeartBitTickList(event, data) {
@@ -520,8 +568,10 @@
 <style lang="scss" scoped>
 
     .selection-control {
-        
-        padding: 6px 0px 0px 12px;
+        padding-inline-start: 12px;
+        padding-inline-end: 0px;
+        padding-block-start: 6px;
+        padding-block-end: 0px;
         background: var(--tainacan-background-color);
         height: 40px;
 
@@ -614,11 +664,11 @@
                     font-size: 0.875em !important;
                 }
                 width: 20.833333%;
-                margin-right: var(--tainacan-one-column) !important;
+                margin-inline-end: var(--tainacan-one-column) !important;
             }
             .process-progress {
                 width: auto;
-                margin-right: var(--tainacan-one-column) !important;
+                margin-inline-end: var(--tainacan-one-column) !important;
                 flex-grow: 2;
 
                 .occluding-content {
@@ -643,7 +693,7 @@
 
             .process-queued-on {
                 width: 16.6666667%;
-                margin-right: var(--tainacan-one-column) !important;
+                margin-inline-end: var(--tainacan-one-column) !important;
             }
         }
         &>.process-collapse {
@@ -663,7 +713,7 @@
 
             .process-output {
                 margin-left: 1.75em !important;
-                margin-right: var(--tainacan-one-column) !important;
+                margin-inline-end: var(--tainacan-one-column) !important;
                 width: 20.83%;
 
                 ul {
@@ -684,8 +734,8 @@
             }
 
             .process-last-processed-on {
-                margin-left: auto !important;
-                margin-right: calc(var(--tainacan-one-column) + 72px) !important;
+                margin-inline-start: auto !important;
+                margin-inline-end: calc(var(--tainacan-one-column) + 72px) !important;
             }
         }
     }

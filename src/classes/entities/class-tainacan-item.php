@@ -744,12 +744,15 @@ class Item extends Entity {
 			}
 
 			// Get the metadatum representation in html, with its label and value
-			$return .= $this->get_item_metadatum_as_html($item_metadatum, $args, $metadatum_index);
-			$metadatum_index++;
+			$item_metadatum_html = $this->get_item_metadatum_as_html($item_metadatum, $args, $metadatum_index);
+			$return .= $item_metadatum_html;
+			if (!empty($item_metadatum_html)) {
+				$metadatum_index++;
+			}
 		}
 
 		// Returns the html content created by the function
-		return wp_kses_tainacan($return);
+		return wp_kses($return, wp_kses_allowed_html('tainacan_content'));
 	}
 
 	/**
@@ -928,7 +931,7 @@ class Item extends Entity {
 			$output = $this->get_attachment_as_html($this->get_document(), $img_size);
 		}
 
-		return apply_filters("tainacan-item-get-document-as-html", wp_kses_tainacan($output), $img_size, $this);
+		return apply_filters("tainacan-item-get-document-as-html", wp_kses($output, wp_kses_allowed_html('tainacan_content')), $img_size, $this);
 	}
 
 	/**
@@ -961,7 +964,7 @@ class Item extends Entity {
 				$output .= $embed;
 			}
 		}
-		return apply_filters("tainacan-item-get-attachment-as-html", wp_kses_tainacan($output), $img_size, $this);
+		return apply_filters("tainacan-item-get-attachment-as-html", wp_kses($output, wp_kses_allowed_html('tainacan_content')), $img_size, $this);
 
 	}
 
@@ -1035,7 +1038,7 @@ class Item extends Entity {
 	 *     @type string      $empty_metadata_list_message 	Message string to display if $hide_empty is false and there is not metadata section metadata list.
 	 *                                                  	Default: ''
 	 *     @type string      $before                    	String to be added before each metadata section block
-	 *                                                  	Default '<section class="metadata-section-slug-$slug" id="$id">'
+	 *                                                  	Default '<section class="metadata-section-slug-$slug" id="metadata-section-$id">'
 	 *     @type string      $after		                	String to be added after each metadata section block
 	 *                                                  	Default '</section>'
 	 *     @type string      $before_name              		String to be added before each metadata section name
@@ -1167,8 +1170,11 @@ class Item extends Entity {
 		// Loop metadata sections to print their "values" as html
 		$section_index = 0;
 		foreach ( $metadata_sections as $metadata_section_object ) {
-			$return .= $this->get_metadata_section_as_html($metadata_section_object, $args, $section_index);
-			$section_index++;
+			$section_as_html = $this->get_metadata_section_as_html($metadata_section_object, $args, $section_index);
+			if (!empty($section_as_html)) {
+				$return .= $section_as_html;
+				$section_index++;
+			}
 		}
 
 		// Returns the html content created by the function
@@ -1195,7 +1201,7 @@ class Item extends Entity {
 	 *     @type string      $empty_metadata_list_message 	Message string to display if $hide_empty is false and there is not metadata section metadata list.
 	 *                                                  	Default: ''
 	 *     @type string      $before                    	String to be added before each metadata section block
-	 *                                                  	Default '<section class="metadata-section-slug-$slug" id="$id">'
+	 *                                                  	Default '<section class="metadata-section-slug-$slug" id="metadata-section-$id">'
 	 *     @type string      $after		                	String to be added after each metadata section block
 	 *                                                  	Default '</section>'
 	 *     @type string      $before_name              		String to be added before each metadata section name
@@ -1326,13 +1332,13 @@ class Item extends Entity {
 					$after_name = apply_filters( 'tainacan-get-metadata-section-as-html-after-name--index-' . $section_index, $after_name, $metadata_section );	
 				}
 
-				// Renders the metadata section name
-				$return .= $before_name . $metadata_section->get_name() . $after_name;
+				// Renders the metadata section name (escaped for safety)
+				$return .= $before_name . wp_kses_post($metadata_section->get_name()) . $after_name;
 			}
 
-			// Adds section description
+			// Adds section description (escaped for safety)
 			if ( !$args['hide_description'] ) {
-				$return .= $args['before_description'] . $metadata_section->get_description() . $args['after_description'];
+				$return .= $args['before_description'] . wp_kses_post($metadata_section->get_description()) . $args['after_description'];
 			}
 
 			// Gets the section metadata list wrapper
@@ -1358,11 +1364,14 @@ class Item extends Entity {
 				$metadatum_index = 0;
 				foreach( $metadata_section_metadata_list as $metadata_object) {
 					$the_metadata_list = $this->get_metadata_as_html( wp_parse_args($args['metadata_list_args'], [ 'metadata' => $metadata_object, 'metadatum_index' => $metadatum_index ]) );
-					if (!$has_some_metadata_value && !empty($the_metadata_list))
+					if ( !$has_some_metadata_value && !empty($the_metadata_list) )
 						$has_some_metadata_value = true;
 
 					$return .= $the_metadata_list;
-					$metadatum_index++;
+					
+					if ( !empty($the_metadata_list) )
+						$metadatum_index++;
+					
 				}
 
 				// If no metadata value was found, this section may not be necessary
@@ -1401,6 +1410,9 @@ class Item extends Entity {
 		}
 
 		// Returns the html content created by the function
+		// Note: We trust filter output and $args values (they come from plugins/themes)
+		// Only untrusted database content (name, description) is escaped above
+		// Metadata list is already escaped via get_metadata_as_html()
 		return $return;
 	}
 }

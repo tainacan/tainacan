@@ -28,7 +28,9 @@
                                 :disabled="!isSelecting"
                                 class="button is-white">
                             <span>{{ $i18n.get('label_bulk_actions') }}</span>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button> 
@@ -40,9 +42,9 @@
                             @keydown.space.prevent="deleteSelected()">
                         {{ $i18n.get('label_delete_selected_taxonomies') }}
                     </b-dropdown-item>
-                    <b-dropdown-item disabled>
+                    <!-- <b-dropdown-item disabled>
                         {{ $i18n.get('label_edit_selected_taxonomies') + ' (Not ready)' }}
-                    </b-dropdown-item>
+                    </b-dropdown-item> -->
                 </b-dropdown>
             </div>
         </div>
@@ -122,7 +124,7 @@
                             <span 
                                     v-if="$statusHelper.hasIcon(taxonomy.status)"
                                     v-tooltip="{
-                                        content: $i18n.get('status_' + taxonomy.status),
+                                        content: $statusHelper.getStatusLabel(taxonomy.status),
                                         autoHide: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
@@ -174,6 +176,7 @@
                         </td>
                         <!-- Total terms -->
                         <td
+                                v-if="!isOnTrash"
                                 class="column-small-width column-align-right" 
                                 :label="$i18n.get('label_total_terms')" 
                                 :aria-label="$i18n.get('label_total_terms') + ': ' + (taxonomy.total_terms != undefined ? taxonomy.total_terms['total'] : 0)"
@@ -228,6 +231,7 @@
                                         v-if="taxonomy.current_user_can_edit" 
                                         :id="'button-edit-' + taxonomy.id"
                                         class="button-edit"
+                                        tabindex="0"
                                         :aria-label="$i18n.getFrom('taxonomies','edit_item')" 
                                         :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getTaxonomyEditPath(taxonomy.id)"
                                         @click.prevent.stop="onClickTaxonomy($event, taxonomy.id, index)">
@@ -247,8 +251,11 @@
                                         :id="'button-delete-' + taxonomy.id"
                                         class="button-delete"
                                         role="button"
+                                        tabindex="0"
                                         :aria-label="$i18n.get('label_button_delete')" 
-                                        @click.prevent.stop="deleteOneTaxonomy(taxonomy)">
+                                        @click.prevent.stop="deleteOneTaxonomy(taxonomy)"
+                                        @keydown.enter.prevent="deleteOneTaxonomy(taxonomy)"
+                                        @keydown.space.prevent="deleteOneTaxonomy(taxonomy)">
                                     <span
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
@@ -256,7 +263,8 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                 placement: 'bottom'
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i 
                                                 :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                                 class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
@@ -278,7 +286,8 @@
                                                 placement: 'auto',
                                                 html: true
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                                     </span>
                                 </a>
@@ -372,6 +381,7 @@
                     [ taxonomyName ]
                 );
                 
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: CustomDialog,
                     props: {
@@ -406,7 +416,10 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    canCancel: ['escape', 'outside']
+                    canCancel: ['escape', 'outside'],
+                    events: {
+                        beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                    }
                 });
             },
             deleteSelected() {
@@ -415,6 +428,7 @@
                 // For multiple taxonomies, we don't add individual names
                 // The message already indicates multiple taxonomies are being deleted
                 
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: CustomDialog,
                     props: {
@@ -451,7 +465,10 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    canCancel: ['escape', 'outside']
+                    canCancel: ['escape', 'outside'],
+                    events: {
+                        beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                    }
                 });
             },
             onClickTaxonomy($event, taxonomyId, index) {
@@ -486,8 +503,10 @@
     @use "../../scss/_tables.scss";
 
     .selection-control {
-        
-        padding: 6px 0px 0px 12px;
+        padding-inline-start: 12px;
+        padding-inline-end: 0px;
+        padding-block-start: 6px;
+        padding-block-end: 0px;
         background: var(--tainacan-background-color);
         height: 40px;
 
@@ -504,7 +523,7 @@
     }
 
     .total-terms-header {
-        text-align: right;
+        text-align: end;
     }
 
 </style>

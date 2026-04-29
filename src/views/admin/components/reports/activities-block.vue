@@ -15,7 +15,7 @@
                             class="icon prev-page button is-outlined"
                             aria-hidden="true"
                             @click="(!isBuildingChart && currentStart.getFullYear() > (minYear + 1)) ? decreaseYear() : null">
-                        <i class="tainacan-icon tainacan-icon-previous tainacan-icon-1-25em" />
+                        <i class="tainacan-icon tainacan-icon-previous tainacan-icon-is-rtl-mirrored tainacan-icon-1-25em" />
                     </span>
                     <span class="select">
                         <select
@@ -38,14 +38,14 @@
                             aria-hidden="true"
                             class="icon next-page button is-outlined"
                             @click="(!isBuildingChart && currentStart.getFullYear() <= (maxYear - 1)) ? increaseYear() : null">
-                        <i class="tainacan-icon tainacan-icon-next tainacan-icon-1-25em" />
+                        <i class="tainacan-icon tainacan-icon-next tainacan-icon-is-rtl-mirrored tainacan-icon-1-25em" />
                     </span>
                 </span>
             </div>
             <div class="report-card-header__item">
                 <label>{{ $i18n.get('label_range_of_dates') + ': ' }}</label>
                 <span class="paging-input">
-                    {{ currentStart.toDateString() }} - {{ currentEnd.toDateString() }}
+                    {{ currentStart.toLocaleDateString() }} - {{ currentEnd.toLocaleDateString() }}
                 </span>
             </div>
         </div>
@@ -201,6 +201,9 @@ export default {
                             zoomin: true,
                             zoomout: true,
                             pan: true,
+                        },
+                        export: {
+                            scale: 3
                         }
                     },
                 },
@@ -262,6 +265,9 @@ export default {
                                 zoomin: true,
                                 zoomout: true,
                                 pan: true,
+                            },
+                            export: {
+                                scale: 3
                             }
                         },
                     },

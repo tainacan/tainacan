@@ -117,7 +117,7 @@ class Test_Importer extends Importer {
 			<div class="column is-half">
 				<div class="field">
 					<label class="label" style="position: relative">
-						<?php _e('Number of items in collection 1', 'tainacan'); ?>
+						<?php esc_html_e('Number of items in collection 1', 'tainacan'); ?>
 						<span class="help-wrapper">
 							<a class="help-button">
 								<span class="icon is-small">
@@ -126,10 +126,10 @@ class Test_Importer extends Importer {
 							</a>
 							<div class="help-tooltip">
 								<div class="help-tooltip-header">
-									<h5><?php _e('Number of items in collection 1', 'tainacan'); ?></h5>
+									<h5><?php esc_html_e('Number of items in collection 1', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php _e('The total of items to created in first collection (e.g. 20)', 'tainacan'); ?></p>
+									<p><?php esc_html_e('The total of items to created in first collection (e.g. 20)', 'tainacan'); ?></p>
 								</div>
 							</div> 
 						</span>
@@ -143,7 +143,7 @@ class Test_Importer extends Importer {
 			<div class="column is-half">
 				<div class="field">
 					<label class="label" style="position: relative">
-						<?php _e('Number of extra metadata to create in first collection', 'tainacan'); ?>
+						<?php esc_html_e('Number of extra metadata to create in first collection', 'tainacan'); ?>
 						<span class="help-wrapper">
 							<a class="help-button">
 								<span class="icon is-small">
@@ -152,10 +152,10 @@ class Test_Importer extends Importer {
 							</a>
 							<div class="help-tooltip">
 								<div class="help-tooltip-header">
-									<h5><?php _e('Number of extra metadata', 'tainacan'); ?></h5>
+									<h5><?php esc_html_e('Number of extra metadata', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php _e('Create additional text metadata with random values  in first collection', 'tainacan'); ?></p>
+									<p><?php esc_html_e('Create additional text metadata with random values  in first collection', 'tainacan'); ?></p>
 								</div>
 							</div> 
 						</span>
@@ -169,7 +169,7 @@ class Test_Importer extends Importer {
 			<div class="column is-half">
 				<div class="field">
 					<label class="label" style="position: relative">
-						<?php _e('Create second collection with a relationship', 'tainacan'); ?>
+						<?php esc_html_e('Create second collection with a relationship', 'tainacan'); ?>
 						<span class="help-wrapper">
 							<a class="help-button">
 								<span class="icon is-small">
@@ -178,10 +178,10 @@ class Test_Importer extends Importer {
 							</a>
 							<div class="help-tooltip">
 								<div class="help-tooltip-header">
-									<h5><?php _e('Create second collection', 'tainacan'); ?></h5>
+									<h5><?php esc_html_e('Create second collection', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php _e('Create second collection with a relationship with the first collection created', 'tainacan'); ?></p>
+									<p><?php esc_html_e('Create second collection with a relationship with the first collection created', 'tainacan'); ?></p>
 								</div>
 							</div> 
 						</span>
@@ -193,7 +193,7 @@ class Test_Importer extends Importer {
 								name="second_collection" 
 								<?php echo ( $this->get_option('second_collection') && $this->get_option('second_collection') === 'yes' ) ? 'checked' : ''  ?>
 								value="yes">
-							<?php _e('Yes', 'tainacan'); ?>
+							<?php esc_html_e('Yes', 'tainacan'); ?>
 						</label>
 					</div>
 				</div>
@@ -202,7 +202,7 @@ class Test_Importer extends Importer {
 			<div class="column is-half">
 				<div class="field">
 					<label class="label" style="position: relative">
-						<?php _e('Number of items in collection 2', 'tainacan'); ?>
+						<?php esc_html_e('Number of items in collection 2', 'tainacan'); ?>
 						<span class="help-wrapper">
 							<a class="help-button">
 								<span class="icon is-small">
@@ -211,10 +211,10 @@ class Test_Importer extends Importer {
 							</a>
 							<div class="help-tooltip">
 								<div class="help-tooltip-header">
-									<h5><?php _e('Number of items in collection 2', 'tainacan'); ?></h5>
+									<h5><?php esc_html_e('Number of items in collection 2', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php _e('The total of items to created in second collection (e.g. 20)', 'tainacan'); ?></p>
+									<p><?php esc_html_e('The total of items to created in second collection (e.g. 20)', 'tainacan'); ?></p>
 								</div>
 							</div> 
 						</span>
@@ -231,13 +231,13 @@ class Test_Importer extends Importer {
 		<div class="columns is-multiline">
 
 			<div class="column is-12">
-				<h2><?php _e('Images', 'tainacan') ?></h2>
+				<h2><?php esc_html_e('Images', 'tainacan') ?></h2>
 			</div>
 
 			<div class="column">
 				<div class="field">
 					<label class="label" style="position: relative">
-						<?php _e('Add random images from flickr', 'tainacan'); ?>
+						<?php esc_html_e('Add random images from flickr', 'tainacan'); ?>
 						<span class="help-wrapper">
 							<a class="help-button">
 								<span class="icon is-small">
@@ -246,10 +246,10 @@ class Test_Importer extends Importer {
 							</a>
 							<div class="help-tooltip">
 								<div class="help-tooltip-header">
-									<h5><?php _e('Add random images from flickr', 'tainacan'); ?></h5>
+									<h5><?php esc_html_e('Add random images from flickr', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php _e('Add random images from flickr using [https://loremflickr.com/] in first collection', 'tainacan'); ?></p>
+									<p><?php echo wp_kses_post(sprintf(__('Add random images from flickr using [https://loremflickr.com/] in first collection', 'tainacan'), '<a href="https://loremflickr.com/" target="_blank" rel="noopener noreferrer">https://loremflickr.com/</a>')); ?></p>
 								</div>
 							</div> 
 						</span>
@@ -261,14 +261,14 @@ class Test_Importer extends Importer {
 								name="add_random_images" 
 								<?php echo ( $this->get_option('add_random_images') && $this->get_option('add_random_images') === 'yes' ) ? 'checked' : ''  ?>
 								value="yes">
-							<?php _e('Yes', 'tainacan'); ?>
+							<?php esc_html_e('Yes', 'tainacan'); ?>
 						</label>
 					</div>
 				</div>
 
 				<div class="field">
 					<label class="label" style="position: relative">
-						<?php _e('Keyword Search', 'tainacan'); ?>
+						<?php esc_html_e('Keyword Search', 'tainacan'); ?>
 						<span class="help-wrapper">
 							<a class="help-button">
 								<span class="icon is-small">
@@ -277,10 +277,10 @@ class Test_Importer extends Importer {
 							</a>
 							<div class="help-tooltip">
 								<div class="help-tooltip-header">
-									<h5><?php _e('Keyword Search', 'tainacan'); ?></h5>
+									<h5><?php esc_html_e('Keyword Search', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php _e('Optionally type one keyword which it will be used to find images in flickr (e.g. dogs, cat). Default is "kitten".', 'tainacan'); ?></p>
+									<p><?php esc_html_e('Optionally type one keyword which it will be used to find images in flickr (e.g. dogs, cat). Default is "kitten".', 'tainacan'); ?></p>
 								</div>
 							</div> 
 						</span>
@@ -294,7 +294,7 @@ class Test_Importer extends Importer {
 			<div class="column">
 				<div class="field">
 					<label class="label" style="position: relative">
-						<?php _e('Horizontal image size (0 for random)', 'tainacan'); ?>
+						<?php esc_html_e('Horizontal image size (0 for random)', 'tainacan'); ?>
 						<span class="help-wrapper">
 							<a class="help-button">
 								<span class="icon is-small">
@@ -303,10 +303,10 @@ class Test_Importer extends Importer {
 							</a>
 							<div class="help-tooltip">
 								<div class="help-tooltip-header">
-									<h5><?php _e('Horizontal image size', 'tainacan'); ?></h5>
+									<h5><?php esc_html_e('Horizontal image size', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php _e('Horizontal image size in pixels ( 0 for random size )', 'tainacan'); ?></p>
+									<p><?php esc_html_e('Horizontal image size in pixels ( 0 for random size )', 'tainacan'); ?></p>
 								</div>
 							</div> 
 						</span>
@@ -318,7 +318,7 @@ class Test_Importer extends Importer {
 
 				<div class="field">
 					<label class="label" style="position: relative">
-						<?php _e('Vertical image size (0 for random)', 'tainacan'); ?>
+						<?php esc_html_e('Vertical image size (0 for random)', 'tainacan'); ?>
 						<span class="help-wrapper">
 							<a class="help-button">
 								<span class="icon is-small">
@@ -327,10 +327,10 @@ class Test_Importer extends Importer {
 							</a>
 							<div class="help-tooltip">
 								<div class="help-tooltip-header">
-									<h5><?php _e('Vertical image size', 'tainacan'); ?></h5>
+									<h5><?php esc_html_e('Vertical image size', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php _e('Vertical image size in pixels ( 0 for random size )', 'tainacan'); ?></p>
+									<p><?php esc_html_e('Vertical image size in pixels ( 0 for random size )', 'tainacan'); ?></p>
 								</div>
 							</div> 
 						</span>
@@ -349,7 +349,7 @@ class Test_Importer extends Importer {
 	public function create_taxonomies() {
 		
 		$tax1 = new Entities\Taxonomy();
-		$tax1->set_name('Terms for taxonomy metadata');
+		$tax1->set_name( esc_html__('Terms for taxonomy metadata', 'tainacan') );
 		$tax1->set_allow_insert('yes');
 		$tax1->set_status('publish');
 		
@@ -377,7 +377,7 @@ class Test_Importer extends Importer {
 	public function create_collections() {
 		
 		$col1 = new Entities\Collection();
-		$col1->set_name('Collection test 1');
+		$col1->set_name(esc_html__('Collection test 1', 'tainacan'));
 		$col1->set_status('publish');
 		if ($col1->validate()) {
 			$col1 = $this->col_repo->insert($col1);
@@ -498,7 +498,7 @@ class Test_Importer extends Importer {
 		// if collection 2 is allowed to be created
 		if( $this->get_option('second_collection') === 'yes' ){
 			$col2 = new Entities\Collection();
-			$col2->set_name('Collection test 2');
+			$col2->set_name(esc_html__('Collection test 2', 'tainacan'));
 			$col2->set_status('publish');
 			if ($col2->validate()) {
 				$col2 = $this->col_repo->insert($col2);
@@ -519,7 +519,7 @@ class Test_Importer extends Importer {
 			$col2_map[$col2_core_description->get_id()] = 'field2';
 			
 			$metadatum = new Entities\Metadatum();
-			$metadatum->set_name('Test Metadatum');
+			$metadatum->set_name(esc_html__('Test Metadatum', 'tainacan'));
 			$metadatum->set_collection($col2);
 			$metadatum->set_metadata_type('Tainacan\Metadata_Types\Text');
 			$metadatum->set_status('publish');
@@ -543,7 +543,7 @@ class Test_Importer extends Importer {
 
 			// Create Relationship
 			$metadatum = $this->create_metadata( [
-				'name' => 'Relationship type',
+				'name' => esc_html__('Relationship type', 'tainacan'),
 				'type' => 'Tainacan\Metadata_Types\Relationship',
 				'options' => [
 				'collection_id' => $col2->get_id(),
@@ -668,8 +668,8 @@ class Test_Importer extends Importer {
 		
 		if( $collection_definition['source_id'] === 'col1' && $this->get_option('add_random_images') === 'yes' ){
 
-			$horizontal_size = ( $this->get_option('horizontal_image_size') > 0 ) ? $this->get_option('horizontal_image_size') : rand ( 100 , 600 );
-			$vertical_size = ( $this->get_option('vertical_image_size') > 0 ) ? $this->get_option('vertical_image_size') : rand ( 100 , 600 );
+			$horizontal_size = ( $this->get_option('horizontal_image_size') > 0 ) ? $this->get_option('horizontal_image_size') : wp_rand( 100 , 600 );
+			$vertical_size = ( $this->get_option('vertical_image_size') > 0 ) ? $this->get_option('vertical_image_size') : wp_rand( 100 , 600 );
 			$keyword = ( $this->get_option('keyword_images') ) ? $this->get_option('keyword_images') : '';
 
 			$url = "https://loremflickr.com/$horizontal_size/$vertical_size/$keyword";
@@ -750,8 +750,8 @@ class Test_Importer extends Importer {
 		];
 		
 		$array = [
-			'field1' => 'Title ' . $index,
-			'field2' => 'Description ' . $index,
+			'field1' => esc_html__('Title', 'tainacan') . ' ' . $index,
+			'field2' => esc_html__('Description', 'tainacan') . ' ' . $index,
 			'field3' => $terms_for_taxonomy1[array_rand($terms_for_taxonomy1)],
 			'field4' => $this->selectbox_values[array_rand($this->selectbox_values)],
 			'field5' => $this->date_values[array_rand($this->date_values)],
@@ -777,8 +777,8 @@ class Test_Importer extends Importer {
 
 	public function get_col2_item($index) {
 		return [
-			'field1' => 'Collection 2 item ' . $index,
-			'field2' => 'Collection 2 item description ' . $index,
+			'field1' => esc_html__('Collection 2 item', 'tainacan') . ' ' . $index,
+			'field2' => esc_html__('Collection 2 item description', 'tainacan') . ' ' . $index,
 			'field3' => 'Collection 2 whatever ' . $index,
 		];
 	}

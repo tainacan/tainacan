@@ -258,7 +258,8 @@ class REST_Importers_Controller extends REST_Controller {
 		$response = [
 			'source_metadata' => false,
 			'source_total_items' => false,
-			'source_special_fields' => false
+			'source_special_fields' => false,
+			'source_file_name' => false
 		];
 
 		if ( method_exists($importer, 'get_source_metadata') ) {
@@ -272,6 +273,11 @@ class REST_Importers_Controller extends REST_Controller {
 		if ( method_exists($importer, 'get_source_special_fields') ) {
 			$response['source_special_fields'] = $importer->get_source_special_fields();
 		}
+
+		if ( method_exists($importer, 'get_source_file_name') ) {
+			$response['source_file_name'] = $importer->get_source_file_name();
+		}
+
 		$Tainacan_Importer_Handler->save_importer_instance($importer);
 		return new \WP_REST_Response( $response, 200 );
 

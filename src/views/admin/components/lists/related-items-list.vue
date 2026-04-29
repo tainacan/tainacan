@@ -15,7 +15,9 @@
                                 <div class="section-status">
                                     <div class="field has-addons">
                                         <span>
-                                            <span class="icon">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-collection" />
                                             </span>
                                             {{ relatedItemGroup.collection_name ? relatedItemGroup.collection_name : '' }}
@@ -27,7 +29,9 @@
                                 <div class="section-status">
                                     <div class="field has-addons">
                                         <span>
-                                            <span class="icon">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-metadata" />
                                             </span>
                                             {{ relatedItemGroup.metadata_name ? relatedItemGroup.metadata_name : '' }}
@@ -37,7 +41,7 @@
                             </div>
                             <div 
                                     v-if="relatedItemGroup.total_items && relatedItemGroup.total_items > 1"
-                                    style="margin-left: auto;"
+                                    style="margin-inline-start: auto;"
                                     class="column is-narrow">
                                 <div class="section-status">
                                     <div class="field">
@@ -56,54 +60,56 @@
                             <li
                                     v-for="(relatedItem, itemIndex) of relatedItemGroup.items"
                                     :key="itemIndex">
-                                
-                                <div
-                                        class="status-cell"
-                                        @click="openItemOnNewTab(relatedItem)">
-                                    <span 
-                                            v-if="$statusHelper.hasIcon(relatedItem.status)"
-                                            v-tooltip="{
-                                                content: $i18n.get('status_' + relatedItem.status),
-                                                autoHide: true,
-                                                placement: 'top',
-                                                popperClass: ['tainacan-tooltip', 'tooltip']
-                                            }"
-                                            class="icon has-text-dark">
-                                        <i 
-                                                class="tainacan-icon tainacan-icon-1em"
-                                                :class="$statusHelper.getIcon(relatedItem.status)"
-                                            />
-                                    </span>
-                                </div>
-                                <div @click="openItemOnNewTab(relatedItem)">
-                                    <span class="item-thumb">
-                                        <blur-hash-image
-                                                :width="$thumbHelper.getWidth(relatedItem['thumbnail'], 'tainacan-small', 40)"
-                                                :height="$thumbHelper.getHeight(relatedItem['thumbnail'], 'tainacan-small', 40)"
-                                                :hash="$thumbHelper.getBlurhashString(relatedItem['thumbnail'], 'tainacan-small')"
-                                                :src="$thumbHelper.getSrc(relatedItem['thumbnail'], 'tainacan-small', relatedItem.document_mimetype)"
-                                                :alt="relatedItem.thumbnail_alt ? relatedItem.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                                :transition-duration="500"
-                                            />
-                                    </span>
-                                </div>
-                                <div 
-                                        style="width: 100%"
-                                        @click="openItemOnNewTab(relatedItem)">
-                                    <p
-                                            v-tooltip="{
-                                                delay: {
-                                                    show: 500,
-                                                    hide: 300,
-                                                },
-                                                content: relatedItem.title != undefined && relatedItem.title != '' ? relatedItem.title : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
-                                                html: true,
-                                                autoHide: false,
-                                                placement: 'top',
-                                                popperClass: ['tainacan-tooltip', 'tooltip']
-                                            }"
-                                            v-html="(relatedItem.title != undefined && relatedItem.title != '') ? relatedItem.title : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`" />
-                                </div>
+                                <a 
+                                        tabindex="0"
+                                        href="#"
+                                        @click.prevent.stop="openItemOnNewTab(relatedItem)"
+                                        @keydown.enter.prevent.stop="openItemOnNewTab(relatedItem)"
+                                        @keydown.space.prevent.stop="openItemOnNewTab(relatedItem)">
+                                    <div class="status-cell">
+                                        <span 
+                                                v-if="$statusHelper.hasIcon(relatedItem.status)"
+                                                v-tooltip="{
+                                                    content: $statusHelper.getStatusLabel(relatedItem.status),
+                                                    autoHide: true,
+                                                    placement: 'top',
+                                                    popperClass: ['tainacan-tooltip', 'tooltip']
+                                                }"
+                                                class="icon has-text-dark">
+                                            <i 
+                                                    class="tainacan-icon tainacan-icon-1em"
+                                                    :class="$statusHelper.getIcon(relatedItem.status)"
+                                                />
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span class="item-thumb">
+                                            <blur-hash-image
+                                                    :width="$thumbHelper.getWidth(relatedItem['thumbnail'], 'tainacan-small', 40)"
+                                                    :height="$thumbHelper.getHeight(relatedItem['thumbnail'], 'tainacan-small', 40)"
+                                                    :hash="$thumbHelper.getBlurhashString(relatedItem['thumbnail'], 'tainacan-small')"
+                                                    :src="$thumbHelper.getSrc(relatedItem['thumbnail'], 'tainacan-small', relatedItem.document_mimetype)"
+                                                    :alt="relatedItem.thumbnail_alt ? relatedItem.thumbnail_alt : ''"
+                                                    :transition-duration="500"
+                                                />
+                                        </span>
+                                    </div>
+                                    <div style="width: 100%">
+                                        <p
+                                                v-tooltip="{
+                                                    delay: {
+                                                        show: 500,
+                                                        hide: 300,
+                                                    },
+                                                    content: relatedItem.title != undefined && relatedItem.title != '' ? relatedItem.title : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
+                                                    html: true,
+                                                    autoHide: false,
+                                                    placement: 'top',
+                                                    popperClass: ['tainacan-tooltip', 'tooltip']
+                                                }"
+                                                v-html="(relatedItem.title != undefined && relatedItem.title != '') ? relatedItem.title : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`" />
+                                    </div>
+                                </a>
                                 <div 
                                         v-if="isEditable && relatedItem.current_user_can_edit"
                                         class="actions-area"
@@ -112,8 +118,12 @@
                                         <a
                                                 v-if="!relatedItem.status != 'trash'"
                                                 id="button-edit"
+                                                role="button"
+                                                tabindex="0"
                                                 :aria-label="$i18n.getFrom('items','edit_item')"
-                                                @click.prevent.stop="setItemForEdit(relatedItem, relatedItemGroup)">
+                                                @click.prevent.stop="setItemForEdit(relatedItem, relatedItemGroup)"
+                                                @keydown.enter.prevent="setItemForEdit(relatedItem, relatedItemGroup)"
+                                                @keydown.space.prevent="setItemForEdit(relatedItem, relatedItemGroup)">
                                             <span
                                                     v-tooltip="{
                                                         delay: {
@@ -125,7 +135,8 @@
                                                         placement: 'auto',
                                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                                     }"
-                                                    class="icon">
+                                                    class="icon"
+                                                    aria-hidden="true">
                                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                             </span>
                                         </a>
@@ -140,7 +151,7 @@
                         :width="1200"
                         custom-class="tainacan-modal"
                         :can-cancel="['escape', 'outside']"
-                        @after-leave="reloadRelatedItems">
+                        @after-leave="onEditItemModalClose">
                     <iframe 
                             width="100%"
                             :style="{ height: (isMobileScreen ? '100vh' : '85vh') }"
@@ -207,9 +218,12 @@
                 this.editItemId = aRelatedItem.id;
                 this.editCollectionId = aRelatedItem.collection_id;
                 this.editMetadataId = aRelatedItemGroup.metadata_id;
+                this._modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.editItemModal = true;
             },
-            reloadRelatedItems() {
+            onEditItemModalClose() {
+                this.$modalFocusA11y.restoreFocus(this._modalTrigger, this);
+
                 this.isUpdatingRelatedItems = true;
                 this.fetchOnlyRelatedItems({
                     itemId: this.itemId,
@@ -248,9 +262,13 @@
     }
     .related-items-list {
         .related-item-group {
+            text-align: start;
+            list-style: none;
+            margin-inline-start: 0;
+            padding-inline-start: 0;
 
             .related-item-group__items-list {
-                margin-top: 0.25em;
+                margin-top: 0.5em;
             }
             
             &:not(:last-child) {

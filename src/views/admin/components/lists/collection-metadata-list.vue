@@ -12,9 +12,11 @@
                         :aria-expanded="!collapseAll"
                         class="button link-style collapse-all"
                         @click="collapseAll = !collapseAll">
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i 
-                                :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
+                                :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !collapseAll }"
                                 class="has-text-secondary tainacan-icon tainacan-icon-1-125em" />
                     </span>
                     <span class="collapse-all__text">
@@ -35,7 +37,9 @@
                                     :disabled="activeMetadataSectionsList.length <= 0"
                                     class="button is-white">
                                 <span>{{ $i18n.get('label_filter_by_type') }}</span>
-                                <span class="icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                 </span>
                             </button>
@@ -74,7 +78,9 @@
                 class="field is-grouped-centered section">
             <div class="content has-text-dark has-text-centered">
                 <p>
-                    <span class="icon is-large">
+                    <span 
+                            aria-hidden="true"
+                            class="icon is-large">
                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
                     </span>
                 </p>
@@ -132,7 +138,9 @@
                                         :disabled="sectionIndex == 0"
                                         class="link-button"
                                         @click="moveMetadataSectionUpViaButon(sectionIndex)">
-                                    <span class="icon">
+                                    <span 
+                                            aria-hidden="true"
+                                            class="icon">
                                         <i class="tainacan-icon tainacan-icon-previous tainacan-icon-rotate-90" />
                                     </span>
                                 </button>
@@ -140,7 +148,9 @@
                                         :disabled="sectionIndex == activeMetadataSectionsList.length - 1"
                                         class="link-button"
                                         @click="moveMetadataSectionDownViaButton(sectionIndex)">
-                                    <span class="icon">
+                                    <span 
+                                            aria-hidden="true"
+                                            class="icon">
                                         <i class="tainacan-icon tainacan-icon-next tainacan-icon-rotate-90" />
                                     </span>
                                 </button>
@@ -191,8 +201,11 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip'],
                                             placement: 'auto-start'
                                         }"
-                                        class="icon">
-                                    <i class="tainacan-icon tainacan-icon-private" />
+                                        class="icon"
+                                        :aria-label="$i18n.get('status_private')">
+                                    <i 
+                                            aria-hidden="true"
+                                            class="tainacan-icon tainacan-icon-private" />
                                 </span>
                             </span>
                             <span 
@@ -217,7 +230,9 @@
                                         role="button"
                                         tabindex="0"
                                         :aria-label="$i18n.get('edit')"
-                                        @click.prevent="toggleMetadataSectionEdition(metadataSection)">
+                                        @click.prevent="toggleMetadataSectionEdition(metadataSection)"
+                                        @keydown.enter.prevent="toggleMetadataSectionEdition(metadataSection)"
+                                        @keydown.space.prevent="toggleMetadataSectionEdition(metadataSection)">
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
@@ -225,7 +240,8 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip'],
                                                 placement: 'auto-start'
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                     </span>
                                 </a>
@@ -236,7 +252,9 @@
                                         role="button"
                                         tabindex="0"
                                         :aria-label="$i18n.get('delete')"
-                                        @click.prevent="removeMetadataSection(metadataSection)">
+                                        @click.prevent="removeMetadataSection(metadataSection)"
+                                        @keydown.enter.prevent="removeMetadataSection(metadataSection)"
+                                        @keydown.space.prevent="removeMetadataSection(metadataSection)">
                                     <span
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
@@ -244,7 +262,8 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip'],
                                                 placement: 'auto-start'
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
                                     </span>
                                 </a>
@@ -257,7 +276,9 @@
                             class="field is-grouped-centered section">
                         <div class="content has-text-dark has-text-centered">
                             <p>
-                                <span class="icon is-large">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon is-large">
                                     <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
                                 </span>
                             </p>
@@ -319,7 +340,9 @@
                                                     :aria-label="$i18n.get('label_move_up')"
                                                     role="button"
                                                     @click="moveMetadatumUpViaButton(index, sectionIndex)">
-                                                <span class="icon">
+                                                <span 
+                                                        aria-hidden="true"
+                                                        class="icon">
                                                     <i class="tainacan-icon tainacan-icon-previous tainacan-icon-rotate-90" />
                                                 </span>
                                             </button>
@@ -329,7 +352,9 @@
                                                     :aria-label="$i18n.get('label_move_down')"
                                                     role="button"
                                                     @click="moveMetadatumDownViaButton(index, sectionIndex)">
-                                                <span class="icon">
+                                                <span 
+                                                        aria-hidden="true"
+                                                        class="icon">
                                                     <i class="tainacan-icon tainacan-icon-next tainacan-icon-rotate-90" />
                                                 </span>
                                             </button>
@@ -363,9 +388,10 @@
                                                     placement: 'auto-start'
                                                 }"
                                                 class="gray-icon icon"
+                                                aria-hidden="true"
                                                 :style="{ cursor: 'pointer', opacity: openedMetadatumId != metadatum.id ? '1.0' : '0.0' }"
                                                 @click="Object.assign(collapses, { [metadatum.id]: !isCollapseOpen(metadatum.id) })">
-                                            <i :class="'tainacan-icon tainacan-icon-1-25em tainacan-icon-' + (isCollapseOpen(metadatum.id) ? 'arrowdown' : 'arrowright')" />
+                                            <i :class="'tainacan-icon tainacan-icon-1-25em tainacan-icon-' + (isCollapseOpen(metadatum.id) ? 'arrowdown' : 'arrowright tainacan-icon-is-rtl-mirrored')" />
                                         </span>
 
                                         <span class="metadatum-name">
@@ -444,7 +470,9 @@
                                                     role="button"
                                                     tabindex="0"
                                                     :aria-label="$i18n.get('edit')" 
-                                                    @click.prevent="toggleMetadatumEdition(metadatum)">
+                                                    @click.prevent="toggleMetadatumEdition(metadatum)"
+                                                    @keydown.enter.prevent="toggleMetadatumEdition(metadatum)"
+                                                    @keydown.space.prevent="toggleMetadatumEdition(metadatum)">
                                                 <span 
                                                         v-tooltip="{
                                                             content: $i18n.get('edit'),
@@ -462,7 +490,9 @@
                                                     role="button"
                                                     tabindex="0"
                                                     :aria-label="$i18n.get('delete')"
-                                                    @click.prevent="removeMetadatum(metadatum, sectionIndex)">
+                                                    @click.prevent="removeMetadatum(metadatum, sectionIndex)"
+                                                    @keydown.enter.prevent="removeMetadatum(metadatum, sectionIndex)"
+                                                    @keydown.space.prevent="removeMetadatum(metadatum, sectionIndex)">
                                                 <span
                                                         v-tooltip="{
                                                             content: $i18n.get('delete'),
@@ -496,9 +526,9 @@
                                 </div>
                                 <!-- Metadata edition form, for each metadata -->
                                 <b-modal 
-                                        v-if="openedMetadatumId == metadatum.id"
                                         :model-value="openedMetadatumId == metadatum.id"
-                                        trap-focus
+                                        trap-focus  
+                                        auto-focus
                                         aria-modal
                                         aria-role="dialog"
                                         width="860px"
@@ -522,6 +552,7 @@
                     <b-modal 
                             :model-value="openedMetadataSectionId == metadataSection.id"
                             trap-focus
+                            auto-focus
                             aria-modal
                             aria-role="dialog"
                             width="820px"
@@ -879,6 +910,7 @@ export default {
                 [ metadatumName ]
             );
             
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
@@ -903,7 +935,10 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             }); 
         },
         removeMetadataSection(removedMetadataSection) {
@@ -921,6 +956,7 @@ export default {
                 [ metadataSectionName ]
             );
             
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
@@ -941,7 +977,10 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             }); 
         },
         toggleMetadatumEdition(metadatum) {
@@ -951,9 +990,11 @@ export default {
             this.$router.push({ query: { sectionEdit: metadataSection.id } });
         },
         editMetadatum(metadatumId) {
+            this._modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.openedMetadatumId = metadatumId;
         },
         editMetadataSection(metadataSectionId) {
+            this._sectionModalTrigger = this.$modalFocusA11y.captureTrigger();
             this.openedMetadataSectionId = metadataSectionId;
         },
         onEditionFinished() {
@@ -963,6 +1004,7 @@ export default {
         onEditionCanceled() {
             this.openedMetadatumId = '';
             this.$router.push({ query: {}});
+            this.$modalFocusA11y.restoreFocus(this._modalTrigger, this);
         },
         onSectionEditionFinished() {
             this.openedMetadataSectionId = '';
@@ -971,6 +1013,7 @@ export default {
         onSectionEditionCanceled() {
             this.openedMetadataSectionId = '';
             this.$router.push({ query: {}});
+            this.$modalFocusA11y.restoreFocus(this._sectionModalTrigger, this);
         },
         moveMetadatumUpViaButton(index, sectionIndex) {
             this.moveMetadatumUp({ index, sectionIndex });

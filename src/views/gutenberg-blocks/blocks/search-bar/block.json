@@ -86,6 +86,9 @@
         "multiple": false,
         "typography": {
             "fontSize": true
+        },
+        "position": {
+            "sticky": true
         }
     },
     "styles": [

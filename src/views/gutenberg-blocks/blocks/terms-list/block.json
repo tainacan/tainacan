@@ -81,6 +81,23 @@
         "taxonomyId": {
             "type": "String",
             "default": ""
+        },
+        "style": {
+            "type": "object",
+            "default": {
+                "elements": {
+                    "link": {
+                        "color": {
+                            "text": "currentColor"
+                        },
+                        ":hover": {
+                            "color": {
+                                "text": "currentColor"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "supports": {
@@ -94,6 +111,9 @@
             "background": false,
             "gradients": false,
             "link": true
+        },
+        "position": {
+            "sticky": true
         }
     },
     "editorScript": "terms-list",

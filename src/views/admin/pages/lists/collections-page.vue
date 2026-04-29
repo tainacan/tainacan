@@ -20,6 +20,7 @@
                     class="header-item">
                 <b-dropdown
                         id="collection-creation-options-dropdown"
+                        ref="collectionCreationOptionsDropdown"
                         v-a11y-dropdown="{ appendToBody: true }"
                         :trigger-tabindex="-1"
                         :mobile-modal="true"
@@ -28,7 +29,9 @@
                     <template #trigger>
                         <button class="button is-secondary">
                             <div>{{ $i18n.getFrom('collections', 'new_item') }}</div>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
@@ -89,10 +92,10 @@
                     class="header-item">
                 <b-input 
                         v-model="searchQuery"
-                        :placeholder="$i18n.get('instruction_search')"
+                        :placeholder="$i18n.get('instruction_search_and_press_enter')"
                         type="search"
                         size="is-small"
-                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('collections')"
+                        :aria-label="$i18n.get('instruction_search_and_press_enter')"
                         autocomplete="on"
                         icon-right="magnify"
                         icon-right-clickable
@@ -306,7 +309,7 @@
                             :key="index"
                             tabindex="-1"
                             :class="{ 'is-active': status == statusOption.slug}"
-                            :style="{ marginRight: statusOption.slug == 'pending' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }">
+                            :style="{ marginInlineEnd: statusOption.slug == 'pending' ? 'auto' : '', marginInlineStart: statusOption.slug == 'trash' ? 'auto' : '' }">
                         <a
                                 :id="'collections-status-tab-' + statusOption.slug"
                                 v-tooltip="{
@@ -356,7 +359,7 @@
                                 {{ $i18n.get('info_no_collection_created') }}
                             </p>
                             <p v-else>
-                                {{ $i18n.get('info_no_collections_' + status) }}
+                                {{ $i18n.getNoEntitiesMessageForStatus('collections', status) }}
                             </p>
                             <p v-if="searchQuery">
                                 {{ $i18n.get('info_try_empting_the_textual_search') }}
@@ -434,13 +437,7 @@
                         v-if="collections.length > 0"
                         class="pagination-area">
                     <div class="shown-items"> 
-                        {{ 
-                            $i18n.get('info_showing_collections') + 
-                                (collectionsPerPage*(page - 1) + 1) + 
-                                $i18n.get('info_to') + 
-                                getLastCollectionNumber() + 
-                                $i18n.get('info_of') + totalCollections + '.'
-                        }} 
+                        {{ showingCollectionsText }}
                     </div> 
                     <div class="items-per-page">
                         <b-field 
@@ -471,7 +468,6 @@
                                 :aria-next-label="$i18n.get('label_next_page')"
                                 :aria-previous-label="$i18n.get('label_previous_page')"
                                 :aria-page-label="$i18n.get('label_page')"
-                                :aria-current-label="$i18n.get('label_current_page')"
                                 @change="onPageChange" /> 
                     </div>
                 </div>    
@@ -543,6 +539,13 @@ export default {
                 return selectedOrderOption.label;
 
             return this.orderBy;
+        },
+        showingCollectionsText() {
+            const first = this.collectionsPerPage * (this.page - 1) + 1;
+            const last = this.getLastCollectionNumber();
+            const total = this.totalCollections;
+            
+            return this.$i18n.getWithVariables('info_showing_collections_range', [first, last, total]);
         },
         collectionsPerPageOptions() {
             const defaultCollectionsPerPageOptions = [];
@@ -714,21 +717,31 @@ export default {
             return last > this.totalCollections ? this.totalCollections : last;
         },
         onOpenImportersModal() {
+            const dropdownTrigger = this.$modalFocusA11y.getDropdownTrigger(this.$refs.collectionCreationOptionsDropdown);
+            const modalTrigger = this.$modalFocusA11y.captureTrigger(dropdownTrigger);
             this.$buefy.modal.open({
                 component: AvailableImportersModal,
                 hasModalCard: true,
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
         },
         onOpenCollectionCreationModal() {
+            const dropdownTrigger = this.$modalFocusA11y.getDropdownTrigger(this.$refs.collectionCreationOptionsDropdown);
+            const modalTrigger = this.$modalFocusA11y.captureTrigger(dropdownTrigger);
             this.$buefy.modal.open({
                 component: CollectionCreationModal,
                 hasModalCard: true,
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
         },
         searchCollections() {
@@ -750,10 +763,10 @@ export default {
             min-height: 1.875em;
 
             &:first-child {
-                margin-right: auto;
+                margin-inline-end: auto;
             }
             &:not(:last-child) {
-                padding-right: 0.875em;
+                padding-inline-end: 0.875em;
             }
 
             .label {
@@ -847,7 +860,7 @@ export default {
             padding-top: 0.9em;
 
             .header-item:not(:last-child) {
-                padding-right: 0.2em;
+                padding-inline-end: 0.2em;
             }
         }
     }

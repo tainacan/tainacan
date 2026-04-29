@@ -27,7 +27,10 @@ export default function getCollectionIdFromPossibleTemplateEdition() {
         }
         // Fallback for WP 5.9–6.0 (Site Editor used core/edit-site)
         if (!templateSlug) {
-            const editSitePost = select('core/edit-site')?.getEditedPostTemplate();
+            const editSiteStore = select('core/edit-site');
+            const editSitePost = (typeof editSiteStore?.getEditedPostTemplate === 'function')
+                ? editSiteStore.getEditedPostTemplate()
+                : undefined;
             if (editSitePost?.slug) {
                 templateSlug = editSitePost.slug;
             }

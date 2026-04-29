@@ -3,7 +3,11 @@
         <figure 
                 class="file-item"
                 :class="{'shows-modal-on-click' : modalOnClick}"
-                @click="modalOnClick ? openPreviewModal() : null">
+                :role="modalOnClick ? 'button' : undefined"
+                :tabindex="modalOnClick ? 0 : undefined"
+                @click="modalOnClick ? openPreviewModal() : null"
+                @keydown.enter.prevent="modalOnClick ? openPreviewModal() : null"
+                @keydown.space.prevent="modalOnClick ? openPreviewModal() : null">
             <figcaption 
                     v-if="showName && file.title != undefined"
                     v-tooltip="{
@@ -77,6 +81,7 @@ export default {
             
         },
         openPreviewModal() {
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: FilePreviewModal,
                 props: {
@@ -88,7 +93,10 @@ export default {
                 trapFocus: true,
                 ariaRole: 'dialog',
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
         }
     }
@@ -99,14 +107,29 @@ export default {
 
     .file-item {
         display: inline-block;
+        outline: none;
 
-        &.shows-modal-on-click:hover {
+        &:hover,
+        &.shows-modal-on-click:focus,
+        &.shows-modal-on-click:focus-within,
+        &.shows-modal-on-click:focus-visible {
             cursor: pointer;
             .image, .file-placeholder {
                 transform: scale(1.05);
             }
         }
-        &:hover {
+        &.shows-modal-on-click:focus-visible {
+            outline-width: 2px;
+            outline-offset: -1px;
+            outline-color: var(--tainacan-secondary);
+            outline-color: color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
+            outline-style: solid;
+            box-shadow: none;
+        }
+        &:hover,
+        &:focus,
+        &:focus-within,
+        &:focus-visible {
             figcaption {
                 background-color: var(--tainacan-gray1);
             }
@@ -158,7 +181,7 @@ export default {
         }
     }
     .tainacan-modal-title {
-        text-align: left;
+        text-align: start;
     }
     .rendered-content {
         justify-content: center !important;

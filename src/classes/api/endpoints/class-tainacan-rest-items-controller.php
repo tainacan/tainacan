@@ -550,7 +550,8 @@ class REST_Items_Controller extends REST_Controller {
 
 				$filter_id = empty($filter) ? false : $filter[0]->get_id();
 				$filter_order_index = isset($order) && $order ? array_search( $filter_id, array_column( $order, 'id' ) ) :  false;
-				if ( !empty($filter_order_index) && $order[$filter_order_index]['enabled'] == true) {
+
+				if ( $filter_order_index !== false && $order[$filter_order_index]['enabled'] == true) {
 					$f = $filter[0]->_toArray();
 					$filter_type_component = $filter[0]->get_filter_type_object()->get_component();
 					$m = $f['metadatum'];
@@ -1339,7 +1340,7 @@ class REST_Items_Controller extends REST_Controller {
 
 				if ($item->validate()) {
 					$item = $this->items_repository->insert( $item );
-					$fake_id = md5(uniqid(mt_rand(), true));
+					$fake_id = md5(uniqid(wp_rand(), true));
 					$id = $item->get_id();
 					if (set_transient('tnc_transient_submission_' . $fake_id, $id, 300) == true) {
 						set_transient('tnc_transient_submission_' . $fake_id . '_new_terms_ids', $this->new_terms_ids, 300);

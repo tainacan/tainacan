@@ -89,7 +89,7 @@
                                 :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype'])"
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], imageSize)"
-                                :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : wpI18n( 'Thumbnail', 'tainacan' ))"
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : '')"
                                 :transition-duration="500" />
                         <span 
                                 v-if="!hideTitle"
@@ -102,8 +102,7 @@
         </div>
         <button 
                 :id="blockId + '-prev'" 
-                class="swiper-button-prev" 
-                :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
+                class="swiper-button-prev wp-element-button">
             <svg
                     :width="largeArrows ? 60 : 42"
                     :height="largeArrows ? 60 : 42"
@@ -121,8 +120,7 @@
         </button>
         <button 
                 :id="blockId + '-next'" 
-                class="swiper-button-next"
-                :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
+                class="swiper-button-next wp-element-button">
             <svg
                     :width="largeArrows ? 60 : 42"
                     :height="largeArrows ? 60 : 42"
@@ -150,10 +148,6 @@
 import { nextTick } from 'vue';
 import axios from 'axios';
 import qs from 'qs';
-import 'swiper/css';
-import 'swiper/css/a11y';
-import 'swiper/css/autoplay';
-import 'swiper/css/navigation';
 import Swiper from 'swiper';
 import { Autoplay, Navigation, A11y } from 'swiper/modules';
 
@@ -351,6 +345,7 @@ export default {
                 spaceBetween: spaceBetween,
                 slideToClickedSlide: true,
                 navigation: {
+                    addIcons: false,
                     nextEl: '#' + self.blockId + '-next',
                     prevEl: '#' + self.blockId + '-prev',
                 }, 

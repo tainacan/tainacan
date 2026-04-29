@@ -1,6 +1,211 @@
 const { useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 export default [
+    /* Deprecated to improve link color support */
+    {
+        "attributes": {
+            "content": {
+                "type": "array",
+                "source": "children",
+                "selector": "div"
+            },
+            "collectionId": {
+                "type": "string",
+                "default": ""
+            },
+            "collectionSlug": {
+                "type": "string",
+                "default": ""
+            },
+            "facets": {
+                "type": "array",
+                "default": []
+            },
+            "facetsObject": {
+                "type": "array",
+                "default": []
+            },
+            "showImage": {
+                "type": "boolean",
+                "default": true
+            },
+            "nameInsideImage": {
+                "type": "boolean",
+                "default": false
+            },
+            "showItemsCount": {
+                "type": "boolean",
+                "default": true
+            },
+            "showLoadMore": {
+                "type": "boolean",
+                "default": false
+            },
+            "showSearchBar": {
+                "type": "boolean",
+                "value": false
+            },
+            "layout": {
+                "type": "string",
+                "default": "grid"
+            },
+            "cloudRate": {
+                "type": "number",
+                "default": 1
+            },
+            "isModalOpen": {
+                "type": "boolean",
+                "default": false
+            },
+            "gridMargin": {
+                "type": "number",
+                "default": 24
+            },
+            "metadatumId": {
+                "type": "string",
+                "default": ""
+            },
+            "metadatumType": {
+                "type": "string",
+                "default": ""
+            },
+            "facetsRequestSource": {
+                "type": "string",
+                "default": ""
+            },
+            "maxFacetsNumber": {
+                "type": "number",
+                "value": 12
+            },
+            "isLoading": {
+                "type": "boolean",
+                "value": false
+            },
+            "isLoadingCollection": {
+                "type": "boolean",
+                "value": false
+            },
+            "collection": {
+                "type": "object",
+                "value": {}
+            },
+            "searchstring": {
+                "type": "string",
+                "default": ""
+            },
+            "blockId": {
+                "type": "string",
+                "default": ""
+            },
+            "parentTerm": {
+                "type": "number",
+                "default": null
+            },
+            "isParentTermModalOpen": {
+                "type": "boolean",
+                "default": false
+            },
+            "maxColumnsCount": {
+                "type": "number",
+                "default": 5
+            },
+            "appendChildTerms": {
+                "type": "boolean",
+                "default": false
+            },
+            "childFacetsObject": {
+                "type": "object",
+                "default": {}
+            },
+            "linkTermFacetsToTermPage": {
+                "type": "boolean",
+                "default": true
+            },
+            "isLoadingChildTerms": {
+                "type": "number",
+                "default": null
+            },
+            "itemsCountStyle": {
+                "type": "string",
+                "default": "default"
+            },
+            "imageSize": {
+                "type": "string",
+                "default": "tainacan-medium"
+            },
+        },
+        "supports": {
+            "align": ["full", "wide"],
+            "html": false,
+            "typography": {
+                "fontSize": true
+            },
+            "color": {
+                "text": true,
+                "background": false,
+                "gradients": false,
+                "link": true
+            },
+            "position": {
+                "sticky": true
+            }
+        },
+        "save": function({ attributes, className }) {
+            const {
+                content, 
+                blockId,
+                collectionId,  
+                collectionSlug,
+                parentTerm,  
+                showImage,
+                nameInsideImage,
+                showItemsCount,
+                showLoadMore,
+                layout,
+                cloudRate,
+                gridMargin,
+                metadatumId,
+                metadatumType,
+                maxFacetsNumber,
+                maxColumnsCount,
+                showSearchBar,
+                linkTermFacetsToTermPage,
+                appendChildTerms,
+                itemsCountStyle,
+                imageSize
+            } = attributes;
+        
+            // Gets attributes such as style, that are automatically added by the editor hook
+            const blockProps = useBlockProps.save();
+            return <div 
+                        { ...blockProps }
+                        data-module="facets-list"
+                        data-metadatum-id={ metadatumId }
+                        data-metadatum-type={ metadatumType }
+                        data-collection-id={ collectionId }  
+                        data-collection-slug={ collectionSlug }
+                        data-parent-term-id={ parentTerm ? parentTerm.id : undefined }  
+                        data-show-image={ '' + showImage }
+                        data-name-inside-image={ nameInsideImage === true ? 'true' : 'false' }
+                        data-show-items-count={ '' + showItemsCount }
+                        data-show-search-bar={ '' + showSearchBar }
+                        data-show-load-more={ '' + showLoadMore }
+                        data-image-size={ imageSize }
+                        data-append-child-terms={ (appendChildTerms === true ? 'true' : 'false') }
+                        data-link-term-facets-to-term-page={ linkTermFacetsToTermPage === false ? 'false' : 'true' }
+                        data-layout={ layout }
+                        data-items-count-style={ itemsCountStyle }
+                        data-cloud-rate={ cloudRate }
+                        data-grid-margin={ gridMargin }
+                        data-max-facets-number={ maxFacetsNumber }
+                        data-max-columns-count={ maxColumnsCount }
+                        data-tainacan-api-root={ tainacan_blocks.root }
+                        data-tainacan-site-url={ tainacan_blocks.site_url }
+                        id={ 'wp-block-tainacan-facets-list_' + blockId }>
+                            { content }
+                    </div>
+        }
+    },
     /* Deprecated during Vue 3 migration to prepend attributes with data- */
     {
         "attributes": {

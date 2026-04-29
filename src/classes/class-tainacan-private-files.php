@@ -50,7 +50,8 @@ class Private_Files {
 		add_filter('image_get_intermediate_size', [$this, 'image_get_intermediate_size'], 10, 3);
 		add_filter('wp_get_attachment_url', [$this, 'wp_get_attachment_url'], 10, 2);
 
-		add_action('tainacan-insert', [$this, 'update_item_and_collection']);
+		add_action('tainacan-insert', [$this, 'rename_item_and_collection_folder_path']);
+		add_action('tainacan-deleted', [$this, 'rename_item_and_collection_folder_path'], 10, 2);
 
 		add_action('tainacan-bulk-edit-set-status', [$this, 'bulk_edit'], 10, 4);
 
@@ -147,14 +148,18 @@ class Private_Files {
 	function change_upload_dir($path) {
 		$post_id = false;
 
-		// regular ajax uploads via Admin Panel will send post_id
+		// Regular ajax uploads via Admin Panel will send post_id
+		/* phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a filter hook called by WordPress core after upload validation. WordPress core already handles nonce verification for uploads in wp_handle_upload() and wp_ajax_upload_attachment(). */
 		if ( isset($_REQUEST['post_id']) && $_REQUEST['post_id'] ) {
-			$post_id = sanitize_text_field($_REQUEST['post_id']);
+			/* phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a filter hook called by WordPress core after upload validation. WordPress core already handles nonce verification for uploads in wp_handle_upload() and wp_ajax_upload_attachment(). */
+			$post_id = sanitize_text_field( wp_unslash( $_REQUEST['post_id'] ) );
 		}
 
 		// API requests to media endpoint will send post
+		/* phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a filter hook called by WordPress core after upload validation. REST API uploads use authentication tokens, not nonces. */
 		if ( false === $post_id && isset($_REQUEST['post']) && is_numeric($_REQUEST['post']) ) {
-			$post_id = sanitize_text_field($_REQUEST['post']);
+			/* phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a filter hook called by WordPress core after upload validation. REST API uploads use authentication tokens, not nonces. */
+			$post_id = sanitize_text_field( wp_unslash( $_REQUEST['post'] ) );
 		}
 
 		// tainacan internals, scripts and tests, will set this global
@@ -318,11 +323,19 @@ class Private_Files {
 	}
 
 	/**
-	 * When an item or collection is saved, it checks if the satus was changed and
-	 * if the items upload directory mus be renamed to add or remove the
+	 * When an item or collection is saved, it checks if the status was changed and
+	 * if the items upload directory must be renamed to add or remove the
 	 * private folder prefix
+	 * 
+	 * TODO: when deleting an item or collection, the folder must be deleted. However this is challenging because 
+	 * we need to build the path with information that may not be available after the deletion.
 	 */
-	function update_item_and_collection($obj) {
+	function rename_item_and_collection_folder_path($obj, $permanent_delete = false) {
+
+		if ( $permanent_delete ) {
+			// The $obj won't have enough information to build the path
+			return;
+		}
 
 		$folder = $this->dir_separator;
 		$check_folder = $this->dir_separator;
@@ -340,7 +353,6 @@ class Private_Files {
 		}
 
 		if ( $obj instanceof \Tainacan\Entities\Item ) {
-
 			$collection = $obj->get_collection();
 			$col_status_object = get_post_status_object($collection->get_status());
 
@@ -359,7 +371,7 @@ class Private_Files {
 
 		}
 
-		if ($check) {
+		if ( $check ) {
 
 			$upload_dir = wp_get_upload_dir();
 			$base_dir = $upload_dir['basedir'];
@@ -372,7 +384,6 @@ class Private_Files {
 			}
 
 		}
-
 
 	}
 

@@ -979,7 +979,7 @@ class Elastic_Press {
 		}
 		
 		// Get term hierarchy separator
-		$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
+		$separator = wp_strip_all_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 		
 		// Process each aggregation
 		foreach ($aggregations as $key => $aggregation) {
@@ -1120,7 +1120,7 @@ class Elastic_Press {
 		}
 		
 		// Get term hierarchy separator
-		$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
+		$separator = wp_strip_all_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 		
 		// Process each aggregation
 		foreach ($aggregations as $key => $aggregation) {

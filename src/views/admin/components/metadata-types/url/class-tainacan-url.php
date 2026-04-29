@@ -2,6 +2,8 @@
 
 namespace Tainacan\Metadata_Types;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 class URL extends Metadata_Type {
 	use \Tainacan\Traits\Formatter_Text;
 
@@ -72,27 +74,42 @@ class URL extends Metadata_Type {
 		$return .= $link_as_button ? '<div class="wp-block-buttons">' : '';
 		
 		if ( is_array($value) && $item_metadata->is_multiple() ) {
-			$total = sizeof($value);
-			$count = 0;
-			$prefix = $item_metadata->get_multivalue_prefix();
-			$suffix = $item_metadata->get_multivalue_suffix();
-			$separator = $item_metadata->get_multivalue_separator();
-
-			foreach ( $value as $el ) {
-				if ( !empty($el) ) {
-					$return .= $prefix;
-					
-					$return .= $this->get_single_value_as_html($el);
-
-					$return .= $suffix;
-					
-					$count ++;
-
-					if ($count < $total && !$link_as_button)
-						$return .= $separator;
+			$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+			if ( $html_formatting === 'list' ) {
+				$list_items = [];
+				foreach ( $value as $el ) {
+					if ( !empty($el) ) {
+						$list_items[] = $this->get_single_value_as_html($el);
+					}
+				}
+				$total = count( $list_items );
+				if ( $total === 1 ) {
+					$return .= $list_items[0];
+				} elseif ( $total > 1 ) {
+					$return .= '<ul>';
+					foreach ( $list_items as $item ) {
+						$return .= '<li>' . $item . '</li>';
+					}
+					$return .= '</ul>';
+				}
+			} else {
+				$total = sizeof($value);
+				$count = 0;
+				$prefix = $item_metadata->get_multivalue_prefix();
+				$suffix = $item_metadata->get_multivalue_suffix();
+				$separator = $item_metadata->get_multivalue_separator();
+				foreach ( $value as $el ) {
+					if ( !empty($el) ) {
+						$return .= $prefix;
+						$return .= $this->get_single_value_as_html($el);
+						$return .= $suffix;
+						$count++;
+						if ( $count < $total && !$link_as_button ) {
+							$return .= $separator;
+						}
+					}
 				}
 			}
-			
 		} else {			
 			$return .= $this->get_single_value_as_html($value);	
 		}
@@ -217,7 +234,7 @@ class URL extends Metadata_Type {
 			 * 
 			 * @return string The STRING representation of the item metadatum value
 			 */
-			apply_filters( 'tainacan-item-metadata-get-value-as-string--type-url', strip_tags($return), $item_metadata );
+			apply_filters( 'tainacan-item-metadata-get-value-as-string--type-url', wp_strip_all_tags($return), $item_metadata );
 	}
 
 	/**
@@ -241,6 +258,7 @@ class URL extends Metadata_Type {
 
 					// If this seems to be a markdown link, we check if the url inside it is ok as well
 					if ( !preg_match($reg_url, $url_value) && !preg_match($reg_full, $url_value) ) {
+						/* translators: %s is the value given to the URL metadatum */
 						$this->add_error( sprintf( __('"%s" is invalid. Please provide a valid, full URL or a Markdown link in the form of [label](url).', 'tainacan'), $url_value ) );
 						return false;
 					}
@@ -257,6 +275,7 @@ class URL extends Metadata_Type {
 
 			// If this seems to be a markdown link, we check if the url inside it is ok as well
 			if ( !preg_match($reg_url, $value) && !preg_match($reg_full, $value) ) {
+				/* translators: %s is the value given to the URL metadatum */
 				$this->add_error( sprintf( __('"%s" is invalid. Please provide a valid, full URL or a Markdown link in the form of [label](url).', 'tainacan'), $value ) );
 				return false;
 			}

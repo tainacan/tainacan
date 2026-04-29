@@ -117,6 +117,29 @@
         "variableTermsWidth": {
             "type": "boolean",
             "default": false
+        },
+        "style": {
+            "type": "object",
+            "default": {
+                "elements": {
+                    "link": {
+                        "color": {
+                            "text": "currentColor"
+                        },
+                        ":hover": {
+                            "color": {
+                                "text": "currentColor"
+                            }
+                        }
+                    },
+                    "button": {
+                        "color": {
+                            "text": "var(--tainacan-block-primary, #187181)",
+                            "background": "transparent"
+                        }
+                    }
+                }
+            }
         }
     },
     "supports": {
@@ -128,9 +151,13 @@
         },
         "color": {
             "text": true,
-            "background": false,
+            "background": true,
             "gradients": false,
-            "link": true
+            "link": true,
+            "button": true
+        },
+        "position": {
+            "sticky": true
         }
     },
     "editorScript": "carousel-terms-list",

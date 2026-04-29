@@ -380,8 +380,8 @@ export const submitItemSubmission = ({ commit }, { itemSubmission, itemSubmissio
                 resolve( res.data.id );
             }).catch( error => { 
                 reject({
-                    errors: error.response.data.errors,
-                    error_message: error.response.data.error_message
+                    errors: error.error.response.data.errors,
+                    error_message: error.error.response.data.error_message
                 });
             });
     }); 

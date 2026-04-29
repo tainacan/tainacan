@@ -23,7 +23,9 @@
                             type="button"
                             role="link" 
                             class="button is-secondary"
-                            @click="navigate()">
+                            @click="navigate()"
+                            @keydown.enter="navigate()"
+                            @keydown.space="navigate()">
                         {{ $i18n.getFrom('taxonomies', 'new_item') }}
                     </button>
                 </router-link>
@@ -37,10 +39,10 @@
             <b-field class="header-item">
                 <b-input 
                         v-model="searchQuery"
-                        :placeholder="$i18n.get('instruction_search')"
+                        :placeholder="$i18n.get('instruction_search_and_press_enter')"
                         type="search"
                         size="is-small"
-                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('taxonomies')"
+                        :aria-label="$i18n.get('instruction_search_and_press_enter')"
                         autocomplete="on"
                         icon-right="magnify"
                         icon-right-clickable
@@ -88,7 +90,9 @@
                             &nbsp;
                             <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_sorting') }}</span>
                             <span class="is-hidden-widescreen">{{ $i18n.get('label_sort') }}</span>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
@@ -103,7 +107,9 @@
                                     @click="newOrder = 'desc'"
                                     @keydown.enter.prevent="newOrder = 'desc'"
                                     @keydown.space.prevent="newOrder = 'desc'">
-                                <span class="icon gray-icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-sortdescending" />
                                 </span>
                                 <span>{{ $i18n.get('label_descending') }}</span>
@@ -116,7 +122,9 @@
                                     @click="newOrder = 'asc'"
                                     @keydown.enter.prevent="newOrder = 'asc'"
                                     @keydown.space.prevent="newOrder = 'asc'">
-                                <span class="icon gray-icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon gray-icon">
                                     <i class="tainacan-icon tainacan-icon-sortascending" />
                                 </span>
                                 <span>{{ $i18n.get('label_ascending') }}</span>
@@ -187,7 +195,7 @@
                             :key="index"
                             :tabindex="-1"
                             :class="{ 'is-active': status == statusOption.slug}"
-                            :style="{ marginRight: statusOption.slug == 'draft' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }">
+                            :style="{ marginInlineEnd: statusOption.slug == 'draft' ? 'auto' : '', marginInlineStart: statusOption.slug == 'trash' ? 'auto' : '' }">
                         <a
                                 :id="'taxonomies-status-tab-' + statusOption.slug"
                                 v-tooltip="{
@@ -228,7 +236,9 @@
                     <section class="section">
                         <div class="content has-text-dark has-text-centered">
                             <p>
-                                <span class="icon is-medium">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon is-medium">
                                     <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms" />
                                 </span>
                             </p>
@@ -236,7 +246,7 @@
                                 {{ $i18n.get('info_no_taxonomy_created') }}
                             </p>
                             <p v-else>
-                                {{ $i18n.get('info_no_taxonomies_' + status) }}
+                                {{ $i18n.getNoEntitiesMessageForStatus('taxonomies', status) }}
                             </p>
                             <router-link
                                     v-if="status == undefined || status == ''"
@@ -248,7 +258,9 @@
                                         role="link"
                                         type="button"
                                         class="button is-secondary"
-                                        @click="navigate()">
+                                        @click="navigate()"
+                                        @keydown.enter="navigate()"
+                                        @keydown.space="navigate()">
                                     {{ $i18n.getFrom('taxonomies', 'new_item') }}
                                 </button>
                             </router-link>
@@ -260,13 +272,7 @@
                         v-if="taxonomies.length > 0" 
                         class="pagination-area">
                     <div class="shown-items">
-                        {{
-                            $i18n.get('info_showing_taxonomies') + ' ' +
-                                (taxonomiesPerPage * (page - 1) + 1) +
-                                $i18n.get('info_to') +
-                                getLastTaxonomyNumber() +
-                                $i18n.get('info_of') + total + '.'
-                        }}
+                        {{ showingTaxonomiesText }}
                     </div>
                     <div class="items-per-page">
                         <b-field 
@@ -297,7 +303,6 @@
                                 :aria-next-label="$i18n.get('label_next_page')"
                                 :aria-previous-label="$i18n.get('label_previous_page')"
                                 :aria-page-label="$i18n.get('label_page')"
-                                :aria-current-label="$i18n.get('label_current_page')"
                                 @change="onPageChange" />
                     
                     </div>
@@ -350,6 +355,13 @@
                     return selectedOrderOption.label;
 
                 return this.orderBy;
+            },
+            showingTaxonomiesText() {
+                const first = this.taxonomiesPerPage * (this.page - 1) + 1;
+                const last = this.getLastTaxonomyNumber();
+                const total = this.total;
+                
+                return this.$i18n.getWithVariables('info_showing_taxonomies_range', [first, last, total]);
             },
             taxonomiesPerPageOptions() {
                 const defaultTaxonomiesPerPageOptions = [];
@@ -490,10 +502,10 @@
             min-height: 1.875em;
 
             &:first-child {
-                margin-right: auto;
+                margin-inline-end: auto;
             }
             &:not(:last-child) {
-                padding-right: 0.875em;
+                padding-inline-end: 0.875em;
             }
 
             .label {

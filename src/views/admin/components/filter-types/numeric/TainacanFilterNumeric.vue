@@ -1,5 +1,8 @@
 <template>
-    <div class="numeric-filter-container">
+    <div
+            class="numeric-filter-container"
+            role="group"
+            :aria-labelledby="filterLabelId">
         <b-dropdown
                 v-if="filterTypeOptions.comparators.length > 1"
                 v-a11y-dropdown
@@ -9,12 +12,14 @@
                 @update:model-value="($event) => { resetPage(); onChangeComparator($event) }">
             <template #trigger>
                 <button
-                        :aria-label="$i18n.get('label_comparator')"
+                        :aria-label="comparatorAriaLabel"
                         class="button is-white">
                     <span class="icon is-small">
                         <i v-html="comparatorsObject[comparator].symbol" />
                     </span>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                     </span>
                 </button>
@@ -32,9 +37,9 @@
         </b-dropdown>
         <b-numberinput
                 v-model="value"
-                :aria-labelledby="'filter-label-id-' + filter.id"
-                :aria-minus-label="$i18n.get('label_decrease')"
-                :aria-plus-label="$i18n.get('label_increase')"
+                :aria-labelledby="filterLabelId"
+                :aria-minus-label="decreaseAriaLabel"
+                :aria-plus-label="increaseAriaLabel"
                 :placeholder="filter.placeholder ? filter.placeholder : ''"
                 size="is-small"
                 controls-position="compact"
@@ -60,6 +65,36 @@
                 value: null,
                 filterTypeOptions: [],
                 comparator: '=' // =, !=, >, >=, <, <=
+            }
+        },
+        computed: {
+            filterLabelId() {
+                return this.filter && this.filter.id ? ('filter-label-id-' + this.filter.id) : null;
+            },
+            filterName() {
+                if (this.filter && this.filter.name)
+                    return this.filter.name;
+                if (this.metadatumName)
+                    return this.metadatumName;
+                return '';
+            },
+            comparatorAriaLabel() {
+                const comparatorLabel = this.$i18n.get('label_comparator');
+                return this.filterName
+                    ? this.$i18n.getWithVariables('label_%s_for_%s', [comparatorLabel, this.filterName])
+                    : comparatorLabel;
+            },
+            increaseAriaLabel() {
+                const increaseLabel = this.$i18n.get('label_increase');
+                return this.filterName
+                    ? this.$i18n.getWithVariables('label_%s_for_%s', [increaseLabel, this.filterName])
+                    : increaseLabel;
+            },
+            decreaseAriaLabel() {
+                const decreaseLabel = this.$i18n.get('label_decrease');
+                return this.filterName
+                    ? this.$i18n.getWithVariables('label_%s_for_%s', [decreaseLabel, this.filterName])
+                    : decreaseLabel;
             }
         },
         watch: {
@@ -168,9 +203,9 @@
                 padding: 2px 0.5em 2px 0.5em !important;
                 min-height: 100% !important;
                 height: var(--tainacan-button-min-height, 2.571em) !important;
-                border-top-right-radius: 0 !important;
-                border-bottom-right-radius: 0 !important;
-                border-right-width: 0px !important;
+                border-start-end-radius: 0 !important;
+                border-end-end-radius: 0 !important;
+                border-inline-end-width: 0px !important;
                 
                 i:not(.tainacan-icon-arrowdown) {
                     font-size: 1.25em;
@@ -184,8 +219,8 @@
             flex-grow: 1;
 
             :deep(input.input) {
-                border-top-left-radius: 0 !important;
-                border-bottom-left-radius: 0 !important;
+                border-start-start-radius: 0 !important;
+                border-end-start-radius: 0 !important;
             }
         }
 
@@ -204,7 +239,7 @@
                 flex-grow: 2 !important;
 
                 .dropdown-trigger button {
-                    border-right-width: 1px !important;
+                    border-inline-end-width: 1px !important;
                 }
             }
         }

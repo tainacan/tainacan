@@ -83,8 +83,10 @@
                                     @click="previousSearchPage"
                                     @keydown.enter.prevent="previousSearchPage"
                                     @keydown.space.prevent="previousSearchPage">
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-previous" />
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-previous tainacan-icon-is-rtl-mirrored" />
                                 </span>
                             </a>
                             <ul class="tainacan-modal-checkbox-list-body">
@@ -131,8 +133,10 @@
                                     @click="nextSearchPage"
                                     @keydown.enter.prevent="nextSearchPage"
                                     @keydown.space.prevent="nextSearchPage">
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-next" />
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-next tainacan-icon-is-rtl-mirrored" />
                                 </span>
                             </a>
                         </div>
@@ -150,8 +154,10 @@
                                     @click="previousPage"
                                     @keydown.enter.prevent="previousPage"
                                     @keydown.space.prevent="previousPage">
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-previous" />
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-previous tainacan-icon-is-rtl-mirrored" />
                                 </span>
                             </a>
                             <ul 
@@ -203,8 +209,10 @@
                                     @click="nextPage"
                                     @keydown.enter.prevent="nextPage"
                                     @keydown.space.prevent="nextPage">
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-next" />
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-next tainacan-icon-is-rtl-mirrored" />
                                 </span>
                             </a>
                         </div>
@@ -282,8 +290,10 @@
                                                 {{ option.total_children }}
                                                 <span class="sr-only">{{ $i18n.get('label_children_terms') }}</span>
                                             </span>
-                                            <span class="icon is-pulled-right">
-                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowright" />
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon is-pulled-right">
+                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored" />
                                             </span>
                                         </a>
                                     </b-field>
@@ -292,8 +302,11 @@
                                                 v-if="shouldShowMoreButton(key)"
                                                 :aria-label="$i18n.get('label_show_more_options')"
                                                 class="tainacan-show-more"
+                                                type="button"
                                                 @click="getMoreOptions(finderColumn, key)">
-                                            <span class="icon">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore" />
                                             </span>
                                         </button>
@@ -369,7 +382,7 @@
                     <button
                             class="button is-outlined"
                             type="button"
-                            @click="$emit('close')">{{ $i18n.get('cancel') }}
+                            @click="closeModal">{{ $i18n.get('cancel') }}
                     </button>
                 </div>
                 <div class="control">
@@ -394,7 +407,6 @@
         mixins: [ dynamicFilterTypeMixin ],
         props: {
             filter: '',
-            parent: [Number, String],
             taxonomyId: [Number, String],
             taxonomy: String,
             collectionId: [String, Number],
@@ -417,7 +429,8 @@
         emits: [
             'input',
             'close',
-            'appliedCheckBoxModal'
+            'appliedCheckBoxModal',
+            'beforeClose'
         ],
         data() {
             return {
@@ -501,6 +514,8 @@
                 this.$refs.CheckboxRadioFilterInput.focus();
         },
         beforeUnmount() {
+            if (this.isModal)
+                this.$emit('beforeClose');
             // Cancels previous Request
             if (this.getOptionsValuesCancel != undefined)
                 this.getOptionsValuesCancel.cancel('Get options request canceled.');
@@ -639,23 +654,20 @@
                 this.autoComplete();
             },
             getOptions(offset) {
-                let promise = '';
-                
                 // Cancels previous Request
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' )
-                    promise = this.getValuesRelationship({
+                const promise = ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' )
+                    ? this.getValuesRelationship({
                         search: this.optionName,
                         isRepositoryLevel: this.isRepositoryLevel,
                         valuesToIgnore: [],
                         offset: offset,
                         number: this.maxNumOptionsCheckboxList,
                         isInCheckboxModal: true
-                    });
-                else
-                    promise = this.getValuesPlainText({
+                    })
+                    : this.getValuesPlainText({
                         metadatumId: this.metadatumId,
                         search: this.optionName,
                         isRepositoryLevel: this.isRepositoryLevel,
@@ -922,10 +934,13 @@
                 else
                     return optionValue == this.selected;
             },
+            closeModal() {
+                this.$emit('close');
+            },
             applyFilter() {
                 if (this.isModal)
                     this.$emit('close');
-                else    
+                else
                     this.initializeValues();
 
                 this.$eventBusSearch.resetPageOnStore();
@@ -1029,8 +1044,8 @@
             break-inside: avoid;
             max-width: 100%;
             min-height: 1.75em;
-            margin-left: 0.7em;
-            margin-right: 2em !important;
+            margin-inline-start: 0.7em;
+            margin-inline-end: 2em !important;
             margin-bottom: 0px !important;
         }
 
@@ -1051,7 +1066,7 @@
         flex-grow: 0;
         flex-shrink: 1;
         max-width: calc(100% - 0.5em);
-        padding-left: 0.5em;
+        padding-inline-start: 0.5em;
         margin: 0;
         -webkit-break-inside: avoid;
         break-inside: avoid;
@@ -1059,7 +1074,7 @@
         .b-checkbox {
             -webkit-break-inside: avoid;
             break-inside: avoid;
-            margin-right: 0px;
+            margin-inline-end: 0px;
             margin-bottom: 0;
         }
 
@@ -1140,7 +1155,7 @@
             overflow-x: hidden;
             list-style: none;
             margin: 0;
-            padding-left: 0;
+            padding-inline-start: 0;
         }
         a {
             font-size: 0.75em;
@@ -1171,7 +1186,7 @@
                 content: '';
                 display: block;
                 position: absolute;
-                right: 100%;
+                inset-inline-end: 100%;
                 width: 0;
                 height: 0;
                 border-style: solid;
@@ -1179,18 +1194,18 @@
             &::after {
                 top: 0px;
                 border-color: transparent transparent transparent white;
-                border-left-width: 12px;
+                border-inline-start-width: 12px;
                 border-top-width: calc(1.2em + 1px);
                 border-bottom-width: calc(1.2em + 0px);
-                left: -3px;
+                inset-inline-start: -3px;
             }
             &::before {
                 top: 0px;
                 border-color: transparent transparent transparent var(--tainacan-input-border-color);
-                border-left-width: 12px;
+                border-inline-start-width: 12px;
                 border-top-width: calc(1.2em + 1px);
                 border-bottom-width: calc(1.2em + 0px);
-                left: -1px;
+                inset-inline-start: -1px;
             }
         }
         
@@ -1243,8 +1258,8 @@
         padding: 6px 20px !important;
 
         &>ul+.tainacan-checkbox-list-page-changer {
-            right: 0;
-            left: auto;
+            inset-inline-end: 0;
+            inset-inline-start: auto;
         }
     }
 
@@ -1258,8 +1273,8 @@
     .tainacan-checkbox-list-page-changer {
         height: 100%;
         position: absolute;
-        left: 0;
-        right: auto;
+        inset-inline-start: 0;
+        inset-inline-end: auto;
         align-items: center;
         display: flex;
         background-color: var(--tainacan-item-hover-background-color);

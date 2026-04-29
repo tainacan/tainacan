@@ -12,8 +12,10 @@
             <button         
                     class="button is-medium is-white is-align-self-flex-start"
                     :aria-label="$i18n.get('close')"
-                    @click="$emit('close')">
-                <span class="icon">
+                    @click="closeModal()">
+                <span 
+                        aria-hidden="true"
+                        class="icon">
                     <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-125em" />
                 </span>
             </button>
@@ -23,18 +25,24 @@
             <div 
                     v-if="!isLoading" 
                     class="collection-types-container tainacan-clickable-cards"
-                    role="list">
+                    :role="editableCollectionsCount > 1 ? 'list' : undefined">
                 <template
                         v-for="(collection, index) in collections"
                         :key="index">
                     <router-link
                             v-if="collection && collection.current_user_can_edit_items"
-                            role="listitem"
+                            :role="editableCollectionsCount > 1 ? 'listitem' : undefined"
                             class="collection-type tainacan-clickable-card"
                             :to="$routerHelper.getNewItemPath(collection.id)"
-                            @click="$emit('close')">
-                        <h4>{{ collection.name }}</h4>
-                        <p>{{ collection.description.length > 200 ? (collection.description.substring(0,197) + '...') : collection.description }}</p>            
+                            @click="closeModal()">
+                        <dl class="collection-type-definition">
+                            <dt class="collection-type-name">
+                                {{ collection.name }}
+                            </dt>
+                            <dd>
+                                {{ collection.description.length > 200 ? (collection.description.substring(0,197) + '...') : collection.description }}
+                            </dd>            
+                        </dl>
                     </router-link>
                 </template>
                 <div 
@@ -55,7 +63,7 @@
                     <button 
                             class="button is-outlined" 
                             type="button" 
-                            @click="$emit('close')">Close</button>
+                            @click="closeModal()">Close</button>
                 </div>
             </footer>
         </section>
@@ -68,13 +76,19 @@ import { mapActions } from 'vuex';
 export default {
     name: 'CollectionsModal',
     emits: [
-        'close'
+        'close',
+        'beforeClose'
     ],
     data() {
         return {
             collections: [],
             isLoading: false,
             maxCollectionsPerPage: tainacan_plugin.api_max_items_per_page ? Number(tainacan_plugin.api_max_items_per_page) : 96
+        }
+    },
+    computed: {
+        editableCollectionsCount() {
+            return (this.collections || []).filter(c => c && c.current_user_can_edit_items).length;
         }
     },
     mounted() {
@@ -98,7 +112,11 @@ export default {
     methods: {
         ...mapActions('collection', [
             'fetchCollections'
-        ])
+        ]),
+        closeModal() {
+            this.$emit('beforeClose');
+            this.$emit('close');
+        }
     }
 }
 </script>

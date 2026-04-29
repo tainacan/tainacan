@@ -24,6 +24,7 @@
 
             <b-taginput
                     v-model="options"
+                    v-a11y-autocomplete
                     attached
                     :confirm-keys="optionsSeparator"
                     :on-paste-separators="optionsSeparator"
@@ -44,7 +45,7 @@
                         :native-value="separator"
                         :disabled="separator == 'Enter'"
                         @update:model-value="emitValues()">
-                    <kbd>{{ separator }}</kbd>
+                    <kbd class="tainacan-kbd">{{ separator }}</kbd>
                 </b-checkbox>
             </div>
         </b-field>

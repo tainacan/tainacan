@@ -2,6 +2,7 @@
     <div class="block">
         <b-autocomplete
                 v-model="selected"
+                v-a11y-autocomplete
                 icon="magnify"
                 size="is-small"
                 :aria-labelledby="'filter-label-id-' + filter.id"
@@ -21,8 +22,8 @@
                             v-if="props.option.img"
                             class="media-left">
                         <img
-                                :alt="$i18n.get('label_thumbnail')"
                                 width="24"
+                                alt=""
                                 :src="props.option.img">
                     </div>
                     <div    
@@ -113,22 +114,19 @@
 
                 if (this.searchQuery != '') {
 
-                    let promise = null;
-
                     // Cancels previous Request
                     if (this.getOptionsValuesCancel != undefined)
                         this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                    if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' )
-                        promise = this.getValuesRelationship({
+                    const promise = ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' )
+                        ? this.getValuesRelationship({
                             search: this.searchQuery,
                             isRepositoryLevel: this.isRepositoryLevel,
                             valuesToIgnore: [],
                             offset: this.searchOffset,
                             number: this.searchNumber
-                        });
-                    else
-                        promise = this.getValuesPlainText({
+                        })
+                        : this.getValuesPlainText({
                             metadatumId: this.metadatumId,
                             search: this.searchQuery,
                             isRepositoryLevel: this.isRepositoryLevel,

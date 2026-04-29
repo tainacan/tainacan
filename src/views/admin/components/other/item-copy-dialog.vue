@@ -13,15 +13,15 @@
             <div 
                     v-if="icon != undefined && icon != ''"
                     class="modal-custom-icon">
-                <span class="icon is-large">
+                <span 
+                        aria-hidden="true"
+                        class="icon is-large">
                     <i 
                             :class="'tainacan-icon-' + icon"
                             class="tainacan-icon" />
                 </span>
             </div>
-            <section 
-                    tabindex="1"
-                    class="modal-card-body">
+            <section class="modal-card-body">
                 <header 
                         class="modal-card-head">
                     <h1 
@@ -109,7 +109,7 @@
                 default: () => {}
             },
             collectionId: [String, Number],
-            itemId: String
+            itemId: [String, Number]
         },
         emits: [
             'close'
@@ -182,20 +182,23 @@
 
                 let onlyItemIds = this.newItems.map(item => item.id);
 
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: BulkEditionModal,
                     props: {
                         modalTitle: this.$i18n.get('info_editing_items_in_bulk'),
                         totalItems: onlyItemIds.length,
                         selectedForBulk: onlyItemIds,
-                        objectType: this.$i18n.get('items'),
                         collectionId: this.collectionId
                     },
                     width: 'calc(100% - (2 * var(--tainacan-one-column)))',
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    canCancel: ['escape', 'outside']
-                }); 
+                    canCancel: ['escape', 'outside'],
+                    events: {
+                        beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                    }
+                });
 
                 this.$emit('close');
             },
@@ -211,7 +214,7 @@
     }
 
     button.is-success {
-        margin-left: auto;
+        margin-inline-start: auto;
     }
 
     .field.is-horizontal {

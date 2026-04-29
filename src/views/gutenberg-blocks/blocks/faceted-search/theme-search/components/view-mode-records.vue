@@ -25,7 +25,6 @@
                 <li
                         v-for="(item, index) of items"
                         :key="index"
-                        role="listitem"
                         :aria-setsize="totalItems"
                         :aria-posinset="getPosInSet(index)"
                         :data-tainacan-item-id="item.id"
@@ -80,10 +79,17 @@
                                         content: $i18n.get('label_see_on_fullscreen'),
                                         placement: 'auto-start',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
-                                    }"          
+                                    }"
+                                    role="button"
+                                    tabindex="0"
+                                    :aria-label="$i18n.get('label_see_on_fullscreen')"
                                     class="icon slideshow-icon"
-                                    @click.prevent="starSlideshowFromHere(index)">
-                                <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em" />
+                                    @click.prevent="starSlideshowFromHere(index)"
+                                    @keydown.enter.prevent="starSlideshowFromHere(index)"
+                                    @keydown.space.prevent="starSlideshowFromHere(index)">
+                                <i
+                                        class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"
+                                        aria-hidden="true" />
                             </span> 
                         </div>
 
@@ -167,7 +173,7 @@ export default {
                             this.masonry.destroy();
                         
                         this.masonry = new Masonry( this.containerId ? ( '#' + this.containerId + ' .tainacan-records-container' ) : '.tainacan-records-container', {
-                            itemSelector: 'li',
+                            itemSelector: '.tainacan-records-container>li',
                             columnWidth: '.tainacan-records-grid-sizer',
                             gutter: 30,
                             percentPosition: true,

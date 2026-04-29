@@ -216,21 +216,50 @@ class Relationship extends Metadata_Type {
 		$return = '';
 
 		if ( $item_metadata->is_multiple() ) {
-			$prefix = $item_metadata->get_multivalue_prefix();
-			$suffix = $item_metadata->get_multivalue_suffix();
-			$separator = $item_metadata->get_multivalue_separator();
 			
-			foreach ( $value as $item_id ) {
+			$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+			$items_to_display = [];
+			foreach ( (array) $value as $item_id ) {
 				try {
-					$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-					$item = $Tainacan_Items->fetch( (int) $item_id);
+					$item = $Tainacan_Items->fetch( (int) $item_id );
 					if ( $this->can_display_item($item) ) {
-						$return .= empty($return)
-							? ($prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix)
-							: ($separator . $prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix);
+						$items_to_display[] = $item;
 					}
 				} catch (\Exception $e) {
-					// item not found
+					// skip invalid item
+				}
+			}
+
+			$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+			$render_multiple_as_list = $html_formatting === 'list' && count( $items_to_display ) > 1;
+			
+			if ( $html_formatting === 'list' ) {
+				$total = count( $items_to_display );
+				if ( $total === 1 ) {
+					$return = $this->get_item_html($items_to_display[0], $search_meta_id, $display_metas, $render_multiple_as_list);
+					if ( !empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 && $return !== '' ) {
+						$return = "<div class='tainacan-relationship-group'>{$return}</div>";
+					}
+				} elseif ( $total > 1 ) {
+					$return .= (!empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 ) ? '<ul class="tainacan-relationship-group">' : '<ul>';
+					foreach ( $items_to_display as $item ) {
+						$return .= $this->get_item_html($item, $search_meta_id, $display_metas, $render_multiple_as_list);
+					}
+					$return .= '</ul>';
+				}
+
+			} else {
+				$prefix = $item_metadata->get_multivalue_prefix();
+				$suffix = $item_metadata->get_multivalue_suffix();
+				$separator = $item_metadata->get_multivalue_separator();
+
+				foreach ( $items_to_display as $item ) {
+					$return .= empty($return)
+						? ($prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix)
+						: ($separator . $prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix);
+				}
+				if ( !empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 && $return !== '' ) {
+					$return = "<div class='tainacan-relationship-group'>{$return}</div>";
 				}
 			}
 		} else {
@@ -242,9 +271,10 @@ class Relationship extends Metadata_Type {
 			} catch (\Exception $e) {
 				// item not found 
 			}
-		}
-		if ( !empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 && $return !== '' ) {
-			$return = "<div class='tainacan-relationship-group'>{$return}</div>";
+
+			if ( !empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 && $return !== '' ) {
+				$return = "<div class='tainacan-relationship-group'>{$return}</div>";
+			}
 		}
 
 		return 
@@ -264,14 +294,14 @@ class Relationship extends Metadata_Type {
 			$item instanceof \Tainacan\Entities\Item && (
 				is_user_logged_in() ||
 				(
-					\is_post_status_viewable( $item->get_status() ) &&
-					($item->get_collection() != null && \is_post_status_viewable( $item->get_collection()->get_status() ))
+					\tainacan_is_post_status_viewable( $item->get_status() ) &&
+					($item->get_collection() != null && \tainacan_is_post_status_viewable( $item->get_collection()->get_status() ))
 				)
 			)
 		);
 	}
 
-	private function get_item_html($item, $search_meta_id, $display_metas) {
+	private function get_item_html($item, $search_meta_id, $display_metas, $render_as_list_item = false) {
 		$return = '';
 		$id = $item->get_id();
 		
@@ -298,10 +328,14 @@ class Relationship extends Metadata_Type {
 				}
 				$return = implode("\n", $metadata_value);
 			}
-			$return = "<div class='tainacan-relationship-metadatum' data-item-id='$id'>{$return}</div>";
+			if ( $render_as_list_item ) {
+				$return = "<li class='tainacan-relationship-metadatum' data-item-id='$id'>{$return}</li>";
+			} else {
+				$return = "<div class='tainacan-relationship-metadatum' data-item-id='$id'>{$return}</div>";
+			}
 		} else if ( $id && $search_meta_id ) {
 			$as_link = $this->get_item_link($item, $search_meta_id);
-			$return = "$as_link";
+			$return = $render_as_list_item ? "<li>{$as_link}</li>" : "{$as_link}";
 		}
 
 		return $return;
@@ -354,13 +388,14 @@ class Relationship extends Metadata_Type {
 			if ($value_link) {
 				?>
 					<div class="tainacan-relationship-metadatum-header">
-						<?php echo ($should_display_thumbnail ? $this->get_item_thumbnail($thumbnail_id, $item) : ''); ?>
+						<?php echo wp_kses_post($should_display_thumbnail ? $this->get_item_thumbnail($thumbnail_id, $item) : ''); ?>
 						<h4 class="label">
 							<?php
 							/**
 							 * Note to code reviewers: This lines doesn't need to be escaped.
 							 * The variable $value_link is escaped.
 							 */
+							/* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */
 							echo $value_link;
 							?>
 						</h4>
@@ -383,19 +418,18 @@ class Relationship extends Metadata_Type {
 							$metadata_wrapper_class .= ' metadata-type-' . $metadata_type;
 					}
 
-
 					$metadata_slug = $meta->get_metadatum()->get_slug();
 
 					if ( $metadata_slug )
 						$metadata_wrapper_class .= ' metadata-slug-' . $metadata_slug;
 				}
 				?>
-					<div class="<?php echo $metadata_wrapper_class; ?>">
+					<div class="<?php echo esc_attr( $metadata_wrapper_class ); ?>">
 						<h5 class="label related-metadadum-label">
 							<?php echo esc_html($meta->get_metadatum()->get_name()); ?>
 						</h5>
 						<p>
-							<?php echo wp_kses_tainacan(($value_link === false ? $meta->get_value_as_html() : $value_link)); ?> 
+							<?php echo wp_kses(($value_link === false ? $meta->get_value_as_html() : $value_link), wp_kses_allowed_html('tainacan_content')); ?> 
 						</p>
 					</div>
 				<?php

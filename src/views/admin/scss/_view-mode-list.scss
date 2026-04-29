@@ -44,31 +44,33 @@
 
         .list-checkbox {
             position: absolute;
-            margin-left: 1.0em;
+            margin-inline-start: 1.0em;
             margin-top: 7px;
             z-index: 9;
         }
         .actions-area {
             position: relative;
-            float: right;
+            float: inline-end;
             top: calc(-1 * var(--tainacan-container-padding));
             bottom: 0;
             margin-bottom: -25px;
-            padding-right: 12px;
+            padding-inline-end: 12px;
             margin-bottom: -25px;
             display: flex;
             justify-content: space-between;
-            visibility: hidden;
+            //visibility: hidden; Removed as it prevents focus to return to the area when coming from modals
             opacity: 0;
             transition: visibility 0.2s, opacity 0.3s ease, top 0.2s ease;
 
             a {
-                margin-left: 12px;
+                margin-inline-start: 12px;
                 opacity: 0;
                 transition: opacity 0.3s ease;
             }
         }
-        &:hover .actions-area {
+        &:hover .actions-area,
+        &:focus .actions-area,
+        &:focus-within .actions-area {
             visibility: visible;
             opacity: 1.0;
             top:  calc(-1 * 0.5em - var(--tainacan-container-padding));
@@ -80,17 +82,20 @@
 
         .record-line {
             height: 1px;
-            margin-left: -44px;
-            margin-right: -44px;
+            margin-inline-start: -44px;
+            margin-inline-end: -44px;
             opacity: 0;
             visibility: hidden;
         }
         .tainacan-list-thumbnail {
-            float: left;
-            margin: 0 0.875em 0 0;
+            float: inline-start;
+            margin-block: 0;
+            margin-inline-end: 0.875em;
+            margin-inline-start: 0;
 
             @media screen and (max-width: 768px) {
-                margin: 0 0.875em 0.875em 0.875em;
+                margin-block: 0 0.875em;
+                margin-inline: 0.875em;
             }
         }
         .tainacan-list-item-thumbnail,
@@ -136,13 +141,13 @@
             .slideshow-icon {
                 color: var(--tainacan-info-color); 
                 position: absolute;
-                right: 7px;
+                inset-inline-end: 7px;
                 top: 7px;
                 transform: scale(0.0);
                 transition: transform 0.2s ease;
             }
             .icon:not(.slideshow-icon) {
-                float: left;
+                float: inline-start;
                 margin-top: -1px;
             }
         }
@@ -243,7 +248,7 @@
     &.hide-items-selection {
         .tainacan-list {
             &:hover { background-color: rgba(126, 126, 126, 0.05) !important; cursor: default; }
-            .metadata-title { padding-left: 1.5em !important; }
+            .metadata-title { padding-inline-start: 1.5em !important; }
             &:hover .metadata-title { background-color: var(--tainacan-gray0) !important; cursor: default; }
         }
     }

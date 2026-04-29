@@ -12,7 +12,7 @@ import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainac
 import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 
-export default function ({ attributes, setAttributes, isSelected }) {
+export default function ({ attributes, setAttributes, isSelected, context }) {
     
     let {
         collectionId,
@@ -30,6 +30,16 @@ export default function ({ attributes, setAttributes, isSelected }) {
         textAlign
     } = attributes;
 
+    // When rendered inside item-metadata-sections (or item-metadata-section), use ancestor's itemId from context so we stay in sync when parent's item selection changes (InnerBlocks template is only used on initial creation).
+    const effectiveItemId = ( dataSource === 'parent' && context && context['tainacan/itemId'] != null ) ? Number( context['tainacan/itemId'] ) : ( isNaN( itemId ) ? 0 : Number( itemId ) );
+
+    // Keep attribute in sync when we use context, so this block provides the correct itemId to its inner blocks (e.g. item-metadatum) via context.
+    useEffect(() => {
+        if ( dataSource === 'parent' && context && context['tainacan/itemId'] != null && Number( context['tainacan/itemId'] ) !== ( isNaN( itemId ) ? 0 : Number( itemId ) ) ) {
+            setAttributes({ itemId: Number( context['tainacan/itemId'] ) });
+        }
+    }, [ dataSource, context, itemId ]);
+
     // Gets blocks props from hook
     const blockProps = useBlockProps( {
         className: {
@@ -40,7 +50,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
 
     useEffect(() => {
         setContent();
-    }, [ itemId, collectionId, sectionId, isDynamic, templateMode ]);
+    }, [ effectiveItemId, collectionId, sectionId, isDynamic, templateMode ]);
 
     function setContent() {
         if ( dataSource === 'parent' && templateMode) {
@@ -94,7 +104,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
                         isLoading: false
                     });
                 });
-        } else if (itemId) {
+        } else if (effectiveItemId) {
 
             isLoading = true;
         
@@ -107,7 +117,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
 
             itemMetadataRequestSource = axios.CancelToken.source();
 
-            const endpoint = '/item/' + itemId + (sectionId ? ('/metadata-sections/' + sectionId) : '/metadata');
+            const endpoint = '/item/' + effectiveItemId + (sectionId ? ('/metadata-sections/' + sectionId) : '/metadata');
 
             tainacanApi.get(endpoint, { cancelToken: itemMetadataRequestSource.token })
                 .then(response => {
@@ -165,7 +175,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
                         {
                             placeholder: __( 'Item Metadatum', 'tainacan' ),
                             metadatumId: itemMetadatum.metadatum.id,
-                            itemId: Number(itemId),
+                            itemId: effectiveItemId,
                             collectionId: Number(collectionId),
                             dataSource: 'parent',
                             templateMode: templateMode
@@ -233,7 +243,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
                             modalTitle={ __('Select one item to render its metadata', 'tainacan') }
                             applyButtonLabel={ __('List metadata for this item', 'tainacan') }
                             existingCollectionId={ collectionId }
-                            existingItemId={ itemId }
+                            existingItemId={ effectiveItemId }
                             onSelectCollection={ (selectedCollectionId) => {
                                 collectionId = Number(selectedCollectionId);
                                 setAttributes({ 
@@ -256,7 +266,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
                 ) : null
             }
 
-            { !itemId && !templateMode && dataSource !== 'parent' ? (
+            { !effectiveItemId && !templateMode && dataSource !== 'parent' ? (
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(

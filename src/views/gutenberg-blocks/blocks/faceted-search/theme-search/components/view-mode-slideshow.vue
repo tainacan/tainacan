@@ -29,7 +29,9 @@
                 @click="openSlidesHelpModal"
                 @keydown.enter.prevent="openSlidesHelpModal"
                 @keydown.space.prevent="openSlidesHelpModal">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-help" />
             </span>
         </button>
@@ -56,7 +58,9 @@
                 @click="isMetadataCompressed = !isMetadataCompressed"
                 @keydown.enter.prevent="isMetadataCompressed = !isMetadataCompressed"
                 @keydown.space.prevent="isMetadataCompressed = !isMetadataCompressed">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata" />
             </span>
         </button>
@@ -79,14 +83,16 @@
                 :aria-label="$i18n.get('label_item_page')"
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
                 :href="getItemLink(slideItems[swiper.activeIndex].url, swiper.activeIndex)">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see" />
             </span>
         </a>
 
         <!-- CLOSE BUTTON -->
         <button
-                id="close-fullscren-button"  
+                id="close-fullscren-button"
                 v-tooltip="{
                     delay: {
                         show: 500,
@@ -97,12 +103,18 @@
                     placement: 'auto-start',
                     popperClass: ['tainacan-tooltip', 'tooltip']
                 }"
+                type="button"
+                :aria-label="$i18n.get('close')"
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
                 @click="closeSlideViewMode()"
                 @keydown.enter.prevent="closeSlideViewMode()"
                 @keydown.space.prevent="closeSlideViewMode()">
-            <span class="icon">
-                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close" />
+            <span 
+                    aria-hidden="true"
+                    class="icon">
+                <i
+                        class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close"
+                        aria-hidden="true" />
             </span>
         </button>
 
@@ -127,10 +139,12 @@
                 @click="isMetadataCompressed = !isMetadataCompressed"
                 @keydown.enter.prevent="isMetadataCompressed = !isMetadataCompressed"
                 @keydown.space.prevent="isMetadataCompressed = !isMetadataCompressed">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i 
                         :class="{ 'tainacan-icon-arrowleft' : isMetadataCompressed, 'tainacan-icon-arrowright' : !isMetadataCompressed }"
-                        class="tainacan-icon tainacan-icon-1-25em" />
+                        class="tainacan-icon tainacan-icon-1-25em tainacan-icon-is-rtl-mirrored" />
             </span>
         </button>
 
@@ -156,8 +170,9 @@
                                     placement: 'auto',
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
+                                aria-hidden="true"
                                 class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-previous" />
+                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-previous tainacan-icon-is-rtl-mirrored" />
                         </span> 
                     </button>
                     <div     
@@ -242,8 +257,8 @@
                                     placement: 'auto',
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
-                                class="icon is-large has-text-turoquoise5">
-                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-next" />
+                                class="icon is-large has-text-secondary">
+                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-next tainacan-icon-is-rtl-mirrored" />
                         </span>
                     </button>
                 </section>
@@ -271,6 +286,7 @@
                                         placement: 'auto',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
+                                    aria-hidden="true"
                                     class="icon">
                                 <i 
                                         :class="{ 'tainacan-icon-pausefill' : isPlaying, 'tainacan-icon-playfill' : !isPlaying }"
@@ -295,6 +311,7 @@
                     <span 
                             v-if="isLoading"
                             :style="{ left: !goingRight ? '' : '25%', right: !goingRight ? '25%' : '' }"
+                            aria-hidden="true"
                             class="icon loading-icon">
                         <div class="control has-icons-right is-loading is-clearfix" />
                     </span>
@@ -319,7 +336,9 @@
                         @click="isMetadataCompressed = true"
                         @keydown.enter.prevent="isMetadataCompressed = true"
                         @keydown.space.prevent="isMetadataCompressed = true">
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close" />
                     </span>
                 </button>
@@ -340,9 +359,11 @@
                     @keydown.enter.prevent="collapseAll = !collapseAll"
                     @keydown.space.prevent="collapseAll = !collapseAll">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                <span class="icon">
+                <span 
+                        aria-hidden="true"
+                        class="icon">
                     <i 
-                            :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll}"
+                            :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !collapseAll}"
                             class="tainacan-icon tainacan-icon-1-25em" />
                 </span>
             </a>
@@ -365,9 +386,11 @@
                             :model-value="!collapseAll">
                         <template #trigger="props">
                             <label class="label has-text-white">
-                                <span class="icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
                                     <i 
-                                            :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open}"
+                                            :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !props.open}"
                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                                 </span>
                                 <span 
@@ -754,6 +777,7 @@ export default {
             }
         },
         openSlidesHelpModal() {
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: SlidesHelpModal,
                 width: 680,
@@ -761,10 +785,13 @@ export default {
                 ariaModal: true,
                 trapFocus: true,
                 customClass: 'tainacan-modal slides-help-modal',
-                onCancel: () => {
-                    setTimeout(() => document.documentElement.classList.add('is-clipped'), 500); 
-                },
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => {
+                        setTimeout(() => document.documentElement.classList.add('is-clipped'), 500);
+                        this.$modalFocusA11y.restoreFocus(modalTrigger, this);
+                    }
+                }
             });
         }
     }

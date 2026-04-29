@@ -199,6 +199,15 @@ class Metadata extends Repository {
 				'description' => __( 'Display by default on listing or do not display or never display.', 'tainacan' ),
 				'default'     => 'no'
 			],
+			'html_formatting'          => [
+				'map'         => 'meta',
+				'title'       => __( 'HTML formatting', 'tainacan' ),
+				'type'        => 'string',
+				'validation'  => v::stringType()->in( [ 'inline', 'list' ] ),
+				'enum'        => [ 'inline', 'list' ],
+				'description' => __( 'How to display multiple values: inline with separators or as a list. Only applies when the metadatum allows multiple values.', 'tainacan' ),
+				'default'     => 'inline'
+			],
 			'allow_advanced_search' => [
 				'map'         => 'meta',
 				'title'       => __( 'Allow advanced search', 'tainacan' ),
@@ -265,8 +274,8 @@ class Metadata extends Repository {
 			'labels'              => $labels,
 			'hierarchical'        => true,
 			'public'              => true,
-			'show_ui'             => tnc_enable_dev_wp_interface(),
-			'show_in_menu'        => tnc_enable_dev_wp_interface(),
+			'show_ui'             => tainacan_enable_dev_wp_interface(),
+			'show_in_menu'        => tainacan_enable_dev_wp_interface(),
 			'publicly_queryable'  => false,
 			'exclude_from_search' => true,
 			'has_archive'         => false,
@@ -547,7 +556,9 @@ class Metadata extends Repository {
 		} elseif ( is_integer( $collection ) ) {
 			$collection_id = $collection;
 		} else {
-			throw new \InvalidArgumentException( 'fetch_ids_by_collection expects paramater 1 to be a integer or a \Tainacan\Entities\Collection object. ' . gettype( $collection ) . ' given' );
+			throw new \InvalidArgumentException(
+				'fetch_ids_by_collection expects paramater 1 to be a integer or a \Tainacan\Entities\Collection object. ' . esc_html( gettype( $collection ) ) . ' given'
+			);
 		}
 
 		//get parent collections
@@ -760,8 +771,8 @@ class Metadata extends Repository {
 				$new_value = array_diff($old_value, $collection_metadata_sections_id);
 				$new_value[] = (string)$new_metadata_section_id;
 				$metadatum->set_metadata_section_id($new_value);
-				if(!$metadatum->validate()) { 
-					throw new \Exception( $metadatum->get_errors() );
+				if (!$metadatum->validate()) { 
+					throw new \Exception( esc_html( print_r($metadatum->get_errors(), true) ) );
 				}
 			}
 		}
@@ -1147,7 +1158,7 @@ class Metadata extends Repository {
 
 			return $metadatum->get_id();
 		} else {
-			throw new \ErrorException( 'The entity wasn\'t validated.' . print_r( $metadatum->get_errors(), true ) );
+			throw new \ErrorException( 'The entity wasn\'t validated.' . esc_html( print_r( $metadatum->get_errors(), true ) ) );
 		}
 	}
 
@@ -1379,10 +1390,11 @@ class Metadata extends Repository {
 					$to_include = $wpdb->get_results($query_to_include);
 
 					// remove terms that will be included at the begining
-					$results = array_filter($results, function($t) use($args) { return !in_array($t->term_id, $args['include']); });
+					$total_included = count($to_include) > $args['number'] ? count($to_include) : $args['number'];
+					$results = array_filter($results, function($t) use($args, $total_included) { return !in_array($t->term_id, $args['include']) && $total_included > 0; });
 
 					$results = array_merge($to_include, $results);
-
+					$results = array_slice($results, 0, $total_included);
 				}
 			}
 
@@ -1392,7 +1404,7 @@ class Metadata extends Repository {
 			} else {
 				$pages = ceil( $total / $number );
 			}
-			$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
+			$separator = wp_strip_all_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 			$values = [];
 			foreach ($results as $r) {
 
@@ -1462,7 +1474,9 @@ class Metadata extends Repository {
 			// add selected to the result
 			if ( !empty($args['include']) ) {
 				if ( is_array($args['include']) ) {
+					$total_included = count($args['include']) > $number ? count($args['include']) : $number;
 					$results = array_unique( array_merge($args['include'], $results) );
+					$results = array_slice($results, 0, $total_included);
 				}
 			}
 

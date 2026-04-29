@@ -38,7 +38,7 @@
             fill: var(--tainacan-block-gray4, gutenberg-blocks-variables.$gray4);
 
             svg {
-                margin-right: 1em; 
+                margin-inline-end: 1em; 
                 top: 4px;
                 position: relative;
                 fill: var(--tainacan-block-gray4, gutenberg-blocks-variables.$gray4);
@@ -140,7 +140,7 @@
             @media only screen and (max-width: 1024px) {  width: 95% }
             &:nth-child(2) {
                 flex-shrink: 2;
-                margin-left: 0.75em
+                margin-inline-start: 0.75em;
             }
             .components-base-control__field {
                 flex-wrap: wrap;
@@ -154,7 +154,7 @@
 
     .modal-radio-area-label {
         font-weight: 500;
-        margin-left: 1.75em;
+        margin-inline-start: 1.75em;
     }
 
     .modal-checkbox-list,
@@ -192,7 +192,7 @@
             img {
                 width: 24px;
                 height: 24px;
-                margin-right: 10px;
+                margin-inline-end: 10px;
                 margin-bottom: 8px;
             }
             label {

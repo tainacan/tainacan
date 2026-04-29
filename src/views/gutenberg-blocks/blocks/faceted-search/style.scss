@@ -66,13 +66,13 @@
                     padding: 18px 12px 6px 12px;
 
                     .fake-filters-heading {
-                        margin-right: 90%;
+                        margin-inline-end: 90%;
                         top: -0.5em;
-                        left: 0.5em;
+                        inset-inline-start: 0.5em;
                     }
                     .fake-filters-heading + .fake-link {
-                        margin-right: 95%;
-                        margin-left: 12px;
+                        margin-inline-end: 95%;
+                        margin-inline-start: 12px;
                     }
 
                     .fake-filter {
@@ -123,7 +123,7 @@
                             max-height: 0.4em;
                             border: 2px solid var(--tainacan-input-border-color, rgba(200,200,200, 0.3));
                             border-radius: 2px;
-                            margin-right: 4px;
+                            margin-inline-end: 4px;
                         }
                         .fake-text {
                             background-color: var(--tainacan-input-color, rgba(200,200,200, 0.3));
@@ -138,7 +138,7 @@
                 .fake-filters-heading {
                     position: relative;
                     top: -1.3em;
-                    left: -0.3em;                
+                    inset-inline-start: -0.3em;                
                     background-color: var(--tainacan-heading-color, rgba(200,200,200, 0.3));
                     height: 0.2em;
                     width: 28%;
@@ -163,7 +163,7 @@
                             display: none;
                         }
                         .fake-item-description {
-                            left: 0;
+                            inset-inline-start: 0;
                         }
                     }
                 }
@@ -213,7 +213,7 @@
             justify-content: center;
             align-items: center;
             top: -0.75em;
-            left: 1em;
+            inset-inline-start: 1em;
 
             .fake-link {
                 width: 100%;
@@ -224,7 +224,7 @@
                 content: "";
                 display: block;
                 position: absolute;
-                left: 12px;
+                inset-inline-start: 12px;
                 width: 0;
                 height: 0;
                 border-style: solid;
@@ -264,7 +264,7 @@
             font-size: 0.75em;
             border-radius: 3px;
             position: absolute;
-            left: 0px;
+            inset-inline-start: 0px;
             top: 42px;
 
             .fake-icon {
@@ -277,11 +277,11 @@
             width: 10%;
             max-width: 3.25em;
             min-width: 1em;
-            margin-left: 6px;
+            margin-inline-start: 6px;
             border-radius: 3px;
             display: flex;
             align-items: center;
-            margin-right: auto;
+            margin-inline-end: auto;
             
             .fake-text {
                 background-color: var(--tainacan-input-color, rgba(200,200,200, 0.3));
@@ -329,7 +329,7 @@
                 background-color: var(--tainacan-input-border-color, rgba(200,200,200, 0.1));
                 height: 58px;
                 width: 58px;
-                float: left;
+                float: inline-start;
             }
             .fake-item-description {
                 background-color: var(--tainacan-info-color, rgba(200,200,200, 0.15));
@@ -338,7 +338,7 @@
                 border-radius: 2px;
                 margin: 8px 6px 2px 6px;
                 position: relative;
-                left: 62px;
+                inset-inline-start: 62px;
 
                 &:nth-child(odd) {
                     width: 50%;
@@ -356,14 +356,17 @@
             padding: var(--tainacan-container-padding, 25px) var(--tainacan-container-padding, 25px) 20px var(--tainacan-container-padding, 25px);
         }
         #filters-modal .modal-content {
-            padding: 24px 18px 24px var(--tainacan-container-padding, 25px);
+            padding-inline-start: 18px;
+            padding-inline-end: var(--tainacan-container-padding, 25px);
+            padding-block-start: 24px;
+            padding-block-end: 24px;
         }
         #filter-menu-compress-button {
             border-radius: 2px;
         }
         #items-list-results .table-container {
-            padding-left: var(--tainacan-container-padding, 25px);
-            padding-right: var(--tainacan-container-padding, 25px);
+            padding-inline-start: var(--tainacan-container-padding, 25px);
+            padding-inline-end: var(--tainacan-container-padding, 25px);
         }
     }
 }

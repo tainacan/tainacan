@@ -367,7 +367,7 @@ export default class TainacanSingleItemMetadataSectionSelectionModal extends Rea
                         {__('Switch collection', 'tainacan')}
                     </Button>
                     <Button
-                        style={{ marginLeft: 'auto' }} 
+                        style={{ marginInlineStart: 'auto' }} 
                         isPrimary
                         onClick={ () => this.selectItem() }>
                         { __('Use this item', 'tainacan') }

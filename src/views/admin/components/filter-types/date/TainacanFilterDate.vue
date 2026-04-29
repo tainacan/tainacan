@@ -1,5 +1,8 @@
 <template>
-    <div class="date-filter-container">
+    <div
+            class="date-filter-container"
+            role="group"
+            :aria-labelledby="filterLabelId">
         <b-dropdown
                 v-if="filterTypeOptions.comparators.length > 1"
                 v-a11y-dropdown
@@ -9,12 +12,14 @@
                 @update:model-value="($event) => { resetPage(); onChangeComparator($event) }">
             <template #trigger>
                 <button
-                        :aria-label="$i18n.get('label_comparator')"
+                        :aria-label="comparatorAriaLabel"
                         class="button is-white">
                     <span class="icon is-small">
                         <i v-html="comparatorsObject[comparator].symbol" />
                     </span>
-                    <span class="icon">
+                    <span 
+                            aria-hidden="true"
+                            class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                     </span>
                 </button>
@@ -33,7 +38,7 @@
         <b-datepicker
                 v-model="value"
                 position="is-bottom-right"
-                :aria-labelledby="'filter-label-id-' + filter.id"
+                :aria-labelledby="filterLabelId"
                 :aria-next-label="$i18n.get('label_next_month')"
                 :aria-previous-label="$i18n.get('label_previous_month')"
                 :placeholder="filter.placeholder ? filter.placeholder : $i18n.get('instruction_select_a_date')"
@@ -92,6 +97,22 @@
         computed: {
             yearsOnlyValue() {
                 return this.value && typeof this.value.getUTCFullYear === 'function' ? this.value.getUTCFullYear() : null
+            },
+            filterLabelId() {
+                return this.filter && this.filter.id ? ('filter-label-id-' + this.filter.id) : null;
+            },
+            filterName() {
+                if (this.filter && this.filter.name)
+                    return this.filter.name;
+                if (this.metadatumName)
+                    return this.metadatumName;
+                return '';
+            },
+            comparatorAriaLabel() {
+                const comparatorLabel = this.$i18n.get('label_comparator');
+                return this.filterName
+                    ? this.$i18n.getWithVariables('label_%s_for_%s', [comparatorLabel, this.filterName])
+                    : comparatorLabel;
             }
         },
         watch: {
@@ -216,9 +237,9 @@
                 padding: 2px 0.5em !important;
                 height: var(--tainacan-button-min-height, 2.571em) !important;
                 min-height: 100% !important;
-                border-top-right-radius: 0 !important;
-                border-bottom-right-radius: 0 !important;
-                border-right-width: 0px !important;
+                border-start-end-radius: 0 !important;
+                border-end-end-radius: 0 !important;
+                border-inline-end-width: 0px !important;
 
                 i:not(.tainacan-icon-arrowdown) {
                     margin-top: -3px;
@@ -231,8 +252,8 @@
         .datepicker {
             
             :deep(input.input) {
-                border-top-left-radius: 0 !important;
-                border-bottom-left-radius: 0 !important;
+                border-start-start-radius: 0 !important;
+                border-end-start-radius: 0 !important;
             }
         }
 
@@ -249,7 +270,7 @@
 
             :deep(.dropdown) {
                 .dropdown-trigger button {
-                    border-right-width: 1px !important;
+                    border-inline-end-width: 1px !important;
                 }
             }
         }

@@ -383,6 +383,7 @@ abstract class REST_Controller extends \WP_REST_Controller {
 				'enum'    => array_merge(array_keys(get_post_stati()), array('any')),
 				'type'    => 'string',
 			),
+			'sanitize_callback' => array( $this, 'tainacan_sanitize_post_statuses' ),
 		);
 
 		$query_params['offset'] = array(
@@ -729,6 +730,43 @@ abstract class REST_Controller extends \WP_REST_Controller {
 			'tags' => [$this->rest_base],
 		];
 		return $schema;
+	}
+
+	/**
+	 * Sanitizes and validates a list of post statuses for use in REST requests.
+	 *
+	 * Accepts a list of status slugs (string or array). If it contains 'any',
+	 * returns all non-internal post statuses. Otherwise, validates each
+	 * status against those allowed by get_post_stati(); returns WP_Error if any
+	 * status is invalid.
+	 *
+	 * @param string|array $statuses   List of statuses (comma-separated string or array of slugs).
+	 * @param \WP_REST_Request $request REST request object (not used in the current logic).
+	 * @param string $parameter        Parameter name in the request (not used in the current logic).
+	 *
+	 * @return array|\WP_Error Array of valid status slugs or WP_Error if any status is not allowed.
+	 */
+	public function tainacan_sanitize_post_statuses( $statuses, $request, $parameter ) {
+		$statuses = wp_parse_slug_list( $statuses );
+		$allowStatuses = array_values(get_post_stati([]));
+		foreach ( $statuses as $status ) {
+			if ( $status === 'any' ) {
+				$allstatuses = get_post_stati(
+					['internal' => false]
+				);
+				return array_values($allstatuses);
+			} else {
+				if(!in_array($status, $allowStatuses)) {
+				return new \WP_Error(
+					'rest_forbidden_status',
+					__( 'Status is forbidden.', 'tainacan' ),
+					array( 'status' => rest_authorization_required_code() )
+				);
+			}
+
+			}
+		}
+		return $statuses;
 	}
 
 }

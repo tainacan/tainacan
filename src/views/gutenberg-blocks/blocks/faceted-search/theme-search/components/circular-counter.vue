@@ -33,7 +33,7 @@ export default {
 
 .circular-counter {
     position: relative;
-    float: left;
+    float: inline-start;
 }
 
 svg {

@@ -1,14 +1,12 @@
 <template>
     <div 
             v-if="!isFetchingData && chartData.totals && chartData.totals.by_user && !isBuildingChart"
-            :style="{
-                maxHeight: ((120 + (chartData.totals.by_user.length * 58)) <= 800 ? (120 + (chartData.totals.by_user.length * 58)) : 800) + 'px'
-            }"
+            :style="{ maxHeight: activitiesPerUserChartMaxHeight + 'px' }"
             class="report-card activities-per-user-box">
         <template v-if="chartData.totals && chartData.totals.by_user">
             <apexchart
                     ref="activities-per-user-chart"
-                    :height="120 + (chartData.totals.by_user.length * 58)"
+                    :height="activitiesPerUserChartHeight"
                     :series="chartSeries"
                     :options="chartOptions" />
         </template>
@@ -44,7 +42,17 @@ export default {
     computed: {
         ...mapGetters('report', {
             horizontalBarChartOptions: 'getHorizontalBarChartOptions',
-        })
+        }),
+        activitiesPerUserChartHeight() {
+            if (!this.chartData.totals?.by_user?.length) return 432;
+            return Math.max(120 + (this.chartData.totals.by_user.length * 58), 432);
+        },
+        activitiesPerUserChartMaxHeight() {
+            // Wrapper gets extra space so chart has padding; chart height stays activitiesPerUserChartHeight
+            const chartH = this.activitiesPerUserChartHeight;
+            const wrapperPadding = 60;
+            return Math.min(chartH + wrapperPadding, 800);
+        }
     },
     watch: {
         chartData: {
@@ -66,7 +74,8 @@ export default {
                 const orderedActivitiesPerUsers = JSON.parse(JSON.stringify(this.chartData.totals.by_user)).sort((a, b) => b.total - a.total );
                 let activityPerUserValues = [];
                 let activityPerUserLabels = [];
-                const userCount = 100 + (this.chartData.totals.by_user.length * 58);
+                // Use a minimum height so few users (e.g. 2) still get readable bar thickness
+                const chartHeight = Math.max(120 + (this.chartData.totals.by_user.length * 58), 432);
 
                 // Create empty series for each possible action
                 this.validActions.forEach((action) => {
@@ -96,7 +105,7 @@ export default {
                             activity.data.push( activityPerUser.by_action[activity.id] ? activityPerUser.by_action[activity.id] : 0 );
                         }
                     });
-                })
+                });
                 
                 this.chartSeries = activityPerUserValues;
    
@@ -105,10 +114,13 @@ export default {
                     ...{
                         chart: {
                             type: 'bar',
-                            height: userCount,
+                            height: chartHeight,
                             stacked: true,
                             toolbar: {
-                                show: true
+                                show: true,
+                                export: {
+                                    scale: 3
+                                },
                             },
                             zoom: {
                                 type: 'y',
@@ -120,6 +132,12 @@ export default {
                             text: this.$i18n.get('label_activity_per_user')
                         },
                         labels: activityPerUserLabels,
+                        plotOptions: {
+                            bar: {
+                                horizontal: true,
+                                barHeight: '78%'
+                            }
+                        },
                         yaxis: {
                             title: {
                                 text: ''

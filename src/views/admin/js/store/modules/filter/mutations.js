@@ -21,7 +21,12 @@ export const setSingleFilter = (state, { filter, index}) => {
 }
 
 export const addSingleFilter = (state, { filter, index}) => {
-    state.filters.splice( index, 0, filter );
+    const at = state.filters[index];
+    if (at !== undefined && at.id === undefined) {
+        state.filters.splice(index, 1, filter);
+    } else {
+        state.filters.splice(index, 0, filter);
+    }
 }
 
 export const setFilters = (state, filters) => {

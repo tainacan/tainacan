@@ -57,9 +57,10 @@
             color: var(--tainacan-heading-color);
             display: inline-block;
             width: calc(90% - 2rem);
-            margin-right: auto;
-            margin-bottom: 0px;
-            margin: 0 auto 0 0;
+            margin-inline-start: 0;
+            margin-inline-end: auto;
+            margin-block-start: 0;
+            margin-block-end: 0;
         }
         hr {
             margin: 3px 0 4px 0;
@@ -137,6 +138,7 @@
 
             .modal-card-title {
                 max-width: 100%;
+                font-weight: normal;
             }
 
             .modal-card-head, .modal-card-body, .modal-card-foot {
@@ -148,8 +150,8 @@
             .modal-custom-icon {
                 background-color: var(--tainacan-gray1);
                 border-radius: 50px;
-                height: 80px;
-                width: 80px;
+                height: 64px;
+                width: 64px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -164,7 +166,10 @@
             }
             .modal-card-body {
                 background: var(--tainacan-background-color);
-                padding: 0px 0px 12px 20px;
+                padding-block-start: 0px;
+                padding-block-end: 12px;
+                padding-inline-start: 20px;
+                padding-inline-end: 0px;
                 width: 50%;
                 font-size: 0.875em;
             }
@@ -298,7 +303,7 @@
                 overflow: hidden;
             }
             .media-frame-title {
-                padding-left: 0px;
+                padding-inline-start: 0px;
             }
         }
 

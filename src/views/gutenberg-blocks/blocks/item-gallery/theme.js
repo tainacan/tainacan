@@ -10,6 +10,12 @@ import { Navigation, A11y, Thumbs, Pagination } from 'swiper/modules';
 
 const { __ } = wp.i18n;
 
+if (typeof window.tainacan_plugin === 'undefined')
+    window.tainacan_plugin = {};
+
+if (!window.tainacan_plugin.classes)
+    window.tainacan_plugin.classes = {};
+
 tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
 
     /**
@@ -41,9 +47,9 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         
         if (!this.options.disable_lightbox) {
             if (this.main_gallery_selector)
-                this.initializePhotoswipe(this.main_gallery_selector + " .swiper-wrapper");
+                this.initializePhotoswipe(this.main_gallery_selector + " .tainacan-media-items");
             else if (this.thumbs_gallery_selector)
-                this.initializePhotoswipe(this.thumbs_gallery_selector + " .swiper-wrapper");
+                this.initializePhotoswipe(this.thumbs_gallery_selector + " .tainacan-media-items");
         }
     }
   
@@ -56,6 +62,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 slidesPerView: 'auto',
                 watchSlidesProgress: true,
                 navigation: {
+                    addIcons: false,
                     nextEl: '.swiper-navigation-next_' + this.thumbs_gallery_selector,
                     prevEl: '.swiper-navigation-prev_' + this.thumbs_gallery_selector,
                 },
@@ -72,7 +79,8 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                     prevSlideMessage: __( 'Previous slide', 'tainacan'),
                     nextSlideMessage: __( 'Next slide', 'tainacan'),
                     firstSlideMessage: __('This is the first slide', 'tainacan'),
-                    lastSlideMessage: __('This is the last slide', 'tainacan')
+                    lastSlideMessage: __('This is the last slide', 'tainacan'),
+                    slideLabelMessage: '' // Screenreaders already know the 1/x slide number due to <ul>/<li> structure
                 },
                 modules: [Navigation, A11y, Pagination],
                 on: {
@@ -94,7 +102,9 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 }
             };
             thumbsSwiperOptions = {...thumbsSwiperOptions, ...this.options.swiper_thumbs_options };
-            this.thumbsSwiper = new Swiper(this.thumbs_gallery_selector, thumbsSwiperOptions);
+
+            if ( !this.options.disable_thumbs_carousel)
+                this.thumbsSwiper = new Swiper(this.thumbs_gallery_selector, thumbsSwiperOptions);
         }
 
         if (this.main_gallery_selector) {
@@ -107,7 +117,8 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                     prevSlideMessage: __( 'Previous slide', 'tainacan'),
                     nextSlideMessage: __( 'Next slide', 'tainacan'),
                     firstSlideMessage: __('This is the first slide', 'tainacan'),
-                    lastSlideMessage: __('This is the last slide', 'tainacan')
+                    lastSlideMessage: __('This is the last slide', 'tainacan'),
+                    slideLabelMessage: '' // Screenreaders already know the 1/x slide number due to <ul>/<li> structure
                 },
                 pagination: {
                     el: '.swiper-pagination_' + this.main_gallery_selector,
@@ -125,13 +136,21 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 mainSwiperOptions.modules = [Navigation, A11y, Thumbs, Pagination];
             }
 
-            this.mainSwiper = new Swiper(this.main_gallery_selector, mainSwiperOptions);
+            if ( !this.options.disable_main_carousel)
+                this.mainSwiper = new Swiper(this.main_gallery_selector, mainSwiperOptions);
 
-            if (this.thumbs_gallery_selector && this.thumbsSwiper && this.mainSwiper) {
+            if (
+                !this.options.disable_thumbs_carousel &&
+                !this.options.disable_main_carousel &&
+                this.thumbs_gallery_selector &&
+                this.thumbsSwiper &&
+                this.mainSwiper
+            ) {
 
                 const refToMainSwiper = this.mainSwiper;
                 const refToThumbSwiper = this.thumbsSwiper;
 
+                
                 this.mainSwiper.on('slideChangeTransitionStart', function() {
                     refToThumbSwiper.slideTo(refToMainSwiper.activeIndex);
                 });
@@ -159,7 +178,6 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
 
         // Enhance links for accessibility before parsing items
         this.enhanceLinksForAccessibility(galleryElement);
-
         let items = this.parseThumbnailElements(galleryElement);
         let photoswipeOptions = {
             loop: false,
@@ -201,7 +219,11 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         this.setupKeyboardAccessibility(galleryElement);
         
         /* Updates Swiper instance from Photoswipe */
-        const swiperInstance = this.mainSwiper ? this.mainSwiper : this.thumbsSwiper;    
+        let swiperInstance = null;
+        if (!this.options.disable_main_carousel && this.mainSwiper)
+            swiperInstance = this.mainSwiper;
+        else if (!this.options.disable_thumbs_carousel && this.thumbsSwiper)
+            swiperInstance = this.thumbsSwiper;
 
         // Parse URL and open gallery from it if contains #&pid=3&gid=1
         const hashData = this.photoswipeParseHash();
@@ -226,7 +248,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
 
         // Swiper autoplay stop when image zoom */
         this.lightbox.on('initialZoomInEnd', () => {
-            if (swiperInstance.params && swiperInstance.params.autoplay && swiperInstance.params.autoplay.enabled && swiperInstance.autoplay.running)
+            if (swiperInstance && swiperInstance.params && swiperInstance.params.autoplay && swiperInstance.params.autoplay.enabled && swiperInstance.autoplay.running)
                 swiperInstance.autoplay.stop();
         });
 
@@ -234,7 +256,8 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         this.lightbox.on("change", () => {
             if (self.lightbox.pswp && !isNaN(self.lightbox.pswp.currIndex) && self.lightbox.pswp.currIndex >= 0) {
                 // This is the index of current photoswipe slide
-                swiperInstance.slideTo(self.lightbox.pswp.currIndex);
+                if (swiperInstance)
+                    swiperInstance.slideTo(self.lightbox.pswp.currIndex);
 
                 // Also updates URL for history navigation
                 // We only add to the history if it is the first time opening
@@ -251,7 +274,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         // Re-starts autoplay, if needed
         this.lightbox.on("close", () => {
             // Start swiper autoplay (on close - if swiper autoplay is true)
-            if (swiperInstance.params && swiperInstance.params.autoplay && swiperInstance.params.autoplay.enabled)
+            if (swiperInstance && swiperInstance.params && swiperInstance.params.autoplay && swiperInstance.params.autoplay.enabled)
                 swiperInstance.autoplay.start();
 
             // Clears URL hash as we no longer need history navigation
@@ -428,7 +451,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
      * PhotoSwipe works with any direct child of galleryElement, not just links
      * Some slides have links (images), others don't (PDFs, videos with iframe)
      * This makes all slides accessible via keyboard
-     * @param {HTMLElement} galleryElement - The gallery container element (.swiper-wrapper)
+     * @param {HTMLElement} galleryElement - The gallery container element (.tainacan-media-items)
      */
     enhanceLinksForAccessibility(galleryElement) {
         const slides = [];
@@ -476,9 +499,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             let mediaDescription = '';
             
             // Identify media type and get description
-            if (img && img.alt && img.alt.trim()) {
-                mediaDescription = img.alt.trim();
-            } else if (video) {
+            if (video) {
                 const videoTitle = video.getAttribute('title') || video.getAttribute('aria-label');
                 mediaDescription = videoTitle || __('Video', 'tainacan');
             } else if (audio) {
@@ -499,18 +520,9 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 ariaLabelParts.push(mediaDescription);
             }
             
-            // Add title if no media description is available
-            if (ariaLabelParts.length === 0 && titleElement && titleElement.textContent.trim()) {
+            // Add title if no media description is available unless it is an img with alt text (those will be read from the img tag)
+            if ( !img.alt && ariaLabelParts.length === 0 && titleElement && titleElement.textContent.trim() ) {
                 ariaLabelParts.push(titleElement.textContent.trim());
-            }
-            
-            // Add lightbox information
-            const lightboxInfo = __('Opens media gallery in lightbox', 'tainacan');
-            if (totalSlides > 1) {
-                const slideInfo = (index + 1) + ' ' + __('of', 'tainacan') + ' ' + totalSlides;
-                ariaLabelParts.push(lightboxInfo + ' (' + slideInfo + ')');
-            } else {
-                ariaLabelParts.push(lightboxInfo);
             }
             
             const ariaLabel = ariaLabelParts.join('. ');
@@ -518,10 +530,9 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             // If there's a link, enhance it
             if (mainLink) {
                 mainLink.setAttribute('aria-haspopup', 'dialog');
-                mainLink.setAttribute('aria-label', ariaLabel);
-                if (!mainLink.hasAttribute('tabindex')) {
-                    mainLink.setAttribute('tabindex', '0');
-                }
+                mainLink.removeAttribute('target');
+                if ( ariaLabel )
+                    mainLink.setAttribute('aria-label', ariaLabel);
             } else {
                 // No link exists - make the slide content focable and interactive
                 // Use the figure if available, otherwise use slideContent
@@ -529,7 +540,8 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 
                 focusableElement.setAttribute('role', 'button');
                 focusableElement.setAttribute('aria-haspopup', 'dialog');
-                focusableElement.setAttribute('aria-label', ariaLabel);
+                if ( ariaLabel )
+                    focusableElement.setAttribute('aria-label', ariaLabel);
                 focusableElement.setAttribute('tabindex', '0');
                 
                 // Add cursor style to indicate it's clickable (for visual users)
@@ -543,7 +555,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
     /**
      * Sets up keyboard accessibility for slides (Enter and Space keys)
      * Works with both links and non-link elements (like figures with iframes)
-     * @param {HTMLElement} galleryElement - The gallery container element (.swiper-wrapper)
+     * @param {HTMLElement} galleryElement - The gallery container element (.tainacan-media-items)
      */
     setupKeyboardAccessibility(galleryElement) {
         const slides = [];
@@ -552,7 +564,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         
         // Get all slide elements (<li>) - same approach as parseThumbnailElements
         Array.prototype.forEach.call(galleryElements, (liElement) => {
-            if (liElement.nodeType === 1 && liElement.classList.contains('swiper-slide')) {
+            if (liElement.nodeType === 1 && liElement.classList.contains('tainacan-media-item')) {
                 slides.push(liElement);
             }
         });
@@ -619,8 +631,47 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
 
 /* Loads and instantiates media components passed to the global variable */
 export default (element) => {
-    if (element && element.id && tainacan_plugin?.classes?.TainacanMediaGallery && tainacan_plugin?.tainacan_media_components && tainacan_plugin.tainacan_media_components[element.id]) {
-        const component = tainacan_plugin.tainacan_media_components[element.id];
+    if (!element || !element.id || !tainacan_plugin?.classes?.TainacanMediaGallery)
+        return;
+
+    const defaultComponentConfig = {
+        media_main_id: null,
+        media_thumbs_id: null,
+        media_id: element.id,
+        has_media_main: false,
+        has_media_thumbs: false,
+        swiper_main_options: {},
+        swiper_thumbs_options: {},
+        disable_main_carousel: false,
+        disable_thumbs_carousel: false,
+        disable_lightbox: false,
+        lightbox_has_light_background: false,
+        hide_media_name: false,
+        hide_media_caption: false,
+        hide_media_description: false,
+        show_share_button: false,
+        show_download_button: false,
+    };
+
+    let component = null;
+
+    // Config embedded in markup
+    const rawConfig = element?.dataset?.tainacanMediaComponentConfig;
+    if (rawConfig) {
+        try {
+            component = { ...defaultComponentConfig, ...(JSON.parse(rawConfig) || {}) };
+        } catch (e) {
+            component = null;
+        }
+    }
+
+    if (component && (Array.isArray(component.swiper_main_options) || !component.swiper_main_options))
+        component.swiper_main_options = {};
+
+    if (component && (Array.isArray(component.swiper_thumbs_options) || !component.swiper_thumbs_options))
+        component.swiper_thumbs_options = {};
+
+    if (component) {
         new tainacan_plugin.classes.TainacanMediaGallery(
             component.has_media_thumbs ? '#' + component.media_thumbs_id : null,
             component.has_media_main ? '#' + component.media_main_id : null,

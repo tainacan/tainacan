@@ -1,6 +1,7 @@
 <template>
     <div class="block">
         <b-select
+                ref="filterSelect"
                 :loading="isLoadingOptions"
                 :disabled="!isLoadingOptions && options.length <= 0"
                 :model-value="selected"
@@ -15,10 +16,7 @@
                     v-for="(option, index) in options"
                     :key="index"
                     :value="option.value">
-                {{ getUnescapedLabel(option.label) }}
-                <span 
-                        v-if="option.total_items != undefined"
-                        class="has-text-dark">{{ "(" + option.total_items + ")" }}</span>    
+                {{ getUnescapedLabel(option.label) + ( option.total_items ? (' (' + option.total_items + ')') : '' ) }}
             </option>
         </b-select>
     </div>
@@ -61,6 +59,10 @@
             this.$eventBusSearchEmitter.off('hasToReloadFacets', this.reloadOptions); 
         },
         methods: {
+            getFocusRestoreElement() {
+                const root = this.$refs.filterSelect && this.$refs.filterSelect.$el;
+                return root ? (root.querySelector('select') || root) : null;
+            },
             getUnescapedLabel(label) {
                 return typeof _.unescape === 'function' ? _.unescape(label) : label;
             },
@@ -73,8 +75,7 @@
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                let promise = null;
-                promise = this.getValuesPlainText({
+                const promise = this.getValuesPlainText({
                     metadatumId: this.metadatumId,
                     search: null,
                     isRepositoryLevel: this.isRepositoryLevel,
@@ -87,6 +88,7 @@
                         
                         if (res && res.data && res.data.values)
                             this.$emit('update-parent-collapse', res.data.values.length > 0 );
+                        this.$nextTick(() => this.tryRestoreFocus());
                     })
                     .catch( error => {
                         if (isCancel(error))

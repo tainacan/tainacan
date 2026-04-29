@@ -1,8 +1,8 @@
 #!/bin/bash
  
-# Executa o comando 'sass' para verificar se existe (veja http://stackoverflow.com/a/677212/329911)
+# Executes the 'sass' command to check if it exists (see http://stackoverflow.com/a/677212/329911)
 if ! npx --no sass --version >/dev/null 2>&1; then
-  echo >&2 "Sass não está instalado neste projeto. Rode 'npm install'."
+  echo >&2 "Sass is not installed in this project. Run 'npm install'."
   exit 1
 fi
 
@@ -10,9 +10,9 @@ fi
 SASS_STYLE="expanded"
 if [ "$1" = "--prod" ] || [ "$PROD_BUILD" = "true" ]; then
   SASS_STYLE="compressed"
-  echo "Compilando Sass em modo de produção (minificado)..."
+  echo "Compiling Sass in production mode (minified)..."
 else
-  echo "Compilando Sass..."
+  echo "Compiling Sass..."
 fi
 
 npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/admin/scss/tainacan-admin.scss:src/assets/css/tainacan-admin.css
@@ -28,8 +28,6 @@ npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=glob
 npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/collections-list/style.scss:src/assets/css/tainacan-gutenberg-block-collections-list.css
 
 npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/carousel-collections-list/style.scss:src/assets/css/tainacan-gutenberg-block-carousel-collections-list.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/items-list/style.scss:src/assets/css/tainacan-gutenberg-block-items-list.css
 
 npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/dynamic-items-list/style.scss:src/assets/css/tainacan-gutenberg-block-dynamic-items-list.css
 
@@ -73,5 +71,5 @@ npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=glob
 
 npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/settings/tainacan-settings.scss:src/assets/css/tainacan-settings.css
 
-echo "Compilação do Sass Concluído!"
+echo "Sass Compilation Finished!"
 exit 0

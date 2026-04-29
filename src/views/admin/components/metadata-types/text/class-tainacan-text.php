@@ -39,6 +39,7 @@ class Text extends Metadata_Type {
 			'mask' => [
                 'title' => __( 'Mask input', 'tainacan' ),
                 'description' => sprintf(
+					/* translators: %1$s is the link to the imask.js guide */
 					__( 'Define a pattern of fixed characters that will be used to mask the input. Learn how to build mask patterns <a target="_blank" href="%1$s">here</a>.', 'tainacan' ),
 					'https://imask.js.org/guide.html#masked-pattern'
 				)
@@ -59,20 +60,33 @@ class Text extends Metadata_Type {
 		$return = '';
 
 		if ( is_array($value) && $item_metadata->is_multiple() ) {
-			$total = sizeof($value);
-			$count = 0;
-			$prefix = $item_metadata->get_multivalue_prefix();
-			$suffix = $item_metadata->get_multivalue_suffix();
-			$separator = $item_metadata->get_multivalue_separator();
-
-			foreach ( $value as $el ) {
-				$return .= $prefix;
-				$return .= $this->make_clickable_links($el);
-				$return .= $suffix;
-				$count ++;
-
-				if ($count < $total)
-					$return .= $separator;
+			$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+			if ( $html_formatting === 'list' ) {
+				$total = count( $value );
+				if ( $total === 1 ) {
+					$return .= $this->make_clickable_links( reset( $value ) );
+				} elseif ( $total > 1 ) {
+					$return .= '<ul>';
+					foreach ( $value as $el ) {
+						$return .= '<li>' . $this->make_clickable_links($el) . '</li>';
+					}
+					$return .= '</ul>';
+				}
+			} else {
+				$total = sizeof($value);
+				$count = 0;
+				$prefix = $item_metadata->get_multivalue_prefix();
+				$suffix = $item_metadata->get_multivalue_suffix();
+				$separator = $item_metadata->get_multivalue_separator();
+				foreach ( $value as $el ) {
+					$return .= $prefix;
+					$return .= $this->make_clickable_links($el);
+					$return .= $suffix;
+					$count++;
+					if ( $count < $total ) {
+						$return .= $separator;
+					}
+				}
 			}
 		} else {
 			$return = $this->make_clickable_links($value);

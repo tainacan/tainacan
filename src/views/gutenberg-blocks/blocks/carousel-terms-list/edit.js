@@ -98,15 +98,15 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                             <img
                                 src={ termItems[0] ? thumbHelper.getSrc(termItems[0]['thumbnail'], 'tainacan-medium', termItems[0]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                 srcSet={ termItems[0] ? thumbHelper.getSrcSet(termItems[0]['thumbnail'], 'tainacan-medium', termItems[0]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
-                                alt={ termItems[0] && termItems[0].thumbnail_alt ? termItems[0].thumbnail_alt : (termItems[0] && termItems[0].name ? termItems[0].name : __( 'Thumbnail', 'tainacan' )) } />
+                                alt={ termItems[0] && termItems[0].thumbnail_alt ? termItems[0].thumbnail_alt : (termItems[0] && termItems[0].name ? termItems[0].name : '') } />
                             <img
                                     src={ termItems[1] ? thumbHelper.getSrc(termItems[1]['thumbnail'], 'tainacan-medium', termItems[1]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                     srcSet={ termItems[1] ? thumbHelper.getSrcSet(termItems[1]['thumbnail'], 'tainacan-medium', termItems[1]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
-                                    alt={ termItems[1] && termItems[1].thumbnail_alt ? termItems[1].thumbnail_alt : (termItems[1] && termItems[1].name ? termItems[1].name : __( 'Thumbnail', 'tainacan' )) } />
+                                    alt={ termItems[1] && termItems[1].thumbnail_alt ? termItems[1].thumbnail_alt : (termItems[1] && termItems[1].name ? termItems[1].name : '') } />
                             <img
                                     src={ termItems[2] ? thumbHelper.getSrc(termItems[2]['thumbnail'], 'tainacan-medium', termItems[2]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                     srcSet={ termItems[2] ? thumbHelper.getSrcSet(termItems[2]['thumbnail'], 'tainacan-medium', termItems[2]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
-                                    alt={ termItems[2] && termItems[2].thumbnail_alt ? termItems[2].thumbnail_alt : (termItems[2] && termItems[2].name ? termItems[2].name : __( 'Thumbnail', 'tainacan' )) } />
+                                    alt={ termItems[2] && termItems[2].thumbnail_alt ? termItems[2].thumbnail_alt : (termItems[2] && termItems[2].name ? termItems[2].name : '') } />
                         </div>
                         :
                         <img
@@ -122,7 +122,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                                     ( imageSize === 'full' ? `${tainacan_blocks.base_url}/assets/images/placeholder_square.png` : `${tainacan_blocks.base_url}/assets/images/placeholder_square_medium.png`)
                                 )
                             }
-                            alt={ term.thumbnail_alt ? term.thumbnail_alt : (term.name ? term.name : __( 'Thumbnail', 'tainacan' ) ) }/>
+                            alt={ term.thumbnail_alt ? term.thumbnail_alt : (term.name ? term.name : '' ) }/>
                     }
                     { !hideName ? <span style={{ maxWidth: variableTermsWidth && showTermThumbnail ? thumbHelper.getWidth(term.thumbnail['thumbnail'], imageSize) + 'px' : 'unset' }}>{ term.name ? term.name : '' }</span> : null }
                 </a>
@@ -483,7 +483,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                                 </ul>
                             </div>
                             <button
-                                    className="swiper-button-prev"
+                                    className="swiper-button-prev wp-element-button"
                                     slot="button-prev"
                                     style={{ cursor: 'not-allowed' }}>
                                 <svg
@@ -502,7 +502,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                                 </svg>
                             </button>
                             <button
-                                    className="swiper-button-next"
+                                    className="swiper-button-next wp-element-button"
                                     slot="button-next"
                                     style={{ cursor: 'not-allowed' }}>
                                 <svg

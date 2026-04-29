@@ -958,7 +958,7 @@ class Facets extends TAINACAN_UnitApiTestCase {
 			]
 		] );
 		$values = $this->get_values($values);
-		$this->assertEquals(3, sizeof($values));
+		$this->assertEquals(2, sizeof($values));
 		
 		// test parent 
 		$values = $this->repository->fetch_all_metadatum_values( $this->meta_3_tax->get_id(), [
@@ -1174,10 +1174,10 @@ class Facets extends TAINACAN_UnitApiTestCase {
 
 		foreach ($parents as $parent) {
 			for($i=0; $i < $items_repeat; $i++) {
-				$rando_h = rand (1, $h);
+				$rando_h = wp_rand(1, $h);
 				$id = $parent;
 				for ($count=0; $count < $rando_h; $count++ ) {
-					$rando_c = rand (1, $nchildrens) - 1;
+					$rando_c = wp_rand(1, $nchildrens) - 1;
 					$idx = ($id * $nchildrens) + $rando_c;
 					if($idx > count($data)-1) {
 						$idx = ($parent * $nchildrens) + $rando_c;

@@ -25,6 +25,7 @@
         <b-autocomplete
                 v-else
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
+                v-a11y-autocomplete
                 :disabled="disabled"
                 :model-value="localValue"
                 :data="options"
@@ -174,13 +175,11 @@
 
                 if (this.searchQuery != '') {
 
-                    let promise = null;
-
                     // Cancels previous Request
                     if (this.getOptionsValuesCancel != undefined)
                         this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                    promise = this.getValuesPlainText({
+                    const promise = this.getValuesPlainText({
                         metadatumId: this.itemMetadatum.metadatum.id,
                         search: this.searchQuery,
                         isRepositoryLevel: this.currentCollectionId == 'default', 

@@ -39,36 +39,36 @@ abstract class Exporter {
 	}
 
 	/**
-	 * The ID for this importer/exporter session
+	 * The ID for this exporter session
 	 *
-	 * When creating a new importer/exporter session via API, an id is returned and used to access this
-	 * importer/exporter instance. This is temporarly saved in the database and discarded after the bg process is triggered
+	 * When creating a new exporter session via API, an id is returned and used to access this
+	 * exporter instance. This is temporarly saved in the database and discarded after the bg process is triggered
 	 * 
 	 * @var identifier
 	 */
 	protected $id;
 
 	/**
-	 * Stores the options for the importer/exporter. Each importer/exporter might use this property to save
+	 * Stores the options for the exporter. Each exporter might use this property to save
 	 * their own specific option
 	 * @var array
 	 */
 	protected $options = [];
 
 	/**
-	 * Stores the default options for the importer/exporter options
+	 * Stores the default options for the exporter options
 	 * @var array
 	 */
 	protected $default_options = [];
 
 	/**
-	 * Declares what are the steps the importer/exporter will run, in the right order.
+	 * Declares what are the steps the exporter will run, in the right order.
 	 *
 	 * By default, there is only one step, and the callback is the process_collections method 
 	 * that process items for the collections in the collections array.
 	 *
 	 * Child classes may declare as many steps as they want and can keep this default step to use 
-	 * this method for importer/exporter the items. But it is optional.
+	 * this method for exporter the items. But it is optional.
 	 * 
 	 * @var array
 	 */
@@ -91,11 +91,11 @@ abstract class Exporter {
 	/**
 	 * This array holds the structure that the default step 'process_collections' will handle.
 	 *
-	 * Its an array of the target collections, with their IDs, an identifier from the source, the total number of items to be importer/exporter, the mapping array 
+	 * Its an array of the target collections, with their IDs, an identifier from the source, the total number of items to be exporter, the mapping array 
 	 * from the source structure to the ID of the metadata in tainacan
 	 *
 	 * The format of the map is an array where the keys are the metadata IDs of the destination collection and the 
-	 * values are the identifier from the source. This could be an ID or a string or whatever the importer/exporter finds appropriate to handle
+	 * values are the identifier from the source. This could be an ID or a string or whatever the exporter finds appropriate to handle
 	 *
 	 * The source_id can be anyhting you like, that helps you relate this collection to your source.
 	 * 
@@ -139,7 +139,7 @@ abstract class Exporter {
 	protected $transients = [];
 
 	/**
-	 * Whether to abort importer/exporter execution.
+	 * Whether to abort exporter execution.
 	 * @var bool
 	 */
 	protected $abort = false;
@@ -386,7 +386,7 @@ abstract class Exporter {
 	}
 
 	/**
-	 * Schedule importer abortion at the end of run()
+	 * Schedule	exporter abortion at the end of run()
 	 * @return void
 	 */
 	protected function abort() {
@@ -394,7 +394,7 @@ abstract class Exporter {
 	}
 
 	/**
-	 * Return whether importer should abort execution or not
+	 * Return whether exporter should abort execution or not
 	 * @return bool 
 	 */
 	public function get_abort() {
@@ -407,7 +407,7 @@ abstract class Exporter {
 	 * 
 	 * It automatically gets the attribute progress_label from the current step running.
 	 * 
-	 * Importers/Exporters may change this label whenever they want
+	 * Exporters may change this label whenever they want
 	 * 
 	 * @return string
 	 */
@@ -425,12 +425,13 @@ abstract class Exporter {
 		}
 
 		if ( sizeof($steps) > 1 ) {
+			/* translators: %1$d is the current step, %2$d is the total number of steps */
 			$preLabel = sprintf( __('Step %1$d of %2$d', 'tainacan'), $current_step + 1, sizeof($steps) );
 			$label = $preLabel . ': ' . $label;
 		}
 
 		if ( empty($label) ) {
-			$label = __('Running Importer', 'tainacan');
+			$label = __('Running exporter', 'tainacan');
 		}
 
 		return $label;
@@ -438,7 +439,7 @@ abstract class Exporter {
 
 	/**
 	 * Gets the current value to build the progress bar and give feedback to the user
-	 * on the background process that is running the importer.
+	 * on the background process that is running the exporter.
 	 * 
 	 * It does so by comparing the "size" attribute with the $in_step_count class attribute
 	 * where size indicates the total size of iterations the step will take and $this->in_step_count 
@@ -557,7 +558,7 @@ abstract class Exporter {
 	
 	
 	/**
-	 * Method implemented by child importer/exporter to return the HTML of the Options Form to be rendered in the Importer page
+	 * Method implemented by child exporter to return the HTML of the Options Form to be rendered in the Exporter page
 	 */
 	public function options_form() {}
 
@@ -586,6 +587,7 @@ abstract class Exporter {
 		}
 		$final = microtime(true);
 		$total = ($final - $init);
+		/* translators: %f is the time in seconds */
 		$time_log = sprintf( __('Processed in %f seconds', 'tainacan'), $total );
 		$this->add_log($time_log);
 
@@ -627,7 +629,7 @@ abstract class Exporter {
 			'paged'   => $page,
 			'order'   => 'DESC',
 			'orderby' => 'ID',
-			'post_status' => ["private", "publish", "draft"]
+			'post_status' => ['publish','private','pending', 'draft']
 		];
 
 		$this->add_log("Retrieving $per_page items on page index: $page , item index: $index, in collection " . $collection_definition['id'] );
@@ -727,7 +729,7 @@ abstract class Exporter {
 			$fp = fopen($this->output_files[$key]['filename'], 'a');
 			if($fp == false) {
 				$file_name = $this->output_files[$key]['filename'];
-				throw new \Exception("Cannot open file $file_name");
+				throw new \Exception('Cannot open file ' . esc_html($file_name));
 			}
 			fwrite($fp, $data);
 			fclose($fp);

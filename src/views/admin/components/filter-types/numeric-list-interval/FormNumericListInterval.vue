@@ -58,8 +58,12 @@
                                 tabindex="0"
                                 class="add-link"
                                 :title="$i18n.get('add_value')"
-                                @click="addInterval(index)">
-                            <span class="icon is-small">
+                                @click="addInterval(index)"
+                                @keydown.enter.prevent="addInterval(index)"
+                                @keydown.space.prevent="addInterval(index)">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
                             &nbsp;{{ $i18n.get('add_value') }}
@@ -73,8 +77,12 @@
                                 tabindex="0"
                                 class="add-link"
                                 :title="$i18n.get('remove_value')"
-                                @click="removeInterval(index)">
-                            <span class="icon is-small">
+                                @click="removeInterval(index)"
+                                @keydown.enter.prevent="removeInterval(index)"
+                                @keydown.space.prevent="removeInterval(index)">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-repprovedcircle" />
                             </span>
                             &nbsp;{{ $i18n.get('remove_value') }}

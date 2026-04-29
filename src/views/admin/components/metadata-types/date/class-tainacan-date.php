@@ -75,24 +75,43 @@ class Date extends Metadata_Type {
 		$return = '';
 
 		if ( $item_metadata->is_multiple() ) {
-			$total = sizeof($value);
-			$count = 0;
-			$prefix = $item_metadata->get_multivalue_prefix();
-			$suffix = $item_metadata->get_multivalue_suffix();
-			$separator = $item_metadata->get_multivalue_separator();
-
-			foreach ( $value as $el ) {
-
-				if( empty( $el ) ) 
-					continue;
-
-				$return .= $prefix;
-				$return .= $this->format_date_value($el);
-				$return .= $suffix;
-				$count ++;
-
-				if ($count < $total)
-					$return .= $separator;
+			$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+			if ( $html_formatting === 'list' ) {
+				$list_items = [];
+				foreach ( $value as $el ) {
+					if ( empty( $el ) ) {
+						continue;
+					}
+					$list_items[] = $this->format_date_value($el);
+				}
+				$total = count( $list_items );
+				if ( $total === 1 ) {
+					$return .= $list_items[0];
+				} elseif ( $total > 1 ) {
+					$return .= '<ul>';
+					foreach ( $list_items as $item ) {
+						$return .= '<li>' . $item . '</li>';
+					}
+					$return .= '</ul>';
+				}
+			} else {
+				$total = sizeof($value);
+				$count = 0;
+				$prefix = $item_metadata->get_multivalue_prefix();
+				$suffix = $item_metadata->get_multivalue_suffix();
+				$separator = $item_metadata->get_multivalue_separator();
+				foreach ( $value as $el ) {
+					if ( empty( $el ) ) {
+						continue;
+					}
+					$return .= $prefix;
+					$return .= $this->format_date_value($el);
+					$return .= $suffix;
+					$count++;
+					if ( $count < $total ) {
+						$return .= $separator;
+					}
+				}
 			}
 		} else {
 			$return = $this->format_date_value($value);
@@ -118,6 +137,7 @@ class Date extends Metadata_Type {
 
 	private function format_error_msg($value) {
 		return sprintf(
+			/* translators: %1$s is the expected format, %2$s is the value given to the date metadatum */
 			__('Invalid date format. Expected format is %1$s, got %2$s.', 'tainacan'),
 			$this->format,
 			$value

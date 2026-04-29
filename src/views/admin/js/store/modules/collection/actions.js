@@ -196,13 +196,16 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage, status, 
                 let collections = res.data;
                 commit('setCollections', collections);
 
-                commit('setRepositoryTotalCollections', {
-                    draft: res.headers['x-tainacan-total-collections-draft'],
-                    trash: res.headers['x-tainacan-total-collections-trash'],
-                    publish: res.headers['x-tainacan-total-collections-publish'],
-                    pending: res.headers['x-tainacan-total-collections-pending'],
-                    private: res.headers['x-tainacan-total-collections-private'],
+                const totalsByStatusPrefix = 'x-tainacan-total-collections-';
+                const repositoryTotalCollections = {};
+                Object.keys(res.headers).forEach((headerName) => {
+                    const lower = headerName.toLowerCase();
+                    if (lower.startsWith(totalsByStatusPrefix)) {
+                        const slug = lower.slice(totalsByStatusPrefix.length);
+                        repositoryTotalCollections[slug] = res.headers[headerName];
+                    }
                 });
+                commit('setRepositoryTotalCollections', repositoryTotalCollections);
 
                 resolve({'collections': collections, 'total': res.headers['x-wp-total'] });
             }) 

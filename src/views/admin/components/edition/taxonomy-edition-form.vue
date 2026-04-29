@@ -112,7 +112,9 @@
                                         class="button is-outlined"
                                         :class="{ 'disabled': editFormErrors['status'] && (form.status == 'publish' || form.status == 'private' || form.status == 'pending' ) }"
                                         style="width: auto">
-                                    <span class="icon has-text-dark">
+                                    <span 
+                                            aria-hidden="true"
+                                            class="icon has-text-dark">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-18px"
                                                 :class="$statusHelper.getIcon(form.status)" />
@@ -124,8 +126,9 @@
                                         {{ $i18n.get('status_auto-draft') }}
                                     </template>
                                     <span 
-                                            style="margin-left: 0.5em;"
-                                            class="icon is-small">
+                                            style="margin-inline-start: 0.5em;"
+                                            class="icon is-small"
+                                            aria-hidden="true">
                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                     </span>
                                 </button>
@@ -134,7 +137,9 @@
                                     v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft' && (taxonomy.status != 'auto-draft' || status.slug != 'trash'))"
                                     :key="index"
                                     @click="form.status = statusOption.slug">
-                                <span class="icon has-text-dark">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon has-text-dark">
                                     <i 
                                             class="tainacan-icon tainacan-icon-18px"
                                             :class="$statusHelper.getIcon(statusOption.slug)" />
@@ -254,7 +259,7 @@
                 </div>
                 <div    
                         v-if="!$route.query.recent"
-                        style="margin-right: auto;"
+                        style="margin-inline-end: auto;"
                         class="control">
                     <button
                             id="button-cancel-taxonomy-creation"
@@ -286,7 +291,9 @@
             <section class="section">
                 <div class="content has-text-dark has-text-centered">
                     <p>
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-taxonomies" />
                         </span>
                     </p>
@@ -336,6 +343,7 @@
             }
 
             if (formNotSaved && this.taxonomy) {
+                const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: CustomDialog,
                     props: {
@@ -348,7 +356,10 @@
                     },
                     trapFocus: true,
                     customClass: 'tainacan-modal',
-                    canCancel: ['escape', 'outside']
+                    canCancel: ['escape', 'outside'],
+                    events: {
+                        beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                    }
                 });   
             } else {
                 next();
@@ -680,7 +691,7 @@
         padding: 10px var(--tainacan-one-column);
         position: absolute;
         bottom: 0;
-        right: 0;
+        inset-inline-end: 0;
         z-index: 9999;
         background-color: var(--tainacan-gray1);
         width: 100%;
@@ -720,7 +731,7 @@
 
         .update-info-section {
             color: var(--tainacan-info-color);
-            margin-right: auto;
+            margin-inline-end: auto;
             display: flex;
             flex-wrap: nowrap;
         }
@@ -729,10 +740,10 @@
             display: inline-flex;
             font-size: 1.0em;
             margin-top: 0;
-            margin-left: 24px;
+            margin-inline-start: 24px;
 
             .tainacan-help-tooltip-trigger {
-                margin-left: 0.25em;
+                margin-inline-start: 0.25em;
             }
         }
 
@@ -747,14 +758,14 @@
         }
         .footer {
             padding: 13px 0.5em;
-            margin-left: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
+            margin-inline-start: calc(-1 * var(--tainacan-one-column) - var(--tainacan-page-container--inner-padding-x));
             width: 100%;
             flex-wrap: wrap;
             height: auto;
             position: fixed;
 
             .update-info-section {
-                margin-left: auto;
+                margin-inline-start: auto;
                 margin-bottom: 0.75em;
                 margin-top: -0.25em;
             }

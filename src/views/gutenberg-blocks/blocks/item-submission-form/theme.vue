@@ -54,7 +54,9 @@
                                 <section class="section">
                                     <div class="content has-text-centered">
                                         <p>
-                                            <span class="icon">
+                                            <span 
+                                                    aria-hidden="true"
+                                                    class="icon">
                                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-upload" />
                                             </span>
                                         </p>
@@ -166,7 +168,9 @@
                             <button
                                     type="button"
                                     @click.prevent="form.document_type = 'attachment'">
-                                <span class="icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-upload" />
                                 </span>
                             </button>
@@ -176,7 +180,9 @@
                             <button
                                     type="button"
                                     @click.prevent="form.document_type = 'text'">
-                                <span class="icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text" />
                                 </span>
                             </button>
@@ -186,7 +192,9 @@
                             <button
                                     type="button"
                                     @click.prevent="form.document_type = 'url'">
-                                <span class="icon">
+                                <span 
+                                        aria-hidden="true"
+                                        class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url" />
                                 </span>
                             </button>
@@ -250,7 +258,9 @@
                         <section class="section">
                             <div class="content has-text-centered">
                                 <p>
-                                    <span class="icon">
+                                    <span 
+                                            aria-hidden="true"
+                                            class="icon">
                                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-upload" />
                                     </span>
                                 </p>
@@ -306,7 +316,9 @@
                 <div class="section-label">
                     <label v-if="attachmentsSectionLabel">
                         <span>{{ attachmentsSectionLabel }}</span>
-                        <span class="icon has-text-dark">
+                        <span 
+                                aria-hidden="true"
+                                class="icon has-text-dark">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments" />
                         </span>
                     </label>
@@ -324,7 +336,9 @@
                         <section class="section">
                             <div class="content has-text-centered">
                                 <p>
-                                    <span class="icon">
+                                    <span 
+                                            aria-hidden="true"
+                                            class="icon">
                                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-upload" />
                                     </span>
                                 </p>
@@ -401,7 +415,9 @@
             <div class="section-label">
                 <label v-if="metadataSectionLabel">
                     <span>{{ metadataSectionLabel }}</span>
-                    <span class="icon has-text-dark">
+                    <span 
+                            aria-hidden="true"
+                            class="icon has-text-dark">
                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata" />
                     </span>
                 </label>
@@ -416,9 +432,11 @@
                     @keydown.enter.prevent="toggleCollapseAll()"
                     @keydown.space.prevent="toggleCollapseAll()">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                <span class="icon">
+                <span 
+                        aria-hidden="true"
+                        class="icon">
                     <i
-                            :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
+                            :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !collapseAll }"
                             class="tainacan-icon tainacan-icon-1-25em" />
                 </span>
             </a>
@@ -469,12 +487,13 @@
                                 @keydown.space.prevent="!hideCollapses && !isSectionHidden(metadataSection.id) ? toggleMetadataSectionCollapse(sectionIndex) : ''">
                             <span 
                                     v-if="!hideCollapses"
+                                    aria-hidden="true"
                                     class="icon"
                                     @click="toggleMetadataSectionCollapse(sectionIndex)">
                                 <i 
                                         :class="{
                                             'tainacan-icon-arrowdown' : (metadataSectionCollapses[sectionIndex] || formErrorMessage) && !isSectionHidden(metadataSection.id),
-                                            'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || formErrorMessage) || isSectionHidden(metadataSection.id)
+                                            'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !(metadataSectionCollapses[sectionIndex] || formErrorMessage) || isSectionHidden(metadataSection.id)
                                         }"
                                         class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                             </span>
@@ -575,7 +594,9 @@
                     class="form-error-area is-danger">
                 <div class="form-error-area-icon">
                     <a class="help-button has-text-danger">
-                        <span class="icon">
+                        <span 
+                                aria-hidden="true"
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-alertcircle" />
                         </span>
                     </a>
@@ -583,7 +604,6 @@
                 <div class="form-error-area-messages">
                     <strong>{{ formErrorMessage }}</strong>
                     <template v-if="errors.length && errors[0].errors && errors[0].errors.length">
-                        <p>{{ $i18n.get('instruction_click_error_to_go_to_metadata') }}</p>
                         <ol>
                             <template 
                                     v-for="(error, index) of errors"
@@ -592,7 +612,11 @@
                                     <a 
                                             v-if="['thumbnail', 'attachments', 'document'].includes(error.metadatum_id) || metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')]"
                                             class="has-text-danger"
-                                            @click="goToErrorMetadatum(error)">
+                                            role="button"
+                                            tabindex="0"
+                                            @click="goToErrorMetadatum(error)"
+                                            @keydown.enter.prevent="goToErrorMetadatum(error)"
+                                            @keydown.space.prevent="goToErrorMetadatum(error)">
                                         {{ getErrorMessage(error.errors) }}
                                     </a>                           
                                     <p v-else>
@@ -639,7 +663,7 @@
                         style="gap: 1rem;">
                     <div
                             class="wp-block-button is-style-outline"
-                            style="margin-right: auto;">
+                            style="margin-inline-end: auto;">
                         <button 
                                 id="tainacan-item-submission-block-button--cancel"
                                 type="button"
@@ -701,7 +725,9 @@
             <div class="content has-text-dark has-text-centered">
                 <br>
                 <p>
-                    <span class="icon is-medium">
+                    <span 
+                            aria-hidden="true"
+                            class="icon is-medium">
                         <i class="tainacan-icon tainacan-icon-30px tainacan-icon-updating tainacan-icon-spin" />
                     </span>
                 </p>
@@ -730,7 +756,9 @@
             <div class="content has-text-dark has-text-centered">
                 <br>
                 <p>
-                    <span class="icon is-medium">
+                    <span 
+                            aria-hidden="true"
+                            class="icon is-medium">
                         <i class="tainacan-icon tainacan-icon-30px tainacan-icon-approvedcircle" />
                     </span>
                 </p>
@@ -1366,6 +1394,7 @@ export default {
 
         .column-large-width {
             .tainacan-compound-group {
+                list-style: none;
                 display: inline-block;
                 font-size: 1.125em;
                 margin-top: -0.25em;
@@ -1406,9 +1435,10 @@ export default {
         .metadata-value {
                 
             .tainacan-compound-group {
-                margin-left: 2px;
-                padding-left: 0.875em;
-                border-left: 1px solid var(--tainacan-gray3);
+                list-style: none;
+                margin-inline-start: 2px;
+                padding-inline-start: 0.875em;
+                border-inline-start: 1px solid var(--tainacan-gray3);
 
                 .tainacan-compound-metadatum .label {
                     margin-bottom: 0.25em;
@@ -1426,7 +1456,10 @@ export default {
                     background: var(--tainacan-gray3);
                     content: none;
                     color: transparent;
-                    margin: 1em auto 1em -0.875em;
+                    margin-inline-start: -0.875em;
+                    margin-block-start: 1em;
+                    margin-block-end: 1em;
+                    margin-inline-end: auto;
                 }
             }
         }
@@ -1449,8 +1482,11 @@ export default {
             margin-bottom: 0em;
         }
         .field {
-            padding: 12px 0px 12px 34px;
-            margin-left: 16px;
+            padding-inline-start: 34px;
+            padding-inline-end: 0;
+            padding-block-start: 12px;
+            padding-block-end: 12px;
+            margin-inline-start: 16px;
         }
         :deep(input) {
             box-sizing: border-box;
@@ -1496,7 +1532,7 @@ export default {
     .section-toggle p {
         font-size: 0.875em;
         margin-bottom: 0;
-        padding-left: calc(0.75em - 1px);
+        padding-inline-start: calc(0.75em - 1px);
     }
 
     .section-box {
@@ -1505,8 +1541,8 @@ export default {
         margin-bottom: 14px;
 
         .field {
-            padding-left: 0 !important;
-            margin-left: 0 !important;
+            padding-inline-start: 0 !important;
+            margin-inline-start: 0 !important;
         }
 
         ul {
@@ -1515,8 +1551,8 @@ export default {
             flex-wrap: wrap;
 
             li {
-                margin-left: 0.25em;
-                margin-right: 1.5em;
+                margin-inline-start: 0.25em;
+                margin-inline-end: 1.5em;
                 text-align: center;
                 button {
                     border-radius: 50px;
@@ -1556,7 +1592,7 @@ export default {
             list-style: none;
         }
         .document-buttons-row {
-            text-align: right;
+            text-align: end;
             top: -21px;
             position: relative;
         }
@@ -1572,8 +1608,8 @@ export default {
         margin-top: 1.25em;
 
         .field {
-            margin-left: 0;
-            margin-right: 0;
+            margin-inline-start: 0;
+            margin-inline-end: 0;
             padding: 0.75em 0.75em 0.5em 0.75em;
             border: 1px dashed var(--tainacan-input-border-color);
 
@@ -1600,7 +1636,7 @@ export default {
 
         .form-error-area-icon {
             font-size: 2rem;
-            padding-right: 0.75rem;
+            padding-inline-end: 0.75rem;
         }
 
         .form-error-area-messages > p {
@@ -1621,10 +1657,10 @@ export default {
         border-bottom: 1px solid var(--tainacan-input-border-color);
 
         .icon {
-            margin-left: -0.5rem;
+            margin-inline-start: -0.5rem;
         }
         .tainacan-help-tooltip-trigger .icon {
-            margin-left: 0.25rem;
+            margin-inline-start: 0.25rem;
         }
     }
 
@@ -1656,14 +1692,14 @@ export default {
         }
         .update-info-section {
             color: var(--tainacan-info-color);
-            margin-right: auto;
+            margin-inline-end: auto;
         }
 
         .help {
             display: inline-flex;
             font-size: 1.0em;
             margin-top: 0;
-            margin-left: 24px;
+            margin-inline-start: 24px;
         }
     }
 

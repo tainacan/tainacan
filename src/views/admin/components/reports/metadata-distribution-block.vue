@@ -78,7 +78,10 @@ export default {
                             stacked: true,
                             stackType: '100%',
                             toolbar: {
-                                show: true
+                                show: true,
+                                export: {
+                                    scale: 3
+                                }
                             },
                             zoom: {
                                 type: 'y',

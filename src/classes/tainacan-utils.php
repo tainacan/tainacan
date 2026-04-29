@@ -28,8 +28,8 @@ function tainacan_get_api_postdata() {
  * @param string|\WP_Post_Status $post_status Post status name or object.
  * @return bool True if the post status is viewable, false otherwise.
  */
-if ( !function_exists("is_post_status_viewable") ) {
-	function is_post_status_viewable( $post_status ) {
+if ( !function_exists("tainacan_is_post_status_viewable") ) {
+	function tainacan_is_post_status_viewable( $post_status ) {
 		if ( is_scalar( $post_status ) ) {
 			$post_status = \get_post_status_object( $post_status );
 			if ( ! $post_status ) {
@@ -51,13 +51,13 @@ if ( !function_exists("is_post_status_viewable") ) {
 
 /**
  * DEV Interface utility, used for debugging.
- * This functions checks if the TNC_ENABLE_DEV_WP_INTERFACE constant is defined and true.
+ * This functions checks if the tainacan_enable_dev_wp_interface constant is defined and true.
  * If this returns true, Tainacan post types will be displayed in the WP Admin interface.
  *
  * @return boolean
  */
-function tnc_enable_dev_wp_interface() {
-    return defined('TNC_ENABLE_DEV_WP_INTERFACE') && true === TNC_ENABLE_DEV_WP_INTERFACE ? true : false;
+function tainacan_enable_dev_wp_interface() {
+    return defined('tainacan_enable_dev_wp_interface') && true === tainacan_enable_dev_wp_interface ? true : false;
 }
 
 /**
@@ -67,33 +67,189 @@ function tnc_enable_dev_wp_interface() {
  * Extends the default 'post' context to include iframe elements for embedded content.
  *
  * @since 0.1.0
+ * @deprecated Use wp_kses() with wp_kses_allowed_html() directly instead.
+ *            Example: wp_kses($content, wp_kses_allowed_html('tainacan_content'))
  *
  * @param string $content The content to sanitize.
  * @param string $context The kses context to use. Default 'tainacan_content'.
  * @return string Sanitized content.
  */
-function wp_kses_tainacan($content, $context = 'tainacan_content') {
+function tainacan_wp_kses($content, $context = 'tainacan_content') {
+	_deprecated_function(
+		__FUNCTION__,
+		'0.21.0',
+		'wp_kses($content, wp_kses_allowed_html($context))'
+	);
 	$allowed_html = wp_kses_allowed_html($context);
 	return wp_kses($content, $allowed_html);
 }
+/**
+ * Adds CSS properties to the safe_style_css filter
+ * These properties are needed for the media gallery component (e.g., .media-full-content)
+ * 
+ * @param array $styles Array of allowed CSS property names
+ * @return array Modified array with additional CSS properties
+ * @since 1.0.0
+ */
+function tainacan_get_default_allowed_styles($styles) {
+	$additional_styles = ['display', 'position', 'visibility'];
+	foreach ($additional_styles as $style) {
+		if (!in_array($style, $styles, true)) {
+			$styles[] = $style;
+		}
+	}
+	return $styles;
+}
+
+/**
+ * Returns SVG allowed HTML elements and attributes for wp_kses
+ * 
+ * @return array Array of SVG-related HTML elements and their allowed attributes
+ */
+function tainacan_get_svg_allowed_html() {
+	return [
+		'svg'      => array(
+			'class'           => true,
+			'aria-hidden'     => true,
+			'aria-labelledby' => true,
+			'role'            => true,
+			'xmlns'           => true,
+			'width'           => true,
+			'height'          => true,
+			'viewbox'         => true,
+			'fill'            => true,
+			'stroke'          => true,
+			'stroke-width'    => true,
+			'stroke-linecap'  => true,
+			'stroke-linejoin' => true,
+		),
+		'g'       => array(
+			'fill'            => true,
+			'stroke'          => true,
+			'stroke-width'    => true,
+			'stroke-linecap'  => true,
+			'stroke-linejoin' => true,
+			'transform'       => true,
+		),
+		'title'   => array( 'title' => true ),
+		'path'    => array(
+			'd'               => true,
+			'fill'            => true,
+			'stroke'          => true,
+			'stroke-width'    => true,
+			'stroke-linecap'  => true,
+			'stroke-linejoin' => true,
+			'transform'       => true,
+		),
+		'rect'    => array(
+			'x'            => true,
+			'y'            => true,
+			'width'        => true,
+			'height'       => true,
+			'fill'         => true,
+			'stroke'       => true,
+			'stroke-width' => true,
+			'rx'           => true,
+			'ry'           => true,
+		),
+		'circle'  => array(
+			'cx'           => true,
+			'cy'           => true,
+			'r'            => true,
+			'fill'         => true,
+			'stroke'       => true,
+			'stroke-width' => true,
+		),
+		'ellipse' => array(
+			'cx'           => true,
+			'cy'           => true,
+			'rx'           => true,
+			'ry'           => true,
+			'fill'         => true,
+			'stroke'       => true,
+			'stroke-width' => true,
+		),
+		'line'    => array(
+			'x1'           => true,
+			'x2'           => true,
+			'y1'           => true,
+			'y2'           => true,
+			'stroke'       => true,
+			'stroke-width' => true,
+		),
+		'polyline' => array(
+			'points'       => true,
+			'fill'         => true,
+			'stroke'       => true,
+			'stroke-width' => true,
+		),
+		'polygon'  => array(
+			'points'       => true,
+			'fill'         => true,
+			'stroke'       => true,
+			'stroke-width' => true,
+		),
+		'text'     => array(
+			'x'           => true,
+			'y'           => true,
+			'fill'        => true,
+			'font-size'   => true,
+			'font-family' => true,
+			'text-anchor' => true,
+		),
+		'defs'     => array(),
+		'style'    => array( 'type' => true ),
+		'use'      => array(
+			'xlink:href' => true,
+			'href'       => true,
+		),
+	];
+}
+
 add_filter('wp_kses_allowed_html', function($allowedposttags, $context) {
 	switch ( $context ) {
 		case 'tainacan_content':
 			$post_allowed_html = wp_kses_allowed_html('post');
-			return  array_merge(
-				$post_allowed_html, 
-				['iframe' => array(
-					'src'             => true,
-					'height'          => true,
-					'width'           => true,
-					'frameborder'     => true,
-					'allowfullscreen' => true,
-				)]
+			// Add data-module attribute to div elements
+			// Note: style attribute (for div/img) and img width/height are already allowed in 'post' context
+			// The safe_style_css filter (added globally above) ensures CSS properties like display, position, visibility are allowed
+			if (isset($post_allowed_html['div'])) {
+				$post_allowed_html['div']['data-module'] = true;
+			} else {
+				$post_allowed_html['div'] = array('data-module' => true);
+			}
+			// Add iframe support
+			$post_allowed_html['iframe'] = array(
+				'src'             => true,
+				'height'          => true,
+				'width'           => true,
+				'frameborder'     => true,
+				'allowfullscreen' => true,
+			);
+			// Add SVG support (reusing shared SVG rules)
+			return array_merge($post_allowed_html, tainacan_get_svg_allowed_html());
+		case 'tainacan_menu_link':
+			$post_allowed_html = wp_kses_allowed_html('post');
+			return array_merge(
+				$post_allowed_html,
+				tainacan_get_svg_allowed_html()
 			);
 		default:
 			return $allowedposttags;
 	}
 }, 10, 2);
+
+/**
+ * Allow the geo: URL protocol in sanitized content (e.g. geocoordinate metadata links).
+ * WordPress's wp_kses() only allows protocols from wp_allowed_protocols(), which does not include geo:.
+ * Without this filter, href='geo:lat,lng' would be stripped when content is passed through wp_kses().
+ */
+add_filter( 'kses_allowed_protocols', function( $protocols ) {
+	if ( ! in_array( 'geo', $protocols, true ) ) {
+		$protocols[] = 'geo';
+	}
+	return $protocols;
+}, 10, 1 );
 
 /**
  * Makes untrashed posts return to their previous status instead of 'draft'.
@@ -103,3 +259,53 @@ add_filter('wp_kses_allowed_html', function($allowedposttags, $context) {
 add_filter( 'wp_untrash_post_status', function( $new_status, $post_id, $previous_status ) {
 	return $previous_status;
 }, 10, 3 );
+
+/**
+ * Filter callback for load_script_translation_file: resolves lazy-loaded chunk handles to the translation JSON.
+ * Handles are aligned with build output (e.g. tainacan-chunks-blocks-{slug}-theme, tainacan-chunks-{name}-js-{name}-main),
+ * so the pattern is always the handle. Finds the language-pack JSON whose comment.reference contains it.
+ * Returns $file when no match (same as default WordPress behavior).
+ *
+ * @param string|false $file   Path to the translation file to load.
+ * @param string       $handle Script handle.
+ * @param string       $domain Text domain.
+ * @return string|false
+ */
+function tainacan_load_script_translation_file_for_chunk( $file, $handle, $domain ) {
+	if ( $domain !== 'tainacan' || strpos( $handle, 'tainacan-chunks-' ) !== 0 ) {
+		return $file;
+	}
+	$pattern = $handle;
+	static $cache = array();
+	$locale = get_locale();
+	$cache_key = $handle . '-' . $locale;
+	if ( isset( $cache[ $cache_key ] ) ) {
+		return $cache[ $cache_key ];
+	}
+	$lang_dir = WP_LANG_DIR . '/plugins/';
+	if ( ! is_dir( $lang_dir ) ) {
+		return $file;
+	}
+	$json_files = glob( $lang_dir . 'tainacan-' . $locale . '-*.json' );
+	if ( $json_files === false || empty( $json_files ) ) {
+		return $file;
+	}
+	foreach ( $json_files as $path ) {
+		$content = @file_get_contents( $path );
+		if ( $content === false ) {
+			continue;
+		}
+		$data = json_decode( $content, true );
+		if ( ! is_array( $data ) ) {
+			continue;
+		}
+		$ref = isset( $data['comment']['reference'] ) ? $data['comment']['reference'] : '';
+		if ( $ref !== '' && strpos( $ref, $pattern ) !== false ) {
+			$cache[ $cache_key ] = $path;
+			return $path;
+		}
+	}
+	return $file;
+}
+
+add_filter( 'load_script_translation_file', 'tainacan_load_script_translation_file_for_chunk', 10, 3 );

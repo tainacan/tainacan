@@ -51,7 +51,9 @@
                 :class="localOrder == 'asc' ? 'sorting-button-selected' : ''"
                 :label="wpI18n('Sort ascending', 'tainacan')"
                 @click="localOrder = 'asc'; fetchItems()">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i>
                     <svg
                             width="24"
@@ -66,7 +68,9 @@
                 :class="localOrder == 'desc' ? 'sorting-button-selected' : ''"
                 :label="wpI18n('Sort descending', 'tainacan')"
                 @click="localOrder = 'desc'; fetchItems(); ">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i>
                     <svg
                             width="24"
@@ -82,7 +86,9 @@
                 :label="wpI18n('Search', 'tainacan')"
                 class="search-button"
                 @click="fetchItems()">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i>
                     <svg    
                             width="24"
@@ -110,7 +116,9 @@
                 class="previous-button"
                 :label="wpI18n('Previous page', 'tainacan')"
                 @click="paged--; fetchItems()">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i>
                     <svg
                             width="30"
@@ -126,11 +134,13 @@
         </button> 
         <button
                 v-if="paged < totalItems/localMaxItemsNumber && items.length < totalItems"
-                :style="{ marginLeft: paged <= 1 ? 'auto' : '0' }"
+                :style="{ marginInlineStart: paged <= 1 ? 'auto' : '0' }"
                 class="next-button"
                 :label="wpI18n('Next page', 'tainacan')"
                 @click="paged++; fetchItems()">
-            <span class="icon">
+            <span 
+                    aria-hidden="true"
+                    class="icon">
                 <i>
                     <svg
                             width="30"
@@ -208,7 +218,7 @@
                             :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"
                             :srcset="$thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype'])"
                             :hash="$thumbHelper.getBlurhashString(item['thumbnail'], imageSize)"
-                            :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : wpI18n( 'Thumbnail', 'tainacan' ))"
+                            :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : '')"
                             :transition-duration="500" />
                     <span v-if="item.title">{{ item.title }}</span>
                 </a>
@@ -254,7 +264,7 @@
                                 :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype'])"
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], imageSize)"
-                                :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : wpI18n( 'Thumbnail', 'tainacan' ))"
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : '')"
                                 :transition-duration="500" />
                         <span v-if="item.title">{{ item.title }}</span>
                     </a>
@@ -599,9 +609,15 @@ export default {
 
     .metadata-value {
         .tainacan-compound-group {
-            margin-left: 2px;
-            padding-left: 0.875em;
-            border-left: 1px solid var(--tainacan-gray3);
+            list-style: none;
+            margin-inline-start: 2px;
+            padding-inline-start: 0.875em;
+            border-inline-start: 1px solid var(--tainacan-gray3);
+            
+            & > .tainacan-compound-metadatum:not(:last-child) {
+                border-bottom: 1px solid var(--tainacan-gray2);
+                margin-bottom: 1em;
+            }
 
             .tainacan-compound-metadatum .label {
                 margin-bottom: 0.25em;
@@ -626,14 +642,20 @@ export default {
             }
         }
         .tainacan-relationship-group {
+            text-align: start;
+            list-style: none;
+            margin-inline-start: 0;
+            padding-inline-start: 0;
+
             .tainacan-relationship-metadatum {
                 .tainacan-relationship-metadatum-header {
                     display: flex;
                     align-items: center;
                     img {
-                        margin-right: 12px;
+                        margin-inline-end: 12px;
                         max-width: 22px;
                         max-height: 22px;
+                        border-radius: var(--tainacan-item-border-radius, 0px);
                     }
                     .label {
                         font-weight: normal;
@@ -645,7 +667,7 @@ export default {
                     }
                 }
                 .tainacan-metadatum {
-                    margin-left: 40px;
+                    margin-inline-start: 34px;
                     .label {
                         color: var(--tainacan-gray4);
                         font-size: 1em !important;
@@ -658,12 +680,25 @@ export default {
             &>.multivalue-separator {
                 display: block;
                 max-height: 1px;
-                width: calc(100% - 40px);
+                width: calc(100% - 34px);
                 background: var(--tainacan-gray2);
                 content: none;
                 color: transparent;
-                margin: 0.5em 0 0.5em 40px;
+                margin-inline-start: 34px;
+                margin-inline-end: 0;
+                margin-block-start: 0.5em;
+                margin-block-end: 0.5em;
             }
+        }
+    }
+    ul.tainacan-relationship-group {
+        list-style: none;
+        margin-inline-start: 0;
+        padding-inline-start: 0;
+
+        & > .tainacan-relationship-metadatum:not(:last-child) {
+            border-bottom: 1px solid var(--tainacan-gray2);
+            margin-bottom: 1em;
         }
     }
 </style>

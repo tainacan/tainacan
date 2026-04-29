@@ -7,7 +7,7 @@
             <button         
                     class="button is-medium is-white is-align-self-flex-start"
                     :aria-label="$i18n.get('close')"
-                    @click="$emit('close')">
+                    @click="closeModal()">
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-close tainacan-icon-1-125em" />
                 </span>
@@ -92,7 +92,7 @@
                         id="button-cancel-importer-edition"
                         class="button is-outlined"
                         type="button"
-                        @click="$emit('close')">
+                        @click="closeModal()">
                     {{ $i18n.get('exit') }}</button>
             </div>
         </div>
@@ -109,6 +109,7 @@ export default {
         capabilityKey: String
     },
     emits: [
+        'beforeClose',
         'close'
     ],
     data() {
@@ -133,6 +134,10 @@ export default {
             'addCapabilityToRole',
             'removeCapabilityFromRole'
         ]),
+        closeModal() {
+            this.$emit('beforeClose');
+            this.$emit('close');
+        },
         updateRole(role, value) {
             if (value)
                 this.addCapabilityToRole({ capabilityKey: this.capabilityKey.replace('%d', 'all'), role: role })
@@ -177,7 +182,7 @@ export default {
             break-inside: avoid;
 
             label {
-                margin-left: 12px;
+                margin-inline-start: 12px;
 
                 :deep(.control-label) {
                     white-space: normal;

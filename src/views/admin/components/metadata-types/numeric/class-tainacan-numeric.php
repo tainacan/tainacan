@@ -52,6 +52,7 @@ class Numeric extends Metadata_Type {
 
 		foreach ($value as $numeric_value) {
 			if( !empty($numeric_value) && !is_numeric($numeric_value) ) {
+				/* translators: %s is the value of the numeric metadata */
 				$this->add_error( sprintf(__('The value (%s) is not a valid number', 'tainacan'), $numeric_value ) );
 				return false;
 			}

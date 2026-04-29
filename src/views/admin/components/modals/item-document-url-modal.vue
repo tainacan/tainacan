@@ -73,14 +73,14 @@
                         id="button-cancel-url-link-selection"
                         class="button is-outlined"
                         type="button"
-                        @click="$emit('close')">
+                        @click="closeModal()">
                     {{ $i18n.get('cancel') }}</button>
             </div>
             <div class="control">
                 <button
                         id="button-submit-url-link-selection"
                         class="button is-success"
-                        @click.prevent="confirmURLSelection();$emit('close');">
+                        @click.prevent="confirmURLSelection(); closeModal();">
                     {{ $i18n.get('save') }}</button>
             </div>
         </div>
@@ -98,6 +98,7 @@ export default {
     },
     emits: [
         'confirmURLSelection',
+        'beforeClose',
         'close'
     ],
     data(){
@@ -127,6 +128,10 @@ export default {
         }
     },
     methods: {
+        closeModal() {
+            this.$emit('beforeClose');
+            this.$emit('close');
+        },
         confirmURLSelection() {
             this.$emit('confirmURLSelection',
                 { 

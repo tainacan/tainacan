@@ -27,7 +27,9 @@
                                 :disabled="!isSelectingCollections"
                                 class="button is-white">
                             <span>{{ $i18n.get('label_bulk_actions') }}</span>
-                            <span class="icon">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button> 
@@ -190,7 +192,7 @@
                             <span 
                                     v-if="$statusHelper.hasIcon(collection.status)"
                                     v-tooltip="{
-                                        content: $i18n.get('status_' + collection.status),
+                                        content: $statusHelper.getStatusLabel(collection.status),
                                         autoHide: true,
                                         html: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip'],
@@ -212,8 +214,8 @@
                                 @click.right="onRightClickCollection($event, collection.id, index)">
                             <span>
                                 <img 
-                                        :alt="$i18n.get('label_thumbnail')"
                                         class="table-thumb" 
+                                        alt=""
                                         :src="$thumbHelper.getSrc(collection['thumbnail'], 'tainacan-small')">
                             </span>
                         </td>
@@ -261,6 +263,7 @@
                         </td>
                         <!-- Total items -->
                         <td
+                                v-if="!isOnTrash"
                                 class="column-small-width column-align-right"
                                 :label="$i18n.get('label_total_items')" 
                                 :aria-label="$i18n.get('label_total_items') + ': ' + (collection.total_items ? getTotalItems(collection.total_items) : 0)" 
@@ -360,7 +363,9 @@
                                         class="button-edit"
                                         :aria-label="$i18n.getFrom('collections','edit_item')" 
                                         :href="$routerHelper.getAbsoluteAdminPath() + $routerHelper.getCollectionEditPath(collection.id)"
-                                        @click.prevent.stop="goToCollectionEditPage(collection.id)">                      
+                                        @click.prevent.stop="goToCollectionEditPage(collection.id)"
+                                        @keydown.enter.prevent="goToCollectionEditPage(collection.id)"
+                                        @keydown.space.prevent="goToCollectionEditPage(collection.id)">                      
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
@@ -369,6 +374,7 @@
                                                 placement: 'auto',
                                                 html: true
                                             }"
+                                            aria-hidden="true"
                                             class="icon">
                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-settings" />
                                     </span>
@@ -380,7 +386,9 @@
                                         role="button"
                                         tabindex="0"
                                         :aria-label="$i18n.get('label_button_delete')" 
-                                        @click.prevent.stop="deleteOneCollection(collection)">
+                                        @click.prevent.stop="deleteOneCollection(collection)"
+                                        @keydown.enter.prevent="deleteOneCollection(collection)"
+                                        @keydown.space.prevent="deleteOneCollection(collection)">
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
@@ -388,7 +396,8 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip'],
                                                 placement: 'auto'
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i 
                                                 :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                                 class="tainacan-icon tainacan-icon-1-25em" />
@@ -409,7 +418,8 @@
                                                 placement: 'auto',
                                                 html: true
                                             }"
-                                            class="icon">
+                                            class="icon"
+                                            aria-hidden="true">
                                         <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                                     </span>
                                 </a>
@@ -490,13 +500,10 @@ export default {
                 this.selectedCollections.splice(i, 1, !this.allCollectionsOnPageSelected);
         },
         getTotalItems(total_items) {
-            return Number(total_items['publish']) + Number(total_items['private']) + Number(total_items['pending']) + Number(total_items['draft']);
+            return this.$statusHelper.sumTotalItemsByStatus(total_items);
         },
         getTotalItemsDetailed(total_items) {
-            return this.$i18n.get('status_public') + ': ' + total_items['publish'] + '<br> ' +
-                   this.$i18n.get('status_private') + ': ' + total_items['private'] + '<br> ' +
-                   this.$i18n.get('status_pending') + ': ' + total_items['pending'] + '<br> ' +
-                   this.$i18n.get('status_draft') + ': ' + total_items['draft'];
+            return this.$statusHelper.getTotalItemsDetailedHtml(total_items);
         },
         deleteOneCollection(collection) {
             let collectionName = '';
@@ -513,6 +520,7 @@ export default {
                 [ collectionName ]
             );
             
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
@@ -546,7 +554,10 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
             this.clearContextMenu();
         },
@@ -557,6 +568,7 @@ export default {
             
             // For multiple collections, we don't add individual names
             // The message already indicates multiple collections are being deleted
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
@@ -593,7 +605,10 @@ export default {
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
-                canCancel: ['escape', 'outside']
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
             });
         },
         openCollection() {
@@ -647,7 +662,10 @@ export default {
     @use "../../scss/_tables.scss";
 
     .selection-control {
-        padding: 6px 0px 0px 12px;
+        padding-inline-start: 12px;
+        padding-inline-end: 0px;
+        padding-block-start: 6px;
+        padding-block-end: 0px;
         background: var(--tainacan-background-color);
         height: 40px;
 

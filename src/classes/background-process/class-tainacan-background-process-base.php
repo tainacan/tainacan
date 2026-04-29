@@ -184,7 +184,7 @@ abstract class Background_Process_Base extends Async_Request {
 	 * @return string
 	 */
 	protected function generate_key( $length = 64 ) {
-		$unique  = md5( microtime() . rand() );
+		$unique  = md5( microtime() . wp_rand() );
 		$prepend = $this->identifier . '_batch_';
 
 		return substr( $prepend . $unique, 0, $length );
@@ -471,6 +471,7 @@ abstract class Background_Process_Base extends Async_Request {
 		// Adds every 5 minutes to the existing schedules.
 		$schedules[ $this->identifier . '_cron_interval' ] = array(
 			'interval' => MINUTE_IN_SECONDS * $interval,
+			/* translators: %d is the number of minutes */
 			'display'  => sprintf( __( 'Every %d Minutes', 'tainacan' ), $interval ),
 		);
 

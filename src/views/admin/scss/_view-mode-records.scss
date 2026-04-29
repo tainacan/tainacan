@@ -93,31 +93,33 @@
 
         .record-checkbox {
             position: absolute;
-            margin-left: 1.0em;
+            margin-inline-start: 1.0em;
             margin-top: 7px;
             z-index: 9;
         }
         .actions-area {
             position: relative;
-            float: right;
+            float: inline-end;
             top: calc(-1 * var(--tainacan-container-padding));
             bottom: 0;
-            padding-right: 12px;
+            padding-inline-end: 12px;
             //width: 80px;
             margin-bottom: -25px;
             display: flex;
             justify-content: space-between;
-            visibility: hidden;
+            //visibility: hidden; Removed as it prevents focus to return to the area when coming from modals
             opacity: 0;
             transition: visibility 0.2s, opacity 0.3s ease, top 0.2s ease;
 
             a {
-                margin-left: 12px;
+                margin-inline-start: 12px;
                 opacity: 0;
                 transition: opacity 0.3s ease;
             }
         }
-        &:hover .actions-area {
+        &:hover .actions-area,
+        &:focus .actions-area,
+        &:focus-within .actions-area {
             visibility: visible;
             opacity: 1.0;
             top:  calc(-1 * 0.5em - var(--tainacan-container-padding));
@@ -130,14 +132,17 @@
         .record-line {
             height: 1px;
             background-color: var(--tainacan-item-heading-hover-background-color);
-            margin-left: -44px;
-            margin-right: -44px;
+            margin-inline-start: -44px;
+            margin-inline-end: -44px;
             opacity: 0;
             visibility: hidden;
         }
         .tainacan-record-thumbnail {
-            float: right;
-            margin: 0 0 var(--tainacan-container-padding) var(--tainacan-container-padding);
+            float: inline-end;
+            margin-inline-end: 0;
+            margin-inline-start: var(--tainacan-container-padding);
+            margin-block-start: 0;
+            margin-block-end: var(--tainacan-container-padding);
         }
         .tainacan-record-item-thumbnail,
         img {
@@ -174,13 +179,13 @@
             .slideshow-icon {
                 color: var(--tainacan-info-color); 
                 position: absolute;
-                right: 7px;
+                inset-inline-end: 7px;
                 top: 7px;
                 transform: scale(0.0);
                 transition: transform 0.2s ease;
             }
             .icon:not(.slideshow-icon) {
-                float: left;
+                float: inline-start;
                 margin-top: -1px;
             }
         }
@@ -242,15 +247,15 @@
     &.hide-items-selection {
         .tainacan-record {
             &:hover .media { background-color: var(--tainacan-gray0) !important; cursor: default; }
-            .metadata-title { padding-left: 1.5em !important; margin-bottom: -0.75em; }
+            .metadata-title { padding-inline-start: 1.5em !important; margin-bottom: -0.75em; }
             &:hover .metadata-title { background-color: var(--tainacan-gray0) !important; cursor: default; }
         }
     }
 }
 .tainacan-records-container--skeleton {
     display: block;
-    padding-left: 30px;
-    padding-right: 30px;
+    padding-inline-start: 30px;
+    padding-inline-end: 30px;
     column-gap: 30px;
     height: auto !important;
 
@@ -297,6 +302,6 @@
 }
 @media screen and (min-width: 769px) {
     .is-filters-menu-open #filters-modal+#items-list-area .tainacan-records-container {
-        margin-left: 30px;
+        margin-inline-start: 30px;
     }
 }

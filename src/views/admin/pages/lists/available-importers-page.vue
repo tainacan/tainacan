@@ -5,16 +5,22 @@
         <h2>{{ $i18n.get('label_available_importers') }}</h2>
         <p>{{ $i18n.get('instruction_select_an_importer_type') }}</p>
         <div 
-                role="list"
+                :role="Object.keys(availableImporters).length > 1 ? 'list' : undefined"
                 class="importer-types-container tainacan-clickable-cards">
             <router-link
                     v-for="importerType in availableImporters"
                     :key="importerType.slug"
                     class="importer-type tainacan-clickable-card"
-                    role="listitem"
+                    :role="Object.keys(availableImporters).length > 1 ? 'listitem' : undefined"
                     :to="$routerHelper.getImporterEditionPath(importerType.slug)">
-                <h4>{{ importerType.name }}</h4>
-                <p>{{ importerType.description }}</p>            
+                <dl class="importer-type-definition">
+                    <dt class="importer-type-name">
+                        {{ importerType.name }}
+                    </dt>
+                    <dd class="importer-type-description">
+                        {{ importerType.description }}
+                    </dd>
+                </dl>
             </router-link>
 
         </div>
@@ -32,7 +38,7 @@ export default {
     name: 'ImporterEditionForm',
     data(){
         return {
-            availableImporters: [],
+            availableImporters: {},
             isLoading: false
         }
     },

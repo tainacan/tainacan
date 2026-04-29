@@ -15,7 +15,6 @@ const tainacanBlocksPerformWhenDocumentIsLoaded = callback => {
 // Adds data-module to blocks inserted previous to Tainacan 0.18.4
 const addDataModuleToOldBlocks = () => {
     const tainacanBlocks = [
-        'items-list',
         'collections-list',
         'terms-list',
         'search-bar',

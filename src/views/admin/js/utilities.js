@@ -235,6 +235,15 @@ A11yDropdownPlugin.install = function (app, options = {}) {
     app.directive('a11y-dropdown', a11yDropdownDirective);
 };
 
+// A11Y AUTOCOMPLETE DIRECTIVE PLUGIN - Adds combobox/listbox semantics to Buefy autocomplete and taginput
+import a11yAutocompleteDirective from './directives/a11y-autocomplete.js';
+
+export const A11yAutocompletePlugin = {};
+
+A11yAutocompletePlugin.install = function (app, options = {}) {
+    app.directive('a11y-autocomplete', a11yAutocompleteDirective);
+};
+
 // A11Y TABS DIRECTIVE PLUGIN - Adds keyboard navigation to tab components
 import a11yTabsDirective from './directives/a11y-tabs.js';
 

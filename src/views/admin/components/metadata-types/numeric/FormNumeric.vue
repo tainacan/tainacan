@@ -49,7 +49,11 @@
                 <button
                         class="button is-white is-pulled-right"
                         :aria-label="$i18n.get('edit')"
-                        @click.prevent="showEditStepOptions = true">
+                        role="button"
+                        tabindex="0"
+                        @click.prevent="showEditStepOptions = true"
+                        @keydown.enter.prevent="showEditStepOptions = true"
+                        @keydown.space.prevent="showEditStepOptions = true">
                     <span 
                             v-tooltip="{
                                 content: $i18n.get('edit'),
@@ -57,7 +61,8 @@
                                 placement: 'bottom',
                                 popperClass: ['tainacan-tooltip', 'tooltip']
                             }"
-                            class="icon">
+                            class="icon"
+                            aria-hidden="true">
                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-edit has-text-secondary" />
                     </span>
                 </button>

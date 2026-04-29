@@ -2,6 +2,7 @@
     <b-taginput
             :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
             v-model="selected"
+            v-a11y-autocomplete="{ appendToBody: !itemMetadatum.item }"
             expanded
             :disabled="disabled"
             size="is-small"
@@ -21,7 +22,6 @@
             check-infinite-scroll
             :has-counter="false"
             :append-to-body="!itemMetadatum.item"
-            :open-on-focus="false"
             @add="emitAdd"
             @remove="emitRemove"
             @typing="search"

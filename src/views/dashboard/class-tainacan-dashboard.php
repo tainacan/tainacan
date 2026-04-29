@@ -60,7 +60,8 @@ class Dashboard extends Pages {
 			'tainacan-dashboard-scripts',
 			$TAINACAN_BASE_URL . '/assets/js/tainacan_dashboard.js',
 			array('jquery', 'postbox'),
-			TAINACAN_VERSION
+			TAINACAN_VERSION,
+			true
 		);
 
 		$dashboard_settings = array(
@@ -167,7 +168,7 @@ class Dashboard extends Pages {
 			$tainacan_dashboard_cards[] = array(
 				'id' => 'tainacan-dashboard-info-card',
 				'title' => __( 'Help content and tutorials', 'tainacan' ),
-				'description' => __('The Tainacan community provides some help resources. Below we list the main ones for you to clear your doubts.', 'tainacan'),
+				'description' => __('The Tainacan community offers a variety of support materials. Check out the main channels to get answers to your questions.', 'tainacan'),
 				'content' => array( $this, 'tainacan_help_dashboard_card' ),
 				'icon' => $this->get_svg_icon( 'info' ),
 				'color' => 'gray',
@@ -180,7 +181,7 @@ class Dashboard extends Pages {
 			$tainacan_dashboard_cards[] = array(
 				'id' => 'tainacan-dashboard-news-card',
 				'title' => __( 'News and events', 'tainacan' ),
-				'description' => __('Keep an eye on oficial Tainacan news.', 'tainacan'),
+				'description' => __('Keep an eye on official Tainacan news.', 'tainacan'),
 				'content' => array( $this, 'tainacan_news_dashboard_card' ),
 				'constrol' => array( $this, 'tainacan_news_dashboard_card_control' ),
 				'icon' => $this->get_svg_icon( 'openurl' ),
@@ -290,7 +291,7 @@ class Dashboard extends Pages {
 
 		$content_callback = function () use ($args, $callback_args) {
 			if ( $args['description'] )
-				echo '<p class="tainacan-dashboard-card-description">' . $args['description'] . '</p>';
+				echo '<p class="tainacan-dashboard-card-description">' . wp_kses($args['description'], wp_kses_allowed_html('tainacan_content')) . '</p>';
 
 			echo '<hr>';
 			call_user_func($args['content'], $callback_args);
@@ -317,91 +318,91 @@ class Dashboard extends Pages {
 		<ul class="tainacan-dashboard-card-list" data-color-scheme="blue">
 			<?php if ( ( current_user_can( 'manage_tainacan' ) ||	current_user_can( 'tnc_rep_edit_taxonomies') ) && !$this->has_admin_ui_option('hideDashboardRepositoryCardTaxonomiesButton') ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/taxonomies'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/taxonomies')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('taxonomies'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('taxonomies'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Taxonomies', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Taxonomies', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( ( current_user_can( 'manage_tainacan' ) ||	current_user_can( 'tnc_rep_edit_metadata') ) && !$this->has_admin_ui_option('hideDashboardRepositoryCardMetadataButton' ) ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/metadata'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/metadata')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('metadata'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('metadata'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Metadata', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Metadata', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( ( current_user_can( 'manage_tainacan' ) ||	current_user_can( 'tnc_rep_edit_filters') ) && !$this->has_admin_ui_option('hideDashboardRepositoryCardFiltersButton' ) ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/filters'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/filters')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('filters'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('filters'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Filters', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Filters', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( current_user_can( 'manage_tainacan' ) && !$this->has_admin_ui_option('hideDashboardRepositoryCardImportersButton' )  ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/importers'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/importers')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('importers'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('importers'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Importers', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Importers', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( current_user_can( 'manage_tainacan' ) && $this->has_admin_ui_option('showDashboardRepositoryCardExportersButton' )  ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/exporters'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/exporters')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('export'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('export'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Exporters', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Exporters', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( current_user_can( 'read' ) && $this->has_admin_ui_option('showDashboardRepositoryCardProcessesButton' )  ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/processes'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/processes')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('processes'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('processes'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Processes', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Processes', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( current_user_can( 'read' ) && $this->has_admin_ui_option('showDashboardRepositoryCardActivitiesButton' )  ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/activities'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/activities')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('activities'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('activities'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Activities', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Activities', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( current_user_can( 'tnc_rep_edit_users' ) && $this->has_admin_ui_option('showDashboardRepositoryCardCapabilitiesButton' )  ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/capabilities'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/capabilities')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('capability'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('capability'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Capabilities', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Capabilities', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( current_user_can( 'manage_tainacan' ) && $this->has_admin_ui_option('showDashboardRepositoryCardReportsButton' )  ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/reports'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/reports')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('reports'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('reports'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Reports', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Reports', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
@@ -417,41 +418,41 @@ class Dashboard extends Pages {
 		<ul class="tainacan-dashboard-card-list">
 			<?php if ( !$this->has_admin_ui_option('hideDashboardCollectionsCardCollectionsListButton' ) ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('collections'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('collections'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Collections list', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Collections list', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( !$this->has_admin_ui_option('hideDashboardCollectionsCardItemsListButton' ) ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/items'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/items')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('items'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('items'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Items list', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Items list', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( ( current_user_can('manage_tainacan') || current_user_can('tnc_rep_edit_collections') ) && !$this->has_admin_ui_option('hideDashboardCollectionsCardNewCollectionButton' ) ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/new'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/new')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('add'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('add'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('New collection', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('New collection', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( !$this->has_admin_ui_option('hideDashboardCollectionsCardMyItemsListButton' ) ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/my-items?' . http_build_query(['authorid' => get_current_user_id()])  ); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/my-items?' . http_build_query(['authorid' => get_current_user_id()]) ) ); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('userfill'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('userfill'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('My Items list', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('My Items list', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
@@ -469,11 +470,11 @@ class Dashboard extends Pages {
 				<li>
 					<a href="https://tainacan.discourse.group" target="_blank">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('discourse'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('discourse'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
 						<span class="text">
-							<?php _e('User\'s forum', 'tainacan'); ?>
-							<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span> 
+							<?php esc_html_e('User\'s forum', 'tainacan'); ?>
+							<span class="screen-reader-text"><?php esc_html_e(' (open in a new tab)', 'tainacan'); ?></span> 
 							<span class="external-link-icon"></span>
 						</span>
 					</a>
@@ -481,13 +482,13 @@ class Dashboard extends Pages {
 			<?php endif; ?>
 			<?php if ( !$this->has_admin_ui_option('hideDashboardInfoCardFAQButton' ) ) : ?>
 				<li>
-					<a href="<?php _e('https://tainacan.github.io/tainacan-wiki/#/faq', 'tainacan'); ?>" target="_blank">
+					<a href="<?php echo esc_url(__('https://tainacan.github.io/tainacan-wiki/#/faq', 'tainacan')); ?>" target="_blank">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('help'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('help'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
 						<span class="text">
-							<?php _e('F.A.Q.', 'tainacan'); ?>
-							<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span> 
+							<?php esc_html_e('F.A.Q.', 'tainacan'); ?>
+							<span class="screen-reader-text"><?php esc_html_e(' (open in a new tab)', 'tainacan'); ?></span> 
 							<span class="external-link-icon"></span>
 						</span>
 					</span>
@@ -498,11 +499,11 @@ class Dashboard extends Pages {
 				<li>
 					<a href="https://tainacan.github.io/tainacan-wiki/#/" target="_blank">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('info'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('info'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
 						<span class="text">
-							<?php _e('Wiki', 'tainacan'); ?>
-							<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span> 
+							<?php esc_html_e('Wiki', 'tainacan'); ?>
+							<span class="screen-reader-text"><?php esc_html_e(' (open in a new tab)', 'tainacan'); ?></span> 
 							<span class="external-link-icon"></span></span>
 						</span>
 					</a>
@@ -512,11 +513,11 @@ class Dashboard extends Pages {
 				<li>
 					<a href="https://github.com/tainacan/tainacan" target="_blank">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('github'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('github'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
 						<span class="text">
-							<?php _e('GitHub', 'tainacan'); ?>
-							<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span> 
+							<?php esc_html_e('GitHub', 'tainacan'); ?>
+							<span class="screen-reader-text"><?php esc_html_e(' (open in a new tab)', 'tainacan'); ?></span> 
 							<span class="external-link-icon"></span></span>
 						</span>
 					</a>
@@ -526,11 +527,11 @@ class Dashboard extends Pages {
 				<li>
 					<a href="https://www.youtube.com/@Tainacan/videos" target="_blank">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('youtube'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('youtube'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
 						<span class="text">
-							<?php _e('YouTube', 'tainacan'); ?>
-							<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span> 
+							<?php esc_html_e('YouTube', 'tainacan'); ?>
+							<span class="screen-reader-text"><?php esc_html_e(' (open in a new tab)', 'tainacan'); ?></span> 
 							<span class="external-link-icon"></span></span>
 						</span>
 					</a>
@@ -598,14 +599,14 @@ class Dashboard extends Pages {
 		ob_start();
     
 		if ( empty($feed_data) ) : ?>
-			<p><?php echo __( 'No news available at the moment.', 'tainacan' ); ?></p>
+			<p><?php esc_html_e('No news available at the moment.', 'tainacan'); ?></p>
 		<?php else : ?>
 			<ul class="tainacan-dashboard-links-list">
 				<?php foreach ($feed_data as $feed_item) : ?>
 					<li>
 						<a href="<?php echo esc_url($feed_item['link']); ?>" target="_blank" rel="noopener noreferrer">
 							<?php echo esc_html( $feed_item['title'] ); ?>
-							<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span>
+							<span class="screen-reader-text"><?php esc_html_e(' (open in a new tab)', 'tainacan'); ?></span>
 							<span class="external-link-icon"></span>
 						</a>
 						<?php
@@ -623,10 +624,10 @@ class Dashboard extends Pages {
 					</li>
 				<?php endforeach; ?>
 
-				<li style="margin-left: auto;">
-					<a href="<?php echo $feed_options['view_all_link'];?>" target="_blank" rel="noopener noreferrer">
-						<?php echo __('See all news', 'tainacan'); ?>
-						<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span>
+				<li style="margin-inline-start: auto;">
+					<a href="<?php echo esc_url($feed_options['view_all_link']);?>" target="_blank" rel="noopener noreferrer">
+						<?php esc_html_e('See all news', 'tainacan'); ?>
+						<span class="screen-reader-text"><?php esc_html_e(' (open in a new tab)', 'tainacan'); ?></span>
 						<span class="external-link-icon"></span>
 					</a>
 				</li>
@@ -650,23 +651,23 @@ class Dashboard extends Pages {
 		<ul class="tainacan-dashboard-card-list">
 			<?php if ( !$this->has_admin_ui_option('hideDashboardCollectionCardsItemsButton') ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/items'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/items')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('items'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('items'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Items list', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Items list', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( !$this->has_admin_ui_option('hideDashboardCollectionCardsExternalLinkButton') ) : ?>
 				<li>
-					<a href="<?php echo get_permalink( $collection_id ); ?>" target="_blank" rel="noopener noreferrer">
+					<a href="<?php echo esc_url(get_permalink( $collection_id )); ?>" target="_blank" rel="noopener noreferrer">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('openurl'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('openurl'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
 						<span class="text">
-							<?php _e('Visit page', 'tainacan'); ?>
-							<span class="screen-reader-text"><?php echo __(' (open in a new tab)', 'tainacan'); ?></span>
+							<?php esc_html_e('Visit page', 'tainacan'); ?>
+							<span class="screen-reader-text"><?php esc_html_e(' (open in a new tab)', 'tainacan'); ?></span>
 							<span class="external-link-icon"></span>
 						</span>
 					</a>
@@ -674,91 +675,91 @@ class Dashboard extends Pages {
 			<?php endif; ?>
 			<?php if ( $this->has_admin_ui_option('showDashboardCollectionCardsMyItemsButton') ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/my-items?' . http_build_query(['authorid' => get_current_user_id()]) ); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/my-items?' . http_build_query(['authorid' => get_current_user_id()]))); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('userfill'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('userfill'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('My Items list', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('My Items list', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( !$this->has_admin_ui_option('hideDashboardCollectionCardsMetadataButton') ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/metadata'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/metadata')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('metadata'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('metadata'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Metadata', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Metadata', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( !$this->has_admin_ui_option('hideDashboardCollectionCardsSettingsButton') ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/settings'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/settings')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('settings'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('settings'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Settings', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Settings', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( $this->has_admin_ui_option('showDashboardCollectionCardsFiltersButton') ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/filters'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/filters')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('filters'); ?>
+							<?php echo wp_kses( $this->get_svg_icon('filters'), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Filters', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Filters', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( $this->has_admin_ui_option('showDashboardCollectionCardsImportersButton') ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/importers'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/importers')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('importers' ); ?>
+							<?php echo wp_kses( $this->get_svg_icon('importers' ), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Importers', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Importers', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( $this->has_admin_ui_option('showDashboardCollectionCardsExportersButton') ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/exporters'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/exporters')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('export' ); ?>
+							<?php echo wp_kses( $this->get_svg_icon('export' ), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Exporters', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Exporters', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( $this->has_admin_ui_option('showDashboardCollectionCardsActivitiesButton') ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/activities'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/activities')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('activities' ); ?>
+							<?php echo wp_kses( $this->get_svg_icon('activities' ), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Activities', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Activities', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( $this->has_admin_ui_option('showDashboardCollectionCardsCapabilitiesButton') ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/capabilities'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/capabilities')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('capability' ); ?>
+							<?php echo wp_kses( $this->get_svg_icon('capability' ), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Capabilities', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Capabilities', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>
 			<?php if ( $this->has_admin_ui_option('showDashboardCollectionCardsReportsButton') ) : ?>
 				<li>
-					<a href="<?php echo admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/reports'); ?>">
+					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/reports')); ?>">
 						<span class="icon">
-							<?php echo $this->get_svg_icon('reports' ); ?>
+							<?php echo wp_kses( $this->get_svg_icon('reports' ), wp_kses_allowed_html('tainacan_menu_link') ); ?>
 						</span>
-						<span class="text"><?php _e('Reports', 'tainacan'); ?></span>
+						<span class="text"><?php esc_html_e('Reports', 'tainacan'); ?></span>
 					</a>
 				</li>
 			<?php endif; ?>

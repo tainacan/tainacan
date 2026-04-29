@@ -81,6 +81,23 @@
         "gridMargin": {
             "type": "Number",
             "default": 0
+        },
+        "style": {
+            "type": "object",
+            "default": {
+                "elements": {
+                    "link": {
+                        "color": {
+                            "text": "currentColor"
+                        },
+                        ":hover": {
+                            "color": {
+                                "text": "currentColor"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "supports": {
@@ -94,6 +111,9 @@
             "background": false,
             "gradients": false,
             "link": true
+        },
+        "position": {
+            "sticky": true
         }
     },
     "editorScript": "collections-list",

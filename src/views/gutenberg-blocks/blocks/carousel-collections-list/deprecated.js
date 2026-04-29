@@ -1,6 +1,162 @@
 const { useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 export default [
+    /** Deprecated to add color support */
+    {
+        "supports": {
+            "align": ["full", "wide"],
+            "html": false,
+            "multiple": true,
+            "typography": {
+                "fontSize": true
+            },
+            "color": {
+                "text": true,
+                "background": false,
+                "gradients": false,
+                "link": true
+            }
+        },
+        "attributes": {
+            "content": {
+                "type": "array",
+                "source": "children",
+                "selector": "div"
+            },
+            "collections": {
+                "type": "array",
+                "default": []
+            },
+            "isModalOpen": {
+                "type": "boolean",
+                "default": false
+            },
+            "selectedCollections": {
+                "type": "array",
+                "default": []
+            },
+            "itemsRequestSource": {
+                "type": "string",
+                "default": false
+            },
+            "maxCollectionsNumber": {
+                "type": "number",
+                "default": false
+            },
+            "maxCollectionsPerScreen": {
+                "type": "number",
+                "default": 6
+            },
+            "spaceBetweenCollections": {
+                "type": "number",
+                "default": 32
+            },
+            "spaceAroundCarousel": {
+                "type": "number",
+                "default": 50
+            },
+            "isLoading": {
+                "type": "boolean",
+                "default": false
+            },
+            "isLoadingCollection": {
+                "type": "boolean",
+                "default": false
+            },
+            "arrowsPosition": {
+                "type": "string",
+                "default": "around"
+            },
+            "largeArrows": {
+                "type": "boolean",
+                "default": false
+            },
+            "arrowsStyle": {
+                "type": "string",
+                "default": "type-1"
+            },
+            "autoPlay": {
+                "type": "boolean",
+                "default": false
+            },
+            "autoPlaySpeed": {
+                "type": "number",
+                "default": 3
+            },
+            "loopSlides": {
+                "type": "boolean",
+                "default": false
+            },
+            "hideName": {
+                "type": "boolean",
+                "default": true
+            },
+            "showCollectionThumbnail": {
+                "type": "boolean",
+                "default": false
+            },
+            "imageSize": {
+                "type": "string",
+                "default": "tainacan-medium"
+            },
+            "blockId": {
+                "type": "string",
+                "default": ""
+            },
+            "collectionBackgroundColor": {
+                "type": "string",
+                "default": "#373839"
+            },
+            "collectionTextColor": {
+                "type": "string",
+                "default": "#ffffff"
+            }
+        },
+        "save": function({ attributes }) {
+            const {
+                content, 
+                blockId,
+                selectedCollections,
+                arrowsPosition,
+                largeArrows,
+                arrowsStyle,
+                imageSize,
+                maxCollectionsPerScreen,
+                maxCollectionsNumber,
+                spaceBetweenCollections,
+                spaceAroundCarousel,
+                autoPlay,
+                autoPlaySpeed,
+                loopSlides,
+                hideName,
+                showCollectionThumbnail
+            } = attributes;
+        
+            // Gets attributes such as style, that are automatically added by the editor hook
+            const blockProps = useBlockProps.save();
+            return <div 
+                        { ...blockProps }
+                        data-module="carousel-collections-list"
+                        data-selected-collections={ JSON.stringify(selectedCollections.map((collection) => { return collection.id })) }
+                        data-arrows-position={ arrowsPosition }
+                        data-auto-play={ '' + autoPlay }
+                        data-auto-play-speed={ autoPlaySpeed }
+                        data-loop-slides={ '' + loopSlides }
+                        data-hide-name={ '' + hideName }
+                        data-large-arrows={ '' + largeArrows }
+                        data-arrows-style={ arrowsStyle }
+                        data-image-size={ imageSize }
+                        data-max-collections-number={ maxCollectionsNumber }
+                        data-max-collections-per-screen={ maxCollectionsPerScreen }
+                        data-space-between-collections={ spaceBetweenCollections }
+                        data-space-around-carousel={ spaceAroundCarousel }
+                        data-tainacan-api-root={ tainacan_blocks.root }
+                        data-show-collection-thumbnail={ '' + showCollectionThumbnail }
+                        id={ 'wp-block-tainacan-carousel-collections-list_' + blockId }>
+                            { content }
+                    </div>
+        }
+    },
     /* Deprecated during Vue 3 migration to prepend attributes with data- */
     {
         "attributes" :{

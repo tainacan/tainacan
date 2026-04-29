@@ -57,20 +57,33 @@ class Textarea extends Metadata_Type {
 		$return = '';
 
 		if ( $item_metadata->is_multiple() ) {
-			$total = sizeof($value);
-			$count = 0;
-			$prefix = $item_metadata->get_multivalue_prefix();
-			$suffix = $item_metadata->get_multivalue_suffix();
-			$separator = $item_metadata->get_multivalue_separator();
-
-			foreach ( $value as $el ) {
-				$return .= $prefix;
-				$return .= nl2br($this->make_clickable_links($el));
-				$return .= $suffix;
-				$count ++;
-
-				if ($count < $total)
-					$return .= $separator;
+			$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+			if ( $html_formatting === 'list' ) {
+				$total = count( $value );
+				if ( $total === 1 ) {
+					$return .= nl2br($this->make_clickable_links( reset( $value ) ));
+				} elseif ( $total > 1 ) {
+					$return .= '<ul>';
+					foreach ( $value as $el ) {
+						$return .= '<li>' . nl2br($this->make_clickable_links($el)) . '</li>';
+					}
+					$return .= '</ul>';
+				}
+			} else {
+				$total = sizeof($value);
+				$count = 0;
+				$prefix = $item_metadata->get_multivalue_prefix();
+				$suffix = $item_metadata->get_multivalue_suffix();
+				$separator = $item_metadata->get_multivalue_separator();
+				foreach ( $value as $el ) {
+					$return .= $prefix;
+					$return .= nl2br($this->make_clickable_links($el));
+					$return .= $suffix;
+					$count++;
+					if ( $count < $total ) {
+						$return .= $separator;
+					}
+				}
 			}
 		} else {
 			$return = nl2br($this->make_clickable_links($value));
