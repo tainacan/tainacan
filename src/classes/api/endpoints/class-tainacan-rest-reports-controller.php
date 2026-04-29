@@ -735,7 +735,7 @@ class REST_Reports_Controller extends REST_Controller {
 				$collection_from = $wpdb->prepare($collection_from, 'collection_id', sanitize_text_field($collection_id));
 			}
 			$sql_statement = $wpdb->prepare(
-				"SELECT count(DISTINCT (unix_timestamp(p.post_date) DIV 60)) as total, DATE(p.post_date) as date
+				"SELECT count(*) as total, DATE(p.post_date) as date
 				FROM $wpdb->posts p $collection_from
 				WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN '$start' AND '$end'
 				GROUP BY DATE(p.post_date)
@@ -747,7 +747,7 @@ class REST_Reports_Controller extends REST_Controller {
 		$tainacan_log_table = Repositories\Logs::get_instance()->get_table_name();
 		$collection_where =  $collection_id == false ? '1=1' : "collection_id=$collection_id";
 		$sql_statement = $wpdb->prepare(
-			"SELECT count(DISTINCT (unix_timestamp(p.date) DIV 60)) as total, DATE(p.date) as date
+			"SELECT count(*) as total, DATE(p.date) as date
 			FROM $tainacan_log_table p
 			WHERE p.date BETWEEN '$start' AND '$end' AND ($collection_where)
 			GROUP BY DATE(p.date)
@@ -776,7 +776,7 @@ class REST_Reports_Controller extends REST_Controller {
 				$collection_from = $wpdb->prepare($collection_from, 'collection_id', sanitize_text_field($collection_id));
 			}
 			$sql_statement = $wpdb->prepare(
-				"SELECT p.post_author  as user_id, count(DISTINCT (unix_timestamp(p.post_date) DIV 60)) as total, DATE(p.post_date) as date
+				"SELECT p.post_author  as user_id, count(*) as total, DATE(p.post_date) as date
 				FROM $wpdb->posts p $collection_from
 				WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN '$start' AND '$end'
 				GROUP BY p.post_author, DATE(p.post_date)
@@ -786,7 +786,7 @@ class REST_Reports_Controller extends REST_Controller {
 			$tainacan_log_table = Repositories\Logs::get_instance()->get_table_name();
 			$collection_where =  $collection_id == false ? '1=1' : "collection_id=$collection_id";
 			$sql_statement = $wpdb->prepare(
-				"SELECT p.user_id, count(DISTINCT (unix_timestamp(p.date) DIV 60)) as total, DATE(p.date) as date
+				"SELECT p.user_id, count(*) as total, DATE(p.date) as date
 				FROM $tainacan_log_table p
 				WHERE p.date BETWEEN '$start' AND '$end' AND ($collection_where)
 				GROUP BY p.user_id, DATE(p.date)
@@ -836,7 +836,7 @@ class REST_Reports_Controller extends REST_Controller {
 				$collection_from = $wpdb->prepare($collection_from, 'collection_id', sanitize_text_field($collection_id));
 			}
 			$sql_statement = $wpdb->prepare(
-				"SELECT	count(DISTINCT (unix_timestamp(p.post_date) DIV 60)) as total, p.post_author as user, pm.meta_value as action
+				"SELECT	count(*) as total, p.post_author as user, pm.meta_value as action
 				FROM $wpdb->posts p 
 				INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'action'
 				$collection_from
@@ -848,7 +848,7 @@ class REST_Reports_Controller extends REST_Controller {
 			$tainacan_log_table = Repositories\Logs::get_instance()->get_table_name();
 			$collection_where =  $collection_id == false ? '1=1' : "collection_id=$collection_id";
 			$sql_statement = $wpdb->prepare(
-				"SELECT	count(DISTINCT (unix_timestamp(p.date) DIV 60)) as total, p.user_id as user, p.action as action
+				"SELECT	count(*) as total, p.user_id as user, p.action as action
 				FROM $tainacan_log_table p
 				WHERE $collection_where
 				GROUP BY p.user_id, p.action
