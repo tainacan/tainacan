@@ -169,9 +169,9 @@ class Logs_Wp_Posts_Migration {
  * wp tainacan logs migrate --dry-run
  * wp tainacan logs migrate --batch-size=100 --yes
  * 
- * wp tainacan logs purge            # apaga os registros já migrados do wp_posts
- * wp tainacan logs purge --dry-run
- * wp tainacan logs purge --batch-size=200 --yes
+ * wp tainacan logs purge-deprecated            # apaga os registros já migrados do wp_posts
+ * wp tainacan logs purge-deprecated --dry-run
+ * wp tainacan logs purge-deprecated --batch-size=200 --yes
  */
 class Cli_Logs {
 
@@ -253,11 +253,11 @@ class Cli_Logs {
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     wp tainacan logs purge
-	 *     wp tainacan logs purge --batch-size=200 --yes
-	 *     wp tainacan logs purge --dry-run
+	 *     wp tainacan logs purge-deprecated
+	 *     wp tainacan logs purge-deprecated --batch-size=200 --yes
+	 *     wp tainacan logs purge-deprecated --dry-run
 	 */
-	public function purge( $args, $assoc_args ) {
+	public function purge_deprecated( $args, $assoc_args ) {
 		$migration  = new Logs_Wp_Posts_Migration();
 		$dry_run    = isset( $assoc_args['dry-run'] );
 		$batch_size = max( 1, absint( $assoc_args['batch-size'] ?? 50 ) );

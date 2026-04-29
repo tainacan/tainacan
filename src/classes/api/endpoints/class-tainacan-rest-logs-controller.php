@@ -362,11 +362,11 @@ class REST_Logs_Controller extends REST_Controller {
 		$total_logs = 0;
 		/**
 		 * Temporary fallback for sites that cannot run the WP-CLI log migration command.
-		 * The USE_DEPRECATED_TAINACAN_LOGS constant must be manually defined in wp-config.php to enable this behavior.
+		 * The TAINACAN_USE_DEPRECATED_LOGS constant must be manually defined in wp-config.php to enable this behavior.
 		 * This block will be removed in future versions once legacy support is discontinued.
 		 * 
 		 */ 
-		if (!defined('USE_DEPRECATED_TAINACAN_LOGS') || USE_DEPRECATED_TAINACAN_LOGS !== false) {
+		if (!defined('TAINACAN_USE_DEPRECATED_LOGS') || TAINACAN_USE_DEPRECATED_LOGS !== false) {
 			if($logs->have_posts()){
 				while ($logs->have_posts()){
 					$logs->the_post();
