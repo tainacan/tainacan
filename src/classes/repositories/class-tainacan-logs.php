@@ -294,7 +294,8 @@ class Logs extends Repository {
 		global $wpdb;
 
 		$table  = $this->get_table_name();
-		$args   = apply_filters( 'tainacan-fetch-args', $args, 'logs' );
+		$args = $this->parse_fetch_args( $args );
+		$args = apply_filters( 'tainacan-fetch-args', $args, 'logs' );
 
 		[ $where_sql, $params ] = $this->build_where( $args );
 
