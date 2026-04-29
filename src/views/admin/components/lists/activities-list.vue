@@ -37,6 +37,7 @@
                     </div>
                     <div class="activities-timeline-item__content">
                         <p
+                                v-if="!filterByItemMetadatum"
                                 v-tooltip="{
                                     delay: { show: 500, hide: 300 },
                                     content: activity.title,
@@ -47,6 +48,44 @@
                                 class="activities-timeline-item__title column-main-content">
                             {{ activity.title }}
                         </p>
+                        <div
+                                v-else
+                                class="activities-timeline-item__diff-content">
+                            <div 
+                                    v-for="(attributeValue, attributeName, attributeIndex) in activity.new_value"
+                                    :key="attributeIndex">
+                                <div v-if="activity.action == 'update'">
+
+                                    <div v-if="attributeName == 'metadata_type_options'">
+                                        <p 
+                                                v-for="(innerValue, innerName, innerIndex) of attributeValue"
+                                                :key="innerIndex">
+                                            <strong>{{ innerName + ': ' }}</strong>{{ innerValue ? innerValue : infoEmpty }}
+                                            <br>
+                                        </p>
+                                    </div>
+
+                                    <div v-else-if="attributeName == 'header_image_id'">
+                                        <p class="log-diff-content log-diff-content--after">
+                                            {{ attributeValue ? attributeValue : infoEmpty }}
+                                            <br>
+                                            <img 
+                                                    v-if="activity.object && activity.object.header_image"
+                                                    style="max-width: 160px;"
+                                                    :alt="$i18n.get('label_header_image')"
+                                                    :src="activity.object.header_image">
+                                        </p>
+                                    </div>
+
+                                    <p
+                                            v-else
+                                            v-html="(!attributeValue || (attributeValue instanceof Array && !attributeValue.length)) ? infoEmpty : (attributeValue instanceof Array ? attributeValue.join(`<span class='multivalue-separator'>|</span>`) : attributeValue)" />
+                                </div>
+                            </div>
+                            <p
+                                    v-if="activity.action == 'update-metadata-value'"
+                                    v-html="!activity.new_value ? infoEmpty : (activity.new_value instanceof Array ? activity.new_value.join(`<span class='multivalue-separator'>|</span>`) : activity.new_value)" />
+                        </div>
                         <div class="activities-timeline-item__meta">
                             <span
                                     v-tooltip="{
@@ -117,6 +156,24 @@
                 </div>
             </section>
         </div>
+
+        <!-- Empty state due filtering -->
+        <div v-if="activities.length <= 0 && totalActivities > 0 && !isLoading">
+            <section class="section">
+                <div class="content has-text-dark has-text-centered">
+                    <p>
+                        <span 
+                                aria-hidden="true"
+                                class="icon is-medium">
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities" />
+                        </span>
+                    </p>
+                    <p>
+                        {{ $i18n.get('info_no_activities_found_with_filter') }}
+                    </p>
+                </div>
+            </section>
+        </div>
     </div>
 </template>
 
@@ -132,10 +189,12 @@
             page: 1,
             activitiesPerPage: 12,
             activities: Array,
-            isItemLevel: false
+            isItemLevel: false,
+            filterByItemMetadatum: false
         },
         data() {
             return {
+                infoEmpty: this.$i18n.get('info_empty'),
                 dateFormat: '',
                 dayFormat: '',
                 timeFormat: ''
@@ -318,7 +377,7 @@
         min-height: 2.25rem;
         position: sticky;
         top: calc(var(--tainacan-container-padding) + var(--tainacan-button-min-height, 2.571em) + 3.75em);
-        background-color: var(--tainacan-gray0);
+        background-color: var(--tainacan-gray1);
         border-radius: var(--tainacan-item-border-radius, 4px);
         z-index: 3;
 
@@ -374,10 +433,6 @@
         border-radius: var(--tainacan-item-border-radius, 0px);
         background-color: var(--tainacan-item-background-color);
         transition: background-color 0.15s ease;
-
-        &:focus-within {
-            background-color: var(--tainacan-item-hover-background-color) !important;
-        }
 
         &__line-wrap {
             position: relative;
@@ -538,6 +593,16 @@
                 outline: 2px solid var(--tainacan-secondary);
                 outline-offset: 2px;
             }
+        }
+
+        &__diff-content {
+            word-break: break-word;
+            border-radius: var(--tainacan-input-border-radius);
+            padding: 6px;
+            margin-bottom: 0.5rem;
+            max-height: 40vh;
+            overflow-y: auto;
+            background-color: var(--tainacan-gray0);
         }
     }
 
