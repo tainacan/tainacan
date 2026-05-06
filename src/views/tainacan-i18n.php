@@ -1199,6 +1199,8 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: %s is the number of selected items */
 	'info_%s_selected_items_for_bulk_edition'		 => __( '<strong>%s items selected</strong> for bulk edition.', 'tainacan'),
 	'info_define_bulk_edit_criteria'				 => __( 'Define the criteria below:', 'tainacan'),
+	'info_error_empty_value'						 => __( 'If you want to leave this field empty, please remove the value.', 'tainacan'),
+
 
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
