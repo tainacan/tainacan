@@ -270,11 +270,18 @@
                     (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.id ? ' tainacan-metadatum-id--' + this.itemMetadatum.metadatum.id : '') +
                     (this.isFocused ? ' is-focused' : '') +
                     (this.errorMessage ? ' is-danger' : '');  
+            },
+            metadatumFormIdentifier() {
+                if (!this.itemMetadatum || !this.itemMetadatum.metadatum)
+                    return '';
+                return this.itemMetadatum.parent_meta_id
+                    ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id
+                    : this.itemMetadatum.metadatum.id;
             }
         },
         created() {
             this.setInitialValues();
-            this.$emitter.on('updateErrorMessageOf#' + (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id), (errors) => {    
+            this.$emitter.on('updateErrorMessageOf#' + this.metadatumFormIdentifier, (errors) => {    
                 let updatedErrorMessage = '';
                 if (errors && errors.errors && this.itemMetadatum && this.itemMetadatum.metadatum && (this.itemMetadatum.parent_meta_id ? (this.itemMetadatum.parent_meta_id == errors.parent_meta_id && this.itemMetadatum.metadatum.id == errors.metadatum_id) : this.itemMetadatum.metadatum.id == errors.metadatum_id)) {
                     for (let error of errors.errors) { 
@@ -287,12 +294,12 @@
         },
         beforeUnmount() {
             if (this.itemMetadatum && this.itemMetadatum.metadatum) {
-                this.$emitter.off('updateErrorMessageOf#' + (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id));
+                this.$emitter.off('updateErrorMessageOf#' + this.metadatumFormIdentifier);
             }
         },
         mounted () {
             if (this.$route && this.$route.query && this.$route.query.editingmetadata) {
-                this.isHighlightedMetadatum = this.$route.query.editingmetadata == (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id);
+                this.isHighlightedMetadatum = this.$route.query.editingmetadata == this.metadatumFormIdentifier;
 
                 if (this.isHighlightedMetadatum) {
                     
