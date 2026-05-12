@@ -2,6 +2,10 @@ import axios from '../../../axios';
 import qs from 'qs';
 
 // Actions related to background processes
+/**
+ * Dispatches `bgprocess/fetchProcesses`.
+ * @returns {*} Action result.
+ */
 export const fetchProcesses = ({ commit }, {page, processesPerPage, shouldUpdateStore, searchDates, search}) => {
     return new Promise((resolve, reject) => {
         let endpoint = '/bg-processes?all_users=1';
@@ -44,6 +48,10 @@ export const fetchProcesses = ({ commit }, {page, processesPerPage, shouldUpdate
     });
 };
 
+/**
+ * Dispatches `bgprocess/updateProcess`.
+ * @returns {*} Action result.
+ */
 export const updateProcess = ({ commit }, { id, status }) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.put(`/bg-processes/${id}/`, {
@@ -60,10 +68,18 @@ export const updateProcess = ({ commit }, { id, status }) => {
     });
 };
 
+/**
+ * Dispatches `bgprocess/heartBitUpdateProcess`.
+ * @returns {*} Action result.
+ */
 export const heartBitUpdateProcess = ({ commit }, aProcess) => {
     commit('setProcess', aProcess);
 };
 
+/**
+ * Dispatches `bgprocess/fetchProcess`.
+ * @returns {*} Action result.
+ */
 export const fetchProcess = ({ commit }, id) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.get(`/bg-processes/${id}/`)
@@ -79,6 +95,10 @@ export const fetchProcess = ({ commit }, id) => {
     });
 };
 
+/**
+ * Dispatches `bgprocess/fetchProcessErrorLog`.
+ * @returns {*} Action result.
+ */
 export const fetchProcessErrorLog = ({ commit }, { id: id, isFull: isFull }) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.get(`/bg-processes/${id}/log`)
@@ -93,10 +113,18 @@ export const fetchProcessErrorLog = ({ commit }, { id: id, isFull: isFull }) => 
     });
 };
 
+/**
+ * Dispatches `bgprocess/cleanProcesses`.
+ * @returns {*} Action result.
+ */
 export const cleanProcesses = ({ commit }) => {
     commit('cleanProcesses');
 };
 
+/**
+ * Dispatches `bgprocess/deleteProcess`.
+ * @returns {*} Action result.
+ */
 export const deleteProcess = ({ commit }, id) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.delete('/bg-processes/' + id).then( res => {

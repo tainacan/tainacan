@@ -2,6 +2,11 @@ import * as actions from './actions';
 import * as getters from './getters';
 import * as mutations from './mutations';
 
+/**
+ * Vuex module `report`.
+ * Namespace: `report`.
+ * Purpose: stores report summaries, chart datasets, and report chart options.
+ */
 const state = {
     reportsLatestCachedOn: {},
     summary: {},

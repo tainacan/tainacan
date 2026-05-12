@@ -15,6 +15,11 @@ import exposer from './modules/exposer';
 import capability from './modules/capability';
 import report from './modules/report';
 
+/**
+ * Vuex root store notes:
+ * - Modules are namespaced and should be accessed with `moduleName/actionName` and peers.
+ * - Actions are the preferred API surface for async side effects; mutations stay synchronous.
+ */
 export default createStore({
     modules: {
         item,

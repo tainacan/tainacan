@@ -1,6 +1,10 @@
 import axios from '../../../axios';
 import qs from 'qs';
 
+/**
+ * Dispatches `activity/fetchActivities`.
+ * @returns {*} Action result.
+ */
 export const fetchActivities = ({ commit }, { page, activitiesPerPage, search, searchDates, authorId} ) => {
 
     let endpoint = `/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit&orderby=id&order=desc`;
@@ -40,6 +44,10 @@ export const fetchActivities = ({ commit }, { page, activitiesPerPage, search, s
     });
 };
 
+/**
+ * Dispatches `activity/fetchCollectionActivities`.
+ * @returns {*} Action result.
+ */
 export const fetchCollectionActivities = ({ commit }, { page, activitiesPerPage, collectionId, search, searchDates, authorId }) => {
 
     let endpoint = `/collection/${collectionId}/logs?paged=${page}&perpage=${activitiesPerPage}&context=edit&orderby=id&order=desc`;
@@ -79,6 +87,10 @@ export const fetchCollectionActivities = ({ commit }, { page, activitiesPerPage,
     });
 };
 
+/**
+ * Dispatches `activity/fetchItemActivities`.
+ * @returns {*} Action result.
+ */
 export const fetchItemActivities = ({ commit }, { page, activitiesPerPage, itemId, metadatumId, search, searchDates, authorId }) => {
 
     let endpoint = metadatumId
@@ -120,6 +132,10 @@ export const fetchItemActivities = ({ commit }, { page, activitiesPerPage, itemI
     });
 };
 
+/**
+ * Dispatches `activity/fetchActivity`.
+ * @returns {*} Action result.
+ */
 export const fetchActivity = ({ commit }, activityId) => {
     commit('clearActivity');
     return new Promise((resolve, reject) => {
@@ -139,6 +155,10 @@ export const fetchActivity = ({ commit }, activityId) => {
 
 
 // Users for filtering and core author metadata
+/**
+ * Dispatches `activity/fetchUsers`.
+ * @returns {*} Action result.
+ */
 export const fetchUsers = ({ commit }, { search, page, exclude }) => {
     let endpoint = '/users';
     let params = {
@@ -163,6 +183,10 @@ export const fetchUsers = ({ commit }, { search, page, exclude }) => {
 };
 
 // Single user for core author metadata
+/**
+ * Dispatches `activity/fetchUser`.
+ * @returns {*} Action result.
+ */
 export const fetchUser = ({ commit }, userId) => {
     return new Promise((resolve, reject) => {
         axios.wpApi.get('/users/' + userId)

@@ -2,6 +2,11 @@ import * as actions from './actions';
 import * as getters from './getters';
 import * as mutations from './mutations';
 
+/**
+ * Vuex module `filter`.
+ * Namespace: `filter`.
+ * Purpose: stores filter definitions, filter types, and taxonomy/repository filter caches.
+ */
 const state = {
     postquery: {
         post_type: [],

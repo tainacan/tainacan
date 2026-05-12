@@ -2,6 +2,10 @@ import axios from '../../../axios'
 import qs from 'qs'
 
 // TAXONOMIES
+/**
+ * Dispatches `taxonomy/createTaxonomy`.
+ * @returns {*} Action result.
+ */
 export const createTaxonomy = ({commit}, taxonomy) => {
     return new Promise(( resolve, reject ) => {
         axios.tainacanApi.post('/taxonomies', taxonomy)
@@ -17,6 +21,10 @@ export const createTaxonomy = ({commit}, taxonomy) => {
     });
 };
 
+/**
+ * Dispatches `taxonomy/deleteTaxonomy`.
+ * @returns {*} Action result.
+ */
 export const deleteTaxonomy = ({ commit }, { taxonomyId, isPermanently }) => {
   return new Promise(( resolve, reject ) => {
       axios.tainacanApi.delete(`/taxonomies/${taxonomyId}?permanently=` + (isPermanently ? '1' : '0'))
@@ -31,6 +39,10 @@ export const deleteTaxonomy = ({ commit }, { taxonomyId, isPermanently }) => {
   });
 };
 
+/**
+ * Dispatches `taxonomy/updateTaxonomy`.
+ * @returns {*} Action result.
+ */
 export const updateTaxonomy = ({ commit }, taxonomy) => {
     return new Promise(( resolve, reject ) => {
         axios.tainacanApi.put(`/taxonomies/${taxonomy.taxonomyId}`, taxonomy)
@@ -45,6 +57,10 @@ export const updateTaxonomy = ({ commit }, taxonomy) => {
     });
 };
 
+/**
+ * Dispatches `taxonomy/fetch`.
+ * @returns {*} Action result.
+ */
 export const fetch = ({ commit }, { page, taxonomiesPerPage, status, order, orderby, search } ) => {
     return new Promise((resolve, reject) => {
         let endpoint = `/taxonomies?paged=${page}&perpage=${taxonomiesPerPage}&context=edit`;
@@ -88,6 +104,10 @@ export const fetch = ({ commit }, { page, taxonomiesPerPage, status, order, orde
     });
 };
 
+/**
+ * Dispatches `taxonomy/fetchTaxonomy`.
+ * @returns {*} Action result.
+ */
 export const fetchTaxonomy = ({ commit }, { taxonomyId, isContextEdit }) => {
     let endpoint = `/taxonomies/${taxonomyId}`;
 
@@ -111,6 +131,10 @@ export const fetchTaxonomy = ({ commit }, { taxonomyId, isContextEdit }) => {
     });
 };
 
+/**
+ * Dispatches `taxonomy/fetchTaxonomyName`.
+ * @returns {*} Action result.
+ */
 export const fetchTaxonomyName = ({ commit }, taxonomyId) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.get(`/taxonomies/${taxonomyId}?fetch_only=name`)
@@ -127,6 +151,10 @@ export const fetchTaxonomyName = ({ commit }, taxonomyId) => {
 };
 
 // TAXONOMY TERMS
+/**
+ * Dispatches `taxonomy/fetchTerms`.
+ * @returns {*} Action result.
+ */
 export const fetchTerms = ({}, {taxonomyId, fetchOnly, search, all, order, offset, number, exclude, include }) => {
 
     let query = '';
@@ -168,6 +196,10 @@ export const fetchTerms = ({}, {taxonomyId, fetchOnly, search, all, order, offse
     });
 };
 
+/**
+ * Dispatches `taxonomy/sendChildTerm`.
+ * @returns {*} Action result.
+ */
 export const sendChildTerm = ({ commit }, { taxonomyId, term, itemId, metadatumId }) => {
     
     if ( itemId != undefined )
@@ -188,6 +220,10 @@ export const sendChildTerm = ({ commit }, { taxonomyId, term, itemId, metadatumI
     });
 };
 
+/**
+ * Dispatches `taxonomy/updateTerm`.
+ * @returns {*} Action result.
+ */
 export const updateTerm = ({}, { taxonomyId, term, itemId, metadatumId }) => {
 
     if ( itemId != undefined )
@@ -208,6 +244,10 @@ export const updateTerm = ({}, { taxonomyId, term, itemId, metadatumId }) => {
     });
 };
 
+/**
+ * Dispatches `taxonomy/deleteTerm`.
+ * @returns {*} Action result.
+ */
 export const deleteTerm = ({}, { taxonomyId, termId, deleteChildTerms = false }) => {
     let query = 'permanently=1&hideempty=0';
 
@@ -226,6 +266,10 @@ export const deleteTerm = ({}, { taxonomyId, termId, deleteChildTerms = false })
     });
 };
 
+/**
+ * Dispatches `taxonomy/deleteTerms`.
+ * @returns {*} Action result.
+ */
 export const deleteTerms = ({}, { taxonomyId, terms, parent, deleteChildTerms = false }) => {
     let query = `permanently=1&hideempty=0&number=0`;
 
@@ -250,6 +294,10 @@ export const deleteTerms = ({}, { taxonomyId, terms, parent, deleteChildTerms = 
     });
 };
 
+/**
+ * Dispatches `taxonomy/changeTermsParent`.
+ * @returns {*} Action result.
+ */
 export const changeTermsParent = ({}, { taxonomyId, newParentTerm, terms, parent }) => {
     let query = `hideempty=0&number=0`;
 
@@ -272,6 +320,10 @@ export const changeTermsParent = ({}, { taxonomyId, newParentTerm, terms, parent
 };
 
 // Used only on Term Edit form, for autocomplete search for parents
+/**
+ * Dispatches `taxonomy/fetchPossibleParentTerms`.
+ * @returns {*} Action result.
+ */
 export const fetchPossibleParentTerms = ({ commit }, { taxonomyId, termId, search, offset } ) => {
 
     const excludeTree = termId && termId != 'new' ? qs.stringify({ exclude_tree: termId }) : '';
@@ -300,6 +352,10 @@ export const fetchPossibleParentTerms = ({ commit }, { taxonomyId, termId, searc
     });
 };
 
+/**
+ * Dispatches `taxonomy/fetchParentName`.
+ * @returns {*} Action result.
+ */
 export const fetchParentName = ({ commit }, { taxonomyId, parentId } ) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.get('/taxonomy/' + taxonomyId + '/terms/' + parentId + '?fetch_only=name')
@@ -313,6 +369,10 @@ export const fetchParentName = ({ commit }, { taxonomyId, parentId } ) => {
     });
 };
 
+/**
+ * Dispatches `taxonomy/multipleTermsInsertion`.
+ * @returns {*} Action result.
+ */
 export const multipleTermsInsertion = ({}, { taxonomyId, parent, termNames } ) => {
     const terms = termNames.map(aTermName => {
         return {
