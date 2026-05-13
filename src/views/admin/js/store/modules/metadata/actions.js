@@ -1,6 +1,10 @@
 import axios from '../../../axios';
 import qs from 'qs';
 
+/**
+ * Dispatches `metadata/fetchMetadata`.
+ * @returns {*} Action result.
+ */
 export const fetchMetadata = ({commit}, {
     collectionId,
     isRepositoryLevel,
@@ -67,6 +71,10 @@ export const fetchMetadata = ({commit}, {
     });
 };
 
+/**
+ * Dispatches `metadata/sendMetadatum`.
+ * @returns {*} Action result.
+ */
 export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, status, isRepositoryLevel, newIndex, parent, includeOptionsAsHtml, sectionId }) => {
     return new Promise((resolve, reject) => {
         let endpoint = '';
@@ -107,6 +115,10 @@ export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, stat
     });
 };
 
+/**
+ * Dispatches `metadata/updateMetadatum`.
+ * @returns {*} Action result.
+ */
 export const updateMetadatum = ({commit}, {collectionId, metadatumId, isRepositoryLevel, index, options, includeOptionsAsHtml, sectionId }) => {
     return new Promise((resolve, reject) => {
         let endpoint = '';
@@ -146,6 +158,10 @@ export const updateMetadatum = ({commit}, {collectionId, metadatumId, isReposito
     });
 };
 
+/**
+ * Dispatches `metadata/fetchMetadatum`.
+ * @returns {*} Action result.
+ */
 export const fetchMetadatum = ({commit}, {collectionId, metadatumId}) => {
     return new Promise((resolve, reject) => {
         let endpoint = '';
@@ -166,10 +182,18 @@ export const fetchMetadatum = ({commit}, {collectionId, metadatumId}) => {
     });
 };
 
+/**
+ * Dispatches `metadata/updateMetadata`.
+ * @returns {*} Action result.
+ */
 export const updateMetadata = ({commit}, metadata) => {
     commit('setMetadata', metadata);
 };
 
+/**
+ * Dispatches `metadata/deleteMetadatum`.
+ * @returns {*} Action result.
+ */
 export const deleteMetadatum = ({commit}, {collectionId, metadatumId, isRepositoryLevel }) => {
     let endpoint = '';
     if (!isRepositoryLevel)
@@ -195,10 +219,18 @@ export const deleteMetadatum = ({commit}, {collectionId, metadatumId, isReposito
     });
 };
 
+/**
+ * Dispatches `metadata/cleanMetadata`.
+ * @returns {*} Action result.
+ */
 export const cleanMetadata = ({commit}) => {
     commit('cleanMetadata');
 };
 
+/**
+ * Dispatches `metadata/updateCollectionMetadataOrder`.
+ * @returns {*} Action result.
+ */
 export const updateCollectionMetadataOrder = ({ commit }, { collectionId, metadataOrder, metadataSectionId }) => {
 
     return new Promise((resolve, reject) => {
@@ -215,6 +247,10 @@ export const updateCollectionMetadataOrder = ({ commit }, { collectionId, metada
     });
 }
 
+/**
+ * Dispatches `metadata/updateChildMetadataOrder`.
+ * @returns {*} Action result.
+ */
 export const updateChildMetadataOrder = ({ commit }, {isRepositoryLevel, collectionId, parentMetadatumId, childMetadataOrder }) => {
     let endpoint = '';
     
@@ -239,6 +275,10 @@ export const updateChildMetadataOrder = ({ commit }, {isRepositoryLevel, collect
     });
 }
 
+/**
+ * Dispatches `metadata/fetchMetadatumTypes`.
+ * @returns {*} Action result.
+ */
 export const fetchMetadatumTypes = ({commit}) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.get('/metadata-types')
@@ -254,11 +294,19 @@ export const fetchMetadatumTypes = ({commit}) => {
     });
 }
 
+/**
+ * Dispatches `metadata/updateMetadatumTypes`.
+ * @returns {*} Action result.
+ */
 export const updateMetadatumTypes = ({commit}, metadatumTypes) => {
     commit('setMetadatumTypes', metadatumTypes);
 };
 
 // METADATA MAPPERS
+/**
+ * Dispatches `metadata/fetchMetadatumMappers`.
+ * @returns {*} Action result.
+ */
 export const fetchMetadatumMappers = ({commit}) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.get('/metadatum-mappers')
@@ -274,6 +322,10 @@ export const fetchMetadatumMappers = ({commit}) => {
     });
 }
 
+/**
+ * Dispatches `metadata/updateMetadataMapperMetadata`.
+ * @returns {*} Action result.
+ */
 export const updateMetadataMapperMetadata = ({ dispatch }, {metadataMapperMetadata, mapper}) => {
     return new Promise((resolve, reject) => {
         var param = {
@@ -290,11 +342,19 @@ export const updateMetadataMapperMetadata = ({ dispatch }, {metadataMapperMetada
     });
 }
 
+/**
+ * Dispatches `metadata/updateMetadatumMappers`.
+ * @returns {*} Action result.
+ */
 export const updateMetadatumMappers = ({commit}, metadatumMappers) => {
     commit('setMetadatumMappers', metadatumMappers);
 };
 
 // METADATA SECTIONS
+/**
+ * Dispatches `metadata/fetchMetadataSections`.
+ * @returns {*} Action result.
+ */
 export const fetchMetadataSections = ({commit}, { collectionId, isContextEdit, includeDisabled }) => {
 
     let endpoint = '/collection/' + collectionId + '/metadata-sections';
@@ -322,6 +382,10 @@ export const fetchMetadataSections = ({commit}, { collectionId, isContextEdit, i
     });
 }
 
+/**
+ * Dispatches `metadata/sendMetadataSection`.
+ * @returns {*} Action result.
+ */
 export const sendMetadataSection = ({commit}, { collectionId, name, status, newIndex }) => {
     return new Promise((resolve, reject) => {
         let endpoint = '/collection/' + collectionId + '/metadata-sections/';
@@ -346,6 +410,10 @@ export const sendMetadataSection = ({commit}, { collectionId, name, status, newI
 };
 
 
+/**
+ * Dispatches `metadata/updateMetadataSection`.
+ * @returns {*} Action result.
+ */
 export const updateMetadataSection = ({commit}, {collectionId, metadataSectionId, index, options }) => {
     return new Promise((resolve, reject) => {
         let endpoint = '/collection/' + collectionId + '/metadata-sections/' + metadataSectionId;
@@ -367,6 +435,10 @@ export const updateMetadataSection = ({commit}, {collectionId, metadataSectionId
     });
 };
 
+/**
+ * Dispatches `metadata/deleteMetadataSection`.
+ * @returns {*} Action result.
+ */
 export const deleteMetadataSection = ({commit}, { collectionId, metadataSectionId }) => {
     let endpoint = '/collection/' + collectionId + '/metadata-sections/' + metadataSectionId;
 
@@ -383,10 +455,18 @@ export const deleteMetadataSection = ({commit}, { collectionId, metadataSectionI
     });
 };
 
+/**
+ * Dispatches `metadata/updateMetadataSections`.
+ * @returns {*} Action result.
+ */
 export const updateMetadataSections = ({commit}, metadataSections) => {
     commit('setMetadataSections', metadataSections);
 };
 
+/**
+ * Dispatches `metadata/updateCollectionMetadataSectionsOrder`.
+ * @returns {*} Action result.
+ */
 export const updateCollectionMetadataSectionsOrder = ({ commit }, {collectionId, metadataSectionsOrder }) => {
 
     return new Promise((resolve, reject) => {
@@ -402,31 +482,59 @@ export const updateCollectionMetadataSectionsOrder = ({ commit }, {collectionId,
     });
 }
 
+/**
+ * Dispatches `metadata/cleanMetadataSections`.
+ * @returns {*} Action result.
+ */
 export const cleanMetadataSections = ({commit}) => {
     commit('cleanMetadataSections');
 };
 
+/**
+ * Dispatches `metadata/moveMetadataSectionUp`.
+ * @returns {*} Action result.
+ */
 export const moveMetadataSectionUp = ({ commit }, index) => {
     commit('moveMetadataSectionUp', index);
 }
 
+/**
+ * Dispatches `metadata/moveMetadataSectionDown`.
+ * @returns {*} Action result.
+ */
 export const moveMetadataSectionDown = ({ commit }, index) => {
     commit('moveMetadataSectionDown', index);
 }
 
+/**
+ * Dispatches `metadata/moveMetadatumUp`.
+ * @returns {*} Action result.
+ */
 export const moveMetadatumUp = ({ commit }, { index, sectionIndex }) => {
     commit('moveMetadatumUp', { index, sectionIndex });
 }
 
+/**
+ * Dispatches `metadata/moveMetadatumDown`.
+ * @returns {*} Action result.
+ */
 export const moveMetadatumDown = ({ commit }, { index, sectionIndex }) => {
     commit('moveMetadatumDown', { index, sectionIndex });
 }
 
+/**
+ * Dispatches `metadata/moveMetadatum`.
+ * @returns {*} Action result.
+ */
 export const moveMetadatum = ({ commit }, { newIndex, oldIndex, sectionIndex }) => {
     commit('moveMetadatum', { newIndex, oldIndex, sectionIndex });
 }
 
 // METADATA SECTION METADATA LIST
+/**
+ * Dispatches `metadata/fetchMetadataSectionMetadata`.
+ * @returns {*} Action result.
+ */
 export const fetchMetadataSectionMetadata = ({commit}, { collectionId , metadataSectionId }) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.get('/collection/' + collectionId + '/metadata-sections/' + metadataSectionId + '/metadata')

@@ -477,7 +477,7 @@
 
                                             <template 
                                                     v-for="(itemMetadatum, index) of itemMetadata"
-                                                    :key="index">
+                                                    :key="getMetadataFieldRenderNonce(itemMetadatum, index)">
                                                 <tainacan-form-item
                                                         v-if="itemMetadatum.metadatum.metadata_section_id == metadataSection.id"
                                                         v-show="(!showOnlyRequiredMetadata || itemMetadatum.metadatum.required === 'yes') && (metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"
@@ -925,7 +925,9 @@ export default {
             isOnFirstMetadatumOfCompoundNavigation: false,
             isOnLastMetadatumOfCompoundNavigation: false,
             hideMetadataTypes: this.$adminOptions.hideItemEditionMetadataTypes,
-            showOnlyRequiredMetadata: false
+            showOnlyRequiredMetadata: false,
+            metadataFieldsGlobalRenderNonce: 0,
+            metadataFieldsIndividualRenderNonce: {}
         }
     },
     computed: {
@@ -1212,6 +1214,9 @@ export default {
         this.handleWindowResize();
         window.addEventListener('resize', this.handleWindowResize);
 
+        // Listens to external metadata reload event
+        window.addEventListener('TainacanReloadItemMetadataForm', this.handleExternalMetadataReloadEvent);
+
         // If we're in the mobile app, show panel
         if (this.$adminOptions.mobileAppMode)
             this.isMobileSubheaderOpen = true;
@@ -1220,6 +1225,7 @@ export default {
         this.$emitter.off('isOnFirstMetadatumOfCompoundNavigation');
         this.$emitter.off('isOnLastMetadatumOfCompoundNavigation');
         window.removeEventListener('resize', this.handleWindowResize);
+        window.removeEventListener('TainacanReloadItemMetadataForm', this.handleExternalMetadataReloadEvent);
         if (typeof this.swiper.destroy == 'function')
             this.swiper.destroy();
     },
@@ -1230,6 +1236,7 @@ export default {
             'updateItemDocument',
             'updateThumbnailAlt',
             'fetchItemMetadata',
+            'fetchItemMetadatum',
             'fetchItem',
             'cleanItemMetadata',
             'sendAttachments',
@@ -1252,6 +1259,40 @@ export default {
         ...mapActions('metadata',[
             'fetchMetadataSections'
         ]),
+        getMetadataFieldRenderNonce(itemMetadatum, index) {
+            const individualRenderNonce = this.metadataFieldsIndividualRenderNonce[itemMetadatum.metadatum.id] || 0;
+            return `${itemMetadatum.metadatum.id}-${index}-${this.metadataFieldsGlobalRenderNonce}-${individualRenderNonce}`;
+        },
+        handleExternalMetadataReloadEvent(event) {
+            const detail = event && event.detail ? event.detail : {};
+            const hasFilter = detail && Object.keys(detail).length > 0;
+
+            if (!hasFilter) {
+                this.isLoading = true;
+                this.metadataFieldsGlobalRenderNonce += 1;
+                this.loadItemMetadata();
+                return;
+            }
+
+            const requestItemId = detail.itemId !== undefined ? detail.itemId : this.itemId;
+            const requestMetadatumId = detail.metadatumId !== undefined ? detail.metadatumId : '';
+            
+            if (!requestItemId || !requestMetadatumId) {
+                return;
+            }
+
+            this.fetchItemMetadatum({
+                item_id: requestItemId,
+                metadatum_id: requestMetadatumId
+            })
+                .then(() => {
+                    const currentIndividualRenderNonce = this.metadataFieldsIndividualRenderNonce[requestMetadatumId] || 0;
+                    Object.assign(this.metadataFieldsIndividualRenderNonce, { [requestMetadatumId]: currentIndividualRenderNonce + 1 });
+                })
+                .catch((error) => {
+                    this.$console.error('Error reloading metadata from external event', error);
+                });
+        },
         onSubmit(status, alternativeDestination) {
 
             // Puts loading on Item edition
@@ -1423,8 +1464,8 @@ export default {
                     this.item ? JSON.parse(JSON.stringify(this.item)) : false
                 );
 
-                // Loads metadata and attachments
-                this.loadMetadata();
+                // Loads metadata
+                this.loadItemMetadata();
 
             })
             .catch((error) => {
@@ -1432,8 +1473,7 @@ export default {
                 this.isLoading = false;
             });
         },
-        loadMetadata() {
-            // Obtains Item Metadatum
+        loadItemMetadata() {
             this.fetchItemMetadata(this.itemId)
                 .then((metadata) => {
                     this.metadataCollapses = [];
@@ -1929,7 +1969,7 @@ export default {
                         this.item ? JSON.parse(JSON.stringify(this.item)) : false
                     );
 
-                    this.loadMetadata();
+                    this.loadItemMetadata();
                     this.setLastUpdated(this.item.modification_date);
 
                     this.shouldLoadAttachments = !this.shouldLoadAttachments;

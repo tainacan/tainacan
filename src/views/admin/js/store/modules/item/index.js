@@ -2,6 +2,11 @@ import * as actions from './actions';
 import * as getters from './getters';
 import * as mutations from './mutations';
 
+/**
+ * Vuex module `item`.
+ * Namespace: `item`.
+ * Purpose: stores current item data, metadata, attachments, and submission workflow state.
+ */
 const state = {
     item: [],
     itemMetadata: [],

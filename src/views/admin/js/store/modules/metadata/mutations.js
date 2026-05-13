@@ -1,5 +1,11 @@
 
 
+/**
+ * Commits `metadata/deleteMetadatum` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} metadatum - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const deleteMetadatum = ( state, metadatum ) => {
     if (metadatum.parent && metadatum.parent >= 0) {
         const existingParentIndex = state.metadata.findIndex((aMetadatum) => aMetadatum.id == metadatum.parent);
@@ -23,6 +29,11 @@ export const deleteMetadatum = ( state, metadatum ) => {
     }
 }
 
+/**
+ * Commits `metadata/setSingleMetadatum` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const setSingleMetadatum = (state, {metadatum, index, isRepositoryLevel }) => {
     if (metadatum.parent && metadatum.parent >= 0) {
         const existingParentIndex = state.metadata.findIndex((aMetadatum) => aMetadatum.id == metadatum.parent);
@@ -65,10 +76,21 @@ export const setSingleMetadatum = (state, {metadatum, index, isRepositoryLevel }
     }
 }
 
+/**
+ * Commits `metadata/setMetadata` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} metadata - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setMetadata = (state, metadata) => {
     state.metadata = metadata;
 }
 
+/**
+ * Commits `metadata/updateCollectionMetadataOrder` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const updateCollectionMetadataOrder = (state, { metadataOrder, metadataSectionId }) => {
 
     for (let i = 0; i < metadataOrder.length; i++) {
@@ -92,22 +114,50 @@ export const updateCollectionMetadataOrder = (state, { metadataOrder, metadataSe
     }
 }
 
+/**
+ * Commits `metadata/setMetadatumTypes` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} metadatumTypes - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setMetadatumTypes = (state, metadatumTypes) => {
     state.metadatumTypes = metadatumTypes;
 }
 
+/**
+ * Commits `metadata/setMetadatumMappers` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} metadatumMappers - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setMetadatumMappers = (state, metadatumMappers) => {
     state.metadatumMappers = metadatumMappers;
 }
 
+/**
+ * Commits `metadata/cleanMetadata` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const cleanMetadata = (state) => {
     state.metadata = [];
 }
 
+/**
+ * Commits `metadata/setMetadataSections` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} metadataSections - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setMetadataSections = (state, metadataSections) => {
     state.metadataSections = metadataSections;
 }
 
+/**
+ * Commits `metadata/setMetadataSectionMetadata` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const setMetadataSectionMetadata = (state, { metadataSectionId, metadata }) => {
     const existingIndex = state.metadataSections.findIndex((aMetadataSection) => aMetadataSection.id == metadataSectionId);
 
@@ -118,6 +168,11 @@ export const setMetadataSectionMetadata = (state, { metadataSectionId, metadata 
     }
 }
 
+/**
+ * Commits `metadata/setSingleMetadataSection` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const setSingleMetadataSection = (state, { metadataSection, index }) => {  
 
     if (index !== undefined && index !== null)
@@ -131,6 +186,11 @@ export const setSingleMetadataSection = (state, { metadataSection, index }) => {
     }
 }
 
+/**
+ * Commits `metadata/updateMetadatumInsideSectionMetadata` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const updateMetadatumInsideSectionMetadata = (state, { metadatum, index, sectionId }) => {
     const existingSectionIndex = state.metadataSections.findIndex((aMetadataSection) => aMetadataSection.id == sectionId);
     if (existingSectionIndex >= 0) {
@@ -173,6 +233,12 @@ export const updateMetadatumInsideSectionMetadata = (state, { metadatum, index, 
     }  
 }
 
+/**
+ * Commits `metadata/deleteMetadatumInsideMetadataSection` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} metadatum - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const deleteMetadatumInsideMetadataSection = (state, metadatum) => {
     const existingSectionIndex = state.metadataSections.findIndex((aMetadataSection) => aMetadataSection.id == metadatum.metadata_section_id);
     if (existingSectionIndex >= 0) {
@@ -201,6 +267,12 @@ export const deleteMetadatumInsideMetadataSection = (state, metadatum) => {
     }
 }
 
+/**
+ * Commits `metadata/updateMetadataSectionsOrderFromCollection` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} metadataSectionsOrder - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const updateMetadataSectionsOrderFromCollection = (state, metadataSectionsOrder) => {
     for (let i = 0; i < state.metadataSections.length; i++) {
         let updatedMetadataSectionIndex = metadataSectionsOrder.findIndex(aMetadataSection => aMetadataSection.id == state.metadataSections[i].id);
@@ -209,38 +281,81 @@ export const updateMetadataSectionsOrderFromCollection = (state, metadataSection
     }
 }
 
+/**
+ * Commits `metadata/clearPlaceholderMetadataSection` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const clearPlaceholderMetadataSection = (state) => {
     const existingPlaceholder = state.metadataSections.findIndex((aMetadataSection) => aMetadataSection.id == 'metadataSectionCreator');
     if (existingPlaceholder >= 0)
         state.metadataSections.splice(existingPlaceholder, 1);
 }
 
+/**
+ * Commits `metadata/deleteMetadataSection` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} metadataSection - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const deleteMetadataSection = ( state, metadataSection ) => {
     let index = state.metadataSections.findIndex(deletedMetadataSection => deletedMetadataSection.id == metadataSection.id);
     if (index >= 0)
         state.metadataSections.splice(index, 1);
 }
 
+/**
+ * Commits `metadata/cleanMetadataSections` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const cleanMetadataSections = (state) => {
     state.metadataSections = [];
 }
 
+/**
+ * Commits `metadata/moveMetadataSectionUp` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} index - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const moveMetadataSectionUp = (state, index) => {
     state.metadataSections.splice(index - 1, 0, state.metadataSections.splice(index, 1)[0]);   
 }
 
+/**
+ * Commits `metadata/moveMetadataSectionDown` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} index - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const moveMetadataSectionDown = (state, index) => {
     state.metadataSections.splice(index + 1, 0, state.metadataSections.splice(index, 1)[0]);
 }
 
+/**
+ * Commits `metadata/moveMetadatumUp` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const moveMetadatumUp = (state, { index, sectionIndex }) => {
     state.metadataSections[sectionIndex].metadata_object_list.splice(index - 1, 0, state.metadataSections[sectionIndex].metadata_object_list.splice(index, 1)[0]);
 }
 
+/**
+ * Commits `metadata/moveMetadatumDown` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const moveMetadatumDown = (state, { index, sectionIndex }) => {
     state.metadataSections[sectionIndex].metadata_object_list.splice(index + 1, 0, state.metadataSections[sectionIndex].metadata_object_list.splice(index, 1)[0]);
 }
 
+/**
+ * Commits `metadata/moveMetadatum` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const moveMetadatum = (state, { newIndex, oldIndex, sectionIndex }) => {
     state.metadataSections[sectionIndex].metadata_object_list.splice(newIndex, 0, state.metadataSections[sectionIndex].metadata_object_list.splice(oldIndex, 1)[0]);
 }

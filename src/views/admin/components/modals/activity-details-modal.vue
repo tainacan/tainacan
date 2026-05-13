@@ -540,7 +540,7 @@
         ],
         data() {
             return {
-                infoEmpty: `[ ${this.$i18n.get('info_empty').toLowerCase()} ]`,
+                infoEmpty: this.$i18n.get('info_empty'),
                 dateFormat: '',
                 activityCreationDate: '',
                 isLoadingActivity: false,

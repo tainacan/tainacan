@@ -2,6 +2,10 @@ import axios from '../../../axios';
 import qs from 'qs';
 
 // THE ITEMS SEARCH
+/**
+ * Dispatches `collection/fetchItems`.
+ * @returns {*} Action result.
+ */
 export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, isOnTheme, termId, taxonomy }) => {
     commit('cleanItems');
 
@@ -126,6 +130,10 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
     })
 };
 
+/**
+ * Dispatches `collection/deleteItem`.
+ * @returns {*} Action result.
+ */
 export const deleteItem = ({ commit }, { itemId, isPermanently }) => {
     return new Promise((resolve, reject) => {
         let endpoint = '/items/' + itemId;
@@ -147,6 +155,10 @@ export const deleteItem = ({ commit }, { itemId, isPermanently }) => {
     });
 };
  
+/**
+ * Dispatches `collection/fetchCollections`.
+ * @returns {*} Action result.
+ */
 export const fetchCollections = ({commit} , { page, collectionsPerPage, status, contextEdit, order, orderby, search, collectionTaxonomies, authorid }) => {
     
     return new Promise((resolve, reject) => {
@@ -216,18 +228,34 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage, status, 
     });
 };
 
+/**
+ * Dispatches `collection/cleanCollections`.
+ * @returns {*} Action result.
+ */
 export const cleanCollections = ({ commit }) => {
     commit('cleanCollections');
 };
 
+/**
+ * Dispatches `collection/cleanItems`.
+ * @returns {*} Action result.
+ */
 export const cleanItems = ({ commit }) => {
     commit('cleanItems');
 };
 
+/**
+ * Dispatches `collection/cleanCollection`.
+ * @returns {*} Action result.
+ */
 export const cleanCollection = ({ commit }) => {
     commit('cleanCollection');
 };
 
+/**
+ * Dispatches `collection/fetchCollection`.
+ * @returns {*} Action result.
+ */
 export const fetchCollection = ({ commit, }, id) => {
     return new Promise((resolve, reject) => { 
         axios.tainacanApi.get('/collections/' + id + '?context=edit&fetch_collection_taxonomies=true')
@@ -242,6 +270,10 @@ export const fetchCollection = ({ commit, }, id) => {
     });
 };
 
+/**
+ * Dispatches `collection/fetchCollectionBasics`.
+ * @returns {*} Action result.
+ */
 export const fetchCollectionBasics = ({ commit }, {collectionId, isContextEdit }) => {
     return new Promise((resolve, reject) => { 
         let endpoint = '/collections/' + collectionId + '?fetch_only=name,url,status,item_publication_label,allow_comments,allow_item_slug_editing,allow_item_author_editing,hide_items_thumbnail_on_lists,item_enabled_document_types,item_document_label,item_thumbnail_label,item_enable_thumbnail,item_attachment_label,item_enable_attachments,item_enable_metadata_focus_mode,item_enable_metadata_required_filter,item_enable_metadata_searchbar,item_enable_metadata_collapses,item_enable_metadata_enumeration,metadata_section_order';
@@ -261,6 +293,10 @@ export const fetchCollectionBasics = ({ commit }, {collectionId, isContextEdit }
     });
 };
 
+/**
+ * Dispatches `collection/fetchCollectionTaxonomies`.
+ * @returns {*} Action result.
+ */
 export const fetchCollectionTaxonomies = ({ commit }, { termParent, termPerPage = 96 }) => {
     return new Promise((resolve, reject) => { 
         axios.wpApi.get('/taxonomies/?type=tainacan-collection')
@@ -300,6 +336,10 @@ export const fetchCollectionTaxonomies = ({ commit }, { termParent, termPerPage 
     });
 };
 
+/**
+ * Dispatches `collection/fetchCollectionForExposer`.
+ * @returns {*} Action result.
+ */
 export const fetchCollectionForExposer = ({ commit }, collectionId) => {
     return new Promise((resolve, reject) => { 
         let endpoint = '/collections/' + collectionId + '?fetch_only=name,url';
@@ -313,6 +353,10 @@ export const fetchCollectionForExposer = ({ commit }, collectionId) => {
     });
 };
 
+/**
+ * Dispatches `collection/fetchCollectionForItemSubmission`.
+ * @returns {*} Action result.
+ */
 export const fetchCollectionForItemSubmission = ({ commit }, collectionId) => {
     return new Promise((resolve, reject) => { 
         let endpoint = '/collections/' + collectionId + '?fetch_only=name,allows_submission,submission_use_recaptcha,item_enable_metadata_enumeration,metadata_section_order';
@@ -326,6 +370,10 @@ export const fetchCollectionForItemSubmission = ({ commit }, collectionId) => {
     });
 };
 
+/**
+ * Dispatches `collection/deleteCollection`.
+ * @returns {*} Action result.
+ */
 export const deleteCollection = ({ commit }, { collectionId, isPermanently }) => {
     return new Promise((resolve, reject) => { 
         let endpoint = '/collections/' + collectionId;
@@ -347,6 +395,10 @@ export const deleteCollection = ({ commit }, { collectionId, isPermanently }) =>
     });
 };
 
+/**
+ * Dispatches `collection/updateCollection`.
+ * @returns {*} Action result.
+ */
 export const updateCollection = ({ commit }, { collection_id, collection }) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.put('/collections/' + collection_id + '?context=edit', collection)
@@ -361,6 +413,10 @@ export const updateCollection = ({ commit }, { collection_id, collection }) => {
     });
 };
 
+/**
+ * Dispatches `collection/updateCollectionTaxonomyValues`.
+ * @returns {*} Action result.
+ */
 export const updateCollectionTaxonomyValues = ({ commit }, { collectionId, taxonomyValues }) => {
     return new Promise((resolve, reject) => {
         axios.wpApi.patch('/tainacan-collection/' + collectionId, taxonomyValues)
@@ -373,6 +429,10 @@ export const updateCollectionTaxonomyValues = ({ commit }, { collectionId, taxon
         });
 };
 
+/**
+ * Dispatches `collection/sendCollection`.
+ * @returns {*} Action result.
+ */
 export const sendCollection = ( { commit }, collection) => {
     return new Promise(( resolve, reject ) => {
         let param = collection;
@@ -389,12 +449,20 @@ export const sendCollection = ( { commit }, collection) => {
     });
  };
 
+/**
+ * Dispatches `collection/setItems`.
+ * @returns {*} Action result.
+ */
 export const setItems = ({ commit }, items ) => {
     commit('setItems', items);
 };
 
 
 // Attachments =======================================
+/**
+ * Dispatches `collection/sendAttachment`.
+ * @returns {*} Action result.
+ */
 export const sendAttachment = ( { commit }, { collection_id, file }) => {
     return new Promise(( resolve, reject ) => {
         axios.wpApi.post('/media/?post=' + collection_id, file, {
@@ -414,6 +482,10 @@ export const sendAttachment = ( { commit }, { collection_id, file }) => {
     });
 };
 
+/**
+ * Dispatches `collection/fetchAttachments`.
+ * @returns {*} Action result.
+ */
 export const fetchAttachments = ({ commit }, collection_id) => {
     commit('cleanAttachments')
     return new Promise((resolve, reject) => {
@@ -429,6 +501,10 @@ export const fetchAttachments = ({ commit }, collection_id) => {
     });
 };
 
+/**
+ * Dispatches `collection/updateThumbnail`.
+ * @returns {*} Action result.
+ */
 export const updateThumbnail = ({ commit }, { collectionId, thumbnailId }) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.put('/collections/' + collectionId + '?context=edit', {
@@ -444,6 +520,10 @@ export const updateThumbnail = ({ commit }, { collectionId, thumbnailId }) => {
     }); 
 };
 
+/**
+ * Dispatches `collection/updateHeaderImage`.
+ * @returns {*} Action result.
+ */
 export const updateHeaderImage = ({ commit }, { collectionId, headerImageId }) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.put('/collections/' + collectionId + '?context=edit', {
@@ -460,6 +540,10 @@ export const updateHeaderImage = ({ commit }, { collectionId, headerImageId }) =
 };
 
 // Collection Cover Page
+/**
+ * Dispatches `collection/fetchPages`.
+ * @returns {*} Action result.
+ */
 export const fetchPages = ({ commit }, { search, page } ) => {
     return new Promise((resolve, reject) => {
         axios.wpApi.get('/pages?search=' + search + '&page=' + page)
@@ -474,6 +558,10 @@ export const fetchPages = ({ commit }, { search, page } ) => {
     });
 };
 
+/**
+ * Dispatches `collection/fetchPage`.
+ * @returns {*} Action result.
+ */
 export const fetchPage = ({ commit }, pageId ) => {
     return new Promise((resolve, reject) => {
         axios.wpApi.get('/pages/' + pageId)
@@ -488,6 +576,10 @@ export const fetchPage = ({ commit }, pageId ) => {
 };
 
 // Fetch Collections for listing repository filters, parent collection selection, importer destiny...
+/**
+ * Dispatches `collection/fetchAllCollectionNames`.
+ * @returns {*} Action result.
+ */
 export const fetchAllCollectionNames = ({ commit }, collectionsIds) => {
 
     let endpoint = '/collections/?context=edit&nopaging=1&fetch_only=name,id';
@@ -520,6 +612,10 @@ export const fetchAllCollectionNames = ({ commit }, collectionsIds) => {
 };
 
 // Send Files to Item Bulk Addition
+/**
+ * Dispatches `collection/sendFile`.
+ * @returns {*} Action result.
+ */
 export const sendFile = ( { commit }, {itemId, file } ) => {
     return new Promise(( resolve, reject ) => {
         axios.wpApi.post('/media/?post=' + itemId, file, {
@@ -536,6 +632,10 @@ export const sendFile = ( { commit }, {itemId, file } ) => {
     });
 };
 
+/**
+ * Dispatches `collection/cleanFiles`.
+ * @returns {*} Action result.
+ */
 export const cleanFiles = ({ commit }) => {
     commit('cleanFiles');
 };

@@ -687,6 +687,8 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: %s is the date */
 	'label_changes_on_%s'                              => __( 'Changes on %s', 'tainacan' ),
 	'label_item_activities'						 	 => __( 'Item activities', 'tainacan' ),
+	/* translators: %s is the metadatum name */
+	'label_item_activities_in_%s'					 => __( 'Item activities in %s', 'tainacan' ),
 	'label_add_new_section'							 => __( 'Add new section', 'tainacan' ),
 	'label_new_metadata_section'					 => __( 'New metadata section', 'tainacan' ),
 	'label_show_details'					 	 	 => __( 'Show details', 'tainacan' ),
@@ -1009,6 +1011,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_warning_taxonomy_not_saved'                => __( 'Are you sure? The taxonomy is not saved, changes will be lost.', 'tainacan' ),
 	'info_warning_terms_not_saved'                   => __( 'Are you sure? There are terms not saved, changes will be lost.', 'tainacan' ),
 	'info_no_activities'                             => __( 'No activities found.', 'tainacan' ),
+	'info_no_activities_found_with_filter'           => __( 'No activities found with the current filters.', 'tainacan' ),
 	'info_logs_before'                               => __( 'Before', 'tainacan' ),
 	'info_logs_after'                                => __( 'After', 'tainacan' ),
 	'info_there_is_no_metadatum'                     => __( 'There is no metadata here yet.', 'tainacan' ),
@@ -1206,6 +1209,8 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: %s is the number of selected items */
 	'info_%s_selected_items_for_bulk_edition'		 => __( '<strong>%s items selected</strong> for bulk edition.', 'tainacan'),
 	'info_define_bulk_edit_criteria'				 => __( 'Define the criteria below:', 'tainacan'),
+	'info_error_empty_value'						 => __( 'If you want to leave this field empty, please remove the value.', 'tainacan'),
+
 
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
