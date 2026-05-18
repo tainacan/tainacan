@@ -640,23 +640,23 @@ abstract class Pages {
 		 */
 		$breadcrumbs = apply_filters( 'tainacan_admin_breadcrumbs', $breadcrumbs );
 
-		if ( count($breadcrumbs) ) {
-			?>
-			<div id="tainacan-breadcrumbs">
-				<nav>
-					<ul id="tainacan-breadcrumbs-list">
-						<?php foreach( $breadcrumbs as $breadcrumb ) : ?>
-							<?php if ( isset( $breadcrumb['url'] ) ) : ?>
-								<li><a href="<?php echo esc_url($breadcrumb['url']); ?>"><?php echo esc_html($breadcrumb['label']); ?></a></li>
-							<?php else : ?>
-								<li><?php echo esc_html($breadcrumb['label']); ?></li>
-							<?php endif; ?>
-						<?php endforeach; ?>
-					</ul>
-				</nav>
-			</div>
-			<?php
-		}
+		// We render this even if the array is empty because it may be filled by the tainacan-admin-navigation-menu.js script.
+		?>
+		<div id="tainacan-breadcrumbs">
+			<nav>
+				<ul id="tainacan-breadcrumbs-list">
+					<?php foreach( $breadcrumbs as $breadcrumb ) : ?>
+						<?php if ( isset( $breadcrumb['url'] ) ) : ?>
+							<li><a href="<?php echo esc_url($breadcrumb['url']); ?>"><?php echo esc_html($breadcrumb['label']); ?></a></li>
+						<?php else : ?>
+							<li><?php echo esc_html($breadcrumb['label']); ?></li>
+						<?php endif; ?>
+					<?php endforeach; ?>
+				</ul>
+			</nav>
+		</div>
+		<?php
+		
 	}
 
 	/**
