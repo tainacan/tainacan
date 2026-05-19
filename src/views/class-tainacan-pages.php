@@ -279,10 +279,6 @@ abstract class Pages {
 			),
 			'has_permalinks_structure' => get_option('permalink_structure') !== '',
 			'wp_abilities_api_url'     => esc_url_raw( rest_url( 'wp-abilities/v1/' ) ),
-			'ai_alt_text_generation_available' => (bool) apply_filters(
-				'tainacan_ai_alt_text_generation_available',
-				function_exists( 'wp_has_ability' ) && wp_has_ability( 'ai/alt-text-generation' )
-			),
 		];
 		
 		$maps = [
@@ -344,6 +340,22 @@ abstract class Pages {
 
 		return $settings;
 
+	}
+
+	/**
+	 * Whether the WordPress AI alt-text ability is registered and available.
+	 *
+	 * Must not be called from get_admin_js_localization_params() because that runs on init@11
+	 * (Gutenberg blocks), before the AI plugin registers abilities on init@15 — an early
+	 * wp_has_ability() call would fire wp_abilities_api_init too soon and break the global registry.
+	 *
+	 * @return bool
+	 */
+	function get_ai_alt_text_generation_available() {
+		return (bool) apply_filters(
+			'tainacan_ai_alt_text_generation_available',
+			function_exists( 'wp_has_ability' ) && wp_has_ability( 'ai/alt-text-generation' )
+		);
 	}
 	
 	/**

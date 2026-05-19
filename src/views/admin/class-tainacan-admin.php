@@ -282,7 +282,10 @@ class Admin extends Pages {
 		);
 
 		wp_localize_script( 'tainacan-pages-common-scripts', 'tainacan_user', $this->get_admin_js_user_data() );
-		wp_localize_script( 'tainacan-pages-common-scripts', 'tainacan_plugin', $this->get_admin_js_localization_params() );
+
+		$plugin_settings = $this->get_admin_js_localization_params();
+		$plugin_settings['ai_alt_text_generation_available'] = $this->get_ai_alt_text_generation_available();
+		wp_localize_script( 'tainacan-pages-common-scripts', 'tainacan_plugin', $plugin_settings );
 		
 		wp_enqueue_media();
 		wp_enqueue_script ('underscore' );

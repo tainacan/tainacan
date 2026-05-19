@@ -180,6 +180,8 @@ export default {
                         msg = this.$i18n.get('error_thumbnail_alt_ai_empty_response');
                     } else if (err && err.message === 'abilities_unavailable') {
                         msg = this.$i18n.get('error_thumbnail_alt_ai_unavailable');
+                    } else if (err?.error?.response?.data?.message) {
+                        msg = err.error.response.data.message;
                     } else if (err && err.errorMessage) {
                         msg = err.errorMessage;
                     }
