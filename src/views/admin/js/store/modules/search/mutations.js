@@ -1,23 +1,52 @@
 
 
+/**
+ * Commits `search/setPostQueryAttribute` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const setPostQueryAttribute = ( state, { attr, value }) => {
     Object.assign(state.postquery, { [attr]: value });
 };
 
+/**
+ * Commits `search/removePostQueryAttribute` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} attr - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const removePostQueryAttribute = ( state, attr) => {
     delete state.postquery[`${attr}`];
 };
 
+/**
+ * Commits `search/setPostQuery` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} postquery - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setPostQuery = ( state, postquery ) => {
     state.postquery = postquery;
 };
 
+/**
+ * Commits `search/setAdvancedSearchQuery` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} advancedSearchQuery - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setAdvancedSearchQuery = (state, advancedSearchQuery) => {
     state.postquery.advancedSearch = advancedSearchQuery.advancedSearch;
     state.postquery.metaquery = Object.assign({}, advancedSearchQuery.metaquery);
     state.postquery.taxquery = Object.assign({}, advancedSearchQuery.taxquery);
 };
 
+/**
+ * Commits `search/addMetaQuery` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} filter - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const addMetaQuery = ( state, filter ) => {
     state.postquery.metaquery = ( ! state.postquery.metaquery  || state.postquery.metaquery.length == undefined ) ? [] : state.postquery.metaquery;
 
@@ -39,6 +68,12 @@ export const addMetaQuery = ( state, filter ) => {
         state.postquery.metaquery.push(metaquery);
 };
 
+/**
+ * Commits `search/addTaxQuery` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} filter - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const addTaxQuery = ( state, filter ) => {
     state.postquery.taxquery = ( ! state.postquery.taxquery || state.postquery.taxquery.length == undefined ) ? [] : state.postquery.taxquery;
 
@@ -56,13 +91,31 @@ export const addTaxQuery = ( state, filter ) => {
         state.postquery.taxquery.push(taxquery);
 };
 
+/**
+ * Commits `search/addFetchOnly` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} metadatum - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const addFetchOnly = ( state, metadatum ) => {
     state.postquery.fetch_only = metadatum
 };
+/**
+ * Commits `search/addFetchOnlyMeta` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} metadatum - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const addFetchOnlyMeta = ( state, metadatum ) => {
     state.postquery.fetch_only_meta = metadatum;
 };
 
+/**
+ * Commits `search/removeFetchOnly` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} metadatum - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const removeFetchOnly = ( state, metadatum ) => {
 
     let fetch = state.postquery.fetch_only.split(',');
@@ -74,6 +127,12 @@ export const removeFetchOnly = ( state, metadatum ) => {
     state.postquery.fetch_only = fetch.toString();
 };
 
+/**
+ * Commits `search/removeFetchOnlyMeta` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} metadatum - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const removeFetchOnlyMeta = ( state, metadatum ) => {
     if(state.postquery.fetch_only_meta != undefined) {
         let fetch_meta = state.postquery.fetch_only_meta.split(',');
@@ -86,6 +145,12 @@ export const removeFetchOnlyMeta = ( state, metadatum ) => {
     }
 };
 
+/**
+ * Commits `search/removeMetaQuery` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} filter - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const removeMetaQuery = ( state, filter ) => {
     state.postquery.metaquery = ( ! state.postquery.metaquery ) ? [] : state.postquery.metaquery;
 
@@ -115,6 +180,12 @@ export const removeMetaQuery = ( state, filter ) => {
     }
 };
 
+/**
+ * Commits `search/removeTaxQuery` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} filter - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const removeTaxQuery = ( state, filter ) => {
     state.postquery.taxquery = ( ! state.postquery.taxquery ) ? [] : state.postquery.taxquery;
 
@@ -131,22 +202,51 @@ export const removeTaxQuery = ( state, filter ) => {
     }
 };
 
+/**
+ * Commits `search/removePostIn` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const removePostIn = ( state ) => {
     delete state.postquery.postin;
 };
 
+/**
+ * Commits `search/setTotalItems` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} total - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setTotalItems = ( state, total ) => {
     state.totalItems = total;
 };
 
+/**
+ * Commits `search/setTotalPages` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} totalPages - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setTotalPages = ( state, totalPages ) => {
     state.totalPages = totalPages;
 };
 
+/**
+ * Commits `search/setItemsPerPage` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} itemsPerPage - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setItemsPerPage = ( state, itemsPerPage ) => {
     state.itemsPerPage = itemsPerPage;
 };
 
+/**
+ * Commits `search/setSearchQuery` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} searchQuery - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setSearchQuery = ( state, searchQuery ) => {
     
     if (searchQuery != '')
@@ -158,6 +258,12 @@ export const setSearchQuery = ( state, searchQuery ) => {
     delete state.postquery.s;
 };
 
+/**
+ * Commits `search/setSentenceMode` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} sentenceMode - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setSentenceMode = ( state, sentenceMode ) => {
     if (sentenceMode != true)
         Object.assign(state.postquery, { 'sentence': sentenceMode });
@@ -167,18 +273,42 @@ export const setSentenceMode = ( state, sentenceMode ) => {
     }
 };
 
+/**
+ * Commits `search/setStatus` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} status - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setStatus = ( state, status ) => {
     state.postquery.status = status;
 };
 
+/**
+ * Commits `search/setViewMode` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} viewMode - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setViewMode = ( state, viewMode ) => {
     state.postquery.view_mode = viewMode;
 };
 
+/**
+ * Commits `search/setAdminViewMode` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} adminViewMode - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setAdminViewMode = ( state, adminViewMode ) => {
     state.postquery.admin_view_mode = adminViewMode;
 };
 
+/**
+ * Commits `search/addFilterTag` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} filterTag - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const addFilterTag = ( state, filterTag ) => {
     state.filter_tags = ( ! state.filter_tags) ? [] : state.filter_tags;
     let index = state.filter_tags.findIndex( tag => tag.filterId == filterTag.filterId);
@@ -189,6 +319,12 @@ export const addFilterTag = ( state, filterTag ) => {
         state.filter_tags.push(filterTag);
 };
 
+/**
+ * Commits `search/setFilterTags` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} filterArguments - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setFilterTags = ( state, filterArguments ) => {
     let filterTags = filterArguments.map((aFilterArgument) => {
         return {
@@ -209,6 +345,12 @@ export const setFilterTags = ( state, filterArguments ) => {
     state.filter_tags = filterTags;
 };
 
+/**
+ * Commits `search/removeFilterTag` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} filterTag - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const removeFilterTag = ( state, filterTag ) => {
     state.filter_tags = ( ! state.filter_tags ) ? [] : state.filter_tags;
     let index = state.filter_tags.findIndex( tag => tag.filterId == filterTag.filterId);
@@ -217,10 +359,20 @@ export const removeFilterTag = ( state, filterTag ) => {
         state.filter_tags.splice(index, 1);
 };
 
+/**
+ * Commits `search/cleanFilterTags` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const cleanFilterTags = ( state ) => {
     state.filter_tags = [];
 };
 
+/**
+ * Commits `search/cleanMetaQueries` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const cleanMetaQueries = (state, { keepCollections }) => {
     if (keepCollections === true && Array.isArray(state.postquery.metaquery) )
         state.postquery.metaquery = state.postquery.metaquery.filter(aMetaQuery => aMetaQuery.key === 'collection_id');
@@ -228,18 +380,40 @@ export const cleanMetaQueries = (state, { keepCollections }) => {
         state.postquery.metaquery = [];
 };
 
+/**
+ * Commits `search/cleanTaxQueries` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const cleanTaxQueries = (state) => {
     state.postquery.taxquery = [];
 };
 
+/**
+ * Commits `search/cleanFetchOnly` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const cleanFetchOnly = (state) => {
     delete state.postquery.fetch_only;
 };
 
+/**
+ * Commits `search/setFacets` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} facets - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setFacets = (state, facets) => {
     state.facets = facets;
 }
 
+/**
+ * Commits `search/setSelectedItems` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} selectedItems - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setSelectedItems = (state, selectedItems) => {
     for (let selecteditem of selectedItems) {
         let index = state.selecteditems.findIndex( item => item == selecteditem);
@@ -248,22 +422,45 @@ export const setSelectedItems = (state, selectedItems) => {
     }
 }
 
+/**
+ * Commits `search/cleanSelectedItems` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const cleanSelectedItems = (state) => {
     state.selecteditems = [];
 }
 
+/**
+ * Commits `search/addSelectedItem` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} selectedItem - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const addSelectedItem = (state, selectedItem) => {
     let index = state.selecteditems.findIndex( item => item == selectedItem);
     if ( index < 0 )
         state.selecteditems.push(selectedItem);
 }
 
+/**
+ * Commits `search/removeSelectedItem` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} selectedItem - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const removeSelectedItem = (state, selectedItem) => {
     let index = state.selecteditems.findIndex( item => item == selectedItem);
     if ( index >= 0 )
         state.selecteditems.splice(index, 1);
 }
 
+/**
+ * Commits `search/setHighlightedItem` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} itemId - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setHighlightedItem = (state, itemId) => {
     state.highlightedItem = itemId;
 }

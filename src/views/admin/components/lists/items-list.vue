@@ -252,7 +252,7 @@
                             <span 
                                     v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
                                     v-tooltip="{
-                                        content: $i18n.get('status_' + item.status),
+                                        content: $statusHelper.getStatusLabel(item.status),
                                         autoHide: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
@@ -439,7 +439,7 @@
                                 <span 
                                         v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
                                         v-tooltip="{
-                                            content: $i18n.get('status_' + item.status),
+                                            content: $statusHelper.getStatusLabel(item.status),
                                             autoHide: true,
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             placement: 'auto-start'
@@ -623,7 +623,7 @@
                             <span 
                                     v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
                                     v-tooltip="{
-                                        content: $i18n.get('status_' + item.status),
+                                        content: $statusHelper.getStatusLabel(item.status),
                                         autoHide: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
@@ -855,7 +855,7 @@
                             <span 
                                     v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
                                     v-tooltip="{
-                                        content: $i18n.get('status_' + item.status),
+                                        content: $statusHelper.getStatusLabel(item.status),
                                         autoHide: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
@@ -1140,7 +1140,7 @@
                             <span 
                                     v-if="$statusHelper.hasIcon(item.status)"
                                     v-tooltip="{
-                                        content: $i18n.get('status_' + item.status),
+                                        content: $statusHelper.getStatusLabel(item.status),
                                         autoHide: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
@@ -1445,7 +1445,7 @@
                         <span 
                                 v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
                                 v-tooltip="{
-                                    content: $i18n.get('status_' + item.status),
+                                    content: $statusHelper.getStatusLabel(item.status),
                                     autoHide: true,
                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
@@ -1696,7 +1696,7 @@
                                 <span 
                                         v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
                                         v-tooltip="{
-                                            content: $i18n.get('status_' + item.status),
+                                            content: $statusHelper.getStatusLabel(item.status),
                                             autoHide: true,
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             placement: 'auto-start'
@@ -1964,7 +1964,7 @@
                                         <span 
                                                 v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
                                                 v-tooltip="{
-                                                    content: $i18n.get('status_' + item.status),
+                                                    content: $statusHelper.getStatusLabel(item.status),
                                                     autoHide: true,
                                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                     placement: 'auto-start'
@@ -2272,7 +2272,7 @@
                                 <span 
                                         v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
                                         v-tooltip="{
-                                            content: $i18n.get('status_' + item.status),
+                                            content: $statusHelper.getStatusLabel(item.status),
                                             autoHide: true,
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             placement: 'auto-start'

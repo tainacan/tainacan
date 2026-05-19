@@ -758,7 +758,7 @@
                             {{ (hasFiltered || openAdvancedSearch || searchQuery) ? $i18n.get('info_no_item_found_filter') : (isSortingByCustomMetadata ? $i18n.get('info_no_item_found') : ( ($route.name == 'CollectionMyItemsPage' || $route.name == 'RepositoryMyItemsPage') ? $i18n.get('info_no_item_found_by_you') : $i18n.get('info_no_item_created') )) }}
                         </p>
                         <p v-else>
-                            {{ $i18n.get('info_no_items_' + status) }}
+                            {{ $i18n.getNoEntitiesMessageForStatus('items', status) }}
                         </p>
 
                         <router-link

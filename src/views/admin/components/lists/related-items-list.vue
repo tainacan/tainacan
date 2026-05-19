@@ -70,7 +70,7 @@
                                         <span 
                                                 v-if="$statusHelper.hasIcon(relatedItem.status)"
                                                 v-tooltip="{
-                                                    content: $i18n.get('status_' + relatedItem.status),
+                                                    content: $statusHelper.getStatusLabel(relatedItem.status),
                                                     autoHide: true,
                                                     placement: 'top',
                                                     popperClass: ['tainacan-tooltip', 'tooltip']

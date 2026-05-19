@@ -660,18 +660,27 @@ html {
                     }
                 }
             }
-            .separator-list-item {
+            ul .separator-list-item {
                 width: 100%;
                 text-align: start;
                 box-sizing: border-box;
                 font-size: 0.75em;
                 font-weight: 500;
                 color: var(--tainacan-admin-navigation-sidebar-separator-color);
+                border-top: 1px dashed color-mix(in srgb, var(--tainacan-admin-navigation-sidebar-separator-color) 50%, transparent);
                 padding: 0.5rem;
     
                 .icon {
                     color: currentColor !important;
                     margin-inline-end: 0.5em;
+                }
+            }
+            ul .separator-list-item ~ li {
+                margin-bottom: 2px;
+                margin-inline-start: 0.5rem;
+
+                a {
+                    font-weight: 400;
                 }
             }
         }

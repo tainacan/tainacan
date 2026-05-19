@@ -109,7 +109,7 @@
         },
         props: {
             itemMetadatum: Object,
-            value: [ Number, String, Array, Object ],
+            value: [ Number, String, Array, Object, Boolean ],
             disabled: false,
             forcedComponentType: '',
             maxtags: '',

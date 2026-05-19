@@ -124,7 +124,7 @@
                             <span 
                                     v-if="$statusHelper.hasIcon(taxonomy.status)"
                                     v-tooltip="{
-                                        content: $i18n.get('status_' + taxonomy.status),
+                                        content: $statusHelper.getStatusLabel(taxonomy.status),
                                         autoHide: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'

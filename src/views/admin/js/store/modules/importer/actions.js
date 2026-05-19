@@ -1,6 +1,10 @@
 import axios from '../../../axios';
 
 // IMPORTER ----------------------------------------------------
+/**
+ * Dispatches `importer/fetchAvailableImporters`.
+ * @returns {*} Action result.
+ */
 export const fetchAvailableImporters = ({ commit }) => {
     return new Promise((resolve, reject) => {
 
@@ -16,6 +20,10 @@ export const fetchAvailableImporters = ({ commit }) => {
     });
 };
 
+/**
+ * Dispatches `importer/fetchImporter`.
+ * @returns {*} Action result.
+ */
 export const fetchImporter = ( { commit }, importerId ) => {
     return new Promise(( resolve, reject ) => {
 
@@ -31,6 +39,10 @@ export const fetchImporter = ( { commit }, importerId ) => {
     });
 };
 
+/**
+ * Dispatches `importer/sendImporter`.
+ * @returns {*} Action result.
+ */
 export const sendImporter = ( { commit }, importerTypeSlug) => {
     return new Promise(( resolve, reject ) => {
 
@@ -48,6 +60,10 @@ export const sendImporter = ( { commit }, importerTypeSlug) => {
     });
 };
 
+/**
+ * Dispatches `importer/updateImporter`.
+ * @returns {*} Action result.
+ */
 export const updateImporter = ( { commit }, { sessionId, options }) => {
     return new Promise(( resolve, reject ) => {
 
@@ -63,6 +79,10 @@ export const updateImporter = ( { commit }, { sessionId, options }) => {
     });
 };
 
+/**
+ * Dispatches `importer/updateImporterCollection`.
+ * @returns {*} Action result.
+ */
 export const updateImporterCollection = ( { commit }, { sessionId, collection }) => {
     return new Promise(( resolve, reject ) => {
         axios.tainacanApi.put('importers/session/' + sessionId, {
@@ -79,6 +99,10 @@ export const updateImporterCollection = ( { commit }, { sessionId, collection })
     });
 };
 
+/**
+ * Dispatches `importer/updateImporterURL`.
+ * @returns {*} Action result.
+ */
 export const updateImporterURL = ( { commit }, { sessionId, url }) => {
     return new Promise(( resolve, reject ) => {
         axios.tainacanApi.put('importers/session/' + sessionId, {
@@ -95,6 +119,10 @@ export const updateImporterURL = ( { commit }, { sessionId, url }) => {
     });
 };
 
+/**
+ * Dispatches `importer/updateImporterOptions`.
+ * @returns {*} Action result.
+ */
 export const updateImporterOptions = ( { commit }, { sessionId, options }) => {
     return new Promise(( resolve, reject ) => {
 
@@ -112,6 +140,10 @@ export const updateImporterOptions = ( { commit }, { sessionId, options }) => {
     });
 };
 
+/**
+ * Dispatches `importer/updateImporterFile`.
+ * @returns {*} Action result.
+ */
 export const updateImporterFile = ( { commit }, { sessionId, file }) => {
     return new Promise(( resolve, reject ) => {
         
@@ -134,6 +166,10 @@ export const updateImporterFile = ( { commit }, { sessionId, file }) => {
     });
 };
 
+/**
+ * Dispatches `importer/fetchImporterSourceInfo`.
+ * @returns {*} Action result.
+ */
 export const fetchImporterSourceInfo = ({ commit }, sessionId ) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.get('/importers/session/' + sessionId + '/source_info')
@@ -148,6 +184,10 @@ export const fetchImporterSourceInfo = ({ commit }, sessionId ) => {
     });
 };
 
+/**
+ * Dispatches `importer/runImporter`.
+ * @returns {*} Action result.
+ */
 export const runImporter = ( { dispatch } , importerId ) => {
     return new Promise(( resolve, reject ) => {
 
@@ -163,6 +203,10 @@ export const runImporter = ( { dispatch } , importerId ) => {
     });
 };
 
+/**
+ * Dispatches `importer/fetchMappingImporter`.
+ * @returns {*} Action result.
+ */
 export const fetchMappingImporter = ( { commit }, { sessionId, collection } ) => {
     return new Promise(( resolve, reject ) => {
 

@@ -467,7 +467,7 @@ class REST_Items_Controller extends REST_Controller {
 		$filters_arguments = array();
 		
 		if(!empty($collection_id)) {
-			$collection = $this->collections_repository->fetch($collection_id);
+			$collection = $this->collections_repository->fetch($collection_id, 'OBJECT');
 			$order = $collection->get_filters_order();
 			$order = ( is_array( $order ) ) ? $order : unserialize( $order );
 		}

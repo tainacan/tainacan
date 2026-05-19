@@ -76,7 +76,7 @@
                         :is="metadatumComponent"
                         v-model:value="values[0]" 
                         :item-metadatum="itemMetadatum"
-                        :disabled="false"
+                        :disabled="invalidEmptyMultivalueIndex.length > 0"
                         :metadata-name-filter-string="metadataNameFilterString"
                         :hide-collapses="hideCollapses"
                         :hide-metadata-types="hideMetadataTypes"
@@ -89,49 +89,61 @@
                         @blur="performValueChange"
                         @mobile-special-focus="onMobileSpecialFocus" />
                 <template v-if="isMultiple && values.length > 1">
-                    <transition-group
-                            tag="div"
-                            name="filter-item"
+                    <div 
+                            v-for="(value, index) of values"
+                            :key="index + '-' + values.length"
                             class="multiple-inputs">
-                        <template 
-                                v-for="(value, index) of values"
-                                :key="index">
-                            <component 
-                                    :is="metadatumComponent"
-                                    v-if="index > 0"
-                                    v-model:value="values[index]" 
-                                    :item-metadatum="itemMetadatum"
-                                    :disabled="false"
-                                    :metadata-name-filter-string="metadataNameFilterString"
-                                    :hide-collapses="hideCollapses"
-                                    :hide-metadata-types="hideMetadataTypes"
-                                    :hide-help-buttons="hideHelpButtons"
-                                    :help-info-bellow-label="helpInfoBellowLabel"
-                                    :is-mobile-screen="isMobileScreen"
-                                    :is-focused="isFocused"
-                                    :is-metadata-navigation="isMetadataNavigation"
-                                    @update:value="performValueChange"
-                                    @blur="performValueChange"
-                                    @mobile-special-focus="onMobileSpecialFocus" />
-                            <a 
-                                    v-if="index > 0" 
-                                    :key="index"
-                                    class="add-link"
-                                    role="button"
-                                    tabindex="0"
-                                    @click="removeValue(index)"
-                                    @keydown.enter.prevent="removeValue(index)"
-                                    @keydown.space.prevent="removeValue(index)">
-                                <span class="icon is-small">
-                                    <i class="tainacan-icon has-text-secondary tainacan-icon-remove" />
-                                </span>
-                                &nbsp;{{ $i18n.get('label_remove_value') }}
-                            </a>
-                        </template>
-                    </transition-group>
+                        <component 
+                                :is="metadatumComponent"
+                                v-if="index > 0"
+                                v-model:value="values[index]" 
+                                :item-metadatum="itemMetadatum"
+                                :disabled="invalidEmptyMultivalueIndex.length > 0 && !invalidEmptyMultivalueIndex.includes(index)"
+                                :metadata-name-filter-string="metadataNameFilterString"
+                                :hide-collapses="hideCollapses"
+                                :hide-metadata-types="hideMetadataTypes"
+                                :hide-help-buttons="hideHelpButtons"
+                                :help-info-bellow-label="helpInfoBellowLabel"
+                                :is-mobile-screen="isMobileScreen"
+                                :is-focused="isFocused"
+                                :is-metadata-navigation="isMetadataNavigation"
+                                @update:value="checkForEmptyIndexInMultivalueBeforeUpdate(values[index], index)"
+                                @blur="checkForEmptyIndexInMultivalueBeforeUpdate(values[index], index)"
+                                @mobile-special-focus="onMobileSpecialFocus" />
+                        <p
+                                v-if="index > 0 && invalidEmptyMultivalueIndex.includes(index)"
+                                style="font-size: 0.75em;"
+                                class="has-text-warning is-italic">
+                            {{ $i18n.get('info_error_empty_value') }}
+                        </p>
+                        <a 
+                                v-if="index > 0" 
+                                class="add-link"
+                                role="button"
+                                tabindex="0"
+                                :disabled="invalidEmptyMultivalueIndex.length > 0 && !invalidEmptyMultivalueIndex.includes(index)"
+                                @click="removeValue(index)"
+                                @keydown.enter.prevent="removeValue(index)"
+                                @keydown.space.prevent="removeValue(index)">
+                            <span class="icon is-small">
+                                <i class="tainacan-icon has-text-secondary tainacan-icon-remove" />
+                            </span>
+                            &nbsp;{{ $i18n.get('label_remove_value') }}
+                        </a>
+                    </div>
                 </template>
-                <template v-if="isMultiple && (maxMultipleValues === undefined || maxMultipleValues === 0 || (maxMultipleValues !== 1 && maxMultipleValues > values.length))">
+                <template
+                        v-if="
+                            isMultiple &&
+                                (
+                                    maxMultipleValues === undefined ||
+                                    maxMultipleValues === 0 ||
+                                    (maxMultipleValues !== 1 && maxMultipleValues > values.length)
+                                )
+                        ">
+                          
                     <a 
+                            :disabled="invalidEmptyMultivalueIndex.length > 0"
                             class="is-inline-block add-link"
                             role="button"
                             tabindex="0"
@@ -224,7 +236,8 @@
             return {
                 values: [],
                 errorMessage: '',
-                isHighlightedMetadatum: false
+                isHighlightedMetadatum: false,
+                invalidEmptyMultivalueIndex: []
             }
         },
         computed: {
@@ -257,11 +270,18 @@
                     (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.id ? ' tainacan-metadatum-id--' + this.itemMetadatum.metadatum.id : '') +
                     (this.isFocused ? ' is-focused' : '') +
                     (this.errorMessage ? ' is-danger' : '');  
+            },
+            metadatumFormIdentifier() {
+                if (!this.itemMetadatum || !this.itemMetadatum.metadatum)
+                    return '';
+                return this.itemMetadatum.parent_meta_id
+                    ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id
+                    : this.itemMetadatum.metadatum.id;
             }
         },
         created() {
             this.setInitialValues();
-            this.$emitter.on('updateErrorMessageOf#' + (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id), (errors) => {    
+            this.$emitter.on('updateErrorMessageOf#' + this.metadatumFormIdentifier, (errors) => {    
                 let updatedErrorMessage = '';
                 if (errors && errors.errors && this.itemMetadatum && this.itemMetadatum.metadatum && (this.itemMetadatum.parent_meta_id ? (this.itemMetadatum.parent_meta_id == errors.parent_meta_id && this.itemMetadatum.metadatum.id == errors.metadatum_id) : this.itemMetadatum.metadatum.id == errors.metadatum_id)) {
                     for (let error of errors.errors) { 
@@ -274,12 +294,12 @@
         },
         beforeUnmount() {
             if (this.itemMetadatum && this.itemMetadatum.metadatum) {
-                this.$emitter.off('updateErrorMessageOf#' + (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id));
+                this.$emitter.off('updateErrorMessageOf#' + this.metadatumFormIdentifier);
             }
         },
         mounted () {
             if (this.$route && this.$route.query && this.$route.query.editingmetadata) {
-                this.isHighlightedMetadatum = this.$route.query.editingmetadata == (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id);
+                this.isHighlightedMetadatum = this.$route.query.editingmetadata == this.metadatumFormIdentifier;
 
                 if (this.isHighlightedMetadatum) {
                     
@@ -302,7 +322,7 @@
                 }
             },
             performValueChange() {
-                
+
                 // Compound metadata do not emit values, only their children.
                 if ( this.metadatumComponent == 'tainacan-compound' )
                     return;
@@ -326,11 +346,15 @@
                              
                             if (Array.isArray(currentValues)) {
                                 for (let value of currentValues) {
-                                    let foundIndex = this.itemMetadatum.value.findIndex(element => value == element.id);
+                                    let foundIndex = this.itemMetadatum.value.findIndex(element => {
+                                        if (typeof element == 'object')
+                                            return value == element.id;
+                                        else
+                                            return value == element;
+                                    });
                                     if (foundIndex >= 0)
                                         equal.push(this.itemMetadatum.value[foundIndex]);
                                 }
-
                                 if (equal.length == currentValues.length && this.itemMetadatum.value.length <= equal.length)
                                     return;
                             } else { // This will happen in taxonomy single valued on item submission, as there all term values appear as array.
@@ -381,11 +405,24 @@
             removeValue(index) {
                 this.values.splice(index, 1);
                 this.performValueChange();
+                this.invalidEmptyMultivalueIndex = [];
             },
             onMobileSpecialFocus() {
                 if (this.isMobileScreen)
                     this.$emit('mobile-special-focus');
+            },
+            checkForEmptyIndexInMultivalueBeforeUpdate(value, index) {
+                if ( value === '' ) {
+                    if ( !this.invalidEmptyMultivalueIndex.includes(index) )
+                        this.invalidEmptyMultivalueIndex.push(index);
+                } else {
+                    const invalidEmptyValueIndex = this.invalidEmptyMultivalueIndex.indexOf(index);
+                    if ( invalidEmptyValueIndex !== -1 )
+                        this.invalidEmptyMultivalueIndex.splice(invalidEmptyValueIndex, 1);
+                    this.performValueChange();
+                }
             }
+       
         }
     }
 </script>

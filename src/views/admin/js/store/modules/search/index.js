@@ -2,6 +2,11 @@ import * as actions from './actions';
 import * as getters from './getters';
 import * as mutations from './mutations';
 
+/**
+ * Vuex module `search`.
+ * Namespace: `search`.
+ * Purpose: stores postquery parameters, filter tags, facets, and selected items.
+ */
 const state = {
     postquery: {
         orderby: '',

@@ -258,7 +258,7 @@
                     <p>{{ __("The following capabilities are related to the admin interface appearance.", "tainacan") }}</p>
 
                     <p v-if="roleSlug === 'new'">
-                        <span class="dashicons dashicons-info" />&nbsp; {{ __("You must first create the slug before defining apperaence options for it.", "tainacan") }}
+                        <span class="dashicons dashicons-info" />&nbsp; {{ __("You must first create the role with a slug before defining appearence options for it.", "tainacan") }}
                     </p>
                     
                     <div class="capabilities-list">

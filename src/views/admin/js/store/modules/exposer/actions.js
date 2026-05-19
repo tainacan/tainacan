@@ -1,5 +1,9 @@
 import { tainacanApi } from '../../../axios';
 
+/**
+ * Dispatches `exposer/fetchAvailableExposers`.
+ * @returns {*} Action result.
+ */
 export const fetchAvailableExposers = ({ commit }) => {
 
     return new Promise((resolve, reject) => {

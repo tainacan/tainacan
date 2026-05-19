@@ -43,6 +43,7 @@ class Cli {
 		\WP_CLI::add_command('tainacan collection', 'Tainacan\Cli_Collection');
 		\WP_CLI::add_command('tainacan index-content', 'Tainacan\Cli_Document');
 		\WP_CLI::add_command('tainacan control-metadata', 'Tainacan\Cli_Control_Metadata');
+		\WP_CLI::add_command('tainacan logs', 'Tainacan\Cli_Logs');
 	}
 	
 }

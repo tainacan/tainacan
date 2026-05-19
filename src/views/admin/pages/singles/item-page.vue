@@ -22,7 +22,7 @@
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading) && !$adminOptions.hideItemSingleCurrentStatus"
                         class="status-tag is-hidden-mobile">
-                    {{ $i18n.get('status_' + item.status) }}
+                    {{ $statusHelper.getStatusLabel(item.status) }}
                 </span>
             </h1>
         </tainacan-title>
@@ -120,6 +120,25 @@
                                                                 :class="$statusHelper.getIcon(itemMetadatum.metadatum.status)"
                                                             />
                                                     </span>
+                                                    <button 
+                                                            v-if="!$adminOptions.hideItemSingleActivities &&
+                                                                !isUsingDeprecatedLogs &&
+                                                                $userCaps.hasCapability('tnc_rep_read_logs') &&
+                                                                itemMetadatum.metadatum.metadata_type_object.component != 'tainacan-compound'"
+                                                            v-tooltip="{
+                                                                content: $i18n.get('label_view_activity_logs'),
+                                                                autoHide: true,
+                                                                popperClass: ['tainacan-tooltip', 'tooltip']
+                                                            }"
+                                                            class="button link-style"
+                                                            aria-label="$i18n.get('label_view_activity_logs')"
+                                                            @click="openActivitiesModal(itemMetadatum.item.id, itemMetadatum.metadatum.id)">
+                                                        <span
+                                                                class="icon"
+                                                                style="margin: 0;">
+                                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities" />
+                                                        </span>
+                                                    </button>
                                                 </label>
                                                 <div
                                                         :class="{
@@ -261,7 +280,7 @@
                                                 {{ $i18n.get('status_auto-draft') }}
                                             </template>
                                             <help-button
-                                                    :title="$i18n.get('status_' + item.status)"
+                                                    :title="$statusHelper.getStatusLabel(item.status)"
                                                     :message="$i18n.get('info_item_' + item.status)" />
                                         </div>
                                     </div>
@@ -472,7 +491,7 @@
                         <span>{{ $i18n.get('label_create_another_item') }}</span>
                     </router-link>
                     <button 
-                            v-if="!$adminOptions.hideItemSingleActivities"
+                            v-if="!$adminOptions.hideItemSingleActivities && $userCaps.hasCapability('tnc_rep_read_logs')"
                             class="button sequence-button"
                             :aria-label="$i18n.get('label_view_activity_logs')"
                             :disabled="isLoading"
@@ -540,7 +559,8 @@
                 open: true,
                 urls_open: false,
                 entityName: 'item',
-                activeTab: 'metadata'
+                activeTab: 'metadata',
+                isUsingDeprecatedLogs: tainacan_plugin.tainacan_use_deprecated_logs
             }
         },
         computed: {
@@ -725,12 +745,13 @@
                     }
                 });
             },
-            openActivitiesModal() {
+            openActivitiesModal(itemId, metadatumId = null) {
                 const modalTrigger = this.$modalFocusA11y.captureTrigger();
                 this.$buefy.modal.open({
                     component: ActivitiesPage,
                     customClass: 'tainacan-modal',
                     canCancel: ['escape', 'outside'],
+                    props: { metadatumId, metadatumName: this.itemMetadata.find(itemMetadatum => itemMetadatum.metadatum.id == metadatumId)?.metadatum.name ?? null },
                     events: {
                         beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
                     }
@@ -899,7 +920,7 @@
                 font-size: 0.875em;
                 font-weight: 500;
                 margin-bottom: 0.5em;
-                display: inline-flex;
+                display: flex;
                 align-items: center;
 
                 span {
@@ -1038,7 +1059,7 @@
             :deep(img),
             :deep(video),
             :deep(figure) {
-                max-width: 100%;
+                max-width: 100% !important;
                 max-height: 32vh;
                 width: auto;
                 margin: 0;
