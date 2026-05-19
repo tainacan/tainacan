@@ -168,14 +168,16 @@ export default {
             }
             this.isGeneratingAiAlt = true;
             this.generateThumbnailAltWithAi({ thumbnailId: this.item.thumbnail_id })
-                .then((altText) => {
+                .then((result) => {
                     this.isGeneratingAiAlt = false;
-                    this.$emit('on-update-thumbnail-alt', altText);
+                    this.$emit('on-update-thumbnail-alt', result.alt_text);
                     this.$buefy.snackbar.open({
-                        message: this.$i18n.get('info_thumbnail_alt_ai_success'),
-                        type: 'is-success',
+                        message: result.is_decorative
+                            ? this.$i18n.get('info_thumbnail_alt_ai_decorative')
+                            : this.$i18n.get('info_thumbnail_alt_ai_success'),
+                        type: result.is_decorative ? 'is-info' : 'is-success',
                         position: 'is-bottom-right',
-                        duration: 4000,
+                        duration: 5000,
                         queue: false
                     });
                 })

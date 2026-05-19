@@ -120,7 +120,6 @@ wpApi.interceptors.request.use((config) => {
     return config;
 });
 
-
 // WordPress AJAX axios
 export const wpAjax = axios.create({
     baseURL: tainacan_plugin.wp_ajax_url

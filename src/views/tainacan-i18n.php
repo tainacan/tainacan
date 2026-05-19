@@ -1204,6 +1204,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_error_empty_value'						 => __( 'If you want to leave this field empty, please remove the value.', 'tainacan'),
 	'info_thumbnail_alt_ai_generating'               => __( 'Generating alternative text…', 'tainacan' ),
 	'info_thumbnail_alt_ai_success'                  => __( 'Alternative text was generated.', 'tainacan' ),
+	'info_thumbnail_alt_ai_decorative'               => __( 'The image was identified as decorative. Alternative text was cleared.', 'tainacan' ),
 	
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),

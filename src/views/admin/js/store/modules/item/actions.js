@@ -462,7 +462,8 @@ export const updateThumbnailAlt = ({ commit }, { thumbnailId, thumbnailAlt }) =>
 };
 
 /**
- * Runs WordPress AI alt-text ability and returns generated alt text (does not persist).
+ * Runs WordPress AI alt-text ability (does not persist).
+ * @returns {Promise<{alt_text: string, is_decorative: boolean}>}
  */
 export const generateThumbnailAltWithAi = (context, { thumbnailId }) => {
     return new Promise((resolve, reject) => {
@@ -478,12 +479,15 @@ export const generateThumbnailAltWithAi = (context, { thumbnailId }) => {
         axios.wpAbilitiesApi.post(path, {
             input: { attachment_id: Number(thumbnailId) }
         }).then((res) => {
-            const altText = extractAltTextFromAbilityResponse(res.data);
-            if (altText == null || altText === '') {
+            const data = res.data;
+            if (!data || typeof data !== 'object' || typeof data.alt_text !== 'string') {
                 reject(new Error('empty_alt_response'));
                 return;
             }
-            resolve(altText);
+            resolve({
+                alt_text: data.alt_text,
+                is_decorative: !!data.is_decorative
+            });
         }).catch((err) => {
             reject(err);
         });
@@ -607,26 +611,4 @@ export const finishItemSubmission = ({ commit }, { itemSubmission, fakeItemId })
                 });
             });
     }); 
-}
-
-/**
- * Parses Abilities API run response for alt text (WordPress AI: ai/alt-text-generation).
- *
- * @param {*} data Response JSON body
- * @return {string|null}
- */
-function extractAltTextFromAbilityResponse(data) {
-    if (data == null || typeof data !== 'object') {
-        return null;
-    }
-    if (typeof data.alt_text === 'string') {
-        return data.alt_text;
-    }
-    if (data.result != null && typeof data.result === 'object' && typeof data.result.alt_text === 'string') {
-        return data.result.alt_text;
-    }
-    if (data.output != null && typeof data.output === 'object' && typeof data.output.alt_text === 'string') {
-        return data.output.alt_text;
-    }
-    return null;
 }
