@@ -18,7 +18,8 @@
         </div>
         <div 
                 v-if="!$adminOptions.hideItemEditionThumbnail"
-                class="section-box section-thumbnail">
+                class="section-box section-thumbnail"
+                :style="{ 'margin-bottom': aiAltTextAvailable ? '1rem' : '' }">
             <div class="thumbnail-field">
                 <file-item
                         v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
@@ -59,14 +60,20 @@
                     <div
                             v-if="aiAltTextAvailable"
                             class="thumbnail-alt-ai-actions">
-                        <b-button
-                                type="button"
+                        <a
+                                role="button"
+                                tabindex="0"
                                 :loading="isGeneratingAiAlt"
                                 :disabled="isGeneratingAiAlt"
-                                class="button is-secondary is-small"
+                                class="link-style"
                                 @click.prevent="onGenerateThumbnailAltAi">
-                            {{ hasThumbnailAltText ? $i18n.get('label_thumbnail_alt_regenerate_ai') : $i18n.get('label_thumbnail_alt_generate_ai') }}
-                        </b-button>
+                            <span class="icon is-small">
+                                <i 
+                                        class="tainacan-icon has-text-secondary tainacan-icon-updating"
+                                        :class="isGeneratingAiAlt ? 'tainacan-icon-spin' : ''" />
+                            </span>
+                            {{ hasThumbnailAltText ? $i18n.get('label_regenerate_ai') : $i18n.get('label_generate_ai') }}
+                        </a>
                     </div>
                 </b-field>    
                 <div class="thumbnail-buttons-row">
@@ -242,8 +249,14 @@ export default {
             margin-inline-start: 1em;
             width: 100%;
         }
-        .thumbnail-alt-ai-actions {
-            margin-top: 0.5rem;
+        .thumbnail-alt-ai-actions  {
+            position: relative;
+            a {
+                margin-top: 0.125rem;
+                font-size: 0.875em;
+                position: absolute;
+                inset-inline-end: 0;
+            }
         }
         .content {
             padding: 10px;
