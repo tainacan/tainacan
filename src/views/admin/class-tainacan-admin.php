@@ -285,16 +285,12 @@ class Admin extends Pages {
 
 		$plugin_settings = $this->get_admin_js_localization_params();
 
-		/* Whether the WordPress AI alt-text ability is registered and available.
+		/* Whether WordPress AI alt-text generation is usable (feature, credentials, vision model).
 		 *
-		 * Must not be called from get_admin_js_localization_params() in the parent Pages class because that runs on
-		 * 'init' with priority 11, before the AI plugin registers its abilities on 'init' at 15 — an early
-		 * wp_has_ability() call would fire wp_abilities_api_init too soon and break the global registry.
+		 * Must not be called from get_admin_js_localization_params() because that runs on 'init' priority 11,
+		 * before the AI plugin registers abilities on 'init' at 15.
 		 */
-		$plugin_settings['ai_alt_text_generation_available'] = (bool) apply_filters(
-			'tainacan_ai_alt_text_generation_available',
-			function_exists( 'wp_has_ability' ) && wp_has_ability( 'ai/alt-text-generation' )
-		);
+		$plugin_settings['ai_alt_text_generation_available'] = \Tainacan\WordPress_AI::get_instance()->is_alt_text_generation_available();
 		wp_localize_script( 'tainacan-pages-common-scripts', 'tainacan_plugin', $plugin_settings );
 		
 		wp_enqueue_media();

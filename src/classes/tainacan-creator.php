@@ -183,6 +183,8 @@ $Tainacan_Search_Engine = new \Tainacan\Search_Engine();
 
 \Tainacan\Elastic_Press::get_instance();
 
+\Tainacan\WordPress_AI::get_instance();
+
 \Tainacan\Roles::get_instance();
 
 \Tainacan\Private_Files::get_instance();
