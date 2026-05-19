@@ -142,8 +142,7 @@ export default {
     emits: [
         'open-thumbnail-media-frame',
         'on-delete-thumbnail',
-        'on-update-thumbnail-alt',
-        'on-thumbnail-alt-sync'
+        'on-update-thumbnail-alt'
     ],
     data() {
         return {
@@ -169,9 +168,9 @@ export default {
             }
             this.isGeneratingAiAlt = true;
             this.generateThumbnailAltWithAi({ thumbnailId: this.item.thumbnail_id })
-                .then((res) => {
+                .then((altText) => {
                     this.isGeneratingAiAlt = false;
-                    this.$emit('on-thumbnail-alt-sync', res.alt_text);
+                    this.$emit('on-update-thumbnail-alt', altText);
                     this.$buefy.snackbar.open({
                         message: this.$i18n.get('info_thumbnail_alt_ai_success'),
                         type: 'is-success',

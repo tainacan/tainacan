@@ -462,9 +462,9 @@ export const updateThumbnailAlt = ({ commit }, { thumbnailId, thumbnailAlt }) =>
 };
 
 /**
- * Runs WordPress AI alt-text ability then persists alt text on the attachment (same as manual edit).
+ * Runs WordPress AI alt-text ability and returns generated alt text (does not persist).
  */
-export const generateThumbnailAltWithAi = ({ dispatch }, { thumbnailId }) => {
+export const generateThumbnailAltWithAi = (context, { thumbnailId }) => {
     return new Promise((resolve, reject) => {
         if (!thumbnailId) {
             reject(new Error('no_thumbnail'));
@@ -483,9 +483,7 @@ export const generateThumbnailAltWithAi = ({ dispatch }, { thumbnailId }) => {
                 reject(new Error('empty_alt_response'));
                 return;
             }
-            dispatch('updateThumbnailAlt', { thumbnailId, thumbnailAlt: altText })
-                .then((media) => resolve(media))
-                .catch((err) => reject(err));
+            resolve(altText);
         }).catch((err) => {
             reject(err);
         });

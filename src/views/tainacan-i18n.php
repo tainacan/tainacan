@@ -199,11 +199,6 @@ return apply_filters( 'tainacan-i18n', [
 	'label_thumbnail_alt'                            => __( 'Alternative text', 'tainacan' ),
 	'label_generate_ai'                				 => __( 'Generate with AI', 'tainacan' ),
 	'label_regenerate_ai'             				 => __( 'Regenerate with AI', 'tainacan' ),
-	'info_thumbnail_alt_ai_generating'               => __( 'Generating alternative text…', 'tainacan' ),
-	'info_thumbnail_alt_ai_success'                  => __( 'Alternative text was generated and saved.', 'tainacan' ),
-	'error_thumbnail_alt_ai_failed'                  => __( 'Could not generate alternative text. You can try again or enter it manually.', 'tainacan' ),
-	'error_thumbnail_alt_ai_empty_response'          => __( 'The generator did not return alternative text. Please try again or enter it manually.', 'tainacan' ),
-	'error_thumbnail_alt_ai_unavailable'             => __( 'Alt text generation is not available on this site.', 'tainacan' ),
 	'label_empty_thumbnail'                          => __( 'Empty thumbnail', 'tainacan' ),
 	'label_empty_term_image'                         => __( 'Empty term image', 'tainacan' ),
 	'label_parent_collection'                        => __( 'Parent collection', 'tainacan' ),
@@ -1207,8 +1202,9 @@ return apply_filters( 'tainacan-i18n', [
 	'info_%s_selected_items_for_bulk_edition'		 => __( '<strong>%s items selected</strong> for bulk edition.', 'tainacan'),
 	'info_define_bulk_edit_criteria'				 => __( 'Define the criteria below:', 'tainacan'),
 	'info_error_empty_value'						 => __( 'If you want to leave this field empty, please remove the value.', 'tainacan'),
-
-
+	'info_thumbnail_alt_ai_generating'               => __( 'Generating alternative text…', 'tainacan' ),
+	'info_thumbnail_alt_ai_success'                  => __( 'Alternative text was generated.', 'tainacan' ),
+	
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
 	'action_update'					=> __( 'General Updates', 'tainacan'),
@@ -1283,6 +1279,10 @@ return apply_filters( 'tainacan-i18n', [
 	'error_503_detail'	 => __('The server might be unavailable due to multiple access, some instability or connection issues. Try again later and if it persists, contact the administrator.', 'tainacan'),
 	'error_504_detail'	 => __('This error response is given when the server is acting as a gateway and cannot get a response in time. Try contacting the administrator.', 'tainacan'),
 	'error_511_detail'	 => __('You must authenticate to get access this information. Even if you have access to the Tainacan admin panel, your session cookies might have gotten lost. Try reloading the page or logging in again on the WordPress Admin panel.', 'tainacan'),
-	'error_other_detail' => __('Something went wrong here. Please try again or contact the administrator.', 'tainacan')
+	'error_other_detail' => __('Something went wrong here. Please try again or contact the administrator.', 'tainacan'),
+	'error_thumbnail_alt_ai_failed'                  => __( 'Could not generate alternative text. You can try again or enter it manually.', 'tainacan' ),
+	'error_thumbnail_alt_ai_empty_response'          => __( 'The generator did not return alternative text. Please try again or enter it manually.', 'tainacan' ),
+	'error_thumbnail_alt_ai_unavailable'             => __( 'Alt text generation is not available on this site.', 'tainacan' ),
+	'error_thumbnail_alt_ai_failed_detail'           => __( 'Could not generate alternative text. You can try again or enter it manually.', 'tainacan' ),
 ] );
 ?>

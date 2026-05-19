@@ -215,7 +215,7 @@ abstract class Pages {
 	 * get_admin_js_localization_params is used to build the JS tainacan_plugin global object that serves as a 
 	 * bridge between PHP and JS. Not every page needs it but they can call it to add their own data to the object.
 	 *
-	 * @return void
+	 * @return array Array of settings to be passed to the JS global object 'tainacan_plugin'.
 	 */
 	function get_admin_js_localization_params() {
 		global $TAINACAN_BASE_URL, $TAINACAN_API_MAX_ITEMS_PER_PAGE;
@@ -339,23 +339,6 @@ abstract class Pages {
 		$settings['admin_request_options'] = $admin_request_options;
 
 		return $settings;
-
-	}
-
-	/**
-	 * Whether the WordPress AI alt-text ability is registered and available.
-	 *
-	 * Must not be called from get_admin_js_localization_params() because that runs on init@11
-	 * (Gutenberg blocks), before the AI plugin registers abilities on init@15 — an early
-	 * wp_has_ability() call would fire wp_abilities_api_init too soon and break the global registry.
-	 *
-	 * @return bool
-	 */
-	function get_ai_alt_text_generation_available() {
-		return (bool) apply_filters(
-			'tainacan_ai_alt_text_generation_available',
-			function_exists( 'wp_has_ability' ) && wp_has_ability( 'ai/alt-text-generation' )
-		);
 	}
 	
 	/**
