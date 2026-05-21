@@ -380,7 +380,22 @@ class Private_Files {
 
 			if (\file_exists($full_path_check)) {
 				rename($full_path_check, $full_path);
-				do_action('tainacan-upload-folder-renamed', $full_path_check, $full_path);
+				
+				do_action('tainacan-upload-folder-renamed', $check_folder, $folder);
+
+				$attachments_query = [
+					'post_type'     	=> 'attachment',
+					'posts_per_page' 	=> -1,
+					'post_parent'   	=> $obj->get_id()
+				];
+		
+				$attachments = get_posts( $attachments_query );
+				foreach ($attachments as $attachment) {
+					update_attached_file(
+						$attachment->ID, 
+						str_replace($full_path_check, $full_path, get_attached_file($attachment->ID))
+					);
+				}
 			}
 
 		}
