@@ -1,10 +1,8 @@
 <?php
 
-namespace Tainacan;
+namespace Tainacan\Integrations;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
-
-require_once('class-tainacan-elastic-press-lte-4.7.2.php');
 
 /**
  * Class Elastic_Press
@@ -49,12 +47,12 @@ class Elastic_Press {
 	/**
 	 * Get singleton instance
 	 *
-	 * @return Elastic_Press
+	 * @return Elastic_Press|Elastic_Press_lte4
 	 */
 	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {
 			if ( defined('EP_VERSION') && version_compare(EP_VERSION, '5.0.0', '<') ) {
-				self::$instance = \Tainacan\Elastic_Press_lte4::get_instance();
+				self::$instance = Elastic_Press_lte4::get_instance();
 			} else {
 				self::$instance = new self();
 			}

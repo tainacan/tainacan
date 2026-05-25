@@ -18,6 +18,7 @@ const TAINACAN_ENDPOINTS_DIR              = __DIR__ . '/api/endpoints/';
 const TAINACAN_FILTER_TYPES_DIR           = __DIR__ . '/../views/admin/components/filter-types/';
 const TAINACAN_REPOSITORIES_DIR           = __DIR__ . '/repositories/';
 const TAINACAN_METADATA_TYPES_DIR         = __DIR__ . '/../views/admin/components/metadata-types/';
+const TAINACAN_INTEGRATIONS_DIR           = __DIR__ . '/integrations/';
 
 const DIRS = [
 	TAINACAN_CLI_DIR,
@@ -128,6 +129,8 @@ function tainacan_autoload($class_name) {
 			$dir = TAINACAN_METADATA_TYPES_DIR;
 		} else if ( isset( $class_path[1] ) && $class_path[1] === 'Filter_Types' ) {
 			$dir = TAINACAN_FILTER_TYPES_DIR;
+		} else if ( isset( $class_path[1] ) && $class_path[1] === 'Integrations' ) {
+			$dir = TAINACAN_INTEGRATIONS_DIR;
 		} else if ( $sliced ) {
 			$lower     = $sliced[0];
 			$sliced[0] = strtolower( $lower );
@@ -181,7 +184,9 @@ function tainacan_autoload($class_name) {
 
 $Tainacan_Search_Engine = new \Tainacan\Search_Engine();
 
-\Tainacan\Elastic_Press::get_instance();
+\Tainacan\Integrations\Elastic_Press::get_instance();
+
+\Tainacan\Integrations\WordPress_AI::get_instance();
 
 \Tainacan\Roles::get_instance();
 

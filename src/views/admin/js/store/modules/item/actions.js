@@ -461,6 +461,39 @@ export const updateThumbnailAlt = ({ commit }, { thumbnailId, thumbnailAlt }) =>
     }); 
 };
 
+/**
+ * Runs WordPress AI alt-text ability (does not persist).
+ * @returns {Promise<{alt_text: string, is_decorative: boolean}>}
+ */
+export const generateThumbnailAltWithAi = (context, { thumbnailId }) => {
+    return new Promise((resolve, reject) => {
+        if (!thumbnailId) {
+            reject(new Error('no_thumbnail'));
+            return;
+        }
+        if (typeof tainacan_plugin === 'undefined' || !tainacan_plugin.wp_abilities_api_url) {
+            reject(new Error('abilities_unavailable'));
+            return;
+        }
+        const path = 'abilities/ai/alt-text-generation/run';
+        axios.wpAbilitiesApi.post(path, {
+            input: { attachment_id: Number(thumbnailId) }
+        }).then((res) => {
+            const data = res.data;
+            if (!data || typeof data !== 'object' || typeof data.alt_text !== 'string') {
+                reject(new Error('empty_alt_response'));
+                return;
+            }
+            resolve({
+                alt_text: data.alt_text,
+                is_decorative: !!data.is_decorative
+            });
+        }).catch((err) => {
+            reject(err);
+        });
+    });
+};
+
 // Item Submission ======================================================
 /**
  * Clears pending front-end item submission form state.

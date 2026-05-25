@@ -215,7 +215,7 @@ abstract class Pages {
 	 * get_admin_js_localization_params is used to build the JS tainacan_plugin global object that serves as a 
 	 * bridge between PHP and JS. Not every page needs it but they can call it to add their own data to the object.
 	 *
-	 * @return void
+	 * @return array Array of settings to be passed to the JS global object 'tainacan_plugin'.
 	 */
 	function get_admin_js_localization_params() {
 		global $TAINACAN_BASE_URL, $TAINACAN_API_MAX_ITEMS_PER_PAGE;
@@ -263,7 +263,7 @@ abstract class Pages {
 			'exposer_type_param'     	=> \Tainacan\Exposers_Handler::TYPE_PARAM,
 			'repository_name'	 		=> get_bloginfo('name'),
 			'api_max_items_per_page'    => $TAINACAN_API_MAX_ITEMS_PER_PAGE,
-			'wp_elasticpress'    		=> \Tainacan\Elastic_Press::get_instance()->is_active(),
+			'wp_elasticpress'    		=> \Tainacan\Integrations\Elastic_Press::get_instance()->is_active(),
 			'item_submission_captcha_site_key' => get_option("tnc_option_recaptch_site_key"),
 			'tainacan_use_deprecated_logs' => (
 				!defined('TAINACAN_USE_DEPRECATED_LOGS') || 
@@ -277,7 +277,8 @@ abstract class Pages {
 				defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') &&
 				true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY
 			),
-			'has_permalinks_structure' => get_option('permalink_structure') !== ''
+			'has_permalinks_structure' => get_option('permalink_structure') !== '',
+			'wp_abilities_api_url'     => esc_url_raw( rest_url( 'wp-abilities/v1/' ) ),
 		];
 		
 		$maps = [
@@ -338,7 +339,6 @@ abstract class Pages {
 		$settings['admin_request_options'] = $admin_request_options;
 
 		return $settings;
-
 	}
 	
 	/**
