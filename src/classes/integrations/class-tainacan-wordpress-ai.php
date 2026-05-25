@@ -14,7 +14,7 @@ class WordPress_AI {
 	use \Tainacan\Traits\Singleton_Instance;
 
 	/**
-	 * Plugin basename for is_plugin_active().
+	 * Plugin basename when {@see is_plugin_active()} is already available (e.g. admin).
 	 *
 	 * @var string
 	 */
@@ -29,6 +29,9 @@ class WordPress_AI {
 	/**
 	 * Whether the WordPress AI plugin is active.
 	 *
+	 * When the plugin is enabled, WordPress loads ai/ai.php, which defines WPAI_VERSION
+	 * and instantiates Main in the same request (see WordPress/ai ai.php).
+	 *
 	 * @return bool
 	 */
 	public function is_active(): bool {
@@ -36,11 +39,16 @@ class WordPress_AI {
 			return true;
 		}
 
-		if ( ! function_exists( 'is_plugin_active' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		// Non-standard partial load only; false = do not autoload Main.php from disk.
+		if ( class_exists( \WordPress\AI\Main::class, false ) ) {
+			return true;
 		}
 
-		return function_exists( 'is_plugin_active' ) && is_plugin_active( self::PLUGIN_BASENAME );
+		if ( function_exists( 'is_plugin_active' ) ) {
+			return is_plugin_active( self::PLUGIN_BASENAME );
+		}
+
+		return false;
 	}
 
 	/**
@@ -72,7 +80,7 @@ class WordPress_AI {
 		if ( function_exists( 'WordPress\AI\has_ai_credentials' ) && ! \WordPress\AI\has_ai_credentials() ) {
 			return false;
 		}
-
+		
 		return $this->has_vision_model_available();
 	}
 
@@ -92,16 +100,18 @@ class WordPress_AI {
 		if ( empty( $connectors ) ) {
 			return false;
 		}
-
+		
 		try {
+			// Same requirements as WordPress\AI\REST\Models_Controller for capability "vision".
+			// ModalityEnum lives under Messages\Enums, not Providers\Models\Enums.
 			$requirements = new \WordPress\AiClient\Providers\Models\DTO\ModelRequirements(
 				array( \WordPress\AiClient\Providers\Models\Enums\CapabilityEnum::textGeneration() ),
 				array(
 					new \WordPress\AiClient\Providers\Models\DTO\RequiredOption(
 						\WordPress\AiClient\Providers\Models\Enums\OptionEnum::inputModalities(),
 						array(
-							\WordPress\AiClient\Providers\Models\Enums\ModalityEnum::text(),
-							\WordPress\AiClient\Providers\Models\Enums\ModalityEnum::image(),
+							\WordPress\AiClient\Messages\Enums\ModalityEnum::text(),
+							\WordPress\AiClient\Messages\Enums\ModalityEnum::image(),
 						)
 					),
 				)
