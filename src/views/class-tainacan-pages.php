@@ -263,7 +263,7 @@ abstract class Pages {
 			'exposer_type_param'     	=> \Tainacan\Exposers_Handler::TYPE_PARAM,
 			'repository_name'	 		=> get_bloginfo('name'),
 			'api_max_items_per_page'    => $TAINACAN_API_MAX_ITEMS_PER_PAGE,
-			'wp_elasticpress'    		=> \Tainacan\Elastic_Press::get_instance()->is_active(),
+			'wp_elasticpress'    		=> \Tainacan\Integrations\Elastic_Press::get_instance()->is_active(),
 			'item_submission_captcha_site_key' => get_option("tnc_option_recaptch_site_key"),
 			'tainacan_use_deprecated_logs' => (
 				!defined('TAINACAN_USE_DEPRECATED_LOGS') || 

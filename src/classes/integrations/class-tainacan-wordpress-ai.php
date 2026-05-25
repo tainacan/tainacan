@@ -1,6 +1,6 @@
 <?php
 
-namespace Tainacan;
+namespace Tainacan\Integrations;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 

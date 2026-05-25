@@ -1,6 +1,6 @@
 <?php
 
-namespace Tainacan;
+namespace Tainacan\Integrations;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
@@ -240,12 +240,12 @@ class Elastic_Press_lte4 {
 			
 			if ( isset($args['facet_metadatum_id']) ) {
 				$this->aggregation_type = 'facets';
-				$metadatum = Repositories\Metadata::get_instance()->fetch($args['facet_metadatum_id']);
+				$metadatum = \Tainacan\Repositories\Metadata::get_instance()->fetch($args['facet_metadatum_id']);
 				$metadatum_options = $metadatum->get_metadata_type_options();
 				$metadata_type = $metadatum->get_metadata_type();
 				if ($metadata_type == 'Tainacan\Metadata_Types\Taxonomy') {
 					$taxonomy_id = $metadatum_options['taxonomy_id'];
-					$taxonomy_slug = Repositories\Taxonomies::get_instance()->get_db_identifier_by_id($taxonomy_id);
+					$taxonomy_slug = \Tainacan\Repositories\Taxonomies::get_instance()->get_db_identifier_by_id($taxonomy_id);
 					$id = "taxonomy.$taxonomy_slug";
 					$key = "terms.$taxonomy_slug.term_id";
 					$field = "terms.$taxonomy_slug";
@@ -278,7 +278,7 @@ class Elastic_Press_lte4 {
 						if ($metadata_type == 'Tainacan\Metadata_Types\Taxonomy') {
 							$metadatum_options = $filter->get_metadatum()->get_metadata_type_options();
 							$taxonomy_id = $metadatum_options['taxonomy_id'];
-							$taxonomy_slug = Repositories\Taxonomies::get_instance()->get_db_identifier_by_id($taxonomy_id);
+							$taxonomy_slug = \Tainacan\Repositories\Taxonomies::get_instance()->get_db_identifier_by_id($taxonomy_id);
 							$id = "$filter_id.taxonomy.$taxonomy_slug";
 							$key = "terms.$taxonomy_slug.term_id";
 							$field = "terms.$taxonomy_slug";
@@ -760,7 +760,7 @@ class Elastic_Press_lte4 {
 			$formated_aggs[$filter_id] = isset($formated_aggs[$filter_id]) ? $formated_aggs[$filter_id] : [];
 			if($description_types[1] == 'taxonomy') {
 				$taxonomy_slug = $description_types[2];
-				$taxonomy_id = Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($taxonomy_slug);
+				$taxonomy_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($taxonomy_slug);
 				foreach ($aggregation[$key]['buckets'] as $term) {
 					$temp = explode('.', $term['key']);
 					$term_id = intval( $temp[count($temp)-2] );
@@ -842,7 +842,7 @@ class Elastic_Press_lte4 {
 
 				$taxonomy_label = $description_types[0].'.'.$description_types[1];
 				$taxonomy_slug = $description_types[1];
-				$taxonomy_id = Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($taxonomy_slug);
+				$taxonomy_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($taxonomy_slug);
 
 				$buckets = ($has_include == false ? $aggregation['buckets'] : $aggregation[$key]['buckets']);
 				foreach ($buckets as $term) {
