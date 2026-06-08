@@ -305,12 +305,8 @@
                             </div>
 
                             <button
-                                    v-if="!bulkEditionProcedures[criterion].isDone &&
-                                        !bulkEditionProcedures[criterion].isExecuting &&
-                                        bulkEditionProcedures[criterion].metadatum &&
-                                        bulkEditionProcedures[criterion].action && 
-                                        (bulkEditionProcedures[criterion].action != editionActions.copy || (bulkEditionProcedures[criterion].action == editionActions.copy && !!bulkEditionProcedures[criterion].metadatumIdCopyFrom))"
-                                    :disabled="!groupId"
+                                    v-if="canExecuteBulkEditionProcedure(criterion)"
+                                    :disabled="isExecuteBulkEditionProcedureDisabled(criterion)"
                                     class="button is-white is-pulled-right"
                                     @click="executeBulkEditionProcedure(criterion)">
                                 <span 
@@ -518,6 +514,27 @@
                 this.dones[this.editionCriteria.indexOf(criterion)] = true;
  
                 Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': false });
+            },
+            canExecuteBulkEditionProcedure(criterion) {
+                const procedure = this.bulkEditionProcedures[criterion];
+                return !procedure.isDone
+                    && !procedure.isExecuting
+                    && procedure.metadatum
+                    && procedure.action
+                    && (procedure.action != this.editionActions.copy || !!procedure.metadatumIdCopyFrom);
+            },
+            isExecuteBulkEditionProcedureDisabled(criterion) {
+                if (!this.groupId)
+                    return true;
+
+                const procedure = this.bulkEditionProcedures[criterion];
+                const requiresNewValue = procedure.action !== this.editionActions.clear
+                    && procedure.action !== this.editionActions.copy;
+                const hasNewValue = procedure.newValue === 0
+                    || procedure.newValue === '0'
+                    || (procedure.newValue != null && procedure.newValue !== '');
+
+                return requiresNewValue && !hasNewValue;
             },
             executeBulkEditionProcedure(criterion){
                 let procedure = this.bulkEditionProcedures[criterion];
@@ -851,6 +868,7 @@
 
     .tainacan-by-text {
         max-width: 28px;
+        align-self: center;
     }
 
     .tainacan-bulk-edition-inline-fields {
