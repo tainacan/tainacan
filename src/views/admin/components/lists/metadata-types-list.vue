@@ -289,7 +289,7 @@ export default {
                 top: 6px;
             }
             .metadatum-name {
-                color: var(--tainacan-label-color);
+                color: var(--tainacan-info-color);
                 text-overflow: ellipsis;
                 overflow-x: hidden;
                 white-space: nowrap;
