@@ -60,7 +60,7 @@ class Inbcm_Museological extends Mapper {
 			],
 			'inbcm:localProd' => [
 				'label' => __( 'Production Site', 'tainacan' ),
-				'label' => 'Local de Produção'
+				'field' => 'Local de Produção'
 			],
 			'inbcm:dataProd' => [
 				'label' => __( 'Production Date', 'tainacan' ),
