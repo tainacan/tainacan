@@ -243,6 +243,7 @@ export default {
 
     .title {
         margin-top: 0.25em;
+        color: var(--tainacan-heading-color);
 
         &.is-2 {
             font-size: string.unquote('clamp(1.75rem, 1.386vw + 1.391rem, 2.5rem)');
@@ -250,6 +251,7 @@ export default {
         }
     }
     .subtitle {
+        color: var(--tainacan-info-color);
         padding-left: 0;
         padding-right: 0;
         margin: 0 auto;
