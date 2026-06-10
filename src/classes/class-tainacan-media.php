@@ -52,6 +52,19 @@ class Media {
 	public static $content_index_last = 'document_content_last_index';
 
 	/**
+	 * Whether automatic PDF text extraction is enabled.
+	 *
+	 * @return bool
+	 */
+	public static function is_index_pdf_content_enabled() {
+		if ( defined( 'TAINACAN_INDEX_PDF_CONTENT' ) ) {
+			return true === TAINACAN_INDEX_PDF_CONTENT;
+		}
+
+		return (bool) get_option( 'tainacan_option_index_pdf_content', false );
+	}
+
+	/**
 	 * Initializes the media functionality.
 	 *
 	 * Sets up rewrite rules, query vars, and image sizes for Tainacan media handling.
@@ -475,11 +488,7 @@ class Media {
 			return $this->clear_document_content_index( $item_id );
 		}
 
-		if ( ! (
-			defined('TAINACAN_INDEX_PDF_CONTENT') 
-				? ( true === TAINACAN_INDEX_PDF_CONTENT )
-				: get_option( 'tainacan_option_index_pdf_content', false ) 
-		) ) {
+		if ( ! self::is_index_pdf_content_enabled() ) {
 			return;
 		}
 

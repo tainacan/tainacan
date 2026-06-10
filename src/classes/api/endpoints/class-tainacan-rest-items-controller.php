@@ -126,7 +126,7 @@ class REST_Items_Controller extends REST_Controller {
 			$this->namespace, '/' . $this->rest_base . '/(?P<item_id>[\d]+)/document-content-index/extract',
 			array(
 				array(
-					'methods'             => \WP_REST_Server::CREATABLE,
+					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'extract_document_content_index'),
 					'permission_callback' => array($this, 'update_item_permissions_check'),
 					'args'                => array(
@@ -1072,11 +1072,7 @@ class REST_Items_Controller extends REST_Controller {
 			], 400);
 		}
 
-		$indexing_enabled = defined( 'TAINACAN_INDEX_PDF_CONTENT' )
-			? ( true === TAINACAN_INDEX_PDF_CONTENT )
-			: get_option( 'tainacan_option_index_pdf_content', false );
-
-		if ( ! $indexing_enabled ) {
+		if ( ! \Tainacan\Media::is_index_pdf_content_enabled() ) {
 			return new \WP_REST_Response([
 				'error_message' => __( 'PDF text extraction is disabled in settings.', 'tainacan' ),
 			], 400);

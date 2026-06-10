@@ -39,7 +39,7 @@
                     type="textarea"
                     :rows="12" />
             <div
-                    v-if="isPdfDocument"
+                    v-if="canExtractDocumentContent"
                     class="document-content-index-actions">
                 <a
                         id="button-extract-document-content-index"
@@ -109,6 +109,11 @@ export default {
     computed: {
         isPdfDocument() {
             return this.documentType === 'attachment' && this.documentMimetype === 'application/pdf';
+        },
+        canExtractDocumentContent() {
+            return this.isPdfDocument
+                && typeof tainacan_plugin !== 'undefined'
+                && tainacan_plugin.tainacan_index_pdf_content;
         },
         hasDocumentContentIndexChanged() {
             return this.localDocumentContentIndex !== this.savedDocumentContentIndex;
