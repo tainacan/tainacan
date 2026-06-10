@@ -216,7 +216,7 @@
                 z-index: 9;
                 padding: 0.25em 0.5em;
                 font-size: 0.6875em;
-                border-radius: 3px;
+                border-radius: var(--tainacan-item-border-radius, 3px);
                 bottom: 10px;
                 left: 4px;
                 font-weight: 500;

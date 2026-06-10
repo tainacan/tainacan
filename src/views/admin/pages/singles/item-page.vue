@@ -1048,11 +1048,23 @@
             max-height: 32vh;
 
             &.document-field-content--text {
-                padding-bottom: 2rem;
 
                 :deep(article) {
                     max-height: calc(32vh - 2rem);
                     overflow-y: auto;
+                }
+            }
+            &.document-field-content--url:not(:has(iframe)):not(:has(blockquote)):not(:has(audio)):not(:has(figure)):not(:has(video)):not(:has(img)),
+            &.document-field-content--text {
+                border-radius: var(--tainacan-item-border-radius, 3px);
+                background-color: var(--tainacan-input-disabled-color, var(--tainacan-input-border-color));
+                padding: 0.75em;
+                white-space: break-spaces;
+                word-wrap: normal;
+                font-size: 0.875em;
+
+                :deep(a) {
+                    min-height: unset;
                 }
             }
 
@@ -1119,7 +1131,7 @@
         img {
             height: 110px;
             width: 110px;
-            border-radius: 3px;
+            border-radius: var(--tainacan-item-border-radius, 3px);
         }
         .image-placeholder {
             position: absolute;
