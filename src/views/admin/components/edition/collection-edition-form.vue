@@ -335,6 +335,23 @@
                                 </b-field>
                             </div>
 
+                            <!-- Features related to document content index extraction -------------------------------- --> 
+                            <b-field
+                                    :addons="false" 
+                                    :label="$i18n.get('label_document_content')">
+                                <help-button
+                                        :title="$i18n.getHelperTitle('collections', 'item_enable_document_content_editing')"
+                                        :message="$i18n.getHelperMessage('collections', 'item_enable_document_content_editing')" />
+                                <div class="options-checkboxes">
+                                    <b-checkbox
+                                            v-model="form.item_enable_document_content_editing"
+                                            true-value="yes"
+                                            false-value="no">
+                                        {{ $i18n.getHelperTitle('collections', 'item_enable_document_content_editing') }}
+                                    </b-checkbox>
+                                </div>
+                            </b-field>
+
                             <!-- Thumbnail Label -------------------------------- -->
                             <div>
                                 <b-field
@@ -1146,6 +1163,7 @@ export default {
                 item_enable_metadata_searchbar: 'yes',
                 item_enable_metadata_collapses: 'yes',
                 item_enable_metadata_enumeration: 'yes',
+                item_enable_document_content_editing: 'yes',
                 collection_taxonomies: []
             },
             thumbnail: {},
@@ -1295,6 +1313,7 @@ export default {
                 this.form.item_enable_metadata_searchbar = this.collection.item_enable_metadata_searchbar;
                 this.form.item_enable_metadata_collapses = this.collection.item_enable_metadata_collapses;
                 this.form.item_enable_metadata_enumeration = this.collection.item_enable_metadata_enumeration;
+                this.form.item_enable_document_content_editing = this.collection.item_enable_document_content_editing;
                 this.form.collection_taxonomies = this.collection.collection_taxonomies;
 
                 // Generates CoverPage from current cover_page_id info
@@ -1431,6 +1450,7 @@ export default {
                 item_enable_metadata_searchbar: this.form.item_enable_metadata_searchbar,
                 item_enable_metadata_collapses: this.form.item_enable_metadata_collapses,
                 item_enable_metadata_enumeration: this.form.item_enable_metadata_enumeration,
+                item_enable_document_content_editing: this.form.item_enable_document_content_editing,
             };
             this.fillExtraFormData(data);
 
@@ -1473,6 +1493,7 @@ export default {
                     this.form.item_enable_metadata_searchbar = this.collection.item_enable_metadata_searchbar;
                     this.form.item_enable_metadata_collapses = this.collection.item_enable_metadata_collapses;
                     this.form.item_enable_metadata_enumeration = this.collection.item_enable_metadata_enumeration;
+                    this.form.item_enable_document_content_editing = this.collection.item_enable_document_content_editing;
                     
                     this.isLoading = false;
                     this.formErrorMessage = '';
@@ -1547,6 +1568,7 @@ export default {
                 this.form.item_enable_metadata_searchbar = this.collection.item_enable_metadata_searchbar;
                 this.form.item_enable_metadata_collapses = this.collection.item_enable_metadata_collapses;
                 this.form.item_enable_metadata_enumeration = this.collection.item_enable_metadata_enumeration;
+                this.form.item_enable_document_content_editing = this.collection.item_enable_document_content_editing;
 
                 // Pre-fill status with publish to incentivate it
                 this.form.status = 'publish';
@@ -1987,7 +2009,7 @@ export default {
         }
         .image,
         img {
-            border-radius: 3px;
+            border-radius: var(--tainacan-item-border-radius, 3px);
         }
         &+.thumbnail-field {
             opacity: 1.0;
@@ -2011,7 +2033,7 @@ export default {
             font-size: 0.8em;
         }
         .image {
-            border-radius: 3px;
+            border-radius: var(--tainacan-item-border-radius, 3px);
 
             &:has(.image-placeholder) img {
                 opacity: 0.5;
@@ -2026,7 +2048,7 @@ export default {
         :deep(.image-wrapper) {
             height: 146px;
             width: 146px;
-            border-radius: 3px;
+            border-radius: var(--tainacan-item-border-radius, 3px);
             border: 6px solid var(--tainacan-background-color);
         }
         .image-placeholder {

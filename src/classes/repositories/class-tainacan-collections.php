@@ -532,6 +532,16 @@ class Collections extends Repository {
 				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
 				'enum'  => [ 'yes', 'no' ],
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+			],
+			'item_enable_document_content_editing'  => [
+				'map'         => 'meta',
+				'title'       => __( 'Document content editing', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'If enabled, the item edition form shows controls to view, extract and edit the textual content stored from item documents for use in search.', 'tainacan' ),
+				'default'     => 'yes',
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'enum'  => [ 'yes', 'no' ],
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ),
 			]
 		] );
 	}

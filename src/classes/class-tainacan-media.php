@@ -399,7 +399,62 @@ class Media {
 			throw new \Exception("fatal error");
 	}
 
+	/**
+	 * Extract textual content from a PDF file
+	 *
+	 * @param string   $file    Absolute path to the PDF file.
+	 * @param int|null $item_id Optional item ID for filters.
+	 *
+	 * @return string|bool|null Extracted text, false on failure, null when not a PDF, or a boolean when a filter handles extraction.
+	 */
+	public function extract_pdf_content( $file, $item_id = null ) {
+
+		if ( ! $file || ! \file_exists( $file ) ) {
+			return false;
+		}
+
+		if ( $this->get_mime_content_type( $file ) != 'application/pdf' ) {
+			return null;
+		}
+
+		$alternate = apply_filters( 'tainacan-index-pdf', null, $file, $item_id );
+		if ( ! \is_null( $alternate ) ) {
+			return $alternate;
+		}
+
+		try {
+			$parser = new \Smalot\PdfParser\Parser();
+			$content = $parser->parseFile( $file )->getText();
+
+			$wp_charset = get_bloginfo( 'charset' );
+			$content_charset = mb_detect_encoding( $content );
+			$content = mb_convert_encoding( $content, $wp_charset, $content_charset );
+
+			return $content;
+		} catch ( \Exception $e ) {
+			error_log( 'Caught exception: ' . $e->getMessage() . "\n" );
+			return false;
+		}
+	}
+
+	/**
+	 * Clears stored document content index metadata for an item.
+	 *
+	 * @param int $item_id The item ID.
+	 *
+	 * @return bool
+	 */
+	public function clear_document_content_index( $item_id ) {
+		delete_post_meta( $item_id, SELF::$content_index_meta );
+		delete_post_meta( $item_id, SELF::$content_index_last );
+		return true;
+	}
+
 	public function index_pdf_content($file, $item_id) {
+
+		if ($file == null) {
+			return $this->clear_document_content_index( $item_id );
+		}
 
 		if ( ! (
 			defined('TAINACAN_INDEX_PDF_CONTENT') 
@@ -407,12 +462,6 @@ class Media {
 				: get_option( 'tainacan_option_index_pdf_content', false ) 
 		) ) {
 			return;
-		}
-
-		if ($file == null) {
-			update_post_meta( $item_id, SELF::$content_index_meta, null );
-			update_post_meta( $item_id, SELF::$content_index_last, null );
-			return true;
 		}
 
 		if ( ! \file_exists($file) ) {
@@ -448,35 +497,29 @@ class Media {
 			}
 		}
 
-		// Allow plugins to implement other approach to index pdf contents
-		$alternate = apply_filters('tainacan-index-pdf', null, $file, $item_id);
-		if ( ! \is_null($alternate) ) {
-			return $alternate;
+		$content = $this->extract_pdf_content( $file, $item_id );
+
+		if ( $content === false || $content === null ) {
+			return $content;
 		}
 
-		try {
-			$parser = new \Smalot\PdfParser\Parser();
-			$content = $parser->parseFile($file)->getText();
-
-			$wp_charset = get_bloginfo('charset');
-			$content_charset = mb_detect_encoding($content);
-			$content = mb_convert_encoding($content, $wp_charset, $content_charset);
-			update_post_meta( $item_id, SELF::$content_index_meta, $content );
-			
-			// Store file metadata for future change detection (only if we have valid data)
-			if ($current_mod_time !== false && $current_file_size !== false) {
-				$file_info = array(
-					'file_name' => $current_file_name,
-					'mod_time' => $current_mod_time,
-					'file_size' => $current_file_size
-				);
-				update_post_meta( $item_id, SELF::$content_index_last, $file_info );
-			}
-			
-		} catch(\Exception $e) {
-			error_log('Caught exception: ' .  $e->getMessage() . "\n");
-			return false;
+		if ( ! is_string( $content ) ) {
+			return $content;
 		}
+
+		update_post_meta( $item_id, SELF::$content_index_meta, $content );
+			
+		// Store file metadata for future change detection (only if we have valid data)
+		if ($current_mod_time !== false && $current_file_size !== false) {
+			$file_info = array(
+				'file_name' => $current_file_name,
+				'mod_time' => $current_mod_time,
+				'file_size' => $current_file_size
+			);
+			update_post_meta( $item_id, SELF::$content_index_last, $file_info );
+		}
+
+		return true;
 	}
 
 	public function get_attachment_html_url($attachment_id) {

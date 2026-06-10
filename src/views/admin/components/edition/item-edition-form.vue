@@ -578,7 +578,8 @@
                                             @on-remove-document="removeDocument"
                                             @on-set-file-document="setFileDocument"
                                             @on-set-text-document="setTextDocument"
-                                            @on-set-url-document="setURLDocument" />
+                                            @on-set-url-document="setURLDocument"
+                                            @on-edit-document-content-index="editDocumentContentIndex" />
                                     <item-thumbnail-edition-form 
                                             :item="item"
                                             :form="form"
@@ -661,7 +662,8 @@
                                     @on-remove-document="removeDocument"
                                     @on-set-file-document="setFileDocument"
                                     @on-set-text-document="setTextDocument"
-                                    @on-set-url-document="setURLDocument" />
+                                    @on-set-url-document="setURLDocument"
+                                    @on-edit-document-content-index="editDocumentContentIndex" />
 
                             <hr v-if="shouldDisplayItemEditionDocument && !$adminOptions.itemEditionDocumentInsideTabs">
 
@@ -819,6 +821,7 @@ import RelatedItemsList from '../lists/related-items-list.vue';
 import CustomDialog from '../other/custom-dialog.vue';
 import ItemMetadatumErrorsTooltip from '../other/item-metadatum-errors-tooltip.vue';
 import ItemDocumentTextModal from '../modals/item-document-text-modal.vue';
+import ItemDocumentContentIndexModal from '../modals/item-document-content-index-modal.vue';
 import ItemDocumentURLModal from '../modals/item-document-url-modal.vue';
 import ItemPublicationEditionForm from '../edition/item-publication-edition-form.vue';
 import ItemDocumentEditionForm from '../edition/item-document-edition-form.vue';
@@ -1757,6 +1760,28 @@ export default {
             });
 
         },
+        editDocumentContentIndex() {
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
+            this.$buefy.modal.open({
+                component: ItemDocumentContentIndexModal,
+                canCancel: false,
+                width: 860,
+                scroll: 'keep',
+                trapFocus: true,
+                autoFocus: false,
+                ariaModal: true,
+                ariaRole: 'dialog',
+                customClass: 'tainacan-modal',
+                props: {
+                    itemId: this.itemId,
+                    documentType: this.form.document_type,
+                    documentMimetype: this.item.document_mimetype
+                },
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
+            });
+        },
         initializeMediaFrames() {
 
             this.fileMediaFrame = new wpMediaFrames.documentFileControl(
@@ -2540,7 +2565,8 @@ export default {
         #button-edit-document,
         #button-delete-thumbnail,
         #button-alt-text-thumbnail,
-        #button-delete-document {
+        #button-delete-document,
+        #button-edit-document-content-index {
             border-radius: 100px !important;
             max-height: 2.125em !important;
             max-width: 2.125em !important;

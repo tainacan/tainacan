@@ -123,6 +123,22 @@ class REST_Items_Controller extends REST_Controller {
 			)
 		);
 		register_rest_route(
+			$this->namespace, '/' . $this->rest_base . '/(?P<item_id>[\d]+)/document-content-index/extract',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array($this, 'extract_document_content_index'),
+					'permission_callback' => array($this, 'update_item_permissions_check'),
+					'args'                => array(
+						'item_id' => [
+							'description' => __( 'Item ID', 'tainacan' ),
+							'required' => true,
+						],
+					),
+				),
+			)
+		);
+		register_rest_route(
 			$this->namespace, '/' . $this->rest_base,
 			array(
 				array(
@@ -1038,6 +1054,77 @@ class REST_Items_Controller extends REST_Controller {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public function extract_document_content_index( $request ) {
+		$item_id = $request['item_id'];
+		$item = $this->items_repository->fetch( $item_id );
+
+		if ( ! $item instanceof Entities\Item ) {
+			return new \WP_REST_Response([
+				'error_message' => __( 'An item with this ID was not found', 'tainacan' ),
+				'item_id'       => $item_id,
+			], 400);
+		}
+
+		$indexing_enabled = defined( 'TAINACAN_INDEX_PDF_CONTENT' )
+			? ( true === TAINACAN_INDEX_PDF_CONTENT )
+			: get_option( 'tainacan_option_index_pdf_content', false );
+
+		if ( ! $indexing_enabled ) {
+			return new \WP_REST_Response([
+				'error_message' => __( 'PDF text extraction is disabled in settings.', 'tainacan' ),
+			], 400);
+		}
+
+		if ( empty( $item->get_document() ) ) {
+			return new \WP_REST_Response([
+				'error_message' => __( 'This item has no document.', 'tainacan' ),
+			], 400);
+		}
+
+		if ( $item->get_document_type() !== 'attachment' ) {
+			return new \WP_REST_Response([
+				'error_message' => __( 'Document text extraction is only available for file documents.', 'tainacan' ),
+			], 400);
+		}
+
+		if ( wp_attachment_is_image( $item->get_document() ) ) {
+			return new \WP_REST_Response([
+				'error_message' => __( 'Document text extraction is not available for image documents.', 'tainacan' ),
+			], 400);
+		}
+
+		if ( get_post_mime_type( $item->get_document() ) !== 'application/pdf' ) {
+			return new \WP_REST_Response([
+				'error_message' => __( 'Document text extraction is only available for PDF documents.', 'tainacan' ),
+			], 400);
+		}
+
+		$filepath = get_attached_file( $item->get_document() );
+
+		if ( empty( $filepath ) || ! file_exists( $filepath ) ) {
+			return new \WP_REST_Response([
+				'error_message' => __( 'The document file could not be found.', 'tainacan' ),
+			], 400);
+		}
+
+		$extracted_content = $this->items_repository->extract_document_content( $item );
+
+		if ( $extracted_content === false ) {
+			return new \WP_REST_Response([
+				'error_message' => __( 'Failed to extract document text.', 'tainacan' ),
+			], 400);
+		}
+
+		return new \WP_REST_Response([
+			'document_content_index' => $extracted_content,
+		], 200);
 	}
 
 	/**

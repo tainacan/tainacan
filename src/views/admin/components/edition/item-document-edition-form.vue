@@ -43,6 +43,29 @@
                         </span>
                     </a>
                     <a
+                            v-if="collection && collection.item_enable_document_content_editing === 'yes'"
+                            id="button-edit-document-content-index"
+                            class="button is-rounded is-secondary"
+                            size="is-small"
+                            role="button"
+                            tabindex="0"
+                            :aria-label="$i18n.get('label_button_index_document')"
+                            @click.prevent="($event) => $emit('on-edit-document-content-index', $event)"
+                            @keydown.enter.prevent="($event) => $emit('on-edit-document-content-index', $event)"
+                            @keydown.space.prevent="($event) => $emit('on-edit-document-content-index', $event)">
+                        <span
+                                v-tooltip="{
+                                    content: $i18n.get('label_document_content'),
+                                    autoHide: true,
+                                    placement: 'bottom',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
+                                }"
+                                class="icon"
+                                aria-hidden="true">
+                            <i class="tainacan-icon tainacan-icon-text" />
+                        </span>
+                    </a>
+                    <a
                             id="button-delete-document"
                             class="button is-rounded is-secondary"
                             size="is-small"
@@ -131,7 +154,8 @@ export default {
         'on-set-text-document',
         'on-set-url-document',
         'on-set-document',
-        'on-remove-document'
+        'on-remove-document',
+        'on-edit-document-content-index'
     ]
 }
 </script>
@@ -144,11 +168,23 @@ export default {
             max-height: 32vh;
 
             &.document-field-content--text {
-                padding-bottom: 2rem;
 
                 :deep(article) {
                     max-height: calc(32vh - 2rem);
                     overflow-y: auto;
+                }
+            }
+            &.document-field-content--url:not(:has(iframe)):not(:has(blockquote)):not(:has(audio)):not(:has(figure)):not(:has(video)):not(:has(img)),
+            &.document-field-content--text {
+                border-radius: var(--tainacan-item-border-radius, 3px);
+                background-color: var(--tainacan-input-disabled-color, var(--tainacan-input-border-color));
+                padding: 0.75em 0.75em 1.75rem 0.75em;
+                white-space: break-spaces;
+                word-wrap: normal;
+                font-size: 0.875em;
+
+                :deep(a) {
+                    min-height: unset;
                 }
             }
 
@@ -160,7 +196,7 @@ export default {
                 width: auto !important;
                 margin: 0;
             }
-            :deep(a){
+            :deep(a) {
                 min-height: 60px;
                 display: block;
             }
@@ -210,7 +246,7 @@ export default {
             padding: 0.5rem;
             min-height: 136px;
             border: 1px solid var(--tainacan-input-border-color);
-            border-radius: 3px;
+            border-radius: var(--tainacan-item-border-radius, 3px);
             background-color: var(--tainacan-input-disabled-color);
 
             @container documentfield (max-width: 322px) {

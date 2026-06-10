@@ -147,6 +147,12 @@ class Items extends Repository {
 					),
 				)
 			],
+			'document_content_index'     => [
+				'map'         => 'meta',
+				'title'       => __( 'Document Content Index', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'The document content to be used in textual search', 'tainacan' ),
+			],
 			'_thumbnail_id'     => [
 				'map'         => 'meta',
 				'title'       => __( 'Thumbnail', 'tainacan' ),
@@ -500,15 +506,46 @@ class Items extends Repository {
 	 */
 	public function generate_index_content(Entities\Item $item) {
 		$TainacanMedia = \Tainacan\Media::get_instance();
-		if ( empty( $item->get_document() ) ) {
-			$TainacanMedia->index_pdf_content( null, $item->get_ID() );
+		if ( empty( $item->get_document() ) || $item->get_document_type() === 'empty' ) {
+			return $TainacanMedia->clear_document_content_index( $item->get_ID() );
 		} elseif ( $item->get_document_type() == 'attachment' ) {
 			if (! wp_attachment_is_image( $item->get_document() ) ) {
 				$filepath = get_attached_file( $item->get_document() );
-				$TainacanMedia->index_pdf_content( $filepath, $item->get_ID() );
+				return $TainacanMedia->index_pdf_content( $filepath, $item->get_ID() );
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Extract document textual content without persisting it to the item.
+	 *
+	 * @param  Entities\Item $item The item
+	 *
+	 * @return string|false Extracted text or false on failure.
+	 */
+	public function extract_document_content(Entities\Item $item) {
+		if ( empty( $item->get_document() ) || $item->get_document_type() !== 'attachment' ) {
+			return false;
+		}
+
+		if ( wp_attachment_is_image( $item->get_document() ) ) {
+			return false;
+		}
+
+		$filepath = get_attached_file( $item->get_document() );
+
+		if ( empty( $filepath ) ) {
+			return false;
+		}
+
+		$content = \Tainacan\Media::get_instance()->extract_pdf_content( $filepath, $item->get_ID() );
+
+		if ( ! is_string( $content ) ) {
+			return false;
+		}
+
+		return $content;
 	}
 
 	/**

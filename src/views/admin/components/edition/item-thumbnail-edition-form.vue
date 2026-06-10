@@ -267,7 +267,7 @@ export default {
             height: 110px;
             width: 110px;
             min-width: 110px;
-            border-radius: 3px;
+            border-radius: var(--tainacan-item-border-radius, 3px);
         }
         .image-placeholder {
             position: absolute;
