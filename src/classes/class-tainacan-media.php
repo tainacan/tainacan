@@ -450,6 +450,25 @@ class Media {
 		return true;
 	}
 
+	/**
+	 * Stores text document content in the document content index for search.
+	 *
+	 * @param string $content The text document content.
+	 * @param int    $item_id The item ID.
+	 *
+	 * @return bool
+	 */
+	public function index_text_document_content( $content, $item_id ) {
+		if ( $content === null || $content === '' ) {
+			return $this->clear_document_content_index( $item_id );
+		}
+
+		update_post_meta( $item_id, SELF::$content_index_meta, $content );
+		delete_post_meta( $item_id, SELF::$content_index_last );
+
+		return true;
+	}
+
 	public function index_pdf_content($file, $item_id) {
 
 		if ($file == null) {

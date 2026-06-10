@@ -513,6 +513,8 @@ class Items extends Repository {
 				$filepath = get_attached_file( $item->get_document() );
 				return $TainacanMedia->index_pdf_content( $filepath, $item->get_ID() );
 			}
+		} elseif ( $item->get_document_type() == 'text' ) {
+			return $TainacanMedia->index_text_document_content( $item->get_document(), $item->get_ID() );
 		}
 		return true;
 	}

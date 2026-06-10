@@ -43,7 +43,7 @@
                         </span>
                     </a>
                     <a
-                            v-if="collection && collection.item_enable_document_content_editing === 'yes'"
+                            v-if="collection && collection.item_enable_document_content_editing === 'yes' && form.document_type !== 'text'"
                             id="button-edit-document-content-index"
                             class="button is-rounded is-secondary"
                             size="is-small"
