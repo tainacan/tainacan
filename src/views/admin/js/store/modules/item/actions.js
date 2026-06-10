@@ -351,7 +351,7 @@ export const fetchItemDocumentContentIndex = ({}, { itemId, contextEdit } ) => {
  */
 export const extractItemDocumentContentIndex = ({}, { itemId }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.post('/items/' + itemId + '/document-content-index/extract')
+        axios.tainacanApi.get('/items/' + itemId + '/document-content-index/extract')
             .then(res => {
                 const documentContentIndex = res.data && res.data.document_content_index !== undefined
                     ? res.data.document_content_index

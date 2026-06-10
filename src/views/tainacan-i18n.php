@@ -310,7 +310,7 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: Description shown in the document content modal, explaining that extracted text is used in search */
 	'info_document_content_index_description'        => __( 'Text extracted from the document to be used in search results.', 'tainacan' ),
 	'info_document_content_index_empty'              => __( 'No text has been extracted from this document yet.', 'tainacan' ),
-	'info_document_content_index_empty_pdf'          => __( 'If this is a PDF file, it may not have been processed yet, or extraction may be disabled in settings.', 'tainacan' ),
+	'info_document_content_index_empty_pdf'          => __( 'If this is a PDF file, it may not have been processed yet, or the extraction failed.', 'tainacan' ),
 	'info_document_content_index_empty_non_pdf'      => __( 'Tainacan does not support automatic text extraction for this document type, but you can type content here to include it in textual searches. This is useful, for example, to add an image description.', 'tainacan' ),
 	'info_document_content_index_extracted'          => __( 'Document content extracted.', 'tainacan' ),
 	'label_extract_document_content'                 => __( 'Extract content', 'tainacan' ),
