@@ -353,10 +353,15 @@ export const extractItemDocumentContentIndex = ({}, { itemId }) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.get('/items/' + itemId + '/document-content-index/extract')
             .then(res => {
-                const documentContentIndex = res.data && res.data.document_content_index !== undefined
-                    ? res.data.document_content_index
-                    : '';
-                resolve(documentContentIndex);
+                resolve({
+                    documentContentIndex: res.data && res.data.document_content_index !== undefined
+                        ? res.data.document_content_index
+                        : '',
+                    truncated: !!(res.data && res.data.document_content_index_truncated),
+                    warning: res.data && res.data.document_content_index_warning
+                        ? res.data.document_content_index_warning
+                        : null
+                });
             })
             .catch(error => {
                 reject({
@@ -379,10 +384,15 @@ export const updateItemDocumentContentIndex = ({}, { itemId, documentContentInde
             document_content_index: documentContentIndex
         })
             .then(res => {
-                const savedContent = res.data && res.data.document_content_index !== undefined
-                    ? res.data.document_content_index
-                    : documentContentIndex;
-                resolve(savedContent);
+                resolve({
+                    documentContentIndex: res.data && res.data.document_content_index !== undefined
+                        ? res.data.document_content_index
+                        : documentContentIndex,
+                    truncated: !!(res.data && res.data.document_content_index_truncated),
+                    warning: res.data && res.data.document_content_index_warning
+                        ? res.data.document_content_index_warning
+                        : null
+                });
             })
             .catch(error => {
                 reject({

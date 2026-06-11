@@ -78,20 +78,6 @@ class Settings extends Pages {
 		) );
 
 		$this->create_tainacan_setting( array(
-			'id' => 'index_pdf_content',
-			'section' => 'tainacan_settings_search_and_performance',
-			'title' => __( 'PDF content extraction', 'tainacan' ),
-			'label' => __( 'Automatically extract textual content from PDF files on upload', 'tainacan' ),
-			'description' => __( 'Enable this option to extract and store PDF text when an item document is saved. This increases server load on upload.', 'tainacan' ),
-			'type' => 'boolean',
-			'input_type' => 'checkbox',
-			'input_disabled' => defined('TAINACAN_INDEX_PDF_CONTENT'),
-			'sanitize_callback' => 'rest_sanitize_boolean',
-			'default' => defined('TAINACAN_INDEX_PDF_CONTENT') ? TAINACAN_INDEX_PDF_CONTENT : false,
-			'forced_value' => defined('TAINACAN_INDEX_PDF_CONTENT') ? TAINACAN_INDEX_PDF_CONTENT : null
-		) );
-
-		$this->create_tainacan_setting( array(
 			'id' => 'enable_default_search_engine',
 			'section' => 'tainacan_settings_search_and_performance',
 			'title' => __( 'Fields for textual search', 'tainacan' ),
@@ -133,6 +119,44 @@ class Settings extends Pages {
 			'forced_value' => defined('TAINACAN_FACETS_DISABLE_COUNT_ITEMS') ? !TAINACAN_FACETS_DISABLE_COUNT_ITEMS : null
 		) );
 
+		$this->create_tainacan_setting( array(
+			'id' => 'index_pdf_content',
+			'section' => 'tainacan_settings_search_and_performance',
+			'title' => __( 'PDF content extraction', 'tainacan' ),
+			'label' => __( 'Automatically extract textual content from PDF files on upload', 'tainacan' ),
+			'description' => __( 'Enable this option to extract and store PDF text when an item document is saved. This increases server load on upload.', 'tainacan' ),
+			'type' => 'boolean',
+			'input_type' => 'checkbox',
+			'input_disabled' => defined('TAINACAN_INDEX_PDF_CONTENT'),
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'default' => defined('TAINACAN_INDEX_PDF_CONTENT') ? TAINACAN_INDEX_PDF_CONTENT : false,
+			'forced_value' => defined('TAINACAN_INDEX_PDF_CONTENT') ? TAINACAN_INDEX_PDF_CONTENT : null
+		) );
+
+		$this->create_tainacan_setting( array(
+			'id' => 'document_content_index_max_size_kb',
+			'section' => 'tainacan_settings_search_and_performance',
+			'title' => __( 'Extracted content size limit', 'tainacan' ),
+			'description' => sprintf(
+				/* translators: 1: default size in kilobytes, 2: maximum allowed size in kilobytes */
+				__( 'Maximum amount of extracted or edited document content stored for search, in kilobytes (KB).', 'tainacan' ),
+				\Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_DEFAULT,
+				\Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_LIMIT
+			),
+			'type' => 'integer',
+			'input_type' => 'number',
+			'input_attrs' => 'min="1" max="' . \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_LIMIT . '" step="1" required="required"',
+			'input_disabled' => defined( 'TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB' ),
+			'sanitize_callback' => array( $this, 'sanitize_document_content_index_max_size_kb' ),
+			'default' => \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_DEFAULT,
+			'forced_value' => defined( 'TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB' )
+				? min(
+					max( 1, (int) TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB ),
+					\Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_LIMIT
+				)
+				: null
+		) );
+		
 		/**
 		 * Theme default templates -----------------------------------------------------
 		 */
@@ -590,6 +614,23 @@ class Settings extends Pages {
 		<?php endif;
 	}	
 
+
+	/**
+	 * Sanitizes the document content index maximum size setting.
+	 *
+	 * @param mixed $value Raw setting value.
+	 *
+	 * @return int
+	 */
+	public function sanitize_document_content_index_max_size_kb( $value ) {
+		$value = absint( $value );
+
+		if ( $value <= 0 ) {
+			return \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_DEFAULT;
+		}
+
+		return min( $value, \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_LIMIT );
+	}
 
 	public function search_and_performance_section_description() {
 	?>

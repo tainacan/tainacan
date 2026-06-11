@@ -38,6 +38,11 @@
                     aria-labelledby="item-document-content-index-modal-title"
                     type="textarea"
                     :rows="12" />
+            <p
+                    v-if="documentContentIndexWarning"
+                    class="document-content-index-truncation-warning help">
+                {{ documentContentIndexWarning }}
+            </p>
             <div
                     v-if="canExtractDocumentContent"
                     class="document-content-index-actions">
@@ -101,6 +106,7 @@ export default {
         return {
             localDocumentContentIndex: '',
             savedDocumentContentIndex: '',
+            documentContentIndexWarning: null,
             isLoading: false,
             isExtracting: false,
             isSaving: false
@@ -120,6 +126,9 @@ export default {
         }
     },
     watch: {
+        localDocumentContentIndex() {
+            this.documentContentIndexWarning = null;
+        },
         isLoading(isLoading) {
             if (!isLoading)
                 this.$nextTick(() => this.focusModal());
@@ -166,18 +175,30 @@ export default {
         },
         extractDocumentContentIndex() {
             this.isExtracting = true;
+            this.documentContentIndexWarning = null;
             this.extractItemDocumentContentIndex({
                 itemId: this.itemId
             })
-                .then((documentContentIndex) => {
-                    this.localDocumentContentIndex = documentContentIndex || '';
-                    this.$buefy.toast.open({
-                        duration: 3000,
-                        message: this.$i18n.get('info_document_content_index_extracted'),
-                        position: 'is-bottom-right',
-                        type: 'is-success',
-                        queue: false
-                    });
+                .then((result) => {
+                    this.localDocumentContentIndex = result.documentContentIndex || '';
+                    if (result.truncated && result.warning) {
+                        this.documentContentIndexWarning = result.warning;
+                        this.$buefy.toast.open({
+                            duration: 6000,
+                            message: result.warning,
+                            position: 'is-bottom-right',
+                            type: 'is-warning',
+                            queue: false
+                        });
+                    } else {
+                        this.$buefy.toast.open({
+                            duration: 3000,
+                            message: this.$i18n.get('info_document_content_index_extracted'),
+                            position: 'is-bottom-right',
+                            type: 'is-success',
+                            queue: false
+                        });
+                    }
                 })
                 .catch((errors) => {
                     this.$buefy.snackbar.open({
@@ -199,11 +220,26 @@ export default {
             }
 
             this.isSaving = true;
+            this.documentContentIndexWarning = null;
             this.updateItemDocumentContentIndex({
                 itemId: this.itemId,
                 documentContentIndex: this.localDocumentContentIndex
             })
-                .then(() => {
+                .then((result) => {
+                    if (result.truncated && result.warning) {
+                        const savedContent = result.documentContentIndex || '';
+                        this.localDocumentContentIndex = savedContent;
+                        this.savedDocumentContentIndex = savedContent;
+                        this.documentContentIndexWarning = result.warning;
+                        this.$buefy.toast.open({
+                            duration: 6000,
+                            message: result.warning,
+                            position: 'is-bottom-right',
+                            type: 'is-warning',
+                            queue: false
+                        });
+                        return;
+                    }
                     this.closeModal();
                 })
                 .catch((errors) => {
@@ -241,6 +277,11 @@ export default {
         display: flex;
         justify-content: flex-end;
         font-size: 0.875em;
+        margin-top: 0.5rem;
+    }
+
+    .document-content-index-truncation-warning {
+        color: var(--tainacan-warning, #946c00);
         margin-top: 0.5rem;
     }
 </style>

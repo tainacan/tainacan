@@ -51,6 +51,12 @@ class Media {
 	 */
 	public static $content_index_last = 'document_content_last_index';
 
+	/** Default maximum document content index size in kilobytes. */
+	public const DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_DEFAULT = 200;
+
+	/** Maximum allowed document content index size setting in kilobytes. */
+	public const DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_LIMIT = 2000;
+
 	/**
 	 * Whether automatic PDF text extraction is enabled.
 	 *
@@ -62,6 +68,86 @@ class Media {
 		}
 
 		return (bool) get_option( 'tainacan_option_index_pdf_content', false );
+	}
+
+	/**
+	 * Configured maximum document content index size in kilobytes.
+	 *
+	 * @return int
+	 */
+	public static function get_document_content_index_max_size_kb() {
+		if ( defined( 'TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB' ) ) {
+			return min(
+				max( 1, (int) TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB ),
+				self::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_LIMIT
+			);
+		}
+
+		$value = (int) get_option(
+			'tainacan_option_document_content_index_max_size_kb',
+			self::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_DEFAULT
+		);
+
+		if ( $value <= 0 ) {
+			return self::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_DEFAULT;
+		}
+
+		return min( $value, self::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_LIMIT );
+	}
+
+	/**
+	 * Configured maximum document content index size in bytes.
+	 *
+	 * @return int
+	 */
+	public static function get_document_content_index_max_bytes() {
+		return self::get_document_content_index_max_size_kb() * 1024;
+	}
+
+	/**
+	 * Truncates document content to the configured maximum size before storage.
+	 *
+	 * @param mixed $content Raw document content.
+	 *
+	 * @return array {
+	 *     @type mixed  $content       Content ready for storage.
+	 *     @type bool   $was_truncated Whether the content was cropped.
+	 * }
+	 */
+	public static function prepare_document_content_index_for_storage( $content ) {
+		if ( ! is_string( $content ) ) {
+			return [
+				'content'       => $content,
+				'was_truncated' => false,
+			];
+		}
+
+		$max_bytes = self::get_document_content_index_max_bytes();
+
+		if ( strlen( $content ) <= $max_bytes ) {
+			return [
+				'content'       => $content,
+				'was_truncated' => false,
+			];
+		}
+
+		return [
+			'content'       => mb_strcut( $content, 0, $max_bytes, 'UTF-8' ),
+			'was_truncated' => true,
+		];
+	}
+
+	/**
+	 * Human-readable warning when document content was truncated.
+	 *
+	 * @return string
+	 */
+	public static function get_document_content_index_truncation_warning_message() {
+		return sprintf(
+			/* translators: %d: maximum document content size in kilobytes */
+			__( 'The document content exceeded the maximum size (%d KB) and was truncated.', 'tainacan' ),
+			self::get_document_content_index_max_size_kb()
+		);
 	}
 
 	/**
@@ -489,6 +575,23 @@ class Media {
 	}
 
 	/**
+	 * Stores document content index metadata, cropping when above the configured limit.
+	 *
+	 * @param string $content Document content.
+	 * @param int    $item_id Item ID.
+	 *
+	 * @return bool Whether the content was truncated.
+	 */
+	private function store_document_content_index( $content, $item_id ) {
+		$prepared = self::prepare_document_content_index_for_storage( $content );
+
+		update_post_meta( $item_id, self::$content_index_meta, $prepared['content'] );
+		delete_post_meta( $item_id, self::$content_index_last );
+
+		return $prepared['was_truncated'];
+	}
+
+	/**
 	 * Stores text document content in the document content index for search.
 	 *
 	 * @param string $content The text document content.
@@ -501,8 +604,7 @@ class Media {
 			return $this->clear_document_content_index( $item_id );
 		}
 
-		update_post_meta( $item_id, SELF::$content_index_meta, $content );
-		delete_post_meta( $item_id, SELF::$content_index_last );
+		$this->store_document_content_index( $content, $item_id );
 
 		return true;
 	}
@@ -563,8 +665,8 @@ class Media {
 			return $content;
 		}
 
-		update_post_meta( $item_id, SELF::$content_index_meta, $content );
-			
+		$this->store_document_content_index( $content, $item_id );
+
 		// Store file metadata for future change detection (only if we have valid data)
 		if ($current_mod_time !== false && $current_file_size !== false) {
 			$file_info = array(

@@ -1003,9 +1003,16 @@ class REST_Items_Controller extends REST_Controller {
 
 		if (!empty($body)) {
 			$attributes = [];
+			$document_content_index_truncated = false;
 
 			foreach ($body as $att => $value){
 				$attributes[$att] = $value;
+			}
+
+			if ( array_key_exists( 'document_content_index', $attributes ) && is_string( $attributes['document_content_index'] ) ) {
+				$prepared = \Tainacan\Media::prepare_document_content_index_for_storage( $attributes['document_content_index'] );
+				$attributes['document_content_index'] = $prepared['content'];
+				$document_content_index_truncated = $prepared['was_truncated'];
 			}
 
 			$item = $this->items_repository->fetch($item_id);
@@ -1018,7 +1025,13 @@ class REST_Items_Controller extends REST_Controller {
 
 					do_action('tainacan-api-item-updated', $updated_item, $attributes);
 
-					return new \WP_REST_Response($this->prepare_item_for_response($updated_item, $request), 200);
+					$response = $this->prepare_item_for_response($updated_item, $request);
+
+					if ( $document_content_index_truncated ) {
+						$response = $this->add_document_content_index_truncation_to_response( $response );
+					}
+
+					return new \WP_REST_Response( $response, 200 );
 				}
 
 				return new \WP_REST_Response([
@@ -1118,9 +1131,31 @@ class REST_Items_Controller extends REST_Controller {
 			], 400);
 		}
 
-		return new \WP_REST_Response([
-			'document_content_index' => $extracted_content,
-		], 200);
+		$prepared = \Tainacan\Media::prepare_document_content_index_for_storage( $extracted_content );
+
+		$response = [
+			'document_content_index' => $prepared['content'],
+		];
+
+		if ( $prepared['was_truncated'] ) {
+			$response = $this->add_document_content_index_truncation_to_response( $response );
+		}
+
+		return new \WP_REST_Response( $response, 200 );
+	}
+
+	/**
+	 * Adds truncation warning fields to an API response array.
+	 *
+	 * @param array $response Response data.
+	 *
+	 * @return array
+	 */
+	private function add_document_content_index_truncation_to_response( $response ) {
+		$response['document_content_index_truncated'] = true;
+		$response['document_content_index_warning'] = \Tainacan\Media::get_document_content_index_truncation_warning_message();
+
+		return $response;
 	}
 
 	/**
