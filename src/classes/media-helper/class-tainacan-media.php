@@ -51,11 +51,11 @@ class Media {
 	 */
 	public static $content_index_last = 'document_content_last_index';
 
-	/** Default maximum document content index size in kilobytes. */
-	public const DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_DEFAULT = 200;
+	/** Default maximum document content index length in characters. */
+	public const DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_DEFAULT = 200000;
 
-	/** Maximum allowed document content index size setting in kilobytes. */
-	public const DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_LIMIT = 2000;
+	/** Maximum allowed document content index length setting in characters. */
+	public const DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_LIMIT = 2000000;
 
 	/**
 	 * Whether automatic PDF text extraction is enabled.
@@ -71,41 +71,32 @@ class Media {
 	}
 
 	/**
-	 * Configured maximum document content index size in kilobytes.
+	 * Configured maximum document content index length in characters.
 	 *
 	 * @return int
 	 */
-	public static function get_document_content_index_max_size_kb() {
-		if ( defined( 'TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB' ) ) {
+	public static function get_document_content_index_max_characters() {
+		if ( defined( 'TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS' ) ) {
 			return min(
-				max( 1, (int) TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB ),
-				self::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_LIMIT
+				max( 1, (int) TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS ),
+				self::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_LIMIT
 			);
 		}
 
 		$value = (int) get_option(
-			'tainacan_option_document_content_index_max_size_kb',
-			self::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_DEFAULT
+			'tainacan_option_document_content_index_max_characters',
+			self::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_DEFAULT
 		);
 
 		if ( $value <= 0 ) {
-			return self::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_DEFAULT;
+			return self::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_DEFAULT;
 		}
 
-		return min( $value, self::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_LIMIT );
+		return min( $value, self::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_LIMIT );
 	}
 
 	/**
-	 * Configured maximum document content index size in bytes.
-	 *
-	 * @return int
-	 */
-	public static function get_document_content_index_max_bytes() {
-		return self::get_document_content_index_max_size_kb() * 1024;
-	}
-
-	/**
-	 * Truncates document content to the configured maximum size before storage.
+	 * Truncates document content to the configured maximum length before storage.
 	 *
 	 * @param mixed $content Raw document content.
 	 *
@@ -122,9 +113,9 @@ class Media {
 			];
 		}
 
-		$max_bytes = self::get_document_content_index_max_bytes();
+		$max_characters = self::get_document_content_index_max_characters();
 
-		if ( strlen( $content ) <= $max_bytes ) {
+		if ( mb_strlen( $content, 'UTF-8' ) <= $max_characters ) {
 			return [
 				'content'       => $content,
 				'was_truncated' => false,
@@ -132,7 +123,7 @@ class Media {
 		}
 
 		return [
-			'content'       => mb_strcut( $content, 0, $max_bytes, 'UTF-8' ),
+			'content'       => mb_substr( $content, 0, $max_characters, 'UTF-8' ),
 			'was_truncated' => true,
 		];
 	}
@@ -144,9 +135,9 @@ class Media {
 	 */
 	public static function get_document_content_index_truncation_warning_message() {
 		return sprintf(
-			/* translators: %d: maximum document content size in kilobytes */
-			__( 'The document content exceeded the maximum size (%d KB) and was truncated.', 'tainacan' ),
-			self::get_document_content_index_max_size_kb()
+			/* translators: %s: maximum document content length in characters, formatted with thousands separators */
+			__( 'The document content exceeded the maximum size (%s characters) and was truncated.', 'tainacan' ),
+			number_format_i18n( self::get_document_content_index_max_characters() )
 		);
 	}
 

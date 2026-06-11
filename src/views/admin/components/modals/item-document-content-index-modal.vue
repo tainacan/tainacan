@@ -33,11 +33,12 @@
                 </p>
             </div>
             <b-input
-                    ref="item-document-content-index-input"
                     v-model="localDocumentContentIndex"
                     aria-labelledby="item-document-content-index-modal-title"
                     type="textarea"
-                    :rows="12" />
+                    :maxlength="documentContentMaxLength"
+                    has-counter
+                    :rows="10" />
             <p
                     v-if="documentContentIndexWarning"
                     class="document-content-index-truncation-warning help">
@@ -123,12 +124,16 @@ export default {
         },
         hasDocumentContentIndexChanged() {
             return this.localDocumentContentIndex !== this.savedDocumentContentIndex;
+        },
+        documentContentMaxLength() {
+            const maxCharacters = typeof tainacan_plugin !== 'undefined' && tainacan_plugin.document_content_index_max_characters
+                ? parseInt(tainacan_plugin.document_content_index_max_characters, 10)
+                : 200000;
+
+            return Math.max(1, maxCharacters);
         }
     },
     watch: {
-        localDocumentContentIndex() {
-            this.documentContentIndexWarning = null;
-        },
         isLoading(isLoading) {
             if (!isLoading)
                 this.$nextTick(() => this.focusModal());
@@ -154,6 +159,26 @@ export default {
             if (this.$refs.itemDocumentContentIndexModal)
                 this.$refs.itemDocumentContentIndexModal.focus();
         },
+        prepareContentForStorage(content) {
+            if (typeof content !== 'string')
+                return { content, wasTruncated: false };
+
+            const maxCharacters = this.documentContentMaxLength;
+
+            if (content.length <= maxCharacters)
+                return { content, wasTruncated: false };
+
+            return {
+                content: content.slice(0, maxCharacters),
+                wasTruncated: true
+            };
+        },
+        truncationWarningMessage() {
+            return this.$i18n.getWithVariables(
+                'info_document_content_index_truncated_%s',
+                [ this.documentContentMaxLength.toLocaleString() ]
+            );
+        },
         loadDocumentContentIndex() {
             this.isLoading = true;
             this.fetchItemDocumentContentIndex({
@@ -161,13 +186,17 @@ export default {
                 contextEdit: true
             })
                 .then((documentContentIndex) => {
-                    const content = documentContentIndex || '';
-                    this.localDocumentContentIndex = content;
-                    this.savedDocumentContentIndex = content;
+                    const prepared = this.prepareContentForStorage(documentContentIndex || '');
+                    this.localDocumentContentIndex = prepared.content;
+                    this.savedDocumentContentIndex = prepared.content;
+                    this.documentContentIndexWarning = prepared.wasTruncated
+                        ? this.truncationWarningMessage()
+                        : null;
                 })
                 .catch(() => {
                     this.localDocumentContentIndex = '';
                     this.savedDocumentContentIndex = '';
+                    this.documentContentIndexWarning = null;
                 })
                 .finally(() => {
                     this.isLoading = false;
@@ -180,16 +209,11 @@ export default {
                 itemId: this.itemId
             })
                 .then((result) => {
-                    this.localDocumentContentIndex = result.documentContentIndex || '';
-                    if (result.truncated && result.warning) {
-                        this.documentContentIndexWarning = result.warning;
-                        this.$buefy.toast.open({
-                            duration: 6000,
-                            message: result.warning,
-                            position: 'is-bottom-right',
-                            type: 'is-warning',
-                            queue: false
-                        });
+                    const prepared = this.prepareContentForStorage(result.documentContentIndex || '');
+                    this.localDocumentContentIndex = prepared.content;
+
+                    if (result.truncated || prepared.wasTruncated) {
+                        this.documentContentIndexWarning = result.warning || this.truncationWarningMessage();
                     } else {
                         this.$buefy.toast.open({
                             duration: 3000,
@@ -220,26 +244,28 @@ export default {
             }
 
             this.isSaving = true;
-            this.documentContentIndexWarning = null;
+
+            const prepared = this.prepareContentForStorage(this.localDocumentContentIndex);
+
+            if (prepared.wasTruncated) {
+                this.localDocumentContentIndex = prepared.content;
+                this.documentContentIndexWarning = this.truncationWarningMessage();
+            }
+
             this.updateItemDocumentContentIndex({
                 itemId: this.itemId,
-                documentContentIndex: this.localDocumentContentIndex
+                documentContentIndex: prepared.content
             })
                 .then((result) => {
-                    if (result.truncated && result.warning) {
-                        const savedContent = result.documentContentIndex || '';
-                        this.localDocumentContentIndex = savedContent;
-                        this.savedDocumentContentIndex = savedContent;
-                        this.documentContentIndexWarning = result.warning;
-                        this.$buefy.toast.open({
-                            duration: 6000,
-                            message: result.warning,
-                            position: 'is-bottom-right',
-                            type: 'is-warning',
-                            queue: false
-                        });
+                    const savedContent = result.documentContentIndex || prepared.content || '';
+                    this.localDocumentContentIndex = savedContent;
+                    this.savedDocumentContentIndex = savedContent;
+
+                    if (result.truncated || prepared.wasTruncated) {
+                        this.documentContentIndexWarning = result.warning || this.truncationWarningMessage();
                         return;
                     }
+
                     this.closeModal();
                 })
                 .catch((errors) => {

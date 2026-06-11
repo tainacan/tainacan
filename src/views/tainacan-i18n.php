@@ -1213,6 +1213,8 @@ return apply_filters( 'tainacan-i18n', [
 	'info_thumbnail_alt_ai_generating'               => __( 'Generating alternative text…', 'tainacan' ),
 	'info_thumbnail_alt_ai_success'                  => __( 'Alternative text was generated.', 'tainacan' ),
 	'info_thumbnail_alt_ai_decorative'               => __( 'The image was identified as decorative. Alternative text was cleared.', 'tainacan' ),
+	/* translators: %s: maximum document content size in kilobytes */
+	'info_document_content_index_truncated_%s'    => __( 'The document content exceeded the maximum size (%s characters) and was truncated.', 'tainacan' ),
 	
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),

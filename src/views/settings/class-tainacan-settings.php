@@ -134,29 +134,29 @@ class Settings extends Pages {
 		) );
 
 		$this->create_tainacan_setting( array(
-			'id' => 'document_content_index_max_size_kb',
+			'id' => 'document_content_index_max_characters',
 			'section' => 'tainacan_settings_search_and_performance',
-			'title' => __( 'Extracted content size limit', 'tainacan' ),
+			'title' => __( 'Extracted content character limit', 'tainacan' ),
 			'description' => sprintf(
-				/* translators: 1: default size in kilobytes, 2: maximum allowed size in kilobytes */
-				__( 'Maximum amount of extracted or edited document content stored for search, in kilobytes (KB).', 'tainacan' ),
-				\Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_DEFAULT,
-				\Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_LIMIT
+				/* translators: 1: default character limit, 2: maximum allowed character limit */
+				__( 'Maximum number of characters stored from extracted or edited document content for search.', 'tainacan' ),
+				number_format_i18n( \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_DEFAULT ),
+				number_format_i18n( \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_LIMIT )
 			),
 			'type' => 'integer',
 			'input_type' => 'number',
-			'input_attrs' => 'min="1" max="' . \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_LIMIT . '" step="1" required="required"',
-			'input_disabled' => defined( 'TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB' ),
-			'sanitize_callback' => array( $this, 'sanitize_document_content_index_max_size_kb' ),
-			'default' => \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_DEFAULT,
-			'forced_value' => defined( 'TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB' )
+			'input_attrs' => 'min=1000 max=' . \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_LIMIT . ' step=1000 required="required"',
+			'input_disabled' => defined( 'TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS' ),
+			'sanitize_callback' => array( $this, 'sanitize_document_content_index_max_characters' ),
+			'default' => \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_DEFAULT,
+			'forced_value' => defined( 'TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS' )
 				? min(
-					max( 1, (int) TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB ),
-					\Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_LIMIT
+					max( 1, (int) TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS ),
+					\Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_LIMIT
 				)
 				: null
 		) );
-		
+
 		/**
 		 * Theme default templates -----------------------------------------------------
 		 */
@@ -616,20 +616,20 @@ class Settings extends Pages {
 
 
 	/**
-	 * Sanitizes the document content index maximum size setting.
+	 * Sanitizes the document content index maximum character length setting.
 	 *
 	 * @param mixed $value Raw setting value.
 	 *
 	 * @return int
 	 */
-	public function sanitize_document_content_index_max_size_kb( $value ) {
+	public function sanitize_document_content_index_max_characters( $value ) {
 		$value = absint( $value );
 
 		if ( $value <= 0 ) {
-			return \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_DEFAULT;
+			return \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_DEFAULT;
 		}
 
-		return min( $value, \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_SIZE_KB_LIMIT );
+		return min( $value, \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_LIMIT );
 	}
 
 	public function search_and_performance_section_description() {
