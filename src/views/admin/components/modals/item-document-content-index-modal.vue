@@ -119,17 +119,17 @@ export default {
             return this.localDocumentContentIndex !== this.savedDocumentContentIndex;
         }
     },
-    created() {
-        this.loadDocumentContentIndex();
-    },
-    mounted() {
-        this.focusModal();
-    },
     watch: {
         isLoading(isLoading) {
             if (!isLoading)
                 this.$nextTick(() => this.focusModal());
         }
+    },
+    created() {
+        this.loadDocumentContentIndex();
+    },
+    mounted() {
+        this.focusModal();
     },
     methods: {
         ...mapActions('item', [

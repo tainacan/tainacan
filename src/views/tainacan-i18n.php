@@ -314,8 +314,6 @@ return apply_filters( 'tainacan-i18n', [
 	'info_document_content_index_empty_non_pdf'      => __( 'Tainacan does not support automatic text extraction for this document type, but you can type content here to include it in textual searches. This is useful, for example, to add an image description.', 'tainacan' ),
 	'info_document_content_index_extracted'          => __( 'Document content extracted.', 'tainacan' ),
 	'label_extract_document_content'                 => __( 'Extract content', 'tainacan' ),
-	'error_document_content_index_extraction_failed' => __( 'Failed to extract document content.', 'tainacan' ),
-	'error_document_content_index_save_failed'       => __( 'Failed to save document content.', 'tainacan' ),
 	'label_file'                                     => __( 'File', 'tainacan' ),
 	'label_text'                                     => __( 'Text', 'tainacan' ),
 	'label_url'                                      => __( 'URL', 'tainacan' ),
@@ -1259,6 +1257,10 @@ return apply_filters( 'tainacan-i18n', [
 	'datepicker_short_friday'			=> __( 'F', 'tainacan' ),
 	/* translators: This refers to the short label that will appear on datepickers for Saturday */
 	'datepicker_short_saturday'			=> __( 'Sa', 'tainacan' ),
+
+	/* Errors related to document content index extraction and saving */
+	'error_document_content_index_extraction_failed' => __( 'Could not extract usable text from this PDF. It may use fonts or encoding that are not supported for automatic extraction.', 'tainacan' ),
+	'error_document_content_index_save_failed'       => __( 'Failed to save document content.', 'tainacan' ),
 
 	/* Errors displayed on the interface bottom notifications */
 	'error_connectivity_label' => __('Connectivity issue', 'tainacan'),

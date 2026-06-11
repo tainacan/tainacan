@@ -432,7 +432,7 @@ class Media {
 
 		$alternate = apply_filters( 'tainacan-index-pdf', null, $file, $item_id );
 		if ( ! \is_null( $alternate ) ) {
-			return $alternate;
+			return self::normalize_extracted_pdf_content( $alternate );
 		}
 
 		try {
@@ -440,14 +440,39 @@ class Media {
 			$content = $parser->parseFile( $file )->getText();
 
 			$wp_charset = get_bloginfo( 'charset' );
-			$content_charset = mb_detect_encoding( $content );
-			$content = mb_convert_encoding( $content, $wp_charset, $content_charset );
+			$content_charset = mb_detect_encoding( $content, [ 'UTF-8', 'ISO-8859-1', 'Windows-1252' ], true );
+			if ( $content_charset ) {
+				$content = mb_convert_encoding( $content, $wp_charset, $content_charset );
+			}
 
-			return $content;
+			return self::normalize_extracted_pdf_content( $content );
 		} catch ( \Exception $e ) {
 			error_log( 'Caught exception: ' . $e->getMessage() . "\n" );
 			return false;
 		}
+	}
+
+	/**
+	 * Validates extracted PDF text before it is returned or stored.
+	 *
+	 * @param mixed $content Raw extraction result.
+	 *
+	 * @return string|bool|null|false
+	 */
+	private static function normalize_extracted_pdf_content( $content ) {
+		if ( $content === false || $content === null ) {
+			return $content;
+		}
+
+		if ( ! is_string( $content ) ) {
+			return $content;
+		}
+
+		if ( ! Pdf_Extracted_Text_Quality::is_usable( $content ) ) {
+			return false;
+		}
+
+		return $content;
 	}
 
 	/**
@@ -528,6 +553,9 @@ class Media {
 		$content = $this->extract_pdf_content( $file, $item_id );
 
 		if ( $content === false || $content === null ) {
+			if ( $content === false ) {
+				$this->clear_document_content_index( $item_id );
+			}
 			return $content;
 		}
 

@@ -1114,7 +1114,7 @@ class REST_Items_Controller extends REST_Controller {
 
 		if ( $extracted_content === false ) {
 			return new \WP_REST_Response([
-				'error_message' => __( 'Failed to extract document text.', 'tainacan' ),
+				'error_message' => __( 'Could not extract usable text from this PDF. It may use fonts or encoding that are not supported for automatic extraction.', 'tainacan' ),
 			], 400);
 		}
 
