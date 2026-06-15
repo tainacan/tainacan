@@ -276,7 +276,7 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 		}
 
 		if ( ! empty( $params['from'] ) ) {
-			$from = $this->parse_date( $params['from'] );
+			$from = $this->parse_date( $params['from'], 'from' );
 			if ( null === $from ) {
 				$xml->add_error( 'badArgument', 'Invalid from date.' );
 				return false;
@@ -284,7 +284,7 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 			$query['from'] = $from;
 		}
 		if ( ! empty( $params['until'] ) ) {
-			$until = $this->parse_date( $params['until'] );
+			$until = $this->parse_date( $params['until'], 'until' );
 			if ( null === $until ) {
 				$xml->add_error( 'badArgument', 'Invalid until date.' );
 				return false;
@@ -299,13 +299,17 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 	 * Normalize an OAI date argument (YYYY-MM-DD or full UTC) to SQL form.
 	 *
 	 * @param string $date
+	 * @param string $bound Either 'from' or 'until'.
 	 * @return string|null
 	 */
-	private function parse_date( $date ) {
+	private function parse_date( $date, $bound = 'from' ) {
 		if ( preg_match( '/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/', $date ) ) {
 			return gmdate( 'Y-m-d H:i:s', strtotime( $date ) );
 		}
 		if ( preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) ) {
+			if ( 'until' === $bound ) {
+				return $date . ' 23:59:59';
+			}
 			return $date . ' 00:00:00';
 		}
 		return null;
