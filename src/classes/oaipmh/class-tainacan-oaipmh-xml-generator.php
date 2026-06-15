@@ -111,6 +111,25 @@ class OAIPMH_Xml_Generator {
 				$identify->appendChild( $this->text_element( $field, $data[ $field ] ) );
 			}
 		}
+
+		if ( ! empty( $data['repositoryIdentifier'] ) ) {
+			$description = $this->dom->createElement( 'description' );
+			$oai_id      = $this->dom->createElement( 'oai-identifier' );
+			$oai_id->setAttribute( 'xmlns', 'http://www.openarchives.org/OAI/2.0/oai-identifier' );
+			$oai_id->setAttribute( 'xmlns:xsi', self::XSI_NS );
+			$oai_id->setAttribute(
+				'xsi:schemaLocation',
+				'http://www.openarchives.org/OAI/2.0/oai-identifier http://www.openarchives.org/OAI/2.0/oai-identifier.xsd'
+			);
+			$oai_id->appendChild( $this->text_element( 'scheme', 'oai' ) );
+			$oai_id->appendChild( $this->text_element( 'repositoryIdentifier', $data['repositoryIdentifier'] ) );
+			$oai_id->appendChild( $this->text_element( 'delimiter', ':' ) );
+			$sample = ! empty( $data['sampleIdentifier'] ) ? $data['sampleIdentifier'] : 'oai:' . $data['repositoryIdentifier'] . ':1';
+			$oai_id->appendChild( $this->text_element( 'sampleIdentifier', $sample ) );
+			$description->appendChild( $oai_id );
+			$identify->appendChild( $description );
+		}
+
 		$this->root->appendChild( $identify );
 		return $this;
 	}

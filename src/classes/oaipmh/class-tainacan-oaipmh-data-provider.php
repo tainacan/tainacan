@@ -75,14 +75,26 @@ class OAIPMH_Data_Provider {
 			 *
 			 * @param string $name Defaults to the site name.
 			 */
-			'repositoryName'    => apply_filters( 'tainacan-oai-repository-name', get_bloginfo( 'name' ) ),
-			'baseURL'           => $this->get_base_url(),
-			'protocolVersion'   => '2.0',
-			'adminEmail'        => apply_filters( 'tainacan-oai-admin-email', get_bloginfo( 'admin_email' ) ),
-			'earliestDatestamp' => $this->get_earliest_datestamp(),
-			'deletedRecord'     => 'transient',
-			'granularity'       => 'YYYY-MM-DDThh:mm:ssZ',
+			'repositoryName'         => apply_filters( 'tainacan-oai-repository-name', get_bloginfo( 'name' ) ),
+			'baseURL'                => $this->get_base_url(),
+			'protocolVersion'        => '2.0',
+			'adminEmail'             => apply_filters( 'tainacan-oai-admin-email', get_bloginfo( 'admin_email' ) ),
+			'earliestDatestamp'      => $this->get_earliest_datestamp(),
+			'deletedRecord'          => 'transient',
+			'granularity'            => 'YYYY-MM-DDThh:mm:ssZ',
+			'repositoryIdentifier'   => $this->get_repository_identifier(),
+			'sampleIdentifier'       => $this->build_identifier( 1 ),
 		);
+	}
+
+	/**
+	 * Repository identifier for the oai-identifier description block.
+	 *
+	 * @return string
+	 */
+	public function get_repository_identifier() {
+		$domain = wp_parse_url( home_url(), PHP_URL_HOST );
+		return $domain ? $domain : 'unknown';
 	}
 
 	/**
