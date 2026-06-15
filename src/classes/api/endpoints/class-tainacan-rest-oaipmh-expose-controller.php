@@ -268,6 +268,14 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 	 */
 	private function parse_list_params( $xml, $params ) {
 		if ( ! empty( $params['resumptionToken'] ) ) {
+			$exclusive_args = array( 'metadataPrefix', 'from', 'until', 'set' );
+			foreach ( $exclusive_args as $arg ) {
+				if ( isset( $params[ $arg ] ) && '' !== $params[ $arg ] ) {
+					$xml->add_error( 'badArgument', 'The usage of resumptionToken as an argument allows no other arguments.' );
+					return false;
+				}
+			}
+
 			$data = $this->token_manager->get( $params['resumptionToken'] );
 			if ( ! $data ) {
 				$xml->add_error( 'badResumptionToken', 'Invalid or expired token.' );
