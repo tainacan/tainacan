@@ -99,10 +99,10 @@ class OAIPMH_Data_Provider {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- MIN() aggregate over $wpdb->posts restricted to Tainacan item post types; not expressible via WP_Query without loading every post; constant predicates, no user input; result cached in a transient below.
 		$earliest = $wpdb->get_var(
-			"SELECT MIN(post_date_gmt) FROM {$wpdb->posts}
+			"SELECT MIN(post_modified_gmt) FROM {$wpdb->posts}
 			 WHERE post_type LIKE 'tnc_col_%_item'
-			   AND post_status IN ('publish', 'private')
-			   AND post_date_gmt > '1970-01-01 00:00:00'"
+			   AND post_status IN ('publish', 'trash')
+			   AND post_modified_gmt > '1970-01-01 00:00:00'"
 		);
 
 		if ( $earliest ) {
@@ -252,7 +252,7 @@ class OAIPMH_Data_Provider {
 	}
 
 	/**
-	 * Build a WP_Query date_query on post_date_gmt from OAI from/until.
+	 * Build a WP_Query date_query on post_modified_gmt from OAI from/until.
 	 *
 	 * @param string|null $from
 	 * @param string|null $until
@@ -262,14 +262,14 @@ class OAIPMH_Data_Provider {
 		$date_query = array();
 		if ( ! empty( $from ) ) {
 			$date_query[] = array(
-				'column'    => 'post_date_gmt',
+				'column'    => 'post_modified_gmt',
 				'after'     => $from,
 				'inclusive' => true,
 			);
 		}
 		if ( ! empty( $until ) ) {
 			$date_query[] = array(
-				'column'    => 'post_date_gmt',
+				'column'    => 'post_modified_gmt',
 				'before'    => $until,
 				'inclusive' => true,
 			);
