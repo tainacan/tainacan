@@ -33,6 +33,7 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 	public function __construct() {
 		$this->rest_base = 'oai';
 		parent::__construct();
+		add_filter( 'rest_pre_serve_request', array( $this, 'serve_xml_response' ), 10, 2 );
 	}
 
 	/**
@@ -348,6 +349,30 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 	}
 
 	/**
+	 * Echo raw OAI-PMH XML instead of the REST JSON envelope.
+	 *
+	 * @param bool              $served Whether the request was already served.
+	 * @param \WP_REST_Response $result REST response object.
+	 * @return bool
+	 */
+	public function serve_xml_response( $served, $result ) {
+		if ( $served || ! ( $result instanceof \WP_REST_Response ) ) {
+			return $served;
+		}
+		$data = $result->get_data();
+		if ( ! is_string( $data ) || '' === $data ) {
+			return $served;
+		}
+		$headers = $result->get_headers();
+		if ( isset( $headers['Content-Type'] ) && false === strpos( $headers['Content-Type'], 'text/xml' ) ) {
+			return $served;
+		}
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Raw OAI-PMH XML produced by DOMDocument (OAIPMH_Xml_Generator), already escaped element by element; esc_*() would corrupt the XML and break harvesters.
+		echo $data;
+		return true;
+	}
+
+	/**
 	 * Serve an XML string as the raw response body.
 	 *
 	 * @param string $xml_string The OAI-PMH XML document.
@@ -371,17 +396,6 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 		$response = new \WP_REST_Response();
 		$response->set_headers( array( 'Content-Type' => 'text/xml; charset=utf-8' ) );
 		$response->set_data( $xml_string );
-
-		add_filter(
-			'rest_pre_serve_request',
-			static function ( $served, $result ) {
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Raw OAI-PMH XML produced by DOMDocument (OAIPMH_Xml_Generator), already escaped element by element; esc_*() would corrupt the XML and break harvesters.
-				echo $result->get_data();
-				return true;
-			},
-			10,
-			2
-		);
 
 		return $response;
 	}
