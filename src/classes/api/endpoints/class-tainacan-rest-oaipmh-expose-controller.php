@@ -122,6 +122,10 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 				$this->handle_list_metadata_formats( $xml, $params );
 				break;
 			case 'ListSets':
+				if ( $this->has_disallowed_list_sets_args( $params ) ) {
+					$xml->add_error( 'badArgument', 'Invalid argument for ListSets.' );
+					break;
+				}
 				$xml->create_sets( $this->data_provider->get_sets() );
 				break;
 			case 'ListRecords':
@@ -136,6 +140,26 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 		}
 
 		return $this->serve( $xml->output(), $verb, $params );
+	}
+
+	/**
+	 * ListSets accepts only the verb argument (no resumption-token pagination yet).
+	 *
+	 * @param array $params
+	 * @return bool
+	 */
+	private function has_disallowed_list_sets_args( $params ) {
+		$allowed = array( 'verb' );
+		foreach ( $params as $key => $value ) {
+			if ( in_array( $key, $allowed, true ) ) {
+				continue;
+			}
+			if ( is_string( $value ) && '' === $value ) {
+				continue;
+			}
+			return true;
+		}
+		return false;
 	}
 
 	/**
