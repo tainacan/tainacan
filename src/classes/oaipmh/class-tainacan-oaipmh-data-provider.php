@@ -60,7 +60,12 @@ class OAIPMH_Data_Provider {
 	 * @return int
 	 */
 	public function extract_item_id( $identifier ) {
-		return (int) str_replace( $this->identifier_prefix, '', $identifier );
+		// Accept both the current host-based scheme (oai:example.org:42) and the
+		// legacy reversed-domain scheme (oai:org.example:42).
+		if ( ! is_string( $identifier ) || ! preg_match( '/^oai:.+:(\d+)$/', $identifier, $matches ) ) {
+			return 0;
+		}
+		return (int) $matches[1];
 	}
 
 	/**
@@ -185,6 +190,9 @@ class OAIPMH_Data_Provider {
 	 */
 	public function item_exists( $identifier ) {
 		$item_id = $this->extract_item_id( $identifier );
+		if ( $item_id <= 0 ) {
+			return false;
+		}
 		try {
 			$item = new \Tainacan\Entities\Item( $item_id );
 		} catch ( \Exception $e ) {
@@ -201,6 +209,9 @@ class OAIPMH_Data_Provider {
 	 */
 	public function get_item( $identifier ) {
 		$item_id = $this->extract_item_id( $identifier );
+		if ( $item_id <= 0 ) {
+			return null;
+		}
 		try {
 			$item = new \Tainacan\Entities\Item( $item_id );
 		} catch ( \Exception $e ) {
