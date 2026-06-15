@@ -80,7 +80,7 @@ class TAINACAN_REST_Oaipmh_Controller extends TAINACAN_UnitApiTestCase {
 	public function test_list_sets() {
 		$this->create_published_item();
 		$body = $this->get_oai_body( $this->dispatch_oai( array( 'verb' => 'ListSets' ) ) );
-		$this->assertStringContainsString( '<set>', $body );
+		$this->assertStringContainsString( '<set', $body );
 		$this->assertStringContainsString( '<setSpec>', $body );
 	}
 
@@ -138,7 +138,7 @@ class TAINACAN_REST_Oaipmh_Controller extends TAINACAN_UnitApiTestCase {
 				)
 			)
 		);
-		$this->assertStringContainsString( '<set>', $page_two );
+		$this->assertStringContainsString( '<set', $page_two );
 
 		remove_filter( 'tainacan-oai-maxrecords', array( $this, 'filter_oai_page_size_one' ) );
 	}
@@ -211,7 +211,7 @@ class TAINACAN_REST_Oaipmh_Controller extends TAINACAN_UnitApiTestCase {
 			)
 		);
 		$this->assertStringContainsString( '<ListRecords>', $body );
-		$this->assertStringContainsString( '<record>', $body );
+		$this->assertStringContainsString( '<record', $body );
 		$this->assertStringContainsString( 'OAI Test Item', $body );
 	}
 
@@ -269,6 +269,7 @@ class TAINACAN_REST_Oaipmh_Controller extends TAINACAN_UnitApiTestCase {
 					'dublin-core' => 'dc:creator',
 				),
 			),
+			true,
 			true
 		);
 
@@ -295,7 +296,7 @@ class TAINACAN_REST_Oaipmh_Controller extends TAINACAN_UnitApiTestCase {
 		);
 
 		$this->assertStringContainsString( 'Jane Curator', $body );
-		$this->assertStringContainsString( 'dc:creator', $body );
+		$this->assertStringContainsString( '<dc:creator>', $body );
 	}
 
 	public function test_selective_harvest_from_uses_modification_date() {
@@ -352,7 +353,7 @@ class TAINACAN_REST_Oaipmh_Controller extends TAINACAN_UnitApiTestCase {
 			)
 		);
 
-		$this->assertStringContainsString( '<record>', $body );
+		$this->assertStringContainsString( '<record', $body );
 		$this->assertStringNotContainsString( 'code="noRecordsMatch"', $body );
 	}
 
@@ -410,7 +411,7 @@ class TAINACAN_REST_Oaipmh_Controller extends TAINACAN_UnitApiTestCase {
 				)
 			)
 		);
-		$this->assertStringContainsString( '<record>', $page_two );
+		$this->assertStringContainsString( '<record', $page_two );
 
 		$page_two_again = $this->get_oai_body(
 			$this->dispatch_oai(
@@ -420,7 +421,7 @@ class TAINACAN_REST_Oaipmh_Controller extends TAINACAN_UnitApiTestCase {
 				)
 			)
 		);
-		$this->assertStringContainsString( '<record>', $page_two_again );
+		$this->assertStringContainsString( '<record', $page_two_again );
 
 		remove_filter( 'tainacan-oai-maxrecords', array( $this, 'filter_oai_page_size_one' ) );
 	}
@@ -464,13 +465,8 @@ class TAINACAN_REST_Oaipmh_Controller extends TAINACAN_UnitApiTestCase {
 	 * @return string
 	 */
 	private function build_legacy_identifier( $item_id ) {
-		$url = str_replace( 'https://', '', home_url() );
-		$url = array_reverse( explode( '/', str_replace( 'http://', '', $url ) ) );
-		if ( is_array( $url ) && count( $url ) > 1 ) {
-			$repository_identifier = implode( '.', $url );
-		} else {
-			$repository_identifier = $url[0];
-		}
-		return 'oai:' . $repository_identifier . ':' . (int) $item_id;
+		$host = wp_parse_url( home_url(), PHP_URL_HOST );
+		$parts = explode( '.', $host );
+		return 'oai:' . implode( '.', array_reverse( $parts ) ) . ':' . (int) $item_id;
 	}
 }
