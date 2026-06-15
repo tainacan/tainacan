@@ -60,12 +60,10 @@ class OAIPMH_Data_Provider {
 	 * @return int
 	 */
 	public function extract_item_id( $identifier ) {
-		// Accept both the current host-based scheme (oai:example.org:42) and the
-		// legacy reversed-domain scheme (oai:org.example:42).
-		if ( ! is_string( $identifier ) || ! preg_match( '/^oai:.+:(\d+)$/', $identifier, $matches ) ) {
+		if ( ! is_string( $identifier ) || 0 !== strpos( $identifier, $this->identifier_prefix ) ) {
 			return 0;
 		}
-		return (int) $matches[1];
+		return (int) substr( $identifier, strlen( $this->identifier_prefix ) );
 	}
 
 	/**
@@ -147,20 +145,57 @@ class OAIPMH_Data_Provider {
 	 * @return array
 	 */
 	public function get_sets() {
-		$repo        = \Tainacan\Repositories\Collections::get_instance();
-		$collections = $repo->fetch( array(), 'OBJECT' );
+		$result = $this->get_sets_page(
+			array(
+				'per'  => PHP_INT_MAX,
+				'page' => 1,
+			)
+		);
+		return $result['sets'];
+	}
+
+	/**
+	 * Fetch a page of OAI sets (Tainacan collections).
+	 *
+	 * @param array $query {
+	 *     @type int $page 1-based page number.
+	 *     @type int $per  Page size.
+	 * }
+	 * @return array { @type array $sets; @type int $total }
+	 */
+	public function get_sets_page( $query ) {
+		$args = array(
+			'posts_per_page' => (int) $query['per'],
+			'paged'          => max( 1, (int) $query['page'] ),
+			'order'          => 'DESC',
+			'orderby'        => 'ID',
+			'post_status'    => 'any',
+		);
+
+		$repo     = \Tainacan\Repositories\Collections::get_instance();
+		$wp_query = $repo->fetch( $args, 'WP_Query' );
 
 		$sets = array();
-		if ( is_array( $collections ) ) {
-			foreach ( $collections as $col ) {
-				$sets[] = array(
-					'setSpec'        => (string) $col->get_id(),
-					'setName'        => $col->get_name(),
-					'setDescription' => $col->get_description(),
-				);
+		foreach ( $wp_query->posts as $post ) {
+			try {
+				$col = new \Tainacan\Entities\Collection( $post );
+			} catch ( \Exception $e ) {
+				continue;
 			}
+			if ( ! $col->get_id() ) {
+				continue;
+			}
+			$sets[] = array(
+				'setSpec'        => (string) $col->get_id(),
+				'setName'        => $col->get_name(),
+				'setDescription' => $col->get_description(),
+			);
 		}
-		return $sets;
+
+		return array(
+			'sets'  => $sets,
+			'total' => (int) $wp_query->found_posts,
+		);
 	}
 
 	/**

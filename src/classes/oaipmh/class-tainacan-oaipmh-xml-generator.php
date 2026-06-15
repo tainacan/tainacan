@@ -156,20 +156,29 @@ class OAIPMH_Xml_Generator {
 		if ( empty( $sets ) ) {
 			return $this->add_error( 'noSetHierarchy', 'This repository does not support sets.' );
 		}
-		$list = $this->dom->createElement( 'ListSets' );
+		$list = $this->start_list( 'ListSets' );
 		foreach ( $sets as $set ) {
-			$node = $this->dom->createElement( 'set' );
-			$node->appendChild( $this->text_element( 'setSpec', $set['setSpec'] ) );
-			$node->appendChild( $this->text_element( 'setName', $set['setName'] ) );
-			if ( ! empty( $set['setDescription'] ) ) {
-				$desc = $this->dom->createElement( 'setDescription' );
-				$dc   = $this->build_oai_dc( array( 'description' => $set['setDescription'] ) );
-				$desc->appendChild( $dc );
-				$node->appendChild( $desc );
-			}
-			$list->appendChild( $node );
+			$this->add_set( $list, $set );
 		}
-		$this->root->appendChild( $list );
+		return $this;
+	}
+
+	/**
+	 * @param \DOMElement $list
+	 * @param array       $set
+	 * @return OAIPMH_Xml_Generator
+	 */
+	public function add_set( $list, $set ) {
+		$node = $this->dom->createElement( 'set' );
+		$node->appendChild( $this->text_element( 'setSpec', $set['setSpec'] ) );
+		$node->appendChild( $this->text_element( 'setName', $set['setName'] ) );
+		if ( ! empty( $set['setDescription'] ) ) {
+			$desc = $this->dom->createElement( 'setDescription' );
+			$dc   = $this->build_oai_dc( array( 'description' => $set['setDescription'] ) );
+			$desc->appendChild( $dc );
+			$node->appendChild( $desc );
+		}
+		$list->appendChild( $node );
 		return $this;
 	}
 

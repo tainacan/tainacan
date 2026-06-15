@@ -123,11 +123,7 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 				$this->handle_list_metadata_formats( $xml, $params );
 				break;
 			case 'ListSets':
-				if ( $this->has_disallowed_list_sets_args( $params ) ) {
-					$xml->add_error( 'badArgument', 'Invalid argument for ListSets.' );
-					break;
-				}
-				$xml->create_sets( $this->data_provider->get_sets() );
+				$this->handle_list_sets( $xml, $params );
 				break;
 			case 'ListRecords':
 				$this->handle_list_records( $xml, $params, true );
@@ -144,13 +140,70 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 	}
 
 	/**
-	 * ListSets accepts only the verb argument (no resumption-token pagination yet).
+	 * @param OAIPMH_Xml_Generator $xml
+	 * @param array                $params
+	 */
+	private function handle_list_sets( $xml, $params ) {
+		if ( $this->has_disallowed_list_sets_args( $params ) ) {
+			$xml->add_error( 'badArgument', 'Invalid argument for ListSets.' );
+			return;
+		}
+
+		$query = $this->parse_list_sets_params( $xml, $params );
+		if ( false === $query ) {
+			return;
+		}
+
+		$max_records = (int) apply_filters( 'tainacan-oai-maxrecords', 100 );
+
+		$result = $this->data_provider->get_sets_page(
+			array(
+				'per'  => $max_records,
+				'page' => $query['page'],
+			)
+		);
+
+		if ( empty( $result['sets'] ) ) {
+			if ( 1 === (int) $query['page'] ) {
+				$xml->add_error( 'noSetHierarchy', 'This repository does not support sets.' );
+			} else {
+				$xml->add_error( 'badResumptionToken', 'Invalid or expired token.' );
+			}
+			return;
+		}
+
+		$total = $result['total'];
+		$list  = $xml->start_list( 'ListSets' );
+
+		foreach ( $result['sets'] as $set ) {
+			$xml->add_set( $list, $set );
+		}
+
+		$delivered = $query['page'] * $max_records;
+		if ( $delivered < $total ) {
+			$next_query         = $query;
+			$next_query['page'] = $query['page'] + 1;
+
+			$token      = $this->token_manager->create( $next_query );
+			$ttl        = (int) apply_filters( 'tainacan-oai-token-valid', DAY_IN_SECONDS );
+			$expiration = gmdate( 'Y-m-d\TH:i:s\Z', time() + $ttl );
+			$cursor     = ( $query['page'] - 1 ) * $max_records;
+
+			$xml->add_resumption_token( $list, $token, $total, $cursor, $expiration );
+		} elseif ( ! empty( $params['resumptionToken'] ) ) {
+			$cursor = ( $query['page'] - 1 ) * $max_records;
+			$xml->add_resumption_token( $list, '', $total, $cursor );
+		}
+	}
+
+	/**
+	 * ListSets accepts only verb and resumptionToken.
 	 *
 	 * @param array $params
 	 * @return bool
 	 */
 	private function has_disallowed_list_sets_args( $params ) {
-		$allowed = array( 'verb' );
+		$allowed = array( 'verb', 'resumptionToken' );
 		foreach ( $params as $key => $value ) {
 			if ( in_array( $key, $allowed, true ) ) {
 				continue;
@@ -159,6 +212,55 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 				continue;
 			}
 			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * @param OAIPMH_Xml_Generator $xml
+	 * @param array                $params
+	 * @return array|false
+	 */
+	private function parse_list_sets_params( $xml, $params ) {
+		if ( ! empty( $params['resumptionToken'] ) ) {
+			if ( $this->has_exclusive_argument_violation( $params, array( 'metadataPrefix', 'from', 'until', 'set' ) ) ) {
+				$xml->add_error( 'badArgument', 'The usage of resumptionToken as an argument allows no other arguments.' );
+				return false;
+			}
+
+			$data = $this->token_manager->get( $params['resumptionToken'] );
+			if ( ! $this->is_valid_token_for_verb( $data, 'ListSets' ) ) {
+				$xml->add_error( 'badResumptionToken', 'Invalid or expired token.' );
+				return false;
+			}
+			return $data;
+		}
+
+		return array(
+			'verb' => 'ListSets',
+			'page' => 1,
+		);
+	}
+
+	/**
+	 * @param array        $data
+	 * @param string       $verb
+	 * @return bool
+	 */
+	private function is_valid_token_for_verb( $data, $verb ) {
+		return is_array( $data ) && isset( $data['verb'] ) && $verb === $data['verb'];
+	}
+
+	/**
+	 * @param array $params
+	 * @param array $exclusive_args
+	 * @return bool
+	 */
+	private function has_exclusive_argument_violation( $params, $exclusive_args ) {
+		foreach ( $exclusive_args as $arg ) {
+			if ( isset( $params[ $arg ] ) && '' !== $params[ $arg ] ) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -181,7 +283,8 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 	 * @param bool                 $include_metadata
 	 */
 	private function handle_list_records( $xml, $params, $include_metadata ) {
-		$query = $this->parse_list_params( $xml, $params );
+		$list_verb = $include_metadata ? 'ListRecords' : 'ListIdentifiers';
+		$query     = $this->parse_list_params( $xml, $params, $list_verb );
 		if ( false === $query ) {
 			return;
 		}
@@ -267,18 +370,15 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 	 * @param array                $params
 	 * @return array|false
 	 */
-	private function parse_list_params( $xml, $params ) {
+	private function parse_list_params( $xml, $params, $expected_verb ) {
 		if ( ! empty( $params['resumptionToken'] ) ) {
-			$exclusive_args = array( 'metadataPrefix', 'from', 'until', 'set' );
-			foreach ( $exclusive_args as $arg ) {
-				if ( isset( $params[ $arg ] ) && '' !== $params[ $arg ] ) {
-					$xml->add_error( 'badArgument', 'The usage of resumptionToken as an argument allows no other arguments.' );
-					return false;
-				}
+			if ( $this->has_exclusive_argument_violation( $params, array( 'metadataPrefix', 'from', 'until', 'set' ) ) ) {
+				$xml->add_error( 'badArgument', 'The usage of resumptionToken as an argument allows no other arguments.' );
+				return false;
 			}
 
 			$data = $this->token_manager->get( $params['resumptionToken'] );
-			if ( ! $data ) {
+			if ( ! $this->is_valid_token_for_verb( $data, $expected_verb ) ) {
 				$xml->add_error( 'badResumptionToken', 'Invalid or expired token.' );
 				return false;
 			}
@@ -295,6 +395,7 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 		}
 
 		$query = array(
+			'verb'           => $expected_verb,
 			'page'           => 1,
 			'metadataPrefix' => 'oai_dc',
 		);

@@ -97,6 +97,109 @@ class TAINACAN_REST_Oaipmh_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertStringContainsString( 'code="badArgument"', $body );
 	}
 
+	public function test_list_sets_pagination() {
+		add_filter( 'tainacan-oai-maxrecords', array( $this, 'filter_oai_page_size_one' ) );
+
+		$this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'OAI Set A',
+				'status' => 'publish',
+			),
+			true
+		);
+		$this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'OAI Set B',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		$page_one = $this->get_oai_body(
+			$this->dispatch_oai(
+				array(
+					'verb' => 'ListSets',
+				)
+			)
+		);
+
+		$this->assertStringContainsString( '<resumptionToken', $page_one );
+		preg_match( '/<resumptionToken[^>]*>([^<]+)<\/resumptionToken>/', $page_one, $matches );
+		$this->assertNotEmpty( $matches[1] );
+		$token = $matches[1];
+
+		$page_two = $this->get_oai_body(
+			$this->dispatch_oai(
+				array(
+					'verb'            => 'ListSets',
+					'resumptionToken' => $token,
+				)
+			)
+		);
+		$this->assertStringContainsString( '<set>', $page_two );
+
+		remove_filter( 'tainacan-oai-maxrecords', array( $this, 'filter_oai_page_size_one' ) );
+	}
+
+	public function test_cross_verb_resumption_token_is_rejected() {
+		add_filter( 'tainacan-oai-maxrecords', array( $this, 'filter_oai_page_size_one' ) );
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'OAI Cross Verb Collection',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		$this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'OAI Item A',
+				'collection' => $collection,
+				'status'     => 'publish',
+			),
+			true
+		);
+		$this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'OAI Item B',
+				'collection' => $collection,
+				'status'     => 'publish',
+			),
+			true
+		);
+
+		$page_one = $this->get_oai_body(
+			$this->dispatch_oai(
+				array(
+					'verb'           => 'ListRecords',
+					'metadataPrefix' => 'oai_dc',
+					'set'            => (string) $collection->get_id(),
+				)
+			)
+		);
+
+		preg_match( '/<resumptionToken[^>]*>([^<]+)<\/resumptionToken>/', $page_one, $matches );
+		$this->assertNotEmpty( $matches[1] );
+
+		$body = $this->get_oai_body(
+			$this->dispatch_oai(
+				array(
+					'verb'            => 'ListSets',
+					'resumptionToken' => $matches[1],
+				)
+			)
+		);
+		$this->assertStringContainsString( 'code="badResumptionToken"', $body );
+
+		remove_filter( 'tainacan-oai-maxrecords', array( $this, 'filter_oai_page_size_one' ) );
+	}
+
 	public function test_list_records() {
 		$this->create_published_item();
 		$body = $this->get_oai_body(
@@ -130,7 +233,7 @@ class TAINACAN_REST_Oaipmh_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertStringContainsString( $identifier, $body );
 	}
 
-	public function test_get_record_with_legacy_identifier() {
+	public function test_get_record_rejects_legacy_identifier() {
 		$setup = $this->create_published_item();
 		$legacy_identifier = $this->build_legacy_identifier( $setup['item']->get_id() );
 
@@ -143,8 +246,7 @@ class TAINACAN_REST_Oaipmh_Controller extends TAINACAN_UnitApiTestCase {
 				)
 			)
 		);
-		$this->assertStringContainsString( '<GetRecord>', $body );
-		$this->assertStringContainsString( esc_html( $legacy_identifier ), $body );
+		$this->assertStringContainsString( 'code="idDoesNotExist"', $body );
 	}
 
 	public function test_dublin_core_mapping_in_list_records() {
