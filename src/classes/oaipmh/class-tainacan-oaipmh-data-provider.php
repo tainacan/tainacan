@@ -169,7 +169,7 @@ class OAIPMH_Data_Provider {
 			'paged'          => max( 1, (int) $query['page'] ),
 			'order'          => 'DESC',
 			'orderby'        => 'ID',
-			'post_status'    => 'any',
+			'post_status'    => 'publish',
 		);
 
 		$repo     = \Tainacan\Repositories\Collections::get_instance();
@@ -182,7 +182,7 @@ class OAIPMH_Data_Provider {
 			} catch ( \Exception $e ) {
 				continue;
 			}
-			if ( ! $col->get_id() ) {
+			if ( ! $this->is_set_oai_readable( $col ) ) {
 				continue;
 			}
 			$sets[] = array(
@@ -216,7 +216,7 @@ class OAIPMH_Data_Provider {
 		} catch ( \Exception $e ) {
 			return false;
 		}
-		return $collection->get_id() > 0;
+		return $this->is_set_oai_readable( $collection );
 	}
 
 	/**
@@ -233,7 +233,7 @@ class OAIPMH_Data_Provider {
 		} catch ( \Exception $e ) {
 			return false;
 		}
-		return $item->get_id() > 0;
+		return $this->is_item_oai_readable( $item );
 	}
 
 	/**
@@ -252,7 +252,7 @@ class OAIPMH_Data_Provider {
 		} catch ( \Exception $e ) {
 			return null;
 		}
-		if ( ! $item->get_id() ) {
+		if ( ! $item->get_id() || ! $this->is_item_oai_readable( $item ) ) {
 			return null;
 		}
 		return $this->format_item( $item->get_id() );
@@ -348,7 +348,7 @@ class OAIPMH_Data_Provider {
 			return null;
 		}
 
-		if ( ! $item->get_id() ) {
+		if ( ! $item->get_id() || ! $this->is_item_oai_readable( $item ) ) {
 			return null;
 		}
 
@@ -418,5 +418,49 @@ class OAIPMH_Data_Provider {
 		}
 
 		return array_filter( $dc );
+	}
+
+	/**
+	 * Whether a collection may appear as an OAI set for anonymous harvesters.
+	 *
+	 * Uses publish status explicitly so logged-in administrators browsing the
+	 * endpoint do not widen the public harvest surface.
+	 *
+	 * @param \Tainacan\Entities\Collection $collection
+	 * @return bool
+	 */
+	private function is_set_oai_readable( \Tainacan\Entities\Collection $collection ) {
+		return $collection->get_id() > 0 && 'publish' === $collection->get_status();
+	}
+
+	/**
+	 * Whether an item may be disseminated through the public OAI-PMH interface.
+	 *
+	 * Published items in published collections are harvestable. Trashed items
+	 * remain visible as header-only records when deletedRecord=transient. All
+	 * other statuses are withheld regardless of the current user session.
+	 *
+	 * @param \Tainacan\Entities\Item $item
+	 * @return bool
+	 */
+	private function is_item_oai_readable( \Tainacan\Entities\Item $item ) {
+		if ( ! $item->get_id() ) {
+			return false;
+		}
+
+		$status = $item->get_status();
+
+		if ( 'trash' === $status ) {
+			return true;
+		}
+
+		if ( 'publish' !== $status ) {
+			return false;
+		}
+
+		$collection = $item->get_collection();
+
+		return $collection instanceof \Tainacan\Entities\Collection
+			&& $this->is_set_oai_readable( $collection );
 	}
 }

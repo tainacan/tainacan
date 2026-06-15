@@ -249,6 +249,128 @@ class TAINACAN_REST_Oaipmh_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertStringContainsString( 'code="idDoesNotExist"', $body );
 	}
 
+	public function test_get_record_rejects_private_item() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'OAI Public Collection',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		$item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'Secret OAI Item Title',
+				'description' => 'Must not appear in OAI',
+				'collection'  => $collection,
+				'status'      => 'private',
+			),
+			true
+		);
+
+		$provider   = new \Tainacan\OAIPMHExpose\OAIPMH_Data_Provider();
+		$identifier = $provider->build_identifier( $item->get_id() );
+
+		$body = $this->get_oai_body(
+			$this->dispatch_oai(
+				array(
+					'verb'           => 'GetRecord',
+					'metadataPrefix' => 'oai_dc',
+					'identifier'     => $identifier,
+				)
+			)
+		);
+
+		$this->assertStringContainsString( 'code="idDoesNotExist"', $body );
+		$this->assertStringNotContainsString( 'Secret OAI Item Title', $body );
+	}
+
+	public function test_list_sets_excludes_private_collection() {
+		$this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'OAI Private Set Name',
+				'status' => 'private',
+			),
+			true
+		);
+
+		$body = $this->get_oai_body( $this->dispatch_oai( array( 'verb' => 'ListSets' ) ) );
+
+		$this->assertStringNotContainsString( 'OAI Private Set Name', $body );
+	}
+
+	public function test_list_records_rejects_private_collection_set() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'OAI Private Harvest Collection',
+				'status' => 'private',
+			),
+			true
+		);
+
+		$this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'Published item in private collection',
+				'collection' => $collection,
+				'status'     => 'publish',
+			),
+			true
+		);
+
+		$body = $this->get_oai_body(
+			$this->dispatch_oai(
+				array(
+					'verb'           => 'ListRecords',
+					'metadataPrefix' => 'oai_dc',
+					'set'            => (string) $collection->get_id(),
+				)
+			)
+		);
+
+		$this->assertStringContainsString( 'code="badArgument"', $body );
+		$this->assertStringNotContainsString( 'Published item in private collection', $body );
+	}
+
+	public function test_list_metadata_formats_rejects_private_item_identifier() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'OAI Metadata Formats Collection',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		$item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'Private item for ListMetadataFormats',
+				'collection' => $collection,
+				'status'     => 'private',
+			),
+			true
+		);
+
+		$provider   = new \Tainacan\OAIPMHExpose\OAIPMH_Data_Provider();
+		$identifier = $provider->build_identifier( $item->get_id() );
+
+		$body = $this->get_oai_body(
+			$this->dispatch_oai(
+				array(
+					'verb'       => 'ListMetadataFormats',
+					'identifier' => $identifier,
+				)
+			)
+		);
+
+		$this->assertStringContainsString( 'code="idDoesNotExist"', $body );
+	}
+
 	public function test_dublin_core_mapping_in_list_records() {
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
