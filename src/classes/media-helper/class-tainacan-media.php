@@ -129,6 +129,34 @@ class Media {
 	}
 
 	/**
+	 * Cleans extracted document content before it is returned or stored.
+	 *
+	 * Intended for automatic extraction only; manual edits should not pass through this.
+	 *
+	 * @param string $content Raw extracted text.
+	 *
+	 * @return string
+	 */
+	public static function sanitize_document_content_index_text( $content ) {
+		if ( ! is_string( $content ) || $content === '' ) {
+			return $content;
+		}
+
+		$content = preg_replace( '/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $content ) ?? $content;
+		$content = str_replace( [ "\r\n", "\r" ], "\n", $content );
+		$content = preg_replace( '/[ \t]+/u', ' ', $content ) ?? $content;
+		$content = preg_replace( "/\n{3,}/", "\n\n", $content ) ?? $content;
+		$content = trim( $content );
+
+		/**
+		 * Filters sanitized document content index text after automatic extraction cleanup.
+		 *
+		 * @param string $content Sanitized content.
+		 */
+		return (string) apply_filters( 'tainacan_sanitize_document_content_index', $content );
+	}
+
+	/**
 	 * Human-readable warning when document content was truncated.
 	 *
 	 * @return string
@@ -530,7 +558,7 @@ class Media {
 	}
 
 	/**
-	 * Validates extracted PDF text before it is returned or stored.
+	 * Validates and sanitizes extracted PDF text before it is returned or stored.
 	 *
 	 * @param mixed $content Raw extraction result.
 	 *
@@ -549,7 +577,7 @@ class Media {
 			return false;
 		}
 
-		return $content;
+		return self::sanitize_document_content_index_text( $content );
 	}
 
 	/**

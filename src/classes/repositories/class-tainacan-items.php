@@ -549,6 +549,10 @@ class Items extends Repository {
 		$extracted_content = apply_filters( 'tainacan_extract_document_content', null, $item, $context );
 
 		if ( $extracted_content !== null ) {
+			if ( is_string( $extracted_content ) ) {
+				$extracted_content = \Tainacan\Media::sanitize_document_content_index_text( $extracted_content );
+			}
+
 			return $extracted_content;
 		}
 
