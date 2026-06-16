@@ -902,6 +902,15 @@ class Theme_Helper {
 			$enabled_view_modes = $collection->get_enabled_view_modes();
 			$default_order = $collection->get_default_order();
 			$default_orderby = $collection->get_default_orderby();
+
+			// Default items per page from this collection's setting, clamped to the maximum allowed.
+			global $TAINACAN_API_MAX_ITEMS_PER_PAGE;
+			$max_per_page = isset( $TAINACAN_API_MAX_ITEMS_PER_PAGE )
+				? (int) $TAINACAN_API_MAX_ITEMS_PER_PAGE
+				: (int) get_option( 'tainacan_option_search_results_per_page', 96 );
+			$default_per_page = (int) $collection->get_default_per_page();
+			$default_per_page = $default_per_page > 0 ? $default_per_page : 12;
+			$props .= "data-default-items-per-page='" . min( $default_per_page, $max_per_page ) . "' ";
 			
 			// Gets hideItemsThumbnail info from collection setting
 			$args['hide-items-thumbnail'] = $collection->get_hide_items_thumbnail_on_lists() == 'yes' ? true : false;
