@@ -421,6 +421,75 @@ class TAINACAN_REST_Oaipmh_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertStringContainsString( '<dc:creator>', $body );
 	}
 
+	public function test_list_records_hides_private_mapped_metadata_even_for_logged_in_user() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'OAI Private Metadata Collection',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		$public_metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'            => 'Public creator',
+				'collection'      => $collection,
+				'status'          => 'publish',
+				'metadata_type'   => 'Tainacan\Metadata_Types\Text',
+				'exposer_mapping' => array(
+					'dublin-core' => 'dc:creator',
+				),
+			),
+			true,
+			true
+		);
+
+		$private_metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'            => 'Private contributor',
+				'collection'      => $collection,
+				'status'          => 'private',
+				'metadata_type'   => 'Tainacan\Metadata_Types\Text',
+				'exposer_mapping' => array(
+					'dublin-core' => 'dc:contributor',
+				),
+			),
+			true,
+			true
+		);
+
+		$item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'OAI Metadata Visibility Item',
+				'collection' => $collection,
+				'status'     => 'publish',
+			),
+			true
+		);
+
+		$this->tainacan_item_metadata_factory->create_item_metadata( $item, $public_metadatum, 'Public Curator' );
+		$this->tainacan_item_metadata_factory->create_item_metadata( $item, $private_metadatum, 'Secret Contributor' );
+
+		$body = $this->get_oai_body(
+			$this->dispatch_oai(
+				array(
+					'verb'           => 'ListRecords',
+					'metadataPrefix' => 'oai_dc',
+					'set'            => (string) $collection->get_id(),
+				)
+			)
+		);
+
+		$this->assertStringContainsString( 'Public Curator', $body );
+		$this->assertStringContainsString( '<dc:creator>', $body );
+		$this->assertStringNotContainsString( 'Secret Contributor', $body );
+		$this->assertStringNotContainsString( '<dc:contributor>', $body );
+	}
+
 	public function test_selective_harvest_from_uses_modification_date() {
 		global $wpdb;
 

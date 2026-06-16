@@ -386,11 +386,15 @@ class OAIPMH_Data_Provider {
 			$dc['description'] = array( $item->get_description() );
 		}
 
-		$metadata = $item->get_metadata();
+		$metadata = $item->get_metadata(
+			array(
+				'post_status' => 'publish',
+			)
+		);
 		if ( is_array( $metadata ) ) {
 			foreach ( $metadata as $item_meta ) {
 				$metadatum = $item_meta->get_metadatum();
-				if ( ! $metadatum ) {
+				if ( ! $metadatum || 'publish' !== $metadatum->get_status() ) {
 					continue;
 				}
 
