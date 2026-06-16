@@ -372,6 +372,8 @@ class REST_Items_Controller extends REST_Controller {
 
 			}
 
+			$item_arr['supports_document_content_extraction'] = $this->items_repository->supports_document_content_extraction( $item );
+
 			$item_arr = apply_filters('tainacan-api-items-prepare-for-response', $item_arr, $item, $request);
 
 			return $item_arr;
@@ -1085,45 +1087,19 @@ class REST_Items_Controller extends REST_Controller {
 			], 400);
 		}
 
-		if ( ! \Tainacan\Media::is_index_pdf_content_enabled() ) {
-			return new \WP_REST_Response([
-				'error_message' => __( 'PDF text extraction is disabled in settings.', 'tainacan' ),
-			], 400);
-		}
-
 		if ( empty( $item->get_document() ) ) {
 			return new \WP_REST_Response([
 				'error_message' => __( 'This item has no document.', 'tainacan' ),
 			], 400);
 		}
 
-		if ( $item->get_document_type() !== 'attachment' ) {
+		$extracted_content = $this->items_repository->extract_document_content( $item, $request );
+
+		if ( is_wp_error( $extracted_content ) ) {
 			return new \WP_REST_Response([
-				'error_message' => __( 'Document text extraction is only available for file documents.', 'tainacan' ),
+				'error_message' => $extracted_content->get_error_message(),
 			], 400);
 		}
-
-		if ( wp_attachment_is_image( $item->get_document() ) ) {
-			return new \WP_REST_Response([
-				'error_message' => __( 'Document text extraction is not available for image documents.', 'tainacan' ),
-			], 400);
-		}
-
-		if ( get_post_mime_type( $item->get_document() ) !== 'application/pdf' ) {
-			return new \WP_REST_Response([
-				'error_message' => __( 'Document text extraction is only available for PDF documents.', 'tainacan' ),
-			], 400);
-		}
-
-		$filepath = get_attached_file( $item->get_document() );
-
-		if ( empty( $filepath ) || ! file_exists( $filepath ) ) {
-			return new \WP_REST_Response([
-				'error_message' => __( 'The document file could not be found.', 'tainacan' ),
-			], 400);
-		}
-
-		$extracted_content = $this->items_repository->extract_document_content( $item );
 
 		if ( $extracted_content === false ) {
 			return new \WP_REST_Response([

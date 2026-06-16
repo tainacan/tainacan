@@ -97,7 +97,8 @@ export default {
     props: {
         itemId: Number|String,
         documentType: String,
-        documentMimetype: String
+        documentMimetype: String,
+        supportsDocumentContentExtraction: Boolean
     },
     emits: [
         'beforeClose',
@@ -118,9 +119,7 @@ export default {
             return this.documentType === 'attachment' && this.documentMimetype === 'application/pdf';
         },
         canExtractDocumentContent() {
-            return this.isPdfDocument
-                && typeof tainacan_plugin !== 'undefined'
-                && tainacan_plugin.tainacan_index_pdf_content;
+            return !!this.supportsDocumentContentExtraction;
         },
         hasDocumentContentIndexChanged() {
             return this.localDocumentContentIndex !== this.savedDocumentContentIndex;

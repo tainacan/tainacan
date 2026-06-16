@@ -1775,7 +1775,8 @@ export default {
                 props: {
                     itemId: this.itemId,
                     documentType: this.form.document_type,
-                    documentMimetype: this.item.document_mimetype
+                    documentMimetype: this.item.document_mimetype,
+                    supportsDocumentContentExtraction: !!this.item.supports_document_content_extraction
                 },
                 events: {
                     beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
