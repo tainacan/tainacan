@@ -1,6 +1,6 @@
 <?php
 
-namespace Tainacan\OAIPMHExpose;
+namespace Tainacan\OAIPMH;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 

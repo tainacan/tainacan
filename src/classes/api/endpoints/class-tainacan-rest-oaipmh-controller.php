@@ -5,9 +5,9 @@ namespace Tainacan\API\EndPoints;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 use Tainacan\API\REST_Controller;
-use Tainacan\OAIPMHExpose\OAIPMH_Data_Provider;
-use Tainacan\OAIPMHExpose\OAIPMH_Xml_Generator;
-use Tainacan\OAIPMHExpose\OAIPMH_Token_Manager;
+use Tainacan\OAIPMH\OAIPMH_Data_Provider;
+use Tainacan\OAIPMH\OAIPMH_Xml_Generator;
+use Tainacan\OAIPMH\OAIPMH_Token_Manager;
 
 /**
  * REST controller exposing the repository as an OAI-PMH 2.0 data provider.
@@ -18,7 +18,7 @@ use Tainacan\OAIPMHExpose\OAIPMH_Token_Manager;
  *
  * @since 1.0.0
  */
-class REST_Oaipmh_Expose_Controller extends REST_Controller {
+class REST_Oaipmh_Controller extends REST_Controller {
 
 	/**
 	 * @var OAIPMH_Data_Provider

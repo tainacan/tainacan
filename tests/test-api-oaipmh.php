@@ -217,7 +217,7 @@ class TAINACAN_REST_Oaipmh_Controller extends TAINACAN_UnitApiTestCase {
 
 	public function test_get_record_with_host_based_identifier() {
 		$setup = $this->create_published_item();
-		$provider = new \Tainacan\OAIPMHExpose\OAIPMH_Data_Provider();
+		$provider = new \Tainacan\OAIPMH\OAIPMH_Data_Provider();
 		$identifier = $provider->build_identifier( $setup['item']->get_id() );
 
 		$body = $this->get_oai_body(
@@ -270,7 +270,7 @@ class TAINACAN_REST_Oaipmh_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$provider   = new \Tainacan\OAIPMHExpose\OAIPMH_Data_Provider();
+		$provider   = new \Tainacan\OAIPMH\OAIPMH_Data_Provider();
 		$identifier = $provider->build_identifier( $item->get_id() );
 
 		$body = $this->get_oai_body(
@@ -356,7 +356,7 @@ class TAINACAN_REST_Oaipmh_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		$provider   = new \Tainacan\OAIPMHExpose\OAIPMH_Data_Provider();
+		$provider   = new \Tainacan\OAIPMH\OAIPMH_Data_Provider();
 		$identifier = $provider->build_identifier( $item->get_id() );
 
 		$body = $this->get_oai_body(
