@@ -154,7 +154,7 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 			return;
 		}
 
-		$max_records = (int) apply_filters( 'tainacan-oai-maxrecords', 100 );
+		$max_records = $this->get_max_records();
 
 		$result = $this->data_provider->get_sets_page(
 			array(
@@ -289,7 +289,7 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 			return;
 		}
 
-		$max_records = (int) apply_filters( 'tainacan-oai-maxrecords', 100 );
+		$max_records = $this->get_max_records();
 
 		$result = $this->data_provider->get_records(
 			array(
@@ -427,6 +427,29 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 		}
 
 		return $query;
+	}
+
+	/**
+	 * Page size for paginated OAI list verbs.
+	 *
+	 * Defaults to the same value as the REST API and theme search
+	 * (`tainacan_option_search_results_per_page`, via $TAINACAN_API_MAX_ITEMS_PER_PAGE).
+	 *
+	 * @return int
+	 */
+	private function get_max_records() {
+		global $TAINACAN_API_MAX_ITEMS_PER_PAGE;
+
+		$default = isset( $TAINACAN_API_MAX_ITEMS_PER_PAGE )
+			? (int) $TAINACAN_API_MAX_ITEMS_PER_PAGE
+			: max( 12, (int) get_option( 'tainacan_option_search_results_per_page', 96 ) );
+
+		/**
+		 * Filter the OAI-PMH page size for ListSets, ListRecords and ListIdentifiers.
+		 *
+		 * @param int $default Page size from Tainacan search settings.
+		 */
+		return max( 1, (int) apply_filters( 'tainacan-oai-maxrecords', $default ) );
 	}
 
 	/**
