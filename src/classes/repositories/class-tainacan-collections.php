@@ -70,6 +70,13 @@ class Collections extends Repository {
 	 */
 	protected function _get_map() {
 		$entity = $this->get_name();
+
+		// Ceiling for the default items per page: never above the configured maximum.
+		global $TAINACAN_API_MAX_ITEMS_PER_PAGE;
+		$max_per_page = isset( $TAINACAN_API_MAX_ITEMS_PER_PAGE )
+			? (int) $TAINACAN_API_MAX_ITEMS_PER_PAGE
+			: (int) get_option( 'tainacan_option_search_results_per_page', 96 );
+
 		return apply_filters( "tainacan-get-map-$entity", [
 			'name' => [
 				'map'         => 'post_title',
@@ -148,6 +155,14 @@ class Collections extends Repository {
 				'default'     => 'ASC',
 				'enum'  => [ 'ASC', 'DESC' ],
 				'validation'  => v::stringType()->in( [ 'ASC', 'DESC' ] ),
+			],
+			'default_per_page' => [
+				'map'         => 'meta',
+				'title'       => __( 'Default items per page', 'tainacan' ),
+				'type'        => 'integer',
+				'default'     => 12,
+				'description' => __( 'Default number of items shown per page in the public items listing of this collection.', 'tainacan' ),
+				'validation'  => v::intVal()->between( 1, $max_per_page ),
 			],
 			'default_displayed_metadata' => [
 				'map'         => 'meta',
