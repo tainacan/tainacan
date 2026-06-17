@@ -29,6 +29,7 @@ class Collection extends Entity {
 		$description,
 		$default_order,
 		$default_orderby,
+		$default_per_page,
 		$columns,
 		$default_view_mode,
 		$enabled_view_modes,
@@ -393,6 +394,15 @@ class Collection extends Entity {
 	 */
 	function get_default_orderby() {
 		return $this->get_mapped_property( 'default_orderby' );
+	}
+
+	/**
+	 * Get collection default items per page
+	 *
+	 * @return int
+	 */
+	function get_default_per_page() {
+		return $this->get_mapped_property( 'default_per_page' );
 	}
 
 	/**
@@ -838,6 +848,17 @@ class Collection extends Entity {
 	 */
 	function set_default_orderby( $value ) {
 		$this->set_mapped_property( 'default_orderby', $value );
+	}
+
+	/**
+	 * Set collection default items per page option
+	 *
+	 * @param int $value
+	 *
+	 * @return void
+	 */
+	function set_default_per_page( $value ) {
+		$this->set_mapped_property( 'default_per_page', $value );
 	}
 
 	/**
