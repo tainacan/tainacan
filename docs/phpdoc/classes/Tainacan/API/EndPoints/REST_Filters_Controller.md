@@ -1,6 +1,5 @@
 # REST_Filters_Controller
 
-
 REST API controller for managing Tainacan filters.
 
 Handles all REST API endpoints for filter operations including

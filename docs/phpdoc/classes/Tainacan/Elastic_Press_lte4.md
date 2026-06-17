@@ -1,16 +1,5 @@
 # Elastic_Press_lte4
 
-# Elastic_Press_lte4
-
-# Elastic_Press_lte4
-
-# Elastic_Press_lte4
-
-# Elastic_Press_lte4
-
-# Elastic_Press_lte4
-
-
 ***
 
 * Full name: `\Tainacan\Elastic_Press_lte4`

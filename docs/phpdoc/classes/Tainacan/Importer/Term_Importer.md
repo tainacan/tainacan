@@ -1,6 +1,5 @@
 # Term_Importer
 
-
 ***
 
 * Full name: `\Tainacan\Importer\Term_Importer`

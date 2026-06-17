@@ -1,6 +1,5 @@
 # GeoCoordinate_Helper
 
-
 Class TainacanFilterType
 
 ***

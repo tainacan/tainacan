@@ -1,6 +1,5 @@
 # JSON_LD
 
-
 Generate a text formated response
 
 ***

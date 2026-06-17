@@ -1,6 +1,5 @@
 # Metadata_Sections
 
-
 Repository for managing Tainacan metadata sections.
 
 Handles all database operations for metadata sections including creation,

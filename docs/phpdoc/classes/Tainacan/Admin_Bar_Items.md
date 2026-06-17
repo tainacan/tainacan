@@ -1,6 +1,5 @@
 # Admin_Bar_Items
 
-
 Handles WordPress admin bar items for Tainacan.
 
 Adds contextual edit links to the WordPress admin bar for Tainacan items,

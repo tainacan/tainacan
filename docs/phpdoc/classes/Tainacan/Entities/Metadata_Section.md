@@ -1,6 +1,5 @@
 # Metadata_Section
 
-
 Represents a Tainacan Metadata Section entity.
 
 Metadata sections organize metadata fields into logical groups

@@ -1,6 +1,5 @@
 # REST_Metadata_Sections_Controller
 
-
 REST API controller for managing Tainacan metadata sections.
 
 Handles all REST API endpoints for metadata section operations including

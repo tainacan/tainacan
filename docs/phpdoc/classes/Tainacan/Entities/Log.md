@@ -1,6 +1,5 @@
 # Log
 
-
 Represents a Tainacan Log entity.
 
 Logs track changes and operations within Tainacan, providing

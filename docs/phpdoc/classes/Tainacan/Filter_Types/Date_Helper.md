@@ -1,6 +1,5 @@
 # Date_Helper
 
-
 ***
 
 * Full name: `\Tainacan\Filter_Types\Date_Helper`

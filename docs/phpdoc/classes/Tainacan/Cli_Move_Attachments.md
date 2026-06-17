@@ -1,6 +1,5 @@
 # Cli_Move_Attachments
 
-
 Handles WP-CLI commands for Tainacan attachment migration operations.
 
 Provides command-line interface for migrating attachments to the new

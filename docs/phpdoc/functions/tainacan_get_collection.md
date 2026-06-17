@@ -1,6 +1,5 @@
 # tainacan_get_collection
 
-
 When visiting a collection archive or single, returns the current collection object
 
 ***

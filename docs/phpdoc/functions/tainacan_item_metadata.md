@@ -1,6 +1,5 @@
 # tainacan_item_metadata
 
-
 Retrieve the singleton Item_Metadata Repository instance
 
 ***

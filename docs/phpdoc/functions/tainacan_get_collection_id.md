@@ -1,6 +1,5 @@
 # tainacan_get_collection_id
 
-
 When visiting a collection archive or single, returns the current collection id
 
 ***

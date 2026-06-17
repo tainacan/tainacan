@@ -1,6 +1,5 @@
 # Dates_Intersection_Interval_Helper
 
-
 ***
 
 * Full name: `\Tainacan\Filter_Types\Dates_Intersection_Interval_Helper`

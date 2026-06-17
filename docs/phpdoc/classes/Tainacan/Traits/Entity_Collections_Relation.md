@@ -1,6 +1,5 @@
 # Entity_Collections_Relation
 
-
 ***
 
 * Full name: `\Tainacan\Traits\Entity_Collections_Relation`

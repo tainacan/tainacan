@@ -1,6 +1,5 @@
 # Theme_Helper
 
-
 Theme helper class for Tainacan.
 
 Provides theme integration functionality including template overrides,

@@ -1,6 +1,5 @@
 # Exporter_Handler_Cell
 
-
 ***
 
 * Full name: `\Tainacan\Traits\Exporter_Handler_Cell`

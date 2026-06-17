@@ -1,15 +1,5 @@
 # OAIPMH_Token_Manager
 
-# OAIPMH_Token_Manager
-
-# OAIPMH_Token_Manager
-
-# OAIPMH_Token_Manager
-
-# OAIPMH_Token_Manager
-
-# OAIPMH_Token_Manager
-
 Stores ListRecords/ListIdentifiers pagination state in WordPress transients.
 
 * Full name: `\Tainacan\OAIPMHExpose\OAIPMH_Token_Manager`

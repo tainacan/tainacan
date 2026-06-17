@@ -1,6 +1,5 @@
 # Admin_Commands
 
-
 Handles WordPress Command Palette integration for Tainacan.
 
 Registers navigation commands for Tainacan internal pages using the WordPress Command Palette API.

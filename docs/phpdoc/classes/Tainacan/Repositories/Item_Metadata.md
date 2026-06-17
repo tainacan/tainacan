@@ -1,6 +1,5 @@
 # Item_Metadata
 
-
 Repository for managing Tainacan item metadata.
 
 Handles all database operations for item metadata including creation,

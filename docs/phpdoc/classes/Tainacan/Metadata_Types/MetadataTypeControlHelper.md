@@ -1,6 +1,5 @@
 # MetadataTypeControlHelper
 
-
 ***
 
 * Full name: `\Tainacan\Metadata_Types\MetadataTypeControlHelper`

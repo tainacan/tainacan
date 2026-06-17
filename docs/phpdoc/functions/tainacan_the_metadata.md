@@ -1,6 +1,5 @@
 # tainacan_the_metadata
 
-
 To be used inside The Loop
 
 Echo the item metadata as a HTML string to be used as output.

@@ -1,6 +1,5 @@
 # Date_Interval_Interval_Helper
 
-
 ***
 
 * Full name: `\Tainacan\Filter_Types\Date_Interval_Interval_Helper`

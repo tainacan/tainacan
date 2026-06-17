@@ -1,6 +1,5 @@
 # Item
 
-
 Represents a Tainacan Item entity.
 
 Items are the main content entities in Tainacan, containing

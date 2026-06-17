@@ -1,6 +1,5 @@
 # Taginput
 
-
 Class TainacanFilterType
 
 ***

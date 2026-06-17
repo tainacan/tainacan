@@ -1,6 +1,5 @@
 # Background_Process_Heartbeat
 
-
 ***
 
 * Full name: `\Tainacan\Background_Process_Heartbeat`

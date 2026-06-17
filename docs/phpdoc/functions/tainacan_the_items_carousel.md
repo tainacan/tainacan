@@ -1,6 +1,5 @@
 # tainacan_the_items_carousel
 
-
 Displays a carousel of items, the same of the gutenberg block
 
 ***

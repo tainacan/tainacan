@@ -1,6 +1,5 @@
 # tainacan_blocks_render_metadata_section
 
-
 Renders the content of the item metadata section
 using Tainacan template functions
 

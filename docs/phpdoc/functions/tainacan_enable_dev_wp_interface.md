@@ -1,6 +1,5 @@
 # tainacan_enable_dev_wp_interface
 
-
 DEV Interface utility, used for debugging.
 
 This functions checks if the tainacan_enable_dev_wp_interface constant is defined and true.

@@ -1,6 +1,5 @@
 # Inbcm_Bibliographic
 
-
 ***
 
 * Full name: `\Tainacan\Mappers\Inbcm_Bibliographic`

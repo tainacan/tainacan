@@ -1,6 +1,5 @@
 # tainacan_blocks_render_related_items_list
 
-
 Renders the content of the related items block
 
 ***

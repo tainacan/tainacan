@@ -1,6 +1,5 @@
 # OAIPMH_List_Sets
 
-
 Support Dublin Core Mapping
 http://purl.org/dc/elements/1.1/
 

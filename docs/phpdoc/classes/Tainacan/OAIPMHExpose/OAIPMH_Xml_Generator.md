@@ -1,15 +1,5 @@
 # OAIPMH_Xml_Generator
 
-# OAIPMH_Xml_Generator
-
-# OAIPMH_Xml_Generator
-
-# OAIPMH_Xml_Generator
-
-# OAIPMH_Xml_Generator
-
-# OAIPMH_Xml_Generator
-
 Builds OAI-PMH 2.0 XML responses with `DOMDocument`. Element text is escaped via `createTextNode`.
 
 * Full name: `\Tainacan\OAIPMHExpose\OAIPMH_Xml_Generator`

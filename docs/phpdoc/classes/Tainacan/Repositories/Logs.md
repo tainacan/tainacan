@@ -1,6 +1,5 @@
 # Logs
 
-
 Repository for managing Tainacan logs.
 
 Implements a comprehensive logging system for tracking changes

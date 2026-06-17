@@ -1,6 +1,5 @@
 # tainacan_get_the_view_modes
 
-
 Get view modes already filtered by hooks, user preferences and collection settings
 
 ***

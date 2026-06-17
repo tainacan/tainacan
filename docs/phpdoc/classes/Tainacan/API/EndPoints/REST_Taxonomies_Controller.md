@@ -1,6 +1,5 @@
 # REST_Taxonomies_Controller
 
-
 REST API controller for managing Tainacan taxonomies.
 
 Handles all REST API endpoints for taxonomy operations including

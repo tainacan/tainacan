@@ -1,6 +1,5 @@
 # tainacan_get_the_collection_name
 
-
 When visiting a collection archive or single, returns the collection name
 
 ***

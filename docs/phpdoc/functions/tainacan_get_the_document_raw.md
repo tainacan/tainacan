@@ -1,6 +1,5 @@
 # tainacan_get_the_document_raw
 
-
 To be used inside The Loop
 
 Return the item document in raw form (ID if an Attachment, textual content if URL or Text)

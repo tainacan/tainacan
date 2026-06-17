@@ -1,6 +1,5 @@
 # Terms
 
-
 Repository for managing Tainacan taxonomy terms.
 
 Handles all database operations for taxonomy terms including creation,

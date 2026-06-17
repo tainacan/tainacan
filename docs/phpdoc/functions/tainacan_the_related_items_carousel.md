@@ -1,6 +1,5 @@
 # tainacan_the_related_items_carousel
 
-
 Displays a group of related items carousels
 This is a preset version of tainacan_the_related_items, to keep compatibility with previous versions
 

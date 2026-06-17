@@ -1,6 +1,5 @@
 # REST_Controller
 
-
 Abstract base class for Tainacan REST API controllers.
 
 Provides common functionality for all Tainacan REST API endpoints including

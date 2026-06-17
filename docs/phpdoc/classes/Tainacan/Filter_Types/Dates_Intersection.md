@@ -1,6 +1,5 @@
 # Dates_Intersection
 
-
 Class TainacanFilterType
 
 ***

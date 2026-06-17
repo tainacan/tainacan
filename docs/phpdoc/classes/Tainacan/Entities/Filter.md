@@ -1,6 +1,5 @@
 # Filter
 
-
 Represents a Tainacan Filter entity.
 
 Filters define search and filtering capabilities for collections,

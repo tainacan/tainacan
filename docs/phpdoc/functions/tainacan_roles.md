@@ -1,6 +1,5 @@
 # tainacan_roles
 
-
 Retrieve the singleton Tainacan Roles instance
 
 ***

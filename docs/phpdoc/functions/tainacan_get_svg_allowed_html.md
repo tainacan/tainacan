@@ -1,6 +1,5 @@
 # tainacan_get_svg_allowed_html
 
-
 Returns SVG allowed HTML elements and attributes for wp_kses
 
 ***

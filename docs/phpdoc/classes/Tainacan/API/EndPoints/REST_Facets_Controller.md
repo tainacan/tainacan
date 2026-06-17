@@ -1,6 +1,5 @@
 # REST_Facets_Controller
 
-
 REST API controller for managing Tainacan facets.
 
 Handles all REST API endpoints for facet operations including

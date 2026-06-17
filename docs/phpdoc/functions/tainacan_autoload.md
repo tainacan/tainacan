@@ -1,6 +1,5 @@
 # tainacan_autoload
 
-
 Autoloader function for Tainacan classes.
 
 Handles automatic loading of Tainacan classes based on their namespace and class name.

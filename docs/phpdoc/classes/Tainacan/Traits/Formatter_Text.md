@@ -1,6 +1,5 @@
 # Formatter_Text
 
-
 Class for formatter texts
 
 ***

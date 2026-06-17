@@ -1,6 +1,5 @@
 # Collection
 
-
 Represents a Tainacan Collection entity.
 
 Collections are the main organizational units in Tainacan, containing

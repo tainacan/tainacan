@@ -1,6 +1,5 @@
 # tainacan_get_the_document
 
-
 To be used inside The Loop
 
 Return the item document as a HTML string to be used as output.

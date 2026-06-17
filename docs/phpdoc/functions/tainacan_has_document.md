@@ -1,6 +1,5 @@
 # tainacan_has_document
 
-
 To be used inside The Loop
 
 Check whether the current item has a document or not

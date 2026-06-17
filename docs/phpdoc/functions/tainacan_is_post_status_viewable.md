@@ -1,6 +1,5 @@
 # tainacan_is_post_status_viewable
 
-
 ***
 
 * Full name: `tainacan_is_post_status_viewable`

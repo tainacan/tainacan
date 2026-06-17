@@ -1,6 +1,5 @@
 # tainacan_metadata_sections
 
-
 Retrieve the singleton Metadata Sections Repository instance
 
 ***

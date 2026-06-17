@@ -1,6 +1,5 @@
 # Checkbox
 
-
 Class TainacanFilterType
 
 ***

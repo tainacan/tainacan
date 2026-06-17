@@ -1,6 +1,5 @@
 # REST_Logs_Controller
 
-
 REST API controller for managing Tainacan logs.
 
 Handles all REST API endpoints for log operations including

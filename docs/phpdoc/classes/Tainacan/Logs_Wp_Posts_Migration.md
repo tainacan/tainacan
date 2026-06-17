@@ -1,6 +1,5 @@
 # Logs_Wp_Posts_Migration
 
-
 Handles migration of legacy Tainacan logs from wp_posts/wp_postmeta
 to the dedicated tainacan_logs table.
 

@@ -1,6 +1,5 @@
 # tainacan_get_the_mime_type_icon
 
-
 Gets the icon mime type using our custom plugin thumbnails
 
 ***

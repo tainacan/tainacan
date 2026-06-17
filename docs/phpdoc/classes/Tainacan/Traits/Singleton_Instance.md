@@ -1,6 +1,5 @@
 # Singleton_Instance
 
-
 Class for Singleton pattern
 
 ***

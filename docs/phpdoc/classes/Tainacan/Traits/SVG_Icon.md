@@ -1,6 +1,5 @@
 # SVG_Icon
 
-
 Class for getting inline svg icons based on the Tainacan Icon font and new symbols needed
 The svg files have a fill of currentColor and width and height of 1em to allow external customization.
 

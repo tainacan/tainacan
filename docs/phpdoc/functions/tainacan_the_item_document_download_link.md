@@ -1,6 +1,5 @@
 # tainacan_the_item_document_download_link
 
-
 To be used inside The Loop
 
 Return the item document download link as HTML.

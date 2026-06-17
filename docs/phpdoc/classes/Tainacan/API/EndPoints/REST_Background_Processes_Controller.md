@@ -1,6 +1,5 @@
 # REST_Background_Processes_Controller
 
-
 REST API controller for managing Tainacan background processes.
 
 Handles all REST API endpoints for background process operations including

@@ -1,6 +1,5 @@
 # tainacan_get_the_document_type
 
-
 To be used inside The Loop
 
 Return the item document type (e.g., 'attachment', 'url', 'text').

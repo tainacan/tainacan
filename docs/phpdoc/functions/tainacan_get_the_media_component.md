@@ -1,6 +1,5 @@
 # tainacan_get_the_media_component
 
-
 Tainacan Media Gallery component, used to render document, attachments and other files
 
 ***

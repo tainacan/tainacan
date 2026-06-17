@@ -1,6 +1,5 @@
 # Exporter
 
-
 ***
 
 * Full name: `\Tainacan\Exporter\Exporter`

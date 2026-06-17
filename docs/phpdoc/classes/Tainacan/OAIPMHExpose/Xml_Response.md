@@ -1,6 +1,5 @@
 # Xml_Response
 
-
 Generate an XML response to a request if no error has occured
 
 This is the class to further develop to suits a publication need

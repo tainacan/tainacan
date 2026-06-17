@@ -1,6 +1,5 @@
 # tainacan_the_metadata_sections
 
-
 ***
 
 * Full name: `tainacan_the_metadata_sections`

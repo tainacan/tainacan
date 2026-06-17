@@ -1,6 +1,5 @@
 # tainacan_get_term
 
-
 When visiting a term archive, returns the current term object if it belongs to a Tainacan taxonomy
 
 ***

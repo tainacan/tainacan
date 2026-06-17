@@ -1,6 +1,5 @@
 # tainacan_the_collection_description
 
-
 When visiting a collection archive or single, prints the collection description
 
 ***

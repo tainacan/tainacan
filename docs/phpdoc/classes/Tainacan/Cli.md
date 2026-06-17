@@ -1,6 +1,5 @@
 # Cli
 
-
 Handles WP-CLI command registration for Tainacan.
 
 Registers all available Tainacan WP-CLI commands including

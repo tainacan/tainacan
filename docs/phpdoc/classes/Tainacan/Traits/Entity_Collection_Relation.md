@@ -1,6 +1,5 @@
 # Entity_Collection_Relation
 
-
 Defines Collection and Items relation
 
 ***

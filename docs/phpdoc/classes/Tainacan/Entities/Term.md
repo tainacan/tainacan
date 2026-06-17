@@ -1,6 +1,5 @@
 # Term
 
-
 Represents a Tainacan Term entity.
 
 Terms are individual entries within taxonomies, representing

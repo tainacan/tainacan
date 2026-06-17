@@ -1,6 +1,5 @@
 # Numerics_Intersection_Interval_Helper
 
-
 ***
 
 * Full name: `\Tainacan\Filter_Types\Numerics_Intersection_Interval_Helper`

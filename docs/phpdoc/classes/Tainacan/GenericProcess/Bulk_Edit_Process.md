@@ -1,6 +1,5 @@
 # Bulk_Edit_Process
 
-
 ***
 
 * Full name: `\Tainacan\GenericProcess\Bulk_Edit_Process`

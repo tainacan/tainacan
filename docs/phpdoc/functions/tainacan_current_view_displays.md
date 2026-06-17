@@ -1,6 +1,5 @@
 # tainacan_current_view_displays
 
-
 To be used inside The Loop of a faceted search view mode template.
 
 Returns true or false indicating whether a certain property or metadata is

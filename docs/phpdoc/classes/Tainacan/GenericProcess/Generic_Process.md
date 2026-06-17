@@ -1,6 +1,5 @@
 # Generic_Process
 
-
 ***
 
 * Full name: `\Tainacan\GenericProcess\Generic_Process`

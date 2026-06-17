@@ -1,6 +1,5 @@
 # Embed
 
-
 Handles media embedding functionality for Tainacan.
 
 Provides enhanced embedding capabilities for various media types including

@@ -1,6 +1,5 @@
 # Repository
 
-
 Abstract base class for all Tainacan repositories.
 
 Provides common functionality for data access and manipulation

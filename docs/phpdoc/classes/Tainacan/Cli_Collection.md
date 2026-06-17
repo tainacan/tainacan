@@ -1,6 +1,5 @@
 # Cli_Collection
 
-
 Handles WP-CLI commands for Tainacan collections.
 
 Provides command-line interface for managing collections including

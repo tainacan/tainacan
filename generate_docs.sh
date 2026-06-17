@@ -55,6 +55,24 @@ ensure_doc_dependencies() {
     fi
 }
 
+set_phpdoc_title() {
+    local file="$1"
+    local title="$2"
+
+    while [ -f "$file" ]; do
+        case "$(head -n 1 "$file")" in
+            "# $title"|"")
+                sed -i '1d' "$file"
+                ;;
+            *)
+                break
+                ;;
+        esac
+    done
+
+    sed -i "1i# $title\n" "$file"
+}
+
 ensure_doc_dependencies
 
 echo "Generating phpDocumentor documentation..."
@@ -70,16 +88,16 @@ php "$PHPDOC_BIN" \
     --ignore="*.min.css"
 
 echo "Adding titles to documentation files..."
-find "$DOCS_DIR/phpdoc/classes" -name "*.md" -type f -exec bash -c '
-    filename=$(basename "$1" .md)
+while IFS= read -r -d '' file; do
+    filename=$(basename "$file" .md)
     classname=$(echo "$filename" | sed "s/.*\\\\.//")
-    sed -i "1i# $classname\n" "$1"
-' _ {} \;
+    set_phpdoc_title "$file" "$classname"
+done < <(find "$DOCS_DIR/phpdoc/classes" -name "*.md" -type f -print0)
 
-find "$DOCS_DIR/phpdoc/functions" -name "*.md" -type f -exec bash -c '
-    filename=$(basename "$1" .md)
-    sed -i "1i# $filename\n" "$1"
-' _ {} \;
+while IFS= read -r -d '' file; do
+    filename=$(basename "$file" .md)
+    set_phpdoc_title "$file" "$filename"
+done < <(find "$DOCS_DIR/phpdoc/functions" -name "*.md" -type f -print0)
 
 echo "Fixing documentation links for GitHub Pages..."
 find "$DOCS_DIR/phpdoc" -name "*.md" -type f -exec sed -i 's|\./functions/|/dev/phpdoc/functions/|g' {} \;

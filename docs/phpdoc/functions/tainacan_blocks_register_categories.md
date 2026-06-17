@@ -1,16 +1,5 @@
 # tainacan_blocks_register_categories
 
-# tainacan_blocks_register_categories
-
-# tainacan_blocks_register_categories
-
-# tainacan_blocks_register_categories
-
-# tainacan_blocks_register_categories
-
-# tainacan_blocks_register_categories
-
-
 Registers the Tainacan category on the blocks inserter
 
 ***

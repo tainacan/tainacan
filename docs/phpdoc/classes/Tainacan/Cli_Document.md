@@ -1,6 +1,5 @@
 # Cli_Document
 
-
 Handles WP-CLI commands for Tainacan document indexing operations.
 
 Provides command-line interface for document content indexing including

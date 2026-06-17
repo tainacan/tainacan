@@ -1,6 +1,5 @@
 # Item_Metadata_Entity
 
-
 Represents a Tainacan Item Metadata Entity.
 
 Represents the relationship between items and their metadata values,

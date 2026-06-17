@@ -1,6 +1,5 @@
 # Term_Exporter
 
-
 ***
 
 * Full name: `\Tainacan\Exporter\Term_Exporter`

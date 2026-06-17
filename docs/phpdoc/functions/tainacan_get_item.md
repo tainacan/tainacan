@@ -1,6 +1,5 @@
 # tainacan_get_item
 
-
 Gets the Tainacan Item Entity object
 
 If used inside the Loop of items, will get the Item object for the current post

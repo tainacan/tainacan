@@ -1,6 +1,5 @@
 # Filters
 
-
 Repository for managing Tainacan filters.
 
 Handles all database operations for collection filters including creation,

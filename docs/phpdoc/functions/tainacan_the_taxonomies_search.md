@@ -1,6 +1,5 @@
 # tainacan_the_taxonomies_search
 
-
 ***
 
 * Full name: `tainacan_the_taxonomies_search`

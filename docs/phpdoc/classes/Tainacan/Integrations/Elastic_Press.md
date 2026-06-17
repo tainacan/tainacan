@@ -1,6 +1,5 @@
 # Elastic_Press
 
-
 Class Elastic_Press
 
 This class implements the integration of Tainacan with ElasticPress, a WordPress plugin that connects your WordPress installation with Elastic Search

@@ -1,6 +1,5 @@
 # tainacan_taxonomies
 
-
 Retrieve the singleton Taxonomies Repository instance
 
 ***

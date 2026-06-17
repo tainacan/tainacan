@@ -1,6 +1,5 @@
 # WordPress_AI
 
-
 Integration with the WordPress AI plugin (https://github.com/WordPress/ai).
 
 ***

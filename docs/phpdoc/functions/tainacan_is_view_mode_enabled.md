@@ -1,6 +1,5 @@
 # tainacan_is_view_mode_enabled
 
-
 Checks whether a view mode is enabled in the current list instance
 
 ***

@@ -1,6 +1,5 @@
 # TaxonomyTaginput
 
-
 Class Taginput
 
 ***

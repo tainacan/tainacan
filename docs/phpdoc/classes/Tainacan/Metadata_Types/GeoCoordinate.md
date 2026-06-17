@@ -1,6 +1,5 @@
 # GeoCoordinate
 
-
 Class GeoCoordinate
 
 ***

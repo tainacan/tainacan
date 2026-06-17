@@ -1,6 +1,5 @@
 # tainacan_get_the_collection_description
 
-
 When visiting a collection archive or single, returns the collection description with clickable links
 
 ***

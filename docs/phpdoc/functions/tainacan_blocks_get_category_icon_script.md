@@ -1,16 +1,5 @@
 # tainacan_blocks_get_category_icon_script
 
-# tainacan_blocks_get_category_icon_script
-
-# tainacan_blocks_get_category_icon_script
-
-# tainacan_blocks_get_category_icon_script
-
-# tainacan_blocks_get_category_icon_script
-
-# tainacan_blocks_get_category_icon_script
-
-
 Registers the script that inserts the Tainacan icon on the blocks category
 
 ***

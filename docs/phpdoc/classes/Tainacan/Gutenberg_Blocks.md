@@ -1,6 +1,5 @@
 # Gutenberg_Blocks
 
-
 Handles registration of Tainacan Gutenberg blocks and Query loop variations.
 
 Not a page; provides block list and labels for Settings and filters registration by options.

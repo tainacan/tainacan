@@ -1,6 +1,5 @@
 # REST_Terms_Controller
 
-
 REST API controller for managing Tainacan taxonomy terms.
 
 Handles all REST API endpoints for term operations including

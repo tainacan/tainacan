@@ -1,6 +1,5 @@
 # tainacan_the_item_attachment_download_link
 
-
 Return the item attachment download link as HTML.
 
 ***

@@ -1,6 +1,5 @@
 # Migrations
 
-
 ***
 
 * Full name: `\Tainacan\Migrations`

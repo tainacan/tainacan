@@ -1,6 +1,5 @@
 # tainacan_items
 
-
 Retrieve the singleton Items Repository instance
 
 ***

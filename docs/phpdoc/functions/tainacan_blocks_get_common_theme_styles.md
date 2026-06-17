@@ -1,16 +1,5 @@
 # tainacan_blocks_get_common_theme_styles
 
-# tainacan_blocks_get_common_theme_styles
-
-# tainacan_blocks_get_common_theme_styles
-
-# tainacan_blocks_get_common_theme_styles
-
-# tainacan_blocks_get_common_theme_styles
-
-# tainacan_blocks_get_common_theme_styles
-
-
 Enqueues the global theme styles necessary for the majority of the blocks
 
 ***

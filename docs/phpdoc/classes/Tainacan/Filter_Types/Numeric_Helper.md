@@ -1,6 +1,5 @@
 # Numeric_Helper
 
-
 ***
 
 * Full name: `\Tainacan\Filter_Types\Numeric_Helper`

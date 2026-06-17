@@ -1,6 +1,5 @@
 # Entity
 
-
 Abstract base class for all Tainacan entities.
 
 Provides common functionality for all Tainacan entities including

@@ -1,6 +1,5 @@
 # tainacan_register_view_mode
 
-
 Register a view mode for items list
 
 ***

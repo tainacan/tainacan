@@ -1,6 +1,5 @@
 # REST_Exposers_Controller
 
-
 REST API controller for managing Tainacan exposers.
 
 Handles all REST API endpoints for exposer operations including

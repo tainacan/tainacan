@@ -1,6 +1,5 @@
 # tainacan_the_related_items
 
-
 Displays a group of related items lists
 For each metatada, the collection name, the metadata name and a button linking
 the items list filtered is presented

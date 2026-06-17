@@ -1,6 +1,5 @@
 # tainacan_get_the_metadata_sections
 
-
 Render the item metadata sections as a HTML string.
 
 Each metadata section is a label with the list of its metadata name and value.

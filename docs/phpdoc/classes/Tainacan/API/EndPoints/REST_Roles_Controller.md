@@ -1,6 +1,5 @@
 # REST_Roles_Controller
 
-
 REST API controller for managing Tainacan roles and capabilities.
 
 Handles all REST API endpoints for role operations including

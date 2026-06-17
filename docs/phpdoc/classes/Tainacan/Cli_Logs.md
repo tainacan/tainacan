@@ -1,6 +1,5 @@
 # Cli_Logs
 
-
 Manages Tainacan activity log data migration from the legacy wp_posts structure.
 
 wp tainacan logs migrate          # migra os logs do wp_posts → tainacan_logs

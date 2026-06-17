@@ -1,6 +1,5 @@
 # Filter_Type
 
-
 Class TainacanFilterType
 
 ***

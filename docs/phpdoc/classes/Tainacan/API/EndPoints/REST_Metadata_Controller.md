@@ -1,6 +1,5 @@
 # REST_Metadata_Controller
 
-
 REST API controller for managing Tainacan metadata.
 
 Handles all REST API endpoints for metadata operations including

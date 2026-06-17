@@ -1,6 +1,5 @@
 # tainacan_register_admin_hook
 
-
 ***
 
 * Full name: `tainacan_register_admin_hook`

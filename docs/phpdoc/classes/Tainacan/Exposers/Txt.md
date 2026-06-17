@@ -1,6 +1,5 @@
 # Txt
 
-
 Generate a text formated response
 
 ***

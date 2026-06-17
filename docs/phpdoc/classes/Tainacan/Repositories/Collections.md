@@ -1,6 +1,5 @@
 # Collections
 
-
 Repository for managing Tainacan collections.
 
 Handles all database operations for collections including creation,

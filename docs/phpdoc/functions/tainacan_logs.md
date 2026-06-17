@@ -1,6 +1,5 @@
 # tainacan_logs
 
-
 Retrieve the singleton Logs Repository instance
 
 ***

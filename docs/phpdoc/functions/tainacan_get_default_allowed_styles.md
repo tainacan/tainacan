@@ -1,6 +1,5 @@
 # tainacan_get_default_allowed_styles
 
-
 Adds CSS properties to the safe_style_css filter
 These properties are needed for the media gallery component (e.g., .media-full-content)
 

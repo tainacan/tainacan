@@ -1,6 +1,5 @@
 # Private_Files
 
-
 Handles private file management for Tainacan.
 
 Provides methods for managing private file uploads, access control,

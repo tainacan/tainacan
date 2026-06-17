@@ -1,6 +1,5 @@
 # tainacan_has_related_items
 
-
 Checks if the current item has or not related items
 
 ***

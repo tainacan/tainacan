@@ -1,6 +1,5 @@
 # Inbcm_Museological
 
-
 ***
 
 * Full name: `\Tainacan\Mappers\Inbcm_Museological`

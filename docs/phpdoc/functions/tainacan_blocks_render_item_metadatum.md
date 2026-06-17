@@ -1,6 +1,5 @@
 # tainacan_blocks_render_item_metadatum
 
-
 Renders the content of the item metadata block
 using Tainacan template functions
 

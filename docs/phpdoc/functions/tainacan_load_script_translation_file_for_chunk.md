@@ -1,6 +1,5 @@
 # tainacan_load_script_translation_file_for_chunk
 
-
 Filter callback for load_script_translation_file: resolves lazy-loaded chunk handles to the translation JSON.
 
 Handles are aligned with build output (e.g. tainacan-chunks-blocks-{slug}-theme, tainacan-chunks-{name}-js-{name}-main),

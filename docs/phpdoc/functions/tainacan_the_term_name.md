@@ -1,6 +1,5 @@
 # tainacan_the_term_name
 
-
 When visiting a taxonomy archive, prints the term name
 
 ***

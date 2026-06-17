@@ -1,6 +1,5 @@
 # __Bulk_Edit
 
-
 Bulk_Edit class handles bulk item edition
 
 ***

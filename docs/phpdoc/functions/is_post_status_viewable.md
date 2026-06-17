@@ -1,16 +1,5 @@
 # is_post_status_viewable
 
-# is_post_status_viewable
-
-# is_post_status_viewable
-
-# is_post_status_viewable
-
-# is_post_status_viewable
-
-# is_post_status_viewable
-
-
 ***
 
 * Full name: `is_post_status_viewable`

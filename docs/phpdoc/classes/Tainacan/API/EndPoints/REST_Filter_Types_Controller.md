@@ -1,6 +1,5 @@
 # REST_Filter_Types_Controller
 
-
 REST API controller for managing Tainacan filter types.
 
 Handles all REST API endpoints for filter type operations including

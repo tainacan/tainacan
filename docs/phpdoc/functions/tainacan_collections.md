@@ -1,6 +1,5 @@
 # tainacan_collections
 
-
 Retrieve the singleton Collections Repository instance
 
 ***

@@ -1,6 +1,5 @@
 # tainacan_get_single_taxonomy_content
 
-
 Render the taxonomy single template HTML string.
 
 This works as an archive of the taxonomy terms, and uses the CPT tainacan-taxonomy.

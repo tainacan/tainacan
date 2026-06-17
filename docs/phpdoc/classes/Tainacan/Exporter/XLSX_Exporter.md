@@ -1,6 +1,5 @@
 # XLSX_Exporter
 
-
 ***
 
 * Full name: `\Tainacan\Exporter\XLSX_Exporter`

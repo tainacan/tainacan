@@ -1,6 +1,5 @@
 # tainacan_the_document
 
-
 To be used inside The Loop
 
 echoes HTML display-ready version of the item document

@@ -1,6 +1,5 @@
 # tainacan_get_initials
 
-
 Gets the initials from a name.
 
 By default, returns 2 uppercase letters representing the name. The first letter from the first name and the first letter from the last.

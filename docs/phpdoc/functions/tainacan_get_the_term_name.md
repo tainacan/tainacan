@@ -1,6 +1,5 @@
 # tainacan_get_the_term_name
 
-
 When visiting a taxonomy archive, returns the term name
 
 ***

@@ -1,6 +1,5 @@
 # XML_Error
 
-
 Generate an XML response when a request cannot be finished
 
 It has only one derived member function

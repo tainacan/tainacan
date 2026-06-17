@@ -1,6 +1,5 @@
 # REST_Collections_Controller
 
-
 REST API controller for managing Tainacan collections.
 
 Handles all REST API endpoints for collection operations including

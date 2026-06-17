@@ -1,6 +1,5 @@
 # REST_Sequence_Edit_Controller
 
-
 REST API controller for managing Tainacan sequence edit operations.
 
 Handles all REST API endpoints for sequence editing operations including

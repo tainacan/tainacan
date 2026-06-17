@@ -1,6 +1,5 @@
 # TaxonomyCheckbox
 
-
 Class TainacanFilterType
 
 ***

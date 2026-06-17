@@ -1,6 +1,5 @@
 # tainacan_the_item_gallery
 
-
 Renders the content of the item gallery block
 using Tainacan template functions that create
 a Swiper.js carousel and slider, with a PhotoSwipe.js

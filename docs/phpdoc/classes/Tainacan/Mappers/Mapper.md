@@ -1,6 +1,5 @@
 # Mapper
 
-
 ***
 
 * Full name: `\Tainacan\Mappers\Mapper`

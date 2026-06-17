@@ -1,6 +1,5 @@
 # Admin
 
-
 Pages is an abstract base class for all Tainacan admin pages.
 
 ***

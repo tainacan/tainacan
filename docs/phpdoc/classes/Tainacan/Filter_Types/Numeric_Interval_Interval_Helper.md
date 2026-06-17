@@ -1,6 +1,5 @@
 # Numeric_Interval_Interval_Helper
 
-
 ***
 
 * Full name: `\Tainacan\Filter_Types\Numeric_Interval_Interval_Helper`

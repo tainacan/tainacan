@@ -1,6 +1,5 @@
 # Taxonomies
 
-
 Repository for managing Tainacan taxonomies.
 
 Handles all database operations for taxonomies including creation,

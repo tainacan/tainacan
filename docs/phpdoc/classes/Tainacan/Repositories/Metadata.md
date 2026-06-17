@@ -1,6 +1,5 @@
 # Metadata
 
-
 Repository for managing Tainacan metadata definitions.
 
 Handles all database operations for metadata including creation,

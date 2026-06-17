@@ -1,6 +1,5 @@
 # tainacan_get_the_item_document_url
 
-
 To be used inside The Loop
 
 Return the item document download URL.

@@ -1,6 +1,5 @@
 # OAI_PMH
 
-
 Generate a OAI_PMH/oai_dc formated response
 
 ***

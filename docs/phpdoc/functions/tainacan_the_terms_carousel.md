@@ -1,6 +1,5 @@
 # tainacan_the_terms_carousel
 
-
 Displays a carousel of terms, the same of the Gutenberg block
 
 ***

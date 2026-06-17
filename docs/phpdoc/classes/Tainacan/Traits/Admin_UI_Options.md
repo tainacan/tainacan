@@ -1,6 +1,5 @@
 # Admin_UI_Options
 
-
 Class for getting Admin UI options passed either via query string in
 the URL or via the 'tainacan-admin-ui-options' filter.
 

@@ -1,6 +1,5 @@
 # Roles
 
-
 Manages roles and capabilities for the Tainacan plugin.
 
 Handles the creation, management, and enforcement of custom roles and capabilities

@@ -1,16 +1,5 @@
 # tainacan_blocks_register_and_enqueue_all_blocks
 
-# tainacan_blocks_register_and_enqueue_all_blocks
-
-# tainacan_blocks_register_and_enqueue_all_blocks
-
-# tainacan_blocks_register_and_enqueue_all_blocks
-
-# tainacan_blocks_register_and_enqueue_all_blocks
-
-# tainacan_blocks_register_and_enqueue_all_blocks
-
-
 Calls the routines responsible for Registering the global style, category and
 both 'generic' and 'special' blocks
 

@@ -1,6 +1,5 @@
 # REST_Metadata_Types_Controller
 
-
 REST API controller for managing Tainacan metadata types.
 
 Handles all REST API endpoints for metadata type operations including

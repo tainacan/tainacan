@@ -1,6 +1,5 @@
 # tainacan_get_the_attachments
 
-
 To be used inside The Loop
 
 Return the list of attachments of the current item (by default, excluding the document and the thumbnail)

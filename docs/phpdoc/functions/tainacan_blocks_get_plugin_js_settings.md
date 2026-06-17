@@ -1,16 +1,5 @@
 # tainacan_blocks_get_plugin_js_settings
 
-# tainacan_blocks_get_plugin_js_settings
-
-# tainacan_blocks_get_plugin_js_settings
-
-# tainacan_blocks_get_plugin_js_settings
-
-# tainacan_blocks_get_plugin_js_settings
-
-# tainacan_blocks_get_plugin_js_settings
-
-
 Generates the global 'tainacan_blocks' that contains some info from PHP necessary
 to the blocks scripts in JS
 

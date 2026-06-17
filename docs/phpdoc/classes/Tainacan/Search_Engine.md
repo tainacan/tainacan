@@ -1,6 +1,5 @@
 # Search_Engine
 
-
 Implements the default Tainacan search engine.
 
 Replaces the default WordPress search behavior to search through item metadata

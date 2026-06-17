@@ -1,6 +1,5 @@
 # Background_Process_Base
 
-
 Abstract base class for background processes in Tainacan.
 
 Extends Async_Request to provide background processing capabilities

@@ -1,6 +1,5 @@
 # Taxonomy
 
-
 Represents a Tainacan Taxonomy entity.
 
 Taxonomies define hierarchical classification systems for organizing

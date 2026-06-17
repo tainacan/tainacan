@@ -1,6 +1,5 @@
 # tainacan_the_taxonomies_pagination
 
-
 ***
 
 * Full name: `tainacan_the_taxonomies_pagination`

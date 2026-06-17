@@ -1,6 +1,5 @@
 # REST_Reports_Controller
 
-
 REST API controller for managing Tainacan reports.
 
 Handles all REST API endpoints for report operations including

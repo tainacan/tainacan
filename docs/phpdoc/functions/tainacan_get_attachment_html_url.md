@@ -1,6 +1,5 @@
 # tainacan_get_attachment_html_url
 
-
 Get the HTML URL for an attachment
 
 ***

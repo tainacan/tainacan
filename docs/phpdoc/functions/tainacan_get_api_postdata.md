@@ -1,6 +1,5 @@
 # tainacan_get_api_postdata
 
-
 Retrieves raw data sent to an API endpoint reading the php://input stream
 
 ***

@@ -1,16 +1,5 @@
 # wp_kses_tainacan
 
-# wp_kses_tainacan
-
-# wp_kses_tainacan
-
-# wp_kses_tainacan
-
-# wp_kses_tainacan
-
-# wp_kses_tainacan
-
-
 Custom wp_kses function for Tainacan content.
 
 Sanitizes content using WordPress kses with Tainacan-specific allowed HTML tags.

@@ -1,6 +1,5 @@
 # tainacan_get_the_media_component_slide
 
-
 Tainacan Media Item for the Media Gallery component, used to render a single link displayed in the carousel
 
 ***

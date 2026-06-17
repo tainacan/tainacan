@@ -1,6 +1,5 @@
 # Background_Process
 
-
 Abstract Tainacan\Background_Process class.
 
 Uses modified version of https://github.com/A5hleyRich/wp-background-processing

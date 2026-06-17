@@ -1,6 +1,5 @@
 # Admin_Hooks
 
-
 ***
 
 * Full name: `\Tainacan\Admin_Hooks`

@@ -1,6 +1,5 @@
 # tainacan_get_adjacent_items
 
-
 When visiting an item single page containing a search query, returns the previous and next items
 
 ***
