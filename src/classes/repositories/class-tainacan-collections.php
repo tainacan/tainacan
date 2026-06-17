@@ -65,6 +65,22 @@ class Collections extends Repository {
 	protected function init() { }
 
 	/**
+	 * Maximum number of items allowed per page.
+	 *
+	 * Falls back to the stored option when the global is not available
+	 * (e.g. the PHPUnit bootstrap loads the plugin inside a function, so the
+	 * global assignment in tainacan.php is scoped to that function).
+	 *
+	 * @return int
+	 */
+	public function get_max_items_per_page() {
+		global $TAINACAN_API_MAX_ITEMS_PER_PAGE;
+		return isset( $TAINACAN_API_MAX_ITEMS_PER_PAGE )
+			? (int) $TAINACAN_API_MAX_ITEMS_PER_PAGE
+			: (int) get_option( 'tainacan_option_search_results_per_page', 96 );
+	}
+
+	/**
 	 * {@inheritDoc}
 	 * @see \Tainacan\Repositories\Repository::get_map()
 	 */
@@ -72,10 +88,7 @@ class Collections extends Repository {
 		$entity = $this->get_name();
 
 		// Ceiling for the default items per page: never above the configured maximum.
-		global $TAINACAN_API_MAX_ITEMS_PER_PAGE;
-		$max_per_page = isset( $TAINACAN_API_MAX_ITEMS_PER_PAGE )
-			? (int) $TAINACAN_API_MAX_ITEMS_PER_PAGE
-			: (int) get_option( 'tainacan_option_search_results_per_page', 96 );
+		$max_per_page = $this->get_max_items_per_page();
 
 		return apply_filters( "tainacan-get-map-$entity", [
 			'name' => [
