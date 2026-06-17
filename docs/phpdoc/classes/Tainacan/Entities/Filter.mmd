@@ -1,0 +1,78 @@
+classDiagram
+    direction TB
+    class Filter {
+        #name : mixed
+        +post_type : mixed
+        +enabled_for_collection : mixed
+        #repository : string
+        +__toString()
+        +_toArray()
+        +get_name()
+        +get_description()
+        +get_placeholder()
+        +get_order()
+        +get_max_options()
+        +set_max_options(max_options)
+        +get_metadatum_id()
+        +get_metadatum()
+        +get_filter_type_object()
+        +get_filter_type()
+        +get_filter_type_options()
+        +get_begin_with_filter_collapsed()
+        +get_display_in_repository_level_lists()
+        +get_description_bellow_name()
+        +set_name(value)
+        +set_order(value)
+        +set_description(value)
+        +set_placeholder(value)
+        +set_metadatum(value)
+        +set_metadatum_id(value)
+        +set_filter_type(value)
+        +set_begin_with_filter_collapsed(begin_with_filter_collapsed)
+        +set_display_in_repository_level_lists(display_in_repository_level_lists)
+        +get_enabled_for_collection()
+        +set_enabled_for_collection(value)
+        +set_description_bellow_name(value)
+        +validate()
+        +set_filter_type_options(value)
+    }
+    class Entity {
+        #repository : Repository
+        -errors : array
+        #post_type : string|false
+        #capability_type : string|false
+        +WP_Post : WP_Post
+        -validated : bool
+        +cap : object
+        +__construct(which)
+        +get_repository()
+        +get_date_i18n(date)
+        +get_mapped_property(prop)
+        #set_mapped_property(prop, value)
+        +set(prop, value)
+        +get(prop)
+        +set_status(value)
+        +validate()
+        +validate_prop(prop)
+        +get_errors()
+        +$get_post_type()
+        +$get_capability_type()
+        +get_status()
+        +get_db_identifier()
+        +get_id()
+        +add_error(type, message)
+        +reset_errors()
+        +get_validated()
+        #set_validated(value)
+        #set_as_valid()
+        +_toArray()
+        +_toJson()
+        +can_read(user)
+        +can_edit(user)
+        +can_delete(user)
+        +can_publish(user)
+        +get_capabilities()
+        +diff(which)
+    }
+    Entity ..> Entity
+    Entity <|-- Filter

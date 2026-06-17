@@ -1,0 +1,29 @@
+classDiagram
+    direction TB
+    class Media {
+        -file_name : string|null
+        -attachment_html_url_base : string
+        +content_index_meta : string
+        +content_index_last : string
+        -THROW_EXCPTION_ON_FATAL_ERROR : mixed
+        #init()
+        +add_image_sizes()
+        +add_image_sizes_to_admin(sizes)
+        +add_attachment_page_rewrite_rule()
+        +add_css()
+        +attachment_page_add_var(vars)
+        -flush_buffers()
+        -get_file_name_from_url(url)
+        +insert_attachment_from_url(url, post_id)
+        +insert_attachment_from_file(filename, post_id)
+        +save_remote_file(url)
+        +insert_attachment_from_blob(blob, filename, post_id)
+        +get_mime_content_type(filename)
+        +get_pdf_cover(filepath)
+        +shutdown_function()
+        +index_pdf_content(file, item_id)
+        +get_attachment_html_url(attachment_id)
+        +attachment_page()
+        +get_default_image_blurhash()
+        +get_image_blurhash(file_path, width, height)
+    }

@@ -1,0 +1,26 @@
+classDiagram
+    direction TB
+    class OAIPMH_Get_Record { }
+    class OAIPMH_List_Identifiers { }
+    class OAIPMH_List_Sets { }
+    class OAIPMH_Expose { }
+    class OAIPMH_List_Metadata_Formats { }
+    class OAIPMH_Identify { }
+    class XML_Error { }
+    class Xml_Response { }
+    class OAIPMH_List_Records { }
+    class Xml_Create { }
+    OAIPMH_Expose ..> XML_Error
+    OAIPMH_Expose <|-- OAIPMH_Get_Record
+    OAIPMH_Expose <|-- OAIPMH_Identify
+    OAIPMH_Expose <|-- OAIPMH_List_Identifiers
+    OAIPMH_Expose <|-- OAIPMH_List_Metadata_Formats
+    OAIPMH_Expose <|-- OAIPMH_List_Records
+    OAIPMH_Expose <|-- OAIPMH_List_Sets
+    OAIPMH_Get_Record ..> Xml_Response
+    OAIPMH_Identify ..> Xml_Response
+    OAIPMH_List_Identifiers ..> Xml_Response
+    OAIPMH_List_Metadata_Formats ..> Xml_Response
+    OAIPMH_List_Records ..> Xml_Response
+    OAIPMH_List_Sets ..> Xml_Response
+    Xml_Create <|-- Xml_Response

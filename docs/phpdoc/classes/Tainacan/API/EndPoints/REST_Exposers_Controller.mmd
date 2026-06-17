@@ -1,0 +1,13 @@
+classDiagram
+    direction TB
+    class REST_Exposers_Controller {
+        -metadatum_repository : mixed
+        -exposers : mixed
+        -mappers : mixed
+        #get_schema()
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +get_items(request)
+        +get_items_permissions_check(request)
+    }

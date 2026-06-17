@@ -1,0 +1,106 @@
+@startuml class-diagram
+  class "Generic_Process_Handler" as Generic_Process_Handler {
+    #bg_process : Background_Generic_Process
+    -registered_process : 
+    -init()
+    +register_generic_processes()
+    +register_generic_process(process)
+    +add_to_queue(process_object)
+    +unregister_generic_process(slug)
+    +get_registered_generic_process()
+    +get_generic_process(slug)
+    +get_generic_process_by_object(process_object)
+    +initialize_generic_process(slug)
+    +save_process_instance(process)
+    +get_process_instance_by_session_id(session_id)
+    +delete_process_instance(process)
+  }
+  class "Generic_Process" as Generic_Process {
+    #id : identifier
+    #steps : array
+    #transients : array
+    #abort : bool
+    #current_step : 
+    #in_step_count : 
+    #log : 
+    #error_log : 
+    #array_attributes : array
+    +__construct(attributes)
+    +get_id()
+    +get_current_step()
+    +set_current_step(value)
+    +get_in_step_count()
+    +set_in_step_count(value)
+    +set_steps(steps)
+    +get_steps()
+    #get_transients()
+    #set_transients(data)
+    +add_transient(key, data)
+    +delete_transient(key)
+    +get_transient(key)
+    +get_log()
+    +get_error_log()
+    +add_log(message)
+    +add_error_log(message)
+    +is_finished()
+    #cancel_abort()
+    #abort()
+    +get_abort()
+    +get_progress_label()
+    +get_progress_value()
+    #set_current_step_total(value)
+    #set_step_total(step, value)
+    #next_step()
+    +_to_Array(short)
+    +finished()
+    +run()
+  }
+  class "Bulk_Edit_Process" as Bulk_Edit_Process {
+    -meta_key : 
+    -group_id : 
+    -items_repository : 
+    -metadatum_repository : 
+    -item_metadata_repository : 
+    -bulk_edit_data : 
+    +__construct(attributes)
+    +init_objects()
+    +create_bulk_edit(params)
+    +save_options(value)
+    +get_options()
+    +set_group_id(group_id)
+    +get_group_id()
+    +get_output()
+    -get_bulk_edit_collection_name()
+    -get_changed_metadata()
+    +set_bulk_edit_data(bulk_edit_data)
+    +get_bulk_edit_data()
+    -bulk_list_remove_item(item)
+    +add_control_metadata()
+    -get_total_items()
+    -bulk_list_get_item(count)
+    +main_process()
+    +finished()
+    -save_item_metadata(item_metadata, item)
+    -clear_value(item)
+    -set_value(item)
+    -get_parent_meta_id(item, metadatum)
+    -add_value(item)
+    -copy_value(item)
+    -remove_value(item)
+    -replace_value(item)
+    -trash_items(item)
+    -untrash_items(item)
+    -delete_items(item)
+    -set_status(item)
+    -set_comment_status(item)
+    -set_author_id(item)
+  }
+  class "Background_Generic_Process" as Background_Generic_Process {
+    #action : string
+    +__construct()
+    +task(batch)
+  }
+  Generic_Process <|-- Bulk_Edit_Process
+  Generic_Process_Handler ..> Background_Generic_Process
+  Generic_Process_Handler ..> Generic_Process
+@enduml

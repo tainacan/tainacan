@@ -1,0 +1,16 @@
+classDiagram
+    direction TB
+    class Relationship {
+        +__construct()
+        +get_form_labels()
+        +get_options_as_html()
+        +validate_options(metadatum)
+        +get_value_as_html(item_metadata)
+        -can_display_item(item)
+        -get_item_html(item, search_meta_id, display_metas)
+        -get_item_link(item, search_meta_id)
+        -get_item_thumbnail(thumbnail_id, item)
+        -get_meta_html(meta, item, value_link, thumbnail_id, should_display_thumbnail)
+        +get_collection()
+        +get_options()
+    }

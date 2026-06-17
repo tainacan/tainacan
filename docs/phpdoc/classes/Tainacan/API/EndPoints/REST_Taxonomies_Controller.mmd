@@ -1,0 +1,25 @@
+classDiagram
+    direction TB
+    class REST_Taxonomies_Controller {
+        -taxonomy : mixed
+        -taxonomy_repository : mixed
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +prepare_item_for_response(item, request)
+        +get_metadata_taxonomy_in_collection(taxonomy_id, collection_id, collection_parent_id)
+        +prepare_item_for_database(request)
+        +get_item(request)
+        +get_item_permissions_check(request)
+        +delete_item(request)
+        +delete_item_permissions_check(request)
+        +get_items(request)
+        +get_items_permissions_check(request)
+        +create_item(request)
+        +create_item_permissions_check(request)
+        +update_item(request)
+        +update_item_permissions_check(request)
+        +get_endpoint_args_for_item_schema(method)
+        +get_wp_query_params()
+        +get_schema()
+    }

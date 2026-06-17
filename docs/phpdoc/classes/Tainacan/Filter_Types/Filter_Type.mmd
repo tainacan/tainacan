@@ -1,0 +1,40 @@
+classDiagram
+    direction TB
+    class Filter_Type {
+        -supported_types : mixed
+        -options : array
+        -default_options : array
+        -name : string
+        -component : string
+        -script : string
+        -form_component : bool|string
+        -preview_template : string
+        #use_max_options : mixed
+        #use_input_placeholder : mixed
+        +__construct()
+        +form()
+        +set_name(name)
+        +get_name()
+        +get_supported_types()
+        +set_supported_types(supported_types)
+        +get_component()
+        +set_preview_template(preview_template)
+        +get_preview_template()
+        +_toArray()
+        +set_options(options)
+        +set_default_options(options)
+        +validate_options(filter)
+        +set_component(component)
+        +set_script(script)
+        +get_options()
+        +set_use_max_options(use_max_options)
+        +get_use_max_options()
+        +set_use_input_placeholder(use_input_placeholder)
+        +get_use_input_placeholder()
+        +get_option(key)
+        +get_form_labels()
+        +get_form_component()
+        +get_script()
+        +set_form_component(form_component)
+        +get_filter_type()
+    }

@@ -1,0 +1,15 @@
+classDiagram
+    direction TB
+    class Exporter { }
+    class Term_Exporter { }
+    class XLSX_Exporter { }
+    class Exporter_Handler { }
+    class CSV { }
+    class Background_Exporter { }
+    class traits_Exporter_Handler_Cell { }
+    Exporter ..> Exporter_Handler
+    Exporter <|-- CSV
+    Exporter <|-- Term_Exporter
+    Exporter <|-- XLSX_Exporter
+    Exporter_Handler ..> Background_Exporter
+    Exporter_Handler ..> Exporter

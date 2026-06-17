@@ -1,0 +1,70 @@
+@startuml class-diagram
+  class "Mapper" as Mapper {
+    +slug : 
+    +name : 
+    +allow_extra_metadata : 
+    +context_url : 
+    +type : 
+    +metadata : array
+    +prefix : 
+    +sufix : 
+    +header : 
+    +show_ui : 
+    +_toArray()
+    +get_url(meta_slug)
+    +__construct()
+  }
+  class "Mappers_Handler" as Mappers_Handler {
+    -instance : 
+    #mappers : 
+    {static} +get_instance()
+    +__construct()
+    +init()
+    +register_mapper(class_name)
+    +unregister_mapper(class_name)
+    +get_mappers(output)
+    +get_mapper(slug)
+    +mappers_i18n(i18n_strings)
+    {static} +get_mapper_from_request(request)
+    #map_metadatum(item_arr, mapper)
+    #map(item_arr, mapper, resquest)
+    +mapper_exists(mapper)
+    +check_class_name(class_name, root, prefix)
+    +create_mapped_collection(collection, request)
+    +filter_item_api_response(item_arr, item, request)
+  }
+  class "Dublin_Core\n<b>Support Dublin Core Mapping </b>" as Dublin_Core {
+    +slug : 
+    +name : 
+    +allow_extra_metadata : 
+    +context_url : 
+    +header : 
+    +prefixes : 
+    +XML_namespace : 
+    +XML_append_root : 
+    +__construct()
+  }
+  class "Inbcm_Archive" as Inbcm_Archive {
+    +slug : 
+    +name : 
+    +allow_extra_metadata : 
+    +__construct()
+  }
+  class "Inbcm_Bibliographic" as Inbcm_Bibliographic {
+    +slug : 
+    +name : 
+    +allow_extra_metadata : 
+    +__construct()
+  }
+  class "Inbcm_Museological" as Inbcm_Museological {
+    +slug : 
+    +name : 
+    +allow_extra_metadata : 
+    +__construct()
+  }
+  Mapper <|-- Dublin_Core
+  Mapper <|-- Inbcm_Archive
+  Mapper <|-- Inbcm_Bibliographic
+  Mapper <|-- Inbcm_Museological
+  Mappers_Handler ..> Mapper
+@enduml

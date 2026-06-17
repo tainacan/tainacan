@@ -1,0 +1,61 @@
+classDiagram
+    direction TB
+    class Item_Metadata {
+        +entities_type : mixed
+        #init()
+        +insert(item_metadata)
+        +save_core_metadatum_value(item_metadata)
+        +save_terms_metadatum_value(item_metadata)
+        +upclean_compound_value(item_metadata)
+        +add_compound_value(item_metadata, meta_id)
+        +delete_metadata(item_metadata)
+        +remove_compound_value(parent_meta_id)
+        +fetch(object, output, args)
+        +get_value(item_metadata)
+        +create_default_value_metadata(item)
+        -extract_compound_value(ids, item, compound_meta_id)
+        +register_post_type()
+        #_get_map()
+        +get_default_properties(map)
+        +update(object, new_values)
+        +suggest(item_metadata)
+    }
+    class Repository {
+        +entities_type : string
+        #use_logs : bool
+        #logs_repository : Logs
+        -map : array
+        +disable_logs()
+        +enable_logs()
+        +get_enabled_logs()
+        #__construct()
+        +init_objects()
+        +get_map()
+        +get_name()
+        +insert(obj)
+        +insert_metadata(obj, prop, diffs)
+        +maybe_add_slashes(value)
+        +fetch_output(WP_Query, output)
+        +parse_fetch_args(args)
+        +get_default_properties(map)
+        +get_mapped_property(entity, prop)
+        +$get_collections_db_identifiers()
+        +$get_entity_by_post(post)
+        +$get_entity_by_post_type(post_type, post)
+        +$get_repository(entity)
+        +fetch_one(args)
+        +trash(entity)
+        +delete(entity, permanent)
+        +can_edit(entity, user)
+        +can_read(entity, user)
+        +can_delete(entity, user)
+        +can_publish(entity, user)
+        +unique_multidimensional_array(array, key)
+        -insert_thumbnail(obj, diffs)
+        +get_descendants_ids(id, depth)
+        +get_capabilities()
+        #sanitize_value(content)
+    }
+    Repository ..> Item_Metadata
+    Repository ..> Repository
+    Repository <|-- Item_Metadata

@@ -1,0 +1,35 @@
+classDiagram
+    direction TB
+    class REST_Collections_Controller {
+        -collections_repository : mixed
+        -collection : mixed
+        -items_repository : mixed
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +get_items(request)
+        +get_item(request)
+        -get_preview_image_items(collection, amount)
+        +get_collection_taxonomies(collection)
+        +prepare_item_for_response(item, request)
+        +get_items_permissions_check(request)
+        +get_item_permissions_check(request)
+        +create_item(request)
+        +create_item_permissions_check(request)
+        +prepare_item_for_database(request)
+        +delete_item(request)
+        +delete_item_permissions_check(request)
+        +update_item(request)
+        +update_item_permissions_check(request)
+        +validate_filters_metadata_order(value, request, param)
+        +validate_metadata_section_order(value, request, param)
+        +update_metadata_order(request)
+        +update_metadata_section_order(request)
+        +update_metadata_order_permissions_check(request)
+        +update_metadata_section_order_permissions_check(request)
+        +update_filters_order(request)
+        +update_filters_order_permissions_check(request)
+        +get_endpoint_args_for_item_schema(method)
+        +get_endpoint_arg_for_schema(name, properties, repository)
+        +get_schema()
+    }

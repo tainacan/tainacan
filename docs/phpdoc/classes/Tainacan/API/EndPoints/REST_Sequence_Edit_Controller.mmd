@@ -1,0 +1,20 @@
+classDiagram
+    direction TB
+    class REST_Sequence_Edit_Controller {
+        -items_repository : mixed
+        -collections_repository : mixed
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +prepare_item_for_response(item, request)
+        +sequence_edit_permissions_check(request)
+        +create_item(request)
+        +get_item(request)
+        +get_item_in_sequence(request)
+        +get_create_params(object_name)
+        +get_sequence_params()
+        +get_sequence_index_params()
+        +get_sequence_schema()
+        +get_sequence_index_schema()
+        +get_schema()
+    }
