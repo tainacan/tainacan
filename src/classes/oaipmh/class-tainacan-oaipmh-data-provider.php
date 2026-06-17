@@ -378,8 +378,7 @@ class OAIPMH_Data_Provider {
 		// to the same DC element commonly carry the identical value.
 		$dc = array(
 			'title'      => array( $item->get_title() ),
-			'identifier' => array( get_permalink( $item->get_id() ) ),
-			'date'       => array( gmdate( 'Y-m-d', strtotime( $item->get_creation_date() ) ) ),
+			'identifier' => array( get_permalink( $item->get_id() ) )
 		);
 
 		if ( $item->get_description() ) {
