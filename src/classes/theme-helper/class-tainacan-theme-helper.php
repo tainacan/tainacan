@@ -905,9 +905,7 @@ class Theme_Helper {
 
 			// Default items per page from this collection's setting, clamped to the maximum allowed.
 			global $TAINACAN_API_MAX_ITEMS_PER_PAGE;
-			$max_per_page = isset( $TAINACAN_API_MAX_ITEMS_PER_PAGE )
-				? (int) $TAINACAN_API_MAX_ITEMS_PER_PAGE
-				: (int) get_option( 'tainacan_option_search_results_per_page', 96 );
+			$max_per_page = (int) $TAINACAN_API_MAX_ITEMS_PER_PAGE;
 			$default_per_page = (int) $collection->get_default_per_page();
 			$default_per_page = $default_per_page > 0 ? $default_per_page : 12;
 			$props .= "data-default-items-per-page='" . min( $default_per_page, $max_per_page ) . "' ";

@@ -73,9 +73,7 @@ class Collections extends Repository {
 
 		// Ceiling for the default items per page: never above the configured maximum.
 		global $TAINACAN_API_MAX_ITEMS_PER_PAGE;
-		$max_per_page = isset( $TAINACAN_API_MAX_ITEMS_PER_PAGE )
-			? (int) $TAINACAN_API_MAX_ITEMS_PER_PAGE
-			: (int) get_option( 'tainacan_option_search_results_per_page', 96 );
+		$max_per_page = (int) $TAINACAN_API_MAX_ITEMS_PER_PAGE;
 
 		return apply_filters( "tainacan-get-map-$entity", [
 			'name' => [
