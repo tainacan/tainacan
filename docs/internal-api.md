@@ -31,7 +31,7 @@ $metadatum->set_name('new name');
 $metadatum->set_required('yes');
 ```
 
-![Entities and the database](_assets/images/entity-database.png)
+![Entities and the database](./_assets/images/entity-database.png)
 
 
 Tainacan will automatically map the values of the attributes to and from where they are stored.

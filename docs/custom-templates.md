@@ -4,7 +4,7 @@ When using Tainacan plugin with your custom theme enabled, you'll have access to
 
 Here is an example of an item list in a raw [child theme](https://developer.wordpress.org/themes/advanced-topics/child-themes/) of [TwentyTwenty](https://wordpress.org/themes/twentytwenty/):
 
-![Items list, single item page, and term items list pages on TwentyTwenty theme.](/_assets/images/custom-templates-1.gif)
+![Items list, single item page, and term items list pages on TwentyTwenty theme.](./_assets/images/custom-templates-1.gif)
 
 It looks like a blog, right? You can also see the Item single page, which is pretty much like any post, displaying the _thumbnail_, _document_ and then _metadata_.
 

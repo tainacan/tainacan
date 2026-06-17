@@ -6,7 +6,7 @@ Tainacan 1.0.0 introduces a system for developers to create custom admin pages t
 
 For a complete working example, refer to the [Tainacan Sample Plugin](https://github.com/tainacan/tainacan-sample-plugin), which demonstrates all the concepts covered in this documentation. It creates a page inside the Tainacan Admin and even has basic build system to compile some `.js` and `.scss` in the frontend using the modern `wp-scripts`.
 
-![Image with the page created via the sample plugin.](/_assets/images/creating-tainacan-admin-pages.png)
+![Image with the page created via the sample plugin.](./_assets/images/creating-tainacan-admin-pages.png)
 
 ## Overview
 

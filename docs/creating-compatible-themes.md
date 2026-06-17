@@ -6,7 +6,7 @@ Tainacan plugin offers tools to manage your digital repository, but in the end, 
 
 Considering that, the development of the plugin was made _in sync_ with the production of an "official theme", planned to attend the majority of use cases, which is the [Tainacan Interface](https://wordpress.org/themes/tainacan-interface/). Nevertheless, if you are a developer and have an interest on adapting your theme to support some Tainacan features, you are free to do it by using the strategies that are described on this section.
 
-![Exemples of an Items List on custom themes.](/_assets/images/creating-compatible-themes.png ':class=alignwide')
+![Exemples of an Items List on custom themes.](./_assets/images/creating-compatible-themes.png ':class=alignwide')
 
 To give you a taste of what is possible, check out this file with three simple lines added to a _child-theme_ of WordPress famous [TwentyNineteen](https://wordpress.org/themes/twentynineteen/ ":ignore") theme:
 
@@ -21,12 +21,12 @@ To give you a taste of what is possible, check out this file with three simple l
 
 With that minimal update, the items list goes from a standard _blog-posts-like_ list to a full _faceted search items list_:
 
-![Twenty Nineteen child theme adapted to Tainacan items list.](/_assets/images/creating-compatible-themes-2.png ':class=alignwide')
+![Twenty Nineteen child theme adapted to Tainacan items list.](./_assets/images/creating-compatible-themes-2.png ':class=alignwide')
 
 We have a sample child theme made to take care of this small adjustment, that you can download here:
 
 <div style="width: 100%; text-align: center;">
-    <a style="margin: 4px; padding: 10px 16px; color: #298596; border: 2px solid #298596; border-radius: 4px;" href="https://github.com/tainacan/tainacan-wiki/raw/master/dev/_assets/some-theme-child.zip">
+    <a style="margin: 4px; padding: 10px 16px; color: #298596; border: 2px solid #298596; border-radius: 4px;" href="./_assets/some-theme-child.zip">
         Sample Child Theme
     </a>
 </div>

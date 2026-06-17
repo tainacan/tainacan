@@ -2,7 +2,7 @@
 
 <div style="position: relative; z-index: 1;">
 
-![Image of the collection form with extra options registered by the Tainacan Interface theme.](/_assets/images/admin-form-hooks-1.png ':size=450 :class=alignright')
+![Image of the collection form with extra options registered by the Tainacan Interface theme.](./_assets/images/admin-form-hooks-1.png ':size=450 :class=alignright')
 
 </div>
 

@@ -5,7 +5,7 @@
 
 A lot can be done for adding Tainacan support to your theme using the template hierarchy logic mentioned in the section [Custom Templates](/dev/custom-templates.md). While this might be enough you may be interested in tweaking a bit more of the appearance of the most complex page that Tainacan offers to you: **The Items List Page**. Check the example bellow, of the child theme of [TwentyTwenty](https://wordpress.org/themes/twentytwenty/ ":ignore") that implemented a basic `archive-items.php`:
 
-![Template added to the items list page.](/_assets/images/the-vue-items-list-component-1.png)
+![Template added to the items list page.](./_assets/images/the-vue-items-list-component-1.png)
 
 Looks like a powerful faceted search interface, but we definitelly could make some font adjustments to match better with our parent theme. It turns out that this page works in a much different strategy, which is explained in details in [the "Vue Items List Component" section](/dev/the-vue-items-list-component.md).
 
@@ -227,6 +227,6 @@ So here are a few examples of customizations that you can do, now that you under
 
 After applying some of the suggestions mentioned, our items list looks a lot better on the TwentyTwenty child theme:
 
-![TwentyTwenty items list page with css fixes.](/_assets/images/the-vue-items-list-component-3.png)
+![TwentyTwenty items list page with css fixes.](./_assets/images/the-vue-items-list-component-3.png)
 
 Much better, right? :wink:

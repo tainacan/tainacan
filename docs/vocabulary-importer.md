@@ -18,7 +18,7 @@ It's also possible to inform the hierarchy. You do so by leaving empty cells to 
 
 Your spreadsheet will look like this:
 
-![Vocabulary spreadsheet](_assets/images/vocabulary-importer-sample.png)
+![Vocabulary spreadsheet](./_assets/images/vocabulary-importer-sample.png)
 
 This same spreadsheet, saved in CSV format, will look like this:
 

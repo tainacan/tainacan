@@ -2,7 +2,7 @@
 
 Tainacan (version >= 1.0.0) provides a streamlined way for developers to add custom options to the Tainacan Settings Page. The system handles both WordPress option registration and UI creation automatically, making it easy to extend the settings without duplicating code.
 
-![Image with settings registered in this tutorial appearing in the Settings Page.](/_assets/images/creating-options-in-the-settings-page.png)
+![Image with settings registered in this tutorial appearing in the Settings Page.](./_assets/images/creating-options-in-the-settings-page.png)
 
 ## How It Works
 

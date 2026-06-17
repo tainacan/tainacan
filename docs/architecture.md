@@ -168,7 +168,7 @@ As a SPA, Tainacan loads only a single initial HTML page and then dynamically up
 
 This document presents the routing and data flow flowchart of Tainacan's Single Page Application (SPA), showing how initialization, routing, and data flow between components occur.
 
-![Initialization and Routing Flowchart](_assets/images/initialization_routing_front.png)
+![Initialization and Routing Flowchart](./_assets/images/initialization_routing_front.png)
 
 
 ### 6.1 File Locations

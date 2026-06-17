@@ -16,7 +16,7 @@ Each has it's specificities, but in case you're not satisfied with them, a devel
 
 As shown in [our post for extra view modes](http://tainacan.org/2018/06/13/custom-view-modes-how-will-the-world-see-your-collection/), we've created [a sample plugin](https://wordpress.org/plugins/tainacan-extra-view-modes/) with some inspirational ideas for custom view modes, such as this one:
 
-![Image with an example of an extra view mode, showing borders around items thumbnail.](/_assets/images/Example_of_an_Extra_View_Mode.jpeg ':class=alignwide')
+![Image with an example of an extra view mode, showing borders around items thumbnail.](./_assets/images/Example_of_an_Extra_View_Mode.jpeg ':class=alignwide')
 
 We here describe the process to create such a plugin. There are two strategies:
 
@@ -123,7 +123,7 @@ The function `tainacan_register_view_mode` is part of Tainacan's plugin. Its fir
 The `type` parameter is one of the most relevant here. When passing a template, the file path should be provided.
 
 
-![Enabled Metadata Dropdown](/_assets/images/Enabled_Metadata_Dropdown.png ':class=alignright')
+![Enabled Metadata Dropdown](./_assets/images/Enabled_Metadata_Dropdown.png ':class=alignright')
 
 View modes as Cards and Grid do not allow users to choose which metadata should be displayed, but rather decide that only certain will be visible. For this kind of view mode, it is used the `dynamic_metadata` parameter as `false`.
 
