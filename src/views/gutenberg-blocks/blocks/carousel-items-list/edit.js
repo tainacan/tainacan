@@ -46,7 +46,10 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
         collection,
         collectionBackgroundColor,
         collectionTextColor,
-        variableItemsWidth
+        variableItemsWidth,
+        order,
+        orderBy,
+        orderByMetaKey
     } = attributes;
 
     // Gets blocks props from hook
@@ -202,6 +205,40 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
             else {
                 queryObject.perpage = 12;
                 setAttributes({ maxItemsNumber: 12 });
+            }
+
+            // Set up sorting order
+            if (queryObject.order != undefined && queryObject.order != '')
+                setAttributes({ order: queryObject.order });
+            else if (order != undefined && order != '')
+                queryObject.order = order;
+            else {
+                queryObject.order = 'asc';
+                setAttributes({ order: 'asc' });
+            }
+
+            // Set up sorting orderby
+            if (orderBy == 'rand') {
+                queryObject.orderby = 'rand';
+                if (queryObject.order != undefined && queryObject.order != '')
+                    delete queryObject.order;
+            } else if (queryObject.orderby != undefined && queryObject.orderby != '')
+                setAttributes({ orderBy: queryObject.orderby });
+            else if (orderBy != undefined && orderBy != 'date')
+                queryObject.orderby = orderBy;
+            else {
+                queryObject.orderby = 'date';
+                setAttributes({ orderBy: 'date' });
+            }
+
+            // Set up sorting metakey (used by some orderby)
+            if (queryObject.metakey != undefined && queryObject.metakey != '')
+                setAttributes({ orderByMetaKey: queryObject.metakey });
+            else if (orderByMetaKey != undefined && orderByMetaKey != '')
+                queryObject.metakey = orderByMetaKey;
+            else {
+                queryObject.metakey = '';
+                setAttributes({ orderByMetaKey: '' });
             }
 
             // Remove unecessary queries
@@ -560,6 +597,17 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                                     }}
                                     min={ 1 }
                                     max={ tainacan_blocks.api_max_items_per_page ? Number(tainacan_blocks.api_max_items_per_page) : 96 }
+                                />
+                                <hr></hr>
+                                <ToggleControl
+                                    label={__('Random order', 'tainacan')}
+                                    help={ orderBy == 'rand' ? __('Items will be ordered randomly.', 'tainacan') : __('Toggle to order items randomly.', 'tainacan')}
+                                    checked={ orderBy == 'rand' }
+                                    onChange={ ( isChecked ) => {
+                                        orderBy = isChecked ? 'rand' : 'date';
+                                        setAttributes({ orderBy: orderBy });
+                                        setContent();
+                                    } }
                                 />
                             </div>
                         </PanelBody>
