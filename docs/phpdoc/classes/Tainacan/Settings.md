@@ -26,6 +26,8 @@ classDiagram
         +search_and_performance_section_description()
         +theme_templates_section_description()
         +items_list_defaults_section_description()
+        +gutenberg_blocks_section_description()
+        +sanitize_enabled_blocks(input)
         +print_section_info()
         +tnc_option_recaptch_site_key()
         +tnc_option_recaptch_secret_key()
@@ -193,6 +195,30 @@ public theme_templates_section_description(): mixed
 ```php
 public items_list_defaults_section_description(): mixed
 ```
+
+***
+
+### gutenberg_blocks_section_description
+
+```php
+public gutenberg_blocks_section_description(): mixed
+```
+
+***
+
+### sanitize_enabled_blocks
+
+Sanitizes the enabled_blocks setting: ensures value is an array of strings and only allows known block slugs.
+
+```php
+public sanitize_enabled_blocks(mixed $input): array
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description |
+|-----------|-----------|-------------|
+| `$input`  | **mixed** |             |
 
 ***
 
@@ -405,8 +431,12 @@ get_admin_js_localization_params is used to build the JS tainacan_plugin global 
 bridge between PHP and JS. Not every page needs it but they can call it to add their own data to the object.
 
 ```php
-public get_admin_js_localization_params(): void
+public get_admin_js_localization_params(): array
 ```
+
+**Return Value:**
+
+Array of settings to be passed to the JS global object 'tainacan_plugin'.
 
 ***
 
@@ -515,6 +545,26 @@ public admin_add_screen_options(mixed $current, mixed $screen): mixed
 |------------|-----------|-------------|
 | `$current` | **mixed** |             |
 | `$screen`  | **mixed** |             |
+
+***
+
+### register_pages_chunk_translations
+
+Registers the lazy-loaded chunk for this page and sets up its translations.
+
+```php
+protected register_pages_chunk_translations(string $name): void
+```
+
+Call this from admin_enqueue_js() when the page uses tainacan-pages-common-scripts with a data-module.
+The chunk path is ./{name}/js/{name}-main.js, so the built handle is tainacan-chunks-{name}-js-{name}-main.
+Translation file resolution is handled by the load_script_translation_file filter in tainacan-utils.
+
+**Parameters:**
+
+| Parameter | Type       | Description                                                                                          |
+|-----------|------------|------------------------------------------------------------------------------------------------------|
+| `$name`   | **string** | The module name (e.g. 'roles', 'admin'), matching the data-module value and the folder under views/. |
 
 ***
 

@@ -133,7 +133,7 @@ public unregister_exposer(mixed $class_name): mixed
 Return namespaced class name
 
 ```php
-public check_class_name(string $class_name, bool $root = false, string $prefix = 'TainacanExposer\'): string
+public check_class_name(string $class_name, bool $root = false, string $prefix = 'Tainacan\Exposer\\'): string
 ```
 
 **Parameters:**
@@ -239,7 +239,7 @@ false
 Return list of registered exposers
 
 ```php
-public get_exposers(string $output = ARRAY_N): array
+public get_exposers(string $output = \ARRAY_N): array
 ```
 
 **Parameters:**

@@ -21,3 +21,24 @@ If something is not working properly on Tainacan, use this template.
 If you have any feature ideas you would like to suggest to our developers, use this template.
 
 A great issue is one that includes a concise description of errors you are stumbling upon along with crucial information such as which version of Tainacan you are using, which web browser, or which WordPress version. It's also important to search our repository for duplicates—and if you find one, opt to participate in the original discussion adding new information instead of creating your own. That will help contributors and users to keep track of a specific subject more easily.
+
+### Regenerating developer documentation
+
+Some files under `docs/` are generated from the plugin source (PHP code reference, hooks lists, OpenAPI schema, class diagrams). After changing PHP code or REST routes, regenerate them from the plugin repository:
+
+```bash
+cd /path/to/tainacan
+composer install
+./generate_docs.sh
+```
+
+In the [tainacan-docker](https://github.com/tainacan/tainacan-docker) environment:
+
+```bash
+docker exec -it tainacan_fpm_apache bash
+cd /src/tainacan && composer install && ./generate_docs.sh
+```
+
+The script writes into `docs/` (`phpdoc/`, `actions.md`, `filters.md`, `openapi.json`, `diagrams/`). phpDocumentor itself is downloaded as a phar on first run; other tools come from Composer dev dependencies. OpenAPI export requires WP-CLI and the `document-generator-for-openapi` plugin (override the WordPress path with `WP_PATH` if needed).
+
+Generated docs are published via the [Tainacan Wiki](https://github.com/tainacan/tainacan-wiki) under `/dev/`, which loads this folder externally.

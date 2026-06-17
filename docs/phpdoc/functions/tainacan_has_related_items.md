@@ -10,10 +10,12 @@ Checks if the current item has or not related items
 
 ## Parameters
 
-| Parameter  | Type      | Description |
-|------------|-----------|-------------|
-| `$item_id` | **mixed** |             |
+| Parameter  | Type                   | Description                                                            |
+|------------|------------------------|------------------------------------------------------------------------|
+| `$item_id` | **int\|string\|false** | (Optional) The item ID. Default is false (uses current item from loop) |
 
 ## Return Value
 
-**mixed**
+**bool**
+
+True if item has related items, false otherwise

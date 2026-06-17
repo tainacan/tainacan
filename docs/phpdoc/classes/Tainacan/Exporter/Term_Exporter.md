@@ -120,7 +120,7 @@ classDiagram
 
 ### steps
 
-Declares what are the steps the importer/exporter will run, in the right order.
+Declares what are the steps the exporter will run, in the right order.
 
 ```php
 protected array $steps
@@ -130,7 +130,7 @@ By default, there is only one step, and the callback is the process_collections 
 that process items for the collections in the collections array.
 
 Child classes may declare as many steps as they want and can keep this default step to use
-this method for importer/exporter the items. But it is optional.
+this method for exporter the items. But it is optional.
 
 ***
 
@@ -194,7 +194,7 @@ public output_footer(): mixed
 
 ### options_form
 
-Method implemented by child importer/exporter to return the HTML of the Options Form to be rendered in the Importer page
+Method implemented by child exporter to return the HTML of the Options Form to be rendered in the Exporter page
 
 ```php
 public options_form(): mixed
@@ -228,7 +228,7 @@ public exporting_terms(): mixed
 ### get_terms_recursively
 
 ```php
-public get_terms_recursively(mixed $term_repo, mixed $taxonomy, mixed $parent, mixed $level): string
+public get_terms_recursively(mixed $term_repo, mixed $taxonomy, mixed $parent = 0, mixed $level = 0): string
 ```
 
 **Parameters:**
@@ -687,7 +687,7 @@ protected cancel_abort(): void
 
 ### abort
 
-Schedule importer abortion at the end of run()
+Schedule	exporter abortion at the end of run()
 
 ```php
 protected abort(): void
@@ -697,7 +697,7 @@ protected abort(): void
 
 ### get_abort
 
-Return whether importer should abort execution or not
+Return whether exporter should abort execution or not
 
 ```php
 public get_abort(): bool
@@ -716,14 +716,14 @@ public get_progress_label(): string
 
 It automatically gets the attribute progress_label from the current step running.
 
-Importers/Exporters may change this label whenever they want
+Exporters may change this label whenever they want
 
 ***
 
 ### get_progress_value
 
 Gets the current value to build the progress bar and give feedback to the user
-on the background process that is running the importer.
+on the background process that is running the exporter.
 
 ```php
 public get_progress_value(): mixed
@@ -820,7 +820,7 @@ public get_current_mapper(): mixed
 
 ### options_form
 
-Method implemented by child importer/exporter to return the HTML of the Options Form to be rendered in the Importer page
+Method implemented by child exporter to return the HTML of the Options Form to be rendered in the Exporter page
 
 ```php
 public options_form(): mixed

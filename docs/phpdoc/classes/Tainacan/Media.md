@@ -25,6 +25,7 @@ classDiagram
         +add_image_sizes()
         +add_image_sizes_to_admin(sizes)
         +add_attachment_page_rewrite_rule()
+        -$get_media_page_css()
         +add_css()
         +attachment_page_add_var(vars)
         -flush_buffers()
@@ -154,10 +155,27 @@ public add_attachment_page_rewrite_rule(): void
 
 ***
 
-### add_css
+### get_media_page_css
+
+Gets the CSS styles for media attachment pages.
 
 ```php
-public add_css(): mixed
+private static get_media_page_css(): string
+```
+
+* This method is **static**.
+**Return Value:**
+
+CSS content for media attachment pages.
+
+***
+
+### add_css
+
+Adds inline CSS for media attachment pages. (Too small to be a separate file)
+
+```php
+public add_css(): void
 ```
 
 ***

@@ -123,7 +123,7 @@ Tainacan roles
 
 ### translate_user_roles
 
-Callback to gettext_with_context hook to translate custom ueser roles.
+Callback to gettext_with_context hook to translate custom user roles.
 
 ```php
 public translate_user_roles(mixed $translations, mixed $text, mixed $context, mixed $domain): mixed

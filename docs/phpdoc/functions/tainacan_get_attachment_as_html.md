@@ -10,12 +10,14 @@ Return HTML display-ready version of an attachment
 
 ## Parameters
 
-| Parameter        | Type      | Description |
-|------------------|-----------|-------------|
-| `$attachment_id` | **mixed** |             |
-| `$item_id`       | **mixed** |             |
-| `$img_size`      | **mixed** |             |
+| Parameter        | Type            | Description                                         |
+|------------------|-----------------|-----------------------------------------------------|
+| `$attachment_id` | **int**         | The attachment ID                                   |
+| `$item_id`       | **int\|string** | (Optional) The item ID. Default is the global $post |
+| `$img_size`      | **string**      | (Optional) The image size. Default is 'large'       |
 
 ## Return Value
 
-**mixed**
+**string**
+
+The HTML output, or empty string if attachment ID is invalid or item is not found

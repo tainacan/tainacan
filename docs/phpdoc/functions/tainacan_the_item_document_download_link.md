@@ -1,6 +1,12 @@
 # tainacan_the_item_document_download_link
 
 
+To be used inside The Loop
+
+Return the item document download link as HTML.
+
+Only returns a link for attachment-type documents. Returns empty string for text or URL documents.
+
 ***
 
 * Full name: `tainacan_the_item_document_download_link`
@@ -8,10 +14,12 @@
 
 ## Parameters
 
-| Parameter  | Type      | Description |
-|------------|-----------|-------------|
-| `$item_id` | **mixed** |             |
+| Parameter  | Type            | Description                                         |
+|------------|-----------------|-----------------------------------------------------|
+| `$item_id` | **int\|string** | (Optional) The item ID. Default is the global $post |
 
 ## Return Value
 
-**mixed**
+**string**
+
+The HTML download link, or empty string if item is not found, has no document, or document is not downloadable

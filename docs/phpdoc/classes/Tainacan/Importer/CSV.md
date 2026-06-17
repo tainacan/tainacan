@@ -174,6 +174,14 @@ $metadata_source the metadata from the source
 
 ***
 
+### get_source_file_name
+
+```php
+public get_source_file_name(): mixed
+```
+
+***
+
 ### get_source_special_fields
 
 ```php

@@ -24,6 +24,36 @@ classDiagram
         #init()
         #_get_map()
         +register_post_type()
+        +fetch(args, _output)
+        +fetch_count(args)
+        -build_where(args)
+        -normalize_date_bound(date, bound)
+        -row_to_entity(row)
+        +get_table_name()
+        +insert(obj)
+        +update(object, new_values)
+        +fetch_last()
+        +insert_attachment(post_ID)
+        +pre_delete_attachment(attachment_id)
+        +delete_attachment(attachment_id)
+        +pre_insert_entity(unsaved)
+        -prepare_item_metadata_diff(unsaved)
+        +__temporary_multivalue_separator(sep)
+        +insert_entity(entity)
+        +pre_delete_entity(entity, permanent)
+        +delete_entity(entity, permanent)
+        -insert_item_metadata(entity)
+        +filter_log_title(title)
+        +tainacan_set_log_slug(override, slug, post_ID, post_status, post_type, post_parent)
+    }
+    class Logs {
+        +entities_type : mixed
+        -current_diff : mixed
+        -current_deleting_entity : mixed
+        -current_action : mixed
+        #init()
+        #_get_map()
+        +register_post_type()
         +fetch(args, output)
         +update(object, new_values)
         +fetch_last()
@@ -66,6 +96,7 @@ classDiagram
         +fetch_one(args)
         +trash(entity)
         +delete(entity, permanent)
+        -delete_attachments(entity)
         +can_edit(entity, user)
         +can_read(entity, user)
         +can_delete(entity, user)
@@ -178,30 +209,196 @@ public register_post_type(): mixed
 
 ### fetch
 
-fetch logs based on ID or WP_Query args
+Fetch logs from the custom wp_tainacan_logs table.
 
 ```php
-public fetch(array $args = [], string $output = null): \WP_Query|array
+public fetch(array|int $args = [], mixed $_output = null): \Tainacan\Entities\Log|\Tainacan\Entities\Log[]
 ```
 
-Logs are stored as posts. Check WP_Query docs
-to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
-You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
-appropriate WP_Query argument
+When an integer is passed, returns a single Log entity matching that ID,
+or an empty array if not found.
 
-If a number is passed to $args, it will return a \Tainacan\Entities\Log object.  But if the post is not found or
-does not match the entity post type, it will return an empty array
+When an array is passed, supports the following keys:
+
+Filtering (WHERE):
+  - int    $item_id       Filter by item ID.
+  - int    $user_id       Filter by user ID.
+  - string $collection_id Filter by collection ID (or 'default' for repository-level).
+  - string $object_type   Filter by object type (fully-qualified class name).
+  - string $object_id     Filter by object ID.
+  - string $action        Filter by action key (e.g. 'create', 'update', 'delete').
+  - string $s             Search term matched (case-insensitive LIKE) against
+                          title, old_value, and new_value columns.
+  - array  $date_query    Array of date clauses. Each clause may contain:
+                            'after'     (string) – lower date bound (Y-m-d or Y-m-d H:i:s),
+                            'before'    (string) – upper date bound,
+                            'inclusive' (bool)   – whether bounds are inclusive (default false).
+
+Ordering (ORDER BY):
+  - string $orderby  Column to sort by. Allowed: ID, date, title, user_id,
+                     collection_id, item_id, action. Defaults to 'ID'.
+  - string $order    Sort direction: 'ASC' or 'DESC'. Defaults to 'DESC'.
+
+Pagination (LIMIT / OFFSET):
+  - int $posts_per_page  Number of rows to return. Use -1 for all. Defaults to -1.
+  - int $paged           Page number (1-based), used with posts_per_page. Defaults to 1.
+  - int $offset          Raw row offset, overrides paged when provided.
 
 **Parameters:**
 
-| Parameter | Type       | Description                                                                                            |
-|-----------|------------|--------------------------------------------------------------------------------------------------------|
-| `$args`   | **array**  | WP_Query args \|\| int $args the log id                                                                |
-| `$output` | **string** | The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values) |
+| Parameter  | Type           | Description                                            |
+|------------|----------------|--------------------------------------------------------|
+| `$args`    | **array\|int** | Associative array of query args, or an integer log ID. |
+| `$_output` | **mixed**      |                                                        |
 
 **Return Value:**
 
-an instance of wp query OR array of entities;
+A single entity when $args is an ID,
+or an array of entities when $args is an array.
+
+***
+
+### fetch_count
+
+Count logs matching the given filters.
+
+```php
+public fetch_count(array $args = []): int
+```
+
+Accepts the same filtering args as fetch() (item_id, user_id,
+collection_id, object_type, object_id, action) but ignores
+pagination and ordering — it always returns an integer.
+
+Typical pagination usage:
+  $total      = $logs->fetch_count( $filters );
+  $rows       = $logs->fetch( array_merge( $filters, [ 'posts_per_page' => 20, 'paged' => 2 ] ) );
+  $total_pages = ceil( $total / 20 );
+
+**Parameters:**
+
+| Parameter | Type      | Description                               |
+|-----------|-----------|-------------------------------------------|
+| `$args`   | **array** | Same filtering keys supported by fetch(). |
+
+**Return Value:**
+
+Total number of matching rows.
+
+***
+
+### build_where
+
+Build a parameterized WHERE clause from a filter args array.
+
+```php
+private build_where(array $args): array{0: string, 1: array}
+```
+
+Column names are taken from a whitelist, so they are never
+interpolated from user input. Values are returned as a separate
+$params array to be bound via $wpdb->prepare().
+
+Supports an optional date_query key — an array of clause arrays, each
+accepting: before (string), after (string), inclusive (bool|string).
+Date-only values (Y-m-d) are automatically expanded to full datetimes.
+Example:
+  'date_query' => [ [ 'after' => '2026-04-09', 'before' => '2026-04-11', 'inclusive' => true ] ]
+
+**Parameters:**
+
+| Parameter | Type      | Description                                     |
+|-----------|-----------|-------------------------------------------------|
+| `$args`   | **array** | Filtering args (same keys accepted by fetch()). |
+
+**Return Value:**
+
+Tuple of [ $where_sql, $params ].
+$where_sql is either an empty string or 'WHERE col = %%x AND …'.
+$params holds the corresponding values in order.
+
+***
+
+### normalize_date_bound
+
+Expands a date-only string (Y-m-d) to a full datetime for WHERE comparisons.
+
+```php
+private normalize_date_bound(string $date, string $bound): string
+```
+
+Datetime strings that already include a time component are returned as-is.
+
+**Parameters:**
+
+| Parameter | Type       | Description                                           |
+|-----------|------------|-------------------------------------------------------|
+| `$date`   | **string** | A date or datetime string.                            |
+| `$bound`  | **string** | 'start' → appends 00:00:00, 'end' → appends 23:59:59. |
+
+***
+
+### row_to_entity
+
+Build a Log entity from a custom table row.
+
+```php
+private row_to_entity(\stdClass $row): \Tainacan\Entities\Log
+```
+
+Fields that have setters are stored as class properties via
+set_mapped_property(), so get_mapped_property() returns them
+directly without hitting WP_Post or wp_postmeta.
+
+Fields without setters (date, slug, id, status) are written
+directly onto the entity's WP_Post stub so the inherited
+get_mapped_property() fallback can still find them.
+
+**Parameters:**
+
+| Parameter | Type          | Description                                       |
+|-----------|---------------|---------------------------------------------------|
+| `$row`    | **\stdClass** | Row returned by $wpdb->get_row() / get_results(). |
+
+***
+
+### get_table_name
+
+Returns the name of the custom logs table.
+
+```php
+public get_table_name(): string
+```
+
+***
+
+### insert
+
+Persist a Log entity into the custom wp_tainacan_logs table.
+
+```php
+public insert(\Tainacan\Entities\Log $obj): \Tainacan\Entities\Log|false
+```
+
+Uses $wpdb->insert() with explicit format specifiers so all values
+go through wpdb's internal prepare(), preventing SQL injection.
+Serializable fields (old_value, new_value) are passed through
+maybe_serialize() before storage.
+
+**Parameters:**
+
+| Parameter | Type                       | Description |
+|-----------|----------------------------|-------------|
+| `$obj`    | **\Tainacan\Entities\Log** |             |
+
+**Return Value:**
+
+The entity with its new ID set, or false on failure.
+
+**Throws:**
+
+When the entity has not been validated before insert.
+- [`Exception`](../../Exception)
 
 ***
 
@@ -222,15 +419,15 @@ public update(mixed $object, mixed $new_values = null): mixed
 
 ### fetch_last
 
-Feth most recent log
+Fetch most recent log.
 
 ```php
-public fetch_last(): \Tainacan\Entities\Log
+public fetch_last(): \Tainacan\Entities\Log|null
 ```
 
 **Return Value:**
 
-The most recent Log entity
+The most recent Log entity, or null if none exists.
 
 ***
 
@@ -713,7 +910,7 @@ public static get_entity_by_post(int|\WP_Post $post): \Tainacan\Entities\Entity|
 ### get_entity_by_post_type
 
 ```php
-public static get_entity_by_post_type(string $post_type, int|\WP_Post $post): \Tainacan\Entities\Entity|bool
+public static get_entity_by_post_type(string $post_type, int|\WP_Post $post = 0): \Tainacan\Entities\Entity|bool
 ```
 
 * This method is **static**.

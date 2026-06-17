@@ -1,24 +1,10 @@
 @startuml class-diagram
-  class "REST_Oaipmh_Expose_Controller\n<b>REST controller exposing the repository as an OAI-PMH 2.0 data provider.</b>" as REST_Oaipmh_Expose_Controller {
-    -data_provider : OAIPMH_Data_Provider
-    -token_manager : OAIPMH_Token_Manager
+  class "REST_Oaipmh_Expose_Controller\n<b>REST API controller for managing Tainacan OAI-PMH exposure.</b>" as REST_Oaipmh_Expose_Controller {
     +__construct()
-    -boot()
+    +init_objects()
     +register_routes()
     +get_verb_permissions_check(request)
     +get_verb(request)
-    -handle_list_sets(xml, params)
-    -has_disallowed_list_sets_args(params)
-    -parse_list_sets_params(xml, params)
-    -is_valid_token_for_verb(data, verb)
-    -has_exclusive_argument_violation(params, exclusive_args)
-    -handle_list_metadata_formats(xml, params)
-    -handle_list_records(xml, params, include_metadata)
-    -handle_get_record(xml, params)
-    -parse_list_params(xml, params, expected_verb)
-    -parse_date(date, bound)
-    +serve_xml_response(served, result)
-    -serve(xml_string, verb, params, from_cache)
     +get_verb_params()
     +get_schema()
   }

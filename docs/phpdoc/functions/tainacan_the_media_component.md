@@ -10,13 +10,13 @@ Tainacan Gallery component, used to render document, attachments and other files
 
 ## Parameters
 
-| Parameter             | Type      | Description |
-|-----------------------|-----------|-------------|
-| `$media_id`           | **mixed** |             |
-| `$media_items_thumbs` | **mixed** |             |
-| `$media_items_main`   | **mixed** |             |
-| `$args`               | **mixed** |             |
+| Parameter             | Type              | Description                                                                       |
+|-----------------------|-------------------|-----------------------------------------------------------------------------------|
+| `$media_id`           | **string**        | ID to be added to the gallery div                                                 |
+| `$media_items_thumbs` | **array**         | Array of media items for thumbnails carousel                                      |
+| `$media_items_main`   | **array**         | Array of media items for main carousel                                            |
+| `$args`               | **array\|string** | Optional. Array of arguments. See tainacan_get_the_media_component() for details. |
 
 ## Return Value
 
-**string**
+**void**

@@ -462,7 +462,7 @@ public validate(): bool
 Create an instance of Entity
 
 ```php
-public __construct(mixed $which): mixed
+public __construct(mixed $which = 0): mixed
 ```
 
 If ID or WP Post is passed, it retrieves the object from the database
@@ -838,7 +838,7 @@ Object with all the capabilities as member variables.
 Compare this entity props with self old values or with $which other entity
 
 ```php
-public diff(\Tainacan\Entities\Entity|int|\WP_Post $which): array
+public diff(\Tainacan\Entities\Entity|int|\WP_Post $which = 0): array
 ```
 
 **Parameters:**

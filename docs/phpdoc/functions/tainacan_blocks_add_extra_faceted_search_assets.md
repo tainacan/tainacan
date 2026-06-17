@@ -1,5 +1,15 @@
 # tainacan_blocks_add_extra_faceted_search_assets
 
+# tainacan_blocks_add_extra_faceted_search_assets
+
+# tainacan_blocks_add_extra_faceted_search_assets
+
+# tainacan_blocks_add_extra_faceted_search_assets
+
+# tainacan_blocks_add_extra_faceted_search_assets
+
+# tainacan_blocks_add_extra_faceted_search_assets
+
 
 Registers the extra styles necessary for faceted search block
 

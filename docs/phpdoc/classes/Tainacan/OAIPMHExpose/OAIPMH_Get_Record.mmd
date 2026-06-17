@@ -1,0 +1,60 @@
+classDiagram
+    direction TB
+    class OAIPMH_Get_Record {
+        #working_node : mixed
+        +errors : mixed
+        +xml_creater : mixed
+        +restoken : mixed
+        +expirationdatetime : mixed
+        +num_rows : mixed
+        +cursor : mixed
+        +deliveredrecords : mixed
+        +from : mixed
+        +until : mixed
+        +sets : mixed
+        +metadataPrefix : mixed
+        +__construct()
+        +get_item(params)
+        +get_record(data)
+        +get_current_mapper()
+        #create_metadata_node(item, collection, record_node)
+        -map_item_metadata(item)
+        +initiate_variables(data)
+    }
+    class OAIPMH_Expose {
+        +identifyResponse : mixed
+        +deletedRecord : mixed
+        +adminEmail : mixed
+        +compression : mixed
+        +expirationdatetime : mixed
+        +delimiter : mixed
+        +show_identifier : mixed
+        +SETS : mixed
+        +METADATAFORMATS : mixed
+        +supported_formats : mixed
+        +MAXRECORDS : mixed
+        +CONTENT_TYPE : mixed
+        +charset : mixed
+        +xmlescaped : mixed
+        +text : mixed
+        +code : mixed
+        +token_valid : mixed
+        +token_prefix : mixed
+        #collection_repository : mixed
+        #item_repository : mixed
+        #repositoryIdentifier : mixed
+        +config()
+        +is_valid_uri(url)
+        +is_valid_attrb(attrb)
+        +formatDatestamp(datestamp)
+        +checkDateFormat(date)
+        +prepare_set_names()
+        +oai_exit(args, errors)
+        #create_token_dir()
+        +get_token()
+        +createResumToken(cursor, from, until, sets, metadataPrefix)
+        +readResumToken(resumptionToken)
+        +oai_error(code, argument, value)
+        +get_metadata_formats(item_id)
+    }
+    OAIPMH_Expose <|-- OAIPMH_Get_Record

@@ -33,6 +33,7 @@ classDiagram
         +get_permissions_schema()
         +get_base_properties_schema()
         +get_list_schema()
+        +tainacan_sanitize_post_statuses(statuses, request, parameter)
     }
 ```
 
@@ -249,5 +250,32 @@ protected get_schema(): mixed
 ```php
 public get_list_schema(): mixed
 ```
+
+***
+
+### tainacan_sanitize_post_statuses
+
+Sanitizes and validates a list of post statuses for use in REST requests.
+
+```php
+public tainacan_sanitize_post_statuses(string|array $statuses, \WP_REST_Request $request, string $parameter): array|\WP_Error
+```
+
+Accepts a list of status slugs (string or array). If it contains 'any',
+returns all non-internal post statuses. Otherwise, validates each
+status against those allowed by get_post_stati(); returns WP_Error if any
+status is invalid.
+
+**Parameters:**
+
+| Parameter    | Type                 | Description                                                    |
+|--------------|----------------------|----------------------------------------------------------------|
+| `$statuses`  | **string\|array**    | List of statuses (comma-separated string or array of slugs).   |
+| `$request`   | **\WP_REST_Request** | REST request object (not used in the current logic).           |
+| `$parameter` | **string**           | Parameter name in the request (not used in the current logic). |
+
+**Return Value:**
+
+Array of valid status slugs or WP_Error if any status is not allowed.
 
 ***

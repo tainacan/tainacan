@@ -106,9 +106,16 @@ classDiagram
     class api_endpoints_REST_Taxonomies_Controller { }
     class api_endpoints_REST_Logs_Controller { }
     class api_endpoints_REST_Sequence_Edit_Controller { }
-    class oaipmh_OAIPMH_Token_Manager { }
-    class oaipmh_OAIPMH_Data_Provider { }
-    class oaipmh_OAIPMH_Xml_Generator { }
+    class oaipmh_OAIPMH_Get_Record { }
+    class oaipmh_OAIPMH_List_Identifiers { }
+    class oaipmh_OAIPMH_List_Sets { }
+    class oaipmh_OAIPMH_Expose { }
+    class oaipmh_OAIPMH_List_Metadata_Formats { }
+    class oaipmh_OAIPMH_Identify { }
+    class oaipmh_XML_Error { }
+    class oaipmh_Xml_Response { }
+    class oaipmh_OAIPMH_List_Records { }
+    class oaipmh_Xml_Create { }
     Media ..> entities_Item
     Media ..> repositories_Items
     Private_Files ..> Media
@@ -223,9 +230,13 @@ classDiagram
     api_endpoints_REST_Metadatum_Mappers_Controller ..> mappers_Mappers_Handler
     api_endpoints_REST_Metadatum_Mappers_Controller ..> repositories_Metadata
     api_endpoints_REST_Metadatum_Mappers_Controller ..> repositories_Repository
-    api_endpoints_REST_Oaipmh_Expose_Controller ..> oaipmh_OAIPMH_Data_Provider
-    api_endpoints_REST_Oaipmh_Expose_Controller ..> oaipmh_OAIPMH_Token_Manager
-    api_endpoints_REST_Oaipmh_Expose_Controller ..> oaipmh_OAIPMH_Xml_Generator
+    api_endpoints_REST_Oaipmh_Expose_Controller ..> oaipmh_OAIPMH_Expose
+    api_endpoints_REST_Oaipmh_Expose_Controller ..> oaipmh_OAIPMH_Get_Record
+    api_endpoints_REST_Oaipmh_Expose_Controller ..> oaipmh_OAIPMH_Identify
+    api_endpoints_REST_Oaipmh_Expose_Controller ..> oaipmh_OAIPMH_List_Identifiers
+    api_endpoints_REST_Oaipmh_Expose_Controller ..> oaipmh_OAIPMH_List_Metadata_Formats
+    api_endpoints_REST_Oaipmh_Expose_Controller ..> oaipmh_OAIPMH_List_Records
+    api_endpoints_REST_Oaipmh_Expose_Controller ..> oaipmh_OAIPMH_List_Sets
     api_endpoints_REST_Reports_Controller ..> entities_Collection
     api_endpoints_REST_Reports_Controller ..> entities_Taxonomy
     api_endpoints_REST_Reports_Controller ..> repositories_Collections
@@ -442,11 +453,36 @@ classDiagram
     mappers_Mappers_Handler ..> mappers_Mapper
     mappers_Mappers_Handler ..> repositories_Collections
     mappers_Mappers_Handler ..> repositories_Metadata
-    oaipmh_OAIPMH_Data_Provider ..> entities_Collection
-    oaipmh_OAIPMH_Data_Provider ..> entities_Item
-    oaipmh_OAIPMH_Data_Provider ..> repositories_Collections
-    oaipmh_OAIPMH_Data_Provider ..> repositories_Items
-    oaipmh_OAIPMH_Xml_Generator ..> oaipmh_OAIPMH_Xml_Generator
+    oaipmh_OAIPMH_Expose ..> mappers_Mappers_Handler
+    oaipmh_OAIPMH_Expose ..> oaipmh_XML_Error
+    oaipmh_OAIPMH_Expose <|-- oaipmh_OAIPMH_Get_Record
+    oaipmh_OAIPMH_Expose <|-- oaipmh_OAIPMH_Identify
+    oaipmh_OAIPMH_Expose <|-- oaipmh_OAIPMH_List_Identifiers
+    oaipmh_OAIPMH_Expose <|-- oaipmh_OAIPMH_List_Metadata_Formats
+    oaipmh_OAIPMH_Expose <|-- oaipmh_OAIPMH_List_Records
+    oaipmh_OAIPMH_Expose <|-- oaipmh_OAIPMH_List_Sets
+    oaipmh_OAIPMH_Get_Record ..> entities_Item
+    oaipmh_OAIPMH_Get_Record ..> mappers_Mappers_Handler
+    oaipmh_OAIPMH_Get_Record ..> oaipmh_Xml_Response
+    oaipmh_OAIPMH_Get_Record ..> repositories_Collections
+    oaipmh_OAIPMH_Get_Record ..> repositories_Items
+    oaipmh_OAIPMH_Identify ..> oaipmh_Xml_Response
+    oaipmh_OAIPMH_List_Identifiers ..> entities_Collection
+    oaipmh_OAIPMH_List_Identifiers ..> oaipmh_Xml_Response
+    oaipmh_OAIPMH_List_Identifiers ..> repositories_Collections
+    oaipmh_OAIPMH_List_Identifiers ..> repositories_Items
+    oaipmh_OAIPMH_List_Metadata_Formats ..> entities_Item
+    oaipmh_OAIPMH_List_Metadata_Formats ..> oaipmh_Xml_Response
+    oaipmh_OAIPMH_List_Records ..> entities_Collection
+    oaipmh_OAIPMH_List_Records ..> entities_Item
+    oaipmh_OAIPMH_List_Records ..> mappers_Mappers_Handler
+    oaipmh_OAIPMH_List_Records ..> oaipmh_Xml_Response
+    oaipmh_OAIPMH_List_Records ..> repositories_Collections
+    oaipmh_OAIPMH_List_Records ..> repositories_Items
+    oaipmh_OAIPMH_List_Sets ..> entities_Collection
+    oaipmh_OAIPMH_List_Sets ..> oaipmh_Xml_Response
+    oaipmh_OAIPMH_List_Sets ..> repositories_Collections
+    oaipmh_Xml_Create <|-- oaipmh_Xml_Response
     repositories_Collections ..> entities_Collection
     repositories_Collections ..> entities_Metadatum
     repositories_Collections ..> repositories_Metadata

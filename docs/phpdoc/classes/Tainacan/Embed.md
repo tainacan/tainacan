@@ -23,6 +23,7 @@ classDiagram
         +pdf_embed_handler(matches, attr, url, rawattr)
         +oembed_get_thumbnail(url)
         +oembed_get_thumbnail_filter(return, data, url)
+        -$get_embeds_css()
         +add_css()
         +add_responsive_wrapper(html)
     }
@@ -168,9 +169,28 @@ The thumbnail URL or null.
 
 ***
 
+### get_embeds_css
+
+Gets the CSS styles for responsive embeds. (Too small to be a separate file)
+
+```php
+private static get_embeds_css(): string
+```
+
+This CSS copies most of Gutenberg's logic for responsive blocks,
+but uses different classes to avoid future conflicts.
+Check their original css: /packages/block-library/src/embed/style.scss
+
+* This method is **static**.
+**Return Value:**
+
+CSS content for responsive embeds.
+
+***
+
 ### add_css
 
-Enqueues CSS for responsive embeds.
+Adds inline CSS for responsive embeds.
 
 ```php
 public add_css(): void

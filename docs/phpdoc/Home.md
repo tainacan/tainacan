@@ -27,18 +27,22 @@ This is an automatically generated documentation for **Documentation**.
 | [`tainacan_roles()`](/dev/phpdoc/functions/tainacan_roles.md)                                                                           | Retrieve the singleton Tainacan Roles instance                                                                                                              |
 | [`tainacan_metadata_sections()`](/dev/phpdoc/functions/tainacan_metadata_sections.md)                                                   | Retrieve the singleton Metadata Sections Repository instance                                                                                                |
 | [`tainacan_get_api_postdata()`](/dev/phpdoc/functions/tainacan_get_api_postdata.md)                                                     | Retrieves raw data sent to an API endpoint reading the php://input stream                                                                                   |
-| [`is_post_status_viewable()`](/dev/phpdoc/functions/is_post_status_viewable.md)                                                         |                                                                                                                                                             |
-| [`tnc_enable_dev_wp_interface()`](/dev/phpdoc/functions/tnc_enable_dev_wp_interface.md)                                                 | DEV Interface utility, used for debugging.                                                                                                                  |
-| [`wp_kses_tainacan()`](/dev/phpdoc/functions/wp_kses_tainacan.md)                                                                       | Custom wp_kses function for Tainacan content.                                                                                                               |
+| [`tainacan_is_post_status_viewable()`](/dev/phpdoc/functions/tainacan_is_post_status_viewable.md)                                       |                                                                                                                                                             |
+| [`tainacan_enable_dev_wp_interface()`](/dev/phpdoc/functions/tainacan_enable_dev_wp_interface.md)                                       | DEV Interface utility, used for debugging.                                                                                                                  |
+| [`tainacan_wp_kses()`](/dev/phpdoc/functions/tainacan_wp_kses.md)                                                                       | Custom wp_kses function for Tainacan content.                                                                                                               |
+| [`tainacan_get_default_allowed_styles()`](/dev/phpdoc/functions/tainacan_get_default_allowed_styles.md)                                 | Adds CSS properties to the safe_style_css filter
+These properties are needed for the media gallery component (e.g., .media-full-content)                    |
+| [`tainacan_get_svg_allowed_html()`](/dev/phpdoc/functions/tainacan_get_svg_allowed_html.md)                                             | Returns SVG allowed HTML elements and attributes for wp_kses                                                                                                |
+| [`tainacan_load_script_translation_file_for_chunk()`](/dev/phpdoc/functions/tainacan_load_script_translation_file_for_chunk.md)         | Filter callback for load_script_translation_file: resolves lazy-loaded chunk handles to the translation JSON.                                               |
 | [`tainacan_get_the_metadata()`](/dev/phpdoc/functions/tainacan_get_the_metadata.md)                                                     | To be used inside The Loop                                                                                                                                  |
-| [`tainacan_the_metadata()`](/dev/phpdoc/functions/tainacan_the_metadata.md)                                                             |                                                                                                                                                             |
+| [`tainacan_the_metadata()`](/dev/phpdoc/functions/tainacan_the_metadata.md)                                                             | To be used inside The Loop                                                                                                                                  |
 | [`tainacan_get_the_document()`](/dev/phpdoc/functions/tainacan_get_the_document.md)                                                     | To be used inside The Loop                                                                                                                                  |
 | [`tainacan_get_the_document_raw()`](/dev/phpdoc/functions/tainacan_get_the_document_raw.md)                                             | To be used inside The Loop                                                                                                                                  |
-| [`tainacan_get_the_item_document_url()`](/dev/phpdoc/functions/tainacan_get_the_item_document_url.md)                                   |                                                                                                                                                             |
-| [`tainacan_get_the_document_type()`](/dev/phpdoc/functions/tainacan_get_the_document_type.md)                                           |                                                                                                                                                             |
-| [`tainacan_the_item_document_download_link()`](/dev/phpdoc/functions/tainacan_the_item_document_download_link.md)                       |                                                                                                                                                             |
-| [`tainacan_the_item_attachment_download_link()`](/dev/phpdoc/functions/tainacan_the_item_attachment_download_link.md)                   |                                                                                                                                                             |
-| [`tainacan_the_document()`](/dev/phpdoc/functions/tainacan_the_document.md)                                                             |                                                                                                                                                             |
+| [`tainacan_get_the_item_document_url()`](/dev/phpdoc/functions/tainacan_get_the_item_document_url.md)                                   | To be used inside The Loop                                                                                                                                  |
+| [`tainacan_get_the_document_type()`](/dev/phpdoc/functions/tainacan_get_the_document_type.md)                                           | To be used inside The Loop                                                                                                                                  |
+| [`tainacan_the_item_document_download_link()`](/dev/phpdoc/functions/tainacan_the_item_document_download_link.md)                       | To be used inside The Loop                                                                                                                                  |
+| [`tainacan_the_item_attachment_download_link()`](/dev/phpdoc/functions/tainacan_the_item_attachment_download_link.md)                   | Return the item attachment download link as HTML.                                                                                                           |
+| [`tainacan_the_document()`](/dev/phpdoc/functions/tainacan_the_document.md)                                                             | To be used inside The Loop                                                                                                                                  |
 | [`tainacan_get_single_attachment_as_html()`](/dev/phpdoc/functions/tainacan_get_single_attachment_as_html.md)                           | To be used inside The Loop                                                                                                                                  |
 | [`tainacan_get_attachment_as_html()`](/dev/phpdoc/functions/tainacan_get_attachment_as_html.md)                                         | Return HTML display-ready version of an attachment                                                                                                          |
 | [`tainacan_has_document()`](/dev/phpdoc/functions/tainacan_has_document.md)                                                             | To be used inside The Loop                                                                                                                                  |
@@ -63,10 +67,10 @@ This is an automatically generated documentation for **Documentation**.
 | [`tainacan_get_the_term_description()`](/dev/phpdoc/functions/tainacan_get_the_term_description.md)                                     | When visiting a taxonomy archive, returns the term description                                                                                              |
 | [`tainacan_the_term_description()`](/dev/phpdoc/functions/tainacan_the_term_description.md)                                             | When visiting a taxonomy archive, prints the term description                                                                                               |
 | [`tainacan_get_the_attachments()`](/dev/phpdoc/functions/tainacan_get_the_attachments.md)                                               | To be used inside The Loop                                                                                                                                  |
-| [`tainacan_get_attachment_html_url()`](/dev/phpdoc/functions/tainacan_get_attachment_html_url.md)                                       |                                                                                                                                                             |
-| [`tainacan_register_view_mode()`](/dev/phpdoc/functions/tainacan_register_view_mode.md)                                                 |                                                                                                                                                             |
+| [`tainacan_get_attachment_html_url()`](/dev/phpdoc/functions/tainacan_get_attachment_html_url.md)                                       | Get the HTML URL for an attachment                                                                                                                          |
+| [`tainacan_register_view_mode()`](/dev/phpdoc/functions/tainacan_register_view_mode.md)                                                 | Register a view mode for items list                                                                                                                         |
 | [`tainacan_get_item()`](/dev/phpdoc/functions/tainacan_get_item.md)                                                                     | Gets the Tainacan Item Entity object                                                                                                                        |
-| [`tainacan_current_view_displays()`](/dev/phpdoc/functions/tainacan_current_view_displays.md)                                           | To be used inside The Loop of a faceted serach view mode template.                                                                                          |
+| [`tainacan_current_view_displays()`](/dev/phpdoc/functions/tainacan_current_view_displays.md)                                           | To be used inside The Loop of a faceted search view mode template.                                                                                          |
 | [`tainacan_the_item_edit_link()`](/dev/phpdoc/functions/tainacan_the_item_edit_link.md)                                                 | Displays the link to the edit page of an item, if current user have permission                                                                              |
 | [`tainacan_get_initials()`](/dev/phpdoc/functions/tainacan_get_initials.md)                                                             | Gets the initials from a name.                                                                                                                              |
 | [`tainacan_get_the_mime_type_icon()`](/dev/phpdoc/functions/tainacan_get_the_mime_type_icon.md)                                         | Gets the icon mime type using our custom plugin thumbnails                                                                                                  |
@@ -111,22 +115,6 @@ using Tainacan template functions that create
 a Swiper.js carousel and slider, with a PhotoSwipe.js
 lightbox |
 | [`tainacan_blocks_render_related_items_list()`](/dev/phpdoc/functions/tainacan_blocks_render_related_items_list.md)                     | Renders the content of the related items block                                                                                                              |
-| [`tainacan_blocks_initialize()`](/dev/phpdoc/functions/tainacan_blocks_initialize.md)                                                   | Initialize the Gutenberg Blocks logic, only if possible                                                                                                     |
-| [`tainacan_blocks_register_categories()`](/dev/phpdoc/functions/tainacan_blocks_register_categories.md)                                 | Registers the Tainacan category on the blocks inserter                                                                                                      |
-| [`tainacan_blocks_register_and_enqueue_all_blocks()`](/dev/phpdoc/functions/tainacan_blocks_register_and_enqueue_all_blocks.md)         | Calls the routines responsible for Registering the global style, category and
-both 'generic' and 'special' blocks                                           |
-| [`tainacan_blocks_register_block()`](/dev/phpdoc/functions/tainacan_blocks_register_block.md)                                           | Registers a 'generic' Tainacan Block, according to the TAINACAN_BLOCKs array                                                                                |
-| [`tainacan_blocks_get_common_theme_styles()`](/dev/phpdoc/functions/tainacan_blocks_get_common_theme_styles.md)                         | Enqueues the global theme styles necessary for the majority of the blocks                                                                                   |
-| [`tainacan_blocks_get_common_editor_styles()`](/dev/phpdoc/functions/tainacan_blocks_get_common_editor_styles.md)                       | Enqueues the global editor styles necessary for the majority of the blocks                                                                                  |
-| [`tainacan_blocks_get_plugin_js_settings()`](/dev/phpdoc/functions/tainacan_blocks_get_plugin_js_settings.md)                           | Generates the global 'tainacan_blocks' that contains some info from PHP necessary
-to the blocks scripts in JS                                               |
-| [`tainacan_blocks_add_common_theme_scripts()`](/dev/phpdoc/functions/tainacan_blocks_add_common_theme_scripts.md)                       | Efectivelly enqueues the common js and passes the necessary global variables                                                                                |
-| [`tainacan_blocks_add_extra_item_submission_assets()`](/dev/phpdoc/functions/tainacan_blocks_add_extra_item_submission_assets.md)       | Registers the extra scripts necessary for item submission block                                                                                             |
-| [`tainacan_blocks_add_extra_faceted_search_assets()`](/dev/phpdoc/functions/tainacan_blocks_add_extra_faceted_search_assets.md)         | Registers the extra styles necessary for faceted search block                                                                                               |
-| [`tainacan_blocks_get_category_icon_script()`](/dev/phpdoc/functions/tainacan_blocks_get_category_icon_script.md)                       | Registers the script that inserts the Tainacan icon on the blocks category                                                                                  |
-| [`tainacan_blocks_get_variations_script()`](/dev/phpdoc/functions/tainacan_blocks_get_variations_script.md)                             | Registers the script that inserts the Query Loop Block variations                                                                                           |
-| [`tainacan_blocks_register_react_components()`](/dev/phpdoc/functions/tainacan_blocks_register_react_components.md)                     | Registers Tainacan react components that may be used by either block editor
-scripts or plugin extenders.                                                    |
 
 ### \Tainacan
 
@@ -147,7 +135,9 @@ classDiagram
     class Embed { }
     class Background_Process { }
     class Cli_Move_Attachments { }
-    class Elastic_Press_lte4 { }
+    class Logs_Wp_Posts_Migration { }
+    class Cli_Logs { }
+    class Gutenberg_Blocks { }
     class Cli_Garbage_Collector { }
     class Cli_Collection { }
     class Admin { }
@@ -155,24 +145,24 @@ classDiagram
     class Mobile_App { }
     class Cli_Document { }
     class Settings { }
+    class Admin_Commands { }
     class Cli_Control_Metadata { }
     class Cli { }
     class Theme_Helper { }
     class Pages { }
     class Dashboard { }
-    class Elastic_Press { }
     class Admin_Bar_Items { }
     class Media { }
     class Search_Engine { }
     class Exposers_Handler { }
     Async_Request <|-- Background_Process_Base
     Background_Process_Base <|-- Background_Process
+    Cli_Logs ..> Logs_Wp_Posts_Migration
     Cli_Move_Attachments ..> Private_Files
     Cli_Move_Attachments ..> Theme_Helper
-    Elastic_Press ..> Elastic_Press
-    Elastic_Press ..> Elastic_Press_lte4
     Exposers_Handler ..> Mappers_Handler
-    Pages ..> Elastic_Press
+    Gutenberg_Blocks ..> Admin
+    Gutenberg_Blocks ..> Theme_Helper
     Pages ..> Exposers_Handler
     Pages ..> Mappers_Handler
     Pages ..> Theme_Helper
@@ -184,53 +174,57 @@ classDiagram
     Pages <|-- System_Check
     Private_Files ..> Media
     Private_Files ..> Theme_Helper
+    Settings ..> Gutenberg_Blocks
     System_Check ..> Private_Files
     Theme_Helper ..> Mappers_Handler
     Theme_Helper ..> Theme_Helper
 ```
 #### Classes
 
-| Class                                                                             | Description                                                           |
-|-----------------------------------------------------------------------------------|-----------------------------------------------------------------------|
-| [`Async_Request`](/dev/phpdoc/classes/Tainacan/Async_Request.md)                               | Abstract base class for asynchronous requests.                        |
-| [`Background_Process_Base`](/dev/phpdoc/classes/Tainacan/Background_Process_Base.md)           | Abstract base class for background processes in Tainacan.             |
-| [`Background_Process_Heartbeat`](/dev/phpdoc/classes/Tainacan/Background_Process_Heartbeat.md) |                                                                       |
-| [`Background_Process`](/dev/phpdoc/classes/Tainacan/Background_Process.md)                     | Abstract Tainacan\Background_Process class.                           |
-| [`Background_Exporter`](/dev/phpdoc/classes/Tainacan/Background_Exporter.md)                   | Abstract Tainacan\Background_Process class.                           |
-| [`Exporter_Handler`](/dev/phpdoc/classes/Tainacan/Exporter_Handler.md)                         |                                                                       |
-| [`Background_Generic_Process`](/dev/phpdoc/classes/Tainacan/Background_Generic_Process.md)     | Abstract Tainacan\Background_Process class.                           |
-| [`Generic_Process_Handler`](/dev/phpdoc/classes/Tainacan/Generic_Process_Handler.md)           |                                                                       |
-| [`Background_Importer`](/dev/phpdoc/classes/Tainacan/Background_Importer.md)                   | Abstract Tainacan\Background_Process class.                           |
-| [`Importer_Handler`](/dev/phpdoc/classes/Tainacan/Importer_Handler.md)                         |                                                                       |
-| [`Admin_Bar_Items`](/dev/phpdoc/classes/Tainacan/Admin_Bar_Items.md)                           | Handles WordPress admin bar items for Tainacan.                       |
-| [`__Bulk_Edit`](/dev/phpdoc/classes/Tainacan/__Bulk_Edit.md)                                   | Bulk_Edit class handles bulk item edition                             |
-| [`Elastic_Press_lte4`](/dev/phpdoc/classes/Tainacan/Elastic_Press_lte4.md)                     |                                                                       |
-| [`Elastic_Press`](/dev/phpdoc/classes/Tainacan/Elastic_Press.md)                               | Class Elastic_Press                                                   |
-| [`Embed`](/dev/phpdoc/classes/Tainacan/Embed.md)                                               | Handles media embedding functionality for Tainacan.                   |
-| [`Media`](/dev/phpdoc/classes/Tainacan/Media.md)                                               | Handles media functionality for Tainacan.                             |
-| [`Private_Files`](/dev/phpdoc/classes/Tainacan/Private_Files.md)                               | Handles private file management for Tainacan.                         |
-| [`Roles`](/dev/phpdoc/classes/Tainacan/Roles.md)                                               | Manages roles and capabilities for the Tainacan plugin.               |
-| [`Search_Engine`](/dev/phpdoc/classes/Tainacan/Search_Engine.md)                               | Implements the default Tainacan search engine.                        |
-| [`Cli_Collection`](/dev/phpdoc/classes/Tainacan/Cli_Collection.md)                             | Handles WP-CLI commands for Tainacan collections.                     |
-| [`Cli_Control_Metadata`](/dev/phpdoc/classes/Tainacan/Cli_Control_Metadata.md)                 | Handles WP-CLI commands for Tainacan control metadata operations.     |
-| [`Cli_Document`](/dev/phpdoc/classes/Tainacan/Cli_Document.md)                                 | Handles WP-CLI commands for Tainacan document indexing operations.    |
-| [`Cli_Garbage_Collector`](/dev/phpdoc/classes/Tainacan/Cli_Garbage_Collector.md)               | Handles WP-CLI commands for Tainacan garbage collection operations.   |
-| [`Cli_Move_Attachments`](/dev/phpdoc/classes/Tainacan/Cli_Move_Attachments.md)                 | Handles WP-CLI commands for Tainacan attachment migration operations. |
-| [`Cli`](/dev/phpdoc/classes/Tainacan/Cli.md)                                                   | Handles WP-CLI command registration for Tainacan.                     |
-| [`Exposers_Handler`](/dev/phpdoc/classes/Tainacan/Exposers_Handler.md)                         | Load exposers classes                                                 |
-| [`Mappers_Handler`](/dev/phpdoc/classes/Tainacan/Mappers_Handler.md)                           |                                                                       |
-| [`Theme_Helper`](/dev/phpdoc/classes/Tainacan/Theme_Helper.md)                                 | Theme helper class for Tainacan.                                      |
-| [`Migrations`](/dev/phpdoc/classes/Tainacan/Migrations.md)                                     |                                                                       |
-| [`Admin`](/dev/phpdoc/classes/Tainacan/Admin.md)                                               | Pages is an abstract base class for all Tainacan admin pages.         |
-| [`Admin_Hooks`](/dev/phpdoc/classes/Tainacan/Admin_Hooks.md)                                   |                                                                       |
-| [`Component_Hooks`](/dev/phpdoc/classes/Tainacan/Component_Hooks.md)                           | Class Components_Hooks                                                |
-| [`Plugin_Hooks`](/dev/phpdoc/classes/Tainacan/Plugin_Hooks.md)                                 | Class Plugins_Hooks                                                   |
-| [`Pages`](/dev/phpdoc/classes/Tainacan/Pages.md)                                               | Pages is an abstract base class for all Tainacan admin pages.         |
-| [`Dashboard`](/dev/phpdoc/classes/Tainacan/Dashboard.md)                                       | Pages is an abstract base class for all Tainacan admin pages.         |
-| [`Mobile_App`](/dev/phpdoc/classes/Tainacan/Mobile_App.md)                                     | Pages is an abstract base class for all Tainacan admin pages.         |
-| [`Roles_Editor`](/dev/phpdoc/classes/Tainacan/Roles_Editor.md)                                 | Pages is an abstract base class for all Tainacan admin pages.         |
-| [`Settings`](/dev/phpdoc/classes/Tainacan/Settings.md)                                         | Pages is an abstract base class for all Tainacan admin pages.         |
-| [`System_Check`](/dev/phpdoc/classes/Tainacan/System_Check.md)                                 | Pages is an abstract base class for all Tainacan admin pages.         |
+| Class                                                                             | Description                                                                                               |
+|-----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
+| [`Async_Request`](/dev/phpdoc/classes/Tainacan/Async_Request.md)                               | Abstract base class for asynchronous requests.                                                            |
+| [`Background_Process_Base`](/dev/phpdoc/classes/Tainacan/Background_Process_Base.md)           | Abstract base class for background processes in Tainacan.                                                 |
+| [`Background_Process_Heartbeat`](/dev/phpdoc/classes/Tainacan/Background_Process_Heartbeat.md) |                                                                                                           |
+| [`Background_Process`](/dev/phpdoc/classes/Tainacan/Background_Process.md)                     | Abstract Tainacan\Background_Process class.                                                               |
+| [`Background_Exporter`](/dev/phpdoc/classes/Tainacan/Background_Exporter.md)                   | Abstract Tainacan\Background_Process class.                                                               |
+| [`Exporter_Handler`](/dev/phpdoc/classes/Tainacan/Exporter_Handler.md)                         |                                                                                                           |
+| [`Background_Generic_Process`](/dev/phpdoc/classes/Tainacan/Background_Generic_Process.md)     | Abstract Tainacan\Background_Process class.                                                               |
+| [`Generic_Process_Handler`](/dev/phpdoc/classes/Tainacan/Generic_Process_Handler.md)           |                                                                                                           |
+| [`Background_Importer`](/dev/phpdoc/classes/Tainacan/Background_Importer.md)                   | Abstract Tainacan\Background_Process class.                                                               |
+| [`Importer_Handler`](/dev/phpdoc/classes/Tainacan/Importer_Handler.md)                         |                                                                                                           |
+| [`__Bulk_Edit`](/dev/phpdoc/classes/Tainacan/__Bulk_Edit.md)                                   | Bulk_Edit class handles bulk item edition                                                                 |
+| [`Embed`](/dev/phpdoc/classes/Tainacan/Embed.md)                                               | Handles media embedding functionality for Tainacan.                                                       |
+| [`Media`](/dev/phpdoc/classes/Tainacan/Media.md)                                               | Handles media functionality for Tainacan.                                                                 |
+| [`Private_Files`](/dev/phpdoc/classes/Tainacan/Private_Files.md)                               | Handles private file management for Tainacan.                                                             |
+| [`Roles`](/dev/phpdoc/classes/Tainacan/Roles.md)                                               | Manages roles and capabilities for the Tainacan plugin.                                                   |
+| [`Search_Engine`](/dev/phpdoc/classes/Tainacan/Search_Engine.md)                               | Implements the default Tainacan search engine.                                                            |
+| [`Cli_Collection`](/dev/phpdoc/classes/Tainacan/Cli_Collection.md)                             | Handles WP-CLI commands for Tainacan collections.                                                         |
+| [`Cli_Control_Metadata`](/dev/phpdoc/classes/Tainacan/Cli_Control_Metadata.md)                 | Handles WP-CLI commands for Tainacan control metadata operations.                                         |
+| [`Cli_Document`](/dev/phpdoc/classes/Tainacan/Cli_Document.md)                                 | Handles WP-CLI commands for Tainacan document indexing operations.                                        |
+| [`Cli_Garbage_Collector`](/dev/phpdoc/classes/Tainacan/Cli_Garbage_Collector.md)               | Handles WP-CLI commands for Tainacan garbage collection operations.                                       |
+| [`Logs_Wp_Posts_Migration`](/dev/phpdoc/classes/Tainacan/Logs_Wp_Posts_Migration.md)           | Handles migration of legacy Tainacan logs from wp_posts/wp_postmeta
+to the dedicated tainacan_logs table. |
+| [`Cli_Logs`](/dev/phpdoc/classes/Tainacan/Cli_Logs.md)                                         | Manages Tainacan activity log data migration from the legacy wp_posts structure.                          |
+| [`Cli_Move_Attachments`](/dev/phpdoc/classes/Tainacan/Cli_Move_Attachments.md)                 | Handles WP-CLI commands for Tainacan attachment migration operations.                                     |
+| [`Cli`](/dev/phpdoc/classes/Tainacan/Cli.md)                                                   | Handles WP-CLI command registration for Tainacan.                                                         |
+| [`Exposers_Handler`](/dev/phpdoc/classes/Tainacan/Exposers_Handler.md)                         | Load exposers classes                                                                                     |
+| [`Mappers_Handler`](/dev/phpdoc/classes/Tainacan/Mappers_Handler.md)                           |                                                                                                           |
+| [`Theme_Helper`](/dev/phpdoc/classes/Tainacan/Theme_Helper.md)                                 | Theme helper class for Tainacan.                                                                          |
+| [`Migrations`](/dev/phpdoc/classes/Tainacan/Migrations.md)                                     |                                                                                                           |
+| [`Admin`](/dev/phpdoc/classes/Tainacan/Admin.md)                                               | Pages is an abstract base class for all Tainacan admin pages.                                             |
+| [`Admin_Hooks`](/dev/phpdoc/classes/Tainacan/Admin_Hooks.md)                                   |                                                                                                           |
+| [`Component_Hooks`](/dev/phpdoc/classes/Tainacan/Component_Hooks.md)                           | Class Components_Hooks                                                                                    |
+| [`Plugin_Hooks`](/dev/phpdoc/classes/Tainacan/Plugin_Hooks.md)                                 | Class Plugins_Hooks                                                                                       |
+| [`Admin_Bar_Items`](/dev/phpdoc/classes/Tainacan/Admin_Bar_Items.md)                           | Handles WordPress admin bar items for Tainacan.                                                           |
+| [`Admin_Commands`](/dev/phpdoc/classes/Tainacan/Admin_Commands.md)                             | Handles WordPress Command Palette integration for Tainacan.                                               |
+| [`Pages`](/dev/phpdoc/classes/Tainacan/Pages.md)                                               | Pages is an abstract base class for all Tainacan admin pages.                                             |
+| [`Dashboard`](/dev/phpdoc/classes/Tainacan/Dashboard.md)                                       | Pages is an abstract base class for all Tainacan admin pages.                                             |
+| [`Gutenberg_Blocks`](/dev/phpdoc/classes/Tainacan/Gutenberg_Blocks.md)                         | Handles registration of Tainacan Gutenberg blocks and Query loop variations.                              |
+| [`Mobile_App`](/dev/phpdoc/classes/Tainacan/Mobile_App.md)                                     | Pages is an abstract base class for all Tainacan admin pages.                                             |
+| [`Roles_Editor`](/dev/phpdoc/classes/Tainacan/Roles_Editor.md)                                 | Pages is an abstract base class for all Tainacan admin pages.                                             |
+| [`Settings`](/dev/phpdoc/classes/Tainacan/Settings.md)                                         | Pages is an abstract base class for all Tainacan admin pages.                                             |
+| [`System_Check`](/dev/phpdoc/classes/Tainacan/System_Check.md)                                 | Pages is an abstract base class for all Tainacan admin pages.                                             |
 
 ### \Tainacan\API
 
@@ -579,6 +573,29 @@ classDiagram
 | [`Test_Importer`](/dev/phpdoc/classes/Tainacan/Importer/Test_Importer.md)       | Test Importer |
 | [`Youtube_Importer`](/dev/phpdoc/classes/Tainacan/Importer/Youtube_Importer.md) |               |
 
+### \Tainacan\Integrations
+
+
+
+#### Namespace Diagram
+
+```mermaid
+classDiagram
+    direction TB
+    class Elastic_Press_lte4 { }
+    class WordPress_AI { }
+    class Elastic_Press { }
+    Elastic_Press ..> Elastic_Press
+    Elastic_Press ..> Elastic_Press_lte4
+```
+#### Classes
+
+| Class                                                                      | Description                                                                 |
+|----------------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| [`Elastic_Press_lte4`](/dev/phpdoc/classes/Tainacan/Integrations/Elastic_Press_lte4.md) |                                                                             |
+| [`Elastic_Press`](/dev/phpdoc/classes/Tainacan/Integrations/Elastic_Press.md)           | Class Elastic_Press                                                         |
+| [`WordPress_AI`](/dev/phpdoc/classes/Tainacan/Integrations/WordPress_AI.md)             | Integration with the WordPress AI plugin (https://github.com/WordPress/ai). |
+
 ### \Tainacan\Mappers
 
 
@@ -637,29 +654,59 @@ http://purl.org/dc/elements/1.1/ |
 
 ### \Tainacan\OAIPMHExpose
 
-OAI-PMH 2.0 provider classes used by `REST_Oaipmh_Expose_Controller` at `/wp-json/tainacan/v2/oai`.
+
 
 #### Namespace Diagram
 
 ```mermaid
 classDiagram
     direction TB
-    class OAIPMH_Data_Provider { }
-    class OAIPMH_Xml_Generator { }
-    class OAIPMH_Token_Manager { }
-    class REST_Oaipmh_Expose_Controller { }
-    REST_Oaipmh_Expose_Controller ..> OAIPMH_Data_Provider
-    REST_Oaipmh_Expose_Controller ..> OAIPMH_Xml_Generator
-    REST_Oaipmh_Expose_Controller ..> OAIPMH_Token_Manager
+    class OAIPMH_Get_Record { }
+    class OAIPMH_List_Identifiers { }
+    class OAIPMH_List_Sets { }
+    class OAIPMH_Expose { }
+    class OAIPMH_List_Metadata_Formats { }
+    class OAIPMH_Identify { }
+    class XML_Error { }
+    class Xml_Response { }
+    class OAIPMH_List_Records { }
+    class Xml_Create { }
+    OAIPMH_Expose ..> XML_Error
+    OAIPMH_Expose <|-- OAIPMH_Get_Record
+    OAIPMH_Expose <|-- OAIPMH_Identify
+    OAIPMH_Expose <|-- OAIPMH_List_Identifiers
+    OAIPMH_Expose <|-- OAIPMH_List_Metadata_Formats
+    OAIPMH_Expose <|-- OAIPMH_List_Records
+    OAIPMH_Expose <|-- OAIPMH_List_Sets
+    OAIPMH_Get_Record ..> Xml_Response
+    OAIPMH_Identify ..> Xml_Response
+    OAIPMH_List_Identifiers ..> Xml_Response
+    OAIPMH_List_Metadata_Formats ..> Xml_Response
+    OAIPMH_List_Records ..> Xml_Response
+    OAIPMH_List_Sets ..> Xml_Response
+    Xml_Create <|-- Xml_Response
 ```
-
 #### Classes
 
-| Class | Description |
-|-------|-------------|
-| [`OAIPMH_Data_Provider`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/OAIPMH_Data_Provider.md) | Maps Tainacan entities to OAI record arrays |
-| [`OAIPMH_Xml_Generator`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/OAIPMH_Xml_Generator.md) | Builds OAI-PMH XML with DOMDocument |
-| [`OAIPMH_Token_Manager`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/OAIPMH_Token_Manager.md) | Transient-backed resumptionToken storage |
+| Class                                                                                          | Description                                                   |
+|------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
+| [`OAIPMH_Expose`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/OAIPMH_Expose.md)                               | Support Dublin Core Mapping
+http://purl.org/dc/elements/1.1/  |
+| [`OAIPMH_Get_Record`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/OAIPMH_Get_Record.md)                       | Support Dublin Core Mapping
+http://purl.org/dc/elements/1.1/  |
+| [`OAIPMH_Identify`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/OAIPMH_Identify.md)                           | Support Dublin Core Mapping
+http://purl.org/dc/elements/1.1/  |
+| [`OAIPMH_List_Identifiers`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/OAIPMH_List_Identifiers.md)           | Support Dublin Core Mapping
+http://purl.org/dc/elements/1.1/  |
+| [`OAIPMH_List_Metadata_Formats`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/OAIPMH_List_Metadata_Formats.md) | Support Dublin Core Mapping
+http://purl.org/dc/elements/1.1/  |
+| [`OAIPMH_List_Records`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/OAIPMH_List_Records.md)                   | Support Dublin Core Mapping
+http://purl.org/dc/elements/1.1/  |
+| [`OAIPMH_List_Sets`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/OAIPMH_List_Sets.md)                         | Support Dublin Core Mapping
+http://purl.org/dc/elements/1.1/  |
+| [`Xml_Create`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/Xml_Create.md)                                     | A wraper of DOMDocument for data provider                     |
+| [`XML_Error`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/XML_Error.md)                                       | Generate an XML response when a request cannot be finished    |
+| [`Xml_Response`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/Xml_Response.md)                                 | Generate an XML response to a request if no error has occured |
 
 ### \Tainacan\Repositories
 
@@ -671,6 +718,7 @@ classDiagram
 classDiagram
     direction TB
     class Metadata_Sections { }
+    class Logs { }
     class Logs { }
     class Item_Metadata { }
     class Metadata { }
@@ -726,6 +774,7 @@ classDiagram
 | [`Filters`](/dev/phpdoc/classes/Tainacan/Repositories/Filters.md)                     | Repository for managing Tainacan filters.              |
 | [`Item_Metadata`](/dev/phpdoc/classes/Tainacan/Repositories/Item_Metadata.md)         | Repository for managing Tainacan item metadata.        |
 | [`Items`](/dev/phpdoc/classes/Tainacan/Repositories/Items.md)                         | Repository for managing Tainacan items.                |
+| [`Logs`](/dev/phpdoc/classes/Tainacan/Repositories/Logs.md)                           | Abstract base class for all Tainacan repositories.     |
 | [`Logs`](/dev/phpdoc/classes/Tainacan/Repositories/Logs.md)                           | Repository for managing Tainacan logs.                 |
 | [`Metadata_Sections`](/dev/phpdoc/classes/Tainacan/Repositories/Metadata_Sections.md) | Repository for managing Tainacan metadata sections.    |
 | [`Metadata`](/dev/phpdoc/classes/Tainacan/Repositories/Metadata.md)                   | Repository for managing Tainacan metadata definitions. |

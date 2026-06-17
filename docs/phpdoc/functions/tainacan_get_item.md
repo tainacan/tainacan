@@ -12,10 +12,12 @@ If used inside the Loop of items, will get the Item object for the current post
 
 ## Parameters
 
-| Parameter  | Type      | Description |
-|------------|-----------|-------------|
-| `$post_id` | **mixed** |             |
+| Parameter  | Type            | Description                                              |
+|------------|-----------------|----------------------------------------------------------|
+| `$post_id` | **int\|string** | (Optional) The post ID. Default is 0 (uses global $post) |
 
 ## Return Value
 
-**mixed**
+**\Tainacan\Entities\Item|null**
+
+The Item object, or null if not found or not a valid item

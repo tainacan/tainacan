@@ -17,6 +17,7 @@ classDiagram
     direction TB
     class Admin_Bar_Items {
         -init()
+        -$get_admin_bar_css()
         +add_admin_bar_items_styles()
         +add_admin_bar_items(admin_bar)
     }
@@ -34,9 +35,24 @@ private init(): void
 
 ***
 
+### get_admin_bar_css
+
+Gets the CSS styles for admin bar items. (Too small to be a separate file)
+
+```php
+private static get_admin_bar_css(): string
+```
+
+* This method is **static**.
+**Return Value:**
+
+CSS content for admin bar items.
+
+***
+
 ### add_admin_bar_items_styles
 
-Enqueues styles for admin bar items.
+Adds inline styles for admin bar items.
 
 ```php
 public add_admin_bar_items_styles(): void

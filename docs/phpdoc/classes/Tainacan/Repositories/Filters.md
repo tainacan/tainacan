@@ -42,6 +42,7 @@ classDiagram
         +fetch_one(args)
         +trash(entity)
         +delete(entity, permanent)
+        -delete_attachments(entity)
         +can_edit(entity, user)
         +can_read(entity, user)
         +can_delete(entity, user)
@@ -749,7 +750,7 @@ public static get_entity_by_post(int|\WP_Post $post): \Tainacan\Entities\Entity|
 ### get_entity_by_post_type
 
 ```php
-public static get_entity_by_post_type(string $post_type, int|\WP_Post $post): \Tainacan\Entities\Entity|bool
+public static get_entity_by_post_type(string $post_type, int|\WP_Post $post = 0): \Tainacan\Entities\Entity|bool
 ```
 
 * This method is **static**.

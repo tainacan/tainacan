@@ -19,10 +19,10 @@ Tainacan Items
 |-----------|-------------------|-----------------------------------------------------------------|
 | `$text`   | **string**        | (optional) Anchor text. If null, default is 'Edit this item'.   |
 | `$before` | **string**        | (optional) Display before edit link                             |
-| `$after`  | **mixed**         |                                                                 |
+| `$after`  | **string**        | (optional) Display after edit link                              |
 | `$id`     | **int\|\WP_Post** | (optional) Post ID or post object. Default is the global $post. |
 | `$class`  | **string**        | (optional) Add custom class to link                             |
 
 ## Return Value
 
-**mixed**
+**void**

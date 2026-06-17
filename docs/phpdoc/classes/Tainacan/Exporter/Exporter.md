@@ -107,20 +107,20 @@ classDiagram
 
 ### id
 
-The ID for this importer/exporter session
+The ID for this exporter session
 
 ```php
 protected \Tainacan\Exporter\identifier $id
 ```
 
-When creating a new importer/exporter session via API, an id is returned and used to access this
-importer/exporter instance. This is temporarly saved in the database and discarded after the bg process is triggered
+When creating a new exporter session via API, an id is returned and used to access this
+exporter instance. This is temporarly saved in the database and discarded after the bg process is triggered
 
 ***
 
 ### options
 
-Stores the options for the importer/exporter. Each importer/exporter might use this property to save
+Stores the options for the exporter. Each exporter might use this property to save
 their own specific option
 
 ```php
@@ -131,7 +131,7 @@ protected array $options
 
 ### default_options
 
-Stores the default options for the importer/exporter options
+Stores the default options for the exporter options
 
 ```php
 protected array $default_options
@@ -141,7 +141,7 @@ protected array $default_options
 
 ### steps
 
-Declares what are the steps the importer/exporter will run, in the right order.
+Declares what are the steps the exporter will run, in the right order.
 
 ```php
 protected array $steps
@@ -151,7 +151,7 @@ By default, there is only one step, and the callback is the process_collections 
 that process items for the collections in the collections array.
 
 Child classes may declare as many steps as they want and can keep this default step to use
-this method for importer/exporter the items. But it is optional.
+this method for exporter the items. But it is optional.
 
 ***
 
@@ -163,11 +163,11 @@ This array holds the structure that the default step 'process_collections' will 
 protected array $collections
 ```
 
-Its an array of the target collections, with their IDs, an identifier from the source, the total number of items to be importer/exporter, the mapping array
+Its an array of the target collections, with their IDs, an identifier from the source, the total number of items to be exporter, the mapping array
 from the source structure to the ID of the metadata in tainacan
 
 The format of the map is an array where the keys are the metadata IDs of the destination collection and the
-values are the identifier from the source. This could be an ID or a string or whatever the importer/exporter finds appropriate to handle
+values are the identifier from the source. This could be an ID or a string or whatever the exporter finds appropriate to handle
 
 The source_id can be anyhting you like, that helps you relate this collection to your source.
 
@@ -245,7 +245,7 @@ Transients can be strings, numbers or arrays. Avoid storing objects.
 
 ### abort
 
-Whether to abort importer/exporter execution.
+Whether to abort exporter execution.
 
 ```php
 protected bool $abort
@@ -757,7 +757,7 @@ protected cancel_abort(): void
 
 ### abort
 
-Schedule importer abortion at the end of run()
+Schedule	exporter abortion at the end of run()
 
 ```php
 protected abort(): void
@@ -767,7 +767,7 @@ protected abort(): void
 
 ### get_abort
 
-Return whether importer should abort execution or not
+Return whether exporter should abort execution or not
 
 ```php
 public get_abort(): bool
@@ -786,14 +786,14 @@ public get_progress_label(): string
 
 It automatically gets the attribute progress_label from the current step running.
 
-Importers/Exporters may change this label whenever they want
+Exporters may change this label whenever they want
 
 ***
 
 ### get_progress_value
 
 Gets the current value to build the progress bar and give feedback to the user
-on the background process that is running the importer.
+on the background process that is running the exporter.
 
 ```php
 public get_progress_value(): mixed
@@ -890,7 +890,7 @@ public get_current_mapper(): mixed
 
 ### options_form
 
-Method implemented by child importer/exporter to return the HTML of the Options Form to be rendered in the Importer page
+Method implemented by child exporter to return the HTML of the Options Form to be rendered in the Exporter page
 
 ```php
 public options_form(): mixed

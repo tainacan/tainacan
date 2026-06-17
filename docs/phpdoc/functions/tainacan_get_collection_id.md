@@ -14,4 +14,6 @@ This function has no parameters.
 
 ## Return Value
 
-**mixed**
+**int|false**
+
+The collection ID, or false if not found

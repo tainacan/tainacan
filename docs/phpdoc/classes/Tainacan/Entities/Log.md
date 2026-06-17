@@ -233,7 +233,7 @@ protected string $repository
 Create an instance of Entity
 
 ```php
-public __construct(mixed $which): mixed
+public __construct(mixed $which = 0): mixed
 ```
 
 If ID or WP Post is passed, it retrieves the object from the database
@@ -419,7 +419,7 @@ public set_description(mixed $value): void
 Define the user ID of log entry
 
 ```php
-public set_user_id(mixed $value): void
+public set_user_id(mixed $value = 0): void
 ```
 
 **Parameters:**
@@ -579,7 +579,7 @@ public approve(): mixed
 Create an instance of Entity
 
 ```php
-public __construct(mixed $which): mixed
+public __construct(mixed $which = 0): mixed
 ```
 
 If ID or WP Post is passed, it retrieves the object from the database
@@ -955,7 +955,7 @@ Object with all the capabilities as member variables.
 Compare this entity props with self old values or with $which other entity
 
 ```php
-public diff(\Tainacan\Entities\Entity|int|\WP_Post $which): array
+public diff(\Tainacan\Entities\Entity|int|\WP_Post $which = 0): array
 ```
 
 **Parameters:**

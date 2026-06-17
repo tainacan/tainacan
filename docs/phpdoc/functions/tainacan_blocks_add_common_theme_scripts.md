@@ -1,5 +1,15 @@
 # tainacan_blocks_add_common_theme_scripts
 
+# tainacan_blocks_add_common_theme_scripts
+
+# tainacan_blocks_add_common_theme_scripts
+
+# tainacan_blocks_add_common_theme_scripts
+
+# tainacan_blocks_add_common_theme_scripts
+
+# tainacan_blocks_add_common_theme_scripts
+
 
 Efectivelly enqueues the common js and passes the necessary global variables
 

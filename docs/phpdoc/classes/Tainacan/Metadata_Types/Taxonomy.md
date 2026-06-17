@@ -178,6 +178,80 @@ The HTML representation of the value, containing one or multiple terms, separate
 
 ***
 
+### render_terms_flat_list
+
+Renders a flat <ul><li> list of the given terms only (no ancestors, no nesting).
+
+```php
+private render_terms_flat_list(\Tainacan\Entities\Term[] $terms, \Tainacan\Entities\Item|null $item = null): string
+```
+
+Used when html_formatting is list and hide_hierarchy_path is yes.
+
+**Parameters:**
+
+| Parameter | Type                              | Description                     |
+|-----------|-----------------------------------|---------------------------------|
+| `$terms`  | **\Tainacan\Entities\Term[]**     | Selected terms only.            |
+| `$item`   | **\Tainacan\Entities\Item\|null** | Optional item for link context. |
+
+**Return Value:**
+
+HTML <ul><li>...</li></ul>.
+
+***
+
+### render_terms_hierarchy_tree
+
+Builds and returns an HTML list tree from multiple terms, including ancestors so hierarchy is shown without repeating parents.
+
+```php
+private render_terms_hierarchy_tree(\Tainacan\Entities\Term[] $terms, \Tainacan\Entities\Item|null $item = null): string
+```
+
+Uses get_ancestors() and a single get_terms() call (like wp_list_categories with 'include') to avoid N+1 queries.
+
+**Parameters:**
+
+| Parameter | Type                              | Description                           |
+|-----------|-----------------------------------|---------------------------------------|
+| `$terms`  | **\Tainacan\Entities\Term[]**     | Selected terms (may be at any level). |
+| `$item`   | **\Tainacan\Entities\Item\|null** | Optional item for link context.       |
+
+**Return Value:**
+
+Nested <ul>/<li> markup.
+
+**See Also:**
+
+* https://developer.wordpress.org/reference/functions/wp_list_categories/
+
+***
+
+### render_terms_tree_level
+
+Renders one level of the term tree as <ul><li>...</li></ul>.
+
+```php
+private render_terms_tree_level(\Tainacan\Entities\Term[] $terms, array $children_by_parent, \Tainacan\Entities\Item|null $item = null): string
+```
+
+Caller must have already filtered to the desired terms and built children_by_parent.
+
+**Parameters:**
+
+| Parameter             | Type                              | Description              |
+|-----------------------|-----------------------------------|--------------------------|
+| `$terms`              | **\Tainacan\Entities\Term[]**     | Terms at this level.     |
+| `$children_by_parent` | **array**                         | Map parent_id => Term[]. |
+| `$item`               | **\Tainacan\Entities\Item\|null** | Optional item.           |
+
+**Return Value:**
+
+HTML fragment.
+
+***
+
 ### get_term_hierarchy_html
 
 ```php

@@ -1,6 +1,8 @@
 # tainacan_get_attachment_html_url
 
 
+Get the HTML URL for an attachment
+
 ***
 
 * Full name: `tainacan_get_attachment_html_url`
@@ -8,10 +10,12 @@
 
 ## Parameters
 
-| Parameter        | Type      | Description |
-|------------------|-----------|-------------|
-| `$attachment_id` | **mixed** |             |
+| Parameter        | Type    | Description       |
+|------------------|---------|-------------------|
+| `$attachment_id` | **int** | The attachment ID |
 
 ## Return Value
 
-**mixed**
+**string**
+
+The HTML URL for the attachment

@@ -1,10 +1,48 @@
 # Elastic_Press_lte4
 
+# Elastic_Press_lte4
+
+# Elastic_Press_lte4
+
+# Elastic_Press_lte4
+
+# Elastic_Press_lte4
+
+# Elastic_Press_lte4
+
 
 ***
 
 * Full name: `\Tainacan\Elastic_Press_lte4`
 * **Warning:** this class is **deprecated**. This means that this class will likely be removed in a future version.
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    direction TB
+    class Elastic_Press_lte4 {
+        +last_aggregations : mixed
+        +facets : mixed
+        -aggregation_type : mixed
+        -instance : mixed
+        +$get_instance()
+        #__construct(ajax_query)
+        +is_active()
+        +init()
+        +elasticpress_config_mapping(mapping)
+        +ep_post_sync_args(post_args, post_id)
+        +filter_args(args, type)
+        -add_items_args(args)
+        +prepare_request(formatted_args, args)
+        +format_aggregations(aggregations)
+        +fetch_all_metadatum_values(return, metadatum, args)
+        -prepare_request_for_items(formatted_args)
+        -prepare_request_for_facet(formatted_args)
+        -format_aggregations_items(aggregations)
+        -format_aggregations_facet(aggregations)
+    }
+```
 
 ## Properties
 

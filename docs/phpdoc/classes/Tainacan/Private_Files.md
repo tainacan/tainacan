@@ -28,7 +28,7 @@ classDiagram
         +template_redirect()
         +image_get_intermediate_size(data, post_id, size)
         +wp_get_attachment_url(url, post_id)
-        +update_item_and_collection(obj)
+        +rename_item_and_collection_folder_path(obj, permanent_delete)
         +bulk_edit(status, group, select_query, query)
         +$add_htaccess_rules()
     }
@@ -233,21 +233,25 @@ public wp_get_attachment_url(mixed $url, mixed $post_id): mixed
 
 ***
 
-### update_item_and_collection
+### rename_item_and_collection_folder_path
 
-When an item or collection is saved, it checks if the satus was changed and
-if the items upload directory mus be renamed to add or remove the
+When an item or collection is saved, it checks if the status was changed and
+if the items upload directory must be renamed to add or remove the
 private folder prefix
 
 ```php
-public update_item_and_collection(mixed $obj): mixed
+public rename_item_and_collection_folder_path(mixed $obj, mixed $permanent_delete = false): mixed
 ```
+
+TODO: when deleting an item or collection, the folder must be deleted. However this is challenging because
+we need to build the path with information that may not be available after the deletion.
 
 **Parameters:**
 
-| Parameter | Type      | Description |
-|-----------|-----------|-------------|
-| `$obj`    | **mixed** |             |
+| Parameter           | Type      | Description |
+|---------------------|-----------|-------------|
+| `$obj`              | **mixed** |             |
+| `$permanent_delete` | **mixed** |             |
 
 ***
 

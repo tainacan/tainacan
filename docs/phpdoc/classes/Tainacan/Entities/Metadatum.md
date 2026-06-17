@@ -25,6 +25,8 @@ classDiagram
         +__toString()
         +set_display(display)
         +get_display()
+        +set_html_formatting(html_formatting)
+        +get_html_formatting()
         +get_allow_advanced_search()
         +set_allow_advanced_search(allow_advanced_search)
         +get_name()
@@ -197,6 +199,14 @@ protected $display
 
 ***
 
+### html_formatting
+
+```php
+protected $html_formatting
+```
+
+***
+
 ### allow_advanced_search
 
 ```php
@@ -334,6 +344,32 @@ public set_display(mixed $display): mixed
 ```php
 public get_display(): mixed
 ```
+
+***
+
+### set_html_formatting
+
+```php
+public set_html_formatting(string $html_formatting): mixed
+```
+
+**Parameters:**
+
+| Parameter          | Type       | Description |
+|--------------------|------------|-------------|
+| `$html_formatting` | **string** |             |
+
+***
+
+### get_html_formatting
+
+```php
+public get_html_formatting(): string
+```
+
+**Return Value:**
+
+'inline' or 'list'. Defaults to 'inline' when not set.
 
 ***
 
@@ -948,7 +984,7 @@ valid or not
 Create an instance of Entity
 
 ```php
-public __construct(mixed $which): mixed
+public __construct(mixed $which = 0): mixed
 ```
 
 If ID or WP Post is passed, it retrieves the object from the database
@@ -1324,7 +1360,7 @@ Object with all the capabilities as member variables.
 Compare this entity props with self old values or with $which other entity
 
 ```php
-public diff(\Tainacan\Entities\Entity|int|\WP_Post $which): array
+public diff(\Tainacan\Entities\Entity|int|\WP_Post $which = 0): array
 ```
 
 **Parameters:**

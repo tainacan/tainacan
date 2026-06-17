@@ -122,7 +122,7 @@ public unregister_mapper(mixed $class_name): mixed
 Return list of registered mappers
 
 ```php
-public get_mappers(string $output = ARRAY_N): mixed
+public get_mappers(string $output = \Tainacan\ARRAY_N): mixed
 ```
 
 **Parameters:**
@@ -240,7 +240,7 @@ public mapper_exists(string $mapper): bool
 Return namespaced class name
 
 ```php
-public check_class_name(string $class_name, bool $root = false, string $prefix = 'TainacanMapper\'): string
+public check_class_name(string $class_name, bool $root = false, string $prefix = 'Tainacan\Mapper\\'): string
 ```
 
 **Parameters:**

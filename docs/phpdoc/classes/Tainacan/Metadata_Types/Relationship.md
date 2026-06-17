@@ -20,7 +20,7 @@ classDiagram
         +validate_options(metadatum)
         +get_value_as_html(item_metadata)
         -can_display_item(item)
-        -get_item_html(item, search_meta_id, display_metas)
+        -get_item_html(item, search_meta_id, display_metas, render_as_list_item)
         -get_item_link(item, search_meta_id)
         -get_item_thumbnail(thumbnail_id, item)
         -get_meta_html(meta, item, value_link, thumbnail_id, should_display_thumbnail)
@@ -124,16 +124,17 @@ private can_display_item(mixed $item): mixed
 ### get_item_html
 
 ```php
-private get_item_html(mixed $item, mixed $search_meta_id, mixed $display_metas): mixed
+private get_item_html(mixed $item, mixed $search_meta_id, mixed $display_metas, mixed $render_as_list_item = false): mixed
 ```
 
 **Parameters:**
 
-| Parameter         | Type      | Description |
-|-------------------|-----------|-------------|
-| `$item`           | **mixed** |             |
-| `$search_meta_id` | **mixed** |             |
-| `$display_metas`  | **mixed** |             |
+| Parameter              | Type      | Description |
+|------------------------|-----------|-------------|
+| `$item`                | **mixed** |             |
+| `$search_meta_id`      | **mixed** |             |
+| `$display_metas`       | **mixed** |             |
+| `$render_as_list_item` | **mixed** |             |
 
 ***
 

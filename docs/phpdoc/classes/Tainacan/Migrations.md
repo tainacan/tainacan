@@ -189,3 +189,19 @@ public static alter_table_tnc_bg_process_add_uuid_refactor(): mixed
 
 * This method is **static**.
 ***
+
+### tainacan_create_logs_table
+
+Creates the custom wp_tainacan_logs table that replaces the wp_posts/wp_postmeta
+approach previously used to store Tainacan activity logs.
+
+```php
+public static tainacan_create_logs_table(): mixed
+```
+
+Each column corresponds to a field in the Log entity map:
+- title, date, description, slug, user_id  → formerly wp_posts columns
+- item_id … action, _user_edit_lastr        → formerly wp_postmeta rows
+
+* This method is **static**.
+***

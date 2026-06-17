@@ -1,6 +1,10 @@
 # tainacan_get_the_item_document_url
 
 
+To be used inside The Loop
+
+Return the item document download URL.
+
 ***
 
 * Full name: `tainacan_get_the_item_document_url`
@@ -8,10 +12,12 @@
 
 ## Parameters
 
-| Parameter  | Type      | Description |
-|------------|-----------|-------------|
-| `$item_id` | **mixed** |             |
+| Parameter  | Type            | Description                                         |
+|------------|-----------------|-----------------------------------------------------|
+| `$item_id` | **int\|string** | (Optional) The item ID. Default is the global $post |
 
 ## Return Value
 
-**mixed**
+**string**
+
+The document download URL, or empty string if item is not found or has no document

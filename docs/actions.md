@@ -15,7 +15,7 @@ Refer to the list below for available Tainacan actions and their usage.
 ## `tainacan-enqueue-roles-scripts` <!-- {docsify-ignore} -->
 
 
-Source: [class-tainacan-roles.php](https://github.com/tainacan/tainacan/blob/master/src/views/roles/class-tainacan-roles.php), [line 54](https://github.com/tainacan/tainacan/blob/master/src/views/roles/class-tainacan-roles.php#L54-L54)
+Source: [class-tainacan-roles.php](https://github.com/tainacan/tainacan/blob/master/src/views/roles/class-tainacan-roles.php), [line 57](https://github.com/tainacan/tainacan/blob/master/src/views/roles/class-tainacan-roles.php#L57-L57)
 
 ---------------------------------
 <br>
@@ -23,7 +23,7 @@ Source: [class-tainacan-roles.php](https://github.com/tainacan/tainacan/blob/mas
 ## `tainacan-dashboard-before-cards` <!-- {docsify-ignore} -->
 
 
-Source: [page.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php), [line 48](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php#L48-L48)
+Source: [page.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php), [line 49](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php#L49-L49)
 
 ---------------------------------
 <br>
@@ -31,7 +31,7 @@ Source: [page.php](https://github.com/tainacan/tainacan/blob/master/src/views/da
 ## `tainacan-dashboard-after-cards` <!-- {docsify-ignore} -->
 
 
-Source: [page.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php), [line 61](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php#L61-L61)
+Source: [page.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php), [line 62](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php#L62-L62)
 
 ---------------------------------
 <br>
@@ -39,7 +39,7 @@ Source: [page.php](https://github.com/tainacan/tainacan/blob/master/src/views/da
 ## `tainacan-enqueue-admin-scripts` <!-- {docsify-ignore} -->
 
 
-Source: [class-tainacan-admin.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php), [line 286](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php#L286-L286)
+Source: [class-tainacan-admin.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php), [line 301](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php#L301-L301)
 
 ---------------------------------
 <br>
@@ -75,7 +75,7 @@ Source: [class-tainacan-metadata-type-helper.php](https://github.com/tainacan/ta
 ## `tainacan-register-admin-hooks` <!-- {docsify-ignore} -->
 
 
-Source: [class-tainacan-admin-hooks.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/classes/hooks/class-tainacan-admin-hooks.php), [line 15](https://github.com/tainacan/tainacan/blob/master/src/views/admin/classes/hooks/class-tainacan-admin-hooks.php#L15-L15)
+Source: [class-tainacan-admin-hooks.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/classes/hooks/class-tainacan-admin-hooks.php), [line 17](https://github.com/tainacan/tainacan/blob/master/src/views/admin/classes/hooks/class-tainacan-admin-hooks.php#L17-L17)
 
 ---------------------------------
 <br>
@@ -138,17 +138,20 @@ Source: [class-tainacan-importer-handler.php](https://github.com/tainacan/tainac
 
 ## `tainacan-upload-folder-renamed` <!-- {docsify-ignore} -->
 
-*When an item or collection is saved, it checks if the satus was changed and
-if the items upload directory mus be renamed to add or remove the
+*When an item or collection is saved, it checks if the status was changed and
+if the items upload directory must be renamed to add or remove the
 private folder prefix*
+
+TODO: when deleting an item or collection, the folder must be deleted. However this is challenging because
+we need to build the path with information that may not be available after the deletion.
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$full_path_check` |  | 
-`$full_path` |  | 
+`$check_folder` |  | 
+`$folder` |  | 
 
-Source: [class-tainacan-private-files.php](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php), [line 320](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php#L320-L371)
+Source: [class-tainacan-private-files.php](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php), [line 325](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php#L325-L384)
 
 ---------------------------------
 <br>
@@ -165,7 +168,7 @@ Argument | Type | Description
 `$found[0]` |  | 
 `$target` |  | 
 
-Source: [class-tainacan-private-files.php](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php), [line 379](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php#L379-L410)
+Source: [class-tainacan-private-files.php](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php), [line 405](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php#L405-L436)
 
 ---------------------------------
 <br>
@@ -183,6 +186,84 @@ Argument | Type | Description
 `$query` |  | 
 
 Source: [class-tainacan-bulk-edit.php](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-bulk-edit.php), [line 223](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-bulk-edit.php#L223-L249)
+
+---------------------------------
+<br>
+
+## `tainacan-pre-insert` <!-- {docsify-ignore} -->
+
+*Persist a Log entity into the custom wp_tainacan_logs table.*
+
+Uses $wpdb->insert() with explicit format specifiers so all values
+go through wpdb's internal prepare(), preventing SQL injection.
+Serializable fields (old_value, new_value) are passed through
+maybe_serialize() before storage.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$obj` | `\Tainacan\Entities\Log` | 
+
+Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 453](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L453-L472)
+
+---------------------------------
+<br>
+
+## `tainacan-pre-insert-{$post_type}` <!-- {docsify-ignore} -->
+
+*Persist a Log entity into the custom wp_tainacan_logs table.*
+
+Uses $wpdb->insert() with explicit format specifiers so all values
+go through wpdb's internal prepare(), preventing SQL injection.
+Serializable fields (old_value, new_value) are passed through
+maybe_serialize() before storage.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$obj` | `\Tainacan\Entities\Log` | 
+
+Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 453](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L453-L474)
+
+---------------------------------
+<br>
+
+## `tainacan-insert` <!-- {docsify-ignore} -->
+
+*Persist a Log entity into the custom wp_tainacan_logs table.*
+
+Uses $wpdb->insert() with explicit format specifiers so all values
+go through wpdb's internal prepare(), preventing SQL injection.
+Serializable fields (old_value, new_value) are passed through
+maybe_serialize() before storage.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$obj` | `\Tainacan\Entities\Log` | 
+`[]` |  | 
+`false` |  | 
+
+Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 453](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L453-L519)
+
+---------------------------------
+<br>
+
+## `tainacan-insert-{$post_type}` <!-- {docsify-ignore} -->
+
+*Persist a Log entity into the custom wp_tainacan_logs table.*
+
+Uses $wpdb->insert() with explicit format specifiers so all values
+go through wpdb's internal prepare(), preventing SQL injection.
+Serializable fields (old_value, new_value) are passed through
+maybe_serialize() before storage.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$obj` | `\Tainacan\Entities\Log` | 
+
+Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 453](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L453-L520)
 
 ---------------------------------
 <br>
@@ -340,7 +421,7 @@ CLASS (default) - returns the Class name of of metadatum types registered
 NAME - return an Array of the names of metadatum types registered
 
 
-Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 783](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L783-L797)
+Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 794](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L794-L808)
 
 ---------------------------------
 <br>
@@ -358,7 +439,7 @@ Argument | Type | Description
 `$this->current_taxonomy` |  | 
 `$collection` |  | 
 
-Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 1641](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L1641-L1663)
+Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 1662](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L1662-L1684)
 
 ---------------------------------
 <br>
@@ -376,7 +457,7 @@ Argument | Type | Description
 `$new_tax` |  | 
 `$collection` |  | 
 
-Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 1641](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L1641-L1667)
+Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 1662](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L1662-L1688)
 
 ---------------------------------
 <br>
@@ -400,7 +481,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L10-L1718)
+Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L10-L1739)
 
 ---------------------------------
 <br>
@@ -501,7 +582,7 @@ Argument | Type | Description
 `$entity` | `\Tainacan\Entities\Entity` | 
 `$permanent` | `bool` | If false, sendo to trash, if true, permanently delete. Default true
 
-Source: [class-tainacan-repository.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-repository.php), [line 670](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-repository.php#L670-L692)
+Source: [class-tainacan-repository.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-repository.php), [line 670](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-repository.php#L670-L695)
 
 ---------------------------------
 <br>
@@ -514,7 +595,7 @@ Argument | Type | Description
 `$entity` | `\Tainacan\Entities\Entity` | 
 `$permanent` | `bool` | If false, sendo to trash, if true, permanently delete. Default true
 
-Source: [class-tainacan-repository.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-repository.php), [line 670](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-repository.php#L670-L693)
+Source: [class-tainacan-repository.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-repository.php), [line 670](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-repository.php#L670-L696)
 
 ---------------------------------
 <br>
@@ -667,7 +748,7 @@ Argument | Type | Description
 `$updated_item` |  | 
 `$attributes` |  | 
 
-Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 978](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L978-L1002)
+Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 979](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L979-L1003)
 
 ---------------------------------
 <br>
@@ -680,7 +761,7 @@ Argument | Type | Description
 `$item` |  | 
 `$new_item` |  | 
 
-Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 1042](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L1042-L1134)
+Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 1043](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L1043-L1135)
 
 ---------------------------------
 <br>
@@ -704,7 +785,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L11-L1460)
+Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L11-L1461)
 
 ---------------------------------
 <br>
@@ -720,7 +801,7 @@ Argument | Type | Description
 `$response` |  | 
 `$request` | `\WP_REST_Request` | 
 
-Source: [class-tainacan-rest-collections-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-collections-controller.php), [line 469](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-collections-controller.php#L469-L499)
+Source: [class-tainacan-rest-collections-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-collections-controller.php), [line 472](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-collections-controller.php#L472-L502)
 
 ---------------------------------
 <br>
@@ -736,7 +817,7 @@ Argument | Type | Description
 `$filename` | `string` | The filename that will be created
 `$post_id` | `int` | (optional) the post this attachement should be attached to. empty for none
 
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-media.php), [line 218](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-media.php#L218-L228)
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-media.php), [line 277](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-media.php#L277-L287)
 
 ---------------------------------
 <br>
@@ -752,7 +833,7 @@ Argument | Type | Description
 `$attach_data` |  | 
 `$post_id` | `int` | (optional) the post this attachement should be attached to. empty for none
 
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-media.php), [line 218](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-media.php#L218-L272)
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-media.php), [line 277](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-media.php#L277-L331)
 
 ---------------------------------
 <br>

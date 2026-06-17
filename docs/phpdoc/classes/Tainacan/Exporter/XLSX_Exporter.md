@@ -289,7 +289,7 @@ public process_item(mixed $item, mixed $metadata): mixed
 ### addRowToSheet
 
 ```php
-public addRowToSheet(array $rowData, mixed $sheetIndex): mixed
+public addRowToSheet(array $rowData, mixed $sheetIndex = 0): mixed
 ```
 
 **Parameters:**
@@ -379,7 +379,7 @@ public output_header(): mixed
 
 ### options_form
 
-Method implemented by child importer/exporter to return the HTML of the Options Form to be rendered in the Importer page
+Method implemented by child exporter to return the HTML of the Options Form to be rendered in the Exporter page
 
 ```php
 public options_form(): mixed
@@ -832,7 +832,7 @@ protected cancel_abort(): void
 
 ### abort
 
-Schedule importer abortion at the end of run()
+Schedule	exporter abortion at the end of run()
 
 ```php
 protected abort(): void
@@ -842,7 +842,7 @@ protected abort(): void
 
 ### get_abort
 
-Return whether importer should abort execution or not
+Return whether exporter should abort execution or not
 
 ```php
 public get_abort(): bool
@@ -861,14 +861,14 @@ public get_progress_label(): string
 
 It automatically gets the attribute progress_label from the current step running.
 
-Importers/Exporters may change this label whenever they want
+Exporters may change this label whenever they want
 
 ***
 
 ### get_progress_value
 
 Gets the current value to build the progress bar and give feedback to the user
-on the background process that is running the importer.
+on the background process that is running the exporter.
 
 ```php
 public get_progress_value(): mixed
@@ -965,7 +965,7 @@ public get_current_mapper(): mixed
 
 ### options_form
 
-Method implemented by child importer/exporter to return the HTML of the Options Form to be rendered in the Importer page
+Method implemented by child exporter to return the HTML of the Options Form to be rendered in the Exporter page
 
 ```php
 public options_form(): mixed
