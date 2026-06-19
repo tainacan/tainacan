@@ -1,0 +1,47 @@
+classDiagram
+    direction TB
+    class REST_Controller { }
+    class endpoints_REST_Oaipmh_Expose_Controller { }
+    class endpoints_REST_Roles_Controller { }
+    class endpoints_REST_Metadata_Controller { }
+    class endpoints_REST_Exporters_Controller { }
+    class endpoints_REST_Items_Controller { }
+    class endpoints_REST_Metadata_Sections_Controller { }
+    class endpoints_REST_Background_Processes_Controller { }
+    class endpoints_REST_Reports_Controller { }
+    class endpoints_REST_Terms_Controller { }
+    class endpoints_REST_Metadata_Types_Controller { }
+    class endpoints_REST_Exposers_Controller { }
+    class endpoints_REST_Metadatum_Mappers_Controller { }
+    class endpoints_REST_Facets_Controller { }
+    class endpoints_REST_Filters_Controller { }
+    class endpoints_REST_Importers_Controller { }
+    class endpoints_REST_Collections_Controller { }
+    class endpoints_REST_Filter_Types_Controller { }
+    class endpoints_REST_Item_Metadata_Controller { }
+    class endpoints_REST_Bulkedit_Controller { }
+    class endpoints_REST_Taxonomies_Controller { }
+    class endpoints_REST_Logs_Controller { }
+    class endpoints_REST_Sequence_Edit_Controller { }
+    REST_Controller <|-- endpoints_REST_Background_Processes_Controller
+    REST_Controller <|-- endpoints_REST_Bulkedit_Controller
+    REST_Controller <|-- endpoints_REST_Collections_Controller
+    REST_Controller <|-- endpoints_REST_Exporters_Controller
+    REST_Controller <|-- endpoints_REST_Exposers_Controller
+    REST_Controller <|-- endpoints_REST_Facets_Controller
+    REST_Controller <|-- endpoints_REST_Filter_Types_Controller
+    REST_Controller <|-- endpoints_REST_Filters_Controller
+    REST_Controller <|-- endpoints_REST_Importers_Controller
+    REST_Controller <|-- endpoints_REST_Item_Metadata_Controller
+    REST_Controller <|-- endpoints_REST_Items_Controller
+    REST_Controller <|-- endpoints_REST_Logs_Controller
+    REST_Controller <|-- endpoints_REST_Metadata_Controller
+    REST_Controller <|-- endpoints_REST_Metadata_Sections_Controller
+    REST_Controller <|-- endpoints_REST_Metadata_Types_Controller
+    REST_Controller <|-- endpoints_REST_Metadatum_Mappers_Controller
+    REST_Controller <|-- endpoints_REST_Oaipmh_Expose_Controller
+    REST_Controller <|-- endpoints_REST_Reports_Controller
+    REST_Controller <|-- endpoints_REST_Roles_Controller
+    REST_Controller <|-- endpoints_REST_Sequence_Edit_Controller
+    REST_Controller <|-- endpoints_REST_Taxonomies_Controller
+    REST_Controller <|-- endpoints_REST_Terms_Controller

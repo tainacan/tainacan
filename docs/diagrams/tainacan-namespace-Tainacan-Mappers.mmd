@@ -1,0 +1,13 @@
+classDiagram
+    direction TB
+    class Mapper { }
+    class Mappers_Handler { }
+    class Dublin_Core { }
+    class Inbcm_Archive { }
+    class Inbcm_Bibliographic { }
+    class Inbcm_Museological { }
+    Mapper <|-- Dublin_Core
+    Mapper <|-- Inbcm_Archive
+    Mapper <|-- Inbcm_Bibliographic
+    Mapper <|-- Inbcm_Museological
+    Mappers_Handler ..> Mapper

@@ -1,0 +1,180 @@
+@startuml class-diagram
+  class "OAIPMH_Get_Record" as OAIPMH_Get_Record {
+    #working_node : 
+    +errors : 
+    +xml_creater : 
+    +restoken : 
+    +expirationdatetime : 
+    +num_rows : 
+    +cursor : 
+    +deliveredrecords : 
+    +from : 
+    +until : 
+    +sets : 
+    +metadataPrefix : 
+    +__construct()
+    +get_item(params)
+    +get_record(data)
+    +get_current_mapper()
+    #create_metadata_node(item, collection, record_node)
+    -map_item_metadata(item)
+    +initiate_variables(data)
+  }
+  class "OAIPMH_List_Identifiers" as OAIPMH_List_Identifiers {
+    #working_node : 
+    +errors : 
+    +xml_creater : 
+    +restoken : 
+    +expirationdatetime : 
+    +num_rows : 
+    +cursor : 
+    +deliveredrecords : 
+    +from : 
+    +until : 
+    +sets : 
+    +metadataPrefix : 
+    +__construct()
+    +list_collections()
+    +get_items()
+    +list_identifiers(data)
+    +initiate_variables(data)
+    +verify_resumption_token(numRows)
+    +add_resumption_token_xml(numRows)
+  }
+  class "OAIPMH_List_Sets" as OAIPMH_List_Sets {
+    #working_node : 
+    +errors : 
+    +xml_creater : 
+    +restoken : 
+    +expirationdatetime : 
+    +num_rows : 
+    +cursor : 
+    +deliveredrecords : 
+    +from : 
+    +until : 
+    +sets : 
+    +metadataPrefix : 
+    +collection_repository : 
+    +__construct()
+    +list_collections()
+    +limit_data(objects)
+    +list_sets(data)
+    +initiate_variables(data)
+    +verify_resumption_token(numRows)
+    +add_resumption_token_xml(numRows)
+  }
+  class "OAIPMH_Expose\n<b>Support Dublin Core Mapping</b>" as OAIPMH_Expose {
+    +identifyResponse : 
+    +deletedRecord : 
+    +adminEmail : 
+    +compression : 
+    +expirationdatetime : 
+    +delimiter : 
+    +show_identifier : 
+    +SETS : 
+    +METADATAFORMATS : 
+    +supported_formats : 
+    +MAXRECORDS : 
+    +CONTENT_TYPE : 
+    +charset : 
+    +xmlescaped : 
+    +text : 
+    +code : 
+    +token_valid : 
+    +token_prefix : 
+    #collection_repository : 
+    #item_repository : 
+    #repositoryIdentifier : 
+    +config()
+    +is_valid_uri(url)
+    +is_valid_attrb(attrb)
+    +formatDatestamp(datestamp)
+    +checkDateFormat(date)
+    +prepare_set_names()
+    +oai_exit(args, errors)
+    #create_token_dir()
+    +get_token()
+    +createResumToken(cursor, from, until, sets, metadataPrefix)
+    +readResumToken(resumptionToken)
+    +oai_error(code, argument, value)
+    +get_metadata_formats(item_id)
+  }
+  class "OAIPMH_List_Metadata_Formats" as OAIPMH_List_Metadata_Formats {
+    #working_node : 
+    +errors : 
+    +xml_creater : 
+    +restoken : 
+    +expirationdatetime : 
+    +num_rows : 
+    +cursor : 
+    +deliveredrecords : 
+    +from : 
+    +until : 
+    +sets : 
+    +metadataPrefix : 
+    +list_metadata_formats(data)
+  }
+  class "OAIPMH_Identify" as OAIPMH_Identify {
+    #working_node : 
+    +identify(data)
+  }
+  class "XML_Error\n<b>Generate an XML response when a request cannot be finished</b>" as XML_Error {
+    +__construct(par_array, error_array)
+  }
+  class "Xml_Response\n<b>Generate an XML response to a request if no error has occured</b>" as Xml_Response {
+    +verbNode : 
+    #verb : 
+    +__construct(par_array)
+    +add2_verbNode(nodeName, value)
+    +create_record()
+    +create_header(identifier, timestamp, ands_class, add_to_node, is_deleted)
+    +create_metadata(mom_record_node)
+    +create_resumpToken(token, expirationdatetime, num_rows, cursor)
+  }
+  class "OAIPMH_List_Records" as OAIPMH_List_Records {
+    #working_node : 
+    +errors : 
+    +xml_creater : 
+    +restoken : 
+    +expirationdatetime : 
+    +num_rows : 
+    +cursor : 
+    +deliveredrecords : 
+    +from : 
+    +until : 
+    +sets : 
+    +metadataPrefix : 
+    +__construct()
+    +list_collections()
+    +get_items()
+    +list_records(data)
+    +get_current_mapper()
+    #create_metadata_node(item, collection, record_node)
+    -map_item_metadata(item)
+    +initiate_variables(data)
+    +verify_resumption_token(numRows)
+    +add_resumption_token_xml(numRows)
+  }
+  class "Xml_Create\n<b>A wraper of DOMDocument for data provider</b>" as Xml_Create {
+    +doc : 
+    +__construct(par_array)
+    +addChild(mom_node, name, value)
+    +addChildDC(mom_node, name, value)
+    +create_request(par_array)
+    +display()
+  }
+  OAIPMH_Expose ..> XML_Error
+  OAIPMH_Expose <|-- OAIPMH_Get_Record
+  OAIPMH_Expose <|-- OAIPMH_Identify
+  OAIPMH_Expose <|-- OAIPMH_List_Identifiers
+  OAIPMH_Expose <|-- OAIPMH_List_Metadata_Formats
+  OAIPMH_Expose <|-- OAIPMH_List_Records
+  OAIPMH_Expose <|-- OAIPMH_List_Sets
+  OAIPMH_Get_Record ..> Xml_Response
+  OAIPMH_Identify ..> Xml_Response
+  OAIPMH_List_Identifiers ..> Xml_Response
+  OAIPMH_List_Metadata_Formats ..> Xml_Response
+  OAIPMH_List_Records ..> Xml_Response
+  OAIPMH_List_Sets ..> Xml_Response
+  Xml_Create <|-- Xml_Response
+@enduml

@@ -1,0 +1,21 @@
+classDiagram
+    direction TB
+    class Exposers_Handler {
+        #exposers : mixed
+        -instance : mixed
+        -request : mixed
+        +$get_instance()
+        +__construct()
+        +init()
+        +register_exposer(class_name)
+        +unregister_exposer(class_name)
+        +check_class_name(class_name, root, prefix)
+        +is_tainacan_request(request)
+        +$request_has_url_param(request)
+        +rest_request_after_callbacks(response, handler, request)
+        +exposer_exists(exposer)
+        +$request_has_exposer(request)
+        +get_exposers(output)
+        +filter_check_items_request(response, request)
+        +$get_exposer_urls(base_url)
+    }

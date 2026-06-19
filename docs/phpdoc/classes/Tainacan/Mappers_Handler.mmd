@@ -1,0 +1,21 @@
+classDiagram
+    direction TB
+    class Mappers_Handler {
+        -instance : mixed
+        #mappers : mixed
+        +$get_instance()
+        +__construct()
+        +init()
+        +register_mapper(class_name)
+        +unregister_mapper(class_name)
+        +get_mappers(output)
+        +get_mapper(slug)
+        +mappers_i18n(i18n_strings)
+        +$get_mapper_from_request(request)
+        #map_metadatum(item_arr, mapper)
+        #map(item_arr, mapper, resquest)
+        +mapper_exists(mapper)
+        +check_class_name(class_name, root, prefix)
+        +create_mapped_collection(collection, request)
+        +filter_item_api_response(item_arr, item, request)
+    }

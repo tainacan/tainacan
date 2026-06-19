@@ -1,0 +1,33 @@
+@startuml class-diagram
+  class "Formatter_Text\n<b>Class for formatter texts</b>" as Formatter_Text {
+    {static} +make_clickable_links(text)
+  }
+  class "Admin_UI_Options\n<b>Class for getting Admin UI options passed either via query string in</b>" as Admin_UI_Options {
+    #admin_ui_options : 
+    +get_available_admin_ui_options()
+    +has_admin_ui_option(option)
+  }
+  class "Entity_Collection_Relation\n<b>Defines Collection and Items relation</b>" as Entity_Collection_Relation {
+    #collection : 
+    +get_collection_id()
+    +get_collection()
+    +set_collection_id(value)
+    +set_collection(collection)
+  }
+  class "Entity_Collections_Relation" as Entity_Collections_Relation {
+    +get_collections_ids()
+    +get_collections()
+    +set_collections_ids(value)
+    +set_collections(collections)
+    +add_collection_id(new_collection_id)
+    +remove_collection_id(collection_id)
+  }
+  class "SVG_Icon\n<b>Class for getting inline svg icons based on the Tainacan Icon font and new symbols needed</b>" as SVG_Icon {
+    +get_svg_icon(icon_slug)
+  }
+  class "Singleton_Instance\n<b>Class for Singleton pattern</b>" as Singleton_Instance {
+    -instance : 
+    {static} +get_instance()
+    -__construct()
+  }
+@enduml

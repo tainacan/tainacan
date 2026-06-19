@@ -1,0 +1,88 @@
+classDiagram
+    direction TB
+    class Metadata {
+        +entities_type : mixed
+        #default_metadata : mixed
+        #current_taxonomy : mixed
+        +metadata_types : mixed
+        +core_metadata : mixed
+        #init()
+        #_get_map()
+        +get_cpt_labels()
+        +register_post_type()
+        +get_default_metadata_attribute()
+        +register_metadata_type(class_name)
+        +unregister_metadata_type(class_name)
+        +fetch(args, output)
+        +fetch_ids(args)
+        +fetch_by_collection(collection, args)
+        +fetch_ids_by_collection(collection, args)
+        +fetch_by_metadata_section(metadata_section, args)
+        +order_result(result, collection, include_disabled)
+        +insert(metadatum)
+        +pre_update_metadata_repository_level(metadatum, attributes)
+        +update(object, new_values)
+        +fetch_metadata_types(output)
+        +maybe_update_core_metadata_meta_keys(collection_new, collection_old, old_title_metadatum, old_description_metadatum)
+        -get_data_core_metadata(collection)
+        +register_core_metadata(collection, force)
+        +register_control_metadata(collection, force)
+        +disable_delete_core_metadata(before, post)
+        +force_delete_core_metadata(before, post, force_delete)
+        +get_core_metadata(collection)
+        +get_core_title_metadatum(collection)
+        +get_core_description_metadatum(collection)
+        +insert_array_metadatum(data)
+        +fetch_all_metadatum_values(metadatum_id, args)
+        +_process_terms_tree(tree, search_value, search_type)
+        -pre_update_taxonomy_metadatum(metadatum)
+        -update_taxonomy_metadatum(metadatum)
+        -update_metadata_type_index(metadatum)
+        +delete(entity, permanent)
+        -delete_taxonomy_metadatum(metadatum)
+        +hook_taxonomies_saved_as_private(taxonomy)
+        +hook_taxonomies_saved_not_allow_insert_new_terms(taxonomy)
+        +metadata_is_enabled(collection, metadata)
+        +hook_metadata_update_order(metadata)
+    }
+    class Repository {
+        +entities_type : string
+        #use_logs : bool
+        #logs_repository : Logs
+        -map : array
+        +disable_logs()
+        +enable_logs()
+        +get_enabled_logs()
+        #__construct()
+        +init_objects()
+        +get_map()
+        +get_name()
+        +insert(obj)
+        +insert_metadata(obj, prop, diffs)
+        +maybe_add_slashes(value)
+        +fetch_output(WP_Query, output)
+        +parse_fetch_args(args)
+        +get_default_properties(map)
+        +get_mapped_property(entity, prop)
+        +$get_collections_db_identifiers()
+        +$get_entity_by_post(post)
+        +$get_entity_by_post_type(post_type, post)
+        +$get_repository(entity)
+        +fetch_one(args)
+        +trash(entity)
+        +delete(entity, permanent)
+        -delete_attachments(entity)
+        +can_edit(entity, user)
+        +can_read(entity, user)
+        +can_delete(entity, user)
+        +can_publish(entity, user)
+        +unique_multidimensional_array(array, key)
+        -insert_thumbnail(obj, diffs)
+        +get_descendants_ids(id, depth)
+        +get_capabilities()
+        #sanitize_value(content)
+    }
+    Metadata ..> Metadata
+    Repository ..> Metadata
+    Repository ..> Repository
+    Repository <|-- Metadata

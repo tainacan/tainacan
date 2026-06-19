@@ -1,0 +1,52 @@
+classDiagram
+    direction TB
+    class Metadata_Type {
+        -primitive_type : string
+        -repository : bool|Repository
+        -options : array
+        -default_options : array
+        -errors : mixed
+        -core : mixed
+        -related_mapped_prop : mixed
+        -component : string
+        -form_component : bool|string
+        -name : mixed
+        -description : mixed
+        -preview_template : string
+        -sortable : mixed
+        +__construct()
+        +validate(item_metadata)
+        +get_related_mapped_prop()
+        +set_related_mapped_prop(related_mapped_prop)
+        +get_validation_errors()
+        +get_primitive_type()
+        +set_primitive_type(primitive_type)
+        +get_errors()
+        +get_component()
+        +set_component(component)
+        +get_form_component()
+        +set_form_component(form_component)
+        +get_preview_template()
+        +set_preview_template(preview_template)
+        +get_name()
+        +set_name(name)
+        +get_description()
+        +set_description(description)
+        +add_error(msg)
+        +set_options(options)
+        +set_default_options(options)
+        +get_options()
+        +get_option(key)
+        +get_options_as_html()
+        +get_form_labels()
+        +form()
+        +validate_options(metadatum)
+        +get_core()
+        +set_core(core)
+        +get_repository()
+        +set_repository(repository)
+        +get_sortable()
+        +set_sortable(sortable)
+        +get_slug()
+        +_toArray()
+    }

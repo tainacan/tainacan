@@ -1,0 +1,15 @@
+classDiagram
+    direction TB
+    class Async_Request {
+        #prefix : string
+        #action : string
+        #identifier : mixed
+        #data : array
+        +__construct()
+        +data(data)
+        +dispatch()
+        #get_query_args()
+        #get_query_url()
+        #get_post_args()
+        +maybe_handle()
+    }

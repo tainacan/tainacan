@@ -1,0 +1,96 @@
+@startuml class-diagram
+  class "Exposer\n<b>abstract class for implement exposer types</b>" as Exposer {
+    #mappers : 
+    +accept_no_mapper : 
+    +slug : 
+    -name : 
+    -description : 
+    #set_name(name)
+    #set_description(description)
+    +get_name()
+    +get_description()
+    +_toArray()
+    {abstract} +rest_request_after_callbacks(response, handler, request)
+    +get_mappers()
+  }
+  class "Txt\n<b>Generate a text formated response</b>" as Txt {
+    +mappers : 
+    +slug : 
+    +name : 
+    +rest_request_after_callbacks(response, handler, request)
+    #array_to_txt(data, txt)
+  }
+  class "JSON_LD\n<b>Generate a text formated response</b>" as JSON_LD {
+    +mappers : 
+    +slug : 
+    +name : 
+    #contexts : 
+    +rest_request_after_callbacks(response, handler, request)
+    #array_to_jsonld(data, jsonld)
+    +get_locale(obj)
+  }
+  class "JSON_flat\n<b>Generate a text formated response</b>" as JSON_flat {
+    +slug : 
+    +name : 
+    +accept_no_mapper : 
+    #mappers : 
+    +__construct()
+    +rest_request_after_callbacks(response, handler, request)
+  }
+  class "Xml\n<b>Generate a Csv formated response</b>" as Xml {
+    #extension : string
+    +slug : 
+    +name : 
+    +rest_request_after_callbacks(response, handler, request)
+    #array_to_xml(data, xml_data, namespace)
+  }
+  class "Csv\n<b>Generate a Csv formated response</b>" as Csv {
+    +slug : 
+    +__construct()
+    +rest_request_after_callbacks(response, handler, request)
+  }
+  class "Html\n<b>Generate a Html formated response</b>" as Html {
+    +slug : 
+    +name : 
+    #mappers : 
+    +accept_no_mapper : 
+    +__construct()
+    +rest_request_after_callbacks(response, handler, request)
+    #array_to_html(data)
+  }
+  class "OAI_PMH\n<b>Generate a OAI_PMH/oai_dc formated response</b>" as OAI_PMH {
+    +mappers : 
+    +slug : 
+    +name : 
+    +rest_request_after_callbacks(response, handler, request)
+  }
+  class "Exposers_Handler\n<b>Load exposers classes</b>" as Exposers_Handler {
+    #exposers : 
+    -instance : 
+    -request : 
+    {static} +get_instance()
+    +__construct()
+    +init()
+    +register_exposer(class_name)
+    +unregister_exposer(class_name)
+    +check_class_name(class_name, root, prefix)
+    +is_tainacan_request(request)
+    {static} +request_has_url_param(request)
+    +rest_request_after_callbacks(response, handler, request)
+    +exposer_exists(exposer)
+    {static} +request_has_exposer(request)
+    +get_exposers(output)
+    +filter_check_items_request(response, request)
+    {static} +get_exposer_urls(base_url)
+  }
+  Exposer <|-- Csv
+  Exposer <|-- Html
+  Exposer <|-- JSON_LD
+  Exposer <|-- JSON_flat
+  Exposer <|-- OAI_PMH
+  Exposer <|-- Txt
+  Exposer <|-- Xml
+  Exposers_Handler ..> Exposer
+  JSON_LD ..> Exposers_Handler
+  Xml ..> Exposers_Handler
+@enduml

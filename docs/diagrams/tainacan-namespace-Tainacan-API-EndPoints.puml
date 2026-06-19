@@ -1,0 +1,455 @@
+@startuml class-diagram
+  class "REST_Oaipmh_Expose_Controller\n<b>REST API controller for managing Tainacan OAI-PMH exposure.</b>" as REST_Oaipmh_Expose_Controller {
+    +__construct()
+    +init_objects()
+    +register_routes()
+    +get_verb_permissions_check(request)
+    +get_verb(request)
+    +get_verb_params()
+    +get_schema()
+  }
+  class "REST_Roles_Controller\n<b>REST API controller for managing Tainacan roles and capabilities.</b>" as REST_Roles_Controller {
+    +__construct()
+    +register_routes()
+    +create_item(request)
+    +create_item_permissions_check(request)
+    +delete_item(request)
+    +delete_item_permissions_check(request)
+    +update_item(request)
+    -handle_capabilities_for_role(role_slug, newcaps)
+    -handle_capabilites_default_for_role(role_slug)
+    +update_item_permissions_check(request)
+    +validate_roles_capabilities_arg(value, request, param)
+    +_prepare_item_for_response(slug, name, caps, request)
+    +get_items(request)
+    +get_items_permissions_check(request)
+    +get_item(request)
+    +get_item_permissions_check(request)
+    +get_capabilities_permissions_check(request)
+    +get_endpoint_args(method)
+    +get_capabilities(request)
+    +get_admin_ui_options(request)
+    +update_admin_ui_options(request)
+    +get_admin_ui_options_permissions_check(request)
+    +update_admin_ui_options_permissions_check(request)
+    +get_capabilities_schema()
+    +get_schema()
+    +get_admin_ui_options_schema()
+  }
+  class "REST_Metadata_Controller\n<b>REST API controller for managing Tainacan metadata.</b>" as REST_Metadata_Controller {
+    -collection_repository : 
+    -metadatum_repository : 
+    +__construct()
+    +init_objects()
+    +register_routes()
+    +get_item(request)
+    +get_item_permissions_check(request)
+    +prepare_item_for_database(request, collection_id)
+    +create_item(request)
+    +create_item_permissions_check(request)
+    +prepare_item_for_response(item, request)
+    +get_items(request)
+    +get_items_permissions_check(request)
+    +delete_item(request)
+    +delete_item_permissions_check(request)
+    +update_item(request)
+    +update_item_permissions_check(request)
+    +get_wp_query_params()
+    +get_endpoint_args_for_item_schema(method, is_collection_level)
+    +get_schema()
+  }
+  class "REST_Exporters_Controller\n<b>REST API controller for managing Tainacan exporters.</b>" as REST_Exporters_Controller {
+    -collections_repository : 
+    +__construct()
+    +init_objects()
+    +register_routes()
+    +export_permissions_check(request)
+    +get_registered_exporters()
+    +create_item(request)
+    +update_item(request)
+    +run(request)
+    #map(item_arr, mapper)
+    #map_metadatum(item_arr, mapper)
+    +get_schema()
+    +get_schema_run()
+    +get_schema_exporters_available()
+  }
+  class "REST_Items_Controller\n<b>REST API controller for managing Tainacan items.</b>" as REST_Items_Controller {
+    -items_repository : 
+    -item : 
+    -item_metadata : 
+    -collections_repository : 
+    -metadatum_repository : 
+    -terms_repository : 
+    -filters_repository : 
+    -taxonomies_repository : 
+    -new_terms_ids : 
+    +__construct()
+    +init_objects()
+    +register_routes()
+    -add_metadata_to_item(item_object, item_array, args)
+    +get_context_edit(item)
+    +prepare_item_for_response(item, request)
+    +get_item(request)
+    +get_item_attachments(request)
+    -prepare_filters_arguments(args, collection_id, ignore_filter_arguments)
+    +get_items(request)
+    +get_item_permissions_check(request)
+    +get_item_attachments_permissions_check(request)
+    +get_items_permissions_check(request)
+    -get_items_permissions_check_for_taxonomy(taxonomies)
+    +prepare_item_for_database(request)
+    +create_item(request)
+    +create_item_permissions_check(request)
+    +delete_item(request)
+    +delete_item_permissions_check(request)
+    +update_item(request)
+    +update_item_permissions_check(request)
+    +duplicate_item(request)
+    -submission_item_metadata(item_metadata, request)
+    -submission_process_terms(value, taxonomy)
+    -submission_rollback_new_terms()
+    +submission_item(request)
+    +submission_item_finish(request)
+    +submission_item_permissions_check(request)
+    -submission_item_check_recaptcha(request)
+    +get_endpoint_args_for_item_schema(method)
+    +get_wp_query_params()
+    +process_request_filters(args)
+    +get_attachments_schema()
+    +get_schema()
+  }
+  class "REST_Metadata_Sections_Controller\n<b>REST API controller for managing Tainacan metadata sections.</b>" as REST_Metadata_Sections_Controller {
+    -metadata_sections_repository : 
+    -metadata_repository : 
+    -collection_repository : 
+    +__construct()
+    +init_objects()
+    +register_routes()
+    +prepare_item_for_database(request, collection_id)
+    +prepare_item_for_response(item, request)
+    +prepare_metadata_for_response(item, request)
+    +get_item(request)
+    +get_item_permissions_check(request)
+    +create_item(request)
+    +create_item_permissions_check(request)
+    +get_items(request)
+    +get_items_permissions_check(request)
+    +delete_item(request)
+    +delete_item_permissions_check(request)
+    +update_item(request)
+    +add_metadata(request)
+    +delete_metadata(request)
+    +get_metadata_list(request)
+    +update_item_permissions_check(request)
+    +get_wp_query_params()
+    +get_endpoint_args_for_item_schema(method)
+    +get_metadata_list_schema()
+    +get_schema()
+  }
+  class "REST_Background_Processes_Controller\n<b>REST API controller for managing Tainacan background processes.</b>" as REST_Background_Processes_Controller {
+    -table : String
+    #get_schema()
+    +__construct()
+    +register_routes()
+    +bg_processes_permissions_check(request)
+    +get_items(request)
+    +get_item(request)
+    +prepare_item_for_response(item, request)
+    +update_item(request)
+    +delete_item(request)
+    +get_log_url(id, action, type)
+    +get_file(request)
+  }
+  class "REST_Reports_Controller\n<b>REST API controller for managing Tainacan reports.</b>" as REST_Reports_Controller {
+    -taxonomy_repository : 
+    -metadatum_repository : 
+    -collections_repository : 
+    -prefix_transient_cahce : 
+    +__construct()
+    +init_objects()
+    +register_routes()
+    +reports_permissions_check(request)
+    +get_collections(request)
+    +get_summary(request)
+    +get_taxonomies_list(request)
+    +get_taxonomy(request)
+    +get_metadata(request)
+    +get_stats_collection_metadata(request)
+    -query_item_metadata_distribution(meta_ids, collection_post_type)
+    -query_count_used_taxononomies()
+    +get_activities(request)
+    -get_activities_general(collection_id, interval)
+    -get_activities_general_by_user(collection_id, interval)
+    -get_activities_users(collection_id)
+    -get_cache_object(key, request)
+    -set_cache_object(key, data)
+    +get_endpoint_args_for_item_schema(method)
+    +get_metadata_schema()
+    +get_collection_schema()
+    +get_collection_metadatum_schema()
+    +get_collection_summary_schema()
+    +get_taxonomy_schema()
+    +get_taxonomy_terms_schema()
+    +get_summary_schema()
+    +get_activities_schema()
+    +get_schema()
+  }
+  class "REST_Terms_Controller\n<b>REST API controller for managing Tainacan taxonomy terms.</b>" as REST_Terms_Controller {
+    -term : 
+    -terms_repository : 
+    -items_repository : 
+    -taxonomy_repository : 
+    +__construct()
+    +init_objects()
+    +register_routes()
+    +prepare_item_for_database(to_prepare)
+    +create_multiples_items(request)
+    +create_item(request)
+    +create_item_permissions_check(request)
+    +delete_items_permissions_check(request)
+    +delete_items(request)
+    +delete_item(request)
+    +delete_item_permissions_check(request)
+    +update_parent_terms_permissions_check(request)
+    +update_parent_terms(request)
+    +update_item(request)
+    +update_item_permissions_check(request)
+    -get_preview_image_items(term, amount)
+    +prepare_item_for_response(item, request)
+    +get_items(request)
+    +get_items_permissions_check(request)
+    +get_item(request)
+    +get_item_permissions_check(request)
+    +get_endpoint_args_for_item_schema(method)
+    +get_wp_query_params()
+    +get_schema()
+  }
+  class "REST_Metadata_Types_Controller\n<b>REST API controller for managing Tainacan metadata types.</b>" as REST_Metadata_Types_Controller {
+    +__construct()
+    +register_routes()
+    +prepare_item_for_response(item, request)
+    +get_items(request)
+    +get_items_permissions_check(request)
+    +get_schema()
+  }
+  class "REST_Exposers_Controller\n<b>REST API controller for managing Tainacan exposers.</b>" as REST_Exposers_Controller {
+    -metadatum_repository : 
+    -exposers : 
+    -mappers : 
+    #get_schema()
+    +__construct()
+    +init_objects()
+    +register_routes()
+    +get_items(request)
+    +get_items_permissions_check(request)
+  }
+  class "REST_Metadatum_Mappers_Controller\n<b>REST API controller for managing Tainacan metadatum mappers.</b>" as REST_Metadatum_Mappers_Controller {
+    #get_schema()
+    +__construct()
+    +register_routes()
+    +prepare_item_for_response(mapper, request)
+    +prepare_metadatum_for_response(item, request)
+    +get_items(request)
+    +get_items_permissions_check(request)
+    +update_item_permissions_check(request)
+    +update_item(request)
+  }
+  class "REST_Facets_Controller\n<b>REST API controller for managing Tainacan facets.</b>" as REST_Facets_Controller {
+    -metadatum_repository : 
+    +__construct()
+    +init_objects()
+    +register_routes()
+    +get_items(request)
+    +get_items_permissions_check(request)
+    +get_schema()
+  }
+  class "REST_Filters_Controller\n<b>REST API controller for managing Tainacan filters.</b>" as REST_Filters_Controller {
+    -collection : 
+    -collection_repository : 
+    -metadatum_repository : 
+    -filter_repository : 
+    +__construct()
+    +init_objects()
+    +register_routes()
+    +prepare_item_for_database(request)
+    +create_item(request)
+    +create_item_permissions_check(request)
+    +delete_item(request)
+    +delete_item_permissions_check(request)
+    +update_item(request)
+    +update_item_permissions_check(request)
+    +prepare_item_for_response(item, request)
+    +get_items(request)
+    +get_items_permissions_check(request)
+    +get_item(request)
+    +get_item_permissions_check(request)
+    +get_endpoint_args_for_item_schema(method, is_collection_level)
+    +get_wp_query_params()
+    +get_schema()
+  }
+  class "REST_Importers_Controller\n<b>REST API controller for managing Tainacan importers.</b>" as REST_Importers_Controller {
+    #get_schema()
+    +__construct()
+    +register_routes()
+    +import_permissions_check(request)
+    +create_item(request)
+    +update_item(request)
+    +source_info(request)
+    +get_saved_mapping(request)
+    +get_item(request)
+    +add_file(request)
+    +run(request)
+    +get_registered_importers()
+  }
+  class "REST_Collections_Controller\n<b>REST API controller for managing Tainacan collections.</b>" as REST_Collections_Controller {
+    -collections_repository : 
+    -collection : 
+    -items_repository : 
+    +__construct()
+    +init_objects()
+    +register_routes()
+    +get_items(request)
+    +get_item(request)
+    -get_preview_image_items(collection, amount)
+    +get_collection_taxonomies(collection)
+    +prepare_item_for_response(item, request)
+    +get_items_permissions_check(request)
+    +get_item_permissions_check(request)
+    +create_item(request)
+    +create_item_permissions_check(request)
+    +prepare_item_for_database(request)
+    +delete_item(request)
+    +delete_item_permissions_check(request)
+    +update_item(request)
+    +update_item_permissions_check(request)
+    +validate_filters_metadata_order(value, request, param)
+    +validate_metadata_section_order(value, request, param)
+    +update_metadata_order(request)
+    +update_metadata_section_order(request)
+    +update_metadata_order_permissions_check(request)
+    +update_metadata_section_order_permissions_check(request)
+    +update_filters_order(request)
+    +update_filters_order_permissions_check(request)
+    +get_endpoint_args_for_item_schema(method)
+    +get_endpoint_arg_for_schema(name, properties, repository)
+    +get_schema()
+  }
+  class "REST_Filter_Types_Controller\n<b>REST API controller for managing Tainacan filter types.</b>" as REST_Filter_Types_Controller {
+    +__construct()
+    +register_routes()
+    +prepare_item_for_response(item, request)
+    +get_items(request)
+    +get_items_permissions_check(request)
+    +get_schema()
+  }
+  class "REST_Item_Metadata_Controller\n<b>REST API controller for managing Tainacan item metadata.</b>" as REST_Item_Metadata_Controller {
+    -metadatum : 
+    -item_metadata_repository : 
+    -item_repository : 
+    -collection_repository : 
+    -metadatum_repository : 
+    +__construct()
+    +init_objects()
+    +register_routes()
+    +prepare_item_for_database(request)
+    +prepare_item_for_response(item, request)
+    +get_items(request)
+    +get_item_metadatum_value(request)
+    +get_items_permissions_check(request)
+    +update_item(request)
+    +update_item_permissions_check(request)
+    +get_endpoint_args_for_item_schema(method)
+    +get_wp_query_params()
+    +delete_item_permissions_check(request)
+    +delete_item(request)
+    -get_metadata_value(is_multiple, value)
+    +get_schema()
+  }
+  class "REST_Bulkedit_Controller\n<b>REST API controller for managing Tainacan bulk edit operations.</b>" as REST_Bulkedit_Controller {
+    -metadatum_repository : 
+    -collections_repository : 
+    +__construct()
+    +init_objects()
+    +register_routes()
+    +bulk_edit_permissions_check(request)
+    +create_item(request)
+    +set_status(request)
+    +trash_items(request)
+    +untrash_items(request)
+    +delete_items(request)
+    +add_value(request)
+    +set_value(request)
+    +clear_value(request)
+    +remove_value(request)
+    +copy_value(request)
+    +replace_value(request)
+    +set_comment_status(request)
+    +set_author_id(request)
+    +get_item(request)
+    +prepare_item_for_response(bulk_object, request)
+    -generic_action(method, request, keys)
+    +get_item_in_sequence(request)
+    +get_create_params(object_name)
+    +get_sequence_params()
+    +get_actions_params(action)
+    +get_actions_schema()
+    +get_bulk_schema()
+    +get_sequence_schema()
+    +get_schema()
+  }
+  class "REST_Taxonomies_Controller\n<b>REST API controller for managing Tainacan taxonomies.</b>" as REST_Taxonomies_Controller {
+    -taxonomy : 
+    -taxonomy_repository : 
+    +__construct()
+    +init_objects()
+    +register_routes()
+    +prepare_item_for_response(item, request)
+    +get_metadata_taxonomy_in_collection(taxonomy_id, collection_id, collection_parent_id)
+    +prepare_item_for_database(request)
+    +get_item(request)
+    +get_item_permissions_check(request)
+    +delete_item(request)
+    +delete_item_permissions_check(request)
+    +get_items(request)
+    +get_items_permissions_check(request)
+    +create_item(request)
+    +create_item_permissions_check(request)
+    +update_item(request)
+    +update_item_permissions_check(request)
+    +get_endpoint_args_for_item_schema(method)
+    +get_wp_query_params()
+    +get_schema()
+  }
+  class "REST_Logs_Controller\n<b>REST API controller for managing Tainacan logs.</b>" as REST_Logs_Controller {
+    -logs_repository : 
+    +__construct()
+    +register_routes()
+    +prepare_item_for_response(item, request)
+    -prepare_legacy_item_for_response(item, request)
+    +get_items(request)
+    +get_items_permissions_check(request)
+    +get_item(request)
+    +get_item_permissions_check(request)
+    +get_endpoint_args_for_item_schema(method)
+    +get_schema()
+  }
+  class "REST_Sequence_Edit_Controller\n<b>REST API controller for managing Tainacan sequence edit operations.</b>" as REST_Sequence_Edit_Controller {
+    -items_repository : 
+    -collections_repository : 
+    +__construct()
+    +init_objects()
+    +register_routes()
+    +prepare_item_for_response(item, request)
+    +sequence_edit_permissions_check(request)
+    +create_item(request)
+    +get_item(request)
+    +get_item_in_sequence(request)
+    +get_create_params(object_name)
+    +get_sequence_params()
+    +get_sequence_index_params()
+    +get_sequence_schema()
+    +get_sequence_index_schema()
+    +get_schema()
+  }
+@enduml

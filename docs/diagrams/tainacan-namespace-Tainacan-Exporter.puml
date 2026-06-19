@@ -1,0 +1,181 @@
+@startuml class-diagram
+  class "Exporter" as Exporter {
+    #id : identifier
+    #options : array
+    #default_options : array
+    #steps : array
+    #collections : array
+    -output_files : 
+    -mapping_accept : 
+    -send_email : 
+    #mapping_list : 
+    +mapping_selected : 
+    #accept_no_mapping : 
+    #transients : array
+    #abort : bool
+    #current_step : 
+    #in_step_count : 
+    #current_collection : 
+    #current_collection_item : 
+    #log : 
+    #error_log : 
+    #array_attributes : array
+    +__construct(attributes)
+    +add_collection(collection)
+    +remove_collection(col_id)
+    +update_collection(index, collection_definition)
+    +update_current_collection(collection_definition)
+    +next_item()
+    +next_collection()
+    +get_id()
+    +get_current_step()
+    +set_current_step(value)
+    +get_in_step_count()
+    +set_in_step_count(value)
+    +get_current_collection()
+    +set_current_collection(value)
+    +get_current_collection_item()
+    +get_step_length_items()
+    +set_current_collection_item(value)
+    +get_collections()
+    +set_collections(value)
+    +get_current_collection_object()
+    +get_options()
+    +set_options(options)
+    +get_option(key)
+    #set_default_options(options)
+    +set_steps(steps)
+    +get_steps()
+    #get_transients()
+    #set_transients(data)
+    +add_transient(key, data)
+    +delete_transient(key)
+    +get_transient(key)
+    +get_log()
+    +get_error_log()
+    +add_log(message)
+    +add_error_log(message)
+    +is_finished()
+    #cancel_abort()
+    #abort()
+    +get_abort()
+    +get_progress_label()
+    +get_progress_value()
+    #set_current_step_total(value)
+    #set_step_total(step, value)
+    #next_step()
+    +_to_Array(short)
+    +get_current_mapper()
+    +options_form()
+    +process_collections()
+    {abstract} +process_item(item, metadata)
+    -process_header(current_collection_item, collection_definition)
+    +output_header()
+    -process_footer(current_collection_item, collection_definition)
+    +output_footer()
+    -get_items(index, collection_definition)
+    -map_item_metadata(item)
+    +add_new_file(key)
+    +append_to_file(key, data)
+    +set_accepted_mapping_methods(method, default_mapping, list)
+    +set_mapping_selected(mapping_selected)
+    +get_mapping_selected()
+    +set_send_email(email)
+    +get_send_email()
+    +get_output()
+    +finished()
+    +begin_exporter()
+    +end_exporter()
+    -set_output_files(output_files)
+    #get_output_files()
+    +run()
+  }
+  class "Term_Exporter" as Term_Exporter {
+    #steps : 
+    +__construct(attributes)
+    +get_output()
+    +str_putcsv(item, delimiter, enclosure)
+    +output_header()
+    +output_footer()
+    +options_form()
+    +process_item(index, collection_definition)
+    +exporting_terms()
+    +get_terms_recursively(term_repo, taxonomy, parent, level)
+  }
+  class "XLSX_Exporter" as XLSX_Exporter {
+    -collection_name : 
+    -spreadsheet : 
+    -filePath : 
+    -tempFilePath : 
+    +__construct(attributes)
+    +initialize_writer()
+    +finalize_writer()
+    +process_collections()
+    -process_header(current_collection_item, collection_definition)
+    -process_footer(current_collection_item, collection_definition)
+    -get_items(index, collection_definition)
+    -map_item_metadata(item)
+    +process_item(item, metadata)
+    +addRowToSheet(rowData, sheetIndex)
+    +get_file_path()
+    +get_file_name()
+    +get_content_type()
+    +filter_multivalue_separator(separator)
+    +filter_hierarchy_separator(separator)
+    -get_collections_names()
+    +get_output()
+    +output_header()
+    +options_form()
+  }
+  class "Exporter_Handler" as Exporter_Handler {
+    #bg_exporter : Background_Exporter
+    -registered_exporters : 
+    -init()
+    +register_exporters()
+    +enqueue_scripts()
+    +register_exporter(exporter)
+    +add_to_queue(exporter_object)
+    +unregister_exporter(slug)
+    +get_registered_exporters()
+    +get_exporter(slug)
+    +get_exporter_by_object(exporter_object)
+    +initialize_exporter(slug)
+    +save_exporter_instance(exporter)
+    +get_exporter_instance_by_session_id(session_id)
+    +delete_exporter_instance(exporter)
+  }
+  class "CSV" as CSV {
+    -collection_name : 
+    +__construct(attributes)
+    +filter_multivalue_separator(separator)
+    +filter_hierarchy_separator(separator)
+    +process_item(item, metadata)
+    +output_header()
+    +output_footer()
+    -get_collections_names()
+    +get_output()
+    +options_form()
+  }
+  class "Background_Exporter" as Background_Exporter {
+    #action : string
+    +__construct()
+    +task(batch)
+  }
+  package traits as traits {
+    class "Exporter_Handler_Cell" as traits_Exporter_Handler_Cell {
+      +str_putcsv(input, delimiter, enclosure)
+      +get_thumbnail_cell(item)
+      +get_document_cell(item)
+      +get_attachments_cell(item)
+      +get_compound_metadata_cell(meta)
+      +get_author_name_last_modification(item_id)
+      +get_description_title_meta(meta)
+    }
+  }
+  Exporter ..> Exporter_Handler
+  Exporter <|-- CSV
+  Exporter <|-- Term_Exporter
+  Exporter <|-- XLSX_Exporter
+  Exporter_Handler ..> Background_Exporter
+  Exporter_Handler ..> Exporter
+@enduml
