@@ -15,7 +15,6 @@ SRC_DIR="$PLUGIN_ROOT/src"
 VENDOR_BIN="$PLUGIN_ROOT/src/vendor/bin"
 PHPDOC_THEME="$PLUGIN_ROOT/src/vendor/saggre/phpdocumentor-markdown/themes/markdown"
 PHPDOC_BIN="$SCRIPTS_DIR/.tools/phpDocumentor.phar"
-WP_PATH="${WP_PATH:-/var/www/html/public}"
 
 if [ ! -f "$SRC_DIR/tainacan.php" ]; then
     echo "Error: Could not find the Tainacan plugin at $PLUGIN_ROOT"
@@ -130,17 +129,27 @@ else
         --output="$DOCS_DIR/filters.md" --format=markdown
 fi
 
-echo "Checking for OpenAPI generator plugin..."
-if command -v wp >/dev/null 2>&1 && wp --path="$WP_PATH" plugin is-active document-generator-for-openapi --allow-root 2>/dev/null; then
-    echo -e "\e[34m ### Generating OpenAPI REST file ### \e[0m"
-    if wp --path="$WP_PATH" openapi-generator export-file tainacan/v2 \
-        --destination="$DOCS_DIR/openapi.json" --allow-root; then
-        echo -e "\e[32m ### OpenAPI documentation generated successfully ### \e[0m"
-    else
-        echo -e "\e[31m ### Error generating OpenAPI documentation ### \e[0m"
-    fi
+echo "Generating OpenAPI REST file..."
+OPENAPI_SCRIPT="$SCRIPTS_DIR/generate-openapi.php"
+BOOTSTRAP_CONFIG="$PLUGIN_ROOT/tests/bootstrap-config.php"
+
+if [ ! -f "$OPENAPI_SCRIPT" ]; then
+    echo -e "\e[31m ### Error: OpenAPI generator script not found at $OPENAPI_SCRIPT ### \e[0m"
+    exit 1
+fi
+
+if [ ! -f "$BOOTSTRAP_CONFIG" ]; then
+    echo -e "\e[31m ### Error: tests/bootstrap-config.php not found ### \e[0m"
+    echo -e "\e[31m     Copy tests/bootstrap-config-sample.php to tests/bootstrap-config.php and run tests/bin/install-wp-tests.sh\e[0m"
+    exit 1
+fi
+
+echo -e "\e[34m ### Generating OpenAPI REST file ### \e[0m"
+if php "$OPENAPI_SCRIPT" --destination="$DOCS_DIR/openapi.json"; then
+    echo -e "\e[32m ### OpenAPI documentation generated successfully ### \e[0m"
 else
-    echo -e "\e[33m ### Skipping OpenAPI export (wp-cli or document-generator-for-openapi not available) ### \e[0m"
+    echo -e "\e[31m ### Error generating OpenAPI documentation ### \e[0m"
+    exit 1
 fi
 
 echo -e "\e[34m ### Generating Mermaid class diagrams ### \e[0m"

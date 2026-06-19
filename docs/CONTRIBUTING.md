@@ -39,6 +39,8 @@ docker exec -it tainacan_fpm_apache bash
 cd /src/tainacan && composer install && ./generate_docs.sh
 ```
 
-The script writes into `docs/` (`phpdoc/`, `actions.md`, `filters.md`, `openapi.json`, `diagrams/`). phpDocumentor itself is downloaded as a phar on first run; other tools come from Composer dev dependencies. OpenAPI export requires WP-CLI and the `document-generator-for-openapi` plugin (override the WordPress path with `WP_PATH` if needed).
+The script writes into `docs/` (`phpdoc/`, `actions.md`, `filters.md`, `openapi.json`, `diagrams/`). phpDocumentor itself is downloaded as a phar on first run; other tools come from Composer dev dependencies.
+
+OpenAPI export uses the same WordPress test bootstrap as PHPUnit (`tests/bootstrap-config.php` + `tests/bin/install-wp-tests.sh`).
 
 Generated docs are published via the [Tainacan Wiki](https://github.com/tainacan/tainacan-wiki) under `/dev/`, which loads this folder externally.
