@@ -12,31 +12,6 @@ Class TainacanMetadatumType
 ```mermaid
 classDiagram
     direction TB
-    class Taxonomy {
-        #name : mixed
-        +post_type : string
-        #capability_type : string
-        #repository : string
-        +db_identifier_prefix : string
-        +__toString()
-        +tainacan_register_taxonomy()
-        +get_capabilities()
-        +get_name()
-        +get_description()
-        +get_allow_insert()
-        +get_hierarchical()
-        +get_slug()
-        +get_enabled_post_types()
-        +get_db_identifier()
-        +set_name(value)
-        +set_slug(value)
-        +set_description(value)
-        +set_allow_insert(value)
-        +set_hierarchical(value)
-        +set_enabled_post_types(value)
-        +validate()
-        +term_exists(term_name, parent, return_term)
-    }
     class Entity {
         #repository : Repository
         -errors : array
@@ -74,6 +49,31 @@ classDiagram
         +can_publish(user)
         +get_capabilities()
         +diff(which)
+    }
+    class Taxonomy {
+        #name : mixed
+        +post_type : string
+        #capability_type : string
+        #repository : string
+        +db_identifier_prefix : string
+        +__toString()
+        +tainacan_register_taxonomy()
+        +get_capabilities()
+        +get_name()
+        +get_description()
+        +get_allow_insert()
+        +get_hierarchical()
+        +get_slug()
+        +get_enabled_post_types()
+        +get_db_identifier()
+        +set_name(value)
+        +set_slug(value)
+        +set_description(value)
+        +set_allow_insert(value)
+        +set_hierarchical(value)
+        +set_enabled_post_types(value)
+        +validate()
+        +term_exists(term_name, parent, return_term)
     }
     Entity ..> Entity
     Entity <|-- Taxonomy

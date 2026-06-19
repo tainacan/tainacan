@@ -21,6 +21,7 @@ classDiagram
         -old_core_title : string
         -old_core_description : string
         #init()
+        +get_max_items_per_page()
         #_get_map()
         +get_cpt_labels()
         +register_post_type()
@@ -127,6 +128,20 @@ Initializes the collections repository.
 ```php
 protected init(): void
 ```
+
+***
+
+### get_max_items_per_page
+
+Maximum number of items allowed per page.
+
+```php
+public get_max_items_per_page(): int
+```
+
+Falls back to the stored option when the global is not available
+(e.g. the PHPUnit bootstrap loads the plugin inside a function, so the
+global assignment in tainacan.php is scoped to that function).
 
 ***
 
