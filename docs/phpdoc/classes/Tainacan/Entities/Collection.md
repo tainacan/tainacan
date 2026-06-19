@@ -43,6 +43,7 @@ classDiagram
         +get_description()
         +get_default_order()
         +get_default_orderby()
+        +get_default_per_page()
         +get_default_displayed_metadata()
         +get_default_view_mode()
         +get_enabled_view_modes()
@@ -88,6 +89,7 @@ classDiagram
         +set_description(value)
         +set_default_order(value)
         +set_default_orderby(value)
+        +set_default_per_page(value)
         +set_default_displayed_metadata(value)
         +set_default_view_mode(value)
         +set_enabled_view_modes(value)
@@ -276,6 +278,14 @@ protected $default_order
 
 ```php
 protected $default_orderby
+```
+
+***
+
+### default_per_page
+
+```php
+protected $default_per_page
 ```
 
 ***
@@ -803,6 +813,16 @@ Get collection default orderby
 
 ```php
 public get_default_orderby(): string
+```
+
+***
+
+### get_default_per_page
+
+Get collection default items per page
+
+```php
+public get_default_per_page(): int
 ```
 
 ***
@@ -1388,6 +1408,22 @@ public set_default_orderby(mixed $value): void
 | Parameter | Type      | Description |
 |-----------|-----------|-------------|
 | `$value`  | **mixed** |             |
+
+***
+
+### set_default_per_page
+
+Set collection default items per page option
+
+```php
+public set_default_per_page(int $value): void
+```
+
+**Parameters:**
+
+| Parameter | Type    | Description |
+|-----------|---------|-------------|
+| `$value`  | **int** |             |
 
 ***
 

@@ -13,27 +13,6 @@ http://purl.org/dc/elements/1.1/
 ```mermaid
 classDiagram
     direction TB
-    class OAIPMH_List_Identifiers {
-        #working_node : mixed
-        +errors : mixed
-        +xml_creater : mixed
-        +restoken : mixed
-        +expirationdatetime : mixed
-        +num_rows : mixed
-        +cursor : mixed
-        +deliveredrecords : mixed
-        +from : mixed
-        +until : mixed
-        +sets : mixed
-        +metadataPrefix : mixed
-        +__construct()
-        +list_collections()
-        +get_items()
-        +list_identifiers(data)
-        +initiate_variables(data)
-        +verify_resumption_token(numRows)
-        +add_resumption_token_xml(numRows)
-    }
     class OAIPMH_Expose {
         +identifyResponse : mixed
         +deletedRecord : mixed
@@ -69,6 +48,27 @@ classDiagram
         +readResumToken(resumptionToken)
         +oai_error(code, argument, value)
         +get_metadata_formats(item_id)
+    }
+    class OAIPMH_List_Identifiers {
+        #working_node : mixed
+        +errors : mixed
+        +xml_creater : mixed
+        +restoken : mixed
+        +expirationdatetime : mixed
+        +num_rows : mixed
+        +cursor : mixed
+        +deliveredrecords : mixed
+        +from : mixed
+        +until : mixed
+        +sets : mixed
+        +metadataPrefix : mixed
+        +__construct()
+        +list_collections()
+        +get_items()
+        +list_identifiers(data)
+        +initiate_variables(data)
+        +verify_resumption_token(numRows)
+        +add_resumption_token_xml(numRows)
     }
     OAIPMH_Expose <|-- OAIPMH_List_Identifiers
 ```

@@ -15,46 +15,6 @@
     +get_process_instance_by_session_id(session_id)
     +delete_process_instance(process)
   }
-  class "Generic_Process" as Generic_Process {
-    #id : identifier
-    #steps : array
-    #transients : array
-    #abort : bool
-    #current_step : 
-    #in_step_count : 
-    #log : 
-    #error_log : 
-    #array_attributes : array
-    +__construct(attributes)
-    +get_id()
-    +get_current_step()
-    +set_current_step(value)
-    +get_in_step_count()
-    +set_in_step_count(value)
-    +set_steps(steps)
-    +get_steps()
-    #get_transients()
-    #set_transients(data)
-    +add_transient(key, data)
-    +delete_transient(key)
-    +get_transient(key)
-    +get_log()
-    +get_error_log()
-    +add_log(message)
-    +add_error_log(message)
-    +is_finished()
-    #cancel_abort()
-    #abort()
-    +get_abort()
-    +get_progress_label()
-    +get_progress_value()
-    #set_current_step_total(value)
-    #set_step_total(step, value)
-    #next_step()
-    +_to_Array(short)
-    +finished()
-    +run()
-  }
   class "Bulk_Edit_Process" as Bulk_Edit_Process {
     -meta_key : 
     -group_id : 
@@ -99,6 +59,46 @@
     #action : string
     +__construct()
     +task(batch)
+  }
+  class "Generic_Process" as Generic_Process {
+    #id : identifier
+    #steps : array
+    #transients : array
+    #abort : bool
+    #current_step : 
+    #in_step_count : 
+    #log : 
+    #error_log : 
+    #array_attributes : array
+    +__construct(attributes)
+    +get_id()
+    +get_current_step()
+    +set_current_step(value)
+    +get_in_step_count()
+    +set_in_step_count(value)
+    +set_steps(steps)
+    +get_steps()
+    #get_transients()
+    #set_transients(data)
+    +add_transient(key, data)
+    +delete_transient(key)
+    +get_transient(key)
+    +get_log()
+    +get_error_log()
+    +add_log(message)
+    +add_error_log(message)
+    +is_finished()
+    #cancel_abort()
+    #abort()
+    +get_abort()
+    +get_progress_label()
+    +get_progress_value()
+    #set_current_step_total(value)
+    #set_step_total(step, value)
+    #next_step()
+    +_to_Array(short)
+    +finished()
+    +run()
   }
   Generic_Process <|-- Bulk_Edit_Process
   Generic_Process_Handler ..> Background_Generic_Process
