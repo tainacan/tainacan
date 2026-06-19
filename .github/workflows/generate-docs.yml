@@ -15,6 +15,7 @@ concurrency:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   generate-docs:
@@ -59,15 +60,16 @@ jobs:
       - name: Generate documentation
         run: ./generate_docs.sh
 
-      - name: Commit documentation changes
-        run: |
-          if git diff --quiet -- docs/; then
-            echo "No documentation changes to commit."
-            exit 0
-          fi
+      - name: Create pull request with documentation changes
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "docs: regenerate developer documentation"
+          title: "docs: regenerate developer documentation"
+          body: |
+            Automated regeneration of developer documentation from `generate_docs.sh`.
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/
-          git commit -m "chore(docs): regenerate developer documentation"
-          git push
+            Merge when CI passes to update `docs/` on `develop`.
+          branch: docs/regenerate-developer-docs
+          base: develop
+          add-paths: |
+            docs/**
