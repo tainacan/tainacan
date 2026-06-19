@@ -10,7 +10,7 @@ As you know, **Tainacan is a [WordPress](https://wordpress.org) plugin** and is 
 > - [Key Concepts](/dev/key-concepts.md) - First things first. Let's understand what is what in Tainacan.
 > - [Tainacan Internals](/dev/internal-api.md) - Reference on Tainacan main classes and how to use them. If you need more details, check our [Code Reference](/dev/phpdoc/Home) extracted from source code.
 > - [Tainacan Hooks](/dev/hooks.md) - Expand or modify different sections of code without modifying the plugin, using Actions and Filters, both in backend and frontend.
-> - [Tainacan API](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/tainacan/tainacan/refs/heads/1047-bring-developer-documentation-to-the-code-repository/docs/openapi.json ":ignore") - A Rest JSON API which you can use to get content from a Tainacan database.
+> - [Tainacan API](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/tainacan/tainacan/refs/heads/develop/docs/openapi.json ":ignore") - A Rest JSON API which you can use to get content from a Tainacan database.
 > - [Roles and Capabilities](/dev/roles-capabilities.md) - Basic information about data privacy and access levels in Tainacan.
 > 
 > </div>

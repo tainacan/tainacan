@@ -11,7 +11,7 @@ These are the currently available ones:
 
 ## Why Use Them?
 
-Building selection flows is a relatively easy task if you're familiar with our [REST API](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/tainacan/tainacan/refs/heads/1047-bring-developer-documentation-to-the-code-repository/docs/openapi.json). However, offering the user a powerful UI do select items or metadata can be challenging if you have a big range of metadata and items to filter. Our modal components reuse the Admin Faceted Search UI, which means you'll have filters, facets, pagination and sorting options ready for you. This is big win because it will take out the burden of caring about pagination and other performance challenges.
+Building selection flows is a relatively easy task if you're familiar with our [REST API](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/tainacan/tainacan/refs/heads/develop/docs/openapi.json). However, offering the user a powerful UI do select items or metadata can be challenging if you have a big range of metadata and items to filter. Our modal components reuse the Admin Faceted Search UI, which means you'll have filters, facets, pagination and sorting options ready for you. This is big win because it will take out the burden of caring about pagination and other performance challenges.
 
 > [!WARNING]
 > Remember that collections can have thousand of items with thousand of metadata so displaying all of them in a giant select component is never an option.

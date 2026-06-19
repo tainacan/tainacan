@@ -6,7 +6,7 @@
   - [Key Concepts](/dev/key-concepts.md 'Key Concepts related to Tainacan Development - Tainacan Wiki')
   - [Internal API](/dev/internal-api.md 'Tainacan Internal API - Tainacan Wiki')
   - [Architecture](/dev/architecture.md 'technical architecture of Tainacan')
-  - [:link: JSON API](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/tainacan/tainacan/refs/heads/1047-bring-developer-documentation-to-the-code-repository/docs/openapi.json ':ignore')
+  - [:link: JSON API](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/tainacan/tainacan/refs/heads/develop/docs/openapi.json ':ignore')
   - [Code Reference](/dev/phpdoc/Home.md 'PHP Code Reference listing Classes and functions - Tainacan Wiki')
   - [Tainacan Hooks](/dev/hooks.md 'Tainacan Hooks - Tainacan Wiki')
     - [Actions](/dev/actions.md 'Tainacan PHP Actions - Tainacan Wiki')
