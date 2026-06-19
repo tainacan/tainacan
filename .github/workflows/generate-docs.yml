@@ -69,9 +69,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/
-          git commit -m "$(cat <<'EOF'
-chore(docs): regenerate developer documentation
-
-EOF
-)"
+          git commit -m "chore(docs): regenerate developer documentation"
           git push
