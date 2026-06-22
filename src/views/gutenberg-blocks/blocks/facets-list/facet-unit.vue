@@ -8,6 +8,7 @@
                 :style="{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}"
                 @click="() => { isCollapseInsteadOfLink(facet) ? displayChildTerms(facetId) : null }">
             <img
+                    v-if="facet.entity"
                     :src=" 
                         facet.entity.thumbnail && facet.entity.thumbnail[imageSize] && facet.entity.thumbnail[imageSize][0] 
                             ?
