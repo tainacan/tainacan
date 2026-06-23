@@ -226,6 +226,7 @@ abstract class Pages {
 		$Tainacan_Filters     		= \Tainacan\Repositories\Filters::get_instance();
 		$Tainacan_Items       		= \Tainacan\Repositories\Items::get_instance();
 		$Tainacan_Taxonomies  		= \Tainacan\Repositories\Taxonomies::get_instance();
+		$Tainacan_Terms       		= \Tainacan\Repositories\Terms::get_instance();
 
 		$tainacan_admin_i18n = require( 'tainacan-i18n.php' );
 
@@ -288,6 +289,7 @@ abstract class Pages {
 			'filters'     		=> $Tainacan_Filters->get_map(),
 			'items'       		=> $Tainacan_Items->get_map(),
 			'taxonomies'  		=> $Tainacan_Taxonomies->get_map(),
+			'terms'       		=> $Tainacan_Terms->get_map(),
 		];
 
 		$metadata_types = $Tainacan_Metadata->fetch_metadata_types();
