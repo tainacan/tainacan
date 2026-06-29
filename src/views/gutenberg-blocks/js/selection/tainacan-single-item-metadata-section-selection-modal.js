@@ -10,12 +10,18 @@ export default class TainacanSingleItemMetadataSectionSelectionModal extends Rea
     constructor(props) {
         super(props);
 
-        // Initialize state
+        const existingMetadataSectionId = props.existingMetadataSectionId;
+        const existingCollectionId = props.existingCollectionId;
+        const searchURL = existingCollectionId && !props.isTemplateMode
+            ? tainacan_blocks.admin_url + '?itemsSingleSelectionMode=true&page=tainacan_admin#/collections/' + existingCollectionId + '/items/?status=publish'
+            : '';
+
+        // Initialize state from block attributes so the correct step renders on first paint.
         this.state = {
             collectionsPerPage: 24,
-            collectionId: undefined,
-            itemId: undefined,
-            sectionId: undefined,
+            collectionId: existingCollectionId,
+            itemId: props.existingItemId,
+            sectionId: existingMetadataSectionId,
             collectionName: '',
             isLoadingCollections: false, 
             modalCollections: [],
@@ -25,17 +31,17 @@ export default class TainacanSingleItemMetadataSectionSelectionModal extends Rea
             totalModalCollections: 0, 
             collectionOrderBy: 'date-desc',
             collectionPage: 1,
-            temporaryCollectionId: '',
-            temporaryItemId: '',
-            temporaryMetadataSectionId: '',
+            temporaryCollectionId: existingCollectionId ? '' + existingCollectionId : '',
+            temporaryItemId: props.existingItemId ? '' + props.existingItemId : '',
+            temporaryMetadataSectionId: existingMetadataSectionId ? '' + existingMetadataSectionId : '',
             searchCollectionName: '',
             collections: [],
             collectionsRequestSource: undefined,
             metadataSections: [],
             metadataSectionsRequestSource: undefined,
-            searchURL: '',
+            searchURL: searchURL,
             itemsPerPage: 12,
-            templateMode: false
+            templateMode: props.isTemplateMode || false
         };
         
         // Bind events
@@ -53,33 +59,19 @@ export default class TainacanSingleItemMetadataSectionSelectionModal extends Rea
         this.applySelectedMetadataSection = this.applySelectedMetadataSection.bind(this);
     }
 
-    componentWillMount() {
-        
-        this.setState({ 
-            collectionId: this.props.existingCollectionId,
-            itemId: this.props.existingItemId,
-            sectionId: this.props.existingSectionId,
-            templateMode: this.props.isTemplateMode
-        });
-         
-        if (this.props.existingCollectionId && !this.props.isTemplateMode) {
-            this.fetchCollection(this.props.existingCollectionId);
-            this.setState({ 
-                searchURL: tainacan_blocks.admin_url + '?itemsSingleSelectionMode=true&page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?status=publish'
-            });
+    componentDidMount() {
+        const { existingCollectionId, existingItemId, isTemplateMode } = this.props;
 
-            if (this.props.existingItemId) {
-                this.fetchItem(this.props.existingItemId);
-                this.fetchModalMetadataSections();
+        if (existingCollectionId && !isTemplateMode) {
+            this.fetchCollection(existingCollectionId);
+
+            if (existingItemId != null && existingItemId !== '' && Number(existingItemId) > 0) {
+                this.fetchItem(existingItemId, existingCollectionId);
+                this.fetchModalMetadataSections(existingCollectionId);
             }
-
-        }  else if (this.props.existingCollectionId && this.props.isTemplateMode) {
-            this.fetchCollection(this.props.existingCollectionId);
-            this.setState({
-                collectionId: this.props.existingCollectionId,
-                templateMode: this.props.isTemplateMode
-            });
-            this.fetchModalMetadataSections(this.props.existingCollectionId);
+        } else if (existingCollectionId && isTemplateMode) {
+            this.fetchCollection(existingCollectionId);
+            this.fetchModalMetadataSections(existingCollectionId);
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();
@@ -143,8 +135,10 @@ export default class TainacanSingleItemMetadataSectionSelectionModal extends Rea
             });
     }
 
-    fetchItem(itemId) {
-        tainacanApi.get('/collections/' + this.state.collectionId + '/items/' + itemId)
+    fetchItem(itemId, collectionId) {
+        const resolvedCollectionId = (collectionId != null && collectionId !== '') ? collectionId : this.state.collectionId;
+
+        tainacanApi.get('/collections/' + resolvedCollectionId + '/items/' + itemId)
             .then((response) => {
                 this.setState({ itemTitle: response.data.title });
             }).catch(error => {
@@ -251,7 +245,7 @@ export default class TainacanSingleItemMetadataSectionSelectionModal extends Rea
                     itemId: selectedItems[0]
                 });
                 this.props.onSelectItem(selectedItems[0]);
-                this.fetchModalMetadataSections();
+                this.fetchModalMetadataSections(this.state.collectionId);
             }
         }
     }

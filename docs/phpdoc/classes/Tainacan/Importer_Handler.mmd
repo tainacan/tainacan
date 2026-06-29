@@ -1,0 +1,18 @@
+classDiagram
+    direction TB
+    class Importer_Handler {
+        #bg_importer : Background_Importer
+        -registered_importers : mixed
+        -init()
+        +register_importers()
+        +add_to_queue(importer_object)
+        +register_importer(importer)
+        +unregister_importer(importer_slug)
+        +get_registered_importers()
+        +get_importer(importer_slug)
+        +get_importer_by_object(importer_object)
+        +initialize_importer(importer_slug)
+        +save_importer_instance(importer)
+        +get_importer_instance_by_session_id(session_id)
+        +delete_importer_instance(importer)
+    }

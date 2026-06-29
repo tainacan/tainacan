@@ -1,0 +1,25 @@
+classDiagram
+    direction TB
+    class REST_Item_Metadata_Controller {
+        -metadatum : mixed
+        -item_metadata_repository : mixed
+        -item_repository : mixed
+        -collection_repository : mixed
+        -metadatum_repository : mixed
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +prepare_item_for_database(request)
+        +prepare_item_for_response(item, request)
+        +get_items(request)
+        +get_item_metadatum_value(request)
+        +get_items_permissions_check(request)
+        +update_item(request)
+        +update_item_permissions_check(request)
+        +get_endpoint_args_for_item_schema(method)
+        +get_wp_query_params()
+        +delete_item_permissions_check(request)
+        +delete_item(request)
+        -get_metadata_value(is_multiple, value)
+        +get_schema()
+    }

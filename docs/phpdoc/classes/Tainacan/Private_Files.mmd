@@ -1,0 +1,19 @@
+classDiagram
+    direction TB
+    class Private_Files {
+        +dir_separator : string
+        #init()
+        +pre_tainacan_upload(blob, filename, post_id)
+        +post_tainacan_upload(attach_id, attach_data, post_id)
+        +pre_upload(file)
+        +post_upload(fileinfo)
+        +get_items_uploads_folder()
+        +get_private_folder_prefix()
+        +change_upload_dir(path)
+        +template_redirect()
+        +image_get_intermediate_size(data, post_id, size)
+        +wp_get_attachment_url(url, post_id)
+        +rename_item_and_collection_folder_path(obj, permanent_delete)
+        +bulk_edit(status, group, select_query, query)
+        +$add_htaccess_rules()
+    }

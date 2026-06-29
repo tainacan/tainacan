@@ -1,0 +1,14 @@
+classDiagram
+    direction TB
+    class Admin_Commands {
+        -tainacan_root_menu_slug : string
+        -tainacan_other_links_slug : string
+        -repository_links_slug : string
+        -collections_links_slug : string
+        -init()
+        +enqueue_command_palette_scripts()
+        -get_command_palette_menu_items()
+        -build_hierarchical_label(item_label, parent_label, parent_slug)
+        -generate_command_name_slug(page_slug, fallback_label)
+        -build_menu_item_url(page_slug, admin_url)
+    }

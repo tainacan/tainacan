@@ -10,23 +10,34 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
     constructor(props) {
         super(props);
 
-        // Initialize state
+        const existingCollectionId = props.existingCollectionId;
+        const loadStrategy = props.loadStrategy || 'search';
+        const searchURL = existingCollectionId ? (
+            props.existingSearchURL &&
+            props.existingSearchURL.indexOf('iframemode') < 0 &&
+            props.existingSearchURL.includes(tainacan_blocks.admin_url)
+        )
+            ? props.existingSearchURL
+            : tainacan_blocks.admin_url + '?' + (loadStrategy == 'search' ? 'itemsSearchSelectionMode' : 'itemsMultipleSelectionMode') + '=true&page=tainacan_admin#/collections/' + existingCollectionId + '/items/?status=publish'
+        : '';
+
+        // Initialize state from block attributes so the correct step renders on first paint.
         this.state = {
             collectionsPerPage: 24,
-            collectionId: undefined,  
+            collectionId: existingCollectionId,
             collectionName: '', 
             isLoadingCollections: false, 
             modalCollections: [],
             totalModalCollections: 0, 
             collectionOrderBy: 'date-desc',
             collectionPage: 1,
-            temporaryCollectionId: '',
+            temporaryCollectionId: existingCollectionId ? '' + existingCollectionId : '',
             searchCollectionName: '',
             collections: [],
             collectionsRequestSource: undefined,
-            searchURL: '',
+            searchURL: searchURL,
             itemsPerPage: 12,
-            loadStrategy: 'search'
+            loadStrategy: loadStrategy
         };
         
         // Bind events
@@ -40,22 +51,8 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
     }
 
     componentDidMount() {
-
-        this.setState({ 
-            collectionId: this.props.existingCollectionId
-        });
-         
         if (this.props.existingCollectionId) {
             this.fetchCollection(this.props.existingCollectionId);
-            this.setState({ 
-                searchURL: (
-                    this.props.existingSearchURL &&
-                    this.props.existingSearchURL.indexOf('iframemode') < 0 &&
-                    this.props.existingSearchURL.includes(tainacan_blocks.admin_url)
-                ) 
-                    ? this.props.existingSearchURL
-                    : tainacan_blocks.admin_url + '?' + (this.props.loadStrategy == 'search' ? 'itemsSearchSelectionMode' : 'itemsMultipleSelectionMode') + '=true&page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?status=publish'
-            });
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();

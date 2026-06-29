@@ -254,7 +254,10 @@ export default function ({ attributes, setAttributes, isSelected, context }) {
                                 width="24px">
                             <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
                         </svg>
-                        { collectionId ? __('Select a metadata section to display it.', 'tainacan') : __('Select an item and a metadata section to display it.', 'tainacan') }
+                        { collectionId && ( templateMode || effectiveItemId ) ?
+                            __('Select a metadata section to display it.', 'tainacan') :
+                            __('Select an item and a metadata section to display it.', 'tainacan')
+                        }
                     </p>
                     <Button
                         isPrimary
@@ -266,7 +269,10 @@ export default function ({ attributes, setAttributes, isSelected, context }) {
                                 }); 
                             }
                         }>
-                        { collectionId ?  __('Select a Metadata Section', 'tainacan') : __('Select Item and Metadata Section', 'tainacan') }
+                        { collectionId && ( templateMode || effectiveItemId ) ?
+                            __('Select a Metadata Section', 'tainacan') :
+                            __('Select Item and Metadata Section', 'tainacan')
+                        }
                     </Button>
                 </Placeholder>
                 ) : null

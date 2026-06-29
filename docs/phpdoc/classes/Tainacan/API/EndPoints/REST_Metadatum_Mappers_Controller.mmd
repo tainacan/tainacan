@@ -1,0 +1,13 @@
+classDiagram
+    direction TB
+    class REST_Metadatum_Mappers_Controller {
+        #get_schema()
+        +__construct()
+        +register_routes()
+        +prepare_item_for_response(mapper, request)
+        +prepare_metadatum_for_response(item, request)
+        +get_items(request)
+        +get_items_permissions_check(request)
+        +update_item_permissions_check(request)
+        +update_item(request)
+    }

@@ -1,0 +1,32 @@
+classDiagram
+    direction TB
+    class REST_Terms_Controller {
+        -term : mixed
+        -terms_repository : mixed
+        -items_repository : mixed
+        -taxonomy_repository : mixed
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +prepare_item_for_database(to_prepare)
+        +create_multiples_items(request)
+        +create_item(request)
+        +create_item_permissions_check(request)
+        +delete_items_permissions_check(request)
+        +delete_items(request)
+        +delete_item(request)
+        +delete_item_permissions_check(request)
+        +update_parent_terms_permissions_check(request)
+        +update_parent_terms(request)
+        +update_item(request)
+        +update_item_permissions_check(request)
+        -get_preview_image_items(term, amount)
+        +prepare_item_for_response(item, request)
+        +get_items(request)
+        +get_items_permissions_check(request)
+        +get_item(request)
+        +get_item_permissions_check(request)
+        +get_endpoint_args_for_item_schema(method)
+        +get_wp_query_params()
+        +get_schema()
+    }

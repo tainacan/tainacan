@@ -819,6 +819,19 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                             { items }
                                         </ul>
                                     </BaseControl>
+                                    { tainacanViewMode != 'mosaic' && tainacanViewMode != 'masonry' ?
+                                        <ToggleControl
+                                            label={__('Image', 'tainacan')}
+                                            help={ showImage ? __("Toggle to show item's image", 'tainacan') : __("Do not show item's image", 'tainacan')}
+                                            checked={ showImage }
+                                            onChange={ ( isChecked ) => {
+                                                    showImage = isChecked;
+                                                    setAttributes({ showImage: showImage });
+                                                    setContent();
+                                                } 
+                                            }
+                                        />
+                                    : null }
                                 </>
                             : null }
                         </div>
@@ -1134,7 +1147,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                     { layout === 'tainacan-view-modes' ? (
                         <>
                             <div className="preview-warning">{__('Warning: this is just a demonstration. Tainacan view modes can only be rendered outside the editor, so either preview or publish your post.', 'tainacan') }</div>
-                            <div className="items-list-edit items-layout-tainacan-view-modes" dangerouslySetInnerHTML={{ __html: tainacan_blocks.registered_view_modes[tainacanViewMode] && tainacan_blocks.registered_view_modes[tainacanViewMode].placeholder_template ? (tainacan_blocks.registered_view_modes[tainacanViewMode].placeholder_template) : null }} />
+                            <div className={"items-list-edit items-layout-tainacan-view-modes " + (!showImage && (tainacanViewMode != 'mosaic' && tainacanViewMode != 'masonry') ? "items-without-image" : "")} dangerouslySetInnerHTML={{ __html: tainacan_blocks.registered_view_modes[tainacanViewMode] && tainacan_blocks.registered_view_modes[tainacanViewMode].placeholder_template ? (tainacan_blocks.registered_view_modes[tainacanViewMode].placeholder_template) : null }} />
                         </>
                     ) : null }
             

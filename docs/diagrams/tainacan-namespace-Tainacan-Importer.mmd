@@ -1,0 +1,20 @@
+classDiagram
+    direction TB
+    class Importer { }
+    class Flickr_Importer { }
+    class Term_Importer { }
+    class Importer_Handler { }
+    class CSV { }
+    class Youtube_Importer { }
+    class Oaipmh_Importer { }
+    class Test_Importer { }
+    class Background_Importer { }
+    Importer ..> Importer_Handler
+    Importer <|-- CSV
+    Importer <|-- Flickr_Importer
+    Importer <|-- Oaipmh_Importer
+    Importer <|-- Term_Importer
+    Importer <|-- Test_Importer
+    Importer <|-- Youtube_Importer
+    Importer_Handler ..> Background_Importer
+    Importer_Handler ..> Importer

@@ -1,0 +1,13 @@
+classDiagram
+    direction TB
+    class Cli_Document {
+        -collection_repository : mixed
+        -items_repository : mixed
+        -result_count : mixed
+        -dry_run : mixed
+        +__construct()
+        +__invoke(args, assoc_args)
+        -index_item_all_collections()
+        -index_item(collection_id)
+        -index_content_document_item(item)
+    }

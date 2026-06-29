@@ -1,0 +1,42 @@
+classDiagram
+    direction TB
+    class Generic_Process {
+        #id : identifier
+        #steps : array
+        #transients : array
+        #abort : bool
+        #current_step : mixed
+        #in_step_count : mixed
+        #log : mixed
+        #error_log : mixed
+        #array_attributes : array
+        +__construct(attributes)
+        +get_id()
+        +get_current_step()
+        +set_current_step(value)
+        +get_in_step_count()
+        +set_in_step_count(value)
+        +set_steps(steps)
+        +get_steps()
+        #get_transients()
+        #set_transients(data)
+        +add_transient(key, data)
+        +delete_transient(key)
+        +get_transient(key)
+        +get_log()
+        +get_error_log()
+        +add_log(message)
+        +add_error_log(message)
+        +is_finished()
+        #cancel_abort()
+        #abort()
+        +get_abort()
+        +get_progress_label()
+        +get_progress_value()
+        #set_current_step_total(value)
+        #set_step_total(step, value)
+        #next_step()
+        +_to_Array(short)
+        +finished()
+        +run()
+    }

@@ -259,6 +259,24 @@
                                 </b-field>
                             </div>
 
+                            <!-- Default Items Per Page ------------------------------ -->
+                            <b-field
+                                    :addons="false"
+                                    :label="$i18n.get('label_default_per_page')"
+                                    :message="$i18n.get('info_default_per_page')">
+                                <b-select
+                                        id="tainacan-select-default_per_page"
+                                        v-model="form.default_per_page"
+                                        expanded>
+                                    <option
+                                            v-for="option of defaultPerPageOptions"
+                                            :key="option"
+                                            :value="option">
+                                        {{ option }}
+                                    </option>
+                                </b-select>
+                            </b-field>
+
                             <!-- Hide Items Thumbnail on Lists ------------------------ --> 
                             <b-field
                                     :addons="false" 
@@ -1127,6 +1145,7 @@ export default {
                 default_view_mode: [],
                 default_order: 'ASC',
                 default_orderby: 'date',
+                default_per_page: 12,
                 allow_comments: 'closed',
                 allow_item_author_editing: 'no',
                 allow_item_slug_editing: 'no',
@@ -1213,6 +1232,12 @@ export default {
         validDefaultViewModes() {
             return Array.isArray(this.form.enabled_view_modes) ? this.form.enabled_view_modes.filter((aViewMode) => this.registeredAndNotDisabledViewModes[aViewMode] != undefined && this.registeredAndNotDisabledViewModes[aViewMode].full_screen == false ) : [];
         },
+        defaultPerPageOptions() {
+            const cap = Number(tainacan_plugin.api_max_items_per_page) || 96;
+            const opts = [12, 24, 48].filter(value => value <= cap);
+            if (!opts.includes(cap)) opts.push(cap);
+            return opts.sort((a, b) => a - b);
+        },
         registeredAndNotDisabledViewModes() {
             let registered = tainacan_plugin.registered_view_modes;
             for (let key in registered) {
@@ -1293,6 +1318,7 @@ export default {
                 this.form.enabled_view_modes = JSON.parse(JSON.stringify(this.collection.enabled_view_modes.reduce((result, viewMode) => { typeof viewMode == 'string' ? result.push(viewMode) : null; return result }, [])));
                 this.form.default_order = this.collection.default_order;
                 this.form.default_orderby = this.collection.default_orderby;
+                this.form.default_per_page = Number(this.collection.default_per_page);
                 this.form.allow_comments = this.collection.allow_comments;
                 this.form.allow_item_slug_editing = this.collection.allow_item_slug_editing;
                 this.form.allow_item_author_editing = this.collection.allow_item_author_editing;
@@ -1430,6 +1456,7 @@ export default {
                 default_view_mode: this.form.default_view_mode,
                 default_order: this.form.default_order,
                 default_orderby: this.form.default_orderby,
+                default_per_page: this.form.default_per_page,
                 allows_submission: this.form.allows_submission,
                 submission_anonymous_user: this.form.submission_anonymous_user,
                 submission_default_status: this.form.submission_default_status,
@@ -1473,6 +1500,7 @@ export default {
                     this.form.default_view_mode = this.collection.default_view_mode;
                     this.form.default_order = this.collection.default_order;
                     this.form.default_orderby = this.collection.default_orderby;
+                    this.form.default_per_page = Number(this.collection.default_per_page);
                     this.form.allow_comments = this.collection.allow_comments;
                     this.form.allow_item_slug_editing = this.collection.allow_item_slug_editing;
                     this.form.allow_item_author_editing = this.collection.allow_item_author_editing;
@@ -1547,6 +1575,7 @@ export default {
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.default_order = this.collection.default_order;
                 this.form.default_orderby = this.collection.default_orderby;
+                this.form.default_per_page = Number(this.collection.default_per_page);
                 this.form.enabled_view_modes = this.collection.enabled_view_modes;
                 this.form.allow_comments = this.collection.allow_comments;
                 this.form.allow_item_slug_editing = this.collection.allow_item_slug_editing;
@@ -2287,5 +2316,4 @@ export default {
     }
 
 </style>
-
 

@@ -1,0 +1,14 @@
+classDiagram
+    direction TB
+    class Compound {
+        +__construct()
+        +get_form_labels()
+        +get_options_as_html()
+        +save_children(metadatum)
+        +delete_children(metadatum)
+        +get_options()
+        +get_value_as_html(item_metadata)
+        +get_value_as_string(item_metadata)
+        -get_meta_html(meta)
+    }
+    Compound ..> Compound
