@@ -4,6 +4,33 @@ Builds OAI-PMH 2.0 XML responses with `DOMDocument`. Element text is escaped via
 
 * Full name: `\Tainacan\OAIPMHExpose\OAIPMH_Xml_Generator`
 
+## Class Diagram
+
+```mermaid
+classDiagram
+    direction TB
+    class OAIPMH_Xml_Generator {
+        -dom : DOMDocument
+        -root : DOMElement
+        +__construct()
+        -text_element(name, value)
+        +init(base_url, verb, params)
+        +add_error(code, message)
+        +create_identify(data)
+        +create_metadata_formats()
+        +create_sets(sets)
+        +add_set(list, set)
+        +start_list(type)
+        +add_record(list, data, include_metadata)
+        +add_header(list, data)
+        -create_header(data)
+        -build_oai_dc(dc_data)
+        +add_resumption_token(list, token, total, cursor, expiration)
+        +output()
+    }
+    OAIPMH_Xml_Generator ..> OAIPMH_Xml_Generator
+```
+
 ## Methods
 
 | Method | Description |

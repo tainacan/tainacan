@@ -4,6 +4,17 @@ Stores ListRecords/ListIdentifiers pagination state in WordPress transients.
 
 * Full name: `\Tainacan\OAIPMHExpose\OAIPMH_Token_Manager`
 
+## Class Diagram
+
+```mermaid
+classDiagram
+    direction TB
+    class OAIPMH_Token_Manager {
+        +create(data)
+        +get(token)
+    }
+```
+
 ## Methods
 
 | Method | Description |

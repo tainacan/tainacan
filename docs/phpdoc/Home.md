@@ -125,36 +125,36 @@ lightbox |
 ```mermaid
 classDiagram
     direction TB
-    class Dashboard { }
-    class Exposers_Handler { }
-    class Cli_Document { }
     class Background_Process_Heartbeat { }
-    class Media { }
-    class Embed { }
-    class Admin { }
-    class Cli_Control_Metadata { }
-    class Background_Process { }
-    class Settings { }
-    class Pages { }
-    class Roles_Editor { }
-    class Cli_Collection { }
-    class Cli_Garbage_Collector { }
-    class Search_Engine { }
-    class Async_Request { }
-    class Theme_Helper { }
-    class Background_Process_Base { }
-    class Mappers_Handler { }
-    class Mobile_App { }
-    class __Bulk_Edit { }
-    class Admin_Bar_Items { }
-    class Cli { }
     class Private_Files { }
-    class Gutenberg_Blocks { }
+    class __Bulk_Edit { }
+    class Async_Request { }
+    class Roles_Editor { }
+    class Mappers_Handler { }
+    class System_Check { }
+    class Embed { }
+    class Background_Process { }
+    class Cli_Move_Attachments { }
     class Logs_Wp_Posts_Migration { }
     class Cli_Logs { }
+    class Gutenberg_Blocks { }
+    class Cli_Garbage_Collector { }
+    class Cli_Collection { }
+    class Admin { }
+    class Background_Process_Base { }
+    class Mobile_App { }
+    class Cli_Document { }
+    class Settings { }
     class Admin_Commands { }
-    class Cli_Move_Attachments { }
-    class System_Check { }
+    class Cli_Control_Metadata { }
+    class Cli { }
+    class Theme_Helper { }
+    class Pages { }
+    class Dashboard { }
+    class Admin_Bar_Items { }
+    class Media { }
+    class Search_Engine { }
+    class Exposers_Handler { }
     Async_Request <|-- Background_Process_Base
     Background_Process_Base <|-- Background_Process
     Cli_Logs ..> Logs_Wp_Posts_Migration
@@ -236,28 +236,28 @@ to the dedicated tainacan_logs table. |
 classDiagram
     direction TB
     class REST_Controller { }
-    class endpoints_REST_Background_Processes_Controller { }
-    class endpoints_REST_Collections_Controller { }
-    class endpoints_REST_Facets_Controller { }
     class endpoints_REST_Roles_Controller { }
-    class endpoints_REST_Taxonomies_Controller { }
-    class endpoints_REST_Reports_Controller { }
-    class endpoints_REST_Metadata_Types_Controller { }
     class endpoints_REST_Metadata_Controller { }
-    class endpoints_REST_Terms_Controller { }
-    class endpoints_REST_Filter_Types_Controller { }
     class endpoints_REST_Exporters_Controller { }
-    class endpoints_REST_Metadata_Sections_Controller { }
-    class endpoints_REST_Filters_Controller { }
-    class endpoints_REST_Logs_Controller { }
-    class endpoints_REST_Bulkedit_Controller { }
     class endpoints_REST_Items_Controller { }
-    class endpoints_REST_Sequence_Edit_Controller { }
-    class endpoints_REST_Metadatum_Mappers_Controller { }
+    class endpoints_REST_Metadata_Sections_Controller { }
+    class endpoints_REST_Oaipmh_Controller { }
+    class endpoints_REST_Background_Processes_Controller { }
+    class endpoints_REST_Reports_Controller { }
+    class endpoints_REST_Terms_Controller { }
+    class endpoints_REST_Metadata_Types_Controller { }
     class endpoints_REST_Exposers_Controller { }
+    class endpoints_REST_Metadatum_Mappers_Controller { }
+    class endpoints_REST_Facets_Controller { }
+    class endpoints_REST_Filters_Controller { }
     class endpoints_REST_Importers_Controller { }
-    class endpoints_REST_Oaipmh_Expose_Controller { }
+    class endpoints_REST_Collections_Controller { }
+    class endpoints_REST_Filter_Types_Controller { }
     class endpoints_REST_Item_Metadata_Controller { }
+    class endpoints_REST_Bulkedit_Controller { }
+    class endpoints_REST_Taxonomies_Controller { }
+    class endpoints_REST_Logs_Controller { }
+    class endpoints_REST_Sequence_Edit_Controller { }
     REST_Controller <|-- endpoints_REST_Background_Processes_Controller
     REST_Controller <|-- endpoints_REST_Bulkedit_Controller
     REST_Controller <|-- endpoints_REST_Collections_Controller
@@ -274,7 +274,7 @@ classDiagram
     REST_Controller <|-- endpoints_REST_Metadata_Sections_Controller
     REST_Controller <|-- endpoints_REST_Metadata_Types_Controller
     REST_Controller <|-- endpoints_REST_Metadatum_Mappers_Controller
-    REST_Controller <|-- endpoints_REST_Oaipmh_Expose_Controller
+    REST_Controller <|-- endpoints_REST_Oaipmh_Controller
     REST_Controller <|-- endpoints_REST_Reports_Controller
     REST_Controller <|-- endpoints_REST_Roles_Controller
     REST_Controller <|-- endpoints_REST_Sequence_Edit_Controller
@@ -296,55 +296,55 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class REST_Background_Processes_Controller { }
-    class REST_Collections_Controller { }
-    class REST_Facets_Controller { }
     class REST_Roles_Controller { }
-    class REST_Taxonomies_Controller { }
-    class REST_Reports_Controller { }
-    class REST_Metadata_Types_Controller { }
     class REST_Metadata_Controller { }
-    class REST_Terms_Controller { }
-    class REST_Filter_Types_Controller { }
     class REST_Exporters_Controller { }
-    class REST_Metadata_Sections_Controller { }
-    class REST_Filters_Controller { }
-    class REST_Logs_Controller { }
-    class REST_Bulkedit_Controller { }
     class REST_Items_Controller { }
-    class REST_Sequence_Edit_Controller { }
-    class REST_Metadatum_Mappers_Controller { }
+    class REST_Metadata_Sections_Controller { }
+    class REST_Oaipmh_Controller { }
+    class REST_Background_Processes_Controller { }
+    class REST_Reports_Controller { }
+    class REST_Terms_Controller { }
+    class REST_Metadata_Types_Controller { }
     class REST_Exposers_Controller { }
+    class REST_Metadatum_Mappers_Controller { }
+    class REST_Facets_Controller { }
+    class REST_Filters_Controller { }
     class REST_Importers_Controller { }
-    class REST_Oaipmh_Expose_Controller { }
+    class REST_Collections_Controller { }
+    class REST_Filter_Types_Controller { }
     class REST_Item_Metadata_Controller { }
+    class REST_Bulkedit_Controller { }
+    class REST_Taxonomies_Controller { }
+    class REST_Logs_Controller { }
+    class REST_Sequence_Edit_Controller { }
 ```
 #### Classes
 
-| Class                                                                                                           | Description                                                         |
-|-----------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------|
-| [`REST_Background_Processes_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Background_Processes_Controller.md) | REST API controller for managing Tainacan background processes.     |
-| [`REST_Bulkedit_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Bulkedit_Controller.md)                         | REST API controller for managing Tainacan bulk edit operations.     |
-| [`REST_Collections_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Collections_Controller.md)                   | REST API controller for managing Tainacan collections.              |
-| [`REST_Exporters_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Exporters_Controller.md)                       | REST API controller for managing Tainacan exporters.                |
-| [`REST_Exposers_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Exposers_Controller.md)                         | REST API controller for managing Tainacan exposers.                 |
-| [`REST_Facets_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Facets_Controller.md)                             | REST API controller for managing Tainacan facets.                   |
-| [`REST_Filter_Types_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Filter_Types_Controller.md)                 | REST API controller for managing Tainacan filter types.             |
-| [`REST_Filters_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Filters_Controller.md)                           | REST API controller for managing Tainacan filters.                  |
-| [`REST_Importers_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Importers_Controller.md)                       | REST API controller for managing Tainacan importers.                |
-| [`REST_Item_Metadata_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Item_Metadata_Controller.md)               | REST API controller for managing Tainacan item metadata.            |
-| [`REST_Items_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Items_Controller.md)                               | REST API controller for managing Tainacan items.                    |
-| [`REST_Logs_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Logs_Controller.md)                                 | REST API controller for managing Tainacan logs.                     |
-| [`REST_Metadata_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Metadata_Controller.md)                         | REST API controller for managing Tainacan metadata.                 |
-| [`REST_Metadata_Sections_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Metadata_Sections_Controller.md)       | REST API controller for managing Tainacan metadata sections.        |
-| [`REST_Metadata_Types_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Metadata_Types_Controller.md)             | REST API controller for managing Tainacan metadata types.           |
-| [`REST_Metadatum_Mappers_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Metadatum_Mappers_Controller.md)       | REST API controller for managing Tainacan metadatum mappers.        |
-| [`REST_Oaipmh_Expose_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Oaipmh_Expose_Controller.md)               | REST API controller for managing Tainacan OAI-PMH exposure.         |
-| [`REST_Reports_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Reports_Controller.md)                           | REST API controller for managing Tainacan reports.                  |
-| [`REST_Roles_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Roles_Controller.md)                               | REST API controller for managing Tainacan roles and capabilities.   |
-| [`REST_Sequence_Edit_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Sequence_Edit_Controller.md)               | REST API controller for managing Tainacan sequence edit operations. |
-| [`REST_Taxonomies_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Taxonomies_Controller.md)                     | REST API controller for managing Tainacan taxonomies.               |
-| [`REST_Terms_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Terms_Controller.md)                               | REST API controller for managing Tainacan taxonomy terms.           |
+| Class                                                                                                           | Description                                                              |
+|-----------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| [`REST_Background_Processes_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Background_Processes_Controller.md) | REST API controller for managing Tainacan background processes.          |
+| [`REST_Bulkedit_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Bulkedit_Controller.md)                         | REST API controller for managing Tainacan bulk edit operations.          |
+| [`REST_Collections_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Collections_Controller.md)                   | REST API controller for managing Tainacan collections.                   |
+| [`REST_Exporters_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Exporters_Controller.md)                       | REST API controller for managing Tainacan exporters.                     |
+| [`REST_Exposers_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Exposers_Controller.md)                         | REST API controller for managing Tainacan exposers.                      |
+| [`REST_Facets_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Facets_Controller.md)                             | REST API controller for managing Tainacan facets.                        |
+| [`REST_Filter_Types_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Filter_Types_Controller.md)                 | REST API controller for managing Tainacan filter types.                  |
+| [`REST_Filters_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Filters_Controller.md)                           | REST API controller for managing Tainacan filters.                       |
+| [`REST_Importers_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Importers_Controller.md)                       | REST API controller for managing Tainacan importers.                     |
+| [`REST_Item_Metadata_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Item_Metadata_Controller.md)               | REST API controller for managing Tainacan item metadata.                 |
+| [`REST_Items_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Items_Controller.md)                               | REST API controller for managing Tainacan items.                         |
+| [`REST_Logs_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Logs_Controller.md)                                 | REST API controller for managing Tainacan logs.                          |
+| [`REST_Metadata_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Metadata_Controller.md)                         | REST API controller for managing Tainacan metadata.                      |
+| [`REST_Metadata_Sections_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Metadata_Sections_Controller.md)       | REST API controller for managing Tainacan metadata sections.             |
+| [`REST_Metadata_Types_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Metadata_Types_Controller.md)             | REST API controller for managing Tainacan metadata types.                |
+| [`REST_Metadatum_Mappers_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Metadatum_Mappers_Controller.md)       | REST API controller for managing Tainacan metadatum mappers.             |
+| [`REST_Oaipmh_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Oaipmh_Controller.md)                             | REST controller exposing the repository as an OAI-PMH 2.0 data provider. |
+| [`REST_Reports_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Reports_Controller.md)                           | REST API controller for managing Tainacan reports.                       |
+| [`REST_Roles_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Roles_Controller.md)                               | REST API controller for managing Tainacan roles and capabilities.        |
+| [`REST_Sequence_Edit_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Sequence_Edit_Controller.md)               | REST API controller for managing Tainacan sequence edit operations.      |
+| [`REST_Taxonomies_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Taxonomies_Controller.md)                     | REST API controller for managing Tainacan taxonomies.                    |
+| [`REST_Terms_Controller`](/dev/phpdoc/classes/Tainacan/API/EndPoints/REST_Terms_Controller.md)                               | REST API controller for managing Tainacan taxonomy terms.                |
 
 ### \Tainacan\Entities
 
@@ -355,16 +355,16 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Item_Metadata_Entity { }
-    class Metadatum { }
-    class Term { }
-    class Filter { }
-    class Metadata_Section { }
-    class Item { }
     class Collection { }
-    class Entity { }
+    class Term { }
+    class Item { }
     class Log { }
+    class Metadatum { }
+    class Filter { }
+    class Item_Metadata_Entity { }
     class Taxonomy { }
+    class Entity { }
+    class Metadata_Section { }
     Collection ..> Collection
     Collection ..> Metadatum
     Entity ..> Collection
@@ -414,9 +414,9 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
+    class Exporter { }
     class Term_Exporter { }
     class XLSX_Exporter { }
-    class Exporter { }
     class Exporter_Handler { }
     class CSV { }
     class Background_Exporter { }
@@ -446,15 +446,15 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Exposers_Handler { }
-    class Html { }
     class Exposer { }
-    class JSON_LD { }
-    class Csv { }
-    class Xml { }
-    class JSON_flat { }
     class Txt { }
+    class JSON_LD { }
+    class JSON_flat { }
+    class Xml { }
+    class Csv { }
+    class Html { }
     class OAI_PMH { }
+    class Exposers_Handler { }
     Exposer <|-- Csv
     Exposer <|-- Html
     Exposer <|-- JSON_LD
@@ -519,9 +519,9 @@ classDiagram
 classDiagram
     direction TB
     class Generic_Process_Handler { }
+    class Generic_Process { }
     class Bulk_Edit_Process { }
     class Background_Generic_Process { }
-    class Generic_Process { }
     Generic_Process <|-- Bulk_Edit_Process
     Generic_Process_Handler ..> Background_Generic_Process
     Generic_Process_Handler ..> Generic_Process
@@ -543,14 +543,14 @@ classDiagram
 classDiagram
     direction TB
     class Importer { }
+    class Background_Importer { }
     class Flickr_Importer { }
     class Term_Importer { }
+    class Oaipmh_Importer { }
+    class Youtube_Importer { }
+    class Test_Importer { }
     class Importer_Handler { }
     class CSV { }
-    class Youtube_Importer { }
-    class Oaipmh_Importer { }
-    class Test_Importer { }
-    class Background_Importer { }
     Importer ..> Importer_Handler
     Importer <|-- CSV
     Importer <|-- Flickr_Importer
@@ -582,9 +582,9 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Elastic_Press { }
     class Elastic_Press_lte4 { }
     class WordPress_AI { }
+    class Elastic_Press { }
     Elastic_Press ..> Elastic_Press
     Elastic_Press ..> Elastic_Press_lte4
 ```
@@ -606,11 +606,11 @@ classDiagram
 classDiagram
     direction TB
     class Mapper { }
-    class Inbcm_Museological { }
+    class Mappers_Handler { }
     class Dublin_Core { }
     class Inbcm_Archive { }
-    class Mappers_Handler { }
     class Inbcm_Bibliographic { }
+    class Inbcm_Museological { }
     Mapper <|-- Dublin_Core
     Mapper <|-- Inbcm_Archive
     Mapper <|-- Inbcm_Bibliographic
@@ -652,7 +652,7 @@ http://purl.org/dc/elements/1.1/ |
 | [`URL`](/dev/phpdoc/classes/Tainacan/Metadata_Types/URL.md)                                             | Class TainacanMetadatumType |
 | [`User`](/dev/phpdoc/classes/Tainacan/Metadata_Types/User.md)                                           | Class TainacanMetadatumType |
 
-### \Tainacan\OAIPMHExpose
+### \Tainacan\OAIPMH
 
 
 
@@ -661,52 +661,18 @@ http://purl.org/dc/elements/1.1/ |
 ```mermaid
 classDiagram
     direction TB
-    class OAIPMH_List_Metadata_Formats { }
-    class OAIPMH_Get_Record { }
-    class XML_Error { }
-    class OAIPMH_Expose { }
-    class OAIPMH_List_Records { }
-    class Xml_Response { }
-    class OAIPMH_List_Identifiers { }
-    class Xml_Create { }
-    class OAIPMH_Identify { }
-    class OAIPMH_List_Sets { }
-    OAIPMH_Expose ..> XML_Error
-    OAIPMH_Expose <|-- OAIPMH_Get_Record
-    OAIPMH_Expose <|-- OAIPMH_Identify
-    OAIPMH_Expose <|-- OAIPMH_List_Identifiers
-    OAIPMH_Expose <|-- OAIPMH_List_Metadata_Formats
-    OAIPMH_Expose <|-- OAIPMH_List_Records
-    OAIPMH_Expose <|-- OAIPMH_List_Sets
-    OAIPMH_Get_Record ..> Xml_Response
-    OAIPMH_Identify ..> Xml_Response
-    OAIPMH_List_Identifiers ..> Xml_Response
-    OAIPMH_List_Metadata_Formats ..> Xml_Response
-    OAIPMH_List_Records ..> Xml_Response
-    OAIPMH_List_Sets ..> Xml_Response
-    Xml_Create <|-- Xml_Response
+    class OAIPMH_Token_Manager { }
+    class OAIPMH_Data_Provider { }
+    class OAIPMH_Xml_Generator { }
+    OAIPMH_Xml_Generator ..> OAIPMH_Xml_Generator
 ```
 #### Classes
 
-| Class                                                                                          | Description                                                   |
-|------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
-| [`OAIPMH_Expose`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/OAIPMH_Expose.md)                               | Support Dublin Core Mapping
-http://purl.org/dc/elements/1.1/  |
-| [`OAIPMH_Get_Record`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/OAIPMH_Get_Record.md)                       | Support Dublin Core Mapping
-http://purl.org/dc/elements/1.1/  |
-| [`OAIPMH_Identify`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/OAIPMH_Identify.md)                           | Support Dublin Core Mapping
-http://purl.org/dc/elements/1.1/  |
-| [`OAIPMH_List_Identifiers`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/OAIPMH_List_Identifiers.md)           | Support Dublin Core Mapping
-http://purl.org/dc/elements/1.1/  |
-| [`OAIPMH_List_Metadata_Formats`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/OAIPMH_List_Metadata_Formats.md) | Support Dublin Core Mapping
-http://purl.org/dc/elements/1.1/  |
-| [`OAIPMH_List_Records`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/OAIPMH_List_Records.md)                   | Support Dublin Core Mapping
-http://purl.org/dc/elements/1.1/  |
-| [`OAIPMH_List_Sets`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/OAIPMH_List_Sets.md)                         | Support Dublin Core Mapping
-http://purl.org/dc/elements/1.1/  |
-| [`Xml_Create`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/Xml_Create.md)                                     | A wraper of DOMDocument for data provider                     |
-| [`XML_Error`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/XML_Error.md)                                       | Generate an XML response when a request cannot be finished    |
-| [`Xml_Response`](/dev/phpdoc/classes/Tainacan/OAIPMHExpose/Xml_Response.md)                                 | Generate an XML response to a request if no error has occured |
+| Class                                                                    | Description                                             |
+|--------------------------------------------------------------------------|---------------------------------------------------------|
+| [`OAIPMH_Data_Provider`](/dev/phpdoc/classes/Tainacan/OAIPMH/OAIPMH_Data_Provider.md) | OAI-PMH data provider.                                  |
+| [`OAIPMH_Token_Manager`](/dev/phpdoc/classes/Tainacan/OAIPMH/OAIPMH_Token_Manager.md) | resumptionToken storage backed by WordPress transients. |
+| [`OAIPMH_Xml_Generator`](/dev/phpdoc/classes/Tainacan/OAIPMH/OAIPMH_Xml_Generator.md) | Builds OAI-PMH 2.0 XML responses with DOMDocument.      |
 
 ### \Tainacan\Repositories
 
@@ -717,17 +683,17 @@ http://purl.org/dc/elements/1.1/  |
 ```mermaid
 classDiagram
     direction TB
-    class Collections { }
-    class Terms { }
     class Metadata_Sections { }
     class Logs { }
-    class Item_Metadata { }
     class Logs { }
-    class Taxonomies { }
+    class Item_Metadata { }
     class Metadata { }
-    class Repository { }
     class Items { }
+    class Collections { }
+    class Repository { }
     class Filters { }
+    class Terms { }
+    class Taxonomies { }
     Collections ..> Metadata
     Item_Metadata ..> Items
     Item_Metadata ..> Metadata
@@ -792,11 +758,11 @@ classDiagram
 classDiagram
     direction TB
     class Formatter_Text { }
-    class Entity_Collections_Relation { }
-    class Singleton_Instance { }
-    class SVG_Icon { }
-    class Entity_Collection_Relation { }
     class Admin_UI_Options { }
+    class Entity_Collection_Relation { }
+    class Entity_Collections_Relation { }
+    class SVG_Icon { }
+    class Singleton_Instance { }
 ```
 #### Traits
 

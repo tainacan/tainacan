@@ -10,29 +10,35 @@
 ```mermaid
 classDiagram
     direction TB
-    class Importer {
-        -id : identifier
-        #tmp_file : string
-        #collections : array
-        -options : array
+    class Exporter {
+        #id : identifier
+        #options : array
         #default_options : array
-        -accepts : mixed
         #steps : array
-        -transients : array
-        -current_step : mixed
-        -in_step_count : mixed
-        -current_collection : mixed
-        -current_collection_item : mixed
-        -url : mixed
-        -log : mixed
-        -error_log : mixed
-        -abort : bool
-        -array_attributes : array
+        #collections : array
+        -output_files : mixed
+        -mapping_accept : mixed
+        -send_email : mixed
+        #mapping_list : mixed
+        +mapping_selected : mixed
+        #accept_no_mapping : mixed
+        #transients : array
+        #abort : bool
+        #current_step : mixed
+        #in_step_count : mixed
+        #current_collection : mixed
+        #current_collection_item : mixed
+        #log : mixed
+        #error_log : mixed
+        #array_attributes : array
         +__construct(attributes)
-        +_to_Array(short)
+        +add_collection(collection)
+        +remove_collection(col_id)
+        +update_collection(index, collection_definition)
+        +update_current_collection(collection_definition)
+        +next_item()
+        +next_collection()
         +get_id()
-        +set_url(url)
-        +get_url()
         +get_current_step()
         +set_current_step(value)
         +get_in_step_count()
@@ -40,33 +46,26 @@ classDiagram
         +get_current_collection()
         +set_current_collection(value)
         +get_current_collection_item()
+        +get_step_length_items()
         +set_current_collection_item(value)
-        +get_tmp_file()
-        +set_tmp_file(filepath)
         +get_collections()
         +set_collections(value)
+        +get_current_collection_object()
         +get_options()
         +set_options(options)
+        +get_option(key)
         #set_default_options(options)
         +set_steps(steps)
         +get_steps()
-        -get_transients()
-        -set_transients(data)
-        +get_log()
-        +get_error_log()
-        +add_file(file)
-        +add_log(message)
-        +add_error_log(message)
-        +add_collection(collection)
-        +remove_collection(col_id)
-        -upload_file(file_array)
-        +fetch_from_remote(url)
-        +get_option(key)
-        +add_import_method(method)
-        +remove_import_method(method)
+        #get_transients()
+        #set_transients(data)
         +add_transient(key, data)
         +delete_transient(key)
         +get_transient(key)
+        +get_log()
+        +get_error_log()
+        +add_log(message)
+        +add_error_log(message)
         +is_finished()
         #cancel_abort()
         #abort()
@@ -75,55 +74,45 @@ classDiagram
         +get_progress_value()
         #set_current_step_total(value)
         #set_step_total(step, value)
-        +get_source_metadata()
-        +get_source_number_of_items()
-        +options_form()
-        +get_output()
-        +process_collections()
-        #next_item()
-        #next_collection()
         #next_step()
-        +insert(processed_item, collection_index)
-        +after_inserted_item(insertedItem, collection_index)
+        +_to_Array(short)
+        +get_current_mapper()
+        +options_form()
+        +process_collections()
+        -process_header(current_collection_item, collection_definition)
+        +output_header()
+        -process_footer(current_collection_item, collection_definition)
+        +output_footer()
+        -get_items(index, collection_definition)
+        -map_item_metadata(item)
+        +add_new_file(key)
+        +append_to_file(key, data)
+        +set_accepted_mapping_methods(method, default_mapping, list)
+        +set_mapping_selected(mapping_selected)
+        +get_mapping_selected()
+        +set_send_email(email)
+        +get_send_email()
+        +get_output()
+        +finished()
+        +begin_exporter()
+        +end_exporter()
+        -set_output_files(output_files)
+        #get_output_files()
         +run()
-        +create_new_metadata(metadata_description, collection_id, parent_id)
     }
     class CSV {
-        -items_repo : mixed
+        -collection_name : mixed
         +__construct(attributes)
-        +set_option(key, value)
-        +get_source_metadata()
-        +get_source_file_name()
-        +get_source_special_fields()
-        +raw_source_metadata()
-        +process_item(index, collection_definition)
-        +after_inserted_item(inserted_item, collection_index)
-        +get_source_number_of_items()
-        +options_form()
-        -handle_encoding(string)
-        -handle_document(column_value, item_inserted)
-        -handle_thumbnail(column_value, item_inserted)
-        -handle_attachment(column_value, item_inserted)
-        -handle_enclosure(file)
-        -handle_item_status(status, item_inserted)
-        -handle_item_comment_status(comment_status, item_inserted)
-        -handle_item_author_id(author, item_inserted)
-        -handle_item_slug(slug, item_inserted)
-        -handle_item_id(values)
-        +insert(processed_item, collection_index)
-        -is_assoc(arr)
-        -deleteAllValuesCompoundItemMetadata(item, compoundMetadataID)
-        +is_empty_value(value)
-        -is_clear_value(value)
-        -insert_hierarchy(metadatum, values)
-        +save_mapping(collection_id, mapping)
-        +get_mapping(collection_id)
-        +add_collection(collection)
+        +filter_multivalue_separator(separator)
+        +filter_hierarchy_separator(separator)
+        +process_item(item, metadata)
+        +output_header()
+        +output_footer()
         -get_collections_names()
         +get_output()
-        -delete_previous_document_imgs(item_id, item_document)
+        +options_form()
     }
-    Importer <|-- CSV
+    Exporter <|-- CSV
 ```
 
 ## Properties
