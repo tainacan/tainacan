@@ -1,0 +1,28 @@
+classDiagram
+    direction TB
+    class System_Check {
+        -min_php_version : mixed
+        -mysql_min_version_check : mixed
+        -mysql_rec_version_check : mixed
+        +mariadb : mixed
+        -mysql_server_version : mixed
+        -health_check_mysql_rec_version : mixed
+        -health_check_mysql_min_version : mixed
+        #get_page_slug()
+        +init()
+        +add_admin_menu()
+        +render_page_content()
+        +test_php_version()
+        -prepare_sql_data()
+        +check_permalink_settings()
+        +check_php_timeout()
+        +check_upload_permission()
+        +check_max_upload_size()
+        +test_wordpress_version()
+        +child_test_php_extension_availability(extension, function)
+        +test_php_extensions()
+        +test_sql_server()
+        +test_utf8mb4_support()
+        +check_protected_upload_folders()
+        +get_tainacan_version()
+    }

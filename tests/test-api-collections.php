@@ -54,6 +54,41 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
         $this->assertEquals('TesteJsonAdd', $data['name']);
     }
 
+	public function test_default_per_page_via_api() {
+		$request = new \WP_REST_Request( 'POST', $this->namespace . '/collections' );
+		$request->set_body(
+			json_encode(
+				array(
+					'name'             => 'PerPageApi',
+					'status'           => 'publish',
+					'default_per_page' => 24,
+				)
+			)
+		);
+
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 201, $response->get_status(), sprintf( 'response: %s', print_r( $response, true ) ) );
+		$this->assertEquals( 24, $response->get_data()['default_per_page'] );
+
+		global $TAINACAN_API_MAX_ITEMS_PER_PAGE;
+		$cap = isset( $TAINACAN_API_MAX_ITEMS_PER_PAGE )
+			? (int) $TAINACAN_API_MAX_ITEMS_PER_PAGE
+			: (int) get_option( 'tainacan_option_search_results_per_page', 96 );
+
+		$bad = new \WP_REST_Request( 'POST', $this->namespace . '/collections' );
+		$bad->set_body(
+			json_encode(
+				array(
+					'name'             => 'PerPageApiBad',
+					'status'           => 'publish',
+					'default_per_page' => $cap + 1,
+				)
+			)
+		);
+
+		$this->assertEquals( 400, $this->server->dispatch( $bad )->get_status() );
+	}
+
     public function test_fetch_collections(){
     	$this->tainacan_entity_factory->create_entity(
     		'collection',

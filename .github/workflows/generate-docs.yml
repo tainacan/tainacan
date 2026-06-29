@@ -1,0 +1,75 @@
+name: Generate developer documentation
+
+on:
+  push:
+    branches:
+      - develop
+    # Avoid re-running when this workflow commits regenerated docs/.
+    paths-ignore:
+      - 'docs/**'
+  workflow_dispatch:
+
+concurrency:
+  group: generate-docs-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, mysql, mysqli, pdo_mysql, bcmath, intl, gd, exif, iconv
+
+      - name: Install database tools
+        run: |
+          sudo apt-get update
+          sudo apt install mariadb-client subversion -y
+
+      - name: Add bootstrap-config
+        run: mv ./tests/bootstrap-config-sample.php ./tests/bootstrap-config.php
+
+      - name: Install WordPress test environment
+        run: ./tests/bin/install-wp-tests.sh wordpress_test root "" /tmp/wordpress 127.0.0.1:3306 latest
+
+      - name: Install Composer dependencies
+        uses: ramsey/composer-install@v1
+
+      - name: Generate documentation
+        run: ./generate_docs.sh
+
+      - name: Create pull request with documentation changes
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "docs: regenerate developer documentation"
+          title: "docs: regenerate developer documentation"
+          body: |
+            Automated regeneration of developer documentation from `generate_docs.sh`.
+
+            Merge when CI passes to update `docs/` on `develop`.
+          branch: docs/regenerate-developer-docs
+          base: develop
+          add-paths: |
+            docs/**

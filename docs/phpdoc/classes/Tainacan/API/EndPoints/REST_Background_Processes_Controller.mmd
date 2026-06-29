@@ -1,0 +1,16 @@
+classDiagram
+    direction TB
+    class REST_Background_Processes_Controller {
+        -table : String
+        #get_schema()
+        +__construct()
+        +register_routes()
+        +bg_processes_permissions_check(request)
+        +get_items(request)
+        +get_item(request)
+        +prepare_item_for_response(item, request)
+        +update_item(request)
+        +delete_item(request)
+        +get_log_url(id, action, type)
+        +get_file(request)
+    }

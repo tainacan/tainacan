@@ -1,0 +1,36 @@
+classDiagram
+    direction TB
+    class Item_Metadata_Entity { }
+    class Metadatum { }
+    class Term { }
+    class Filter { }
+    class Metadata_Section { }
+    class Item { }
+    class Collection { }
+    class Entity { }
+    class Log { }
+    class Taxonomy { }
+    Collection ..> Collection
+    Collection ..> Metadatum
+    Entity ..> Collection
+    Entity ..> Entity
+    Entity ..> Item
+    Entity <|-- Collection
+    Entity <|-- Filter
+    Entity <|-- Item
+    Entity <|-- Item_Metadata_Entity
+    Entity <|-- Log
+    Entity <|-- Metadata_Section
+    Entity <|-- Metadatum
+    Entity <|-- Taxonomy
+    Entity <|-- Term
+    Filter ..> Metadatum
+    Item ..> Item_Metadata_Entity
+    Item ..> Metadata_Section
+    Item ..> Metadatum
+    Item_Metadata_Entity ..> Item
+    Item_Metadata_Entity ..> Item_Metadata_Entity
+    Item_Metadata_Entity ..> Metadatum
+    Item_Metadata_Entity ..> Term
+    Metadatum ..> Metadata_Section
+    Metadatum ..> Metadatum

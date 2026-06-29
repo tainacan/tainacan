@@ -37,3 +37,6 @@ src/.DS_Store
 tests/wordpress-test
 tests/wordpress-tests-lib
 .phpunit.result.cache
+
+# Documentation generation (generate_docs.sh)
+docs/scripts/.tools/

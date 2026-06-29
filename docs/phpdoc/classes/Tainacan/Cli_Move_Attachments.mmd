@@ -1,0 +1,10 @@
+classDiagram
+    direction TB
+    class Cli_Move_Attachments {
+        -collections : mixed
+        -documents : mixed
+        +__invoke(args, assoc_args)
+        -is_item_attachment(att)
+        -is_document(attachment_id)
+        -get_collection(id)
+    }

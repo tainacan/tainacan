@@ -80,10 +80,9 @@
                         <!-- Remaining metadata -->
                         <div class="media">
                             <div 
-                                    v-if="!shouldHideItemsThumbnail"
+                                    v-if="!shouldHideItemsThumbnail && item['thumbnail']"
                                     class="card-thumbnail">
                                 <blur-hash-image
-                                        v-if="item.thumbnail != undefined"
                                         :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 120)"
                                         :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 120)"
                                         :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"

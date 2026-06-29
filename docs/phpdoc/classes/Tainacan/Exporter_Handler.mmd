@@ -1,0 +1,19 @@
+classDiagram
+    direction TB
+    class Exporter_Handler {
+        #bg_exporter : Background_Exporter
+        -registered_exporters : mixed
+        -init()
+        +register_exporters()
+        +enqueue_scripts()
+        +register_exporter(exporter)
+        +add_to_queue(exporter_object)
+        +unregister_exporter(slug)
+        +get_registered_exporters()
+        +get_exporter(slug)
+        +get_exporter_by_object(exporter_object)
+        +initialize_exporter(slug)
+        +save_exporter_instance(exporter)
+        +get_exporter_instance_by_session_id(session_id)
+        +delete_exporter_instance(exporter)
+    }

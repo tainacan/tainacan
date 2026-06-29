@@ -229,6 +229,31 @@ class Collections extends TAINACAN_UnitTestCase {
 		$this->assertTrue(empty($x->get_errors()));
 	}
 
+	function test_default_per_page() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'PerPageDefault',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		$this->assertEquals( 12, $collection->get_default_per_page() );
+
+		$collection->set_default_per_page( 24 );
+		$this->assertTrue( $collection->validate() );
+		$this->assertEquals( 24, $collection->get_default_per_page() );
+
+		global $TAINACAN_API_MAX_ITEMS_PER_PAGE;
+		$cap = isset( $TAINACAN_API_MAX_ITEMS_PER_PAGE )
+			? (int) $TAINACAN_API_MAX_ITEMS_PER_PAGE
+			: (int) get_option( 'tainacan_option_search_results_per_page', 96 );
+
+		$collection->set_default_per_page( $cap + 1 );
+		$this->assertFalse( $collection->validate() );
+	}
+
 	function test_hooks() {
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 		$this->assertTrue(has_action('init', array($Tainacan_Collections, 'register_post_type')) !== false, 'Collections Init is not registred!');
