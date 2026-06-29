@@ -33,7 +33,7 @@ classDiagram
         +init_tainacan_search_vars()
         +get_where_to_title_and_content()
         +get_where_to_term_taxonomies()
-        +get_where_to_metadatas()
+        +get_where_to_postmeta()
         +search_where(where, wp_query)
         +distinct(query)
         +relationships_join(join)
@@ -182,10 +182,10 @@ public get_where_to_term_taxonomies(): mixed
 
 ***
 
-### get_where_to_metadatas
+### get_where_to_postmeta
 
 ```php
-public get_where_to_metadatas(): mixed
+public get_where_to_postmeta(): mixed
 ```
 
 ***

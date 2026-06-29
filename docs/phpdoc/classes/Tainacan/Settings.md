@@ -22,6 +22,7 @@ classDiagram
         +create_tainacan_setting(args)
         +tainacan_settings_field_callback(args)
         +default_field_callback(args)
+        +sanitize_document_content_index_max_characters(value)
         +search_and_performance_section_description()
         +theme_templates_section_description()
         +items_list_defaults_section_description()
@@ -170,6 +171,22 @@ Renders a basic input field with a description.
 | Parameter | Type      | Description |
 |-----------|-----------|-------------|
 | `$args`   | **mixed** |             |
+
+***
+
+### sanitize_document_content_index_max_characters
+
+Sanitizes the document content index maximum character length setting.
+
+```php
+public sanitize_document_content_index_max_characters(mixed $value): int
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description        |
+|-----------|-----------|--------------------|
+| `$value`  | **mixed** | Raw setting value. |
 
 ***
 

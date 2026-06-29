@@ -13,21 +13,6 @@ http://purl.org/dc/elements/1.1/
 ```mermaid
 classDiagram
     direction TB
-    class OAIPMH_List_Metadata_Formats {
-        #working_node : mixed
-        +errors : mixed
-        +xml_creater : mixed
-        +restoken : mixed
-        +expirationdatetime : mixed
-        +num_rows : mixed
-        +cursor : mixed
-        +deliveredrecords : mixed
-        +from : mixed
-        +until : mixed
-        +sets : mixed
-        +metadataPrefix : mixed
-        +list_metadata_formats(data)
-    }
     class OAIPMH_Expose {
         +identifyResponse : mixed
         +deletedRecord : mixed
@@ -63,6 +48,21 @@ classDiagram
         +readResumToken(resumptionToken)
         +oai_error(code, argument, value)
         +get_metadata_formats(item_id)
+    }
+    class OAIPMH_List_Metadata_Formats {
+        #working_node : mixed
+        +errors : mixed
+        +xml_creater : mixed
+        +restoken : mixed
+        +expirationdatetime : mixed
+        +num_rows : mixed
+        +cursor : mixed
+        +deliveredrecords : mixed
+        +from : mixed
+        +until : mixed
+        +sets : mixed
+        +metadataPrefix : mixed
+        +list_metadata_formats(data)
     }
     OAIPMH_Expose <|-- OAIPMH_List_Metadata_Formats
 ```

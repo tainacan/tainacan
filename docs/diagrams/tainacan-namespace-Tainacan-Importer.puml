@@ -78,6 +78,13 @@
     +run()
     +create_new_metadata(metadata_description, collection_id, parent_id)
   }
+  class "Background_Importer" as Background_Importer {
+    #action : string
+    -finish_status : int
+    +__construct()
+    -set_finish_status(status)
+    +task(batch)
+  }
   class "Flickr_Importer" as Flickr_Importer {
     #endPoint : 
     #method : 
@@ -112,6 +119,79 @@
     +create_terms()
     +create_taxonomy()
     +get_output()
+  }
+  class "Oaipmh_Importer" as Oaipmh_Importer {
+    #steps : 
+    #NAME_FOR_SETS : 
+    #tainacan_api_address : 
+    #has_sets : 
+    #items_per_page : 
+    -col_repo : 
+    -items_repo : 
+    -metadata_repo : 
+    -item_metadata_repo : 
+    -tax_repo : 
+    -term_repo : 
+    +__construct(attributes)
+    +process_item(index, collection_id)
+    +create_collections()
+    +insert(processed_item, collection_index)
+    #get_identifier(metadata)
+    +get_total_items_from_source(setSpec)
+    #create_collection(setSpec, setName)
+    #create_collection_metadata(collection_object)
+    #fetch_collections()
+    #decode_request(result, url)
+    #requester(link)
+    +createTerms(taxonomy_father, name, slug)
+    +create_set_metadata(collection_id, taxonomy_id)
+    +getRepoName()
+    +hasCompleteSize(attributes)
+    +get_progress_value()
+    +options_form()
+  }
+  class "Youtube_Importer" as Youtube_Importer {
+    #steps : 
+    -items_repo : 
+    +__construct(attributes)
+    +get_source_metadata()
+    +process_item(index, collection_definition)
+    +identify_url(showDetails)
+    +get_source_number_of_items()
+    -get_list_items()
+    +after_inserted_item(inserted_item, collection_index)
+    +save_mapping(collection_id, mapping)
+    +get_mapping(collection_id)
+    +add_collection(collection)
+    +options_form()
+  }
+  class "Test_Importer\n<b>Test Importer</b>" as Test_Importer {
+    #steps : 
+    #selectbox_values : 
+    #date_values : 
+    #numeric_values : 
+    #text_values : 
+    #textarea_values : 
+    #extra_values : 
+    #tax_repo : 
+    #col_repo : 
+    #items_repo : 
+    #metadata_repo : 
+    #item_metadata_repo : 
+    +__construct(attributes)
+    +options_form()
+    +create_taxonomies()
+    +create_collections()
+    +link_relationship()
+    +close_taxonomies()
+    +finish_processing()
+    +process_item(index, collection_definition)
+    +after_inserted_item(inserted_item, collection_index)
+    +get_col1_number_of_items()
+    +get_col2_number_of_items()
+    -create_metadata(args, collection)
+    +get_col1_item(index)
+    +get_col2_item(index)
   }
   class "Importer_Handler" as Importer_Handler {
     #bg_importer : Background_Importer
@@ -163,86 +243,6 @@
     -get_collections_names()
     +get_output()
     -delete_previous_document_imgs(item_id, item_document)
-  }
-  class "Youtube_Importer" as Youtube_Importer {
-    #steps : 
-    -items_repo : 
-    +__construct(attributes)
-    +get_source_metadata()
-    +process_item(index, collection_definition)
-    +identify_url(showDetails)
-    +get_source_number_of_items()
-    -get_list_items()
-    +after_inserted_item(inserted_item, collection_index)
-    +save_mapping(collection_id, mapping)
-    +get_mapping(collection_id)
-    +add_collection(collection)
-    +options_form()
-  }
-  class "Oaipmh_Importer" as Oaipmh_Importer {
-    #steps : 
-    #NAME_FOR_SETS : 
-    #tainacan_api_address : 
-    #has_sets : 
-    #items_per_page : 
-    -col_repo : 
-    -items_repo : 
-    -metadata_repo : 
-    -item_metadata_repo : 
-    -tax_repo : 
-    -term_repo : 
-    +__construct(attributes)
-    +process_item(index, collection_id)
-    +create_collections()
-    +insert(processed_item, collection_index)
-    #get_identifier(metadata)
-    +get_total_items_from_source(setSpec)
-    #create_collection(setSpec, setName)
-    #create_collection_metadata(collection_object)
-    #fetch_collections()
-    #decode_request(result, url)
-    #requester(link)
-    +createTerms(taxonomy_father, name, slug)
-    +create_set_metadata(collection_id, taxonomy_id)
-    +getRepoName()
-    +hasCompleteSize(attributes)
-    +get_progress_value()
-    +options_form()
-  }
-  class "Test_Importer\n<b>Test Importer</b>" as Test_Importer {
-    #steps : 
-    #selectbox_values : 
-    #date_values : 
-    #numeric_values : 
-    #text_values : 
-    #textarea_values : 
-    #extra_values : 
-    #tax_repo : 
-    #col_repo : 
-    #items_repo : 
-    #metadata_repo : 
-    #item_metadata_repo : 
-    +__construct(attributes)
-    +options_form()
-    +create_taxonomies()
-    +create_collections()
-    +link_relationship()
-    +close_taxonomies()
-    +finish_processing()
-    +process_item(index, collection_definition)
-    +after_inserted_item(inserted_item, collection_index)
-    +get_col1_number_of_items()
-    +get_col2_number_of_items()
-    -create_metadata(args, collection)
-    +get_col1_item(index)
-    +get_col2_item(index)
-  }
-  class "Background_Importer" as Background_Importer {
-    #action : string
-    -finish_status : int
-    +__construct()
-    -set_finish_status(status)
-    +task(batch)
   }
   Importer ..> Importer_Handler
   Importer <|-- CSV

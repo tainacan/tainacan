@@ -1,43 +1,44 @@
 @startuml class-diagram
-  class "Media\n<b>Handles media functionality for Tainacan.</b>" as Media {
-    -file_name : string|null
-    -attachment_html_url_base : string
-    +content_index_meta : string
-    +content_index_last : string
-    -THROW_EXCPTION_ON_FATAL_ERROR : 
+  class "Private_Files\n<b>Handles private file management for Tainacan.</b>" as Private_Files {
+    +dir_separator : string
     #init()
-    +add_image_sizes()
-    +add_image_sizes_to_admin(sizes)
-    +add_attachment_page_rewrite_rule()
-    {static} -get_media_page_css()
-    +add_css()
-    +attachment_page_add_var(vars)
-    -flush_buffers()
-    -get_file_name_from_url(url)
-    +insert_attachment_from_url(url, post_id)
-    +insert_attachment_from_file(filename, post_id)
-    +save_remote_file(url)
-    +insert_attachment_from_blob(blob, filename, post_id)
-    +get_mime_content_type(filename)
-    +get_pdf_cover(filepath)
-    +shutdown_function()
-    +index_pdf_content(file, item_id)
-    +get_attachment_html_url(attachment_id)
-    +attachment_page()
-    +get_default_image_blurhash()
-    +get_image_blurhash(file_path, width, height)
+    +pre_tainacan_upload(blob, filename, post_id)
+    +post_tainacan_upload(attach_id, attach_data, post_id)
+    +pre_upload(file)
+    +post_upload(fileinfo)
+    +get_items_uploads_folder()
+    +get_private_folder_prefix()
+    +change_upload_dir(path)
+    +template_redirect()
+    +image_get_intermediate_size(data, post_id, size)
+    +wp_get_attachment_url(url, post_id)
+    +rename_item_and_collection_folder_path(obj, permanent_delete)
+    +bulk_edit(status, group, select_query, query)
+    {static} +add_htaccess_rules()
   }
-  class "Embed\n<b>Handles media embedding functionality for Tainacan.</b>" as Embed {
-    -aspect_ratios : array
-    #init()
-    +filter_video_embed(video, attr, url, rawattr)
-    +filter_audio_embed(audio, attr, url, rawattr)
-    +pdf_embed_handler(matches, attr, url, rawattr)
-    +oembed_get_thumbnail(url)
-    +oembed_get_thumbnail_filter(return, data, url)
-    {static} -get_embeds_css()
-    +add_css()
-    +add_responsive_wrapper(html)
+  class "__Bulk_Edit\n<b>Bulk_Edit class handles bulk item edition</b>" as __Bulk_Edit {
+    -meta_key : 
+    -id : string
+    +__construct(params)
+    +add_fields_to_query(fields, wp_query)
+    +get_id()
+    +count_posts()
+    +get_item_id_by_index(index)
+    +save_options(value)
+    +get_options()
+    -_build_select(fields)
+    +set_status(value)
+    +add_value(metadatum, value)
+    +set_value(metadatum, value)
+    +remove_value(metadatum, value)
+    +replace_value(metadatum, new_value, old_value)
+    +trash_items()
+    +untrash_items()
+    +delete_items()
+    -_add_value(metadatum, value)
+    -_remove_value(metadatum, value)
+    -_replace_value(metadatum, newvalue, value)
+    -_remove_values(metadatum)
   }
   class "Roles\n<b>Manages roles and capabilities for the Tainacan plugin.</b>" as Roles {
     -capabilities : array
@@ -75,56 +76,29 @@
     +init_tainacan_search_vars()
     +get_where_to_title_and_content()
     +get_where_to_term_taxonomies()
-    +get_where_to_metadatas()
+    +get_where_to_postmeta()
     +search_where(where, wp_query)
     +distinct(query)
     +relationships_join(join)
-  }
-  class "__Bulk_Edit\n<b>Bulk_Edit class handles bulk item edition</b>" as __Bulk_Edit {
-    -meta_key : 
-    -id : string
-    +__construct(params)
-    +add_fields_to_query(fields, wp_query)
-    +get_id()
-    +count_posts()
-    +get_item_id_by_index(index)
-    +save_options(value)
-    +get_options()
-    -_build_select(fields)
-    +set_status(value)
-    +add_value(metadatum, value)
-    +set_value(metadatum, value)
-    +remove_value(metadatum, value)
-    +replace_value(metadatum, new_value, old_value)
-    +trash_items()
-    +untrash_items()
-    +delete_items()
-    -_add_value(metadatum, value)
-    -_remove_value(metadatum, value)
-    -_replace_value(metadatum, newvalue, value)
-    -_remove_values(metadatum)
-  }
-  class "Private_Files\n<b>Handles private file management for Tainacan.</b>" as Private_Files {
-    +dir_separator : string
-    #init()
-    +pre_tainacan_upload(blob, filename, post_id)
-    +post_tainacan_upload(attach_id, attach_data, post_id)
-    +pre_upload(file)
-    +post_upload(fileinfo)
-    +get_items_uploads_folder()
-    +get_private_folder_prefix()
-    +change_upload_dir(path)
-    +template_redirect()
-    +image_get_intermediate_size(data, post_id, size)
-    +wp_get_attachment_url(url, post_id)
-    +rename_item_and_collection_folder_path(obj, permanent_delete)
-    +bulk_edit(status, group, select_query, query)
-    {static} +add_htaccess_rules()
   }
   package background-process as background-process {
     class "Background_Process_Heartbeat" as background-process_Background_Process_Heartbeat {
       -init()
       +bg_process_feedback(response, data)
+    }
+    class "Async_Request\n<b>Abstract base class for asynchronous requests.</b>" as background-process_Async_Request {
+      #prefix : string
+      #action : string
+      #identifier : mixed
+      #data : array
+      +__construct()
+      +data(data)
+      +dispatch()
+      #get_query_args()
+      #get_query_url()
+      #get_post_args()
+      +maybe_handle()
+      {abstract} #handle()
     }
     class "Background_Process\n<b>Abstract Tainacan\Background_Process class.</b>" as background-process_Background_Process {
       #table : string
@@ -152,20 +126,6 @@
       #write_error_log(key, log)
       -recursive_stingify_log_array(log, break)
       -has_errors(key)
-    }
-    class "Async_Request\n<b>Abstract base class for asynchronous requests.</b>" as background-process_Async_Request {
-      #prefix : string
-      #action : string
-      #identifier : mixed
-      #data : array
-      +__construct()
-      +data(data)
-      +dispatch()
-      #get_query_args()
-      #get_query_url()
-      #get_post_args()
-      +maybe_handle()
-      {abstract} #handle()
     }
     class "Background_Process_Base\n<b>Abstract base class for background processes in Tainacan.</b>" as background-process_Background_Process_Base {
       #action : string
@@ -203,291 +163,7 @@
       {abstract} #task(item)
       +debug(message)
     }
-    package importer as background-process.importer {
-      class "Importer" as background-process_importer_Importer {
-        -id : identifier
-        #tmp_file : string
-        #collections : array
-        -options : array
-        #default_options : array
-        -accepts : 
-        #steps : array
-        -transients : array
-        -current_step : 
-        -in_step_count : 
-        -current_collection : 
-        -current_collection_item : 
-        -url : 
-        -log : 
-        -error_log : 
-        -abort : bool
-        -array_attributes : array
-        +__construct(attributes)
-        +_to_Array(short)
-        +get_id()
-        +set_url(url)
-        +get_url()
-        +get_current_step()
-        +set_current_step(value)
-        +get_in_step_count()
-        +set_in_step_count(value)
-        +get_current_collection()
-        +set_current_collection(value)
-        +get_current_collection_item()
-        +set_current_collection_item(value)
-        +get_tmp_file()
-        +set_tmp_file(filepath)
-        +get_collections()
-        +set_collections(value)
-        +get_options()
-        +set_options(options)
-        #set_default_options(options)
-        +set_steps(steps)
-        +get_steps()
-        -get_transients()
-        -set_transients(data)
-        +get_log()
-        +get_error_log()
-        +add_file(file)
-        +add_log(message)
-        +add_error_log(message)
-        +add_collection(collection)
-        +remove_collection(col_id)
-        -upload_file(file_array)
-        +fetch_from_remote(url)
-        +get_option(key)
-        +add_import_method(method)
-        +remove_import_method(method)
-        +add_transient(key, data)
-        +delete_transient(key)
-        +get_transient(key)
-        +is_finished()
-        #cancel_abort()
-        #abort()
-        +get_abort()
-        +get_progress_label()
-        +get_progress_value()
-        #set_current_step_total(value)
-        #set_step_total(step, value)
-        +get_source_metadata()
-        {abstract} +process_item(index, collection_id)
-        +get_source_number_of_items()
-        +options_form()
-        +get_output()
-        +process_collections()
-        #next_item()
-        #next_collection()
-        #next_step()
-        +insert(processed_item, collection_index)
-        +after_inserted_item(insertedItem, collection_index)
-        +run()
-        +create_new_metadata(metadata_description, collection_id, parent_id)
-      }
-      class "Flickr_Importer" as background-process_importer_Flickr_Importer {
-        #endPoint : 
-        #method : 
-        #apiKey : 
-        #perPage : 
-        #format : 
-        #apiKeyValue : 
-        #steps : 
-        -items_repo : 
-        +__construct(attributes)
-        +get_source_metadata()
-        +process_item(index, collection_definition)
-        +identify_url(showDetails)
-        +get_source_number_of_items()
-        -get_list_items()
-        -process_item_user_request(items_json, index, collection_definition)
-        -process_item_album_request(items_json, index, collection_definition)
-        -process_item_single_request(items_json, index, collection_definition)
-        -get_item_data(id)
-        +after_inserted_item(inserted_item, collection_index)
-        +save_mapping(collection_id, mapping)
-        +get_mapping(collection_id)
-        +add_collection(collection)
-        -get_image_mime_type(image_path)
-        +options_form()
-      }
-      class "Term_Importer" as background-process_importer_Term_Importer {
-        #steps : 
-        +__construct(attributes)
-        +options_form()
-        +process_item(index, collection_definition)
-        +create_terms()
-        +create_taxonomy()
-        +get_output()
-      }
-      class "Importer_Handler" as background-process_importer_Importer_Handler {
-        #bg_importer : Background_Importer
-        -registered_importers : 
-        -init()
-        +register_importers()
-        +add_to_queue(importer_object)
-        +register_importer(importer)
-        +unregister_importer(importer_slug)
-        +get_registered_importers()
-        +get_importer(importer_slug)
-        +get_importer_by_object(importer_object)
-        +initialize_importer(importer_slug)
-        +save_importer_instance(importer)
-        +get_importer_instance_by_session_id(session_id)
-        +delete_importer_instance(importer)
-      }
-      class "CSV" as background-process_importer_CSV {
-        -items_repo : 
-        +__construct(attributes)
-        +set_option(key, value)
-        +get_source_metadata()
-        +get_source_file_name()
-        +get_source_special_fields()
-        +raw_source_metadata()
-        +process_item(index, collection_definition)
-        +after_inserted_item(inserted_item, collection_index)
-        +get_source_number_of_items()
-        +options_form()
-        -handle_encoding(string)
-        -handle_document(column_value, item_inserted)
-        -handle_thumbnail(column_value, item_inserted)
-        -handle_attachment(column_value, item_inserted)
-        -handle_enclosure(file)
-        -handle_item_status(status, item_inserted)
-        -handle_item_comment_status(comment_status, item_inserted)
-        -handle_item_author_id(author, item_inserted)
-        -handle_item_slug(slug, item_inserted)
-        -handle_item_id(values)
-        +insert(processed_item, collection_index)
-        -is_assoc(arr)
-        -deleteAllValuesCompoundItemMetadata(item, compoundMetadataID)
-        +is_empty_value(value)
-        -is_clear_value(value)
-        -insert_hierarchy(metadatum, values)
-        +save_mapping(collection_id, mapping)
-        +get_mapping(collection_id)
-        +add_collection(collection)
-        -get_collections_names()
-        +get_output()
-        -delete_previous_document_imgs(item_id, item_document)
-      }
-      class "Youtube_Importer" as background-process_importer_Youtube_Importer {
-        #steps : 
-        -items_repo : 
-        +__construct(attributes)
-        +get_source_metadata()
-        +process_item(index, collection_definition)
-        +identify_url(showDetails)
-        +get_source_number_of_items()
-        -get_list_items()
-        +after_inserted_item(inserted_item, collection_index)
-        +save_mapping(collection_id, mapping)
-        +get_mapping(collection_id)
-        +add_collection(collection)
-        +options_form()
-      }
-      class "Oaipmh_Importer" as background-process_importer_Oaipmh_Importer {
-        #steps : 
-        #NAME_FOR_SETS : 
-        #tainacan_api_address : 
-        #has_sets : 
-        #items_per_page : 
-        -col_repo : 
-        -items_repo : 
-        -metadata_repo : 
-        -item_metadata_repo : 
-        -tax_repo : 
-        -term_repo : 
-        +__construct(attributes)
-        +process_item(index, collection_id)
-        +create_collections()
-        +insert(processed_item, collection_index)
-        #get_identifier(metadata)
-        +get_total_items_from_source(setSpec)
-        #create_collection(setSpec, setName)
-        #create_collection_metadata(collection_object)
-        #fetch_collections()
-        #decode_request(result, url)
-        #requester(link)
-        +createTerms(taxonomy_father, name, slug)
-        +create_set_metadata(collection_id, taxonomy_id)
-        +getRepoName()
-        +hasCompleteSize(attributes)
-        +get_progress_value()
-        +options_form()
-      }
-      class "Test_Importer\n<b>Test Importer</b>" as background-process_importer_Test_Importer {
-        #steps : 
-        #selectbox_values : 
-        #date_values : 
-        #numeric_values : 
-        #text_values : 
-        #textarea_values : 
-        #extra_values : 
-        #tax_repo : 
-        #col_repo : 
-        #items_repo : 
-        #metadata_repo : 
-        #item_metadata_repo : 
-        +__construct(attributes)
-        +options_form()
-        +create_taxonomies()
-        +create_collections()
-        +link_relationship()
-        +close_taxonomies()
-        +finish_processing()
-        +process_item(index, collection_definition)
-        +after_inserted_item(inserted_item, collection_index)
-        +get_col1_number_of_items()
-        +get_col2_number_of_items()
-        -create_metadata(args, collection)
-        +get_col1_item(index)
-        +get_col2_item(index)
-      }
-      class "Background_Importer" as background-process_importer_Background_Importer {
-        #action : string
-        -finish_status : int
-        +__construct()
-        -set_finish_status(status)
-        +task(batch)
-      }
-    }
     package exporter as background-process.exporter {
-      class "Term_Exporter" as background-process_exporter_Term_Exporter {
-        #steps : 
-        +__construct(attributes)
-        +get_output()
-        +str_putcsv(item, delimiter, enclosure)
-        +output_header()
-        +output_footer()
-        +options_form()
-        +process_item(index, collection_definition)
-        +exporting_terms()
-        +get_terms_recursively(term_repo, taxonomy, parent, level)
-      }
-      class "XLSX_Exporter" as background-process_exporter_XLSX_Exporter {
-        -collection_name : 
-        -spreadsheet : 
-        -filePath : 
-        -tempFilePath : 
-        +__construct(attributes)
-        +initialize_writer()
-        +finalize_writer()
-        +process_collections()
-        -process_header(current_collection_item, collection_definition)
-        -process_footer(current_collection_item, collection_definition)
-        -get_items(index, collection_definition)
-        -map_item_metadata(item)
-        +process_item(item, metadata)
-        +addRowToSheet(rowData, sheetIndex)
-        +get_file_path()
-        +get_file_name()
-        +get_content_type()
-        +filter_multivalue_separator(separator)
-        +filter_hierarchy_separator(separator)
-        -get_collections_names()
-        +get_output()
-        +output_header()
-        +options_form()
-      }
       class "Exporter" as background-process_exporter_Exporter {
         #id : identifier
         #options : array
@@ -579,6 +255,43 @@
         #get_output_files()
         +run()
       }
+      class "Term_Exporter" as background-process_exporter_Term_Exporter {
+        #steps : 
+        +__construct(attributes)
+        +get_output()
+        +str_putcsv(item, delimiter, enclosure)
+        +output_header()
+        +output_footer()
+        +options_form()
+        +process_item(index, collection_definition)
+        +exporting_terms()
+        +get_terms_recursively(term_repo, taxonomy, parent, level)
+      }
+      class "XLSX_Exporter" as background-process_exporter_XLSX_Exporter {
+        -collection_name : 
+        -spreadsheet : 
+        -filePath : 
+        -tempFilePath : 
+        +__construct(attributes)
+        +initialize_writer()
+        +finalize_writer()
+        +process_collections()
+        -process_header(current_collection_item, collection_definition)
+        -process_footer(current_collection_item, collection_definition)
+        -get_items(index, collection_definition)
+        -map_item_metadata(item)
+        +process_item(item, metadata)
+        +addRowToSheet(rowData, sheetIndex)
+        +get_file_path()
+        +get_file_name()
+        +get_content_type()
+        +filter_multivalue_separator(separator)
+        +filter_hierarchy_separator(separator)
+        -get_collections_names()
+        +get_output()
+        +output_header()
+        +options_form()
+      }
       class "Exporter_Handler" as background-process_exporter_Exporter_Handler {
         #bg_exporter : Background_Exporter
         -registered_exporters : 
@@ -642,6 +355,46 @@
         +get_process_instance_by_session_id(session_id)
         +delete_process_instance(process)
       }
+      class "Generic_Process" as background-process_generic-process_Generic_Process {
+        #id : identifier
+        #steps : array
+        #transients : array
+        #abort : bool
+        #current_step : 
+        #in_step_count : 
+        #log : 
+        #error_log : 
+        #array_attributes : array
+        +__construct(attributes)
+        +get_id()
+        +get_current_step()
+        +set_current_step(value)
+        +get_in_step_count()
+        +set_in_step_count(value)
+        +set_steps(steps)
+        +get_steps()
+        #get_transients()
+        #set_transients(data)
+        +add_transient(key, data)
+        +delete_transient(key)
+        +get_transient(key)
+        +get_log()
+        +get_error_log()
+        +add_log(message)
+        +add_error_log(message)
+        +is_finished()
+        #cancel_abort()
+        #abort()
+        +get_abort()
+        +get_progress_label()
+        +get_progress_value()
+        #set_current_step_total(value)
+        #set_step_total(step, value)
+        #next_step()
+        +_to_Array(short)
+        +finished()
+        +run()
+      }
       class "Bulk_Edit_Process" as background-process_generic-process_Bulk_Edit_Process {
         -meta_key : 
         -group_id : 
@@ -687,33 +440,65 @@
         +__construct()
         +task(batch)
       }
-      class "Generic_Process" as background-process_generic-process_Generic_Process {
-        #id : identifier
+    }
+    package importer as background-process.importer {
+      class "Importer" as background-process_importer_Importer {
+        -id : identifier
+        #tmp_file : string
+        #collections : array
+        -options : array
+        #default_options : array
+        -accepts : 
         #steps : array
-        #transients : array
-        #abort : bool
-        #current_step : 
-        #in_step_count : 
-        #log : 
-        #error_log : 
-        #array_attributes : array
+        -transients : array
+        -current_step : 
+        -in_step_count : 
+        -current_collection : 
+        -current_collection_item : 
+        -url : 
+        -log : 
+        -error_log : 
+        -abort : bool
+        -array_attributes : array
         +__construct(attributes)
+        +_to_Array(short)
         +get_id()
+        +set_url(url)
+        +get_url()
         +get_current_step()
         +set_current_step(value)
         +get_in_step_count()
         +set_in_step_count(value)
+        +get_current_collection()
+        +set_current_collection(value)
+        +get_current_collection_item()
+        +set_current_collection_item(value)
+        +get_tmp_file()
+        +set_tmp_file(filepath)
+        +get_collections()
+        +set_collections(value)
+        +get_options()
+        +set_options(options)
+        #set_default_options(options)
         +set_steps(steps)
         +get_steps()
-        #get_transients()
-        #set_transients(data)
+        -get_transients()
+        -set_transients(data)
+        +get_log()
+        +get_error_log()
+        +add_file(file)
+        +add_log(message)
+        +add_error_log(message)
+        +add_collection(collection)
+        +remove_collection(col_id)
+        -upload_file(file_array)
+        +fetch_from_remote(url)
+        +get_option(key)
+        +add_import_method(method)
+        +remove_import_method(method)
         +add_transient(key, data)
         +delete_transient(key)
         +get_transient(key)
-        +get_log()
-        +get_error_log()
-        +add_log(message)
-        +add_error_log(message)
         +is_finished()
         #cancel_abort()
         #abort()
@@ -722,1477 +507,189 @@
         +get_progress_value()
         #set_current_step_total(value)
         #set_step_total(step, value)
+        +get_source_metadata()
+        {abstract} +process_item(index, collection_id)
+        +get_source_number_of_items()
+        +options_form()
+        +get_output()
+        +process_collections()
+        #next_item()
+        #next_collection()
         #next_step()
-        +_to_Array(short)
-        +finished()
+        +insert(processed_item, collection_index)
+        +after_inserted_item(insertedItem, collection_index)
         +run()
+        +create_new_metadata(metadata_description, collection_id, parent_id)
       }
-    }
-  }
-  package traits as traits {
-    class "Formatter_Text\n<b>Class for formatter texts</b>" as traits_Formatter_Text {
-      {static} +make_clickable_links(text)
-    }
-    class "Entity_Collections_Relation" as traits_Entity_Collections_Relation {
-      +get_collections_ids()
-      +get_collections()
-      +set_collections_ids(value)
-      +set_collections(collections)
-      +add_collection_id(new_collection_id)
-      +remove_collection_id(collection_id)
-    }
-    class "Singleton_Instance\n<b>Class for Singleton pattern</b>" as traits_Singleton_Instance {
-      -instance : 
-      {static} +get_instance()
-      -__construct()
-    }
-    class "SVG_Icon\n<b>Class for getting inline svg icons based on the Tainacan Icon font and new symbols needed</b>" as traits_SVG_Icon {
-      +get_svg_icon(icon_slug)
-    }
-    class "Entity_Collection_Relation\n<b>Defines Collection and Items relation</b>" as traits_Entity_Collection_Relation {
-      #collection : 
-      +get_collection_id()
-      +get_collection()
-      +set_collection_id(value)
-      +set_collection(collection)
-    }
-    class "Admin_UI_Options\n<b>Class for getting Admin UI options passed either via query string in</b>" as traits_Admin_UI_Options {
-      #admin_ui_options : 
-      +get_available_admin_ui_options()
-      +has_admin_ui_option(option)
-    }
-  }
-  package integrations as integrations {
-    class "Elastic_Press\n<b>Class Elastic_Press</b>" as integrations_Elastic_Press {
-      +last_aggregations : array
-      +facets : array
-      -aggregation_type : string
-      -instance : Elastic_Press
-      {static} +get_instance()
-      #__construct(ajax_query)
-      +is_active()
-      +init()
-      +prepare_meta_allowed_keys(allowed_keys)
-      +modify_formatted_args(formatted_args)
-      +elasticpress_config_mapping(mapping)
-      +ep_post_sync_args(post_args, post_id)
-      +filter_args(args, type)
-      -add_items_args(args)
-      +prepare_request(formatted_args, args)
-      +format_aggregations(aggregations)
-      +fetch_all_metadatum_values(return, metadatum, args)
-      -prepare_request_for_items(formatted_args)
-      -prepare_request_for_facet(formatted_args)
-      -format_aggregations_items(aggregations)
-      -format_aggregations_facet(aggregations)
-    }
-    class "Elastic_Press_lte4" as integrations_Elastic_Press_lte4 {
-      +last_aggregations : 
-      +facets : 
-      -aggregation_type : 
-      -instance : 
-      {static} +get_instance()
-      #__construct(ajax_query)
-      +is_active()
-      +init()
-      +elasticpress_config_mapping(mapping)
-      +ep_post_sync_args(post_args, post_id)
-      +filter_args(args, type)
-      -add_items_args(args)
-      +prepare_request(formatted_args, args)
-      +format_aggregations(aggregations)
-      +fetch_all_metadatum_values(return, metadatum, args)
-      -prepare_request_for_items(formatted_args)
-      -prepare_request_for_facet(formatted_args)
-      -format_aggregations_items(aggregations)
-      -format_aggregations_facet(aggregations)
-    }
-    class "WordPress_AI\n<b>Integration with the WordPress AI plugin (https://github.com/WordPress/ai).</b>" as integrations_WordPress_AI {
-      #init()
-      +is_active()
-      +is_alt_text_generation_available()
-      -is_alt_text_generation_usable()
-      -has_vision_model_available()
-    }
-  }
-  package api as api {
-    class "REST_Controller\n<b>Abstract base class for Tainacan REST API controllers.</b>" as api_REST_Controller {
-      +__construct()
-      #filter_object_by_attributes(object, attributes)
-      #prepare_item_for_updating(object, new_values)
-      #prepare_filters(request)
-      +add_support_to_tax_query_like(args)
-      #sanitize_value(value)
-      -prepare_meta(mapped, request, query, mapped_v, args)
-      #contains_array(array, query)
-      +get_fetch_only_param()
-      +get_wp_query_params()
-      #get_meta_queries_params()
-      +get_repository_schema(repository)
-      +get_permissions_schema()
-      +get_base_properties_schema()
-      {abstract} #get_schema()
-      +get_list_schema()
-      +tainacan_sanitize_post_statuses(statuses, request, parameter)
-    }
-    package endpoints as api.endpoints {
-      class "REST_Background_Processes_Controller\n<b>REST API controller for managing Tainacan background processes.</b>" as api_endpoints_REST_Background_Processes_Controller {
-        -table : String
-        #get_schema()
+      class "Background_Importer" as background-process_importer_Background_Importer {
+        #action : string
+        -finish_status : int
         +__construct()
-        +register_routes()
-        +bg_processes_permissions_check(request)
-        +get_items(request)
-        +get_item(request)
-        +prepare_item_for_response(item, request)
-        +update_item(request)
-        +delete_item(request)
-        +get_log_url(id, action, type)
-        +get_file(request)
+        -set_finish_status(status)
+        +task(batch)
       }
-      class "REST_Collections_Controller\n<b>REST API controller for managing Tainacan collections.</b>" as api_endpoints_REST_Collections_Controller {
-        -collections_repository : 
-        -collection : 
-        -items_repository : 
-        +__construct()
-        +init_objects()
-        +register_routes()
-        +get_items(request)
-        +get_item(request)
-        -get_preview_image_items(collection, amount)
-        +get_collection_taxonomies(collection)
-        +prepare_item_for_response(item, request)
-        +get_items_permissions_check(request)
-        +get_item_permissions_check(request)
-        +create_item(request)
-        +create_item_permissions_check(request)
-        +prepare_item_for_database(request)
-        +delete_item(request)
-        +delete_item_permissions_check(request)
-        +update_item(request)
-        +update_item_permissions_check(request)
-        +validate_filters_metadata_order(value, request, param)
-        +validate_metadata_section_order(value, request, param)
-        +update_metadata_order(request)
-        +update_metadata_section_order(request)
-        +update_metadata_order_permissions_check(request)
-        +update_metadata_section_order_permissions_check(request)
-        +update_filters_order(request)
-        +update_filters_order_permissions_check(request)
-        +get_endpoint_args_for_item_schema(method)
-        +get_endpoint_arg_for_schema(name, properties, repository)
-        +get_schema()
+      class "Flickr_Importer" as background-process_importer_Flickr_Importer {
+        #endPoint : 
+        #method : 
+        #apiKey : 
+        #perPage : 
+        #format : 
+        #apiKeyValue : 
+        #steps : 
+        -items_repo : 
+        +__construct(attributes)
+        +get_source_metadata()
+        +process_item(index, collection_definition)
+        +identify_url(showDetails)
+        +get_source_number_of_items()
+        -get_list_items()
+        -process_item_user_request(items_json, index, collection_definition)
+        -process_item_album_request(items_json, index, collection_definition)
+        -process_item_single_request(items_json, index, collection_definition)
+        -get_item_data(id)
+        +after_inserted_item(inserted_item, collection_index)
+        +save_mapping(collection_id, mapping)
+        +get_mapping(collection_id)
+        +add_collection(collection)
+        -get_image_mime_type(image_path)
+        +options_form()
       }
-      class "REST_Facets_Controller\n<b>REST API controller for managing Tainacan facets.</b>" as api_endpoints_REST_Facets_Controller {
-        -metadatum_repository : 
-        +__construct()
-        +init_objects()
-        +register_routes()
-        +get_items(request)
-        +get_items_permissions_check(request)
-        +get_schema()
+      class "Term_Importer" as background-process_importer_Term_Importer {
+        #steps : 
+        +__construct(attributes)
+        +options_form()
+        +process_item(index, collection_definition)
+        +create_terms()
+        +create_taxonomy()
+        +get_output()
       }
-      class "REST_Roles_Controller\n<b>REST API controller for managing Tainacan roles and capabilities.</b>" as api_endpoints_REST_Roles_Controller {
-        +__construct()
-        +register_routes()
-        +create_item(request)
-        +create_item_permissions_check(request)
-        +delete_item(request)
-        +delete_item_permissions_check(request)
-        +update_item(request)
-        -handle_capabilities_for_role(role_slug, newcaps)
-        -handle_capabilites_default_for_role(role_slug)
-        +update_item_permissions_check(request)
-        +validate_roles_capabilities_arg(value, request, param)
-        +_prepare_item_for_response(slug, name, caps, request)
-        +get_items(request)
-        +get_items_permissions_check(request)
-        +get_item(request)
-        +get_item_permissions_check(request)
-        +get_capabilities_permissions_check(request)
-        +get_endpoint_args(method)
-        +get_capabilities(request)
-        +get_admin_ui_options(request)
-        +update_admin_ui_options(request)
-        +get_admin_ui_options_permissions_check(request)
-        +update_admin_ui_options_permissions_check(request)
-        +get_capabilities_schema()
-        +get_schema()
-        +get_admin_ui_options_schema()
+      class "Oaipmh_Importer" as background-process_importer_Oaipmh_Importer {
+        #steps : 
+        #NAME_FOR_SETS : 
+        #tainacan_api_address : 
+        #has_sets : 
+        #items_per_page : 
+        -col_repo : 
+        -items_repo : 
+        -metadata_repo : 
+        -item_metadata_repo : 
+        -tax_repo : 
+        -term_repo : 
+        +__construct(attributes)
+        +process_item(index, collection_id)
+        +create_collections()
+        +insert(processed_item, collection_index)
+        #get_identifier(metadata)
+        +get_total_items_from_source(setSpec)
+        #create_collection(setSpec, setName)
+        #create_collection_metadata(collection_object)
+        #fetch_collections()
+        #decode_request(result, url)
+        #requester(link)
+        +createTerms(taxonomy_father, name, slug)
+        +create_set_metadata(collection_id, taxonomy_id)
+        +getRepoName()
+        +hasCompleteSize(attributes)
+        +get_progress_value()
+        +options_form()
       }
-      class "REST_Taxonomies_Controller\n<b>REST API controller for managing Tainacan taxonomies.</b>" as api_endpoints_REST_Taxonomies_Controller {
-        -taxonomy : 
-        -taxonomy_repository : 
-        +__construct()
-        +init_objects()
-        +register_routes()
-        +prepare_item_for_response(item, request)
-        +get_metadata_taxonomy_in_collection(taxonomy_id, collection_id, collection_parent_id)
-        +prepare_item_for_database(request)
-        +get_item(request)
-        +get_item_permissions_check(request)
-        +delete_item(request)
-        +delete_item_permissions_check(request)
-        +get_items(request)
-        +get_items_permissions_check(request)
-        +create_item(request)
-        +create_item_permissions_check(request)
-        +update_item(request)
-        +update_item_permissions_check(request)
-        +get_endpoint_args_for_item_schema(method)
-        +get_wp_query_params()
-        +get_schema()
+      class "Youtube_Importer" as background-process_importer_Youtube_Importer {
+        #steps : 
+        -items_repo : 
+        +__construct(attributes)
+        +get_source_metadata()
+        +process_item(index, collection_definition)
+        +identify_url(showDetails)
+        +get_source_number_of_items()
+        -get_list_items()
+        +after_inserted_item(inserted_item, collection_index)
+        +save_mapping(collection_id, mapping)
+        +get_mapping(collection_id)
+        +add_collection(collection)
+        +options_form()
       }
-      class "REST_Reports_Controller\n<b>REST API controller for managing Tainacan reports.</b>" as api_endpoints_REST_Reports_Controller {
-        -taxonomy_repository : 
-        -metadatum_repository : 
-        -collections_repository : 
-        -prefix_transient_cahce : 
-        +__construct()
-        +init_objects()
-        +register_routes()
-        +reports_permissions_check(request)
-        +get_collections(request)
-        +get_summary(request)
-        +get_taxonomies_list(request)
-        +get_taxonomy(request)
-        +get_metadata(request)
-        +get_stats_collection_metadata(request)
-        -query_item_metadata_distribution(meta_ids, collection_post_type)
-        -query_count_used_taxononomies()
-        +get_activities(request)
-        -get_activities_general(collection_id, interval)
-        -get_activities_general_by_user(collection_id, interval)
-        -get_activities_users(collection_id)
-        -get_cache_object(key, request)
-        -set_cache_object(key, data)
-        +get_endpoint_args_for_item_schema(method)
-        +get_metadata_schema()
-        +get_collection_schema()
-        +get_collection_metadatum_schema()
-        +get_collection_summary_schema()
-        +get_taxonomy_schema()
-        +get_taxonomy_terms_schema()
-        +get_summary_schema()
-        +get_activities_schema()
-        +get_schema()
+      class "Test_Importer\n<b>Test Importer</b>" as background-process_importer_Test_Importer {
+        #steps : 
+        #selectbox_values : 
+        #date_values : 
+        #numeric_values : 
+        #text_values : 
+        #textarea_values : 
+        #extra_values : 
+        #tax_repo : 
+        #col_repo : 
+        #items_repo : 
+        #metadata_repo : 
+        #item_metadata_repo : 
+        +__construct(attributes)
+        +options_form()
+        +create_taxonomies()
+        +create_collections()
+        +link_relationship()
+        +close_taxonomies()
+        +finish_processing()
+        +process_item(index, collection_definition)
+        +after_inserted_item(inserted_item, collection_index)
+        +get_col1_number_of_items()
+        +get_col2_number_of_items()
+        -create_metadata(args, collection)
+        +get_col1_item(index)
+        +get_col2_item(index)
       }
-      class "REST_Metadata_Types_Controller\n<b>REST API controller for managing Tainacan metadata types.</b>" as api_endpoints_REST_Metadata_Types_Controller {
-        +__construct()
-        +register_routes()
-        +prepare_item_for_response(item, request)
-        +get_items(request)
-        +get_items_permissions_check(request)
-        +get_schema()
-      }
-      class "REST_Metadata_Controller\n<b>REST API controller for managing Tainacan metadata.</b>" as api_endpoints_REST_Metadata_Controller {
-        -collection_repository : 
-        -metadatum_repository : 
-        +__construct()
-        +init_objects()
-        +register_routes()
-        +get_item(request)
-        +get_item_permissions_check(request)
-        +prepare_item_for_database(request, collection_id)
-        +create_item(request)
-        +create_item_permissions_check(request)
-        +prepare_item_for_response(item, request)
-        +get_items(request)
-        +get_items_permissions_check(request)
-        +delete_item(request)
-        +delete_item_permissions_check(request)
-        +update_item(request)
-        +update_item_permissions_check(request)
-        +get_wp_query_params()
-        +get_endpoint_args_for_item_schema(method, is_collection_level)
-        +get_schema()
-      }
-      class "REST_Terms_Controller\n<b>REST API controller for managing Tainacan taxonomy terms.</b>" as api_endpoints_REST_Terms_Controller {
-        -term : 
-        -terms_repository : 
-        -items_repository : 
-        -taxonomy_repository : 
-        +__construct()
-        +init_objects()
-        +register_routes()
-        +prepare_item_for_database(to_prepare)
-        +create_multiples_items(request)
-        +create_item(request)
-        +create_item_permissions_check(request)
-        +delete_items_permissions_check(request)
-        +delete_items(request)
-        +delete_item(request)
-        +delete_item_permissions_check(request)
-        +update_parent_terms_permissions_check(request)
-        +update_parent_terms(request)
-        +update_item(request)
-        +update_item_permissions_check(request)
-        -get_preview_image_items(term, amount)
-        +prepare_item_for_response(item, request)
-        +get_items(request)
-        +get_items_permissions_check(request)
-        +get_item(request)
-        +get_item_permissions_check(request)
-        +get_endpoint_args_for_item_schema(method)
-        +get_wp_query_params()
-        +get_schema()
-      }
-      class "REST_Filter_Types_Controller\n<b>REST API controller for managing Tainacan filter types.</b>" as api_endpoints_REST_Filter_Types_Controller {
-        +__construct()
-        +register_routes()
-        +prepare_item_for_response(item, request)
-        +get_items(request)
-        +get_items_permissions_check(request)
-        +get_schema()
-      }
-      class "REST_Exporters_Controller\n<b>REST API controller for managing Tainacan exporters.</b>" as api_endpoints_REST_Exporters_Controller {
-        -collections_repository : 
-        +__construct()
-        +init_objects()
-        +register_routes()
-        +export_permissions_check(request)
-        +get_registered_exporters()
-        +create_item(request)
-        +update_item(request)
-        +run(request)
-        #map(item_arr, mapper)
-        #map_metadatum(item_arr, mapper)
-        +get_schema()
-        +get_schema_run()
-        +get_schema_exporters_available()
-      }
-      class "REST_Metadata_Sections_Controller\n<b>REST API controller for managing Tainacan metadata sections.</b>" as api_endpoints_REST_Metadata_Sections_Controller {
-        -metadata_sections_repository : 
-        -metadata_repository : 
-        -collection_repository : 
-        +__construct()
-        +init_objects()
-        +register_routes()
-        +prepare_item_for_database(request, collection_id)
-        +prepare_item_for_response(item, request)
-        +prepare_metadata_for_response(item, request)
-        +get_item(request)
-        +get_item_permissions_check(request)
-        +create_item(request)
-        +create_item_permissions_check(request)
-        +get_items(request)
-        +get_items_permissions_check(request)
-        +delete_item(request)
-        +delete_item_permissions_check(request)
-        +update_item(request)
-        +add_metadata(request)
-        +delete_metadata(request)
-        +get_metadata_list(request)
-        +update_item_permissions_check(request)
-        +get_wp_query_params()
-        +get_endpoint_args_for_item_schema(method)
-        +get_metadata_list_schema()
-        +get_schema()
-      }
-      class "REST_Filters_Controller\n<b>REST API controller for managing Tainacan filters.</b>" as api_endpoints_REST_Filters_Controller {
-        -collection : 
-        -collection_repository : 
-        -metadatum_repository : 
-        -filter_repository : 
-        +__construct()
-        +init_objects()
-        +register_routes()
-        +prepare_item_for_database(request)
-        +create_item(request)
-        +create_item_permissions_check(request)
-        +delete_item(request)
-        +delete_item_permissions_check(request)
-        +update_item(request)
-        +update_item_permissions_check(request)
-        +prepare_item_for_response(item, request)
-        +get_items(request)
-        +get_items_permissions_check(request)
-        +get_item(request)
-        +get_item_permissions_check(request)
-        +get_endpoint_args_for_item_schema(method, is_collection_level)
-        +get_wp_query_params()
-        +get_schema()
-      }
-      class "REST_Logs_Controller\n<b>REST API controller for managing Tainacan logs.</b>" as api_endpoints_REST_Logs_Controller {
-        -logs_repository : 
-        +__construct()
-        +register_routes()
-        +prepare_item_for_response(item, request)
-        -prepare_legacy_item_for_response(item, request)
-        +get_items(request)
-        +get_items_permissions_check(request)
-        +get_item(request)
-        +get_item_permissions_check(request)
-        +get_endpoint_args_for_item_schema(method)
-        +get_schema()
-      }
-      class "REST_Bulkedit_Controller\n<b>REST API controller for managing Tainacan bulk edit operations.</b>" as api_endpoints_REST_Bulkedit_Controller {
-        -metadatum_repository : 
-        -collections_repository : 
-        +__construct()
-        +init_objects()
-        +register_routes()
-        +bulk_edit_permissions_check(request)
-        +create_item(request)
-        +set_status(request)
-        +trash_items(request)
-        +untrash_items(request)
-        +delete_items(request)
-        +add_value(request)
-        +set_value(request)
-        +clear_value(request)
-        +remove_value(request)
-        +copy_value(request)
-        +replace_value(request)
-        +set_comment_status(request)
-        +set_author_id(request)
-        +get_item(request)
-        +prepare_item_for_response(bulk_object, request)
-        -generic_action(method, request, keys)
-        +get_item_in_sequence(request)
-        +get_create_params(object_name)
-        +get_sequence_params()
-        +get_actions_params(action)
-        +get_actions_schema()
-        +get_bulk_schema()
-        +get_sequence_schema()
-        +get_schema()
-      }
-      class "REST_Items_Controller\n<b>REST API controller for managing Tainacan items.</b>" as api_endpoints_REST_Items_Controller {
-        -items_repository : 
-        -item : 
-        -item_metadata : 
-        -collections_repository : 
-        -metadatum_repository : 
-        -terms_repository : 
-        -filters_repository : 
-        -taxonomies_repository : 
-        -new_terms_ids : 
-        +__construct()
-        +init_objects()
-        +register_routes()
-        -add_metadata_to_item(item_object, item_array, args)
-        +get_context_edit(item)
-        +prepare_item_for_response(item, request)
-        +get_item(request)
-        +get_item_attachments(request)
-        -prepare_filters_arguments(args, collection_id, ignore_filter_arguments)
-        +get_items(request)
-        +get_item_permissions_check(request)
-        +get_item_attachments_permissions_check(request)
-        +get_items_permissions_check(request)
-        -get_items_permissions_check_for_taxonomy(taxonomies)
-        +prepare_item_for_database(request)
-        +create_item(request)
-        +create_item_permissions_check(request)
-        +delete_item(request)
-        +delete_item_permissions_check(request)
-        +update_item(request)
-        +update_item_permissions_check(request)
-        +duplicate_item(request)
-        -submission_item_metadata(item_metadata, request)
-        -submission_process_terms(value, taxonomy)
-        -submission_rollback_new_terms()
-        +submission_item(request)
-        +submission_item_finish(request)
-        +submission_item_permissions_check(request)
-        -submission_item_check_recaptcha(request)
-        +get_endpoint_args_for_item_schema(method)
-        +get_wp_query_params()
-        +process_request_filters(args)
-        +get_attachments_schema()
-        +get_schema()
-      }
-      class "REST_Sequence_Edit_Controller\n<b>REST API controller for managing Tainacan sequence edit operations.</b>" as api_endpoints_REST_Sequence_Edit_Controller {
-        -items_repository : 
-        -collections_repository : 
-        +__construct()
-        +init_objects()
-        +register_routes()
-        +prepare_item_for_response(item, request)
-        +sequence_edit_permissions_check(request)
-        +create_item(request)
-        +get_item(request)
-        +get_item_in_sequence(request)
-        +get_create_params(object_name)
-        +get_sequence_params()
-        +get_sequence_index_params()
-        +get_sequence_schema()
-        +get_sequence_index_schema()
-        +get_schema()
-      }
-      class "REST_Metadatum_Mappers_Controller\n<b>REST API controller for managing Tainacan metadatum mappers.</b>" as api_endpoints_REST_Metadatum_Mappers_Controller {
-        #get_schema()
-        +__construct()
-        +register_routes()
-        +prepare_item_for_response(mapper, request)
-        +prepare_metadatum_for_response(item, request)
-        +get_items(request)
-        +get_items_permissions_check(request)
-        +update_item_permissions_check(request)
-        +update_item(request)
-      }
-      class "REST_Exposers_Controller\n<b>REST API controller for managing Tainacan exposers.</b>" as api_endpoints_REST_Exposers_Controller {
-        -metadatum_repository : 
-        -exposers : 
-        -mappers : 
-        #get_schema()
-        +__construct()
-        +init_objects()
-        +register_routes()
-        +get_items(request)
-        +get_items_permissions_check(request)
-      }
-      class "REST_Importers_Controller\n<b>REST API controller for managing Tainacan importers.</b>" as api_endpoints_REST_Importers_Controller {
-        #get_schema()
-        +__construct()
-        +register_routes()
-        +import_permissions_check(request)
-        +create_item(request)
-        +update_item(request)
-        +source_info(request)
-        +get_saved_mapping(request)
-        +get_item(request)
-        +add_file(request)
-        +run(request)
+      class "Importer_Handler" as background-process_importer_Importer_Handler {
+        #bg_importer : Background_Importer
+        -registered_importers : 
+        -init()
+        +register_importers()
+        +add_to_queue(importer_object)
+        +register_importer(importer)
+        +unregister_importer(importer_slug)
         +get_registered_importers()
+        +get_importer(importer_slug)
+        +get_importer_by_object(importer_object)
+        +initialize_importer(importer_slug)
+        +save_importer_instance(importer)
+        +get_importer_instance_by_session_id(session_id)
+        +delete_importer_instance(importer)
       }
-      class "REST_Oaipmh_Expose_Controller\n<b>REST API controller for managing Tainacan OAI-PMH exposure.</b>" as api_endpoints_REST_Oaipmh_Expose_Controller {
-        +__construct()
-        +init_objects()
-        +register_routes()
-        +get_verb_permissions_check(request)
-        +get_verb(request)
-        +get_verb_params()
-        +get_schema()
+      class "CSV" as background-process_importer_CSV {
+        -items_repo : 
+        +__construct(attributes)
+        +set_option(key, value)
+        +get_source_metadata()
+        +get_source_file_name()
+        +get_source_special_fields()
+        +raw_source_metadata()
+        +process_item(index, collection_definition)
+        +after_inserted_item(inserted_item, collection_index)
+        +get_source_number_of_items()
+        +options_form()
+        -handle_encoding(string)
+        -handle_document(column_value, item_inserted)
+        -handle_thumbnail(column_value, item_inserted)
+        -handle_attachment(column_value, item_inserted)
+        -handle_enclosure(file)
+        -handle_item_status(status, item_inserted)
+        -handle_item_comment_status(comment_status, item_inserted)
+        -handle_item_author_id(author, item_inserted)
+        -handle_item_slug(slug, item_inserted)
+        -handle_item_id(values)
+        +insert(processed_item, collection_index)
+        -is_assoc(arr)
+        -deleteAllValuesCompoundItemMetadata(item, compoundMetadataID)
+        +is_empty_value(value)
+        -is_clear_value(value)
+        -insert_hierarchy(metadatum, values)
+        +save_mapping(collection_id, mapping)
+        +get_mapping(collection_id)
+        +add_collection(collection)
+        -get_collections_names()
+        +get_output()
+        -delete_previous_document_imgs(item_id, item_document)
       }
-      class "REST_Item_Metadata_Controller\n<b>REST API controller for managing Tainacan item metadata.</b>" as api_endpoints_REST_Item_Metadata_Controller {
-        -metadatum : 
-        -item_metadata_repository : 
-        -item_repository : 
-        -collection_repository : 
-        -metadatum_repository : 
-        +__construct()
-        +init_objects()
-        +register_routes()
-        +prepare_item_for_database(request)
-        +prepare_item_for_response(item, request)
-        +get_items(request)
-        +get_item_metadatum_value(request)
-        +get_items_permissions_check(request)
-        +update_item(request)
-        +update_item_permissions_check(request)
-        +get_endpoint_args_for_item_schema(method)
-        +get_wp_query_params()
-        +delete_item_permissions_check(request)
-        +delete_item(request)
-        -get_metadata_value(is_multiple, value)
-        +get_schema()
-      }
-    }
-  }
-  package repositories as repositories {
-    class "Collections\n<b>Repository for managing Tainacan collections.</b>" as repositories_Collections {
-      +entities_type : string
-      -old_collection : Collection
-      -old_core_title : string
-      -old_core_description : string
-      #init()
-      +get_max_items_per_page()
-      #_get_map()
-      +get_cpt_labels()
-      +register_post_type()
-      +insert(collection)
-      +update(object, new_values)
-      +fetch(args, output)
-      +fetch_by_db_identifier(db_identifier)
-      +get_id_by_db_identifier(db_identifier)
-      +pre_process(collection)
-      +handle_core_metadata(collection)
-      +handle_control_metadata(collection)
-      +handle_parent_order_clone(collection)
-    }
-    class "Terms\n<b>Repository for managing Tainacan taxonomy terms.</b>" as repositories_Terms {
-      +entities_type : 
-      #init()
-      #_get_map()
-      +get_default_properties(map)
-      +insert(term)
-      +get_mapped_property(entity, prop)
-      +fetch(args, taxonomies)
-      +update(object, args)
-      +delete_child_terms(parentTerm, permanent)
-      +delete(term, permanent)
-      +term_exists(searched_term, taxonomy, parent, return_term)
-      +register_post_type()
-      +can_edit(term, user)
-      +can_read(term, user)
-      +can_delete(term, user)
-      +can_publish(term, user)
-    }
-    class "Metadata_Sections\n<b>Repository for managing Tainacan metadata sections.</b>" as repositories_Metadata_Sections {
-      +entities_type : 
-      #init()
-      #_get_map()
-      +get_cpt_labels()
-      +register_post_type()
-      +get_default_section(collection)
-      +fetch(args, output)
-      +fetch_ids(args)
-      +fetch_by_collection(collection, args)
-      +insert(metadata_section)
-      +update(object, new_values)
-      +add_metadata(metadata_section_id, metadata_list)
-      +delete_metadata(metadata_section_id, metadata_list)
-      +get_metadata_object_list(metadata_section_id, args)
-      +get_default_section_metadata_object_list(collection, args)
-      +delete(entity, permanent)
-      +order_result(result, collection, include_disabled)
-      +can_read(entity, user)
-      +can_edit(entity, user)
-    }
-    class "Logs\n<b>Repository for managing Tainacan logs.</b>" as repositories_Logs {
-      +entities_type : 
-      -current_diff : 
-      -current_deleting_entity : 
-      -current_action : 
-      #init()
-      #_get_map()
-      +register_post_type()
-      +fetch(args, _output)
-      +fetch_count(args)
-      -build_where(args)
-      -normalize_date_bound(date, bound)
-      -row_to_entity(row)
-      +get_table_name()
-      +insert(obj)
-      +update(object, new_values)
-      +fetch_last()
-      +insert_attachment(post_ID)
-      +pre_delete_attachment(attachment_id)
-      +delete_attachment(attachment_id)
-      +pre_insert_entity(unsaved)
-      -prepare_item_metadata_diff(unsaved)
-      +__temporary_multivalue_separator(sep)
-      +insert_entity(entity)
-      +pre_delete_entity(entity, permanent)
-      +delete_entity(entity, permanent)
-      -insert_item_metadata(entity)
-      +filter_log_title(title)
-      +tainacan_set_log_slug(override, slug, post_ID, post_status, post_type, post_parent)
-    }
-    class "Item_Metadata\n<b>Repository for managing Tainacan item metadata.</b>" as repositories_Item_Metadata {
-      +entities_type : 
-      #init()
-      +insert(item_metadata)
-      +save_core_metadatum_value(item_metadata)
-      +save_terms_metadatum_value(item_metadata)
-      +upclean_compound_value(item_metadata)
-      +add_compound_value(item_metadata, meta_id)
-      +delete_metadata(item_metadata)
-      +remove_compound_value(parent_meta_id)
-      +fetch(object, output, args)
-      +get_value(item_metadata)
-      +create_default_value_metadata(item)
-      -extract_compound_value(ids, item, compound_meta_id)
-      +register_post_type()
-      #_get_map()
-      +get_default_properties(map)
-      +update(object, new_values)
-      +suggest(item_metadata)
-    }
-    class "Logs" as repositories_Logs {
-      +entities_type : 
-      -current_diff : 
-      -current_deleting_entity : 
-      -current_action : 
-      #init()
-      #_get_map()
-      +register_post_type()
-      +fetch(args, output)
-      +update(object, new_values)
-      +fetch_last()
-      +insert_attachment(post_ID)
-      +pre_delete_attachment(attachment_id)
-      +delete_attachment(attachment_id)
-      +pre_insert_entity(unsaved)
-      -prepare_item_metadata_diff(unsaved)
-      +__temporary_multivalue_separator(sep)
-      +insert_entity(entity)
-      +pre_delete_entity(entity, permanent)
-      +delete_entity(entity, permanent)
-      -insert_item_metadata(entity)
-      +filter_log_title(title)
-      +tainacan_set_log_slug(override, slug, post_ID, post_status, post_type, post_parent)
-    }
-    class "Taxonomies\n<b>Repository for managing Tainacan taxonomies.</b>" as repositories_Taxonomies {
-      +entities_type : 
-      #init()
-      #_get_map()
-      +get_cpt_labels()
-      +register_post_type()
-      +insert(taxonomy)
-      +fetch(args, output)
-      +fetch_by_collection(collection, args, output)
-      +fetch_by_db_identifier(db_identifier)
-      +update(object, new_values)
-      +delete(taxonomy, permanent)
-      +added_collection(taxonomy_id, collection_id)
-      +removed_collection(taxonomy_id, collection_id)
-      +update_taxonomy_registry_for_collection(taxonomy_id, collection_id)
-      +register_taxonomies_for_all_collections(all_collections)
-      +get_db_identifier_by_id(id)
-      +get_id_by_db_identifier(db_identifier)
-      +term_exists(taxonomy, term_name, parent, return_term)
-    }
-    class "Metadata\n<b>Repository for managing Tainacan metadata definitions.</b>" as repositories_Metadata {
-      +entities_type : 
-      #default_metadata : 
-      #current_taxonomy : 
-      +metadata_types : 
-      +core_metadata : 
-      #init()
-      #_get_map()
-      +get_cpt_labels()
-      +register_post_type()
-      +get_default_metadata_attribute()
-      +register_metadata_type(class_name)
-      +unregister_metadata_type(class_name)
-      +fetch(args, output)
-      +fetch_ids(args)
-      +fetch_by_collection(collection, args)
-      +fetch_ids_by_collection(collection, args)
-      +fetch_by_metadata_section(metadata_section, args)
-      +order_result(result, collection, include_disabled)
-      +insert(metadatum)
-      +pre_update_metadata_repository_level(metadatum, attributes)
-      +update(object, new_values)
-      +fetch_metadata_types(output)
-      +maybe_update_core_metadata_meta_keys(collection_new, collection_old, old_title_metadatum, old_description_metadatum)
-      -get_data_core_metadata(collection)
-      +register_core_metadata(collection, force)
-      +register_control_metadata(collection, force)
-      +disable_delete_core_metadata(before, post)
-      +force_delete_core_metadata(before, post, force_delete)
-      +get_core_metadata(collection)
-      +get_core_title_metadatum(collection)
-      +get_core_description_metadatum(collection)
-      +insert_array_metadatum(data)
-      +fetch_all_metadatum_values(metadatum_id, args)
-      +_process_terms_tree(tree, search_value, search_type)
-      -pre_update_taxonomy_metadatum(metadatum)
-      -update_taxonomy_metadatum(metadatum)
-      -update_metadata_type_index(metadatum)
-      +delete(entity, permanent)
-      -delete_taxonomy_metadatum(metadatum)
-      +hook_taxonomies_saved_as_private(taxonomy)
-      +hook_taxonomies_saved_not_allow_insert_new_terms(taxonomy)
-      +metadata_is_enabled(collection, metadata)
-      +hook_metadata_update_order(metadata)
-    }
-    class "Repository\n<b>Abstract base class for all Tainacan repositories.</b>" as repositories_Repository {
-      +entities_type : string
-      #use_logs : bool
-      #logs_repository : Logs
-      -map : array
-      +disable_logs()
-      +enable_logs()
-      +get_enabled_logs()
-      #__construct()
-      +init_objects()
-      {abstract} #_get_map()
-      +get_map()
-      +get_name()
-      +insert(obj)
-      +insert_metadata(obj, prop, diffs)
-      +maybe_add_slashes(value)
-      +fetch_output(WP_Query, output)
-      +parse_fetch_args(args)
-      +get_default_properties(map)
-      +get_mapped_property(entity, prop)
-      {static} +get_collections_db_identifiers()
-      {static} +get_entity_by_post(post)
-      {static} +get_entity_by_post_type(post_type, post)
-      {static} +get_repository(entity)
-      +fetch_one(args)
-      +trash(entity)
-      +delete(entity, permanent)
-      -delete_attachments(entity)
-      {abstract} +fetch(args, output)
-      {abstract} +update(object, new_values)
-      {abstract} +register_post_type()
-      +can_edit(entity, user)
-      +can_read(entity, user)
-      +can_delete(entity, user)
-      +can_publish(entity, user)
-      +unique_multidimensional_array(array, key)
-      -insert_thumbnail(obj, diffs)
-      +get_descendants_ids(id, depth)
-      +get_capabilities()
-      #sanitize_value(content)
-    }
-    class "Items\n<b>Repository for managing Tainacan items.</b>" as repositories_Items {
-      +entities_type : 
-      -fetching_from_collections : 
-      #init()
-      #_get_map()
-      +get_cpt_labels()
-      +register_post_type()
-      +insert(item)
-      +fetch(args, collections, output)
-      +fetch_ids(args, collections)
-      +_filter_where(where, wp_query)
-      +update(object, new_values)
-      +generate_index_content(item)
-      +get_thumbnail_id_from_document(item)
-      +hook_api_updated_item(updated_item, attributes)
-      +hook_comments_open(comments_open, post_id)
-      +map_meta_cap(caps, cap, user_id, args)
-      -get_related_items_by_collection(item, collection, metadata, args)
-      +fetch_related_items(item, args)
-      -parse_relationship_metaquery(args)
-      +posts_where_relationship_metaquery(where)
-      -parse_core_metadata_for_advanced_search(args, collections)
-    }
-    class "Filters\n<b>Repository for managing Tainacan filters.</b>" as repositories_Filters {
-      +entities_type : 
-      +filters_types : 
-      #init()
-      #_get_map()
-      +get_cpt_labels()
-      +register_post_type()
-      +update(object, new_values)
-      +fetch(args, output)
-      +register_filter_type(class_name)
-      +deregister_filter_type(class_name)
-      +fetch_filter_types(output)
-      +fetch_supported_filter_types(types)
-      +fetch_ids(args)
-      +fetch_by_collection(collection, args)
-      +fetch_ids_by_collection(collection, args)
-      +order_result(result, collection, include_disabled)
-      +hook_delete_when_metadata_deleted(metadatum, permanent)
-      +hook_update_when_metadata_saved_as_private(metadatum)
-    }
-  }
-  package mappers as mappers {
-    class "Mapper" as mappers_Mapper {
-      +slug : 
-      +name : 
-      +allow_extra_metadata : 
-      +context_url : 
-      +type : 
-      +metadata : array
-      +prefix : 
-      +sufix : 
-      +header : 
-      +show_ui : 
-      +_toArray()
-      +get_url(meta_slug)
-      +__construct()
-    }
-    class "Inbcm_Museological" as mappers_Inbcm_Museological {
-      +slug : 
-      +name : 
-      +allow_extra_metadata : 
-      +__construct()
-    }
-    class "Dublin_Core\n<b>Support Dublin Core Mapping </b>" as mappers_Dublin_Core {
-      +slug : 
-      +name : 
-      +allow_extra_metadata : 
-      +context_url : 
-      +header : 
-      +prefixes : 
-      +XML_namespace : 
-      +XML_append_root : 
-      +__construct()
-    }
-    class "Inbcm_Archive" as mappers_Inbcm_Archive {
-      +slug : 
-      +name : 
-      +allow_extra_metadata : 
-      +__construct()
-    }
-    class "Mappers_Handler" as mappers_Mappers_Handler {
-      -instance : 
-      #mappers : 
-      {static} +get_instance()
-      +__construct()
-      +init()
-      +register_mapper(class_name)
-      +unregister_mapper(class_name)
-      +get_mappers(output)
-      +get_mapper(slug)
-      +mappers_i18n(i18n_strings)
-      {static} +get_mapper_from_request(request)
-      #map_metadatum(item_arr, mapper)
-      #map(item_arr, mapper, resquest)
-      +mapper_exists(mapper)
-      +check_class_name(class_name, root, prefix)
-      +create_mapped_collection(collection, request)
-      +filter_item_api_response(item_arr, item, request)
-    }
-    class "Inbcm_Bibliographic" as mappers_Inbcm_Bibliographic {
-      +slug : 
-      +name : 
-      +allow_extra_metadata : 
-      +__construct()
-    }
-  }
-  package oaipmh as oaipmh {
-    class "OAIPMH_List_Metadata_Formats" as oaipmh_OAIPMH_List_Metadata_Formats {
-      #working_node : 
-      +errors : 
-      +xml_creater : 
-      +restoken : 
-      +expirationdatetime : 
-      +num_rows : 
-      +cursor : 
-      +deliveredrecords : 
-      +from : 
-      +until : 
-      +sets : 
-      +metadataPrefix : 
-      +list_metadata_formats(data)
-    }
-    class "OAIPMH_Get_Record" as oaipmh_OAIPMH_Get_Record {
-      #working_node : 
-      +errors : 
-      +xml_creater : 
-      +restoken : 
-      +expirationdatetime : 
-      +num_rows : 
-      +cursor : 
-      +deliveredrecords : 
-      +from : 
-      +until : 
-      +sets : 
-      +metadataPrefix : 
-      +__construct()
-      +get_item(params)
-      +get_record(data)
-      +get_current_mapper()
-      #create_metadata_node(item, collection, record_node)
-      -map_item_metadata(item)
-      +initiate_variables(data)
-    }
-    class "XML_Error\n<b>Generate an XML response when a request cannot be finished</b>" as oaipmh_XML_Error {
-      +__construct(par_array, error_array)
-    }
-    class "OAIPMH_Expose\n<b>Support Dublin Core Mapping</b>" as oaipmh_OAIPMH_Expose {
-      +identifyResponse : 
-      +deletedRecord : 
-      +adminEmail : 
-      +compression : 
-      +expirationdatetime : 
-      +delimiter : 
-      +show_identifier : 
-      +SETS : 
-      +METADATAFORMATS : 
-      +supported_formats : 
-      +MAXRECORDS : 
-      +CONTENT_TYPE : 
-      +charset : 
-      +xmlescaped : 
-      +text : 
-      +code : 
-      +token_valid : 
-      +token_prefix : 
-      #collection_repository : 
-      #item_repository : 
-      #repositoryIdentifier : 
-      +config()
-      +is_valid_uri(url)
-      +is_valid_attrb(attrb)
-      +formatDatestamp(datestamp)
-      +checkDateFormat(date)
-      +prepare_set_names()
-      +oai_exit(args, errors)
-      #create_token_dir()
-      +get_token()
-      +createResumToken(cursor, from, until, sets, metadataPrefix)
-      +readResumToken(resumptionToken)
-      +oai_error(code, argument, value)
-      +get_metadata_formats(item_id)
-    }
-    class "OAIPMH_List_Records" as oaipmh_OAIPMH_List_Records {
-      #working_node : 
-      +errors : 
-      +xml_creater : 
-      +restoken : 
-      +expirationdatetime : 
-      +num_rows : 
-      +cursor : 
-      +deliveredrecords : 
-      +from : 
-      +until : 
-      +sets : 
-      +metadataPrefix : 
-      +__construct()
-      +list_collections()
-      +get_items()
-      +list_records(data)
-      +get_current_mapper()
-      #create_metadata_node(item, collection, record_node)
-      -map_item_metadata(item)
-      +initiate_variables(data)
-      +verify_resumption_token(numRows)
-      +add_resumption_token_xml(numRows)
-    }
-    class "Xml_Response\n<b>Generate an XML response to a request if no error has occured</b>" as oaipmh_Xml_Response {
-      +verbNode : 
-      #verb : 
-      +__construct(par_array)
-      +add2_verbNode(nodeName, value)
-      +create_record()
-      +create_header(identifier, timestamp, ands_class, add_to_node, is_deleted)
-      +create_metadata(mom_record_node)
-      +create_resumpToken(token, expirationdatetime, num_rows, cursor)
-    }
-    class "OAIPMH_List_Identifiers" as oaipmh_OAIPMH_List_Identifiers {
-      #working_node : 
-      +errors : 
-      +xml_creater : 
-      +restoken : 
-      +expirationdatetime : 
-      +num_rows : 
-      +cursor : 
-      +deliveredrecords : 
-      +from : 
-      +until : 
-      +sets : 
-      +metadataPrefix : 
-      +__construct()
-      +list_collections()
-      +get_items()
-      +list_identifiers(data)
-      +initiate_variables(data)
-      +verify_resumption_token(numRows)
-      +add_resumption_token_xml(numRows)
-    }
-    class "Xml_Create\n<b>A wraper of DOMDocument for data provider</b>" as oaipmh_Xml_Create {
-      +doc : 
-      +__construct(par_array)
-      +addChild(mom_node, name, value)
-      +addChildDC(mom_node, name, value)
-      +create_request(par_array)
-      +display()
-    }
-    class "OAIPMH_Identify" as oaipmh_OAIPMH_Identify {
-      #working_node : 
-      +identify(data)
-    }
-    class "OAIPMH_List_Sets" as oaipmh_OAIPMH_List_Sets {
-      #working_node : 
-      +errors : 
-      +xml_creater : 
-      +restoken : 
-      +expirationdatetime : 
-      +num_rows : 
-      +cursor : 
-      +deliveredrecords : 
-      +from : 
-      +until : 
-      +sets : 
-      +metadataPrefix : 
-      +collection_repository : 
-      +__construct()
-      +list_collections()
-      +limit_data(objects)
-      +list_sets(data)
-      +initiate_variables(data)
-      +verify_resumption_token(numRows)
-      +add_resumption_token_xml(numRows)
-    }
-  }
-  package theme-helper as theme-helper {
-    class "Theme_Helper\n<b>Theme helper class for Tainacan.</b>" as theme-helper_Theme_Helper {
-      +visiting_collection_cover : 
-      -registered_view_modes : 
-      #default_placeholder_template : 
-      -init()
-      +is_post_type_a_collection(post_type)
-      +is_post_an_item(post)
-      +is_post_a_tainacan_taxonomy_postype(post)
-      +is_taxonomy_a_tainacan_tax(tax_slug)
-      +is_term_a_tainacan_term(term)
-      +filter_archive_title(title)
-      +override_item_single_template()
-      +register_block_templates_for_item_single()
-      +override_collection_items_archive_template()
-      +register_block_templates_for_collection_items_archive()
-      +override_taxonomy_term_items_archive_template()
-      +override_repository_items_archive_template()
-      +override_taxonomy_single_template()
-      +permalink_filter(permalink, post, leavename)
-      +tax_archive_pre_get_posts(wp_query)
-      +collection_single_redirect()
-      +item_template_hierarchy(templates)
-      +collection_items_template_hierarchy(templates)
-      +taxonomy_term_items_template_hierarchy(templates)
-      +taxonomy_terms_template_hierarchy(templates)
-      +header_image(image)
-      +item_submission_shortcode(args)
-      +get_tainacan_item_single_content()
-      +search_shortcode(args)
-      +get_tainacan_items_list(args, force_enqueue)
-      +get_items_list_slug()
-      +rewrite_rules(wp_rewrite)
-      +rewrite_rules_query_vars(public_query_vars)
-      +rewrite_rule_template_include(template)
-      +archive_repository_pre_get_posts(wp_query)
-      +register_view_mode(slug, args)
-      +get_registered_view_modes()
-      +get_view_mode(slug)
-      +get_default_view_mode()
-      +get_enabled_view_modes()
-      +get_default_order()
-      +get_default_orderby()
-      +get_enable_item_link_query_params()
-      +tainacan_get_collection_id()
-      +tainacan_get_collection(args)
-      +tainacan_get_item(post_id)
-      +add_social_meta()
-      +get_adjacent_items()
-      +get_tainacan_items_carousel(args)
-      +get_tainacan_dynamic_items_list(args)
-      +get_tainacan_related_items_list(args)
-      +get_tainacan_related_items_carousel(args)
-      +get_tainacan_item_gallery(args)
-      +get_tainacan_items_gallery(args)
-      +get_tainacan_terms_carousel(args)
-      +get_tainacan_item_metadata_template(args, collection_id)
-      +get_tainacan_item_metadata_sections_template(args, collection_id)
-      +get_metadata_section_template(metadata_section, args, section_index, collection_id)
-      +get_tainacan_item_gallery_template(args)
-      +get_taxonomies_query_args()
-      +register_tainacan_oficial_view_modes()
-      -convert_params_to_camel_case(params)
-    }
-  }
-  package exposers as exposers {
-    class "Exposers_Handler\n<b>Load exposers classes</b>" as exposers_Exposers_Handler {
-      #exposers : 
-      -instance : 
-      -request : 
-      {static} +get_instance()
-      +__construct()
-      +init()
-      +register_exposer(class_name)
-      +unregister_exposer(class_name)
-      +check_class_name(class_name, root, prefix)
-      +is_tainacan_request(request)
-      {static} +request_has_url_param(request)
-      +rest_request_after_callbacks(response, handler, request)
-      +exposer_exists(exposer)
-      {static} +request_has_exposer(request)
-      +get_exposers(output)
-      +filter_check_items_request(response, request)
-      {static} +get_exposer_urls(base_url)
-    }
-    class "Html\n<b>Generate a Html formated response</b>" as exposers_Html {
-      +slug : 
-      +name : 
-      #mappers : 
-      +accept_no_mapper : 
-      +__construct()
-      +rest_request_after_callbacks(response, handler, request)
-      #array_to_html(data)
-    }
-    class "Exposer\n<b>abstract class for implement exposer types</b>" as exposers_Exposer {
-      #mappers : 
-      +accept_no_mapper : 
-      +slug : 
-      -name : 
-      -description : 
-      #set_name(name)
-      #set_description(description)
-      +get_name()
-      +get_description()
-      +_toArray()
-      {abstract} +rest_request_after_callbacks(response, handler, request)
-      +get_mappers()
-    }
-    class "JSON_LD\n<b>Generate a text formated response</b>" as exposers_JSON_LD {
-      +mappers : 
-      +slug : 
-      +name : 
-      #contexts : 
-      +rest_request_after_callbacks(response, handler, request)
-      #array_to_jsonld(data, jsonld)
-      +get_locale(obj)
-    }
-    class "Csv\n<b>Generate a Csv formated response</b>" as exposers_Csv {
-      +slug : 
-      +__construct()
-      +rest_request_after_callbacks(response, handler, request)
-    }
-    class "Xml\n<b>Generate a Csv formated response</b>" as exposers_Xml {
-      #extension : string
-      +slug : 
-      +name : 
-      +rest_request_after_callbacks(response, handler, request)
-      #array_to_xml(data, xml_data, namespace)
-    }
-    class "JSON_flat\n<b>Generate a text formated response</b>" as exposers_JSON_flat {
-      +slug : 
-      +name : 
-      +accept_no_mapper : 
-      #mappers : 
-      +__construct()
-      +rest_request_after_callbacks(response, handler, request)
-    }
-    class "Txt\n<b>Generate a text formated response</b>" as exposers_Txt {
-      +mappers : 
-      +slug : 
-      +name : 
-      +rest_request_after_callbacks(response, handler, request)
-      #array_to_txt(data, txt)
-    }
-    class "OAI_PMH\n<b>Generate a OAI_PMH/oai_dc formated response</b>" as exposers_OAI_PMH {
-      +mappers : 
-      +slug : 
-      +name : 
-      +rest_request_after_callbacks(response, handler, request)
     }
   }
   package entities as entities {
-    class "Item_Metadata_Entity\n<b>Represents a Tainacan Item Metadata Entity.</b>" as entities_Item_Metadata_Entity {
-      #post_type : 
-      #repository : string
-      #item : 
-      +__construct(item, metadatum, meta_id, parent_meta_id)
-      +get_multivalue_prefix()
-      +get_multivalue_suffix()
-      +get_multivalue_separator()
-      +get_value_as_html()
-      +get_value_as_string()
-      +get_value_as_array()
-      +_toArray(formatted_values, cascade)
-      +set_item(item)
-      +set_value(value)
-      +set_metadatum(metadatum)
-      +set_meta_id(meta_id)
-      +set_parent_meta_id(parent_meta_id)
-      +get_item()
-      +get_metadatum()
-      +get_meta_id()
-      +get_parent_meta_id()
-      +get_value()
-      +has_value()
-      +is_multiple()
-      +is_collection_key()
-      +is_required()
-      +validate()
-    }
-    class "Metadatum\n<b>Represents a Tainacan Metadatum entity.</b>" as entities_Metadatum {
-      #name : 
-      +enabled_for_collection : 
-      +post_type : 
-      #capability_type : string
-      #repository : string
-      +__toString()
-      +set_display(display)
-      +get_display()
-      +set_html_formatting(html_formatting)
-      +get_html_formatting()
-      +get_allow_advanced_search()
-      +set_allow_advanced_search(allow_advanced_search)
-      +get_name()
-      +get_slug()
-      +get_order()
-      +get_parent()
-      +get_description()
-      +get_description_bellow_name()
-      +get_placeholder()
-      +get_required()
-      +get_multiple()
-      +get_cardinality()
-      +get_collection_key()
-      +get_default_value()
-      +get_metadata_type_object()
-      +get_metadata_type()
-      +get_metadata_type_options()
-      +get_accept_suggestion()
-      +get_exposer_mapping()
-      +get_semantic_uri()
-      +get_metadata_section_id()
-      +set_name(value)
-      +set_slug(value)
-      +set_order(value)
-      +set_parent(value)
-      +set_description(value)
-      +set_description_bellow_name(value)
-      +set_placeholder(value)
-      +set_required(value)
-      +set_multiple(value)
-      +set_cardinality(value)
-      +set_collection_key(value)
-      +set_default_value(value)
-      +set_metadata_type(value)
-      +set_accept_suggestion(value)
-      +set_metadata_type_options(value)
-      +set_exposer_mapping(value)
-      +set_semantic_uri(value)
-      +set_metadata_section_id(value)
-      +get_enabled_for_collection()
-      +set_enabled_for_collection(value)
-      +is_multiple()
-      +is_collection_key()
-      +is_required()
-      +is_repository_level()
-      +validate()
-    }
-    class "Term\n<b>Represents a Tainacan Term entity.</b>" as entities_Term {
-      +WP_Term : 
-      #term_id : 
-      +post_type : 
-      #repository : string
-      +__construct(which, taxonomy)
-      +__toString()
-      +_toArray()
-      +get_id()
-      +get_term_id()
-      +get_name()
-      +get_parent()
-      +get_description()
-      +get_user()
-      +get_taxonomy()
-      +get_header_image_id()
-      +get_header_image()
-      +get_url()
-      +get_thumbnail()
-      +get_thumbnail_blurhash()
-      +set_name(value)
-      +set_parent(value)
-      +set_description(value)
-      +set_user(value)
-      +set_taxonomy(value)
-      +set_header_image_id(value)
-      +validate()
-      +_toHtml()
-    }
-    class "Filter\n<b>Represents a Tainacan Filter entity.</b>" as entities_Filter {
-      #name : 
-      +post_type : 
-      +enabled_for_collection : 
-      #repository : string
-      +__toString()
-      +_toArray()
-      +get_name()
-      +get_description()
-      +get_placeholder()
-      +get_order()
-      +get_max_options()
-      +set_max_options(max_options)
-      +get_metadatum_id()
-      +get_metadatum()
-      +get_filter_type_object()
-      +get_filter_type()
-      +get_filter_type_options()
-      +get_begin_with_filter_collapsed()
-      +get_display_in_repository_level_lists()
-      +get_description_bellow_name()
-      +set_name(value)
-      +set_order(value)
-      +set_description(value)
-      +set_placeholder(value)
-      +set_metadatum(value)
-      +set_metadatum_id(value)
-      +set_filter_type(value)
-      +set_begin_with_filter_collapsed(begin_with_filter_collapsed)
-      +set_display_in_repository_level_lists(display_in_repository_level_lists)
-      +get_enabled_for_collection()
-      +set_enabled_for_collection(value)
-      +set_description_bellow_name(value)
-      +validate()
-      +set_filter_type_options(value)
-    }
-    class "Metadata_Section\n<b>Represents a Tainacan Metadata Section entity.</b>" as entities_Metadata_Section {
-      +post_type : 
-      +default_section_slug : 
-      #name : 
-      #repository : string
-      +enabled_for_collection : 
-      +__toString()
-      +get_id()
-      +get_name()
-      +get_slug()
-      +get_description()
-      +get_description_bellow_name()
-      +get_metadata_object_list(args)
-      +get_is_conditional_section()
-      +get_conditional_section_rules()
-      +is_conditional_section()
-      +set_name(value)
-      +set_slug(value)
-      +set_description(value)
-      +set_description_bellow_name(value)
-      +set_is_conditional_section(value)
-      +set_conditional_section_rules(value)
-      +get_enabled_for_collection()
-      +set_enabled_for_collection(value)
-      +validate()
-    }
-    class "Item\n<b>Represents a Tainacan Item entity.</b>" as entities_Item {
-      #terms : 
-      #repository : string
-      +__construct(which)
-      +__toString()
-      +_toArray()
-      +set_terms(value)
-      +get_terms()
-      +get_attachments(exclude)
-      +get_author_name()
-      +get_author_login()
-      +get_thumbnail()
-      +get_thumbnail_blurhash()
-      +set__thumbnail_id(id)
-      +get__thumbnail_id()
-      +get_modification_date()
-      +get_creation_date()
-      +get_author_id()
-      +get_url()
-      +get_id()
-      +get_title()
-      +get_slug()
-      +get_order()
-      +get_parent()
-      +get_description()
-      +get_document_type()
-      +get_document_options()
-      +get_document_mimetype()
-      +get_document()
-      +get_db_identifier()
-      +get_capabilities()
-      +get_comment_status()
-      +set_title(value)
-      +set_slug(value)
-      +set_order(value)
-      +set_creation_date(value)
-      +set_parent(value)
-      +set_document_type(value)
-      +set_document_options(value)
-      +set_document(value)
-      +set_description(value)
-      +set_author_id(author_id)
-      +get_metadata(args)
-      #set_cap()
-      +set_comment_status(value)
-      +validate()
-      +validate_core_metadata()
-      +_toHtml()
-      +get_metadata_as_html(args)
-      +get_item_metadatum_as_html(item_metadatum, args, metadatum_index)
-      +get_document_as_html(img_size)
-      +get_attachment_as_html(attachment, img_size)
-      +get_edit_url()
-      +get_document_download_url()
-      +get_related_items(args)
-      +get_metadata_sections_as_html(args)
-      +get_metadata_section_as_html(metadata_section, args, section_index)
-    }
     class "Collection\n<b>Represents a Tainacan Collection entity.</b>" as entities_Collection {
       #diplay_name : 
       +post_type : string
@@ -2260,6 +757,7 @@
       +get_item_enable_metadata_searchbar()
       +get_item_enable_metadata_collapses()
       +get_item_enable_metadata_enumeration()
+      +get_item_enable_document_content_editing()
       +set_name(value)
       +set_slug(value)
       +set_order(value)
@@ -2299,8 +797,279 @@
       +set_item_enable_metadata_searchbar(value)
       +set_item_enable_metadata_collapses(value)
       +set_item_enable_metadata_enumeration(value)
+      +set_item_enable_document_content_editing(value)
       +validate()
       +user_can(capability, user)
+    }
+    class "Term\n<b>Represents a Tainacan Term entity.</b>" as entities_Term {
+      +WP_Term : 
+      #term_id : 
+      +post_type : 
+      #repository : string
+      +__construct(which, taxonomy)
+      +__toString()
+      +_toArray()
+      +get_id()
+      +get_term_id()
+      +get_name()
+      +get_parent()
+      +get_description()
+      +get_user()
+      +get_taxonomy()
+      +get_header_image_id()
+      +get_header_image()
+      +get_url()
+      +get_thumbnail()
+      +get_thumbnail_blurhash()
+      +set_name(value)
+      +set_parent(value)
+      +set_description(value)
+      +set_user(value)
+      +set_taxonomy(value)
+      +set_header_image_id(value)
+      +validate()
+      +_toHtml()
+    }
+    class "Item\n<b>Represents a Tainacan Item entity.</b>" as entities_Item {
+      #terms : 
+      #repository : string
+      +__construct(which)
+      +__toString()
+      +_toArray()
+      +set_terms(value)
+      +get_terms()
+      +get_attachments(exclude)
+      +get_author_name()
+      +get_author_login()
+      +get_thumbnail()
+      +get_thumbnail_blurhash()
+      +set__thumbnail_id(id)
+      +get__thumbnail_id()
+      +get_modification_date()
+      +get_creation_date()
+      +get_author_id()
+      +get_url()
+      +get_id()
+      +get_title()
+      +get_slug()
+      +get_order()
+      +get_parent()
+      +get_description()
+      +get_document_type()
+      +get_document_options()
+      +get_document_content_index()
+      +get_document_mimetype()
+      +get_document()
+      +get_db_identifier()
+      +get_capabilities()
+      +get_comment_status()
+      +set_title(value)
+      +set_slug(value)
+      +set_order(value)
+      +set_creation_date(value)
+      +set_parent(value)
+      +set_document_type(value)
+      +set_document_options(value)
+      +set_document_content_index(value)
+      +set_document(value)
+      +set_description(value)
+      +set_author_id(author_id)
+      +get_metadata(args)
+      #set_cap()
+      +set_comment_status(value)
+      +validate()
+      +validate_core_metadata()
+      +_toHtml()
+      +get_metadata_as_html(args)
+      +get_item_metadatum_as_html(item_metadatum, args, metadatum_index)
+      +get_document_as_html(img_size)
+      +get_attachment_as_html(attachment, img_size)
+      +get_edit_url()
+      +get_document_download_url()
+      +get_related_items(args)
+      +get_metadata_sections_as_html(args)
+      +get_metadata_section_as_html(metadata_section, args, section_index)
+    }
+    class "Log\n<b>Represents a Tainacan Log entity.</b>" as entities_Log {
+      #title : 
+      +post_type : 
+      #repository : string
+      +__construct(which)
+      +__toString()
+      +_toArray()
+      +get_capabilities()
+      +set_collection_id(collection_id)
+      +get_collection_id()
+      +get_title()
+      +get_user_name()
+      +get_date()
+      +get_slug()
+      +get_description()
+      +get_user_id()
+      +get_old_value()
+      +get_new_value()
+      +set_title(value)
+      +set_description(value)
+      +set_user_id(value)
+      +set_old_value(value)
+      +set_new_value(value)
+      +get_log_diffs()
+      +get_object_type()
+      +set_object_type(value)
+      +get_object_id()
+      +set_object_id(value)
+      +set_item_id(item_id)
+      +get_item_id()
+      +get_action()
+      +set_action(value)
+      +approve()
+    }
+    class "Metadatum\n<b>Represents a Tainacan Metadatum entity.</b>" as entities_Metadatum {
+      #name : 
+      +enabled_for_collection : 
+      +post_type : 
+      #capability_type : string
+      #repository : string
+      +__toString()
+      +set_display(display)
+      +get_display()
+      +set_html_formatting(html_formatting)
+      +get_html_formatting()
+      +get_allow_advanced_search()
+      +set_allow_advanced_search(allow_advanced_search)
+      +get_name()
+      +get_slug()
+      +get_order()
+      +get_parent()
+      +get_description()
+      +get_description_bellow_name()
+      +get_placeholder()
+      +get_required()
+      +get_multiple()
+      +get_cardinality()
+      +get_collection_key()
+      +get_default_value()
+      +get_metadata_type_object()
+      +get_metadata_type()
+      +get_metadata_type_options()
+      +get_accept_suggestion()
+      +get_exposer_mapping()
+      +get_semantic_uri()
+      +get_metadata_section_id()
+      +set_name(value)
+      +set_slug(value)
+      +set_order(value)
+      +set_parent(value)
+      +set_description(value)
+      +set_description_bellow_name(value)
+      +set_placeholder(value)
+      +set_required(value)
+      +set_multiple(value)
+      +set_cardinality(value)
+      +set_collection_key(value)
+      +set_default_value(value)
+      +set_metadata_type(value)
+      +set_accept_suggestion(value)
+      +set_metadata_type_options(value)
+      +set_exposer_mapping(value)
+      +set_semantic_uri(value)
+      +set_metadata_section_id(value)
+      +get_enabled_for_collection()
+      +set_enabled_for_collection(value)
+      +is_multiple()
+      +is_collection_key()
+      +is_required()
+      +is_repository_level()
+      +validate()
+    }
+    class "Filter\n<b>Represents a Tainacan Filter entity.</b>" as entities_Filter {
+      #name : 
+      +post_type : 
+      +enabled_for_collection : 
+      #repository : string
+      +__toString()
+      +_toArray()
+      +get_name()
+      +get_description()
+      +get_placeholder()
+      +get_order()
+      +get_max_options()
+      +set_max_options(max_options)
+      +get_metadatum_id()
+      +get_metadatum()
+      +get_filter_type_object()
+      +get_filter_type()
+      +get_filter_type_options()
+      +get_begin_with_filter_collapsed()
+      +get_display_in_repository_level_lists()
+      +get_description_bellow_name()
+      +set_name(value)
+      +set_order(value)
+      +set_description(value)
+      +set_placeholder(value)
+      +set_metadatum(value)
+      +set_metadatum_id(value)
+      +set_filter_type(value)
+      +set_begin_with_filter_collapsed(begin_with_filter_collapsed)
+      +set_display_in_repository_level_lists(display_in_repository_level_lists)
+      +get_enabled_for_collection()
+      +set_enabled_for_collection(value)
+      +set_description_bellow_name(value)
+      +validate()
+      +set_filter_type_options(value)
+    }
+    class "Item_Metadata_Entity\n<b>Represents a Tainacan Item Metadata Entity.</b>" as entities_Item_Metadata_Entity {
+      #post_type : 
+      #repository : string
+      #item : 
+      +__construct(item, metadatum, meta_id, parent_meta_id)
+      +get_multivalue_prefix()
+      +get_multivalue_suffix()
+      +get_multivalue_separator()
+      +get_value_as_html()
+      +get_value_as_string()
+      +get_value_as_array()
+      +_toArray(formatted_values, cascade)
+      +set_item(item)
+      +set_value(value)
+      +set_metadatum(metadatum)
+      +set_meta_id(meta_id)
+      +set_parent_meta_id(parent_meta_id)
+      +get_item()
+      +get_metadatum()
+      +get_meta_id()
+      +get_parent_meta_id()
+      +get_value()
+      +has_value()
+      +is_multiple()
+      +is_collection_key()
+      +is_required()
+      +validate()
+    }
+    class "Taxonomy\n<b>Represents a Tainacan Taxonomy entity.</b>" as entities_Taxonomy {
+      #name : 
+      +post_type : string
+      #capability_type : string
+      #repository : string
+      +db_identifier_prefix : string
+      +__toString()
+      +tainacan_register_taxonomy()
+      +get_capabilities()
+      +get_name()
+      +get_description()
+      +get_allow_insert()
+      +get_hierarchical()
+      +get_slug()
+      +get_enabled_post_types()
+      +get_db_identifier()
+      +set_name(value)
+      +set_slug(value)
+      +set_description(value)
+      +set_allow_insert(value)
+      +set_hierarchical(value)
+      +set_enabled_post_types(value)
+      +validate()
+      +term_exists(term_name, parent, return_term)
     }
     class "Entity\n<b>Abstract base class for all Tainacan entities.</b>" as entities_Entity {
       #repository : Repository
@@ -2340,67 +1109,664 @@
       +get_capabilities()
       +diff(which)
     }
-    class "Log\n<b>Represents a Tainacan Log entity.</b>" as entities_Log {
-      #title : 
+    class "Metadata_Section\n<b>Represents a Tainacan Metadata Section entity.</b>" as entities_Metadata_Section {
       +post_type : 
-      #repository : string
-      +__construct(which)
-      +__toString()
-      +_toArray()
-      +get_capabilities()
-      +set_collection_id(collection_id)
-      +get_collection_id()
-      +get_title()
-      +get_user_name()
-      +get_date()
-      +get_slug()
-      +get_description()
-      +get_user_id()
-      +get_old_value()
-      +get_new_value()
-      +set_title(value)
-      +set_description(value)
-      +set_user_id(value)
-      +set_old_value(value)
-      +set_new_value(value)
-      +get_log_diffs()
-      +get_object_type()
-      +set_object_type(value)
-      +get_object_id()
-      +set_object_id(value)
-      +set_item_id(item_id)
-      +get_item_id()
-      +get_action()
-      +set_action(value)
-      +approve()
-    }
-    class "Taxonomy\n<b>Represents a Tainacan Taxonomy entity.</b>" as entities_Taxonomy {
+      +default_section_slug : 
       #name : 
-      +post_type : string
-      #capability_type : string
       #repository : string
-      +db_identifier_prefix : string
+      +enabled_for_collection : 
       +__toString()
-      +tainacan_register_taxonomy()
-      +get_capabilities()
+      +get_id()
       +get_name()
-      +get_description()
-      +get_allow_insert()
-      +get_hierarchical()
       +get_slug()
-      +get_enabled_post_types()
-      +get_db_identifier()
+      +get_description()
+      +get_description_bellow_name()
+      +get_metadata_object_list(args)
+      +get_is_conditional_section()
+      +get_conditional_section_rules()
+      +is_conditional_section()
       +set_name(value)
       +set_slug(value)
       +set_description(value)
-      +set_allow_insert(value)
-      +set_hierarchical(value)
-      +set_enabled_post_types(value)
+      +set_description_bellow_name(value)
+      +set_is_conditional_section(value)
+      +set_conditional_section_rules(value)
+      +get_enabled_for_collection()
+      +set_enabled_for_collection(value)
       +validate()
-      +term_exists(term_name, parent, return_term)
+    }
+  }
+  package traits as traits {
+    class "Formatter_Text\n<b>Class for formatter texts</b>" as traits_Formatter_Text {
+      {static} +make_clickable_links(text)
+    }
+    class "Admin_UI_Options\n<b>Class for getting Admin UI options passed either via query string in</b>" as traits_Admin_UI_Options {
+      #admin_ui_options : 
+      +get_available_admin_ui_options()
+      +has_admin_ui_option(option)
+    }
+    class "Entity_Collection_Relation\n<b>Defines Collection and Items relation</b>" as traits_Entity_Collection_Relation {
+      #collection : 
+      +get_collection_id()
+      +get_collection()
+      +set_collection_id(value)
+      +set_collection(collection)
+    }
+    class "Entity_Collections_Relation" as traits_Entity_Collections_Relation {
+      +get_collections_ids()
+      +get_collections()
+      +set_collections_ids(value)
+      +set_collections(collections)
+      +add_collection_id(new_collection_id)
+      +remove_collection_id(collection_id)
+    }
+    class "SVG_Icon\n<b>Class for getting inline svg icons based on the Tainacan Icon font and new symbols needed</b>" as traits_SVG_Icon {
+      +get_svg_icon(icon_slug)
+    }
+    class "Singleton_Instance\n<b>Class for Singleton pattern</b>" as traits_Singleton_Instance {
+      -instance : 
+      {static} +get_instance()
+      -__construct()
+    }
+  }
+  package repositories as repositories {
+    class "Metadata_Sections\n<b>Repository for managing Tainacan metadata sections.</b>" as repositories_Metadata_Sections {
+      +entities_type : 
+      #init()
+      #_get_map()
+      +get_cpt_labels()
+      +register_post_type()
+      +get_default_section(collection)
+      +fetch(args, output)
+      +fetch_ids(args)
+      +fetch_by_collection(collection, args)
+      +insert(metadata_section)
+      +update(object, new_values)
+      +add_metadata(metadata_section_id, metadata_list)
+      +delete_metadata(metadata_section_id, metadata_list)
+      +get_metadata_object_list(metadata_section_id, args)
+      +get_default_section_metadata_object_list(collection, args)
+      +delete(entity, permanent)
+      +order_result(result, collection, include_disabled)
+      +can_read(entity, user)
+      +can_edit(entity, user)
+    }
+    class "Logs\n<b>Repository for managing Tainacan logs.</b>" as repositories_Logs {
+      +entities_type : 
+      -current_diff : 
+      -current_deleting_entity : 
+      -current_action : 
+      #init()
+      #_get_map()
+      +register_post_type()
+      +fetch(args, _output)
+      +fetch_count(args)
+      -build_where(args)
+      -normalize_date_bound(date, bound)
+      -row_to_entity(row)
+      +get_table_name()
+      +insert(obj)
+      +update(object, new_values)
+      +fetch_last()
+      +insert_attachment(post_ID)
+      +pre_delete_attachment(attachment_id)
+      +delete_attachment(attachment_id)
+      +pre_insert_entity(unsaved)
+      -prepare_item_metadata_diff(unsaved)
+      +__temporary_multivalue_separator(sep)
+      +insert_entity(entity)
+      +pre_delete_entity(entity, permanent)
+      +delete_entity(entity, permanent)
+      -insert_item_metadata(entity)
+      +filter_log_title(title)
+      +tainacan_set_log_slug(override, slug, post_ID, post_status, post_type, post_parent)
+    }
+    class "Logs" as repositories_Logs {
+      +entities_type : 
+      -current_diff : 
+      -current_deleting_entity : 
+      -current_action : 
+      #init()
+      #_get_map()
+      +register_post_type()
+      +fetch(args, output)
+      +update(object, new_values)
+      +fetch_last()
+      +insert_attachment(post_ID)
+      +pre_delete_attachment(attachment_id)
+      +delete_attachment(attachment_id)
+      +pre_insert_entity(unsaved)
+      -prepare_item_metadata_diff(unsaved)
+      +__temporary_multivalue_separator(sep)
+      +insert_entity(entity)
+      +pre_delete_entity(entity, permanent)
+      +delete_entity(entity, permanent)
+      -insert_item_metadata(entity)
+      +filter_log_title(title)
+      +tainacan_set_log_slug(override, slug, post_ID, post_status, post_type, post_parent)
+    }
+    class "Item_Metadata\n<b>Repository for managing Tainacan item metadata.</b>" as repositories_Item_Metadata {
+      +entities_type : 
+      #init()
+      +insert(item_metadata)
+      +save_core_metadatum_value(item_metadata)
+      +save_terms_metadatum_value(item_metadata)
+      +upclean_compound_value(item_metadata)
+      +add_compound_value(item_metadata, meta_id)
+      +delete_metadata(item_metadata)
+      +remove_compound_value(parent_meta_id)
+      +fetch(object, output, args)
+      +get_value(item_metadata)
+      +create_default_value_metadata(item)
+      -extract_compound_value(ids, item, compound_meta_id)
+      +register_post_type()
+      #_get_map()
+      +get_default_properties(map)
+      +update(object, new_values)
+      +suggest(item_metadata)
+    }
+    class "Metadata\n<b>Repository for managing Tainacan metadata definitions.</b>" as repositories_Metadata {
+      +entities_type : 
+      #default_metadata : 
+      #current_taxonomy : 
+      +metadata_types : 
+      +core_metadata : 
+      #init()
+      #_get_map()
+      +get_cpt_labels()
+      +register_post_type()
+      +get_default_metadata_attribute()
+      +register_metadata_type(class_name)
+      +unregister_metadata_type(class_name)
+      +fetch(args, output)
+      +fetch_ids(args)
+      +fetch_by_collection(collection, args)
+      +fetch_ids_by_collection(collection, args)
+      +fetch_by_metadata_section(metadata_section, args)
+      +order_result(result, collection, include_disabled)
+      +insert(metadatum)
+      +pre_update_metadata_repository_level(metadatum, attributes)
+      +update(object, new_values)
+      +fetch_metadata_types(output)
+      +maybe_update_core_metadata_meta_keys(collection_new, collection_old, old_title_metadatum, old_description_metadatum)
+      -get_data_core_metadata(collection)
+      +register_core_metadata(collection, force)
+      +register_control_metadata(collection, force)
+      +disable_delete_core_metadata(before, post)
+      +force_delete_core_metadata(before, post, force_delete)
+      +get_core_metadata(collection)
+      +get_core_title_metadatum(collection)
+      +get_core_description_metadatum(collection)
+      +insert_array_metadatum(data)
+      +fetch_all_metadatum_values(metadatum_id, args)
+      +_process_terms_tree(tree, search_value, search_type)
+      -pre_update_taxonomy_metadatum(metadatum)
+      -update_taxonomy_metadatum(metadatum)
+      -update_metadata_type_index(metadatum)
+      +delete(entity, permanent)
+      -delete_taxonomy_metadatum(metadatum)
+      +hook_taxonomies_saved_as_private(taxonomy)
+      +hook_taxonomies_saved_not_allow_insert_new_terms(taxonomy)
+      +metadata_is_enabled(collection, metadata)
+      +hook_metadata_update_order(metadata)
+    }
+    class "Items\n<b>Repository for managing Tainacan items.</b>" as repositories_Items {
+      +entities_type : 
+      -fetching_from_collections : 
+      #init()
+      #_get_map()
+      +get_cpt_labels()
+      +register_post_type()
+      +insert(item)
+      +fetch(args, collections, output)
+      +fetch_ids(args, collections)
+      +_filter_where(where, wp_query)
+      +update(object, new_values)
+      +generate_index_content(item)
+      +extract_document_content(item, context)
+      +supports_document_content_extraction(item)
+      -validate_default_pdf_document_extraction(item)
+      -extract_document_content_default(item)
+      +get_thumbnail_id_from_document(item)
+      +hook_api_updated_item(updated_item, attributes)
+      +hook_comments_open(comments_open, post_id)
+      +map_meta_cap(caps, cap, user_id, args)
+      -get_related_items_by_collection(item, collection, metadata, args)
+      +fetch_related_items(item, args)
+      -parse_relationship_metaquery(args)
+      +posts_where_relationship_metaquery(where)
+      -parse_core_metadata_for_advanced_search(args, collections)
+    }
+    class "Collections\n<b>Repository for managing Tainacan collections.</b>" as repositories_Collections {
+      +entities_type : string
+      -old_collection : Collection
+      -old_core_title : string
+      -old_core_description : string
+      #init()
+      +get_max_items_per_page()
+      #_get_map()
+      +get_cpt_labels()
+      +register_post_type()
+      +insert(collection)
+      +update(object, new_values)
+      +fetch(args, output)
+      +fetch_by_db_identifier(db_identifier)
+      +get_id_by_db_identifier(db_identifier)
+      +pre_process(collection)
+      +handle_core_metadata(collection)
+      +handle_control_metadata(collection)
+      +handle_parent_order_clone(collection)
+    }
+    class "Repository\n<b>Abstract base class for all Tainacan repositories.</b>" as repositories_Repository {
+      +entities_type : string
+      #use_logs : bool
+      #logs_repository : Logs
+      -map : array
+      +disable_logs()
+      +enable_logs()
+      +get_enabled_logs()
+      #__construct()
+      +init_objects()
+      {abstract} #_get_map()
+      +get_map()
+      +get_name()
+      +insert(obj)
+      +insert_metadata(obj, prop, diffs)
+      +maybe_add_slashes(value)
+      +fetch_output(WP_Query, output)
+      +parse_fetch_args(args)
+      +get_default_properties(map)
+      +get_mapped_property(entity, prop)
+      {static} +get_collections_db_identifiers()
+      {static} +get_entity_by_post(post)
+      {static} +get_entity_by_post_type(post_type, post)
+      {static} +get_repository(entity)
+      +fetch_one(args)
+      +trash(entity)
+      +delete(entity, permanent)
+      -delete_attachments(entity)
+      {abstract} +fetch(args, output)
+      {abstract} +update(object, new_values)
+      {abstract} +register_post_type()
+      +can_edit(entity, user)
+      +can_read(entity, user)
+      +can_delete(entity, user)
+      +can_publish(entity, user)
+      +unique_multidimensional_array(array, key)
+      -insert_thumbnail(obj, diffs)
+      +get_descendants_ids(id, depth)
+      +get_capabilities()
+      #sanitize_value(content)
+    }
+    class "Filters\n<b>Repository for managing Tainacan filters.</b>" as repositories_Filters {
+      +entities_type : 
+      +filters_types : 
+      #init()
+      #_get_map()
+      +get_cpt_labels()
+      +register_post_type()
+      +update(object, new_values)
+      +fetch(args, output)
+      +register_filter_type(class_name)
+      +deregister_filter_type(class_name)
+      +fetch_filter_types(output)
+      +fetch_supported_filter_types(types)
+      +fetch_ids(args)
+      +fetch_by_collection(collection, args)
+      +fetch_ids_by_collection(collection, args)
+      +order_result(result, collection, include_disabled)
+      +hook_delete_when_metadata_deleted(metadatum, permanent)
+      +hook_update_when_metadata_saved_as_private(metadatum)
+    }
+    class "Terms\n<b>Repository for managing Tainacan taxonomy terms.</b>" as repositories_Terms {
+      +entities_type : 
+      #init()
+      #_get_map()
+      +get_default_properties(map)
+      +insert(term)
+      +get_mapped_property(entity, prop)
+      +fetch(args, taxonomies)
+      +update(object, args)
+      +delete_child_terms(parentTerm, permanent)
+      +delete(term, permanent)
+      +term_exists(searched_term, taxonomy, parent, return_term)
+      +register_post_type()
+      +can_edit(term, user)
+      +can_read(term, user)
+      +can_delete(term, user)
+      +can_publish(term, user)
+    }
+    class "Taxonomies\n<b>Repository for managing Tainacan taxonomies.</b>" as repositories_Taxonomies {
+      +entities_type : 
+      #init()
+      #_get_map()
+      +get_cpt_labels()
+      +register_post_type()
+      +insert(taxonomy)
+      +fetch(args, output)
+      +fetch_by_collection(collection, args, output)
+      +fetch_by_db_identifier(db_identifier)
+      +update(object, new_values)
+      +delete(taxonomy, permanent)
+      +added_collection(taxonomy_id, collection_id)
+      +removed_collection(taxonomy_id, collection_id)
+      +update_taxonomy_registry_for_collection(taxonomy_id, collection_id)
+      +register_taxonomies_for_all_collections(all_collections)
+      +get_db_identifier_by_id(id)
+      +get_id_by_db_identifier(db_identifier)
+      +term_exists(taxonomy, term_name, parent, return_term)
+    }
+  }
+  package theme-helper as theme-helper {
+    class "Theme_Helper\n<b>Theme helper class for Tainacan.</b>" as theme-helper_Theme_Helper {
+      +visiting_collection_cover : 
+      -registered_view_modes : 
+      #default_placeholder_template : 
+      -init()
+      +is_post_type_a_collection(post_type)
+      +is_post_an_item(post)
+      +is_post_a_tainacan_taxonomy_postype(post)
+      +is_taxonomy_a_tainacan_tax(tax_slug)
+      +is_term_a_tainacan_term(term)
+      +filter_archive_title(title)
+      +override_item_single_template()
+      +register_block_templates_for_item_single()
+      +override_collection_items_archive_template()
+      +register_block_templates_for_collection_items_archive()
+      +override_taxonomy_term_items_archive_template()
+      +override_repository_items_archive_template()
+      +override_taxonomy_single_template()
+      +permalink_filter(permalink, post, leavename)
+      +tax_archive_pre_get_posts(wp_query)
+      +collection_single_redirect()
+      +item_template_hierarchy(templates)
+      +collection_items_template_hierarchy(templates)
+      +taxonomy_term_items_template_hierarchy(templates)
+      +taxonomy_terms_template_hierarchy(templates)
+      +header_image(image)
+      +item_submission_shortcode(args)
+      +get_tainacan_item_single_content()
+      +search_shortcode(args)
+      +get_tainacan_items_list(args, force_enqueue)
+      +get_items_list_slug()
+      +rewrite_rules(wp_rewrite)
+      +rewrite_rules_query_vars(public_query_vars)
+      +rewrite_rule_template_include(template)
+      +archive_repository_pre_get_posts(wp_query)
+      +register_view_mode(slug, args)
+      +get_registered_view_modes()
+      +get_view_mode(slug)
+      +get_default_view_mode()
+      +get_enabled_view_modes()
+      +get_default_order()
+      +get_default_orderby()
+      +get_enable_item_link_query_params()
+      +tainacan_get_collection_id()
+      +tainacan_get_collection(args)
+      +tainacan_get_item(post_id)
+      +add_social_meta()
+      +get_adjacent_items()
+      +get_tainacan_items_carousel(args)
+      +get_tainacan_dynamic_items_list(args)
+      +get_tainacan_related_items_list(args)
+      +get_tainacan_related_items_carousel(args)
+      +get_tainacan_item_gallery(args)
+      +get_tainacan_items_gallery(args)
+      +get_tainacan_terms_carousel(args)
+      +get_tainacan_item_metadata_template(args, collection_id)
+      +get_tainacan_item_metadata_sections_template(args, collection_id)
+      +get_metadata_section_template(metadata_section, args, section_index, collection_id)
+      +get_tainacan_item_gallery_template(args)
+      +get_taxonomies_query_args()
+      +register_tainacan_oficial_view_modes()
+      -convert_params_to_camel_case(params)
+    }
+  }
+  package mappers as mappers {
+    class "Mapper" as mappers_Mapper {
+      +slug : 
+      +name : 
+      +allow_extra_metadata : 
+      +context_url : 
+      +type : 
+      +metadata : array
+      +prefix : 
+      +sufix : 
+      +header : 
+      +show_ui : 
+      +_toArray()
+      +get_url(meta_slug)
+      +__construct()
+    }
+    class "Mappers_Handler" as mappers_Mappers_Handler {
+      -instance : 
+      #mappers : 
+      {static} +get_instance()
+      +__construct()
+      +init()
+      +register_mapper(class_name)
+      +unregister_mapper(class_name)
+      +get_mappers(output)
+      +get_mapper(slug)
+      +mappers_i18n(i18n_strings)
+      {static} +get_mapper_from_request(request)
+      #map_metadatum(item_arr, mapper)
+      #map(item_arr, mapper, resquest)
+      +mapper_exists(mapper)
+      +check_class_name(class_name, root, prefix)
+      +create_mapped_collection(collection, request)
+      +filter_item_api_response(item_arr, item, request)
+    }
+    class "Dublin_Core\n<b>Support Dublin Core Mapping </b>" as mappers_Dublin_Core {
+      +slug : 
+      +name : 
+      +allow_extra_metadata : 
+      +context_url : 
+      +header : 
+      +prefixes : 
+      +XML_namespace : 
+      +XML_append_root : 
+      +__construct()
+    }
+    class "Inbcm_Archive" as mappers_Inbcm_Archive {
+      +slug : 
+      +name : 
+      +allow_extra_metadata : 
+      +__construct()
+    }
+    class "Inbcm_Bibliographic" as mappers_Inbcm_Bibliographic {
+      +slug : 
+      +name : 
+      +allow_extra_metadata : 
+      +__construct()
+    }
+    class "Inbcm_Museological" as mappers_Inbcm_Museological {
+      +slug : 
+      +name : 
+      +allow_extra_metadata : 
+      +__construct()
+    }
+  }
+  package exposers as exposers {
+    class "Exposer\n<b>abstract class for implement exposer types</b>" as exposers_Exposer {
+      #mappers : 
+      +accept_no_mapper : 
+      +slug : 
+      -name : 
+      -description : 
+      #set_name(name)
+      #set_description(description)
+      +get_name()
+      +get_description()
+      +_toArray()
+      {abstract} +rest_request_after_callbacks(response, handler, request)
+      +get_mappers()
+    }
+    class "Txt\n<b>Generate a text formated response</b>" as exposers_Txt {
+      +mappers : 
+      +slug : 
+      +name : 
+      +rest_request_after_callbacks(response, handler, request)
+      #array_to_txt(data, txt)
+    }
+    class "JSON_LD\n<b>Generate a text formated response</b>" as exposers_JSON_LD {
+      +mappers : 
+      +slug : 
+      +name : 
+      #contexts : 
+      +rest_request_after_callbacks(response, handler, request)
+      #array_to_jsonld(data, jsonld)
+      +get_locale(obj)
+    }
+    class "JSON_flat\n<b>Generate a text formated response</b>" as exposers_JSON_flat {
+      +slug : 
+      +name : 
+      +accept_no_mapper : 
+      #mappers : 
+      +__construct()
+      +rest_request_after_callbacks(response, handler, request)
+    }
+    class "Xml\n<b>Generate a Csv formated response</b>" as exposers_Xml {
+      #extension : string
+      +slug : 
+      +name : 
+      +rest_request_after_callbacks(response, handler, request)
+      #array_to_xml(data, xml_data, namespace)
+    }
+    class "Csv\n<b>Generate a Csv formated response</b>" as exposers_Csv {
+      +slug : 
+      +__construct()
+      +rest_request_after_callbacks(response, handler, request)
+    }
+    class "Html\n<b>Generate a Html formated response</b>" as exposers_Html {
+      +slug : 
+      +name : 
+      #mappers : 
+      +accept_no_mapper : 
+      +__construct()
+      +rest_request_after_callbacks(response, handler, request)
+      #array_to_html(data)
+    }
+    class "OAI_PMH\n<b>Generate a OAI_PMH/oai_dc formated response</b>" as exposers_OAI_PMH {
+      +mappers : 
+      +slug : 
+      +name : 
+      +rest_request_after_callbacks(response, handler, request)
+    }
+    class "Exposers_Handler\n<b>Load exposers classes</b>" as exposers_Exposers_Handler {
+      #exposers : 
+      -instance : 
+      -request : 
+      {static} +get_instance()
+      +__construct()
+      +init()
+      +register_exposer(class_name)
+      +unregister_exposer(class_name)
+      +check_class_name(class_name, root, prefix)
+      +is_tainacan_request(request)
+      {static} +request_has_url_param(request)
+      +rest_request_after_callbacks(response, handler, request)
+      +exposer_exists(exposer)
+      {static} +request_has_exposer(request)
+      +get_exposers(output)
+      +filter_check_items_request(response, request)
+      {static} +get_exposer_urls(base_url)
+    }
+  }
+  package integrations as integrations {
+    class "Elastic_Press_lte4" as integrations_Elastic_Press_lte4 {
+      +last_aggregations : 
+      +facets : 
+      -aggregation_type : 
+      -instance : 
+      {static} +get_instance()
+      #__construct(ajax_query)
+      +is_active()
+      +init()
+      +elasticpress_config_mapping(mapping)
+      +ep_post_sync_args(post_args, post_id)
+      +filter_args(args, type)
+      -add_items_args(args)
+      +prepare_request(formatted_args, args)
+      +format_aggregations(aggregations)
+      +fetch_all_metadatum_values(return, metadatum, args)
+      -prepare_request_for_items(formatted_args)
+      -prepare_request_for_facet(formatted_args)
+      -format_aggregations_items(aggregations)
+      -format_aggregations_facet(aggregations)
+    }
+    class "WordPress_AI\n<b>Integration with the WordPress AI plugin (https://github.com/WordPress/ai).</b>" as integrations_WordPress_AI {
+      #init()
+      +is_active()
+      +is_alt_text_generation_available()
+      -is_alt_text_generation_usable()
+      -has_vision_model_available()
+    }
+    class "Elastic_Press\n<b>Class Elastic_Press</b>" as integrations_Elastic_Press {
+      +last_aggregations : array
+      +facets : array
+      -aggregation_type : string
+      -instance : Elastic_Press
+      {static} +get_instance()
+      #__construct(ajax_query)
+      +is_active()
+      +init()
+      +prepare_meta_allowed_keys(allowed_keys)
+      +modify_formatted_args(formatted_args)
+      +elasticpress_config_mapping(mapping)
+      +ep_post_sync_args(post_args, post_id)
+      +filter_args(args, type)
+      -add_items_args(args)
+      +prepare_request(formatted_args, args)
+      +format_aggregations(aggregations)
+      +fetch_all_metadatum_values(return, metadatum, args)
+      -prepare_request_for_items(formatted_args)
+      -prepare_request_for_facet(formatted_args)
+      -format_aggregations_items(aggregations)
+      -format_aggregations_facet(aggregations)
     }
   }
   package cli as cli {
+    class "Cli_Move_Attachments\n<b>Handles WP-CLI commands for Tainacan attachment migration operations.</b>" as cli_Cli_Move_Attachments {
+      -collections : 
+      -documents : 
+      +__invoke(args, assoc_args)
+      -is_item_attachment(att)
+      -is_document(attachment_id)
+      -get_collection(id)
+    }
+    class "Logs_Wp_Posts_Migration\n<b>Handles migration of legacy Tainacan logs from wp_posts/wp_postmeta</b>" as cli_Logs_Wp_Posts_Migration {
+      +count_pending()
+      +run_batch(batch_size)
+      +count_purgeable()
+      +purge_batch(batch_size)
+    }
+    class "Cli_Logs\n<b>Manages Tainacan activity log data migration from the legacy wp_posts structure.</b>" as cli_Cli_Logs {
+      +migrate(args, assoc_args)
+      +purge_deprecated(args, assoc_args)
+    }
+    class "Cli_Garbage_Collector\n<b>Handles WP-CLI commands for Tainacan garbage collection operations.</b>" as cli_Cli_Garbage_Collector {
+      +__invoke(args, assoc_args)
+      -get_orphan_items_query(select)
+      -delete_items(dry_run, deep)
+      -get_orphan_attachments_count()
+      -delete_attachments(dry_run, deep)
+      -filesize_formatted(size)
+      -delete_terms_taxonomies(dry_run, deep)
+      -delete_metadata(dry_run, deep)
+      -delete_transients(dry_run)
+    }
+    class "Cli_Collection\n<b>Handles WP-CLI commands for Tainacan collections.</b>" as cli_Cli_Collection {
+      -collection_repository : Collections
+      -items_repository : Items
+      -result_count : array
+      -dry_run : bool
+      +__construct()
+      +list()
+      +clean(args, assoc_args)
+      -delete_item(item, permanently)
+      -delete_attachments(item)
+    }
     class "Cli_Document\n<b>Handles WP-CLI commands for Tainacan document indexing operations.</b>" as cli_Cli_Document {
       -collection_repository : 
       -items_repository : 
@@ -2424,56 +1790,716 @@
       -recreate_control_metadata_collection_definitions()
       -perform_item_recalculation(item)
     }
-    class "Cli_Collection\n<b>Handles WP-CLI commands for Tainacan collections.</b>" as cli_Cli_Collection {
-      -collection_repository : Collections
-      -items_repository : Items
-      -result_count : array
-      -dry_run : bool
-      +__construct()
-      +list()
-      +clean(args, assoc_args)
-      -delete_item(item, permanently)
-      -delete_attachments(item)
-    }
-    class "Cli_Garbage_Collector\n<b>Handles WP-CLI commands for Tainacan garbage collection operations.</b>" as cli_Cli_Garbage_Collector {
-      +__invoke(args, assoc_args)
-      -get_orphan_items_query(select)
-      -delete_items(dry_run, deep)
-      -get_orphan_attachments_count()
-      -delete_attachments(dry_run, deep)
-      -filesize_formatted(size)
-      -delete_terms_taxonomies(dry_run, deep)
-      -delete_metadata(dry_run, deep)
-      -delete_transients(dry_run)
-    }
     class "Cli\n<b>Handles WP-CLI command registration for Tainacan.</b>" as cli_Cli {
       -init()
       +add_commands()
     }
-    class "Logs_Wp_Posts_Migration\n<b>Handles migration of legacy Tainacan logs from wp_posts/wp_postmeta</b>" as cli_Logs_Wp_Posts_Migration {
-      +count_pending()
-      +run_batch(batch_size)
-      +count_purgeable()
-      +purge_batch(batch_size)
+  }
+  package api as api {
+    class "REST_Controller\n<b>Abstract base class for Tainacan REST API controllers.</b>" as api_REST_Controller {
+      +__construct()
+      #filter_object_by_attributes(object, attributes)
+      #prepare_item_for_updating(object, new_values)
+      #prepare_filters(request)
+      +add_support_to_tax_query_like(args)
+      #sanitize_value(value)
+      -prepare_meta(mapped, request, query, mapped_v, args)
+      #contains_array(array, query)
+      +get_fetch_only_param()
+      +get_wp_query_params()
+      #get_meta_queries_params()
+      +get_repository_schema(repository)
+      +get_permissions_schema()
+      +get_base_properties_schema()
+      {abstract} #get_schema()
+      +get_list_schema()
+      +tainacan_sanitize_post_statuses(statuses, request, parameter)
     }
-    class "Cli_Logs\n<b>Manages Tainacan activity log data migration from the legacy wp_posts structure.</b>" as cli_Cli_Logs {
-      +migrate(args, assoc_args)
-      +purge_deprecated(args, assoc_args)
-    }
-    class "Cli_Move_Attachments\n<b>Handles WP-CLI commands for Tainacan attachment migration operations.</b>" as cli_Cli_Move_Attachments {
-      -collections : 
-      -documents : 
-      +__invoke(args, assoc_args)
-      -is_item_attachment(att)
-      -is_document(attachment_id)
-      -get_collection(id)
+    package endpoints as api.endpoints {
+      class "REST_Oaipmh_Expose_Controller\n<b>REST API controller for managing Tainacan OAI-PMH exposure.</b>" as api_endpoints_REST_Oaipmh_Expose_Controller {
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +get_verb_permissions_check(request)
+        +get_verb(request)
+        +get_verb_params()
+        +get_schema()
+      }
+      class "REST_Roles_Controller\n<b>REST API controller for managing Tainacan roles and capabilities.</b>" as api_endpoints_REST_Roles_Controller {
+        +__construct()
+        +register_routes()
+        +create_item(request)
+        +create_item_permissions_check(request)
+        +delete_item(request)
+        +delete_item_permissions_check(request)
+        +update_item(request)
+        -handle_capabilities_for_role(role_slug, newcaps)
+        -handle_capabilites_default_for_role(role_slug)
+        +update_item_permissions_check(request)
+        +validate_roles_capabilities_arg(value, request, param)
+        +_prepare_item_for_response(slug, name, caps, request)
+        +get_items(request)
+        +get_items_permissions_check(request)
+        +get_item(request)
+        +get_item_permissions_check(request)
+        +get_capabilities_permissions_check(request)
+        +get_endpoint_args(method)
+        +get_capabilities(request)
+        +get_admin_ui_options(request)
+        +update_admin_ui_options(request)
+        +get_admin_ui_options_permissions_check(request)
+        +update_admin_ui_options_permissions_check(request)
+        +get_capabilities_schema()
+        +get_schema()
+        +get_admin_ui_options_schema()
+      }
+      class "REST_Metadata_Controller\n<b>REST API controller for managing Tainacan metadata.</b>" as api_endpoints_REST_Metadata_Controller {
+        -collection_repository : 
+        -metadatum_repository : 
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +get_item(request)
+        +get_item_permissions_check(request)
+        +prepare_item_for_database(request, collection_id)
+        +create_item(request)
+        +create_item_permissions_check(request)
+        +prepare_item_for_response(item, request)
+        +get_items(request)
+        +get_items_permissions_check(request)
+        +delete_item(request)
+        +delete_item_permissions_check(request)
+        +update_item(request)
+        +update_item_permissions_check(request)
+        +get_wp_query_params()
+        +get_endpoint_args_for_item_schema(method, is_collection_level)
+        +get_schema()
+      }
+      class "REST_Exporters_Controller\n<b>REST API controller for managing Tainacan exporters.</b>" as api_endpoints_REST_Exporters_Controller {
+        -collections_repository : 
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +export_permissions_check(request)
+        +get_registered_exporters()
+        +create_item(request)
+        +update_item(request)
+        +run(request)
+        #map(item_arr, mapper)
+        #map_metadatum(item_arr, mapper)
+        +get_schema()
+        +get_schema_run()
+        +get_schema_exporters_available()
+      }
+      class "REST_Items_Controller\n<b>REST API controller for managing Tainacan items.</b>" as api_endpoints_REST_Items_Controller {
+        -items_repository : 
+        -item : 
+        -item_metadata : 
+        -collections_repository : 
+        -metadatum_repository : 
+        -terms_repository : 
+        -filters_repository : 
+        -taxonomies_repository : 
+        -new_terms_ids : 
+        +__construct()
+        +init_objects()
+        +register_routes()
+        -add_metadata_to_item(item_object, item_array, args)
+        +get_context_edit(item)
+        +prepare_item_for_response(item, request)
+        +get_item(request)
+        +get_item_attachments(request)
+        -prepare_filters_arguments(args, collection_id, ignore_filter_arguments)
+        +get_items(request)
+        +get_item_permissions_check(request)
+        +get_item_attachments_permissions_check(request)
+        +get_items_permissions_check(request)
+        -get_items_permissions_check_for_taxonomy(taxonomies)
+        +prepare_item_for_database(request)
+        +create_item(request)
+        +create_item_permissions_check(request)
+        +delete_item(request)
+        +delete_item_permissions_check(request)
+        +update_item(request)
+        +update_item_permissions_check(request)
+        +extract_document_content_index(request)
+        -add_document_content_index_truncation_to_response(response)
+        +duplicate_item(request)
+        -submission_item_metadata(item_metadata, request)
+        -submission_process_terms(value, taxonomy)
+        -submission_rollback_new_terms()
+        +submission_item(request)
+        +submission_item_finish(request)
+        +submission_item_permissions_check(request)
+        -submission_item_check_recaptcha(request)
+        +get_endpoint_args_for_item_schema(method)
+        +get_wp_query_params()
+        +process_request_filters(args)
+        +get_attachments_schema()
+        +get_schema()
+      }
+      class "REST_Metadata_Sections_Controller\n<b>REST API controller for managing Tainacan metadata sections.</b>" as api_endpoints_REST_Metadata_Sections_Controller {
+        -metadata_sections_repository : 
+        -metadata_repository : 
+        -collection_repository : 
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +prepare_item_for_database(request, collection_id)
+        +prepare_item_for_response(item, request)
+        +prepare_metadata_for_response(item, request)
+        +get_item(request)
+        +get_item_permissions_check(request)
+        +create_item(request)
+        +create_item_permissions_check(request)
+        +get_items(request)
+        +get_items_permissions_check(request)
+        +delete_item(request)
+        +delete_item_permissions_check(request)
+        +update_item(request)
+        +add_metadata(request)
+        +delete_metadata(request)
+        +get_metadata_list(request)
+        +update_item_permissions_check(request)
+        +get_wp_query_params()
+        +get_endpoint_args_for_item_schema(method)
+        +get_metadata_list_schema()
+        +get_schema()
+      }
+      class "REST_Background_Processes_Controller\n<b>REST API controller for managing Tainacan background processes.</b>" as api_endpoints_REST_Background_Processes_Controller {
+        -table : String
+        #get_schema()
+        +__construct()
+        +register_routes()
+        +bg_processes_permissions_check(request)
+        +get_items(request)
+        +get_item(request)
+        +prepare_item_for_response(item, request)
+        +update_item(request)
+        +delete_item(request)
+        +get_log_url(id, action, type)
+        +get_file(request)
+      }
+      class "REST_Reports_Controller\n<b>REST API controller for managing Tainacan reports.</b>" as api_endpoints_REST_Reports_Controller {
+        -taxonomy_repository : 
+        -metadatum_repository : 
+        -collections_repository : 
+        -prefix_transient_cahce : 
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +reports_permissions_check(request)
+        +get_collections(request)
+        +get_summary(request)
+        +get_taxonomies_list(request)
+        +get_taxonomy(request)
+        +get_metadata(request)
+        +get_stats_collection_metadata(request)
+        -query_item_metadata_distribution(meta_ids, collection_post_type)
+        -query_count_used_taxononomies()
+        +get_activities(request)
+        -get_activities_general(collection_id, interval)
+        -get_activities_general_by_user(collection_id, interval)
+        -get_activities_users(collection_id)
+        -get_cache_object(key, request)
+        -set_cache_object(key, data)
+        +get_endpoint_args_for_item_schema(method)
+        +get_metadata_schema()
+        +get_collection_schema()
+        +get_collection_metadatum_schema()
+        +get_collection_summary_schema()
+        +get_taxonomy_schema()
+        +get_taxonomy_terms_schema()
+        +get_summary_schema()
+        +get_activities_schema()
+        +get_schema()
+      }
+      class "REST_Terms_Controller\n<b>REST API controller for managing Tainacan taxonomy terms.</b>" as api_endpoints_REST_Terms_Controller {
+        -term : 
+        -terms_repository : 
+        -items_repository : 
+        -taxonomy_repository : 
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +prepare_item_for_database(to_prepare)
+        +create_multiples_items(request)
+        +create_item(request)
+        +create_item_permissions_check(request)
+        +delete_items_permissions_check(request)
+        +delete_items(request)
+        +delete_item(request)
+        +delete_item_permissions_check(request)
+        +update_parent_terms_permissions_check(request)
+        +update_parent_terms(request)
+        +update_item(request)
+        +update_item_permissions_check(request)
+        -get_preview_image_items(term, amount)
+        +prepare_item_for_response(item, request)
+        +get_items(request)
+        +get_items_permissions_check(request)
+        +get_item(request)
+        +get_item_permissions_check(request)
+        +get_endpoint_args_for_item_schema(method)
+        +get_wp_query_params()
+        +get_schema()
+      }
+      class "REST_Metadata_Types_Controller\n<b>REST API controller for managing Tainacan metadata types.</b>" as api_endpoints_REST_Metadata_Types_Controller {
+        +__construct()
+        +register_routes()
+        +prepare_item_for_response(item, request)
+        +get_items(request)
+        +get_items_permissions_check(request)
+        +get_schema()
+      }
+      class "REST_Exposers_Controller\n<b>REST API controller for managing Tainacan exposers.</b>" as api_endpoints_REST_Exposers_Controller {
+        -metadatum_repository : 
+        -exposers : 
+        -mappers : 
+        #get_schema()
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +get_items(request)
+        +get_items_permissions_check(request)
+      }
+      class "REST_Metadatum_Mappers_Controller\n<b>REST API controller for managing Tainacan metadatum mappers.</b>" as api_endpoints_REST_Metadatum_Mappers_Controller {
+        #get_schema()
+        +__construct()
+        +register_routes()
+        +prepare_item_for_response(mapper, request)
+        +prepare_metadatum_for_response(item, request)
+        +get_items(request)
+        +get_items_permissions_check(request)
+        +update_item_permissions_check(request)
+        +update_item(request)
+      }
+      class "REST_Facets_Controller\n<b>REST API controller for managing Tainacan facets.</b>" as api_endpoints_REST_Facets_Controller {
+        -metadatum_repository : 
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +get_items(request)
+        +get_items_permissions_check(request)
+        +get_schema()
+      }
+      class "REST_Filters_Controller\n<b>REST API controller for managing Tainacan filters.</b>" as api_endpoints_REST_Filters_Controller {
+        -collection : 
+        -collection_repository : 
+        -metadatum_repository : 
+        -filter_repository : 
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +prepare_item_for_database(request)
+        +create_item(request)
+        +create_item_permissions_check(request)
+        +delete_item(request)
+        +delete_item_permissions_check(request)
+        +update_item(request)
+        +update_item_permissions_check(request)
+        +prepare_item_for_response(item, request)
+        +get_items(request)
+        +get_items_permissions_check(request)
+        +get_item(request)
+        +get_item_permissions_check(request)
+        +get_endpoint_args_for_item_schema(method, is_collection_level)
+        +get_wp_query_params()
+        +get_schema()
+      }
+      class "REST_Importers_Controller\n<b>REST API controller for managing Tainacan importers.</b>" as api_endpoints_REST_Importers_Controller {
+        #get_schema()
+        +__construct()
+        +register_routes()
+        +import_permissions_check(request)
+        +create_item(request)
+        +update_item(request)
+        +source_info(request)
+        +get_saved_mapping(request)
+        +get_item(request)
+        +add_file(request)
+        +run(request)
+        +get_registered_importers()
+      }
+      class "REST_Collections_Controller\n<b>REST API controller for managing Tainacan collections.</b>" as api_endpoints_REST_Collections_Controller {
+        -collections_repository : 
+        -collection : 
+        -items_repository : 
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +get_items(request)
+        +get_item(request)
+        -get_preview_image_items(collection, amount)
+        +get_collection_taxonomies(collection)
+        +prepare_item_for_response(item, request)
+        +get_items_permissions_check(request)
+        +get_item_permissions_check(request)
+        +create_item(request)
+        +create_item_permissions_check(request)
+        +prepare_item_for_database(request)
+        +delete_item(request)
+        +delete_item_permissions_check(request)
+        +update_item(request)
+        +update_item_permissions_check(request)
+        +validate_filters_metadata_order(value, request, param)
+        +validate_metadata_section_order(value, request, param)
+        +update_metadata_order(request)
+        +update_metadata_section_order(request)
+        +update_metadata_order_permissions_check(request)
+        +update_metadata_section_order_permissions_check(request)
+        +update_filters_order(request)
+        +update_filters_order_permissions_check(request)
+        +get_endpoint_args_for_item_schema(method)
+        +get_endpoint_arg_for_schema(name, properties, repository)
+        +get_schema()
+      }
+      class "REST_Filter_Types_Controller\n<b>REST API controller for managing Tainacan filter types.</b>" as api_endpoints_REST_Filter_Types_Controller {
+        +__construct()
+        +register_routes()
+        +prepare_item_for_response(item, request)
+        +get_items(request)
+        +get_items_permissions_check(request)
+        +get_schema()
+      }
+      class "REST_Item_Metadata_Controller\n<b>REST API controller for managing Tainacan item metadata.</b>" as api_endpoints_REST_Item_Metadata_Controller {
+        -metadatum : 
+        -item_metadata_repository : 
+        -item_repository : 
+        -collection_repository : 
+        -metadatum_repository : 
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +prepare_item_for_database(request)
+        +prepare_item_for_response(item, request)
+        +get_items(request)
+        +get_item_metadatum_value(request)
+        +get_items_permissions_check(request)
+        +update_item(request)
+        +update_item_permissions_check(request)
+        +get_endpoint_args_for_item_schema(method)
+        +get_wp_query_params()
+        +delete_item_permissions_check(request)
+        +delete_item(request)
+        -get_metadata_value(is_multiple, value)
+        +get_schema()
+      }
+      class "REST_Bulkedit_Controller\n<b>REST API controller for managing Tainacan bulk edit operations.</b>" as api_endpoints_REST_Bulkedit_Controller {
+        -metadatum_repository : 
+        -collections_repository : 
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +bulk_edit_permissions_check(request)
+        +create_item(request)
+        +set_status(request)
+        +trash_items(request)
+        +untrash_items(request)
+        +delete_items(request)
+        +add_value(request)
+        +set_value(request)
+        +clear_value(request)
+        +remove_value(request)
+        +copy_value(request)
+        +replace_value(request)
+        +set_comment_status(request)
+        +set_author_id(request)
+        +get_item(request)
+        +prepare_item_for_response(bulk_object, request)
+        -generic_action(method, request, keys)
+        +get_item_in_sequence(request)
+        +get_create_params(object_name)
+        +get_sequence_params()
+        +get_actions_params(action)
+        +get_actions_schema()
+        +get_bulk_schema()
+        +get_sequence_schema()
+        +get_schema()
+      }
+      class "REST_Taxonomies_Controller\n<b>REST API controller for managing Tainacan taxonomies.</b>" as api_endpoints_REST_Taxonomies_Controller {
+        -taxonomy : 
+        -taxonomy_repository : 
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +prepare_item_for_response(item, request)
+        +get_metadata_taxonomy_in_collection(taxonomy_id, collection_id, collection_parent_id)
+        +prepare_item_for_database(request)
+        +get_item(request)
+        +get_item_permissions_check(request)
+        +delete_item(request)
+        +delete_item_permissions_check(request)
+        +get_items(request)
+        +get_items_permissions_check(request)
+        +create_item(request)
+        +create_item_permissions_check(request)
+        +update_item(request)
+        +update_item_permissions_check(request)
+        +get_endpoint_args_for_item_schema(method)
+        +get_wp_query_params()
+        +get_schema()
+      }
+      class "REST_Logs_Controller\n<b>REST API controller for managing Tainacan logs.</b>" as api_endpoints_REST_Logs_Controller {
+        -logs_repository : 
+        +__construct()
+        +register_routes()
+        +prepare_item_for_response(item, request)
+        -prepare_legacy_item_for_response(item, request)
+        +get_items(request)
+        +get_items_permissions_check(request)
+        +get_item(request)
+        +get_item_permissions_check(request)
+        +get_endpoint_args_for_item_schema(method)
+        +get_schema()
+      }
+      class "REST_Sequence_Edit_Controller\n<b>REST API controller for managing Tainacan sequence edit operations.</b>" as api_endpoints_REST_Sequence_Edit_Controller {
+        -items_repository : 
+        -collections_repository : 
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +prepare_item_for_response(item, request)
+        +sequence_edit_permissions_check(request)
+        +create_item(request)
+        +get_item(request)
+        +get_item_in_sequence(request)
+        +get_create_params(object_name)
+        +get_sequence_params()
+        +get_sequence_index_params()
+        +get_sequence_schema()
+        +get_sequence_index_schema()
+        +get_schema()
+      }
     }
   }
-  Media ..> entities_Item
-  Media ..> repositories_Items
-  Private_Files ..> Media
+  package media-helper as media-helper {
+    class "Embed\n<b>Handles media embedding functionality for Tainacan.</b>" as media-helper_Embed {
+      -aspect_ratios : array
+      #init()
+      +filter_video_embed(video, attr, url, rawattr)
+      +filter_audio_embed(audio, attr, url, rawattr)
+      +pdf_embed_handler(matches, attr, url, rawattr)
+      +oembed_get_thumbnail(url)
+      +oembed_get_thumbnail_filter(return, data, url)
+      {static} -get_embeds_css()
+      +add_css()
+      +add_responsive_wrapper(html)
+    }
+    class "Pdf_Extracted_Text_Quality\n<b>Basic quality gate for PDF text extracted via Smalot PdfParser.</b>" as media-helper_Pdf_Extracted_Text_Quality {
+      {static} +is_usable(text)
+      {static} -passes_heuristics(text)
+      {static} -count_readable_words(text)
+      {static} -is_readable_word_token(token)
+    }
+    class "Media\n<b>Handles media functionality for Tainacan.</b>" as media-helper_Media {
+      -file_name : string|null
+      -attachment_html_url_base : string
+      +content_index_meta : string
+      +content_index_last : string
+      -THROW_EXCPTION_ON_FATAL_ERROR : 
+      {static} +is_index_pdf_content_enabled()
+      {static} +get_document_content_index_max_characters()
+      {static} +prepare_document_content_index_for_storage(content)
+      {static} +sanitize_document_content_index_text(content)
+      {static} +get_document_content_index_truncation_warning_message()
+      #init()
+      +add_image_sizes()
+      +add_image_sizes_to_admin(sizes)
+      +add_attachment_page_rewrite_rule()
+      {static} -get_media_page_css()
+      +add_css()
+      +attachment_page_add_var(vars)
+      -flush_buffers()
+      -get_file_name_from_url(url)
+      +insert_attachment_from_url(url, post_id)
+      +insert_attachment_from_file(filename, post_id)
+      +save_remote_file(url)
+      +insert_attachment_from_blob(blob, filename, post_id)
+      +get_mime_content_type(filename)
+      +get_pdf_cover(filepath)
+      +shutdown_function()
+      +extract_pdf_content(file, item_id)
+      {static} -normalize_extracted_pdf_content(content)
+      +clear_document_content_index(item_id)
+      -store_document_content_index(content, item_id)
+      +index_text_document_content(content, item_id)
+      +index_pdf_content(file, item_id)
+      +get_attachment_html_url(attachment_id)
+      +attachment_page()
+      +get_default_image_blurhash()
+      +get_image_blurhash(file_path, width, height)
+    }
+  }
+  package oaipmh as oaipmh {
+    class "OAIPMH_Get_Record" as oaipmh_OAIPMH_Get_Record {
+      #working_node : 
+      +errors : 
+      +xml_creater : 
+      +restoken : 
+      +expirationdatetime : 
+      +num_rows : 
+      +cursor : 
+      +deliveredrecords : 
+      +from : 
+      +until : 
+      +sets : 
+      +metadataPrefix : 
+      +__construct()
+      +get_item(params)
+      +get_record(data)
+      +get_current_mapper()
+      #create_metadata_node(item, collection, record_node)
+      -map_item_metadata(item)
+      +initiate_variables(data)
+    }
+    class "OAIPMH_List_Identifiers" as oaipmh_OAIPMH_List_Identifiers {
+      #working_node : 
+      +errors : 
+      +xml_creater : 
+      +restoken : 
+      +expirationdatetime : 
+      +num_rows : 
+      +cursor : 
+      +deliveredrecords : 
+      +from : 
+      +until : 
+      +sets : 
+      +metadataPrefix : 
+      +__construct()
+      +list_collections()
+      +get_items()
+      +list_identifiers(data)
+      +initiate_variables(data)
+      +verify_resumption_token(numRows)
+      +add_resumption_token_xml(numRows)
+    }
+    class "OAIPMH_List_Sets" as oaipmh_OAIPMH_List_Sets {
+      #working_node : 
+      +errors : 
+      +xml_creater : 
+      +restoken : 
+      +expirationdatetime : 
+      +num_rows : 
+      +cursor : 
+      +deliveredrecords : 
+      +from : 
+      +until : 
+      +sets : 
+      +metadataPrefix : 
+      +collection_repository : 
+      +__construct()
+      +list_collections()
+      +limit_data(objects)
+      +list_sets(data)
+      +initiate_variables(data)
+      +verify_resumption_token(numRows)
+      +add_resumption_token_xml(numRows)
+    }
+    class "OAIPMH_Expose\n<b>Support Dublin Core Mapping</b>" as oaipmh_OAIPMH_Expose {
+      +identifyResponse : 
+      +deletedRecord : 
+      +adminEmail : 
+      +compression : 
+      +expirationdatetime : 
+      +delimiter : 
+      +show_identifier : 
+      +SETS : 
+      +METADATAFORMATS : 
+      +supported_formats : 
+      +MAXRECORDS : 
+      +CONTENT_TYPE : 
+      +charset : 
+      +xmlescaped : 
+      +text : 
+      +code : 
+      +token_valid : 
+      +token_prefix : 
+      #collection_repository : 
+      #item_repository : 
+      #repositoryIdentifier : 
+      +config()
+      +is_valid_uri(url)
+      +is_valid_attrb(attrb)
+      +formatDatestamp(datestamp)
+      +checkDateFormat(date)
+      +prepare_set_names()
+      +oai_exit(args, errors)
+      #create_token_dir()
+      +get_token()
+      +createResumToken(cursor, from, until, sets, metadataPrefix)
+      +readResumToken(resumptionToken)
+      +oai_error(code, argument, value)
+      +get_metadata_formats(item_id)
+    }
+    class "OAIPMH_List_Metadata_Formats" as oaipmh_OAIPMH_List_Metadata_Formats {
+      #working_node : 
+      +errors : 
+      +xml_creater : 
+      +restoken : 
+      +expirationdatetime : 
+      +num_rows : 
+      +cursor : 
+      +deliveredrecords : 
+      +from : 
+      +until : 
+      +sets : 
+      +metadataPrefix : 
+      +list_metadata_formats(data)
+    }
+    class "OAIPMH_Identify" as oaipmh_OAIPMH_Identify {
+      #working_node : 
+      +identify(data)
+    }
+    class "XML_Error\n<b>Generate an XML response when a request cannot be finished</b>" as oaipmh_XML_Error {
+      +__construct(par_array, error_array)
+    }
+    class "Xml_Response\n<b>Generate an XML response to a request if no error has occured</b>" as oaipmh_Xml_Response {
+      +verbNode : 
+      #verb : 
+      +__construct(par_array)
+      +add2_verbNode(nodeName, value)
+      +create_record()
+      +create_header(identifier, timestamp, ands_class, add_to_node, is_deleted)
+      +create_metadata(mom_record_node)
+      +create_resumpToken(token, expirationdatetime, num_rows, cursor)
+    }
+    class "OAIPMH_List_Records" as oaipmh_OAIPMH_List_Records {
+      #working_node : 
+      +errors : 
+      +xml_creater : 
+      +restoken : 
+      +expirationdatetime : 
+      +num_rows : 
+      +cursor : 
+      +deliveredrecords : 
+      +from : 
+      +until : 
+      +sets : 
+      +metadataPrefix : 
+      +__construct()
+      +list_collections()
+      +get_items()
+      +list_records(data)
+      +get_current_mapper()
+      #create_metadata_node(item, collection, record_node)
+      -map_item_metadata(item)
+      +initiate_variables(data)
+      +verify_resumption_token(numRows)
+      +add_resumption_token_xml(numRows)
+    }
+    class "Xml_Create\n<b>A wraper of DOMDocument for data provider</b>" as oaipmh_Xml_Create {
+      +doc : 
+      +__construct(par_array)
+      +addChild(mom_node, name, value)
+      +addChildDC(mom_node, name, value)
+      +create_request(par_array)
+      +display()
+    }
+  }
   Private_Files ..> entities_Collection
   Private_Files ..> entities_Item
+  Private_Files ..> media-helper_Media
   Private_Files ..> repositories_Items
   Private_Files ..> theme-helper_Theme_Helper
   Roles ..> entities_Collection
@@ -2543,13 +2569,13 @@
   api_endpoints_REST_Item_Metadata_Controller ..> repositories_Item_Metadata
   api_endpoints_REST_Item_Metadata_Controller ..> repositories_Items
   api_endpoints_REST_Item_Metadata_Controller ..> repositories_Metadata
-  api_endpoints_REST_Items_Controller ..> Media
   api_endpoints_REST_Items_Controller ..> entities_Collection
   api_endpoints_REST_Items_Controller ..> entities_Item
   api_endpoints_REST_Items_Controller ..> entities_Item_Metadata_Entity
   api_endpoints_REST_Items_Controller ..> entities_Taxonomy
   api_endpoints_REST_Items_Controller ..> entities_Term
   api_endpoints_REST_Items_Controller ..> exposers_Exposers_Handler
+  api_endpoints_REST_Items_Controller ..> media-helper_Media
   api_endpoints_REST_Items_Controller ..> repositories_Collections
   api_endpoints_REST_Items_Controller ..> repositories_Filters
   api_endpoints_REST_Items_Controller ..> repositories_Item_Metadata
@@ -2646,20 +2672,20 @@
   background-process_generic-process_Generic_Process <|-- background-process_generic-process_Bulk_Edit_Process
   background-process_generic-process_Generic_Process_Handler ..> background-process_generic-process_Background_Generic_Process
   background-process_generic-process_Generic_Process_Handler ..> background-process_generic-process_Generic_Process
-  background-process_importer_CSV ..> Media
   background-process_importer_CSV ..> entities_Collection
   background-process_importer_CSV ..> entities_Item
   background-process_importer_CSV ..> entities_Item_Metadata_Entity
   background-process_importer_CSV ..> entities_Metadatum
   background-process_importer_CSV ..> entities_Taxonomy
   background-process_importer_CSV ..> entities_Term
+  background-process_importer_CSV ..> media-helper_Media
   background-process_importer_CSV ..> repositories_Collections
   background-process_importer_CSV ..> repositories_Item_Metadata
   background-process_importer_CSV ..> repositories_Items
   background-process_importer_CSV ..> repositories_Metadata
   background-process_importer_CSV ..> repositories_Terms
-  background-process_importer_Flickr_Importer ..> Media
   background-process_importer_Flickr_Importer ..> entities_Metadatum
+  background-process_importer_Flickr_Importer ..> media-helper_Media
   background-process_importer_Flickr_Importer ..> repositories_Items
   background-process_importer_Importer ..> background-process_importer_Importer_Handler
   background-process_importer_Importer ..> entities_Collection
@@ -2697,18 +2723,18 @@
   background-process_importer_Term_Importer ..> entities_Term
   background-process_importer_Term_Importer ..> repositories_Taxonomies
   background-process_importer_Term_Importer ..> repositories_Terms
-  background-process_importer_Test_Importer ..> Media
   background-process_importer_Test_Importer ..> entities_Collection
   background-process_importer_Test_Importer ..> entities_Item_Metadata_Entity
   background-process_importer_Test_Importer ..> entities_Metadatum
   background-process_importer_Test_Importer ..> entities_Taxonomy
+  background-process_importer_Test_Importer ..> media-helper_Media
   background-process_importer_Test_Importer ..> repositories_Collections
   background-process_importer_Test_Importer ..> repositories_Item_Metadata
   background-process_importer_Test_Importer ..> repositories_Items
   background-process_importer_Test_Importer ..> repositories_Metadata
   background-process_importer_Test_Importer ..> repositories_Taxonomies
-  background-process_importer_Youtube_Importer ..> Media
   background-process_importer_Youtube_Importer ..> entities_Metadatum
+  background-process_importer_Youtube_Importer ..> media-helper_Media
   background-process_importer_Youtube_Importer ..> repositories_Items
   cli_Cli_Collection ..> entities_Item
   cli_Cli_Collection ..> repositories_Collections
@@ -2747,11 +2773,11 @@
   entities_Entity <|-- entities_Term
   entities_Filter ..> entities_Metadatum
   entities_Filter ..> repositories_Metadata
-  entities_Item ..> Embed
-  entities_Item ..> Media
   entities_Item ..> entities_Item_Metadata_Entity
   entities_Item ..> entities_Metadata_Section
   entities_Item ..> entities_Metadatum
+  entities_Item ..> media-helper_Embed
+  entities_Item ..> media-helper_Media
   entities_Item ..> repositories_Item_Metadata
   entities_Item ..> repositories_Items
   entities_Item ..> repositories_Metadata
@@ -2766,7 +2792,7 @@
   entities_Metadatum ..> entities_Metadata_Section
   entities_Metadatum ..> entities_Metadatum
   entities_Metadatum ..> repositories_Metadata
-  entities_Term ..> Media
+  entities_Term ..> media-helper_Media
   exposers_Csv ..> repositories_Collections
   exposers_Exposer ..> mappers_Mappers_Handler
   exposers_Exposer <|-- exposers_Csv
@@ -2806,6 +2832,9 @@
   mappers_Mappers_Handler ..> mappers_Mapper
   mappers_Mappers_Handler ..> repositories_Collections
   mappers_Mappers_Handler ..> repositories_Metadata
+  media-helper_Media ..> entities_Item
+  media-helper_Media ..> media-helper_Pdf_Extracted_Text_Quality
+  media-helper_Media ..> repositories_Items
   oaipmh_OAIPMH_Expose ..> mappers_Mappers_Handler
   oaipmh_OAIPMH_Expose ..> oaipmh_XML_Error
   oaipmh_OAIPMH_Expose <|-- oaipmh_OAIPMH_Get_Record
@@ -2853,11 +2882,11 @@
   repositories_Item_Metadata ..> repositories_Metadata
   repositories_Item_Metadata ..> repositories_Taxonomies
   repositories_Item_Metadata ..> repositories_Terms
-  repositories_Items ..> Embed
-  repositories_Items ..> Media
   repositories_Items ..> entities_Collection
   repositories_Items ..> entities_Item
   repositories_Items ..> entities_Metadatum
+  repositories_Items ..> media-helper_Embed
+  repositories_Items ..> media-helper_Media
   repositories_Items ..> repositories_Collections
   repositories_Items ..> repositories_Metadata
   repositories_Items ..> repositories_Taxonomies
@@ -2884,12 +2913,12 @@
   repositories_Metadata_Sections ..> entities_Entity
   repositories_Metadata_Sections ..> entities_Metadata_Section
   repositories_Metadata_Sections ..> repositories_Metadata
-  repositories_Repository ..> Media
   repositories_Repository ..> entities_Collection
   repositories_Repository ..> entities_Entity
   repositories_Repository ..> entities_Item
   repositories_Repository ..> entities_Item_Metadata_Entity
   repositories_Repository ..> entities_Log
+  repositories_Repository ..> media-helper_Media
   repositories_Repository ..> repositories_Collections
   repositories_Repository ..> repositories_Filters
   repositories_Repository ..> repositories_Item_Metadata

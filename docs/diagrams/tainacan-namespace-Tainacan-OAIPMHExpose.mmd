@@ -1,15 +1,15 @@
 classDiagram
     direction TB
-    class OAIPMH_List_Metadata_Formats { }
     class OAIPMH_Get_Record { }
-    class XML_Error { }
-    class OAIPMH_Expose { }
-    class OAIPMH_List_Records { }
-    class Xml_Response { }
     class OAIPMH_List_Identifiers { }
-    class Xml_Create { }
-    class OAIPMH_Identify { }
     class OAIPMH_List_Sets { }
+    class OAIPMH_Expose { }
+    class OAIPMH_List_Metadata_Formats { }
+    class OAIPMH_Identify { }
+    class XML_Error { }
+    class Xml_Response { }
+    class OAIPMH_List_Records { }
+    class Xml_Create { }
     OAIPMH_Expose ..> XML_Error
     OAIPMH_Expose <|-- OAIPMH_Get_Record
     OAIPMH_Expose <|-- OAIPMH_Identify

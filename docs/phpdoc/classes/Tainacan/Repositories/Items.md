@@ -15,6 +15,33 @@ updates, deletion, and querying with proper validation and logging.
 ```mermaid
 classDiagram
     direction TB
+    class Items {
+        +entities_type : mixed
+        -fetching_from_collections : mixed
+        #init()
+        #_get_map()
+        +get_cpt_labels()
+        +register_post_type()
+        +insert(item)
+        +fetch(args, collections, output)
+        +fetch_ids(args, collections)
+        +_filter_where(where, wp_query)
+        +update(object, new_values)
+        +generate_index_content(item)
+        +extract_document_content(item, context)
+        +supports_document_content_extraction(item)
+        -validate_default_pdf_document_extraction(item)
+        -extract_document_content_default(item)
+        +get_thumbnail_id_from_document(item)
+        +hook_api_updated_item(updated_item, attributes)
+        +hook_comments_open(comments_open, post_id)
+        +map_meta_cap(caps, cap, user_id, args)
+        -get_related_items_by_collection(item, collection, metadata, args)
+        +fetch_related_items(item, args)
+        -parse_relationship_metaquery(args)
+        +posts_where_relationship_metaquery(where)
+        -parse_core_metadata_for_advanced_search(args, collections)
+    }
     class Repository {
         +entities_type : string
         #use_logs : bool
@@ -51,29 +78,6 @@ classDiagram
         +get_descendants_ids(id, depth)
         +get_capabilities()
         #sanitize_value(content)
-    }
-    class Items {
-        +entities_type : mixed
-        -fetching_from_collections : mixed
-        #init()
-        #_get_map()
-        +get_cpt_labels()
-        +register_post_type()
-        +insert(item)
-        +fetch(args, collections, output)
-        +fetch_ids(args, collections)
-        +_filter_where(where, wp_query)
-        +update(object, new_values)
-        +generate_index_content(item)
-        +get_thumbnail_id_from_document(item)
-        +hook_api_updated_item(updated_item, attributes)
-        +hook_comments_open(comments_open, post_id)
-        +map_meta_cap(caps, cap, user_id, args)
-        -get_related_items_by_collection(item, collection, metadata, args)
-        +fetch_related_items(item, args)
-        -parse_relationship_metaquery(args)
-        +posts_where_relationship_metaquery(where)
-        -parse_core_metadata_for_advanced_search(args, collections)
     }
     Repository ..> Items
     Repository ..> Repository
@@ -309,6 +313,83 @@ public generate_index_content(\Tainacan\Entities\Item $item): bool
 | Parameter | Type                        | Description |
 |-----------|-----------------------------|-------------|
 | `$item`   | **\Tainacan\Entities\Item** | The item    |
+
+***
+
+### extract_document_content
+
+Extract document textual content without persisting it to the item.
+
+```php
+public extract_document_content(\Tainacan\Entities\Item $item, mixed $context = null): string|false|\WP_Error
+```
+
+Plugins may short-circuit default extraction via the
+`tainacan_extract_document_content` filter (for example, to handle URL
+documents or alternate PDF pipelines).
+
+**Parameters:**
+
+| Parameter  | Type                        | Description                                               |
+|------------|-----------------------------|-----------------------------------------------------------|
+| `$item`    | **\Tainacan\Entities\Item** | The item.                                                 |
+| `$context` | **mixed**                   | Optional context passed to filters (e.g. a REST request). |
+
+**Return Value:**
+
+Extracted text, false on generic failure, or WP_Error with a message.
+
+***
+
+### supports_document_content_extraction
+
+Whether document content extraction is available for an item in the admin UI.
+
+```php
+public supports_document_content_extraction(\Tainacan\Entities\Item $item): bool
+```
+
+**Parameters:**
+
+| Parameter | Type                        | Description |
+|-----------|-----------------------------|-------------|
+| `$item`   | **\Tainacan\Entities\Item** | The item.   |
+
+***
+
+### validate_default_pdf_document_extraction
+
+Validates that an item qualifies for default PDF document content extraction.
+
+```php
+private validate_default_pdf_document_extraction(\Tainacan\Entities\Item $item): true|\WP_Error
+```
+
+**Parameters:**
+
+| Parameter | Type                        | Description |
+|-----------|-----------------------------|-------------|
+| `$item`   | **\Tainacan\Entities\Item** | The item.   |
+
+**Return Value:**
+
+True when valid, WP_Error otherwise.
+
+***
+
+### extract_document_content_default
+
+Default PDF attachment extraction used when no filter overrides the request.
+
+```php
+private extract_document_content_default(\Tainacan\Entities\Item $item): string|false|\WP_Error
+```
+
+**Parameters:**
+
+| Parameter | Type                        | Description |
+|-----------|-----------------------------|-------------|
+| `$item`   | **\Tainacan\Entities\Item** | The item.   |
 
 ***
 
