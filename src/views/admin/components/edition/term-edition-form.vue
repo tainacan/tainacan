@@ -398,7 +398,7 @@
                 coverPageTitle: '',
                 coverPageEditPath: '',
                 totalPages: 0,
-                newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page'
+                newPagePath: tainacan_plugin.wp_admin_url + 'post-new.php?post_type=page'
             }
         },
         created() {
@@ -449,7 +449,7 @@
                         this.coverPage = page;
                         if (this.coverPage && this.coverPage.title) {
                             this.coverPageTitle = this.coverPage.title.rendered;
-                            this.coverPageEditPath = tainacan_plugin.admin_url + 'post.php?post=' + page.id + '&action=edit';
+                            this.coverPageEditPath = tainacan_plugin.wp_admin_url + 'post.php?post=' + page.id + '&action=edit';
                         }
                         this.isFetchingPages = false;
                     })
@@ -699,7 +699,7 @@
                 this.form.cover_page_id = selectedPage.id; 
                 this.coverPage = selectedPage;
                 this.coverPageTitle = this.coverPage.title.rendered;
-                this.coverPageEditPath = tainacan_plugin.admin_url + 'post.php?post=' + selectedPage.id + '&action=edit';
+                this.coverPageEditPath = tainacan_plugin.wp_admin_url + 'post.php?post=' + selectedPage.id + '&action=edit';
             },
             removeCoverPage() {
                 this.coverPage = {};

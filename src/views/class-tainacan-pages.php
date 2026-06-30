@@ -245,6 +245,7 @@ abstract class Pages {
 			'tainacan_api_url'         	=> esc_url_raw( rest_url() ) . 'tainacan/v2',
 			'wp_api_url'            	=> esc_url_raw( rest_url() ) . 'wp/v2/',
 			'wp_ajax_url'            	=> admin_url( 'admin-ajax.php' ),
+			'wp_admin_url'             	=> admin_url(),
 			'classes'                	=> array(),
 			'i18n'                   	=> $tainacan_admin_i18n,
 			'base_url'               	=> $TAINACAN_BASE_URL,
