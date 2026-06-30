@@ -31,6 +31,7 @@ classDiagram
         +get_user()
         +get_taxonomy()
         +get_header_image_id()
+        +get_cover_page_id()
         +get_header_image()
         +get_url()
         +get_thumbnail()
@@ -41,6 +42,7 @@ classDiagram
         +set_user(value)
         +set_taxonomy(value)
         +set_header_image_id(value)
+        +set_cover_page_id(value)
         +validate()
         +_toHtml()
     }
@@ -140,6 +142,14 @@ protected $user
 
 ```php
 protected $header_image_id
+```
+
+***
+
+### cover_page_id
+
+```php
+protected $cover_page_id
 ```
 
 ***
@@ -293,6 +303,16 @@ public get_header_image_id(): string
 
 ***
 
+### get_cover_page_id
+
+Get cover page ID
+
+```php
+public get_cover_page_id(): string
+```
+
+***
+
 ### get_header_image
 
 ```php
@@ -419,6 +439,22 @@ Set Header Image ID
 
 ```php
 public set_header_image_id(mixed $value): void
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description |
+|-----------|-----------|-------------|
+| `$value`  | **mixed** |             |
+
+***
+
+### set_cover_page_id
+
+Set cover page ID
+
+```php
+public set_cover_page_id(mixed $value): void
 ```
 
 **Parameters:**

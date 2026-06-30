@@ -254,6 +254,7 @@
   }
   class "Theme_Helper\n<b>Theme helper class for Tainacan.</b>" as Theme_Helper {
     +visiting_collection_cover : 
+    +visiting_term_cover : 
     -registered_view_modes : 
     #default_placeholder_template : 
     -init()
@@ -273,6 +274,7 @@
     +permalink_filter(permalink, post, leavename)
     +tax_archive_pre_get_posts(wp_query)
     +collection_single_redirect()
+    +term_archive_redirect()
     +item_template_hierarchy(templates)
     +collection_items_template_hierarchy(templates)
     +taxonomy_term_items_template_hierarchy(templates)
