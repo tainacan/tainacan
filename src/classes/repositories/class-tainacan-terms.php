@@ -84,6 +84,14 @@ class Terms extends Repository {
 				//'validation' => v::numeric(),
 				'default'     => ''
 			],
+			'cover_page_id'   => [
+				'map'         => 'termmeta',
+				'title'       => __( 'Cover Page ID', 'tainacan' ),
+				'type'        => ['integer', 'string'],
+				'description' => __( 'If defined, this custom page will be used as cover for this term, instead of default items list.', 'tainacan' ),
+				'on_error'    => __( 'Invalid page', 'tainacan' ),
+				'default'     => ''
+			],
 			'hide_empty'      => [
 				'map'         => 'hide_empty',
 				'title'       => __( 'Hide empty', 'tainacan' ),

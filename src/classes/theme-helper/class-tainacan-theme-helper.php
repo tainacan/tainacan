@@ -18,6 +18,7 @@ class Theme_Helper {
 	use \Tainacan\Traits\Singleton_Instance;
 	
 	public $visiting_collection_cover = false;
+	public $visiting_term_cover = false;
 
 	/**
 	 * Stores view modes available to be used by the theme
@@ -78,6 +79,9 @@ class Theme_Helper {
 		// Replace single query to the page content set as cover for the collection
 		// Redirect to post type archive if no cover page is set
 		add_action('wp', array($this, 'collection_single_redirect'));
+		
+		// Replace term archive query to the page content set as cover for the term
+		add_action('wp', array($this, 'term_archive_redirect'));
 		
 		// make archive for terms work with items
 		add_action('pre_get_posts', array($this, 'tax_archive_pre_get_posts'));
@@ -580,6 +584,31 @@ class Theme_Helper {
 					$wp_query = new \WP_Query('page_id=' . $cover_page_id);
 					
 					$this->visiting_collection_cover = $collection->get_id();
+				}
+				
+			}
+			
+		}
+		
+	}
+
+	function term_archive_redirect() {
+		
+		if ( is_tax() ) {
+			
+			$term = get_queried_object();
+			
+			if ($term instanceof \WP_Term && $this->is_term_a_tainacan_term($term)) {
+				
+				$tainacan_term = new \Tainacan\Entities\Term($term);
+				$cover_page_id = $tainacan_term->get_cover_page_id();
+				
+				if ($cover_page_id) {
+					
+					global $wp_query;
+					$wp_query = new \WP_Query('page_id=' . $cover_page_id);
+					
+					$this->visiting_term_cover = $tainacan_term->get_id();
 				}
 				
 			}

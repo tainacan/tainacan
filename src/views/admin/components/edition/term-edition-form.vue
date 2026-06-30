@@ -199,6 +199,119 @@
                     </transition>
                 </b-field>
 
+                <!-- Cover Page -------------------------------- --> 
+                <b-field
+                        :addons="false" 
+                        :label="$i18n.get('label_term_cover_page')"
+                        :type="formErrors['cover_page_id'] != undefined ? 'is-danger' : ''" 
+                        :message="formErrors['cover_page_id'] != undefined ? formErrors['cover_page_id'] : ''">
+                    &nbsp;
+                    <b-switch
+                            id="tainacan-checkbox-cover-page" 
+                            v-model="enableCoverPage"
+                            size="is-small" 
+                            true-value="yes"
+                            false-value="no"
+                            @update:model-value="onToggleCoverPageSwitch" />
+                    <help-button 
+                            :title="$i18n.getHelperTitle('terms', 'cover_page_id')" 
+                            :message="$i18n.getHelperMessage('terms', 'cover_page_id')" />
+                    <template v-if="enableCoverPage == 'yes'">
+                        <b-autocomplete
+                                v-if="coverPage == undefined || coverPage.title == undefined"
+                                id="tainacan-text-cover-page"
+                                v-model="coverPageTitle"
+                                v-a11y-autocomplete="{ appendToBody: true }"
+                                :placeholder="$i18n.get('instruction_term_cover_page')"
+                                :data="coverPages"
+                                :loading="isFetchingPages"
+                                :append-to-body="true"
+                                check-infinite-scroll
+                                @select="onSelectCoverPage($event)"
+                                @update:model-value="fecthCoverPages"
+                                @focus="clearErrors('cover_page_id')"
+                                @infinite-scroll="fetchMoreCoverPages">
+                            <template #default="props">
+                                {{ props.option.title.rendered }}
+                            </template>
+                            <template #empty>
+                                {{ $i18n.get('info_no_page_found') }}
+                            </template>
+                        </b-autocomplete>
+
+                        <div 
+                                v-if="coverPage != undefined && coverPage.title != undefined"
+                                class="control selected-cover-page">
+                            <span v-html="coverPage.title.rendered" />
+                            <span class="selected-cover-page-control">
+                                <a 
+                                        target="_blank"
+                                        @click.prevent="removeCoverPage()">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('remove_value'),
+                                                autoHide: true,
+                                                placement: 'bottom',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']  
+                                            }"
+                                            class="icon is-small">
+                                        <i class="tainacan-icon tainacan-icon-close" />
+                                    </span>
+                                </a>
+                            </span>
+                        </div>
+                        <span 
+                                :class="{'disabled': enableCoverPage != 'yes' || coverPage == undefined || coverPage.title == undefined}"
+                                class="selected-cover-page-buttons">
+                            <a 
+                                    target="_blank" 
+                                    :href="coverPage ? coverPage.link : ''">
+                                <span 
+                                        v-tooltip="{
+                                            content: $i18n.get('see'),
+                                            autoHide: true,
+                                            placement: 'bottom',
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
+                                        }"
+                                        class="icon is-small">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl" />
+                                </span>
+                            </a>
+                            &nbsp;&nbsp;
+                            <a 
+                                    target="blank" 
+                                    :href="coverPageEditPath">
+                                <span 
+                                        v-tooltip="{
+                                            content: $i18n.get('edit'),
+                                            autoHide: true,
+                                            placement: 'bottom',
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
+                                        }"
+                                        class="icon is-small">
+                                    <i class="tainacan-icon tainacan-icon-edit" />
+                                </span>
+                            </a>
+                        </span>
+                        <br>
+                        <a
+                                class="add-link"  
+                                style="font-size: 0.875em;" 
+                                :class="{'disabled': enableCoverPage != 'yes'}"
+                                target="_blank"  
+                                role="button"
+                                tabindex="0"
+                                :href="newPagePath">
+                            <span   
+                                    aria-hidden="true"
+                                    class="icon is-small">
+                                <i class="tainacan-icon tainacan-icon-add" />
+                            </span>
+                            {{ $i18n.get('label_create_new_page') }}
+                        </a>
+                    </template>
+                </b-field>
+
                 <!-- Hook for extra Form options -->
                 <template v-if="hasEndLeftForm">  
                     <form 
@@ -275,7 +388,17 @@
                 parentTermSearchQuery: '',
                 parentTermSearchOffset: 0,
                 form: {},
-                totalTerms: undefined
+                totalTerms: undefined,
+                enableCoverPage: 'no',
+                isFetchingPages: false,
+                coverPages: [],
+                coverPagesSearchQuery: '',
+                coverPagesSearchPage: 0,
+                coverPage: {},
+                coverPageTitle: '',
+                coverPageEditPath: '',
+                totalPages: 0,
+                newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page'
             }
         },
         created() {
@@ -315,6 +438,28 @@
                         this.showCheckboxesWarning = false;
                     });
             }
+
+            // Generates CoverPage from current cover_page_id info
+            if (this.form.cover_page_id != undefined && this.form.cover_page_id != '') {
+                this.enableCoverPage = 'yes';
+                this.isFetchingPages = true;
+                
+                this.fetchPage(this.form.cover_page_id)
+                    .then((page) => {
+                        this.coverPage = page;
+                        if (this.coverPage && this.coverPage.title) {
+                            this.coverPageTitle = this.coverPage.title.rendered;
+                            this.coverPageEditPath = tainacan_plugin.admin_url + 'post.php?post=' + page.id + '&action=edit';
+                        }
+                        this.isFetchingPages = false;
+                    })
+                    .catch((error) => {
+                        this.$console.error(error);
+                        this.isFetchingPages = false;
+                    });
+            } else {
+                this.enableCoverPage = 'no';
+            }
         },
         methods: {
             ...mapActions('taxonomy', [
@@ -322,6 +467,10 @@
                 'updateTerm',
                 'fetchParentName',
                 'fetchPossibleParentTerms'
+            ]),
+            ...mapActions('collection', [
+                'fetchPages',
+                'fetchPage'
             ]),
             saveEdition(term) {
 
@@ -332,6 +481,7 @@
                         parent: this.hasParent ? this.form.parent : 0,
                         header_image_id: this.form.header_image_id,
                         header_image: this.form.header_image,
+                        cover_page_id: this.form.cover_page_id
                     };
                     this.fillExtraFormData(data);
                     this.isLoading = true;
@@ -367,7 +517,8 @@
                         parent: this.hasParent ? this.form.parent : 0,
                         header_image_id: this.form.header_image_id,
                         header_image: this.form.header_image,
-                        total_children:	this.form.total_children ? this.form.total_children : 0
+                        total_children:	this.form.total_children ? this.form.total_children : 0,
+                        cover_page_id: this.form.cover_page_id
                     }
                     this.fillExtraFormData(data);
                     this.isLoading = true;
@@ -502,6 +653,67 @@
                     this.parentTermName = selectedParentTerm.name;
                     this.showCheckboxesWarning = true;
                 }
+            },
+            fecthCoverPages: _.debounce(function(search) {
+
+                // String update
+                if (search != this.coverPagesSearchQuery) {
+                    this.coverPagesSearchQuery = search;
+                    this.coverPages = [];
+                    this.coverPagesSearchPage = 1;
+                } 
+                
+                // String cleared
+                if (!search.length) {
+                    this.coverPagesSearchQuery = search;
+                    this.coverPages = [];
+                    this.coverPagesSearchPage = 1;
+                }
+
+                // No need to load more
+                if (this.coverPagesSearchPage > 1 && this.coverPages.length > this.totalPages*12)
+                    return;
+
+                this.isFetchingPages = true;
+                this.fetchPages({ search: this.coverPagesSearchQuery, page: this.coverPagesSearchPage })
+                    .then((res) => {
+                        if (res.pages) {
+                            for (let page of res.pages)
+                                this.coverPages.push(page); 
+                        }
+                        if (res.totalPages)
+                            this.totalPages = res.totalPages;
+
+                        this.coverPagesSearchPage++;
+                        this.isFetchingPages = false;
+                    })
+                    .catch((error) => {
+                        this.$console.error(error);
+                        this.isFetchingPages = false;
+                    });
+            }, 500),
+            fetchMoreCoverPages: _.debounce(function () {
+                this.fecthCoverPages(this.coverPagesSearchQuery)
+            }, 250),
+            onSelectCoverPage(selectedPage) { 
+                this.form.cover_page_id = selectedPage.id; 
+                this.coverPage = selectedPage;
+                this.coverPageTitle = this.coverPage.title.rendered;
+                this.coverPageEditPath = tainacan_plugin.admin_url + 'post.php?post=' + selectedPage.id + '&action=edit';
+            },
+            removeCoverPage() {
+                this.coverPage = {};
+                this.coverPageTitle = '';
+                this.enableCoverPage = 'no';
+                this.form.cover_page_id = '';
+            },
+            onToggleCoverPageSwitch() {
+                if (this.enableCoverPage == 'no') {
+                    this.form.cover_page_id = '';
+                    this.coverPage = {};
+                    this.coverPageTitle = '';
+                }
+                this.clearErrors('cover_page_id');
             }
         }
     }
@@ -668,6 +880,38 @@
             color: var(--tainacan-gray5);
             font-style: italic;
             padding: 0.2em 0.75em;
+        }
+    }
+
+    .switch {
+        position: relative;
+        top: -1px;
+    }
+    .selected-cover-page {
+        border: 1px solid var(--tainacan-gray2);
+        padding: calc(0.57em - 1px) 8px;
+        font-size: .875em;
+        height: auto;
+        line-height: 1em;
+        min-height: 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .span { vertical-align: middle;}
+
+        .selected-cover-page-control {
+            float: inline-end;
+        }
+    }
+    .selected-cover-page-buttons {
+        float: inline-end;
+        padding: 4px 6px;  
+        &.disabled {
+            pointer-events: none;
+            cursor: not-allowed;
+           
+           .icon { color: var(--tainacan-gray2); }
         }
     }
 

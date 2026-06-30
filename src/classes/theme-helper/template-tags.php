@@ -895,9 +895,12 @@ function tainacan_get_term($args = []) {
 		}
 		return $term;
 	}
+	$theme_helper = \Tainacan\Theme_Helper::get_instance();
+	if ( false !== $theme_helper->visiting_term_cover ) {
+		return get_term( $theme_helper->visiting_term_cover );
+	}
 	if ( is_tax() ) {
 		$term = get_queried_object();
-		$theme_helper = \Tainacan\Theme_Helper::get_instance();
 		if ( isset($term->taxonomy) && $theme_helper->is_taxonomy_a_tainacan_tax($term->taxonomy) ) {
 			return $term;
 		}
