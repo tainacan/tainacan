@@ -265,7 +265,7 @@
                                 class="selected-cover-page-buttons">
                             <a 
                                     target="_blank" 
-                                    :href="coverPage.link">
+                                    :href="coverPage ? coverPage.link : ''">
                                 <span 
                                         v-tooltip="{
                                             content: $i18n.get('see'),
@@ -394,7 +394,7 @@
                 coverPages: [],
                 coverPagesSearchQuery: '',
                 coverPagesSearchPage: 0,
-                coverPage: undefined,
+                coverPage: {},
                 coverPageTitle: '',
                 coverPageEditPath: '',
                 totalPages: 0,
