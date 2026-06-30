@@ -97,10 +97,10 @@ class Admin_Bar_Items {
 				$item = tainacan_get_item();
 
 				// There should exist a Tainacan item and the user should have permission for this
-				if ( isset($item) && $item->can_edit() ) {
+				if ( isset($item) && $item->can_edit() && (int) get_queried_object_id() === (int) $item->get_id() ) {
 					
 					$url = $item->get_edit_url();
-				
+
 					// The item edition link must be valid!
 					if ( $url ) {
 				
@@ -169,6 +169,7 @@ class Admin_Bar_Items {
 					}
 				}
 			}
+
 			// In the collection and items list, we can also display links
 			else if ( is_archive() ) {
 
