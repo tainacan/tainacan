@@ -16,6 +16,7 @@ classDiagram
     direction TB
     class Theme_Helper {
         +visiting_collection_cover : mixed
+        +visiting_term_cover : mixed
         -registered_view_modes : mixed
         #default_placeholder_template : mixed
         -init()
@@ -35,6 +36,7 @@ classDiagram
         +permalink_filter(permalink, post, leavename)
         +tax_archive_pre_get_posts(wp_query)
         +collection_single_redirect()
+        +term_archive_redirect()
         +item_template_hierarchy(templates)
         +collection_items_template_hierarchy(templates)
         +taxonomy_term_items_template_hierarchy(templates)
@@ -86,6 +88,14 @@ classDiagram
 
 ```php
 public $visiting_collection_cover
+```
+
+***
+
+### visiting_term_cover
+
+```php
+public $visiting_term_cover
 ```
 
 ***
@@ -334,6 +344,14 @@ public tax_archive_pre_get_posts(mixed $wp_query): mixed
 
 ```php
 public collection_single_redirect(): mixed
+```
+
+***
+
+### term_archive_redirect
+
+```php
+public term_archive_redirect(): mixed
 ```
 
 ***

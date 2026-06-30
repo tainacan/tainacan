@@ -145,7 +145,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$term` | `\Tainacan\Entities\Entity` | 
 
-Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 104](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L104-L116)
+Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 112](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L112-L124)
 
 ---------------------------------
 <br>
@@ -157,7 +157,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$term` | `\Tainacan\Entities\Entity` | 
 
-Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 104](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L104-L117)
+Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 112](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L112-L125)
 
 ---------------------------------
 <br>
@@ -169,7 +169,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$new_entity` |  | 
 
-Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 104](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L104-L164)
+Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 112](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L112-L172)
 
 ---------------------------------
 <br>
@@ -181,7 +181,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$new_entity` |  | 
 
-Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 104](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L104-L165)
+Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 112](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L112-L173)
 
 ---------------------------------
 <br>
@@ -194,7 +194,7 @@ Argument | Type | Description
 `$deleted` |  | 
 `$permanent` | `bool` | this parameter is not used by Terms repository. Delete is always permanent
 
-Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 273](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L273-L284)
+Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 281](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L281-L292)
 
 ---------------------------------
 <br>
@@ -207,7 +207,7 @@ Argument | Type | Description
 `$deleted` |  | 
 `$permanent` | `bool` | this parameter is not used by Terms repository. Delete is always permanent
 
-Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 273](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L273-L285)
+Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 281](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L281-L293)
 
 ---------------------------------
 <br>
@@ -220,7 +220,7 @@ Argument | Type | Description
 `$deleted` |  | 
 `$permanent` | `bool` | this parameter is not used by Terms repository. Delete is always permanent
 
-Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 273](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L273-L290)
+Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 281](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L281-L298)
 
 ---------------------------------
 <br>
@@ -233,7 +233,7 @@ Argument | Type | Description
 `$deleted` |  | 
 `$permanent` | `bool` | this parameter is not used by Terms repository. Delete is always permanent
 
-Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 273](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L273-L291)
+Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 281](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L281-L299)
 
 ---------------------------------
 <br>

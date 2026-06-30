@@ -101,6 +101,7 @@
     +get_user()
     +get_taxonomy()
     +get_header_image_id()
+    +get_cover_page_id()
     +get_header_image()
     +get_url()
     +get_thumbnail()
@@ -111,6 +112,7 @@
     +set_user(value)
     +set_taxonomy(value)
     +set_header_image_id(value)
+    +set_cover_page_id(value)
     +validate()
     +_toHtml()
   }
