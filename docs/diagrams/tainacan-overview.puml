@@ -1809,6 +1809,7 @@
   package theme-helper as theme-helper {
     class "Theme_Helper\n<b>Theme helper class for Tainacan.</b>" as theme-helper_Theme_Helper {
       +visiting_collection_cover : 
+      +visiting_term_cover : 
       -registered_view_modes : 
       #default_placeholder_template : 
       -init()
@@ -1828,6 +1829,7 @@
       +permalink_filter(permalink, post, leavename)
       +tax_archive_pre_get_posts(wp_query)
       +collection_single_redirect()
+      +term_archive_redirect()
       +item_template_hierarchy(templates)
       +collection_items_template_hierarchy(templates)
       +taxonomy_term_items_template_hierarchy(templates)
@@ -2060,6 +2062,7 @@
       +get_user()
       +get_taxonomy()
       +get_header_image_id()
+      +get_cover_page_id()
       +get_header_image()
       +get_url()
       +get_thumbnail()
@@ -2070,6 +2073,7 @@
       +set_user(value)
       +set_taxonomy(value)
       +set_header_image_id(value)
+      +set_cover_page_id(value)
       +validate()
       +_toHtml()
     }
