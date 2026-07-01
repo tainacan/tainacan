@@ -117,7 +117,8 @@ const TainacanPluginConfig = {
             prettify: false
         }),
         new webpack.ProvidePlugin({
-            'PhotoSwipe': 'PhotoSwipe'
+            'PhotoSwipe': 'PhotoSwipe',
+            'L': [path.resolve(__dirname, 'node_modules/leaflet/dist/leaflet-src.js'), 'default']
         }),
         new MomentLocalesPlugin({
             localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'el', 'es-in', 'pt-br', 'pt', 'ca', 'es', 'es-us', 'es-mx', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv', 'sq', 'sk', 'uk', 'de'],

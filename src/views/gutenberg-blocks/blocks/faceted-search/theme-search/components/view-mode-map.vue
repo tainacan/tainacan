@@ -394,9 +394,10 @@
 
 <script>
 import { viewModesMixin } from '../js/view-modes-mixin.js';
-import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl, LControlZoom } from '@vue-leaflet/vue-leaflet';
+import '../../../../../leaflet/setup-active-area.js';
+import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl, LControlZoom } from '@maxel01/vue-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { latLng } from 'leaflet';
+import { LatLng } from 'leaflet';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
@@ -489,7 +490,7 @@ export default {
                                     item: item,
                                     multivalueIndex: i,
                                     multivalueTotal: selectedItemMetadatum.value.length,
-                                    location: latLng(selectedItemMetadatum.value[i].split(','))
+                                    location: new LatLng(...selectedItemMetadatum.value[i].split(',').map(Number))
                                 });
                             }
                         }
@@ -500,7 +501,7 @@ export default {
                     ) {
                         locations.push({
                             item: item,
-                            location: latLng(selectedItemMetadatum.value.split(','))
+                            location: new LatLng(...selectedItemMetadatum.value.split(',').map(Number))
                         });
                     }
                     
