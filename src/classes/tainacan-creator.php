@@ -180,8 +180,6 @@ function tainacan_autoload($class_name) {
 
 \Tainacan\Mappers_Handler::get_instance();
 
-\Tainacan\Embed::get_instance();
-
 $Tainacan_Search_Engine = new \Tainacan\Search_Engine();
 
 \Tainacan\Integrations\Elastic_Press::get_instance();
@@ -191,8 +189,6 @@ $Tainacan_Search_Engine = new \Tainacan\Search_Engine();
 \Tainacan\Roles::get_instance();
 
 \Tainacan\Private_Files::get_instance();
-
-\Tainacan\Media::get_instance();
 
 if ( class_exists('WP_CLI') ) {
 	Tainacan\Cli::get_instance();
@@ -211,6 +207,12 @@ require_once(__DIR__ . '/../views/admin/classes/hooks/class-tainacan-component-h
 
 require_once(__DIR__ . '/../views/admin/classes/hooks/class-tainacan-plugin-hooks.php');
 \Tainacan\Plugin_Hooks::get_instance();
+
+require_once(__DIR__ . '/media-helper/class-tainacan-pdf-extracted-text-quality.php');
+require_once(__DIR__ . '/media-helper/class-tainacan-embed.php');
+\Tainacan\Embed::get_instance();
+require_once(__DIR__ . '/media-helper/class-tainacan-media.php');
+\Tainacan\Media::get_instance();
 
 require_once(__DIR__ . '/theme-helper/class-tainacan-theme-helper.php');
 require_once(__DIR__ . '/theme-helper/template-tags.php');

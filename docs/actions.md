@@ -20,22 +20,54 @@ Source: [class-tainacan-importer-handler.php](https://github.com/tainacan/tainac
 ---------------------------------
 <br>
 
-## `tainacan-register-exporters` <!-- {docsify-ignore} -->
+## `tainacan-dashboard-before-cards` <!-- {docsify-ignore} -->
+
+
+Source: [page.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php), [line 49](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php#L49-L49)
+
+---------------------------------
+<br>
+
+## `tainacan-dashboard-after-cards` <!-- {docsify-ignore} -->
+
+
+Source: [page.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php), [line 62](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php#L62-L62)
+
+---------------------------------
+<br>
+
+## `tainacan-enqueue-admin-scripts` <!-- {docsify-ignore} -->
+
+
+Source: [class-tainacan-admin.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php), [line 301](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php#L301-L301)
+
+---------------------------------
+<br>
+
+## `tainacan-register-filter-type` <!-- {docsify-ignore} -->
+
+*Class FilterTypeHelper*
 
 
 Argument | Type | Description
 -------- | ---- | -----------
 `$this` |  | 
 
-Source: [class-tainacan-exporter-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/exporter/class-tainacan-exporter-handler.php), [line 52](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/exporter/class-tainacan-exporter-handler.php#L52-L52)
+Source: [class-tainacan-filter-type-helper.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/filter-type-helper/class-tainacan-filter-type-helper.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/filter-type-helper/class-tainacan-filter-type-helper.php#L7-L41)
 
 ---------------------------------
 <br>
 
-## `tainacan-register-generic_process` <!-- {docsify-ignore} -->
+## `tainacan-register-metadata-type` <!-- {docsify-ignore} -->
+
+*Class MetadataTypeHelper*
 
 
-Source: [class-tainacan-generic-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/generic-process/class-tainacan-generic-handler.php), [line 34](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/generic-process/class-tainacan-generic-handler.php#L34-L34)
+Argument | Type | Description
+-------- | ---- | -----------
+`$this` |  | 
+
+Source: [class-tainacan-metadata-type-helper.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/metadata-type-helper/class-tainacan-metadata-type-helper.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/metadata-type-helper/class-tainacan-metadata-type-helper.php#L7-L40)
 
 ---------------------------------
 <br>
@@ -106,20 +138,17 @@ Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/t
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$item` |  | 
-`$new_item` |  | 
+`$found[0]` |  | 
+`$target` |  | 
 
-Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 1043](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L1043-L1135)
+Source: [class-tainacan-private-files.php](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php), [line 405](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php#L405-L436)
 
 ---------------------------------
 <br>
 
-## `tainacan-submission-item-finish` <!-- {docsify-ignore} -->
+## `tainacan-bulk-edit-set-status` <!-- {docsify-ignore} -->
 
-*REST API controller for managing Tainacan items.*
-
-Handles all REST API endpoints for item operations including
-creation, updates, deletion, and querying of items within collections.
+*Sets the status to all items in the current group*
 
 
 Argument | Type | Description
@@ -662,28 +691,26 @@ Source: [class-tainacan-filters.php](https://github.com/tainacan/tainacan/blob/m
 ---------------------------------
 <br>
 
-## `tainacan-register-mappers` <!-- {docsify-ignore} -->
+## `tainacan-pre-insert` <!-- {docsify-ignore} -->
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$this` |  | 
+`$term` | `\Tainacan\Entities\Entity` | 
 
-Source: [class-tainacan-mappers-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/mappers/class-tainacan-mappers-handler.php), [line 46](https://github.com/tainacan/tainacan/blob/master/src/classes/mappers/class-tainacan-mappers-handler.php#L46-L46)
+Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 104](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L104-L116)
 
 ---------------------------------
 <br>
 
-## `tainacan-register-exposers` <!-- {docsify-ignore} -->
-
-*Load exposers classes*
+## `tainacan-pre-insert-term` <!-- {docsify-ignore} -->
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$this` |  | 
+`$term` | `\Tainacan\Entities\Entity` | 
 
-Source: [class-tainacan-exposers-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-exposers-handler.php), [line 8](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-exposers-handler.php#L8-L47)
+Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 104](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L104-L117)
 
 ---------------------------------
 <br>

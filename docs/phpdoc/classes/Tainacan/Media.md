@@ -20,6 +20,11 @@ classDiagram
         +content_index_meta : string
         +content_index_last : string
         -THROW_EXCPTION_ON_FATAL_ERROR : mixed
+        +$is_index_pdf_content_enabled()
+        +$get_document_content_index_max_characters()
+        +$prepare_document_content_index_for_storage(content)
+        +$sanitize_document_content_index_text(content)
+        +$get_document_content_index_truncation_warning_message()
         #init()
         +add_image_sizes()
         +add_image_sizes_to_admin(sizes)
@@ -36,6 +41,11 @@ classDiagram
         +get_mime_content_type(filename)
         +get_pdf_cover(filepath)
         +shutdown_function()
+        +extract_pdf_content(file, item_id)
+        -$normalize_extracted_pdf_content(content)
+        +clear_document_content_index(item_id)
+        -store_document_content_index(content, item_id)
+        +index_text_document_content(content, item_id)
         +index_pdf_content(file, item_id)
         +get_attachment_html_url(attachment_id)
         +attachment_page()
@@ -43,6 +53,13 @@ classDiagram
         +get_image_blurhash(file_path, width, height)
     }
 ```
+
+## Constants
+
+| Constant                                        | Visibility | Type | Value   |
+|-------------------------------------------------|------------|------|---------|
+| `DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_DEFAULT` | public     |      | 200000  |
+| `DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_LIMIT`   | public     |      | 2000000 |
 
 ## Properties
 
@@ -101,6 +118,82 @@ private $THROW_EXCPTION_ON_FATAL_ERROR
 ***
 
 ## Methods
+
+### is_index_pdf_content_enabled
+
+Whether automatic PDF text extraction is enabled.
+
+```php
+public static is_index_pdf_content_enabled(): bool
+```
+
+* This method is **static**.
+***
+
+### get_document_content_index_max_characters
+
+Configured maximum document content index length in characters.
+
+```php
+public static get_document_content_index_max_characters(): int
+```
+
+* This method is **static**.
+***
+
+### prepare_document_content_index_for_storage
+
+Truncates document content to the configured maximum length before storage.
+
+```php
+public static prepare_document_content_index_for_storage(mixed $content): array
+```
+
+* This method is **static**.
+**Parameters:**
+
+| Parameter  | Type      | Description           |
+|------------|-----------|-----------------------|
+| `$content` | **mixed** | Raw document content. |
+
+**Return Value:**
+
+{
+    @type mixed  $content       Content ready for storage.
+    @type bool   $was_truncated Whether the content was cropped.
+}
+
+***
+
+### sanitize_document_content_index_text
+
+Cleans extracted document content before it is returned or stored.
+
+```php
+public static sanitize_document_content_index_text(string $content): string
+```
+
+Intended for automatic extraction only; manual edits should not pass through this.
+
+* This method is **static**.
+**Parameters:**
+
+| Parameter  | Type       | Description         |
+|------------|------------|---------------------|
+| `$content` | **string** | Raw extracted text. |
+
+***
+
+### get_document_content_index_truncation_warning_message
+
+Human-readable warning when document content was truncated.
+
+```php
+public static get_document_content_index_truncation_warning_message(): string
+```
+
+* This method is **static**.
+***
 
 ### init
 
@@ -344,6 +437,98 @@ bitstream of the image in jpg format
 ```php
 public shutdown_function(): mixed
 ```
+
+***
+
+### extract_pdf_content
+
+Extract textual content from a PDF file
+
+```php
+public extract_pdf_content(string $file, int|null $item_id = null): string|bool|null
+```
+
+**Parameters:**
+
+| Parameter  | Type          | Description                    |
+|------------|---------------|--------------------------------|
+| `$file`    | **string**    | Absolute path to the PDF file. |
+| `$item_id` | **int\|null** | Optional item ID for filters.  |
+
+**Return Value:**
+
+Extracted text, false on failure, null when not a PDF, or a boolean when a filter handles extraction.
+
+***
+
+### normalize_extracted_pdf_content
+
+Validates and sanitizes extracted PDF text before it is returned or stored.
+
+```php
+private static normalize_extracted_pdf_content(mixed $content): string|bool|null|false
+```
+
+* This method is **static**.
+**Parameters:**
+
+| Parameter  | Type      | Description            |
+|------------|-----------|------------------------|
+| `$content` | **mixed** | Raw extraction result. |
+
+***
+
+### clear_document_content_index
+
+Clears stored document content index metadata for an item.
+
+```php
+public clear_document_content_index(int $item_id): bool
+```
+
+**Parameters:**
+
+| Parameter  | Type    | Description  |
+|------------|---------|--------------|
+| `$item_id` | **int** | The item ID. |
+
+***
+
+### store_document_content_index
+
+Stores document content index metadata, cropping when above the configured limit.
+
+```php
+private store_document_content_index(string $content, int $item_id): bool
+```
+
+**Parameters:**
+
+| Parameter  | Type       | Description       |
+|------------|------------|-------------------|
+| `$content` | **string** | Document content. |
+| `$item_id` | **int**    | Item ID.          |
+
+**Return Value:**
+
+Whether the content was truncated.
+
+***
+
+### index_text_document_content
+
+Stores text document content in the document content index for search.
+
+```php
+public index_text_document_content(string $content, int $item_id): bool
+```
+
+**Parameters:**
+
+| Parameter  | Type       | Description                |
+|------------|------------|----------------------------|
+| `$content` | **string** | The text document content. |
+| `$item_id` | **int**    | The item ID.               |
 
 ***
 

@@ -51,6 +51,124 @@ class Media {
 	 */
 	public static $content_index_last = 'document_content_last_index';
 
+	/** Default maximum document content index length in characters. */
+	public const DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_DEFAULT = 200000;
+
+	/** Maximum allowed document content index length setting in characters. */
+	public const DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_LIMIT = 2000000;
+
+	/**
+	 * Whether automatic PDF text extraction is enabled.
+	 *
+	 * @return bool
+	 */
+	public static function is_index_pdf_content_enabled() {
+		if ( defined( 'TAINACAN_INDEX_PDF_CONTENT' ) ) {
+			return true === TAINACAN_INDEX_PDF_CONTENT;
+		}
+
+		return (bool) get_option( 'tainacan_option_index_pdf_content', false );
+	}
+
+	/**
+	 * Configured maximum document content index length in characters.
+	 *
+	 * @return int
+	 */
+	public static function get_document_content_index_max_characters() {
+		if ( defined( 'TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS' ) ) {
+			return min(
+				max( 1, (int) TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS ),
+				self::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_LIMIT
+			);
+		}
+
+		$value = (int) get_option(
+			'tainacan_option_document_content_index_max_characters',
+			self::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_DEFAULT
+		);
+
+		if ( $value <= 0 ) {
+			return self::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_DEFAULT;
+		}
+
+		return min( $value, self::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_LIMIT );
+	}
+
+	/**
+	 * Truncates document content to the configured maximum length before storage.
+	 *
+	 * @param mixed $content Raw document content.
+	 *
+	 * @return array {
+	 *     @type mixed  $content       Content ready for storage.
+	 *     @type bool   $was_truncated Whether the content was cropped.
+	 * }
+	 */
+	public static function prepare_document_content_index_for_storage( $content ) {
+		if ( ! is_string( $content ) ) {
+			return [
+				'content'       => $content,
+				'was_truncated' => false,
+			];
+		}
+
+		$max_characters = self::get_document_content_index_max_characters();
+
+		if ( mb_strlen( $content, 'UTF-8' ) <= $max_characters ) {
+			return [
+				'content'       => $content,
+				'was_truncated' => false,
+			];
+		}
+
+		return [
+			'content'       => mb_substr( $content, 0, $max_characters, 'UTF-8' ),
+			'was_truncated' => true,
+		];
+	}
+
+	/**
+	 * Cleans extracted document content before it is returned or stored.
+	 *
+	 * Intended for automatic extraction only; manual edits should not pass through this.
+	 *
+	 * @param string $content Raw extracted text.
+	 *
+	 * @return string
+	 */
+	public static function sanitize_document_content_index_text( $content ) {
+		if ( ! is_string( $content ) || $content === '' ) {
+			return $content;
+		}
+
+		$content = preg_replace( '/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $content ) ?? $content;
+		$content = str_replace( [ "\r\n", "\r" ], "\n", $content );
+		$content = preg_replace( '/[ \t]+/u', ' ', $content ) ?? $content;
+		$content = preg_replace( "/\n{3,}/", "\n\n", $content ) ?? $content;
+		$content = trim( $content );
+
+		/**
+		 * Filters sanitized document content index text after automatic extraction cleanup.
+		 *
+		 * @param string $content Sanitized content.
+		 */
+		return (string) apply_filters( 'tainacan_sanitize_document_content_index', $content );
+	}
+
+	/**
+	 * Human-readable warning when document content was truncated.
+	 *
+	 * @return string
+	 */
+	public static function get_document_content_index_truncation_warning_message() {
+		return sprintf(
+			/* translators: %s: maximum document content length in characters, formatted with thousands separators */
+			__( 'The document content exceeded the maximum size (%s characters) and was truncated.', 'tainacan' ),
+			number_format_i18n( self::get_document_content_index_max_characters() )
+		);
+	}
+
 	/**
 	 * Initializes the media functionality.
 	 *
@@ -399,20 +517,125 @@ class Media {
 			throw new \Exception("fatal error");
 	}
 
-	public function index_pdf_content($file, $item_id) {
+	/**
+	 * Extract textual content from a PDF file
+	 *
+	 * @param string   $file    Absolute path to the PDF file.
+	 * @param int|null $item_id Optional item ID for filters.
+	 *
+	 * @return string|bool|null Extracted text, false on failure, null when not a PDF, or a boolean when a filter handles extraction.
+	 */
+	public function extract_pdf_content( $file, $item_id = null ) {
 
-		if ( ! (
-			defined('TAINACAN_INDEX_PDF_CONTENT') 
-				? ( true === TAINACAN_INDEX_PDF_CONTENT )
-				: get_option( 'tainacan_option_index_pdf_content', false ) 
-		) ) {
-			return;
+		if ( ! $file || ! \file_exists( $file ) ) {
+			return false;
 		}
 
+		if ( $this->get_mime_content_type( $file ) != 'application/pdf' ) {
+			return null;
+		}
+
+		$alternate = apply_filters( 'tainacan-index-pdf', null, $file, $item_id );
+		if ( ! \is_null( $alternate ) ) {
+			return self::normalize_extracted_pdf_content( $alternate );
+		}
+
+		try {
+			$parser = new \Smalot\PdfParser\Parser();
+			$content = $parser->parseFile( $file )->getText();
+
+			$wp_charset = get_bloginfo( 'charset' );
+			$content_charset = mb_detect_encoding( $content, [ 'UTF-8', 'ISO-8859-1', 'Windows-1252' ], true );
+			if ( $content_charset ) {
+				$content = mb_convert_encoding( $content, $wp_charset, $content_charset );
+			}
+
+			return self::normalize_extracted_pdf_content( $content );
+		} catch ( \Exception $e ) {
+			error_log( 'Caught exception: ' . $e->getMessage() . "\n" );
+			return false;
+		}
+	}
+
+	/**
+	 * Validates and sanitizes extracted PDF text before it is returned or stored.
+	 *
+	 * @param mixed $content Raw extraction result.
+	 *
+	 * @return string|bool|null|false
+	 */
+	private static function normalize_extracted_pdf_content( $content ) {
+		if ( $content === false || $content === null ) {
+			return $content;
+		}
+
+		if ( ! is_string( $content ) ) {
+			return $content;
+		}
+
+		if ( ! Pdf_Extracted_Text_Quality::is_usable( $content ) ) {
+			return false;
+		}
+
+		return self::sanitize_document_content_index_text( $content );
+	}
+
+	/**
+	 * Clears stored document content index metadata for an item.
+	 *
+	 * @param int $item_id The item ID.
+	 *
+	 * @return bool
+	 */
+	public function clear_document_content_index( $item_id ) {
+		delete_post_meta( $item_id, SELF::$content_index_meta );
+		delete_post_meta( $item_id, SELF::$content_index_last );
+		return true;
+	}
+
+	/**
+	 * Stores document content index metadata, cropping when above the configured limit.
+	 *
+	 * @param string $content Document content.
+	 * @param int    $item_id Item ID.
+	 *
+	 * @return bool Whether the content was truncated.
+	 */
+	private function store_document_content_index( $content, $item_id ) {
+		$prepared = self::prepare_document_content_index_for_storage( $content );
+
+		update_post_meta( $item_id, self::$content_index_meta, $prepared['content'] );
+		delete_post_meta( $item_id, self::$content_index_last );
+
+		return $prepared['was_truncated'];
+	}
+
+	/**
+	 * Stores text document content in the document content index for search.
+	 *
+	 * @param string $content The text document content.
+	 * @param int    $item_id The item ID.
+	 *
+	 * @return bool
+	 */
+	public function index_text_document_content( $content, $item_id ) {
+		if ( $content === null || $content === '' ) {
+			return $this->clear_document_content_index( $item_id );
+		}
+
+		$this->store_document_content_index( $content, $item_id );
+
+		return true;
+	}
+
+	public function index_pdf_content($file, $item_id) {
+
 		if ($file == null) {
-			update_post_meta( $item_id, SELF::$content_index_meta, null );
-			update_post_meta( $item_id, SELF::$content_index_last, null );
-			return true;
+			return $this->clear_document_content_index( $item_id );
+		}
+
+		if ( ! self::is_index_pdf_content_enabled() ) {
+			return;
 		}
 
 		if ( ! \file_exists($file) ) {
@@ -448,35 +671,32 @@ class Media {
 			}
 		}
 
-		// Allow plugins to implement other approach to index pdf contents
-		$alternate = apply_filters('tainacan-index-pdf', null, $file, $item_id);
-		if ( ! \is_null($alternate) ) {
-			return $alternate;
-		}
+		$content = $this->extract_pdf_content( $file, $item_id );
 
-		try {
-			$parser = new \Smalot\PdfParser\Parser();
-			$content = $parser->parseFile($file)->getText();
-
-			$wp_charset = get_bloginfo('charset');
-			$content_charset = mb_detect_encoding($content);
-			$content = mb_convert_encoding($content, $wp_charset, $content_charset);
-			update_post_meta( $item_id, SELF::$content_index_meta, $content );
-			
-			// Store file metadata for future change detection (only if we have valid data)
-			if ($current_mod_time !== false && $current_file_size !== false) {
-				$file_info = array(
-					'file_name' => $current_file_name,
-					'mod_time' => $current_mod_time,
-					'file_size' => $current_file_size
-				);
-				update_post_meta( $item_id, SELF::$content_index_last, $file_info );
+		if ( $content === false || $content === null ) {
+			if ( $content === false ) {
+				$this->clear_document_content_index( $item_id );
 			}
-			
-		} catch(\Exception $e) {
-			error_log('Caught exception: ' .  $e->getMessage() . "\n");
-			return false;
+			return $content;
 		}
+
+		if ( ! is_string( $content ) ) {
+			return $content;
+		}
+
+		$this->store_document_content_index( $content, $item_id );
+
+		// Store file metadata for future change detection (only if we have valid data)
+		if ($current_mod_time !== false && $current_file_size !== false) {
+			$file_info = array(
+				'file_name' => $current_file_name,
+				'mod_time' => $current_mod_time,
+				'file_size' => $current_file_size
+			);
+			update_post_meta( $item_id, SELF::$content_index_last, $file_info );
+		}
+
+		return true;
 	}
 
 	public function get_attachment_html_url($attachment_id) {

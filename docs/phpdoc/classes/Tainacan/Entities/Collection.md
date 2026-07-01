@@ -82,6 +82,7 @@ classDiagram
         +get_item_enable_metadata_searchbar()
         +get_item_enable_metadata_collapses()
         +get_item_enable_metadata_enumeration()
+        +get_item_enable_document_content_editing()
         +set_name(value)
         +set_slug(value)
         +set_order(value)
@@ -121,6 +122,7 @@ classDiagram
         +set_item_enable_metadata_searchbar(value)
         +set_item_enable_metadata_collapses(value)
         +set_item_enable_metadata_enumeration(value)
+        +set_item_enable_document_content_editing(value)
         +validate()
         +user_can(capability, user)
     }
@@ -534,6 +536,14 @@ protected $item_enable_metadata_collapses
 
 ```php
 protected $item_enable_metadata_enumeration
+```
+
+***
+
+### item_enable_document_content_editing
+
+```php
+protected $item_enable_document_content_editing
 ```
 
 ***
@@ -1293,6 +1303,20 @@ public get_item_enable_metadata_enumeration(): bool
 
 ***
 
+### get_item_enable_document_content_editing
+
+Check if document content editing is enabled in the item edition form.
+
+```php
+public get_item_enable_document_content_editing(): string
+```
+
+**Return Value:**
+
+'yes' if enabled, 'no' otherwise.
+
+***
+
 ### set_name
 
 Set the collection name
@@ -1920,6 +1944,22 @@ public set_item_enable_metadata_enumeration(string $value): void
 | Parameter | Type       | Description                                            |
 |-----------|------------|--------------------------------------------------------|
 | `$value`  | **string** | 'yes' to enable metadata enumeration, 'no' to disable. |
+
+***
+
+### set_item_enable_document_content_editing
+
+Enable or disable document content editing for the item edition form in this collection.
+
+```php
+public set_item_enable_document_content_editing(string $value): void
+```
+
+**Parameters:**
+
+| Parameter | Type       | Description                       |
+|-----------|------------|-----------------------------------|
+| `$value`  | **string** | 'yes' to enable, 'no' to disable. |
 
 ***
 

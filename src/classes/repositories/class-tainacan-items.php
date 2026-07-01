@@ -147,6 +147,12 @@ class Items extends Repository {
 					),
 				)
 			],
+			'document_content_index'     => [
+				'map'         => 'meta',
+				'title'       => __( 'Document Content Index', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'The document content to be used in textual search', 'tainacan' ),
+			],
 			'_thumbnail_id'     => [
 				'map'         => 'meta',
 				'title'       => __( 'Thumbnail', 'tainacan' ),
@@ -500,15 +506,157 @@ class Items extends Repository {
 	 */
 	public function generate_index_content(Entities\Item $item) {
 		$TainacanMedia = \Tainacan\Media::get_instance();
-		if ( empty( $item->get_document() ) ) {
-			$TainacanMedia->index_pdf_content( null, $item->get_ID() );
+		if ( empty( $item->get_document() ) || $item->get_document_type() === 'empty' ) {
+			return $TainacanMedia->clear_document_content_index( $item->get_ID() );
 		} elseif ( $item->get_document_type() == 'attachment' ) {
 			if (! wp_attachment_is_image( $item->get_document() ) ) {
 				$filepath = get_attached_file( $item->get_document() );
-				$TainacanMedia->index_pdf_content( $filepath, $item->get_ID() );
+				return $TainacanMedia->index_pdf_content( $filepath, $item->get_ID() );
 			}
+		} elseif ( $item->get_document_type() == 'text' ) {
+			return $TainacanMedia->index_text_document_content( $item->get_document(), $item->get_ID() );
 		}
 		return true;
+	}
+
+	/**
+	 * Extract document textual content without persisting it to the item.
+	 *
+	 * Plugins may short-circuit default extraction via the
+	 * `tainacan_extract_document_content` filter (for example, to handle URL
+	 * documents or alternate PDF pipelines).
+	 *
+	 * @param  Entities\Item       $item    The item.
+	 * @param  mixed               $context Optional context passed to filters (e.g. a REST request).
+	 *
+	 * @return string|false|\WP_Error Extracted text, false on generic failure, or WP_Error with a message.
+	 */
+	public function extract_document_content( Entities\Item $item, $context = null ) {
+		/**
+		 * Filters document content extraction for an item.
+		 *
+		 * Return a non-null value to bypass Tainacan's default PDF attachment extraction:
+		 * - string: extracted text (empty string is allowed)
+		 * - false: extraction failed; REST uses a generic error message
+		 * - \WP_Error: extraction failed; REST uses the error message
+		 *
+		 * Return null to use the default extraction path.
+		 *
+		 * @param null|string|false|\WP_Error $extracted_content Extracted content or error.
+		 * @param Entities\Item               $item              The item.
+		 * @param mixed                       $context           Optional context (e.g. \WP_REST_Request).
+		 */
+		$extracted_content = apply_filters( 'tainacan_extract_document_content', null, $item, $context );
+
+		if ( $extracted_content !== null ) {
+			if ( is_string( $extracted_content ) ) {
+				$extracted_content = \Tainacan\Media::sanitize_document_content_index_text( $extracted_content );
+			}
+
+			return $extracted_content;
+		}
+
+		return $this->extract_document_content_default( $item );
+	}
+
+	/**
+	 * Whether document content extraction is available for an item in the admin UI.
+	 *
+	 * @param Entities\Item $item The item.
+	 *
+	 * @return bool
+	 */
+	public function supports_document_content_extraction( Entities\Item $item ) {
+		$supports = ! is_wp_error( $this->validate_default_pdf_document_extraction( $item ) );
+
+		/**
+		 * Filters whether document content extraction is available for an item.
+		 *
+		 * Plugins may return true for document types handled by
+		 * `tainacan_extract_document_content` (for example, URL documents).
+		 *
+		 * @param bool          $supports Whether Tainacan's default extraction is supported.
+		 * @param Entities\Item $item     The item.
+		 */
+		return (bool) apply_filters( 'tainacan_item_supports_document_content_extraction', $supports, $item );
+	}
+
+	/**
+	 * Validates that an item qualifies for default PDF document content extraction.
+	 *
+	 * @param Entities\Item $item The item.
+	 *
+	 * @return true|\WP_Error True when valid, WP_Error otherwise.
+	 */
+	private function validate_default_pdf_document_extraction( Entities\Item $item ) {
+		if ( empty( $item->get_document() ) ) {
+			return new \WP_Error(
+				'no_document',
+				__( 'This item has no document.', 'tainacan' )
+			);
+		}
+
+		if ( ! \Tainacan\Media::is_index_pdf_content_enabled() ) {
+			return new \WP_Error(
+				'pdf_extraction_disabled',
+				__( 'PDF text extraction is disabled in settings.', 'tainacan' )
+			);
+		}
+
+		if ( $item->get_document_type() !== 'attachment' ) {
+			return new \WP_Error(
+				'unsupported_document_type',
+				__( 'Document text extraction is only available for file documents.', 'tainacan' )
+			);
+		}
+
+		if ( wp_attachment_is_image( $item->get_document() ) ) {
+			return new \WP_Error(
+				'unsupported_document_type',
+				__( 'Document text extraction is not available for image documents.', 'tainacan' )
+			);
+		}
+
+		if ( get_post_mime_type( $item->get_document() ) !== 'application/pdf' ) {
+			return new \WP_Error(
+				'unsupported_document_type',
+				__( 'Document text extraction is only available for PDF documents.', 'tainacan' )
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Default PDF attachment extraction used when no filter overrides the request.
+	 *
+	 * @param Entities\Item $item The item.
+	 *
+	 * @return string|false|\WP_Error
+	 */
+	private function extract_document_content_default( Entities\Item $item ) {
+		$validation = $this->validate_default_pdf_document_extraction( $item );
+
+		if ( is_wp_error( $validation ) ) {
+			return $validation;
+		}
+
+		$filepath = get_attached_file( $item->get_document() );
+
+		if ( empty( $filepath ) || ! file_exists( $filepath ) ) {
+			return new \WP_Error(
+				'document_file_not_found',
+				__( 'The document file could not be found.', 'tainacan' )
+			);
+		}
+
+		$content = \Tainacan\Media::get_instance()->extract_pdf_content( $filepath, $item->get_ID() );
+
+		if ( ! is_string( $content ) ) {
+			return false;
+		}
+
+		return $content;
 	}
 
 	/**

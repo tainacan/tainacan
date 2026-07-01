@@ -60,7 +60,8 @@ class Collection extends Entity {
 		$item_enable_metadata_required_filter,
 		$item_enable_metadata_searchbar,
 		$item_enable_metadata_collapses,
-		$item_enable_metadata_enumeration;
+		$item_enable_metadata_enumeration,
+		$item_enable_document_content_editing;
 
 	/**
 	 * {@inheritDoc}
@@ -766,6 +767,15 @@ class Collection extends Entity {
 		return $this->get_mapped_property('item_enable_metadata_enumeration');
 	}
 
+	/**
+	 * Check if document content editing is enabled in the item edition form.
+	 *
+	 * @return string 'yes' if enabled, 'no' otherwise.
+	 */
+	function get_item_enable_document_content_editing() {
+		return $this->get_mapped_property('item_enable_document_content_editing');
+	}
+
 	// Setters
 	/**
 	 * Set the collection name
@@ -1188,6 +1198,16 @@ class Collection extends Entity {
 	 */
 	function set_item_enable_metadata_enumeration( $value ) {
 		$this->set_mapped_property('item_enable_metadata_enumeration', $value);
+	}
+
+	/**
+	 * Enable or disable document content editing for the item edition form in this collection.
+	 *
+	 * @param string $value 'yes' to enable, 'no' to disable.
+	 * @return void
+	 */
+	function set_item_enable_document_content_editing( $value ) {
+		$this->set_mapped_property('item_enable_document_content_editing', $value);
 	}
 
 	/**

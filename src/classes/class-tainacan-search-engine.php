@@ -243,7 +243,7 @@ class Search_Engine {
 		return '';
 	}
 
-	function get_where_to_metadatas() {
+	function get_where_to_postmeta() {
 		if ( $this->is_tainacan_search ) {
 			global $wpdb;
 			$search_meta_query = '';
@@ -257,15 +257,8 @@ class Search_Engine {
 			}
 			if ( empty($search_meta_query) ) return '';
 			
-			$content_index_meta = '';
-			if ( 
-				defined('TAINACAN_INDEX_PDF_CONTENT') 
-					? ( true === TAINACAN_INDEX_PDF_CONTENT )
-					: get_option( 'tainacan_option_index_pdf_content', false ) 
-			) {
-				$content_index_meta_meta_key = \TAINACAN\Media::$content_index_meta;
-				$content_index_meta = "OR (m.meta_key='{$content_index_meta_meta_key}')";
-			}
+			$content_index_meta_meta_key = \TAINACAN\Media::$content_index_meta;
+			$content_index_meta = "OR (m.meta_key='{$content_index_meta_meta_key}')";
 
 			$join = \is_user_logged_in() 
 				? ''
@@ -294,7 +287,7 @@ class Search_Engine {
 
 		$search_query = $this->get_where_to_title_and_content();
 		$search_tax_query = $this->get_where_to_term_taxonomies();
-		$search_meta_query = $this->get_where_to_metadatas();
+		$search_meta_query = $this->get_where_to_postmeta();
 		$search_query = "($search_query) ";
 		if(!empty($search_tax_query)) $search_query .= " OR ($search_tax_query) "; 
 		if(!empty($search_meta_query)) $search_query .= " OR ($search_meta_query) ";

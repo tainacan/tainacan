@@ -211,6 +211,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_button_edit_thumb'                        => __( 'Button Edit Thumbnail', 'tainacan' ),
 	'label_button_edit_header_image'                 => __( 'Button Edit Header Image', 'tainacan' ),
 	'label_button_edit_document'                     => __( 'Button Edit Document', 'tainacan' ),
+	'label_button_index_document'                    => __( 'Button View Document Content', 'tainacan' ),
 	'label_button_delete_document'                   => __( 'Button Delete Document', 'tainacan' ),
 	'label_choose_thumb'                             => __( 'Choose Thumbnail', 'tainacan' ),
 	'label_button_delete_thumb'                      => __( 'Button Delete Thumbnail', 'tainacan' ),
@@ -308,6 +309,13 @@ return apply_filters( 'tainacan-i18n', [
 	'label_document'                                 => __( 'Document', 'tainacan' ),
 	'label_document_empty'                           => __( 'Empty document', 'tainacan' ),
 	'label_document_content'                         => __( 'Document content', 'tainacan' ),
+	/* translators: Description shown in the document content modal, explaining that extracted text is used in search */
+	'info_document_content_index_description'        => __( 'Text extracted from the document to be used in search results.', 'tainacan' ),
+	'info_document_content_index_empty'              => __( 'No text has been extracted from this document yet.', 'tainacan' ),
+	'info_document_content_index_empty_pdf'          => __( 'If this is a PDF file, it may not have been processed yet, or the extraction failed.', 'tainacan' ),
+	'info_document_content_index_empty_non_pdf'      => __( 'Tainacan does not support automatic text extraction for this document type, but you can type content here to include it in textual searches. This is useful, for example, to add an image description.', 'tainacan' ),
+	'info_document_content_index_extracted'          => __( 'Document content extracted.', 'tainacan' ),
+	'label_extract_document_content'                 => __( 'Extract content', 'tainacan' ),
 	'label_file'                                     => __( 'File', 'tainacan' ),
 	'label_text'                                     => __( 'Text', 'tainacan' ),
 	'label_url'                                      => __( 'URL', 'tainacan' ),
@@ -1210,6 +1218,8 @@ return apply_filters( 'tainacan-i18n', [
 	'info_thumbnail_alt_ai_generating'               => __( 'Generating alternative text…', 'tainacan' ),
 	'info_thumbnail_alt_ai_success'                  => __( 'Alternative text was generated.', 'tainacan' ),
 	'info_thumbnail_alt_ai_decorative'               => __( 'The image was identified as decorative. Alternative text was cleared.', 'tainacan' ),
+	/* translators: %s: maximum document content size in kilobytes */
+	'info_document_content_index_truncated_%s'    => __( 'The document content exceeded the maximum size (%s characters) and was truncated.', 'tainacan' ),
 	
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
@@ -1254,6 +1264,10 @@ return apply_filters( 'tainacan-i18n', [
 	'datepicker_short_friday'			=> __( 'F', 'tainacan' ),
 	/* translators: This refers to the short label that will appear on datepickers for Saturday */
 	'datepicker_short_saturday'			=> __( 'Sa', 'tainacan' ),
+
+	/* Errors related to document content index extraction and saving */
+	'error_document_content_index_extraction_failed' => __( 'Could not extract usable text from this PDF. It may use fonts or encoding that are not supported for automatic extraction.', 'tainacan' ),
+	'error_document_content_index_save_failed'       => __( 'Failed to save document content.', 'tainacan' ),
 
 	/* Errors displayed on the interface bottom notifications */
 	'error_connectivity_label' => __('Connectivity issue', 'tainacan'),
