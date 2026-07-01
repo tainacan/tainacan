@@ -1,30 +1,5 @@
 classDiagram
     direction TB
-    class XLSX_Exporter {
-        -collection_name : mixed
-        -spreadsheet : mixed
-        -filePath : mixed
-        -tempFilePath : mixed
-        +__construct(attributes)
-        +initialize_writer()
-        +finalize_writer()
-        +process_collections()
-        -process_header(current_collection_item, collection_definition)
-        -process_footer(current_collection_item, collection_definition)
-        -get_items(index, collection_definition)
-        -map_item_metadata(item)
-        +process_item(item, metadata)
-        +addRowToSheet(rowData, sheetIndex)
-        +get_file_path()
-        +get_file_name()
-        +get_content_type()
-        +filter_multivalue_separator(separator)
-        +filter_hierarchy_separator(separator)
-        -get_collections_names()
-        +get_output()
-        +output_header()
-        +options_form()
-    }
     class Exporter {
         #id : identifier
         #options : array
@@ -114,5 +89,30 @@ classDiagram
         -set_output_files(output_files)
         #get_output_files()
         +run()
+    }
+    class XLSX_Exporter {
+        -collection_name : mixed
+        -spreadsheet : mixed
+        -filePath : mixed
+        -tempFilePath : mixed
+        +__construct(attributes)
+        +initialize_writer()
+        +finalize_writer()
+        +process_collections()
+        -process_header(current_collection_item, collection_definition)
+        -process_footer(current_collection_item, collection_definition)
+        -get_items(index, collection_definition)
+        -map_item_metadata(item)
+        +process_item(item, metadata)
+        +addRowToSheet(rowData, sheetIndex)
+        +get_file_path()
+        +get_file_name()
+        +get_content_type()
+        +filter_multivalue_separator(separator)
+        +filter_hierarchy_separator(separator)
+        -get_collections_names()
+        +get_output()
+        +output_header()
+        +options_form()
     }
     Exporter <|-- XLSX_Exporter

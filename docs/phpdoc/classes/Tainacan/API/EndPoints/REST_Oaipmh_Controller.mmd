@@ -1,0 +1,26 @@
+classDiagram
+    direction TB
+    class REST_Oaipmh_Controller {
+        -data_provider : OAIPMH_Data_Provider
+        -token_manager : OAIPMH_Token_Manager
+        +__construct()
+        -boot()
+        +register_routes()
+        +get_verb_permissions_check(request)
+        +get_verb(request)
+        -handle_list_sets(xml, params)
+        -has_disallowed_list_sets_args(params)
+        -parse_list_sets_params(xml, params)
+        -is_valid_token_for_verb(data, verb)
+        -has_exclusive_argument_violation(params, exclusive_args)
+        -handle_list_metadata_formats(xml, params)
+        -handle_list_records(xml, params, include_metadata)
+        -handle_get_record(xml, params)
+        -parse_list_params(xml, params, expected_verb)
+        -get_max_records()
+        -parse_date(date, bound)
+        +serve_xml_response(served, result)
+        -serve(xml_string, verb, params, from_cache)
+        +get_verb_params()
+        +get_schema()
+    }

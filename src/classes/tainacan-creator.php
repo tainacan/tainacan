@@ -120,7 +120,7 @@ function tainacan_autoload($class_name) {
 		} else if ( isset( $class_path[1] ) && $class_path[1] === 'API' ) {
 			$dir = TAINACAN_API_DIR;
 			if ( count($class_path) > 3 ) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
-		} else if ( isset( $class_path[1] ) && $class_path[1] === 'OAIPMHExpose' ) {
+		} else if ( isset( $class_path[1] ) && $class_path[1] === 'OAIPMH' ) {
 			$dir = TAINACAN_OAIPMH_DIR;
 			if ( count($class_path) > 3 ) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
 		} else if ( isset( $class_path[1] ) && substr($class_path[1], 0, 3) === 'Cli' ) {
