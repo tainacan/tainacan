@@ -46,6 +46,38 @@ class Settings extends Pages {
 		wp_enqueue_style( 'tainacan-settings-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-settings.css', [], TAINACAN_VERSION );
 	}
 
+	/**
+	 * Returns help tabs for the settings page.
+	 *
+	 * @return array
+	 */
+	protected function get_help_tabs() {
+		return array(
+			array(
+				'id'      => 'tainacan_settings_overview_help_tab',
+				'title'   => __( 'Settings', 'tainacan' ),
+				'content' => '<p>' . __( 'Use this page to configure repository-wide behavior, including search and performance, media processing, metadata, URLs and interface options.', 'tainacan' ) . '</p>',
+			),
+			array(
+				'id'      => 'tainacan_settings_constants_help_tab',
+				'title'   => __( 'Locked settings', 'tainacan' ),
+				'content' => '<p>' . __( 'Some settings can be locked by constants defined in the WordPress configuration. When this happens, the current value is shown here but can only be changed in the server configuration.', 'tainacan' ) . '</p>',
+			),
+		);
+	}
+
+	/**
+	 * Returns help sidebar content for the settings page.
+	 *
+	 * @return string
+	 */
+	protected function get_help_sidebar() {
+		return
+			'<p><strong>' . __( 'For more information:', 'tainacan' ) . '</strong></p>' .
+			'<p><a href="' . esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/settings', 'tainacan' ) ) . '" target="_blank" rel="noopener noreferrer">' . __( 'Tainacan settings', 'tainacan' ) . '</a></p>' .
+			'<p><a href="' . esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/dev', 'tainacan' ) ) . '" target="_blank" rel="noopener noreferrer">' . __( 'Developer documentation', 'tainacan' ) . '</a></p>';
+	}
+
 	public function render_page_content() {
 		require_once('page.php');
 	}

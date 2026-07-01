@@ -33,6 +33,37 @@ class Roles_Editor extends Pages {
 		wp_enqueue_style( 'tainacan-roles-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-roles.css', [], TAINACAN_VERSION );
 	}
 
+	/**
+	 * Returns help tabs for the user roles page.
+	 *
+	 * @return array
+	 */
+	protected function get_help_tabs() {
+		return array(
+			array(
+				'id'      => 'tainacan_roles_overview_help_tab',
+				'title'   => __( 'User roles', 'tainacan' ),
+				'content' => '<p>' . __( 'Use this page to review and adjust the Tainacan capabilities assigned to each WordPress user role.', 'tainacan' ) . '</p>',
+			),
+			array(
+				'id'      => 'tainacan_roles_capabilities_help_tab',
+				'title'   => __( 'Capabilities', 'tainacan' ),
+				'content' => '<p>' . __( 'Capabilities control who can manage repository structures, collections, items, taxonomies, processes and other administrative resources. Review changes carefully before saving.', 'tainacan' ) . '</p>',
+			),
+		);
+	}
+
+	/**
+	 * Returns help sidebar content for the user roles page.
+	 *
+	 * @return string
+	 */
+	protected function get_help_sidebar() {
+		return
+			'<p><strong>' . __( 'For more information:', 'tainacan' ) . '</strong></p>' .
+			'<p><a href="' . esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/permissions', 'tainacan' ) ) . '" target="_blank" rel="noopener noreferrer">' . __( 'Permissions and roles', 'tainacan' ) . '</a></p>';
+	}
+
 
 	function admin_enqueue_js() {
 		global $TAINACAN_BASE_URL;

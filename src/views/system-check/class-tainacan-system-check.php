@@ -45,6 +45,38 @@ class System_Check extends Pages {
 		require_once('page.php');
 	}
 
+	/**
+	 * Returns help tabs for the system check page.
+	 *
+	 * @return array
+	 */
+	protected function get_help_tabs() {
+		return array(
+			array(
+				'id'      => 'tainacan_system_check_overview_help_tab',
+				'title'   => __( 'System check', 'tainacan' ),
+				'content' => '<p>' . __( 'This page checks whether your WordPress installation, PHP environment, database and upload folders meet the requirements recommended for Tainacan.', 'tainacan' ) . '</p>',
+			),
+			array(
+				'id'      => 'tainacan_system_check_results_help_tab',
+				'title'   => __( 'Reading results', 'tainacan' ),
+				'content' => '<p>' . __( 'Warnings point to recommended improvements, while errors indicate requirements that may prevent Tainacan from working correctly. Server-related issues usually need to be handled by the site administrator or hosting provider.', 'tainacan' ) . '</p>',
+			),
+		);
+	}
+
+	/**
+	 * Returns help sidebar content for the system check page.
+	 *
+	 * @return string
+	 */
+	protected function get_help_sidebar() {
+		return
+			'<p><strong>' . __( 'For more information:', 'tainacan' ) . '</strong></p>' .
+			'<p><a href="' . esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/requirements', 'tainacan' ) ) . '" target="_blank" rel="noopener noreferrer">' . __( 'System requirements', 'tainacan' ) . '</a></p>' .
+			'<p><a href="' . esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/faq', 'tainacan' ) ) . '" target="_blank" rel="noopener noreferrer">' . __( 'Frequently Asked Questions', 'tainacan' ) . '</a></p>';
+	}
+
 	public function test_php_version() {
 		$testphpmin = version_compare( $this->min_php_version, PHP_VERSION, '<=' );
 		$testphprec = version_compare( '7.4', PHP_VERSION, '<=' );
