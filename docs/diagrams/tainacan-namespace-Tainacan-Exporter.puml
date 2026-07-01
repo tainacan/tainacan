@@ -1,4 +1,41 @@
 @startuml class-diagram
+  class "Term_Exporter" as Term_Exporter {
+    #steps : 
+    +__construct(attributes)
+    +get_output()
+    +str_putcsv(item, delimiter, enclosure)
+    +output_header()
+    +output_footer()
+    +options_form()
+    +process_item(index, collection_definition)
+    +exporting_terms()
+    +get_terms_recursively(term_repo, taxonomy, parent, level)
+  }
+  class "XLSX_Exporter" as XLSX_Exporter {
+    -collection_name : 
+    -spreadsheet : 
+    -filePath : 
+    -tempFilePath : 
+    +__construct(attributes)
+    +initialize_writer()
+    +finalize_writer()
+    +process_collections()
+    -process_header(current_collection_item, collection_definition)
+    -process_footer(current_collection_item, collection_definition)
+    -get_items(index, collection_definition)
+    -map_item_metadata(item)
+    +process_item(item, metadata)
+    +addRowToSheet(rowData, sheetIndex)
+    +get_file_path()
+    +get_file_name()
+    +get_content_type()
+    +filter_multivalue_separator(separator)
+    +filter_hierarchy_separator(separator)
+    -get_collections_names()
+    +get_output()
+    +output_header()
+    +options_form()
+  }
   class "Exporter" as Exporter {
     #id : identifier
     #options : array
@@ -89,43 +126,6 @@
     -set_output_files(output_files)
     #get_output_files()
     +run()
-  }
-  class "Term_Exporter" as Term_Exporter {
-    #steps : 
-    +__construct(attributes)
-    +get_output()
-    +str_putcsv(item, delimiter, enclosure)
-    +output_header()
-    +output_footer()
-    +options_form()
-    +process_item(index, collection_definition)
-    +exporting_terms()
-    +get_terms_recursively(term_repo, taxonomy, parent, level)
-  }
-  class "XLSX_Exporter" as XLSX_Exporter {
-    -collection_name : 
-    -spreadsheet : 
-    -filePath : 
-    -tempFilePath : 
-    +__construct(attributes)
-    +initialize_writer()
-    +finalize_writer()
-    +process_collections()
-    -process_header(current_collection_item, collection_definition)
-    -process_footer(current_collection_item, collection_definition)
-    -get_items(index, collection_definition)
-    -map_item_metadata(item)
-    +process_item(item, metadata)
-    +addRowToSheet(rowData, sheetIndex)
-    +get_file_path()
-    +get_file_name()
-    +get_content_type()
-    +filter_multivalue_separator(separator)
-    +filter_hierarchy_separator(separator)
-    -get_collections_names()
-    +get_output()
-    +output_header()
-    +options_form()
   }
   class "Exporter_Handler" as Exporter_Handler {
     #bg_exporter : Background_Exporter

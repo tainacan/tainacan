@@ -1,28 +1,5 @@
 classDiagram
     direction TB
-    class Items {
-        +entities_type : mixed
-        -fetching_from_collections : mixed
-        #init()
-        #_get_map()
-        +get_cpt_labels()
-        +register_post_type()
-        +insert(item)
-        +fetch(args, collections, output)
-        +fetch_ids(args, collections)
-        +_filter_where(where, wp_query)
-        +update(object, new_values)
-        +generate_index_content(item)
-        +get_thumbnail_id_from_document(item)
-        +hook_api_updated_item(updated_item, attributes)
-        +hook_comments_open(comments_open, post_id)
-        +map_meta_cap(caps, cap, user_id, args)
-        -get_related_items_by_collection(item, collection, metadata, args)
-        +fetch_related_items(item, args)
-        -parse_relationship_metaquery(args)
-        +posts_where_relationship_metaquery(where)
-        -parse_core_metadata_for_advanced_search(args, collections)
-    }
     class Repository {
         +entities_type : string
         #use_logs : bool
