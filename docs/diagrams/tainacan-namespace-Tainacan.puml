@@ -3,112 +3,43 @@
     -init()
     +bg_process_feedback(response, data)
   }
-  class "Private_Files\n<b>Handles private file management for Tainacan.</b>" as Private_Files {
-    +dir_separator : string
+  class "Media\n<b>Handles media functionality for Tainacan.</b>" as Media {
+    -file_name : string|null
+    -attachment_html_url_base : string
+    +content_index_meta : string
+    +content_index_last : string
+    -THROW_EXCPTION_ON_FATAL_ERROR : 
+    {static} +is_index_pdf_content_enabled()
+    {static} +get_document_content_index_max_characters()
+    {static} +prepare_document_content_index_for_storage(content)
+    {static} +sanitize_document_content_index_text(content)
+    {static} +get_document_content_index_truncation_warning_message()
     #init()
-    +pre_tainacan_upload(blob, filename, post_id)
-    +post_tainacan_upload(attach_id, attach_data, post_id)
-    +pre_upload(file)
-    +post_upload(fileinfo)
-    +get_items_uploads_folder()
-    +get_private_folder_prefix()
-    +change_upload_dir(path)
-    +template_redirect()
-    +image_get_intermediate_size(data, post_id, size)
-    +wp_get_attachment_url(url, post_id)
-    +rename_item_and_collection_folder_path(obj, permanent_delete)
-    +bulk_edit(status, group, select_query, query)
-    {static} +add_htaccess_rules()
-  }
-  class "__Bulk_Edit\n<b>Bulk_Edit class handles bulk item edition</b>" as __Bulk_Edit {
-    -meta_key : 
-    -id : string
-    +__construct(params)
-    +add_fields_to_query(fields, wp_query)
-    +get_id()
-    +count_posts()
-    +get_item_id_by_index(index)
-    +save_options(value)
-    +get_options()
-    -_build_select(fields)
-    +set_status(value)
-    +add_value(metadatum, value)
-    +set_value(metadatum, value)
-    +remove_value(metadatum, value)
-    +replace_value(metadatum, new_value, old_value)
-    +trash_items()
-    +untrash_items()
-    +delete_items()
-    -_add_value(metadatum, value)
-    -_remove_value(metadatum, value)
-    -_replace_value(metadatum, newvalue, value)
-    -_remove_values(metadatum)
-  }
-  class "Async_Request\n<b>Abstract base class for asynchronous requests.</b>" as Async_Request {
-    #prefix : string
-    #action : string
-    #identifier : mixed
-    #data : array
-    +__construct()
-    +data(data)
-    +dispatch()
-    #get_query_args()
-    #get_query_url()
-    #get_post_args()
-    +maybe_handle()
-    {abstract} #handle()
-  }
-  class "Roles_Editor" as Roles_Editor {
-    #get_page_slug()
-    +add_admin_menu()
-    +admin_enqueue_css()
-    +admin_enqueue_js()
-    +render_page_content()
-  }
-  class "Mappers_Handler" as Mappers_Handler {
-    -instance : 
-    #mappers : 
-    {static} +get_instance()
-    +__construct()
-    +init()
-    +register_mapper(class_name)
-    +unregister_mapper(class_name)
-    +get_mappers(output)
-    +get_mapper(slug)
-    +mappers_i18n(i18n_strings)
-    {static} +get_mapper_from_request(request)
-    #map_metadatum(item_arr, mapper)
-    #map(item_arr, mapper, resquest)
-    +mapper_exists(mapper)
-    +check_class_name(class_name, root, prefix)
-    +create_mapped_collection(collection, request)
-    +filter_item_api_response(item_arr, item, request)
-  }
-  class "System_Check" as System_Check {
-    -min_php_version : 
-    -mysql_min_version_check : 
-    -mysql_rec_version_check : 
-    +mariadb : 
-    -mysql_server_version : 
-    -health_check_mysql_rec_version : 
-    -health_check_mysql_min_version : 
-    #get_page_slug()
-    +init()
-    +add_admin_menu()
-    +render_page_content()
-    +test_php_version()
-    -prepare_sql_data()
-    +check_permalink_settings()
-    +check_php_timeout()
-    +check_upload_permission()
-    +check_max_upload_size()
-    +test_wordpress_version()
-    +child_test_php_extension_availability(extension, function)
-    +test_php_extensions()
-    +test_sql_server()
-    +test_utf8mb4_support()
-    +check_protected_upload_folders()
-    +get_tainacan_version()
+    +add_image_sizes()
+    +add_image_sizes_to_admin(sizes)
+    +add_attachment_page_rewrite_rule()
+    {static} -get_media_page_css()
+    +add_css()
+    +attachment_page_add_var(vars)
+    -flush_buffers()
+    -get_file_name_from_url(url)
+    +insert_attachment_from_url(url, post_id)
+    +insert_attachment_from_file(filename, post_id)
+    +save_remote_file(url)
+    +insert_attachment_from_blob(blob, filename, post_id)
+    +get_mime_content_type(filename)
+    +get_pdf_cover(filepath)
+    +shutdown_function()
+    +extract_pdf_content(file, item_id)
+    {static} -normalize_extracted_pdf_content(content)
+    +clear_document_content_index(item_id)
+    -store_document_content_index(content, item_id)
+    +index_text_document_content(content, item_id)
+    +index_pdf_content(file, item_id)
+    +get_attachment_html_url(attachment_id)
+    +attachment_page()
+    +get_default_image_blurhash()
+    +get_image_blurhash(file_path, width, height)
   }
   class "Embed\n<b>Handles media embedding functionality for Tainacan.</b>" as Embed {
     -aspect_ratios : array
@@ -285,6 +216,7 @@
     +create_tainacan_setting(args)
     +tainacan_settings_field_callback(args)
     +default_field_callback(args)
+    +sanitize_document_content_index_max_characters(value)
     +search_and_performance_section_description()
     +theme_templates_section_description()
     +items_list_defaults_section_description()
@@ -318,9 +250,45 @@
     -recreate_control_metadata_collection_definitions()
     -perform_item_recalculation(item)
   }
-  class "Cli\n<b>Handles WP-CLI command registration for Tainacan.</b>" as Cli {
-    -init()
-    +add_commands()
+  class "Pdf_Extracted_Text_Quality\n<b>Basic quality gate for PDF text extracted via Smalot PdfParser.</b>" as Pdf_Extracted_Text_Quality {
+    {static} +is_usable(text)
+    {static} -passes_heuristics(text)
+    {static} -count_readable_words(text)
+    {static} -is_readable_word_token(token)
+  }
+  class "Search_Engine\n<b>Implements the default Tainacan search engine.</b>" as Search_Engine {
+    +logging : bool
+    +options : array
+    +ajax_request : bool
+    -query_instance : WP_Query
+    -taxonomies : array
+    -relationships : array
+    -is_tainacan_search : bool
+    -is_inner_query : bool
+    +__construct(ajax_query)
+    +search_hooks()
+    +get_search_terms()
+    +init_tainacan_search_vars()
+    +get_where_to_title_and_content()
+    +get_where_to_term_taxonomies()
+    +get_where_to_postmeta()
+    +search_where(where, wp_query)
+    +distinct(query)
+    +relationships_join(join)
+  }
+  class "Async_Request\n<b>Abstract base class for asynchronous requests.</b>" as Async_Request {
+    #prefix : string
+    #action : string
+    #identifier : mixed
+    #data : array
+    +__construct()
+    +data(data)
+    +dispatch()
+    #get_query_args()
+    #get_query_url()
+    #get_post_args()
+    +maybe_handle()
+    {abstract} #handle()
   }
   class "Theme_Helper\n<b>Theme helper class for Tainacan.</b>" as Theme_Helper {
     +visiting_collection_cover : 
@@ -514,8 +482,10 @@
   Exposers_Handler ..> Mappers_Handler
   Gutenberg_Blocks ..> Admin
   Gutenberg_Blocks ..> Theme_Helper
+  Media ..> Pdf_Extracted_Text_Quality
   Pages ..> Exposers_Handler
   Pages ..> Mappers_Handler
+  Pages ..> Media
   Pages ..> Theme_Helper
   Pages <|-- Admin
   Pages <|-- Dashboard
@@ -526,6 +496,7 @@
   Private_Files ..> Media
   Private_Files ..> Theme_Helper
   Settings ..> Gutenberg_Blocks
+  Settings ..> Media
   System_Check ..> Private_Files
   Theme_Helper ..> Mappers_Handler
   Theme_Helper ..> Theme_Helper

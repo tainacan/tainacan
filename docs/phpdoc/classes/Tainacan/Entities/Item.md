@@ -42,6 +42,7 @@ classDiagram
         +get_description()
         +get_document_type()
         +get_document_options()
+        +get_document_content_index()
         +get_document_mimetype()
         +get_document()
         +get_db_identifier()
@@ -54,6 +55,7 @@ classDiagram
         +set_parent(value)
         +set_document_type(value)
         +set_document_options(value)
+        +set_document_content_index(value)
         +set_document(value)
         +set_description(value)
         +set_author_id(author_id)
@@ -258,6 +260,14 @@ protected $document_options
 
 ```php
 protected $collection_id
+```
+
+***
+
+### document_content_index
+
+```php
+protected $document_content_index
 ```
 
 ***
@@ -520,6 +530,16 @@ public get_document_options(): string
 
 ***
 
+### get_document_content_index
+
+Return the item document content index
+
+```php
+public get_document_content_index(): string
+```
+
+***
+
 ### get_document_mimetype
 
 Return the document mimetype
@@ -695,6 +715,22 @@ Define the document options
 
 ```php
 public set_document_options(mixed $value): void
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description |
+|-----------|-----------|-------------|
+| `$value`  | **mixed** |             |
+
+***
+
+### set_document_content_index
+
+Define the document content index
+
+```php
+public set_document_content_index(mixed $value): void
 ```
 
 **Parameters:**

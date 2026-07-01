@@ -128,35 +128,7 @@ Source: [class-tainacan-generic-handler.php](https://github.com/tainacan/tainaca
 ---------------------------------
 <br>
 
-## `tainacan-register-importers` <!-- {docsify-ignore} -->
-
-
-Source: [class-tainacan-importer-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/importer/class-tainacan-importer-handler.php), [line 83](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/importer/class-tainacan-importer-handler.php#L83-L83)
-
----------------------------------
-<br>
-
-## `tainacan-upload-folder-renamed` <!-- {docsify-ignore} -->
-
-*When an item or collection is saved, it checks if the status was changed and
-if the items upload directory must be renamed to add or remove the
-private folder prefix*
-
-TODO: when deleting an item or collection, the folder must be deleted. However this is challenging because
-we need to build the path with information that may not be available after the deletion.
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$check_folder` |  | 
-`$folder` |  | 
-
-Source: [class-tainacan-private-files.php](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php), [line 325](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php#L325-L384)
-
----------------------------------
-<br>
-
-## `tainacan-upload-folder-renamed` <!-- {docsify-ignore} -->
+## `tainacan-api-collection-created` <!-- {docsify-ignore} -->
 
 *Rename all folders from items after a bulk edit operation move their statuses*
 
@@ -185,7 +157,7 @@ Argument | Type | Description
 `$select_q` |  | 
 `$query` |  | 
 
-Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 979](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L979-L1003)
+Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 997](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L997-L1028)
 
 ---------------------------------
 <br>
@@ -198,7 +170,7 @@ Argument | Type | Description
 `$item` |  | 
 `$new_item` |  | 
 
-Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 1043](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L1043-L1135)
+Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 1137](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L1137-L1229)
 
 ---------------------------------
 <br>
@@ -222,7 +194,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L11-L1461)
+Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L11-L1555)
 
 ---------------------------------
 <br>
@@ -859,6 +831,38 @@ Argument | Type | Description
 `$this` |  | 
 
 Source: [class-tainacan-mappers-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/mappers/class-tainacan-mappers-handler.php), [line 46](https://github.com/tainacan/tainacan/blob/master/src/classes/mappers/class-tainacan-mappers-handler.php#L46-L46)
+
+---------------------------------
+<br>
+
+## `tainacan-pre-insert-attachment` <!-- {docsify-ignore} -->
+
+*Insert an attachment from an URL address.*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$blob` | `\Tainacan\blob` | bitstream of the attachment
+`$filename` | `string` | The filename that will be created
+`$post_id` | `int` | (optional) the post this attachement should be attached to. empty for none
+
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 395](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L395-L405)
+
+---------------------------------
+<br>
+
+## `tainacan-post-insert-attachment` <!-- {docsify-ignore} -->
+
+*Insert an attachment from an URL address.*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$attach_id` |  | 
+`$attach_data` |  | 
+`$post_id` | `int` | (optional) the post this attachement should be attached to. empty for none
+
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 395](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L395-L449)
 
 ---------------------------------
 <br>

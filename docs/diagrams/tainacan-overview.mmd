@@ -1,5 +1,8 @@
 classDiagram
     direction TB
+    class Roles { }
+    class Search_Engine { }
+    class __Bulk_Edit { }
     class Private_Files { }
     class __Bulk_Edit { }
     class Roles { }
@@ -62,7 +65,22 @@ classDiagram
     class mappers_Dublin_Core { }
     class mappers_Inbcm_Archive { }
     class mappers_Inbcm_Bibliographic { }
-    class mappers_Inbcm_Museological { }
+    class oaipmh_OAIPMH_List_Metadata_Formats { }
+    class oaipmh_OAIPMH_Get_Record { }
+    class oaipmh_XML_Error { }
+    class oaipmh_OAIPMH_Expose { }
+    class oaipmh_OAIPMH_List_Records { }
+    class oaipmh_Xml_Response { }
+    class oaipmh_OAIPMH_List_Identifiers { }
+    class oaipmh_Xml_Create { }
+    class oaipmh_OAIPMH_Identify { }
+    class oaipmh_OAIPMH_List_Sets { }
+    class media_helper_Media { }
+    class media_helper_Embed { }
+    class media_helper_Pdf_Extracted_Text_Quality { }
+    class theme_helper_Theme_Helper { }
+    class exposers_Exposers_Handler { }
+    class exposers_Html { }
     class exposers_Exposer { }
     class exposers_Txt { }
     class exposers_JSON_LD { }
@@ -78,42 +96,10 @@ classDiagram
     class cli_Cli_Move_Attachments { }
     class cli_Logs_Wp_Posts_Migration { }
     class cli_Cli_Logs { }
-    class cli_Cli_Garbage_Collector { }
-    class cli_Cli_Collection { }
-    class cli_Cli_Document { }
-    class cli_Cli_Control_Metadata { }
-    class cli_Cli { }
-    class api_REST_Controller { }
-    class api_endpoints_REST_Roles_Controller { }
-    class api_endpoints_REST_Metadata_Controller { }
-    class api_endpoints_REST_Exporters_Controller { }
-    class api_endpoints_REST_Items_Controller { }
-    class api_endpoints_REST_Metadata_Sections_Controller { }
-    class api_endpoints_REST_Oaipmh_Controller { }
-    class api_endpoints_REST_Background_Processes_Controller { }
-    class api_endpoints_REST_Reports_Controller { }
-    class api_endpoints_REST_Terms_Controller { }
-    class api_endpoints_REST_Metadata_Types_Controller { }
-    class api_endpoints_REST_Exposers_Controller { }
-    class api_endpoints_REST_Metadatum_Mappers_Controller { }
-    class api_endpoints_REST_Facets_Controller { }
-    class api_endpoints_REST_Filters_Controller { }
-    class api_endpoints_REST_Importers_Controller { }
-    class api_endpoints_REST_Collections_Controller { }
-    class api_endpoints_REST_Filter_Types_Controller { }
-    class api_endpoints_REST_Item_Metadata_Controller { }
-    class api_endpoints_REST_Bulkedit_Controller { }
-    class api_endpoints_REST_Taxonomies_Controller { }
-    class api_endpoints_REST_Logs_Controller { }
-    class api_endpoints_REST_Sequence_Edit_Controller { }
-    class oaipmh_OAIPMH_Token_Manager { }
-    class oaipmh_OAIPMH_Data_Provider { }
-    class oaipmh_OAIPMH_Xml_Generator { }
-    Media ..> entities_Item
-    Media ..> repositories_Items
-    Private_Files ..> Media
+    class cli_Cli_Move_Attachments { }
     Private_Files ..> entities_Collection
     Private_Files ..> entities_Item
+    Private_Files ..> media_helper_Media
     Private_Files ..> repositories_Items
     Private_Files ..> theme_helper_Theme_Helper
     Roles ..> entities_Collection
@@ -183,13 +169,13 @@ classDiagram
     api_endpoints_REST_Item_Metadata_Controller ..> repositories_Item_Metadata
     api_endpoints_REST_Item_Metadata_Controller ..> repositories_Items
     api_endpoints_REST_Item_Metadata_Controller ..> repositories_Metadata
-    api_endpoints_REST_Items_Controller ..> Media
     api_endpoints_REST_Items_Controller ..> entities_Collection
     api_endpoints_REST_Items_Controller ..> entities_Item
     api_endpoints_REST_Items_Controller ..> entities_Item_Metadata_Entity
     api_endpoints_REST_Items_Controller ..> entities_Taxonomy
     api_endpoints_REST_Items_Controller ..> entities_Term
     api_endpoints_REST_Items_Controller ..> exposers_Exposers_Handler
+    api_endpoints_REST_Items_Controller ..> media_helper_Media
     api_endpoints_REST_Items_Controller ..> repositories_Collections
     api_endpoints_REST_Items_Controller ..> repositories_Filters
     api_endpoints_REST_Items_Controller ..> repositories_Item_Metadata
@@ -282,20 +268,20 @@ classDiagram
     background_process_generic_process_Generic_Process <|-- background_process_generic_process_Bulk_Edit_Process
     background_process_generic_process_Generic_Process_Handler ..> background_process_generic_process_Background_Generic_Process
     background_process_generic_process_Generic_Process_Handler ..> background_process_generic_process_Generic_Process
-    background_process_importer_CSV ..> Media
     background_process_importer_CSV ..> entities_Collection
     background_process_importer_CSV ..> entities_Item
     background_process_importer_CSV ..> entities_Item_Metadata_Entity
     background_process_importer_CSV ..> entities_Metadatum
     background_process_importer_CSV ..> entities_Taxonomy
     background_process_importer_CSV ..> entities_Term
+    background_process_importer_CSV ..> media_helper_Media
     background_process_importer_CSV ..> repositories_Collections
     background_process_importer_CSV ..> repositories_Item_Metadata
     background_process_importer_CSV ..> repositories_Items
     background_process_importer_CSV ..> repositories_Metadata
     background_process_importer_CSV ..> repositories_Terms
-    background_process_importer_Flickr_Importer ..> Media
     background_process_importer_Flickr_Importer ..> entities_Metadatum
+    background_process_importer_Flickr_Importer ..> media_helper_Media
     background_process_importer_Flickr_Importer ..> repositories_Items
     background_process_importer_Importer ..> background_process_importer_Importer_Handler
     background_process_importer_Importer ..> entities_Collection
@@ -333,18 +319,18 @@ classDiagram
     background_process_importer_Term_Importer ..> entities_Term
     background_process_importer_Term_Importer ..> repositories_Taxonomies
     background_process_importer_Term_Importer ..> repositories_Terms
-    background_process_importer_Test_Importer ..> Media
     background_process_importer_Test_Importer ..> entities_Collection
     background_process_importer_Test_Importer ..> entities_Item_Metadata_Entity
     background_process_importer_Test_Importer ..> entities_Metadatum
     background_process_importer_Test_Importer ..> entities_Taxonomy
+    background_process_importer_Test_Importer ..> media_helper_Media
     background_process_importer_Test_Importer ..> repositories_Collections
     background_process_importer_Test_Importer ..> repositories_Item_Metadata
     background_process_importer_Test_Importer ..> repositories_Items
     background_process_importer_Test_Importer ..> repositories_Metadata
     background_process_importer_Test_Importer ..> repositories_Taxonomies
-    background_process_importer_Youtube_Importer ..> Media
     background_process_importer_Youtube_Importer ..> entities_Metadatum
+    background_process_importer_Youtube_Importer ..> media_helper_Media
     background_process_importer_Youtube_Importer ..> repositories_Items
     cli_Cli_Collection ..> entities_Item
     cli_Cli_Collection ..> repositories_Collections
@@ -383,11 +369,11 @@ classDiagram
     entities_Entity <|-- entities_Term
     entities_Filter ..> entities_Metadatum
     entities_Filter ..> repositories_Metadata
-    entities_Item ..> Embed
-    entities_Item ..> Media
     entities_Item ..> entities_Item_Metadata_Entity
     entities_Item ..> entities_Metadata_Section
     entities_Item ..> entities_Metadatum
+    entities_Item ..> media_helper_Embed
+    entities_Item ..> media_helper_Media
     entities_Item ..> repositories_Item_Metadata
     entities_Item ..> repositories_Items
     entities_Item ..> repositories_Metadata
@@ -402,7 +388,7 @@ classDiagram
     entities_Metadatum ..> entities_Metadata_Section
     entities_Metadatum ..> entities_Metadatum
     entities_Metadatum ..> repositories_Metadata
-    entities_Term ..> Media
+    entities_Term ..> media_helper_Media
     exposers_Csv ..> repositories_Collections
     exposers_Exposer ..> mappers_Mappers_Handler
     exposers_Exposer <|-- exposers_Csv
@@ -442,11 +428,39 @@ classDiagram
     mappers_Mappers_Handler ..> mappers_Mapper
     mappers_Mappers_Handler ..> repositories_Collections
     mappers_Mappers_Handler ..> repositories_Metadata
-    oaipmh_OAIPMH_Data_Provider ..> entities_Collection
-    oaipmh_OAIPMH_Data_Provider ..> entities_Item
-    oaipmh_OAIPMH_Data_Provider ..> repositories_Collections
-    oaipmh_OAIPMH_Data_Provider ..> repositories_Items
-    oaipmh_OAIPMH_Xml_Generator ..> oaipmh_OAIPMH_Xml_Generator
+    media_helper_Media ..> entities_Item
+    media_helper_Media ..> media_helper_Pdf_Extracted_Text_Quality
+    media_helper_Media ..> repositories_Items
+    oaipmh_OAIPMH_Expose ..> mappers_Mappers_Handler
+    oaipmh_OAIPMH_Expose ..> oaipmh_XML_Error
+    oaipmh_OAIPMH_Expose <|-- oaipmh_OAIPMH_Get_Record
+    oaipmh_OAIPMH_Expose <|-- oaipmh_OAIPMH_Identify
+    oaipmh_OAIPMH_Expose <|-- oaipmh_OAIPMH_List_Identifiers
+    oaipmh_OAIPMH_Expose <|-- oaipmh_OAIPMH_List_Metadata_Formats
+    oaipmh_OAIPMH_Expose <|-- oaipmh_OAIPMH_List_Records
+    oaipmh_OAIPMH_Expose <|-- oaipmh_OAIPMH_List_Sets
+    oaipmh_OAIPMH_Get_Record ..> entities_Item
+    oaipmh_OAIPMH_Get_Record ..> mappers_Mappers_Handler
+    oaipmh_OAIPMH_Get_Record ..> oaipmh_Xml_Response
+    oaipmh_OAIPMH_Get_Record ..> repositories_Collections
+    oaipmh_OAIPMH_Get_Record ..> repositories_Items
+    oaipmh_OAIPMH_Identify ..> oaipmh_Xml_Response
+    oaipmh_OAIPMH_List_Identifiers ..> entities_Collection
+    oaipmh_OAIPMH_List_Identifiers ..> oaipmh_Xml_Response
+    oaipmh_OAIPMH_List_Identifiers ..> repositories_Collections
+    oaipmh_OAIPMH_List_Identifiers ..> repositories_Items
+    oaipmh_OAIPMH_List_Metadata_Formats ..> entities_Item
+    oaipmh_OAIPMH_List_Metadata_Formats ..> oaipmh_Xml_Response
+    oaipmh_OAIPMH_List_Records ..> entities_Collection
+    oaipmh_OAIPMH_List_Records ..> entities_Item
+    oaipmh_OAIPMH_List_Records ..> mappers_Mappers_Handler
+    oaipmh_OAIPMH_List_Records ..> oaipmh_Xml_Response
+    oaipmh_OAIPMH_List_Records ..> repositories_Collections
+    oaipmh_OAIPMH_List_Records ..> repositories_Items
+    oaipmh_OAIPMH_List_Sets ..> entities_Collection
+    oaipmh_OAIPMH_List_Sets ..> oaipmh_Xml_Response
+    oaipmh_OAIPMH_List_Sets ..> repositories_Collections
+    oaipmh_Xml_Create <|-- oaipmh_Xml_Response
     repositories_Collections ..> entities_Collection
     repositories_Collections ..> entities_Metadatum
     repositories_Collections ..> repositories_Metadata
@@ -464,11 +478,11 @@ classDiagram
     repositories_Item_Metadata ..> repositories_Metadata
     repositories_Item_Metadata ..> repositories_Taxonomies
     repositories_Item_Metadata ..> repositories_Terms
-    repositories_Items ..> Embed
-    repositories_Items ..> Media
     repositories_Items ..> entities_Collection
     repositories_Items ..> entities_Item
     repositories_Items ..> entities_Metadatum
+    repositories_Items ..> media_helper_Embed
+    repositories_Items ..> media_helper_Media
     repositories_Items ..> repositories_Collections
     repositories_Items ..> repositories_Metadata
     repositories_Items ..> repositories_Taxonomies
@@ -495,12 +509,12 @@ classDiagram
     repositories_Metadata_Sections ..> entities_Entity
     repositories_Metadata_Sections ..> entities_Metadata_Section
     repositories_Metadata_Sections ..> repositories_Metadata
-    repositories_Repository ..> Media
     repositories_Repository ..> entities_Collection
     repositories_Repository ..> entities_Entity
     repositories_Repository ..> entities_Item
     repositories_Repository ..> entities_Item_Metadata_Entity
     repositories_Repository ..> entities_Log
+    repositories_Repository ..> media_helper_Media
     repositories_Repository ..> repositories_Collections
     repositories_Repository ..> repositories_Filters
     repositories_Repository ..> repositories_Item_Metadata

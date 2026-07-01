@@ -46,6 +46,8 @@ classDiagram
         +delete_item_permissions_check(request)
         +update_item(request)
         +update_item_permissions_check(request)
+        +extract_document_content_index(request)
+        -add_document_content_index_truncation_to_response(response)
         +duplicate_item(request)
         -submission_item_metadata(item_metadata, request)
         -submission_process_terms(value, taxonomy)
@@ -452,6 +454,36 @@ public update_item_permissions_check(\WP_REST_Request $request): bool|\WP_Error
 **Throws:**
 
 - [`Exception`](../../../Exception)
+
+***
+
+### extract_document_content_index
+
+```php
+public extract_document_content_index(\WP_REST_Request $request): \WP_Error|\WP_REST_Response
+```
+
+**Parameters:**
+
+| Parameter  | Type                 | Description |
+|------------|----------------------|-------------|
+| `$request` | **\WP_REST_Request** |             |
+
+***
+
+### add_document_content_index_truncation_to_response
+
+Adds truncation warning fields to an API response array.
+
+```php
+private add_document_content_index_truncation_to_response(array $response): array
+```
+
+**Parameters:**
+
+| Parameter   | Type      | Description    |
+|-------------|-----------|----------------|
+| `$response` | **array** | Response data. |
 
 ***
 

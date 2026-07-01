@@ -31,6 +31,8 @@ classDiagram
         +delete_item_permissions_check(request)
         +update_item(request)
         +update_item_permissions_check(request)
+        +extract_document_content_index(request)
+        -add_document_content_index_truncation_to_response(response)
         +duplicate_item(request)
         -submission_item_metadata(item_metadata, request)
         -submission_process_terms(value, taxonomy)

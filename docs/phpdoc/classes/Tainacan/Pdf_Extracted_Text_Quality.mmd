@@ -1,0 +1,8 @@
+classDiagram
+    direction TB
+    class Pdf_Extracted_Text_Quality {
+        +$is_usable(text)
+        -$passes_heuristics(text)
+        -$count_readable_words(text)
+        -$is_readable_word_token(token)
+    }

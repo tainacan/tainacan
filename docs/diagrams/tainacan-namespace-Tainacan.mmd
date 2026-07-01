@@ -1,6 +1,26 @@
 classDiagram
     direction TB
     class Background_Process_Heartbeat { }
+    class Media { }
+    class Embed { }
+    class Admin { }
+    class Cli_Control_Metadata { }
+    class Background_Process { }
+    class Settings { }
+    class Pages { }
+    class Roles_Editor { }
+    class Cli_Collection { }
+    class Cli_Garbage_Collector { }
+    class Pdf_Extracted_Text_Quality { }
+    class Search_Engine { }
+    class Async_Request { }
+    class Theme_Helper { }
+    class Background_Process_Base { }
+    class Mappers_Handler { }
+    class Mobile_App { }
+    class __Bulk_Edit { }
+    class Admin_Bar_Items { }
+    class Cli { }
     class Private_Files { }
     class __Bulk_Edit { }
     class Async_Request { }
@@ -38,8 +58,10 @@ classDiagram
     Exposers_Handler ..> Mappers_Handler
     Gutenberg_Blocks ..> Admin
     Gutenberg_Blocks ..> Theme_Helper
+    Media ..> Pdf_Extracted_Text_Quality
     Pages ..> Exposers_Handler
     Pages ..> Mappers_Handler
+    Pages ..> Media
     Pages ..> Theme_Helper
     Pages <|-- Admin
     Pages <|-- Dashboard
@@ -50,6 +72,7 @@ classDiagram
     Private_Files ..> Media
     Private_Files ..> Theme_Helper
     Settings ..> Gutenberg_Blocks
+    Settings ..> Media
     System_Check ..> Private_Files
     Theme_Helper ..> Mappers_Handler
     Theme_Helper ..> Theme_Helper

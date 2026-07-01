@@ -126,6 +126,26 @@ lightbox |
 classDiagram
     direction TB
     class Background_Process_Heartbeat { }
+    class Media { }
+    class Embed { }
+    class Admin { }
+    class Cli_Control_Metadata { }
+    class Background_Process { }
+    class Settings { }
+    class Pages { }
+    class Roles_Editor { }
+    class Cli_Collection { }
+    class Cli_Garbage_Collector { }
+    class Pdf_Extracted_Text_Quality { }
+    class Search_Engine { }
+    class Async_Request { }
+    class Theme_Helper { }
+    class Background_Process_Base { }
+    class Mappers_Handler { }
+    class Mobile_App { }
+    class __Bulk_Edit { }
+    class Admin_Bar_Items { }
+    class Cli { }
     class Private_Files { }
     class __Bulk_Edit { }
     class Async_Request { }
@@ -163,8 +183,10 @@ classDiagram
     Exposers_Handler ..> Mappers_Handler
     Gutenberg_Blocks ..> Admin
     Gutenberg_Blocks ..> Theme_Helper
+    Media ..> Pdf_Extracted_Text_Quality
     Pages ..> Exposers_Handler
     Pages ..> Mappers_Handler
+    Pages ..> Media
     Pages ..> Theme_Helper
     Pages <|-- Admin
     Pages <|-- Dashboard
@@ -175,6 +197,7 @@ classDiagram
     Private_Files ..> Media
     Private_Files ..> Theme_Helper
     Settings ..> Gutenberg_Blocks
+    Settings ..> Media
     System_Check ..> Private_Files
     Theme_Helper ..> Mappers_Handler
     Theme_Helper ..> Theme_Helper
@@ -194,8 +217,6 @@ classDiagram
 | [`Background_Importer`](/dev/phpdoc/classes/Tainacan/Background_Importer.md)                   | Abstract Tainacan\Background_Process class.                                                               |
 | [`Importer_Handler`](/dev/phpdoc/classes/Tainacan/Importer_Handler.md)                         |                                                                                                           |
 | [`__Bulk_Edit`](/dev/phpdoc/classes/Tainacan/__Bulk_Edit.md)                                   | Bulk_Edit class handles bulk item edition                                                                 |
-| [`Embed`](/dev/phpdoc/classes/Tainacan/Embed.md)                                               | Handles media embedding functionality for Tainacan.                                                       |
-| [`Media`](/dev/phpdoc/classes/Tainacan/Media.md)                                               | Handles media functionality for Tainacan.                                                                 |
 | [`Private_Files`](/dev/phpdoc/classes/Tainacan/Private_Files.md)                               | Handles private file management for Tainacan.                                                             |
 | [`Roles`](/dev/phpdoc/classes/Tainacan/Roles.md)                                               | Manages roles and capabilities for the Tainacan plugin.                                                   |
 | [`Search_Engine`](/dev/phpdoc/classes/Tainacan/Search_Engine.md)                               | Implements the default Tainacan search engine.                                                            |
@@ -210,6 +231,9 @@ to the dedicated tainacan_logs table. |
 | [`Cli`](/dev/phpdoc/classes/Tainacan/Cli.md)                                                   | Handles WP-CLI command registration for Tainacan.                                                         |
 | [`Exposers_Handler`](/dev/phpdoc/classes/Tainacan/Exposers_Handler.md)                         | Load exposers classes                                                                                     |
 | [`Mappers_Handler`](/dev/phpdoc/classes/Tainacan/Mappers_Handler.md)                           |                                                                                                           |
+| [`Embed`](/dev/phpdoc/classes/Tainacan/Embed.md)                                               | Handles media embedding functionality for Tainacan.                                                       |
+| [`Media`](/dev/phpdoc/classes/Tainacan/Media.md)                                               | Handles media functionality for Tainacan.                                                                 |
+| [`Pdf_Extracted_Text_Quality`](/dev/phpdoc/classes/Tainacan/Pdf_Extracted_Text_Quality.md)     | Basic quality gate for PDF text extracted via Smalot PdfParser.                                           |
 | [`Theme_Helper`](/dev/phpdoc/classes/Tainacan/Theme_Helper.md)                                 | Theme helper class for Tainacan.                                                                          |
 | [`Migrations`](/dev/phpdoc/classes/Tainacan/Migrations.md)                                     |                                                                                                           |
 | [`Admin`](/dev/phpdoc/classes/Tainacan/Admin.md)                                               | Pages is an abstract base class for all Tainacan admin pages.                                             |

@@ -32,7 +32,8 @@ class Item extends Entity {
 		$document_type,
 		$document,
 		$document_options,
-		$collection_id;
+		$collection_id,
+		$document_content_index;
 
 	/**
 	 * {@inheritDoc}
@@ -286,6 +287,15 @@ class Item extends Entity {
 	}
 
 	/**
+	 * Return the item document content index
+	 *
+	 * @return string
+	 */
+	function get_document_content_index() {
+		return $this->get_mapped_property( 'document_content_index' );
+	}
+
+	/**
 	 * Return the document mimetype
 	 *
 	 * @return string
@@ -416,6 +426,17 @@ class Item extends Entity {
 	 */
 	function set_document_options( $value ) {
 		$this->set_mapped_property( 'document_options', $value );
+	}
+
+	/**
+	 * Define the document content index
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_document_content_index( $value ) {
+		$this->set_mapped_property( 'document_content_index', $value );
 	}
 
 	/**

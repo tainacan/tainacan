@@ -6,6 +6,11 @@ classDiagram
         +content_index_meta : string
         +content_index_last : string
         -THROW_EXCPTION_ON_FATAL_ERROR : mixed
+        +$is_index_pdf_content_enabled()
+        +$get_document_content_index_max_characters()
+        +$prepare_document_content_index_for_storage(content)
+        +$sanitize_document_content_index_text(content)
+        +$get_document_content_index_truncation_warning_message()
         #init()
         +add_image_sizes()
         +add_image_sizes_to_admin(sizes)
@@ -22,6 +27,11 @@ classDiagram
         +get_mime_content_type(filename)
         +get_pdf_cover(filepath)
         +shutdown_function()
+        +extract_pdf_content(file, item_id)
+        -$normalize_extracted_pdf_content(content)
+        +clear_document_content_index(item_id)
+        -store_document_content_index(content, item_id)
+        +index_text_document_content(content, item_id)
         +index_pdf_content(file, item_id)
         +get_attachment_html_url(attachment_id)
         +attachment_page()

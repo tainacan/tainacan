@@ -825,7 +825,7 @@
             .image,
             img,
             .image-placeholder {
-                border-radius: 3px;
+                border-radius: var(--tainacan-item-border-radius, 3px);
             }
             .image-placeholder {
                 position: absolute;

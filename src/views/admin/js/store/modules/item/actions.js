@@ -320,6 +320,93 @@ export const fetchOnlyRelatedItems = ({ commit }, { itemId, contextEdit } ) => {
     });
 };
 
+/**
+ * Fetches only the item document content index without updating cached item state.
+ * Dispatches `item/fetchItemDocumentContentIndex`.
+ * @returns {Promise<string>} Resolves with document content index text; rejects on request error.
+ */
+export const fetchItemDocumentContentIndex = ({}, { itemId, contextEdit } ) => {
+
+    let endpoint = '/items/'+ itemId + '?'; 
+
+    if (contextEdit)
+        endpoint += '&context=edit';
+
+    endpoint += '&fetch_only=document_content_index';
+
+    return new Promise((resolve, reject) => {
+        axios.tainacanApi.get(endpoint)
+            .then(res => {
+                const documentContentIndex = res.data && res.data.document_content_index ? res.data.document_content_index : '';
+                resolve(documentContentIndex);
+            })
+            .catch((thrown) => reject(thrown)); 
+    });
+};
+
+/**
+ * Extracts document content from the item file via API without persisting or updating cached item state.
+ * Dispatches `item/extractItemDocumentContentIndex`.
+ * @returns {Promise<string>} Resolves with extracted document content index text; rejects with API error details.
+ */
+export const extractItemDocumentContentIndex = ({}, { itemId }) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacanApi.get('/items/' + itemId + '/document-content-index/extract')
+            .then(res => {
+                resolve({
+                    documentContentIndex: res.data && res.data.document_content_index !== undefined
+                        ? res.data.document_content_index
+                        : '',
+                    truncated: !!(res.data && res.data.document_content_index_truncated),
+                    warning: res.data && res.data.document_content_index_warning
+                        ? res.data.document_content_index_warning
+                        : null
+                });
+            })
+            .catch(error => {
+                reject({
+                    error_message: error.response && error.response.data && error.response.data.error_message
+                        ? error.response.data.error_message
+                        : error
+                });
+            });
+    });
+};
+
+/**
+ * Updates only the item document content index via API without updating cached item state.
+ * Dispatches `item/updateItemDocumentContentIndex`.
+ * @returns {Promise<string>} Resolves with saved document content index text; rejects with API error details.
+ */
+export const updateItemDocumentContentIndex = ({}, { itemId, documentContentIndex }) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacanApi.put('/items/' + itemId + '?context=edit', {
+            document_content_index: documentContentIndex
+        })
+            .then(res => {
+                resolve({
+                    documentContentIndex: res.data && res.data.document_content_index !== undefined
+                        ? res.data.document_content_index
+                        : documentContentIndex,
+                    truncated: !!(res.data && res.data.document_content_index_truncated),
+                    warning: res.data && res.data.document_content_index_warning
+                        ? res.data.document_content_index_warning
+                        : null
+                });
+            })
+            .catch(error => {
+                reject({
+                    error_message: error.response && error.response.data && error.response.data.error_message
+                        ? error.response.data.error_message
+                        : error,
+                    errors: error.response && error.response.data && error.response.data.errors
+                        ? error.response.data.errors
+                        : {}
+                });
+            });
+    });
+};
+
 // Attachments =======================================
 /**
  * Uploads one attachment file to an item via WordPress media API.
