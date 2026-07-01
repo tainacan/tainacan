@@ -235,6 +235,47 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals(0, sizeof($data), 'new auto draft taxonomy should return 0 terms');
 		
 	}
+
+	function test_term_cover_page_id() {
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'         => 'genero',
+				'description'  => 'tipos de musica',
+				'allow_insert' => 'yes',
+				'status'       => 'publish'
+			),
+			true
+		);
+
+		// Create a mock page to use as cover page
+		$cover_page_id = $this->factory->post->create([
+			'post_type' => 'page',
+			'post_title' => 'Cover Page for Term'
+		]);
+
+		$request = new \WP_REST_Request(
+			'POST', $this->namespace . '/taxonomy/' . $taxonomy->get_id() . '/terms'
+		);
+
+		$term = json_encode([
+			'name' => 'Termo com Cover Page',
+			'user' => get_current_user_id(),
+			'cover_page_id' => $cover_page_id
+		]);
+
+		$request->set_body($term);
+		$response = $this->server->dispatch($request);
+		$data = $response->get_data();
+
+		$this->assertEquals('Termo com Cover Page', $data['name']);
+		$this->assertEquals($cover_page_id, $data['cover_page_id']);
+
+		// Fetch the term from repository to verify database persistence
+		$repository = \Tainacan\Repositories\Terms::get_instance();
+		$fetched_term = $repository->fetch($data['id'], $taxonomy->get_db_identifier());
+		$this->assertEquals($cover_page_id, $fetched_term->get_cover_page_id());
+	}
 	
 }
 

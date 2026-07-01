@@ -1208,7 +1208,7 @@ export default {
             fromImporter: '',
             repositoryEnabledViewModes: tainacan_plugin.enabled_view_modes,
             reCAPTCHASettingsPagePath: tainacan_plugin.admin_url + '?page=tainacan_item_submission',
-            newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page',
+            newPagePath: tainacan_plugin.wp_admin_url + 'post-new.php?post_type=page',
             isUpdatingSlug: false,
             entityName: 'collection',
             metadataSearchCancel: undefined,
@@ -1351,7 +1351,7 @@ export default {
                     .then((page) => {
                         this.coverPage = page;
                         this.coverPageTitle = this.coverPage.title.rendered;
-                        this.coverPageEditPath = tainacan_plugin.admin_url + '/post.php?post=' + page.id + '&action=edit';
+                        this.coverPageEditPath = tainacan_plugin.wp_admin_url + 'post.php?post=' + page.id + '&action=edit';
                         this.isFetchingPages = false;
                     })
                     .catch((error) => {
@@ -1707,7 +1707,7 @@ export default {
             this.form.cover_page_id = selectedPage.id; 
             this.coverPage = selectedPage;
             this.coverPageTitle = this.coverPage.title.rendered;
-            this.coverPageEditPath = tainacan_plugin.admin_url + 'post.php?post=' + selectedPage.id + '&action=edit';
+            this.coverPageEditPath = tainacan_plugin.wp_admin_url + 'post.php?post=' + selectedPage.id + '&action=edit';
         },
         removeCoverPage() {
             this.coverPage = {};
