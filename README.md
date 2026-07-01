@@ -53,6 +53,8 @@ Check out the digital exhibits in our [Showcase page](https://tainacan.org/en/ta
 
 In addition to [our documentation](https://wiki.tainacan.org/) and [instructional videos](https://youtu.be/oEl9bWe_rWI), we provide technical support on our [online forum](https://tainacan.discourse.group) in English, Portuguese and Spanish. You are welcome to send all of your questions!
 
+Inside the WordPress admin, Tainacan's main pages also provide contextual guidance in the native WordPress Help panel. Open a Tainacan admin page and click **Help** in the upper-right corner to see page-specific tips and documentation links.
+
 ### Developers
 
 Please refer to our [Developers Documentation](https://tainacan.github.io/tainacan-wiki/#/dev/) if you want to develop Tainacan plugins, themes or if you want to contribute to the core.
