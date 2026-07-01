@@ -226,6 +226,7 @@ abstract class Pages {
 		$Tainacan_Filters     		= \Tainacan\Repositories\Filters::get_instance();
 		$Tainacan_Items       		= \Tainacan\Repositories\Items::get_instance();
 		$Tainacan_Taxonomies  		= \Tainacan\Repositories\Taxonomies::get_instance();
+		$Tainacan_Terms       		= \Tainacan\Repositories\Terms::get_instance();
 
 		$tainacan_admin_i18n = require( 'tainacan-i18n.php' );
 
@@ -244,6 +245,7 @@ abstract class Pages {
 			'tainacan_api_url'         	=> esc_url_raw( rest_url() ) . 'tainacan/v2',
 			'wp_api_url'            	=> esc_url_raw( rest_url() ) . 'wp/v2/',
 			'wp_ajax_url'            	=> admin_url( 'admin-ajax.php' ),
+			'wp_admin_url'             	=> admin_url(),
 			'classes'                	=> array(),
 			'i18n'                   	=> $tainacan_admin_i18n,
 			'base_url'               	=> $TAINACAN_BASE_URL,
@@ -288,6 +290,7 @@ abstract class Pages {
 			'filters'     		=> $Tainacan_Filters->get_map(),
 			'items'       		=> $Tainacan_Items->get_map(),
 			'taxonomies'  		=> $Tainacan_Taxonomies->get_map(),
+			'terms'       		=> $Tainacan_Terms->get_map(),
 		];
 
 		$metadata_types = $Tainacan_Metadata->fetch_metadata_types();

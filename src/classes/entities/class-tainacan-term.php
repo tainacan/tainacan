@@ -22,6 +22,7 @@ class Term extends Entity {
 		$description,
 		$user,
 		$header_image_id,
+		$cover_page_id,
 		$taxonomy;
 
 
@@ -152,6 +153,15 @@ class Term extends Entity {
 	}
 
 	/**
+	 * Get cover page ID
+	 *
+	 * @return string
+	 */
+	function get_cover_page_id() {
+		return $this->get_mapped_property( 'cover_page_id' );
+	}
+
+	/**
 	 * @return false|string
 	 */
 	function get_header_image(){
@@ -259,6 +269,17 @@ class Term extends Entity {
 	 */
 	function set_header_image_id( $value ) {
 		$this->set_mapped_property( 'header_image_id', $value );
+	}
+	
+	/**
+	 * Set cover page ID
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_cover_page_id( $value ) {
+		$this->set_mapped_property( 'cover_page_id', $value );
 	}
 	
 	
