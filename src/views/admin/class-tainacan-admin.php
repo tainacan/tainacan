@@ -255,6 +255,43 @@ class Admin extends Pages {
 
 	}
 
+	/**
+	 * Returns help tabs for the repository administration page.
+	 *
+	 * @return array
+	 */
+	protected function get_help_tabs() {
+		return array(
+			array(
+				'id'      => 'tainacan_repository_overview_help_tab',
+				'title'   => __( 'Repository', 'tainacan' ),
+				'content' => '<p>' . __( 'Use the Repository area to manage the structures shared by your digital repository, such as metadata, filters, taxonomies, activities, processes and reports.', 'tainacan' ) . '</p>',
+			),
+			array(
+				'id'      => 'tainacan_collections_overview_help_tab',
+				'title'   => __( 'Collections and items', 'tainacan' ),
+				'content' => '<p>' . __( 'Collections group items and define their metadata, filters and publication settings. The items pages let you browse, create and edit records across the repository or inside a specific collection.', 'tainacan' ) . '</p>',
+			),
+			array(
+				'id'      => 'tainacan_repository_tools_help_tab',
+				'title'   => __( 'Importers and exporters', 'tainacan' ),
+				'content' => '<p>' . __( 'Importers help you bring data into Tainacan, while exporters generate files from repository data. Long-running tasks can be followed from the Processes page.', 'tainacan' ) . '</p>',
+			),
+		);
+	}
+
+	/**
+	 * Returns help sidebar content for the repository administration page.
+	 *
+	 * @return string
+	 */
+	protected function get_help_sidebar() {
+		return
+			'<p><strong>' . __( 'For more information:', 'tainacan' ) . '</strong></p>' .
+			'<p><a href="' . esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/admin', 'tainacan' ) ) . '" target="_blank" rel="noopener noreferrer">' . __( 'Repository management', 'tainacan' ) . '</a></p>' .
+			'<p><a href="' . esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/collections', 'tainacan' ) ) . '" target="_blank" rel="noopener noreferrer">' . __( 'Collections', 'tainacan' ) . '</a></p>';
+	}
+
 	function admin_enqueue_js() {
 		global $TAINACAN_BASE_URL;
 		global $TAINACAN_EXTRA_SCRIPTS;
