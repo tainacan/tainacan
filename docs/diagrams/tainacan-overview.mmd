@@ -4,77 +4,81 @@ classDiagram
     class Search_Engine { }
     class __Bulk_Edit { }
     class Private_Files { }
-    class __Bulk_Edit { }
-    class Roles { }
-    class Embed { }
-    class Media { }
-    class Search_Engine { }
     class background_process_Background_Process_Heartbeat { }
-    class background_process_Async_Request { }
     class background_process_Background_Process { }
+    class background_process_Async_Request { }
     class background_process_Background_Process_Base { }
-    class background_process_exporter_Exporter { }
+    class background_process_importer_Importer { }
+    class background_process_importer_Flickr_Importer { }
+    class background_process_importer_Term_Importer { }
+    class background_process_importer_Importer_Handler { }
+    class background_process_exporter_CSV { }
+    class background_process_importer_Youtube_Importer { }
+    class background_process_importer_Oaipmh_Importer { }
+    class background_process_importer_Test_Importer { }
+    class background_process_importer_Background_Importer { }
     class background_process_exporter_Term_Exporter { }
     class background_process_exporter_XLSX_Exporter { }
+    class background_process_exporter_Exporter { }
     class background_process_exporter_Exporter_Handler { }
-    class background_process_importer_CSV { }
     class background_process_exporter_Background_Exporter { }
     class background_process_exporter_traits_Exporter_Handler_Cell { }
     class background_process_generic_process_Generic_Process_Handler { }
-    class background_process_generic_process_Generic_Process { }
     class background_process_generic_process_Bulk_Edit_Process { }
     class background_process_generic_process_Background_Generic_Process { }
-    class background_process_importer_Importer { }
-    class background_process_importer_Background_Importer { }
-    class background_process_importer_Flickr_Importer { }
-    class background_process_importer_Term_Importer { }
-    class background_process_importer_Oaipmh_Importer { }
-    class background_process_importer_Youtube_Importer { }
-    class background_process_importer_Test_Importer { }
-    class background_process_importer_Importer_Handler { }
-    class entities_Collection { }
-    class entities_Term { }
-    class entities_Item { }
-    class entities_Log { }
-    class entities_Metadatum { }
-    class entities_Filter { }
-    class entities_Item_Metadata_Entity { }
-    class entities_Taxonomy { }
-    class entities_Entity { }
-    class entities_Metadata_Section { }
+    class background_process_generic_process_Generic_Process { }
     class traits_Formatter_Text { }
-    class traits_Admin_UI_Options { }
-    class traits_Entity_Collection_Relation { }
     class traits_Entity_Collections_Relation { }
-    class traits_SVG_Icon { }
     class traits_Singleton_Instance { }
+    class traits_SVG_Icon { }
+    class traits_Entity_Collection_Relation { }
+    class traits_Admin_UI_Options { }
+    class integrations_Elastic_Press { }
+    class integrations_Elastic_Press_lte4 { }
+    class integrations_WordPress_AI { }
+    class api_REST_Controller { }
+    class api_endpoints_REST_Background_Processes_Controller { }
+    class api_endpoints_REST_Collections_Controller { }
+    class api_endpoints_REST_Facets_Controller { }
+    class api_endpoints_REST_Roles_Controller { }
+    class api_endpoints_REST_Taxonomies_Controller { }
+    class api_endpoints_REST_Reports_Controller { }
+    class api_endpoints_REST_Metadata_Types_Controller { }
+    class api_endpoints_REST_Metadata_Controller { }
+    class api_endpoints_REST_Terms_Controller { }
+    class api_endpoints_REST_Filter_Types_Controller { }
+    class api_endpoints_REST_Exporters_Controller { }
+    class api_endpoints_REST_Oaipmh_Controller { }
+    class api_endpoints_REST_Metadata_Sections_Controller { }
+    class api_endpoints_REST_Filters_Controller { }
+    class api_endpoints_REST_Logs_Controller { }
+    class api_endpoints_REST_Bulkedit_Controller { }
+    class api_endpoints_REST_Items_Controller { }
+    class api_endpoints_REST_Sequence_Edit_Controller { }
+    class api_endpoints_REST_Metadatum_Mappers_Controller { }
+    class api_endpoints_REST_Exposers_Controller { }
+    class api_endpoints_REST_Importers_Controller { }
+    class api_endpoints_REST_Item_Metadata_Controller { }
+    class repositories_Collections { }
+    class repositories_Terms { }
     class repositories_Metadata_Sections { }
     class repositories_Logs { }
-    class repositories_Logs { }
     class repositories_Item_Metadata { }
-    class repositories_Metadata { }
-    class repositories_Items { }
-    class repositories_Collections { }
-    class repositories_Repository { }
-    class repositories_Filters { }
-    class repositories_Terms { }
+    class repositories_Logs { }
     class repositories_Taxonomies { }
-    class theme_helper_Theme_Helper { }
+    class repositories_Metadata { }
+    class repositories_Repository { }
+    class repositories_Items { }
+    class repositories_Filters { }
     class mappers_Mapper { }
-    class mappers_Mappers_Handler { }
+    class mappers_Inbcm_Museological { }
     class mappers_Dublin_Core { }
     class mappers_Inbcm_Archive { }
+    class mappers_Mappers_Handler { }
     class mappers_Inbcm_Bibliographic { }
-    class oaipmh_OAIPMH_List_Metadata_Formats { }
-    class oaipmh_OAIPMH_Get_Record { }
-    class oaipmh_XML_Error { }
-    class oaipmh_OAIPMH_Expose { }
-    class oaipmh_OAIPMH_List_Records { }
-    class oaipmh_Xml_Response { }
-    class oaipmh_OAIPMH_List_Identifiers { }
-    class oaipmh_Xml_Create { }
-    class oaipmh_OAIPMH_Identify { }
-    class oaipmh_OAIPMH_List_Sets { }
+    class oaipmh_OAIPMH_Token_Manager { }
+    class oaipmh_OAIPMH_Xml_Generator { }
+    class oaipmh_OAIPMH_Data_Provider { }
     class media_helper_Media { }
     class media_helper_Embed { }
     class media_helper_Pdf_Extracted_Text_Quality { }
@@ -82,18 +86,27 @@ classDiagram
     class exposers_Exposers_Handler { }
     class exposers_Html { }
     class exposers_Exposer { }
-    class exposers_Txt { }
     class exposers_JSON_LD { }
-    class exposers_JSON_flat { }
-    class exposers_Xml { }
     class exposers_Csv { }
-    class exposers_Html { }
+    class exposers_Xml { }
+    class exposers_JSON_flat { }
+    class exposers_Txt { }
     class exposers_OAI_PMH { }
-    class exposers_Exposers_Handler { }
-    class integrations_Elastic_Press_lte4 { }
-    class integrations_WordPress_AI { }
-    class integrations_Elastic_Press { }
-    class cli_Cli_Move_Attachments { }
+    class entities_Item_Metadata_Entity { }
+    class entities_Metadatum { }
+    class entities_Term { }
+    class entities_Filter { }
+    class entities_Metadata_Section { }
+    class entities_Item { }
+    class entities_Collection { }
+    class entities_Entity { }
+    class entities_Log { }
+    class entities_Taxonomy { }
+    class cli_Cli_Document { }
+    class cli_Cli_Control_Metadata { }
+    class cli_Cli_Collection { }
+    class cli_Cli_Garbage_Collector { }
+    class cli_Cli { }
     class cli_Logs_Wp_Posts_Migration { }
     class cli_Cli_Logs { }
     class cli_Cli_Move_Attachments { }
@@ -431,36 +444,11 @@ classDiagram
     media_helper_Media ..> entities_Item
     media_helper_Media ..> media_helper_Pdf_Extracted_Text_Quality
     media_helper_Media ..> repositories_Items
-    oaipmh_OAIPMH_Expose ..> mappers_Mappers_Handler
-    oaipmh_OAIPMH_Expose ..> oaipmh_XML_Error
-    oaipmh_OAIPMH_Expose <|-- oaipmh_OAIPMH_Get_Record
-    oaipmh_OAIPMH_Expose <|-- oaipmh_OAIPMH_Identify
-    oaipmh_OAIPMH_Expose <|-- oaipmh_OAIPMH_List_Identifiers
-    oaipmh_OAIPMH_Expose <|-- oaipmh_OAIPMH_List_Metadata_Formats
-    oaipmh_OAIPMH_Expose <|-- oaipmh_OAIPMH_List_Records
-    oaipmh_OAIPMH_Expose <|-- oaipmh_OAIPMH_List_Sets
-    oaipmh_OAIPMH_Get_Record ..> entities_Item
-    oaipmh_OAIPMH_Get_Record ..> mappers_Mappers_Handler
-    oaipmh_OAIPMH_Get_Record ..> oaipmh_Xml_Response
-    oaipmh_OAIPMH_Get_Record ..> repositories_Collections
-    oaipmh_OAIPMH_Get_Record ..> repositories_Items
-    oaipmh_OAIPMH_Identify ..> oaipmh_Xml_Response
-    oaipmh_OAIPMH_List_Identifiers ..> entities_Collection
-    oaipmh_OAIPMH_List_Identifiers ..> oaipmh_Xml_Response
-    oaipmh_OAIPMH_List_Identifiers ..> repositories_Collections
-    oaipmh_OAIPMH_List_Identifiers ..> repositories_Items
-    oaipmh_OAIPMH_List_Metadata_Formats ..> entities_Item
-    oaipmh_OAIPMH_List_Metadata_Formats ..> oaipmh_Xml_Response
-    oaipmh_OAIPMH_List_Records ..> entities_Collection
-    oaipmh_OAIPMH_List_Records ..> entities_Item
-    oaipmh_OAIPMH_List_Records ..> mappers_Mappers_Handler
-    oaipmh_OAIPMH_List_Records ..> oaipmh_Xml_Response
-    oaipmh_OAIPMH_List_Records ..> repositories_Collections
-    oaipmh_OAIPMH_List_Records ..> repositories_Items
-    oaipmh_OAIPMH_List_Sets ..> entities_Collection
-    oaipmh_OAIPMH_List_Sets ..> oaipmh_Xml_Response
-    oaipmh_OAIPMH_List_Sets ..> repositories_Collections
-    oaipmh_Xml_Create <|-- oaipmh_Xml_Response
+    oaipmh_OAIPMH_Data_Provider ..> entities_Collection
+    oaipmh_OAIPMH_Data_Provider ..> entities_Item
+    oaipmh_OAIPMH_Data_Provider ..> repositories_Collections
+    oaipmh_OAIPMH_Data_Provider ..> repositories_Items
+    oaipmh_OAIPMH_Xml_Generator ..> oaipmh_OAIPMH_Xml_Generator
     repositories_Collections ..> entities_Collection
     repositories_Collections ..> entities_Metadatum
     repositories_Collections ..> repositories_Metadata
