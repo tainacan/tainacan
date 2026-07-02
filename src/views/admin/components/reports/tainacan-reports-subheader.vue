@@ -91,8 +91,18 @@
                         <div
                                 class="apexcharts-zoomin-icon"
                                 :title="$i18n.get('label_increase_zoom')">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 5v14M5 12h14"></path>
+                            <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    style="width: 22px; height: 22px;"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                <path d="M12 5v14M5 12h14" />
                             </svg>
                         </div>
                     </span>
@@ -107,8 +117,18 @@
                         <div
                                 class="apexcharts-zoomout-icon"
                                 :title="$i18n.get('label_decrease_zoom')">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M5 12h14"></path>
+                            <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    style="width: 22px; height: 22px;"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                <path d="M5 12h14" />
                             </svg>
                         </div>
                     </span>
@@ -123,9 +143,22 @@
                         <div
                                 class="apexcharts-zoom-icon"
                                 :title="$i18n.get('label_zoom_by_selection')">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="11" cy="11" r="7"></circle>
-                                <path d="m21 21-4.3-4.3M8 11h6M11 8v6"></path>
+                            <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    style="width: 22px; height: 22px;"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                <circle
+                                        cx="11"
+                                        cy="11"
+                                        r="7" />
+                                <path d="m21 21-4.3-4.3M8 11h6M11 8v6" />
                             </svg>
                         </div>
                     </span>
@@ -140,13 +173,23 @@
                         <div 
                                 class="apexcharts-pan-icon" 
                                 :title="$i18n.get('label_pan_selection')">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M5 9 2 12l3 3"></path>
-                                <path d="M9 5l3-3 3 3"></path>
-                                <path d="M15 19l-3 3-3-3"></path>
-                                <path d="M19 9l3 3-3 3"></path>
-                                <path d="M2 12h20"></path>
-                                <path d="M12 2v20"></path>
+                            <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    style="width: 22px; height: 22px;"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                <path d="M5 9 2 12l3 3" />
+                                <path d="M9 5l3-3 3 3" />
+                                <path d="M15 19l-3 3-3-3" />
+                                <path d="M19 9l3 3-3 3" />
+                                <path d="M2 12h20" />
+                                <path d="M12 2v20" />
                             </svg>
                         </div>
                     </span>
@@ -161,9 +204,19 @@
                         <div 
                                 class="apexcharts-reset-icon" 
                                 :title="$i18n.get('label_reset_zoom')">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-                                <path d="M3 3v5h5"></path>
+                            <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    style="width: 22px; height: 22px;"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                <path d="M3 3v5h5" />
                             </svg>
                         </div>
                     </span>
@@ -178,8 +231,18 @@
                         <div
                                 class="apexcharts-menu-icon"
                                 :title="$i18n.get('label_chart_export_options')">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 6h16M4 12h16M4 18h16"></path>
+                            <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    style="width: 22px; height: 22px;"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                <path d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
                         </div>
                     </span>
