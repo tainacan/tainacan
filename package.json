@@ -54,7 +54,7 @@
     "circular-dependency-plugin": "5.2.2",
     "cross-env": "^10.1.0",
     "css-loader": "^7.1.4",
-    "eslint": "^10.2.1",
+    "eslint": "^10.6.0",
     "@eslint/js": "^10.0.1",
     "eslint-plugin-vue": "^10.9.2",
     "eslint-webpack-plugin": "^6.0.0",
