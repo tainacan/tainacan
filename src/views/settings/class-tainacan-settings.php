@@ -78,25 +78,11 @@ class Settings extends Pages {
 		) );
 
 		$this->create_tainacan_setting( array(
-			'id' => 'index_pdf_content',
-			'section' => 'tainacan_settings_search_and_performance',
-			'title' => __( 'PDF content', 'tainacan' ),
-			'label' => __( 'Index textual content from PDF files in search results', 'tainacan' ),
-			'description' => __( 'Enable this option to index the content of PDF files. This will increase the search results accuracy but also the server load.', 'tainacan' ),
-			'type' => 'boolean',
-			'input_type' => 'checkbox',
-			'input_disabled' => defined('TAINACAN_INDEX_PDF_CONTENT'),
-			'sanitize_callback' => 'rest_sanitize_boolean',
-			'default' => defined('TAINACAN_INDEX_PDF_CONTENT') ? TAINACAN_INDEX_PDF_CONTENT : false,
-			'forced_value' => defined('TAINACAN_INDEX_PDF_CONTENT') ? TAINACAN_INDEX_PDF_CONTENT : null
-		) );
-
-		$this->create_tainacan_setting( array(
 			'id' => 'enable_default_search_engine',
 			'section' => 'tainacan_settings_search_and_performance',
 			'title' => __( 'Fields for textual search', 'tainacan' ),
-			'label' => __( 'Enable the search on every metadata.', 'tainacan' ),
-			'description' => __( 'Check this option to enable Tainacan\'s textual search in every metadata of the collection. If disabled, only title and description will be considered, which may improve the search perfomance.', 'tainacan' ),	
+			'label' => __( 'Enable the search on every metadata and document content.', 'tainacan' ),
+			'description' => __( 'Check this option to enable Tainacan\'s textual search in every metadata and stored document content of the collection. If disabled, only title and description will be considered, which may improve the search perfomance.', 'tainacan' ),	
 			'type' => 'boolean',
 			'input_type' => 'checkbox',
 			'input_disabled' => defined('TAINACAN_DISABLE_DEFAULT_SEARCH_ENGINE'),
@@ -131,6 +117,44 @@ class Settings extends Pages {
 			'sanitize_callback' => 'rest_sanitize_boolean',
 			'default' => defined('TAINACAN_FACETS_DISABLE_COUNT_ITEMS') ? !TAINACAN_FACETS_DISABLE_COUNT_ITEMS : true,
 			'forced_value' => defined('TAINACAN_FACETS_DISABLE_COUNT_ITEMS') ? !TAINACAN_FACETS_DISABLE_COUNT_ITEMS : null
+		) );
+
+		$this->create_tainacan_setting( array(
+			'id' => 'index_pdf_content',
+			'section' => 'tainacan_settings_search_and_performance',
+			'title' => __( 'PDF content extraction', 'tainacan' ),
+			'label' => __( 'Automatically extract textual content from PDF files on upload', 'tainacan' ),
+			'description' => __( 'Enable this option to extract and store PDF text when an item document is saved. This increases server load on upload.', 'tainacan' ),
+			'type' => 'boolean',
+			'input_type' => 'checkbox',
+			'input_disabled' => defined('TAINACAN_INDEX_PDF_CONTENT'),
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'default' => defined('TAINACAN_INDEX_PDF_CONTENT') ? TAINACAN_INDEX_PDF_CONTENT : false,
+			'forced_value' => defined('TAINACAN_INDEX_PDF_CONTENT') ? TAINACAN_INDEX_PDF_CONTENT : null
+		) );
+
+		$this->create_tainacan_setting( array(
+			'id' => 'document_content_index_max_characters',
+			'section' => 'tainacan_settings_search_and_performance',
+			'title' => __( 'Extracted content character limit', 'tainacan' ),
+			'description' => sprintf(
+				/* translators: 1: default character limit, 2: maximum allowed character limit */
+				__( 'Maximum number of characters stored from extracted or edited document content for search.', 'tainacan' ),
+				number_format_i18n( \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_DEFAULT ),
+				number_format_i18n( \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_LIMIT )
+			),
+			'type' => 'integer',
+			'input_type' => 'number',
+			'input_attrs' => 'min=1000 max=' . \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_LIMIT . ' step=1000 required="required"',
+			'input_disabled' => defined( 'TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS' ),
+			'sanitize_callback' => array( $this, 'sanitize_document_content_index_max_characters' ),
+			'default' => \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_DEFAULT,
+			'forced_value' => defined( 'TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS' )
+				? min(
+					max( 1, (int) TAINACAN_DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS ),
+					\Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_LIMIT
+				)
+				: null
 		) );
 
 		/**
@@ -590,6 +614,23 @@ class Settings extends Pages {
 		<?php endif;
 	}	
 
+
+	/**
+	 * Sanitizes the document content index maximum character length setting.
+	 *
+	 * @param mixed $value Raw setting value.
+	 *
+	 * @return int
+	 */
+	public function sanitize_document_content_index_max_characters( $value ) {
+		$value = absint( $value );
+
+		if ( $value <= 0 ) {
+			return \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_DEFAULT;
+		}
+
+		return min( $value, \Tainacan\Media::DOCUMENT_CONTENT_INDEX_MAX_CHARACTERS_LIMIT );
+	}
 
 	public function search_and_performance_section_description() {
 	?>

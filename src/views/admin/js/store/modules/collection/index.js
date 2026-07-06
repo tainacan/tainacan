@@ -2,6 +2,11 @@ import * as actions from './actions';
 import * as getters from './getters';
 import * as mutations from './mutations';
 
+/**
+ * Vuex module `collection`.
+ * Namespace: `collection`.
+ * Purpose: stores collections, listing items, and collection-level attachments/files.
+ */
 const state = {
     items: [],
     isFromAdvancedSearch: false,

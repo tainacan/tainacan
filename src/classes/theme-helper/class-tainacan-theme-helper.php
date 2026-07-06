@@ -18,6 +18,7 @@ class Theme_Helper {
 	use \Tainacan\Traits\Singleton_Instance;
 	
 	public $visiting_collection_cover = false;
+	public $visiting_term_cover = false;
 
 	/**
 	 * Stores view modes available to be used by the theme
@@ -78,6 +79,9 @@ class Theme_Helper {
 		// Replace single query to the page content set as cover for the collection
 		// Redirect to post type archive if no cover page is set
 		add_action('wp', array($this, 'collection_single_redirect'));
+		
+		// Replace term archive query to the page content set as cover for the term
+		add_action('wp', array($this, 'term_archive_redirect'));
 		
 		// make archive for terms work with items
 		add_action('pre_get_posts', array($this, 'tax_archive_pre_get_posts'));
@@ -587,6 +591,31 @@ class Theme_Helper {
 		}
 		
 	}
+
+	function term_archive_redirect() {
+		
+		if ( is_tax() ) {
+			
+			$term = get_queried_object();
+			
+			if ($term instanceof \WP_Term && $this->is_term_a_tainacan_term($term)) {
+				
+				$tainacan_term = new \Tainacan\Entities\Term($term);
+				$cover_page_id = $tainacan_term->get_cover_page_id();
+				
+				if ($cover_page_id) {
+					
+					global $wp_query;
+					$wp_query = new \WP_Query('page_id=' . $cover_page_id);
+					
+					$this->visiting_term_cover = $tainacan_term->get_id();
+				}
+				
+			}
+			
+		}
+		
+	}
 	
 	/**
 	 * Allows themes to create a tainacan/single-items.php file which will
@@ -902,6 +931,12 @@ class Theme_Helper {
 			$enabled_view_modes = $collection->get_enabled_view_modes();
 			$default_order = $collection->get_default_order();
 			$default_orderby = $collection->get_default_orderby();
+
+			// Default items per page from this collection's setting, clamped to the maximum allowed.
+			$max_per_page = \Tainacan\Repositories\Collections::get_instance()->get_max_items_per_page();
+			$default_per_page = (int) $collection->get_default_per_page();
+			$default_per_page = $default_per_page > 0 ? $default_per_page : 12;
+			$props .= "data-default-items-per-page='" . min( $default_per_page, $max_per_page ) . "' ";
 			
 			// Gets hideItemsThumbnail info from collection setting
 			$args['hide-items-thumbnail'] = $collection->get_hide_items_thumbnail_on_lists() == 'yes' ? true : false;
@@ -3330,7 +3365,7 @@ class Theme_Helper {
 			array_reduce( range(0,5), function($container, $i) {
 				$container .= '<li style="break-inside: avoid; width: calc(100% - 40px); height: auto; background-color: var(--tainacan-block-gray1, #f2f2f2); margin: 0 0 15px 0; padding: 20px;">
 					<div style="width: 100%; height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 0 0 8px 0;"></div>
-					<div style="width: 42px; height: 54px; background-color: var(--tainacan-block-gray2, #dbdbdb);float: right;margin-left: 10px;margin-bottom: 10px;"></div>
+					<div class="placeholder-template-thumbnail" style="width: 42px; height: 54px; background-color: var(--tainacan-block-gray2, #dbdbdb);float: right;margin-left: 10px;margin-bottom: 10px;"></div>
 					<div style="width: 60%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>
 					<div style="width: 50%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>
 					<div style="width: 65%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>' .
@@ -3356,7 +3391,7 @@ class Theme_Helper {
 			'placeholder_template' => '<ul style="list-style: none;width: 100%; height: auto; display: flex; flex-direction: column; overflow-x: auto;padding: 0;">' .
 				array_reduce( range(0,9), function($container, $i) {
 					$container .= '<li style="display: flex; align-items: center; flex-direction: row; flex-wrap: nowrap; gap: 15px; width: 100%; height: 40px; background-color: var(--tainacan-block-gray' . ($i % 2 == 0 ? 1 : 0) . ', #f2f2f2); padding: 2px 6px;">
-						<div style="flex-shrink: 0; width: 32px; height: 32px; background-color: var(--tainacan-block-gray2, #dbdbdb);"></div>
+						<div class="placeholder-template-thumbnail" style="flex-shrink: 0; width: 32px; height: 32px; background-color: var(--tainacan-block-gray2, #dbdbdb);"></div>
 						<div style="width: 180px; height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5);></div>
 						<div style="width: 120px; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
 						<div style="width: 70px; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
@@ -3384,7 +3419,7 @@ class Theme_Helper {
 				array_reduce( range(0,5), function($container, $i) {
 					$container .= '<li style="height: auto; background-color: var(--tainacan-block-gray1, #f2f2f2);padding: 20px;">
 						<div style="width: 100%; height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 0 0 8px 0;"></div>
-						<div style="width: 64px; height: 64px; background-color: var(--tainacan-block-gray2, #dbdbdb);float:left;margin-right:10px;"></div>
+						<div class="placeholder-template-thumbnail" style="width: 64px; height: 64px; background-color: var(--tainacan-block-gray2, #dbdbdb);float:left;margin-right:10px;"></div>
 						<div style="margin-left: 74px;">
 							<div style="width: ' . wp_rand(85,100) . '%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>
 							<div style="width: ' . wp_rand(75,90) . '%; height: 6px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 14px 0;"></div>
@@ -3415,7 +3450,7 @@ class Theme_Helper {
 			'placeholder_template' => '<ul style="list-style: none;width: 100%; height: auto; column-width: 120px; gap: 15px;padding: 0;">' .
 				array_reduce( range(0,11), function($container, $i) {
 					$container .= '<li style="break-inside: avoid; width: calc(100% - 20px); height: auto; background-color: var(--tainacan-block-gray1, #f2f2f2); margin: 0 0 15px 0; padding: 10px;">
-						<div style="width: 100%;height: ' . ($i % 2 == 0 ? wp_rand(80, 120) : wp_rand(60, 100)) . 'px; background-color: var(--tainacan-block-gray2, #dbdbdb);margin-bottom: 10px;"></div>	
+						<div class="placeholder-template-thumbnail" style="width: 100%;height: ' . ($i % 2 == 0 ? wp_rand(80, 120) : wp_rand(60, 100)) . 'px; background-color: var(--tainacan-block-gray2, #dbdbdb);margin-bottom: 10px;"></div>	
 						<div style="width: 100%;height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
 					</li>';
 					return $container;
@@ -3438,7 +3473,7 @@ class Theme_Helper {
 					<ul style="list-style: none;width: 100%; height: 86px;display: flex;flex-direction:row;gap: 4px;margin:0px;padding: 4px;overflow-x: auto;">' .
 						array_reduce( range(0,17), function($container, $i) {
 							$container .= '<li style="width: 76px; height: 76px; flex-shrink: 0; background-color: var(--tainacan-block-gray2, #dbdbdb;">
-								<div style="width: 70px;height:70px; background-color: var(--tainacan-block-gray2, #dbdbdb);margin-bottom: 10px;"></div>
+								<div class="placeholder-template-thumbnail" style="width: 70px;height:70px; background-color: var(--tainacan-block-gray2, #dbdbdb);margin-bottom: 10px;"></div>
 							</li>';
 							return $container;
 						}) .
@@ -3457,7 +3492,7 @@ class Theme_Helper {
 				array_reduce( range(0,5), function($container, $i) {
 					$container .= '<li style="height: auto; background-color: var(--tainacan-block-gray1, #f2f2f2);padding: 20px;">
 						<div style="width: 100%; height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5); margin: 0 0 8px 0;"></div>
-						<div style="width: 64px; height:' . wp_rand(60,100) . 'px; background-color: var(--tainacan-block-gray2, #dbdbdb);float:left;margin-right:10px;"></div>
+						<div class="placeholder-template-thumbnail" style="width: 64px; height:' . wp_rand(60,100) . 'px; background-color: var(--tainacan-block-gray2, #dbdbdb);float:left;margin-right:10px;"></div>
 						<div style="margin-left: 74px; column-width: 200px;">' .
 							array_reduce( range(0,11), function($item, $m) {
 								$should_appear = wp_rand(0,1);
@@ -3479,7 +3514,7 @@ class Theme_Helper {
 				<ul style="float: inline-start;list-style: none;width: 180px; height: auto;display: flex;flex-direction:column;gap: 4px;margin:0px;padding: 0;">
 					<?php echo wp_kses_post(array_reduce( range(0,5), function($container, $i) {
 							$container .= '<li style="height: 40px; background-color: var(--tainacan-block-gray1, #f2f2f2);display: flex;flex-direction:row;align-items: center;padding: 3px 6px;gap: 6px">
-								<div style="min-width: 32px; height: 32px; background-color: var(--tainacan-block-gray2, #dbdbdb);"></div>		
+								<div class="placeholder-template-thumbnail" style="min-width: 32px; height: 32px; background-color: var(--tainacan-block-gray2, #dbdbdb);"></div>		
 								<div style="width: ' . wp_rand(40, 80) . '%; height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
 							</li>';
 							return $container;
@@ -3518,7 +3553,7 @@ class Theme_Helper {
 			'placeholder_template' => '<ul style="list-style: none;width: 100%; height: auto; display: flex; gap: 24px 0; flex-wrap: wrap;">' .
 				array_reduce( range(0,11), function($container, $i) {
 					$container .= '<li style="flex-grow: 1; max-width: 35%; width: ' . ($i % 2 == 0 ? wp_rand(100, 180) : wp_rand(90, 170)) . 'px; height: 120px ; background-color: var(--tainacan-block-gray1, #f2f2f2); margin: 0; padding: 5px;">
-						<div style="width: 100%;height: 100%; background-color: var(--tainacan-block-gray2, #dbdbdb);margin-bottom: 10px;"></div>
+						<div class="placeholder-template-thumbnail" style="width: 100%;height: 100%; background-color: var(--tainacan-block-gray2, #dbdbdb);margin-bottom: 10px;"></div>
 						<div style="width: 100%;height: 10px; background-color: var(--tainacan-block-gray3, #a5a5a5);"></div>
 					</li>';
 					return $container;

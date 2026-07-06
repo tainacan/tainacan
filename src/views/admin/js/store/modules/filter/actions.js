@@ -2,6 +2,10 @@ import axios from '../../../axios';
 import qs from 'qs';
 
 // FILTERS --------------------------------------------------------
+/**
+ * Dispatches `filter/fetchFilters`.
+ * @returns {*} Action result.
+ */
 export const fetchFilters = ({ commit }, { collectionId, isRepositoryLevel, isContextEdit, includeDisabled, customFilters }) => {
     
     const source = axios.CancelToken.source();
@@ -48,6 +52,10 @@ export const fetchFilters = ({ commit }, { collectionId, isRepositoryLevel, isCo
     });
 };
 
+/**
+ * Dispatches `filter/sendFilter`.
+ * @returns {*} Action result.
+ */
 export const sendFilter = ( { commit }, { collectionId, metadatumId, name, filterType, status, isRepositoryLevel, newIndex }) => {
     return new Promise(( resolve, reject ) => {
         let endpoint = '';
@@ -75,6 +83,10 @@ export const sendFilter = ( { commit }, { collectionId, metadatumId, name, filte
     });
 };
 
+/**
+ * Dispatches `filter/updateFilter`.
+ * @returns {*} Action result.
+ */
 export const updateFilter = ( { commit }, { filterId, index, options }) => {
 
     if (options['metadatum'] != undefined && options['metadatum']['metadatum_id'] != undefined) {
@@ -99,10 +111,18 @@ export const updateFilter = ( { commit }, { filterId, index, options }) => {
     });
 };
 
+/**
+ * Dispatches `filter/updateFilters`.
+ * @returns {*} Action result.
+ */
 export const updateFilters = ( { commit }, filters) => {
     commit('setFilters', filters);
 };
 
+/**
+ * Dispatches `filter/deleteFilter`.
+ * @returns {*} Action result.
+ */
 export const deleteFilter = ({ commit }, filterId ) => {
     let endpoint = '/filters/' + filterId;
 
@@ -118,14 +138,26 @@ export const deleteFilter = ({ commit }, filterId ) => {
     }); 
 };
 
+/**
+ * Dispatches `filter/deleteTemporaryFilter`.
+ * @returns {*} Action result.
+ */
 export const deleteTemporaryFilter = ({ commit }, index ) => {
     commit('deleteTemporaryFilter', index );
 };
 
+/**
+ * Dispatches `filter/addTemporaryFilter`.
+ * @returns {*} Action result.
+ */
 export const addTemporaryFilter = ({ commit }, filter ) => {
     commit('addTemporaryFilter', filter );
 };
 
+/**
+ * Dispatches `filter/updateCollectionFiltersOrder`.
+ * @returns {*} Action result.
+ */
 export const updateCollectionFiltersOrder = ({ commit }, { collectionId, filtersOrder }) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.put('/collections/' + collectionId + '/filters_order?context=edit', {
@@ -141,6 +173,10 @@ export const updateCollectionFiltersOrder = ({ commit }, { collectionId, filters
     });
 };
 
+/**
+ * Dispatches `filter/fetchFilterTypes`.
+ * @returns {*} Action result.
+ */
 export const fetchFilterTypes = ({ commit} ) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.get('/filter-types')
@@ -156,11 +192,19 @@ export const fetchFilterTypes = ({ commit} ) => {
     });
 };
 
+/**
+ * Dispatches `filter/updateFilteTypes`.
+ * @returns {*} Action result.
+ */
 export const updateFilteTypes = ( { commit }, filterTypes) => {
     commit('setFilterTypes', filterTypes);
 };
 
 // REPOSITORY COLLECTION FILTERS - MULTIPLE COLLECTIONS ------------------------
+/**
+ * Dispatches `filter/fetchRepositoryCollectionFilters`.
+ * @returns {*} Action result.
+ */
 export const fetchRepositoryCollectionFilters = ({ dispatch, commit } ) => {
     
     commit('clearRepositoryCollectionFilters');
@@ -228,6 +272,10 @@ export const fetchRepositoryCollectionFilters = ({ dispatch, commit } ) => {
 };
 
 // TAXONOMY FILTERS - MULTIPLE COLLECTIONS ------------------------
+/**
+ * Dispatches `filter/fetchTaxonomyFilters`.
+ * @returns {*} Action result.
+ */
 export const fetchTaxonomyFilters = ({ dispatch, commit }, { taxonomyId, collectionsIds} ) => {
     
     commit('clearTaxonomyFilters');
@@ -291,10 +339,18 @@ export const fetchTaxonomyFilters = ({ dispatch, commit }, { taxonomyId, collect
     });
 };
 
+/**
+ * Dispatches `filter/moveFilterUp`.
+ * @returns {*} Action result.
+ */
 export const moveFilterUp = ({ commit }, index) => {
     commit('moveFilterUp', index);
 }
 
+/**
+ * Dispatches `filter/moveFilterDown`.
+ * @returns {*} Action result.
+ */
 export const moveFilterDown = ({ commit }, index) => {
     commit('moveFilterDown', index);
 }

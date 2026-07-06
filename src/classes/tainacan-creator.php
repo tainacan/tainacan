@@ -18,6 +18,7 @@ const TAINACAN_ENDPOINTS_DIR              = __DIR__ . '/api/endpoints/';
 const TAINACAN_FILTER_TYPES_DIR           = __DIR__ . '/../views/admin/components/filter-types/';
 const TAINACAN_REPOSITORIES_DIR           = __DIR__ . '/repositories/';
 const TAINACAN_METADATA_TYPES_DIR         = __DIR__ . '/../views/admin/components/metadata-types/';
+const TAINACAN_INTEGRATIONS_DIR           = __DIR__ . '/integrations/';
 
 const DIRS = [
 	TAINACAN_CLI_DIR,
@@ -119,7 +120,7 @@ function tainacan_autoload($class_name) {
 		} else if ( isset( $class_path[1] ) && $class_path[1] === 'API' ) {
 			$dir = TAINACAN_API_DIR;
 			if ( count($class_path) > 3 ) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
-		} else if ( isset( $class_path[1] ) && $class_path[1] === 'OAIPMHExpose' ) {
+		} else if ( isset( $class_path[1] ) && $class_path[1] === 'OAIPMH' ) {
 			$dir = TAINACAN_OAIPMH_DIR;
 			if ( count($class_path) > 3 ) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
 		} else if ( isset( $class_path[1] ) && substr($class_path[1], 0, 3) === 'Cli' ) {
@@ -128,6 +129,8 @@ function tainacan_autoload($class_name) {
 			$dir = TAINACAN_METADATA_TYPES_DIR;
 		} else if ( isset( $class_path[1] ) && $class_path[1] === 'Filter_Types' ) {
 			$dir = TAINACAN_FILTER_TYPES_DIR;
+		} else if ( isset( $class_path[1] ) && $class_path[1] === 'Integrations' ) {
+			$dir = TAINACAN_INTEGRATIONS_DIR;
 		} else if ( $sliced ) {
 			$lower     = $sliced[0];
 			$sliced[0] = strtolower( $lower );
@@ -177,17 +180,15 @@ function tainacan_autoload($class_name) {
 
 \Tainacan\Mappers_Handler::get_instance();
 
-\Tainacan\Embed::get_instance();
-
 $Tainacan_Search_Engine = new \Tainacan\Search_Engine();
 
-\Tainacan\Elastic_Press::get_instance();
+\Tainacan\Integrations\Elastic_Press::get_instance();
+
+\Tainacan\Integrations\WordPress_AI::get_instance();
 
 \Tainacan\Roles::get_instance();
 
 \Tainacan\Private_Files::get_instance();
-
-\Tainacan\Media::get_instance();
 
 if ( class_exists('WP_CLI') ) {
 	Tainacan\Cli::get_instance();
@@ -206,6 +207,12 @@ require_once(__DIR__ . '/../views/admin/classes/hooks/class-tainacan-component-h
 
 require_once(__DIR__ . '/../views/admin/classes/hooks/class-tainacan-plugin-hooks.php');
 \Tainacan\Plugin_Hooks::get_instance();
+
+require_once(__DIR__ . '/media-helper/class-tainacan-pdf-extracted-text-quality.php');
+require_once(__DIR__ . '/media-helper/class-tainacan-embed.php');
+\Tainacan\Embed::get_instance();
+require_once(__DIR__ . '/media-helper/class-tainacan-media.php');
+\Tainacan\Media::get_instance();
 
 require_once(__DIR__ . '/theme-helper/class-tainacan-theme-helper.php');
 require_once(__DIR__ . '/theme-helper/template-tags.php');

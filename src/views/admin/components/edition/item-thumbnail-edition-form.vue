@@ -18,7 +18,8 @@
         </div>
         <div 
                 v-if="!$adminOptions.hideItemEditionThumbnail"
-                class="section-box section-thumbnail">
+                class="section-box section-thumbnail"
+                :style="{ 'margin-bottom': aiAltTextAvailable ? '1rem' : '' }">
             <div class="thumbnail-field">
                 <file-item
                         v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
@@ -56,6 +57,24 @@
                             rows="4"
                             :value="form.thumbnail_alt && form.thumbnail_alt != 'false' ? form.thumbnail_alt : ''"
                             @input="updateThumbnailAlt" />
+                    <div
+                            v-if="aiAltTextAvailable"
+                            class="thumbnail-alt-ai-actions">
+                        <a
+                                role="button"
+                                tabindex="0"
+                                :loading="isGeneratingAiAlt"
+                                :disabled="isGeneratingAiAlt"
+                                class="link-style"
+                                @click.prevent="onGenerateThumbnailAltAi">
+                            <span class="icon is-small">
+                                <i 
+                                        class="tainacan-icon has-text-secondary tainacan-icon-updating"
+                                        :class="isGeneratingAiAlt ? 'tainacan-icon-spin' : ''" />
+                            </span>
+                            {{ hasThumbnailAltText ? $i18n.get('label_regenerate_ai') : $i18n.get('label_generate_ai') }}
+                        </a>
+                    </div>
                 </b-field>    
                 <div class="thumbnail-buttons-row">
                     <a
@@ -108,6 +127,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import FileItem from '../other/file-item.vue';
 
 export default {
@@ -124,7 +144,65 @@ export default {
         'on-delete-thumbnail',
         'on-update-thumbnail-alt'
     ],
+    data() {
+        return {
+            isGeneratingAiAlt: false
+        };
+    },
+    computed: {
+        aiAltTextAvailable() {
+            return typeof tainacan_plugin !== 'undefined' && !!tainacan_plugin.ai_alt_text_generation_available;
+        },
+        hasThumbnailAltText() {
+            const altText = this.form && this.form.thumbnail_alt;
+            return !!(altText && altText !== 'false' && String(altText).trim() !== '');
+        }
+    },
     methods: {
+        ...mapActions('item', [
+            'generateThumbnailAltWithAi'
+        ]),
+        onGenerateThumbnailAltAi() {
+            if (!this.item || !this.item.thumbnail_id) {
+                return;
+            }
+            this.isGeneratingAiAlt = true;
+            this.generateThumbnailAltWithAi({ thumbnailId: this.item.thumbnail_id })
+                .then((result) => {
+                    this.isGeneratingAiAlt = false;
+                    this.$emit('on-update-thumbnail-alt', result.alt_text);
+                    this.$buefy.snackbar.open({
+                        message: result.is_decorative
+                            ? this.$i18n.get('info_thumbnail_alt_ai_decorative')
+                            : this.$i18n.get('info_thumbnail_alt_ai_success'),
+                        type: result.is_decorative ? 'is-info' : 'is-success',
+                        position: 'is-bottom-right',
+                        duration: 5000,
+                        queue: false
+                    });
+                })
+                .catch((err) => {
+                    this.isGeneratingAiAlt = false;
+                    let msg = this.$i18n.get('error_thumbnail_alt_ai_failed');
+                    if (err && err.message === 'empty_alt_response') {
+                        msg = this.$i18n.get('error_thumbnail_alt_ai_empty_response');
+                    } else if (err && err.message === 'abilities_unavailable') {
+                        msg = this.$i18n.get('error_thumbnail_alt_ai_unavailable');
+                    } else if (err?.error?.response?.data?.message) {
+                        msg = err.error.response.data.message;
+                    } else if (err && err.errorMessage) {
+                        msg = err.errorMessage;
+                    }
+                    this.$buefy.snackbar.open({
+                        message: msg,
+                        type: 'is-danger',
+                        position: 'is-bottom-right',
+                        duration: 6000,
+                        queue: false
+                    });
+                    this.$console.error(err);
+                });
+        },
         updateThumbnailAlt: _.debounce(function($event) {
             this.$emit('on-update-thumbnail-alt', $event.target.value);
         }, 750)
@@ -172,6 +250,15 @@ export default {
             margin-inline-start: 1em;
             width: 100%;
         }
+        .thumbnail-alt-ai-actions  {
+            position: relative;
+            a {
+                margin-top: 0.125rem;
+                font-size: 0.875em;
+                position: absolute;
+                inset-inline-end: 0;
+            }
+        }
         .content {
             padding: 10px;
             font-size: 0.8em;
@@ -180,7 +267,7 @@ export default {
             height: 110px;
             width: 110px;
             min-width: 110px;
-            border-radius: 3px;
+            border-radius: var(--tainacan-item-border-radius, 3px);
         }
         .image-placeholder {
             position: absolute;

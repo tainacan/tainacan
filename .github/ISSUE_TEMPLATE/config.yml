@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 Community forum
+    url: https://tainacan.discourse.group/
+    about: Ask questions and get support in English, Portuguese or Spanish.
+  - name: 📖 Developer documentation
+    url: https://tainacan.github.io/tainacan-wiki/#/dev/
+    about: Read the developer docs before contributing code.

@@ -29,6 +29,7 @@ class Collection extends Entity {
 		$description,
 		$default_order,
 		$default_orderby,
+		$default_per_page,
 		$columns,
 		$default_view_mode,
 		$enabled_view_modes,
@@ -59,7 +60,8 @@ class Collection extends Entity {
 		$item_enable_metadata_required_filter,
 		$item_enable_metadata_searchbar,
 		$item_enable_metadata_collapses,
-		$item_enable_metadata_enumeration;
+		$item_enable_metadata_enumeration,
+		$item_enable_document_content_editing;
 
 	/**
 	 * {@inheritDoc}
@@ -393,6 +395,15 @@ class Collection extends Entity {
 	 */
 	function get_default_orderby() {
 		return $this->get_mapped_property( 'default_orderby' );
+	}
+
+	/**
+	 * Get collection default items per page
+	 *
+	 * @return int
+	 */
+	function get_default_per_page() {
+		return $this->get_mapped_property( 'default_per_page' );
 	}
 
 	/**
@@ -756,6 +767,15 @@ class Collection extends Entity {
 		return $this->get_mapped_property('item_enable_metadata_enumeration');
 	}
 
+	/**
+	 * Check if document content editing is enabled in the item edition form.
+	 *
+	 * @return string 'yes' if enabled, 'no' otherwise.
+	 */
+	function get_item_enable_document_content_editing() {
+		return $this->get_mapped_property('item_enable_document_content_editing');
+	}
+
 	// Setters
 	/**
 	 * Set the collection name
@@ -838,6 +858,17 @@ class Collection extends Entity {
 	 */
 	function set_default_orderby( $value ) {
 		$this->set_mapped_property( 'default_orderby', $value );
+	}
+
+	/**
+	 * Set collection default items per page option
+	 *
+	 * @param int $value
+	 *
+	 * @return void
+	 */
+	function set_default_per_page( $value ) {
+		$this->set_mapped_property( 'default_per_page', $value );
 	}
 
 	/**
@@ -1167,6 +1198,16 @@ class Collection extends Entity {
 	 */
 	function set_item_enable_metadata_enumeration( $value ) {
 		$this->set_mapped_property('item_enable_metadata_enumeration', $value);
+	}
+
+	/**
+	 * Enable or disable document content editing for the item edition form in this collection.
+	 *
+	 * @param string $value 'yes' to enable, 'no' to disable.
+	 * @return void
+	 */
+	function set_item_enable_document_content_editing( $value ) {
+		$this->set_mapped_property('item_enable_document_content_editing', $value);
 	}
 
 	/**

@@ -1,11 +1,11 @@
-[![Build Status](https://travis-ci.org/tainacan/tainacan.svg?branch=develop)](https://travis-ci.org/tainacan/tainacan)
-
 # Tainacan
+[![Build Status](https://travis-ci.org/tainacan/tainacan.svg?branch=develop)](https://travis-ci.org/tainacan/tainacan)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 
 - Tainacan's [plugin](https://wordpress.org/plugins/tainacan/) and [theme](https://wordpress.org/themes/tainacan-interface/) on WordPress.org
 - [Access our website](http://tainacan.org)
 - [Read our official documentation](https://wiki.tainacan.org/)
-- [Conctact us in our forum](https://tainacan.discourse.group/)
+- [Contact us in our forum](https://tainacan.discourse.group/)
 - [Explore our blog](http://tainacan.org/blog/)
 - [Follow us on Twitter](https://twitter.com/tainacan_l3p)
 

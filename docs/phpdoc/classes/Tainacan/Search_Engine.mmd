@@ -1,0 +1,22 @@
+classDiagram
+    direction TB
+    class Search_Engine {
+        +logging : bool
+        +options : array
+        +ajax_request : bool
+        -query_instance : WP_Query
+        -taxonomies : array
+        -relationships : array
+        -is_tainacan_search : bool
+        -is_inner_query : bool
+        +__construct(ajax_query)
+        +search_hooks()
+        +get_search_terms()
+        +init_tainacan_search_vars()
+        +get_where_to_title_and_content()
+        +get_where_to_term_taxonomies()
+        +get_where_to_postmeta()
+        +search_where(where, wp_query)
+        +distinct(query)
+        +relationships_join(join)
+    }

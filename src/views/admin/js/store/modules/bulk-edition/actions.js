@@ -1,5 +1,14 @@
 import axios from '../../../axios';
 
+/**
+ * Dispatches `bulkedition/createEditGroup`.
+ * @param {Object} parameters - Group creation parameters.
+ * @param {*} parameters.object - Item id array or query object used to build the group.
+ * @param {*} parameters.collectionId - Collection identifier.
+ * @param {*} [parameters.order] - Optional ordering direction.
+ * @param {*} [parameters.orderBy] - Optional ordering field.
+ * @returns {*} Action result.
+ */
 export const createEditGroup = ({commit}, parameters) => {
     let object = parameters.object;
     let collectionId = parameters.collectionId;
@@ -35,6 +44,13 @@ export const createEditGroup = ({commit}, parameters) => {
         });
 };
 
+/**
+ * Dispatches `bulkedition/fetchGroup`.
+ * @param {Object} param1 - Group identifiers.
+ * @param {*} param1.collectionId - Collection identifier.
+ * @param {*} param1.groupId - Bulk edit group identifier.
+ * @returns {*} Action result.
+ */
 export const fetchGroup = ({commit}, { collectionId, groupId }) => {
 
     return new Promise ((resolve, reject) => {
@@ -50,6 +66,13 @@ export const fetchGroup = ({commit}, { collectionId, groupId }) => {
     });
 };
 
+/**
+ * Dispatches `bulkedition/fetchSequenceGroup`.
+ * @param {Object} param1 - Sequence group identifiers.
+ * @param {*} param1.collectionId - Collection identifier.
+ * @param {*} param1.groupId - Sequence edit group identifier.
+ * @returns {*} Action result.
+ */
 export const fetchSequenceGroup = ({commit}, { collectionId, groupId }) => {
 
     return new Promise ((resolve, reject) => {
@@ -65,13 +88,17 @@ export const fetchSequenceGroup = ({commit}, { collectionId, groupId }) => {
     });
 };
 
+/**
+ * Dispatches `bulkedition/setValueInBulk`.
+ * @param {Object} parameters - Bulk operation parameters.
+ * @param {*} parameters.collectionId - Collection identifier.
+ * @param {*} parameters.groupId - Bulk edit group identifier.
+ * @param {*} parameters.bodyParams - Request body payload for the operation.
+ * @returns {*} Action result.
+ */
 export const setValueInBulk = ({commit}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
-
-    /**
-     * @var bodyParams { metadatum_id, new_value } Object
-     * */
     let bodyParams = parameters.bodyParams;
 
     return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/set`, bodyParams)
@@ -84,13 +111,17 @@ export const setValueInBulk = ({commit}, parameters) => {
         });
 };
 
+/**
+ * Dispatches `bulkedition/addValueInBulk`.
+ * @param {Object} parameters - Bulk operation parameters.
+ * @param {*} parameters.collectionId - Collection identifier.
+ * @param {*} parameters.groupId - Bulk edit group identifier.
+ * @param {*} parameters.bodyParams - Request body payload for the operation.
+ * @returns {*} Action result.
+ */
 export const addValueInBulk = ({commit}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
-
-    /**
-     * @var bodyParams { metadatum_id, new_value } Object
-     * */
     let bodyParams = parameters.bodyParams;
 
     return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/add`, bodyParams)
@@ -102,13 +133,17 @@ export const addValueInBulk = ({commit}, parameters) => {
         });
 };
 
+/**
+ * Dispatches `bulkedition/removeValueInBulk`.
+ * @param {Object} parameters - Bulk operation parameters.
+ * @param {*} parameters.collectionId - Collection identifier.
+ * @param {*} parameters.groupId - Bulk edit group identifier.
+ * @param {*} parameters.bodyParams - Request body payload for the operation.
+ * @returns {*} Action result.
+ */
 export const removeValueInBulk = ({commit}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
-
-    /**
-     * @var bodyParams { metadatum_id, new_value } Object
-     * */
     let bodyParams = parameters.bodyParams;
 
     return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/remove`, bodyParams)
@@ -117,13 +152,17 @@ export const removeValueInBulk = ({commit}, parameters) => {
         });
 };
 
+/**
+ * Dispatches `bulkedition/clearValuesInBulk`.
+ * @param {Object} parameters - Bulk operation parameters.
+ * @param {*} parameters.collectionId - Collection identifier.
+ * @param {*} parameters.groupId - Bulk edit group identifier.
+ * @param {*} parameters.bodyParams - Request body payload for the operation.
+ * @returns {*} Action result.
+ */
 export const clearValuesInBulk = ({commit}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
-
-    /**
-     * @var bodyParams { metadatum_id, new_value } Object
-     * */
     let bodyParams = parameters.bodyParams;
 
     return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/clear`, bodyParams)
@@ -132,13 +171,17 @@ export const clearValuesInBulk = ({commit}, parameters) => {
         });
 };
 
+/**
+ * Dispatches `bulkedition/replaceValueInBulk`.
+ * @param {Object} parameters - Bulk operation parameters.
+ * @param {*} parameters.collectionId - Collection identifier.
+ * @param {*} parameters.groupId - Bulk edit group identifier.
+ * @param {*} parameters.bodyParams - Request body payload for the operation.
+ * @returns {*} Action result.
+ */
 export const replaceValueInBulk = ({commit}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
-
-    /**
-     * @var bodyParams { metadatum_id, old_value, new_value } Object
-     * */
     let bodyParams = parameters.bodyParams;
 
     return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/replace`, bodyParams)
@@ -150,14 +193,17 @@ export const replaceValueInBulk = ({commit}, parameters) => {
         });
 };
 
+/**
+ * Dispatches `bulkedition/setStatusInBulk`.
+ * @param {Object} parameters - Bulk operation parameters.
+ * @param {*} parameters.collectionId - Collection identifier.
+ * @param {*} parameters.groupId - Bulk edit group identifier.
+ * @param {*} parameters.bodyParams - Status payload sent to the API.
+ * @returns {*} Action result.
+ */
 export const setStatusInBulk = ({commit}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
-
-    /**
-     * The new status value (draft, publish or private)
-     * @var bodyParams String
-     * */
     let bodyParams = parameters.bodyParams;
 
     return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/set_status`, bodyParams)
@@ -170,14 +216,17 @@ export const setStatusInBulk = ({commit}, parameters) => {
         });
 };
 
+/**
+ * Dispatches `bulkedition/setCommentStatusInBulk`.
+ * @param {Object} parameters - Bulk operation parameters.
+ * @param {*} parameters.collectionId - Collection identifier.
+ * @param {*} parameters.groupId - Bulk edit group identifier.
+ * @param {*} parameters.bodyParams - Comment status payload sent to the API.
+ * @returns {*} Action result.
+ */
 export const setCommentStatusInBulk = ({commit}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
-
-    /**
-     * The new status value (draft, publish or private)
-     * @var bodyParams String
-     * */
     let bodyParams = parameters.bodyParams;
 
     return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/set_comment_status`, bodyParams)
@@ -190,14 +239,17 @@ export const setCommentStatusInBulk = ({commit}, parameters) => {
         });
 };
 
+/**
+ * Dispatches `bulkedition/setAuthorIdInBulk`.
+ * @param {Object} parameters - Bulk operation parameters.
+ * @param {*} parameters.collectionId - Collection identifier.
+ * @param {*} parameters.groupId - Bulk edit group identifier.
+ * @param {*} parameters.bodyParams - Author payload sent to the API.
+ * @returns {*} Action result.
+ */
 export const setAuthorIdInBulk = ({commit}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
-
-    /**
-     * The new status value (draft, publish or private)
-     * @var bodyParams String
-     * */
     let bodyParams = parameters.bodyParams;
 
     return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/set_author_id`, bodyParams)
@@ -210,6 +262,13 @@ export const setAuthorIdInBulk = ({commit}, parameters) => {
         });
 };
 
+/**
+ * Dispatches `bulkedition/trashItemsInBulk`.
+ * @param {Object} parameters - Bulk operation parameters.
+ * @param {*} parameters.collectionId - Collection identifier.
+ * @param {*} parameters.groupId - Bulk edit group identifier.
+ * @returns {*} Action result.
+ */
 export const trashItemsInBulk = ({commit}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
@@ -224,6 +283,13 @@ export const trashItemsInBulk = ({commit}, parameters) => {
         });
 };
 
+/**
+ * Dispatches `bulkedition/untrashItemsInBulk`.
+ * @param {Object} parameters - Bulk operation parameters.
+ * @param {*} parameters.collectionId - Collection identifier.
+ * @param {*} parameters.groupId - Bulk edit group identifier.
+ * @returns {*} Action result.
+ */
 export const untrashItemsInBulk = ({commit}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
@@ -237,6 +303,13 @@ export const untrashItemsInBulk = ({commit}, parameters) => {
         });
 };
 
+/**
+ * Dispatches `bulkedition/deleteItemsInBulk`.
+ * @param {Object} parameters - Bulk operation parameters.
+ * @param {*} parameters.collectionId - Collection identifier.
+ * @param {*} parameters.groupId - Bulk edit group identifier.
+ * @returns {*} Action result.
+ */
 export const deleteItemsInBulk = ({commit}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
@@ -252,13 +325,17 @@ export const deleteItemsInBulk = ({commit}, parameters) => {
 };
 
 
+/**
+ * Dispatches `bulkedition/copyValuesInBulk`.
+ * @param {Object} parameters - Bulk operation parameters.
+ * @param {*} parameters.collectionId - Collection identifier.
+ * @param {*} parameters.groupId - Bulk edit group identifier.
+ * @param {*} parameters.bodyParams - Request body payload for the operation.
+ * @returns {*} Action result.
+ */
 export const copyValuesInBulk = ({commit}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
-
-    /**
-     * @var bodyParams { metadatum_id, new_value } Object
-     * */
     let bodyParams = parameters.bodyParams;
 
     return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/copy_value`, bodyParams)
@@ -272,6 +349,14 @@ export const copyValuesInBulk = ({commit}, parameters) => {
 };
 
 // SEQUENCE EDIT SPECIFIC
+/**
+ * Dispatches `bulkedition/fetchItemIdInSequence`.
+ * @param {Object} param1 - Sequence lookup identifiers.
+ * @param {*} param1.collectionId - Collection identifier.
+ * @param {*} param1.sequenceId - Sequence edit group identifier.
+ * @param {*} param1.itemPosition - Item index in the sequence.
+ * @returns {*} Action result.
+ */
 export const fetchItemIdInSequence = ({commit}, { collectionId, sequenceId, itemPosition }) => {
 
     return new Promise ((resolve, reject) => {
@@ -287,6 +372,13 @@ export const fetchItemIdInSequence = ({commit}, { collectionId, sequenceId, item
     });
 };
 
+/**
+ * Dispatches `bulkedition/createSequenceEditGroup`.
+ * @param {Object} parameters - Sequence group creation parameters.
+ * @param {*} parameters.object - Item id array or query object used to build the sequence group.
+ * @param {*} parameters.collectionId - Collection identifier.
+ * @returns {*} Action result.
+ */
 export const createSequenceEditGroup = ({commit}, parameters) => {
     let object = parameters.object;
     let collectionId = parameters.collectionId;

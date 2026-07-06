@@ -1,5 +1,9 @@
 import axios from '../../../axios';
 
+/**
+ * Dispatches `report/fetchSummary`.
+ * @returns {*} Action result.
+ */
 export const fetchSummary = ({ commit }, { collectionId, force } ) => {
 
     let endpoint = '/reports';
@@ -25,6 +29,10 @@ export const fetchSummary = ({ commit }, { collectionId, force } ) => {
     });
 };
 
+/**
+ * Dispatches `report/fetchMetadata`.
+ * @returns {*} Action result.
+ */
 export const fetchMetadata = ({ commit }, { collectionId, force } ) => {
 
     let endpoint = '/reports';
@@ -50,6 +58,10 @@ export const fetchMetadata = ({ commit }, { collectionId, force } ) => {
     });
 };
 
+/**
+ * Dispatches `report/fetchMetadataList`.
+ * @returns {*} Action result.
+ */
 export const fetchMetadataList = ({ commit }, { collectionId, onlyTaxonomies } ) => {
 
     let endpoint = '';
@@ -74,6 +86,10 @@ export const fetchMetadataList = ({ commit }, { collectionId, onlyTaxonomies } )
     });
 };
 
+/**
+ * Dispatches `report/fetchCollectionsList`.
+ * @returns {*} Action result.
+ */
 export const fetchCollectionsList = ({ commit }, force) => {
 
     let endpoint = '/reports/collection';
@@ -94,6 +110,10 @@ export const fetchCollectionsList = ({ commit }, force) => {
     });
 };
 
+/**
+ * Dispatches `report/fetchTaxonomiesList`.
+ * @returns {*} Action result.
+ */
 export const fetchTaxonomiesList = ({ commit }, force) => {
 
     let endpoint = '/reports/taxonomy';
@@ -114,6 +134,10 @@ export const fetchTaxonomiesList = ({ commit }, force) => {
     });
 };
 
+/**
+ * Dispatches `report/fetchTaxonomyTerms`.
+ * @returns {*} Action result.
+ */
 export const fetchTaxonomyTerms = ({ commit }, { taxonomyId, collectionId, parentTerm, isChildChart, force }) => {
 
     let endpoint = '/reports';
@@ -157,6 +181,10 @@ export const fetchTaxonomyTerms = ({ commit }, { taxonomyId, collectionId, paren
     });
 };
 
+/**
+ * Dispatches `report/fetchActivities`.
+ * @returns {*} Action result.
+ */
 export const fetchActivities = ({ commit }, { collectionId, startDate, force } ) => {
 
     let endpoint = '/reports';

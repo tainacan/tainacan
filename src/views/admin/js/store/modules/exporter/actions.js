@@ -1,5 +1,9 @@
 import { tainacanApi } from '../../../axios';
 
+/**
+ * Dispatches `exporter/fetchAvailableExporters`.
+ * @returns {*} Action result.
+ */
 export const fetchAvailableExporters = () => {
 
     return tainacanApi.get('/exporters/available')
@@ -11,6 +15,10 @@ export const fetchAvailableExporters = () => {
         })
 };
 
+/**
+ * Dispatches `exporter/createExporterSession`.
+ * @returns {*} Action result.
+ */
 export const createExporterSession = ({commit}, slug) => {
 
     return tainacanApi.post('/exporters/session', { exporter_slug: slug })
@@ -24,6 +32,10 @@ export const createExporterSession = ({commit}, slug) => {
         })
 };
 
+/**
+ * Dispatches `exporter/updateExporterSession`.
+ * @returns {*} Action result.
+ */
 export const updateExporterSession = ({commit}, exporterSessionUpdated) => {
 
     return new Promise(( resolve, reject ) => { 
@@ -38,6 +50,10 @@ export const updateExporterSession = ({commit}, exporterSessionUpdated) => {
     });
 };
 
+/**
+ * Dispatches `exporter/runExporterSession`.
+ * @returns {*} Action result.
+ */
 export const runExporterSession = ({commit}, exporterSessionID) => {
 
     return new Promise(( resolve, reject ) => { 

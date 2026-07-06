@@ -1,6 +1,10 @@
 import axios from '../../../axios'
 
 // ROLES
+/**
+ * Dispatches `capability/addCapabilityToRole`.
+ * @returns {*} Action result.
+ */
 export const addCapabilityToRole = ({ commit }, { capabilityKey, role }) => {
     return new Promise(( resolve, reject ) => {
         axios.tainacanApi.put('/roles/' + role + '?add_cap=' + capabilityKey)
@@ -15,6 +19,10 @@ export const addCapabilityToRole = ({ commit }, { capabilityKey, role }) => {
     });
 };
 
+/**
+ * Dispatches `capability/removeCapabilityFromRole`.
+ * @returns {*} Action result.
+ */
 export const removeCapabilityFromRole = ({ commit }, { capabilityKey, role }) => {
     return new Promise(( resolve, reject ) => {
         axios.tainacanApi.put('/roles/' + role + '?remove_cap=' + capabilityKey)
@@ -29,6 +37,10 @@ export const removeCapabilityFromRole = ({ commit }, { capabilityKey, role }) =>
     });
 };
 
+/**
+ * Dispatches `capability/fetchRoles`.
+ * @returns {*} Action result.
+ */
 export const fetchRoles = ({ commit }) => {
     return new Promise((resolve, reject) => {
 
@@ -44,6 +56,10 @@ export const fetchRoles = ({ commit }) => {
     });
 };
 
+/**
+ * Dispatches `capability/fetchRole`.
+ * @returns {*} Action result.
+ */
 export const fetchRole = ({ commit }, roleSlug) => {
     return new Promise((resolve, reject) => {
 
@@ -59,6 +75,10 @@ export const fetchRole = ({ commit }, roleSlug) => {
     });
 };
 
+/**
+ * Dispatches `capability/createRole`.
+ * @returns {*} Action result.
+ */
 export const createRole = ({ commit }, role) => {
     return new Promise((resolve, reject) => {
 
@@ -75,6 +95,10 @@ export const createRole = ({ commit }, role) => {
     });
 };
 
+/**
+ * Dispatches `capability/updateRole`.
+ * @returns {*} Action result.
+ */
 export const updateRole = ({ commit }, role) => {
 
     return new Promise((resolve, reject) => {
@@ -93,6 +117,10 @@ export const updateRole = ({ commit }, role) => {
 };
 
 
+/**
+ * Dispatches `capability/deleteRole`.
+ * @returns {*} Action result.
+ */
 export const deleteRole = ({ commit }, roleSlug) => {
     return new Promise((resolve, reject) => {
 
@@ -109,6 +137,10 @@ export const deleteRole = ({ commit }, roleSlug) => {
 };
 
 // CAPABILITIES
+/**
+ * Dispatches `capability/fetchCapabilities`.
+ * @returns {*} Action result.
+ */
 export const fetchCapabilities = ({ commit }, { collectionId } ) => {
     return new Promise((resolve, reject) => {
         const endpoint = collectionId != undefined ? `/collection/${collectionId}/capabilities` : `/capabilities`;
@@ -125,6 +157,10 @@ export const fetchCapabilities = ({ commit }, { collectionId } ) => {
     });
 };
 
+/**
+ * Dispatches `capability/fetchCapability`.
+ * @returns {*} Action result.
+ */
 export const fetchCapability = ({ commit }, capabilityId) => {
     return new Promise((resolve, reject) => {
        axios.tainacanApi.get(`/capabilities/${capabilityId}`)
@@ -144,6 +180,10 @@ export const fetchCapability = ({ commit }, capabilityId) => {
 };
 
 // ADMIN UI OPTIONS
+/**
+ * Dispatches `capability/fetchAdminUIOptions`.
+ * @returns {*} Action result.
+ */
 export const fetchAdminUIOptions = ({ commit }) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.get('/admin-ui-options')
@@ -158,6 +198,10 @@ export const fetchAdminUIOptions = ({ commit }) => {
     });
 };
 
+/**
+ * Dispatches `capability/updateAdminUIOptions`.
+ * @returns {*} Action result.
+ */
 export const updateAdminUIOptions = ({ commit }, adminUIOptions ) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.put('/admin-ui-options/', { 'admin_ui_options': adminUIOptions })

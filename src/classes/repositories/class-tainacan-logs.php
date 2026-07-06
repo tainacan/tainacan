@@ -470,7 +470,8 @@ class Logs extends Repository {
 		}
 
 		do_action( 'tainacan-pre-insert', $obj );
-		do_action( 'tainacan-pre-insert-' . Entities\Log::get_post_type(), $obj );
+		$post_type = Entities\Log::get_post_type();
+		do_action( "tainacan-pre-insert-$post_type", $obj );
 
 		$old_value = $obj->get_old_value();
 		$new_value = $obj->get_new_value();
@@ -516,7 +517,7 @@ class Logs extends Repository {
 		$obj->WP_Post->ID = $wpdb->insert_id;
 
 		do_action( 'tainacan-insert', $obj, [], false );
-		do_action( 'tainacan-insert-' . Entities\Log::get_post_type(), $obj );
+		do_action( "tainacan-insert-$post_type", $obj );
 
 		return $obj;
 	}

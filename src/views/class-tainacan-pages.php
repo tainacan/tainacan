@@ -215,7 +215,7 @@ abstract class Pages {
 	 * get_admin_js_localization_params is used to build the JS tainacan_plugin global object that serves as a 
 	 * bridge between PHP and JS. Not every page needs it but they can call it to add their own data to the object.
 	 *
-	 * @return void
+	 * @return array Array of settings to be passed to the JS global object 'tainacan_plugin'.
 	 */
 	function get_admin_js_localization_params() {
 		global $TAINACAN_BASE_URL, $TAINACAN_API_MAX_ITEMS_PER_PAGE;
@@ -226,6 +226,7 @@ abstract class Pages {
 		$Tainacan_Filters     		= \Tainacan\Repositories\Filters::get_instance();
 		$Tainacan_Items       		= \Tainacan\Repositories\Items::get_instance();
 		$Tainacan_Taxonomies  		= \Tainacan\Repositories\Taxonomies::get_instance();
+		$Tainacan_Terms       		= \Tainacan\Repositories\Terms::get_instance();
 
 		$tainacan_admin_i18n = require( 'tainacan-i18n.php' );
 
@@ -244,6 +245,7 @@ abstract class Pages {
 			'tainacan_api_url'         	=> esc_url_raw( rest_url() ) . 'tainacan/v2',
 			'wp_api_url'            	=> esc_url_raw( rest_url() ) . 'wp/v2/',
 			'wp_ajax_url'            	=> admin_url( 'admin-ajax.php' ),
+			'wp_admin_url'             	=> admin_url(),
 			'classes'                	=> array(),
 			'i18n'                   	=> $tainacan_admin_i18n,
 			'base_url'               	=> $TAINACAN_BASE_URL,
@@ -263,7 +265,7 @@ abstract class Pages {
 			'exposer_type_param'     	=> \Tainacan\Exposers_Handler::TYPE_PARAM,
 			'repository_name'	 		=> get_bloginfo('name'),
 			'api_max_items_per_page'    => $TAINACAN_API_MAX_ITEMS_PER_PAGE,
-			'wp_elasticpress'    		=> \Tainacan\Elastic_Press::get_instance()->is_active(),
+			'wp_elasticpress'    		=> \Tainacan\Integrations\Elastic_Press::get_instance()->is_active(),
 			'item_submission_captcha_site_key' => get_option("tnc_option_recaptch_site_key"),
 			'tainacan_use_deprecated_logs' => (
 				!defined('TAINACAN_USE_DEPRECATED_LOGS') || 
@@ -277,7 +279,10 @@ abstract class Pages {
 				defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') &&
 				true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY
 			),
-			'has_permalinks_structure' => get_option('permalink_structure') !== ''
+			'tainacan_index_pdf_content' => \Tainacan\Media::is_index_pdf_content_enabled(),
+			'document_content_index_max_characters' => \Tainacan\Media::get_document_content_index_max_characters(),
+			'has_permalinks_structure' => get_option('permalink_structure') !== '',
+			'wp_abilities_api_url'     => esc_url_raw( rest_url( 'wp-abilities/v1/' ) ),
 		];
 		
 		$maps = [
@@ -287,6 +292,7 @@ abstract class Pages {
 			'filters'     		=> $Tainacan_Filters->get_map(),
 			'items'       		=> $Tainacan_Items->get_map(),
 			'taxonomies'  		=> $Tainacan_Taxonomies->get_map(),
+			'terms'       		=> $Tainacan_Terms->get_map(),
 		];
 
 		$metadata_types = $Tainacan_Metadata->fetch_metadata_types();
@@ -338,7 +344,6 @@ abstract class Pages {
 		$settings['admin_request_options'] = $admin_request_options;
 
 		return $settings;
-
 	}
 	
 	/**
@@ -640,23 +645,23 @@ abstract class Pages {
 		 */
 		$breadcrumbs = apply_filters( 'tainacan_admin_breadcrumbs', $breadcrumbs );
 
-		if ( count($breadcrumbs) ) {
-			?>
-			<div id="tainacan-breadcrumbs">
-				<nav>
-					<ul id="tainacan-breadcrumbs-list">
-						<?php foreach( $breadcrumbs as $breadcrumb ) : ?>
-							<?php if ( isset( $breadcrumb['url'] ) ) : ?>
-								<li><a href="<?php echo esc_url($breadcrumb['url']); ?>"><?php echo esc_html($breadcrumb['label']); ?></a></li>
-							<?php else : ?>
-								<li><?php echo esc_html($breadcrumb['label']); ?></li>
-							<?php endif; ?>
-						<?php endforeach; ?>
-					</ul>
-				</nav>
-			</div>
-			<?php
-		}
+		// We render this even if the array is empty because it may be filled by the tainacan-admin-navigation-menu.js script.
+		?>
+		<div id="tainacan-breadcrumbs">
+			<nav>
+				<ul id="tainacan-breadcrumbs-list">
+					<?php foreach( $breadcrumbs as $breadcrumb ) : ?>
+						<?php if ( isset( $breadcrumb['url'] ) ) : ?>
+							<li><a href="<?php echo esc_url($breadcrumb['url']); ?>"><?php echo esc_html($breadcrumb['label']); ?></a></li>
+						<?php else : ?>
+							<li><?php echo esc_html($breadcrumb['label']); ?></li>
+						<?php endif; ?>
+					<?php endforeach; ?>
+				</ul>
+			</nav>
+		</div>
+		<?php
+		
 	}
 
 	/**

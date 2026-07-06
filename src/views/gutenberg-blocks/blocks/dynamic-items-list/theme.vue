@@ -358,6 +358,11 @@ export default {
             registeredViewModes: tainacan_blocks.registered_view_modes,
         }
     },
+    computed: {
+        shouldHideThumbnail() {
+            return !this.showImage && (this.layout !== 'tainacan-view-modes' || (this.layout === 'tainacan-view-modes' && this.tainacanViewMode !== 'mosaic' && this.tainacanViewMode !== 'masonry'));
+        }
+    },
     created() {
         
         this.apiRoot = (tainacan_blocks && tainacan_blocks.root && !this.tainacanApiRoot) ? tainacan_blocks.root : this.tainacanApiRoot;
@@ -396,7 +401,7 @@ export default {
             this.items = [];
             this.isLoading = true;
             this.errorMessage = 'No items found.';
-            
+
             if (this.itemsRequestSource != undefined && typeof this.itemsRequestSource == 'function')
                 this.itemsRequestSource.cancel('Previous items search canceled.');
 
@@ -424,12 +429,12 @@ export default {
                     endpoint += '&view_mode=' + this.tainacanViewMode;
 
                     if ( this.displayedMetadataObjects.length > 0 )
-                        endpoint += '&fetch_only=title,url,thumbnail&fetch_only_meta=' + this.displayedMetadataObjects.map((aMetadatum) => aMetadatum.id).join(',');
+                        endpoint += !this.shouldHideThumbnail ? '&fetch_only=title,url,thumbnail&fetch_only_meta=' + this.displayedMetadataObjects.map((aMetadatum) => aMetadatum.id).join(',') : '&fetch_only=title,url&fetch_only_meta=' + this.displayedMetadataObjects.map((aMetadatum) => aMetadatum.id).join(',');
                     else 
-                        endpoint += '&fetch_only=title,description,url,thumbnail';
+                        endpoint += !this.shouldHideThumbnail ? '&fetch_only=title,description,url,thumbnail' : '&fetch_only=title,description,url';
 
                 } else {
-                    endpoint += '&fetch_only=title,url,thumbnail';
+                    endpoint += !this.shouldHideThumbnail ? '&fetch_only=title,url,thumbnail' : '&fetch_only=title,url';
                 }
 
                 this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
@@ -514,12 +519,12 @@ export default {
                     endpoint += '&view_mode=' + this.tainacanViewMode;
 
                     if ( this.displayedMetadataObjects.length > 0 )
-                        endpoint += '&fetch_only=title,url,thumbnail&fetch_only_meta=' + this.displayedMetadataObjects.map((aMetadatum) => aMetadatum.id).join(',');
+                        endpoint += !this.shouldHideThumbnail ? '&fetch_only=title,url,thumbnail&fetch_only_meta=' + this.displayedMetadataObjects.map((aMetadatum) => aMetadatum.id).join(',') : '&fetch_only=title,url&fetch_only_meta=' + this.displayedMetadataObjects.map((aMetadatum) => aMetadatum.id).join(',');
                     else 
-                        endpoint += '&fetch_only=title,description,url,thumbnail';
+                        endpoint += !this.shouldHideThumbnail ? '&fetch_only=title,description,url,thumbnail' : '&fetch_only=title,description,url';
 
                 } else {
-                    endpoint += '&fetch_only=title,url,thumbnail';
+                    endpoint += !this.shouldHideThumbnail ? '&fetch_only=title,url,thumbnail' : '&fetch_only=title,url';
                 }
                 
                 this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
@@ -571,7 +576,7 @@ export default {
                         metadata_type: undefined,
                         slug: 'thumbnail',
                         id: undefined,
-                        display: true
+                        display: !this.shouldHideThumbnail
                     });
                     this.fetchItems();
                     this.isLoadingMetadata = false;      

@@ -1206,6 +1206,9 @@
             outline: none;
             border-radius: calc(1px);
         }
+        &.items-without-image .placeholder-template-thumbnail {
+            display: none;
+        }
     }
 
     // Rules for Tainacan View Modes are similar to those applied 

@@ -477,7 +477,7 @@
 
                                             <template 
                                                     v-for="(itemMetadatum, index) of itemMetadata"
-                                                    :key="index">
+                                                    :key="getMetadataFieldRenderNonce(itemMetadatum, index)">
                                                 <tainacan-form-item
                                                         v-if="itemMetadatum.metadatum.metadata_section_id == metadataSection.id"
                                                         v-show="(!showOnlyRequiredMetadata || itemMetadatum.metadatum.required === 'yes') && (metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"
@@ -578,7 +578,8 @@
                                             @on-remove-document="removeDocument"
                                             @on-set-file-document="setFileDocument"
                                             @on-set-text-document="setTextDocument"
-                                            @on-set-url-document="setURLDocument" />
+                                            @on-set-url-document="setURLDocument"
+                                            @on-edit-document-content-index="editDocumentContentIndex" />
                                     <item-thumbnail-edition-form 
                                             :item="item"
                                             :form="form"
@@ -661,7 +662,8 @@
                                     @on-remove-document="removeDocument"
                                     @on-set-file-document="setFileDocument"
                                     @on-set-text-document="setTextDocument"
-                                    @on-set-url-document="setURLDocument" />
+                                    @on-set-url-document="setURLDocument"
+                                    @on-edit-document-content-index="editDocumentContentIndex" />
 
                             <hr v-if="shouldDisplayItemEditionDocument && !$adminOptions.itemEditionDocumentInsideTabs">
 
@@ -819,6 +821,7 @@ import RelatedItemsList from '../lists/related-items-list.vue';
 import CustomDialog from '../other/custom-dialog.vue';
 import ItemMetadatumErrorsTooltip from '../other/item-metadatum-errors-tooltip.vue';
 import ItemDocumentTextModal from '../modals/item-document-text-modal.vue';
+import ItemDocumentContentIndexModal from '../modals/item-document-content-index-modal.vue';
 import ItemDocumentURLModal from '../modals/item-document-url-modal.vue';
 import ItemPublicationEditionForm from '../edition/item-publication-edition-form.vue';
 import ItemDocumentEditionForm from '../edition/item-document-edition-form.vue';
@@ -925,7 +928,9 @@ export default {
             isOnFirstMetadatumOfCompoundNavigation: false,
             isOnLastMetadatumOfCompoundNavigation: false,
             hideMetadataTypes: this.$adminOptions.hideItemEditionMetadataTypes,
-            showOnlyRequiredMetadata: false
+            showOnlyRequiredMetadata: false,
+            metadataFieldsGlobalRenderNonce: 0,
+            metadataFieldsIndividualRenderNonce: {}
         }
     },
     computed: {
@@ -1212,6 +1217,9 @@ export default {
         this.handleWindowResize();
         window.addEventListener('resize', this.handleWindowResize);
 
+        // Listens to external metadata reload event
+        window.addEventListener('TainacanReloadItemMetadataForm', this.handleExternalMetadataReloadEvent);
+
         // If we're in the mobile app, show panel
         if (this.$adminOptions.mobileAppMode)
             this.isMobileSubheaderOpen = true;
@@ -1220,6 +1228,7 @@ export default {
         this.$emitter.off('isOnFirstMetadatumOfCompoundNavigation');
         this.$emitter.off('isOnLastMetadatumOfCompoundNavigation');
         window.removeEventListener('resize', this.handleWindowResize);
+        window.removeEventListener('TainacanReloadItemMetadataForm', this.handleExternalMetadataReloadEvent);
         if (typeof this.swiper.destroy == 'function')
             this.swiper.destroy();
     },
@@ -1230,6 +1239,7 @@ export default {
             'updateItemDocument',
             'updateThumbnailAlt',
             'fetchItemMetadata',
+            'fetchItemMetadatum',
             'fetchItem',
             'cleanItemMetadata',
             'sendAttachments',
@@ -1252,6 +1262,40 @@ export default {
         ...mapActions('metadata',[
             'fetchMetadataSections'
         ]),
+        getMetadataFieldRenderNonce(itemMetadatum, index) {
+            const individualRenderNonce = this.metadataFieldsIndividualRenderNonce[itemMetadatum.metadatum.id] || 0;
+            return `${itemMetadatum.metadatum.id}-${index}-${this.metadataFieldsGlobalRenderNonce}-${individualRenderNonce}`;
+        },
+        handleExternalMetadataReloadEvent(event) {
+            const detail = event && event.detail ? event.detail : {};
+            const hasFilter = detail && Object.keys(detail).length > 0;
+
+            if (!hasFilter) {
+                this.isLoading = true;
+                this.metadataFieldsGlobalRenderNonce += 1;
+                this.loadItemMetadata();
+                return;
+            }
+
+            const requestItemId = detail.itemId !== undefined ? detail.itemId : this.itemId;
+            const requestMetadatumId = detail.metadatumId !== undefined ? detail.metadatumId : '';
+            
+            if (!requestItemId || !requestMetadatumId) {
+                return;
+            }
+
+            this.fetchItemMetadatum({
+                item_id: requestItemId,
+                metadatum_id: requestMetadatumId
+            })
+                .then(() => {
+                    const currentIndividualRenderNonce = this.metadataFieldsIndividualRenderNonce[requestMetadatumId] || 0;
+                    Object.assign(this.metadataFieldsIndividualRenderNonce, { [requestMetadatumId]: currentIndividualRenderNonce + 1 });
+                })
+                .catch((error) => {
+                    this.$console.error('Error reloading metadata from external event', error);
+                });
+        },
         onSubmit(status, alternativeDestination) {
 
             // Puts loading on Item edition
@@ -1423,8 +1467,8 @@ export default {
                     this.item ? JSON.parse(JSON.stringify(this.item)) : false
                 );
 
-                // Loads metadata and attachments
-                this.loadMetadata();
+                // Loads metadata
+                this.loadItemMetadata();
 
             })
             .catch((error) => {
@@ -1432,8 +1476,7 @@ export default {
                 this.isLoading = false;
             });
         },
-        loadMetadata() {
-            // Obtains Item Metadatum
+        loadItemMetadata() {
             this.fetchItemMetadata(this.itemId)
                 .then((metadata) => {
                     this.metadataCollapses = [];
@@ -1717,6 +1760,29 @@ export default {
             });
 
         },
+        editDocumentContentIndex() {
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
+            this.$buefy.modal.open({
+                component: ItemDocumentContentIndexModal,
+                canCancel: false,
+                width: 860,
+                scroll: 'keep',
+                trapFocus: true,
+                autoFocus: false,
+                ariaModal: true,
+                ariaRole: 'dialog',
+                customClass: 'tainacan-modal',
+                props: {
+                    itemId: this.itemId,
+                    documentType: this.form.document_type,
+                    documentMimetype: this.item.document_mimetype,
+                    supportsDocumentContentExtraction: !!this.item.supports_document_content_extraction
+                },
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
+            });
+        },
         initializeMediaFrames() {
 
             this.fileMediaFrame = new wpMediaFrames.documentFileControl(
@@ -1929,7 +1995,7 @@ export default {
                         this.item ? JSON.parse(JSON.stringify(this.item)) : false
                     );
 
-                    this.loadMetadata();
+                    this.loadItemMetadata();
                     this.setLastUpdated(this.item.modification_date);
 
                     this.shouldLoadAttachments = !this.shouldLoadAttachments;
@@ -2500,7 +2566,8 @@ export default {
         #button-edit-document,
         #button-delete-thumbnail,
         #button-alt-text-thumbnail,
-        #button-delete-document {
+        #button-delete-document,
+        #button-edit-document-content-index {
             border-radius: 100px !important;
             max-height: 2.125em !important;
             max-width: 2.125em !important;

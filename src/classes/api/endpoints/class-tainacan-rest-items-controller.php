@@ -123,6 +123,22 @@ class REST_Items_Controller extends REST_Controller {
 			)
 		);
 		register_rest_route(
+			$this->namespace, '/' . $this->rest_base . '/(?P<item_id>[\d]+)/document-content-index/extract',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'extract_document_content_index'),
+					'permission_callback' => array($this, 'update_item_permissions_check'),
+					'args'                => array(
+						'item_id' => [
+							'description' => __( 'Item ID', 'tainacan' ),
+							'required' => true,
+						],
+					),
+				),
+			)
+		);
+		register_rest_route(
 			$this->namespace, '/' . $this->rest_base,
 			array(
 				array(
@@ -356,6 +372,8 @@ class REST_Items_Controller extends REST_Controller {
 
 			}
 
+			$item_arr['supports_document_content_extraction'] = $this->items_repository->supports_document_content_extraction( $item );
+
 			$item_arr = apply_filters('tainacan-api-items-prepare-for-response', $item_arr, $item, $request);
 
 			return $item_arr;
@@ -467,7 +485,7 @@ class REST_Items_Controller extends REST_Controller {
 		$filters_arguments = array();
 		
 		if(!empty($collection_id)) {
-			$collection = $this->collections_repository->fetch($collection_id);
+			$collection = $this->collections_repository->fetch($collection_id, 'OBJECT');
 			$order = $collection->get_filters_order();
 			$order = ( is_array( $order ) ) ? $order : unserialize( $order );
 		}
@@ -987,9 +1005,16 @@ class REST_Items_Controller extends REST_Controller {
 
 		if (!empty($body)) {
 			$attributes = [];
+			$document_content_index_truncated = false;
 
 			foreach ($body as $att => $value){
 				$attributes[$att] = $value;
+			}
+
+			if ( array_key_exists( 'document_content_index', $attributes ) && is_string( $attributes['document_content_index'] ) ) {
+				$prepared = \Tainacan\Media::prepare_document_content_index_for_storage( $attributes['document_content_index'] );
+				$attributes['document_content_index'] = $prepared['content'];
+				$document_content_index_truncated = $prepared['was_truncated'];
 			}
 
 			$item = $this->items_repository->fetch($item_id);
@@ -1002,7 +1027,13 @@ class REST_Items_Controller extends REST_Controller {
 
 					do_action('tainacan-api-item-updated', $updated_item, $attributes);
 
-					return new \WP_REST_Response($this->prepare_item_for_response($updated_item, $request), 200);
+					$response = $this->prepare_item_for_response($updated_item, $request);
+
+					if ( $document_content_index_truncated ) {
+						$response = $this->add_document_content_index_truncation_to_response( $response );
+					}
+
+					return new \WP_REST_Response( $response, 200 );
 				}
 
 				return new \WP_REST_Response([
@@ -1038,6 +1069,69 @@ class REST_Items_Controller extends REST_Controller {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public function extract_document_content_index( $request ) {
+		$item_id = $request['item_id'];
+		$item = $this->items_repository->fetch( $item_id );
+
+		if ( ! $item instanceof Entities\Item ) {
+			return new \WP_REST_Response([
+				'error_message' => __( 'An item with this ID was not found', 'tainacan' ),
+				'item_id'       => $item_id,
+			], 400);
+		}
+
+		if ( empty( $item->get_document() ) ) {
+			return new \WP_REST_Response([
+				'error_message' => __( 'This item has no document.', 'tainacan' ),
+			], 400);
+		}
+
+		$extracted_content = $this->items_repository->extract_document_content( $item, $request );
+
+		if ( is_wp_error( $extracted_content ) ) {
+			return new \WP_REST_Response([
+				'error_message' => $extracted_content->get_error_message(),
+			], 400);
+		}
+
+		if ( $extracted_content === false ) {
+			return new \WP_REST_Response([
+				'error_message' => __( 'Could not extract usable text from this PDF. It may use fonts or encoding that are not supported for automatic extraction.', 'tainacan' ),
+			], 400);
+		}
+
+		$prepared = \Tainacan\Media::prepare_document_content_index_for_storage( $extracted_content );
+
+		$response = [
+			'document_content_index' => $prepared['content'],
+		];
+
+		if ( $prepared['was_truncated'] ) {
+			$response = $this->add_document_content_index_truncation_to_response( $response );
+		}
+
+		return new \WP_REST_Response( $response, 200 );
+	}
+
+	/**
+	 * Adds truncation warning fields to an API response array.
+	 *
+	 * @param array $response Response data.
+	 *
+	 * @return array
+	 */
+	private function add_document_content_index_truncation_to_response( $response ) {
+		$response['document_content_index_truncated'] = true;
+		$response['document_content_index_warning'] = \Tainacan\Media::get_document_content_index_truncation_warning_message();
+
+		return $response;
 	}
 
 	/**

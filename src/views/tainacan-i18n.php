@@ -92,7 +92,7 @@ return apply_filters( 'tainacan-i18n', [
 	'finish'                                         => __( 'Finish', 'tainacan' ),
 	'select_to_create'                               => __( 'select to create', 'tainacan' ),
 	'new_bulk_edit_criterion'                     	 => __( 'New bulk edit criterion', 'tainacan' ),
-	'add_bulk_edit_criterion_to_process_queue'      => __( 'Add bulk edit criterion to the process queue', 'tainacan' ),
+	'add_bulk_edit_criterion_to_process_queue'       => __( 'Add bulk edit criterion to the process queue', 'tainacan' ),
 	'undo'                                           => __( 'Undo', 'tainacan' ),
 	'delete'                                    	 => __( 'Delete', 'tainacan' ),
 	'skip'	                                    	 => __( 'Skip', 'tainacan' ),
@@ -197,6 +197,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_image'                                    => __( 'Image', 'tainacan' ),
 	'label_thumbnail'                                => __( 'Thumbnail', 'tainacan' ),
 	'label_thumbnail_alt'                            => __( 'Alternative text', 'tainacan' ),
+	'label_generate_ai'                				 => __( 'Generate with AI', 'tainacan' ),
+	'label_regenerate_ai'             				 => __( 'Regenerate with AI', 'tainacan' ),
 	'label_empty_thumbnail'                          => __( 'Empty thumbnail', 'tainacan' ),
 	'label_empty_term_image'                         => __( 'Empty term image', 'tainacan' ),
 	'label_parent_collection'                        => __( 'Parent collection', 'tainacan' ),
@@ -209,6 +211,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_button_edit_thumb'                        => __( 'Button Edit Thumbnail', 'tainacan' ),
 	'label_button_edit_header_image'                 => __( 'Button Edit Header Image', 'tainacan' ),
 	'label_button_edit_document'                     => __( 'Button Edit Document', 'tainacan' ),
+	'label_button_index_document'                    => __( 'Button View Document Content', 'tainacan' ),
 	'label_button_delete_document'                   => __( 'Button Delete Document', 'tainacan' ),
 	'label_choose_thumb'                             => __( 'Choose Thumbnail', 'tainacan' ),
 	'label_button_delete_thumb'                      => __( 'Button Delete Thumbnail', 'tainacan' ),
@@ -289,6 +292,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_empty_header_image'                       => __( 'Empty Header Image', 'tainacan' ),
 	'label_enable_cover_page'                        => __( 'Enable Cover Page', 'tainacan' ),
 	'label_cover_page'                               => __( 'Cover Page', 'tainacan' ),
+	'label_enable_term_cover_page'                   => __( 'Enable Term Cover Page', 'tainacan' ),
+	'label_term_cover_page'                          => __( 'Term Cover Page', 'tainacan' ),
 	'label_allow_comments'                           => __( 'Allow comments', 'tainacan' ),
 	'label_comments'                           		 => __( 'Comments', 'tainacan' ),
 	'label_default_displayed_metadata'               => __( 'Default Displayed Metadata', 'tainacan' ),
@@ -304,6 +309,13 @@ return apply_filters( 'tainacan-i18n', [
 	'label_document'                                 => __( 'Document', 'tainacan' ),
 	'label_document_empty'                           => __( 'Empty document', 'tainacan' ),
 	'label_document_content'                         => __( 'Document content', 'tainacan' ),
+	/* translators: Description shown in the document content modal, explaining that extracted text is used in search */
+	'info_document_content_index_description'        => __( 'Text extracted from the document to be used in search results.', 'tainacan' ),
+	'info_document_content_index_empty'              => __( 'No text has been extracted from this document yet.', 'tainacan' ),
+	'info_document_content_index_empty_pdf'          => __( 'If this is a PDF file, it may not have been processed yet, or the extraction failed.', 'tainacan' ),
+	'info_document_content_index_empty_non_pdf'      => __( 'Tainacan does not support automatic text extraction for this document type, but you can type content here to include it in textual searches. This is useful, for example, to add an image description.', 'tainacan' ),
+	'info_document_content_index_extracted'          => __( 'Document content extracted.', 'tainacan' ),
+	'label_extract_document_content'                 => __( 'Extract content', 'tainacan' ),
 	'label_file'                                     => __( 'File', 'tainacan' ),
 	'label_text'                                     => __( 'Text', 'tainacan' ),
 	'label_url'                                      => __( 'URL', 'tainacan' ),
@@ -671,6 +683,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_limit_max_values'						 => __( 'Limit the amount of multiple values', 'tainacan'),
 	'label_items_selection'							 => __( 'Items selection', 'tainacan'),
 	'label_default_orderby' 						 => __(	'Initial default sorting', 'tainacan' ),
+	'label_default_per_page'						 => __( 'Default items per page', 'tainacan' ),
 	'label_focus_mode'		 						 => __(	'Focus mode', 'tainacan' ),
 	'label_start_focus_mode'		 				 => __(	'Start focus mode', 'tainacan' ),
 	'label_close_search' 					 		 => __(	'Close search', 'tainacan' ),
@@ -776,6 +789,7 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_select_a_parent_term'               => __( 'Select a parent term:', 'tainacan' ),
 	'instruction_select_a_metadatum'                 => __( 'Select a metadatum', 'tainacan' ),
 	'instruction_cover_page'                         => __( 'Search a Page to choose.', 'tainacan' ),
+	'instruction_term_cover_page'                    => __( 'Search a Page to choose.', 'tainacan' ),
 	'instruction_type_search_users'		             => __( 'Search users...', 'tainacan' ),
 	'instruction_type_search_users_filter'           => __( 'Search users to filter...', 'tainacan' ),
 	'instruction_type_search_metadata_filter'        => __( 'Search metadata to filter...', 'tainacan' ),
@@ -1145,6 +1159,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_iframe_dimensions'						 => __( 'The dimension values will be passed to the iframe, but it\'s rendering may change according to the theme display settings. It is still important to keep an approximate aspect ratio to the inner content.', 'tainacan'),
 	'info_metadata_mapper_helper'					 => __(	'Select the corresponding metadata so they can be exposed according to the mapper', 'tainacan'),
 	'info_default_orderby'							 => __( 'These settings only affect the initial state of the items sorting. After changed, the value used will be the latest selected by the user.', 'tainacan' ),
+	'info_default_per_page'						 => __( 'Initial number of items shown per page in the public listing. Cannot be greater than the maximum items per page.', 'tainacan' ),
 	'info_collection_thumbnail_and_header'			 => __( 'The thumbnail is a squared image that will represent the collection in listings. The header image is a complementary, decorative image that may or not be displayed by your theme in the items list. Keep in mind that it might be cropped.', 'tainacan'),
 	'info_preset_collections'				 		 => __( 'Use mappers or standards as pre configuration', 'tainacan' ),
 	'info_create_collection_from_mapper'			 => __( 'Have the metadata preset by an installed mapper, such as Dublin core, then set the rest manually.', 'tainacan' ),
@@ -1199,7 +1214,13 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: %s is the number of selected items */
 	'info_%s_selected_items_for_bulk_edition'		 => __( '<strong>%s items selected</strong> for bulk edition.', 'tainacan'),
 	'info_define_bulk_edit_criteria'				 => __( 'Define the criteria below:', 'tainacan'),
-
+	'info_error_empty_value'						 => __( 'If you want to leave this field empty, please remove the value.', 'tainacan'),
+	'info_thumbnail_alt_ai_generating'               => __( 'Generating alternative text…', 'tainacan' ),
+	'info_thumbnail_alt_ai_success'                  => __( 'Alternative text was generated.', 'tainacan' ),
+	'info_thumbnail_alt_ai_decorative'               => __( 'The image was identified as decorative. Alternative text was cleared.', 'tainacan' ),
+	/* translators: %s: maximum document content size in kilobytes */
+	'info_document_content_index_truncated_%s'    => __( 'The document content exceeded the maximum size (%s characters) and was truncated.', 'tainacan' ),
+	
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
 	'action_update'					=> __( 'General Updates', 'tainacan'),
@@ -1244,6 +1265,10 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: This refers to the short label that will appear on datepickers for Saturday */
 	'datepicker_short_saturday'			=> __( 'Sa', 'tainacan' ),
 
+	/* Errors related to document content index extraction and saving */
+	'error_document_content_index_extraction_failed' => __( 'Could not extract usable text from this PDF. It may use fonts or encoding that are not supported for automatic extraction.', 'tainacan' ),
+	'error_document_content_index_save_failed'       => __( 'Failed to save document content.', 'tainacan' ),
+
 	/* Errors displayed on the interface bottom notifications */
 	'error_connectivity_label' => __('Connectivity issue', 'tainacan'),
 	'error_connectivity' => __('It is possible that you are disconnected or the server is not working properly.', 'tainacan'),
@@ -1274,6 +1299,10 @@ return apply_filters( 'tainacan-i18n', [
 	'error_503_detail'	 => __('The server might be unavailable due to multiple access, some instability or connection issues. Try again later and if it persists, contact the administrator.', 'tainacan'),
 	'error_504_detail'	 => __('This error response is given when the server is acting as a gateway and cannot get a response in time. Try contacting the administrator.', 'tainacan'),
 	'error_511_detail'	 => __('You must authenticate to get access this information. Even if you have access to the Tainacan admin panel, your session cookies might have gotten lost. Try reloading the page or logging in again on the WordPress Admin panel.', 'tainacan'),
-	'error_other_detail' => __('Something went wrong here. Please try again or contact the administrator.', 'tainacan')
+	'error_other_detail' => __('Something went wrong here. Please try again or contact the administrator.', 'tainacan'),
+	'error_thumbnail_alt_ai_failed'                  => __( 'Could not generate alternative text. You can try again or enter it manually.', 'tainacan' ),
+	'error_thumbnail_alt_ai_empty_response'          => __( 'The generator did not return alternative text. Please try again or enter it manually.', 'tainacan' ),
+	'error_thumbnail_alt_ai_unavailable'             => __( 'Alt text generation is not available on this site.', 'tainacan' ),
+	'error_thumbnail_alt_ai_failed_detail'           => __( 'Could not generate alternative text. You can try again or enter it manually.', 'tainacan' ),
 ] );
 ?>

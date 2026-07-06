@@ -130,6 +130,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                         href={ !appendChildTerms ? ((linkTermFacetsToTermPage && isMetadatumTypeTaxonomy(metadatumType)) ? facet.term_url : facet.url) : (facet.total_children > 0 ? null : (linkTermFacetsToTermPage ? facet.term_url : facet.url)) }
                         onClick={ () => { (appendChildTerms && facet.total_children > 0) ? displayChildTerms(facetId) : null } } 
                         style={{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}}>
+                    { facet.entity ? (
                     <img
                         src={ 
                             facet.entity.thumbnail && facet.entity.thumbnail[imageSize] && facet.entity.thumbnail[imageSize][0] 
@@ -143,6 +144,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                             `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`)
                         }
                         alt={ facet.label ? facet.label : '' }/>
+                    ) : null }
                     <div className={ 'facet-label-and-count' + (itemsCountStyle === 'below' ? ' is-style-facet-label-and-count--below' : '') }>
                         <span>{ facet.label ? facet.label : '' }</span>
                         {

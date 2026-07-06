@@ -622,7 +622,6 @@ export default {
     @use '../../scss/_cards.scss';
 
     .tainacan-modal-title {
-        margin-bottom: 24px;
 
         h2 {
             margin-bottom: 0;

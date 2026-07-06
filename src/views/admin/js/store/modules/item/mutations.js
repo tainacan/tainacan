@@ -1,17 +1,39 @@
 
 
+/**
+ * Commits `item/setItem` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} item - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setItem = ( state, item ) => {
     state.item = item;
 }
 
+/**
+ * Commits `item/cleanItem` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const cleanItem = ( state ) => {
     state.item = [];
 }
 
+/**
+ * Commits `item/cleanLastUpdated` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const cleanLastUpdated = ( state ) => {
     state.lastUpdated = '';
 }
 
+/**
+ * Commits `item/setSingleAttachment` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} attachment - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setSingleAttachment = ( state, attachment ) => {
     let index = state.attachments.findIndex(newAttachment => newAttachment.id === attachment.id);
     if ( index >= 0){
@@ -22,10 +44,22 @@ export const setSingleAttachment = ( state, attachment ) => {
     }
 }
 
+/**
+ * Commits `item/setAttachments` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} attachments - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setAttachments = ( state, attachments ) => {
     state.attachments = attachments;
 }
 
+/**
+ * Commits `item/removeAttatchmentFromItem` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} attachmentId - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const removeAttatchmentFromItem = (state, attachmentId) => {
     let indexOfRemoved = state.attachments.findIndex((anAttachment) => anAttachment.id == attachmentId);
 
@@ -34,40 +68,89 @@ export const removeAttatchmentFromItem = (state, attachmentId) => {
 }
 
 
+/**
+ * Commits `item/cleanAttachment` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const cleanAttachment = (state) => {
     state.attachment = {};
 }
 
+/**
+ * Commits `item/cleanAttachments` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const cleanAttachments = (state) => {
     state.attachments = [];
 }
 
+/**
+ * Commits `item/setTotalAttachments` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} total - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setTotalAttachments = ( state, total) => {
     state.totalAttachments = total;
 }
 
+/**
+ * Commits `item/setItemTitle` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} itemTitle - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setItemTitle = ( state, itemTitle ) => {
     state.itemTitle = itemTitle;
 }
 
+/**
+ * Commits `item/cleanItemTitle` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const cleanItemTitle = ( state ) => {
     state.itemTitle = '';
 }
 
+/**
+ * Commits `item/setItemMetadata` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} itemMetadata - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setItemMetadata = ( state, itemMetadata) => {
     state.itemMetadata = itemMetadata;
 }
 
+/**
+ * Commits `item/cleanItemMetadata` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const cleanItemMetadata = (state) => {
     state.itemMetadata = [];
 }
 
+/**
+ * Commits `item/setOnlyRelatedItemsToItem` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const setOnlyRelatedItemsToItem = (state, { itemId, relatedItems }) => {
     if (state.item && state.item.id && state.item.id == itemId) {
         state.item.related_items = relatedItems;
     }
 }
 
+/**
+ * Commits `item/setSingleMetadatum` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} itemMetadatum - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setSingleMetadatum = (state, itemMetadatum) => {
     
     if (itemMetadatum.metadatum.parent <= 0) {
@@ -124,6 +207,11 @@ export const setSingleMetadatum = (state, itemMetadatum) => {
     }
 }
 
+/**
+ * Commits `item/deleteChildItemMetadata` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const deleteChildItemMetadata = (state, { parentMetadatumId, parentMetaId }) => {
     
     let parentIndex = state.itemMetadata.findIndex(anItemMetadatum => anItemMetadatum.metadatum.id == parentMetadatumId);
@@ -144,6 +232,12 @@ export const deleteChildItemMetadata = (state, { parentMetadatumId, parentMetaId
     }
 }
 
+/**
+ * Commits `item/setLastUpdated` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} value - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setLastUpdated = (state, value) => {
     if (value != undefined)
         state.lastUpdated = value;
@@ -153,22 +247,49 @@ export const setLastUpdated = (state, value) => {
     }
 }
 
+/**
+ * Commits `item/clearItemSubmission` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const clearItemSubmission = (state) => {
     state.itemSubmission = {};
 }
 
+/**
+ * Commits `item/setItemSubmission` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} value - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setItemSubmission = (state, value) => {
     state.itemSubmission = value;
 }
 
+/**
+ * Commits `item/setItemSubmissionMetadata` state changes.
+ * @param {Object} state - Module state.
+ * @param {*} value - Mutation payload.
+ * @returns {void} No return value.
+ */
 export const setItemSubmissionMetadata = (state, value) => {
     state.itemSubmissionMetadata = value;
 }
 
+/**
+ * Commits `item/updateItemSubmission` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const updateItemSubmission = (state, { key, value }) => {
     Object.assign(state.itemSubmission, { [key]: value });
 }
 
+/**
+ * Commits `item/updateItemSubmissionMetadatum` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const updateItemSubmissionMetadatum = (state, { metadatum_id, values, child_group_index, parent_id }) => {
 
     let metadata = Array.isArray(state.itemSubmissionMetadata) ? state.itemSubmissionMetadata : [];
@@ -202,6 +323,11 @@ export const updateItemSubmissionMetadatum = (state, { metadatum_id, values, chi
     Object.assign(state, { 'itemSubmissionMetadata': metadata });
 }
 
+/**
+ * Commits `item/deleteGroupFromItemSubmissionMetadatum` state changes.
+ * @param {Object} state - Module state.
+ * @returns {void} No return value.
+ */
 export const deleteGroupFromItemSubmissionMetadatum = (state, { metadatum_id, child_group_index }) => {
 
     let existingMetadatumIndex = state.itemSubmissionMetadata.findIndex((metadatum) => metadatum.metadatum_id == metadatum_id);
