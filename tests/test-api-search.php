@@ -310,11 +310,11 @@ class TAINACAN_REST_Search extends TAINACAN_UnitApiTestCase {
 		$items = $search_response->get_data()['items'];
 		$this->assertCount( 4, $items );
 
-		// Explicit sentence param overrides the setting
+		// Explicit sentence=true overrides per-word default (phrase match: 1 item, not 4)
 		$search_items->set_query_params( [ 'search' => 'texto poesia', 'sentence' => true ] );
 		$search_response = $this->server->dispatch( $search_items );
 		$items = $search_response->get_data()['items'];
-		$this->assertCount( 0, $items );
+		$this->assertCount( 1, $items );
 
 		$search_items->set_query_params( [ 'search' => 'texto poesia', 'sentence' => false ] );
 		$search_response = $this->server->dispatch( $search_items );
