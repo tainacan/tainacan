@@ -1683,7 +1683,22 @@ class REST_Items_Controller extends REST_Controller {
 			parent::get_meta_queries_params()
 		);
 
+		$query_params['sentence']['default'] = $this->get_default_search_sentence();
+
 		return $query_params;
+	}
+
+	/**
+	 * Default value for the sentence query var on items search requests.
+	 *
+	 * @return bool
+	 */
+	private function get_default_search_sentence() {
+		$search_each_word_by_default = defined( 'TAINACAN_SEARCH_EACH_WORD_BY_DEFAULT' )
+			? TAINACAN_SEARCH_EACH_WORD_BY_DEFAULT
+			: (bool) get_option( 'tainacan_option_search_each_word_by_default', false );
+
+		return apply_filters( 'tainacan-default-search-sentence', ! $search_each_word_by_default );
 	}
 
 	function process_request_filters($args) {

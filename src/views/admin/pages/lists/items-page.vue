@@ -174,16 +174,15 @@
                                 :focusable="false"
                                 @click="updateSearch()">
                             <span v-html="$i18n.get('instruction_press_enter_to_search_for')" />&nbsp;
-                            <em>{{ sentenceMode == true ? futureSearchQuery : ('"' + futureSearchQuery + '"') }}.</em>
+                            <em>{{ !isWordSearchMode ? futureSearchQuery : ('"' + futureSearchQuery + '"') }}.</em>
                         </b-dropdown-item>
                         <b-dropdown-item
+                                v-if="!isWordSearchByDefault"
                                 custom
                                 :focusable="false">
                             <b-checkbox 
-                                    :model-value="sentenceMode"
-                                    :true-value="false"
-                                    :false-value="true"
-                                    @update:model-value="$eventBusSearch.setSentenceMode($event)">
+                                    :model-value="isWordSearchMode"
+                                    @update:model-value="$eventBusSearch.setWordSearchMode($event)">
                                 {{ $i18n.get('label_use_search_separated_words') }}
                             </b-checkbox>
                             <small class="is-small help">{{ $i18n.get('info_use_search_separated_words') }}</small>
@@ -786,22 +785,25 @@
                         </button>
 
                         <p v-if="searchQuery">
-                            <template v-if="!sentenceMode">
-                                <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_enabling_search_by_word') }}
-                                <br>
-                                {{ $i18n.get('info_details_about_search_by_word') }}
+                            <template v-if="isWordSearchByDefault">
+                                <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_use_search_separated_words') }}
                             </template>
                             <template v-else>
-                                <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_disabling_search_by_word') }}
+                                <template v-if="!isWordSearchMode">
+                                    <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_enabling_search_by_word') }}
+                                    <br>
+                                    {{ $i18n.get('info_details_about_search_by_word') }}
+                                </template>
+                                <template v-else>
+                                    <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_disabling_search_by_word') }}
+                                </template>
+                                <br>
+                                <b-checkbox 
+                                        :model-value="isWordSearchMode"
+                                        @update:model-value="$eventBusSearch.setWordSearchMode($event); updateSearch();">
+                                    {{ $i18n.get('label_use_search_separated_words') }}
+                                </b-checkbox>
                             </template>
-                            <br>
-                            <b-checkbox 
-                                    :model-value="sentenceMode"
-                                    :true-value="false"
-                                    :false-value="true"
-                                    @update:model-value="$eventBusSearch.setSentenceMode($event); updateSearch();">
-                                {{ $i18n.get('label_use_search_separated_words') }}
-                            </b-checkbox>
                         </p>
                     </div>
                 </section>
@@ -879,7 +881,8 @@
             }),
             ...mapGetters('search', {
                 'searchQuery': 'getSearchQuery',
-                'sentenceMode': 'getSentenceMode',
+                'isWordSearchMode': 'getIsWordSearchMode',
+                'isWordSearchByDefault': 'getIsWordSearchByDefault',
                 'status': 'getStatus',
                 'orderBy': 'getOrderBy',
                 'order': 'getOrder',
@@ -996,6 +999,7 @@
                     
                     // Passes the current URL to store
                     this.$store.dispatch('search/setPostQuery', JSON.parse(JSON.stringify(this.$route.query)));
+                    this.$eventBusSearch.applyDefaultSentenceIfNeeded();
 
                     // Advanced Search
                     if (this.$route.query && this.$route.query.advancedSearch)

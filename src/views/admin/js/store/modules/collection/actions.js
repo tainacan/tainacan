@@ -59,6 +59,9 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
             if (postQueries.fetch_only_meta == '')
                 dispatch('search/addFetchOnlyMeta', '', { root: true });
 
+            if (postQueries.search || postQueries.s)
+                postQueries.sentence = rootGetters['search/getEffectiveSentence'];
+
             let query = qs.stringify(postQueries);
 
             // Differentiates between repository level and collection level queries

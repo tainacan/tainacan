@@ -166,8 +166,17 @@ export default {
             setTotalItems(totalItems) {
                 app.config.globalProperties.$store.dispatch('search/setTotalItems', totalItems);
             },
-            setSentenceMode(sentenceMode) {
-                app.config.globalProperties.$store.dispatch('search/setSentenceMode', sentenceMode);
+            setWordSearchMode(wordSearchMode) {
+                app.config.globalProperties.$store.dispatch('search/setWordSearchMode', wordSearchMode);
+            },
+            applyDefaultSentenceIfNeeded() {
+                const postquery = app.config.globalProperties.$store.getters['search/getPostQuery'];
+
+                if ( (postquery.search || postquery.s) && postquery.sentence === undefined ) {
+                    const effectiveSentence = app.config.globalProperties.$store.getters['search/getEffectiveSentence'];
+                    app.config.globalProperties.$store.dispatch('search/setWordSearchMode', !effectiveSentence);
+                    this.updateURLQueries();
+                }
             },
             setSearchQuery(searchQuery) {
                 app.config.globalProperties.$store.dispatch('search/setSearchQuery', searchQuery);
@@ -232,6 +241,7 @@ export default {
             },
             updateStoreFromURL() {
                 app.config.globalProperties.$store.dispatch('search/setPostQuery', JSON.parse(JSON.stringify(app.config.globalProperties.$route.query)));
+                this.applyDefaultSentenceIfNeeded();
             },
             loadItems() {
                 // Forces fetch_only to be filled before any search happens

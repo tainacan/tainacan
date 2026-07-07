@@ -361,9 +361,9 @@ abstract class REST_Controller extends \WP_REST_Controller {
 		);
 
 		$query_params['sentence'] = array(
-			'description'        => __( 'Whether to search by phrase. Default true.', 'tainacan' ),
+			'description'        => __( 'Whether to search by phrase.', 'tainacan' ),
 			'type'               => 'boolean',
-			'default'     => true,
+			'default'            => true,
 		);
 
 		$query_params['authorid'] = array(

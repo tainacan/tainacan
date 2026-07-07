@@ -105,12 +105,43 @@ export const getSearchQuery = state => {
 };
 
 /**
- * Reads derived state from `search/getSentenceMode`.
- * @param {Object} state - Module state.
- * @returns {*} Getter result.
+ * Reads the configured default for the sentence search parameter.
+ * @returns {boolean} Getter result.
  */
-export const getSentenceMode = state => {
-    return state.postquery.sentence;
+const getDefaultSearchSentence = () => {
+    if ( typeof tainacan_plugin !== 'undefined' && tainacan_plugin.default_search_sentence !== undefined )
+        return tainacan_plugin.default_search_sentence === true || tainacan_plugin.default_search_sentence === 'true';
+
+    return true;
+};
+
+/**
+ * Reads derived state from `search/getEffectiveSentence`.
+ * @param {Object} state - Module state.
+ * @returns {boolean} Getter result.
+ */
+export const getEffectiveSentence = state => {
+    if ( state.postquery.sentence !== undefined && state.postquery.sentence !== null && state.postquery.sentence !== '' )
+        return state.postquery.sentence === true || state.postquery.sentence === 'true';
+
+    return getDefaultSearchSentence();
+};
+
+/**
+ * Reads derived state from `search/getIsWordSearchMode`.
+ * @param {Object} state - Module state.
+ * @returns {boolean} Getter result.
+ */
+export const getIsWordSearchMode = state => {
+    return !getEffectiveSentence(state);
+};
+
+/**
+ * Reads whether per-word search is the site default.
+ * @returns {boolean} Getter result.
+ */
+export const getIsWordSearchByDefault = () => {
+    return !getDefaultSearchSentence();
 };
 
 /**

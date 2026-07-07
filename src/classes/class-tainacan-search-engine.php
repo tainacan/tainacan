@@ -133,7 +133,9 @@ class Search_Engine {
 	// creates the list of search keywords from the 's' parameters.
 	function get_search_terms() {
 		$s = isset( $this->query_instance->query_vars['s'] ) ? $this->query_instance->query_vars['s'] : '';
-		$sentence = isset( $this->query_instance->query_vars['sentence'] ) ? $this->query_instance->query_vars['sentence'] : false;
+		$sentence = isset( $this->query_instance->query_vars['sentence'] )
+			? $this->query_instance->query_vars['sentence']
+			: $this->get_default_sentence();
 		$search_terms = array();
 
 		if ( !empty( $s ) ) {
@@ -398,5 +400,18 @@ class Search_Engine {
 // 		}
 // 		return $join;
 // 	}
+
+	/**
+	 * Default value for the sentence query var when not explicitly set.
+	 *
+	 * @return bool
+	 */
+	private function get_default_sentence() {
+		$search_each_word_by_default = defined( 'TAINACAN_SEARCH_EACH_WORD_BY_DEFAULT' )
+			? TAINACAN_SEARCH_EACH_WORD_BY_DEFAULT
+			: (bool) get_option( 'tainacan_option_search_each_word_by_default', false );
+
+		return apply_filters( 'tainacan-default-search-sentence', ! $search_each_word_by_default );
+	}
 
 }
