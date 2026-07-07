@@ -168,14 +168,14 @@ export default {
             },
             setWordSearchMode(wordSearchMode) {
                 app.config.globalProperties.$store.dispatch('search/setWordSearchMode', wordSearchMode);
+                this.updateURLQueries();
             },
             applyDefaultSentenceIfNeeded() {
                 const postquery = app.config.globalProperties.$store.getters['search/getPostQuery'];
+                const isWordSearchByDefault = app.config.globalProperties.$store.getters['search/getIsWordSearchByDefault'];
 
-                if ( (postquery.search || postquery.s) && postquery.sentence === undefined ) {
-                    const effectiveSentence = app.config.globalProperties.$store.getters['search/getEffectiveSentence'];
-                    app.config.globalProperties.$store.dispatch('search/setWordSearchMode', !effectiveSentence);
-                    this.updateURLQueries();
+                if ( isWordSearchByDefault && (postquery.search || postquery.s) && postquery.sentence === undefined ) {
+                    app.config.globalProperties.$store.dispatch('search/setWordSearchMode', true);
                 }
             },
             setSearchQuery(searchQuery) {

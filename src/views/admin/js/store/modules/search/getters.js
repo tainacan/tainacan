@@ -110,7 +110,7 @@ export const getSearchQuery = state => {
  */
 const getDefaultSearchSentence = () => {
     if ( typeof tainacan_plugin !== 'undefined' && tainacan_plugin.default_search_sentence !== undefined )
-        return tainacan_plugin.default_search_sentence === true || tainacan_plugin.default_search_sentence === 'true';
+        return tainacan_plugin.default_search_sentence === true || tainacan_plugin.default_search_sentence === 'true' || tainacan_plugin.default_search_sentence === '1' || tainacan_plugin.default_search_sentence === 1;
 
     return true;
 };
