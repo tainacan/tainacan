@@ -667,7 +667,8 @@ class REST_Items_Controller extends REST_Controller {
 		session_write_close();
 		$args = $this->prepare_filters($request);
 
-		if ( ! empty( $args['s'] ) && is_a( $request, '\WP_REST_Request' ) && ! $request->has_param( 'sentence' ) ) {
+		// Route schema default makes has_param() unreliable; apply setting only when sentence was omitted.
+		if ( ! empty( $args['s'] ) && is_a( $request, '\WP_REST_Request' ) && ! array_key_exists( 'sentence', $request->get_query_params() ) ) {
 			$args['sentence'] = $this->get_default_search_sentence();
 		}
 
