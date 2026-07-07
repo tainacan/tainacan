@@ -293,15 +293,8 @@ class TAINACAN_REST_Search extends TAINACAN_UnitApiTestCase {
 	}
 
 	public function test_search_sentence_default() {
-		$theme_helper = \Tainacan\Theme_Helper::get_instance();
-
-		delete_option( 'tainacan_option_search_each_word_by_default' );
-		$this->assertTrue( $theme_helper->get_default_search_sentence() );
-
-		update_option( 'tainacan_option_search_each_word_by_default', true );
-		$this->assertFalse( $theme_helper->get_default_search_sentence() );
-
 		$search_collection_poemas = new \WP_REST_Request( 'GET', $this->namespace . '/collection/' . $this->collection_poemas->get_id() . '/items' );
+		$search_items = new \WP_REST_Request( 'GET', $this->namespace . '/items' );
 
 		// Phrase default: omitted sentence behaves like sentence=true
 		delete_option( 'tainacan_option_search_each_word_by_default' );
@@ -312,7 +305,6 @@ class TAINACAN_REST_Search extends TAINACAN_UnitApiTestCase {
 
 		// Per-word default: omitted sentence behaves like sentence=false
 		update_option( 'tainacan_option_search_each_word_by_default', true );
-		$search_items = new \WP_REST_Request( 'GET', $this->namespace . '/items' );
 		$search_items->set_query_params( [ 'search' => 'texto poesia' ] );
 		$search_response = $this->server->dispatch( $search_items );
 		$items = $search_response->get_data()['items'];
@@ -323,6 +315,11 @@ class TAINACAN_REST_Search extends TAINACAN_UnitApiTestCase {
 		$search_response = $this->server->dispatch( $search_items );
 		$items = $search_response->get_data()['items'];
 		$this->assertCount( 0, $items );
+
+		$search_items->set_query_params( [ 'search' => 'texto poesia', 'sentence' => false ] );
+		$search_response = $this->server->dispatch( $search_items );
+		$items = $search_response->get_data()['items'];
+		$this->assertCount( 4, $items );
 
 		delete_option( 'tainacan_option_search_each_word_by_default' );
 	}

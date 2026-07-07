@@ -667,6 +667,10 @@ class REST_Items_Controller extends REST_Controller {
 		session_write_close();
 		$args = $this->prepare_filters($request);
 
+		if ( ! empty( $args['s'] ) && is_a( $request, '\WP_REST_Request' ) && ! $request->has_param( 'sentence' ) ) {
+			$args['sentence'] = $this->get_default_search_sentence();
+		}
+
 		/**
 		 * allow plugins to hijack the process.
 		 *
@@ -1682,8 +1686,6 @@ class REST_Items_Controller extends REST_Controller {
 			parent::get_wp_query_params(),
 			parent::get_meta_queries_params()
 		);
-
-		$query_params['sentence']['default'] = $this->get_default_search_sentence();
 
 		return $query_params;
 	}
