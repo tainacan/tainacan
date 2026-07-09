@@ -61,7 +61,7 @@
                             v-if="key == 'repository-filters'"
                             class="repository-level-filters">
                         <div 
-                                v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined" 
+                                v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined && shouldShowGroupLabel(taxonomyFilter)" 
                                 v-tooltip="{
                                     delay: {
                                         show: 500,
@@ -76,7 +76,7 @@
                             {{ $i18n.get('label_filters_from') + " " + taxonomyFiltersCollectionNames[key] + ": " }}
                         </div>
                         <div    
-                                v-if="taxonomyFilter.length > 0 && !(taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined)"
+                                v-if="taxonomyFilter.length > 0 && !(taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined) && shouldShowGroupLabel(taxonomyFilter)"
                                 class="collection-name">
                             <span 
                                     style="width: 100%; height: 54px;"
@@ -95,9 +95,11 @@
                                     :is-repository-level="key == 'repository-filters'"
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen"
-                                    :hide-collapses="hideFilterCollapses" />
+                                    :hide-collapses="hideFilterCollapses"
+                                    :hide-collapsed-filters="hideCollapsedFilters"
+                                    :is-revealed="revealedFilterIds.includes(filter.id)" />
                         </template>
-                        <hr v-if="taxonomyFilter.length > 1">
+                        <hr v-if="taxonomyFilter.length > 1 && shouldShowGroupLabel(taxonomyFilter)">
                     </div>
                 </template>
                 <template 
@@ -108,7 +110,7 @@
                             :id="'filters-from-collection-id-' + key"
                             class="collection-level-filters">
                         <div 
-                                v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined" 
+                                v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined && shouldShowGroupLabel(taxonomyFilter)" 
                                 v-tooltip="{
                                     delay: {
                                         show: 500,
@@ -123,7 +125,7 @@
                             {{ $i18n.get('label_filters_from') + " " + taxonomyFiltersCollectionNames[key] + ": " }}
                         </div>
                         <div    
-                                v-if="taxonomyFilter.length > 0 && !(taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined)"
+                                v-if="taxonomyFilter.length > 0 && !(taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined) && shouldShowGroupLabel(taxonomyFilter)"
                                 class="collection-name">
                             <span 
                                     style="width: 100%; height: 54px;"
@@ -142,9 +144,11 @@
                                     :is-repository-level="key == 'repository-filters'"
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen"
-                                    :hide-collapses="hideFilterCollapses" />
+                                    :hide-collapses="hideFilterCollapses"
+                                    :hide-collapsed-filters="hideCollapsedFilters"
+                                    :is-revealed="revealedFilterIds.includes(filter.id)" />
                         </template>
-                        <hr v-if="taxonomyFilter.length > 1">
+                        <hr v-if="taxonomyFilter.length > 1 && shouldShowGroupLabel(taxonomyFilter)">
                     </div>
                 </template>
             </template>
@@ -158,7 +162,7 @@
                             v-if="key == 'repository-filters'"
                             class="repository-level-filters">
                         <div 
-                                v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined" 
+                                v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined && shouldShowGroupLabel(repositoryCollectionFilter)" 
                                 v-tooltip="{
                                     delay: {
                                         show: 500,
@@ -173,7 +177,7 @@
                             {{ $i18n.get('label_filters_from') + " " + repositoryCollectionNames[key] + ": " }}
                         </div>
                         <div    
-                                v-if="repositoryCollectionFilter.length > 0 && !(repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined)"
+                                v-if="repositoryCollectionFilter.length > 0 && !(repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined) && shouldShowGroupLabel(repositoryCollectionFilter)"
                                 class="collection-name">
                             <span 
                                     style="width: 100%; height: 54px;"
@@ -192,9 +196,11 @@
                                     :is-repository-level="key == 'repository-filters'"
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen"
-                                    :hide-collapses="hideFilterCollapses" />
+                                    :hide-collapses="hideFilterCollapses"
+                                    :hide-collapsed-filters="hideCollapsedFilters"
+                                    :is-revealed="revealedFilterIds.includes(filter.id)" />
                         </template>
-                        <hr v-if="repositoryCollectionFilters.length > 1">
+                        <hr v-if="repositoryCollectionFilters.length > 1 && shouldShowGroupLabel(repositoryCollectionFilter)">
                     </div>
                 </template>
                 <template 
@@ -205,7 +211,7 @@
                             :id="'filters-from-collection-id-' + key"
                             class="collection-level-filters">
                         <div 
-                                v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined" 
+                                v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined && shouldShowGroupLabel(repositoryCollectionFilter)" 
                                 v-tooltip="{
                                     delay: {
                                         show: 500,
@@ -220,7 +226,7 @@
                             {{ $i18n.get('label_filters_from') + " " + repositoryCollectionNames[key] + ": " }}
                         </div>
                         <div    
-                                v-if="repositoryCollectionFilter.length > 0 && !(repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined)"
+                                v-if="repositoryCollectionFilter.length > 0 && !(repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined) && shouldShowGroupLabel(repositoryCollectionFilter)"
                                 class="collection-name">
                             <span 
                                     style="width: 100%; height: 54px;"
@@ -239,9 +245,11 @@
                                     :is-repository-level="key == 'repository-filters'"
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen"
-                                    :hide-collapses="hideFilterCollapses" />
+                                    :hide-collapses="hideFilterCollapses"
+                                    :hide-collapsed-filters="hideCollapsedFilters"
+                                    :is-revealed="revealedFilterIds.includes(filter.id)" />
                         </template>
-                        <hr v-if="repositoryCollectionFilters.length > 1">
+                        <hr v-if="repositoryCollectionFilters.length > 1 && shouldShowGroupLabel(repositoryCollectionFilter)">
                     </div>
                 </template>
             </template>
@@ -258,8 +266,15 @@
                         :is-repository-level="isRepositoryLevel"
                         :filters-as-modal="filtersAsModal"
                         :is-mobile-screen="isMobileScreen"
-                        :hide-collapses="hideFilterCollapses" />
+                        :hide-collapses="hideFilterCollapses"
+                        :hide-collapsed-filters="hideCollapsedFilters"
+                        :is-revealed="revealedFilterIds.includes(filter.id)" />
             </template>
+
+            <filters-items-list-add-filter
+                    v-if="hideCollapsedFilters"
+                    :hidden-filter-groups="hiddenFilterGroups"
+                    @add-filter="revealFilter" />
         </div>
         <section
                 v-if="!isLoadingFilters && (
@@ -303,11 +318,13 @@
     import { mapGetters, mapActions } from 'vuex';
     import TainacanFilterItem from '../filter-types/tainacan-filter-item.vue';
     import FiltersTagsList from './filters-tags-list.vue';
+    import FiltersItemsListAddFilter from './filters-items-list-add-filter.vue';
 
     export default {
         components: {
             TainacanFilterItem,
-            FiltersTagsList
+            FiltersTagsList,
+            FiltersItemsListAddFilter
         },
         props: {
             collectionId: [String, Number],
@@ -326,6 +343,12 @@
             return {
                 isLoadingFilters: false,
                 collapseAll: false,
+                // When true, filters flagged with 'begin_with_filter_collapsed' are not rendered
+                // in place. They are instead offered through the "Add filters" control and only
+                // appear (at their expected position) once the user adds them. Toggling this off
+                // falls back to the legacy behavior of showing them collapsed/disabled in place.
+                hideCollapsedFilters: true,
+                revealedFilterIds: [],
                 taxonomyFiltersCollectionNames: {},
                 repositoryCollectionNames: {},
                 collectionNameSearchCancel: undefined,
@@ -349,6 +372,25 @@
             taxonomyId () {
                 const taxonomyArray = this.taxonomy.split("_");
                 return taxonomyArray[taxonomyArray.length - 1];
+            },
+            hiddenFilterGroups() {
+                if (!this.hideCollapsedFilters)
+                    return [];
+
+                if (this.taxonomy && this.taxonomyFilters)
+                    return this.buildHiddenFilterGroups(this.taxonomyFilters, this.taxonomyFiltersCollectionNames);
+
+                if (this.isRepositoryLevel && !this.taxonomy && this.repositoryCollectionFilters)
+                    return this.buildHiddenFilterGroups(this.repositoryCollectionFilters, this.repositoryCollectionNames);
+
+                const hiddenFilters = this.getHiddenFilters(this.filters);
+                if (hiddenFilters.length <= 0)
+                    return [];
+
+                return [{
+                    label: null,
+                    filters: hiddenFilters
+                }];
             }
         },
         watch: {
@@ -489,6 +531,57 @@
             },
             updateIsLoadingItems(isLoadingItems) {
                 this.$emit('update-is-loading-items-state', isLoadingItems); 
+            },
+            getHiddenFilters(filtersArray) {
+                if (!Array.isArray(filtersArray))
+                    return [];
+
+                return filtersArray.filter((aFilter) =>
+                    aFilter &&
+                    aFilter.begin_with_filter_collapsed === 'yes' &&
+                    !this.revealedFilterIds.includes(aFilter.id)
+                );
+            },
+            shouldShowGroupLabel(filtersArray) {
+                if (!Array.isArray(filtersArray) || filtersArray.length <= 0)
+                    return false;
+
+                if (!this.hideCollapsedFilters)
+                    return true;
+
+                return filtersArray.some((aFilter) =>
+                    aFilter &&
+                    (aFilter.begin_with_filter_collapsed !== 'yes' || this.revealedFilterIds.includes(aFilter.id))
+                );
+            },
+            buildHiddenFilterGroups(filtersObject, collectionNames) {
+                const groups = [];
+                const groupKeys = Object.keys(filtersObject || {});
+                const orderedGroupKeys = [
+                    ...groupKeys.filter((groupKey) => groupKey === 'repository-filters'),
+                    ...groupKeys.filter((groupKey) => groupKey !== 'repository-filters')
+                ];
+
+                for (const groupKey of orderedGroupKeys) {
+                    const hiddenFilters = this.getHiddenFilters(filtersObject[groupKey]);
+
+                    if (hiddenFilters.length <= 0)
+                        continue;
+
+                    const collectionName = collectionNames && collectionNames[groupKey];
+                    groups.push({
+                        label: collectionName
+                            ? this.$i18n.get('label_filters_from') + ' ' + collectionName
+                            : null,
+                        filters: hiddenFilters
+                    });
+                }
+
+                return groups;
+            },
+            revealFilter(filter) {
+                if (filter && filter.id != undefined && !this.revealedFilterIds.includes(filter.id))
+                    this.revealedFilterIds.push(filter.id);
             }
         }
     }

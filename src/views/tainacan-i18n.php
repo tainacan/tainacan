@@ -396,6 +396,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_create_repository_metadata'               => __( 'Create repository metadata', 'tainacan' ),
 	'label_select_metadatum_type'                    => __( 'Select a metadatum type', 'tainacan' ),
 	'label_add_more_metadata'                        => __( 'Add more metadata', 'tainacan' ),
+	'label_add_filters'                              => __( 'Add filters', 'tainacan' ),
 	/* translators: Header of the column where the metadata columns from file are in the Mapping Metadata Importer screen */
 	'label_from_source_collection'                   => __( 'From source file', 'tainacan' ),
 	/* translators: Header of the column where the existing collection metadata are in the Mapping Metadata Importer screen */
