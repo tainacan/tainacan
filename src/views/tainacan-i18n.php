@@ -679,6 +679,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_amount_of_metadata_of_type'	 			 =>	__( 'Amount of metadata of this type', 'tainacan'),
 	'label_document_option_iframe_height'			 =>	__( 'Iframe height (px)', 'tainacan'),
 	'label_document_option_iframe_width'			 =>	__( 'Iframe width (px)', 'tainacan'),
+	'label_document_option_iframe_allowfullscreen'	 => __( 'Allow fullscreen on forced iframe', 'tainacan' ),
 	'label_document_option_is_image'				 => __( 'Is link to external image', 'tainacan' ),
 	'label_limit_max_values'						 => __( 'Limit the amount of multiple values', 'tainacan'),
 	'label_items_selection'							 => __( 'Items selection', 'tainacan'),
@@ -1149,6 +1150,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_metadata_autocomplete_suggestions'		 => __( 'Some values already used on this metadatum:', 'tainacan' ),
 	'info_related_items'							 => __( 'These are items that are related to this item via their own relationship type metadata. You can edit such relation on their pages.', 'tainacan'),
 	'info_document_option_forced_iframe'			 => __( 'Attempt to use an iframe to embed url content on the item page. You may use this option if the autoembed does not work.', 'tainacan'),
+	'info_document_option_iframe_allowfullscreen'	 => __( 'If forcing the use of an iframe, allows it to request fullscreen to the browser.', 'tainacan' ),
 	'info_document_option_is_image'					 => __( 'If you are linking directly to an external image, use this option so it can be properly embedded.', 'tainacan' ),
 	/* translators: %s is the number of filters applied */
 	'info_%s_applied_filters'						 => __( '<strong>%s</strong> filters applied', 'tainacan'),
