@@ -144,6 +144,18 @@
                             <b-field
                                     v-if="form.document_options && form.document_options.forced_iframe"
                                     :addons="false"
+                                    :label="$i18n.get('label_document_option_iframe_allowfullscreen')">
+                                    &nbsp;
+                                <b-switch
+                                        v-model="form.document_options.forced_iframe_allowfullscreen"
+                                        size="is-small" />
+                                <help-button
+                                        :title="$i18n.get('label_document_option_iframe_allowfullscreen')"
+                                        :message="$i18n.get('info_document_option_iframe_allowfullscreen')" />
+                            </b-field>
+                            <b-field
+                                    v-if="form.document_options && form.document_options.forced_iframe"
+                                    :addons="false"
                                     :label="$i18n.get('label_document_option_is_image')">
                                     &nbsp;
                                 <b-switch
@@ -860,6 +872,7 @@ export default {
                     forced_iframe: false,
                     forced_iframe_width: 600,
                     forced_iframe_height: 450,
+                    forced_iframe_allowfullscreen: false,
                     is_image: false
                 }
             },

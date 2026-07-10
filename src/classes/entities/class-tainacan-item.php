@@ -934,8 +934,9 @@ class Item extends Entity {
 						$tainacan_embed = \Tainacan\Embed::get_instance();
 						$iframe_width = isset($document_options['forced_iframe_width']) ? $document_options['forced_iframe_width'] : '600';
 						$iframe_height = isset($document_options['forced_iframe_height']) ? $document_options['forced_iframe_height'] : '450';
+						$iframe_allowfullscreen = ! empty( $document_options['forced_iframe_allowfullscreen'] ) ? ' allowfullscreen' : '';
 
-						$_embed = $tainacan_embed->add_responsive_wrapper( sprintf('<iframe src="%s" style="border: 0" width="%s" height="%s"></iframe>', $url, $iframe_width, $iframe_height) );
+						$_embed = $tainacan_embed->add_responsive_wrapper( sprintf('<iframe src="%s" style="border: 0" width="%s" height="%s"%s></iframe>', $url, $iframe_width, $iframe_height, $iframe_allowfullscreen) );
 					}
 				} else {
 					$_embed = sprintf('<a href="%s" target="blank">%s</a>', $url, $url);
