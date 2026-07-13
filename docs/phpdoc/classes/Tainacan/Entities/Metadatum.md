@@ -378,6 +378,10 @@ public get_html_formatting(): string
 public get_allow_advanced_search(): string
 ```
 
+**Return Value:**
+
+'yes', 'no' or 'default'
+
 ***
 
 ### set_allow_advanced_search
@@ -388,9 +392,9 @@ public set_allow_advanced_search(string $allow_advanced_search): void
 
 **Parameters:**
 
-| Parameter                | Type       | Description |
-|--------------------------|------------|-------------|
-| `$allow_advanced_search` | **string** |             |
+| Parameter                | Type       | Description                                                                                      |
+|--------------------------|------------|--------------------------------------------------------------------------------------------------|
+| `$allow_advanced_search` | **string** | 'yes' (offer but not by default), 'no' (never offer) or 'default' (offer by default / pre-build) |
 
 ***
 

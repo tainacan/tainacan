@@ -1223,7 +1223,7 @@ Argument | Type | Description
     'on_error' => __('Invalid Metadata Mapping', 'tainacan'),
     //'validation' =>  v::arrayType(),
     'default' => [],
-], 'display' => ['map' => 'meta', 'title' => __('Display', 'tainacan'), 'type' => 'string', 'validation' => v::stringType()->in(['yes', 'no', 'never']), 'enum' => ['yes', 'no', 'never'], 'description' => __('Display by default on listing or do not display or never display.', 'tainacan'), 'default' => 'no'], 'html_formatting' => ['map' => 'meta', 'title' => __('HTML formatting', 'tainacan'), 'type' => 'string', 'validation' => v::stringType()->in(['inline', 'list']), 'enum' => ['inline', 'list'], 'description' => __('How to display multiple values: inline with separators or as a list. Only applies when the metadatum allows multiple values.', 'tainacan'), 'default' => 'inline'], 'allow_advanced_search' => ['map' => 'meta', 'title' => __('Allow advanced search', 'tainacan'), 'type' => 'string', 'validation' => v::stringType()->in(['yes', 'no']), 'enum' => ['yes', 'no'], 'description' => __('Allow this metadata to be offered as an option for advanced search', 'tainacan'), 'default' => 'yes'], 'semantic_uri' => ['map' => 'meta', 'title' => __('The semantic metadatum description URI', 'tainacan'), 'type' => 'string', 'validation' => v::optional(v::url()), 'description' => __('The semantic metadatum description URI like: ', 'tainacan') . 'https://schema.org/URL', 'default' => ''], 'repository_level' => [
+], 'display' => ['map' => 'meta', 'title' => __('Display', 'tainacan'), 'type' => 'string', 'validation' => v::stringType()->in(['yes', 'no', 'never']), 'enum' => ['yes', 'no', 'never'], 'description' => __('Display by default on listing or do not display or never display.', 'tainacan'), 'default' => 'no'], 'html_formatting' => ['map' => 'meta', 'title' => __('HTML formatting', 'tainacan'), 'type' => 'string', 'validation' => v::stringType()->in(['inline', 'list']), 'enum' => ['inline', 'list'], 'description' => __('How to display multiple values: inline with separators or as a list. Only applies when the metadatum allows multiple values.', 'tainacan'), 'default' => 'inline'], 'allow_advanced_search' => ['map' => 'meta', 'title' => __('Offer on advanced search', 'tainacan'), 'type' => 'string', 'validation' => v::stringType()->in(['yes', 'no', 'default']), 'enum' => ['yes', 'no', 'default'], 'description' => __('Offer this metadata by default on advanced search, offer it but not by default, or never offer it.', 'tainacan'), 'default' => 'yes'], 'semantic_uri' => ['map' => 'meta', 'title' => __('The semantic metadatum description URI', 'tainacan'), 'type' => 'string', 'validation' => v::optional(v::url()), 'description' => __('The semantic metadatum description URI like: ', 'tainacan') . 'https://schema.org/URL', 'default' => ''], 'repository_level' => [
     'map' => 'meta',
     'title' => __('Repository metadata', 'tainacan'),
     'type' => 'string',
@@ -1337,7 +1337,7 @@ updates, deletion, and querying with proper validation and logging.
 
 Argument | Type | Description
 -------- | ---- | -----------
-`['title' => ['map' => 'post_title', 'title' => __('Title', 'tainacan'), 'type' => 'string', 'description' => __('Title of the item', 'tainacan'), 'on_error' => __('The title should be a text value and not empty', 'tainacan')], 'status' => ['map' => 'post_status', 'title' => __('Status', 'tainacan'), 'type' => 'string', 'default' => 'draft', 'description' => __('The current situation of the item. Notice that the item visibility also depends on the collection status.', 'tainacan')], 'description' => ['map' => 'post_content', 'title' => __('Description', 'tainacan'), 'type' => 'string', 'description' => __('The item description', 'tainacan'), 'default' => '', 'validation' => ''], 'collection_id' => ['map' => 'meta', 'title' => __('Collection', 'tainacan'), 'type' => 'integer', 'description' => __('The collection ID', 'tainacan'), 'validation' => ''], 'author_id' => ['map' => 'post_author', 'title' => __('Author', 'tainacan'), 'type' => 'string', 'description' => __('The item author\'s user ID (numeric string)', 'tainacan')], 'slug' => ['map' => 'post_name', 'title' => __('Slug', 'tainacan'), 'type' => 'string', 'description' => __('Slug is the editable portion of a page link, located a the end of an URL. Usually presents the title of the item without special characters, separated by hiphen instead of spaces.', 'tainacan')], 'creation_date' => ['map' => 'post_date', 'title' => __('Creation Date', 'tainacan'), 'type' => 'string', 'description' => __('The item creation date', 'tainacan')], 'modification_date' => ['map' => 'post_modified', 'title' => __('Modification Date', 'tainacan'), 'type' => 'string', 'description' => __('The item modification date', 'tainacan')], 'terms' => ['map' => 'terms', 'title' => __('Term IDs', 'tainacan'), 'type' => 'array', 'description' => __('The item term IDs', 'tainacan'), 'items' => ['type' => ['string', 'integer']]], 'document_type' => ['map' => 'meta', 'title' => __('Document Type', 'tainacan'), 'type' => 'string', 'description' => __('The document type, can be a local attachment, an external URL or a text', 'tainacan'), 'on_error' => __('Invalid document type', 'tainacan'), 'enum' => ['attachment', 'url', 'text', 'empty'], 'validation' => v::stringType()->in(['attachment', 'url', 'text', 'empty']), 'default' => 'empty'], 'document' => ['map' => 'meta', 'title' => __('Document', 'tainacan'), 'type' => 'string', 'description' => __('The item main content. May be a file attached, an URL or a text depending on the type of the document.', 'tainacan'), 'on_error' => __('Invalid document', 'tainacan'), 'default' => ''], 'document_options' => ['map' => 'meta', 'title' => __('Document options', 'tainacan'), 'type' => 'object', 'description' => __('Object of options related to the document display.', 'tainacan'), 'on_error' => __('Invalid document options', 'tainacan'), 'properties' => array('forced_iframe' => array('description' => __('Render content in iframe', 'tainacan'), 'type' => 'boolean', 'context' => array('view', 'edit', 'embed'), 'default' => false), 'is_image' => array('title' => __('Is link to external image', 'tainacan'), 'description' => __('Is link to external image', 'tainacan'), 'type' => 'boolean', 'context' => array('view', 'edit', 'embed'), 'default' => false), 'forced_iframe_height' => array('description' => __('Iframe height (px)', 'tainacan'), 'type' => 'number', 'context' => array('view', 'edit', 'embed'), 'default' => 450), 'forced_iframe_width' => array('description' => __('Iframe width (px)', 'tainacan'), 'type' => 'number', 'context' => array('view', 'edit', 'embed'), 'default' => 600))], 'document_content_index' => ['map' => 'meta', 'title' => __('Document Content Index', 'tainacan'), 'type' => 'string', 'description' => __('The document content to be used in textual search', 'tainacan')], '_thumbnail_id' => ['map' => 'meta', 'title' => __('Thumbnail', 'tainacan'), 'description' => __('Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan'), 'type' => ['integer', 'string']], 'comment_status' => ['map' => 'comment_status', 'title' => __('Comment Status', 'tainacan'), 'type' => 'string', 'description' => __('Item comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan'), 'default' => get_default_comment_status(Entities\Collection::get_post_type()), 'enum' => ['open', 'closed'], 'validation' => v::optional(v::stringType()->in(['open', 'closed']))]]` |  | 
+`['title' => ['map' => 'post_title', 'title' => __('Title', 'tainacan'), 'type' => 'string', 'description' => __('Title of the item', 'tainacan'), 'on_error' => __('The title should be a text value and not empty', 'tainacan')], 'status' => ['map' => 'post_status', 'title' => __('Status', 'tainacan'), 'type' => 'string', 'default' => 'draft', 'description' => __('The current situation of the item. Notice that the item visibility also depends on the collection status.', 'tainacan')], 'description' => ['map' => 'post_content', 'title' => __('Description', 'tainacan'), 'type' => 'string', 'description' => __('The item description', 'tainacan'), 'default' => '', 'validation' => ''], 'collection_id' => ['map' => 'meta', 'title' => __('Collection', 'tainacan'), 'type' => 'integer', 'description' => __('The collection ID', 'tainacan'), 'validation' => ''], 'author_id' => ['map' => 'post_author', 'title' => __('Author', 'tainacan'), 'type' => 'string', 'description' => __('The item author\'s user ID (numeric string)', 'tainacan')], 'slug' => ['map' => 'post_name', 'title' => __('Slug', 'tainacan'), 'type' => 'string', 'description' => __('Slug is the editable portion of a page link, located a the end of an URL. Usually presents the title of the item without special characters, separated by hiphen instead of spaces.', 'tainacan')], 'creation_date' => ['map' => 'post_date', 'title' => __('Creation Date', 'tainacan'), 'type' => 'string', 'description' => __('The item creation date', 'tainacan')], 'modification_date' => ['map' => 'post_modified', 'title' => __('Modification Date', 'tainacan'), 'type' => 'string', 'description' => __('The item modification date', 'tainacan')], 'terms' => ['map' => 'terms', 'title' => __('Term IDs', 'tainacan'), 'type' => 'array', 'description' => __('The item term IDs', 'tainacan'), 'items' => ['type' => ['string', 'integer']]], 'document_type' => ['map' => 'meta', 'title' => __('Document Type', 'tainacan'), 'type' => 'string', 'description' => __('The document type, can be a local attachment, an external URL or a text', 'tainacan'), 'on_error' => __('Invalid document type', 'tainacan'), 'enum' => ['attachment', 'url', 'text', 'empty'], 'validation' => v::stringType()->in(['attachment', 'url', 'text', 'empty']), 'default' => 'empty'], 'document' => ['map' => 'meta', 'title' => __('Document', 'tainacan'), 'type' => 'string', 'description' => __('The item main content. May be a file attached, an URL or a text depending on the type of the document.', 'tainacan'), 'on_error' => __('Invalid document', 'tainacan'), 'default' => ''], 'document_options' => ['map' => 'meta', 'title' => __('Document options', 'tainacan'), 'type' => 'object', 'description' => __('Object of options related to the document display.', 'tainacan'), 'on_error' => __('Invalid document options', 'tainacan'), 'properties' => array('forced_iframe' => array('description' => __('Render content in iframe', 'tainacan'), 'type' => 'boolean', 'context' => array('view', 'edit', 'embed'), 'default' => false), 'is_image' => array('title' => __('Is link to external image', 'tainacan'), 'description' => __('Is link to external image', 'tainacan'), 'type' => 'boolean', 'context' => array('view', 'edit', 'embed'), 'default' => false), 'forced_iframe_height' => array('description' => __('Iframe height (px)', 'tainacan'), 'type' => 'number', 'context' => array('view', 'edit', 'embed'), 'default' => 450), 'forced_iframe_width' => array('description' => __('Iframe width (px)', 'tainacan'), 'type' => 'number', 'context' => array('view', 'edit', 'embed'), 'default' => 600), 'forced_iframe_allowfullscreen' => array('description' => __('Allow fullscreen on forced iframe', 'tainacan'), 'type' => 'boolean', 'context' => array('view', 'edit', 'embed'), 'default' => false))], 'document_content_index' => ['map' => 'meta', 'title' => __('Document Content Index', 'tainacan'), 'type' => 'string', 'description' => __('The document content to be used in textual search', 'tainacan')], '_thumbnail_id' => ['map' => 'meta', 'title' => __('Thumbnail', 'tainacan'), 'description' => __('Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan'), 'type' => ['integer', 'string']], 'comment_status' => ['map' => 'comment_status', 'title' => __('Comment Status', 'tainacan'), 'type' => 'string', 'description' => __('Item comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan'), 'default' => get_default_comment_status(Entities\Collection::get_post_type()), 'enum' => ['open', 'closed'], 'validation' => v::optional(v::stringType()->in(['open', 'closed']))]]` |  | 
 
 **Changelog**
 
@@ -1345,7 +1345,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L11-L171)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L11-L177)
 
 ---------------------------------
 <br>
@@ -1371,7 +1371,7 @@ Argument | Type | Description
 `$args` | `array` | WP_Query args \|\| int $args the item id
 `'items'` |  | 
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 245](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L245-L382)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 251](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L251-L388)
 
 ---------------------------------
 <br>
@@ -1394,7 +1394,7 @@ Argument | Type | Description
 `$item` | `\Tainacan\Entities\Item` | The item.
 `$context` | `mixed` | Optional context (e.g. \WP_REST_Request).
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 535](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L535-L549)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 541](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L541-L555)
 
 ---------------------------------
 <br>
@@ -1412,7 +1412,7 @@ Argument | Type | Description
 `$supports` | `bool` | Whether Tainacan's default extraction is supported.
 `$item` | `\Tainacan\Entities\Item` | The item.
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 572](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L572-L581)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 578](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L578-L587)
 
 ---------------------------------
 <br>
@@ -1427,7 +1427,7 @@ Argument | Type | Description
 `null` |  | 
 `$item` |  | 
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 670](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L670-L673)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 676](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L676-L679)
 
 ---------------------------------
 <br>
@@ -1439,7 +1439,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$item_arr` |  | 
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 822](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L822-L822)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 828](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L828-L828)
 
 ---------------------------------
 <br>
@@ -3749,7 +3749,7 @@ Argument | Type | Description
 `$img_size` |  | 
 `$this` |  | 
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 908](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L908-L955)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 908](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L908-L956)
 
 ---------------------------------
 <br>
@@ -3767,7 +3767,7 @@ Argument | Type | Description
 `$img_size` |  | 
 `$this` |  | 
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 958](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L958-L988)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 959](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L959-L989)
 
 ---------------------------------
 <br>
@@ -3782,7 +3782,7 @@ Argument | Type | Description
 `$args` | `array` | The arguments passed to the function
 `$metadata_section` | `object` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1299](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1299-L1304)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1300](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1300-L1305)
 
 ---------------------------------
 <br>
@@ -3801,7 +3801,7 @@ Argument | Type | Description
 `$before` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1205](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1205-L1322)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1323)
 
 ---------------------------------
 <br>
@@ -3820,7 +3820,7 @@ Argument | Type | Description
 `$before` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1205](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1205-L1323)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1324)
 
 ---------------------------------
 <br>
@@ -3839,7 +3839,7 @@ Argument | Type | Description
 `$before` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1205](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1205-L1325)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1326)
 
 ---------------------------------
 <br>
@@ -3858,7 +3858,7 @@ Argument | Type | Description
 `$before_name` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1205](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1205-L1340)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1341)
 
 ---------------------------------
 <br>
@@ -3877,7 +3877,7 @@ Argument | Type | Description
 `$before_name` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1205](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1205-L1341)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1342)
 
 ---------------------------------
 <br>
@@ -3896,7 +3896,7 @@ Argument | Type | Description
 `$before_name` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1205](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1205-L1343)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1344)
 
 ---------------------------------
 <br>
@@ -3915,7 +3915,7 @@ Argument | Type | Description
 `$after_name` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1205](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1205-L1350)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1351)
 
 ---------------------------------
 <br>
@@ -3934,7 +3934,7 @@ Argument | Type | Description
 `$after_name` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1205](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1205-L1351)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1352)
 
 ---------------------------------
 <br>
@@ -3953,7 +3953,7 @@ Argument | Type | Description
 `$after_name` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1205](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1205-L1353)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1354)
 
 ---------------------------------
 <br>
@@ -3972,7 +3972,7 @@ Argument | Type | Description
 `$before_description` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1205](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1205-L1372)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1373)
 
 ---------------------------------
 <br>
@@ -3991,7 +3991,7 @@ Argument | Type | Description
 `$before_description` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1205](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1205-L1373)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1374)
 
 ---------------------------------
 <br>
@@ -4010,7 +4010,7 @@ Argument | Type | Description
 `$before_description` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1205](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1205-L1375)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1376)
 
 ---------------------------------
 <br>
@@ -4029,7 +4029,7 @@ Argument | Type | Description
 `$after_description` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1205](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1205-L1410)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1411)
 
 ---------------------------------
 <br>
@@ -4048,7 +4048,7 @@ Argument | Type | Description
 `$after_description` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1205](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1205-L1411)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1412)
 
 ---------------------------------
 <br>
@@ -4067,7 +4067,7 @@ Argument | Type | Description
 `$after_description` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1205](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1205-L1413)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1414)
 
 ---------------------------------
 <br>
@@ -4086,7 +4086,7 @@ Argument | Type | Description
 `$after` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1205](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1205-L1424)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1425)
 
 ---------------------------------
 <br>
@@ -4105,7 +4105,7 @@ Argument | Type | Description
 `$after` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1205](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1205-L1426)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1427)
 
 ---------------------------------
 <br>
@@ -4124,7 +4124,7 @@ Argument | Type | Description
 `$after` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1205](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1205-L1427)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1428)
 
 ---------------------------------
 <br>
@@ -4881,9 +4881,9 @@ Argument | Type | Description
     'label_comments' => __('Comments', 'tainacan'),
     'label_default_displayed_metadata' => __('Default Displayed Metadata', 'tainacan'),
     'label_display' => __('Display on listing', 'tainacan'),
-    'label_display_default' => __('Display by default', 'tainacan'),
-    'label_display_never' => __('Never displayed', 'tainacan'),
-    'label_not_display' => __('Do not display by default', 'tainacan'),
+    'label_display_default' => __('By default', 'tainacan'),
+    'label_display_never' => __('Never', 'tainacan'),
+    'label_not_display' => __('Optional', 'tainacan'),
     'label_html_formatting_inline' => __('Inline', 'tainacan'),
     'label_html_formatting_list' => __('List', 'tainacan'),
     'label_no_terms_selected' => __('No terms selected', 'tainacan'),
@@ -5262,6 +5262,7 @@ Argument | Type | Description
     'label_amount_of_metadata_of_type' => __('Amount of metadata of this type', 'tainacan'),
     'label_document_option_iframe_height' => __('Iframe height (px)', 'tainacan'),
     'label_document_option_iframe_width' => __('Iframe width (px)', 'tainacan'),
+    'label_document_option_iframe_allowfullscreen' => __('Allow fullscreen on forced iframe', 'tainacan'),
     'label_document_option_is_image' => __('Is link to external image', 'tainacan'),
     'label_limit_max_values' => __('Limit the amount of multiple values', 'tainacan'),
     'label_items_selection' => __('Items selection', 'tainacan'),
@@ -5722,6 +5723,7 @@ Argument | Type | Description
     'info_metadata_autocomplete_suggestions' => __('Some values already used on this metadatum:', 'tainacan'),
     'info_related_items' => __('These are items that are related to this item via their own relationship type metadata. You can edit such relation on their pages.', 'tainacan'),
     'info_document_option_forced_iframe' => __('Attempt to use an iframe to embed url content on the item page. You may use this option if the autoembed does not work.', 'tainacan'),
+    'info_document_option_iframe_allowfullscreen' => __('If forcing the use of an iframe, allows it to request fullscreen to the browser.', 'tainacan'),
     'info_document_option_is_image' => __('If you are linking directly to an external image, use this option so it can be properly embedded.', 'tainacan'),
     /* translators: %s is the number of filters applied */
     'info_%s_applied_filters' => __('<strong>%s</strong> filters applied', 'tainacan'),
@@ -5874,7 +5876,7 @@ Argument | Type | Description
     'error_thumbnail_alt_ai_failed_detail' => __('Could not generate alternative text. You can try again or enter it manually.', 'tainacan'),
 ]` |  | 
 
-Source: [tainacan-i18n.php](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php), [line 5](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php#L5-L1307)
+Source: [tainacan-i18n.php](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php), [line 5](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php#L5-L1309)
 
 ---------------------------------
 <br>
@@ -6099,7 +6101,7 @@ Argument | Type | Description
 `wp_strip_all_tags($return)` |  | 
 `$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
 
-Source: [class-tainacan-url.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/url/class-tainacan-url.php), [line 229](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/url/class-tainacan-url.php#L229-L237)
+Source: [class-tainacan-url.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/url/class-tainacan-url.php), [line 230](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/url/class-tainacan-url.php#L230-L238)
 
 ---------------------------------
 <br>
