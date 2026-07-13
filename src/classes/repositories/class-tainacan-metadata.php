@@ -210,11 +210,11 @@ class Metadata extends Repository {
 			],
 			'allow_advanced_search' => [
 				'map'         => 'meta',
-				'title'       => __( 'Allow advanced search', 'tainacan' ),
+				'title'       => __( 'Offer on advanced search', 'tainacan' ),
 				'type'        => 'string',
-				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ),
-				'enum'		  => [ 'yes', 'no' ],
-				'description' => __( 'Allow this metadata to be offered as an option for advanced search', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no', 'default' ] ),
+				'enum'		  => [ 'yes', 'no', 'default' ],
+				'description' => __( 'Offer this metadata by default on advanced search, offer it but not by default, or never offer it.', 'tainacan' ),
 				'default'     => 'yes'
 			],
 			'semantic_uri'          => [

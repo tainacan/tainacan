@@ -311,10 +311,7 @@
                 metadataAsObject: {},
                 metadataAsArray: [],
                 metadataSearchCancel: undefined,
-                hasUpdatedSearch: false,
-                // When true, pre-builds a criterion row for each metadatum
-                // available in Advanced Search
-                presetCriteria: true
+                hasUpdatedSearch: false
             }
         },
         mounted() {
@@ -413,9 +410,8 @@
                             // Search Request Token for cancelling
                             this.metadataSearchCancel = resp.source;
 
-                            // Pre-build one empty criterion per eligible metadatum when enabled
-                            if (this.presetCriteria)
-                                this.presetSearchCriteriaFromMetadata();
+                            // Pre-build empty criteria for metadata marked as "offer by default"
+                            this.presetSearchCriteriaFromMetadata();
 
                             // Loads existing search query
                             this.buildAdvancedSearchQueryFromRoute();
@@ -516,11 +512,14 @@
                 }
             },
             /**
-             * Pre-builds one criterion row per metadatum available in Advanced Search,
-             * with the default comparator and no value.
+             * Pre-builds one criterion row per metadatum marked as
+             * allow_advanced_search === 'default', with the default comparator and no value.
              */
             presetSearchCriteriaFromMetadata() {
                 const addCriterionForMetadatum = (metadatum) => {
+                    if (metadatum.allow_advanced_search !== 'default')
+                        return;
+
                     const component = metadatum.metadata_type_object
                         ? metadatum.metadata_type_object.component
                         : '';

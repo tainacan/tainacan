@@ -90,14 +90,14 @@ class Metadatum extends Entity {
 	}
 
 	/**
-	 * @return string
+	 * @return string 'yes', 'no' or 'default'
 	 */
 	function get_allow_advanced_search(){
 		return $this->get_mapped_property('allow_advanced_search');
 	}
 
 	/**
-	 * @param string $allow_advanced_search
+	 * @param string $allow_advanced_search 'yes' (offer but not by default), 'no' (never offer) or 'default' (offer by default / pre-build)
 	 * @return void
 	 */
 	function set_allow_advanced_search( $allow_advanced_search ){
