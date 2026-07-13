@@ -96,7 +96,6 @@
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen"
                                     :hide-collapses="hideFilterCollapses"
-                                    :hide-collapsed-filters="hideCollapsedFilters"
                                     :is-revealed="revealedFilterIds.includes(filter.id)" />
                         </template>
                         <hr v-if="taxonomyFilter.length > 1 && shouldShowGroupLabel(taxonomyFilter)">
@@ -145,7 +144,6 @@
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen"
                                     :hide-collapses="hideFilterCollapses"
-                                    :hide-collapsed-filters="hideCollapsedFilters"
                                     :is-revealed="revealedFilterIds.includes(filter.id)" />
                         </template>
                         <hr v-if="taxonomyFilter.length > 1 && shouldShowGroupLabel(taxonomyFilter)">
@@ -197,7 +195,6 @@
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen"
                                     :hide-collapses="hideFilterCollapses"
-                                    :hide-collapsed-filters="hideCollapsedFilters"
                                     :is-revealed="revealedFilterIds.includes(filter.id)" />
                         </template>
                         <hr v-if="repositoryCollectionFilters.length > 1 && shouldShowGroupLabel(repositoryCollectionFilter)">
@@ -246,7 +243,6 @@
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen"
                                     :hide-collapses="hideFilterCollapses"
-                                    :hide-collapsed-filters="hideCollapsedFilters"
                                     :is-revealed="revealedFilterIds.includes(filter.id)" />
                         </template>
                         <hr v-if="repositoryCollectionFilters.length > 1 && shouldShowGroupLabel(repositoryCollectionFilter)">
@@ -267,12 +263,10 @@
                         :filters-as-modal="filtersAsModal"
                         :is-mobile-screen="isMobileScreen"
                         :hide-collapses="hideFilterCollapses"
-                        :hide-collapsed-filters="hideCollapsedFilters"
                         :is-revealed="revealedFilterIds.includes(filter.id)" />
             </template>
 
             <filters-items-list-add-filter
-                    v-if="hideCollapsedFilters"
                     :hidden-filter-groups="hiddenFilterGroups"
                     @add-filter="revealFilter" />
         </div>
@@ -343,11 +337,6 @@
             return {
                 isLoadingFilters: false,
                 collapseAll: false,
-                // When true, filters flagged with 'begin_with_filter_collapsed' are not rendered
-                // in place. They are instead offered through the "Add filters" control and only
-                // appear (at their expected position) once the user adds them. Toggling this off
-                // falls back to the legacy behavior of showing them collapsed/disabled in place.
-                hideCollapsedFilters: true,
                 revealedFilterIds: [],
                 taxonomyFiltersCollectionNames: {},
                 repositoryCollectionNames: {},
@@ -374,9 +363,6 @@
                 return taxonomyArray[taxonomyArray.length - 1];
             },
             hiddenFilterGroups() {
-                if (!this.hideCollapsedFilters)
-                    return [];
-
                 if (this.taxonomy && this.taxonomyFilters)
                     return this.buildHiddenFilterGroups(this.taxonomyFilters, this.taxonomyFiltersCollectionNames);
 
@@ -532,13 +518,29 @@
             updateIsLoadingItems(isLoadingItems) {
                 this.$emit('update-is-loading-items-state', isLoadingItems); 
             },
+            getFilterInitialDisplay(filter) {
+                if (filter && ['default', 'collapsed', 'hidden'].includes(filter.initial_display))
+                    return filter.initial_display;
+                if (filter && filter.begin_with_filter_collapsed === 'yes')
+                    return 'collapsed';
+                return 'default';
+            },
+            isFilterVisible(filter) {
+                if (!filter)
+                    return false;
+
+                if (this.getFilterInitialDisplay(filter) !== 'hidden')
+                    return true;
+
+                return this.revealedFilterIds.includes(filter.id);
+            },
             getHiddenFilters(filtersArray) {
                 if (!Array.isArray(filtersArray))
                     return [];
 
                 return filtersArray.filter((aFilter) =>
                     aFilter &&
-                    aFilter.begin_with_filter_collapsed === 'yes' &&
+                    this.getFilterInitialDisplay(aFilter) === 'hidden' &&
                     !this.revealedFilterIds.includes(aFilter.id)
                 );
             },
@@ -546,13 +548,7 @@
                 if (!Array.isArray(filtersArray) || filtersArray.length <= 0)
                     return false;
 
-                if (!this.hideCollapsedFilters)
-                    return true;
-
-                return filtersArray.some((aFilter) =>
-                    aFilter &&
-                    (aFilter.begin_with_filter_collapsed !== 'yes' || this.revealedFilterIds.includes(aFilter.id))
-                );
+                return filtersArray.some((aFilter) => this.isFilterVisible(aFilter));
             },
             buildHiddenFilterGroups(filtersObject, collectionNames) {
                 const groups = [];

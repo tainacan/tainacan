@@ -711,6 +711,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_move_down'							 	 => __( 'Move down', 'tainacan' ),
 	'label_view_modes_public_list'				 	 => __( 'Items view modes in the public list', 'tainacan' ),
 	'label_default'							 		 => __( 'Default', 'tainacan' ),
+	'label_collapsed'						 		 => __( 'Collapsed', 'tainacan' ),
+	'label_hidden'							 		 => __( 'Hidden', 'tainacan' ),
 	'label_tainacan_mobile_panel'			 		 => __( 'Tainacan Mobile Panel', 'tainacan' ),
 	'label_close_panel'						 		 => __( 'Close panel', 'tainacan' ),
 	'label_shortcuts'						 		 => __( 'Shortcuts', 'tainacan' ),

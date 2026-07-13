@@ -235,25 +235,32 @@
                 </div>
             </b-field>
 
-            <b-field 
+            <b-field
                     :addons="false"
-                    :label="$i18n.getHelperTitle('filters', 'begin_with_filter_collapsed')"
-                    :type="formErrors['begin_with_filter_collapsed'] != undefined ? 'is-danger' : ''"
-                    :message="formErrors['begin_with_filter_collapsed'] != undefined ? formErrors['begin_with_filter_collapsed'] : ''">
-                    &nbsp;
-                <b-switch
-                        v-model="form.begin_with_filter_collapsed"
-                        size="is-small"
-                        :true-value="'yes'"
-                        :false-value="'no'"
-                        :native-value="form.begin_with_filter_collapsed == 'yes' ? 'yes' : 'no'"
-                        name="begin_with_filter_collapsed"
-                        @update:model-value="clearErrors('begin_with_filter_collapsed')">
+                    :type="formErrors['initial_display'] != undefined ? 'is-danger' : ''"
+                    :message="formErrors['initial_display'] != undefined ? formErrors['initial_display'] : ''">
+                <label class="label is-inline">
+                    {{ $i18n.getHelperTitle('filters', 'initial_display') }}
                     <help-button
-                            :title="$i18n.getHelperTitle('filters', 'begin_with_filter_collapsed')"
-                            :message="$i18n.getHelperMessage('filters', 'begin_with_filter_collapsed')"
+                            :title="$i18n.getHelperTitle('filters', 'initial_display')"
+                            :message="$i18n.getHelperMessage('filters', 'initial_display')"
                             :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                </b-switch>
+                </label>
+                <b-select
+                        v-model="form.initial_display"
+                        name="initial_display"
+                        expanded
+                        @update:model-value="clearErrors('initial_display')">
+                    <option value="default">
+                        {{ $i18n.get('label_default') }}
+                    </option>
+                    <option value="collapsed">
+                        {{ $i18n.get('label_collapsed') }}
+                    </option>
+                    <option value="hidden">
+                        {{ $i18n.get('label_hidden') }}
+                    </option>
+                </b-select>
             </b-field>
 
             <b-field 
@@ -379,6 +386,8 @@ export default {
         
         if ( this.form.metadatum == undefined && this.oldForm.metadatum != undefined )
             this.form.metadatum = this.oldForm.metadatum;
+
+        this.form.initial_display = this.normalizeInitialDisplay(this.form);
         
     },
     mounted() {
@@ -410,11 +419,13 @@ export default {
             if ( !filter.edit_form ) {
 
                 for (let [key, value] of Object.entries(this.form)) {
-                    if (key === 'begin_with_filter_collapsed' || key === 'display_in_repository_level_lists' || key === 'description_bellow_name' )
+                    if (key === 'display_in_repository_level_lists' || key === 'description_bellow_name' )
                         this.form[key] = (value == 'yes' || value == true) ? 'yes' : 'no';
                 }
-                if (this.form['begin_with_filter_collapsed'] === undefined)
-                    this.form['begin_with_filter_collapsed'] = 'no';
+                if (this.form['initial_display'] === undefined || !['default', 'collapsed', 'hidden'].includes(this.form['initial_display']))
+                    this.form['initial_display'] = this.normalizeInitialDisplay(this.form);
+                // Avoid the legacy attribute overwriting initial_display on the API.
+                delete this.form['begin_with_filter_collapsed'];
                 if (this.form['display_in_repository_level_lists'] === undefined)
                     this.form['display_in_repository_level_lists'] = 'no';
                 if (this.form['description_bellow_name'] === undefined)
@@ -447,13 +458,14 @@ export default {
                 let formObj = {};
                 
                 for (let [key, value] of formData.entries()) {
-                    if (key === 'begin_with_filter_collapsed' || key === 'display_in_repository_level_lists' || key === 'description_bellow_name' )
+                    if (key === 'display_in_repository_level_lists' || key === 'description_bellow_name' )
                         formObj[key] = (value == 'yes' || value == true) ? 'yes' : 'no';
                     else
                         formObj[key] = value;
                 }
-                if (formObj['begin_with_filter_collapsed'] === undefined)
-                    formObj['begin_with_filter_collapsed'] = 'no';
+                if (formObj['initial_display'] === undefined || !['default', 'collapsed', 'hidden'].includes(formObj['initial_display']))
+                    formObj['initial_display'] = this.normalizeInitialDisplay(formObj);
+                delete formObj['begin_with_filter_collapsed'];
                 if (formObj['display_in_repository_level_lists'] === undefined)
                     formObj['display_in_repository_level_lists'] = 'no';
                 if (formObj['description_bellow_name'] === undefined)
@@ -486,6 +498,13 @@ export default {
         },
         clearErrors(attribute) {
             this.formErrors[attribute] = undefined;
+        },
+        normalizeInitialDisplay(source) {
+            if (source && ['default', 'collapsed', 'hidden'].includes(source.initial_display))
+                return source.initial_display;
+            if (source && source.begin_with_filter_collapsed === 'yes')
+                return 'collapsed';
+            return 'default';
         },
         cancelEdition() {
             this.closedByForm = true;
