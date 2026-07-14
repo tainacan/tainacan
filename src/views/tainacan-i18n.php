@@ -180,6 +180,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_none'                                     => __( 'None', 'tainacan' ),
 	'label_clear_filters'                            => __( 'Clear filters', 'tainacan' ),
 	'label_and'                                      => __( 'and', 'tainacan' ),
+	'label_or'                                       => __( 'or', 'tainacan' ),
 	'label_selected'                                 => __( 'Selected', 'tainacan' ),
 	'label_nothing_selected'                         => __( 'Nothing selected', 'tainacan' ),
 	'label_relationship_new_search'                  => __( 'New Search', 'tainacan' ),

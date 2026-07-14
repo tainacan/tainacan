@@ -90,7 +90,7 @@
                             :focusable="false"
                             @click="updateSearch()">
                         <span v-html="$i18n.get('instruction_press_enter_to_search_for')" />&nbsp;
-                        <em>{{ !isWordSearchMode ? futureSearchQuery : ('"' + futureSearchQuery + '"') }}.</em>
+                        <em>{{ isWordSearchMode ? formatWordSearchQueryDisplay(futureSearchQuery) : ('"' + futureSearchQuery + '"') }}.</em>
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="!isWordSearchByDefault"
@@ -747,23 +747,31 @@
 
                         <p v-if="searchQuery">
                             <template v-if="isWordSearchByDefault">
-                                <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_use_search_separated_words') }}
+                                <span>{{ $i18n.getWithVariables('info_you_searched_for_%s', [hasExecutedSearchByMoreThanOneWord ? formatWordSearchQueryDisplay(searchQuery) : ('"' + searchQuery + '"')]) }}</span>.
+                                <template v-if="hasExecutedSearchByMoreThanOneWord">
+                                    {{ $i18n.get('info_use_search_separated_words') }}
+                                </template>
                             </template>
                             <template v-else>
-                                <template v-if="!isWordSearchMode">
-                                    <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_enabling_search_by_word') }}
+                                <template v-if="!hasExecutedSearchByMoreThanOneWord">
+                                    <span>{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>.
+                                </template>
+                                <template v-else-if="!isWordSearchMode">
+                                    <span>{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_enabling_search_by_word') }}
                                     <br>
                                     {{ $i18n.get('info_details_about_search_by_word') }}
                                 </template>
                                 <template v-else>
-                                    <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_disabling_search_by_word') }}
+                                    <span>{{ $i18n.getWithVariables('info_you_searched_for_%s', [formatWordSearchQueryDisplay(searchQuery)]) }}</span>. {{ $i18n.get('info_try_disabling_search_by_word') }}
                                 </template>
-                                <br>
-                                <b-checkbox 
-                                        :model-value="isWordSearchMode"
-                                        @update:model-value="$eventBusSearch.setWordSearchMode($event); updateSearch();">
-                                    {{ $i18n.get('label_use_search_separated_words') }}
-                                </b-checkbox>
+                                <template v-if="hasExecutedSearchByMoreThanOneWord">
+                                    <br>
+                                    <b-checkbox 
+                                            :model-value="isWordSearchMode"
+                                            @update:model-value="$eventBusSearch.setWordSearchMode($event); updateSearch();">
+                                        {{ $i18n.get('label_use_search_separated_words') }}
+                                    </b-checkbox>
+                                </template>
                             </template>
                         </p>
                     </div>
@@ -945,7 +953,10 @@
                 return this.$route.query.metakey ? metadatumName : (metadatumName ? this.$i18n.get(metadatumName) : '');
             },
             hasSearchByMoreThanOneWord() {
-                return this.futureSearchQuery && this.futureSearchQuery.split(' ').length > 1;
+                return this.futureSearchQuery && /\s/.test(this.futureSearchQuery.trim());
+            },
+            hasExecutedSearchByMoreThanOneWord() {
+                return this.searchQuery && /\s/.test(String(this.searchQuery).trim());
             }
         },
         watch: {
@@ -1438,6 +1449,25 @@
             },
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
+            },
+            /**
+             * Formats a per-word search query for display, e.g. `texto poesia` → `"texto" or "poesia"`.
+             * Quoted groups are kept as a single term.
+             */
+            formatWordSearchQueryDisplay(query) {
+                if (!query)
+                    return '';
+
+                const tokens = String(query).match(/"[^"]*"|\S+/g) || [];
+                const terms = tokens
+                    .map((token) => token.replace(/^"+|"+$/g, '').trim())
+                    .filter(Boolean)
+                    .map((term) => '"' + term + '"');
+
+                if (!terms.length)
+                    return '"' + String(query).trim() + '"';
+
+                return terms.join(' ' + this.$i18n.get('label_or') + ' ');
             },  
             onChangeOrderBy(metadatum) {
                 this.$eventBusSearch.setOrderBy(this.$orderByHelper.getOrderByForMetadatum(metadatum));
