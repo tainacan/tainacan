@@ -90,15 +90,15 @@
                             :focusable="false"
                             @click="updateSearch()">
                         <span v-html="$i18n.get('instruction_press_enter_to_search_for')" />&nbsp;
-                        <em>{{ isWordSearchMode ? formatWordSearchQueryDisplay(futureSearchQuery) : ('"' + futureSearchQuery + '"') }}.</em>
+                        <em>{{ isPerWordSearchMode ? formatPerWordSearchQueryDisplay(futureSearchQuery) : ('"' + futureSearchQuery + '"') }}.</em>
                     </b-dropdown-item>
                     <b-dropdown-item
-                            v-if="!isWordSearchByDefault"
+                            v-if="!isPerWordSearchByDefault"
                             custom
                             :focusable="false">
                         <b-checkbox 
-                                :model-value="isWordSearchMode"
-                                @update:model-value="$eventBusSearch.setWordSearchMode($event)">
+                                :model-value="isPerWordSearchMode"
+                                @update:model-value="$eventBusSearch.setPerWordSearchMode($event)">
                             {{ $i18n.get('label_use_search_separated_words') }}
                         </b-checkbox>
                         <small class="is-small help">{{ $i18n.get('info_use_search_separated_words') }}</small>
@@ -746,9 +746,9 @@
                         </p>
 
                         <p v-if="searchQuery">
-                            <template v-if="isWordSearchByDefault">
-                                <span>{{ $i18n.getWithVariables('info_you_searched_for_%s', [hasExecutedSearchByMoreThanOneWord ? formatWordSearchQueryDisplay(searchQuery) : ('"' + searchQuery + '"')]) }}</span>.
-                                <template v-if="hasExecutedSearchByMoreThanOneWord">
+                            <template v-if="isPerWordSearchByDefault">
+                                <span>{{ $i18n.getWithVariables('info_you_searched_for_%s', [hasExecutedSearchByMoreThanOneWord ? formatPerWordSearchQueryDisplay(searchQuery) : ('"' + searchQuery + '"')]) }}</span>.
+                                <template v-if="hasExecutedSearchByMoreThanOneWord && !isExecutedSearchWrappedInQuotes">
                                     {{ $i18n.get('info_use_search_separated_words') }}
                                 </template>
                             </template>
@@ -756,19 +756,19 @@
                                 <template v-if="!hasExecutedSearchByMoreThanOneWord">
                                     <span>{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>.
                                 </template>
-                                <template v-else-if="!isWordSearchMode">
+                                <template v-else-if="!isPerWordSearchMode">
                                     <span>{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_enabling_search_by_word') }}
                                     <br>
                                     {{ $i18n.get('info_details_about_search_by_word') }}
                                 </template>
                                 <template v-else>
-                                    <span>{{ $i18n.getWithVariables('info_you_searched_for_%s', [formatWordSearchQueryDisplay(searchQuery)]) }}</span>. {{ $i18n.get('info_try_disabling_search_by_word') }}
+                                    <span>{{ $i18n.getWithVariables('info_you_searched_for_%s', [formatPerWordSearchQueryDisplay(searchQuery)]) }}</span>. {{ $i18n.get('info_try_disabling_search_by_word') }}
                                 </template>
                                 <template v-if="hasExecutedSearchByMoreThanOneWord">
                                     <br>
                                     <b-checkbox 
-                                            :model-value="isWordSearchMode"
-                                            @update:model-value="$eventBusSearch.setWordSearchMode($event); updateSearch();">
+                                            :model-value="isPerWordSearchMode"
+                                            @update:model-value="$eventBusSearch.setPerWordSearchMode($event); updateSearch();">
                                         {{ $i18n.get('label_use_search_separated_words') }}
                                     </b-checkbox>
                                 </template>
@@ -922,8 +922,8 @@
                 'order': 'getOrder',
                 'viewMode': 'getViewMode',
                 'totalItems': 'getTotalItems',
-                'isWordSearchMode': 'getIsWordSearchMode',
-                'isWordSearchByDefault': 'getIsWordSearchByDefault',
+                'isPerWordSearchMode': 'getIsPerWordSearchMode',
+                'isPerWordSearchByDefault': 'getIsPerWordSearchByDefault',
                 'metaKey': 'getMetaKey',
                 'page': 'getPage',
                 'itemsPerPage': 'getItemsPerPage'
@@ -957,6 +957,10 @@
             },
             hasExecutedSearchByMoreThanOneWord() {
                 return this.searchQuery && /\s/.test(String(this.searchQuery).trim());
+            },
+            isExecutedSearchWrappedInQuotes() {
+                const query = String(this.searchQuery || '').trim();
+                return query.length > 1 && query.startsWith('"') && query.endsWith('"');
             }
         },
         watch: {
@@ -1052,7 +1056,7 @@
                         
                         // Passes the current URL to store
                         this.$store.dispatch('search/setPostQuery', JSON.parse(JSON.stringify(this.$route.query)));
-                        this.$eventBusSearch.applyDefaultSentenceIfNeeded();
+                        this.$eventBusSearch.applyPerWordSearchDefaultIfNeeded();
 
                         // Advanced Search
                         if (this.$route.query && this.$route.query.advancedSearch)
@@ -1193,7 +1197,7 @@
 
             // Passes the current URL to store
             this.$store.dispatch('search/setPostQuery', currentQuery )
-            this.$eventBusSearch.applyDefaultSentenceIfNeeded();
+            this.$eventBusSearch.applyPerWordSearchDefaultIfNeeded();
 
             // Sets advanced search
             if ( currentQuery.advancedSearch )
@@ -1454,7 +1458,7 @@
              * Formats a per-word search query for display, e.g. `texto poesia` → `"texto" or "poesia"`.
              * Quoted groups are kept as a single term.
              */
-            formatWordSearchQueryDisplay(query) {
+            formatPerWordSearchQueryDisplay(query) {
                 if (!query)
                     return '';
 

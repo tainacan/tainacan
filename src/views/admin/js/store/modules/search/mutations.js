@@ -259,13 +259,13 @@ export const setSearchQuery = ( state, searchQuery ) => {
 };
 
 /**
- * Commits `search/setWordSearchMode` state changes.
+ * Commits `search/setPerWordSearchMode` state changes.
  * @param {Object} state - Module state.
- * @param {boolean} wordSearchMode - Whether to search each word separately.
+ * @param {boolean} perWordSearchMode - Whether to search each word separately.
  * @returns {void} No return value.
  */
-export const setWordSearchMode = ( state, wordSearchMode ) => {
-    Object.assign(state.postquery, { 'sentence': !wordSearchMode });
+export const setPerWordSearchMode = ( state, perWordSearchMode ) => {
+    Object.assign(state.postquery, { 'sentence': !perWordSearchMode });
 };
 
 /**

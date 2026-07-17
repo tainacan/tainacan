@@ -128,11 +128,11 @@ export const getEffectiveSentence = state => {
 };
 
 /**
- * Reads derived state from `search/getIsWordSearchMode`.
+ * Reads derived state from `search/getIsPerWordSearchMode`.
  * @param {Object} state - Module state.
  * @returns {boolean} Getter result.
  */
-export const getIsWordSearchMode = state => {
+export const getIsPerWordSearchMode = state => {
     return !getEffectiveSentence(state);
 };
 
@@ -140,7 +140,7 @@ export const getIsWordSearchMode = state => {
  * Reads whether per-word search is the site default.
  * @returns {boolean} Getter result.
  */
-export const getIsWordSearchByDefault = () => {
+export const getIsPerWordSearchByDefault = () => {
     return !getDefaultSearchSentence();
 };
 
