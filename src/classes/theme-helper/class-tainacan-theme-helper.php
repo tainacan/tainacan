@@ -1185,6 +1185,21 @@ class Theme_Helper {
 	}
 
 	/**
+	 * Get the default value for the sentence search parameter.
+	 *
+	 * When true, search matches the full phrase. When false, each word is matched separately.
+	 *
+	 * @return bool
+	 */
+	public function get_default_search_sentence() {
+		$search_each_word_by_default = defined( 'TAINACAN_SEARCH_EACH_WORD_BY_DEFAULT' )
+			? TAINACAN_SEARCH_EACH_WORD_BY_DEFAULT
+			: (bool) get_option( 'tainacan_option_search_each_word_by_default', false );
+
+		return apply_filters( 'tainacan-default-search-sentence', ! $search_each_word_by_default );
+	}
+
+	/**
 	 * Get whether query parameters should be included in item links from faceted search.
 	 * This can be tweaked in the settings page.
 	 * 

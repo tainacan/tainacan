@@ -202,13 +202,13 @@ export const setSearchQuery = ({ commit }, searchQuery ) => {
     commit('setSearchQuery', searchQuery );
 };
 
-// Set sentence mode
+// Set per-word search mode
 /**
- * Dispatches `search/setSentenceMode`.
+ * Dispatches `search/setPerWordSearchMode`.
  * @returns {*} Action result.
  */
-export const setSentenceMode = ({ commit }, sentenceMode ) => {
-    commit('setSentenceMode', sentenceMode );
+export const setPerWordSearchMode = ({ commit }, perWordSearchMode ) => {
+    commit('setPerWordSearchMode', perWordSearchMode );
 };
 
 // Set ViewMode (view_mode)

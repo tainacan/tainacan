@@ -166,8 +166,17 @@ export default {
             setTotalItems(totalItems) {
                 app.config.globalProperties.$store.dispatch('search/setTotalItems', totalItems);
             },
-            setSentenceMode(sentenceMode) {
-                app.config.globalProperties.$store.dispatch('search/setSentenceMode', sentenceMode);
+            setPerWordSearchMode(perWordSearchMode) {
+                app.config.globalProperties.$store.dispatch('search/setPerWordSearchMode', perWordSearchMode);
+                this.updateURLQueries();
+            },
+            applyPerWordSearchDefaultIfNeeded() {
+                const postquery = app.config.globalProperties.$store.getters['search/getPostQuery'];
+                const isPerWordSearchByDefault = app.config.globalProperties.$store.getters['search/getIsPerWordSearchByDefault'];
+
+                if ( isPerWordSearchByDefault && (postquery.search || postquery.s) && postquery.sentence === undefined ) {
+                    app.config.globalProperties.$store.dispatch('search/setPerWordSearchMode', true);
+                }
             },
             setSearchQuery(searchQuery) {
                 app.config.globalProperties.$store.dispatch('search/setSearchQuery', searchQuery);
@@ -232,6 +241,7 @@ export default {
             },
             updateStoreFromURL() {
                 app.config.globalProperties.$store.dispatch('search/setPostQuery', JSON.parse(JSON.stringify(app.config.globalProperties.$route.query)));
+                this.applyPerWordSearchDefaultIfNeeded();
             },
             loadItems() {
                 // Forces fetch_only to be filled before any search happens
