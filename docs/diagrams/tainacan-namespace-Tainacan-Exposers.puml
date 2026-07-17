@@ -1,4 +1,28 @@
 @startuml class-diagram
+  class "JSON_flat\n<b>Generate a text formated response</b>" as JSON_flat {
+    +slug : 
+    +name : 
+    +accept_no_mapper : 
+    #mappers : 
+    +__construct()
+    +rest_request_after_callbacks(response, handler, request)
+  }
+  class "JSON_LD\n<b>Generate a text formated response</b>" as JSON_LD {
+    +mappers : 
+    +slug : 
+    +name : 
+    #contexts : 
+    +rest_request_after_callbacks(response, handler, request)
+    #array_to_jsonld(data, jsonld)
+    +get_locale(obj)
+  }
+  class "Txt\n<b>Generate a text formated response</b>" as Txt {
+    +mappers : 
+    +slug : 
+    +name : 
+    +rest_request_after_callbacks(response, handler, request)
+    #array_to_txt(data, txt)
+  }
   class "Exposers_Handler\n<b>Load exposers classes</b>" as Exposers_Handler {
     #exposers : 
     -instance : 
@@ -17,6 +41,11 @@
     +get_exposers(output)
     +filter_check_items_request(response, request)
     {static} +get_exposer_urls(base_url)
+  }
+  class "Csv\n<b>Generate a Csv formated response</b>" as Csv {
+    +slug : 
+    +__construct()
+    +rest_request_after_callbacks(response, handler, request)
   }
   class "Html\n<b>Generate a Html formated response</b>" as Html {
     +slug : 
@@ -41,41 +70,12 @@
     {abstract} +rest_request_after_callbacks(response, handler, request)
     +get_mappers()
   }
-  class "JSON_LD\n<b>Generate a text formated response</b>" as JSON_LD {
-    +mappers : 
-    +slug : 
-    +name : 
-    #contexts : 
-    +rest_request_after_callbacks(response, handler, request)
-    #array_to_jsonld(data, jsonld)
-    +get_locale(obj)
-  }
-  class "Csv\n<b>Generate a Csv formated response</b>" as Csv {
-    +slug : 
-    +__construct()
-    +rest_request_after_callbacks(response, handler, request)
-  }
   class "Xml\n<b>Generate a Csv formated response</b>" as Xml {
     #extension : string
     +slug : 
     +name : 
     +rest_request_after_callbacks(response, handler, request)
     #array_to_xml(data, xml_data, namespace)
-  }
-  class "JSON_flat\n<b>Generate a text formated response</b>" as JSON_flat {
-    +slug : 
-    +name : 
-    +accept_no_mapper : 
-    #mappers : 
-    +__construct()
-    +rest_request_after_callbacks(response, handler, request)
-  }
-  class "Txt\n<b>Generate a text formated response</b>" as Txt {
-    +mappers : 
-    +slug : 
-    +name : 
-    +rest_request_after_callbacks(response, handler, request)
-    #array_to_txt(data, txt)
   }
   class "OAI_PMH\n<b>Generate a OAI_PMH/oai_dc formated response</b>" as OAI_PMH {
     +mappers : 

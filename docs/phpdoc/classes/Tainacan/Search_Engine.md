@@ -37,6 +37,7 @@ classDiagram
         +search_where(where, wp_query)
         +distinct(query)
         +relationships_join(join)
+        -get_default_sentence()
     }
 ```
 
@@ -230,5 +231,15 @@ public relationships_join(mixed $join): mixed
 | Parameter | Type      | Description |
 |-----------|-----------|-------------|
 | `$join`   | **mixed** |             |
+
+***
+
+### get_default_sentence
+
+Default value for the sentence query var when not explicitly set.
+
+```php
+private get_default_sentence(): bool
+```
 
 ***

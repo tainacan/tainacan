@@ -14,6 +14,8 @@ classDiagram
     direction TB
     class Selectbox {
         +__construct()
+        +get_form_labels()
+        +validate_options(metadatum)
     }
 ```
 

@@ -58,6 +58,7 @@ classDiagram
         -submission_item_check_recaptcha(request)
         +get_endpoint_args_for_item_schema(method)
         +get_wp_query_params()
+        -get_default_search_sentence()
         +process_request_filters(args)
         +get_attachments_schema()
         +get_schema()
@@ -615,6 +616,16 @@ Return the common params
 
 ```php
 public get_wp_query_params(): array|void
+```
+
+***
+
+### get_default_search_sentence
+
+Default value for the sentence query var on items search requests.
+
+```php
+private get_default_search_sentence(): bool
 ```
 
 ***

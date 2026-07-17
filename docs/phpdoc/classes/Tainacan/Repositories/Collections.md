@@ -15,26 +15,6 @@ updates, deletion, and querying with proper validation and logging.
 ```mermaid
 classDiagram
     direction TB
-    class Collections {
-        +entities_type : string
-        -old_collection : Collection
-        -old_core_title : string
-        -old_core_description : string
-        #init()
-        +get_max_items_per_page()
-        #_get_map()
-        +get_cpt_labels()
-        +register_post_type()
-        +insert(collection)
-        +update(object, new_values)
-        +fetch(args, output)
-        +fetch_by_db_identifier(db_identifier)
-        +get_id_by_db_identifier(db_identifier)
-        +pre_process(collection)
-        +handle_core_metadata(collection)
-        +handle_control_metadata(collection)
-        +handle_parent_order_clone(collection)
-    }
     class Repository {
         +entities_type : string
         #use_logs : bool
@@ -71,6 +51,26 @@ classDiagram
         +get_descendants_ids(id, depth)
         +get_capabilities()
         #sanitize_value(content)
+    }
+    class Collections {
+        +entities_type : string
+        -old_collection : Collection
+        -old_core_title : string
+        -old_core_description : string
+        #init()
+        +get_max_items_per_page()
+        #_get_map()
+        +get_cpt_labels()
+        +register_post_type()
+        +insert(collection)
+        +update(object, new_values)
+        +fetch(args, output)
+        +fetch_by_db_identifier(db_identifier)
+        +get_id_by_db_identifier(db_identifier)
+        +pre_process(collection)
+        +handle_core_metadata(collection)
+        +handle_control_metadata(collection)
+        +handle_parent_order_clone(collection)
     }
     Repository ..> Collections
     Repository ..> Repository
