@@ -1,19 +1,8 @@
 @startuml class-diagram
-  class "Generic_Process_Handler" as Generic_Process_Handler {
-    #bg_process : Background_Generic_Process
-    -registered_process : 
-    -init()
-    +register_generic_processes()
-    +register_generic_process(process)
-    +add_to_queue(process_object)
-    +unregister_generic_process(slug)
-    +get_registered_generic_process()
-    +get_generic_process(slug)
-    +get_generic_process_by_object(process_object)
-    +initialize_generic_process(slug)
-    +save_process_instance(process)
-    +get_process_instance_by_session_id(session_id)
-    +delete_process_instance(process)
+  class "Background_Generic_Process" as Background_Generic_Process {
+    #action : string
+    +__construct()
+    +task(batch)
   }
   class "Bulk_Edit_Process" as Bulk_Edit_Process {
     -meta_key : 
@@ -55,10 +44,21 @@
     -set_comment_status(item)
     -set_author_id(item)
   }
-  class "Background_Generic_Process" as Background_Generic_Process {
-    #action : string
-    +__construct()
-    +task(batch)
+  class "Generic_Process_Handler" as Generic_Process_Handler {
+    #bg_process : Background_Generic_Process
+    -registered_process : 
+    -init()
+    +register_generic_processes()
+    +register_generic_process(process)
+    +add_to_queue(process_object)
+    +unregister_generic_process(slug)
+    +get_registered_generic_process()
+    +get_generic_process(slug)
+    +get_generic_process_by_object(process_object)
+    +initialize_generic_process(slug)
+    +save_process_instance(process)
+    +get_process_instance_by_session_id(session_id)
+    +delete_process_instance(process)
   }
   class "Generic_Process" as Generic_Process {
     #id : identifier

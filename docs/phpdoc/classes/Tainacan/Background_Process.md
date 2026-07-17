@@ -16,6 +16,19 @@ to handle DB updates in the background.
 ```mermaid
 classDiagram
     direction TB
+    class Async_Request {
+        #prefix : string
+        #action : string
+        #identifier : mixed
+        #data : array
+        +__construct()
+        +data(data)
+        +dispatch()
+        #get_query_args()
+        #get_query_url()
+        #get_post_args()
+        +maybe_handle()
+    }
     class Background_Process {
         #table : string
         +ID : false|int
@@ -42,19 +55,6 @@ classDiagram
         #write_error_log(key, log)
         -recursive_stingify_log_array(log, break)
         -has_errors(key)
-    }
-    class Async_Request {
-        #prefix : string
-        #action : string
-        #identifier : mixed
-        #data : array
-        +__construct()
-        +data(data)
-        +dispatch()
-        #get_query_args()
-        #get_query_url()
-        #get_post_args()
-        +maybe_handle()
     }
     class Background_Process_Base {
         #action : string

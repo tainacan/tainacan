@@ -1,27 +1,4 @@
 @startuml class-diagram
-  class "OAIPMH_Token_Manager\n<b>resumptionToken storage backed by WordPress transients.</b>" as OAIPMH_Token_Manager {
-    +create(data)
-    +get(token)
-  }
-  class "OAIPMH_Xml_Generator\n<b>Builds OAI-PMH 2.0 XML responses with DOMDocument.</b>" as OAIPMH_Xml_Generator {
-    -dom : DOMDocument
-    -root : DOMElement
-    +__construct()
-    -text_element(name, value)
-    +init(base_url, verb, params)
-    +add_error(code, message)
-    +create_identify(data)
-    +create_metadata_formats()
-    +create_sets(sets)
-    +add_set(list, set)
-    +start_list(type)
-    +add_record(list, data, include_metadata)
-    +add_header(list, data)
-    -create_header(data)
-    -build_oai_dc(dc_data)
-    +add_resumption_token(list, token, total, cursor, expiration)
-    +output()
-  }
   class "OAIPMH_Data_Provider\n<b>OAI-PMH data provider.</b>" as OAIPMH_Data_Provider {
     -identifier_prefix : string
     +__construct()
@@ -43,6 +20,29 @@
     -get_item_dc(item)
     -is_set_oai_readable(collection)
     -is_item_oai_readable(item)
+  }
+  class "OAIPMH_Xml_Generator\n<b>Builds OAI-PMH 2.0 XML responses with DOMDocument.</b>" as OAIPMH_Xml_Generator {
+    -dom : DOMDocument
+    -root : DOMElement
+    +__construct()
+    -text_element(name, value)
+    +init(base_url, verb, params)
+    +add_error(code, message)
+    +create_identify(data)
+    +create_metadata_formats()
+    +create_sets(sets)
+    +add_set(list, set)
+    +start_list(type)
+    +add_record(list, data, include_metadata)
+    +add_header(list, data)
+    -create_header(data)
+    -build_oai_dc(dc_data)
+    +add_resumption_token(list, token, total, cursor, expiration)
+    +output()
+  }
+  class "OAIPMH_Token_Manager\n<b>resumptionToken storage backed by WordPress transients.</b>" as OAIPMH_Token_Manager {
+    +create(data)
+    +get(token)
   }
   OAIPMH_Xml_Generator ..> OAIPMH_Xml_Generator
 @enduml
