@@ -38,7 +38,7 @@
 
         <b-field :addons="false">
             <label class="label">
-                {{ $i18n.get('label_select_taxonomy_input_type') }}
+                {{ $i18n.get('label_input_type') }}
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-taxonomy', 'input_type')"
                         :message="$i18n.getHelperMessage('tainacan-taxonomy', 'input_type')" />
@@ -278,9 +278,9 @@
             this.fetchTaxonomies();
             this.fetchCollections();
 
-            this.single_types['tainacan-taxonomy-radio'] = 'Radio';
-            this.multiple_types['tainacan-taxonomy-tag-input'] = 'Tag Input';
-            this.multiple_types['tainacan-taxonomy-checkbox'] = 'Checkbox';
+            this.single_types['tainacan-taxonomy-radio'] = this.$i18n.get('label_input_type_radio');
+            this.multiple_types['tainacan-taxonomy-tag-input'] = this.$i18n.get('label_input_type_tag_input');
+            this.multiple_types['tainacan-taxonomy-checkbox'] = this.$i18n.get('label_input_type_checkbox');
 
             if (this.value) {
 

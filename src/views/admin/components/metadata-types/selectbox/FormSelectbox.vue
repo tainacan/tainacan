@@ -1,15 +1,5 @@
 <template>
     <section>
-        <!-- <b-field
-                :addons="false">
-            <label class="label is-inline">
-                {{ $i18n.getHelperTitle('tainacan-selectbox', 'options_separator') }}
-                <help-button
-                        :title="$i18n.getHelperTitle('tainacan-selectbox', 'options_separator')"
-                        :message="$i18n.getHelperMessage('tainacan-selectbox', 'options_separator')"/>
-            </label>
-            
-        </b-field> -->
         <b-field 
                 :addons="false"
                 :listen="setError"
@@ -49,6 +39,42 @@
                 </b-checkbox>
             </div>
         </b-field>
+
+        <b-field :addons="false">
+            <label class="label">
+                {{ $i18n.get('label_input_type') }}
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-selectbox', 'input_type')"
+                        :message="$i18n.getHelperMessage('tainacan-selectbox', 'input_type')" />
+            </label>
+            <b-select
+                    v-if="listInputType"
+                    v-model="input_type"
+                    name="metadata_type_options[input_type]"
+                    expanded
+                    @update:model-value="emitValues()">
+                <option
+                        v-for="(option, index) in single_types"
+                        :key="index"
+                        :value="index">
+                    {{ option }}
+                </option>
+            </b-select>
+
+            <b-select
+                    v-else
+                    v-model="input_type"
+                    name="metadata_type_options[input_type]"
+                    expanded
+                    @update:model-value="emitValues()">
+                <option
+                        v-for="(option, index) in multiple_types"
+                        :key="index"
+                        :value="index">
+                    {{ option }}
+                </option>
+            </b-select>
+        </b-field>
     </section>
 </template>
 
@@ -65,10 +91,36 @@
                 optionType: '',
                 optionMessage: '',
                 options: [],
-                optionsSeparator: [",", "Tab", "Enter"]
+                optionsSeparator: [",", "Tab", "Enter"],
+                input_type: 'tainacan-selectbox',
+                single_types: {},
+                multiple_types: {}
             }
         },
         computed: {
+            listInputType() {
+                if ( this.metadatum && this.metadatum.multiple === 'no' ) {
+                    let types = Object.keys( this.single_types );
+                    let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
+                    if (hasValue)
+                        this.setInputType(this.value.input_type)
+                    else {
+                        this.setInputType('tainacan-selectbox');
+                        this.emitValues();
+                    }
+
+                    return true;
+                } else {
+                    let types = Object.keys( this.multiple_types );
+                    let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
+                    if (hasValue)
+                        this.setInputType(this.value.input_type)
+                    else
+                        this.setInputType('tainacan-selectbox');
+                        
+                    return false;
+                }
+            },
             setError(){
                 if( this.errors && this.errors.options !== '' ){
                     this.setErrorsAttributes( 'is-danger', this.errors.options )
@@ -78,13 +130,43 @@
                 return true;
             }
         },
+        watch: {
+            input_type:{
+                handler(val, oldValue) {
+                    if (val != oldValue) {
+                        this.emitValues();
+                    }
+                }
+            }
+        },
         created(){
+            this.single_types['tainacan-selectbox'] = this.$i18n.get('label_input_type_selectbox');
+            this.single_types['tainacan-selectbox-radio'] = this.$i18n.get('label_input_type_radio');
+            this.single_types['tainacan-selectbox-radio-button'] = this.$i18n.get('label_input_type_selection_buttons');
+
+            this.multiple_types['tainacan-selectbox'] = this.$i18n.get('label_input_type_selectbox');
+            this.multiple_types['tainacan-selectbox-checkbox'] = this.$i18n.get('label_input_type_checkbox');
+            this.multiple_types['tainacan-selectbox-checkbox-button'] = this.$i18n.get('label_input_type_selection_buttons');
+
             if ( this.value ) {
                 this.options = ( this.value.options ) ? this.value.options.split('\n') : [];
                 this.optionsSeparator = ( this.value.options_separator ) ? JSON.parse(this.value.options_separator) : [",", "Tab", "Enter"];
+
+                if (this.metadatum && this.metadatum.multiple === 'no') {
+                    let types = Object.keys( this.single_types );
+                    let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
+                    this.setInputType( ( hasValue ) ? this.value.input_type : 'tainacan-selectbox' );
+                } else {
+                    let types = Object.keys( this.multiple_types );
+                    let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
+                    this.setInputType( ( hasValue ) ? this.value.input_type : 'tainacan-selectbox' );
+                }
             }
         },
         methods: {
+            setInputType( input ) {
+                this.input_type = input;
+            },
             clear(){
                 this.optionType = '';
                 this.optionMessage = '';
@@ -92,7 +174,8 @@
             emitValues() {
                 this.$emit('update:value', {
                     options: ( this.options.length > 0 ) ? this.options.join('\n') : '',
-                    options_separator: JSON.stringify(this.optionsSeparator)
+                    options_separator: JSON.stringify(this.optionsSeparator),
+                    input_type: this.input_type
                 })
             },
             setErrorsAttributes( type, message ){
