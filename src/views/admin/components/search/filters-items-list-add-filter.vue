@@ -14,11 +14,11 @@
                 <button
                         type="button"
                         :aria-expanded="active"
-                        class="button link-style add-filter-button">
+                        class="button is-white add-filter-button">
                     <span
                             aria-hidden="true"
                             class="icon">
-                        <i class="has-text-secondary tainacan-icon tainacan-icon-1-125em tainacan-icon-add" />
+                        <i class="gray-icon tainacan-icon tainacan-icon-1-125em tainacan-icon-add" />
                     </span>
                     <span class="add-filter-button__text">
                         {{ $i18n.get('label_add_filters') }}
@@ -77,6 +77,9 @@
 <style scoped>
     .add-filter-container {
         margin-top: 1em;
+    }
+    .dropdown .add-filter-button {
+        border: none !important;
     }
     .add-filter-button__text {
         margin-inline-end: auto;
