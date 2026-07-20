@@ -244,7 +244,7 @@
                                 <component
                                         :is="selectedConditionalMetadatum.metadata_type_object.component"
                                         v-if="shouldUpdateConditionalValue"
-                                        :forced-component-type="selectedConditionalMetadatum.metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                        :forced-component-type="getForcedConditionalComponentType(selectedConditionalMetadatum)"
                                         :item-metadatum="{ metadatum: selectedConditionalMetadatum }"
                                         :value="Array.isArray(selectedConditionalValue) ? selectedConditionalValue[0] : selectedConditionalValue"
                                         :allow-new="false"
@@ -424,6 +424,29 @@
                 this.shouldUpdateConditionalValue = false;
                 this.selectedConditionalValue = [];
                 this.$nextTick(() => this.shouldUpdateConditionalValue = true);
+            },
+            getForcedConditionalComponentType(metadatum) {
+                if ( !metadatum || !metadatum.metadata_type_object || !metadatum.metadata_type_object.component )
+                    return '';
+
+                const component = metadatum.metadata_type_object.component;
+                if ( component.includes('taxonomy') )
+                    return 'tainacan-taxonomy-tag-input';
+
+                if ( component.includes('selectbox') ) {
+                    const inputType = metadatum.metadata_type_options && metadatum.metadata_type_options.input_type
+                        ? metadatum.metadata_type_options.input_type
+                        : 'tainacan-selectbox';
+
+                    if ( inputType === 'tainacan-selectbox-checkbox' )
+                        return 'tainacan-selectbox-radio';
+                    if ( inputType === 'tainacan-selectbox-checkbox-button' )
+                        return 'tainacan-selectbox-radio-button';
+
+                    return inputType;
+                }
+
+                return '';
             }
         }
     }
