@@ -46,6 +46,7 @@
 </template>
 
 <script>
+    import qs from 'qs';
     import { tainacanApi, isCancel } from '../../../js/axios'
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../../../js/filter-types-mixin';
 
@@ -63,6 +64,12 @@
                 searchOffset: 0,
                 searchNumber: 12,
                 totalFacets: 0
+            }
+        },
+        computed: {
+            usesRelationshipValues() {
+                return this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' ||
+                    this.metadatumType === 'Tainacan\\Metadata_Types\\Control';
             }
         },
         watch: {
@@ -118,7 +125,7 @@
                     if (this.getOptionsValuesCancel != undefined)
                         this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                    const promise = ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' )
+                    const promise = this.usesRelationshipValues
                         ? this.getValuesRelationship({
                             search: this.searchQuery,
                             isRepositoryLevel: this.isRepositoryLevel,
@@ -180,6 +187,31 @@
                             })
                             .catch(error => {
                                 this.$console.log(error);
+                            });
+                    } else if (this.metadatumType === 'Tainacan\\Metadata_Types\\Control') {
+
+                        let endpoint = `/collection/${this.filter.collection_id}/facets/${this.filter.metadatum.metadatum_id}?getSelected=1&offset=0&number=1&count_items=0`;
+
+                        if (this.isRepositoryLevel)
+                            endpoint = `/facets/${this.filter.metadatum.metadatum_id}?getSelected=1&offset=0&number=1&count_items=0`;
+                        else if (this.filter.collection_id == 'default' && this.currentCollectionId)
+                            endpoint = `/collection/${this.currentCollectionId}/facets/${this.filter.metadatum.metadatum_id}?getSelected=1&offset=0&number=1&count_items=0`;
+
+                        let currentQuery = JSON.parse(JSON.stringify(this.query));
+                        if (currentQuery.fetch_only != undefined)
+                            delete currentQuery.fetch_only;
+
+                        tainacanApi.get(endpoint + '&' + qs.stringify({ 'current_query': currentQuery }))
+                            .then( res => {
+                                const values = res.data.values || res.data;
+                                const match = (Array.isArray(values) ? values : []).find(option => String(option.value) === String(metadata.value));
+                                this.label = match ? match.label : metadata.value;
+                                this.selected = this.label;
+                            })
+                            .catch(error => {
+                                this.$console.log(error);
+                                this.label = metadata.value;
+                                this.selected = metadata.value;
                             });
                     } else {
                         this.label = metadata.value;
