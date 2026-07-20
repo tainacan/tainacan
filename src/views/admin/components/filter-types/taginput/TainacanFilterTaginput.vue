@@ -129,7 +129,11 @@
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                const promise = ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' || this.metadatumType === 'Tainacan\\Metadata_Types\\User' )
+                const promise = (
+                    this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' ||
+                    this.metadatumType === 'Tainacan\\Metadata_Types\\User' ||
+                    this.metadatumType === 'Tainacan\\Metadata_Types\\Control'
+                )
                     ? this.getValuesRelationship({
                         search: this.searchQuery,
                         isRepositoryLevel: this.isRepositoryLevel,
