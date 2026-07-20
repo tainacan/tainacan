@@ -2,7 +2,8 @@
     <div class="block">
         <template v-if="!filtersAsModal">
             <div
-                    :class="{ 'skeleton': isLoadingOptions }"
+                    :class="{ 'skeleton': isLoadingOptions && !isLoadingMore }"
+                    :aria-busy="isLoadingMore ? 'true' : 'false'"
                     class="filter-options-wrap">
                 <div
                         v-for="option in options"
@@ -40,11 +41,27 @@
                     </label>
                 </div>
                 <button
-                        v-if="(filter.max_options && (options.length >= filter.max_options)) || someOptionHasChildren"
+                        v-if="showViewMoreButton"
+                        ref="viewMoreButton"
+                        class="view-all-button link-style"
+                        :disabled="isLoadingMore"
+                        :class="{ 'is-loading': isLoadingMore }"
+                        @click="loadMoreOptions()"> 
+                    {{ $i18n.get('label_view_more') }}
+                </button>
+                <button
+                        v-if="showViewAllButton"
+                        ref="viewAllButton"
                         class="view-all-button link-style"
                         @click="openCheckboxModal()"> 
                     {{ $i18n.get('label_view_all') }}
                 </button>
+                <p
+                        aria-live="polite"
+                        aria-atomic="true"
+                        class="sr-only">
+                    {{ viewMoreLiveMessage }}
+                </p>
                 <p 
                         v-if="options.length != undefined && options.length <= 0"
                         class="no-options-placeholder">
@@ -78,11 +95,11 @@
 <script>
     import { isCancel } from '../../../js/axios';
     import CheckboxRadioFilterInput from '../../../components/other/checkbox-radio-filter-input.vue';
-    import { filterTypeMixin, dynamicFilterTypeMixin } from '../../../js/filter-types-mixin';
+    import { filterTypeMixin, dynamicFilterTypeMixin, progressiveCheckboxMixin } from '../../../js/filter-types-mixin';
 
     export default {
         components: { CheckboxRadioFilterInput },
-        mixins: [ filterTypeMixin, dynamicFilterTypeMixin ],
+        mixins: [ filterTypeMixin, dynamicFilterTypeMixin, progressiveCheckboxMixin ],
         props: {
             isRepositoryLevel: Boolean,
             filtersAsModal: Boolean
@@ -156,6 +173,9 @@
             this.$eventBusSearchEmitter.off('hasToReloadFacets', this.reloadOptions); 
         }, 
         methods: {
+            shouldForceViewAllModalOnly() {
+                return this.someOptionHasChildren;
+            },
             reloadOptions(shouldReload) {
                 if ( !this.isUsingElasticSearch && shouldReload )
                     this.loadOptions();
@@ -164,19 +184,68 @@
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
+                this.resetProgressiveState();
+
+                // Progressive mode under ElasticPress needs the dedicated facets endpoint.
+                const forceFacetsApi = this.maxViewMorePages > 0;
+
                 const promise = this.getValuesTaxonomy({
                     metadatumId: this.metadatumId,
                     isRepositoryLevel: this.isRepositoryLevel,
-                    number: this.filter.max_options
+                    number: this.facetPageSize,
+                    ...(forceFacetsApi ? { parent: 0, offset: 0, getSelected: '1' } : {})
                 });
 
                 promise.request
                     .then((res) => {
+                        const fromAggregations = !!(res && res.fromAggregations);
+                        this.updateProgressiveStateFromResponse(res, { isInitial: true, fromAggregations });
                         if (res && res.data && res.data.values)
                             this.$emit('update-parent-collapse', res.data.values.length > 0);
+                        else if (this.options)
+                            this.$emit('update-parent-collapse', this.options.length > 0);
                         this.$nextTick(() => this.tryRestoreFocus());
                     })
                     .catch((error) => {
+                        if (!isCancel(error))
+                            this.$console.log('Error on facets request: ', error);
+                    });
+
+                this.getOptionsValuesCancel = promise.source;
+            },
+            loadMoreOptions() {
+                if (!this.showViewMoreButton || this.isLoadingMore || this.someOptionHasChildren)
+                    return;
+
+                if (this.getOptionsValuesCancel != undefined)
+                    this.getOptionsValuesCancel.cancel('Facet search Canceled.');
+
+                this.isLoadingMore = true;
+                this.shouldAddOptions = true;
+
+                const previousOptionsCount = this.options.length;
+
+                const promise = this.getValuesTaxonomy({
+                    metadatumId: this.metadatumId,
+                    isRepositoryLevel: this.isRepositoryLevel,
+                    number: this.facetPageSize,
+                    offset: this.nextFacetOffset,
+                    parent: 0,
+                    getSelected: '0',
+                    valuesToIgnore: this.options.map(option => option.value)
+                });
+
+                promise.request
+                    .then((res) => {
+                        this.viewMoreClicks += 1;
+                        this.updateProgressiveStateFromResponse(res, { isInitial: false, fromAggregations: false });
+                        this.isLoadingMore = false;
+                        this.shouldAddOptions = false;
+                        this.$nextTick(() => this.handleFocusAfterLoadMore(previousOptionsCount));
+                    })
+                    .catch((error) => {
+                        this.isLoadingMore = false;
+                        this.shouldAddOptions = false;
                         if (!isCancel(error))
                             this.$console.log('Error on facets request: ', error);
                     });
@@ -235,8 +304,14 @@
                 });
             },
             prepareOptionsForTaxonomy(items) {
-                this.options = [];
-                this.options = items.slice(); // copy array.
+                const incoming = Array.isArray(items) ? items.slice() : [];
+                if (this.shouldAddOptions === true && this.options && this.options.length) {
+                    const existing = new Set(this.options.map(option => String(option.value)));
+                    const uniqueIncoming = incoming.filter(item => !existing.has(String(item.value)));
+                    this.options = this.options.concat(uniqueIncoming);
+                } else {
+                    this.options = incoming;
+                }
                 this.updateSelectedValues();
             }
         }
@@ -260,6 +335,7 @@
 
     .view-all-button {
         font-size: 0.75em !important;
+        display: block;
     }
 
     .is-loading:after {

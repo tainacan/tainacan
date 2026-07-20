@@ -12,7 +12,11 @@ class Checkbox extends Filter_Type {
         $this->set_name( __('Checkbox List', 'tainacan') );
         $this->set_supported_types(['string','long_string','item', 'control']);
         $this->set_component('tainacan-filter-checkbox');
+        $this->set_form_component('tainacan-filter-form-checkbox');
         $this->set_use_input_placeholder(false);
+        $this->set_default_options([
+            'max_view_more_pages' => 0
+        ]);
         $this->set_preview_template('
             <div>
                 <div>
@@ -57,5 +61,39 @@ class Checkbox extends Filter_Type {
                 <a class="add-new-term">'. __('View all', 'tainacan') . '</a>
             </div>
         ');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function get_form_labels(){
+        return [
+            'max_view_more_pages' => [
+                'title' => __( 'Max "View more" pages', 'tainacan' ),
+                'description' => __( 'How many times "View more" may load another page inline before switching to "View all". Use 0 for "View all" only (default).', 'tainacan' ),
+            ]
+        ];
+    }
+
+    /**
+     * @param \Tainacan\Entities\Filter $filter
+     * @return array|bool true if is valid or array if has error
+     */
+    public function validate_options(\Tainacan\Entities\Filter $filter) {
+        $parent_validation = parent::validate_options($filter);
+        if ( is_array($parent_validation) )
+            return $parent_validation;
+
+        if ( !in_array($filter->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
+            return true;
+
+        $max_view_more_pages = $this->get_option('max_view_more_pages');
+        if ( $max_view_more_pages === '' || $max_view_more_pages === null )
+            return true;
+
+        if ( !is_numeric($max_view_more_pages) || intval($max_view_more_pages) < 0 )
+            return ['max_view_more_pages' => __('"Max View more pages" must be a non-negative integer', 'tainacan')];
+
+        return true;
     }
 }

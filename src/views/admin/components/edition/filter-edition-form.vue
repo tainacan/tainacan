@@ -332,6 +332,8 @@ import FormFilterNumericInterval from '../filter-types/numeric-interval/FormNume
 import FormFilterNumericListInterval from '../filter-types/numeric-list-interval/FormNumericListInterval.vue';
 import FormFilterNumericsIntersection from '../filter-types/numerics-intersection/FormNumericsIntersection.vue';
 import FormFilterDatesIntersection from '../filter-types/dates-intersection/FormDatesIntersection.vue';
+import FormFilterCheckbox from '../filter-types/checkbox/FormCheckbox.vue';
+import FormFilterTaxonomyCheckbox from '../filter-types/taxonomy/FormTaxonomyCheckbox.vue';
 
 export default {
     name: 'FilterEditionForm',
@@ -341,7 +343,9 @@ export default {
         'tainacan-filter-form-numeric-interval': FormFilterNumericInterval,
         'tainacan-filter-form-numeric-list-interval': FormFilterNumericListInterval,
         'tainacan-filter-form-numerics-intersection': FormFilterNumericsIntersection,
-        'tainacan-filter-form-dates-intersection': FormFilterDatesIntersection
+        'tainacan-filter-form-dates-intersection': FormFilterDatesIntersection,
+        'tainacan-filter-form-checkbox': FormFilterCheckbox,
+        'tainacan-filter-form-taxonomy-checkbox': FormFilterTaxonomyCheckbox
     },
     mixins: [ formHooks ],
     props: {
