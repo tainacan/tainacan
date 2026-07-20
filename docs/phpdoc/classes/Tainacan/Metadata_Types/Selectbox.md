@@ -15,6 +15,7 @@ classDiagram
     class Selectbox {
         +__construct()
         +get_form_labels()
+        +get_options_as_html()
         +validate_options(metadatum)
     }
 ```
@@ -36,6 +37,20 @@ allow i18n from messages
 ```php
 public get_form_labels(): mixed
 ```
+
+***
+
+### get_options_as_html
+
+Gets print-ready version of the options list in html
+
+```php
+public get_options_as_html(): string
+```
+
+**Return Value:**
+
+An html content with labels and values for the options or an empty string
 
 ***
 

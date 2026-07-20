@@ -4598,7 +4598,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `['publish', 'future', 'private']` |  | 
 
-Source: [class-tainacan-selectbox.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/selectbox/class-tainacan-selectbox.php), [line 54](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/selectbox/class-tainacan-selectbox.php#L54-L54)
+Source: [class-tainacan-selectbox.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/selectbox/class-tainacan-selectbox.php), [line 104](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/selectbox/class-tainacan-selectbox.php#L104-L104)
 
 ---------------------------------
 <br>
@@ -5415,7 +5415,12 @@ Argument | Type | Description
     'label_collection_related' => __('Collection related', 'tainacan'),
     'label_metadata_for_search' => __('Metadata for search', 'tainacan'),
     'label_select_taxonomy' => __('Select taxonomy', 'tainacan'),
-    'label_select_taxonomy_input_type' => __('Input type', 'tainacan'),
+    'label_input_type' => __('Input type', 'tainacan'),
+    'label_input_type_selectbox' => __('Selectbox', 'tainacan'),
+    'label_input_type_radio' => __('Radio', 'tainacan'),
+    'label_input_type_checkbox' => __('Checkbox', 'tainacan'),
+    'label_input_type_selection_buttons' => __('Selection buttons', 'tainacan'),
+    'label_input_type_tag_input' => __('Tag Input', 'tainacan'),
     'label_taxonomy_allow_new_terms' => __('Allow new terms', 'tainacan'),
     'label_selectbox_init' => __('Select', 'tainacan'),
     'label_insert_options' => __('Insertion options', 'tainacan'),
@@ -6459,7 +6464,7 @@ Argument | Type | Description
     'error_thumbnail_alt_ai_failed_detail' => __('Could not generate alternative text. You can try again or enter it manually.', 'tainacan'),
 ]` |  | 
 
-Source: [tainacan-i18n.php](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php), [line 5](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php#L5-L1310)
+Source: [tainacan-i18n.php](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php), [line 5](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php#L5-L1315)
 
 ---------------------------------
 <br>
