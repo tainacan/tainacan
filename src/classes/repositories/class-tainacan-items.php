@@ -145,6 +145,12 @@ class Items extends Repository {
 						'context'     => array( 'view', 'edit', 'embed' ),
 						'default'     => 600
 					),
+					'forced_iframe_allowfullscreen' => array(
+						'description' => __( 'Allow fullscreen on forced iframe', 'tainacan' ),
+						'type'        => 'boolean',
+						'context'     => array( 'view', 'edit', 'embed' ),
+						'default'     => false
+					),
 				)
 			],
 			'document_content_index'     => [

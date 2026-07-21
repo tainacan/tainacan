@@ -15,42 +15,6 @@ allowing users to narrow down item results based on metadata criteria.
 ```mermaid
 classDiagram
     direction TB
-    class Filter {
-        #name : mixed
-        +post_type : mixed
-        +enabled_for_collection : mixed
-        #repository : string
-        +__toString()
-        +_toArray()
-        +get_name()
-        +get_description()
-        +get_placeholder()
-        +get_order()
-        +get_max_options()
-        +set_max_options(max_options)
-        +get_metadatum_id()
-        +get_metadatum()
-        +get_filter_type_object()
-        +get_filter_type()
-        +get_filter_type_options()
-        +get_begin_with_filter_collapsed()
-        +get_display_in_repository_level_lists()
-        +get_description_bellow_name()
-        +set_name(value)
-        +set_order(value)
-        +set_description(value)
-        +set_placeholder(value)
-        +set_metadatum(value)
-        +set_metadatum_id(value)
-        +set_filter_type(value)
-        +set_begin_with_filter_collapsed(begin_with_filter_collapsed)
-        +set_display_in_repository_level_lists(display_in_repository_level_lists)
-        +get_enabled_for_collection()
-        +set_enabled_for_collection(value)
-        +set_description_bellow_name(value)
-        +validate()
-        +set_filter_type_options(value)
-    }
     class Entity {
         #repository : Repository
         -errors : array
@@ -88,6 +52,42 @@ classDiagram
         +can_publish(user)
         +get_capabilities()
         +diff(which)
+    }
+    class Filter {
+        #name : mixed
+        +post_type : mixed
+        +enabled_for_collection : mixed
+        #repository : string
+        +__toString()
+        +_toArray()
+        +get_name()
+        +get_description()
+        +get_placeholder()
+        +get_order()
+        +get_max_options()
+        +set_max_options(max_options)
+        +get_metadatum_id()
+        +get_metadatum()
+        +get_filter_type_object()
+        +get_filter_type()
+        +get_filter_type_options()
+        +get_begin_with_filter_collapsed()
+        +get_display_in_repository_level_lists()
+        +get_description_bellow_name()
+        +set_name(value)
+        +set_order(value)
+        +set_description(value)
+        +set_placeholder(value)
+        +set_metadatum(value)
+        +set_metadatum_id(value)
+        +set_filter_type(value)
+        +set_begin_with_filter_collapsed(begin_with_filter_collapsed)
+        +set_display_in_repository_level_lists(display_in_repository_level_lists)
+        +get_enabled_for_collection()
+        +set_enabled_for_collection(value)
+        +set_description_bellow_name(value)
+        +validate()
+        +set_filter_type_options(value)
     }
     Entity ..> Entity
     Entity <|-- Filter

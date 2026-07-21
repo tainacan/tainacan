@@ -259,18 +259,13 @@ export const setSearchQuery = ( state, searchQuery ) => {
 };
 
 /**
- * Commits `search/setSentenceMode` state changes.
+ * Commits `search/setPerWordSearchMode` state changes.
  * @param {Object} state - Module state.
- * @param {*} sentenceMode - Mutation payload.
+ * @param {boolean} perWordSearchMode - Whether to search each word separately.
  * @returns {void} No return value.
  */
-export const setSentenceMode = ( state, sentenceMode ) => {
-    if (sentenceMode != true)
-        Object.assign(state.postquery, { 'sentence': sentenceMode });
-    else {
-        Object.assign(state.postquery, { 'sentence': sentenceMode }); // Needed to trigger getter
-        delete state.postquery.sentence;
-    }
+export const setPerWordSearchMode = ( state, perWordSearchMode ) => {
+    Object.assign(state.postquery, { 'sentence': !perWordSearchMode });
 };
 
 /**

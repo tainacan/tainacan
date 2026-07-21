@@ -667,6 +667,11 @@ class REST_Items_Controller extends REST_Controller {
 		session_write_close();
 		$args = $this->prepare_filters($request);
 
+		// Route schema default makes has_param() unreliable; apply setting only when sentence was omitted.
+		if ( ! empty( $args['s'] ) && is_a( $request, '\WP_REST_Request' ) && ! array_key_exists( 'sentence', $request->get_query_params() ) ) {
+			$args['sentence'] = $this->get_default_search_sentence();
+		}
+
 		/**
 		 * allow plugins to hijack the process.
 		 *
@@ -1684,6 +1689,19 @@ class REST_Items_Controller extends REST_Controller {
 		);
 
 		return $query_params;
+	}
+
+	/**
+	 * Default value for the sentence query var on items search requests.
+	 *
+	 * @return bool
+	 */
+	private function get_default_search_sentence() {
+		$search_each_word_by_default = defined( 'TAINACAN_SEARCH_EACH_WORD_BY_DEFAULT' )
+			? TAINACAN_SEARCH_EACH_WORD_BY_DEFAULT
+			: (bool) get_option( 'tainacan_option_search_each_word_by_default', false );
+
+		return apply_filters( 'tainacan-default-search-sentence', ! $search_each_word_by_default );
 	}
 
 	function process_request_filters($args) {

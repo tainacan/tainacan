@@ -15,6 +15,44 @@ items and their associated metadata, filters, and display settings.
 ```mermaid
 classDiagram
     direction TB
+    class Entity {
+        #repository : Repository
+        -errors : array
+        #post_type : string|false
+        #capability_type : string|false
+        +WP_Post : WP_Post
+        -validated : bool
+        +cap : object
+        +__construct(which)
+        +get_repository()
+        +get_date_i18n(date)
+        +get_mapped_property(prop)
+        #set_mapped_property(prop, value)
+        +set(prop, value)
+        +get(prop)
+        +set_status(value)
+        +validate()
+        +validate_prop(prop)
+        +get_errors()
+        +$get_post_type()
+        +$get_capability_type()
+        +get_status()
+        +get_db_identifier()
+        +get_id()
+        +add_error(type, message)
+        +reset_errors()
+        +get_validated()
+        #set_validated(value)
+        #set_as_valid()
+        +_toArray()
+        +_toJson()
+        +can_read(user)
+        +can_edit(user)
+        +can_delete(user)
+        +can_publish(user)
+        +get_capabilities()
+        +diff(which)
+    }
     class Collection {
         #diplay_name : mixed
         +post_type : string
@@ -125,44 +163,6 @@ classDiagram
         +set_item_enable_document_content_editing(value)
         +validate()
         +user_can(capability, user)
-    }
-    class Entity {
-        #repository : Repository
-        -errors : array
-        #post_type : string|false
-        #capability_type : string|false
-        +WP_Post : WP_Post
-        -validated : bool
-        +cap : object
-        +__construct(which)
-        +get_repository()
-        +get_date_i18n(date)
-        +get_mapped_property(prop)
-        #set_mapped_property(prop, value)
-        +set(prop, value)
-        +get(prop)
-        +set_status(value)
-        +validate()
-        +validate_prop(prop)
-        +get_errors()
-        +$get_post_type()
-        +$get_capability_type()
-        +get_status()
-        +get_db_identifier()
-        +get_id()
-        +add_error(type, message)
-        +reset_errors()
-        +get_validated()
-        #set_validated(value)
-        #set_as_valid()
-        +_toArray()
-        +_toJson()
-        +can_read(user)
-        +can_edit(user)
-        +can_delete(user)
-        +can_publish(user)
-        +get_capabilities()
-        +diff(which)
     }
     Collection ..> Collection
     Entity ..> Collection

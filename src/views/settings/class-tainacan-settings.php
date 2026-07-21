@@ -92,6 +92,20 @@ class Settings extends Pages {
 		) );
 
 		$this->create_tainacan_setting( array(
+			'id' => 'search_each_word_by_default',
+			'section' => 'tainacan_settings_search_and_performance',
+			'title' => __( 'Search matching mode', 'tainacan' ),
+			'label' => __( 'Search each word separately by default', 'tainacan' ),
+			'description' => __( 'When enabled, text search matches each word independently (OR logic) instead of the full phrase. Users can still use quotes to search for an exact phrase.', 'tainacan' ),
+			'type' => 'boolean',
+			'input_type' => 'checkbox',
+			'input_disabled' => defined('TAINACAN_SEARCH_EACH_WORD_BY_DEFAULT'),
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'default' => defined('TAINACAN_SEARCH_EACH_WORD_BY_DEFAULT') ? TAINACAN_SEARCH_EACH_WORD_BY_DEFAULT : false,
+			'forced_value' => defined('TAINACAN_SEARCH_EACH_WORD_BY_DEFAULT') ? TAINACAN_SEARCH_EACH_WORD_BY_DEFAULT : null
+		) );
+
+		$this->create_tainacan_setting( array(
 			'id' => 'facets_enable_filter_items',
 			'section' => 'tainacan_settings_search_and_performance',
 			'title' => __( 'Filters dynamic values', 'tainacan' ),

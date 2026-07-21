@@ -920,6 +920,7 @@ export default {
             urlForcedIframe: false,
             urlIframeWidth: 600,
             urlIframeHeight: 450,
+            urlIframeAllowfullscreen: false,
             urlIsImage: false,
             isMobileScreen: false,
             openMetadataNameFilter: false,
@@ -1648,6 +1649,7 @@ export default {
                     urlForcedIframe: this.urlForcedIframe,
                     urlIframeWidth: this.urlIframeWidth,
                     urlIframeHeight: this.urlIframeHeight,
+                    urlIframeAllowfullscreen: this.urlIframeAllowfullscreen,
                     urlIsImage: this.urlIsImage
                 },
                 events: {
@@ -1665,6 +1667,7 @@ export default {
                 forced_iframe: updatedValues.urlForcedIframe,
                 forced_iframe_width: updatedValues.urlIframeWidth,
                 forced_iframe_height: updatedValues.urlIframeHeight,
+                forced_iframe_allowfullscreen: updatedValues.urlIframeAllowfullscreen,
                 is_image: updatedValues.urlIsImage
             }
             this.updateItemDocument({
@@ -1691,6 +1694,8 @@ export default {
                         this.urlIframeWidth = item.document_options['forced_iframe_width'];
                     if (item.document_options !== undefined && item.document_options['forced_iframe_height'] !== undefined)
                         this.urlIframeHeight = item.document_options['forced_iframe_height'];
+                    if (item.document_options !== undefined && item.document_options['forced_iframe_allowfullscreen'] !== undefined)
+                        this.urlIframeAllowfullscreen = item.document_options['forced_iframe_allowfullscreen'];
 
                     this.isLoading = false;
 
@@ -1983,6 +1988,8 @@ export default {
                         this.urlIframeWidth = this.form.document_options['forced_iframe_width'];
                     if (this.form.document_options !== undefined && this.form.document_options['forced_iframe_height'] !== undefined)
                         this.urlIframeHeight = this.form.document_options['forced_iframe_height'];
+                    if (this.form.document_options !== undefined && this.form.document_options['forced_iframe_allowfullscreen'] !== undefined)
+                        this.urlIframeAllowfullscreen = this.form.document_options['forced_iframe_allowfullscreen'];
                     
                     /**
                      * Fires action tainacan_item_edition_item_loaded
