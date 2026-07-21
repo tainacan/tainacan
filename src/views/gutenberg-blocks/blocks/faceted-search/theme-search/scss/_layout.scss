@@ -197,8 +197,8 @@
 					vertical-align: text-top;
 					margin-bottom: 1rem;
 				}
-				.add-filter-container {
-					margin-top: 0px;
+				.add-filter-container hr {
+					display: none;
 				}
 
 				@media screen and (min-width: 769px) {

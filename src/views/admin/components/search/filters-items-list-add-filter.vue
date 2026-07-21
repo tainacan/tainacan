@@ -2,14 +2,14 @@
     <div
             v-if="hasHiddenFilters"
             class="add-filter-container">
+        <hr>
         <b-dropdown
                 v-a11y-dropdown
                 :scrollable="true"
                 :max-height="280"
                 :mobile-modal="false"
-                aria-role="menu"
-                trap-focus
-                position="is-top-right">
+                aria-role="listbox"
+                trap-focus>
             <template #trigger="{ active }">
                 <button
                         type="button"
@@ -39,7 +39,7 @@
                     <b-dropdown-item
                             v-for="hiddenFilter in group.filters"
                             :key="hiddenFilter.id"
-                            aria-role="menuitem"
+                            aria-role="option"
                             @click="$emit('add-filter', hiddenFilter)"
                             @keydown.enter.prevent="$emit('add-filter', hiddenFilter)"
                             @keydown.space.prevent="$emit('add-filter', hiddenFilter)">
@@ -76,13 +76,14 @@
 
 <style scoped>
     .add-filter-container {
-        margin-top: 1em;
+        text-align: center;
     }
-    .dropdown .add-filter-button {
-        border: none !important;
+    .add-filter-container .dropdown {
+        width: auto;
     }
-    .add-filter-button__text {
-        margin-inline-end: auto;
+    .add-filter-container .dropdown .add-filter-button {
+        --tainacan-input-border-color: transparent;
+        line-height: 1.2em !important;
     }
     :deep(.dropdown-item.add-filter-group-label),
     :deep(.dropdown-item.add-filter-group-label:hover),
