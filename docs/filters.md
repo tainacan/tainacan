@@ -1049,7 +1049,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `'>'` |  | 
 
-Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 1407](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L1407-L1407)
+Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 1410](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L1410-L1410)
 
 ---------------------------------
 <br>
@@ -1068,7 +1068,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$name` |  | 
 
-Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 1165](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L1165-L1506)
+Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 1165](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L1165-L1509)
 
 ---------------------------------
 <br>
@@ -4615,6 +4615,26 @@ Source: [class-tainacan-control.php](https://github.com/tainacan/tainacan/blob/m
 ---------------------------------
 <br>
 
+## `tainacan-control-metadatum-search-sql` <!-- {docsify-ignore} -->
+
+*Filter the SQL fragment used to search control metadata facet values by label.*
+
+Useful for plugins that register custom control_metadatum kinds.
+Callbacks must return a fully prepared/escaped SQL fragment.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$search_q` | `string` | SQL fragment starting with "AND ..."
+`$search` | `string` | The search string.
+`$control_metadatum` | `string` | The control_metadatum option.
+`$this` |  | 
+
+Source: [class-tainacan-control.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php), [line 240](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php#L240-L251)
+
+---------------------------------
+<br>
+
 ## `tainacan-item-metadata-get-value-as-html--type-control` <!-- {docsify-ignore} -->
 
 *Filter the HTML representation of the value of a control metadatum*
@@ -4625,7 +4645,7 @@ Argument | Type | Description
 `$return` | `string` | The HTML representation of the value
 `$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
 
-Source: [class-tainacan-control.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php), [line 186](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php#L186-L194)
+Source: [class-tainacan-control.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php), [line 306](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php#L306-L314)
 
 ---------------------------------
 <br>
@@ -4640,7 +4660,7 @@ Argument | Type | Description
 `$return` | `string` | The STRING representation of the value
 `$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
 
-Source: [class-tainacan-control.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php), [line 234](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php#L234-L242)
+Source: [class-tainacan-control.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php), [line 354](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php#L354-L362)
 
 ---------------------------------
 <br>
