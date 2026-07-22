@@ -77,6 +77,7 @@
 <style scoped>
     .add-filter-container {
         text-align: center;
+        margin-top: calc(1.4em + 8px); /* Label line height + margin-bottom, to keep horizontal filters aligned */
     }
     .add-filter-container .dropdown {
         width: auto;

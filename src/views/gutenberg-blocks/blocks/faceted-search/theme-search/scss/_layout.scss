@@ -202,9 +202,6 @@
 				}
 
 				@media screen and (min-width: 769px) {
-					& > div:not(:last-child) {
-						margin-inline-end: 2.25em;
-					}
 					.filter-item-forms {
 						width: var(--tainacan-filters-inline-width, 272px);
 					}

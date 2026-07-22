@@ -58,10 +58,10 @@
                         v-for="(taxonomyFilter, key, index) of taxonomyFilters"
                         :key="index">
                     <div 
-                            v-if="key == 'repository-filters'"
+                            v-if="key == 'repository-filters' && shouldShowFilterGroup(taxonomyFilter)"
                             class="repository-level-filters">
                         <div 
-                                v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined && shouldShowGroupLabel(taxonomyFilter)" 
+                                v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined" 
                                 v-tooltip="{
                                     delay: {
                                         show: 500,
@@ -76,7 +76,7 @@
                             {{ $i18n.get('label_filters_from') + " " + taxonomyFiltersCollectionNames[key] + ": " }}
                         </div>
                         <div    
-                                v-if="taxonomyFilter.length > 0 && !(taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined) && shouldShowGroupLabel(taxonomyFilter)"
+                                v-if="taxonomyFilter.length > 0 && !(taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined)"
                                 class="collection-name">
                             <span 
                                     style="width: 100%; height: 54px;"
@@ -98,18 +98,18 @@
                                     :hide-collapses="hideFilterCollapses"
                                     :is-revealed="revealedFilterIds.includes(filter.id)" />
                         </template>
-                        <hr v-if="taxonomyFilter.length > 1 && shouldShowGroupLabel(taxonomyFilter)">
+                        <hr v-if="taxonomyFilter.length > 1">
                     </div>
                 </template>
                 <template 
                         v-for="(taxonomyFilter, key, index) of taxonomyFilters"
                         :key="index">
                     <div 
-                            v-if="key != 'repository-filters'"
+                            v-if="key != 'repository-filters' && shouldShowFilterGroup(taxonomyFilter)"
                             :id="'filters-from-collection-id-' + key"
                             class="collection-level-filters">
                         <div 
-                                v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined && shouldShowGroupLabel(taxonomyFilter)" 
+                                v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined" 
                                 v-tooltip="{
                                     delay: {
                                         show: 500,
@@ -124,7 +124,7 @@
                             {{ $i18n.get('label_filters_from') + " " + taxonomyFiltersCollectionNames[key] + ": " }}
                         </div>
                         <div    
-                                v-if="taxonomyFilter.length > 0 && !(taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined) && shouldShowGroupLabel(taxonomyFilter)"
+                                v-if="taxonomyFilter.length > 0 && !(taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined)"
                                 class="collection-name">
                             <span 
                                     style="width: 100%; height: 54px;"
@@ -146,7 +146,7 @@
                                     :hide-collapses="hideFilterCollapses"
                                     :is-revealed="revealedFilterIds.includes(filter.id)" />
                         </template>
-                        <hr v-if="taxonomyFilter.length > 1 && shouldShowGroupLabel(taxonomyFilter)">
+                        <hr v-if="taxonomyFilter.length > 1">
                     </div>
                 </template>
             </template>
@@ -157,10 +157,10 @@
                         v-for="(repositoryCollectionFilter, key, index) of repositoryCollectionFilters"
                         :key="index">
                     <div 
-                            v-if="key == 'repository-filters'"
+                            v-if="key == 'repository-filters' && shouldShowFilterGroup(repositoryCollectionFilter)"
                             class="repository-level-filters">
                         <div 
-                                v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined && shouldShowGroupLabel(repositoryCollectionFilter)" 
+                                v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined" 
                                 v-tooltip="{
                                     delay: {
                                         show: 500,
@@ -175,7 +175,7 @@
                             {{ $i18n.get('label_filters_from') + " " + repositoryCollectionNames[key] + ": " }}
                         </div>
                         <div    
-                                v-if="repositoryCollectionFilter.length > 0 && !(repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined) && shouldShowGroupLabel(repositoryCollectionFilter)"
+                                v-if="repositoryCollectionFilter.length > 0 && !(repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined)"
                                 class="collection-name">
                             <span 
                                     style="width: 100%; height: 54px;"
@@ -197,18 +197,18 @@
                                     :hide-collapses="hideFilterCollapses"
                                     :is-revealed="revealedFilterIds.includes(filter.id)" />
                         </template>
-                        <hr v-if="repositoryCollectionFilters.length > 1 && shouldShowGroupLabel(repositoryCollectionFilter)">
+                        <hr v-if="repositoryCollectionFilters.length > 1">
                     </div>
                 </template>
                 <template 
                         v-for="(repositoryCollectionFilter, key, index) of repositoryCollectionFilters"
                         :key="index">
                     <div 
-                            v-if="key != 'repository-filters'"
+                            v-if="key != 'repository-filters' && shouldShowFilterGroup(repositoryCollectionFilter)"
                             :id="'filters-from-collection-id-' + key"
                             class="collection-level-filters">
                         <div 
-                                v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined && shouldShowGroupLabel(repositoryCollectionFilter)" 
+                                v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined" 
                                 v-tooltip="{
                                     delay: {
                                         show: 500,
@@ -223,7 +223,7 @@
                             {{ $i18n.get('label_filters_from') + " " + repositoryCollectionNames[key] + ": " }}
                         </div>
                         <div    
-                                v-if="repositoryCollectionFilter.length > 0 && !(repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined) && shouldShowGroupLabel(repositoryCollectionFilter)"
+                                v-if="repositoryCollectionFilter.length > 0 && !(repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined)"
                                 class="collection-name">
                             <span 
                                     style="width: 100%; height: 54px;"
@@ -245,7 +245,7 @@
                                     :hide-collapses="hideFilterCollapses"
                                     :is-revealed="revealedFilterIds.includes(filter.id)" />
                         </template>
-                        <hr v-if="repositoryCollectionFilters.length > 1 && shouldShowGroupLabel(repositoryCollectionFilter)">
+                        <hr v-if="repositoryCollectionFilters.length > 1">
                     </div>
                 </template>
             </template>
@@ -544,7 +544,7 @@
                     !this.revealedFilterIds.includes(aFilter.id)
                 );
             },
-            shouldShowGroupLabel(filtersArray) {
+            shouldShowFilterGroup(filtersArray) {
                 if (!Array.isArray(filtersArray) || filtersArray.length <= 0)
                     return false;
 
