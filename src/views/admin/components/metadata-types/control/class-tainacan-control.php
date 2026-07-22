@@ -149,6 +149,7 @@ class Control extends Metadata_Type {
 		$control_metadatum = $this->get_option( 'control_metadatum' );
 		$like_search = '%' . $wpdb->esc_like( $search ) . '%';
 		$search_q = '';
+		$stripos = function_exists( 'mb_stripos' ) ? 'mb_stripos' : 'stripos';
 
 		switch ( $control_metadatum ) {
 			case 'collection_id':
@@ -164,7 +165,7 @@ class Control extends Metadata_Type {
 				$matching_values = [];
 				foreach ( [ 'yes', 'no' ] as $value ) {
 					$label = $this->get_control_metadatum_value( $value, 'has_thumbnail', 'string' );
-					if ( stripos( (string) $label, $search ) !== false || stripos( $value, $search ) !== false ) {
+					if ( $stripos( (string) $label, $search ) !== false || $stripos( $value, $search ) !== false ) {
 						$matching_values[] = $value;
 					}
 				}
@@ -184,7 +185,7 @@ class Control extends Metadata_Type {
 				$known_values = [ 'attachment', 'text', 'url', 'empty', 'application/pdf' ];
 				foreach ( $known_values as $value ) {
 					$label = $this->get_document_as_string( $value );
-					if ( stripos( (string) $label, $search ) !== false || stripos( $value, $search ) !== false ) {
+					if ( $stripos( (string) $label, $search ) !== false || $stripos( $value, $search ) !== false ) {
 						$matching_values[] = $value;
 					}
 				}
@@ -207,18 +208,14 @@ class Control extends Metadata_Type {
 				];
 				foreach ( $mime_prefixes as $prefix => $label ) {
 					// Match category alone (e.g. "Imagem" or "image").
-					if ( stripos( $label, $search ) !== false || stripos( $prefix, $search ) !== false ) {
+					if ( $stripos( $label, $search ) !== false || $stripos( $prefix, $search ) !== false ) {
 						// $prefix is a hardcoded key from $mime_prefixes.
 						$clauses[] = $wpdb->prepare( 'meta_value LIKE %s', $wpdb->esc_like( $prefix ) . '/%' );
 					}
 
 					// Match full translated labels (e.g. "Imagem/jpeg" → image/jpeg).
 					$translated_prefix = $label . '/';
-					$starts_with_translated = function_exists( 'mb_stripos' )
-						? mb_stripos( $search, $translated_prefix ) === 0
-						: stripos( $search, $translated_prefix ) === 0;
-
-					if ( $starts_with_translated ) {
+					if ( $stripos( $search, $translated_prefix ) === 0 ) {
 						$subtype = function_exists( 'mb_substr' )
 							? mb_substr( $search, mb_strlen( $translated_prefix ) )
 							: substr( $search, strlen( $translated_prefix ) );
