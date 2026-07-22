@@ -132,6 +132,126 @@ class Control extends Metadata_Type {
 	}
 
 	/**
+	 * Build the SQL fragment used by Metadata::fetch_all_metadatum_values() to filter
+	 * control metadata facet values by a textual search against their labels.
+	 *
+	 * @param string $search The search string.
+	 * @return string SQL fragment starting with "AND ..."
+	 */
+	public function get_control_metadatum_search_sql( $search ) {
+		global $wpdb;
+
+		$search = trim( (string) $search );
+		if ( $search === '' ) {
+			return '';
+		}
+
+		$control_metadatum = $this->get_option( 'control_metadatum' );
+		$like_search = '%' . $wpdb->esc_like( $search ) . '%';
+		$search_q = '';
+		$stripos = function_exists( 'mb_stripos' ) ? 'mb_stripos' : 'stripos';
+
+		switch ( $control_metadatum ) {
+			case 'collection_id':
+				$post_type = \Tainacan\Entities\Collection::get_post_type();
+				$search_q = $wpdb->prepare(
+					"AND meta_value IN ( SELECT ID FROM $wpdb->posts WHERE post_type = %s AND post_title LIKE %s )",
+					$post_type,
+					$like_search
+				);
+			break;
+
+			case 'has_thumbnail':
+				$matching_values = [];
+				foreach ( [ 'yes', 'no' ] as $value ) {
+					$label = $this->get_control_metadatum_value( $value, 'has_thumbnail', 'string' );
+					if ( $stripos( (string) $label, $search ) !== false || $stripos( $value, $search ) !== false ) {
+						$matching_values[] = $value;
+					}
+				}
+				if ( empty( $matching_values ) ) {
+					$search_q = 'AND 1=0';
+				} else {
+					// Values come from the fixed yes/no set above; still prepare them.
+					$in_list = implode( ',', array_map( function( $value ) use ( $wpdb ) {
+						return $wpdb->prepare( '%s', $value );
+					}, $matching_values ) );
+					$search_q = "AND meta_value IN ($in_list)";
+				}
+			break;
+
+			case 'document_type':
+				$matching_values = [];
+				$known_values = [ 'attachment', 'text', 'url', 'empty', 'application/pdf' ];
+				foreach ( $known_values as $value ) {
+					$label = $this->get_document_as_string( $value );
+					if ( $stripos( (string) $label, $search ) !== false || $stripos( $value, $search ) !== false ) {
+						$matching_values[] = $value;
+					}
+				}
+
+				$clauses = [];
+				if ( ! empty( $matching_values ) ) {
+					// Values come from the fixed known_values set above; still prepare them.
+					$in_list = implode( ',', array_map( function( $value ) use ( $wpdb ) {
+						return $wpdb->prepare( '%s', $value );
+					}, $matching_values ) );
+					$clauses[] = "meta_value IN ($in_list)";
+				}
+
+				$mime_prefixes = [
+					'image'       => __( 'Image', 'tainacan' ),
+					'video'       => __( 'Video', 'tainacan' ),
+					'audio'       => __( 'Audio', 'tainacan' ),
+					'text'        => __( 'Text', 'tainacan' ),
+					'application' => __( 'Others', 'tainacan' ),
+				];
+				foreach ( $mime_prefixes as $prefix => $label ) {
+					// Match category alone (e.g. "Imagem" or "image").
+					if ( $stripos( $label, $search ) !== false || $stripos( $prefix, $search ) !== false ) {
+						// $prefix is a hardcoded key from $mime_prefixes.
+						$clauses[] = $wpdb->prepare( 'meta_value LIKE %s', $wpdb->esc_like( $prefix ) . '/%' );
+					}
+
+					// Match full translated labels (e.g. "Imagem/jpeg" → image/jpeg).
+					$translated_prefix = $label . '/';
+					if ( $stripos( $search, $translated_prefix ) === 0 ) {
+						$subtype = function_exists( 'mb_substr' )
+							? mb_substr( $search, mb_strlen( $translated_prefix ) )
+							: substr( $search, strlen( $translated_prefix ) );
+						$clauses[] = $wpdb->prepare(
+							'meta_value LIKE %s',
+							$wpdb->esc_like( $prefix ) . '/' . $wpdb->esc_like( $subtype ) . '%'
+						);
+					}
+				}
+
+				// Also match raw stored values (e.g. "image/jpeg", "jpeg").
+				$clauses[] = $wpdb->prepare( 'meta_value LIKE %s', $like_search );
+
+				$search_q = 'AND (' . implode( ' OR ', $clauses ) . ')';
+			break;
+
+			default:
+				$search_q = $wpdb->prepare( 'AND meta_value LIKE %s', $like_search );
+			break;
+		}
+
+		/**
+		 * Filter the SQL fragment used to search control metadata facet values by label.
+		 *
+		 * Useful for plugins that register custom control_metadatum kinds.
+		 * Callbacks must return a fully prepared/escaped SQL fragment.
+		 *
+		 * @param string $search_q           SQL fragment starting with "AND ..."
+		 * @param string $search             The search string.
+		 * @param string $control_metadatum  The control_metadatum option.
+		 * @param \Tainacan\Metadata_Types\Control $metadata_type The Control metadata type instance.
+		 */
+		return apply_filters( 'tainacan-control-metadatum-search-sql', $search_q, $search, $control_metadatum, $this );
+	}
+
+	/**
 	 * Return the value of an Item_Metadata_Entity using a metadatum of this metadatum type as an html string
 	 * 
 	 * @param Item_Metadata_Entity $item_metadata 
