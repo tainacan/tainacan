@@ -1026,6 +1026,11 @@
         .tainacan-finder-columns-container {
             border: none;
         }
+
+        .tainacan-li-checkbox-modal {
+            border-radius: var(--tainacan-input-border-radius);
+        }
+
     }
     .tab-content {
         transition: height 0.2s ease;
@@ -1478,6 +1483,10 @@
             .tainacan-finder-column {
                 max-width: calc(99vw - var(--tainacan-one-column) - 0.75em - 0.75em - 2px);
                 min-width: calc(99vw - var(--tainacan-one-column) - 0.75em - 0.75em - 24px);
+           
+                &.has-only-one-column {
+                    max-width: 100%;
+                }
             }
             .tainacan-finder-column .column-label+ul {
                 max-height: calc(100% - 0.75em - 0.45em - 0.45em - 5px);

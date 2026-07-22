@@ -18,6 +18,7 @@ classDiagram
         +$get_helper()
         +validate_options(metadatum)
         +get_control_metadatum_value(value, control_metadatum, format)
+        +get_control_metadatum_search_sql(search)
         +get_value_as_html(item_metadata)
         +get_value_as_string(item_metadata)
         -get_document_as_html(value)
@@ -91,6 +92,27 @@ public get_control_metadatum_value(mixed $value, mixed $control_metadatum, mixed
 | `$value`             | **mixed** |             |
 | `$control_metadatum` | **mixed** |             |
 | `$format`            | **mixed** |             |
+
+***
+
+### get_control_metadatum_search_sql
+
+Build the SQL fragment used by Metadata::fetch_all_metadatum_values() to filter
+control metadata facet values by a textual search against their labels.
+
+```php
+public get_control_metadatum_search_sql(string $search): string
+```
+
+**Parameters:**
+
+| Parameter | Type       | Description        |
+|-----------|------------|--------------------|
+| `$search` | **string** | The search string. |
+
+**Return Value:**
+
+SQL fragment starting with "AND ..."
 
 ***
 
