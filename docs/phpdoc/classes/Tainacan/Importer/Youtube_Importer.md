@@ -10,21 +10,6 @@
 ```mermaid
 classDiagram
     direction TB
-    class Youtube_Importer {
-        #steps : mixed
-        -items_repo : mixed
-        +__construct(attributes)
-        +get_source_metadata()
-        +process_item(index, collection_definition)
-        +identify_url(showDetails)
-        +get_source_number_of_items()
-        -get_list_items()
-        +after_inserted_item(inserted_item, collection_index)
-        +save_mapping(collection_id, mapping)
-        +get_mapping(collection_id)
-        +add_collection(collection)
-        +options_form()
-    }
     class Importer {
         -id : identifier
         #tmp_file : string
@@ -102,6 +87,21 @@ classDiagram
         +after_inserted_item(insertedItem, collection_index)
         +run()
         +create_new_metadata(metadata_description, collection_id, parent_id)
+    }
+    class Youtube_Importer {
+        #steps : mixed
+        -items_repo : mixed
+        +__construct(attributes)
+        +get_source_metadata()
+        +process_item(index, collection_definition)
+        +identify_url(showDetails)
+        +get_source_number_of_items()
+        -get_list_items()
+        +after_inserted_item(inserted_item, collection_index)
+        +save_mapping(collection_id, mapping)
+        +get_mapping(collection_id)
+        +add_collection(collection)
+        +options_form()
     }
     Importer <|-- Youtube_Importer
 ```
