@@ -377,7 +377,7 @@
                                 if (this.itemMetadatum.value == currentValues)
                                     return;
                             }
-                            console.log('currentValues', currentValues);
+
                             break;
                         }
                         
@@ -403,7 +403,7 @@
                             )
                                 return;
                     }
-                    
+
                 // If the value is null or false, don't update unless the user actually set something
                 // Sometimes when the page is loaded the itemMetadatum.value is null or false from the API, but the user has not set anything yet.
                 } else {
