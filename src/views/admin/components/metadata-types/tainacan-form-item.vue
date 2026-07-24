@@ -344,7 +344,7 @@
                     return;
 
                 if ( this.itemMetadatum.value !== null && this.itemMetadatum.value !== false ) {
-
+                    
                     // This routine avoids calling the API if the value did not changed
                     switch(this.itemMetadatum.value.constructor.name) {
 
@@ -377,7 +377,7 @@
                                 if (this.itemMetadatum.value == currentValues)
                                     return;
                             }
-
+                            console.log('currentValues', currentValues);
                             break;
                         }
                         
@@ -403,6 +403,16 @@
                             )
                                 return;
                     }
+                    
+                // If the value is null or false, don't update unless the user actually set something
+                // Sometimes when the page is loaded the itemMetadatum.value is null or false from the API, but the user has not set anything yet.
+                } else {
+                    // Stored value on this.values is empty: don't update unless the user actually set something
+                    const isLocalEmpty =
+                        !this.values ||
+                        (Array.isArray(this.values) && this.values.filter(v => v !== false && v !== null && v !== undefined && v !== '').length === 0);
+                    if (isLocalEmpty)
+                        return;
                 }
                 
                 // If none is the case, the value is update request is sent to the API
