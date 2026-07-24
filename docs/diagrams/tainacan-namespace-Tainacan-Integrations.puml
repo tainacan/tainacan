@@ -1,4 +1,11 @@
 @startuml class-diagram
+  class "WordPress_AI\n<b>Integration with the WordPress AI plugin (https://github.com/WordPress/ai).</b>" as WordPress_AI {
+    #init()
+    +is_active()
+    +is_alt_text_generation_available()
+    -is_alt_text_generation_usable()
+    -has_vision_model_available()
+  }
   class "Elastic_Press_lte4" as Elastic_Press_lte4 {
     +last_aggregations : 
     +facets : 
@@ -19,13 +26,6 @@
     -prepare_request_for_facet(formatted_args)
     -format_aggregations_items(aggregations)
     -format_aggregations_facet(aggregations)
-  }
-  class "WordPress_AI\n<b>Integration with the WordPress AI plugin (https://github.com/WordPress/ai).</b>" as WordPress_AI {
-    #init()
-    +is_active()
-    +is_alt_text_generation_available()
-    -is_alt_text_generation_usable()
-    -has_vision_model_available()
   }
   class "Elastic_Press\n<b>Class Elastic_Press</b>" as Elastic_Press {
     +last_aggregations : array
