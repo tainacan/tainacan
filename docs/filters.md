@@ -5993,7 +5993,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `['publish', 'future', 'private']` |  | 
 
-Source: [class-tainacan-taxonomy.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/taxonomy/class-tainacan-taxonomy.php), [line 232](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/taxonomy/class-tainacan-taxonomy.php#L232-L232)
+Source: [class-tainacan-taxonomy.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/taxonomy/class-tainacan-taxonomy.php), [line 233](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/taxonomy/class-tainacan-taxonomy.php#L233-L233)
 
 ---------------------------------
 <br>
@@ -6008,7 +6008,7 @@ Argument | Type | Description
 `$return` | `string` | The HTML representation of the value
 `$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
 
-Source: [class-tainacan-taxonomy.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/taxonomy/class-tainacan-taxonomy.php), [line 420](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/taxonomy/class-tainacan-taxonomy.php#L420-L428)
+Source: [class-tainacan-taxonomy.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/taxonomy/class-tainacan-taxonomy.php), [line 421](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/taxonomy/class-tainacan-taxonomy.php#L421-L429)
 
 ---------------------------------
 <br>
@@ -6022,7 +6022,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `'<span class="hierarchy-separator"> > </span>'` |  | 
 
-Source: [class-tainacan-taxonomy.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/taxonomy/class-tainacan-taxonomy.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/taxonomy/class-tainacan-taxonomy.php#L11-L575)
+Source: [class-tainacan-taxonomy.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/taxonomy/class-tainacan-taxonomy.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/taxonomy/class-tainacan-taxonomy.php#L11-L576)
 
 ---------------------------------
 <br>
@@ -6129,7 +6129,7 @@ Argument | Type | Description
 `$return` | `string` | The STRING representation of the value
 `$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
 
-Source: [class-tainacan-geocoordinate.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/geocoordinate/class-tainacan-geocoordinate.php), [line 132](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/geocoordinate/class-tainacan-geocoordinate.php#L132-L140)
+Source: [class-tainacan-geocoordinate.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/geocoordinate/class-tainacan-geocoordinate.php), [line 133](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/geocoordinate/class-tainacan-geocoordinate.php#L133-L141)
 
 ---------------------------------
 <br>
@@ -6144,7 +6144,7 @@ Argument | Type | Description
 `$return` | `string` | The HTML representation of the value
 `$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
 
-Source: [class-tainacan-geocoordinate.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/geocoordinate/class-tainacan-geocoordinate.php), [line 237](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/geocoordinate/class-tainacan-geocoordinate.php#L237-L245)
+Source: [class-tainacan-geocoordinate.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/geocoordinate/class-tainacan-geocoordinate.php), [line 238](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/geocoordinate/class-tainacan-geocoordinate.php#L238-L246)
 
 ---------------------------------
 <br>
@@ -6156,7 +6156,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `['publish', 'future', 'private']` |  | 
 
-Source: [class-tainacan-geocoordinate.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/geocoordinate/class-tainacan-geocoordinate.php), [line 257](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/geocoordinate/class-tainacan-geocoordinate.php#L257-L257)
+Source: [class-tainacan-geocoordinate.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/geocoordinate/class-tainacan-geocoordinate.php), [line 258](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/geocoordinate/class-tainacan-geocoordinate.php#L258-L258)
 
 ---------------------------------
 <br>
@@ -6171,7 +6171,7 @@ Argument | Type | Description
 `$return` | `string` | The HTML representation of the value
 `$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
 
-Source: [class-tainacan-compound.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php), [line 260](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php#L260-L268)
+Source: [class-tainacan-compound.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php), [line 261](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php#L261-L269)
 
 ---------------------------------
 <br>
@@ -6186,7 +6186,7 @@ Argument | Type | Description
 `$return` | `string` | The STRING representation of the value
 `$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
 
-Source: [class-tainacan-compound.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php), [line 303](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php#L303-L311)
+Source: [class-tainacan-compound.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php), [line 304](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php#L304-L312)
 
 ---------------------------------
 <br>
@@ -6201,7 +6201,7 @@ Argument | Type | Description
 `'<h4 class="label child-metadatum-label">'` |  | 
 `$meta` |  | 
 
-Source: [class-tainacan-compound.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php#L10-L323)
+Source: [class-tainacan-compound.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php#L10-L324)
 
 ---------------------------------
 <br>
@@ -6216,7 +6216,7 @@ Argument | Type | Description
 `'</h4>'` |  | 
 `$meta` |  | 
 
-Source: [class-tainacan-compound.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php#L10-L324)
+Source: [class-tainacan-compound.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php#L10-L325)
 
 ---------------------------------
 <br>
@@ -6231,7 +6231,7 @@ Argument | Type | Description
 `'<p class="child-metadatum-value">'` |  | 
 `$meta` |  | 
 
-Source: [class-tainacan-compound.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php#L10-L328)
+Source: [class-tainacan-compound.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php#L10-L329)
 
 ---------------------------------
 <br>
@@ -6246,7 +6246,7 @@ Argument | Type | Description
 `'</p>'` |  | 
 `$meta` |  | 
 
-Source: [class-tainacan-compound.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php#L10-L329)
+Source: [class-tainacan-compound.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/compound/class-tainacan-compound.php#L10-L330)
 
 ---------------------------------
 <br>
@@ -6303,7 +6303,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `['publish', 'future', 'private']` |  | 
 
-Source: [class-tainacan-selectbox.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/selectbox/class-tainacan-selectbox.php), [line 104](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/selectbox/class-tainacan-selectbox.php#L104-L104)
+Source: [class-tainacan-selectbox.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/selectbox/class-tainacan-selectbox.php), [line 120](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/selectbox/class-tainacan-selectbox.php#L120-L120)
 
 ---------------------------------
 <br>
@@ -6315,7 +6315,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `['publish', 'future', 'private']` |  | 
 
-Source: [class-tainacan-relationship.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/relationship/class-tainacan-relationship.php), [line 164](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/relationship/class-tainacan-relationship.php#L164-L164)
+Source: [class-tainacan-relationship.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/relationship/class-tainacan-relationship.php), [line 165](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/relationship/class-tainacan-relationship.php#L165-L165)
 
 ---------------------------------
 <br>
@@ -6330,7 +6330,7 @@ Argument | Type | Description
 `$return` | `string` | The HTML representation of the value
 `$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
 
-Source: [class-tainacan-relationship.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/relationship/class-tainacan-relationship.php), [line 281](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/relationship/class-tainacan-relationship.php#L281-L289)
+Source: [class-tainacan-relationship.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/relationship/class-tainacan-relationship.php), [line 282](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/relationship/class-tainacan-relationship.php#L282-L290)
 
 ---------------------------------
 <br>
@@ -6344,7 +6344,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `'tainacan-small'` |  | 
 
-Source: [class-tainacan-relationship.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/relationship/class-tainacan-relationship.php), [line 366](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/relationship/class-tainacan-relationship.php#L366-L373)
+Source: [class-tainacan-relationship.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/relationship/class-tainacan-relationship.php), [line 367](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/relationship/class-tainacan-relationship.php#L367-L374)
 
 ---------------------------------
 <br>
@@ -6368,7 +6368,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `['publish', 'future', 'private']` |  | 
 
-Source: [class-tainacan-user.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php), [line 141](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php#L141-L141)
+Source: [class-tainacan-user.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php), [line 142](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php#L142-L142)
 
 ---------------------------------
 <br>
@@ -6383,7 +6383,7 @@ Argument | Type | Description
 `$name` |  | 
 `$this` |  | 
 
-Source: [class-tainacan-user.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php), [line 151](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php#L151-L165)
+Source: [class-tainacan-user.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php), [line 152](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php#L152-L166)
 
 ---------------------------------
 <br>
@@ -6398,7 +6398,7 @@ Argument | Type | Description
 `$return` | `string` | The HTML representation of the value
 `$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
 
-Source: [class-tainacan-user.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php), [line 185](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php#L185-L193)
+Source: [class-tainacan-user.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php), [line 186](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php#L186-L194)
 
 ---------------------------------
 <br>
