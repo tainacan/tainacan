@@ -61,7 +61,7 @@
         <transition name="filter-item">
             <div   
                     v-show="hideCollapses || isCollapsed || !!errorMessage"
-                    v-if="isTextInputComponent">
+                    v-if="!manageMultipleInput">
                 <p
                         v-if="itemMetadatum.metadatum &&
                             itemMetadatum.metadatum.description &&
@@ -158,7 +158,7 @@
                 </template>
             </div>
 
-            <!-- Non-textual metadata such as taxonomy, relationship, geocoordinate and compound manage multiple state in different ways -->
+            <!-- Metadata types with manage_multiple_input (taxonomy, relationship, etc.) manage multiple state themselves -->
             <div 
                     v-show="hideCollapses || isCollapsed"
                     v-else>
@@ -256,25 +256,13 @@
                     this.itemMetadatum.metadatum.cardinality > 1
                 ) ? this.itemMetadatum.metadatum.cardinality : undefined;
             },
-            isTextInputComponent() {
-                const array = ['tainacan-relationship','tainacan-taxonomy', 'tainacan-compound', 'tainacan-user', 'tainacan-geocoordinate'];
-                if ( array.indexOf(this.metadatumComponent) >= 0 )
-                    return false;
-
-                // Selectbox checkbox inputs manage multiple values in a single control, like taxonomy
-                if (
-                    this.metadatumComponent === 'tainacan-selectbox' &&
+            manageMultipleInput() {
+                return !!(
                     this.itemMetadatum &&
                     this.itemMetadatum.metadatum &&
-                    this.itemMetadatum.metadatum.metadata_type_options &&
-                    (
-                        this.itemMetadatum.metadatum.metadata_type_options.input_type === 'tainacan-selectbox-checkbox' ||
-                        this.itemMetadatum.metadatum.metadata_type_options.input_type === 'tainacan-selectbox-checkbox-button'
-                    )
-                )
-                    return false;
-
-                return true;
+                    this.itemMetadatum.metadatum.metadata_type_object &&
+                    this.itemMetadatum.metadatum.metadata_type_object.manage_multiple_input
+                );
             },
             metadatumFormClasses() {
                 return '' + 

@@ -95,6 +95,17 @@ abstract class Metadata_Type  {
      */
     private $sortable = true;
 
+    /**
+     * Whether the item form Vue component manages multivalue UI itself.
+     *
+     * When false (default), TainacanFormItem renders N child inputs with add/remove controls
+     * and passes a scalar value per instance. When true, the child receives the full values
+     * array and owns multiplicity.
+     *
+     * @var bool
+     */
+    private $manage_multiple_input = false;
+
     public function __construct(){
         
     }
@@ -283,6 +294,14 @@ abstract class Metadata_Type  {
     public function set_sortable($sortable){
         $this->sortable = $sortable;
     }
+
+    public function get_manage_multiple_input() {
+        return (bool) $this->manage_multiple_input;
+    }
+
+    public function set_manage_multiple_input( $manage_multiple_input ) {
+        $this->manage_multiple_input = (bool) $manage_multiple_input;
+    }
 	
 	/**
 	* Gets a slug based on the class name to represent the metadata type
@@ -306,7 +325,8 @@ abstract class Metadata_Type  {
         $attributes['primitive_type']      = $this->get_primitive_type();
         $attributes['form_component']      = $this->get_form_component();
         $attributes['preview_template']    = $this->get_preview_template();
-        $attributes['sortable']      = $this->get_sortable();
+        $attributes['sortable']            = $this->get_sortable();
+        $attributes['manage_multiple_input'] = $this->get_manage_multiple_input();
         
         return $attributes;
         
