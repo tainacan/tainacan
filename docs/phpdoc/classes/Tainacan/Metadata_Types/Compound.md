@@ -558,6 +558,28 @@ public set_sortable(mixed $sortable): mixed
 
 ***
 
+### get_manage_multiple_input
+
+```php
+public get_manage_multiple_input(): mixed
+```
+
+***
+
+### set_manage_multiple_input
+
+```php
+public set_manage_multiple_input(mixed $manage_multiple_input): mixed
+```
+
+**Parameters:**
+
+| Parameter                | Type      | Description |
+|--------------------------|-----------|-------------|
+| `$manage_multiple_input` | **mixed** |             |
+
+***
+
 ### get_slug
 
 Gets a slug based on the class name to represent the metadata type
