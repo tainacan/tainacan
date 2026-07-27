@@ -206,6 +206,7 @@
             }
 
             .label {
+                color: var(--tainacan-label-color);
                 font-size: 0.875em;
                 font-weight: normal;
                 margin-top: 3px;

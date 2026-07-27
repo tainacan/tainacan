@@ -1,0 +1,21 @@
+classDiagram
+    direction TB
+    class JSON_flat { }
+    class JSON_LD { }
+    class Txt { }
+    class Exposers_Handler { }
+    class Csv { }
+    class Html { }
+    class Exposer { }
+    class Xml { }
+    class OAI_PMH { }
+    Exposer <|-- Csv
+    Exposer <|-- Html
+    Exposer <|-- JSON_LD
+    Exposer <|-- JSON_flat
+    Exposer <|-- OAI_PMH
+    Exposer <|-- Txt
+    Exposer <|-- Xml
+    Exposers_Handler ..> Exposer
+    JSON_LD ..> Exposers_Handler
+    Xml ..> Exposers_Handler

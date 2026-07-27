@@ -1057,7 +1057,7 @@
         }
 
         &:hover {
-            background-color: var(--tainacan-input-border-color);
+            background-color: var(--tainacan-item-hover-background-color);
         }
 
     }

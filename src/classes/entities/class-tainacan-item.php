@@ -32,7 +32,8 @@ class Item extends Entity {
 		$document_type,
 		$document,
 		$document_options,
-		$collection_id;
+		$collection_id,
+		$document_content_index;
 
 	/**
 	 * {@inheritDoc}
@@ -286,6 +287,15 @@ class Item extends Entity {
 	}
 
 	/**
+	 * Return the item document content index
+	 *
+	 * @return string
+	 */
+	function get_document_content_index() {
+		return $this->get_mapped_property( 'document_content_index' );
+	}
+
+	/**
 	 * Return the document mimetype
 	 *
 	 * @return string
@@ -416,6 +426,17 @@ class Item extends Entity {
 	 */
 	function set_document_options( $value ) {
 		$this->set_mapped_property( 'document_options', $value );
+	}
+
+	/**
+	 * Define the document content index
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_document_content_index( $value ) {
+		$this->set_mapped_property( 'document_content_index', $value );
 	}
 
 	/**
@@ -913,8 +934,9 @@ class Item extends Entity {
 						$tainacan_embed = \Tainacan\Embed::get_instance();
 						$iframe_width = isset($document_options['forced_iframe_width']) ? $document_options['forced_iframe_width'] : '600';
 						$iframe_height = isset($document_options['forced_iframe_height']) ? $document_options['forced_iframe_height'] : '450';
+						$iframe_allowfullscreen = ! empty( $document_options['forced_iframe_allowfullscreen'] ) ? ' allowfullscreen' : '';
 
-						$_embed = $tainacan_embed->add_responsive_wrapper( sprintf('<iframe src="%s" style="border: 0" width="%s" height="%s"></iframe>', $url, $iframe_width, $iframe_height) );
+						$_embed = $tainacan_embed->add_responsive_wrapper( sprintf('<iframe src="%s" style="border: 0" width="%s" height="%s"%s></iframe>', $url, $iframe_width, $iframe_height, $iframe_allowfullscreen) );
 					}
 				} else {
 					$_embed = sprintf('<a href="%s" target="blank">%s</a>', $url, $url);

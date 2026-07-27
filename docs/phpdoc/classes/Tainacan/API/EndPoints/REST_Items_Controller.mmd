@@ -1,0 +1,50 @@
+classDiagram
+    direction TB
+    class REST_Items_Controller {
+        -items_repository : mixed
+        -item : mixed
+        -item_metadata : mixed
+        -collections_repository : mixed
+        -metadatum_repository : mixed
+        -terms_repository : mixed
+        -filters_repository : mixed
+        -taxonomies_repository : mixed
+        -new_terms_ids : mixed
+        +__construct()
+        +init_objects()
+        +register_routes()
+        -add_metadata_to_item(item_object, item_array, args)
+        +get_context_edit(item)
+        +prepare_item_for_response(item, request)
+        +get_item(request)
+        +get_item_attachments(request)
+        -prepare_filters_arguments(args, collection_id, ignore_filter_arguments)
+        +get_items(request)
+        +get_item_permissions_check(request)
+        +get_item_attachments_permissions_check(request)
+        +get_items_permissions_check(request)
+        -get_items_permissions_check_for_taxonomy(taxonomies)
+        +prepare_item_for_database(request)
+        +create_item(request)
+        +create_item_permissions_check(request)
+        +delete_item(request)
+        +delete_item_permissions_check(request)
+        +update_item(request)
+        +update_item_permissions_check(request)
+        +extract_document_content_index(request)
+        -add_document_content_index_truncation_to_response(response)
+        +duplicate_item(request)
+        -submission_item_metadata(item_metadata, request)
+        -submission_process_terms(value, taxonomy)
+        -submission_rollback_new_terms()
+        +submission_item(request)
+        +submission_item_finish(request)
+        +submission_item_permissions_check(request)
+        -submission_item_check_recaptcha(request)
+        +get_endpoint_args_for_item_schema(method)
+        +get_wp_query_params()
+        -get_default_search_sentence()
+        +process_request_filters(args)
+        +get_attachments_schema()
+        +get_schema()
+    }

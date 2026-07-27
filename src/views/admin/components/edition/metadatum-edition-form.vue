@@ -389,24 +389,32 @@
                                     form.metadata_type_object.component != 'tainacan-geojson' &&
                                     form.metadata_type_object.component != 'tainacan-compound' &&
                                     form.metadata_type_object.component != 'tainacan-relationship' &&
-                                    form.metadata_type_object.component != 'tainacan-user'" 
-                                :addons="false"
-                                :label="$i18n.getHelperTitle('metadata', 'allow_advanced_search')"
+                                    form.metadata_type_object.component != 'tainacan-user'"
                                 :type="formErrors['allow_advanced_search'] != undefined ? 'is-danger' : ''"
-                                :message="formErrors['allow_advanced_search'] != undefined ? formErrors['allow_advanced_search'] : ''">
-                            &nbsp;
-                            <b-switch
-                                    v-model="form.allow_advanced_search"
-                                    size="is-small"
-                                    true-value="yes"
-                                    false-value="no"
-                                    name="allow_advanced_search"
-                                    @update:model-value="clearErrors('allow_advanced_search')">
+                                :message="formErrors['allow_advanced_search'] != undefined ? formErrors['allow_advanced_search'] : ''"
+                                :addons="false">
+                            <label class="label is-inline">
+                                {{ $i18n.getHelperTitle('metadata', 'allow_advanced_search') }}
                                 <help-button
                                         :title="$i18n.getHelperTitle('metadata', 'allow_advanced_search')"
                                         :message="$i18n.getHelperMessage('metadata', 'allow_advanced_search')"
                                         :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                            </b-switch>
+                            </label>
+                            <b-select
+                                    v-model="form.allow_advanced_search"
+                                    name="allow_advanced_search"
+                                    expanded
+                                    @update:model-value="clearErrors('allow_advanced_search')">
+                                <option value="default">
+                                    {{ $i18n.get('label_display_default') }}
+                                </option>
+                                <option value="yes">
+                                    {{ $i18n.get('label_not_display') }}
+                                </option>
+                                <option value="no">
+                                    {{ $i18n.get('label_display_never') }}
+                                </option>
+                            </b-select>
                         </b-field>
 
                     </section>
@@ -649,13 +657,13 @@
                     let formObj = {};
 
                     for (let [key, value] of formData.entries()) {
-                        if (key === 'description_bellow_name' || key === 'allow_advanced_search')
+                        if (key === 'description_bellow_name')
                             formObj[key] = value ? 'yes' : 'no';
                         else
                             formObj[key] = value;
                     }
                     if ( formObj['allow_advanced_search'] === undefined )
-                        formObj['allow_advanced_search'] = 'no';
+                        formObj['allow_advanced_search'] = 'yes';
                     if ( formObj['description_bellow_name'] === undefined )
                         formObj['description_bellow_name'] = 'no';
 

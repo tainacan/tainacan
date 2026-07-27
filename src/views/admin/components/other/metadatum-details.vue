@@ -36,6 +36,24 @@
                 </template>
             </div>
         </div>
+        <div
+                v-if="metadatum.allow_advanced_search"
+                class="field">
+            <div class="label">
+                {{ $i18n.getHelperTitle('metadata', 'allow_advanced_search') }}
+            </div>
+            <div class="value">
+                <template v-if="metadatum.allow_advanced_search === 'default'">
+                    {{ $i18n.get('label_display_default') }}
+                </template>
+                <template v-else-if="metadatum.allow_advanced_search === 'yes'">
+                    {{ $i18n.get('label_not_display') }}
+                </template>
+                <template v-else-if="metadatum.allow_advanced_search === 'no'">
+                    {{ $i18n.get('label_display_never') }}
+                </template>
+            </div>
+        </div>
         <div 
                 v-if="insertOptions != ''"
                 class="field">

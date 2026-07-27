@@ -1,0 +1,50 @@
+classDiagram
+    direction TB
+    class Item_Metadata { }
+    class Logs { }
+    class Metadata_Sections { }
+    class Metadata { }
+    class Logs { }
+    class Repository { }
+    class Taxonomies { }
+    class Items { }
+    class Collections { }
+    class Filters { }
+    class Terms { }
+    Collections ..> Metadata
+    Item_Metadata ..> Items
+    Item_Metadata ..> Metadata
+    Item_Metadata ..> Taxonomies
+    Item_Metadata ..> Terms
+    Items ..> Collections
+    Items ..> Metadata
+    Items ..> Taxonomies
+    Logs ..> Repository
+    Logs ..> Taxonomies
+    Metadata ..> Items
+    Metadata ..> Metadata
+    Metadata ..> Taxonomies
+    Metadata_Sections ..> Metadata
+    Repository ..> Collections
+    Repository ..> Filters
+    Repository ..> Item_Metadata
+    Repository ..> Items
+    Repository ..> Logs
+    Repository ..> Metadata
+    Repository ..> Metadata_Sections
+    Repository ..> Repository
+    Repository ..> Taxonomies
+    Repository ..> Terms
+    Repository <|-- Collections
+    Repository <|-- Filters
+    Repository <|-- Item_Metadata
+    Repository <|-- Items
+    Repository <|-- Logs
+    Repository <|-- Metadata
+    Repository <|-- Metadata_Sections
+    Repository <|-- Taxonomies
+    Repository <|-- Terms
+    Taxonomies ..> Collections
+    Taxonomies ..> Metadata
+    Taxonomies ..> Terms
+    Terms ..> Taxonomies

@@ -393,6 +393,7 @@ export default {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: var(--tainacan-report-card-gap, 0.75rem);
+            padding-bottom: 1.5rem;
 
             & > .is-full {
                 grid-column: span 3;
@@ -524,6 +525,7 @@ export default {
                 align-items: center;
                 width: 100%;
                 padding: 6px 10px 4px 10px;
+                margin-top: -2px;
             }
             
             .tainacan-custom-tooltip__header+.tainacan-custom-tooltip__body {
@@ -548,7 +550,16 @@ export default {
             display: flex;
             align-items: center;
         }
-
+        .apexcharts-toolbar {
+            background-color: var(--tainacan-gray0);
+        }
+        .apexcharts-canvas .apexcharts-pan-icon.apexcharts-selected,
+        .apexcharts-canvas .apexcharts-reset-zoom-icon.apexcharts-selected,
+        .apexcharts-canvas .apexcharts-selection-icon.apexcharts-selected,
+        .apexcharts-canvas .apexcharts-zoom-icon.apexcharts-selected {
+            background-color: var(--tainacan-primary);
+            color: var(--tainacan-secondary);
+        }
         #current-page-selector {
             min-width: 48px;
         }

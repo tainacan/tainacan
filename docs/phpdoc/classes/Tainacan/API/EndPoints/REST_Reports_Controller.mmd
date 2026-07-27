@@ -1,0 +1,36 @@
+classDiagram
+    direction TB
+    class REST_Reports_Controller {
+        -taxonomy_repository : mixed
+        -metadatum_repository : mixed
+        -collections_repository : mixed
+        -prefix_transient_cahce : mixed
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +reports_permissions_check(request)
+        +get_collections(request)
+        +get_summary(request)
+        +get_taxonomies_list(request)
+        +get_taxonomy(request)
+        +get_metadata(request)
+        +get_stats_collection_metadata(request)
+        -query_item_metadata_distribution(meta_ids, collection_post_type)
+        -query_count_used_taxononomies()
+        +get_activities(request)
+        -get_activities_general(collection_id, interval)
+        -get_activities_general_by_user(collection_id, interval)
+        -get_activities_users(collection_id)
+        -get_cache_object(key, request)
+        -set_cache_object(key, data)
+        +get_endpoint_args_for_item_schema(method)
+        +get_metadata_schema()
+        +get_collection_schema()
+        +get_collection_metadatum_schema()
+        +get_collection_summary_schema()
+        +get_taxonomy_schema()
+        +get_taxonomy_terms_schema()
+        +get_summary_schema()
+        +get_activities_schema()
+        +get_schema()
+    }

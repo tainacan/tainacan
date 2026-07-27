@@ -578,7 +578,8 @@
                                             @on-remove-document="removeDocument"
                                             @on-set-file-document="setFileDocument"
                                             @on-set-text-document="setTextDocument"
-                                            @on-set-url-document="setURLDocument" />
+                                            @on-set-url-document="setURLDocument"
+                                            @on-edit-document-content-index="editDocumentContentIndex" />
                                     <item-thumbnail-edition-form 
                                             :item="item"
                                             :form="form"
@@ -661,7 +662,8 @@
                                     @on-remove-document="removeDocument"
                                     @on-set-file-document="setFileDocument"
                                     @on-set-text-document="setTextDocument"
-                                    @on-set-url-document="setURLDocument" />
+                                    @on-set-url-document="setURLDocument"
+                                    @on-edit-document-content-index="editDocumentContentIndex" />
 
                             <hr v-if="shouldDisplayItemEditionDocument && !$adminOptions.itemEditionDocumentInsideTabs">
 
@@ -819,6 +821,7 @@ import RelatedItemsList from '../lists/related-items-list.vue';
 import CustomDialog from '../other/custom-dialog.vue';
 import ItemMetadatumErrorsTooltip from '../other/item-metadatum-errors-tooltip.vue';
 import ItemDocumentTextModal from '../modals/item-document-text-modal.vue';
+import ItemDocumentContentIndexModal from '../modals/item-document-content-index-modal.vue';
 import ItemDocumentURLModal from '../modals/item-document-url-modal.vue';
 import ItemPublicationEditionForm from '../edition/item-publication-edition-form.vue';
 import ItemDocumentEditionForm from '../edition/item-document-edition-form.vue';
@@ -917,6 +920,7 @@ export default {
             urlForcedIframe: false,
             urlIframeWidth: 600,
             urlIframeHeight: 450,
+            urlIframeAllowfullscreen: false,
             urlIsImage: false,
             isMobileScreen: false,
             openMetadataNameFilter: false,
@@ -1645,6 +1649,7 @@ export default {
                     urlForcedIframe: this.urlForcedIframe,
                     urlIframeWidth: this.urlIframeWidth,
                     urlIframeHeight: this.urlIframeHeight,
+                    urlIframeAllowfullscreen: this.urlIframeAllowfullscreen,
                     urlIsImage: this.urlIsImage
                 },
                 events: {
@@ -1662,6 +1667,7 @@ export default {
                 forced_iframe: updatedValues.urlForcedIframe,
                 forced_iframe_width: updatedValues.urlIframeWidth,
                 forced_iframe_height: updatedValues.urlIframeHeight,
+                forced_iframe_allowfullscreen: updatedValues.urlIframeAllowfullscreen,
                 is_image: updatedValues.urlIsImage
             }
             this.updateItemDocument({
@@ -1688,6 +1694,8 @@ export default {
                         this.urlIframeWidth = item.document_options['forced_iframe_width'];
                     if (item.document_options !== undefined && item.document_options['forced_iframe_height'] !== undefined)
                         this.urlIframeHeight = item.document_options['forced_iframe_height'];
+                    if (item.document_options !== undefined && item.document_options['forced_iframe_allowfullscreen'] !== undefined)
+                        this.urlIframeAllowfullscreen = item.document_options['forced_iframe_allowfullscreen'];
 
                     this.isLoading = false;
 
@@ -1756,6 +1764,29 @@ export default {
                 }
             });
 
+        },
+        editDocumentContentIndex() {
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
+            this.$buefy.modal.open({
+                component: ItemDocumentContentIndexModal,
+                canCancel: false,
+                width: 860,
+                scroll: 'keep',
+                trapFocus: true,
+                autoFocus: false,
+                ariaModal: true,
+                ariaRole: 'dialog',
+                customClass: 'tainacan-modal',
+                props: {
+                    itemId: this.itemId,
+                    documentType: this.form.document_type,
+                    documentMimetype: this.item.document_mimetype,
+                    supportsDocumentContentExtraction: !!this.item.supports_document_content_extraction
+                },
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
+            });
         },
         initializeMediaFrames() {
 
@@ -1957,6 +1988,8 @@ export default {
                         this.urlIframeWidth = this.form.document_options['forced_iframe_width'];
                     if (this.form.document_options !== undefined && this.form.document_options['forced_iframe_height'] !== undefined)
                         this.urlIframeHeight = this.form.document_options['forced_iframe_height'];
+                    if (this.form.document_options !== undefined && this.form.document_options['forced_iframe_allowfullscreen'] !== undefined)
+                        this.urlIframeAllowfullscreen = this.form.document_options['forced_iframe_allowfullscreen'];
                     
                     /**
                      * Fires action tainacan_item_edition_item_loaded
@@ -2540,7 +2573,8 @@ export default {
         #button-edit-document,
         #button-delete-thumbnail,
         #button-alt-text-thumbnail,
-        #button-delete-document {
+        #button-delete-document,
+        #button-edit-document-content-index {
             border-radius: 100px !important;
             max-height: 2.125em !important;
             max-width: 2.125em !important;

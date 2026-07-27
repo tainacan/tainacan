@@ -133,7 +133,9 @@ class Search_Engine {
 	// creates the list of search keywords from the 's' parameters.
 	function get_search_terms() {
 		$s = isset( $this->query_instance->query_vars['s'] ) ? $this->query_instance->query_vars['s'] : '';
-		$sentence = isset( $this->query_instance->query_vars['sentence'] ) ? $this->query_instance->query_vars['sentence'] : false;
+		$sentence = isset( $this->query_instance->query_vars['sentence'] )
+			? $this->query_instance->query_vars['sentence']
+			: $this->get_default_sentence();
 		$search_terms = array();
 
 		if ( !empty( $s ) ) {
@@ -243,7 +245,7 @@ class Search_Engine {
 		return '';
 	}
 
-	function get_where_to_metadatas() {
+	function get_where_to_postmeta() {
 		if ( $this->is_tainacan_search ) {
 			global $wpdb;
 			$search_meta_query = '';
@@ -257,15 +259,8 @@ class Search_Engine {
 			}
 			if ( empty($search_meta_query) ) return '';
 			
-			$content_index_meta = '';
-			if ( 
-				defined('TAINACAN_INDEX_PDF_CONTENT') 
-					? ( true === TAINACAN_INDEX_PDF_CONTENT )
-					: get_option( 'tainacan_option_index_pdf_content', false ) 
-			) {
-				$content_index_meta_meta_key = \TAINACAN\Media::$content_index_meta;
-				$content_index_meta = "OR (m.meta_key='{$content_index_meta_meta_key}')";
-			}
+			$content_index_meta_meta_key = \TAINACAN\Media::$content_index_meta;
+			$content_index_meta = "OR (m.meta_key='{$content_index_meta_meta_key}')";
 
 			$join = \is_user_logged_in() 
 				? ''
@@ -294,7 +289,7 @@ class Search_Engine {
 
 		$search_query = $this->get_where_to_title_and_content();
 		$search_tax_query = $this->get_where_to_term_taxonomies();
-		$search_meta_query = $this->get_where_to_metadatas();
+		$search_meta_query = $this->get_where_to_postmeta();
 		$search_query = "($search_query) ";
 		if(!empty($search_tax_query)) $search_query .= " OR ($search_tax_query) "; 
 		if(!empty($search_meta_query)) $search_query .= " OR ($search_meta_query) ";
@@ -405,5 +400,18 @@ class Search_Engine {
 // 		}
 // 		return $join;
 // 	}
+
+	/**
+	 * Default value for the sentence query var when not explicitly set.
+	 *
+	 * @return bool
+	 */
+	private function get_default_sentence() {
+		$search_each_word_by_default = defined( 'TAINACAN_SEARCH_EACH_WORD_BY_DEFAULT' )
+			? TAINACAN_SEARCH_EACH_WORD_BY_DEFAULT
+			: (bool) get_option( 'tainacan_option_search_each_word_by_default', false );
+
+		return apply_filters( 'tainacan-default-search-sentence', ! $search_each_word_by_default );
+	}
 
 }

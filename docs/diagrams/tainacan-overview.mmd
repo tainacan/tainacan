@@ -1,0 +1,554 @@
+classDiagram
+    direction TB
+    class Roles { }
+    class __Bulk_Edit { }
+    class Search_Engine { }
+    class Private_Files { }
+    class media_helper_Embed { }
+    class media_helper_Pdf_Extracted_Text_Quality { }
+    class media_helper_Media { }
+    class api_REST_Controller { }
+    class api_endpoints_REST_Exposers_Controller { }
+    class api_endpoints_REST_Items_Controller { }
+    class api_endpoints_REST_Filters_Controller { }
+    class api_endpoints_REST_Facets_Controller { }
+    class api_endpoints_REST_Bulkedit_Controller { }
+    class api_endpoints_REST_Metadata_Sections_Controller { }
+    class api_endpoints_REST_Logs_Controller { }
+    class api_endpoints_REST_Reports_Controller { }
+    class api_endpoints_REST_Oaipmh_Controller { }
+    class api_endpoints_REST_Filter_Types_Controller { }
+    class api_endpoints_REST_Metadatum_Mappers_Controller { }
+    class api_endpoints_REST_Metadata_Types_Controller { }
+    class api_endpoints_REST_Importers_Controller { }
+    class api_endpoints_REST_Exporters_Controller { }
+    class api_endpoints_REST_Sequence_Edit_Controller { }
+    class api_endpoints_REST_Item_Metadata_Controller { }
+    class api_endpoints_REST_Taxonomies_Controller { }
+    class api_endpoints_REST_Background_Processes_Controller { }
+    class api_endpoints_REST_Roles_Controller { }
+    class api_endpoints_REST_Metadata_Controller { }
+    class api_endpoints_REST_Terms_Controller { }
+    class api_endpoints_REST_Collections_Controller { }
+    class mappers_Dublin_Core { }
+    class mappers_Mappers_Handler { }
+    class mappers_Inbcm_Bibliographic { }
+    class mappers_Mapper { }
+    class mappers_Inbcm_Museological { }
+    class mappers_Inbcm_Archive { }
+    class exposers_JSON_flat { }
+    class exposers_JSON_LD { }
+    class exposers_Txt { }
+    class exposers_Exposers_Handler { }
+    class exposers_Csv { }
+    class exposers_Html { }
+    class exposers_Exposer { }
+    class exposers_Xml { }
+    class exposers_OAI_PMH { }
+    class repositories_Item_Metadata { }
+    class repositories_Logs { }
+    class repositories_Metadata_Sections { }
+    class repositories_Metadata { }
+    class repositories_Logs { }
+    class repositories_Repository { }
+    class repositories_Taxonomies { }
+    class repositories_Items { }
+    class repositories_Collections { }
+    class repositories_Filters { }
+    class repositories_Terms { }
+    class integrations_Elastic_Press_lte4 { }
+    class integrations_WordPress_AI { }
+    class integrations_Elastic_Press { }
+    class traits_Entity_Collections_Relation { }
+    class traits_Formatter_Text { }
+    class traits_Entity_Collection_Relation { }
+    class traits_Admin_UI_Options { }
+    class traits_Singleton_Instance { }
+    class traits_SVG_Icon { }
+    class entities_Log { }
+    class entities_Item { }
+    class entities_Metadata_Section { }
+    class entities_Term { }
+    class entities_Taxonomy { }
+    class entities_Entity { }
+    class entities_Collection { }
+    class entities_Item_Metadata_Entity { }
+    class entities_Metadatum { }
+    class entities_Filter { }
+    class oaipmh_OAIPMH_Data_Provider { }
+    class oaipmh_OAIPMH_Xml_Generator { }
+    class oaipmh_OAIPMH_Token_Manager { }
+    class theme_helper_Theme_Helper { }
+    class background_process_Background_Process_Heartbeat { }
+    class background_process_Async_Request { }
+    class background_process_Background_Process { }
+    class background_process_Background_Process_Base { }
+    class background_process_exporter_Term_Exporter { }
+    class background_process_exporter_Background_Exporter { }
+    class background_process_exporter_XLSX_Exporter { }
+    class background_process_exporter_Exporter_Handler { }
+    class background_process_exporter_Exporter { }
+    class background_process_importer_CSV { }
+    class background_process_exporter_traits_Exporter_Handler_Cell { }
+    class background_process_importer_Oaipmh_Importer { }
+    class background_process_importer_Term_Importer { }
+    class background_process_importer_Youtube_Importer { }
+    class background_process_importer_Importer_Handler { }
+    class background_process_importer_Test_Importer { }
+    class background_process_importer_Background_Importer { }
+    class background_process_importer_Importer { }
+    class background_process_importer_Flickr_Importer { }
+    class background_process_generic_process_Background_Generic_Process { }
+    class background_process_generic_process_Bulk_Edit_Process { }
+    class background_process_generic_process_Generic_Process_Handler { }
+    class background_process_generic_process_Generic_Process { }
+    class cli_Cli { }
+    class cli_Cli_Control_Metadata { }
+    class cli_Cli_Garbage_Collector { }
+    class cli_Cli_Document { }
+    class cli_Cli_Collection { }
+    class cli_Cli_Move_Attachments { }
+    class cli_Logs_Wp_Posts_Migration { }
+    class cli_Cli_Logs { }
+    Private_Files ..> entities_Collection
+    Private_Files ..> entities_Item
+    Private_Files ..> media_helper_Media
+    Private_Files ..> repositories_Items
+    Private_Files ..> theme_helper_Theme_Helper
+    Roles ..> entities_Collection
+    Roles ..> entities_Filter
+    Roles ..> entities_Metadata_Section
+    Roles ..> entities_Metadatum
+    Search_Engine ..> entities_Collection
+    Search_Engine ..> repositories_Metadata
+    __Bulk_Edit ..> entities_Item
+    __Bulk_Edit ..> entities_Item_Metadata_Entity
+    __Bulk_Edit ..> entities_Metadatum
+    __Bulk_Edit ..> entities_Taxonomy
+    __Bulk_Edit ..> repositories_Items
+    __Bulk_Edit ..> repositories_Repository
+    __Bulk_Edit ..> repositories_Taxonomies
+    api_REST_Controller ..> repositories_Repository
+    api_REST_Controller <|-- api_endpoints_REST_Background_Processes_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Bulkedit_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Collections_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Exporters_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Exposers_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Facets_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Filter_Types_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Filters_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Importers_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Item_Metadata_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Items_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Logs_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Metadata_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Metadata_Sections_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Metadata_Types_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Metadatum_Mappers_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Oaipmh_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Reports_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Roles_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Sequence_Edit_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Taxonomies_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Terms_Controller
+    api_endpoints_REST_Bulkedit_Controller ..> background_process_generic_process_Generic_Process_Handler
+    api_endpoints_REST_Bulkedit_Controller ..> entities_Collection
+    api_endpoints_REST_Bulkedit_Controller ..> repositories_Collections
+    api_endpoints_REST_Bulkedit_Controller ..> repositories_Metadata
+    api_endpoints_REST_Collections_Controller ..> entities_Collection
+    api_endpoints_REST_Collections_Controller ..> entities_Metadata_Section
+    api_endpoints_REST_Collections_Controller ..> repositories_Collections
+    api_endpoints_REST_Collections_Controller ..> repositories_Items
+    api_endpoints_REST_Exporters_Controller ..> background_process_exporter_Exporter_Handler
+    api_endpoints_REST_Exporters_Controller ..> repositories_Collections
+    api_endpoints_REST_Exposers_Controller ..> exposers_Exposers_Handler
+    api_endpoints_REST_Exposers_Controller ..> mappers_Mappers_Handler
+    api_endpoints_REST_Facets_Controller ..> entities_Metadatum
+    api_endpoints_REST_Facets_Controller ..> repositories_Metadata
+    api_endpoints_REST_Facets_Controller ..> repositories_Repository
+    api_endpoints_REST_Facets_Controller ..> repositories_Taxonomies
+    api_endpoints_REST_Filter_Types_Controller ..> repositories_Filters
+    api_endpoints_REST_Filters_Controller ..> entities_Collection
+    api_endpoints_REST_Filters_Controller ..> entities_Filter
+    api_endpoints_REST_Filters_Controller ..> repositories_Collections
+    api_endpoints_REST_Filters_Controller ..> repositories_Filters
+    api_endpoints_REST_Filters_Controller ..> repositories_Metadata
+    api_endpoints_REST_Importers_Controller ..> background_process_importer_Importer_Handler
+    api_endpoints_REST_Item_Metadata_Controller ..> entities_Collection
+    api_endpoints_REST_Item_Metadata_Controller ..> entities_Item
+    api_endpoints_REST_Item_Metadata_Controller ..> entities_Item_Metadata_Entity
+    api_endpoints_REST_Item_Metadata_Controller ..> entities_Metadatum
+    api_endpoints_REST_Item_Metadata_Controller ..> repositories_Collections
+    api_endpoints_REST_Item_Metadata_Controller ..> repositories_Item_Metadata
+    api_endpoints_REST_Item_Metadata_Controller ..> repositories_Items
+    api_endpoints_REST_Item_Metadata_Controller ..> repositories_Metadata
+    api_endpoints_REST_Items_Controller ..> entities_Collection
+    api_endpoints_REST_Items_Controller ..> entities_Item
+    api_endpoints_REST_Items_Controller ..> entities_Item_Metadata_Entity
+    api_endpoints_REST_Items_Controller ..> entities_Taxonomy
+    api_endpoints_REST_Items_Controller ..> entities_Term
+    api_endpoints_REST_Items_Controller ..> exposers_Exposers_Handler
+    api_endpoints_REST_Items_Controller ..> media_helper_Media
+    api_endpoints_REST_Items_Controller ..> repositories_Collections
+    api_endpoints_REST_Items_Controller ..> repositories_Filters
+    api_endpoints_REST_Items_Controller ..> repositories_Item_Metadata
+    api_endpoints_REST_Items_Controller ..> repositories_Items
+    api_endpoints_REST_Items_Controller ..> repositories_Metadata
+    api_endpoints_REST_Items_Controller ..> repositories_Taxonomies
+    api_endpoints_REST_Items_Controller ..> repositories_Terms
+    api_endpoints_REST_Items_Controller ..> theme_helper_Theme_Helper
+    api_endpoints_REST_Logs_Controller ..> entities_Entity
+    api_endpoints_REST_Logs_Controller ..> entities_Item
+    api_endpoints_REST_Logs_Controller ..> entities_Log
+    api_endpoints_REST_Logs_Controller ..> repositories_Collections
+    api_endpoints_REST_Logs_Controller ..> repositories_Items
+    api_endpoints_REST_Logs_Controller ..> repositories_Logs
+    api_endpoints_REST_Logs_Controller ..> repositories_Repository
+    api_endpoints_REST_Logs_Controller ..> repositories_Terms
+    api_endpoints_REST_Metadata_Controller ..> entities_Collection
+    api_endpoints_REST_Metadata_Controller ..> entities_Metadatum
+    api_endpoints_REST_Metadata_Controller ..> repositories_Collections
+    api_endpoints_REST_Metadata_Controller ..> repositories_Metadata
+    api_endpoints_REST_Metadata_Controller ..> repositories_Taxonomies
+    api_endpoints_REST_Metadata_Sections_Controller ..> entities_Collection
+    api_endpoints_REST_Metadata_Sections_Controller ..> entities_Metadata_Section
+    api_endpoints_REST_Metadata_Sections_Controller ..> entities_Metadatum
+    api_endpoints_REST_Metadata_Sections_Controller ..> repositories_Collections
+    api_endpoints_REST_Metadata_Sections_Controller ..> repositories_Metadata
+    api_endpoints_REST_Metadata_Sections_Controller ..> repositories_Metadata_Sections
+    api_endpoints_REST_Metadata_Sections_Controller ..> repositories_Taxonomies
+    api_endpoints_REST_Metadata_Types_Controller ..> repositories_Metadata
+    api_endpoints_REST_Metadatum_Mappers_Controller ..> entities_Metadatum
+    api_endpoints_REST_Metadatum_Mappers_Controller ..> mappers_Mappers_Handler
+    api_endpoints_REST_Metadatum_Mappers_Controller ..> repositories_Metadata
+    api_endpoints_REST_Metadatum_Mappers_Controller ..> repositories_Repository
+    api_endpoints_REST_Oaipmh_Controller ..> oaipmh_OAIPMH_Data_Provider
+    api_endpoints_REST_Oaipmh_Controller ..> oaipmh_OAIPMH_Token_Manager
+    api_endpoints_REST_Oaipmh_Controller ..> oaipmh_OAIPMH_Xml_Generator
+    api_endpoints_REST_Reports_Controller ..> entities_Collection
+    api_endpoints_REST_Reports_Controller ..> entities_Taxonomy
+    api_endpoints_REST_Reports_Controller ..> repositories_Collections
+    api_endpoints_REST_Reports_Controller ..> repositories_Logs
+    api_endpoints_REST_Reports_Controller ..> repositories_Metadata
+    api_endpoints_REST_Reports_Controller ..> repositories_Taxonomies
+    api_endpoints_REST_Sequence_Edit_Controller ..> entities_Collection
+    api_endpoints_REST_Sequence_Edit_Controller ..> repositories_Collections
+    api_endpoints_REST_Sequence_Edit_Controller ..> repositories_Items
+    api_endpoints_REST_Taxonomies_Controller ..> entities_Collection
+    api_endpoints_REST_Taxonomies_Controller ..> entities_Taxonomy
+    api_endpoints_REST_Taxonomies_Controller ..> repositories_Collections
+    api_endpoints_REST_Taxonomies_Controller ..> repositories_Metadata
+    api_endpoints_REST_Taxonomies_Controller ..> repositories_Taxonomies
+    api_endpoints_REST_Terms_Controller ..> entities_Metadatum
+    api_endpoints_REST_Terms_Controller ..> entities_Taxonomy
+    api_endpoints_REST_Terms_Controller ..> entities_Term
+    api_endpoints_REST_Terms_Controller ..> repositories_Items
+    api_endpoints_REST_Terms_Controller ..> repositories_Taxonomies
+    api_endpoints_REST_Terms_Controller ..> repositories_Terms
+    background_process_Async_Request <|-- background_process_Background_Process_Base
+    background_process_Background_Process <|-- background_process_exporter_Background_Exporter
+    background_process_Background_Process <|-- background_process_generic_process_Background_Generic_Process
+    background_process_Background_Process <|-- background_process_importer_Background_Importer
+    background_process_Background_Process_Base <|-- background_process_Background_Process
+    background_process_exporter_CSV ..> repositories_Collections
+    background_process_exporter_Exporter ..> background_process_exporter_Exporter_Handler
+    background_process_exporter_Exporter ..> entities_Item
+    background_process_exporter_Exporter ..> mappers_Mappers_Handler
+    background_process_exporter_Exporter ..> repositories_Collections
+    background_process_exporter_Exporter ..> repositories_Items
+    background_process_exporter_Exporter <|-- background_process_exporter_CSV
+    background_process_exporter_Exporter <|-- background_process_exporter_Term_Exporter
+    background_process_exporter_Exporter <|-- background_process_exporter_XLSX_Exporter
+    background_process_exporter_Exporter_Handler ..> background_process_exporter_Background_Exporter
+    background_process_exporter_Exporter_Handler ..> background_process_exporter_Exporter
+    background_process_exporter_Term_Exporter ..> entities_Taxonomy
+    background_process_exporter_Term_Exporter ..> repositories_Taxonomies
+    background_process_exporter_Term_Exporter ..> repositories_Terms
+    background_process_exporter_XLSX_Exporter ..> entities_Item
+    background_process_exporter_XLSX_Exporter ..> repositories_Collections
+    background_process_exporter_XLSX_Exporter ..> repositories_Items
+    background_process_exporter_traits_Exporter_Handler_Cell ..> entities_Metadata_Section
+    background_process_generic_process_Bulk_Edit_Process ..> entities_Collection
+    background_process_generic_process_Bulk_Edit_Process ..> entities_Item
+    background_process_generic_process_Bulk_Edit_Process ..> entities_Item_Metadata_Entity
+    background_process_generic_process_Bulk_Edit_Process ..> entities_Metadatum
+    background_process_generic_process_Bulk_Edit_Process ..> entities_Term
+    background_process_generic_process_Bulk_Edit_Process ..> repositories_Collections
+    background_process_generic_process_Bulk_Edit_Process ..> repositories_Item_Metadata
+    background_process_generic_process_Bulk_Edit_Process ..> repositories_Items
+    background_process_generic_process_Bulk_Edit_Process ..> repositories_Metadata
+    background_process_generic_process_Bulk_Edit_Process ..> repositories_Terms
+    background_process_generic_process_Generic_Process <|-- background_process_generic_process_Bulk_Edit_Process
+    background_process_generic_process_Generic_Process_Handler ..> background_process_generic_process_Background_Generic_Process
+    background_process_generic_process_Generic_Process_Handler ..> background_process_generic_process_Generic_Process
+    background_process_importer_CSV ..> entities_Collection
+    background_process_importer_CSV ..> entities_Item
+    background_process_importer_CSV ..> entities_Item_Metadata_Entity
+    background_process_importer_CSV ..> entities_Metadatum
+    background_process_importer_CSV ..> entities_Taxonomy
+    background_process_importer_CSV ..> entities_Term
+    background_process_importer_CSV ..> media_helper_Media
+    background_process_importer_CSV ..> repositories_Collections
+    background_process_importer_CSV ..> repositories_Item_Metadata
+    background_process_importer_CSV ..> repositories_Items
+    background_process_importer_CSV ..> repositories_Metadata
+    background_process_importer_CSV ..> repositories_Terms
+    background_process_importer_Flickr_Importer ..> entities_Metadatum
+    background_process_importer_Flickr_Importer ..> media_helper_Media
+    background_process_importer_Flickr_Importer ..> repositories_Items
+    background_process_importer_Importer ..> background_process_importer_Importer_Handler
+    background_process_importer_Importer ..> entities_Collection
+    background_process_importer_Importer ..> entities_Item
+    background_process_importer_Importer ..> entities_Item_Metadata_Entity
+    background_process_importer_Importer ..> entities_Metadatum
+    background_process_importer_Importer ..> entities_Taxonomy
+    background_process_importer_Importer ..> repositories_Collections
+    background_process_importer_Importer ..> repositories_Item_Metadata
+    background_process_importer_Importer ..> repositories_Items
+    background_process_importer_Importer ..> repositories_Metadata
+    background_process_importer_Importer ..> repositories_Taxonomies
+    background_process_importer_Importer <|-- background_process_importer_CSV
+    background_process_importer_Importer <|-- background_process_importer_Flickr_Importer
+    background_process_importer_Importer <|-- background_process_importer_Oaipmh_Importer
+    background_process_importer_Importer <|-- background_process_importer_Term_Importer
+    background_process_importer_Importer <|-- background_process_importer_Test_Importer
+    background_process_importer_Importer <|-- background_process_importer_Youtube_Importer
+    background_process_importer_Importer_Handler ..> background_process_importer_Background_Importer
+    background_process_importer_Importer_Handler ..> background_process_importer_Importer
+    background_process_importer_Oaipmh_Importer ..> entities_Collection
+    background_process_importer_Oaipmh_Importer ..> entities_Item
+    background_process_importer_Oaipmh_Importer ..> entities_Item_Metadata_Entity
+    background_process_importer_Oaipmh_Importer ..> entities_Metadatum
+    background_process_importer_Oaipmh_Importer ..> entities_Taxonomy
+    background_process_importer_Oaipmh_Importer ..> entities_Term
+    background_process_importer_Oaipmh_Importer ..> mappers_Mappers_Handler
+    background_process_importer_Oaipmh_Importer ..> repositories_Collections
+    background_process_importer_Oaipmh_Importer ..> repositories_Item_Metadata
+    background_process_importer_Oaipmh_Importer ..> repositories_Items
+    background_process_importer_Oaipmh_Importer ..> repositories_Metadata
+    background_process_importer_Oaipmh_Importer ..> repositories_Taxonomies
+    background_process_importer_Oaipmh_Importer ..> repositories_Terms
+    background_process_importer_Term_Importer ..> entities_Taxonomy
+    background_process_importer_Term_Importer ..> entities_Term
+    background_process_importer_Term_Importer ..> repositories_Taxonomies
+    background_process_importer_Term_Importer ..> repositories_Terms
+    background_process_importer_Test_Importer ..> entities_Collection
+    background_process_importer_Test_Importer ..> entities_Item_Metadata_Entity
+    background_process_importer_Test_Importer ..> entities_Metadatum
+    background_process_importer_Test_Importer ..> entities_Taxonomy
+    background_process_importer_Test_Importer ..> media_helper_Media
+    background_process_importer_Test_Importer ..> repositories_Collections
+    background_process_importer_Test_Importer ..> repositories_Item_Metadata
+    background_process_importer_Test_Importer ..> repositories_Items
+    background_process_importer_Test_Importer ..> repositories_Metadata
+    background_process_importer_Test_Importer ..> repositories_Taxonomies
+    background_process_importer_Youtube_Importer ..> entities_Metadatum
+    background_process_importer_Youtube_Importer ..> media_helper_Media
+    background_process_importer_Youtube_Importer ..> repositories_Items
+    cli_Cli_Collection ..> entities_Item
+    cli_Cli_Collection ..> repositories_Collections
+    cli_Cli_Collection ..> repositories_Items
+    cli_Cli_Control_Metadata ..> entities_Item
+    cli_Cli_Control_Metadata ..> repositories_Collections
+    cli_Cli_Control_Metadata ..> repositories_Items
+    cli_Cli_Control_Metadata ..> repositories_Metadata
+    cli_Cli_Document ..> entities_Item
+    cli_Cli_Document ..> repositories_Collections
+    cli_Cli_Document ..> repositories_Items
+    cli_Cli_Logs ..> cli_Logs_Wp_Posts_Migration
+    cli_Cli_Move_Attachments ..> Private_Files
+    cli_Cli_Move_Attachments ..> entities_Collection
+    cli_Cli_Move_Attachments ..> entities_Item
+    cli_Cli_Move_Attachments ..> repositories_Collections
+    cli_Cli_Move_Attachments ..> repositories_Items
+    cli_Cli_Move_Attachments ..> theme_helper_Theme_Helper
+    cli_Logs_Wp_Posts_Migration ..> repositories_Logs
+    entities_Collection ..> entities_Collection
+    entities_Collection ..> entities_Metadatum
+    entities_Collection ..> repositories_Filters
+    entities_Collection ..> repositories_Metadata
+    entities_Entity ..> entities_Collection
+    entities_Entity ..> entities_Entity
+    entities_Entity ..> entities_Item
+    entities_Entity ..> repositories_Repository
+    entities_Entity <|-- entities_Collection
+    entities_Entity <|-- entities_Filter
+    entities_Entity <|-- entities_Item
+    entities_Entity <|-- entities_Item_Metadata_Entity
+    entities_Entity <|-- entities_Log
+    entities_Entity <|-- entities_Metadata_Section
+    entities_Entity <|-- entities_Metadatum
+    entities_Entity <|-- entities_Taxonomy
+    entities_Entity <|-- entities_Term
+    entities_Filter ..> entities_Metadatum
+    entities_Filter ..> repositories_Metadata
+    entities_Item ..> entities_Item_Metadata_Entity
+    entities_Item ..> entities_Metadata_Section
+    entities_Item ..> entities_Metadatum
+    entities_Item ..> media_helper_Embed
+    entities_Item ..> media_helper_Media
+    entities_Item ..> repositories_Item_Metadata
+    entities_Item ..> repositories_Items
+    entities_Item ..> repositories_Metadata
+    entities_Item ..> repositories_Metadata_Sections
+    entities_Item_Metadata_Entity ..> entities_Item
+    entities_Item_Metadata_Entity ..> entities_Item_Metadata_Entity
+    entities_Item_Metadata_Entity ..> entities_Metadatum
+    entities_Item_Metadata_Entity ..> entities_Term
+    entities_Item_Metadata_Entity ..> repositories_Item_Metadata
+    entities_Item_Metadata_Entity ..> repositories_Items
+    entities_Metadata_Section ..> repositories_Metadata_Sections
+    entities_Metadatum ..> entities_Metadata_Section
+    entities_Metadatum ..> entities_Metadatum
+    entities_Metadatum ..> repositories_Metadata
+    entities_Term ..> media_helper_Media
+    exposers_Csv ..> repositories_Collections
+    exposers_Exposer ..> mappers_Mappers_Handler
+    exposers_Exposer <|-- exposers_Csv
+    exposers_Exposer <|-- exposers_Html
+    exposers_Exposer <|-- exposers_JSON_LD
+    exposers_Exposer <|-- exposers_JSON_flat
+    exposers_Exposer <|-- exposers_OAI_PMH
+    exposers_Exposer <|-- exposers_Txt
+    exposers_Exposer <|-- exposers_Xml
+    exposers_Exposers_Handler ..> exposers_Exposer
+    exposers_Exposers_Handler ..> mappers_Mappers_Handler
+    exposers_JSON_LD ..> exposers_Exposers_Handler
+    exposers_Xml ..> exposers_Exposers_Handler
+    integrations_Elastic_Press ..> entities_Item
+    integrations_Elastic_Press ..> entities_Metadatum
+    integrations_Elastic_Press ..> integrations_Elastic_Press
+    integrations_Elastic_Press ..> integrations_Elastic_Press_lte4
+    integrations_Elastic_Press ..> repositories_Collections
+    integrations_Elastic_Press ..> repositories_Filters
+    integrations_Elastic_Press ..> repositories_Item_Metadata
+    integrations_Elastic_Press ..> repositories_Items
+    integrations_Elastic_Press ..> repositories_Metadata
+    integrations_Elastic_Press ..> repositories_Taxonomies
+    integrations_Elastic_Press ..> repositories_Terms
+    integrations_Elastic_Press_lte4 ..> repositories_Collections
+    integrations_Elastic_Press_lte4 ..> repositories_Filters
+    integrations_Elastic_Press_lte4 ..> repositories_Item_Metadata
+    integrations_Elastic_Press_lte4 ..> repositories_Items
+    integrations_Elastic_Press_lte4 ..> repositories_Metadata
+    integrations_Elastic_Press_lte4 ..> repositories_Taxonomies
+    integrations_Elastic_Press_lte4 ..> repositories_Terms
+    mappers_Mapper <|-- mappers_Dublin_Core
+    mappers_Mapper <|-- mappers_Inbcm_Archive
+    mappers_Mapper <|-- mappers_Inbcm_Bibliographic
+    mappers_Mapper <|-- mappers_Inbcm_Museological
+    mappers_Mappers_Handler ..> entities_Metadatum
+    mappers_Mappers_Handler ..> mappers_Mapper
+    mappers_Mappers_Handler ..> repositories_Collections
+    mappers_Mappers_Handler ..> repositories_Metadata
+    media_helper_Media ..> entities_Item
+    media_helper_Media ..> media_helper_Pdf_Extracted_Text_Quality
+    media_helper_Media ..> repositories_Items
+    oaipmh_OAIPMH_Data_Provider ..> entities_Collection
+    oaipmh_OAIPMH_Data_Provider ..> entities_Item
+    oaipmh_OAIPMH_Data_Provider ..> repositories_Collections
+    oaipmh_OAIPMH_Data_Provider ..> repositories_Items
+    oaipmh_OAIPMH_Xml_Generator ..> oaipmh_OAIPMH_Xml_Generator
+    repositories_Collections ..> entities_Collection
+    repositories_Collections ..> entities_Metadatum
+    repositories_Collections ..> repositories_Metadata
+    repositories_Filters ..> entities_Collection
+    repositories_Filters ..> entities_Filter
+    repositories_Filters ..> entities_Metadatum
+    repositories_Item_Metadata ..> entities_Collection
+    repositories_Item_Metadata ..> entities_Item
+    repositories_Item_Metadata ..> entities_Item_Metadata_Entity
+    repositories_Item_Metadata ..> entities_Log
+    repositories_Item_Metadata ..> entities_Metadatum
+    repositories_Item_Metadata ..> entities_Taxonomy
+    repositories_Item_Metadata ..> entities_Term
+    repositories_Item_Metadata ..> repositories_Items
+    repositories_Item_Metadata ..> repositories_Metadata
+    repositories_Item_Metadata ..> repositories_Taxonomies
+    repositories_Item_Metadata ..> repositories_Terms
+    repositories_Items ..> entities_Collection
+    repositories_Items ..> entities_Item
+    repositories_Items ..> entities_Metadatum
+    repositories_Items ..> media_helper_Embed
+    repositories_Items ..> media_helper_Media
+    repositories_Items ..> repositories_Collections
+    repositories_Items ..> repositories_Metadata
+    repositories_Items ..> repositories_Taxonomies
+    repositories_Logs ..> entities_Collection
+    repositories_Logs ..> entities_Entity
+    repositories_Logs ..> entities_Filter
+    repositories_Logs ..> entities_Item
+    repositories_Logs ..> entities_Item_Metadata_Entity
+    repositories_Logs ..> entities_Log
+    repositories_Logs ..> entities_Metadatum
+    repositories_Logs ..> entities_Taxonomy
+    repositories_Logs ..> entities_Term
+    repositories_Logs ..> repositories_Repository
+    repositories_Logs ..> repositories_Taxonomies
+    repositories_Metadata ..> entities_Collection
+    repositories_Metadata ..> entities_Entity
+    repositories_Metadata ..> entities_Metadata_Section
+    repositories_Metadata ..> entities_Metadatum
+    repositories_Metadata ..> entities_Taxonomy
+    repositories_Metadata ..> repositories_Items
+    repositories_Metadata ..> repositories_Metadata
+    repositories_Metadata ..> repositories_Taxonomies
+    repositories_Metadata_Sections ..> entities_Collection
+    repositories_Metadata_Sections ..> entities_Entity
+    repositories_Metadata_Sections ..> entities_Metadata_Section
+    repositories_Metadata_Sections ..> repositories_Metadata
+    repositories_Repository ..> entities_Collection
+    repositories_Repository ..> entities_Entity
+    repositories_Repository ..> entities_Item
+    repositories_Repository ..> entities_Item_Metadata_Entity
+    repositories_Repository ..> entities_Log
+    repositories_Repository ..> media_helper_Media
+    repositories_Repository ..> repositories_Collections
+    repositories_Repository ..> repositories_Filters
+    repositories_Repository ..> repositories_Item_Metadata
+    repositories_Repository ..> repositories_Items
+    repositories_Repository ..> repositories_Logs
+    repositories_Repository ..> repositories_Metadata
+    repositories_Repository ..> repositories_Metadata_Sections
+    repositories_Repository ..> repositories_Repository
+    repositories_Repository ..> repositories_Taxonomies
+    repositories_Repository ..> repositories_Terms
+    repositories_Repository <|-- repositories_Collections
+    repositories_Repository <|-- repositories_Filters
+    repositories_Repository <|-- repositories_Item_Metadata
+    repositories_Repository <|-- repositories_Items
+    repositories_Repository <|-- repositories_Logs
+    repositories_Repository <|-- repositories_Metadata
+    repositories_Repository <|-- repositories_Metadata_Sections
+    repositories_Repository <|-- repositories_Taxonomies
+    repositories_Repository <|-- repositories_Terms
+    repositories_Taxonomies ..> entities_Collection
+    repositories_Taxonomies ..> entities_Entity
+    repositories_Taxonomies ..> entities_Taxonomy
+    repositories_Taxonomies ..> repositories_Collections
+    repositories_Taxonomies ..> repositories_Metadata
+    repositories_Taxonomies ..> repositories_Terms
+    repositories_Terms ..> entities_Entity
+    repositories_Terms ..> entities_Taxonomy
+    repositories_Terms ..> entities_Term
+    repositories_Terms ..> repositories_Taxonomies
+    theme_helper_Theme_Helper ..> entities_Collection
+    theme_helper_Theme_Helper ..> entities_Item
+    theme_helper_Theme_Helper ..> entities_Item_Metadata_Entity
+    theme_helper_Theme_Helper ..> entities_Metadata_Section
+    theme_helper_Theme_Helper ..> entities_Metadatum
+    theme_helper_Theme_Helper ..> entities_Taxonomy
+    theme_helper_Theme_Helper ..> entities_Term
+    theme_helper_Theme_Helper ..> mappers_Mappers_Handler
+    theme_helper_Theme_Helper ..> repositories_Collections
+    theme_helper_Theme_Helper ..> repositories_Items
+    theme_helper_Theme_Helper ..> repositories_Metadata
+    theme_helper_Theme_Helper ..> repositories_Metadata_Sections
+    theme_helper_Theme_Helper ..> repositories_Repository
+    theme_helper_Theme_Helper ..> repositories_Taxonomies
+    theme_helper_Theme_Helper ..> repositories_Terms
+    theme_helper_Theme_Helper ..> theme_helper_Theme_Helper
+    traits_Entity_Collection_Relation ..> entities_Collection
+    traits_Entity_Collection_Relation ..> repositories_Collections
+    traits_Entity_Collections_Relation ..> entities_Collection
+    traits_Entity_Collections_Relation ..> repositories_Collections

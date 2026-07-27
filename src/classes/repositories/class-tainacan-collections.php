@@ -65,11 +65,31 @@ class Collections extends Repository {
 	protected function init() { }
 
 	/**
+	 * Maximum number of items allowed per page.
+	 *
+	 * Falls back to the stored option when the global is not available
+	 * (e.g. the PHPUnit bootstrap loads the plugin inside a function, so the
+	 * global assignment in tainacan.php is scoped to that function).
+	 *
+	 * @return int
+	 */
+	public function get_max_items_per_page() {
+		global $TAINACAN_API_MAX_ITEMS_PER_PAGE;
+		return isset( $TAINACAN_API_MAX_ITEMS_PER_PAGE )
+			? (int) $TAINACAN_API_MAX_ITEMS_PER_PAGE
+			: (int) get_option( 'tainacan_option_search_results_per_page', 96 );
+	}
+
+	/**
 	 * {@inheritDoc}
 	 * @see \Tainacan\Repositories\Repository::get_map()
 	 */
 	protected function _get_map() {
 		$entity = $this->get_name();
+
+		// Ceiling for the default items per page: never above the configured maximum.
+		$max_per_page = $this->get_max_items_per_page();
+
 		return apply_filters( "tainacan-get-map-$entity", [
 			'name' => [
 				'map'         => 'post_title',
@@ -148,6 +168,14 @@ class Collections extends Repository {
 				'default'     => 'ASC',
 				'enum'  => [ 'ASC', 'DESC' ],
 				'validation'  => v::stringType()->in( [ 'ASC', 'DESC' ] ),
+			],
+			'default_per_page' => [
+				'map'         => 'meta',
+				'title'       => __( 'Default items per page', 'tainacan' ),
+				'type'        => 'integer',
+				'default'     => 12,
+				'description' => __( 'Default number of items shown per page in the public items listing of this collection.', 'tainacan' ),
+				'validation'  => v::intVal()->between( 1, $max_per_page ),
 			],
 			'default_displayed_metadata' => [
 				'map'         => 'meta',
@@ -532,6 +560,16 @@ class Collections extends Repository {
 				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
 				'enum'  => [ 'yes', 'no' ],
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+			],
+			'item_enable_document_content_editing'  => [
+				'map'         => 'meta',
+				'title'       => __( 'Document content editing', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'If enabled, the item edition form shows controls to view, extract and edit the textual content stored from item documents for use in search.', 'tainacan' ),
+				'default'     => 'yes',
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'enum'  => [ 'yes', 'no' ],
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ),
 			]
 		] );
 	}

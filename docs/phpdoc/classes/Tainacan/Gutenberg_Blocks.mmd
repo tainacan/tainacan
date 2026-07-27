@@ -1,0 +1,22 @@
+classDiagram
+    direction TB
+    class Gutenberg_Blocks {
+        -blocks : array
+        #blocks_dir : string
+        #__construct()
+        +init()
+        +register_categories(categories, editor_context)
+        +register_and_enqueue_all_blocks()
+        +register_block(block_slug, options, block_settings, user_settings, plugin_settings)
+        +get_common_theme_styles()
+        +get_common_editor_styles()
+        +get_blocks()
+        +get_block_labels()
+        +get_plugin_js_settings()
+        +add_common_theme_scripts()
+        +add_extra_item_submission_assets()
+        +add_extra_faceted_search_assets()
+        +get_category_icon_script()
+        +get_variations_script()
+        +register_react_components()
+    }

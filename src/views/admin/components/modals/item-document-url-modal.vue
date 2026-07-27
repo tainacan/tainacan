@@ -57,6 +57,18 @@
         <b-field
                 v-if="localUrlForcedIframe"
                 :addons="false"
+                :label="$i18n.get('label_document_option_iframe_allowfullscreen')">
+                &nbsp;
+            <b-switch
+                    v-model="localUrlIframeAllowfullscreen" 
+                    size="is-small" />
+            <help-button
+                    :title="$i18n.get('label_document_option_iframe_allowfullscreen')"
+                    :message="$i18n.get('info_document_option_iframe_allowfullscreen')" />
+        </b-field>
+        <b-field
+                v-if="localUrlForcedIframe"
+                :addons="false"
                 :label="$i18n.get('label_document_option_is_image')">
                 &nbsp;
             <b-switch
@@ -94,6 +106,7 @@ export default {
         urlForcedIframe: false,
         urlIframeWidth: 600,
         urlIframeHeight: 450,
+        urlIframeAllowfullscreen: false,
         urlIsImage: false,
     },
     emits: [
@@ -107,6 +120,7 @@ export default {
             localUrlForcedIframe: false,
             localUrlIframeWidth: 600,
             localUrlIframeHeight: 450,
+            localUrlIframeAllowfullscreen: false,
             localUrlIsImage: false,
         }
     },
@@ -115,6 +129,7 @@ export default {
         this.localUrlForcedIframe = this.urlForcedIframe;
         this.localUrlIframeWidth = this.urlIframeWidth;
         this.localUrlIframeHeight = this.urlIframeHeight;
+        this.localUrlIframeAllowfullscreen = this.urlIframeAllowfullscreen;
         this.localUrlIsImage = this.urlIsImage;
         if (
             this.$refs && 
@@ -139,6 +154,7 @@ export default {
                     urlForcedIframe: this.localUrlForcedIframe,
                     urlIframeWidth: this.localUrlIframeWidth,
                     urlIframeHeight: this.localUrlIframeHeight,
+                    urlIframeAllowfullscreen: this.localUrlIframeAllowfullscreen,
                     urlIsImage: this.localUrlIsImage
                 });
         }

@@ -59,6 +59,9 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
             if (postQueries.fetch_only_meta == '')
                 dispatch('search/addFetchOnlyMeta', '', { root: true });
 
+            if (postQueries.search || postQueries.s)
+                postQueries.sentence = rootGetters['search/getEffectiveSentence'];
+
             let query = qs.stringify(postQueries);
 
             // Differentiates between repository level and collection level queries
@@ -276,7 +279,7 @@ export const fetchCollection = ({ commit, }, id) => {
  */
 export const fetchCollectionBasics = ({ commit }, {collectionId, isContextEdit }) => {
     return new Promise((resolve, reject) => { 
-        let endpoint = '/collections/' + collectionId + '?fetch_only=name,url,status,item_publication_label,allow_comments,allow_item_slug_editing,allow_item_author_editing,hide_items_thumbnail_on_lists,item_enabled_document_types,item_document_label,item_thumbnail_label,item_enable_thumbnail,item_attachment_label,item_enable_attachments,item_enable_metadata_focus_mode,item_enable_metadata_required_filter,item_enable_metadata_searchbar,item_enable_metadata_collapses,item_enable_metadata_enumeration,metadata_section_order';
+        let endpoint = '/collections/' + collectionId + '?fetch_only=name,url,status,item_publication_label,allow_comments,allow_item_slug_editing,allow_item_author_editing,hide_items_thumbnail_on_lists,item_enabled_document_types,item_document_label,item_thumbnail_label,item_enable_thumbnail,item_attachment_label,item_enable_attachments,item_enable_metadata_focus_mode,item_enable_metadata_required_filter,item_enable_metadata_searchbar,item_enable_metadata_collapses,item_enable_metadata_enumeration,item_enable_document_content_editing,metadata_section_order';
         
         if (isContextEdit)
             endpoint += '&context=edit';

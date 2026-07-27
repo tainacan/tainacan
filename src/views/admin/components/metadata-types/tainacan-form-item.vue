@@ -259,7 +259,23 @@
             },
             isTextInputComponent() {
                 const array = ['tainacan-relationship','tainacan-taxonomy', 'tainacan-compound', 'tainacan-user', 'tainacan-geocoordinate', 'tainacan-geojson'];
-                return !(array.indexOf(this.metadatumComponent) >= 0 );
+                if ( array.indexOf(this.metadatumComponent) >= 0 )
+                    return false;
+
+                // Selectbox checkbox inputs manage multiple values in a single control, like taxonomy
+                if (
+                    this.metadatumComponent === 'tainacan-selectbox' &&
+                    this.itemMetadatum &&
+                    this.itemMetadatum.metadatum &&
+                    this.itemMetadatum.metadatum.metadata_type_options &&
+                    (
+                        this.itemMetadatum.metadatum.metadata_type_options.input_type === 'tainacan-selectbox-checkbox' ||
+                        this.itemMetadatum.metadatum.metadata_type_options.input_type === 'tainacan-selectbox-checkbox-button'
+                    )
+                )
+                    return false;
+
+                return true;
             },
             metadatumFormClasses() {
                 return '' + 

@@ -259,6 +259,24 @@
                                 </b-field>
                             </div>
 
+                            <!-- Default Items Per Page ------------------------------ -->
+                            <b-field
+                                    :addons="false"
+                                    :label="$i18n.get('label_default_per_page')"
+                                    :message="$i18n.get('info_default_per_page')">
+                                <b-select
+                                        id="tainacan-select-default_per_page"
+                                        v-model="form.default_per_page"
+                                        expanded>
+                                    <option
+                                            v-for="option of defaultPerPageOptions"
+                                            :key="option"
+                                            :value="option">
+                                        {{ option }}
+                                    </option>
+                                </b-select>
+                            </b-field>
+
                             <!-- Hide Items Thumbnail on Lists ------------------------ --> 
                             <b-field
                                     :addons="false" 
@@ -334,6 +352,23 @@
                                             v-model="form.item_document_label" />
                                 </b-field>
                             </div>
+
+                            <!-- Features related to document content index extraction -------------------------------- --> 
+                            <b-field
+                                    :addons="false" 
+                                    :label="$i18n.get('label_document_content')">
+                                <help-button
+                                        :title="$i18n.getHelperTitle('collections', 'item_enable_document_content_editing')"
+                                        :message="$i18n.getHelperMessage('collections', 'item_enable_document_content_editing')" />
+                                <div class="options-checkboxes">
+                                    <b-checkbox
+                                            v-model="form.item_enable_document_content_editing"
+                                            true-value="yes"
+                                            false-value="no">
+                                        {{ $i18n.getHelperTitle('collections', 'item_enable_document_content_editing') }}
+                                    </b-checkbox>
+                                </div>
+                            </b-field>
 
                             <!-- Thumbnail Label -------------------------------- -->
                             <div>
@@ -1110,6 +1145,7 @@ export default {
                 default_view_mode: [],
                 default_order: 'ASC',
                 default_orderby: 'date',
+                default_per_page: 12,
                 allow_comments: 'closed',
                 allow_item_author_editing: 'no',
                 allow_item_slug_editing: 'no',
@@ -1146,6 +1182,7 @@ export default {
                 item_enable_metadata_searchbar: 'yes',
                 item_enable_metadata_collapses: 'yes',
                 item_enable_metadata_enumeration: 'yes',
+                item_enable_document_content_editing: 'yes',
                 collection_taxonomies: []
             },
             thumbnail: {},
@@ -1171,7 +1208,7 @@ export default {
             fromImporter: '',
             repositoryEnabledViewModes: tainacan_plugin.enabled_view_modes,
             reCAPTCHASettingsPagePath: tainacan_plugin.admin_url + '?page=tainacan_item_submission',
-            newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page',
+            newPagePath: tainacan_plugin.wp_admin_url + 'post-new.php?post_type=page',
             isUpdatingSlug: false,
             entityName: 'collection',
             metadataSearchCancel: undefined,
@@ -1194,6 +1231,12 @@ export default {
         ]),
         validDefaultViewModes() {
             return Array.isArray(this.form.enabled_view_modes) ? this.form.enabled_view_modes.filter((aViewMode) => this.registeredAndNotDisabledViewModes[aViewMode] != undefined && this.registeredAndNotDisabledViewModes[aViewMode].full_screen == false ) : [];
+        },
+        defaultPerPageOptions() {
+            const cap = Number(tainacan_plugin.api_max_items_per_page) || 96;
+            const opts = [12, 24, 48].filter(value => value <= cap);
+            if (!opts.includes(cap)) opts.push(cap);
+            return opts.sort((a, b) => a - b);
         },
         registeredAndNotDisabledViewModes() {
             let registered = tainacan_plugin.registered_view_modes;
@@ -1275,6 +1318,7 @@ export default {
                 this.form.enabled_view_modes = JSON.parse(JSON.stringify(this.collection.enabled_view_modes.reduce((result, viewMode) => { typeof viewMode == 'string' ? result.push(viewMode) : null; return result }, [])));
                 this.form.default_order = this.collection.default_order;
                 this.form.default_orderby = this.collection.default_orderby;
+                this.form.default_per_page = Number(this.collection.default_per_page);
                 this.form.allow_comments = this.collection.allow_comments;
                 this.form.allow_item_slug_editing = this.collection.allow_item_slug_editing;
                 this.form.allow_item_author_editing = this.collection.allow_item_author_editing;
@@ -1295,6 +1339,7 @@ export default {
                 this.form.item_enable_metadata_searchbar = this.collection.item_enable_metadata_searchbar;
                 this.form.item_enable_metadata_collapses = this.collection.item_enable_metadata_collapses;
                 this.form.item_enable_metadata_enumeration = this.collection.item_enable_metadata_enumeration;
+                this.form.item_enable_document_content_editing = this.collection.item_enable_document_content_editing;
                 this.form.collection_taxonomies = this.collection.collection_taxonomies;
 
                 // Generates CoverPage from current cover_page_id info
@@ -1306,7 +1351,7 @@ export default {
                     .then((page) => {
                         this.coverPage = page;
                         this.coverPageTitle = this.coverPage.title.rendered;
-                        this.coverPageEditPath = tainacan_plugin.admin_url + '/post.php?post=' + page.id + '&action=edit';
+                        this.coverPageEditPath = tainacan_plugin.wp_admin_url + 'post.php?post=' + page.id + '&action=edit';
                         this.isFetchingPages = false;
                     })
                     .catch((error) => {
@@ -1411,6 +1456,7 @@ export default {
                 default_view_mode: this.form.default_view_mode,
                 default_order: this.form.default_order,
                 default_orderby: this.form.default_orderby,
+                default_per_page: this.form.default_per_page,
                 allows_submission: this.form.allows_submission,
                 submission_anonymous_user: this.form.submission_anonymous_user,
                 submission_default_status: this.form.submission_default_status,
@@ -1431,6 +1477,7 @@ export default {
                 item_enable_metadata_searchbar: this.form.item_enable_metadata_searchbar,
                 item_enable_metadata_collapses: this.form.item_enable_metadata_collapses,
                 item_enable_metadata_enumeration: this.form.item_enable_metadata_enumeration,
+                item_enable_document_content_editing: this.form.item_enable_document_content_editing,
             };
             this.fillExtraFormData(data);
 
@@ -1453,6 +1500,7 @@ export default {
                     this.form.default_view_mode = this.collection.default_view_mode;
                     this.form.default_order = this.collection.default_order;
                     this.form.default_orderby = this.collection.default_orderby;
+                    this.form.default_per_page = Number(this.collection.default_per_page);
                     this.form.allow_comments = this.collection.allow_comments;
                     this.form.allow_item_slug_editing = this.collection.allow_item_slug_editing;
                     this.form.allow_item_author_editing = this.collection.allow_item_author_editing;
@@ -1473,6 +1521,7 @@ export default {
                     this.form.item_enable_metadata_searchbar = this.collection.item_enable_metadata_searchbar;
                     this.form.item_enable_metadata_collapses = this.collection.item_enable_metadata_collapses;
                     this.form.item_enable_metadata_enumeration = this.collection.item_enable_metadata_enumeration;
+                    this.form.item_enable_document_content_editing = this.collection.item_enable_document_content_editing;
                     
                     this.isLoading = false;
                     this.formErrorMessage = '';
@@ -1526,6 +1575,7 @@ export default {
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.default_order = this.collection.default_order;
                 this.form.default_orderby = this.collection.default_orderby;
+                this.form.default_per_page = Number(this.collection.default_per_page);
                 this.form.enabled_view_modes = this.collection.enabled_view_modes;
                 this.form.allow_comments = this.collection.allow_comments;
                 this.form.allow_item_slug_editing = this.collection.allow_item_slug_editing;
@@ -1547,6 +1597,7 @@ export default {
                 this.form.item_enable_metadata_searchbar = this.collection.item_enable_metadata_searchbar;
                 this.form.item_enable_metadata_collapses = this.collection.item_enable_metadata_collapses;
                 this.form.item_enable_metadata_enumeration = this.collection.item_enable_metadata_enumeration;
+                this.form.item_enable_document_content_editing = this.collection.item_enable_document_content_editing;
 
                 // Pre-fill status with publish to incentivate it
                 this.form.status = 'publish';
@@ -1656,7 +1707,7 @@ export default {
             this.form.cover_page_id = selectedPage.id; 
             this.coverPage = selectedPage;
             this.coverPageTitle = this.coverPage.title.rendered;
-            this.coverPageEditPath = tainacan_plugin.admin_url + 'post.php?post=' + selectedPage.id + '&action=edit';
+            this.coverPageEditPath = tainacan_plugin.wp_admin_url + 'post.php?post=' + selectedPage.id + '&action=edit';
         },
         removeCoverPage() {
             this.coverPage = {};
@@ -1987,7 +2038,7 @@ export default {
         }
         .image,
         img {
-            border-radius: 3px;
+            border-radius: var(--tainacan-item-border-radius, 3px);
         }
         &+.thumbnail-field {
             opacity: 1.0;
@@ -2011,7 +2062,7 @@ export default {
             font-size: 0.8em;
         }
         .image {
-            border-radius: 3px;
+            border-radius: var(--tainacan-item-border-radius, 3px);
 
             &:has(.image-placeholder) img {
                 opacity: 0.5;
@@ -2026,7 +2077,7 @@ export default {
         :deep(.image-wrapper) {
             height: 146px;
             width: 146px;
-            border-radius: 3px;
+            border-radius: var(--tainacan-item-border-radius, 3px);
             border: 6px solid var(--tainacan-background-color);
         }
         .image-placeholder {
@@ -2265,5 +2316,4 @@ export default {
     }
 
 </style>
-
 

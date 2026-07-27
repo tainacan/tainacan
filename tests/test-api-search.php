@@ -291,6 +291,36 @@ class TAINACAN_REST_Search extends TAINACAN_UnitApiTestCase {
 
 		
 	}
-}
 
-?>
+	public function test_search_sentence_default() {
+		$search_collection_poemas = new \WP_REST_Request( 'GET', $this->namespace . '/collection/' . $this->collection_poemas->get_id() . '/items' );
+		$search_items = new \WP_REST_Request( 'GET', $this->namespace . '/items' );
+
+		// Phrase default: omitted sentence behaves like sentence=true
+		delete_option( 'tainacan_option_search_each_word_by_default' );
+		$search_collection_poemas->set_query_params( [ 'search' => 'Vinícius de Moraes' ] );
+		$search_response = $this->server->dispatch( $search_collection_poemas );
+		$items = $search_response->get_data()['items'];
+		$this->assertCount( 2, $items );
+
+		// Per-word default: omitted sentence behaves like sentence=false
+		update_option( 'tainacan_option_search_each_word_by_default', true );
+		$search_items->set_query_params( [ 'search' => 'texto poesia' ] );
+		$search_response = $this->server->dispatch( $search_items );
+		$items = $search_response->get_data()['items'];
+		$this->assertCount( 4, $items );
+
+		// Explicit sentence=true overrides per-word default (phrase match: 1 item, not 4)
+		$search_items->set_query_params( [ 'search' => 'texto poesia', 'sentence' => true ] );
+		$search_response = $this->server->dispatch( $search_items );
+		$items = $search_response->get_data()['items'];
+		$this->assertCount( 1, $items );
+
+		$search_items->set_query_params( [ 'search' => 'texto poesia', 'sentence' => false ] );
+		$search_response = $this->server->dispatch( $search_items );
+		$items = $search_response->get_data()['items'];
+		$this->assertCount( 4, $items );
+
+		delete_option( 'tainacan_option_search_each_word_by_default' );
+	}
+}

@@ -1,0 +1,14 @@
+classDiagram
+    direction TB
+    class Admin {
+        -repository_links_slug : mixed
+        -collections_links_slug : mixed
+        #get_page_slug()
+        +init()
+        +add_admin_menu()
+        +admin_enqueue_css()
+        +admin_enqueue_js()
+        +admin_body_class(classes)
+        +render_page_content()
+        +ajax_sample_permalink()
+    }

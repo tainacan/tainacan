@@ -1155,6 +1155,7 @@ export default {
                     flex-shrink: 0;
                 }
                 .filter-name {
+                    color: var(--tainacan-info-color) !important;
                     text-overflow: ellipsis;
                     overflow-x: hidden;
                     white-space: nowrap;
@@ -1313,6 +1314,7 @@ export default {
                     bottom: 6px;
                 }
                 .metadatum-name {
+                    color: var(--tainacan-info-color);
                     text-overflow: ellipsis;
                     overflow-x: hidden;
                     white-space: nowrap;

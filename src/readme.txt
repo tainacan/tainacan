@@ -1,10 +1,10 @@
 === Tainacan ===
 Contributors: alanargomes, andrebenedito, ateneagarcia123, ccaio, clarandreozzi, daltonmartins, eduardohumberto, fabianobn, jacsonp, jessicafpx, leogermani, marinagiolo, omarceloavila, ravipassos, rodrigo0freire, suelanesilva, tainacan, vnmedeiros, weryques, wetah
 Tags: museums, archives, GLAM, collections, repository
-Requires at least: 6.0
+Requires at least: 6.5
 Tested up to: 7.0
-Requires PHP: 7.0
-Stable tag: 1.1.0
+Requires PHP: 7.4
+Stable tag: 1.2.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 

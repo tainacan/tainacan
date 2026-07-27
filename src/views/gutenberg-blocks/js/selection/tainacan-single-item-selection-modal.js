@@ -10,23 +10,28 @@ export default class TainacanSingleItemSelectionModal extends React.Component {
     constructor(props) {
         super(props);
 
-        // Initialize state
+        const existingCollectionId = props.existingCollectionId;
+        const searchURL = existingCollectionId
+            ? tainacan_blocks.admin_url + '?itemsSingleSelectionMode=true&page=tainacan_admin#/collections/' + existingCollectionId + '/items/?status=publish'
+            : '';
+
+        // Initialize state from block attributes so the correct step renders on first paint.
         this.state = {
             collectionsPerPage: 24,
-            collectionId: undefined,
-            itemId: undefined,
+            collectionId: existingCollectionId,
+            itemId: props.existingItemId,
             collectionName: '',
             isLoadingCollections: false, 
             modalCollections: [],
             totalModalCollections: 0, 
             collectionOrderBy: 'date-desc',
             collectionPage: 1,
-            temporaryCollectionId: '',
-            temporaryItemId: '',
+            temporaryCollectionId: existingCollectionId ? '' + existingCollectionId : '',
+            temporaryItemId: props.existingItemId ? '' + props.existingItemId : '',
             searchCollectionName: '',
             collections: [],
             collectionsRequestSource: undefined,
-            searchURL: '',
+            searchURL: searchURL,
             itemsPerPage: 12
         };
         
@@ -39,18 +44,9 @@ export default class TainacanSingleItemSelectionModal extends React.Component {
         this.applySelectedItem = this.applySelectedItem.bind(this);
     }
 
-    componentWillMount() {
-        
-        this.setState({ 
-            collectionId: this.props.existingCollectionId,
-            itemId: this.props.existingItemId
-        });
-         
+    componentDidMount() {
         if (this.props.existingCollectionId) {
             this.fetchCollection(this.props.existingCollectionId);
-            this.setState({ 
-                searchURL: tainacan_blocks.admin_url + '?itemsSingleSelectionMode=true&page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?status=publish'
-            });
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();

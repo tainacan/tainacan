@@ -1,0 +1,11 @@
+classDiagram
+    direction TB
+    class REST_Facets_Controller {
+        -metadatum_repository : mixed
+        +__construct()
+        +init_objects()
+        +register_routes()
+        +get_items(request)
+        +get_items_permissions_check(request)
+        +get_schema()
+    }

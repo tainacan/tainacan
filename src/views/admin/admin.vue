@@ -65,11 +65,11 @@
                     component: CustomDialog,
                     props: {
                         title: this.$i18n.get('error_permalinks_label'),
-                        message: this.$i18n.getWithVariables('error_permalinks_detail', [ tainacan_plugin.admin_url + 'options-permalink.php' ]),
+                        message: this.$i18n.getWithVariables('error_permalinks_detail', [ tainacan_plugin.wp_admin_url + 'options-permalink.php' ]),
                         hideCancel: true,
                         confirmText: this.$i18n.get('label_go_to_permalinks'),
                         onConfirm: () => {
-                            window.location.href = tainacan_plugin.admin_url.replace('/admin.php', '/options-permalink.php');
+                            window.location.href = tainacan_plugin.wp_admin_url + 'options-permalink.php';
                         }
                     },
                     ariaRole: 'alertdialog',
@@ -79,7 +79,7 @@
                 });
             },
             onHeartBitError(event, jqxhr, settings) {
-                if (settings && settings.url == tainacan_plugin.admin_url + 'admin-ajax.php') {
+                if (settings && settings.url == tainacan_plugin.wp_ajax_url) {
                     this.$buefy.snackbar.open({
                         message: this.$i18n.get('error_connectivity'),
                         type: 'is-danger',

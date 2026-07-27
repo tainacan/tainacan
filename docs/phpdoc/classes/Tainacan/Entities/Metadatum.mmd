@@ -1,0 +1,101 @@
+classDiagram
+    direction TB
+    class Entity {
+        #repository : Repository
+        -errors : array
+        #post_type : string|false
+        #capability_type : string|false
+        +WP_Post : WP_Post
+        -validated : bool
+        +cap : object
+        +__construct(which)
+        +get_repository()
+        +get_date_i18n(date)
+        +get_mapped_property(prop)
+        #set_mapped_property(prop, value)
+        +set(prop, value)
+        +get(prop)
+        +set_status(value)
+        +validate()
+        +validate_prop(prop)
+        +get_errors()
+        +$get_post_type()
+        +$get_capability_type()
+        +get_status()
+        +get_db_identifier()
+        +get_id()
+        +add_error(type, message)
+        +reset_errors()
+        +get_validated()
+        #set_validated(value)
+        #set_as_valid()
+        +_toArray()
+        +_toJson()
+        +can_read(user)
+        +can_edit(user)
+        +can_delete(user)
+        +can_publish(user)
+        +get_capabilities()
+        +diff(which)
+    }
+    class Metadatum {
+        #name : mixed
+        +enabled_for_collection : mixed
+        +post_type : mixed
+        #capability_type : string
+        #repository : string
+        +__toString()
+        +set_display(display)
+        +get_display()
+        +set_html_formatting(html_formatting)
+        +get_html_formatting()
+        +get_allow_advanced_search()
+        +set_allow_advanced_search(allow_advanced_search)
+        +get_name()
+        +get_slug()
+        +get_order()
+        +get_parent()
+        +get_description()
+        +get_description_bellow_name()
+        +get_placeholder()
+        +get_required()
+        +get_multiple()
+        +get_cardinality()
+        +get_collection_key()
+        +get_default_value()
+        +get_metadata_type_object()
+        +get_metadata_type()
+        +get_metadata_type_options()
+        +get_accept_suggestion()
+        +get_exposer_mapping()
+        +get_semantic_uri()
+        +get_metadata_section_id()
+        +set_name(value)
+        +set_slug(value)
+        +set_order(value)
+        +set_parent(value)
+        +set_description(value)
+        +set_description_bellow_name(value)
+        +set_placeholder(value)
+        +set_required(value)
+        +set_multiple(value)
+        +set_cardinality(value)
+        +set_collection_key(value)
+        +set_default_value(value)
+        +set_metadata_type(value)
+        +set_accept_suggestion(value)
+        +set_metadata_type_options(value)
+        +set_exposer_mapping(value)
+        +set_semantic_uri(value)
+        +set_metadata_section_id(value)
+        +get_enabled_for_collection()
+        +set_enabled_for_collection(value)
+        +is_multiple()
+        +is_collection_key()
+        +is_required()
+        +is_repository_level()
+        +validate()
+    }
+    Entity ..> Entity
+    Entity <|-- Metadatum
+    Metadatum ..> Metadatum
