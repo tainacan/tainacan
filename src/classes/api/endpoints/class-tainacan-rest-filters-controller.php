@@ -121,7 +121,7 @@ class REST_Filters_Controller extends REST_Controller {
 
 		$filter = $body['filter'];
 
-		$received_type = $body['filter_type'];
+		$received_type = ltrim($body['filter_type'], '\\');
 
 		if(empty($received_type)){
 			throw new \InvalidArgumentException('The type can\'t be empty');

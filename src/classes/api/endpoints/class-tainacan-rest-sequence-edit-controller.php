@@ -126,9 +126,9 @@ class REST_Sequence_Edit_Controller extends REST_Controller {
 
 		}
 
-		$new_group_id = wp_generate_password(16, false, false);
+		$new_group_id = bin2hex( random_bytes( 8 ) );
 
-		set_transient('tnc_seq_edit_' . $new_group_id, $args, DAY_IN_SECONDS);
+		update_option('tnc_seq_edit_' . $new_group_id, $args, false);
 
 		$response = [
 			'id' => $new_group_id,
@@ -141,7 +141,7 @@ class REST_Sequence_Edit_Controller extends REST_Controller {
 	public function get_item($request) {
 		$group_id = $request['group_id'];
 
-		$group = get_transient('tnc_seq_edit_' . $group_id);
+		$group = get_option('tnc_seq_edit_' . $group_id);
 		if ( is_array($group) ) {
 
 			return new \WP_REST_Response( $group, 200 );
@@ -160,7 +160,7 @@ class REST_Sequence_Edit_Controller extends REST_Controller {
 		$group_id = $request['group_id'];
 		$index = (int) $request['sequence_index'];
 
-		$group = get_transient('tnc_seq_edit_' . $group_id);
+		$group = get_option('tnc_seq_edit_' . $group_id);
 		if ( is_array($group) ) {
 
 			if ( isset($group['items_ids']) && is_array($group['items_ids']) ) {
