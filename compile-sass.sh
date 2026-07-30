@@ -1,7 +1,12 @@
 #!/bin/bash
- 
-# Executes the 'sass' command to check if it exists (see http://stackoverflow.com/a/677212/329911)
-if ! npx --no sass --version >/dev/null 2>&1; then
+
+# Resolves the local 'sass' binary
+SASS_BIN=""
+if [ -x "./node_modules/.bin/sass" ]; then
+  SASS_BIN="./node_modules/.bin/sass"
+elif npx --no-install sass --version >/dev/null 2>&1; then
+  SASS_BIN="npx --no-install sass"
+else
   echo >&2 "Sass is not installed in this project. Run 'npm install'."
   exit 1
 fi
@@ -15,61 +20,34 @@ else
   echo "Compiling Sass..."
 fi
 
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/admin/scss/tainacan-admin.scss:src/assets/css/tainacan-admin.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/roles/tainacan-roles.scss:src/assets/css/tainacan-roles.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/mobile-app/tainacan-mobile-app.scss:src/assets/css/tainacan-mobile-app.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/item-gallery/style.scss:src/assets/css/tainacan-gutenberg-block-item-gallery.css
-
-# npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/items-gallery/style.scss:src/assets/css/tainacan-gutenberg-block-items-gallery.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/collections-list/style.scss:src/assets/css/tainacan-gutenberg-block-collections-list.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/carousel-collections-list/style.scss:src/assets/css/tainacan-gutenberg-block-carousel-collections-list.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/dynamic-items-list/style.scss:src/assets/css/tainacan-gutenberg-block-dynamic-items-list.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/search-bar/style.scss:src/assets/css/tainacan-gutenberg-block-search-bar.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/carousel-items-list/style.scss:src/assets/css/tainacan-gutenberg-block-carousel-items-list.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/terms-list/style.scss:src/assets/css/tainacan-gutenberg-block-terms-list.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/facets-list/style.scss:src/assets/css/tainacan-gutenberg-block-facets-list.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/carousel-terms-list/style.scss:src/assets/css/tainacan-gutenberg-block-carousel-terms-list.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/faceted-search/style.scss:src/assets/css/tainacan-gutenberg-block-faceted-search.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/item-submission-form/style.scss:src/assets/css/tainacan-gutenberg-block-item-submission-form.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/related-items-list/style.scss:src/assets/css/tainacan-gutenberg-block-related-items-list.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/item-metadata/style.scss:src/assets/css/tainacan-gutenberg-block-item-metadata.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/item-metadata-section/style.scss:src/assets/css/tainacan-gutenberg-block-item-metadata-section.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/item-metadata-sections/style.scss:src/assets/css/tainacan-gutenberg-block-item-metadata-sections.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/item-metadatum/style.scss:src/assets/css/tainacan-gutenberg-block-item-metadatum.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/geocoordinate-item-metadatum/style.scss:src/assets/css/tainacan-gutenberg-block-geocoordinate-item-metadatum.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/metadata-section-name/style.scss:src/assets/css/tainacan-gutenberg-block-metadata-section-name.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/blocks/metadata-section-description/style.scss:src/assets/css/tainacan-gutenberg-block-metadata-section-description.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/scss/gutenberg-blocks-editor-style.scss:src/assets/css/tainacan-gutenberg-block-common-editor-styles.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/gutenberg-blocks/scss/gutenberg-blocks-theme-style.scss:src/assets/css/tainacan-gutenberg-block-common-theme-styles.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/tainacan-pages.scss:src/assets/css/tainacan-pages.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/dashboard/tainacan-dashboard.scss:src/assets/css/tainacan-dashboard.css
-
-npx sass --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin src/views/settings/tainacan-settings.scss:src/assets/css/tainacan-settings.css
+$SASS_BIN --style=$SASS_STYLE --load-path=node_modules --silence-deprecation=global-builtin \
+  src/views/admin/scss/tainacan-admin.scss:src/assets/css/tainacan-admin.css \
+  src/views/roles/tainacan-roles.scss:src/assets/css/tainacan-roles.css \
+  src/views/mobile-app/tainacan-mobile-app.scss:src/assets/css/tainacan-mobile-app.css \
+  src/views/gutenberg-blocks/blocks/item-gallery/style.scss:src/assets/css/tainacan-gutenberg-block-item-gallery.css \
+  src/views/gutenberg-blocks/blocks/collections-list/style.scss:src/assets/css/tainacan-gutenberg-block-collections-list.css \
+  src/views/gutenberg-blocks/blocks/carousel-collections-list/style.scss:src/assets/css/tainacan-gutenberg-block-carousel-collections-list.css \
+  src/views/gutenberg-blocks/blocks/dynamic-items-list/style.scss:src/assets/css/tainacan-gutenberg-block-dynamic-items-list.css \
+  src/views/gutenberg-blocks/blocks/search-bar/style.scss:src/assets/css/tainacan-gutenberg-block-search-bar.css \
+  src/views/gutenberg-blocks/blocks/carousel-items-list/style.scss:src/assets/css/tainacan-gutenberg-block-carousel-items-list.css \
+  src/views/gutenberg-blocks/blocks/terms-list/style.scss:src/assets/css/tainacan-gutenberg-block-terms-list.css \
+  src/views/gutenberg-blocks/blocks/facets-list/style.scss:src/assets/css/tainacan-gutenberg-block-facets-list.css \
+  src/views/gutenberg-blocks/blocks/carousel-terms-list/style.scss:src/assets/css/tainacan-gutenberg-block-carousel-terms-list.css \
+  src/views/gutenberg-blocks/blocks/faceted-search/style.scss:src/assets/css/tainacan-gutenberg-block-faceted-search.css \
+  src/views/gutenberg-blocks/blocks/item-submission-form/style.scss:src/assets/css/tainacan-gutenberg-block-item-submission-form.css \
+  src/views/gutenberg-blocks/blocks/related-items-list/style.scss:src/assets/css/tainacan-gutenberg-block-related-items-list.css \
+  src/views/gutenberg-blocks/blocks/item-metadata/style.scss:src/assets/css/tainacan-gutenberg-block-item-metadata.css \
+  src/views/gutenberg-blocks/blocks/item-metadata-section/style.scss:src/assets/css/tainacan-gutenberg-block-item-metadata-section.css \
+  src/views/gutenberg-blocks/blocks/item-metadata-sections/style.scss:src/assets/css/tainacan-gutenberg-block-item-metadata-sections.css \
+  src/views/gutenberg-blocks/blocks/item-metadatum/style.scss:src/assets/css/tainacan-gutenberg-block-item-metadatum.css \
+  src/views/gutenberg-blocks/blocks/geocoordinate-item-metadatum/style.scss:src/assets/css/tainacan-gutenberg-block-geocoordinate-item-metadatum.css \
+  src/views/gutenberg-blocks/blocks/metadata-section-name/style.scss:src/assets/css/tainacan-gutenberg-block-metadata-section-name.css \
+  src/views/gutenberg-blocks/blocks/metadata-section-description/style.scss:src/assets/css/tainacan-gutenberg-block-metadata-section-description.css \
+  src/views/gutenberg-blocks/scss/gutenberg-blocks-editor-style.scss:src/assets/css/tainacan-gutenberg-block-common-editor-styles.css \
+  src/views/gutenberg-blocks/scss/gutenberg-blocks-theme-style.scss:src/assets/css/tainacan-gutenberg-block-common-theme-styles.css \
+  src/views/tainacan-pages.scss:src/assets/css/tainacan-pages.css \
+  src/views/dashboard/tainacan-dashboard.scss:src/assets/css/tainacan-dashboard.css \
+  src/views/settings/tainacan-settings.scss:src/assets/css/tainacan-settings.css
 
 echo "Sass Compilation Finished!"
 exit 0

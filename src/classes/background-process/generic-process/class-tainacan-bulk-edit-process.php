@@ -143,18 +143,52 @@ class Bulk_Edit_Process extends Generic_Process {
 		return delete_post_meta( $item->get_id(), $this->meta_key, $this->get_group_id());
 	}
 
+	/**
+	 * Maximum number of times the process will wait for another process to
+	 * finish creating the control metadata before aborting to prevent an
+	 * infinite loop (see issue #1008).
+	 *
+	 * @var int
+	 */
+	const MAX_CONTROL_METADATA_WAIT_RETRIES = 30;
+
 	public function add_control_metadata() {
 		$params = $this->get_options();
 
-		if( !isset($params['control_metadata']) ) {
+		// Guard against null/empty params which can happen if the option was
+		// deleted by a cache plugin or DB cleanup (root cause of issue #1008).
+		if ( !is_array($params) ) {
+			$params = [];
+		}
+
+		if( !isset($params['control_metadata']) || empty($params['control_metadata']) ) {
 			$params['control_metadata'] = $this->get_id();
+			$params['control_metadata_wait_retries'] = 0;
 			$this->save_options($params);
 		} elseif ($params['control_metadata'] === true) {
 			$this->add_log( __('Bulk edit control metadata has already been created', 'tainacan') );
 			return false;
 		} elseif( is_numeric($params['control_metadata']) && $params['control_metadata'] != $this->get_id() ) {
+			// Another process is creating the control metadata. Wait for it, but
+			// only up to MAX_CONTROL_METADATA_WAIT_RETRIES iterations to prevent
+			// an infinite loop if that other process has died or its data was lost.
+			$retries = isset($params['control_metadata_wait_retries']) ? (int)$params['control_metadata_wait_retries'] : 0;
+			$retries++;
+			$params['control_metadata_wait_retries'] = $retries;
+			$this->save_options($params);
+
+			if ( $retries > self::MAX_CONTROL_METADATA_WAIT_RETRIES ) {
+				$this->add_error_log( sprintf(
+					/* translators: %d is the number of retries exceeded */
+					__( 'Bulk edit process aborted after %d retries waiting for control metadata creation by another process.', 'tainacan' ),
+					self::MAX_CONTROL_METADATA_WAIT_RETRIES
+				) );
+				$this->abort();
+				return false;
+			}
+
 			/* translators: %d is the ID of the process that is creating the control metadata */
-			$this->add_log( sprintf( __( 'Waiting creating bulk edit control metadata by process ID: "%d"', 'tainacan' ), $params['control_metadata'] ) );
+			$this->add_log( sprintf( __( 'Waiting creating bulk edit control metadata by process ID: "%d" (attempt %d/%d)', 'tainacan' ), $params['control_metadata'], $retries, self::MAX_CONTROL_METADATA_WAIT_RETRIES ) );
 			return true;
 		}
 

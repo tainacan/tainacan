@@ -238,7 +238,11 @@ class REST_Taxonomies_Controller extends REST_Controller {
 	 * @return object|void|\WP_Error
 	 */
 	public function prepare_item_for_database( $request ) {
+		$readonly = $this->get_readonly_fields();
 		foreach ($request as $key => $value){
+			if ( in_array($key, $readonly, true) ) {
+				continue;
+			}
 			$this->taxonomy->set($key, $value);
 		}
 	}

@@ -1,13 +1,18 @@
 #!/bin/bash
 
 # Loads user-defined variables at build-config file
-source build-config.cfg
+if [ -f build-config.cfg ]; then
+    source build-config.cfg
+elif [ -f build-config-sample.cfg ]; then
+    echo "Warning: build-config.cfg not found. Using build-config-sample.cfg defaults..."
+    source build-config-sample.cfg
+fi
 
 ## Only run npm build if there was a change in a .js or .vue file
-current_md5_js=$(<last-js-build.md5)
-current_md5_sass=$(<last-sass-build.md5)
-current_md5_composer=$(<last-composer-build.md5)
-current_md5_package=$(<last-package-build.md5)
+current_md5_js=$([ -f last-js-build.md5 ] && cat last-js-build.md5 2>/dev/null || echo "")
+current_md5_sass=$([ -f last-sass-build.md5 ] && cat last-sass-build.md5 2>/dev/null || echo "")
+current_md5_composer=$([ -f last-composer-build.md5 ] && cat last-composer-build.md5 2>/dev/null || echo "")
+current_md5_package=$([ -f last-package-build.md5 ] && cat last-package-build.md5 2>/dev/null || echo "")
 
 current_OS=`uname`
 
@@ -25,10 +30,10 @@ else
 fi
 
 new_md5_package=$(<last-package-build.md5)
-if [ "$current_md5_package" != "$new_md5_package" ]
+if [ "$current_md5_package" != "$new_md5_package" ] && [ ! -d "node_modules" ]
 then
     ## Install js dependencies
-    npm ci
+    npm ci || npm install --prefer-offline || true
 fi
 
 is_prod_build=false
@@ -45,11 +50,15 @@ new_md5_composer=$(<last-composer-build.md5)
 if [ "$current_md5_composer" != "$new_md5_composer" ]
 then
     ## Install composer dependencies
-    if [ "$is_prod_build" == false ]
-    then
-        composer install
+    if command -v composer >/dev/null 2>&1; then
+        if [ "$is_prod_build" == false ]
+        then
+            composer install
+        else
+            composer install --no-dev
+        fi
     else
-        composer install --no-dev
+        echo "Notice: composer command not found. Skipping composer install."
     fi
 fi
 
@@ -67,7 +76,7 @@ fi
 
 new_md5_js=$(<last-js-build.md5)
 
-if [ "$current_md5_js" != "$new_md5_js" ]
+if [ "$current_md5_js" != "$new_md5_js" ] || [ ! -d "src/assets/js" ] || [ -z "$(ls -A src/assets/js 2>/dev/null)" ]
 then
     if [ "$is_prod_build" == false ]
     then
@@ -90,43 +99,48 @@ fi
 #   rm pdfjs-1.9.426-dist.zip
 # fi
 
-echo "Updating files in $wp_plugin_dir"
+if [ -n "$wp_plugin_dir" ] && [ -d "$(dirname "$wp_plugin_dir")" ]; then
+    echo "Updating files in $wp_plugin_dir"
 
-rm -rf $wp_plugin_dir
+    rm -rf $wp_plugin_dir
 
-mkdir $wp_plugin_dir
+    mkdir $wp_plugin_dir
 
-rsync -axz --exclude='vendor/bin/phpc*' --exclude='vendor/squizlabs' --exclude='vendor/wimg' \
- --exclude='vendor/respect/validation/.git' --exclude='vendor/symfony/polyfill-mbstring/.git' \
- --exclude='vendor/respect/validation/docs' --exclude='vendor/respect/validation/tests' \
- --exclude='views/libs/pdf-viewer/pdfjs-dist/web/compressed.tracemonkey-pldi-09.pdf' \
- --exclude='vendor/tecnickcom/tcpdf/fonts' \
- --exclude='vendor/smalot/pdfparser/src/Smalot/PdfParser/Tests/' \
- --exclude='vendor/tecnickcom/tcpdf/examples' \
- --exclude='vendor/composer/installed.json' \
-  src/* $wp_plugin_dir/
+    rsync -axz --exclude='vendor/bin/phpc*' --exclude='vendor/squizlabs' --exclude='vendor/wimg' \
+     --exclude='vendor/respect/validation/.git' --exclude='vendor/symfony/polyfill-mbstring/.git' \
+     --exclude='vendor/respect/validation/docs' --exclude='vendor/respect/validation/tests' \
+     --exclude='views/libs/pdf-viewer/pdfjs-dist/web/compressed.tracemonkey-pldi-09.pdf' \
+     --exclude='vendor/tecnickcom/tcpdf/fonts' \
+     --exclude='vendor/smalot/pdfparser/src/Smalot/PdfParser/Tests/' \
+     --exclude='vendor/tecnickcom/tcpdf/examples' \
+     --exclude='vendor/composer/installed.json' \
+      src/* $wp_plugin_dir/
 
-echo "Removing unecessary source files"
-rm -rf $wp_plugin_dir/scss
-find $wp_plugin_dir/views/ -type f -name '*.vue' -exec rm {} +
-find $wp_plugin_dir/views/ -type f -name '*.scss' -exec rm {} +
-find $wp_plugin_dir/views/ -type f -name '*.sass' -exec rm {} +
-find $wp_plugin_dir/views/ -type f -name '*.js' -exec rm {} +
-find $wp_plugin_dir/views/ -type d -empty -delete
+    echo "Removing unecessary source files"
+    rm -rf $wp_plugin_dir/scss
+    find $wp_plugin_dir/views/ -type f -name '*.vue' -exec rm {} +
+    find $wp_plugin_dir/views/ -type f -name '*.scss' -exec rm {} +
+    find $wp_plugin_dir/views/ -type f -name '*.sass' -exec rm {} +
+    find $wp_plugin_dir/views/ -type f -name '*.js' -exec rm {} +
+    find $wp_plugin_dir/views/ -type d -empty -delete
 
-if [ "$is_prod_build" == true ]
-then
-    echo "Removing legacy source code that is not used in production..."
-    find $wp_plugin_dir/classes/class-tainacan-bulk-edit.php -type f -delete
-    find $wp_plugin_dir/classes/exposers/class-tainacan-oai-pmh.php -type f -delete
-    find $wp_plugin_dir/classes/exposers/class-tainacan-json-ld.php -type f -delete
-    find $wp_plugin_dir/classes/exposers/class-tainacan-txt.php -type f -delete
-    find $wp_plugin_dir/classes/exposers/class-tainacan-xml.php -type f -delete
-fi
+    if [ "$is_prod_build" == true ]
+    then
+        echo "Removing legacy source code that is not used in production..."
+        find $wp_plugin_dir/classes/class-tainacan-bulk-edit.php -type f -delete
+        find $wp_plugin_dir/classes/exposers/class-tainacan-oai-pmh.php -type f -delete
+        find $wp_plugin_dir/classes/exposers/class-tainacan-json-ld.php -type f -delete
+        find $wp_plugin_dir/classes/exposers/class-tainacan-txt.php -type f -delete
+        find $wp_plugin_dir/classes/exposers/class-tainacan-xml.php -type f -delete
+    fi
 
-if [ "$is_prod_build" == true ]
-then
-    find $wp_plugin_dir/assets/js/ -type f -name '*.js.map' -exec rm {} +
+    if [ "$is_prod_build" == true ]
+    then
+        find $wp_plugin_dir/assets/js/ -type f -name '*.js.map' -exec rm {} +
+    fi
+else
+    echo "Skipping rsync to WordPress plugins directory (directory not set or parent directory does not exist)."
 fi
 
 echo "Build complete!"
+

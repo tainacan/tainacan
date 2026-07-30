@@ -218,6 +218,7 @@ class REST_Importers_Controller extends REST_Controller {
 						}
 					}
 					
+					$att = sanitize_key($att);
 					$method = 'set_' . $att;
 					if (method_exists($importer, $method)) {
 						$importer->$method($value);

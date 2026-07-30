@@ -66,6 +66,28 @@ abstract class Background_Process_Base extends Async_Request {
 	 * @access protected
 	 */
 	protected $process_lock_in_time;
+
+	/**
+	 * Whether the current request is being dispatched via WP-Cron internally.
+	 *
+	 * When true, the nonce check in maybe_handle() is bypassed because cron
+	 * dispatches are internal server-side requests that don't carry a nonce.
+	 *
+	 * @since 1.2.1
+	 * @var bool
+	 * @access protected
+	 */
+	protected $is_cron_dispatch = false;
+
+	/**
+	 * Maximum time (in seconds) a process can remain in 'running' status
+	 * without updating its processed_last timestamp before being considered stale.
+	 *
+	 * @since 1.2.1
+	 * @var int
+	 * @access protected
+	 */
+	protected $stale_process_timeout = 900; // 15 minutes
 	
 	/**
 	 * queue_lock_time
@@ -200,6 +222,16 @@ abstract class Background_Process_Base extends Async_Request {
 		// Don't lock up other requests while processing
 		session_write_close();
 
+		// Verify nonce to prevent unauthorized external triggering of background processes.
+		// The nonce is generated in Async_Request::get_query_args() and sent with the dispatch request.
+		// When dispatched via WP-Cron (which runs internally), the nonce check is bypassed
+		// via the $this->is_cron_dispatch flag.
+		if ( ! $this->is_cron_dispatch ) {
+			$this->debug('checking nonce');
+			check_ajax_referer( $this->identifier, 'nonce' );
+			$this->debug('nonce ok!');
+		}
+
 		if ( $this->is_process_running() ) {
 			$this->debug('process already running. To die...');
 			// Background process already running.
@@ -210,9 +242,6 @@ abstract class Background_Process_Base extends Async_Request {
 			// No data to process.
 			wp_die();
 		}
-		$this->debug('checking nonce');
-		//check_ajax_referer( $this->identifier, 'nonce' );
-		$this->debug('ok!');
 		$this->handle();
 
 		wp_die();
@@ -486,6 +515,10 @@ abstract class Background_Process_Base extends Async_Request {
 	 */
 	public function handle_cron_healthcheck() {
 		$this->debug('running handle_cron_healthcheck');
+
+		// Run the watchdog to detect and clean up stale processes before dispatching.
+		$this->detect_and_cleanup_stale_processes();
+
 		if ( $this->is_process_running() ) {
 			// Background process already running.
 			$this->debug('running handle_cron_healthcheck: process running');
@@ -500,6 +533,8 @@ abstract class Background_Process_Base extends Async_Request {
 		}
 
 		$this->debug('running handle_cron_healthcheck: dispatching');
+		// Mark that this dispatch originates from WP-Cron so maybe_handle() bypasses the nonce check.
+		$this->is_cron_dispatch = true;
 		$this->dispatch();
 
 		exit;
@@ -512,6 +547,9 @@ abstract class Background_Process_Base extends Async_Request {
 	 *
 	 */
 	public function handle_cron_healthcheck_check() {
+		// Run the watchdog to detect and clean up stale processes.
+		$this->detect_and_cleanup_stale_processes();
+
 		if ( $this->is_process_running() ) {
 			// Background process already running.
 			exit;
@@ -526,6 +564,92 @@ abstract class Background_Process_Base extends Async_Request {
 		$this->debug('handle_cron_healthcheck_check scheduling event');
 		$this->schedule_event();
 
+	}
+
+	/**
+	 * Detect and clean up stale processes.
+	 *
+	 * A stale process is one whose status is 'running' in the database but
+	 * whose processed_last timestamp has not been updated within the
+	 * $stale_process_timeout window. This typically happens when a PHP
+	 * process was killed by the server, hit a fatal error not caught by
+	 * the shutdown handler, or the server crashed.
+	 *
+	 * This watchdog marks stale processes as 'errored' and releases the lock
+	 * so that the cron healthcheck can re-dispatch queued work.
+	 *
+	 * @since 1.2.1
+	 * @return void
+	 */
+	protected function detect_and_cleanup_stale_processes() {
+		global $wpdb;
+
+		// Only applies to the DB-backed Background_Process, which defines $this->table.
+		if ( empty( $this->table ) ) {
+			return;
+		}
+
+		$stale_timeout = apply_filters( $this->identifier . '_stale_process_timeout', $this->stale_process_timeout );
+		$cutoff_date = gmdate( 'Y-m-d H:i:s', time() - $stale_timeout );
+
+		// Find processes that are still marked as 'running' but haven't updated recently.
+		$stale_processes = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT ID FROM {$this->table}
+				 WHERE action = %s
+				 AND status = 'running'
+				 AND done = 0
+				 AND processed_last IS NOT NULL
+				 AND processed_last < %s",
+				$this->action,
+				$cutoff_date
+			)
+		);
+
+		if ( empty( $stale_processes ) ) {
+			return;
+		}
+
+		foreach ( $stale_processes as $stale ) {
+			$this->debug( sprintf( 'Watchdog: marking stale process ID %d as errored', $stale->ID ) );
+			$this->close( $stale->ID, 'errored' );
+			$this->write_error_log( $stale->ID, [
+				[
+					'datetime' => gmdate( 'Y-m-d H:i:s' ),
+					'message'  => __( 'Process marked as errored by watchdog: no heartbeat within the stale timeout window.', 'tainacan' ),
+				],
+			] );
+		}
+
+		// Release the process lock so new dispatches can proceed.
+		$this->unlock_process();
+	}
+
+	/**
+	 * Record a heartbeat for the current running process.
+	 *
+	 * Updates the processed_last timestamp in the database to indicate
+	 * that the process is still alive. This is called during task execution
+	 * and on shutdown to help the watchdog distinguish live processes from
+	 * stale ones.
+	 *
+	 * @since 1.2.1
+	 * @return void
+	 */
+	public function record_heartbeat() {
+		global $wpdb;
+
+		if ( empty( $this->table ) || empty( $this->ID ) ) {
+			return;
+		}
+
+		$wpdb->update(
+			$this->table,
+			[ 'processed_last' => current_time( 'mysql' ) ],
+			[ 'ID' => $this->ID ],
+			[ '%s' ],
+			[ '%d' ]
+		);
 	}
 
 	/**
