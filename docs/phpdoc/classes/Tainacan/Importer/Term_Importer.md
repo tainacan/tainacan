@@ -91,6 +91,7 @@ classDiagram
     class Term_Importer {
         #steps : mixed
         +__construct(attributes)
+        #open_tmp_file()
         +options_form()
         +process_item(index, collection_definition)
         +create_terms()
@@ -131,6 +132,20 @@ public __construct(mixed $attributes = array()): mixed
 | Parameter     | Type      | Description |
 |---------------|-----------|-------------|
 | `$attributes` | **mixed** |             |
+
+***
+
+### open_tmp_file
+
+Opens the temporary CSV file for reading, skipping a UTF-8 BOM when present.
+
+```php
+protected open_tmp_file(): resource|false
+```
+
+**Return Value:**
+
+File handle positioned after the BOM, or false on failure.
 
 ***
 
