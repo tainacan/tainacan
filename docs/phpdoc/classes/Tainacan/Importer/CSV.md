@@ -141,6 +141,24 @@ public __construct(mixed $attributes = array()): mixed
 
 ***
 
+### open_tmp_file
+
+Opens the temporary CSV file for reading, skipping a UTF-8 BOM when present.
+
+```php
+protected open_tmp_file(): resource|false
+```
+
+Excel and other tools often save UTF-8 CSV files with a leading BOM (EF BB BF),
+which would otherwise become part of the first column name and break exact
+matches such as special_item_id.
+
+**Return Value:**
+
+File handle positioned after the BOM, or false on failure.
+
+***
+
 ### set_option
 
 alter the default options

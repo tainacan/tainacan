@@ -1100,6 +1100,7 @@
       class "CSV" as background-process_importer_CSV {
         -items_repo : 
         +__construct(attributes)
+        #open_tmp_file()
         +set_option(key, value)
         +get_source_metadata()
         +get_source_file_name()
@@ -1135,6 +1136,7 @@
       class "Term_Importer" as background-process_importer_Term_Importer {
         #steps : 
         +__construct(attributes)
+        #open_tmp_file()
         +options_form()
         +process_item(index, collection_definition)
         +create_terms()
