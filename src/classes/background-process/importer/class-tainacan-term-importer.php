@@ -39,6 +39,29 @@ class Term_Importer extends Importer {
 		]);
 	}
 
+	/**
+	 * Opens the temporary CSV file for reading, skipping a UTF-8 BOM when present.
+	 *
+	 * @return resource|false File handle positioned after the BOM, or false on failure.
+	 */
+	protected function open_tmp_file() {
+		if ( ! isset( $this->tmp_file ) || ! file_exists( $this->tmp_file ) ) {
+			return false;
+		}
+
+		$handle = fopen( $this->tmp_file, 'r' );
+		if ( $handle === false ) {
+			return false;
+		}
+
+		$bom = fread( $handle, 3 );
+		if ( $bom !== "\xEF\xBB\xBF" ) {
+			rewind( $handle );
+		}
+
+		return $handle;
+	}
+
 	public function options_form() {
 		ob_start();
 		?>
@@ -132,7 +155,7 @@ class Term_Importer extends Importer {
 
 	public function create_terms( ) {
 
-		if (($handle = fopen($this->tmp_file, "r")) !== false) {
+		if (($handle = $this->open_tmp_file()) !== false) {
 			$file = $handle;
 			$this->set_current_step_total( filesize($this->tmp_file) );
 		} else {
@@ -154,7 +177,10 @@ class Term_Importer extends Importer {
 		}
 
 		$position_file = $this->get_in_step_count();
-		fseek($file, $position_file);
+		// Avoid seeking to 0 after open_tmp_file(), which already skipped a UTF-8 BOM when present.
+		if ( $position_file > 0 ) {
+			fseek($file, $position_file);
+		}
 		if (($values =  fgetcsv($file, 0, $this->get_option('delimiter'), '"')) !== FALSE) {
 			$position_file = ftell($file);
 			if ($values[$position] == '') { // next degree
