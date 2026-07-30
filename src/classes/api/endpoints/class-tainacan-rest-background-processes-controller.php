@@ -142,17 +142,19 @@ class REST_Background_Processes_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 * @throws \Exception
 	 */
-	public function  bg_processes_permissions_check($request) { 
-        // TODO
-        return current_user_can('read');
+	public function  bg_processes_permissions_check($request) {
+        return current_user_can('manage_tainacan');
 	}
 
     public function get_items( $request ) {
         global $wpdb;
 
-        $perpage = isset($request['perpage']) && is_numeric($request['perpage']) ? $request['perpage'] : 10;
+        $perpage = isset($request['perpage']) && is_numeric($request['perpage']) ? (int) $request['perpage'] : 10;
         if ($perpage < 1) {
             $perpage = 1;
+        }
+        if ($perpage > 100) {
+            $perpage = 100;
         }
         $paged = isset($request['paged']) && is_numeric($request['paged']) ? $request['paged'] : 1;
         if ($paged < 1) {
@@ -238,9 +240,8 @@ class REST_Background_Processes_Controller extends REST_Controller {
         $user_q = $wpdb->prepare("AND user_id = %d", get_current_user_id());
         $id_q = $wpdb->prepare("AND ID = %d", $id);
 
-        // do not allow users without permission to see others people process
         if (current_user_can('edit_users')) {
-            if ( isset($user_q['all_users']) && $user_q['all_users'] ) {
+            if ( isset($request['all_users']) && $request['all_users'] ) {
                 $user_q = "";
             }
         }
@@ -248,6 +249,12 @@ class REST_Background_Processes_Controller extends REST_Controller {
         $query = "SELECT * FROM $this->table WHERE 1=1 $id_q $user_q LIMIT 1";
 
         $result = $wpdb->get_row($query);
+
+        if ( ! $result ) {
+            return new \WP_REST_Response([
+                'error_message' => __('Process not found', 'tainacan'),
+            ], 404);
+        }
 
         $result = $this->prepare_item_for_response($result, $request);
 
@@ -266,69 +273,60 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
     public function update_item( $request ) {
         global $wpdb;
-        $id = $request['id'];
+        $id = (int) $request['id'];
         $body = json_decode($request->get_body(), true);
 
-        if ( !isset($body['status']) || ($body['status'] != 'open' && $body['status'] != 'closed') ) {
+        $allowed_statuses = [
+            'open'            => [ 'done' => 0, 'status' => '' ],
+            'closed'          => [ 'done' => 1, 'status' => 'cancelled' ],
+            'waiting'         => [ 'done' => 1, 'status' => 'waiting' ],
+            'running'         => [ 'done' => 1, 'status' => 'running' ],
+            'paused'          => [ 'done' => 1, 'status' => 'paused' ],
+            'cancelled'       => [ 'done' => 1, 'status' => 'cancelled' ],
+            'errored'         => [ 'done' => 1, 'status' => 'errored' ],
+            'finished'        => [ 'done' => 1, 'status' => 'finished' ],
+            'finished-errors' => [ 'done' => 1, 'status' => 'finished-errors' ],
+        ];
+
+        if ( ! isset($body['status']) || ! isset($allowed_statuses[$body['status']]) ) {
             return new \WP_REST_Response([
                 'error_message' => __('Status must be specified', 'tainacan' ),
                 'session_id' => $id
             ], 400);
         }
 
-        if ( $body['status'] == 'open' ) {
-            $status_q = "done = 0";
+        $update_data = $allowed_statuses[$body['status']];
+        if ( $update_data['status'] === '' ) {
+            $update_data = [ 'done' => 0 ];
+            $update_format = [ '%d' ];
+        } else {
+            $update_format = [ '%d', '%s' ];
         }
 
-        if ( $body['status'] == 'closed' ) {
-            $status_q = "done = 1, status = 'cancelled'";
+        $where = [ 'ID' => $id ];
+        $where_format = [ '%d' ];
+
+        if ( ! current_user_can('edit_users') || ! isset($request['all_users']) || ! $request['all_users'] ) {
+            $where['user_id'] = get_current_user_id();
+            $where_format[] = '%d';
         }
 
-        if ( $body['status'] == 'waiting' ) {
-            $status_q = "done = 1, status = 'waiting'";
-        }
-
-        if ( $body['status'] == 'running' ) {
-            $status_q = "done = 1, status = 'running'";
-        }
-
-        if ( $body['status'] == 'paused' ) {
-            $status_q = "done = 1, status = 'paused'";
-        }
-
-        if ( $body['status'] == 'cancelled' ) {
-            $status_q = "done = 1, status = 'cancelled'";
-        }
-
-        if ( $body['status'] == 'errored' ) {
-            $status_q = "done = 1, status = 'errored'";
-        }
-
-        if ( $body['status'] == 'finished' ) {
-            $status_q = "done = 1, status = 'finished'";
-        }
-
-        if ( $body['status'] == 'finished-errors' ) {
-            $status_q = "done = 1, status = 'finished-errors'";
-        }
+        $wpdb->update( $this->table, $update_data, $where, $update_format, $where_format );
 
         $id_q = $wpdb->prepare("AND ID = %d", $id);
-        $user_q = $wpdb->prepare("AND user_id = %d", get_current_user_id());
-
-        // do not allow users without permission to see others people process
-        if (current_user_can('edit_users')) {
-            if ( isset($user_q['all_users']) && $user_q['all_users'] ) {
-                $user_q = "";
-            }
+        $user_q = '';
+        if ( isset($where['user_id']) ) {
+            $user_q = $wpdb->prepare("AND user_id = %d", $where['user_id']);
         }
 
-        $query = "UPDATE $this->table SET $status_q WHERE 1=1 $id_q $user_q";
-
-        $result = $wpdb->query($query);
-
         $query = "SELECT * FROM $this->table WHERE 1=1 $id_q $user_q LIMIT 1";
-
         $result = $wpdb->get_row($query);
+
+        if ( ! $result ) {
+            return new \WP_REST_Response([
+                'error_message' => __('Process not found', 'tainacan'),
+            ], 404);
+        }
 
         $result = $this->prepare_item_for_response($result, $request);
 
@@ -337,14 +335,13 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
     public function delete_item( $request ) {
         global $wpdb;
-        $id = $request['id'];
+        $id = (int) $request['id'];
 
         $user_q = $wpdb->prepare("AND user_id = %d", get_current_user_id());
         $id_q = $wpdb->prepare("AND ID = %d", $id);
 
-        // do not allow users without permission to see others people process
         if (current_user_can('edit_users')) {
-            if ( isset($user_q['all_users']) && $user_q['all_users'] ) {
+            if ( isset($request['all_users']) && $request['all_users'] ) {
                 $user_q = "";
             }
         }
@@ -352,8 +349,6 @@ class REST_Background_Processes_Controller extends REST_Controller {
         $query = "DELETE FROM $this->table WHERE 1=1 $id_q $user_q LIMIT 1";
 
         $result = $wpdb->query($query);
-
-        // TODO: delete log files
 
         return new \WP_REST_Response( $result, 200 );
     }
@@ -379,46 +374,44 @@ class REST_Background_Processes_Controller extends REST_Controller {
                 'error_message' => __('guid must be specified', 'tainacan' )
             ], 400);
         }
-        if (!is_user_logged_in() || !current_user_can('read') ) {
-            $error_def = [
-                "code" => "unauthorized",
-                "message" => "Unauthorized",
-                "data" => [ "status" => 403 ],
-            ];
-            return new \WP_REST_Response($error_def, 403, array('content-type' => 'text/html; charset=utf-8'));
-        }
 
-        $guid = $request['guid'];
+        $guid = sanitize_file_name( $request['guid'] );
         $upload_url = wp_upload_dir();
-        $path = realpath($upload_url['basedir'] . '/tainacan') . '/' . $guid;
-        $real_file_path = realpath($path);
-        if (strpos($real_file_path, $path) !== 0) {
-            $error_def = [
-                "code" => "unauthorized_file_path",
-                "message" => "Unauthorized file path",
-                "data" => [ "status" => 403 ],
-            ];
-            return new \WP_REST_Response($error_def, 403, array('content-type' => 'application/json; charset=utf-8'));
+        $base_dir = realpath($upload_url['basedir'] . '/tainacan');
+
+        if ( $base_dir === false ) {
+            return new \WP_REST_Response([
+                'error_message' => __('Upload directory not found', 'tainacan')
+            ], 404);
         }
 
-        if ( file_exists( $path ) ) {
+        $real_file_path = realpath($base_dir . '/' . $guid);
 
+        if ( $real_file_path === false || strpos($real_file_path, $base_dir) !== 0 ) {
+            return new \WP_REST_Response([
+                'error_message' => __('Unauthorized file path', 'tainacan'),
+            ], 403);
+        }
+
+        if ( file_exists( $real_file_path ) ) {
             $finfo = @finfo_open(FILEINFO_MIME_TYPE);
-            $mime_type = @finfo_file($finfo, $path);
-            $file_name = @basename($path);
+            $mime_type = @finfo_file($finfo, $real_file_path);
+            $file_name = basename($real_file_path);
             http_response_code(200);
             header('Content-Description: File Transfer');
-            header("Content-Disposition: attachment; filename=$file_name"); 
+            header('Content-Disposition: attachment; filename="' . $file_name . '"');
             header("Content-Type: $mime_type");
-            header("Content-Length: " . @filesize( $path ));
+            header("Content-Length: " . @filesize( $real_file_path ));
             if (\ob_get_level() > 0) {
                 \ob_clean();
             }
             \flush();
-            \readfile($path);
+            \readfile($real_file_path);
             exit;
         } else {
-            return new \WP_REST_Response("file not found", 404, array('content-type' => 'text/html; charset=utf-8'));
+            return new \WP_REST_Response([
+                'error_message' => __('File not found', 'tainacan')
+            ], 404);
         }
     }
 
