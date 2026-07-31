@@ -723,15 +723,18 @@ export default {
             if (removedKey != '')
                 delete this.mappedCollection['mapping'][removedKey];
 
-            let mappingValue;
-            if (isCompound) {
-                mappingValue = {} 
-                mappingValue[sourceMetadatum] = childSourceMetadata;
-                
-            } else {
-                mappingValue = sourceMetadatum;
+            // Empty placeholder ("Select a metadatum") must leave the column unmapped.
+            if (selectedMetadatum) {
+                let mappingValue;
+                if (isCompound) {
+                    mappingValue = {} 
+                    mappingValue[sourceMetadatum] = childSourceMetadata;
+                    
+                } else {
+                    mappingValue = sourceMetadatum;
+                }
+                this.mappedCollection['mapping'][selectedMetadatum] = mappingValue;
             }
-            this.mappedCollection['mapping'][selectedMetadatum] = mappingValue;
 
             // Necessary for causing reactivity to re-check if metadata remains available
             this.collectionMetadata.push("");

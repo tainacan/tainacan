@@ -1207,11 +1207,18 @@ class CSV extends Importer {
 				foreach( $collection['mapping'] as $metadatum_id => $header ){
 
 					if (!is_numeric($metadatum_id)) {
-						$repo_key = "create_repository_metadata";
-						$collection_id = $collection['id'];
-						if (strpos($metadatum_id, $repo_key) !== false) {
-							$collection_id = "default";
+						$metadatum_id_str = (string) $metadatum_id;
+						$is_create_collection = strpos( $metadatum_id_str, 'create_metadata' ) === 0;
+						$is_create_repository = strpos( $metadatum_id_str, 'create_repository_metadata' ) === 0;
+
+						// Ignore empty/placeholder mapping keys (e.g. "null", "") instead of
+						// treating every non-numeric key as a request to create metadata.
+						if ( ! $is_create_collection && ! $is_create_repository ) {
+							unset( $collection['mapping'][ $metadatum_id ] );
+							continue;
 						}
+
+						$collection_id = $is_create_repository ? 'default' : $collection['id'];
 						$metadatum = $this->create_new_metadata($header, $collection_id);
 
 						if ($metadatum == false) {
