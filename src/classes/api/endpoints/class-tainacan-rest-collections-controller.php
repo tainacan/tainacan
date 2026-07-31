@@ -185,9 +185,6 @@ class REST_Collections_Controller extends REST_Controller {
 
 		$rest_response = new \WP_REST_Response($response, 200);
 
-		$rest_response->header('X-WP-Total', (int) $total_collections);
-		$rest_response->header('X-WP-TotalPages', (int) $max_pages);
-
 		// Per https://developer.wordpress.org/reference/functions/wp_count_posts/ — one property per registered
 		// status (core and custom). Header suffix must be a safe token; values are always integers.
 		$collection_status_counts = wp_count_posts( 'tainacan-collection', 'readable' );
@@ -205,7 +202,14 @@ class REST_Collections_Controller extends REST_Controller {
 			}
 		}
 
-		return $rest_response;
+		return $this->prepare_paginated_response(
+			$response,
+			$total_collections,
+			$max_pages,
+			(int) $collections->query_vars['paged'],
+			(int) $collections->query_vars['posts_per_page'],
+			$rest_response
+		);
 	}
 
 	/**
@@ -220,6 +224,7 @@ class REST_Collections_Controller extends REST_Controller {
 		$collection = $this->collections_repository->fetch($collection_id);
 
 		$response = $this->prepare_item_for_response($collection, $request );
+		$response = $this->add_embed_support($response, $request);
 
 		return new \WP_REST_Response($response, 200);
 	}
@@ -531,8 +536,11 @@ class REST_Collections_Controller extends REST_Controller {
 	 * @return object|Entities\Collection|\WP_Error
 	 */
 	public function prepare_item_for_database( $request ) {
-
+		$readonly = $this->get_readonly_fields();
 		foreach ($request as $key => $value){
+			if ( in_array($key, $readonly, true) ) {
+				continue;
+			}
 			$set_ = 'set_' . $key;
 			if(method_exists($this->collection, $set_)) $this->collection->$set_($value);
 		}
@@ -922,7 +930,7 @@ class REST_Collections_Controller extends REST_Controller {
 					'description' => __('Limits the result set to collections with a specific name', 'tainacan'),
 					'type'        => 'string',
 				);
-	
+
 				$endpoint_args = array_merge(
 					$endpoint_args,
 					parent::get_wp_query_params(),
@@ -976,15 +984,20 @@ class REST_Collections_Controller extends REST_Controller {
 		];
 
 		$main_schema = parent::get_repository_schema( $this->collections_repository );
-		$permissions_schema = parent::get_permissions_schema();
 
 		$schema['properties'] = array_merge(
 			parent::get_base_properties_schema(),
 			$main_schema,
-			$permissions_schema
+			parent::get_param_schema('id', ['description' => __('Unique identifier for the resource.', 'tainacan'), 'readOnly' => true]),
+			parent::get_param_schema('current_user_can_edit', ['description' => __('Whether current user can edit this resource.', 'tainacan')]),
+			parent::get_param_schema('current_user_can_delete', ['description' => __('Whether current user can delete this resource.', 'tainacan')])
 		);
 
 		return $schema;
+	}
+
+	function get_list_schema() {
+		return parent::get_paginated_list_schema();
 	}
 
 }

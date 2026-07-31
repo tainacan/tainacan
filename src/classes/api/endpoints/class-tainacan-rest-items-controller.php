@@ -169,7 +169,8 @@ class REST_Items_Controller extends REST_Controller {
 						'copies' => array(
 							'description' => __('Number of copies to be created', 'tainacan'),
 							'default'     => 1,
-							'type'        => 'integer'
+							'type'        => 'integer',
+							'maximum'     => 50,
 						),
 						'status' => array(
 							'description' => __('Try to assign the specified status to the duplicates if they validate. By default it will save them as drafts.', 'tainacan'),
@@ -400,6 +401,7 @@ class REST_Items_Controller extends REST_Controller {
 		}
 
 		$response = $this->prepare_item_for_response($item, $request);
+		$response = $this->add_embed_support($response, $request);
 
 		return new \WP_REST_Response(apply_filters('tainacan-rest-response', $response, $request), 200);
 	}
@@ -887,8 +889,12 @@ class REST_Items_Controller extends REST_Controller {
 		$item = new Entities\Item();
 
 		$item_as_array = $request[0];
+		$readonly = $this->get_readonly_fields();
 
 		foreach ($item_as_array as $key => $value){
+			if ( in_array($key, $readonly, true) ) {
+				continue;
+			}
 			$item->set($key, $value);
 		}
 
@@ -1286,21 +1292,23 @@ class REST_Items_Controller extends REST_Controller {
 		if (is_numeric($value)) return $value;
 		$split_value = explode(">>", $value);
 		if(count($split_value) == 1 ) {
-			$exist = $this->terms_repository->term_exists($split_value[0], $taxonomy, null, true);
+			$sanitized_name = sanitize_text_field($split_value[0]);
+			$exist = $this->terms_repository->term_exists($sanitized_name, $taxonomy, null, true);
 			if ($exist)
-				return $split_value[0];
+				return $sanitized_name;
 			$new_term  = new Entities\Term();
 			$new_term->set_taxonomy( $taxonomy->get_db_identifier() );
-			$new_term->set('name', $split_value[0]);
+			$new_term->set('name', $sanitized_name);
 			if ( $new_term->validate() ) {
 				$new_term = $this->terms_repository->insert( $new_term );
 				$this->new_terms_ids[] = ['term_id' => $new_term->get_term_id(), 'taxonomy' => $new_term->get_taxonomy()];
 			}
 			return $new_term;
 		} else if (count($split_value) == 2 ) {
+			$sanitized_name = sanitize_text_field($split_value[1]);
 			$new_term  = new Entities\Term();
 			$new_term->set_taxonomy( $taxonomy->get_db_identifier() );
-			$new_term->set('name', $split_value[1]);
+			$new_term->set('name', $sanitized_name);
 			$new_term->set('parent', $split_value[0]);
 			if ( $new_term->validate() ) {
 				$new_term = $this->terms_repository->insert( $new_term );
@@ -1476,7 +1484,6 @@ class REST_Items_Controller extends REST_Controller {
 	}
 
 	public function submission_item_finish ( $request ) {
-		define( 'WP_ADMIN', true );
 		$submission_id = $request['submission_id'];
 		$collection_id = $request['collection_id'];
 		$item_id = get_transient('tnc_transient_submission_' . $submission_id);
@@ -1498,7 +1505,7 @@ class REST_Items_Controller extends REST_Controller {
 		$insert_attachments = [];
 		$entities_erros = [];
 		if( isset($files['document']) && !is_array($files['document']['tmp_name']) == 1 && $files['document']['size'] > 0 ) {
-			$tmp_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . \hexdec(\uniqid()) . '_' . $files['document']['name'];
+			$tmp_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . \hexdec(\uniqid()) . '_' . sanitize_file_name($files['document']['name']);
 			move_uploaded_file($files['document']['tmp_name'], $tmp_file_name);
 			$document_id = $TainacanMedia->insert_attachment_from_file($tmp_file_name, $item_id);
 			if($document_id === false) {
@@ -1592,9 +1599,14 @@ class REST_Items_Controller extends REST_Controller {
 				], 400);
 			}
 			$secret_key = get_option("tnc_option_recaptch_secret_key");
-			$api_url = "https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=".$captcha_data."&remoteip=".$_SERVER['REMOTE_ADDR'];
 
-			$response = wp_remote_get( $api_url );
+			$response = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', [
+				'body' => [
+					'secret'   => $secret_key,
+					'response' => $captcha_data,
+					'remoteip' => $_SERVER['REMOTE_ADDR'],
+				],
+			]);
 			$body = wp_remote_retrieve_body( $response );
 			$response = json_decode($body);
 
@@ -1709,52 +1721,7 @@ class REST_Items_Controller extends REST_Controller {
 	}
 
 	function get_attachments_schema() {
-
-		$properties = [
-			'title' => [
-				'description' => esc_html__('The attachment title', 'tainacan'),
-				'type' => 'string'
-			],
-			'description' => [
-				'description' => esc_html__('The attachment description', 'tainacan'),
-				'type' => 'string'
-			],
-			'mime_type' => [
-				'description' => esc_html__('The attachment MIME type', 'tainacan'),
-				'type' => 'string'
-			],
-			'date' => [
-				'description' => esc_html__('The attachment creation date', 'tainacan'),
-				'type' => 'string'
-			],
-			'date_gmt' => [
-				'description' => esc_html__('The attachment creation date in GMT', 'tainacan'),
-				'type' => 'string'
-			],
-			'author' => [
-				'description' => esc_html__('The ID of the user who uploaded the attachment', 'tainacan'),
-				'type' => 'string'
-			],
-			'url' => [
-				'description' => esc_html__('The URL to the attachment file', 'tainacan'),
-				'type' => 'string'
-			],
-			'media_type' => [
-				'description' => esc_html__('The attachment Media type', 'tainacan'),
-				'type' => 'string',
-				'enum' => [ 'image', 'file' ]
-			],
-			'alt_text' => [
-				'description' => esc_html__('The attachment Alt text', 'tainacan'),
-				'type' => 'string'
-			],
-			'thumbnails' => [
-				'description' => esc_html__('The attachment thumbnails', 'tainacan'),
-				'type' => 'array'
-			],
-		];
-
-		$schema = [
+		return [
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
 			'title' => 'attachments',
 			'type' => 'array',
@@ -1763,12 +1730,84 @@ class REST_Items_Controller extends REST_Controller {
 				'type' => 'object',
 				'properties' => array_merge(
 					parent::get_base_properties_schema(),
-					$properties
+					$this->get_param_schema('title', [
+						'description' => esc_html__('The attachment title', 'tainacan'),
+						'type' => 'string'
+					]),
+					$this->get_param_schema('description', [
+						'description' => esc_html__('The attachment description', 'tainacan'),
+						'type' => 'string'
+					]),
+					$this->get_param_schema('mime_type', [
+						'description' => esc_html__('The attachment MIME type', 'tainacan'),
+						'type' => 'string'
+					]),
+					$this->get_param_schema('date', [
+						'description' => esc_html__('The attachment creation date', 'tainacan'),
+						'type' => 'string'
+					]),
+					$this->get_param_schema('date_gmt', [
+						'description' => esc_html__('The attachment creation date in GMT', 'tainacan'),
+						'type' => 'string'
+					]),
+					$this->get_param_schema('author', [
+						'description' => esc_html__('The ID of the user who uploaded the attachment', 'tainacan'),
+						'type' => 'string'
+					]),
+					$this->get_param_schema('url', [
+						'description' => esc_html__('The URL to the attachment file', 'tainacan'),
+						'type' => 'string'
+					]),
+					$this->get_param_schema('media_type', [
+						'description' => esc_html__('The attachment Media type', 'tainacan'),
+						'type' => 'string',
+						'enum' => [ 'image', 'file' ]
+					]),
+					$this->get_param_schema('alt_text', [
+						'description' => esc_html__('The attachment Alt text', 'tainacan'),
+						'type' => 'string'
+					]),
+					$this->get_param_schema('thumbnails', [
+						'description' => esc_html__('The attachment thumbnails', 'tainacan'),
+						'type' => 'array'
+					]),
 				)
 			)
 		];
+	}
 
-		return $schema;
+	function get_list_schema() {
+		return [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'type' => 'object',
+			'title' => 'items',
+			'tags' => [ $this->rest_base ],
+			'properties' => [
+				'total' => [
+					'description' => __('Total number of items in the result set', 'tainacan'),
+					'type' => 'integer',
+				],
+				'total_pages' => [
+					'description' => __('Total number of pages', 'tainacan'),
+					'type' => 'integer',
+				],
+				'current_page' => [
+					'description' => __('Current page number', 'tainacan'),
+					'type' => 'integer',
+				],
+				'per_page' => [
+					'description' => __('Number of items per page', 'tainacan'),
+					'type' => 'integer',
+				],
+				'items' => [
+					'description' => __('Array of items on the current page', 'tainacan'),
+					'type' => 'array',
+					'items' => [
+						'type' => 'object',
+					],
+				],
+			],
+		];
 	}
 
 	function get_schema() {
@@ -1789,6 +1828,33 @@ class REST_Items_Controller extends REST_Controller {
 		);
 
 		return $schema;
+	}
+
+	/**
+	 * Embeds related resources for an item.
+	 *
+	 * This method implements the embed_resource hook from the base controller,
+	 * providing embedded collection and taxonomy information for items.
+	 *
+	 * @param \WP_REST_Request $request The request object.
+	 *
+	 * @return array An array of embedded resources keyed by embed name.
+	 *
+	 * @since 1.3.0
+	 */
+	protected function embed_resource( $request ) {
+		$embedded = array();
+
+		if ( ! empty( $this->collection ) ) {
+			$embedded['wp:collection'] = array(
+				array(
+					'href' => rest_url( sprintf( '%s/%s/%d', $this->namespace, 'collections', $this->collection->get_id() ) ),
+					'embeddable' => true,
+				)
+			);
+		}
+
+		return $embedded;
 	}
 }
 

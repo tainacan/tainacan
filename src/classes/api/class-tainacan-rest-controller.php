@@ -68,10 +68,18 @@ abstract class REST_Controller extends \WP_REST_Controller {
 	 * @return \Tainacan\Entities\Entity The updated entity.
 	 */
 	protected function prepare_item_for_updating($object, $new_values){
+		$readonly = $this->get_readonly_fields();
 		foreach ($new_values as $key => $value) {
+			if ( in_array($key, $readonly, true) ) {
+				continue;
+			}
 			$object->set($key, $value);
 		}
 		return $object;
+	}
+
+	protected function get_readonly_fields() {
+		return [ 'id', 'author_id', 'creation_date', 'modification_date' ];
 	}
 
 	/**
@@ -167,8 +175,18 @@ abstract class REST_Controller extends \WP_REST_Controller {
 			}
 		}
 
+		// Cap posts_per_page to a reasonable maximum to prevent abuse
+		if ( isset($args['posts_per_page']) && (int) $args['posts_per_page'] > 100 ) {
+			$args['posts_per_page'] = 100;
+		}
+
+		// Block nopaging to prevent unbounded queries
+		if ( isset($args['nopaging']) && $args['nopaging'] ) {
+			$args['nopaging'] = false;
+		}
+
 		$args['perm'] = 'readable';
-		
+
 		return apply_filters('tainacan-api-prepare-items-args', $args, $request);
 	}
 
@@ -690,21 +708,31 @@ abstract class REST_Controller extends \WP_REST_Controller {
 
 	}
 
-	function get_permissions_schema() {
-
+	/**
+	 * Returns a schema definition for permission-related object properties.
+	 *
+	 * This helper builds a schema object describing whether the current user
+	 * can edit or delete the object, including the context in which the
+	 * permissions apply. It is used for documenting API endpoints and for
+	 * client-side validation.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return array The schema definition.
+	 */
+	protected function get_permissions_schema() {
 		return [
 			'current_user_can_edit' => [
-				'description' => __('Whether current user can edit this object', 'tainacan'),
-				'type' => 'boolean',
-				'context' => 'edit'
+				'description' => __( 'Whether current user can edit this object', 'tainacan' ),
+				'type'        => 'boolean',
+				'context'     => 'edit',
 			],
 			'current_user_can_delete' => [
-				'description' => __('Whether current user can delete this object', 'tainacan'),
-				'type' => 'boolean',
-				'context' => 'edit'
-			]
+				'description' => __( 'Whether current user can delete this object', 'tainacan' ),
+				'type'        => 'boolean',
+				'context'     => 'edit',
+			],
 		];
-
 	}
 
 	function get_base_properties_schema() {
@@ -767,6 +795,285 @@ abstract class REST_Controller extends \WP_REST_Controller {
 			}
 		}
 		return $statuses;
+	}
+
+	/**
+		* Returns a schema definition for request parameters.
+		*
+		* This helper builds a schema object describing the request parameters,
+		* including their types, descriptions, required status, and validation
+		* callbacks. It is used for documenting API endpoints and for client-side
+		* validation.
+		*
+		* @since 1.2.0
+		*
+		* @param string $param_name The name of the parameter.
+		* @param array  $properties The properties of the parameter.
+		* @return array The schema definition.
+		*/
+	protected function get_param_schema( $param_name, $properties ) {
+		$schema = [
+			'title'          => $param_name,
+			'description'    => isset( $properties['description'] ) ? $properties['description'] : '',
+			'type'           => isset( $properties['type'] ) ? $properties['type'] : 'string',
+			'required'       => isset( $properties['required'] ) && $properties['required'],
+			'enum'           => isset( $properties['enum'] ) ? $properties['enum'] : null,
+			'default'        => isset( $properties['default'] ) ? $properties['default'] : null,
+			'sanitize_callback' => isset( $properties['sanitize_callback'] ) ? $properties['sanitize_callback'] : null,
+			'validate_callback'  => isset( $properties['validate_callback'] ) ? $properties['validate_callback'] : null,
+		];
+
+		if ( isset( $properties['items'] ) ) {
+			$schema['items'] = $properties['items'];
+		}
+
+		if ( isset( $properties['properties'] ) ) {
+			$schema['properties'] = $properties['properties'];
+		}
+
+		return $schema;
+	}
+
+
+	/**
+	 * Returns a schema definition for field selection.
+	 *
+	 * This helper builds a schema object describing the _fields parameter
+	 * used for selecting specific fields to return in the response. It
+	 * accepts a list of allowed fields and validates that only those
+	 * fields are requested. This enables efficient responses by allowing
+	 * clients to request only the fields they need.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param string $field_name The name of the field parameter.
+	 * @param array  $allowed_fields The allowed fields.
+	 * @return array The schema definition.
+	 */
+	protected function get_field_schema( $field_name, $allowed_fields ) {
+		return [
+			'title'          => $field_name,
+			'description'    => __( 'Comma-separated list of fields to include in response. Use empty string for all fields.', 'tainacan' ),
+			'type'           => 'string',
+			'default'        => '',
+			'enum'           => array_merge( [ '' ], $allowed_fields ),
+			'sanitize_callback' => function( $value ) {
+				if ( $value === '' ) {
+					return '';
+				}
+				$fields = wp_parse_list( $value );
+				$allowed = array_map( 'sanitize_key', $allowed_fields );
+				return array_intersect( $fields, $allowed );
+			},
+		];
+	}
+
+	/**
+	 * Returns field selection arguments for use in register_rest_route.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param string $field_name The name of the field parameter.
+	 * @param array  $allowed_fields The allowed fields.
+	 * @return array The args for register_rest_route.
+	 */
+	protected function get_field_args( $field_name, $allowed_fields ) {
+		return [
+			$field_name => $this->get_field_schema( $field_name, $allowed_fields ),
+		];
+	}
+
+	/**
+		* Returns a schema definition for error responses.
+		*
+		* This helper builds a schema object describing the structure of error
+		* responses returned by the API. It includes fields for the error code,
+		* a human-readable message, and any additional contextual information.
+		*
+		* @since 1.2.0
+		*
+		* @return array The schema definition.
+		*/
+	protected function get_error_response_schema() {
+		return [
+			'$schema'    => 'http://json-schema.org/draft-04/schema#',
+			'type'       => 'object',
+			'title'      => 'error',
+			'tags'       => [ 'error' ],
+			'properties' => [
+				'error_code' => [
+					'description' => __( 'Error code identifying the type of error', 'tainacan' ),
+					'type'        => 'string',
+				],
+				'error_message' => [
+					'description' => __( 'Human-readable error message', 'tainacan' ),
+					'type'        => 'string',
+				],
+				'status' => [
+					'description' => __( 'HTTP status code', 'tainacan' ),
+					'type'        => 'integer',
+				],
+				'data' => [
+					'description' => __( 'Additional data related to the error', 'tainacan' ),
+					'type'        => 'object',
+				],
+			],
+		];
+	}
+
+	/**
+	 * Returns a schema definition for paginated list responses.
+	 *
+	 * This helper builds a schema object describing the structure of paginated
+	 * list responses returned by the API. It includes fields for the total
+	 * number of items, total number of pages, the current page number, the
+	 * number of items per page, and the array of items.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return array The schema definition.
+	 */
+	protected function get_paginated_list_schema() {
+		return [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'type'     => 'object',
+			'title'    => 'paginated_list',
+			'tags'     => [ 'paginated_list' ],
+			'properties' => [
+				'total' => [
+					'description' => __( 'Total number of items in the result set', 'tainacan' ),
+					'type'        => 'integer',
+				],
+				'total_pages' => [
+					'description' => __( 'Total number of pages', 'tainacan' ),
+					'type'        => 'integer',
+				],
+				'current_page' => [
+					'description' => __( 'Current page number', 'tainacan' ),
+					'type'        => 'integer',
+				],
+				'per_page' => [
+					'description' => __( 'Number of items per page', 'tainacan' ),
+					'type'        => 'integer',
+				],
+				'items' => [
+					'description' => __( 'Array of items on the current page', 'tainacan' ),
+					'type'        => 'array',
+					'items'       => [
+						'type' => 'object',
+					],
+				],
+			],
+		];
+	}
+
+	/**
+	 * Returns a schema definition for paginated list responses.
+	 *
+	 * This helper builds a schema object describing the structure of paginated
+	 * list responses returned by the API. It includes fields for the total
+	 * number of items, total number of pages, the current page number, the
+	 * number of items per page, and the array of items.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return array The schema definition.
+	 */
+	public function get_paginated_response_schema() {
+		return $this->get_paginated_list_schema();
+	}
+
+	/**
+	 * Prepares a paginated response with proper headers and Link header.
+	 *
+	 * This helper builds a paginated response including the X-WP-Total,
+	 * X-WP-TotalPages, and X-WP-ItemsPerPage headers, as well as the Link
+	 * header for pagination navigation. It is designed to work with the
+	 * get_paginated_list_schema() method.
+	 *
+	 * @param array        $data        The data to include in the response.
+	 * @param int          $total       Total number of items.
+	 * @param int          $total_pages Total number of pages.
+	 * @param int          $current_page Current page number.
+	 * @param int          $per_page    Number of items per page.
+	 * @param \WP_REST_Response|null $response Optional. The response object to modify.
+	 *
+	 * @return \WP_REST_Response The paginated response.
+	 *
+	 * @since 1.3.0
+	 */
+	protected function prepare_paginated_response( $data, $total, $total_pages, $current_page, $per_page, $response = null ) {
+		$response = $response ?: new \WP_REST_Response( $data, 200 );
+
+		$response->header( 'X-WP-Total', (int) $total );
+		$response->header( 'X-WP-TotalPages', (int) $total_pages );
+		$response->header( 'X-WP-ItemsPerPage', (int) $per_page );
+
+		// Add Link header for pagination navigation.
+		// WP_REST_Response does not expose a link() method, so we build the
+		// RFC 8288 Link header manually (multiple links comma-separated).
+		$base   = rest_url( sprintf( '%s/%s', $this->namespace, $this->rest_base ) );
+		$links  = array();
+
+		if ( $current_page < $total_pages ) {
+			$next_link = sprintf( '%s?page=%d&per_page=%d', $base, $current_page + 1, $per_page );
+			$links[]   = sprintf( '<%s>; rel="next"', $next_link );
+		}
+		if ( $current_page > 1 ) {
+			$prev_link = sprintf( '%s?page=%d&per_page=%d', $base, $current_page - 1, $per_page );
+			$links[]   = sprintf( '<%s>; rel="prev"', $prev_link );
+		}
+
+		if ( ! empty( $links ) ) {
+			$response->header( 'Link', implode( ', ', $links ) );
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Adds resource expansion support for the _embed parameter.
+	 *
+	 * @param \WP_REST_Response $response The response to modify.
+	 * @param \WP_REST_Request  $request  The request object.
+	 *
+	 * @return \WP_REST_Response The modified response with embedded resources.
+	 *
+	 * @since 1.3.0
+	 */
+	protected function add_embed_support( $response, $request ) {
+		if ( empty( $request['_embed'] ) ) {
+			return $response;
+		}
+
+		$data = $response->get_data();
+
+		if ( method_exists( $this, 'embed_resource' ) ) {
+			$embedded = $this->embed_resource( $request );
+
+			if ( ! empty( $embedded ) ) {
+				$data['_embedded'] = array_merge(
+					isset( $data['_embedded'] ) ? $data['_embedded'] : array(),
+					$embedded
+				);
+			}
+		}
+
+		$response->set_data( $data );
+		return $response;
+	}
+
+	/**
+	 * Embeds related resources for a single item.
+	 *
+	 * @param \WP_REST_Request $request The request object.
+	 *
+	 * @return array An array of embedded resources keyed by embed name.
+	 *
+	 * @since 1.3.0
+	 */
+	protected function embed_resource( $request ) {
+		return array();
 	}
 
 }

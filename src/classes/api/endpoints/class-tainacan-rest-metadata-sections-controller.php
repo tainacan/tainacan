@@ -156,9 +156,15 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 		}
 		$metadata_section = new Entities\Metadata_Section();
 		$meta = json_decode( $request, true );
+		$readonly = $this->get_readonly_fields();
 		foreach ( $meta as $key => $value ) {
+			if ( in_array($key, $readonly, true) ) {
+				continue;
+			}
 			$set_ = 'set_' . $key;
-			$metadata_section->$set_( $value );
+			if ( method_exists($metadata_section, $set_) ) {
+				$metadata_section->$set_( $value );
+			}
 		}
 		$collection = new Entities\Collection( $collection_id );
 		$metadata_section->set_collection( $collection );
@@ -352,7 +358,6 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 		], 400);
 	}
 
-	// @TODO: fix the permissions check
 	/**
 	 * @param $request
 	 *
@@ -361,7 +366,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 	 */
 	public function create_item_permissions_check( $request ) {
 
-		if ( !isset($request['collection_id']) ) 
+		if ( !isset($request['collection_id']) )
 			return false;
 
 		$collection = $this->collection_repository->fetch($request['collection_id']);
@@ -392,6 +397,8 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 			$collection = new Entities\Collection( $collection_id );
 
 			$result = $this->metadata_sections_repository->fetch_by_collection( $collection, $args );
+		} else {
+			$result = [];
 		}
 
 		$prepared_item = [];
@@ -484,7 +491,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 					return new \WP_REST_Response( [
 						'error_message' => __('This metadata section not found in collection', 'tainacan'),
 						'metadata_section_id'  => $metadata_section_id
-					] );
+					], 404 );
 				}
 			}
 
@@ -511,7 +518,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 			return new \WP_REST_Response( [
 				'error_message' => __('Metadata with this ID was not found', 'tainacan'),
 				'metadata_section_id'  => $metadata_section_id
-			] );
+			], 404 );
 		}
 
 		return new \WP_REST_Response([

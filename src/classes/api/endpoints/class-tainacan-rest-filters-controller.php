@@ -121,7 +121,7 @@ class REST_Filters_Controller extends REST_Controller {
 
 		$filter = $body['filter'];
 
-		$received_type = $body['filter_type'];
+		$received_type = ltrim($body['filter_type'], '\\');
 
 		if(empty($received_type)){
 			throw new \InvalidArgumentException('The type can\'t be empty');
@@ -131,9 +131,27 @@ class REST_Filters_Controller extends REST_Controller {
 			$type = ucwords(strtolower($received_type), '_\\');
 		}
 
+		$registered_filter_types = $this->filter_repository->fetch_filter_types();
+		$valid_type = false;
+		foreach ($registered_filter_types as $registered_type) {
+			if ($type === $registered_type || "Tainacan\\Filter_Types\\$type" === $registered_type) {
+				$type = $registered_type;
+				$valid_type = true;
+				break;
+			}
+		}
+
+		if (!$valid_type) {
+			throw new \InvalidArgumentException(__('Invalid filter type.', 'tainacan'));
+		}
+
 		$filter_type = new $type();
 
+		$readonly = $this->get_readonly_fields();
 		foreach ($filter as $attribute => $value){
+			if ( in_array($attribute, $readonly, true) ) {
+				continue;
+			}
 			$filter_obj->set($attribute, $value);
 		}
 
