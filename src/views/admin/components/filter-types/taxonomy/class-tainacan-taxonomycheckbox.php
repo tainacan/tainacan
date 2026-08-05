@@ -69,8 +69,8 @@ class TaxonomyCheckbox extends Filter_Type {
     public function get_form_labels(){
         return [
             'max_view_more_pages' => [
-                'title' => __( 'Max "View more" pages', 'tainacan' ),
-                'description' => __( 'How many times "View more" may load another page inline before switching to "View all". Use 0 for "View all" only (default). Not used for hierarchical taxonomies.', 'tainacan' ),
+                'title' => __( 'Max "View more" attempts', 'tainacan' ),
+                'description' => __( 'How many times "View more" may load another set of filter values inline before switching to "View all". Use 0 for "View all" only (default).', 'tainacan' ) . ' ' . __( 'Not used for hierarchical taxonomies.', 'tainacan' ),
             ]
         ];
     }
