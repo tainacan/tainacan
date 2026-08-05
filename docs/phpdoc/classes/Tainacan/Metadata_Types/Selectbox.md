@@ -14,8 +14,6 @@ classDiagram
     direction TB
     class Selectbox {
         +__construct()
-        +get_form_labels()
-        +validate_options(metadatum)
     }
 ```
 
@@ -29,6 +27,16 @@ public __construct(): mixed
 
 ***
 
+### get_manage_multiple_input
+
+Checkbox-style inputs manage multiple values in a single control.
+
+```php
+public get_manage_multiple_input(): bool
+```
+
+***
+
 ### get_form_labels
 
 allow i18n from messages
@@ -36,6 +44,20 @@ allow i18n from messages
 ```php
 public get_form_labels(): mixed
 ```
+
+***
+
+### get_options_as_html
+
+Gets print-ready version of the options list in html
+
+```php
+public get_options_as_html(): string
+```
+
+**Return Value:**
+
+An html content with labels and values for the options or an empty string
 
 ***
 
@@ -453,6 +475,28 @@ public set_sortable(mixed $sortable): mixed
 | Parameter   | Type      | Description |
 |-------------|-----------|-------------|
 | `$sortable` | **mixed** |             |
+
+***
+
+### get_manage_multiple_input
+
+```php
+public get_manage_multiple_input(): mixed
+```
+
+***
+
+### set_manage_multiple_input
+
+```php
+public set_manage_multiple_input(mixed $manage_multiple_input): mixed
+```
+
+**Parameters:**
+
+| Parameter                | Type      | Description |
+|--------------------------|-----------|-------------|
+| `$manage_multiple_input` | **mixed** |             |
 
 ***
 

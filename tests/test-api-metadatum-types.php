@@ -15,7 +15,8 @@ class TAINACAN_REST_Metadata_Types_Controller extends TAINACAN_UnitApiTestCase {
 		$metadata_types = $Tainacan_Metadata->fetch_metadata_types('NAME');
 		$this->assertEquals(count($metadata_types), count($data));
 		foreach ($data as $ftype){
-			$this->assertContains($ftype['name'], $metadata_types);
+			$class_name = str_replace( 'Tainacan\\Metadata_Types\\', '', $ftype['className'] );
+			$this->assertContains($class_name, $metadata_types);
 		}
 	}
 }

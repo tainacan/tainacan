@@ -15,7 +15,7 @@ classDiagram
     class Numeric {
         +__construct()
         +get_form_labels()
-        +validate(item_metadata)
+        +validate_options(filter)
     }
 ```
 
@@ -447,6 +447,28 @@ public set_sortable(mixed $sortable): mixed
 | Parameter   | Type      | Description |
 |-------------|-----------|-------------|
 | `$sortable` | **mixed** |             |
+
+***
+
+### get_manage_multiple_input
+
+```php
+public get_manage_multiple_input(): mixed
+```
+
+***
+
+### set_manage_multiple_input
+
+```php
+public set_manage_multiple_input(mixed $manage_multiple_input): mixed
+```
+
+**Parameters:**
+
+| Parameter                | Type      | Description |
+|--------------------------|-----------|-------------|
+| `$manage_multiple_input` | **mixed** |             |
 
 ***
 

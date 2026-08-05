@@ -23,6 +23,33 @@ class CSV extends Importer {
 	}
 
 	/**
+	 * Opens the temporary CSV file for reading, skipping a UTF-8 BOM when present.
+	 *
+	 * Excel and other tools often save UTF-8 CSV files with a leading BOM (EF BB BF),
+	 * which would otherwise become part of the first column name and break exact
+	 * matches such as special_item_id.
+	 *
+	 * @return resource|false File handle positioned after the BOM, or false on failure.
+	 */
+	protected function open_tmp_file() {
+		if ( ! isset( $this->tmp_file ) || ! file_exists( $this->tmp_file ) ) {
+			return false;
+		}
+
+		$handle = fopen( $this->tmp_file, 'r' );
+		if ( $handle === false ) {
+			return false;
+		}
+
+		$bom = fread( $handle, 3 );
+		if ( $bom !== "\xEF\xBB\xBF" ) {
+			rewind( $handle );
+		}
+
+		return $handle;
+	}
+
+	/**
 	 * alter the default options
 	 */
 	public function set_option($key,$value) {
@@ -33,7 +60,7 @@ class CSV extends Importer {
 	 * @inheritdoc
 	 */
 	public function get_source_metadata() {
-		if (($handle = fopen($this->tmp_file, "r")) !== false) {
+		if (($handle = $this->open_tmp_file()) !== false) {
 			if ( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ) {
 				$rawColumns = $this->handle_enclosure( $handle );
 			} else {
@@ -90,14 +117,14 @@ class CSV extends Importer {
 	}
 
 	public function get_source_file_name() {
-		if (isset($this->tmp_file) && file_exists($this->tmp_file) && ($handle = fopen($this->tmp_file, "r")) !== false) {
-			return basename($this->tmp_file);
+		if ( isset( $this->tmp_file ) && file_exists( $this->tmp_file ) ) {
+			return basename( $this->tmp_file );
 		}
 		return false;
 	}
 
 	public function get_source_special_fields() {
-		if (($handle = fopen($this->tmp_file, "r")) !== false) {
+		if (($handle = $this->open_tmp_file()) !== false) {
 			if ( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ) {
 				$rawColumns = $this->handle_enclosure( $handle );
 			} else {
@@ -131,7 +158,7 @@ class CSV extends Importer {
 	 * returns all header including special
 	 */
 	public function raw_source_metadata() {
-		if (($handle = fopen($this->tmp_file, "r")) !== false) {
+		if (($handle = $this->open_tmp_file()) !== false) {
 			if ( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ){
 				return $this->handle_enclosure( $handle );
 			} else {
@@ -162,7 +189,7 @@ class CSV extends Importer {
 		$this->add_log( 'Processing item on line ' . $item_line );
 		$this->add_log( 'Target collection: ' . $collection_definition['id'] );
 
-		if (($handle = fopen($this->tmp_file, "r")) !== false) {
+		if (($handle = $this->open_tmp_file()) !== false) {
 			$file = $handle;
 		} else {
 			$this->add_error_log(' Error reading the file ');
@@ -281,7 +308,7 @@ class CSV extends Importer {
 			 !empty( $column_item_slug ) || !empty( $column_item_author_id )
 			){
 
-			if (($handle = fopen($this->tmp_file, "r")) !== false) {
+			if (($handle = $this->open_tmp_file()) !== false) {
 				$file = $handle;
 			} else {
 				$this->add_error_log(' Error reading the file ');
@@ -331,7 +358,7 @@ class CSV extends Importer {
 	 * @inheritdoc
 	 */
 	public function get_source_number_of_items() {
-		if ( isset($this->tmp_file) && file_exists($this->tmp_file) && ($handle = fopen($this->tmp_file, "r")) !== false) {
+		if ( ($handle = $this->open_tmp_file()) !== false ) {
 			$cont = 0;
 			while ( ($data = fgetcsv($handle, 0, $this->get_option('delimiter')) ) !== false ) {
 				$cont++;
@@ -1180,11 +1207,18 @@ class CSV extends Importer {
 				foreach( $collection['mapping'] as $metadatum_id => $header ){
 
 					if (!is_numeric($metadatum_id)) {
-						$repo_key = "create_repository_metadata";
-						$collection_id = $collection['id'];
-						if (strpos($metadatum_id, $repo_key) !== false) {
-							$collection_id = "default";
+						$metadatum_id_str = (string) $metadatum_id;
+						$is_create_collection = strpos( $metadatum_id_str, 'create_metadata' ) === 0;
+						$is_create_repository = strpos( $metadatum_id_str, 'create_repository_metadata' ) === 0;
+
+						// Ignore empty/placeholder mapping keys (e.g. "null", "") instead of
+						// treating every non-numeric key as a request to create metadata.
+						if ( ! $is_create_collection && ! $is_create_repository ) {
+							unset( $collection['mapping'][ $metadatum_id ] );
+							continue;
 						}
+
+						$collection_id = $is_create_repository ? 'default' : $collection['id'];
 						$metadatum = $this->create_new_metadata($header, $collection_id);
 
 						if ($metadatum == false) {

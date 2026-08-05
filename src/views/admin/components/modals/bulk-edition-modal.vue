@@ -106,7 +106,7 @@
                                     
                                     <component
                                             :is="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component"
-                                            :forced-component-type="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                            :forced-component-type="getForcedComponentType(bulkEditionProcedures[criterion].metadatum)"
                                             :item-metadatum="{ metadatum: bulkEditionProcedures[criterion].metadatum }"
                                             :allow-new="false"
                                             :maxtags="1"
@@ -124,7 +124,7 @@
 
                                     <component
                                             :is="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component"
-                                            :forced-component-type="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                            :forced-component-type="getForcedComponentType(bulkEditionProcedures[criterion].metadatum)"
                                             :item-metadatum="{ metadatum: bulkEditionProcedures[criterion].metadatum }"
                                             :allow-new="false"
                                             :maxtags="1"
@@ -253,7 +253,7 @@
                                 <template v-else-if="bulkEditionProcedures[criterion].action != editionActions.clear">
                                     <component
                                             :is="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component"
-                                            :forced-component-type="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                            :forced-component-type="getForcedComponentType(bulkEditionProcedures[criterion].metadatum)"
                                             :item-metadatum="{ metadatum: bulkEditionProcedures[criterion].metadatum }"
                                             :allow-new="false"
                                             :maxtags="1"
@@ -497,6 +497,16 @@
                 'removeValueInBulk',
                 'copyValuesInBulk'
             ]),
+            getForcedComponentType(metadatum) {
+                if ( !metadatum || !metadatum.metadata_type_object || !metadatum.metadata_type_object.component )
+                    return '';
+                const component = metadatum.metadata_type_object.component;
+                if ( component.includes('taxonomy') )
+                    return 'tainacan-taxonomy-tag-input';
+                if ( component.includes('selectbox') )
+                    return 'tainacan-selectbox';
+                return '';
+            },
             ...mapActions('metadata', [
                 'fetchMetadata'
             ]),
