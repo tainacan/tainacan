@@ -131,6 +131,7 @@
   class "Items\n<b>Repository for managing Tainacan items.</b>" as Items {
     +entities_type : 
     -fetching_from_collections : 
+    -relationsip_metaquery : array{meta_id?: string, search_meta_id?: string, search_meta_value?: string}
     #init()
     #_get_map()
     +get_cpt_labels()

@@ -32,6 +32,7 @@ classDiagram
         +get_stats_collection_metadata(request)
         -query_item_metadata_distribution(meta_ids, collection_post_type)
         -query_count_used_taxononomies()
+        -build_logs_collection_where(collection_id)
         +get_activities(request)
         -get_activities_general(collection_id, interval)
         -get_activities_general_by_user(collection_id, interval)
@@ -237,6 +238,26 @@ private query_item_metadata_distribution(mixed $meta_ids, mixed $collection_post
 ```php
 private query_count_used_taxononomies(): mixed
 ```
+
+***
+
+### build_logs_collection_where
+
+Build a parameterized collection_id WHERE fragment for logs table queries.
+
+```php
+private build_logs_collection_where(mixed $collection_id): array{0: string, 1: array}
+```
+
+**Parameters:**
+
+| Parameter        | Type      | Description                                                   |
+|------------------|-----------|---------------------------------------------------------------|
+| `$collection_id` | **mixed** | Collection ID, the literal 'default', or false for no filter. |
+
+**Return Value:**
+
+Tuple of [ $where_sql, $params ].
 
 ***
 
