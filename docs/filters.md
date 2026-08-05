@@ -4969,6 +4969,7 @@ Argument | Type | Description
     'label_total_items' => __('Total items', 'tainacan'),
     'label_total_terms' => __('Total terms', 'tainacan'),
     'label_view_all' => __('View all', 'tainacan'),
+    'label_view_more' => __('View more', 'tainacan'),
     'label_until' => __('until', 'tainacan'),
     'label_visibility' => __('Visibility', 'tainacan'),
     'label_discard' => __('Discard', 'tainacan'),
@@ -5625,6 +5626,8 @@ Argument | Type | Description
     'info_warning_changing_parent_term' => __('Warning! Changing parent term will reload the terms list, thus unchecking any selection.', 'tainacan'),
     'info_warning_selected_items_remove_from_trash' => __('Do you really want to remove from trash the selected items?', 'tainacan'),
     'info_no_options_available_filtering' => __('No options for this filtering.', 'tainacan'),
+    /* translators: %s is the number of filter options loaded */
+    'info_%s_filter_options_loaded' => __('%s more filter options loaded.', 'tainacan'),
     'info_no_options_found' => __('No options found.', 'tainacan'),
     'info_all_files_uploaded' => __('All files uploaded.', 'tainacan'),
     /* translators: %s is the number of items being edited */
@@ -5854,7 +5857,7 @@ Argument | Type | Description
     'error_thumbnail_alt_ai_failed_detail' => __('Could not generate alternative text. You can try again or enter it manually.', 'tainacan'),
 ]` |  | 
 
-Source: [tainacan-i18n.php](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php), [line 5](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php#L5-L1315)
+Source: [tainacan-i18n.php](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php), [line 5](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php#L5-L1318)
 
 ---------------------------------
 <br>
@@ -5918,6 +5921,18 @@ Argument | Type | Description
 -------- | ---- | -----------
 `['publish', 'future', 'private']` |  | 
 
+Source: [class-tainacan-taxonomycheckbox.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/taxonomy/class-tainacan-taxonomycheckbox.php), [line 87](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/taxonomy/class-tainacan-taxonomycheckbox.php#L87-L87)
+
+---------------------------------
+<br>
+
+## `tainacan-status-require-validation` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`['publish', 'future', 'private']` |  | 
+
 Source: [class-tainacan-dates-intersection.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/dates-intersection/class-tainacan-dates-intersection.php), [line 76](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/dates-intersection/class-tainacan-dates-intersection.php#L76-L76)
 
 ---------------------------------
@@ -5943,6 +5958,18 @@ Argument | Type | Description
 `['publish', 'future', 'private']` |  | 
 
 Source: [class-tainacan-numerics-intersection.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/numerics-intersection/class-tainacan-numerics-intersection.php), [line 87](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/numerics-intersection/class-tainacan-numerics-intersection.php#L87-L87)
+
+---------------------------------
+<br>
+
+## `tainacan-status-require-validation` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`['publish', 'future', 'private']` |  | 
+
+Source: [class-tainacan-checkbox.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/checkbox/class-tainacan-checkbox.php), [line 87](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/checkbox/class-tainacan-checkbox.php#L87-L87)
 
 ---------------------------------
 <br>
