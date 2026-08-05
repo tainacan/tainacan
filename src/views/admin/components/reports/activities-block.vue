@@ -160,8 +160,6 @@ export default {
                     name: this.$i18n.get('activities'),
                     data: []
                 }];
-            else
-                this.chartSeries = [];
 
             let maximumOfActivitiesInADay = 0;
             let everyDay = this.getDaysArray(this.currentStart, this.currentEnd);
