@@ -2185,7 +2185,7 @@
             .label {
                 color: var(--tainacan-label-color);
                 font-size: 0.875em;
-                line-height: calc(var(--tainacan-button-min-height, 2.571em) - 2px);
+                line-height: calc(var(--tainacan-button-min-height, 2.571em) - 4px);
                 font-weight: normal;
                 margin-top: 2px;
                 margin-bottom: 2px;
