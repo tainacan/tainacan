@@ -323,7 +323,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L11-L177)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L11-L184)
 
 ---------------------------------
 <br>
@@ -349,7 +349,7 @@ Argument | Type | Description
 `$args` | `array` | WP_Query args \|\| int $args the item id
 `'items'` |  | 
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 251](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L251-L388)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 258](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L258-L395)
 
 ---------------------------------
 <br>
@@ -372,7 +372,7 @@ Argument | Type | Description
 `$item` | `\Tainacan\Entities\Item` | The item.
 `$context` | `mixed` | Optional context (e.g. \WP_REST_Request).
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 541](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L541-L555)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 548](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L548-L562)
 
 ---------------------------------
 <br>
@@ -390,7 +390,7 @@ Argument | Type | Description
 `$supports` | `bool` | Whether Tainacan's default extraction is supported.
 `$item` | `\Tainacan\Entities\Item` | The item.
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 578](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L578-L587)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 585](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L585-L594)
 
 ---------------------------------
 <br>
@@ -405,7 +405,7 @@ Argument | Type | Description
 `null` |  | 
 `$item` |  | 
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 676](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L676-L679)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 683](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L683-L686)
 
 ---------------------------------
 <br>
@@ -417,7 +417,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$item_arr` |  | 
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 828](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L828-L828)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 835](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L835-L835)
 
 ---------------------------------
 <br>
