@@ -162,6 +162,49 @@
                         @focus="clearErrors('placeholder')" />
             </b-field>
 
+            <b-field 
+                    :addons="false"
+                    :label="$i18n.getHelperTitle('filters', 'begin_with_filter_collapsed')"
+                    :type="formErrors['begin_with_filter_collapsed'] != undefined ? 'is-danger' : ''"
+                    :message="formErrors['begin_with_filter_collapsed'] != undefined ? formErrors['begin_with_filter_collapsed'] : ''">
+                    &nbsp;
+                <b-switch
+                        v-model="form.begin_with_filter_collapsed"
+                        size="is-small"
+                        :true-value="'yes'"
+                        :false-value="'no'"
+                        :native-value="form.begin_with_filter_collapsed == 'yes' ? 'yes' : 'no'"
+                        name="begin_with_filter_collapsed"
+                        @update:model-value="clearErrors('begin_with_filter_collapsed')">
+                    <help-button
+                            :title="$i18n.getHelperTitle('filters', 'begin_with_filter_collapsed')"
+                            :message="$i18n.getHelperMessage('filters', 'begin_with_filter_collapsed')"
+                            :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                </b-switch>
+            </b-field>
+
+            <b-field 
+                    v-if="form.collection_id && form.collection_id !== 'default'"
+                    :addons="false"
+                    :label="$i18n.getHelperTitle('filters', 'display_in_repository_level_lists')"
+                    :type="formErrors['display_in_repository_level_lists'] != undefined ? 'is-danger' : ''"
+                    :message="formErrors['display_in_repository_level_lists'] != undefined ? formErrors['display_in_repository_level_lists'] : ''">
+                    &nbsp;
+                <b-switch
+                        v-model="form.display_in_repository_level_lists"
+                        size="is-small"
+                        :true-value="'yes'"
+                        :false-value="'no'"
+                        :native-value="form.display_in_repository_level_lists == 'yes' ? 'yes' : 'no'"
+                        name="display_in_repository_level_lists"
+                        @update:model-value="clearErrors('display_in_repository_level_lists')">
+                    <help-button
+                            :title="$i18n.getHelperTitle('filters', 'display_in_repository_level_lists')"
+                            :message="$i18n.getHelperMessage('filters', 'display_in_repository_level_lists')"
+                            :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                </b-switch>
+            </b-field>
+
             <b-field
                     v-if="form.filter_type_object && form.filter_type_object.use_max_options"
                     :addons="false">
@@ -235,49 +278,6 @@
                 </div>
             </b-field>
 
-            <b-field 
-                    :addons="false"
-                    :label="$i18n.getHelperTitle('filters', 'begin_with_filter_collapsed')"
-                    :type="formErrors['begin_with_filter_collapsed'] != undefined ? 'is-danger' : ''"
-                    :message="formErrors['begin_with_filter_collapsed'] != undefined ? formErrors['begin_with_filter_collapsed'] : ''">
-                    &nbsp;
-                <b-switch
-                        v-model="form.begin_with_filter_collapsed"
-                        size="is-small"
-                        :true-value="'yes'"
-                        :false-value="'no'"
-                        :native-value="form.begin_with_filter_collapsed == 'yes' ? 'yes' : 'no'"
-                        name="begin_with_filter_collapsed"
-                        @update:model-value="clearErrors('begin_with_filter_collapsed')">
-                    <help-button
-                            :title="$i18n.getHelperTitle('filters', 'begin_with_filter_collapsed')"
-                            :message="$i18n.getHelperMessage('filters', 'begin_with_filter_collapsed')"
-                            :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                </b-switch>
-            </b-field>
-
-            <b-field 
-                    v-if="form.collection_id && form.collection_id !== 'default'"
-                    :addons="false"
-                    :label="$i18n.getHelperTitle('filters', 'display_in_repository_level_lists')"
-                    :type="formErrors['display_in_repository_level_lists'] != undefined ? 'is-danger' : ''"
-                    :message="formErrors['display_in_repository_level_lists'] != undefined ? formErrors['display_in_repository_level_lists'] : ''">
-                    &nbsp;
-                <b-switch
-                        v-model="form.display_in_repository_level_lists"
-                        size="is-small"
-                        :true-value="'yes'"
-                        :false-value="'no'"
-                        :native-value="form.display_in_repository_level_lists == 'yes' ? 'yes' : 'no'"
-                        name="display_in_repository_level_lists"
-                        @update:model-value="clearErrors('display_in_repository_level_lists')">
-                    <help-button
-                            :title="$i18n.getHelperTitle('filters', 'display_in_repository_level_lists')"
-                            :message="$i18n.getHelperMessage('filters', 'display_in_repository_level_lists')"
-                            :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                </b-switch>
-            </b-field>
-
             <component
                     :is="form.filter_type_object.form_component"
                     v-if="form.filter_type_object && form.filter_type_object.form_component"
@@ -332,6 +332,8 @@ import FormFilterNumericInterval from '../filter-types/numeric-interval/FormNume
 import FormFilterNumericListInterval from '../filter-types/numeric-list-interval/FormNumericListInterval.vue';
 import FormFilterNumericsIntersection from '../filter-types/numerics-intersection/FormNumericsIntersection.vue';
 import FormFilterDatesIntersection from '../filter-types/dates-intersection/FormDatesIntersection.vue';
+import FormFilterCheckbox from '../filter-types/checkbox/FormCheckbox.vue';
+import FormFilterTaxonomyCheckbox from '../filter-types/taxonomy/FormTaxonomyCheckbox.vue';
 
 export default {
     name: 'FilterEditionForm',
@@ -341,7 +343,9 @@ export default {
         'tainacan-filter-form-numeric-interval': FormFilterNumericInterval,
         'tainacan-filter-form-numeric-list-interval': FormFilterNumericListInterval,
         'tainacan-filter-form-numerics-intersection': FormFilterNumericsIntersection,
-        'tainacan-filter-form-dates-intersection': FormFilterDatesIntersection
+        'tainacan-filter-form-dates-intersection': FormFilterDatesIntersection,
+        'tainacan-filter-form-checkbox': FormFilterCheckbox,
+        'tainacan-filter-form-taxonomy-checkbox': FormFilterTaxonomyCheckbox
     },
     mixins: [ formHooks ],
     props: {

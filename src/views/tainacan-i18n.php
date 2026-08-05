@@ -414,6 +414,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_total_items'                              => __( 'Total items', 'tainacan' ),
 	'label_total_terms'                              => __( 'Total terms', 'tainacan' ),
 	'label_view_all'                                 => __( 'View all', 'tainacan' ),
+	'label_view_more'                                => __( 'View more', 'tainacan' ),
 	'label_until'                                    => __( 'until', 'tainacan' ),
 	'label_visibility'                               => __( 'Visibility', 'tainacan' ),
 	'label_discard'                                  => __( 'Discard', 'tainacan' ),
@@ -1080,6 +1081,8 @@ return apply_filters( 'tainacan-i18n', [
 	'info_warning_changing_parent_term'              => __( 'Warning! Changing parent term will reload the terms list, thus unchecking any selection.', 'tainacan' ),
 	'info_warning_selected_items_remove_from_trash'  => __( 'Do you really want to remove from trash the selected items?', 'tainacan' ),
 	'info_no_options_available_filtering'            => __( 'No options for this filtering.', 'tainacan' ),
+	/* translators: %s is the number of filter options loaded */
+	'info_%s_filter_options_loaded'                  => __( '%s more filter options loaded.', 'tainacan' ),
 	'info_no_options_found'                          => __( 'No options found.', 'tainacan' ),
 	'info_all_files_uploaded'                        => __( 'All files uploaded.', 'tainacan' ),
 	/* translators: %s is the number of items being edited */
