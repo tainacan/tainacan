@@ -14,6 +14,7 @@ classDiagram
         -description : mixed
         -preview_template : string
         -sortable : mixed
+        -manage_multiple_input : bool
         +__construct()
         +validate(item_metadata)
         +get_related_mapped_prop()
@@ -47,6 +48,8 @@ classDiagram
         +set_repository(repository)
         +get_sortable()
         +set_sortable(sortable)
+        +get_manage_multiple_input()
+        +set_manage_multiple_input(manage_multiple_input)
         +get_slug()
         +_toArray()
     }

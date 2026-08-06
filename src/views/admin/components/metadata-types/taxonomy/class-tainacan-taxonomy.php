@@ -33,6 +33,7 @@ class Taxonomy extends Metadata_Type {
 		$this->set_name( __('Taxonomy', 'tainacan') );
 		$this->set_description( __('A metadatum to use a taxonomy in this collection', 'tainacan') );
 		$this->set_sortable( false );
+		$this->set_manage_multiple_input( true );
 		$this->set_preview_template('
 			<div>
 				<div>

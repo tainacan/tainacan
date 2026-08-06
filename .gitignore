@@ -32,6 +32,7 @@ src/assets/report.html
 report.txt
 .tmp
 demosaved.csv
+demosaved_bom.csv
 .DS_Store
 src/.DS_Store
 tests/wordpress-test

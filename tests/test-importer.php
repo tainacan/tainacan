@@ -575,4 +575,40 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		//  }
 		//}
 	}
+
+	/**
+	 * UTF-8 BOM on the first column must not break special field detection.
+	 *
+	 * @group importer_csv_special_fields
+	 */
+	public function test_utf8_bom_special_item_id() {
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
+		$file_name = 'demosaved_bom.csv';
+		$csv_importer = $Tainacan_Importer_Handler->initialize_importer('csv');
+		$Tainacan_Importer_Handler->save_importer_instance($csv_importer);
+		$id = $csv_importer->get_id();
+		$importer_instance = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($id);
+
+		$file = fopen($file_name, 'w');
+		fwrite($file, "\xEF\xBB\xBF");
+		fputcsv($file, array('special_item_id', 'Column 1', 'Column 2'));
+		fputcsv($file, array('101', 'Data 11', 'Data 12'));
+		fputcsv($file, array('102', 'Data 21', 'Data 22'));
+		fclose($file);
+
+		$importer_instance->set_tmp_file( $file_name );
+
+		$this->assertEquals( 2, $importer_instance->get_source_number_of_items() );
+
+		$raw_headers = $importer_instance->raw_source_metadata();
+		$this->assertEquals( 'special_item_id', $raw_headers[0] );
+		$this->assertStringNotContainsString( "\xEF\xBB\xBF", $raw_headers[0] );
+
+		$headers = $importer_instance->get_source_metadata();
+		$this->assertEquals( array( 'Column 1', 'Column 2' ), $headers );
+		$this->assertEquals( 0, $importer_instance->get_option('item_id_index') );
+
+		$special_fields = $importer_instance->get_source_special_fields();
+		$this->assertEquals( array( 'special_item_id' ), $special_fields );
+	}
 }
