@@ -9,14 +9,26 @@ globalThis.document = {
     addEventListener(type, handler) {
         listeners[type] = handler;
     },
+    querySelectorAll(selector) {
+        assert.equal(selector, '.tainacan-video-lazyload__video');
+        return createdVideos;
+    },
     createElement(type) {
         assert.equal(type, 'video');
         const attributes = {};
+        const eventListeners = {};
         const video = {
             attributes,
+            eventListeners,
             src: '',
+            addEventListener(type, handler) {
+                eventListeners[type] = handler;
+            },
             setAttribute(name, value) {
                 attributes[name] = value;
+            },
+            pause() {
+                video.pauseCalled = true;
             },
             play() {
                 video.playCalled = true;
@@ -29,6 +41,10 @@ globalThis.document = {
 };
 
 const { activateLazyVideo } = await import('../src/views/tainacan-video-lazyload.js');
+
+test.beforeEach(() => {
+    createdVideos.length = 0;
+});
 
 test('activating a lazy video creates and plays one video element', async () => {
     const attributes = {
@@ -62,6 +78,40 @@ test('activating a lazy video creates and plays one video element', async () => 
     assert.equal(createdVideos[0].attributes.height, '360');
     assert.equal(createdVideos[0].playCalled, true);
     assert.equal(placeholder.parentNode.replacedVideo, createdVideos[0]);
+
+    ['click', 'pointerdown', 'touchstart'].forEach((eventType) => {
+        let propagationStopped = false;
+        let defaultPrevented = false;
+        createdVideos[0].eventListeners[eventType]({
+            preventDefault() {
+                defaultPrevented = true;
+            },
+            stopPropagation() {
+                propagationStopped = true;
+            }
+        });
+
+        assert.equal(propagationStopped, true);
+        assert.equal(defaultPrevented, false);
+    });
+});
+
+test('activating another lazy video pauses existing lazy-loaded videos', () => {
+    const createPlaceholder = (videoSrc) => ({
+        getAttribute(name) {
+            return name === 'data-video-src' ? videoSrc : null;
+        },
+        parentNode: {
+            replaceChild() {}
+        }
+    });
+
+    activateLazyVideo(createPlaceholder('https://example.com/video.mp4'));
+    const previousVideo = createdVideos[0];
+    activateLazyVideo(createPlaceholder('https://example.com/another-video.mp4'));
+
+    assert.equal(previousVideo.pauseCalled, true);
+    assert.equal(createdVideos[1].playCalled, true);
 });
 
 test('the module registers delegated DOM readiness handling', () => {

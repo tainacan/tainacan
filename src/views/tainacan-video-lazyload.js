@@ -14,10 +14,19 @@ const activateLazyVideo = (placeholder) => {
     video.setAttribute('autoplay', 'autoplay');
     video.src = videoSrc;
 
+    ['click', 'pointerdown', 'touchstart'].forEach((eventType) => {
+        video.addEventListener(eventType, (event) => event.stopPropagation());
+    });
+
     ['width', 'height'].forEach((dimension) => {
         const value = placeholder.getAttribute(`data-video-${dimension}`);
         if (value && /^[1-9][0-9]*$/.test(value))
             video.setAttribute(dimension, value);
+    });
+
+    document.querySelectorAll('.tainacan-video-lazyload__video').forEach((activeVideo) => {
+        if (activeVideo !== video && typeof activeVideo.pause === 'function')
+            activeVideo.pause();
     });
 
     placeholder.parentNode.replaceChild(video, placeholder);

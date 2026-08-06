@@ -140,6 +140,10 @@
             audio {
                 pointer-events: none;
             }
+            .tainacan-video-lazyload__video {
+                pointer-events: auto;
+                cursor: auto;
+            }
             a {
                 cursor: zoom-in !important;
             }
