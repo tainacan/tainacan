@@ -68,6 +68,7 @@ class URL extends Metadata_Type {
 	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
 		
 		$value = $item_metadata->get_value();
+		$item = $item_metadata->get_item();
 		$link_as_button = $this->get_option('link-as-button') == 'yes';
 		$return = '';
 
@@ -79,7 +80,7 @@ class URL extends Metadata_Type {
 				$list_items = [];
 				foreach ( $value as $el ) {
 					if ( !empty($el) ) {
-						$list_items[] = $this->get_single_value_as_html($el);
+						$list_items[] = $this->get_single_value_as_html($el, $item);
 					}
 				}
 				$total = count( $list_items );
@@ -87,8 +88,8 @@ class URL extends Metadata_Type {
 					$return .= $list_items[0];
 				} elseif ( $total > 1 ) {
 					$return .= '<ul>';
-					foreach ( $list_items as $item ) {
-						$return .= '<li>' . $item . '</li>';
+					foreach ( $list_items as $list_item ) {
+						$return .= '<li>' . $list_item . '</li>';
 					}
 					$return .= '</ul>';
 				}
@@ -101,7 +102,7 @@ class URL extends Metadata_Type {
 				foreach ( $value as $el ) {
 					if ( !empty($el) ) {
 						$return .= $prefix;
-						$return .= $this->get_single_value_as_html($el);
+						$return .= $this->get_single_value_as_html($el, $item);
 						$return .= $suffix;
 						$count++;
 						if ( $count < $total && !$link_as_button ) {
@@ -111,7 +112,7 @@ class URL extends Metadata_Type {
 				}
 			}
 		} else {			
-			$return .= $this->get_single_value_as_html($value);	
+			$return .= $this->get_single_value_as_html($value, $item);
 		}
 		$return .= $link_as_button ? '</div>' : '';
 
@@ -131,8 +132,7 @@ class URL extends Metadata_Type {
 	 * Get the a single value as a HTML string with links
 	 * @return string
 	 */
-	public function get_single_value_as_html($value) {
-		global $wp_embed;
+	public function get_single_value_as_html($value, $item = null) {
 
 		$link_as_button = $this->get_option('link-as-button') == 'yes';
 		$return = '';
@@ -147,7 +147,8 @@ class URL extends Metadata_Type {
 		} else {
 
 			// First, we try WordPress autoembed
-			$embed = $wp_embed->autoembed($value);
+			$tainacan_embed = \Tainacan\Embed::get_instance();
+			$embed = $tainacan_embed->embed( $value, $item );
 			
 			// If it didn't work, it will still ba a URL
  			if ( esc_url($embed) == esc_url($value) ) {

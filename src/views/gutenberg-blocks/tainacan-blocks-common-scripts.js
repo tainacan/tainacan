@@ -1,4 +1,5 @@
 import * as conditioner from 'conditioner-core/conditioner-core.esm';
+import '../tainacan-video-lazyload.js';
 const { __ } = wp.i18n;
 
 // Updates Webpack public path based on plugin folder URL, using variable obtained from server side.

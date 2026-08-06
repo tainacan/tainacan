@@ -16,6 +16,29 @@ class Embed {
 	use \Tainacan\Traits\Singleton_Instance;
 
 	/**
+	 * Whether Tainacan's custom video/audio markup should be applied to the
+	 * current autoembed() call.
+	 *
+	 * The wp_embed_handler_video/audio filters are registered once at plugin
+	 * load, but they must only take effect when Tainacan itself is embedding
+	 * media (Tainacan admin item pages, item single pages, the media page and
+	 * the URL metadata type). This flag is toggled by Embed::embed() so the
+	 * override never leaks into unrelated WordPress content.
+	 *
+	 * @since 1.0.0
+	 * @var bool
+	 */
+	private static $override_active = false;
+
+	/**
+	 * Item currently being embedded by Tainacan.
+	 *
+	 * @since 1.0.0
+	 * @var object|null
+	 */
+	private static $override_item = null;
+
+	/**
 	 * Available aspect ratios for responsive embeds.
 	 *
 	 * @since 0.1.0
@@ -48,7 +71,7 @@ class Embed {
 	protected function init() {
 		
 		/**
-		 * Replace default WordPress embedders with HTML 5 tags instead of shortcodes
+		 * Replace default WordPress embedders with Tainacan media markup.
 		 */
 		add_filter('wp_embed_handler_video', [$this, 'filter_video_embed'], 10, 4);
 		add_filter('wp_embed_handler_audio', [$this, 'filter_audio_embed'], 10, 4);
@@ -76,19 +99,46 @@ class Embed {
 	 * @param array  $attr     Embed attributes.
 	 * @param string $url      The video URL.
 	 * @param array  $rawattr  Raw embed attributes.
-	 * @return string Modified video embed HTML.
+	 * @return string Placeholder HTML for a Tainacan video embed.
 	 */
 	public function filter_video_embed($video, $attr, $url, $rawattr) {
 		
-		
-		$dimensions = '';
-		if ( ! empty( $attr['width'] ) && ! empty( $attr['height'] ) ) {
-			$dimensions .= sprintf( 'width="%d" ', (int) $attr['width'] );
-			//$dimensions .= sprintf( 'height="%d" ', (int) $attr['height'] );
+		// Only apply Tainacan's video markup while Tainacan is embedding its own content.
+		if ( ! self::$override_active ) {
+			return $video;
 		}
-		$video = sprintf( '<video controls="" %s src="%s"></video>', $dimensions, esc_url( $url ) );
-		
-		return $video;
+
+		$thumbnail = $this->get_video_thumbnail();
+		$video_dimensions = '';
+		if ( ! empty( $attr['width'] ) ) {
+			$video_width = absint( $attr['width'] );
+			if ( $video_width ) {
+				$video_dimensions .= sprintf( ' data-video-width="%d"', $video_width );
+			}
+		}
+		if ( ! empty( $attr['height'] ) ) {
+			$video_height = absint( $attr['height'] );
+			if ( $video_height ) {
+				$video_dimensions .= sprintf( ' data-video-height="%d"', $video_height );
+			}
+		}
+
+		$image_dimensions = '';
+		if ( ! empty( $thumbnail['width'] ) ) {
+			$image_dimensions .= sprintf( ' width="%d"', absint( $thumbnail['width'] ) );
+		}
+		if ( ! empty( $thumbnail['height'] ) ) {
+			$image_dimensions .= sprintf( ' height="%d"', absint( $thumbnail['height'] ) );
+		}
+
+		return sprintf(
+			'<a class="tainacan-video-lazyload" href="%1$s" data-video-src="%1$s"%2$s aria-label="%3$s"><img src="%4$s"%5$s alt=""><span class="tainacan-video-lazyload__play" aria-hidden="true"></span></a>',
+			esc_url( $url ),
+			$video_dimensions,
+			esc_attr__( 'Play video', 'tainacan' ),
+			esc_url( $thumbnail['url'] ),
+			$image_dimensions
+		);
 		
 	}
 	
@@ -105,6 +155,11 @@ class Embed {
 	 */
 	public function filter_audio_embed($audio, $attr, $url, $rawattr) {
 		
+		// Only apply Tainacan's audio markup while Tainacan is embedding its own content.
+		if ( ! self::$override_active ) {
+			return $audio;
+		}
+		
 		if ( ! empty( $attr['width'] ) ) {
 			$dimensions = sprintf( 'width="%d" ', (int) $attr['width'] );
 		}
@@ -115,6 +170,79 @@ class Embed {
 		
 	}
 	
+	/**
+	 * Gets the thumbnail to display before a Tainacan video is activated.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array Thumbnail URL and dimensions.
+	 */
+	private function get_video_thumbnail() {
+		$thumbnail_sizes = array( 'tainacan-medium', 'medium_large', 'medium', 'large', 'full' );
+		$item = self::$override_item;
+
+		if ( is_object( $item ) && is_callable( array( $item, 'get_thumbnail' ) ) ) {
+			$thumbnails = $item->get_thumbnail();
+			if ( is_array( $thumbnails ) ) {
+				foreach ( $thumbnail_sizes as $size ) {
+					if ( ! empty( $thumbnails[ $size ] ) && is_array( $thumbnails[ $size ] ) && ! empty( $thumbnails[ $size ][0] ) ) {
+						return array(
+							'url'    => $thumbnails[ $size ][0],
+							'width'  => isset( $thumbnails[ $size ][1] ) ? $thumbnails[ $size ][1] : 0,
+							'height' => isset( $thumbnails[ $size ][2] ) ? $thumbnails[ $size ][2] : 0,
+						);
+					}
+				}
+			}
+		}
+
+		$placeholder = function_exists( 'tainacan_get_the_mime_type_icon' )
+			? tainacan_get_the_mime_type_icon( 'video', 'medium' )
+			: '';
+		if ( empty( $placeholder ) ) {
+			global $TAINACAN_BASE_URL;
+			$placeholder = trailingslashit( $TAINACAN_BASE_URL ) . 'assets/images/placeholder_video_medium.png';
+		}
+
+		return array(
+			'url'    => $placeholder,
+			'width'  => 0,
+			'height' => 0,
+		);
+	}
+
+	/**
+	 * Runs WordPress autoembed on a URL while applying Tainacan's custom
+	 * video/audio markup.
+	 *
+	 * WordPress processes media URLs in content through the registered embed
+	 * handlers. Tainacan's own markup must only be produced for media that
+	 * Tainacan itself embeds (item documents, attachments, URL metadata and
+	 * the media page), never for unrelated WordPress content. This wrapper
+	 * scopes the override to exactly those calls.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string      $url  The URL to embed.
+	 * @param object|null $item The Tainacan item owning the embed.
+	 * @return string The embed HTML, or the original URL when autoembed fails.
+	 */
+	public function embed( $url, $item = null ) {
+		global $wp_embed;
+
+		$previous_override_active = self::$override_active;
+		$previous_override_item = self::$override_item;
+		self::$override_active = true;
+		self::$override_item = $item;
+
+		try {
+			return $wp_embed->autoembed( $url );
+		} finally {
+			self::$override_active = $previous_override_active;
+			self::$override_item = $previous_override_item;
+		}
+	}
+
 	/**
 	 * Handles PDF file embedding using iframe.
 	 *
@@ -262,7 +390,57 @@ class Embed {
 		}
 		:not(.wp-block-embed__wrapper)>.tainacan-embed-aspect-1-2 .tainacan-content-embed__wrapper::before {
 			padding-top: 200%; /* 2 / 1 * 100 */
-		}';
+		}
+		.tainacan-video-lazyload {
+			position: relative;
+			display: block;
+			width: 100%;
+			max-width: 100%;
+			background: #000;
+			cursor: pointer;
+			text-decoration: none;
+		}
+		.tainacan-video-lazyload img {
+			display: block;
+			width: 100%;
+			height: auto;
+			max-width: 100%;
+		}
+		.tainacan-video-lazyload__play {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			width: 3.5rem;
+			height: 3.5rem;
+			border-radius: 50%;
+			background: rgba(0, 0, 0, 0.7);
+			transform: translate(-50%, -50%);
+		}
+		.tainacan-video-lazyload__play::before {
+			content: "";
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			border-top: 0.65rem solid transparent;
+			border-bottom: 0.65rem solid transparent;
+			border-left: 1rem solid #fff;
+			transform: translate(-35%, -50%);
+		}
+		.tainacan-video-lazyload:hover .tainacan-video-lazyload__play,
+		.tainacan-video-lazyload:focus .tainacan-video-lazyload__play {
+			background: rgba(0, 0, 0, 0.9);
+		}
+		.tainacan-video-lazyload:focus {
+			outline: 2px solid currentColor;
+			outline-offset: 3px;
+		}
+		.tainacan-video-lazyload__video {
+			display: block;
+			width: 100%;
+			height: auto;
+			max-width: 100%;
+		}
+		';
 	}
 
 	/**
