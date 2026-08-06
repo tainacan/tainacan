@@ -405,6 +405,8 @@ class Embed {
 			width: 100%;
 			height: auto;
 			max-width: 100%;
+			object-fit: contain;
+			aspect-ratio: 16 / 9;
 		}
 		.tainacan-video-lazyload__play {
 			position: absolute;
