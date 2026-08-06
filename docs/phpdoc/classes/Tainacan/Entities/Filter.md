@@ -71,6 +71,7 @@ classDiagram
         +get_filter_type_object()
         +get_filter_type()
         +get_filter_type_options()
+        +get_initial_display()
         +get_begin_with_filter_collapsed()
         +get_display_in_repository_level_lists()
         +get_description_bellow_name()
@@ -81,6 +82,7 @@ classDiagram
         +set_metadatum(value)
         +set_metadatum_id(value)
         +set_filter_type(value)
+        +set_initial_display(initial_display)
         +set_begin_with_filter_collapsed(begin_with_filter_collapsed)
         +set_display_in_repository_level_lists(display_in_repository_level_lists)
         +get_enabled_for_collection()
@@ -159,10 +161,10 @@ protected $filter_type_options
 
 ***
 
-### begin_with_filter_collapsed
+### initial_display
 
 ```php
-protected $begin_with_filter_collapsed
+protected $initial_display
 ```
 
 ***
@@ -373,13 +375,31 @@ Configurations for the filter type object
 
 ***
 
+### get_initial_display
+
+Return how the filter should initially appear in the faceted search.
+
+```php
+public get_initial_display(): string
+```
+
+Possible values: 'default', 'collapsed', 'hidden'.
+Falls back to the legacy begin_with_filter_collapsed meta when needed.
+
+***
+
 ### get_begin_with_filter_collapsed
 
-Return 'yes' or 'no' to the option of begining the filter collapsed
+Legacy accessor kept for compatibility.
 
 ```php
 public get_begin_with_filter_collapsed(): string
 ```
+
+* **Warning:** this method is **deprecated**. This means that this method will likely be removed in a future version.
+**Return Value:**
+
+'yes' or 'no'
 
 ***
 
@@ -515,19 +535,36 @@ public set_filter_type(string|\Tainacan\Filter_Types\Filter_Type $value): mixed
 
 ***
 
+### set_initial_display
+
+Define how the filter should initially appear in the faceted search.
+
+```php
+public set_initial_display(string $initial_display): mixed
+```
+
+**Parameters:**
+
+| Parameter          | Type       | Description                              |
+|--------------------|------------|------------------------------------------|
+| `$initial_display` | **string** | One of 'default', 'collapsed', 'hidden'. |
+
+***
+
 ### set_begin_with_filter_collapsed
 
-Tells if filter should begin collapsed, not loading facets
+Legacy setter kept for compatibility.
 
 ```php
 public set_begin_with_filter_collapsed(string $begin_with_filter_collapsed): mixed
 ```
 
+* **Warning:** this method is **deprecated**. This means that this method will likely be removed in a future version.
 **Parameters:**
 
-| Parameter                      | Type       | Description |
-|--------------------------------|------------|-------------|
-| `$begin_with_filter_collapsed` | **string** |             |
+| Parameter                      | Type       | Description   |
+|--------------------------------|------------|---------------|
+| `$begin_with_filter_collapsed` | **string** | 'yes' or 'no' |
 
 ***
 
