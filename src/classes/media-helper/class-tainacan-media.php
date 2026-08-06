@@ -746,11 +746,11 @@ class Media {
 		} else {
 			$this->add_css();
 			wp_print_styles('tainacan-media-page');
-			global $wp_embed;
 
 			$url = wp_get_attachment_url($att_id);
 
-			$embed = $wp_embed->autoembed($url);
+			$tainacan_embed = \Tainacan\Embed::get_instance();
+			$embed = $tainacan_embed->embed( $url );
 
 			if ( esc_url($embed) == esc_url($url) ) {
 				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);

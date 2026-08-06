@@ -915,8 +915,8 @@ class Item extends Entity {
 		$output = '';
 		
 		if ( $type == 'url' ) {
-			global $wp_embed;
-			$_embed = $wp_embed->autoembed($this->get_document());
+			$tainacan_embed = \Tainacan\Embed::get_instance();
+			$_embed = $tainacan_embed->embed( $this->get_document() );
 			$url = $this->get_document();
 
 			if ( esc_url($_embed) == esc_url($url) ) {
@@ -942,7 +942,6 @@ class Item extends Entity {
 					$_embed = sprintf('<a href="%s" target="blank">%s</a>', $url, $url);
 				}
 			} else {
-				$tainacan_embed = \Tainacan\Embed::get_instance();
 				$_embed = $tainacan_embed->add_responsive_wrapper($_embed);
 			}
 			$output = $_embed;
@@ -972,16 +971,14 @@ class Item extends Entity {
 			
 		} else {
 
-			global $wp_embed;
-
 			$url = wp_get_attachment_url($attachment);
 
-			$embed = $wp_embed->autoembed($url);
+			$tainacan_embed = \Tainacan\Embed::get_instance();
+			$embed = $tainacan_embed->embed( $url );
 
 			if ( esc_url($embed) == esc_url($url) ) {
 				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);
 			} else {
-				$tainacan_embed = \Tainacan\Embed::get_instance();
 				$embed = $tainacan_embed->add_responsive_wrapper($embed);
 				$output .= $embed;
 			}
