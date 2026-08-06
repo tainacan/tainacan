@@ -83,6 +83,46 @@ class VideoEmbed extends TAINACAN_UnitTestCase {
 	}
 
 	/**
+	 * Item thumbnails must be reserved for the main document.
+	 */
+	public function test_attached_video_uses_default_placeholder() {
+		$item = new class extends \Tainacan\Entities\Item {
+			public function get_thumbnail() {
+				return array(
+					'tainacan-medium' => array(
+						'https://example.com/item-thumbnail.jpg',
+						275,
+						275,
+						false,
+						''
+					),
+				);
+			}
+		};
+		$attachment_id = wp_insert_attachment(
+			array(
+				'post_title'     => 'Attached video',
+				'post_status'    => 'inherit',
+				'post_mime_type' => 'video/mp4',
+				'guid'           => 'https://example.com/attached-video.mp4',
+			)
+		);
+
+		try {
+			$attachment_output = $item->get_attachment_as_html($attachment_id);
+			$this->assertStringContainsString('placeholder_video', $attachment_output);
+			$this->assertStringNotContainsString('item-thumbnail.jpg', $attachment_output);
+
+			$item->set_document_type('attachment');
+			$item->set_document($attachment_id);
+			$document_output = $item->get_document_as_html();
+			$this->assertStringContainsString('item-thumbnail.jpg', $document_output);
+		} finally {
+			wp_delete_attachment($attachment_id, true);
+		}
+	}
+
+	/**
 	 * Runs the Embed wrapper with a small stand-in for WP_Embed.
 	 *
 	 * @param string $url  Video URL.

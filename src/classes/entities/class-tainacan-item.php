@@ -974,7 +974,8 @@ class Item extends Entity {
 			$url = wp_get_attachment_url($attachment);
 
 			$tainacan_embed = \Tainacan\Embed::get_instance();
-			$embed = $tainacan_embed->embed( $url, $this );
+			$is_main_document = $this->get_document_type() === 'attachment' && (int) $this->get_document() === (int) $attachment;
+			$embed = $tainacan_embed->embed( $url, $is_main_document ? $this : null );
 
 			if ( esc_url($embed) == esc_url($url) ) {
 				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);

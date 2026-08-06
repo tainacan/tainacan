@@ -68,7 +68,6 @@ class URL extends Metadata_Type {
 	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
 		
 		$value = $item_metadata->get_value();
-		$item = $item_metadata->get_item();
 		$link_as_button = $this->get_option('link-as-button') == 'yes';
 		$return = '';
 
@@ -80,7 +79,7 @@ class URL extends Metadata_Type {
 				$list_items = [];
 				foreach ( $value as $el ) {
 					if ( !empty($el) ) {
-						$list_items[] = $this->get_single_value_as_html($el, $item);
+						$list_items[] = $this->get_single_value_as_html($el);
 					}
 				}
 				$total = count( $list_items );
@@ -102,7 +101,7 @@ class URL extends Metadata_Type {
 				foreach ( $value as $el ) {
 					if ( !empty($el) ) {
 						$return .= $prefix;
-						$return .= $this->get_single_value_as_html($el, $item);
+						$return .= $this->get_single_value_as_html($el);
 						$return .= $suffix;
 						$count++;
 						if ( $count < $total && !$link_as_button ) {
@@ -112,7 +111,7 @@ class URL extends Metadata_Type {
 				}
 			}
 		} else {			
-			$return .= $this->get_single_value_as_html($value, $item);
+			$return .= $this->get_single_value_as_html($value);
 		}
 		$return .= $link_as_button ? '</div>' : '';
 
@@ -132,7 +131,7 @@ class URL extends Metadata_Type {
 	 * Get the a single value as a HTML string with links
 	 * @return string
 	 */
-	public function get_single_value_as_html($value, $item = null) {
+	public function get_single_value_as_html($value) {
 
 		$link_as_button = $this->get_option('link-as-button') == 'yes';
 		$return = '';
@@ -148,7 +147,7 @@ class URL extends Metadata_Type {
 
 			// First, we try WordPress autoembed
 			$tainacan_embed = \Tainacan\Embed::get_instance();
-			$embed = $tainacan_embed->embed( $value, $item );
+			$embed = $tainacan_embed->embed( $value );
 			
 			// If it didn't work, it will still ba a URL
  			if ( esc_url($embed) == esc_url($value) ) {
