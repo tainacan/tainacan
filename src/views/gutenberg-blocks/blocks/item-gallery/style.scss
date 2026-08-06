@@ -304,6 +304,11 @@
             max-width: 100%;
             height: auto;
         }
+        .tainacan-video-lazyload img {
+            width: 100%;
+            object-fit: contain;
+            aspect-ratio: 16 / 9;
+        }
         .twitter-tweet {
             margin-left: auto;
             margin-right: auto;
