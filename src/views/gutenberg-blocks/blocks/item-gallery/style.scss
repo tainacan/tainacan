@@ -140,7 +140,8 @@
             audio {
                 pointer-events: none;
             }
-            .tainacan-video-lazyload__video {
+            .tainacan-video-lazyload__video,
+            video.tainacan-video-embed {
                 pointer-events: auto;
                 cursor: auto;
             }
@@ -301,6 +302,14 @@
             width: 100%;
             height: auto;
             max-height: var(--tainacan-media-main-carousel-height, 60vh);
+        }
+        video.tainacan-video-embed {
+            width: 100%;
+            height: auto;
+            max-height: none;
+            aspect-ratio: 16 / 9;
+            object-fit: contain;
+            background-color: #000;
         }
         img {
             width: auto;
@@ -696,6 +705,15 @@
         video {
             min-height: 56px;
             max-width: 80%;
+        }
+        video.tainacan-video-embed {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            object-fit: contain;
+            background-color: #000;
+            pointer-events: auto;
         }
         iframe {
             border: none;

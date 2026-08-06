@@ -93,6 +93,7 @@ class VideoEmbed extends TAINACAN_UnitTestCase {
 			$output = $this->run_tainacan_embed('https://example.com/video.mp4');
 
 			$this->assertStringContainsString('<video', $output);
+			$this->assertStringContainsString('class="tainacan-video-embed"', $output);
 			$this->assertStringContainsString('preload="none"', $output);
 			$this->assertStringNotContainsString('tainacan-video-lazyload', $output);
 		} finally {

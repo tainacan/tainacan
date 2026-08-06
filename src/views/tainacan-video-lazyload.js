@@ -1,3 +1,15 @@
+const stopVideoInteractionPropagation = (event) => event.stopPropagation();
+
+const attachVideoInteractionListeners = (video) => {
+    ['click', 'pointerdown', 'touchstart'].forEach((eventType) => {
+        video.addEventListener(eventType, stopVideoInteractionPropagation);
+    });
+};
+
+const initializeVideoEmbeds = () => {
+    document.querySelectorAll('video.tainacan-video-embed').forEach(attachVideoInteractionListeners);
+};
+
 const activateLazyVideo = (placeholder) => {
     if (!placeholder || !placeholder.parentNode)
         return;
@@ -14,9 +26,7 @@ const activateLazyVideo = (placeholder) => {
     video.setAttribute('autoplay', 'autoplay');
     video.src = videoSrc;
 
-    ['click', 'pointerdown', 'touchstart'].forEach((eventType) => {
-        video.addEventListener(eventType, (event) => event.stopPropagation());
-    });
+    attachVideoInteractionListeners(video);
 
     ['width', 'height'].forEach((dimension) => {
         const value = placeholder.getAttribute(`data-video-${dimension}`);
@@ -61,6 +71,7 @@ const handleLazyVideoActivation = (event) => {
 const initializeLazyVideos = () => {
     document.addEventListener('click', handleLazyVideoActivation, true);
     document.addEventListener('keydown', handleLazyVideoActivation, true);
+    initializeVideoEmbeds();
 };
 
 if (typeof document !== 'undefined') {
@@ -70,4 +81,4 @@ if (typeof document !== 'undefined') {
         document.addEventListener('DOMContentLoaded', initializeLazyVideos, false);
 }
 
-export { activateLazyVideo, handleLazyVideoActivation, initializeLazyVideos };
+export { activateLazyVideo, handleLazyVideoActivation, initializeLazyVideos, initializeVideoEmbeds };

@@ -3,6 +3,7 @@ import test from 'node:test';
 
 const listeners = {};
 const createdVideos = [];
+const embeddedVideos = [];
 
 globalThis.document = {
     readyState: 'loading',
@@ -10,8 +11,11 @@ globalThis.document = {
         listeners[type] = handler;
     },
     querySelectorAll(selector) {
-        assert.equal(selector, '.tainacan-video-lazyload__video');
-        return createdVideos;
+        if (selector === '.tainacan-video-lazyload__video')
+            return createdVideos;
+        if (selector === 'video.tainacan-video-embed')
+            return embeddedVideos;
+        assert.fail(`Unexpected selector: ${selector}`);
     },
     createElement(type) {
         assert.equal(type, 'video');
@@ -40,10 +44,11 @@ globalThis.document = {
     }
 };
 
-const { activateLazyVideo } = await import('../src/views/tainacan-video-lazyload.js');
+const { activateLazyVideo, initializeVideoEmbeds } = await import('../src/views/tainacan-video-lazyload.js');
 
 test.beforeEach(() => {
     createdVideos.length = 0;
+    embeddedVideos.length = 0;
 });
 
 test('activating a lazy video creates and plays one video element', async () => {
@@ -83,6 +88,34 @@ test('activating a lazy video creates and plays one video element', async () => 
         let propagationStopped = false;
         let defaultPrevented = false;
         createdVideos[0].eventListeners[eventType]({
+            preventDefault() {
+                defaultPrevented = true;
+            },
+            stopPropagation() {
+                propagationStopped = true;
+            }
+        });
+
+        assert.equal(propagationStopped, true);
+        assert.equal(defaultPrevented, false);
+    });
+});
+
+test('existing Tainacan videos stop PhotoSwipe propagation without preventing controls', () => {
+    const eventListeners = {};
+    const video = {
+        addEventListener(type, handler) {
+            eventListeners[type] = handler;
+        }
+    };
+    embeddedVideos.push(video);
+
+    initializeVideoEmbeds();
+
+    ['click', 'pointerdown', 'touchstart'].forEach((eventType) => {
+        let propagationStopped = false;
+        let defaultPrevented = false;
+        eventListeners[eventType]({
             preventDefault() {
                 defaultPrevented = true;
             },

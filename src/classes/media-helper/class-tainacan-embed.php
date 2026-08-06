@@ -201,7 +201,7 @@ class Embed {
 		}
 
 		return sprintf(
-			'<video controls="" preload="none" %s src="%s"></video>',
+			'<video class="tainacan-video-embed" controls="" preload="none" playsinline="" %s src="%s"></video>',
 			$dimensions,
 			esc_url( $url )
 		);
@@ -427,6 +427,16 @@ class Embed {
 		}
 		:not(.wp-block-embed__wrapper)>.tainacan-embed-aspect-1-2 .tainacan-content-embed__wrapper::before {
 			padding-top: 200%; /* 2 / 1 * 100 */
+		}
+		.tainacan-video-embed {
+			display: block;
+			width: 100%;
+			height: auto;
+			max-width: 100%;
+			aspect-ratio: 16 / 9;
+			object-fit: contain;
+			background: #000;
+			pointer-events: auto;
 		}
 		.tainacan-video-lazyload {
 			position: relative;
