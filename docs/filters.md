@@ -770,17 +770,7 @@ updates, deletion, and querying with proper validation and logging.
 
 Argument | Type | Description
 -------- | ---- | -----------
-`['name' => ['map' => 'post_title', 'title' => __('Name', 'tainacan'), 'type' => 'string', 'description' => __('Name of the filter', 'tainacan'), 'on_error' => __('The filter name should be a text value and not empty', 'tainacan'), 'validation' => v::stringType()->notEmpty()], 'order' => ['map' => 'menu_order', 'title' => __('Order', 'tainacan'), 'type' => ['string', 'integer'], 'description' => __('Filter order. This metadata is used if filters were manually ordered.', 'tainacan'), 'validation' => ''], 'description' => ['map' => 'post_content', 'title' => __('Description', 'tainacan'), 'type' => 'string', 'description' => __('The filter description', 'tainacan'), 'validation' => '', 'default' => ''], 'filter_type_options' => ['map' => 'meta', 'title' => __('Filter type options', 'tainacan'), 'type' => ['array', 'object', 'string'], 'items' => ['type' => ['array', 'string', 'integer', 'object']], 'description' => __('The filter type options', 'tainacan'), 'validation' => ''], 'filter_type' => ['map' => 'meta', 'title' => __('Type', 'tainacan'), 'type' => 'string', 'description' => __('The filter type class name, such as filter_type: Tainacan\\Filter_Types\\Checkbox', 'tainacan'), 'validation' => ''], 'begin_with_filter_collapsed' => [
-    'map' => 'meta',
-    'title' => __('Begin with filter collapsed', 'tainacan'),
-    'type' => 'string',
-    'description' => __('With this option enabled, the filter will appear as a button with an add icon, that should be pressed prior to loading any facet information.', 'tainacan'),
-    'on_error' => __('Please set the "Begin with filter collapsed" value as "yes" or "no"', 'tainacan'),
-    'validation' => v::stringType()->in(['yes', 'no']),
-    // yes or no
-    'enum' => ['yes', 'no'],
-    'default' => 'no',
-], 'display_in_repository_level_lists' => [
+`['name' => ['map' => 'post_title', 'title' => __('Name', 'tainacan'), 'type' => 'string', 'description' => __('Name of the filter', 'tainacan'), 'on_error' => __('The filter name should be a text value and not empty', 'tainacan'), 'validation' => v::stringType()->notEmpty()], 'order' => ['map' => 'menu_order', 'title' => __('Order', 'tainacan'), 'type' => ['string', 'integer'], 'description' => __('Filter order. This metadata is used if filters were manually ordered.', 'tainacan'), 'validation' => ''], 'description' => ['map' => 'post_content', 'title' => __('Description', 'tainacan'), 'type' => 'string', 'description' => __('The filter description', 'tainacan'), 'validation' => '', 'default' => ''], 'filter_type_options' => ['map' => 'meta', 'title' => __('Filter type options', 'tainacan'), 'type' => ['array', 'object', 'string'], 'items' => ['type' => ['array', 'string', 'integer', 'object']], 'description' => __('The filter type options', 'tainacan'), 'validation' => ''], 'filter_type' => ['map' => 'meta', 'title' => __('Type', 'tainacan'), 'type' => 'string', 'description' => __('The filter type class name, such as filter_type: Tainacan\\Filter_Types\\Checkbox', 'tainacan'), 'validation' => ''], 'initial_display' => ['map' => 'meta', 'title' => __('Initial display', 'tainacan'), 'type' => 'string', 'description' => __('Controls how the filter starts in the faceted search: shown by default, collapsed until the user expands it, or hidden until the user adds it from the "Add filters" control.', 'tainacan'), 'on_error' => __('Please set the "Initial display" value as "default", "collapsed" or "hidden"', 'tainacan'), 'validation' => v::stringType()->in(['default', 'collapsed', 'hidden']), 'enum' => ['default', 'collapsed', 'hidden'], 'default' => 'default'], 'display_in_repository_level_lists' => [
     'map' => 'meta',
     'title' => __('Display in repository level lists', 'tainacan'),
     'type' => 'string',
@@ -2464,7 +2454,7 @@ Argument | Type | Description
 `[]` |  | 
 `$request` |  | 
 
-Source: [class-tainacan-rest-filters-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-filters-controller.php), [line 345](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-filters-controller.php#L345-L352)
+Source: [class-tainacan-rest-filters-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-filters-controller.php), [line 350](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-filters-controller.php#L350-L357)
 
 ---------------------------------
 <br>
@@ -3148,7 +3138,7 @@ Argument | Type | Description
 `$filter_array` |  | 
 `$this` |  | 
 
-Source: [class-tainacan-filter.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-filter.php), [line 45](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-filter.php#L45-L66)
+Source: [class-tainacan-filter.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-filter.php), [line 45](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-filter.php#L45-L69)
 
 ---------------------------------
 <br>
@@ -4957,6 +4947,7 @@ Argument | Type | Description
     'label_create_repository_metadata' => __('Create repository metadata', 'tainacan'),
     'label_select_metadatum_type' => __('Select a metadatum type', 'tainacan'),
     'label_add_more_metadata' => __('Add more metadata', 'tainacan'),
+    'label_add_filters' => __('Add filters', 'tainacan'),
     /* translators: Header of the column where the metadata columns from file are in the Mapping Metadata Importer screen */
     'label_from_source_collection' => __('From source file', 'tainacan'),
     /* translators: Header of the column where the existing collection metadata are in the Mapping Metadata Importer screen */
@@ -5273,6 +5264,8 @@ Argument | Type | Description
     'label_move_down' => __('Move down', 'tainacan'),
     'label_view_modes_public_list' => __('Items view modes in the public list', 'tainacan'),
     'label_default' => __('Default', 'tainacan'),
+    'label_collapsed' => __('Collapsed', 'tainacan'),
+    'label_hidden' => __('Hidden', 'tainacan'),
     'label_tainacan_mobile_panel' => __('Tainacan Mobile Panel', 'tainacan'),
     'label_close_panel' => __('Close panel', 'tainacan'),
     'label_shortcuts' => __('Shortcuts', 'tainacan'),
@@ -5857,7 +5850,7 @@ Argument | Type | Description
     'error_thumbnail_alt_ai_failed_detail' => __('Could not generate alternative text. You can try again or enter it manually.', 'tainacan'),
 ]` |  | 
 
-Source: [tainacan-i18n.php](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php), [line 5](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php#L5-L1318)
+Source: [tainacan-i18n.php](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php), [line 5](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php#L5-L1321)
 
 ---------------------------------
 <br>
