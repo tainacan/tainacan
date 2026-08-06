@@ -1738,6 +1738,7 @@
             :deep(.modal-content) {
                 padding-inline-start: 0 !important;
                 padding-inline-end: 28px !important;
+                overflow: visible;
             }
         }
     }

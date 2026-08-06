@@ -197,7 +197,7 @@
                                     :hide-collapses="hideFilterCollapses"
                                     :is-revealed="revealedFilterIds.includes(filter.id)" />
                         </template>
-                        <hr v-if="repositoryCollectionFilters.length > 1">
+                        <hr v-if="Object.keys(repositoryCollectionFilters).length > 1">
                     </div>
                 </template>
                 <template 
@@ -245,7 +245,7 @@
                                     :hide-collapses="hideFilterCollapses"
                                     :is-revealed="revealedFilterIds.includes(filter.id)" />
                         </template>
-                        <hr v-if="repositoryCollectionFilters.length > 1">
+                        <hr v-if="Object.keys(repositoryCollectionFilters).length > 1">
                     </div>
                 </template>
             </template>
@@ -598,6 +598,9 @@
     }
     .filters-components-list {
         margin-bottom: 64px;
+    }
+    .filters-components-list div:has(hr) + :deep(.add-filter-container) > hr {
+        display: none;
     }
     @supports (contain: inline-size) {
         .filters-components-list {
