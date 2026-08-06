@@ -171,6 +171,18 @@ class Settings extends Pages {
 				: null
 		) );
 
+		$this->create_tainacan_setting( array(
+			'id' => 'enable_video_lazyload',
+			'section' => 'tainacan_settings_search_and_performance',
+			'title' => __( 'Enable video lazyload', 'tainacan' ),
+			'label' => __( 'Enable video lazyloading will add a placeholder image instead of the video.', 'tainacan' ),
+			'description' => __( 'When enabled, videos are initially replaced with a placeholder and loaded only after the visitor activates them. The item thumbnail is used only as the placeholder for the main document video; attached videos and video URLs use Tainacan\'s default video placeholder.', 'tainacan' ),
+			'type' => 'boolean',
+			'input_type' => 'checkbox',
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'default' => true
+		) );
+
 		/**
 		 * Theme default templates -----------------------------------------------------
 		 */

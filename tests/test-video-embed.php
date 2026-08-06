@@ -83,6 +83,24 @@ class VideoEmbed extends TAINACAN_UnitTestCase {
 	}
 
 	/**
+	 * Lazyload can be disabled while retaining the scoped video output.
+	 */
+	public function test_video_lazyload_can_be_disabled() {
+		update_option( 'tainacan_option_enable_video_lazyload', '0' );
+
+		try {
+			$this->assertSame( '0', get_option( 'tainacan_option_enable_video_lazyload', true ) );
+			$output = $this->run_tainacan_embed('https://example.com/video.mp4');
+
+			$this->assertStringContainsString('<video', $output);
+			$this->assertStringContainsString('preload="none"', $output);
+			$this->assertStringNotContainsString('tainacan-video-lazyload', $output);
+		} finally {
+			delete_option( 'tainacan_option_enable_video_lazyload' );
+		}
+	}
+
+	/**
 	 * Item thumbnails must be reserved for the main document.
 	 */
 	public function test_attached_video_uses_default_placeholder() {

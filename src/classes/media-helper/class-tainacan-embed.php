@@ -108,6 +108,10 @@ class Embed {
 			return $video;
 		}
 
+		if ( ! $this->is_video_lazyload_enabled() ) {
+			return $this->get_video_embed( $attr, $url );
+		}
+
 		$thumbnail = $this->get_video_thumbnail();
 		$video_dimensions = '';
 		if ( ! empty( $attr['width'] ) ) {
@@ -170,6 +174,39 @@ class Embed {
 		
 	}
 	
+	/**
+	 * Checks whether video lazyload is enabled in Tainacan settings.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool Whether video placeholders should be rendered.
+	 */
+	private function is_video_lazyload_enabled() {
+		return rest_sanitize_boolean( get_option( 'tainacan_option_enable_video_lazyload', true ) );
+	}
+
+	/**
+	 * Renders the scoped video output when lazyload is disabled.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array  $attr Video attributes.
+	 * @param string $url  Video URL.
+	 * @return string Video HTML.
+	 */
+	private function get_video_embed( $attr, $url ) {
+		$dimensions = '';
+		if ( ! empty( $attr['width'] ) && ! empty( $attr['height'] ) ) {
+			$dimensions = sprintf( 'width="%d" ', absint( $attr['width'] ) );
+		}
+
+		return sprintf(
+			'<video controls="" preload="none" %s src="%s"></video>',
+			$dimensions,
+			esc_url( $url )
+		);
+	}
+
 	/**
 	 * Gets the thumbnail to display before a Tainacan video is activated.
 	 *
