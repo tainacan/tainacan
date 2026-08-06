@@ -304,7 +304,7 @@
             max-width: 100%;
             height: auto;
         }
-        .tainacan-video-lazyload {
+        & > a.tainacan-video-lazyload {
             z-index: auto;
         }
         .tainacan-video-lazyload img {
