@@ -1079,6 +1079,11 @@
             :deep(img) {
                 width: auto !important;
             }
+            :deep(.tainacan-video-lazyload img) {
+                width: 100% !important;
+                object-fit: contain;
+                aspect-ratio: 16 / 9;
+            }
             :deep(a) {
                 min-height: 60px;
                 display: block;
