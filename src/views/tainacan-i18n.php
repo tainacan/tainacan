@@ -402,6 +402,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_create_repository_metadata'               => __( 'Create repository metadata', 'tainacan' ),
 	'label_select_metadatum_type'                    => __( 'Select a metadatum type', 'tainacan' ),
 	'label_add_more_metadata'                        => __( 'Add more metadata', 'tainacan' ),
+	'label_add_filters'                              => __( 'Add filters', 'tainacan' ),
 	/* translators: Header of the column where the metadata columns from file are in the Mapping Metadata Importer screen */
 	'label_from_source_collection'                   => __( 'From source file', 'tainacan' ),
 	/* translators: Header of the column where the existing collection metadata are in the Mapping Metadata Importer screen */
@@ -718,6 +719,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_move_down'							 	 => __( 'Move down', 'tainacan' ),
 	'label_view_modes_public_list'				 	 => __( 'Items view modes in the public list', 'tainacan' ),
 	'label_default'							 		 => __( 'Default', 'tainacan' ),
+	'label_collapsed'						 		 => __( 'Collapsed', 'tainacan' ),
+	'label_hidden'							 		 => __( 'Hidden', 'tainacan' ),
 	'label_tainacan_mobile_panel'			 		 => __( 'Tainacan Mobile Panel', 'tainacan' ),
 	'label_close_panel'						 		 => __( 'Close panel', 'tainacan' ),
 	'label_shortcuts'						 		 => __( 'Shortcuts', 'tainacan' ),
