@@ -91,14 +91,13 @@
 <script>
     import { nextTick } from 'vue';
 
-    import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl } from '@vue-leaflet/vue-leaflet';
+    import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl } from '@maxel01/vue-leaflet';
     import 'leaflet/dist/leaflet.css';
-    import { Icon, latLng } from 'leaflet';
+    import { Icon, LatLng } from 'leaflet';
     import iconUrl from 'leaflet/dist/images/marker-icon.png';
     import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
     import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
-    delete Icon.Default.prototype._getIconUrl;
     Icon.Default.mergeOptions({
         iconRetinaUrl: iconRetinaUrl,
         iconUrl: iconUrl,
@@ -160,14 +159,14 @@
                         return ( !isNaN(Number(coordinates[0])) && !isNaN(Number(coordinates[1])) );
                     }).map((aSelected) => {
                         const coordinates = aSelected.indexOf(',') && aSelected.split(',').length == 2 ? aSelected.split(',') : [this.initialLatitude, this.initialLongitude];
-                        return latLng(Number(coordinates[0]), Number(coordinates[1]));
+                        return new LatLng(Number(coordinates[0]), Number(coordinates[1]));
                     }); 
                 }
                 return [];
             },
             editingLatLng() {
                 if ( !isNaN(this.latitude) && !isNaN(this.longitude) )
-                    return latLng(Number(this.latitude), Number(this.longitude));
+                    return new LatLng(Number(this.latitude), Number(this.longitude));
                 else 
                     return null;
             },
