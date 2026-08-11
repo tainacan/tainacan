@@ -115,6 +115,125 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 	/**
 	 * @group importer
 	 */
+	public function test_source_file_is_removed_when_background_import_finishes() {
+		$this->assert_source_file_is_removed_when_background_import_closes( 'finished' );
+	}
+
+	/**
+	 * @group importer
+	 */
+	public function test_source_file_is_removed_when_background_import_finishes_with_errors() {
+		$this->assert_source_file_is_removed_when_background_import_closes( 'finished-errors' );
+	}
+
+	/**
+	 * @group importer
+	 */
+	public function test_source_file_is_removed_when_background_import_errors() {
+		$this->assert_source_file_is_removed_when_background_import_closes( 'errored' );
+	}
+
+	/**
+	 * @group importer
+	 */
+	public function test_source_file_is_removed_when_background_import_is_cancelled() {
+		$this->assert_source_file_is_removed_when_background_import_closes( 'cancelled', 'csv', true );
+	}
+
+	private function assert_source_file_is_removed_when_background_import_closes( $status, $importer_slug = 'csv', $cancel_via_api = false ) {
+		$file_name = wp_tempnam( 'issue-1091.csv' );
+		$this->assertNotFalse( $file_name );
+
+		$file = fopen( $file_name, 'w' );
+		fputcsv( $file, [ 'Name' ] );
+		fputcsv( $file, [ 'Item 1' ] );
+		fclose( $file );
+
+		$handler = \Tainacan\Importer_Handler::get_instance();
+		$importer = $handler->initialize_importer( $importer_slug );
+
+		$file_array = [
+			'name'     => 'issue-1091.csv',
+			'type'     => 'text/csv',
+			'tmp_name' => $file_name,
+			'error'    => 0,
+			'size'     => filesize( $file_name ),
+		];
+
+		$this->assertTrue( $importer->add_file( $file_array ) );
+
+		$uploaded_file = $importer->get_tmp_file();
+		$this->assertFileExists( $uploaded_file );
+
+		$attachment_ids = get_posts( [
+			'post_type'      => 'attachment',
+			'post_status'    => 'inherit',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'meta_key'       => '_wp_attached_file',
+			'meta_value'     => _wp_relative_upload_path( $uploaded_file ),
+		] );
+
+		$this->assertNotEmpty( $attachment_ids );
+		$attachment_id = (int) $attachment_ids[0];
+
+		$background_importer = new \Tainacan\Background_Importer();
+
+		$background_importer
+			->data( $importer->_to_Array( true ) )
+			->set_name( 'CSV Importer' )
+			->save();
+
+		$process_id = $background_importer->ID;
+
+		if ( $cancel_via_api ) {
+			$request = new \WP_REST_Request( 'POST', '/' );
+			$request->set_param( 'id', $process_id );
+			$request->set_body( wp_json_encode( [ 'status' => 'closed' ] ) );
+
+			$controller = new \Tainacan\API\EndPoints\REST_Background_Processes_Controller();
+			$response = $controller->update_item( $request );
+
+			$this->assertEquals( 200, $response->get_status() );
+			$response_data = $response->get_data();
+			$this->assertEquals( 'cancelled', $response_data->status );
+		} else {
+			$background_importer->close( $process_id, $status );
+		}
+
+		$file_exists_after_close = file_exists( $uploaded_file );
+		$attachment_after_close = get_post( $attachment_id );
+
+		// Prevent test artifacts from remaining when an assertion fails.
+		$background_importer->delete( $process_id );
+
+		if ( $attachment_after_close ) {
+			wp_delete_attachment( $attachment_id, true );
+		} elseif ( $file_exists_after_close ) {
+			wp_delete_file( $uploaded_file );
+		}
+
+		$this->assertFalse(
+			$file_exists_after_close,
+			'The importer source file should be removed when the background import reaches a terminal state.'
+		);
+
+		$this->assertNull(
+			$attachment_after_close,
+			'The WordPress attachment should also be removed when the background import reaches a terminal state.'
+		);
+	}
+
+	/**
+	 * @group importer
+	 */
+	public function test_vocabulary_csv_source_file_is_removed_when_background_import_finishes() {
+		$this->assert_source_file_is_removed_when_background_import_closes( 'finished', 'terms' );
+	}
+
+	/**
+	 * @group importer
+	 */
 	/*
 	public function test_fetch_file(){
 		$csv_importer = new Importer\CSV();
@@ -241,7 +360,6 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 			true
 		);
 
-		
 		$collection_definition = [
 			'id' => $collection->get_id(),
 			'total_items' => $importer_instance->get_source_number_of_items(),
@@ -449,7 +567,6 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		$this->assertFalse( is_numeric($document_id) );
 
 	}
-
 
 	/**
 	 * @group importer_csv_special_fields
