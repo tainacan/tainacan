@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "build": "cross-env NODE_ENV=development webpack --config webpack.dev.js --progress --mode development",
-    "build-prod": "cross-env NODE_ENV=production webpack --config webpack.prod.js --progress --mode production"
+    "build-prod": "cross-env NODE_ENV=production webpack --config webpack.prod.js --progress --mode production",
+    "test:js": "node --test tests-js/*.test.cjs"
   },
   "dependencies": {
     "@vue-leaflet/vue-leaflet": "^0.10.1",
