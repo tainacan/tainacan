@@ -123,12 +123,17 @@ jobs:
         with:
           composer-options: --ignore-platform-reqs
 
-      # For the PHP 8.0 and above, we need to install with ignore platform reqs as not all dependencies allow it yet.
-      - name: Install Composer dependencies for PHP >= 8.0
-        if: ${{ matrix.php >= 8.0 }}
+      # The current lock file contains dependencies that require PHP 8.3,
+      # so older PHP 8 versions need platform requirements to be ignored.
+      - name: Install Composer dependencies for PHP 8.0 to 8.2
+        if: ${{ matrix.php >= 8.0 && matrix.php < 8.3 }}
         uses: "ramsey/composer-install@v1"
-        # with:
-        #   composer-options: --ignore-platform-reqs
+        with:
+          composer-options: --ignore-platform-reqs
+
+      - name: Install Composer dependencies for PHP >= 8.3
+        if: ${{ matrix.php >= 8.3 }}
+        uses: "ramsey/composer-install@v1"
 
       - name: Run the unit tests - single site
         run: /usr/local/bin/phpunit
