@@ -755,7 +755,9 @@ class Media {
 			if ( ! $is_main_document && wp_attachment_is( 'video', $att_id ) ) {
 				$companion_thumbnail = $tainacan_embed->get_video_companion_thumbnail( $att_id );
 			}
-			$embed = $tainacan_embed->embed( $url, $item, $companion_thumbnail );
+			// The bare attachment page prints no scripts: lazyload placeholders
+			// could never be activated there, so render the native video.
+			$embed = $tainacan_embed->embed( $url, $item, $companion_thumbnail, false );
 
 			if ( esc_url($embed) == esc_url($url) ) {
 				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);

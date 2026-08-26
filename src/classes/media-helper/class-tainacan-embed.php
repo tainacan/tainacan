@@ -39,6 +39,16 @@ class Embed {
 	private static $override_item = null;
 
 	/**
+	 * Lazyload decision for the current autoembed() call. When set, takes
+	 * precedence over the lazyload setting — used by contexts where the
+	 * lazyload script cannot run, like the bare attachment media page.
+	 *
+	 * @since 1.0.0
+	 * @var bool|null
+	 */
+	private static $override_lazyload = null;
+
+	/**
 	 * Explicit thumbnail for the current autoembed() call, taking precedence
 	 * over the item thumbnail (e.g. an image attachment paired with a video
 	 * file by sharing the same file name).
@@ -124,7 +134,7 @@ class Embed {
 			return $video;
 		}
 
-		if ( ! $this->is_video_lazyload_enabled() ) {
+		if ( ! ( null !== self::$override_lazyload ? self::$override_lazyload : $this->is_video_lazyload_enabled() ) ) {
 			return $this->get_video_embed( $attr, $url );
 		}
 
@@ -457,17 +467,21 @@ class Embed {
 	 * @param object|null $item      The Tainacan item owning the embed.
 	 * @param array|null  $thumbnail Explicit thumbnail (url/width/height) taking
 	 *                                precedence over the item thumbnail.
+	 * @param bool|null   $lazyload  Forces lazyload placeholders on or off for
+	 *                                this call, bypassing the setting.
 	 * @return string The embed HTML, or the original URL when autoembed fails.
 	 */
-	public function embed( $url, $item = null, $thumbnail = null ) {
+	public function embed( $url, $item = null, $thumbnail = null, $lazyload = null ) {
 		global $wp_embed;
 
 		$previous_override_active = self::$override_active;
 		$previous_override_item = self::$override_item;
 		$previous_override_thumbnail = self::$override_thumbnail;
+		$previous_override_lazyload = self::$override_lazyload;
 		self::$override_active = true;
 		self::$override_item = $item;
 		self::$override_thumbnail = is_array( $thumbnail ) && ! empty( $thumbnail['url'] ) ? $thumbnail : null;
+		self::$override_lazyload = $lazyload;
 
 		try {
 			return $wp_embed->autoembed( $url );
@@ -475,6 +489,7 @@ class Embed {
 			self::$override_active = $previous_override_active;
 			self::$override_item = $previous_override_item;
 			self::$override_thumbnail = $previous_override_thumbnail;
+			self::$override_lazyload = $previous_override_lazyload;
 		}
 	}
 	/**
