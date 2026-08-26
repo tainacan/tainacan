@@ -2211,6 +2211,18 @@ class Theme_Helper {
 			if ( $media_sources['attachments'] ) {
 				foreach ( $attachments as $attachment ) {
 					$attachment_thumbnail = get_the_post_thumbnail($attachment->ID, $thumbnails_size);
+
+					// Videos display the miniature chosen for them (a paired image
+					// attachment, then the item thumbnail) instead of the generic icon.
+					if ( ! $attachment_thumbnail && wp_attachment_is('video', $attachment->ID) ) {
+						$companion_id = \Tainacan\Embed::get_instance()->get_video_companion_attachment_id($attachment->ID);
+
+						if ( $companion_id )
+							$attachment_thumbnail = wp_get_attachment_image($companion_id, $thumbnails_size, false);
+
+						if ( ! $attachment_thumbnail )
+							$attachment_thumbnail = get_the_post_thumbnail($item_id, $thumbnails_size);
+					}
 					$media_items_thumbnails[] = 
 						tainacan_get_the_media_component_slide(array(
 							'media_content' => $attachment_thumbnail ? $attachment_thumbnail : wp_get_attachment_image( $attachment->ID, $thumbnails_size, false ),

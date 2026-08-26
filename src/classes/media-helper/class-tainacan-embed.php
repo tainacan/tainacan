@@ -283,9 +283,9 @@ class Embed {
 	 * @since 1.0.0
 	 *
 	 * @param int $attachment_id Video attachment ID.
-	 * @return array|null Thumbnail URL and dimensions, or null when no image is paired.
+	 * @return int|null Paired image attachment ID, or null when none is found.
 	 */
-	public function get_video_companion_thumbnail( $attachment_id ) {
+	public function get_video_companion_attachment_id( $attachment_id ) {
 		$attachment_id = (int) $attachment_id;
 		$attachment = $attachment_id ? get_post( $attachment_id ) : null;
 
@@ -316,29 +316,46 @@ class Embed {
 			$sibling_name = $sibling_file ? pathinfo( $sibling_file, PATHINFO_FILENAME ) : '';
 
 			if ( '' !== $sibling_name && 0 === strcasecmp( $file_name, $sibling_name ) ) {
-				foreach ( array( 'tainacan-medium', 'medium_large', 'medium', 'large', 'full' ) as $size ) {
-					$src = wp_get_attachment_image_src( $sibling->ID, $size );
-					if ( is_array( $src ) ) {
-						return array(
-							'url'    => $src[0],
-							'width'  => (int) $src[1],
-							'height' => (int) $src[2],
-						);
-					}
-				}
-
-				// No generated image sizes: fall back to the original file URL.
-				$url = wp_get_attachment_url( $sibling->ID );
-				if ( $url ) {
-					return array(
-						'url'    => $url,
-						'width'  => 0,
-						'height' => 0,
-					);
-				}
-
-				return null;
+				return (int) $sibling->ID;
 			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Resolves the thumbnail of a video's paired image attachment.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $attachment_id Video attachment ID.
+	 * @return array|null Thumbnail URL and dimensions, or null when no image is paired.
+	 */
+	public function get_video_companion_thumbnail( $attachment_id ) {
+		$sibling_id = $this->get_video_companion_attachment_id( $attachment_id );
+		if ( ! $sibling_id ) {
+			return null;
+		}
+
+		foreach ( array( 'tainacan-medium', 'medium_large', 'medium', 'large', 'full' ) as $size ) {
+			$src = wp_get_attachment_image_src( $sibling_id, $size );
+			if ( is_array( $src ) ) {
+				return array(
+					'url'    => $src[0],
+					'width'  => (int) $src[1],
+					'height' => (int) $src[2],
+				);
+			}
+		}
+
+		// No generated image sizes: fall back to the original file URL.
+		$url = wp_get_attachment_url( $sibling_id );
+		if ( $url ) {
+			return array(
+				'url'    => $url,
+				'width'  => 0,
+				'height' => 0,
+			);
 		}
 
 		return null;
