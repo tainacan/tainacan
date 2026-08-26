@@ -39,6 +39,16 @@ class Embed {
 	private static $override_item = null;
 
 	/**
+	 * Explicit thumbnail for the current autoembed() call, taking precedence
+	 * over the item thumbnail (e.g. an image attachment paired with a video
+	 * file by sharing the same file name).
+	 *
+	 * @since 1.0.0
+	 * @var array|null
+	 */
+	private static $override_thumbnail = null;
+
+	/**
 	 * Available aspect ratios for responsive embeds.
 	 *
 	 * @since 0.1.0
@@ -87,6 +97,12 @@ class Embed {
 		 * @var [type]
 		 */
 		wp_embed_register_handler( 'pdf', '#^https?://.+?\.(pdf)$#i', [$this, 'pdf_embed_handler'] );
+
+		/**
+		 * Hide image attachments that serve as miniatures for sibling videos
+		 * from the item gallery, as they are displayed in the video place.
+		 */
+		add_filter( 'tainacan-get-the-attachments', [ $this, 'filter_video_companion_images' ], 10, 2 );
 
 	}
 	
@@ -215,9 +231,17 @@ class Embed {
 	 * @return array Thumbnail URL and dimensions.
 	 */
 	private function get_video_thumbnail() {
+		$override = self::$override_thumbnail;
+		if ( is_array( $override ) && ! empty( $override['url'] ) ) {
+			return array(
+				'url'    => $override['url'],
+				'width'  => isset( $override['width'] ) ? (int) $override['width'] : 0,
+				'height' => isset( $override['height'] ) ? (int) $override['height'] : 0,
+			);
+		}
+
 		$thumbnail_sizes = array( 'tainacan-medium', 'medium_large', 'medium', 'large', 'full' );
 		$item = self::$override_item;
-
 		if ( is_object( $item ) && is_callable( array( $item, 'get_thumbnail' ) ) ) {
 			$thumbnails = $item->get_thumbnail();
 			if ( is_array( $thumbnails ) ) {
@@ -249,6 +273,158 @@ class Embed {
 	}
 
 	/**
+	 * Finds an image attachment that pairs with a video attachment by sharing
+	 * the same file name (minus extension).
+	 *
+	 * Content managers can upload e.g. interview.mp4 together with interview.jpg
+	 * so the video lazyload placeholder shows a real miniature instead of the
+	 * generic video icon.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $attachment_id Video attachment ID.
+	 * @return array|null Thumbnail URL and dimensions, or null when no image is paired.
+	 */
+	public function get_video_companion_thumbnail( $attachment_id ) {
+		$attachment_id = (int) $attachment_id;
+		$attachment = $attachment_id ? get_post( $attachment_id ) : null;
+
+		if (
+			! $attachment instanceof \WP_Post
+			|| ! wp_attachment_is( 'video', $attachment )
+			|| empty( $attachment->post_parent )
+		) {
+			return null;
+		}
+
+		$file = get_attached_file( $attachment_id );
+		$file_name = $file ? pathinfo( $file, PATHINFO_FILENAME ) : '';
+		if ( '' === $file_name ) {
+			return null;
+		}
+
+		$siblings = get_posts( array(
+			'post_type'      => 'attachment',
+			'post_parent'    => (int) $attachment->post_parent,
+			'post_mime_type' => 'image',
+			'posts_per_page' => -1,
+			'exclude'        => array( $attachment_id ),
+		) );
+
+		foreach ( $siblings as $sibling ) {
+			$sibling_file = get_attached_file( $sibling->ID );
+			$sibling_name = $sibling_file ? pathinfo( $sibling_file, PATHINFO_FILENAME ) : '';
+
+			if ( '' !== $sibling_name && 0 === strcasecmp( $file_name, $sibling_name ) ) {
+				foreach ( array( 'tainacan-medium', 'medium_large', 'medium', 'large', 'full' ) as $size ) {
+					$src = wp_get_attachment_image_src( $sibling->ID, $size );
+					if ( is_array( $src ) ) {
+						return array(
+							'url'    => $src[0],
+							'width'  => (int) $src[1],
+							'height' => (int) $src[2],
+						);
+					}
+				}
+
+				// No generated image sizes: fall back to the original file URL.
+				$url = wp_get_attachment_url( $sibling->ID );
+				if ( $url ) {
+					return array(
+						'url'    => $url,
+						'width'  => 0,
+						'height' => 0,
+					);
+				}
+
+				return null;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Removes image attachments that serve as miniatures for sibling videos
+	 * from item attachment lists.
+	 *
+	 * When an image pairs with a non-document video of the same item, it is
+	 * displayed inside the video placeholder and showing it again in the
+	 * gallery would duplicate the content. The document video is excluded from
+	 * the pairing because it always uses the item's own thumbnail.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array                          $attachments List of attachment posts.
+	 * @param \Tainacan\Entities\Item|null   $item        Owning item.
+	 * @return array Filtered attachment list.
+	 */
+	public function filter_video_companion_images( $attachments, $item = null ) {
+		if ( ! is_array( $attachments ) || empty( $attachments ) || ! $this->is_video_lazyload_enabled() ) {
+			return $attachments;
+		}
+
+		$item_id = 0;
+		if ( is_object( $item ) && method_exists( $item, 'get_id' ) && (int) $item->get_id() ) {
+			$item_id = (int) $item->get_id();
+		} elseif ( ! empty( $attachments[0] ) && $attachments[0] instanceof \WP_Post && $attachments[0]->post_parent ) {
+			$item_id = (int) $attachments[0]->post_parent;
+		}
+		if ( ! $item_id ) {
+			return $attachments;
+		}
+
+		$excluded_ids = array();
+		if (
+			is_object( $item )
+			&& method_exists( $item, 'get_document_type' )
+			&& method_exists( $item, 'get_document' )
+			&& $item->get_document_type() === 'attachment'
+			&& (int) $item->get_document()
+		) {
+			$excluded_ids[] = (int) $item->get_document();
+		}
+
+		$videos = get_posts( array(
+			'post_type'      => 'attachment',
+			'post_parent'    => $item_id,
+			'post_mime_type' => 'video',
+			'posts_per_page' => -1,
+			'exclude'        => $excluded_ids,
+			'fields'         => 'ids',
+		) );
+		if ( empty( $videos ) ) {
+			return $attachments;
+		}
+
+		$video_names = array();
+		foreach ( $videos as $video_id ) {
+			$file = get_attached_file( $video_id );
+			$name = $file ? pathinfo( $file, PATHINFO_FILENAME ) : '';
+			if ( '' !== $name ) {
+				$video_names[ mb_strtolower( $name ) ] = true;
+			}
+		}
+		if ( empty( $video_names ) ) {
+			return $attachments;
+		}
+
+		$result = array();
+		foreach ( $attachments as $attachment ) {
+			if ( $attachment instanceof \WP_Post && wp_attachment_is( 'image', $attachment ) ) {
+				$file = get_attached_file( $attachment->ID );
+				$name = $file ? pathinfo( $file, PATHINFO_FILENAME ) : '';
+				if ( '' !== $name && isset( $video_names[ mb_strtolower( $name ) ] ) ) {
+					continue;
+				}
+			}
+			$result[] = $attachment;
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Runs WordPress autoembed on a URL while applying Tainacan's custom
 	 * video/audio markup.
 	 *
@@ -260,34 +436,35 @@ class Embed {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string      $url  The URL to embed.
-	 * @param object|null $item The Tainacan item owning the embed.
+	 * @param string      $url       The URL to embed.
+	 * @param object|null $item      The Tainacan item owning the embed.
+	 * @param array|null  $thumbnail Explicit thumbnail (url/width/height) taking
+	 *                                precedence over the item thumbnail.
 	 * @return string The embed HTML, or the original URL when autoembed fails.
 	 */
-	public function embed( $url, $item = null ) {
+	public function embed( $url, $item = null, $thumbnail = null ) {
 		global $wp_embed;
 
 		$previous_override_active = self::$override_active;
 		$previous_override_item = self::$override_item;
+		$previous_override_thumbnail = self::$override_thumbnail;
 		self::$override_active = true;
 		self::$override_item = $item;
+		self::$override_thumbnail = is_array( $thumbnail ) && ! empty( $thumbnail['url'] ) ? $thumbnail : null;
 
 		try {
 			return $wp_embed->autoembed( $url );
 		} finally {
 			self::$override_active = $previous_override_active;
 			self::$override_item = $previous_override_item;
+			self::$override_thumbnail = $previous_override_thumbnail;
 		}
 	}
-
 	/**
 	 * Handles PDF file embedding using iframe.
 	 *
 	 * @since 0.1.0
 	 *
-	 * @param array  $matches   Regex matches from the embed handler.
-	 * @param array  $attr      Embed attributes.
-	 * @param string $url       The PDF file URL.
 	 * @param array  $rawattr   Raw embed attributes.
 	 * @return string PDF embed HTML.
 	 */

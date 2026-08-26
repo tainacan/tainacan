@@ -176,7 +176,7 @@ class Settings extends Pages {
 			'section' => 'tainacan_settings_search_and_performance',
 			'title' => __( 'Enable video lazyload', 'tainacan' ),
 			'label' => __( 'Enable video lazyloading will add a placeholder image instead of the video.', 'tainacan' ),
-			'description' => __( 'When enabled, videos are initially replaced with a placeholder and loaded only after the visitor activates them. The item thumbnail is used only as the placeholder for the main document video; attached videos and video URLs use Tainacan\'s default video placeholder.', 'tainacan' ),
+			'description' => __( 'When enabled, videos are initially replaced with a placeholder and loaded only after the visitor activates them. The placeholder image is chosen in this order: an image attachment whose file name matches the video file name (except for the main document video, which always uses the item thumbnail), then the item thumbnail — so multiple videos may repeat the same image — and, if neither exists, Tainacan\'s default video placeholder.', 'tainacan' ),
 			'type' => 'boolean',
 			'input_type' => 'checkbox',
 			'sanitize_callback' => 'rest_sanitize_boolean',

@@ -102,9 +102,10 @@ class VideoEmbed extends TAINACAN_UnitTestCase {
 	}
 
 	/**
-	 * Item thumbnails must be reserved for the main document.
+	 * Without a companion image, non-document videos fall back to the item
+	 * thumbnail instead of the generic placeholder.
 	 */
-	public function test_attached_video_uses_default_placeholder() {
+	public function test_attached_video_without_companion_uses_item_thumbnail() {
 		$item = new class extends \Tainacan\Entities\Item {
 			public function get_thumbnail() {
 				return array(
@@ -129,8 +130,9 @@ class VideoEmbed extends TAINACAN_UnitTestCase {
 
 		try {
 			$attachment_output = $item->get_attachment_as_html($attachment_id);
-			$this->assertStringContainsString('placeholder_video', $attachment_output);
-			$this->assertStringNotContainsString('item-thumbnail.jpg', $attachment_output);
+			$this->assertStringContainsString('class="tainacan-video-lazyload"', $attachment_output);
+			$this->assertStringContainsString('item-thumbnail.jpg', $attachment_output);
+			$this->assertStringNotContainsString('placeholder_video', $attachment_output);
 
 			$item->set_document_type('attachment');
 			$item->set_document($attachment_id);
@@ -138,6 +140,116 @@ class VideoEmbed extends TAINACAN_UnitTestCase {
 			$this->assertStringContainsString('item-thumbnail.jpg', $document_output);
 		} finally {
 			wp_delete_attachment($attachment_id, true);
+		}
+	}
+
+	/**
+	 * A non-document video attachment must use a same-named image attachment
+	 * as its lazyload miniature.
+	 */
+	public function test_attached_video_uses_companion_image_as_miniature() {
+		$item = new class extends \Tainacan\Entities\Item {
+			public function get_thumbnail() {
+				return array(
+					'tainacan-medium' => array(
+						'https://example.com/item-thumbnail.jpg',
+						275,
+						275,
+						false,
+						''
+					),
+				);
+			}
+		};
+		$video_id = wp_insert_attachment(
+			array(
+				'post_title'     => 'Interview video',
+				'post_status'    => 'inherit',
+				'post_mime_type' => 'video/mp4',
+				'guid'           => 'https://example.com/interview.mp4',
+			),
+			'/tmp/interview.mp4'
+		);
+		$image_id = wp_insert_attachment(
+			array(
+				'post_title'     => 'Interview miniature',
+				'post_status'    => 'inherit',
+				'post_mime_type' => 'image/jpeg',
+				'guid'           => 'https://example.com/interview.jpg',
+			),
+			'/tmp/interview.jpg',
+			$item->get_id()
+		);
+
+		try {
+			$output = $item->get_attachment_as_html($video_id);
+
+			$this->assertStringContainsString('class="tainacan-video-lazyload"', $output);
+			$this->assertStringContainsString('interview.jpg', $output);
+			$this->assertStringNotContainsString('placeholder_video', $output);
+			$this->assertStringNotContainsString('item-thumbnail.jpg', $output);
+		} finally {
+			wp_delete_attachment($video_id, true);
+			wp_delete_attachment($image_id, true);
+		}
+	}
+
+	/**
+	 * Images paired with non-document videos must not be listed as gallery
+	 * attachments, while pairs of the document video stay visible.
+	 */
+	public function test_companion_images_are_hidden_from_attachments_list() {
+		$item = new class extends \Tainacan\Entities\Item {
+			private $document;
+
+			public function set_document( $document ) {
+				$this->document = $document;
+			}
+
+			public function get_id() {
+				return 424242;
+			}
+
+			public function get_document_type() {
+				return $this->document ? 'attachment' : 'url';
+			}
+
+			public function get_document() {
+				return $this->document;
+			}
+		};
+		$make_attachment = function ( $title, $mime, $guid, $file ) use ( $item ) {
+			return wp_insert_attachment(
+				array(
+					'post_title'     => $title,
+					'post_status'    => 'inherit',
+					'post_mime_type' => $mime,
+					'guid'           => $guid,
+					'post_parent'    => $item->get_id(),
+				),
+				$file
+			);
+		};
+		$video_id = $make_attachment('Second video', 'video/mp4', 'https://example.com/second.mp4', '/tmp/second.mp4');
+		$companion_id = $make_attachment('Second miniature', 'image/jpeg', 'https://example.com/second.jpg', '/tmp/second.jpg');
+		$unrelated_id = $make_attachment('Poster', 'image/png', 'https://example.com/poster.png', '/tmp/poster.png');
+		$attachments = array( get_post($companion_id), get_post($unrelated_id) );
+
+		$embed = \Tainacan\Embed::get_instance();
+
+		try {
+			// Without a document video, the paired image is hidden.
+			$filtered = $embed->filter_video_companion_images($attachments, $item);
+			$this->assertSame(array($unrelated_id), wp_list_pluck($filtered, 'ID'));
+
+			// The document video keeps using the item thumbnail: its pair stays.
+			$item->set_document($video_id);
+			$filtered = $embed->filter_video_companion_images($attachments, $item);
+			$this->assertSame(array($companion_id, $unrelated_id), wp_list_pluck($filtered, 'ID'));
+		} finally {
+			wp_delete_attachment($video_id, true);
+			wp_delete_attachment($companion_id, true);
+			wp_delete_attachment($unrelated_id, true);
 		}
 	}
 

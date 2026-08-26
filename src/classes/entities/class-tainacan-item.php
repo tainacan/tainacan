@@ -975,7 +975,11 @@ class Item extends Entity {
 
 			$tainacan_embed = \Tainacan\Embed::get_instance();
 			$is_main_document = $this->get_document_type() === 'attachment' && (int) $this->get_document() === (int) $attachment;
-			$embed = $tainacan_embed->embed( $url, $is_main_document ? $this : null );
+			$companion_thumbnail = null;
+			if ( ! $is_main_document && wp_attachment_is( 'video', $attachment ) ) {
+				$companion_thumbnail = $tainacan_embed->get_video_companion_thumbnail( $attachment );
+			}
+			$embed = $tainacan_embed->embed( $url, $this, $companion_thumbnail );
 
 			if ( esc_url($embed) == esc_url($url) ) {
 				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);
