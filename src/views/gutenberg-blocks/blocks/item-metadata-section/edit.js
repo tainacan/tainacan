@@ -31,15 +31,21 @@ export default function ({ attributes, setAttributes, isSelected, context }) {
         textAlign
     } = attributes;
 
+    const contextItemId = context && context['tainacan/itemId'] != null ? Number( context['tainacan/itemId'] ) : NaN;
+    const attributeItemId = Number( itemId );
+
     // When rendered inside item-metadata-sections, use parent's itemId from context so we stay in sync when parent's item selection changes (InnerBlocks template is only used on initial creation).
-    const effectiveItemId = ( dataSource === 'parent' && context && context['tainacan/itemId'] != null ) ? Number( context['tainacan/itemId'] ) : ( isNaN( itemId ) ? 0 : Number( itemId ) );
+    const effectiveItemId = ( dataSource === 'parent' && Number.isFinite( contextItemId ) && contextItemId > 0 )
+        ? contextItemId
+        : ( Number.isFinite( attributeItemId ) ? attributeItemId : 0 );
 
     // Keep attribute in sync when we use context, so this block provides the correct itemId to its inner blocks (e.g. item-metadata) via context.
     useEffect(() => {
-        if ( dataSource === 'parent' && context && context['tainacan/itemId'] != null && Number( context['tainacan/itemId'] ) !== ( isNaN( itemId ) ? 0 : Number( itemId ) ) ) {
-            setAttributes({ itemId: Number( context['tainacan/itemId'] ) });
-        }
-    }, [ dataSource, context, itemId ]);
+        if ( dataSource !== 'parent' || !Number.isFinite( contextItemId ) || contextItemId <= 0 )
+            return;
+        if ( contextItemId !== ( Number.isFinite( attributeItemId ) ? attributeItemId : 0 ) )
+            setAttributes({ itemId: contextItemId });
+    }, [ dataSource, contextItemId, attributeItemId ]);
 
     // Gets blocks props from hook
     const blockProps = useBlockProps( {

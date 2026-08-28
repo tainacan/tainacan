@@ -1,5 +1,6 @@
 import tainacanApi from '../axios.js';
 import axios from 'axios';
+import { subscribeSelectionState } from './tainacan-selection-listener.js';
 
 const { __ } = wp.i18n;
 
@@ -34,6 +35,7 @@ export default class TainacanSingleItemSelectionModal extends React.Component {
             searchURL: searchURL,
             itemsPerPage: 12
         };
+        this.selectionState = null;
         
         // Bind events
         this.resetCollections = this.resetCollections.bind(this);
@@ -42,15 +44,27 @@ export default class TainacanSingleItemSelectionModal extends React.Component {
         this.fetchModalCollections = this.fetchModalCollections.bind(this);
         this.fetchCollection = this.fetchCollection.bind(this);
         this.applySelectedItem = this.applySelectedItem.bind(this);
+        this.onSelectionState = this.onSelectionState.bind(this);
+    }
+
+    onSelectionState(state) {
+        this.selectionState = state;
     }
 
     componentDidMount() {
+        this.unsubscribeSelectionState = subscribeSelectionState(this.onSelectionState);
+
         if (this.props.existingCollectionId) {
             this.fetchCollection(this.props.existingCollectionId);
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();
         }
+    }
+
+    componentWillUnmount() {
+        if (this.unsubscribeSelectionState)
+            this.unsubscribeSelectionState();
     }
 
     // COLLECTIONS RELATED --------------------------------------------------
@@ -111,6 +125,7 @@ export default class TainacanSingleItemSelectionModal extends React.Component {
     }
 
     selectCollection(selectedCollectionId) {
+        this.selectionState = null;
         this.setState({
             collectionId: selectedCollectionId,
             searchURL: tainacan_blocks.admin_url + '?itemsSingleSelectionMode=true&page=tainacan_admin#/collections/' + selectedCollectionId + '/items/?status=publish'
@@ -164,17 +179,14 @@ export default class TainacanSingleItemSelectionModal extends React.Component {
     }
 
     applySelectedItem() {
-        let iframe = document.getElementById("itemsFrame");
-        if (iframe) {
-            let params = new URLSearchParams(iframe.contentWindow.location.search);
-            let selectedItems = params.getAll('selecteditems');
-            params.delete('selecteditems')
-            this.props.onApplySelectedItem(selectedItems[0]);
-        }
+        const selectedItemId = this.selectionState && this.selectionState.selectedItems && this.selectionState.selectedItems[0];
+        if (selectedItemId)
+            this.props.onApplySelectedItem(selectedItemId);
     }
 
     resetCollections() {
 
+        this.selectionState = null;
         this.setState({
             collectionId: null,
             collectionPage: 1,

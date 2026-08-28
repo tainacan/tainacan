@@ -1,5 +1,6 @@
 import tainacanApi from '../axios.js';
 import axios from 'axios';
+import { subscribeSelectionState } from './tainacan-selection-listener.js';
 
 const { __ } = wp.i18n;
 
@@ -44,6 +45,7 @@ export default class TainacanSingleItemMetadatumSelectionModal extends React.Com
             itemsPerPage: 12,
             templateMode: props.isTemplateMode || false
         };
+        this.selectionState = null;
         
         // Bind events
         this.resetCollections = this.resetCollections.bind(this);
@@ -58,9 +60,16 @@ export default class TainacanSingleItemMetadatumSelectionModal extends React.Com
         this.fetchModalMetadata = this.fetchModalMetadata.bind(this);
         
         this.applySelectedMetadatum = this.applySelectedMetadatum.bind(this);
+        this.onSelectionState = this.onSelectionState.bind(this);
+    }
+
+    onSelectionState(state) {
+        this.selectionState = state;
     }
 
     componentDidMount() {
+        this.unsubscribeSelectionState = subscribeSelectionState(this.onSelectionState);
+
         const { existingCollectionId, existingItemId, isTemplateMode } = this.props;
 
         if (existingCollectionId && !isTemplateMode) {
@@ -77,6 +86,11 @@ export default class TainacanSingleItemMetadatumSelectionModal extends React.Com
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();
         }
+    }
+
+    componentWillUnmount() {
+        if (this.unsubscribeSelectionState)
+            this.unsubscribeSelectionState();
     }
 
     // COLLECTIONS RELATED --------------------------------------------------
@@ -146,6 +160,7 @@ export default class TainacanSingleItemMetadatumSelectionModal extends React.Com
     }
 
     selectCollection(selectedCollectionId) {
+        this.selectionState = null;
         this.setState({
             collectionId: selectedCollectionId,
             searchURL: tainacan_blocks.admin_url + '?itemsSingleSelectionMode=true&page=tainacan_admin#/collections/' + selectedCollectionId + '/items/?status=publish'
@@ -236,18 +251,13 @@ export default class TainacanSingleItemMetadatumSelectionModal extends React.Com
 
 
     selectItem() {
-        let iframe = document.getElementById("itemsFrame");
-        if (iframe) {
-            let params = new URLSearchParams(iframe.contentWindow.location.search);
-            let selectedItems = params.getAll('selecteditems');
-            params.delete('selecteditems')
-            if (selectedItems[0]) {
-                this.setState({
-                    itemId: selectedItems[0]
-                });
-                this.props.onSelectItem(selectedItems[0]);
-                this.fetchModalMetadata(this.state.collectionId);
-            }
+        const selectedItemId = this.selectionState && this.selectionState.selectedItems && this.selectionState.selectedItems[0];
+        if (selectedItemId) {
+            this.setState({
+                itemId: selectedItemId
+            });
+            this.props.onSelectItem(selectedItemId);
+            this.fetchModalMetadata(this.state.collectionId);
         }
     }
 
@@ -264,6 +274,7 @@ export default class TainacanSingleItemMetadatumSelectionModal extends React.Com
 
     resetCollections() {
 
+        this.selectionState = null;
         this.setState({
             collectionId: null,
             collectionPage: 1,
@@ -274,6 +285,7 @@ export default class TainacanSingleItemMetadatumSelectionModal extends React.Com
 
     resetItem() {
 
+        this.selectionState = null;
         this.setState({
             itemId: null,
         });
