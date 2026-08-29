@@ -12,6 +12,15 @@ Generate a Html formated response
 ```mermaid
 classDiagram
     direction TB
+    class Html {
+        +slug : mixed
+        +name : mixed
+        #mappers : mixed
+        +accept_no_mapper : mixed
+        +__construct()
+        +rest_request_after_callbacks(response, handler, request)
+        #array_to_html(data)
+    }
     class Exposer {
         #mappers : mixed
         +accept_no_mapper : mixed
@@ -24,15 +33,6 @@ classDiagram
         +get_description()
         +_toArray()
         +get_mappers()
-    }
-    class Html {
-        +slug : mixed
-        +name : mixed
-        #mappers : mixed
-        +accept_no_mapper : mixed
-        +__construct()
-        +rest_request_after_callbacks(response, handler, request)
-        #array_to_html(data)
     }
     Exposer <|-- Html
 ```

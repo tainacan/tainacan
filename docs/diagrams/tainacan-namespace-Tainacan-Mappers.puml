@@ -1,4 +1,25 @@
 @startuml class-diagram
+  class "Mapper" as Mapper {
+    +slug : 
+    +name : 
+    +allow_extra_metadata : 
+    +context_url : 
+    +type : 
+    +metadata : array
+    +prefix : 
+    +sufix : 
+    +header : 
+    +show_ui : 
+    +_toArray()
+    +get_url(meta_slug)
+    +__construct()
+  }
+  class "Inbcm_Bibliographic" as Inbcm_Bibliographic {
+    +slug : 
+    +name : 
+    +allow_extra_metadata : 
+    +__construct()
+  }
   class "Mappers_Handler" as Mappers_Handler {
     -instance : 
     #mappers : 
@@ -18,7 +39,7 @@
     +create_mapped_collection(collection, request)
     +filter_item_api_response(item_arr, item, request)
   }
-  class "Inbcm_Bibliographic" as Inbcm_Bibliographic {
+  class "Inbcm_Museological" as Inbcm_Museological {
     +slug : 
     +name : 
     +allow_extra_metadata : 
@@ -28,27 +49,6 @@
     +slug : 
     +name : 
     +allow_extra_metadata : 
-    +__construct()
-  }
-  class "Inbcm_Museological" as Inbcm_Museological {
-    +slug : 
-    +name : 
-    +allow_extra_metadata : 
-    +__construct()
-  }
-  class "Mapper" as Mapper {
-    +slug : 
-    +name : 
-    +allow_extra_metadata : 
-    +context_url : 
-    +type : 
-    +metadata : array
-    +prefix : 
-    +sufix : 
-    +header : 
-    +show_ui : 
-    +_toArray()
-    +get_url(meta_slug)
     +__construct()
   }
   class "Dublin_Core\n<b>Support Dublin Core Mapping </b>" as Dublin_Core {

@@ -1,16 +1,16 @@
 classDiagram
     direction TB
+    class Repository { }
+    class Filters { }
     class Terms { }
     class Logs { }
-    class Repository { }
-    class Item_Metadata { }
-    class Taxonomies { }
-    class Items { }
     class Logs { }
-    class Metadata { }
-    class Collections { }
-    class Filters { }
     class Metadata_Sections { }
+    class Item_Metadata { }
+    class Items { }
+    class Taxonomies { }
+    class Collections { }
+    class Metadata { }
     Collections ..> Metadata
     Item_Metadata ..> Items
     Item_Metadata ..> Metadata

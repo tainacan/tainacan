@@ -1,31 +1,4 @@
 @startuml class-diagram
-  class "OAI_PMH\n<b>Generate a OAI_PMH/oai_dc formated response</b>" as OAI_PMH {
-    +mappers : 
-    +slug : 
-    +name : 
-    +rest_request_after_callbacks(response, handler, request)
-  }
-  class "Txt\n<b>Generate a text formated response</b>" as Txt {
-    +mappers : 
-    +slug : 
-    +name : 
-    +rest_request_after_callbacks(response, handler, request)
-    #array_to_txt(data, txt)
-  }
-  class "Exposer\n<b>abstract class for implement exposer types</b>" as Exposer {
-    #mappers : 
-    +accept_no_mapper : 
-    +slug : 
-    -name : 
-    -description : 
-    #set_name(name)
-    #set_description(description)
-    +get_name()
-    +get_description()
-    +_toArray()
-    {abstract} +rest_request_after_callbacks(response, handler, request)
-    +get_mappers()
-  }
   class "JSON_LD\n<b>Generate a text formated response</b>" as JSON_LD {
     +mappers : 
     +slug : 
@@ -34,6 +7,13 @@
     +rest_request_after_callbacks(response, handler, request)
     #array_to_jsonld(data, jsonld)
     +get_locale(obj)
+  }
+  class "Xml\n<b>Generate a Csv formated response</b>" as Xml {
+    #extension : string
+    +slug : 
+    +name : 
+    +rest_request_after_callbacks(response, handler, request)
+    #array_to_xml(data, xml_data, namespace)
   }
   class "Csv\n<b>Generate a Csv formated response</b>" as Csv {
     +slug : 
@@ -59,21 +39,6 @@
     +filter_check_items_request(response, request)
     {static} +get_exposer_urls(base_url)
   }
-  class "JSON_flat\n<b>Generate a text formated response</b>" as JSON_flat {
-    +slug : 
-    +name : 
-    +accept_no_mapper : 
-    #mappers : 
-    +__construct()
-    +rest_request_after_callbacks(response, handler, request)
-  }
-  class "Xml\n<b>Generate a Csv formated response</b>" as Xml {
-    #extension : string
-    +slug : 
-    +name : 
-    +rest_request_after_callbacks(response, handler, request)
-    #array_to_xml(data, xml_data, namespace)
-  }
   class "Html\n<b>Generate a Html formated response</b>" as Html {
     +slug : 
     +name : 
@@ -82,6 +47,41 @@
     +__construct()
     +rest_request_after_callbacks(response, handler, request)
     #array_to_html(data)
+  }
+  class "Exposer\n<b>abstract class for implement exposer types</b>" as Exposer {
+    #mappers : 
+    +accept_no_mapper : 
+    +slug : 
+    -name : 
+    -description : 
+    #set_name(name)
+    #set_description(description)
+    +get_name()
+    +get_description()
+    +_toArray()
+    {abstract} +rest_request_after_callbacks(response, handler, request)
+    +get_mappers()
+  }
+  class "Txt\n<b>Generate a text formated response</b>" as Txt {
+    +mappers : 
+    +slug : 
+    +name : 
+    +rest_request_after_callbacks(response, handler, request)
+    #array_to_txt(data, txt)
+  }
+  class "JSON_flat\n<b>Generate a text formated response</b>" as JSON_flat {
+    +slug : 
+    +name : 
+    +accept_no_mapper : 
+    #mappers : 
+    +__construct()
+    +rest_request_after_callbacks(response, handler, request)
+  }
+  class "OAI_PMH\n<b>Generate a OAI_PMH/oai_dc formated response</b>" as OAI_PMH {
+    +mappers : 
+    +slug : 
+    +name : 
+    +rest_request_after_callbacks(response, handler, request)
   }
   Exposer <|-- Csv
   Exposer <|-- Html
