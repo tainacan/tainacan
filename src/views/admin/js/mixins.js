@@ -202,5 +202,13 @@ export const reportsChartMixin = {
            chartSeries: [],
            chartOptions: {}
         }
+    },
+    computed: {
+        hasChartSeries() {
+            return Array.isArray(this.chartSeries) && this.chartSeries.length > 0;
+        },
+        isReloadingChart() {
+            return this.isFetchingData && this.hasChartSeries;
+        }
     }
 };

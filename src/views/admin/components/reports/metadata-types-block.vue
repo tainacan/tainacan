@@ -1,6 +1,6 @@
 <template>
     <div 
-            v-if="!isFetchingData && chartData && chartData.totals && chartData.totals.metadata_per_type && !isBuildingChart"
+            v-if="hasChartSeries || (!isFetchingData && chartData && chartData.totals && chartData.totals.metadata_per_type)"
             class="report-card is-medium">
         <label>{{ $i18n.get('metadata_types') }}&nbsp;</label>
         <div class="graph-mode-switch">
@@ -27,10 +27,19 @@
                 </span>
             </button>
         </div>
-        <apexchart
-                height="380px"
-                :series="chartSeries"
-                :options="chartOptions" />
+        <div
+                class="report-chart"
+                :class="{ 'is-reloading-cache': isReloadingChart }"
+                :aria-busy="isReloadingChart ? 'true' : 'false'">
+            <apexchart
+                    v-if="hasChartSeries"
+                    ref="metadataTypesChart"
+                    :key="metadataTypeChartMode"
+                    :type="metadataTypeChartType"
+                    height="380px"
+                    :series="chartSeries"
+                    :options="chartOptions" />
+        </div>
         <slot />
     </div>
     <div 
@@ -54,7 +63,10 @@ export default {
         ...mapGetters('report', {
             donutChartOptions: 'getDonutChartOptions',
             stackedBarChartOptions: 'getStackedBarChartOptions',
-        })
+        }),
+        metadataTypeChartType() {
+            return this.metadataTypeChartMode == 'circle' ? 'donut' : 'bar';
+        }
     },
     watch: {
         metadataTypeChartMode() {
@@ -71,8 +83,10 @@ export default {
     },
     methods: {
         buildMetadataTypeChart() {
-            
-            this.isBuildingChart = true;
+            if (!this.chartData || !this.chartData.totals || !this.chartData.totals.metadata_per_type) {
+                this.chartSeries = [];
+                return;
+            }
 
             // Building Metadata Type Donut Chart
             let metadataTypeValues = [];
@@ -85,19 +99,23 @@ export default {
             });
             
             this.chartSeries = this.metadataTypeChartMode == 'circle' ? metadataTypeValues : [ { name: this.$i18n.get('label_amount_of_metadata_of_type'), data: metadataTypeValues } ];
-            
-            if (this.metadataTypeChartMode == 'circle') {
-                this.chartOptions = JSON.parse(JSON.stringify({
-                    ...this.donutChartOptions,
-                    ...{
+
+            const nextChartType = this.metadataTypeChartType;
+            const shouldRebuildOptions = !this.chartOptions.chart || this.chartOptions.chart.type !== nextChartType;
+
+            if (shouldRebuildOptions) {
+                if (this.metadataTypeChartMode == 'circle') {
+                    this.chartOptions = {
+                        ...this.donutChartOptions,
+                        chart: {
+                            ...this.donutChartOptions.chart
+                        },
                         title: {},
                         labels: metadataTypeLabels,
-                    }
-                }));
-            } else {
-                this.chartOptions = JSON.parse(JSON.stringify({
-                    ...this.stackedBarChartOptions,
-                    ...{
+                    };
+                } else {
+                    this.chartOptions = {
+                        ...this.stackedBarChartOptions,
                         chart: {
                             type: 'bar',
                             height: 350,
@@ -130,11 +148,23 @@ export default {
                                 text: this.$i18n.get('label_number_of_metadata')
                             }
                         },
+                    };
+                }
+            } else {
+                this.$nextTick(() => {
+                    if (this.$refs.metadataTypesChart && this.$refs.metadataTypesChart.updateOptions) {
+                        if (this.metadataTypeChartMode == 'circle') {
+                            this.$refs.metadataTypesChart.updateOptions({
+                                labels: metadataTypeLabels
+                            }, false, true);
+                        } else {
+                            this.$refs.metadataTypesChart.updateOptions({
+                                xaxis: { categories: metadataTypeLabels }
+                            }, false, true);
+                        }
                     }
-                }));
+                });
             }
-
-            setTimeout(() => { this.isBuildingChart = false; }, 500);
         },
     }
 }

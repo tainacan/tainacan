@@ -103,15 +103,20 @@
                     :is-fetching-data="isFetchingCollectionsList">
                 <div 
                         v-if="collectionsLatestCachedOn"
-                        class="report-last-cached-on">
+                        class="report-last-cached-on"
+                        :class="{ 'is-reloading': isReloadingCollections }">
                     <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(collectionsLatestCachedOn).toLocaleString() }}</span>
                     <button 
+                            type="button"
+                            :disabled="isReloadingCollections"
                             @click="loadCollectionsList(true)">
                         <span class="sr-only">
                             {{ $i18n.get('label_get_latest_report') }}
                         </span>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                            <i 
+                                    class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270"
+                                    :class="{ 'tainacan-icon-spin': isReloadingCollections }" />
                         </span>
                     </button>
                 </div>
@@ -123,15 +128,20 @@
                     :is-fetching-data="isFetchingMetadata">
                 <div 
                         v-if="metadataLatestCachedOn"
-                        class="report-last-cached-on">
+                        class="report-last-cached-on"
+                        :class="{ 'is-reloading': isReloadingMetadata }">
                     <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(metadataLatestCachedOn).toLocaleString() }}</span>
                     <button 
+                            type="button"
+                            :disabled="isReloadingMetadata"
                             @click="loadMetadata(true)">
                         <span class="sr-only">
                             {{ $i18n.get('label_get_latest_report') }}
                         </span>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                            <i 
+                                    class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270"
+                                    :class="{ 'tainacan-icon-spin': isReloadingMetadata }" />
                         </span>
                     </button>
                 </div>
@@ -143,15 +153,20 @@
                     :is-fetching-data="isFetchingMetadata">
                 <div 
                         v-if="metadataLatestCachedOn"
-                        class="report-last-cached-on">
+                        class="report-last-cached-on"
+                        :class="{ 'is-reloading': isReloadingMetadata }">
                     <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(metadataLatestCachedOn).toLocaleString() }}</span>
                     <button 
+                            type="button"
+                            :disabled="isReloadingMetadata"
                             @click="loadMetadata(true)">
                         <span class="sr-only">
                             {{ $i18n.get('label_get_latest_report') }}
                         </span>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                            <i 
+                                    class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270"
+                                    :class="{ 'tainacan-icon-spin': isReloadingMetadata }" />
                         </span>
                     </button>
                 </div>
@@ -163,15 +178,20 @@
                     :is-fetching-data="isFetchingTaxonomiesList">
                 <div 
                         v-if="taxonomiesLatestCachedOn"
-                        class="report-last-cached-on">
+                        class="report-last-cached-on"
+                        :class="{ 'is-reloading': isReloadingTaxonomies }">
                     <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(taxonomiesLatestCachedOn).toLocaleString() }}</span>
                     <button 
+                            type="button"
+                            :disabled="isReloadingTaxonomies"
                             @click="loadTaxonomiesList(true)">
                         <span class="sr-only">
                             {{ $i18n.get('label_get_latest_report') }}
                         </span>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                            <i 
+                                    class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270"
+                                    :class="{ 'tainacan-icon-spin': isReloadingTaxonomies }" />
                         </span>
                     </button>
                 </div>
@@ -192,15 +212,20 @@
                     :is-fetching-data="isFetchingActivities">
                 <div 
                         v-if="activitiesLatestCachedOn"
-                        class="report-last-cached-on">
+                        class="report-last-cached-on"
+                        :class="{ 'is-reloading': isReloadingActivities }">
                     <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(activitiesLatestCachedOn).toLocaleString() }}</span>
                     <button 
+                            type="button"
+                            :disabled="isReloadingActivities"
                             @click="loadActivities(null, true)">
                         <span class="sr-only">
                             {{ $i18n.get('label_get_latest_report') }}
                         </span>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                            <i 
+                                    class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270"
+                                    :class="{ 'tainacan-icon-spin': isReloadingActivities }" />
                         </span>
                     </button>
                 </div>
@@ -212,15 +237,20 @@
                     @time-range-update="loadActivities">
                 <div 
                         v-if="activitiesLatestCachedOn"
-                        class="report-last-cached-on">
+                        class="report-last-cached-on"
+                        :class="{ 'is-reloading': isReloadingActivities }">
                     <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(activitiesLatestCachedOn).toLocaleString() }}</span>
                     <button 
+                            type="button"
+                            :disabled="isReloadingActivities"
                             @click="loadActivities(null, true)">
                         <span class="sr-only">
                             {{ $i18n.get('label_get_latest_report') }}
                         </span>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                            <i 
+                                    class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270"
+                                    :class="{ 'tainacan-icon-spin': isReloadingActivities }" />
                         </span>
                     </button>
                 </div>
@@ -299,6 +329,18 @@ export default {
         },
         activitiesLatestCachedOn() {
             return this.reportsLatestCachedOn['activities-' + (this.selectedCollection ? this.selectedCollection : 'default') + (this.activitiesStartDate ? '-' + this.activitiesStartDate : '')];
+        },
+        isReloadingCollections() {
+            return this.isFetchingCollectionsList && this.collectionsList && Object.keys(this.collectionsList).length > 0;
+        },
+        isReloadingTaxonomies() {
+            return this.isFetchingTaxonomiesList && this.taxonomyList && Object.keys(this.taxonomyList).length > 0;
+        },
+        isReloadingMetadata() {
+            return this.isFetchingMetadata && this.metadata && this.metadata.totals;
+        },
+        isReloadingActivities() {
+            return this.isFetchingActivities && this.activities && this.activities.totals;
         }
     },
     created() {
@@ -473,12 +515,22 @@ export default {
                 &:hover {
                     color: var(--wp-admin-theme-color, #007cba);
                 }
+                &:disabled {
+                    cursor: wait;
+                    color: var(--wp-admin-theme-color, #007cba);
+                }
             }
         }
         .report-card:hover>.report-last-cached-on,
         .report-card:hover>.report-last-cached-on+.report-last-cached-on,
-        .report-last-cached-on:hover {
+        .report-last-cached-on:hover,
+        .report-last-cached-on.is-reloading {
             opacity: 1.0;
+        }
+        .report-chart.is-reloading-cache {
+            opacity: 0.45;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
         }
 
 
