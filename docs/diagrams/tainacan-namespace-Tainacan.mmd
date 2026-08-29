@@ -1,36 +1,36 @@
 classDiagram
     direction TB
-    class Admin { }
+    class Async_Request { }
+    class Admin_Bar_Items { }
+    class Cli_Document { }
+    class Background_Process { }
+    class Background_Process_Base { }
+    class Cli { }
+    class Mappers_Handler { }
+    class System_Check { }
+    class Gutenberg_Blocks { }
+    class Admin_Commands { }
+    class __Bulk_Edit { }
+    class Roles_Editor { }
+    class Search_Engine { }
     class Logs_Wp_Posts_Migration { }
     class Cli_Logs { }
-    class Roles_Editor { }
-    class Embed { }
-    class Mappers_Handler { }
-    class Cli { }
-    class Cli_Move_Attachments { }
-    class Mobile_App { }
-    class Background_Process_Base { }
-    class Gutenberg_Blocks { }
     class Settings { }
-    class Dashboard { }
-    class Async_Request { }
-    class Exposers_Handler { }
-    class Cli_Document { }
-    class Private_Files { }
-    class Admin_Commands { }
-    class Pdf_Extracted_Text_Quality { }
     class Theme_Helper { }
-    class System_Check { }
     class Cli_Control_Metadata { }
-    class __Bulk_Edit { }
+    class Mobile_App { }
+    class Media { }
+    class Exposers_Handler { }
+    class Dashboard { }
     class Cli_Garbage_Collector { }
     class Background_Process_Heartbeat { }
-    class Cli_Collection { }
-    class Search_Engine { }
-    class Admin_Bar_Items { }
-    class Background_Process { }
+    class Embed { }
     class Pages { }
-    class Media { }
+    class Pdf_Extracted_Text_Quality { }
+    class Cli_Move_Attachments { }
+    class Cli_Collection { }
+    class Private_Files { }
+    class Admin { }
     Async_Request <|-- Background_Process_Base
     Background_Process_Base <|-- Background_Process
     Cli_Logs ..> Logs_Wp_Posts_Migration
