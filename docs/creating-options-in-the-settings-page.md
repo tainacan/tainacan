@@ -347,4 +347,4 @@ Key benefits:
 - **Consistent styling** - Matches Tainacan's admin interface
 - **Easy maintenance** - Centralized settings management
 
-For more information, refer to the [WordPress Settings API documentation](https://developer.wordpress.org/plugins/settings/) and the [Tainacan core Settings class](https://github.com/tainacan/tainacan/blob/master/src/views/settings/class-tainacan-settings.php).
+For more information, refer to the [WordPress Settings API documentation](https://developer.wordpress.org/plugins/settings/) and the [Tainacan core Settings class](https://github.com/tainacan/tainacan/blob/master/src/views/settings/class-tainacan-settings.php). For a broader map of plugin extension APIs, see the [Plugin Development Guidelines](/dev/plugin-development-guidelines.md).

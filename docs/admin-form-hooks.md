@@ -338,7 +338,7 @@ public function enqueue_styles() {
 
 ## Conclusion
 
-Tainacan Admin Form Hooks provide a powerful and flexible way to extend the admin interface. You can learn more about extending the Plugin by reading related topics:
+Tainacan Admin Form Hooks provide a powerful and flexible way to extend the admin interface. For a broader map of when to use a plugin and which APIs to pick, see the [Plugin Development Guidelines](/dev/plugin-development-guidelines.md). If your plugin writes metadata from outside the form and needs the fields to refresh, see [Reloading the Item Editing Form](/dev/reloading-the-item-editing-form.md). You can also learn more about extending the Plugin by reading related topics:
 
 - [Creating options in the Settings Page](/dev/creating-options-in-the-settings-page.md) - A guide for registering and displaying options inside the Tainacan Settings Page
 - [Creating Tainacan Admin Pages](/dev/creating-tainacan-admin-pages.md) - A guide for creating your own Pages inside the Tainacan Admin

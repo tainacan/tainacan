@@ -367,4 +367,4 @@ Remember to:
 - Test thoroughly with different user roles and capabilities
 - Provide proper documentation for your users
 
-For additional help and examples, visit the [Tainacan documentation wiki](https://wiki.tainacan.org/) or join the [Tainacan community](https://tainacan.org/community/).
+For additional help and examples, visit the [Tainacan documentation wiki](https://wiki.tainacan.org/) or join the [Tainacan community](https://tainacan.org/community/). For a broader map of when to use a plugin and which APIs to pick, see the [Plugin Development Guidelines](/dev/plugin-development-guidelines.md).
