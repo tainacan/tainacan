@@ -1151,7 +1151,10 @@
                     this.$eventBusSearch.setInitialAdminViewMode('table');
             }
 
-            this.$eventBusSearch.cleanSelectedItems();
+            // Gutenberg iframe selection hydrates selecteditems from initiallySelectedItems
+            // on location.search. Clearing here would drop that before the list can show it.
+            if (!this.$adminOptions.itemsSingleSelectionMode && !this.$adminOptions.itemsMultipleSelectionMode)
+                this.$eventBusSearch.cleanSelectedItems();
 
             // Watches window resize to adjust filter's top position and compression on mobile 
             this.hideFiltersOnMobile();

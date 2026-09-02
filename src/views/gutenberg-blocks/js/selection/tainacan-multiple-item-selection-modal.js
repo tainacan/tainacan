@@ -1,6 +1,6 @@
 import tainacanApi from '../axios.js';
 import axios from 'axios';
-import { subscribeSelectionState } from './tainacan-selection-listener.js';
+import { subscribeSelectionState, appendInitiallySelectedItemsParam } from './tainacan-selection.js';
 
 const { __ } = wp.i18n;
 
@@ -13,14 +13,19 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
 
         const existingCollectionId = props.existingCollectionId;
         const loadStrategy = props.loadStrategy || 'search';
-        const searchURL = existingCollectionId ? (
+        const existingSelectedItems = loadStrategy == 'selection' ? props.existingSelectedItems : undefined;
+        const useExistingSearchURL = loadStrategy == 'search' &&
             props.existingSearchURL &&
             props.existingSearchURL.indexOf('iframemode') < 0 &&
-            props.existingSearchURL.includes(tainacan_blocks.admin_url)
-        )
-            ? props.existingSearchURL
-            : tainacan_blocks.admin_url + '?' + (loadStrategy == 'search' ? 'itemsSearchSelectionMode' : 'itemsMultipleSelectionMode') + '=true&page=tainacan_admin#/collections/' + existingCollectionId + '/items/?status=publish'
-        : '';
+            props.existingSearchURL.includes(tainacan_blocks.admin_url);
+        const searchURL = existingCollectionId ? (
+            useExistingSearchURL
+                ? props.existingSearchURL
+                : appendInitiallySelectedItemsParam(
+                    tainacan_blocks.admin_url + '?' + (loadStrategy == 'search' ? 'itemsSearchSelectionMode' : 'itemsMultipleSelectionMode') + '=true&page=tainacan_admin#/collections/' + existingCollectionId + '/items/?status=publish',
+                    existingSelectedItems
+                )
+        ) : '';
 
         // Initialize state from block attributes so the correct step renders on first paint.
         this.state = {
@@ -40,7 +45,9 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
             itemsPerPage: 12,
             loadStrategy: loadStrategy
         };
-        this.selectionState = null;
+        this.selectionState = existingSelectedItems && existingSelectedItems.length
+            ? { selectedItems: existingSelectedItems.map(String), query: {}, href: '', collectionId: existingCollectionId ? String(existingCollectionId) : '' }
+            : null;
         
         // Bind events
         this.resetCollections = this.resetCollections.bind(this);
