@@ -2397,6 +2397,7 @@ import CustomDialog from '../other/custom-dialog.vue';
 
 import Masonry from 'masonry-layout';
 import { dateInter } from "../../js/mixins";
+import { getInitiallySelectedItemIds } from "../../js/selection-bridge.js";
 
 import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl, LControlZoom } from '@vue-leaflet/vue-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -2702,6 +2703,14 @@ export default {
     created() {
         this.shouldUseLegacyMasonyCols = wp !== undefined && wp.hooks !== undefined && wp.hooks.hasFilter('tainacan_use_legacy_masonry_view_mode_cols') && wp.hooks.applyFilters('tainacan_use_legacy_masonry_view_mode_cols', false);
         document.addEventListener('tainacan_fullscreen_mode_change', this.onFullscreenModeChange);
+
+        const initiallySelectedItems = getInitiallySelectedItemIds();
+        if (initiallySelectedItems.length) {
+            if (this.$adminOptions.itemsSingleSelectionMode)
+                this.singleItemSelection = initiallySelectedItems[0];
+            else if (this.$adminOptions.itemsMultipleSelectionMode)
+                this.$store.dispatch('search/setSelectedItems', initiallySelectedItems);
+        }
     },
     beforeUnmount() {
         document.removeEventListener('tainacan_fullscreen_mode_change', this.onFullscreenModeChange);

@@ -1,6 +1,6 @@
 import tainacanApi from '../axios.js';
 import axios from 'axios';
-import { subscribeSelectionState } from './tainacan-selection-listener.js';
+import { subscribeSelectionState, appendInitiallySelectedItemsParam } from './tainacan-selection.js';
 
 const { __ } = wp.i18n;
 
@@ -13,7 +13,10 @@ export default class TainacanSingleItemSelectionModal extends React.Component {
 
         const existingCollectionId = props.existingCollectionId;
         const searchURL = existingCollectionId
-            ? tainacan_blocks.admin_url + '?itemsSingleSelectionMode=true&page=tainacan_admin#/collections/' + existingCollectionId + '/items/?status=publish'
+            ? appendInitiallySelectedItemsParam(
+                tainacan_blocks.admin_url + '?itemsSingleSelectionMode=true&page=tainacan_admin#/collections/' + existingCollectionId + '/items/?status=publish',
+                props.existingItemId
+            )
             : '';
 
         // Initialize state from block attributes so the correct step renders on first paint.
@@ -35,7 +38,9 @@ export default class TainacanSingleItemSelectionModal extends React.Component {
             searchURL: searchURL,
             itemsPerPage: 12
         };
-        this.selectionState = null;
+        this.selectionState = props.existingItemId && Number(props.existingItemId) > 0
+            ? { selectedItems: [String(props.existingItemId)], query: {}, href: '', collectionId: existingCollectionId ? String(existingCollectionId) : '' }
+            : null;
         
         // Bind events
         this.resetCollections = this.resetCollections.bind(this);

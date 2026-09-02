@@ -117,6 +117,7 @@ const ItemSelectionToolbar = ({ onCreateGroup, isLoading }) => {
                     loadStrategy={loadStrategy}
                     existingCollectionId={collectionId}
                     existingSearchURL={loadStrategy === 'search' ? searchURL : false}
+                    existingSelectedItems={selectedItems}
                     onSelectCollection={(selectedCollectionId) => {
                         if (collectionId !== selectedCollectionId) {
                             setSelectedItems([]);
@@ -133,7 +134,7 @@ const ItemSelectionToolbar = ({ onCreateGroup, isLoading }) => {
                         });
                     }}
                     onApplySelectedItems={(aSelectionOfItems) => {
-                        setSelectedItems(selectedItems.concat(aSelectionOfItems));
+                        setSelectedItems(aSelectionOfItems);
                         setLoadStrategy('selection');
                         setIsModalOpen(false);
                         onCreateGroup({ 
@@ -160,6 +161,7 @@ export default ItemSelectionToolbar;
 | `loadStrategy` | `string` | Either `'selection'` or `'search'` to determine the modal behavior |
 | `existingCollectionId` | `string\|number` | ID of the collection to load items from |
 | `existingSearchURL` | `string\|false` | Existing search URL if using search strategy |
+| `existingSelectedItems` | `array` | Item IDs to check when reopening the modal in `'selection'` mode. Passed to the iframe as `initiallySelectedItems` on `location.search`. |
 | `onSelectCollection` | `function` | Callback when a collection is selected |
 | `onApplySearchURL` | `function` | Callback when search query is applied |
 | `onApplySelectedItems` | `function` | Callback when items are manually selected |
@@ -185,7 +187,8 @@ Do not read the iframe's `Location` or `contentWindow` from your plugin. WordPre
 - Shows an `<iframe>` with the collection's items in selection mode
 - Users can manually select/deselect items, even across pages
 - Filters and search are available within the iframe
-- Selected items are returned via `onApplySelectedItems`
+- Previously selected IDs from `existingSelectedItems` are checked when the iframe loads
+- Selected items are returned via `onApplySelectedItems`. That list is the current iframe selection (replace, do not concatenate with a previous list).
 
 ##### Search Query Strategy
 - Shows an `<iframe>` with the collection's items in search mode
@@ -206,6 +209,7 @@ You can pre-select a collection and skip the collection selection phase:
 <TainacanMultipleItemSelectionModal
     loadStrategy="selection"
     existingCollectionId="123" // Pre-selected collection
+    existingSelectedItems={selectedItems} // IDs already chosen; checked again in the iframe
     onApplySelectedItems={handleItems}
     onCancelSelection={handleCancel}
 />
@@ -311,6 +315,8 @@ These are the URL parameters you can check to customize different selection mode
 - `itemsMultipleSelectionMode`
 - `itemsSearchSelectionMode`
 
+To restore a previous manual selection in the iframe, add `initiallySelectedItems` on the same query string (comma-separated IDs). Do not put it in the hash. See [Using your own iframe](#using-your-own-iframe).
+
 ## Using your own iframe
 
 You can reuse the Tainacan admin items list without the React selection modals: load it in your own `<iframe>` with one of the [selection mode parameters](#available-selection-mode-parameters). The admin then publishes a selection snapshot whenever the user changes the checked items or the search.
@@ -324,8 +330,10 @@ The iframe `src` must include one of:
 - `itemsSearchSelectionMode=true` — a search URL (filters live in the hash)
 
 ```
-https://example.org/wp-admin/admin.php?itemsMultipleSelectionMode=true&page=tainacan_admin#/collections/123/items/?status=publish
+https://example.org/wp-admin/admin.php?itemsMultipleSelectionMode=true&page=tainacan_admin&initiallySelectedItems=12,34#/collections/123/items/?status=publish
 ```
+
+`initiallySelectedItems` belongs on `location.search` (next to the selection-mode flags), not in the hash. The admin reads it once on boot to check those items. Do not put it in the hash: Vue Router would treat it as a search query. Single-item iframes use the same param with one ID. Search-mode iframes restore filters from the hash via `existingSearchURL` / `href` and do not use this param.
 
 Each message looks like:
 

@@ -5,10 +5,11 @@
  * The child publishes a plain snapshot of the selection state and search query, instead of the iframe's URL.
  *
  * Keep source/channel strings in sync with
- * gutenberg-blocks/js/selection/tainacan-selection-listener.js.
+ * gutenberg-blocks/js/selection/tainacan-selection.js.
  */
 export const TAINACAN_SELECTION_SOURCE = 'tainacan-selection';
 export const TAINACAN_SELECTION_CHANNEL = 'tainacan-selection';
+export const INITIALLY_SELECTED_ITEMS_PARAM = 'initiallySelectedItems';
 
 export function isIframeSelectionMode(app) {
     if (typeof window !== 'undefined') {
@@ -44,6 +45,24 @@ export function toPlainItemIds(items) {
         result.push(id);
     }
     return result;
+}
+
+/**
+ * One-shot hydrate list from this iframe's location.search.
+ * Gutenberg (and custom iframes) pass IDs here so checkboxes can restore
+ * a previous selection. Not part of the Vue Router hash / postquery.
+ */
+export function getInitiallySelectedItemIds() {
+    if (typeof window === 'undefined')
+        return [];
+
+    const raw = new URLSearchParams(window.location.search).get(INITIALLY_SELECTED_ITEMS_PARAM);
+    if (!raw)
+        return [];
+
+    return toPlainItemIds(String(raw).split(/[,\s]+/)).map((id) => {
+        return /^\d+$/.test(id) ? Number(id) : id;
+    });
 }
 
 function cloneQuery(query) {
