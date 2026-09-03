@@ -40,6 +40,7 @@
                             v-model="termNames"
                             v-a11y-autocomplete
                             attached
+                            :maxtags="maxTerms"
                             :confirm-keys="termNamesSeparator"
                             :on-paste-separators="termNamesSeparator"
                             :remove-on-keys="[]"
@@ -166,7 +167,9 @@
                 parentTermSearchOffset: 0,
                 selectedParentTerm: undefined,
                 parentTermName: '',
-                totalTerms: undefined
+                totalTerms: undefined,
+                // Mirrors the TAINACAN_API_MAX_BATCH_TERMS constant enforced by the REST API.
+                maxTerms: ( typeof tainacan_plugin !== 'undefined' && tainacan_plugin.api_max_terms_batch ) ? Number(tainacan_plugin.api_max_terms_batch) : 200
             }
         },
         created() {

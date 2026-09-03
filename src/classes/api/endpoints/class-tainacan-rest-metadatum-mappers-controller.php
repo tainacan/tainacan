@@ -17,27 +17,43 @@ use Tainacan\Entities\Metadatum;
  */
 class REST_Metadatum_Mappers_Controller extends REST_Controller {
 	protected function get_schema() {
-        return [
-            '$schema'    => 'http://json-schema.org/draft-04/schema#',
-            'title'      => 'metadatum-mapper',
-            'type'       => 'object',
-            'tags'       => [ $this->rest_base ],
-            'properties' => [
-                'slug' => [
-                    'description' => __('The mapper slug', 'tainacan'),
-                    'type'        => 'string',
-                ],
-                'name' => [
-                    'description' => __('The mapper name', 'tainacan'),
-                    'type'        => 'string',
-                ],
-                'metadata' => [
-                    'description' => __('The mapper metadata definitions', 'tainacan'),
-                    'type'        => 'object',
-                ],
-            ],
-        ];
-    }
+	       return [
+	           '$schema'    => 'http://json-schema.org/draft-04/schema#',
+	           'title'      => 'metadatum-mapper',
+	           'type'       => 'object',
+	           'tags'       => [ $this->rest_base ],
+	           'properties' => [
+	               'slug' => [
+	                   'description' => __('The mapper slug', 'tainacan'),
+	                   'type'        => 'string',
+	               ],
+	               'name' => [
+	                   'description' => __('The mapper name', 'tainacan'),
+	                   'type'        => 'string',
+	               ],
+	               'allow_extra_metadata' => [
+	                   'description' => __('Whether the mapper allows extra metadata to be registered', 'tainacan'),
+	                   'type'        => 'boolean',
+	               ],
+	               'context_url' => [
+	                   'description' => __('URL of the mapper documentation/context', 'tainacan'),
+	                   'type'        => 'string',
+	               ],
+	               'metadata' => [
+	                   'description' => __('The mapper metadata definitions', 'tainacan'),
+	                   'type'        => 'object',
+	               ],
+	               'prefix' => [
+	                   'description' => __('The tag prefix used by the mapper (e.g. dc:)', 'tainacan'),
+	                   'type'        => 'string',
+	               ],
+	               'sufix' => [
+	                   'description' => __('The tag sufix used by the mapper', 'tainacan'),
+	                   'type'        => 'string',
+	               ],
+	           ],
+	       ];
+	   }
 
 	/**
 	 * REST_Metadatum_Mappers_Controller constructor.
@@ -60,6 +76,7 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 			        'callback'            => array($this, 'update_item'),
 			        'permission_callback' => array($this, 'update_item_permissions_check'),
 			    ),
+			    'schema' => [$this, 'get_schema'],
 			)
 		);
 	}

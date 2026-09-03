@@ -988,9 +988,7 @@ class REST_Collections_Controller extends REST_Controller {
 		$schema['properties'] = array_merge(
 			parent::get_base_properties_schema(),
 			$main_schema,
-			parent::get_param_schema('id', ['description' => __('Unique identifier for the resource.', 'tainacan'), 'readOnly' => true]),
-			parent::get_param_schema('current_user_can_edit', ['description' => __('Whether current user can edit this resource.', 'tainacan')]),
-			parent::get_param_schema('current_user_can_delete', ['description' => __('Whether current user can delete this resource.', 'tainacan')])
+			parent::get_permissions_schema()
 		);
 
 		return $schema;

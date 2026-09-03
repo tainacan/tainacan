@@ -175,18 +175,8 @@ abstract class REST_Controller extends \WP_REST_Controller {
 			}
 		}
 
-		// Cap posts_per_page to a reasonable maximum to prevent abuse
-		if ( isset($args['posts_per_page']) && (int) $args['posts_per_page'] > 100 ) {
-			$args['posts_per_page'] = 100;
-		}
-
-		// Block nopaging to prevent unbounded queries
-		if ( isset($args['nopaging']) && $args['nopaging'] ) {
-			$args['nopaging'] = false;
-		}
-
 		$args['perm'] = 'readable';
-
+		
 		return apply_filters('tainacan-api-prepare-items-args', $args, $request);
 	}
 
@@ -819,8 +809,6 @@ abstract class REST_Controller extends \WP_REST_Controller {
 			'required'       => isset( $properties['required'] ) && $properties['required'],
 			'enum'           => isset( $properties['enum'] ) ? $properties['enum'] : null,
 			'default'        => isset( $properties['default'] ) ? $properties['default'] : null,
-			'sanitize_callback' => isset( $properties['sanitize_callback'] ) ? $properties['sanitize_callback'] : null,
-			'validate_callback'  => isset( $properties['validate_callback'] ) ? $properties['validate_callback'] : null,
 		];
 
 		if ( isset( $properties['items'] ) ) {

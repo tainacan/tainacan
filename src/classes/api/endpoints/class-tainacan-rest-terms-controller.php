@@ -162,9 +162,9 @@ class REST_Terms_Controller extends REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if( is_array($body) ){
-			if ( count($body) > 200 ) {
+			if ( count($body) > TAINACAN_API_MAX_BATCH_TERMS ) {
 				return new \WP_REST_Response([
-					'error_message' => __('Batch size exceeds the maximum allowed (200).', 'tainacan'),
+					'error_message' => sprintf( __('Batch size exceeds the maximum allowed (%d).', 'tainacan'), TAINACAN_API_MAX_BATCH_TERMS ),
 				], 400);
 			}
 
@@ -289,10 +289,10 @@ class REST_Terms_Controller extends REST_Controller {
 
 		$terms = $this->terms_repository->fetch($args, $taxonomy);
 
-		if ( is_array($terms) && count($terms) > 200 ) {
+		if ( is_array($terms) && count($terms) > TAINACAN_API_MAX_BATCH_TERMS ) {
 			return new \WP_Error(
 				'rest_too_many_terms',
-				__('Batch size exceeds the maximum allowed (200).', 'tainacan'),
+				sprintf( __('Batch size exceeds the maximum allowed (%d).', 'tainacan'), TAINACAN_API_MAX_BATCH_TERMS ),
 				array( 'status' => 400 )
 			);
 		}
@@ -391,10 +391,10 @@ class REST_Terms_Controller extends REST_Controller {
 
 		$terms = $this->terms_repository->fetch($args, $taxonomy);
 
-		if ( is_array($terms) && count($terms) > 200 ) {
+		if ( is_array($terms) && count($terms) > TAINACAN_API_MAX_BATCH_TERMS ) {
 			return new \WP_Error(
 				'rest_too_many_terms',
-				__('Batch size exceeds the maximum allowed (200).', 'tainacan'),
+				sprintf( __('Batch size exceeds the maximum allowed (%d).', 'tainacan'), TAINACAN_API_MAX_BATCH_TERMS ),
 				array( 'status' => 400 )
 			);
 		}
