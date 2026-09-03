@@ -1,3 +1,12 @@
+# Docker development environment
+data/
+docker-compose.override.yml
+docker-compose.yml
+docker/
+.claude/
+.roo/
+.agents/
+AGENTS.md
 build-config.cfg
 src/style.css
 src/style.css.map
