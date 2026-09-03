@@ -105,12 +105,22 @@ class Embed {
 			$dimensions .= sprintf( 'width="%d" ', (int) $attr['width'] );
 			//$dimensions .= sprintf( 'height="%d" ', (int) $attr['height'] );
 		}
-		// preload="none" avoids loading the video as soon as the tag is rendered,
-		// which prevents CPU/memory spikes on some servers.
-		$video = sprintf( '<video controls="" preload="none" %s src="%s"></video>', $dimensions, esc_url( $url ) );
+		$preload = $this->is_video_preload_none_enabled() ? 'preload="none" ' : '';
+		$video = sprintf( '<video controls="" %s%s src="%s"></video>', $preload, $dimensions, esc_url( $url ) );
 		
 		return $video;
 		
+	}
+
+	/**
+	 * Checks whether Tainacan videos should prevent browser preloading.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool Whether the preload="none" attribute should be rendered.
+	 */
+	private function is_video_preload_none_enabled() {
+		return rest_sanitize_boolean( get_option( 'tainacan_option_enable_video_preload_none', true ) );
 	}
 	
 	/**
@@ -159,11 +169,15 @@ class Embed {
 	public function embed( $url ) {
 		global $wp_embed;
 
+		$previous_override_active = self::$override_active;
 		self::$override_active = true;
-		$embed = $wp_embed->autoembed( $url );
-		self::$override_active = false;
 
-		return $embed;
+		try {
+			return $wp_embed->autoembed( $url );
+		} finally {
+			self::$override_active = $previous_override_active;
+		}
+
 	}
 
 	/**

@@ -171,6 +171,18 @@ class Settings extends Pages {
 				: null
 		) );
 
+		$this->create_tainacan_setting( array(
+			'id' => 'enable_video_preload_none',
+			'section' => 'tainacan_settings_search_and_performance',
+			'title' => __( 'Video preload', 'tainacan' ),
+			'label' => __( 'Prevent videos from preloading', 'tainacan' ),
+			'description' => __( 'When enabled, Tainacan videos use the preload="none" attribute and load only after the visitor starts playback. Disable this option to let the browser use its default video preload behavior.', 'tainacan' ),
+			'type' => 'boolean',
+			'input_type' => 'checkbox',
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'default' => true
+		) );
+
 		/**
 		 * Theme default templates -----------------------------------------------------
 		 */
