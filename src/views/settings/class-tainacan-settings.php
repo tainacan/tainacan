@@ -180,7 +180,7 @@ class Settings extends Pages {
 			'type' => 'boolean',
 			'input_type' => 'checkbox',
 			'sanitize_callback' => 'rest_sanitize_boolean',
-			'default' => true
+			'default' => false
 		) );
 
 		/**

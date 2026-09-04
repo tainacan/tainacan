@@ -120,7 +120,7 @@ class Embed {
 	 * @return bool Whether the preload="none" attribute should be rendered.
 	 */
 	private function is_video_preload_none_enabled() {
-		return rest_sanitize_boolean( get_option( 'tainacan_option_enable_video_preload_none', true ) );
+		return rest_sanitize_boolean( get_option( 'tainacan_option_enable_video_preload_none', false ) );
 	}
 	
 	/**

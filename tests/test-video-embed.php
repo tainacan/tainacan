@@ -31,10 +31,10 @@ class VideoEmbed extends TAINACAN_UnitTestCase {
 				$embed->filter_video_embed( $default_video, array(), 'https://example.com/video.mp4', array() )
 			);
 
-			$this->assertStringContainsString( 'preload="none"', $embed->embed( 'https://example.com/video.mp4' ) );
-
-			update_option( 'tainacan_option_enable_video_preload_none', '0' );
 			$this->assertStringNotContainsString( 'preload=', $embed->embed( 'https://example.com/video.mp4' ) );
+
+			update_option( 'tainacan_option_enable_video_preload_none', '1' );
+			$this->assertStringContainsString( 'preload="none"', $embed->embed( 'https://example.com/video.mp4' ) );
 		} finally {
 			delete_option( 'tainacan_option_enable_video_preload_none' );
 			$wp_embed = $previous_wp_embed;
