@@ -1,36 +1,36 @@
 classDiagram
     direction TB
-    class Async_Request { }
-    class Admin_Bar_Items { }
-    class Cli_Document { }
-    class Background_Process { }
-    class Background_Process_Base { }
     class Cli { }
-    class Mappers_Handler { }
-    class System_Check { }
-    class Gutenberg_Blocks { }
-    class Admin_Commands { }
-    class __Bulk_Edit { }
-    class Roles_Editor { }
-    class Search_Engine { }
-    class Logs_Wp_Posts_Migration { }
-    class Cli_Logs { }
-    class Settings { }
     class Theme_Helper { }
-    class Cli_Control_Metadata { }
-    class Mobile_App { }
-    class Media { }
+    class Gutenberg_Blocks { }
     class Exposers_Handler { }
+    class Cli_Document { }
+    class Media { }
+    class __Bulk_Edit { }
+    class Pdf_Extracted_Text_Quality { }
+    class Roles_Editor { }
+    class Settings { }
     class Dashboard { }
+    class Background_Process_Base { }
+    class Async_Request { }
+    class Pages { }
+    class Cli_Collection { }
+    class Cli_Control_Metadata { }
+    class Admin { }
+    class Private_Files { }
+    class Background_Process { }
+    class Cli_Move_Attachments { }
     class Cli_Garbage_Collector { }
     class Background_Process_Heartbeat { }
+    class Search_Engine { }
+    class Admin_Commands { }
+    class Admin_Bar_Items { }
+    class Logs_Wp_Posts_Migration { }
+    class Cli_Logs { }
+    class Mappers_Handler { }
     class Embed { }
-    class Pages { }
-    class Pdf_Extracted_Text_Quality { }
-    class Cli_Move_Attachments { }
-    class Cli_Collection { }
-    class Private_Files { }
-    class Admin { }
+    class System_Check { }
+    class Mobile_App { }
     Async_Request <|-- Background_Process_Base
     Background_Process_Base <|-- Background_Process
     Cli_Logs ..> Logs_Wp_Posts_Migration
@@ -39,6 +39,7 @@ classDiagram
     Exposers_Handler ..> Mappers_Handler
     Gutenberg_Blocks ..> Admin
     Gutenberg_Blocks ..> Theme_Helper
+    Media ..> Embed
     Media ..> Pdf_Extracted_Text_Quality
     Pages ..> Exposers_Handler
     Pages ..> Mappers_Handler

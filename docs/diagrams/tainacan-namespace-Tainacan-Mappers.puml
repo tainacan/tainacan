@@ -14,7 +14,19 @@
     +get_url(meta_slug)
     +__construct()
   }
+  class "Inbcm_Archive" as Inbcm_Archive {
+    +slug : 
+    +name : 
+    +allow_extra_metadata : 
+    +__construct()
+  }
   class "Inbcm_Bibliographic" as Inbcm_Bibliographic {
+    +slug : 
+    +name : 
+    +allow_extra_metadata : 
+    +__construct()
+  }
+  class "Inbcm_Museological" as Inbcm_Museological {
     +slug : 
     +name : 
     +allow_extra_metadata : 
@@ -38,18 +50,6 @@
     +check_class_name(class_name, root, prefix)
     +create_mapped_collection(collection, request)
     +filter_item_api_response(item_arr, item, request)
-  }
-  class "Inbcm_Museological" as Inbcm_Museological {
-    +slug : 
-    +name : 
-    +allow_extra_metadata : 
-    +__construct()
-  }
-  class "Inbcm_Archive" as Inbcm_Archive {
-    +slug : 
-    +name : 
-    +allow_extra_metadata : 
-    +__construct()
   }
   class "Dublin_Core\n<b>Support Dublin Core Mapping </b>" as Dublin_Core {
     +slug : 

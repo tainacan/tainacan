@@ -12,20 +12,6 @@ function your_callback_function( $arg1, $arg2 ) {
 Refer to the list below for available Tainacan filters and their usage.
 
 
-## `tainacan-blocks-available-blocks` <!-- {docsify-ignore} -->
-
-*Filter the block list to allow plugins to completely remove blocks.*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`self::$blocks` |  | 
-
-Source: [class-tainacan-gutenberg-blocks.php](https://github.com/tainacan/tainacan/blob/master/src/views/gutenberg-blocks/class-tainacan-gutenberg-blocks.php), [line 251](https://github.com/tainacan/tainacan/blob/master/src/views/gutenberg-blocks/class-tainacan-gutenberg-blocks.php#L251-L260)
-
----------------------------------
-<br>
-
 ## `tainacan-i18n` <!-- {docsify-ignore} -->
 
 
@@ -1418,6 +1404,126 @@ Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/mas
 ---------------------------------
 <br>
 
+## `tainacan-blocks-available-blocks` <!-- {docsify-ignore} -->
+
+*Filter the block list to allow plugins to completely remove blocks.*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`self::$blocks` |  | 
+
+Source: [class-tainacan-gutenberg-blocks.php](https://github.com/tainacan/tainacan/blob/master/src/views/gutenberg-blocks/class-tainacan-gutenberg-blocks.php), [line 251](https://github.com/tainacan/tainacan/blob/master/src/views/gutenberg-blocks/class-tainacan-gutenberg-blocks.php#L251-L260)
+
+---------------------------------
+<br>
+
+## `tainacan-dashboard-cards` <!-- {docsify-ignore} -->
+
+*Use this filter to add or remove dashboard cards.*
+
+Remeber to return an array containing the card objects
+with a structure that contains the id, title, description,
+content (a callback), icon (an svg or img html tag), color
+(one of gray, blue and turquoise) and position (normal, side, column3, column4)
+
+If you remove any card from the array, users won't be able to add it anyway.
+If you just remove its id from the 'tainacan_dashboard_disabled_cards' wp option,
+users will be able to add it again.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$tainacan_dashboard_cards` |  | 
+
+Source: [class-tainacan-dashboard.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/class-tainacan-dashboard.php), [line 224](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/class-tainacan-dashboard.php#L224-L235)
+
+---------------------------------
+<br>
+
+## `tainacan_dashboard_news_feed` <!-- {docsify-ignore} -->
+
+*Creates the display code for the news card,
+featuring RSS feed from Tainacan website*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$this->default_news_feed_options` |  | 
+
+Source: [class-tainacan-dashboard.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/class-tainacan-dashboard.php), [line 558](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/class-tainacan-dashboard.php#L558-L566)
+
+---------------------------------
+<br>
+
+## `tainacan-dashboard-logo-use-white` <!-- {docsify-ignore} -->
+
+*Tweaks the dashboard logo to use white, monochrome version*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`false` |  | 
+
+Source: [page.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php#L11-L18)
+
+---------------------------------
+<br>
+
+## `tainacan-dashboard-logo` <!-- {docsify-ignore} -->
+
+*Filter the dashboard logo*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`plugin_dir_url(dirname(__FILE__, 2)) . '/assets/images/' . ($tainacan_dashboard_logo_use_white ? 'tainacan_logo_dashboard_white.svg' : 'tainacan_logo_dashboard.svg')` |  | 
+
+Source: [page.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php), [line 20](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php#L20-L30)
+
+---------------------------------
+<br>
+
+## `tainacan-dashboard-welcome-message` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$tainacan_dashboard_welcome_message` |  | 
+
+Source: [page.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php), [line 41](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php#L41-L41)
+
+---------------------------------
+<br>
+
+## `editable_slug` <!-- {docsify-ignore} -->
+
+*This filter is documented in wp-admin/edit-tag-form.php*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$uri` |  | 
+`$post` |  | 
+
+Source: [class-tainacan-admin.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php), [line 384](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php#L384-L385)
+
+---------------------------------
+<br>
+
+## `editable_slug` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$post->post_name` |  | 
+`$post` |  | 
+
+Source: [class-tainacan-admin.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php), [line 392](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php#L392-L392)
+
+---------------------------------
+<br>
+
 ## `tainacan-admin-hooks-positions` <!-- {docsify-ignore} -->
 
 
@@ -1438,90 +1544,6 @@ Argument | Type | Description
 `['collection', 'metadatum', 'item', 'taxonomy', 'term', 'filter', 'role', 'metadataSection']` |  | 
 
 Source: [class-tainacan-admin-hooks.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/classes/hooks/class-tainacan-admin-hooks.php), [line 25](https://github.com/tainacan/tainacan/blob/master/src/views/admin/classes/hooks/class-tainacan-admin-hooks.php#L25-L25)
-
----------------------------------
-<br>
-
-## `tainacan-status-require-validation` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`['publish', 'future', 'private']` |  | 
-
-Source: [class-tainacan-user.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php), [line 142](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php#L142-L142)
-
----------------------------------
-<br>
-
-## `tainacan-item-get-author-name` <!-- {docsify-ignore} -->
-
-*Get the value as a HTML string*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$name` |  | 
-`$this` |  | 
-
-Source: [class-tainacan-user.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php), [line 152](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php#L152-L166)
-
----------------------------------
-<br>
-
-## `tainacan-item-metadata-get-value-as-html--type-user` <!-- {docsify-ignore} -->
-
-*Filter the HTML representation of the value of a user metadatum*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$return` | `string` | The HTML representation of the value
-`$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
-
-Source: [class-tainacan-user.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php), [line 186](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php#L186-L194)
-
----------------------------------
-<br>
-
-## `tainacan-status-require-validation` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`['publish', 'future', 'private']` |  | 
-
-Source: [class-tainacan-core-description.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/core-description/class-tainacan-core-description.php), [line 75](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/core-description/class-tainacan-core-description.php#L75-L75)
-
----------------------------------
-<br>
-
-## `tainacan-item-metadata-get-value-as-html--type-description` <!-- {docsify-ignore} -->
-
-*Filter the HTML representation of the value of a core description metadatum*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$return` | `string` | The HTML representation of the value
-`$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
-
-Source: [class-tainacan-core-description.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/core-description/class-tainacan-core-description.php), [line 129](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/core-description/class-tainacan-core-description.php#L129-L137)
-
----------------------------------
-<br>
-
-## `tainacan-item-metadata-get-value-as-html--type-date` <!-- {docsify-ignore} -->
-
-*Filter the HTML representation of the value of a date metadatum*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$return` | `string` | The HTML representation of the value
-`$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
-
-Source: [class-tainacan-date.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/date/class-tainacan-date.php), [line 121](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/date/class-tainacan-date.php#L121-L129)
 
 ---------------------------------
 <br>
@@ -1563,6 +1585,21 @@ Argument | Type | Description
 `'tainacan-small'` |  | 
 
 Source: [class-tainacan-relationship.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/relationship/class-tainacan-relationship.php), [line 367](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/relationship/class-tainacan-relationship.php#L367-L374)
+
+---------------------------------
+<br>
+
+## `tainacan-item-metadata-get-value-as-html--type-date` <!-- {docsify-ignore} -->
+
+*Filter the HTML representation of the value of a date metadatum*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$return` | `string` | The HTML representation of the value
+`$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
+
+Source: [class-tainacan-date.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/date/class-tainacan-date.php), [line 121](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/date/class-tainacan-date.php#L121-L129)
 
 ---------------------------------
 <br>
@@ -1609,6 +1646,51 @@ Source: [class-tainacan-geocoordinate.php](https://github.com/tainacan/tainacan/
 ---------------------------------
 <br>
 
+## `tainacan-item-metadata-get-value-as-html--type-text` <!-- {docsify-ignore} -->
+
+*Filter the HTML representation of the value of a text metadatum*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`force_balance_tags($return)` |  | 
+`$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
+
+Source: [class-tainacan-text.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/text/class-tainacan-text.php), [line 96](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/text/class-tainacan-text.php#L96-L104)
+
+---------------------------------
+<br>
+
+## `tainacan-item-metadata-get-value-as-html--type-url` <!-- {docsify-ignore} -->
+
+*Filter the HTML representation of the value of a url metadatum*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$return` | `string` | The HTML representation of the value
+`$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
+
+Source: [class-tainacan-url.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/url/class-tainacan-url.php), [line 119](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/url/class-tainacan-url.php#L119-L127)
+
+---------------------------------
+<br>
+
+## `tainacan-item-metadata-get-value-as-string--type-url` <!-- {docsify-ignore} -->
+
+*Filter the STRING representation of the value of a url metadatum*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`wp_strip_all_tags($return)` |  | 
+`$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
+
+Source: [class-tainacan-url.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/url/class-tainacan-url.php), [line 230](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/url/class-tainacan-url.php#L230-L238)
+
+---------------------------------
+<br>
+
 ## `tainacan-status-require-validation` <!-- {docsify-ignore} -->
 
 
@@ -1628,34 +1710,29 @@ Argument | Type | Description
 -------- | ---- | -----------
 `['publish', 'future', 'private']` |  | 
 
-Source: [class-tainacan-control.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php), [line 100](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php#L100-L100)
+Source: [class-tainacan-user.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php), [line 142](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php#L142-L142)
 
 ---------------------------------
 <br>
 
-## `tainacan-control-metadatum-search-sql` <!-- {docsify-ignore} -->
+## `tainacan-item-get-author-name` <!-- {docsify-ignore} -->
 
-*Filter the SQL fragment used to search control metadata facet values by label.*
-
-Useful for plugins that register custom control_metadatum kinds.
-Callbacks must return a fully prepared/escaped SQL fragment.
+*Get the value as a HTML string*
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$search_q` | `string` | SQL fragment starting with "AND ..."
-`$search` | `string` | The search string.
-`$control_metadatum` | `string` | The control_metadatum option.
+`$name` |  | 
 `$this` |  | 
 
-Source: [class-tainacan-control.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php), [line 240](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php#L240-L251)
+Source: [class-tainacan-user.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php), [line 152](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php#L152-L166)
 
 ---------------------------------
 <br>
 
-## `tainacan-item-metadata-get-value-as-html--type-control` <!-- {docsify-ignore} -->
+## `tainacan-item-metadata-get-value-as-html--type-user` <!-- {docsify-ignore} -->
 
-*Filter the HTML representation of the value of a control metadatum*
+*Filter the HTML representation of the value of a user metadatum*
 
 
 Argument | Type | Description
@@ -1663,37 +1740,7 @@ Argument | Type | Description
 `$return` | `string` | The HTML representation of the value
 `$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
 
-Source: [class-tainacan-control.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php), [line 306](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php#L306-L314)
-
----------------------------------
-<br>
-
-## `tainacan-item-metadata-get-value-as-string--type-control` <!-- {docsify-ignore} -->
-
-*Filter the STRING representation of the value of a control metadatum*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$return` | `string` | The STRING representation of the value
-`$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
-
-Source: [class-tainacan-control.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php), [line 354](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php#L354-L362)
-
----------------------------------
-<br>
-
-## `tainacan-item-metadata-get-value-as-html--type-text` <!-- {docsify-ignore} -->
-
-*Filter the HTML representation of the value of a text metadatum*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`force_balance_tags($return)` |  | 
-`$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
-
-Source: [class-tainacan-text.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/text/class-tainacan-text.php), [line 96](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/text/class-tainacan-text.php#L96-L104)
+Source: [class-tainacan-user.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php), [line 186](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/user/class-tainacan-user.php#L186-L194)
 
 ---------------------------------
 <br>
@@ -1795,6 +1842,122 @@ Argument | Type | Description
 -------- | ---- | -----------
 `['publish', 'future', 'private']` |  | 
 
+Source: [class-tainacan-control.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php), [line 100](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php#L100-L100)
+
+---------------------------------
+<br>
+
+## `tainacan-control-metadatum-search-sql` <!-- {docsify-ignore} -->
+
+*Filter the SQL fragment used to search control metadata facet values by label.*
+
+Useful for plugins that register custom control_metadatum kinds.
+Callbacks must return a fully prepared/escaped SQL fragment.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$search_q` | `string` | SQL fragment starting with "AND ..."
+`$search` | `string` | The search string.
+`$control_metadatum` | `string` | The control_metadatum option.
+`$this` |  | 
+
+Source: [class-tainacan-control.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php), [line 240](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php#L240-L251)
+
+---------------------------------
+<br>
+
+## `tainacan-item-metadata-get-value-as-html--type-control` <!-- {docsify-ignore} -->
+
+*Filter the HTML representation of the value of a control metadatum*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$return` | `string` | The HTML representation of the value
+`$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
+
+Source: [class-tainacan-control.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php), [line 306](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php#L306-L314)
+
+---------------------------------
+<br>
+
+## `tainacan-item-metadata-get-value-as-string--type-control` <!-- {docsify-ignore} -->
+
+*Filter the STRING representation of the value of a control metadatum*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$return` | `string` | The STRING representation of the value
+`$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
+
+Source: [class-tainacan-control.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php), [line 354](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/control/class-tainacan-control.php#L354-L362)
+
+---------------------------------
+<br>
+
+## `tainacan-item-metadata-get-value-as-html--type-textarea` <!-- {docsify-ignore} -->
+
+*Filter the HTML representation of the value of a textarea metadatum*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`force_balance_tags($return)` |  | 
+`$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
+
+Source: [class-tainacan-textarea.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/textarea/class-tainacan-textarea.php), [line 93](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/textarea/class-tainacan-textarea.php#L93-L101)
+
+---------------------------------
+<br>
+
+## `tainacan-status-require-validation` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`['publish', 'future', 'private']` |  | 
+
+Source: [class-tainacan-core-description.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/core-description/class-tainacan-core-description.php), [line 75](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/core-description/class-tainacan-core-description.php#L75-L75)
+
+---------------------------------
+<br>
+
+## `tainacan-item-metadata-get-value-as-html--type-description` <!-- {docsify-ignore} -->
+
+*Filter the HTML representation of the value of a core description metadatum*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$return` | `string` | The HTML representation of the value
+`$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
+
+Source: [class-tainacan-core-description.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/core-description/class-tainacan-core-description.php), [line 129](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/core-description/class-tainacan-core-description.php#L129-L137)
+
+---------------------------------
+<br>
+
+## `tainacan-status-require-validation` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`['publish', 'future', 'private']` |  | 
+
+Source: [class-tainacan-core-title.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/core-title/class-tainacan-core-title.php), [line 74](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/core-title/class-tainacan-core-title.php#L74-L74)
+
+---------------------------------
+<br>
+
+## `tainacan-status-require-validation` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`['publish', 'future', 'private']` |  | 
+
 Source: [class-tainacan-taxonomy.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/taxonomy/class-tainacan-taxonomy.php), [line 233](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/taxonomy/class-tainacan-taxonomy.php#L233-L233)
 
 ---------------------------------
@@ -1836,52 +1999,19 @@ Argument | Type | Description
 -------- | ---- | -----------
 `['publish', 'future', 'private']` |  | 
 
-Source: [class-tainacan-core-title.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/core-title/class-tainacan-core-title.php), [line 74](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/core-title/class-tainacan-core-title.php#L74-L74)
+Source: [class-tainacan-checkbox.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/checkbox/class-tainacan-checkbox.php), [line 87](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/checkbox/class-tainacan-checkbox.php#L87-L87)
 
 ---------------------------------
 <br>
 
-## `tainacan-item-metadata-get-value-as-html--type-textarea` <!-- {docsify-ignore} -->
-
-*Filter the HTML representation of the value of a textarea metadatum*
+## `tainacan-status-require-validation` <!-- {docsify-ignore} -->
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`force_balance_tags($return)` |  | 
-`$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
+`['publish', 'future', 'private']` |  | 
 
-Source: [class-tainacan-textarea.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/textarea/class-tainacan-textarea.php), [line 93](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/textarea/class-tainacan-textarea.php#L93-L101)
-
----------------------------------
-<br>
-
-## `tainacan-item-metadata-get-value-as-html--type-url` <!-- {docsify-ignore} -->
-
-*Filter the HTML representation of the value of a url metadatum*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$return` | `string` | The HTML representation of the value
-`$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
-
-Source: [class-tainacan-url.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/url/class-tainacan-url.php), [line 119](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/url/class-tainacan-url.php#L119-L127)
-
----------------------------------
-<br>
-
-## `tainacan-item-metadata-get-value-as-string--type-url` <!-- {docsify-ignore} -->
-
-*Filter the STRING representation of the value of a url metadatum*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`wp_strip_all_tags($return)` |  | 
-`$item_metadata` | `\Tainacan\Entities\Item_Metadata_Entity` | The Item_Metadata_Entity object
-
-Source: [class-tainacan-url.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/url/class-tainacan-url.php), [line 230](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/url/class-tainacan-url.php#L230-L238)
+Source: [class-tainacan-numerics-intersection.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/numerics-intersection/class-tainacan-numerics-intersection.php), [line 87](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/numerics-intersection/class-tainacan-numerics-intersection.php#L87-L87)
 
 ---------------------------------
 <br>
@@ -1917,18 +2047,6 @@ Argument | Type | Description
 -------- | ---- | -----------
 `['publish', 'future', 'private']` |  | 
 
-Source: [class-tainacan-taxonomycheckbox.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/taxonomy/class-tainacan-taxonomycheckbox.php), [line 87](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/taxonomy/class-tainacan-taxonomycheckbox.php#L87-L87)
-
----------------------------------
-<br>
-
-## `tainacan-status-require-validation` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`['publish', 'future', 'private']` |  | 
-
 Source: [class-tainacan-dates-intersection.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/dates-intersection/class-tainacan-dates-intersection.php), [line 76](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/dates-intersection/class-tainacan-dates-intersection.php#L76-L76)
 
 ---------------------------------
@@ -1941,480 +2059,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `['publish', 'future', 'private']` |  | 
 
-Source: [class-tainacan-numerics-intersection.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/numerics-intersection/class-tainacan-numerics-intersection.php), [line 87](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/numerics-intersection/class-tainacan-numerics-intersection.php#L87-L87)
-
----------------------------------
-<br>
-
-## `tainacan-status-require-validation` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`['publish', 'future', 'private']` |  | 
-
-Source: [class-tainacan-checkbox.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/checkbox/class-tainacan-checkbox.php), [line 87](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/checkbox/class-tainacan-checkbox.php#L87-L87)
-
----------------------------------
-<br>
-
-## `editable_slug` <!-- {docsify-ignore} -->
-
-*This filter is documented in wp-admin/edit-tag-form.php*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$uri` |  | 
-`$post` |  | 
-
-Source: [class-tainacan-admin.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php), [line 384](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php#L384-L385)
-
----------------------------------
-<br>
-
-## `editable_slug` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$post->post_name` |  | 
-`$post` |  | 
-
-Source: [class-tainacan-admin.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php), [line 392](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php#L392-L392)
-
----------------------------------
-<br>
-
-## `tainacan-dashboard-logo-use-white` <!-- {docsify-ignore} -->
-
-*Tweaks the dashboard logo to use white, monochrome version*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`false` |  | 
-
-Source: [page.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php#L11-L18)
-
----------------------------------
-<br>
-
-## `tainacan-dashboard-logo` <!-- {docsify-ignore} -->
-
-*Filter the dashboard logo*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`plugin_dir_url(dirname(__FILE__, 2)) . '/assets/images/' . ($tainacan_dashboard_logo_use_white ? 'tainacan_logo_dashboard_white.svg' : 'tainacan_logo_dashboard.svg')` |  | 
-
-Source: [page.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php), [line 20](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php#L20-L30)
-
----------------------------------
-<br>
-
-## `tainacan-dashboard-welcome-message` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$tainacan_dashboard_welcome_message` |  | 
-
-Source: [page.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php), [line 41](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php#L41-L41)
-
----------------------------------
-<br>
-
-## `tainacan-dashboard-cards` <!-- {docsify-ignore} -->
-
-*Use this filter to add or remove dashboard cards.*
-
-Remeber to return an array containing the card objects
-with a structure that contains the id, title, description,
-content (a callback), icon (an svg or img html tag), color
-(one of gray, blue and turquoise) and position (normal, side, column3, column4)
-
-If you remove any card from the array, users won't be able to add it anyway.
-If you just remove its id from the 'tainacan_dashboard_disabled_cards' wp option,
-users will be able to add it again.
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$tainacan_dashboard_cards` |  | 
-
-Source: [class-tainacan-dashboard.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/class-tainacan-dashboard.php), [line 224](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/class-tainacan-dashboard.php#L224-L235)
-
----------------------------------
-<br>
-
-## `tainacan_dashboard_news_feed` <!-- {docsify-ignore} -->
-
-*Creates the display code for the news card,
-featuring RSS feed from Tainacan website*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$this->default_news_feed_options` |  | 
-
-Source: [class-tainacan-dashboard.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/class-tainacan-dashboard.php), [line 558](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/class-tainacan-dashboard.php#L558-L566)
-
----------------------------------
-<br>
-
-## `tainacan-get-the-document` <!-- {docsify-ignore} -->
-
-*To be used inside The Loop*
-
-Return the item document as a HTML string to be used as output.
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$item->get_document_as_html($item_id, $img_size)` |  | 
-`$item` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 86](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L86-L104)
-
----------------------------------
-<br>
-
-## `tainacan_get_the_document_raw` <!-- {docsify-ignore} -->
-
-*To be used inside The Loop*
-
-Return the item document in raw form (ID if an Attachment, textual content if URL or Text)
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$item->get_document($item_id)` |  | 
-`$item` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 107](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L107-L123)
-
----------------------------------
-<br>
-
-## `tainacan_get_the_item_document_url` <!-- {docsify-ignore} -->
-
-*To be used inside The Loop*
-
-Return the item document download URL.
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$item->get_document_download_url()` |  | 
-`$item` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 126](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L126-L142)
-
----------------------------------
-<br>
-
-## `tainacan_get_the_document_type` <!-- {docsify-ignore} -->
-
-*To be used inside The Loop*
-
-Return the item document type (e.g., 'attachment', 'url', 'text').
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$item->get_document_type()` |  | 
-`$item` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 145](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L145-L161)
-
----------------------------------
-<br>
-
-## `tainacan-get-collection-name` <!-- {docsify-ignore} -->
-
-*When visiting a collection archive or single, returns the collection name*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`''` |  | 
-`$collection` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 299](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L299-L307)
-
----------------------------------
-<br>
-
-## `tainacan-get-collection-name` <!-- {docsify-ignore} -->
-
-*When visiting a collection archive or single, returns the collection name*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`esc_html($name)` |  | 
-`$collection` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 299](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L299-L310)
-
----------------------------------
-<br>
-
-## `tainacan-get-collection-description` <!-- {docsify-ignore} -->
-
-*When visiting a collection archive or single, returns the collection description with clickable links*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`''` |  | 
-`$collection` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 341](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L341-L349)
-
----------------------------------
-<br>
-
-## `tainacan-get-collection-description` <!-- {docsify-ignore} -->
-
-*When visiting a collection archive or single, returns the collection description with clickable links*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`wp_kses_post($description)` |  | 
-`$collection` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 341](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L341-L356)
-
----------------------------------
-<br>
-
-## `tainacan-get-collection-url` <!-- {docsify-ignore} -->
-
-*When visiting a collection archive or single, returns the collection url link*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`''` |  | 
-`$collection` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 772](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L772-L780)
-
----------------------------------
-<br>
-
-## `tainacan-get-collection-url` <!-- {docsify-ignore} -->
-
-*When visiting a collection archive or single, returns the collection url link*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`esc_url($url)` |  | 
-`$collection` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 772](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L772-L783)
-
----------------------------------
-<br>
-
-## `tainacan-get-term-name` <!-- {docsify-ignore} -->
-
-*When visiting a taxonomy archive, returns the term name*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`''` |  | 
-`$term` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 911](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L911-L919)
-
----------------------------------
-<br>
-
-## `tainacan-get-term-name` <!-- {docsify-ignore} -->
-
-*When visiting a taxonomy archive, returns the term name*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`esc_html($name)` |  | 
-`$term` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 911](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L911-L922)
-
----------------------------------
-<br>
-
-## `tainacan-get-term-description` <!-- {docsify-ignore} -->
-
-*When visiting a taxonomy archive, returns the term description*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`''` |  | 
-`$term` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 939](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L939-L947)
-
----------------------------------
-<br>
-
-## `tainacan-get-term-description` <!-- {docsify-ignore} -->
-
-*When visiting a taxonomy archive, returns the term description*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`wp_kses_post($description)` |  | 
-`$term` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 939](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L939-L954)
-
----------------------------------
-<br>
-
-## `tainacan-get-the-attachments` <!-- {docsify-ignore} -->
-
-*To be used inside The Loop*
-
-Return the list of attachments of the current item (by default, excluding the document and the thumbnail)
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$item->get_attachments($exclude)` |  | 
-`$item` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 970](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L970-L986)
-
----------------------------------
-<br>
-
-## `tainacan-get-initials` <!-- {docsify-ignore} -->
-
-*Gets the initials from a name.*
-
-By default, returns 2 uppercase letters representing the name. The first letter from the first name and the first letter from the last.
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$result` |  | 
-`$string` | `string` | The name to extract the initials from
-`$one` | `bool` | whether to return only the first letter, instead of two
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1094](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1094-L1131)
-
----------------------------------
-<br>
-
-## `tainacan-get-the-mime-type-icon` <!-- {docsify-ignore} -->
-
-*Filter the image source for the empty thumbnail placeholder.*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$images_path . $icon_file . $image_size . '.png'` |  | 
-`$mime_type` |  | 
-`$image_size` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1216](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1216-L1224)
-
----------------------------------
-<br>
-
-## `tainacan_single_taxonomy_terms_query` <!-- {docsify-ignore} -->
-
-*Render the taxonomy single template HTML string.*
-
-This works as an archive of the taxonomy terms, and uses the CPT tainacan-taxonomy.
-
-It should display the list of terms, and it is used in the the_content filter of the theme helper to override the cpt single.
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$terms_query_args` |  | 
-`$post` | `object` | The original tainacan-taxonomy post object. It contains the $post->ID, which can be used to query the taxonomy of slug tnc_tax_<$post-id>
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1481](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1481-L1629)
-
----------------------------------
-<br>
-
-## `tainacan-terms-hierarchy-html-separator` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`'>'` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1641](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1641-L1641)
-
----------------------------------
-<br>
-
-## `tainacan_get_single_taxonomy_content` <!-- {docsify-ignore} -->
-
-*Render the taxonomy single template HTML string.*
-
-This works as an archive of the taxonomy terms, and uses the CPT tainacan-taxonomy.
-
-It should display the list of terms, and it is used in the the_content filter of the theme helper to override the cpt single.
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`['content' => $content, 'total_terms' => $total_terms]` |  | 
-`$post` | `object` | The original tainacan-taxonomy post object. It contains the $post->ID, which can be used to query the taxonomy of slug tnc_tax_<$post-id>
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1481](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1481-L1805)
-
----------------------------------
-<br>
-
-## `tainacan_get_taxonomies_orderby` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$html` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1869](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1869-L1869)
-
----------------------------------
-<br>
-
-## `tainacan_get_taxonomies_search` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$html` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1939](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1939-L1939)
-
----------------------------------
-<br>
-
-## `tainacan_get_taxonomies_pagination` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`wp_kses_post($html)` |  | 
-
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1981](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1981-L1981)
+Source: [class-tainacan-taxonomycheckbox.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/taxonomy/class-tainacan-taxonomycheckbox.php), [line 87](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/taxonomy/class-tainacan-taxonomycheckbox.php#L87-L87)
 
 ---------------------------------
 <br>
@@ -3333,231 +2978,357 @@ Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/b
 ---------------------------------
 <br>
 
-## `tainacan-default-search-sentence` <!-- {docsify-ignore} -->
+## `tainacan-get-the-document` <!-- {docsify-ignore} -->
 
-*Default value for the sentence query var when not explicitly set.*
+*To be used inside The Loop*
 
-
-Argument | Type | Description
--------- | ---- | -----------
-`!$search_each_word_by_default` |  | 
-
-Source: [class-tainacan-search-engine.php](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-search-engine.php), [line 404](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-search-engine.php#L404-L414)
-
----------------------------------
-<br>
-
-## `tainacan-oai-token-valid` <!-- {docsify-ignore} -->
-
-*Lifetime, in seconds, of a resumptionToken. Defaults to 24 hours.*
+Return the item document as a HTML string to be used as output.
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`DAY_IN_SECONDS` |  | 
+`$item->get_document_as_html($item_id, $img_size)` |  | 
+`$item` |  | 
 
-Source: [class-tainacan-oaipmh-token-manager.php](https://github.com/tainacan/tainacan/blob/master/src/classes/oaipmh/class-tainacan-oaipmh-token-manager.php), [line 27](https://github.com/tainacan/tainacan/blob/master/src/classes/oaipmh/class-tainacan-oaipmh-token-manager.php#L27-L32)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 86](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L86-L104)
 
 ---------------------------------
 <br>
 
-## `tainacan-oai-repository-name` <!-- {docsify-ignore} -->
+## `tainacan_get_the_document_raw` <!-- {docsify-ignore} -->
+
+*To be used inside The Loop*
+
+Return the item document in raw form (ID if an Attachment, textual content if URL or Text)
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`get_bloginfo('name')` |  | 
+`$item->get_document($item_id)` |  | 
+`$item` |  | 
 
-Source: [class-tainacan-oaipmh-data-provider.php](https://github.com/tainacan/tainacan/blob/master/src/classes/oaipmh/class-tainacan-oaipmh-data-provider.php), [line 81](https://github.com/tainacan/tainacan/blob/master/src/classes/oaipmh/class-tainacan-oaipmh-data-provider.php#L81-L81)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 107](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L107-L123)
 
 ---------------------------------
 <br>
 
-## `tainacan-oai-admin-email` <!-- {docsify-ignore} -->
+## `tainacan_get_the_item_document_url` <!-- {docsify-ignore} -->
+
+*To be used inside The Loop*
+
+Return the item document download URL.
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`get_bloginfo('admin_email')` |  | 
+`$item->get_document_download_url()` |  | 
+`$item` |  | 
 
-Source: [class-tainacan-oaipmh-data-provider.php](https://github.com/tainacan/tainacan/blob/master/src/classes/oaipmh/class-tainacan-oaipmh-data-provider.php), [line 84](https://github.com/tainacan/tainacan/blob/master/src/classes/oaipmh/class-tainacan-oaipmh-data-provider.php#L84-L84)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 126](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L126-L142)
 
 ---------------------------------
 <br>
 
-## `tainacan-oai-earliest-datestamp` <!-- {docsify-ignore} -->
+## `tainacan_get_the_document_type` <!-- {docsify-ignore} -->
 
-*Filter the repository earliest datestamp advertised on Identify.*
+*To be used inside The Loop*
+
+Return the item document type (e.g., 'attachment', 'url', 'text').
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$result` | `string` | Datestamp in YYYY-MM-DDThh:mm:ssZ.
+`$item->get_document_type()` |  | 
+`$item` |  | 
 
-Source: [class-tainacan-oaipmh-data-provider.php](https://github.com/tainacan/tainacan/blob/master/src/classes/oaipmh/class-tainacan-oaipmh-data-provider.php), [line 130](https://github.com/tainacan/tainacan/blob/master/src/classes/oaipmh/class-tainacan-oaipmh-data-provider.php#L130-L135)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 145](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L145-L161)
 
 ---------------------------------
 <br>
 
-## `tainacan-exposer-jsonld` <!-- {docsify-ignore} -->
+## `tainacan-get-collection-name` <!-- {docsify-ignore} -->
+
+*When visiting a collection archive or single, returns the collection name*
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$jsonld` |  | 
+`''` |  | 
+`$collection` |  | 
 
-Source: [class-tainacan-json-ld.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-json-ld.php), [line 47](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-json-ld.php#L47-L47)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 299](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L299-L307)
 
 ---------------------------------
 <br>
 
-## `tainacan-exposer-numeric-item-prefix` <!-- {docsify-ignore} -->
+## `tainacan-get-collection-name` <!-- {docsify-ignore} -->
+
+*When visiting a collection archive or single, returns the collection name*
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`__('item', 'tainacan') . '-'` |  | 
-`get_class($this)` |  | 
+`esc_html($name)` |  | 
+`$collection` |  | 
 
-Source: [class-tainacan-xml.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-xml.php), [line 59](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-xml.php#L59-L59)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 299](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L299-L310)
 
 ---------------------------------
 <br>
 
-## `tainacan-exposer-html` <!-- {docsify-ignore} -->
+## `tainacan-get-collection-description` <!-- {docsify-ignore} -->
 
-*{@inheritDoc}*
+*When visiting a collection archive or single, returns the collection description with clickable links*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`''` |  | 
+`$collection` |  | 
+
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 341](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L341-L349)
+
+---------------------------------
+<br>
+
+## `tainacan-get-collection-description` <!-- {docsify-ignore} -->
+
+*When visiting a collection archive or single, returns the collection description with clickable links*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`wp_kses_post($description)` |  | 
+`$collection` |  | 
+
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 341](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L341-L356)
+
+---------------------------------
+<br>
+
+## `tainacan-get-collection-url` <!-- {docsify-ignore} -->
+
+*When visiting a collection archive or single, returns the collection url link*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`''` |  | 
+`$collection` |  | 
+
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 772](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L772-L780)
+
+---------------------------------
+<br>
+
+## `tainacan-get-collection-url` <!-- {docsify-ignore} -->
+
+*When visiting a collection archive or single, returns the collection url link*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`esc_url($url)` |  | 
+`$collection` |  | 
+
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 772](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L772-L783)
+
+---------------------------------
+<br>
+
+## `tainacan-get-term-name` <!-- {docsify-ignore} -->
+
+*When visiting a taxonomy archive, returns the term name*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`''` |  | 
+`$term` |  | 
+
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 911](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L911-L919)
+
+---------------------------------
+<br>
+
+## `tainacan-get-term-name` <!-- {docsify-ignore} -->
+
+*When visiting a taxonomy archive, returns the term name*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`esc_html($name)` |  | 
+`$term` |  | 
+
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 911](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L911-L922)
+
+---------------------------------
+<br>
+
+## `tainacan-get-term-description` <!-- {docsify-ignore} -->
+
+*When visiting a taxonomy archive, returns the term description*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`''` |  | 
+`$term` |  | 
+
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 939](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L939-L947)
+
+---------------------------------
+<br>
+
+## `tainacan-get-term-description` <!-- {docsify-ignore} -->
+
+*When visiting a taxonomy archive, returns the term description*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`wp_kses_post($description)` |  | 
+`$term` |  | 
+
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 939](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L939-L954)
+
+---------------------------------
+<br>
+
+## `tainacan-get-the-attachments` <!-- {docsify-ignore} -->
+
+*To be used inside The Loop*
+
+Return the list of attachments of the current item (by default, excluding the document and the thumbnail)
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$item->get_attachments($exclude)` |  | 
+`$item` |  | 
+
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 970](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L970-L986)
+
+---------------------------------
+<br>
+
+## `tainacan-get-initials` <!-- {docsify-ignore} -->
+
+*Gets the initials from a name.*
+
+By default, returns 2 uppercase letters representing the name. The first letter from the first name and the first letter from the last.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$result` |  | 
+`$string` | `string` | The name to extract the initials from
+`$one` | `bool` | whether to return only the first letter, instead of two
+
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1094](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1094-L1131)
+
+---------------------------------
+<br>
+
+## `tainacan-get-the-mime-type-icon` <!-- {docsify-ignore} -->
+
+*Filter the image source for the empty thumbnail placeholder.*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$images_path . $icon_file . $image_size . '.png'` |  | 
+`$mime_type` |  | 
+`$image_size` |  | 
+
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1216](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1216-L1224)
+
+---------------------------------
+<br>
+
+## `tainacan_single_taxonomy_terms_query` <!-- {docsify-ignore} -->
+
+*Render the taxonomy single template HTML string.*
+
+This works as an archive of the taxonomy terms, and uses the CPT tainacan-taxonomy.
+
+It should display the list of terms, and it is used in the the_content filter of the theme helper to override the cpt single.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$terms_query_args` |  | 
+`$post` | `object` | The original tainacan-taxonomy post object. It contains the $post->ID, which can be used to query the taxonomy of slug tnc_tax_<$post-id>
+
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1481](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1481-L1629)
+
+---------------------------------
+<br>
+
+## `tainacan-terms-hierarchy-html-separator` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`'>'` |  | 
+
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1641](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1641-L1641)
+
+---------------------------------
+<br>
+
+## `tainacan_get_single_taxonomy_content` <!-- {docsify-ignore} -->
+
+*Render the taxonomy single template HTML string.*
+
+This works as an archive of the taxonomy terms, and uses the CPT tainacan-taxonomy.
+
+It should display the list of terms, and it is used in the the_content filter of the theme helper to override the cpt single.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`['content' => $content, 'total_terms' => $total_terms]` |  | 
+`$post` | `object` | The original tainacan-taxonomy post object. It contains the $post->ID, which can be used to query the taxonomy of slug tnc_tax_<$post-id>
+
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1481](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1481-L1805)
+
+---------------------------------
+<br>
+
+## `tainacan_get_taxonomies_orderby` <!-- {docsify-ignore} -->
 
 
 Argument | Type | Description
 -------- | ---- | -----------
 `$html` |  | 
 
-Source: [class-tainacan-html.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-html.php), [line 23](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-html.php#L23-L85)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1869](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1869-L1869)
 
 ---------------------------------
 <br>
 
-## `tainacan-exposer-numeric-item-prefix` <!-- {docsify-ignore} -->
+## `tainacan_get_taxonomies_search` <!-- {docsify-ignore} -->
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`__('item', 'tainacan') . '-'` |  | 
-`get_class($this)` |  | 
+`$html` |  | 
 
-Source: [class-tainacan-html.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-html.php), [line 102](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-html.php#L102-L102)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1939](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1939-L1939)
 
 ---------------------------------
 <br>
 
-## `tainacan-exporser-type-mappers` <!-- {docsify-ignore} -->
-
-*Return list of supported mappers for this type*
+## `tainacan_get_taxonomies_pagination` <!-- {docsify-ignore} -->
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$this->mappers` |  | 
-`$this` |  | 
+`wp_kses_post($html)` |  | 
 
-Source: [class-tainacan-exposer.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-exposer.php), [line 83](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-exposer.php#L83-L88)
-
----------------------------------
-<br>
-
-## `tainacan-exposer-txt` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$txt` |  | 
-
-Source: [class-tainacan-txt.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-txt.php), [line 25](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-txt.php#L25-L25)
-
----------------------------------
-<br>
-
-## `tainacan-exposer-numeric-item-prefix` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`__('item', 'tainacan') . '-'` |  | 
-`get_class($this)` |  | 
-
-Source: [class-tainacan-txt.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-txt.php), [line 39](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-txt.php#L39-L39)
-
----------------------------------
-<br>
-
-## `tainacan-exposer-head` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`'<?xml version="1.0" encoding="UTF-8"?>
-			<oai_dc:dc 
-    			xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" 
-    			xmlns:dc="http://purl.org/dc/elements/1.1/" 
-    			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    			xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ 
-    			http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
-			</oai_dc:dc>'` |  | 
-
-Source: [class-tainacan-oai-pmh.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-oai-pmh.php), [line 25](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-oai-pmh.php#L25-L33)
-
----------------------------------
-<br>
-
-## `tainacan-oai-pmh-namespace` <!-- {docsify-ignore} -->
-
-*{@inheritDoc}*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`\Tainacan\Exposers\Mappers\Dublin_Core::XML_DC_NAMESPACE` |  | 
-
-Source: [class-tainacan-oai-pmh.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-oai-pmh.php), [line 18](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-oai-pmh.php#L18-L34)
-
----------------------------------
-<br>
-
-## `tainacan-oai-pmh-root` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$xml` |  | 
-
-Source: [class-tainacan-oai-pmh.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-oai-pmh.php), [line 35](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-oai-pmh.php#L35-L35)
-
----------------------------------
-<br>
-
-## `tainacan-available-admin-ui-options` <!-- {docsify-ignore} -->
-
-*Lists a translatable and grouped version of the available admin ui options*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`array('navigation' => array('label' => __('Navigation', 'tainacan'), 'description' => __('Options related to the overall plugin navigation such as sidemenu and fullscreen mode.', 'tainacan'), 'items' => array('forceFullscreenAdminMode' => __('Force Tainacan to always overlap WordPress admin menu and sidebar', 'tainacan'), 'hideBreadcrumbs' => __('Hide breadcrumbs', 'tainacan'), 'hideWordPressShorcutButton' => __('Hide WordPress shortcut button', 'tainacan'), 'hideSiteShorcutButton' => __('Hide site shortcut button', 'tainacan'), 'hideFullscreenTogglerButton' => __('Hide fullscreen toggler button', 'tainacan'), 'hideMenuCollapserButton' => __('Hide menu collapser button', 'tainacan'), 'hideNavigationSidebar' => __('Hide entire navigation side menu', 'tainacan'), 'hideNavigationHomeButton' => __('Hide home button in side menu', 'tainacan'), 'hideNavigationRepositoryMenu' => __('Hide "Repository" menu button in side menu', 'tainacan'), 'hideNavigationTaxonomiesButton' => __('Hide taxonomies button in repository submenu', 'tainacan'), 'hideNavigationMetadataButton' => __('Hide metadata button in repository submenu', 'tainacan'), 'hideNavigationFiltersButton' => __('Hide filters button in repository submenu', 'tainacan'), 'hideNavigationImportersButton' => __('Hide importers button in repository submenu', 'tainacan'), 'hideNavigationExportersButton' => __('Hide exporters button in repository submenu', 'tainacan'), 'hideNavigationActivitiesButton' => __('Hide activities button in repository submenu', 'tainacan'), 'hideNavigationCapabilitiesButton' => __('Hide permissions button in repository submenu', 'tainacan'), 'hideNavigationProcessesButton' => __('Hide processes button in repository submenu', 'tainacan'), 'hideNavigationReportsButton' => __('Hide reports button in repository submenu', 'tainacan'), 'hideNavigationCollectionsMenu' => __('Hide "Collections" menu button in side menu', 'tainacan'), 'hideNavigationCollectionsButton' => __('Hide collections list button in collections submenu', 'tainacan'), 'hideNavigationItemsButton' => __('Hide "All items" button in collections submenu', 'tainacan'), 'hideNavigationMyItemsButton' => __('Hide "My items" button in collections submenu', 'tainacan'), 'hideNavigationCollectionName' => __('Hide collection name in current collection submenu', 'tainacan'), 'hideNavigationCollectionItemsButton' => __('Hide "All items" button in current collection submenu', 'tainacan'), 'hideNavigationCollectionMyItemsButton' => __('Hide "My items" button in current collection submenu', 'tainacan'), 'hideNavigationCollectionSettingsButton' => __('Hide settings button in current collection submenu', 'tainacan'), 'hideNavigationCollectionMetadataButton' => __('Hide metadata button in current collection submenu', 'tainacan'), 'hideNavigationCollectionFiltersButton' => __('Hide filters button in current collection submenu', 'tainacan'), 'hideNavigationCollectionExportersButton' => __('Hide exporters button in current collection submenu', 'tainacan'), 'hideNavigationCollectionActivitiesButton' => __('Hide activities button in current collection submenu', 'tainacan'), 'hideNavigationCollectionCapabilitiesButton' => __('Hide permissions button in current collection submenu', 'tainacan'), 'hideNavigationCollectionReportsButton' => __('Hide reports button in current collection submenu', 'tainacan'), 'hideExternalEntityLinks' => __('Hide external site links for item, collection, taxonomies and other public pages', 'tainacan'), 'hideNavigationOtherMenu' => __('Hide "Other" menu button in side menu', 'tainacan'), 'hideNavigationSettingsButton' => __('Hide "Settings" button in side menu', 'tainacan'), 'hideNavigationRolesButton' => __('Hide "Roles" button in side menu', 'tainacan'), 'hideNavigationSystemCheckButton' => __('Hide "System Check" button in side menu', 'tainacan'))), 'dashboard' => array('label' => __('Dashboard', 'tainacan'), 'description' => __('Options related to the Dashboard page and its cards. Notice that each user may still hide the cards that remain in the screen.', 'tainacan'), 'items' => array('disableDashboardCardsSorting' => __('Disable dashboard cards sorting', 'tainacan'), 'hideDashboardRepositoryCard' => __('Hide repository card', 'tainacan'), 'hideDashboardRepositoryCardTaxonomiesButton' => __('Hide repository card taxonomies button', 'tainacan'), 'hideDashboardRepositoryCardMetadataButton' => __('Hide repository card metadata button', 'tainacan'), 'hideDashboardRepositoryCardFiltersButton' => __('Hide repository card filters button', 'tainacan'), 'hideDashboardRepositoryCardImportersButton' => __('Hide repository card importers button', 'tainacan'), 'showDashboardRepositoryCardExportersButton' => __('Show repository card exporters button', 'tainacan'), 'showDashboardRepositoryCardProcessesButton' => __('Show repository card processes button', 'tainacan'), 'showDashboardRepositoryCardActivitiesButton' => __('Show repository card activities button', 'tainacan'), 'showDashboardRepositoryCardCapabilitiesButton' => __('Show repository card capabilities button', 'tainacan'), 'showDashboardRepositoryCardReportsButton' => __('Show repository card reports button', 'tainacan'), 'hideDashboardCollectionsCard' => __('Hide collections card', 'tainacan'), 'hideDashboardCollectionsCardCollectionsListButton' => __('Hide collections card collections list button', 'tainacan'), 'hideDashboardCollectionsCardNewCollectionButton' => __('Hide collections card new collection button', 'tainacan'), 'hideDashboardCollectionsCardItemsListButton' => __('Hide collections card items list button', 'tainacan'), 'hideDashboardCollectionsCardMyItemsListButton' => __('Hide collections card "My items list" button', 'tainacan'), 'hideDashboardCollectionCards' => __('Hide collection cards', 'tainacan'), 'showOnlyCollectionCardsThatUserCanEdit' => __('Show only collections that user can edit items', 'tainacan'), 'showOnlyCollectionCardsAuthoredByUser' => __('Show only collections authored by the user', 'tainacan'), 'hideDashboardCollectionCardsItemsButton' => __('Hide collection cards items button', 'tainacan'), 'hideDashboardCollectionCardsExternalLinkButton' => __('Hide collection cards external link button', 'tainacan'), 'showDashboardCollectionCardsMyItemsButton' => __('Show collection cards "My items" button', 'tainacan'), 'hideDashboardCollectionCardsMetadataButton' => __('Hide collection cards metadata button', 'tainacan'), 'showDashboardCollectionCardsFiltersButton' => __('Show collection cards filters button', 'tainacan'), 'showDashboardCollectionCardsImportersButton' => __('Show collection cards importers button', 'tainacan'), 'showDashboardCollectionCardsExportersButton' => __('Show collection cards exporters button', 'tainacan'), 'showDashboardCollectionCardsActivitiesButton' => __('Show collection cards activities button', 'tainacan'), 'showDashboardCollectionCardsCapabilitiesButton' => __('Show collection cards capabilities button', 'tainacan'), 'showDashboardCollectionCardsReportsButton' => __('Show collection cards reports button', 'tainacan'), 'hideDashboardInfoCard' => __('Hide info card', 'tainacan'), 'hideDashboardInfoCardForumButton' => __('Hide info card user\'s forum button', 'tainacan'), 'hideDashboardInfoCardFAQButton' => __('Hide info card FAQ button', 'tainacan'), 'hideDashboardInfoCardWikiButton' => __('Hide info card wiki button', 'tainacan'), 'hideDashboardInfoCardSourceCodeButton' => __('Hide info card source code button', 'tainacan'), 'showDashboardInfoCardVideosButton' => __('Show info card videos button', 'tainacan'), 'hideDashboardNewsCard' => __('Hide news card', 'tainacan'))), 'items-list' => array('label' => __('Items list', 'tainacan'), 'description' => __('Options related to the admin pages that display the faceted search with items list.', 'tainacan'), 'items' => array('hideItemsListPageTitle' => __('Hide page title', 'tainacan'), 'hideItemsListBulkActionsButton' => __('Hide bulk actions button', 'tainacan'), 'hideItemsListMultipleSelection' => __('Hide multiple item selection', 'tainacan'), 'hideItemsListSelection' => __('Hide individual item selection', 'tainacan'), 'hideItemsListExposersButton' => __('Hide "View as..." button', 'tainacan'), 'hideItemsListViewModesButton' => __('Hide view mode selector button', 'tainacan'), 'hideDisplayedMetadataDropdown' => __('Hide displayed metadata dropdown', 'tainacan'), 'hideItemsListAdvancedSearch' => __('Hide advanced search', 'tainacan'), 'hideItemsListStatusTabs' => __('Hide status tabs', 'tainacan'), 'hideItemsListStatusTabsTotalItems' => __('Hide total items in status tabs', 'tainacan'), 'hideItemsListCreationDropdownBulkAdd' => __('Hide bulk add button in creation dropdown', 'tainacan'), 'hideItemsListCreationDropdownImport' => __('Hide import button in creation dropdown', 'tainacan'), 'hideItemsListContextMenu' => __('Hide right-click context menu', 'tainacan'), 'hideItemsListFilterCreationButton' => __('Hide create filters button', 'tainacan'), 'hideItemsListGoToPageButton' => __('Hide "Go to page" button', 'tainacan'), 'hideItemsListItemsPerPageButton' => __('Hide "Items per page" button', 'tainacan'))), 'item-editing-page' => array('label' => __('Item editing page', 'tainacan'), 'description' => __('Options related to the item edition form. Some of this settings may also be achieved via collection settings, but doing here will override any option.', 'tainacan'), 'items' => array('hideItemEditionPageTitle' => __('Hide page title', 'tainacan'), 'itemEditionPublicationSectionInsideTabs' => __('Show publication section inside tabs', 'tainacan'), 'itemEditionDocumentInsideTabs' => __('Show document entry inside tabs', 'tainacan'), 'itemEditionAttachmentsInsideTabs' => __('Show attachments inside tabs', 'tainacan'), 'hideItemEditionPublicationSection' => __('Hide publication section', 'tainacan'), 'hideItemEditionStatusOption' => __('Hide status options', 'tainacan'), 'hideItemEditionStatusPublishOption' => __('Hide public status option', 'tainacan'), 'hideItemEditionStatusPrivateOption' => __('Hide private status option', 'tainacan'), 'hideItemEditionStatusPendingOption' => __('Hide pending status option', 'tainacan'), 'hideItemEditionCommentsToggle' => __('Hide comments option', 'tainacan'), 'hideItemEditionDocument' => __('Hide document entry completely', 'tainacan'), 'hideItemEditionDocumentFileInput' => __('Hide file type document entry', 'tainacan'), 'hideItemEditionDocumentTextInput' => __('Hide text type document entry', 'tainacan'), 'hideItemEditionDocumentUrlInput' => __('Hide URL type document entry', 'tainacan'), 'hideItemEditionThumbnail' => __('Hide thumbnail', 'tainacan'), 'hideItemEditionAttachments' => __('Hide attachments', 'tainacan'), 'itemEditionStatusOptionOnFooterDropdown' => __('Show status option in footer dropdown', 'tainacan'), 'allowItemEditionModalInsideModal' => __('Allow item creation modal inside another modal (experimental)', 'tainacan'))), 'item-page' => array('label' => __('Item page', 'tainacan'), 'description' => __('Options related to the item page inside the admin', 'tainacan'), 'items' => array('hideItemSinglePageTitle' => __('Hide page title', 'tainacan'), 'hideItemSingleCurrentStatus' => __('Hide status', 'tainacan'), 'hideItemSingleCurrentVisibility' => __('Hide visibility status', 'tainacan'), 'hideItemSingleCommentsOpen' => __('Hide comments condition', 'tainacan'), 'hideItemSingleDocument' => __('Hide document', 'tainacan'), 'hideItemSingleThumbnail' => __('Hide thumbnail', 'tainacan'), 'hideItemSingleAttachments' => __('Hide attachments', 'tainacan'), 'hideItemSingleActivities' => __('Hide activities', 'tainacan'), 'hideItemSingleExposers' => __('Hide "View as..." button', 'tainacan'))))` |  | 
-
-Source: [class-tainacan-admin-ui-options.php](https://github.com/tainacan/tainacan/blob/master/src/classes/traits/class-tainacan-admin-ui-options.php), [line 15](https://github.com/tainacan/tainacan/blob/master/src/classes/traits/class-tainacan-admin-ui-options.php#L15-L178)
-
----------------------------------
-<br>
-
-## `tainacan-svg-icons-folder-path` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$icons_folder_path` |  | 
-
-Source: [class-tainacan-svg-icon.php](https://github.com/tainacan/tainacan/blob/master/src/classes/traits/class-tainacan-svg-icon.php), [line 13](https://github.com/tainacan/tainacan/blob/master/src/classes/traits/class-tainacan-svg-icon.php#L13-L22)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1981](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1981-L1981)
 
 ---------------------------------
 <br>
@@ -3576,35 +3347,15 @@ Source: [class-tainacan-repository.php](https://github.com/tainacan/tainacan/blo
 
 ## `tainacan-get-map-{$entity}` <!-- {docsify-ignore} -->
 
-*Repository for managing Tainacan filters.*
+*Repository for managing Tainacan items.*
 
-Handles all database operations for collection filters including creation,
+Handles all database operations for items including creation,
 updates, deletion, and querying with proper validation and logging.
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`['name' => ['map' => 'post_title', 'title' => __('Name', 'tainacan'), 'type' => 'string', 'description' => __('Name of the filter', 'tainacan'), 'on_error' => __('The filter name should be a text value and not empty', 'tainacan'), 'validation' => v::stringType()->notEmpty()], 'order' => ['map' => 'menu_order', 'title' => __('Order', 'tainacan'), 'type' => ['string', 'integer'], 'description' => __('Filter order. This metadata is used if filters were manually ordered.', 'tainacan'), 'validation' => ''], 'description' => ['map' => 'post_content', 'title' => __('Description', 'tainacan'), 'type' => 'string', 'description' => __('The filter description', 'tainacan'), 'validation' => '', 'default' => ''], 'filter_type_options' => ['map' => 'meta', 'title' => __('Filter type options', 'tainacan'), 'type' => ['array', 'object', 'string'], 'items' => ['type' => ['array', 'string', 'integer', 'object']], 'description' => __('The filter type options', 'tainacan'), 'validation' => ''], 'filter_type' => ['map' => 'meta', 'title' => __('Type', 'tainacan'), 'type' => 'string', 'description' => __('The filter type class name, such as filter_type: Tainacan\\Filter_Types\\Checkbox', 'tainacan'), 'validation' => ''], 'initial_display' => ['map' => 'meta', 'title' => __('Initial display', 'tainacan'), 'type' => 'string', 'description' => __('Controls how the filter starts in the faceted search: shown by default, collapsed until the user expands it, or hidden until the user adds it from the "Add filters" control.', 'tainacan'), 'on_error' => __('Please set the "Initial display" value as "default", "collapsed" or "hidden"', 'tainacan'), 'validation' => v::stringType()->in(['default', 'collapsed', 'hidden']), 'enum' => ['default', 'collapsed', 'hidden'], 'default' => 'default'], 'display_in_repository_level_lists' => [
-    'map' => 'meta',
-    'title' => __('Display in repository level lists', 'tainacan'),
-    'type' => 'string',
-    'description' => __('With this option enabled, the filter will appear even in repository level items lists, such as the complete items list and the term items list.', 'tainacan'),
-    'on_error' => __('Please set the "Display in repository level lists" value as "yes" or "no"', 'tainacan'),
-    'validation' => v::stringType()->in(['yes', 'no']),
-    // yes or no
-    'enum' => ['yes', 'no'],
-    'default' => 'no',
-], 'collection_id' => ['map' => 'meta', 'title' => __('Collection', 'tainacan'), 'type' => ['integer', 'string'], 'description' => __('The collection ID', 'tainacan'), 'validation' => ''], 'metadatum_id' => ['map' => 'meta', 'title' => __('Metadata', 'tainacan'), 'type' => 'integer', 'description' => __('Filter metadata', 'tainacan'), 'validation' => ''], 'max_options' => ['map' => 'meta', 'title' => __('Max of options', 'tainacan'), 'type' => ['integer', 'string'], 'description' => __('The maximum number of options to be loaded by default on the filter.', 'tainacan'), 'validation' => '', 'default' => 4], 'placeholder' => ['map' => 'meta', 'title' => __('Placeholder', 'tainacan'), 'type' => 'string', 'description' => __('The filter input placeholder. This is a simple message that will appear inside textual input and may indicate to the user what kind of information is expected.', 'tainacan'), 'default' => ''], 'description_bellow_name' => [
-    'map' => 'meta',
-    'title' => __('Description below name', 'tainacan'),
-    'type' => 'string',
-    'description' => __('Whether the filter description should be displayed below the input label instead of inside a tooltip.', 'tainacan'),
-    'on_error' => __('Please set the "Description below name" value as "yes" or "no"', 'tainacan'),
-    'validation' => v::stringType()->in(['yes', 'no']),
-    // yes or no
-    'enum' => ['yes', 'no'],
-    'default' => 'no',
-]]` |  | 
+`['title' => ['map' => 'post_title', 'title' => __('Title', 'tainacan'), 'type' => 'string', 'description' => __('Title of the item', 'tainacan'), 'on_error' => __('The title should be a text value and not empty', 'tainacan')], 'status' => ['map' => 'post_status', 'title' => __('Status', 'tainacan'), 'type' => 'string', 'default' => 'draft', 'description' => __('The current situation of the item. Notice that the item visibility also depends on the collection status.', 'tainacan')], 'description' => ['map' => 'post_content', 'title' => __('Description', 'tainacan'), 'type' => 'string', 'description' => __('The item description', 'tainacan'), 'default' => '', 'validation' => ''], 'collection_id' => ['map' => 'meta', 'title' => __('Collection', 'tainacan'), 'type' => 'integer', 'description' => __('The collection ID', 'tainacan'), 'validation' => ''], 'author_id' => ['map' => 'post_author', 'title' => __('Author', 'tainacan'), 'type' => 'string', 'description' => __('The item author\'s user ID (numeric string)', 'tainacan')], 'slug' => ['map' => 'post_name', 'title' => __('Slug', 'tainacan'), 'type' => 'string', 'description' => __('Slug is the editable portion of a page link, located a the end of an URL. Usually presents the title of the item without special characters, separated by hiphen instead of spaces.', 'tainacan')], 'creation_date' => ['map' => 'post_date', 'title' => __('Creation Date', 'tainacan'), 'type' => 'string', 'description' => __('The item creation date', 'tainacan')], 'modification_date' => ['map' => 'post_modified', 'title' => __('Modification Date', 'tainacan'), 'type' => 'string', 'description' => __('The item modification date', 'tainacan')], 'terms' => ['map' => 'terms', 'title' => __('Term IDs', 'tainacan'), 'type' => 'array', 'description' => __('The item term IDs', 'tainacan'), 'items' => ['type' => ['string', 'integer']]], 'document_type' => ['map' => 'meta', 'title' => __('Document Type', 'tainacan'), 'type' => 'string', 'description' => __('The document type, can be a local attachment, an external URL or a text', 'tainacan'), 'on_error' => __('Invalid document type', 'tainacan'), 'enum' => ['attachment', 'url', 'text', 'empty'], 'validation' => v::stringType()->in(['attachment', 'url', 'text', 'empty']), 'default' => 'empty'], 'document' => ['map' => 'meta', 'title' => __('Document', 'tainacan'), 'type' => 'string', 'description' => __('The item main content. May be a file attached, an URL or a text depending on the type of the document.', 'tainacan'), 'on_error' => __('Invalid document', 'tainacan'), 'default' => ''], 'document_options' => ['map' => 'meta', 'title' => __('Document options', 'tainacan'), 'type' => 'object', 'description' => __('Object of options related to the document display.', 'tainacan'), 'on_error' => __('Invalid document options', 'tainacan'), 'properties' => array('forced_iframe' => array('description' => __('Render content in iframe', 'tainacan'), 'type' => 'boolean', 'context' => array('view', 'edit', 'embed'), 'default' => false), 'is_image' => array('title' => __('Is link to external image', 'tainacan'), 'description' => __('Is link to external image', 'tainacan'), 'type' => 'boolean', 'context' => array('view', 'edit', 'embed'), 'default' => false), 'forced_iframe_height' => array('description' => __('Iframe height (px)', 'tainacan'), 'type' => 'number', 'context' => array('view', 'edit', 'embed'), 'default' => 450), 'forced_iframe_width' => array('description' => __('Iframe width (px)', 'tainacan'), 'type' => 'number', 'context' => array('view', 'edit', 'embed'), 'default' => 600), 'forced_iframe_allowfullscreen' => array('description' => __('Allow fullscreen on forced iframe', 'tainacan'), 'type' => 'boolean', 'context' => array('view', 'edit', 'embed'), 'default' => false))], 'document_content_index' => ['map' => 'meta', 'title' => __('Document Content Index', 'tainacan'), 'type' => 'string', 'description' => __('The document content to be used in textual search', 'tainacan')], '_thumbnail_id' => ['map' => 'meta', 'title' => __('Thumbnail', 'tainacan'), 'description' => __('Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan'), 'type' => ['integer', 'string']], 'comment_status' => ['map' => 'comment_status', 'title' => __('Comment Status', 'tainacan'), 'type' => 'string', 'description' => __('Item comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan'), 'default' => get_default_comment_status(Entities\Collection::get_post_type()), 'enum' => ['open', 'closed'], 'validation' => v::optional(v::stringType()->in(['open', 'closed']))]]` |  | 
 
 **Changelog**
 
@@ -3612,165 +3363,101 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-filters.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-filters.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-filters.php#L10-L129)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L11-L184)
 
 ---------------------------------
 <br>
 
 ## `tainacan-fetch-args` <!-- {docsify-ignore} -->
 
-*fetch filter based on ID or WP_Query args*
+*fetch items based on ID or WP_Query args*
 
-Filters are stored as posts. Check WP_Query docs
+Items are stored as posts. Check WP_Query docs
 to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
 You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
 appropriate WP_Query argument
 
-If a number is passed to $args, it will return a \Tainacan\Entities\Filter object.  But if the post is not found or
+If a number is passed to $args, it will return a \Tainacan\Entities\Item object.  But if the post is not found or
 does not match the entity post type, it will return an empty array
 
+The second paramater specifies from which collections item should be fetched.
+You can pass the Collection ID or object, or an Array of IDs or collection objects
+
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$args` | `array` | WP_Query args \|\| int $args the filter id
-`'filters'` |  | 
+`$args` | `array` | WP_Query args \|\| int $args the item id
+`'items'` |  | 
 
-Source: [class-tainacan-filters.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-filters.php), [line 226](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-filters.php#L226-L265)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 258](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L258-L395)
 
 ---------------------------------
 <br>
 
-## `tainacan-get-map-{$entity}` <!-- {docsify-ignore} -->
+## `tainacan_extract_document_content` <!-- {docsify-ignore} -->
 
-*Repository for managing Tainacan taxonomy terms.*
+*Filters document content extraction for an item.*
 
-Handles all database operations for taxonomy terms including creation,
-updates, deletion, and querying with proper validation and logging.
+Return a non-null value to bypass Tainacan's default PDF attachment extraction:
+- string: extracted text (empty string is allowed)
+- false: extraction failed; REST uses a generic error message
+- \WP_Error: extraction failed; REST uses the error message
+
+Return null to use the default extraction path.
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`['term_id' => ['map' => 'term_id', 'title' => __('ID', 'tainacan'), 'type' => 'integer', 'description' => __('Unique identifier', 'tainacan')], 'name' => ['map' => 'name', 'title' => __('Name', 'tainacan'), 'type' => 'string', 'description' => __('Name of the term', 'tainacan'), 'on_error' => __('The name is empty', 'tainacan'), 'validation' => v::stringType()->notEmpty()], 'parent' => ['map' => 'parent', 'title' => __('Parent', 'tainacan'), 'type' => 'integer', 'description' => __('The parent of the term', 'tainacan'), 'default' => 0], 'description' => ['map' => 'description', 'title' => __('Description', 'tainacan'), 'type' => 'string', 'description' => __('The term description', 'tainacan'), 'default' => ''], 'taxonomy' => ['map' => 'taxonomy', 'title' => __('Taxonomy', 'tainacan'), 'type' => 'string', 'description' => __('The term taxonomy', 'tainacan'), 'on_error' => __('The taxonomy is empty', 'tainacan'), 'validation' => v::stringType()->notEmpty()], 'user' => ['map' => 'termmeta', 'title' => __('User', 'tainacan'), 'type' => 'integer', 'description' => __('The term creator', 'tainacan'), 'on_error' => __('The user is empty or invalid', 'tainacan'), 'default' => get_current_user_id()], 'header_image_id' => [
-    'map' => 'termmeta',
-    'title' => __('Header Image', 'tainacan'),
-    'type' => 'string',
-    'description' => __('The image to be used in term header', 'tainacan'),
-    'on_error' => __('Invalid image', 'tainacan'),
-    //'validation' => v::numeric(),
-    'default' => '',
-], 'cover_page_id' => ['map' => 'termmeta', 'title' => __('Cover Page ID', 'tainacan'), 'type' => ['integer', 'string'], 'description' => __('If defined, this custom page will be used as cover for this term, instead of default items list.', 'tainacan'), 'on_error' => __('Invalid page', 'tainacan'), 'default' => ''], 'hide_empty' => ['map' => 'hide_empty', 'title' => __('Hide empty', 'tainacan'), 'type' => 'boolean', 'description' => __('Hide empty terms', 'tainacan')]]` |  | 
+`null` |  | 
+`$item` | `\Tainacan\Entities\Item` | The item.
+`$context` | `mixed` | Optional context (e.g. \WP_REST_Request).
 
-**Changelog**
-
-Version | Description
-------- | -----------
-`1.0.0` | 
-
-Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L11-L101)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 548](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L548-L562)
 
 ---------------------------------
 <br>
 
-## `tainacan-get-map-{$entity}` <!-- {docsify-ignore} -->
+## `tainacan_item_supports_document_content_extraction` <!-- {docsify-ignore} -->
+
+*Filters whether document content extraction is available for an item.*
+
+Plugins may return true for document types handled by
+`tainacan_extract_document_content` (for example, URL documents).
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`[
-    'title' => ['map' => 'post_title', 'title' => __('Title', 'tainacan'), 'type' => 'string', 'description' => __('The title of the log', 'tainacan'), 'on_error' => __('The title should be a text value and not empty', 'tainacan'), 'validation' => ''],
-    'date' => ['map' => 'post_date', 'title' => __('Log date', 'tainacan'), 'type' => 'string', 'description' => __('The moment when the log was registered', 'tainacan')],
-    'description' => ['map' => 'post_content', 'title' => __('Description', 'tainacan'), 'type' => 'string', 'description' => __('The log description', 'tainacan'), 'default' => '', 'validation' => ''],
-    'slug' => ['map' => 'post_name', 'title' => __('Slug', 'tainacan'), 'type' => 'string', 'description' => __('The log slug', 'tainacan'), 'validation' => ''],
-    'user_id' => ['map' => 'post_author', 'title' => __('User ID', 'tainacan'), 'type' => 'integer', 'description' => __('Unique identifier', 'tainacan'), 'validation' => ''],
-    'item_id' => ['map' => 'meta', 'title' => __('Item ID', 'tainacan'), 'description' => __('Item ID', 'tainacan'), 'type' => 'integer'],
-    // 'value'          => [
-    // 	'map'         => 'meta',
-    // 	'title'       => __( 'Actual value', 'tainacan' ),
-    // 	'type'        => 'string',
-    // 	'description' => __( 'The actual log value' ),
-    // 	'validation'  => ''
-    // ],
-    'log_diffs' => [
-        // deprecated
-        'map' => 'meta',
-        'title' => __('Log differences', 'tainacan'),
-        'description' => __('Differences between old and new versions of object', 'tainacan'),
-        'type' => 'string',
-    ],
-    'collection_id' => ['map' => 'meta', 'title' => __('Log collection relationship', 'tainacan'), 'description' => __('The ID of the collection that this log is related to', 'tainacan'), 'type' => 'string'],
-    'object_id' => ['map' => 'meta', 'title' => __('Log item relationship', 'tainacan'), 'description' => __('The ID of the object that this log is related to', 'tainacan'), 'type' => ['string', 'integer']],
-    'object_type' => ['map' => 'meta', 'title' => __('Log item relationship', 'tainacan'), 'description' => __('The type of the object that this log is related to', 'tainacan'), 'type' => 'string'],
-    'old_value' => ['map' => 'meta', 'title' => __('Old value', 'tainacan'), 'description' => __('Value of the field previous to the edition registered by the log.', 'tainacan'), 'type' => 'string'],
-    'new_value' => ['map' => 'meta', 'title' => __('New value', 'tainacan'), 'description' => __('Value of the field after the edition registered by the log.', 'tainacan'), 'type' => 'string'],
-    'action' => ['map' => 'meta', 'title' => __('Action', 'tainacan'), 'description' => __('Type of action registered by the log.', 'tainacan'), 'type' => 'string'],
-]` |  | 
+`$supports` | `bool` | Whether Tainacan's default extraction is supported.
+`$item` | `\Tainacan\Entities\Item` | The item.
 
-**Changelog**
-
-Version | Description
-------- | -----------
-`1.0.0` | 
-
-Source: [class-tainacan-logs-deprecated.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php#L10-L137)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 585](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L585-L594)
 
 ---------------------------------
 <br>
 
-## `tainacan-fetch-args` <!-- {docsify-ignore} -->
+## `tainacan-get-thumbnail-id-from-document` <!-- {docsify-ignore} -->
 
-*fetch logs based on ID or WP_Query args*
-
-Logs are stored as posts. Check WP_Query docs
-to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
-You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
-appropriate WP_Query argument
-
-If a number is passed to $args, it will return a \Tainacan\Entities\Log object.  But if the post is not found or
-does not match the entity post type, it will return an empty array
+*Hook to get thumbnail from document*
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$args` | `array` | WP_Query args \|\| int $args the log id
-`'logs'` |  | 
+`null` |  | 
+`$item` |  | 
 
-Source: [class-tainacan-logs-deprecated.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php), [line 185](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php#L185-L225)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 683](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L683-L686)
 
 ---------------------------------
 <br>
 
-## `tainacan-entity-diff` <!-- {docsify-ignore} -->
-
-*Compare two repository entities and sets the current_diff property to be used in the insert hook*
+## `tainacan_add_related_item` <!-- {docsify-ignore} -->
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$diff` |  | 
-`$unsaved` | `\Tainacan\Entities\Entity` | The new entity that is going to be saved
-`$old` |  | 
+`$item_arr` |  | 
 
-Source: [class-tainacan-logs-deprecated.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php), [line 382](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php#L382-L449)
-
----------------------------------
-<br>
-
-## `tainacan-entity-diff` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$diff` |  | 
-`$unsaved` |  | 
-`$old` |  | 
-
-**Changelog**
-
-Version | Description
-------- | -----------
-`1.0.0` | 
-
-Source: [class-tainacan-logs-deprecated.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php#L10-L476)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 835](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L835-L835)
 
 ---------------------------------
 <br>
@@ -3940,6 +3627,79 @@ Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/mast
 
 Argument | Type | Description
 -------- | ---- | -----------
+`['name' => ['map' => 'post_title', 'title' => __('Name', 'tainacan'), 'type' => 'string', 'description' => __('The title of the collection', 'tainacan'), 'validation' => v::stringType()->notEmpty()], 'status' => ['map' => 'post_status', 'title' => __('Status', 'tainacan'), 'type' => 'string', 'default' => '', 'description' => __('The current situation of the collection. It also affects the visibility of the collection items, as public items from private collections do not appear in the site.', 'tainacan')], 'author_id' => ['map' => 'post_author', 'title' => __('Author ID', 'tainacan'), 'type' => 'string', 'description' => __('The collection author\'s user ID (numeric string)', 'tainacan')], 'creation_date' => ['map' => 'post_date', 'title' => __('Creation Date', 'tainacan'), 'type' => 'string', 'description' => __('The collection creation date', 'tainacan')], 'modification_date' => ['map' => 'post_modified', 'title' => __('Modification Date', 'tainacan'), 'type' => 'string', 'description' => __('The collection modification date', 'tainacan')], 'order' => ['map' => 'order', 'title' => __('Order', 'tainacan'), 'type' => 'string', 'description' => __('Collection order. This metadata is used if collections are manually ordered.', 'tainacan')], 'parent' => ['map' => 'post_parent', 'title' => __('Parent Collection', 'tainacan'), 'type' => 'integer', 'description' => __('Original collection from which features are inherited', 'tainacan')], 'description' => ['map' => 'post_content', 'title' => __('Description', 'tainacan'), 'type' => 'string', 'description' => __('An introductory text describing the collection', 'tainacan'), 'default' => ''], 'slug' => ['map' => 'post_name', 'title' => __('Slug', 'tainacan'), 'type' => 'string', 'description' => __('An unique and sanitized string representation of the collection, used to build the collection URL. It must not contain any special characters or spaces.', 'tainacan')], 'default_orderby' => ['map' => 'meta', 'title' => __('Default order metadata', 'tainacan'), 'type' => ['string', 'array', 'object'], 'description' => __('Default property that items in this collections will be ordered by', 'tainacan'), 'default' => 'date'], 'default_order' => ['map' => 'meta', 'title' => __('Default order', 'tainacan'), 'description' => __('Default order for items in this collection. ASC or DESC', 'tainacan'), 'type' => 'string', 'default' => 'ASC', 'enum' => ['ASC', 'DESC'], 'validation' => v::stringType()->in(['ASC', 'DESC'])], 'default_per_page' => ['map' => 'meta', 'title' => __('Default items per page', 'tainacan'), 'type' => 'integer', 'default' => 12, 'description' => __('Default number of items shown per page in the public items listing of this collection.', 'tainacan'), 'validation' => v::intVal()->between(1, $max_per_page)], 'default_displayed_metadata' => ['map' => 'meta', 'title' => __('Default Displayed Metadata', 'tainacan'), 'type' => ['array', 'object', 'string'], 'items' => ['type' => ['array', 'string', 'integer', 'object']], 'default' => [], 'description' => __('List of collection properties that will be displayed in the table view', 'tainacan')], 'default_view_mode' => ['map' => 'meta', 'title' => __('Default view mode', 'tainacan'), 'type' => 'string', 'description' => __('Collection default visualization mode', 'tainacan'), 'default' => 'table'], 'enabled_view_modes' => ['map' => 'meta', 'title' => __('Enabled view modes', 'tainacan'), 'type' => 'array', 'description' => __('Which visualization modes will be available for the public to choose from', 'tainacan'), 'default' => ['table', 'cards', 'masonry'], 'items' => ['type' => 'string']], 'metadata_section_order' => ['map' => 'meta', 'title' => __('Metadata order', 'tainacan'), 'type' => 'array', 'items' => ['type' => 'object', 'properties' => ['id' => ['description' => __('Metadata Section ID', 'tainacan'), 'type' => ['integer', 'string']], 'enabled' => ['description' => __('Whether the metadata section is enabled or not.', 'tainacan'), 'type' => 'boolean'], 'metadata_order' => ['type' => 'array', 'description' => __('Array containing the metadata order inside the section', 'tainacan'), 'items' => ['type' => 'object', 'properties' => ['id' => ['description' => __('Metadata ID', 'tainacan'), 'type' => 'integer'], 'enabled' => ['description' => __('Whether the metadata is enabled or not.', 'tainacan'), 'type' => 'boolean']]]]]], 'description' => __('The order of the metadata section in the collection', 'tainacan')], 'metadata_order' => ['map' => 'meta', 'title' => __('Metadata order', 'tainacan'), 'type' => 'array', 'description' => __('The order of the metadata in the collection', 'tainacan'), 'items' => ['type' => 'object', 'properties' => ['id' => ['description' => __('Metadata ID', 'tainacan'), 'type' => 'integer'], 'enabled' => ['description' => __('Whether the metadata is enabled or not.', 'tainacan'), 'type' => 'boolean']]]], 'filters_order' => ['map' => 'meta', 'title' => __('Filters order', 'tainacan'), 'type' => 'array', 'description' => __('The order of the filters in the collection', 'tainacan'), 'items' => ['type' => 'object', 'properties' => ['id' => ['description' => __('Filter ID', 'tainacan'), 'type' => 'integer'], 'enabled' => ['description' => __('Whether the filter is enabled or not.', 'tainacan'), 'type' => 'boolean']]]], 'enable_cover_page' => [
+    'map' => 'meta',
+    'title' => __('Enable Cover Page', 'tainacan'),
+    'type' => 'string',
+    'description' => __('To use this page as the home page of this collection', 'tainacan'),
+    'on_error' => __('Value should be yes or no', 'tainacan'),
+    'enum' => ['yes', 'no'],
+    'validation' => v::stringType()->in(['yes', 'no']),
+    // yes or no
+    'default' => 'no',
+], 'cover_page_id' => [
+    'map' => 'meta',
+    'title' => __('Cover Page ID', 'tainacan'),
+    'type' => ['integer', 'string'],
+    'description' => __('If enabled, this custom page will be used as cover for this collection, instead of default items list.', 'tainacan'),
+    'on_error' => __('Invalid page', 'tainacan'),
+    //'validation' => v::numeric(),
+    'default' => '',
+], 'header_image_id' => [
+    'map' => 'meta',
+    'title' => __('Header Image', 'tainacan'),
+    'type' => 'string',
+    'description' => __('The image to be used in collection header, if the theme has one.', 'tainacan'),
+    'on_error' => __('Invalid image', 'tainacan'),
+    //'validation' => v::numeric(),
+    'default' => '',
+], '_thumbnail_id' => ['map' => 'meta', 'title' => __('Thumbnail', 'tainacan'), 'description' => __('Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan'), 'type' => ['integer', 'string']], 'comment_status' => ['map' => 'comment_status', 'title' => __('Comment Status', 'tainacan'), 'type' => 'string', 'description' => __('Collection comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan'), 'default' => get_default_comment_status(Entities\Collection::get_post_type()), 'enum' => ['open', 'closed'], 'validation' => v::optional(v::stringType()->in(['open', 'closed']))], 'allow_comments' => ['map' => 'meta', 'title' => __('Allow enabling comments on items', 'tainacan'), 'type' => 'string', 'description' => __('If this option is enabled, items of this collection can be set to enable a comments section on their page. "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan'), 'default' => 'closed', 'enum' => ['open', 'closed'], 'validation' => v::optional(v::stringType()->in(['open', 'closed']))], 'allow_item_slug_editing' => ['map' => 'meta', 'title' => __('Allow changing the item slug', 'tainacan'), 'type' => 'string', 'description' => __('If this option is enabled, users will be able to modify the item original slug, resulting in changes to the item permalink.', 'tainacan'), 'default' => 'no', 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'allow_item_author_editing' => ['map' => 'meta', 'title' => __('Allow changing the item author', 'tainacan'), 'type' => 'string', 'description' => __('If this option is enabled, users will be able to modify the item original authorship, resulting in changes to who can edit it and who is credited as creator of it.', 'tainacan'), 'default' => 'no', 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'submission_anonymous_user' => ['map' => 'meta', 'title' => __('Allows submission by anonymous user', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, allows submission by anonymous users, whose does not have to be logged in with permissions on the WordPress system.', 'tainacan'), 'default' => 'no', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'submission_default_status' => ['map' => 'meta', 'title' => __('Default submission item status', 'tainacan'), 'type' => 'string', 'description' => __('The default status of the item that will be created in the collection after submission.', 'tainacan'), 'default' => 'draft'], 'allows_submission' => ['map' => 'meta', 'title' => __('Allows item submission', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, the collection allows item submission, for example via the Item Submission block.', 'tainacan'), 'default' => 'no', 'enum' => ['yes', 'no'], 'on_error' => __('Value should be yes or no', 'tainacan'), 'validation' => v::stringType()->in(['yes', 'no'])], 'hide_items_thumbnail_on_lists' => [
+    'map' => 'meta',
+    'title' => __('Hide items thumbnail on lists', 'tainacan'),
+    'type' => 'string',
+    'description' => __('Enable this option to never display the item thumbnail on the items list. This is ment for collections made of mainly textual content.', 'tainacan'),
+    'on_error' => __('Value should be yes or no', 'tainacan'),
+    'enum' => ['yes', 'no'],
+    'validation' => v::stringType()->in(['yes', 'no']),
+    // yes or no
+    'default' => 'no',
+], 'submission_use_recaptcha' => ['map' => 'meta', 'title' => __('Use reCAPTCHA verification on submission form', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, the collection allows item submission using a reCAPTCHA', 'tainacan'), 'default' => 'no', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'default_metadata_section_properties' => ['map' => 'meta', 'title' => __('Default metadata section properties', 'tainacan'), 'type' => 'object', 'description' => __('The default metadata section properties', 'tainacan'), 'properties' => ['name' => ['type' => 'string', 'description' => __('The name of the default metadata section', 'tainacan')], 'description' => ['type' => 'string', 'description' => __('The description of the default metadata section', 'tainacan')], 'description_bellow_name' => ['type' => 'string', 'description' => __('Whether the description should appear bellow the metadata section.', 'tainacan'), 'enum' => ['yes', 'no']]]], 'item_enabled_document_types' => ['map' => 'meta', 'title' => __('Enabled document types', 'tainacan'), 'type' => 'object', 'description' => __('The document types that are available in the item edition form.', 'tainacan'), 'items' => ['type' => 'object', 'properties' => ['enabled' => ['description' => __('Whether the document type is enabled or not.', 'tainacan'), 'type' => 'string', 'enum' => ['yes', 'no']], 'label' => ['description' => __('The label that will represent the document type.', 'tainacan'), 'type' => 'string'], 'icon' => ['description' => __('The slug of the icon that will represent the document type.', 'tainacan'), 'type' => 'string']]], 'default' => ['attachment' => ['enabled' => 'yes', 'label' => __('File', 'tainacan'), 'icon' => 'attachments'], 'url' => ['enabled' => 'yes', 'label' => __('URL', 'tainacan'), 'icon' => 'url'], 'text' => ['enabled' => 'yes', 'label' => __('Text', 'tainacan'), 'icon' => 'text']]], 'item_publication_label' => ['map' => 'meta', 'title' => __('Publication area label', 'tainacan'), 'type' => 'string', 'description' => __('The label for the publication section in the item edition form, where author, status, slug and comments options appear', 'tainacan'), 'default' => __('Publication data', 'tainacan')], 'item_document_label' => ['map' => 'meta', 'title' => __('Main document label', 'tainacan'), 'type' => 'string', 'description' => __('The label for the main document section in the item edition form', 'tainacan'), 'default' => __('Document', 'tainacan')], 'item_thumbnail_label' => ['map' => 'meta', 'title' => __('Thumbnail label', 'tainacan'), 'type' => 'string', 'description' => __('The label for the thumbnail section in the item edition form', 'tainacan'), 'default' => __('Thumbnail', 'tainacan')], 'item_enable_thumbnail' => ['map' => 'meta', 'title' => __('Item thumbnail', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, each item can have a thumbnail customized instead of the one automatically generated based on the item document.', 'tainacan'), 'default' => 'yes', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'item_attachment_label' => ['map' => 'meta', 'title' => __('Attachments label', 'tainacan'), 'type' => 'string', 'description' => __('The label for the attachments section in the item edition form', 'tainacan'), 'default' => __('Attachments', 'tainacan')], 'item_enable_attachments' => ['map' => 'meta', 'title' => __('Item attachments', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, each item can have a set of files attached to it, complementary to the item document.', 'tainacan'), 'default' => 'yes', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'item_enable_metadata_focus_mode' => ['map' => 'meta', 'title' => __('Metadata focus mode', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, a button can start a special navigation mode, that focus one metadatum per time in the item edition form.', 'tainacan'), 'default' => 'yes', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'item_enable_metadata_required_filter' => ['map' => 'meta', 'title' => __('Metadata required filter', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, a switch can be toggled to display only required metadata in the item edition form.', 'tainacan'), 'default' => 'yes', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'item_enable_metadata_searchbar' => ['map' => 'meta', 'title' => __('Metadata search bar', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, a search bar can be used for filtering the list of metadata in the item edition form.', 'tainacan'), 'default' => 'yes', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'item_enable_metadata_collapses' => ['map' => 'meta', 'title' => __('Metadata collapses', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, each metadata in the item form will be wrapped in a collapsable component.', 'tainacan'), 'default' => 'yes', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'item_enable_metadata_enumeration' => ['map' => 'meta', 'title' => __('Metadata enumeration', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, the metadata sections and their metadata in the item form will be enumerated automatically.', 'tainacan'), 'default' => 'no', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'item_enable_document_content_editing' => ['map' => 'meta', 'title' => __('Document content editing', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, the item edition form shows controls to view, extract and edit the textual content stored from item documents for use in search.', 'tainacan'), 'default' => 'yes', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])]]` |  | 
+
+Source: [class-tainacan-collections.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-collections.php), [line 83](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-collections.php#L83-L574)
+
+---------------------------------
+<br>
+
+## `tainacan-fetch-args` <!-- {docsify-ignore} -->
+
+*fetch collection based on ID or WP_Query args*
+
+Collections are stored as posts. Check WP_Query docs
+to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
+You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
+appropriate WP_Query argument
+
+If a number is passed to $args, it will return a \Tainacan\Entities\Collection object.  But if the post is not found or
+does not match the entity post type, it will return an empty array
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$args` | `array` | WP_Query args \|\| int $args the collection id
+`'collections'` |  | 
+
+Source: [class-tainacan-collections.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-collections.php), [line 658](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-collections.php#L658-L702)
+
+---------------------------------
+<br>
+
+## `tainacan-get-map-{$entity}` <!-- {docsify-ignore} -->
+
+*{@inheritDoc}*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
 `['name' => ['map' => 'post_title', 'title' => __('Name', 'tainacan'), 'type' => 'string', 'description' => __('Name of the metadata section', 'tainacan'), 'on_error' => __('The name should be a text value and not empty', 'tainacan'), 'validation' => v::stringType()->notEmpty()], 'slug' => ['map' => 'post_name', 'title' => __('Slug', 'tainacan'), 'type' => 'string', 'description' => __('A unique and sanitized string representation of the metadata sction', 'tainacan')], 'status' => ['map' => 'post_status', 'title' => __('Status', 'tainacan'), 'type' => 'string', 'default' => 'publish', 'description' => __('Status for control of visibility and access.', 'tainacan')], 'description' => ['map' => 'post_content', 'title' => __('Description', 'tainacan'), 'type' => 'string', 'description' => __('The metadata section description.', 'tainacan'), 'default' => ''], 'description_bellow_name' => [
     'map' => 'meta',
     'title' => __('Description below name', 'tainacan'),
@@ -3982,15 +3742,37 @@ Source: [class-tainacan-metadata-sections.php](https://github.com/tainacan/taina
 
 ## `tainacan-get-map-{$entity}` <!-- {docsify-ignore} -->
 
-*Repository for managing Tainacan items.*
-
-Handles all database operations for items including creation,
-updates, deletion, and querying with proper validation and logging.
-
 
 Argument | Type | Description
 -------- | ---- | -----------
-`['title' => ['map' => 'post_title', 'title' => __('Title', 'tainacan'), 'type' => 'string', 'description' => __('Title of the item', 'tainacan'), 'on_error' => __('The title should be a text value and not empty', 'tainacan')], 'status' => ['map' => 'post_status', 'title' => __('Status', 'tainacan'), 'type' => 'string', 'default' => 'draft', 'description' => __('The current situation of the item. Notice that the item visibility also depends on the collection status.', 'tainacan')], 'description' => ['map' => 'post_content', 'title' => __('Description', 'tainacan'), 'type' => 'string', 'description' => __('The item description', 'tainacan'), 'default' => '', 'validation' => ''], 'collection_id' => ['map' => 'meta', 'title' => __('Collection', 'tainacan'), 'type' => 'integer', 'description' => __('The collection ID', 'tainacan'), 'validation' => ''], 'author_id' => ['map' => 'post_author', 'title' => __('Author', 'tainacan'), 'type' => 'string', 'description' => __('The item author\'s user ID (numeric string)', 'tainacan')], 'slug' => ['map' => 'post_name', 'title' => __('Slug', 'tainacan'), 'type' => 'string', 'description' => __('Slug is the editable portion of a page link, located a the end of an URL. Usually presents the title of the item without special characters, separated by hiphen instead of spaces.', 'tainacan')], 'creation_date' => ['map' => 'post_date', 'title' => __('Creation Date', 'tainacan'), 'type' => 'string', 'description' => __('The item creation date', 'tainacan')], 'modification_date' => ['map' => 'post_modified', 'title' => __('Modification Date', 'tainacan'), 'type' => 'string', 'description' => __('The item modification date', 'tainacan')], 'terms' => ['map' => 'terms', 'title' => __('Term IDs', 'tainacan'), 'type' => 'array', 'description' => __('The item term IDs', 'tainacan'), 'items' => ['type' => ['string', 'integer']]], 'document_type' => ['map' => 'meta', 'title' => __('Document Type', 'tainacan'), 'type' => 'string', 'description' => __('The document type, can be a local attachment, an external URL or a text', 'tainacan'), 'on_error' => __('Invalid document type', 'tainacan'), 'enum' => ['attachment', 'url', 'text', 'empty'], 'validation' => v::stringType()->in(['attachment', 'url', 'text', 'empty']), 'default' => 'empty'], 'document' => ['map' => 'meta', 'title' => __('Document', 'tainacan'), 'type' => 'string', 'description' => __('The item main content. May be a file attached, an URL or a text depending on the type of the document.', 'tainacan'), 'on_error' => __('Invalid document', 'tainacan'), 'default' => ''], 'document_options' => ['map' => 'meta', 'title' => __('Document options', 'tainacan'), 'type' => 'object', 'description' => __('Object of options related to the document display.', 'tainacan'), 'on_error' => __('Invalid document options', 'tainacan'), 'properties' => array('forced_iframe' => array('description' => __('Render content in iframe', 'tainacan'), 'type' => 'boolean', 'context' => array('view', 'edit', 'embed'), 'default' => false), 'is_image' => array('title' => __('Is link to external image', 'tainacan'), 'description' => __('Is link to external image', 'tainacan'), 'type' => 'boolean', 'context' => array('view', 'edit', 'embed'), 'default' => false), 'forced_iframe_height' => array('description' => __('Iframe height (px)', 'tainacan'), 'type' => 'number', 'context' => array('view', 'edit', 'embed'), 'default' => 450), 'forced_iframe_width' => array('description' => __('Iframe width (px)', 'tainacan'), 'type' => 'number', 'context' => array('view', 'edit', 'embed'), 'default' => 600), 'forced_iframe_allowfullscreen' => array('description' => __('Allow fullscreen on forced iframe', 'tainacan'), 'type' => 'boolean', 'context' => array('view', 'edit', 'embed'), 'default' => false))], 'document_content_index' => ['map' => 'meta', 'title' => __('Document Content Index', 'tainacan'), 'type' => 'string', 'description' => __('The document content to be used in textual search', 'tainacan')], '_thumbnail_id' => ['map' => 'meta', 'title' => __('Thumbnail', 'tainacan'), 'description' => __('Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan'), 'type' => ['integer', 'string']], 'comment_status' => ['map' => 'comment_status', 'title' => __('Comment Status', 'tainacan'), 'type' => 'string', 'description' => __('Item comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan'), 'default' => get_default_comment_status(Entities\Collection::get_post_type()), 'enum' => ['open', 'closed'], 'validation' => v::optional(v::stringType()->in(['open', 'closed']))]]` |  | 
+`[
+    'title' => ['map' => 'post_title', 'title' => __('Title', 'tainacan'), 'type' => 'string', 'description' => __('The title of the log', 'tainacan'), 'on_error' => __('The title should be a text value and not empty', 'tainacan'), 'validation' => ''],
+    'date' => ['map' => 'post_date', 'title' => __('Log date', 'tainacan'), 'type' => 'string', 'description' => __('The moment when the log was registered', 'tainacan')],
+    'description' => ['map' => 'post_content', 'title' => __('Description', 'tainacan'), 'type' => 'string', 'description' => __('The log description', 'tainacan'), 'default' => '', 'validation' => ''],
+    'slug' => ['map' => 'post_name', 'title' => __('Slug', 'tainacan'), 'type' => 'string', 'description' => __('The log slug', 'tainacan'), 'validation' => ''],
+    'user_id' => ['map' => 'post_author', 'title' => __('User ID', 'tainacan'), 'type' => 'integer', 'description' => __('Unique identifier', 'tainacan'), 'validation' => ''],
+    'item_id' => ['map' => 'meta', 'title' => __('Item ID', 'tainacan'), 'description' => __('Item ID', 'tainacan'), 'type' => 'integer'],
+    // 'value'          => [
+    // 	'map'         => 'meta',
+    // 	'title'       => __( 'Actual value', 'tainacan' ),
+    // 	'type'        => 'string',
+    // 	'description' => __( 'The actual log value' ),
+    // 	'validation'  => ''
+    // ],
+    'log_diffs' => [
+        // deprecated
+        'map' => 'meta',
+        'title' => __('Log differences', 'tainacan'),
+        'description' => __('Differences between old and new versions of object', 'tainacan'),
+        'type' => 'string',
+    ],
+    'collection_id' => ['map' => 'meta', 'title' => __('Log collection relationship', 'tainacan'), 'description' => __('The ID of the collection that this log is related to', 'tainacan'), 'type' => 'string'],
+    'object_id' => ['map' => 'meta', 'title' => __('Log item relationship', 'tainacan'), 'description' => __('The ID of the object that this log is related to', 'tainacan'), 'type' => ['string', 'integer']],
+    'object_type' => ['map' => 'meta', 'title' => __('Log item relationship', 'tainacan'), 'description' => __('The type of the object that this log is related to', 'tainacan'), 'type' => 'string'],
+    'old_value' => ['map' => 'meta', 'title' => __('Old value', 'tainacan'), 'description' => __('Value of the field previous to the edition registered by the log.', 'tainacan'), 'type' => 'string'],
+    'new_value' => ['map' => 'meta', 'title' => __('New value', 'tainacan'), 'description' => __('Value of the field after the edition registered by the log.', 'tainacan'), 'type' => 'string'],
+    'action' => ['map' => 'meta', 'title' => __('Action', 'tainacan'), 'description' => __('Type of action registered by the log.', 'tainacan'), 'type' => 'string'],
+]` |  | 
 
 **Changelog**
 
@@ -3998,101 +3780,132 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L11-L184)
+Source: [class-tainacan-logs-deprecated.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php#L10-L137)
 
 ---------------------------------
 <br>
 
 ## `tainacan-fetch-args` <!-- {docsify-ignore} -->
 
-*fetch items based on ID or WP_Query args*
+*fetch logs based on ID or WP_Query args*
 
-Items are stored as posts. Check WP_Query docs
+Logs are stored as posts. Check WP_Query docs
 to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
 You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
 appropriate WP_Query argument
 
-If a number is passed to $args, it will return a \Tainacan\Entities\Item object.  But if the post is not found or
+If a number is passed to $args, it will return a \Tainacan\Entities\Log object.  But if the post is not found or
 does not match the entity post type, it will return an empty array
 
-The second paramater specifies from which collections item should be fetched.
-You can pass the Collection ID or object, or an Array of IDs or collection objects
-
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$args` | `array` | WP_Query args \|\| int $args the item id
-`'items'` |  | 
+`$args` | `array` | WP_Query args \|\| int $args the log id
+`'logs'` |  | 
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 258](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L258-L395)
+Source: [class-tainacan-logs-deprecated.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php), [line 185](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php#L185-L225)
 
 ---------------------------------
 <br>
 
-## `tainacan_extract_document_content` <!-- {docsify-ignore} -->
+## `tainacan-entity-diff` <!-- {docsify-ignore} -->
 
-*Filters document content extraction for an item.*
-
-Return a non-null value to bypass Tainacan's default PDF attachment extraction:
-- string: extracted text (empty string is allowed)
-- false: extraction failed; REST uses a generic error message
-- \WP_Error: extraction failed; REST uses the error message
-
-Return null to use the default extraction path.
+*Compare two repository entities and sets the current_diff property to be used in the insert hook*
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`null` |  | 
-`$item` | `\Tainacan\Entities\Item` | The item.
-`$context` | `mixed` | Optional context (e.g. \WP_REST_Request).
+`$diff` |  | 
+`$unsaved` | `\Tainacan\Entities\Entity` | The new entity that is going to be saved
+`$old` |  | 
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 548](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L548-L562)
+Source: [class-tainacan-logs-deprecated.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php), [line 382](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php#L382-L449)
 
 ---------------------------------
 <br>
 
-## `tainacan_item_supports_document_content_extraction` <!-- {docsify-ignore} -->
-
-*Filters whether document content extraction is available for an item.*
-
-Plugins may return true for document types handled by
-`tainacan_extract_document_content` (for example, URL documents).
+## `tainacan-entity-diff` <!-- {docsify-ignore} -->
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$supports` | `bool` | Whether Tainacan's default extraction is supported.
-`$item` | `\Tainacan\Entities\Item` | The item.
+`$diff` |  | 
+`$unsaved` |  | 
+`$old` |  | 
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 585](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L585-L594)
+**Changelog**
+
+Version | Description
+------- | -----------
+`1.0.0` | 
+
+Source: [class-tainacan-logs-deprecated.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php#L10-L476)
 
 ---------------------------------
 <br>
 
-## `tainacan-get-thumbnail-id-from-document` <!-- {docsify-ignore} -->
+## `tainacan-get-map-{$entity}` <!-- {docsify-ignore} -->
 
-*Hook to get thumbnail from document*
+*Repository for managing Tainacan filters.*
+
+Handles all database operations for collection filters including creation,
+updates, deletion, and querying with proper validation and logging.
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`null` |  | 
-`$item` |  | 
+`['name' => ['map' => 'post_title', 'title' => __('Name', 'tainacan'), 'type' => 'string', 'description' => __('Name of the filter', 'tainacan'), 'on_error' => __('The filter name should be a text value and not empty', 'tainacan'), 'validation' => v::stringType()->notEmpty()], 'order' => ['map' => 'menu_order', 'title' => __('Order', 'tainacan'), 'type' => ['string', 'integer'], 'description' => __('Filter order. This metadata is used if filters were manually ordered.', 'tainacan'), 'validation' => ''], 'description' => ['map' => 'post_content', 'title' => __('Description', 'tainacan'), 'type' => 'string', 'description' => __('The filter description', 'tainacan'), 'validation' => '', 'default' => ''], 'filter_type_options' => ['map' => 'meta', 'title' => __('Filter type options', 'tainacan'), 'type' => ['array', 'object', 'string'], 'items' => ['type' => ['array', 'string', 'integer', 'object']], 'description' => __('The filter type options', 'tainacan'), 'validation' => ''], 'filter_type' => ['map' => 'meta', 'title' => __('Type', 'tainacan'), 'type' => 'string', 'description' => __('The filter type class name, such as filter_type: Tainacan\\Filter_Types\\Checkbox', 'tainacan'), 'validation' => ''], 'initial_display' => ['map' => 'meta', 'title' => __('Initial display', 'tainacan'), 'type' => 'string', 'description' => __('Controls how the filter starts in the faceted search: shown by default, collapsed until the user expands it, or hidden until the user adds it from the "Add filters" control.', 'tainacan'), 'on_error' => __('Please set the "Initial display" value as "default", "collapsed" or "hidden"', 'tainacan'), 'validation' => v::stringType()->in(['default', 'collapsed', 'hidden']), 'enum' => ['default', 'collapsed', 'hidden'], 'default' => 'default'], 'display_in_repository_level_lists' => [
+    'map' => 'meta',
+    'title' => __('Display in repository level lists', 'tainacan'),
+    'type' => 'string',
+    'description' => __('With this option enabled, the filter will appear even in repository level items lists, such as the complete items list and the term items list.', 'tainacan'),
+    'on_error' => __('Please set the "Display in repository level lists" value as "yes" or "no"', 'tainacan'),
+    'validation' => v::stringType()->in(['yes', 'no']),
+    // yes or no
+    'enum' => ['yes', 'no'],
+    'default' => 'no',
+], 'collection_id' => ['map' => 'meta', 'title' => __('Collection', 'tainacan'), 'type' => ['integer', 'string'], 'description' => __('The collection ID', 'tainacan'), 'validation' => ''], 'metadatum_id' => ['map' => 'meta', 'title' => __('Metadata', 'tainacan'), 'type' => 'integer', 'description' => __('Filter metadata', 'tainacan'), 'validation' => ''], 'max_options' => ['map' => 'meta', 'title' => __('Max of options', 'tainacan'), 'type' => ['integer', 'string'], 'description' => __('The maximum number of options to be loaded by default on the filter.', 'tainacan'), 'validation' => '', 'default' => 4], 'placeholder' => ['map' => 'meta', 'title' => __('Placeholder', 'tainacan'), 'type' => 'string', 'description' => __('The filter input placeholder. This is a simple message that will appear inside textual input and may indicate to the user what kind of information is expected.', 'tainacan'), 'default' => ''], 'description_bellow_name' => [
+    'map' => 'meta',
+    'title' => __('Description below name', 'tainacan'),
+    'type' => 'string',
+    'description' => __('Whether the filter description should be displayed below the input label instead of inside a tooltip.', 'tainacan'),
+    'on_error' => __('Please set the "Description below name" value as "yes" or "no"', 'tainacan'),
+    'validation' => v::stringType()->in(['yes', 'no']),
+    // yes or no
+    'enum' => ['yes', 'no'],
+    'default' => 'no',
+]]` |  | 
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 683](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L683-L686)
+**Changelog**
+
+Version | Description
+------- | -----------
+`1.0.0` | 
+
+Source: [class-tainacan-filters.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-filters.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-filters.php#L10-L129)
 
 ---------------------------------
 <br>
 
-## `tainacan_add_related_item` <!-- {docsify-ignore} -->
+## `tainacan-fetch-args` <!-- {docsify-ignore} -->
+
+*fetch filter based on ID or WP_Query args*
+
+Filters are stored as posts. Check WP_Query docs
+to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
+You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
+appropriate WP_Query argument
+
+If a number is passed to $args, it will return a \Tainacan\Entities\Filter object.  But if the post is not found or
+does not match the entity post type, it will return an empty array
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$item_arr` |  | 
+`$args` | `array` | WP_Query args \|\| int $args the filter id
+`'filters'` |  | 
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 835](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L835-L835)
+Source: [class-tainacan-filters.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-filters.php), [line 226](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-filters.php#L226-L265)
 
 ---------------------------------
 <br>
@@ -4165,73 +3978,31 @@ Source: [class-tainacan-taxonomies.php](https://github.com/tainacan/tainacan/blo
 
 ## `tainacan-get-map-{$entity}` <!-- {docsify-ignore} -->
 
-*{@inheritDoc}*
+*Repository for managing Tainacan taxonomy terms.*
+
+Handles all database operations for taxonomy terms including creation,
+updates, deletion, and querying with proper validation and logging.
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`['name' => ['map' => 'post_title', 'title' => __('Name', 'tainacan'), 'type' => 'string', 'description' => __('The title of the collection', 'tainacan'), 'validation' => v::stringType()->notEmpty()], 'status' => ['map' => 'post_status', 'title' => __('Status', 'tainacan'), 'type' => 'string', 'default' => '', 'description' => __('The current situation of the collection. It also affects the visibility of the collection items, as public items from private collections do not appear in the site.', 'tainacan')], 'author_id' => ['map' => 'post_author', 'title' => __('Author ID', 'tainacan'), 'type' => 'string', 'description' => __('The collection author\'s user ID (numeric string)', 'tainacan')], 'creation_date' => ['map' => 'post_date', 'title' => __('Creation Date', 'tainacan'), 'type' => 'string', 'description' => __('The collection creation date', 'tainacan')], 'modification_date' => ['map' => 'post_modified', 'title' => __('Modification Date', 'tainacan'), 'type' => 'string', 'description' => __('The collection modification date', 'tainacan')], 'order' => ['map' => 'order', 'title' => __('Order', 'tainacan'), 'type' => 'string', 'description' => __('Collection order. This metadata is used if collections are manually ordered.', 'tainacan')], 'parent' => ['map' => 'post_parent', 'title' => __('Parent Collection', 'tainacan'), 'type' => 'integer', 'description' => __('Original collection from which features are inherited', 'tainacan')], 'description' => ['map' => 'post_content', 'title' => __('Description', 'tainacan'), 'type' => 'string', 'description' => __('An introductory text describing the collection', 'tainacan'), 'default' => ''], 'slug' => ['map' => 'post_name', 'title' => __('Slug', 'tainacan'), 'type' => 'string', 'description' => __('An unique and sanitized string representation of the collection, used to build the collection URL. It must not contain any special characters or spaces.', 'tainacan')], 'default_orderby' => ['map' => 'meta', 'title' => __('Default order metadata', 'tainacan'), 'type' => ['string', 'array', 'object'], 'description' => __('Default property that items in this collections will be ordered by', 'tainacan'), 'default' => 'date'], 'default_order' => ['map' => 'meta', 'title' => __('Default order', 'tainacan'), 'description' => __('Default order for items in this collection. ASC or DESC', 'tainacan'), 'type' => 'string', 'default' => 'ASC', 'enum' => ['ASC', 'DESC'], 'validation' => v::stringType()->in(['ASC', 'DESC'])], 'default_per_page' => ['map' => 'meta', 'title' => __('Default items per page', 'tainacan'), 'type' => 'integer', 'default' => 12, 'description' => __('Default number of items shown per page in the public items listing of this collection.', 'tainacan'), 'validation' => v::intVal()->between(1, $max_per_page)], 'default_displayed_metadata' => ['map' => 'meta', 'title' => __('Default Displayed Metadata', 'tainacan'), 'type' => ['array', 'object', 'string'], 'items' => ['type' => ['array', 'string', 'integer', 'object']], 'default' => [], 'description' => __('List of collection properties that will be displayed in the table view', 'tainacan')], 'default_view_mode' => ['map' => 'meta', 'title' => __('Default view mode', 'tainacan'), 'type' => 'string', 'description' => __('Collection default visualization mode', 'tainacan'), 'default' => 'table'], 'enabled_view_modes' => ['map' => 'meta', 'title' => __('Enabled view modes', 'tainacan'), 'type' => 'array', 'description' => __('Which visualization modes will be available for the public to choose from', 'tainacan'), 'default' => ['table', 'cards', 'masonry'], 'items' => ['type' => 'string']], 'metadata_section_order' => ['map' => 'meta', 'title' => __('Metadata order', 'tainacan'), 'type' => 'array', 'items' => ['type' => 'object', 'properties' => ['id' => ['description' => __('Metadata Section ID', 'tainacan'), 'type' => ['integer', 'string']], 'enabled' => ['description' => __('Whether the metadata section is enabled or not.', 'tainacan'), 'type' => 'boolean'], 'metadata_order' => ['type' => 'array', 'description' => __('Array containing the metadata order inside the section', 'tainacan'), 'items' => ['type' => 'object', 'properties' => ['id' => ['description' => __('Metadata ID', 'tainacan'), 'type' => 'integer'], 'enabled' => ['description' => __('Whether the metadata is enabled or not.', 'tainacan'), 'type' => 'boolean']]]]]], 'description' => __('The order of the metadata section in the collection', 'tainacan')], 'metadata_order' => ['map' => 'meta', 'title' => __('Metadata order', 'tainacan'), 'type' => 'array', 'description' => __('The order of the metadata in the collection', 'tainacan'), 'items' => ['type' => 'object', 'properties' => ['id' => ['description' => __('Metadata ID', 'tainacan'), 'type' => 'integer'], 'enabled' => ['description' => __('Whether the metadata is enabled or not.', 'tainacan'), 'type' => 'boolean']]]], 'filters_order' => ['map' => 'meta', 'title' => __('Filters order', 'tainacan'), 'type' => 'array', 'description' => __('The order of the filters in the collection', 'tainacan'), 'items' => ['type' => 'object', 'properties' => ['id' => ['description' => __('Filter ID', 'tainacan'), 'type' => 'integer'], 'enabled' => ['description' => __('Whether the filter is enabled or not.', 'tainacan'), 'type' => 'boolean']]]], 'enable_cover_page' => [
-    'map' => 'meta',
-    'title' => __('Enable Cover Page', 'tainacan'),
-    'type' => 'string',
-    'description' => __('To use this page as the home page of this collection', 'tainacan'),
-    'on_error' => __('Value should be yes or no', 'tainacan'),
-    'enum' => ['yes', 'no'],
-    'validation' => v::stringType()->in(['yes', 'no']),
-    // yes or no
-    'default' => 'no',
-], 'cover_page_id' => [
-    'map' => 'meta',
-    'title' => __('Cover Page ID', 'tainacan'),
-    'type' => ['integer', 'string'],
-    'description' => __('If enabled, this custom page will be used as cover for this collection, instead of default items list.', 'tainacan'),
-    'on_error' => __('Invalid page', 'tainacan'),
-    //'validation' => v::numeric(),
-    'default' => '',
-], 'header_image_id' => [
-    'map' => 'meta',
+`['term_id' => ['map' => 'term_id', 'title' => __('ID', 'tainacan'), 'type' => 'integer', 'description' => __('Unique identifier', 'tainacan')], 'name' => ['map' => 'name', 'title' => __('Name', 'tainacan'), 'type' => 'string', 'description' => __('Name of the term', 'tainacan'), 'on_error' => __('The name is empty', 'tainacan'), 'validation' => v::stringType()->notEmpty()], 'parent' => ['map' => 'parent', 'title' => __('Parent', 'tainacan'), 'type' => 'integer', 'description' => __('The parent of the term', 'tainacan'), 'default' => 0], 'description' => ['map' => 'description', 'title' => __('Description', 'tainacan'), 'type' => 'string', 'description' => __('The term description', 'tainacan'), 'default' => ''], 'taxonomy' => ['map' => 'taxonomy', 'title' => __('Taxonomy', 'tainacan'), 'type' => 'string', 'description' => __('The term taxonomy', 'tainacan'), 'on_error' => __('The taxonomy is empty', 'tainacan'), 'validation' => v::stringType()->notEmpty()], 'user' => ['map' => 'termmeta', 'title' => __('User', 'tainacan'), 'type' => 'integer', 'description' => __('The term creator', 'tainacan'), 'on_error' => __('The user is empty or invalid', 'tainacan'), 'default' => get_current_user_id()], 'header_image_id' => [
+    'map' => 'termmeta',
     'title' => __('Header Image', 'tainacan'),
     'type' => 'string',
-    'description' => __('The image to be used in collection header, if the theme has one.', 'tainacan'),
+    'description' => __('The image to be used in term header', 'tainacan'),
     'on_error' => __('Invalid image', 'tainacan'),
     //'validation' => v::numeric(),
     'default' => '',
-], '_thumbnail_id' => ['map' => 'meta', 'title' => __('Thumbnail', 'tainacan'), 'description' => __('Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan'), 'type' => ['integer', 'string']], 'comment_status' => ['map' => 'comment_status', 'title' => __('Comment Status', 'tainacan'), 'type' => 'string', 'description' => __('Collection comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan'), 'default' => get_default_comment_status(Entities\Collection::get_post_type()), 'enum' => ['open', 'closed'], 'validation' => v::optional(v::stringType()->in(['open', 'closed']))], 'allow_comments' => ['map' => 'meta', 'title' => __('Allow enabling comments on items', 'tainacan'), 'type' => 'string', 'description' => __('If this option is enabled, items of this collection can be set to enable a comments section on their page. "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan'), 'default' => 'closed', 'enum' => ['open', 'closed'], 'validation' => v::optional(v::stringType()->in(['open', 'closed']))], 'allow_item_slug_editing' => ['map' => 'meta', 'title' => __('Allow changing the item slug', 'tainacan'), 'type' => 'string', 'description' => __('If this option is enabled, users will be able to modify the item original slug, resulting in changes to the item permalink.', 'tainacan'), 'default' => 'no', 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'allow_item_author_editing' => ['map' => 'meta', 'title' => __('Allow changing the item author', 'tainacan'), 'type' => 'string', 'description' => __('If this option is enabled, users will be able to modify the item original authorship, resulting in changes to who can edit it and who is credited as creator of it.', 'tainacan'), 'default' => 'no', 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'submission_anonymous_user' => ['map' => 'meta', 'title' => __('Allows submission by anonymous user', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, allows submission by anonymous users, whose does not have to be logged in with permissions on the WordPress system.', 'tainacan'), 'default' => 'no', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'submission_default_status' => ['map' => 'meta', 'title' => __('Default submission item status', 'tainacan'), 'type' => 'string', 'description' => __('The default status of the item that will be created in the collection after submission.', 'tainacan'), 'default' => 'draft'], 'allows_submission' => ['map' => 'meta', 'title' => __('Allows item submission', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, the collection allows item submission, for example via the Item Submission block.', 'tainacan'), 'default' => 'no', 'enum' => ['yes', 'no'], 'on_error' => __('Value should be yes or no', 'tainacan'), 'validation' => v::stringType()->in(['yes', 'no'])], 'hide_items_thumbnail_on_lists' => [
-    'map' => 'meta',
-    'title' => __('Hide items thumbnail on lists', 'tainacan'),
-    'type' => 'string',
-    'description' => __('Enable this option to never display the item thumbnail on the items list. This is ment for collections made of mainly textual content.', 'tainacan'),
-    'on_error' => __('Value should be yes or no', 'tainacan'),
-    'enum' => ['yes', 'no'],
-    'validation' => v::stringType()->in(['yes', 'no']),
-    // yes or no
-    'default' => 'no',
-], 'submission_use_recaptcha' => ['map' => 'meta', 'title' => __('Use reCAPTCHA verification on submission form', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, the collection allows item submission using a reCAPTCHA', 'tainacan'), 'default' => 'no', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'default_metadata_section_properties' => ['map' => 'meta', 'title' => __('Default metadata section properties', 'tainacan'), 'type' => 'object', 'description' => __('The default metadata section properties', 'tainacan'), 'properties' => ['name' => ['type' => 'string', 'description' => __('The name of the default metadata section', 'tainacan')], 'description' => ['type' => 'string', 'description' => __('The description of the default metadata section', 'tainacan')], 'description_bellow_name' => ['type' => 'string', 'description' => __('Whether the description should appear bellow the metadata section.', 'tainacan'), 'enum' => ['yes', 'no']]]], 'item_enabled_document_types' => ['map' => 'meta', 'title' => __('Enabled document types', 'tainacan'), 'type' => 'object', 'description' => __('The document types that are available in the item edition form.', 'tainacan'), 'items' => ['type' => 'object', 'properties' => ['enabled' => ['description' => __('Whether the document type is enabled or not.', 'tainacan'), 'type' => 'string', 'enum' => ['yes', 'no']], 'label' => ['description' => __('The label that will represent the document type.', 'tainacan'), 'type' => 'string'], 'icon' => ['description' => __('The slug of the icon that will represent the document type.', 'tainacan'), 'type' => 'string']]], 'default' => ['attachment' => ['enabled' => 'yes', 'label' => __('File', 'tainacan'), 'icon' => 'attachments'], 'url' => ['enabled' => 'yes', 'label' => __('URL', 'tainacan'), 'icon' => 'url'], 'text' => ['enabled' => 'yes', 'label' => __('Text', 'tainacan'), 'icon' => 'text']]], 'item_publication_label' => ['map' => 'meta', 'title' => __('Publication area label', 'tainacan'), 'type' => 'string', 'description' => __('The label for the publication section in the item edition form, where author, status, slug and comments options appear', 'tainacan'), 'default' => __('Publication data', 'tainacan')], 'item_document_label' => ['map' => 'meta', 'title' => __('Main document label', 'tainacan'), 'type' => 'string', 'description' => __('The label for the main document section in the item edition form', 'tainacan'), 'default' => __('Document', 'tainacan')], 'item_thumbnail_label' => ['map' => 'meta', 'title' => __('Thumbnail label', 'tainacan'), 'type' => 'string', 'description' => __('The label for the thumbnail section in the item edition form', 'tainacan'), 'default' => __('Thumbnail', 'tainacan')], 'item_enable_thumbnail' => ['map' => 'meta', 'title' => __('Item thumbnail', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, each item can have a thumbnail customized instead of the one automatically generated based on the item document.', 'tainacan'), 'default' => 'yes', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'item_attachment_label' => ['map' => 'meta', 'title' => __('Attachments label', 'tainacan'), 'type' => 'string', 'description' => __('The label for the attachments section in the item edition form', 'tainacan'), 'default' => __('Attachments', 'tainacan')], 'item_enable_attachments' => ['map' => 'meta', 'title' => __('Item attachments', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, each item can have a set of files attached to it, complementary to the item document.', 'tainacan'), 'default' => 'yes', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'item_enable_metadata_focus_mode' => ['map' => 'meta', 'title' => __('Metadata focus mode', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, a button can start a special navigation mode, that focus one metadatum per time in the item edition form.', 'tainacan'), 'default' => 'yes', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'item_enable_metadata_required_filter' => ['map' => 'meta', 'title' => __('Metadata required filter', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, a switch can be toggled to display only required metadata in the item edition form.', 'tainacan'), 'default' => 'yes', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'item_enable_metadata_searchbar' => ['map' => 'meta', 'title' => __('Metadata search bar', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, a search bar can be used for filtering the list of metadata in the item edition form.', 'tainacan'), 'default' => 'yes', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'item_enable_metadata_collapses' => ['map' => 'meta', 'title' => __('Metadata collapses', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, each metadata in the item form will be wrapped in a collapsable component.', 'tainacan'), 'default' => 'yes', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'item_enable_metadata_enumeration' => ['map' => 'meta', 'title' => __('Metadata enumeration', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, the metadata sections and their metadata in the item form will be enumerated automatically.', 'tainacan'), 'default' => 'no', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])], 'item_enable_document_content_editing' => ['map' => 'meta', 'title' => __('Document content editing', 'tainacan'), 'type' => 'string', 'description' => __('If enabled, the item edition form shows controls to view, extract and edit the textual content stored from item documents for use in search.', 'tainacan'), 'default' => 'yes', 'on_error' => __('Value should be yes or no', 'tainacan'), 'enum' => ['yes', 'no'], 'validation' => v::stringType()->in(['yes', 'no'])]]` |  | 
+], 'cover_page_id' => ['map' => 'termmeta', 'title' => __('Cover Page ID', 'tainacan'), 'type' => ['integer', 'string'], 'description' => __('If defined, this custom page will be used as cover for this term, instead of default items list.', 'tainacan'), 'on_error' => __('Invalid page', 'tainacan'), 'default' => ''], 'hide_empty' => ['map' => 'hide_empty', 'title' => __('Hide empty', 'tainacan'), 'type' => 'boolean', 'description' => __('Hide empty terms', 'tainacan')]]` |  | 
 
-Source: [class-tainacan-collections.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-collections.php), [line 83](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-collections.php#L83-L574)
+**Changelog**
 
----------------------------------
-<br>
+Version | Description
+------- | -----------
+`1.0.0` | 
 
-## `tainacan-fetch-args` <!-- {docsify-ignore} -->
-
-*fetch collection based on ID or WP_Query args*
-
-Collections are stored as posts. Check WP_Query docs
-to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
-You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
-appropriate WP_Query argument
-
-If a number is passed to $args, it will return a \Tainacan\Entities\Collection object.  But if the post is not found or
-does not match the entity post type, it will return an empty array
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$args` | `array` | WP_Query args \|\| int $args the collection id
-`'collections'` |  | 
-
-Source: [class-tainacan-collections.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-collections.php), [line 658](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-collections.php#L658-L702)
+Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L11-L101)
 
 ---------------------------------
 <br>
@@ -4397,6 +4168,407 @@ Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/
 ---------------------------------
 <br>
 
+## `tainacan_sanitize_document_content_index` <!-- {docsify-ignore} -->
+
+*Filters sanitized document content index text after automatic extraction cleanup.*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$content` | `string` | Sanitized content.
+
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 151](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L151-L156)
+
+---------------------------------
+<br>
+
+## `tainacan-extract-pdf-cover` <!-- {docsify-ignore} -->
+
+*Extract an image from the first page of a pdf file*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`null` |  | 
+`$filepath` | `string` | The pdf filepath in the server
+
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 472](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L472-L479)
+
+---------------------------------
+<br>
+
+## `tainacan-index-pdf` <!-- {docsify-ignore} -->
+
+*Extract textual content from a PDF file*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`null` |  | 
+`$file` | `string` | Absolute path to the PDF file.
+`$item_id` | `int\|null` | Optional item ID for filters.
+
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 520](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L520-L538)
+
+---------------------------------
+<br>
+
+## `tainacan-default-image-blurhash` <!-- {docsify-ignore} -->
+
+*Handles media functionality for Tainacan.*
+
+Provides methods for managing images, attachments, and media-related features
+including custom image sizes, attachment pages, and content indexing.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`"V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj"` |  | 
+
+**Changelog**
+
+Version | Description
+------- | -----------
+`0.1.0` | 
+
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L7-L770)
+
+---------------------------------
+<br>
+
+## `tainacan_pdf_extracted_text_is_usable` <!-- {docsify-ignore} -->
+
+*Whether extracted PDF text is usable for storage and search.*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$passes` |  | 
+`$text` | `string` | Extracted text.
+
+Source: [class-tainacan-pdf-extracted-text-quality.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-pdf-extracted-text-quality.php), [line 22](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-pdf-extracted-text-quality.php#L22-L45)
+
+---------------------------------
+<br>
+
+## `tainacan-oai-token-valid` <!-- {docsify-ignore} -->
+
+*Lifetime, in seconds, of a resumptionToken. Defaults to 24 hours.*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`DAY_IN_SECONDS` |  | 
+
+Source: [class-tainacan-oaipmh-token-manager.php](https://github.com/tainacan/tainacan/blob/master/src/classes/oaipmh/class-tainacan-oaipmh-token-manager.php), [line 27](https://github.com/tainacan/tainacan/blob/master/src/classes/oaipmh/class-tainacan-oaipmh-token-manager.php#L27-L32)
+
+---------------------------------
+<br>
+
+## `tainacan-oai-repository-name` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`get_bloginfo('name')` |  | 
+
+Source: [class-tainacan-oaipmh-data-provider.php](https://github.com/tainacan/tainacan/blob/master/src/classes/oaipmh/class-tainacan-oaipmh-data-provider.php), [line 81](https://github.com/tainacan/tainacan/blob/master/src/classes/oaipmh/class-tainacan-oaipmh-data-provider.php#L81-L81)
+
+---------------------------------
+<br>
+
+## `tainacan-oai-admin-email` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`get_bloginfo('admin_email')` |  | 
+
+Source: [class-tainacan-oaipmh-data-provider.php](https://github.com/tainacan/tainacan/blob/master/src/classes/oaipmh/class-tainacan-oaipmh-data-provider.php), [line 84](https://github.com/tainacan/tainacan/blob/master/src/classes/oaipmh/class-tainacan-oaipmh-data-provider.php#L84-L84)
+
+---------------------------------
+<br>
+
+## `tainacan-oai-earliest-datestamp` <!-- {docsify-ignore} -->
+
+*Filter the repository earliest datestamp advertised on Identify.*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$result` | `string` | Datestamp in YYYY-MM-DDThh:mm:ssZ.
+
+Source: [class-tainacan-oaipmh-data-provider.php](https://github.com/tainacan/tainacan/blob/master/src/classes/oaipmh/class-tainacan-oaipmh-data-provider.php), [line 130](https://github.com/tainacan/tainacan/blob/master/src/classes/oaipmh/class-tainacan-oaipmh-data-provider.php#L130-L135)
+
+---------------------------------
+<br>
+
+## `tainacan-exposer-head` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`'<?xml version="1.0" encoding="UTF-8"?>
+			<oai_dc:dc 
+    			xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" 
+    			xmlns:dc="http://purl.org/dc/elements/1.1/" 
+    			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    			xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ 
+    			http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+			</oai_dc:dc>'` |  | 
+
+Source: [class-tainacan-oai-pmh.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-oai-pmh.php), [line 25](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-oai-pmh.php#L25-L33)
+
+---------------------------------
+<br>
+
+## `tainacan-oai-pmh-namespace` <!-- {docsify-ignore} -->
+
+*{@inheritDoc}*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`\Tainacan\Exposers\Mappers\Dublin_Core::XML_DC_NAMESPACE` |  | 
+
+Source: [class-tainacan-oai-pmh.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-oai-pmh.php), [line 18](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-oai-pmh.php#L18-L34)
+
+---------------------------------
+<br>
+
+## `tainacan-oai-pmh-root` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$xml` |  | 
+
+Source: [class-tainacan-oai-pmh.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-oai-pmh.php), [line 35](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-oai-pmh.php#L35-L35)
+
+---------------------------------
+<br>
+
+## `tainacan-exporser-type-mappers` <!-- {docsify-ignore} -->
+
+*Return list of supported mappers for this type*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$this->mappers` |  | 
+`$this` |  | 
+
+Source: [class-tainacan-exposer.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-exposer.php), [line 83](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-exposer.php#L83-L88)
+
+---------------------------------
+<br>
+
+## `tainacan-exposer-jsonld` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$jsonld` |  | 
+
+Source: [class-tainacan-json-ld.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-json-ld.php), [line 47](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-json-ld.php#L47-L47)
+
+---------------------------------
+<br>
+
+## `tainacan-exposer-txt` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$txt` |  | 
+
+Source: [class-tainacan-txt.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-txt.php), [line 25](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-txt.php#L25-L25)
+
+---------------------------------
+<br>
+
+## `tainacan-exposer-numeric-item-prefix` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`__('item', 'tainacan') . '-'` |  | 
+`get_class($this)` |  | 
+
+Source: [class-tainacan-txt.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-txt.php), [line 39](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-txt.php#L39-L39)
+
+---------------------------------
+<br>
+
+## `tainacan-exposer-html` <!-- {docsify-ignore} -->
+
+*{@inheritDoc}*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$html` |  | 
+
+Source: [class-tainacan-html.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-html.php), [line 23](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-html.php#L23-L85)
+
+---------------------------------
+<br>
+
+## `tainacan-exposer-numeric-item-prefix` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`__('item', 'tainacan') . '-'` |  | 
+`get_class($this)` |  | 
+
+Source: [class-tainacan-html.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-html.php), [line 102](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-html.php#L102-L102)
+
+---------------------------------
+<br>
+
+## `tainacan-exposer-numeric-item-prefix` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`__('item', 'tainacan') . '-'` |  | 
+`get_class($this)` |  | 
+
+Source: [class-tainacan-xml.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-xml.php), [line 59](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-xml.php#L59-L59)
+
+---------------------------------
+<br>
+
+## `{$this->identifier}_queue_lock_time` <!-- {docsify-ignore} -->
+
+*Lock process*
+
+Lock the process so that multiple instances can't run simultaneously.
+Override if applicable, but the duration should be greater than that
+defined in the time_exceeded() method.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$lock_duration` |  | 
+
+Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 266](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L266-L278)
+
+---------------------------------
+<br>
+
+## `{$this->identifier}_memory_exceeded` <!-- {docsify-ignore} -->
+
+*Memory exceeded*
+
+Ensures the batch process never exceeds 90%%
+of the maximum WordPress memory.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$return` |  | 
+
+Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 386](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L386-L403)
+
+---------------------------------
+<br>
+
+## `{$this->identifier}_default_time_limit` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`20` |  | 
+
+Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 436](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L436-L436)
+
+---------------------------------
+<br>
+
+## `{$this->identifier}_time_exceeded` <!-- {docsify-ignore} -->
+
+*Time exceeded.*
+
+Ensures the batch never exceeds a sensible time limit.
+A timeout limit of 30s is common on shared hosting.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$return` |  | 
+
+Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 427](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L427-L443)
+
+---------------------------------
+<br>
+
+## `{$this->identifier}_cron_interval` <!-- {docsify-ignore} -->
+
+*Schedule cron healthcheck*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`5` |  | 
+
+Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 457](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L457-L465)
+
+---------------------------------
+<br>
+
+## `{$this->identifier}_cron_interval` <!-- {docsify-ignore} -->
+
+*Schedule cron healthcheck*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$this->cron_interval` |  | 
+
+Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 457](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L457-L468)
+
+---------------------------------
+<br>
+
+## `https_local_ssl_verify` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`false` |  | 
+
+Source: [class-tainacan-async-request.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-async-request.php), [line 136](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-async-request.php#L136-L136)
+
+---------------------------------
+<br>
+
+## `tainacan-exporter-step-length-items` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`20` |  | 
+`$this->get_current_step()` |  | 
+
+Source: [class-tainacan-exporter.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/exporter/class-tainacan-exporter.php), [line 261](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/exporter/class-tainacan-exporter.php#L261-L261)
+
+---------------------------------
+<br>
+
+## `tainacan-the-modified-author` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$last_user->display_name` |  | 
+
+Source: [class-tainacan-exporter-handler-cell.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/exporter/traits/class-tainacan-exporter-handler-cell.php), [line 87](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/exporter/traits/class-tainacan-exporter-handler-cell.php#L87-L87)
+
+---------------------------------
+<br>
+
 ## `tainacan-api-prepare-items-args` <!-- {docsify-ignore} -->
 
 
@@ -4406,6 +4578,130 @@ Argument | Type | Description
 `$request` | `mixed` | 
 
 Source: [class-tainacan-rest-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/class-tainacan-rest-controller.php), [line 77](https://github.com/tainacan/tainacan/blob/master/src/classes/api/class-tainacan-rest-controller.php#L77-L172)
+
+---------------------------------
+<br>
+
+## `tainacan-oai-permission` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`true` |  | 
+`$request` | `\WP_REST_Request` | 
+
+Source: [class-tainacan-rest-oaipmh-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php), [line 65](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php#L65-L73)
+
+---------------------------------
+<br>
+
+## `tainacan-oai-pre-dispatch` <!-- {docsify-ignore} -->
+
+*Allow a plugin to short-circuit the response, e.g. serve a cached
+document or reject the request (rate limiting). Returning a non-empty
+string is treated as the full XML response body.*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`null` |  | 
+`$verb` | `string` | The requested verb.
+`$params` | `array` | The request parameters.
+
+Source: [class-tainacan-rest-oaipmh-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php), [line 102](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php#L102-L111)
+
+---------------------------------
+<br>
+
+## `tainacan-oai-token-valid` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`DAY_IN_SECONDS` |  | 
+
+Source: [class-tainacan-rest-oaipmh-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php), [line 142](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php#L142-L188)
+
+---------------------------------
+<br>
+
+## `tainacan-oai-token-valid` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`DAY_IN_SECONDS` |  | 
+
+Source: [class-tainacan-rest-oaipmh-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php), [line 280](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php#L280-L327)
+
+---------------------------------
+<br>
+
+## `tainacan-oai-maxrecords` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$default` |  | 
+
+Source: [class-tainacan-rest-oaipmh-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php), [line 452](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php#L452-L452)
+
+---------------------------------
+<br>
+
+## `tainacan-api-response-term-meta` <!-- {docsify-ignore} -->
+
+*Use this filter to add additional term_meta to the api response
+Use the $request object to get the context of the request and other variables
+For example, id context is edit, you may want to add your meta or not.*
+
+Also take care to do any permissions verification before exposing the data
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`[]` |  | 
+`$request` |  | 
+
+Source: [class-tainacan-rest-terms-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-terms-controller.php), [line 561](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-terms-controller.php#L561-L568)
+
+---------------------------------
+<br>
+
+## `tainacan-api-response-metadata-section-meta` <!-- {docsify-ignore} -->
+
+*Use this filter to add additional post_meta to the api response
+Use the $request object to get the context of the request and other variables
+For example, id context is edit, you may want to add your meta or not.*
+
+Also take care to do any permissions verification before exposing the data
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`[]` |  | 
+`$request` |  | 
+
+Source: [class-tainacan-rest-metadata-sections-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-metadata-sections-controller.php), [line 198](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-metadata-sections-controller.php#L198-L205)
+
+---------------------------------
+<br>
+
+## `tainacan-api-response-metadatum-meta` <!-- {docsify-ignore} -->
+
+*Use this filter to add additional post_meta to the api response
+Use the $request object to get the context of the request and other variables
+For example, id context is edit, you may want to add your meta or not.*
+
+Also take care to do any permissions verification before exposing the data
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`[]` |  | 
+`$request` |  | 
+
+Source: [class-tainacan-rest-metadata-sections-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-metadata-sections-controller.php), [line 251](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-metadata-sections-controller.php#L251-L258)
 
 ---------------------------------
 <br>
@@ -4448,39 +4744,33 @@ Source: [class-tainacan-rest-metadata-controller.php](https://github.com/tainaca
 ---------------------------------
 <br>
 
-## `tainacan-api-role-prepare-for-response` <!-- {docsify-ignore} -->
+## `tainacan-rest-response` <!-- {docsify-ignore} -->
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$return` |  | 
-`$request` | `\WP_REST_Request` | 
-
-Source: [class-tainacan-rest-roles-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-roles-controller.php), [line 389](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-roles-controller.php#L389-L405)
-
----------------------------------
-<br>
-
-## `tainacan-api-response-term-meta` <!-- {docsify-ignore} -->
-
-*Use this filter to add additional term_meta to the api response
-Use the $request object to get the context of the request and other variables
-For example, id context is edit, you may want to add your meta or not.*
-
-Also take care to do any permissions verification before exposing the data
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`[]` |  | 
+`$prepared_item` |  | 
 `$request` |  | 
 
-Source: [class-tainacan-rest-terms-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-terms-controller.php), [line 561](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-terms-controller.php#L561-L568)
+Source: [class-tainacan-rest-item-metadata-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-item-metadata-controller.php), [line 190](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-item-metadata-controller.php#L190-L190)
 
 ---------------------------------
 <br>
 
-## `tainacan-api-response-taxonomy-meta` <!-- {docsify-ignore} -->
+## `tainacan-rest-response` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$prepared_item` |  | 
+`$request` |  | 
+
+Source: [class-tainacan-rest-item-metadata-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-item-metadata-controller.php), [line 216](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-item-metadata-controller.php#L216-L216)
+
+---------------------------------
+<br>
+
+## `tainacan-api-response-collection-meta` <!-- {docsify-ignore} -->
 
 *Use this filter to add additional post_meta to the api response
 Use the $request object to get the context of the request and other variables
@@ -4494,7 +4784,20 @@ Argument | Type | Description
 `[]` |  | 
 `$request` |  | 
 
-Source: [class-tainacan-rest-taxonomies-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-taxonomies-controller.php), [line 194](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-taxonomies-controller.php#L194-L201)
+Source: [class-tainacan-rest-collections-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-collections-controller.php), [line 425](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-collections-controller.php#L425-L432)
+
+---------------------------------
+<br>
+
+## `tainacan-api-role-prepare-for-response` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$return` |  | 
+`$request` | `\WP_REST_Request` | 
+
+Source: [class-tainacan-rest-roles-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-roles-controller.php), [line 389](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-roles-controller.php#L389-L405)
 
 ---------------------------------
 <br>
@@ -4688,100 +4991,7 @@ Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/t
 ---------------------------------
 <br>
 
-## `tainacan-rest-response` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$prepared_item` |  | 
-`$request` |  | 
-
-Source: [class-tainacan-rest-item-metadata-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-item-metadata-controller.php), [line 190](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-item-metadata-controller.php#L190-L190)
-
----------------------------------
-<br>
-
-## `tainacan-rest-response` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$prepared_item` |  | 
-`$request` |  | 
-
-Source: [class-tainacan-rest-item-metadata-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-item-metadata-controller.php), [line 216](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-item-metadata-controller.php#L216-L216)
-
----------------------------------
-<br>
-
-## `tainacan-oai-permission` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`true` |  | 
-`$request` | `\WP_REST_Request` | 
-
-Source: [class-tainacan-rest-oaipmh-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php), [line 65](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php#L65-L73)
-
----------------------------------
-<br>
-
-## `tainacan-oai-pre-dispatch` <!-- {docsify-ignore} -->
-
-*Allow a plugin to short-circuit the response, e.g. serve a cached
-document or reject the request (rate limiting). Returning a non-empty
-string is treated as the full XML response body.*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`null` |  | 
-`$verb` | `string` | The requested verb.
-`$params` | `array` | The request parameters.
-
-Source: [class-tainacan-rest-oaipmh-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php), [line 102](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php#L102-L111)
-
----------------------------------
-<br>
-
-## `tainacan-oai-token-valid` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`DAY_IN_SECONDS` |  | 
-
-Source: [class-tainacan-rest-oaipmh-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php), [line 142](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php#L142-L188)
-
----------------------------------
-<br>
-
-## `tainacan-oai-token-valid` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`DAY_IN_SECONDS` |  | 
-
-Source: [class-tainacan-rest-oaipmh-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php), [line 280](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php#L280-L327)
-
----------------------------------
-<br>
-
-## `tainacan-oai-maxrecords` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$default` |  | 
-
-Source: [class-tainacan-rest-oaipmh-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php), [line 452](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php#L452-L452)
-
----------------------------------
-<br>
-
-## `tainacan-api-response-metadata-section-meta` <!-- {docsify-ignore} -->
+## `tainacan-api-response-taxonomy-meta` <!-- {docsify-ignore} -->
 
 *Use this filter to add additional post_meta to the api response
 Use the $request object to get the context of the request and other variables
@@ -4795,45 +5005,7 @@ Argument | Type | Description
 `[]` |  | 
 `$request` |  | 
 
-Source: [class-tainacan-rest-metadata-sections-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-metadata-sections-controller.php), [line 198](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-metadata-sections-controller.php#L198-L205)
-
----------------------------------
-<br>
-
-## `tainacan-api-response-metadatum-meta` <!-- {docsify-ignore} -->
-
-*Use this filter to add additional post_meta to the api response
-Use the $request object to get the context of the request and other variables
-For example, id context is edit, you may want to add your meta or not.*
-
-Also take care to do any permissions verification before exposing the data
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`[]` |  | 
-`$request` |  | 
-
-Source: [class-tainacan-rest-metadata-sections-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-metadata-sections-controller.php), [line 251](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-metadata-sections-controller.php#L251-L258)
-
----------------------------------
-<br>
-
-## `tainacan-api-response-collection-meta` <!-- {docsify-ignore} -->
-
-*Use this filter to add additional post_meta to the api response
-Use the $request object to get the context of the request and other variables
-For example, id context is edit, you may want to add your meta or not.*
-
-Also take care to do any permissions verification before exposing the data
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`[]` |  | 
-`$request` |  | 
-
-Source: [class-tainacan-rest-collections-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-collections-controller.php), [line 425](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-collections-controller.php#L425-L432)
+Source: [class-tainacan-rest-taxonomies-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-taxonomies-controller.php), [line 194](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-taxonomies-controller.php#L194-L201)
 
 ---------------------------------
 <br>
@@ -4857,17 +5029,138 @@ Source: [class-tainacan-rest-filters-controller.php](https://github.com/tainacan
 ---------------------------------
 <br>
 
-## `tainacan-get-mapper-from-request` <!-- {docsify-ignore} -->
+## `tainacan-available-admin-ui-options` <!-- {docsify-ignore} -->
 
-*Check if there is a mapper*
+*Lists a translatable and grouped version of the available admin ui options*
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$return_mapper` |  | 
-`$request` | `\WP_REST_Request` | 
+`array('navigation' => array('label' => __('Navigation', 'tainacan'), 'description' => __('Options related to the overall plugin navigation such as sidemenu and fullscreen mode.', 'tainacan'), 'items' => array('forceFullscreenAdminMode' => __('Force Tainacan to always overlap WordPress admin menu and sidebar', 'tainacan'), 'hideBreadcrumbs' => __('Hide breadcrumbs', 'tainacan'), 'hideWordPressShorcutButton' => __('Hide WordPress shortcut button', 'tainacan'), 'hideSiteShorcutButton' => __('Hide site shortcut button', 'tainacan'), 'hideFullscreenTogglerButton' => __('Hide fullscreen toggler button', 'tainacan'), 'hideMenuCollapserButton' => __('Hide menu collapser button', 'tainacan'), 'hideNavigationSidebar' => __('Hide entire navigation side menu', 'tainacan'), 'hideNavigationHomeButton' => __('Hide home button in side menu', 'tainacan'), 'hideNavigationRepositoryMenu' => __('Hide "Repository" menu button in side menu', 'tainacan'), 'hideNavigationTaxonomiesButton' => __('Hide taxonomies button in repository submenu', 'tainacan'), 'hideNavigationMetadataButton' => __('Hide metadata button in repository submenu', 'tainacan'), 'hideNavigationFiltersButton' => __('Hide filters button in repository submenu', 'tainacan'), 'hideNavigationImportersButton' => __('Hide importers button in repository submenu', 'tainacan'), 'hideNavigationExportersButton' => __('Hide exporters button in repository submenu', 'tainacan'), 'hideNavigationActivitiesButton' => __('Hide activities button in repository submenu', 'tainacan'), 'hideNavigationCapabilitiesButton' => __('Hide permissions button in repository submenu', 'tainacan'), 'hideNavigationProcessesButton' => __('Hide processes button in repository submenu', 'tainacan'), 'hideNavigationReportsButton' => __('Hide reports button in repository submenu', 'tainacan'), 'hideNavigationCollectionsMenu' => __('Hide "Collections" menu button in side menu', 'tainacan'), 'hideNavigationCollectionsButton' => __('Hide collections list button in collections submenu', 'tainacan'), 'hideNavigationItemsButton' => __('Hide "All items" button in collections submenu', 'tainacan'), 'hideNavigationMyItemsButton' => __('Hide "My items" button in collections submenu', 'tainacan'), 'hideNavigationCollectionName' => __('Hide collection name in current collection submenu', 'tainacan'), 'hideNavigationCollectionItemsButton' => __('Hide "All items" button in current collection submenu', 'tainacan'), 'hideNavigationCollectionMyItemsButton' => __('Hide "My items" button in current collection submenu', 'tainacan'), 'hideNavigationCollectionSettingsButton' => __('Hide settings button in current collection submenu', 'tainacan'), 'hideNavigationCollectionMetadataButton' => __('Hide metadata button in current collection submenu', 'tainacan'), 'hideNavigationCollectionFiltersButton' => __('Hide filters button in current collection submenu', 'tainacan'), 'hideNavigationCollectionExportersButton' => __('Hide exporters button in current collection submenu', 'tainacan'), 'hideNavigationCollectionActivitiesButton' => __('Hide activities button in current collection submenu', 'tainacan'), 'hideNavigationCollectionCapabilitiesButton' => __('Hide permissions button in current collection submenu', 'tainacan'), 'hideNavigationCollectionReportsButton' => __('Hide reports button in current collection submenu', 'tainacan'), 'hideExternalEntityLinks' => __('Hide external site links for item, collection, taxonomies and other public pages', 'tainacan'), 'hideNavigationOtherMenu' => __('Hide "Other" menu button in side menu', 'tainacan'), 'hideNavigationSettingsButton' => __('Hide "Settings" button in side menu', 'tainacan'), 'hideNavigationRolesButton' => __('Hide "Roles" button in side menu', 'tainacan'), 'hideNavigationSystemCheckButton' => __('Hide "System Check" button in side menu', 'tainacan'))), 'dashboard' => array('label' => __('Dashboard', 'tainacan'), 'description' => __('Options related to the Dashboard page and its cards. Notice that each user may still hide the cards that remain in the screen.', 'tainacan'), 'items' => array('disableDashboardCardsSorting' => __('Disable dashboard cards sorting', 'tainacan'), 'hideDashboardRepositoryCard' => __('Hide repository card', 'tainacan'), 'hideDashboardRepositoryCardTaxonomiesButton' => __('Hide repository card taxonomies button', 'tainacan'), 'hideDashboardRepositoryCardMetadataButton' => __('Hide repository card metadata button', 'tainacan'), 'hideDashboardRepositoryCardFiltersButton' => __('Hide repository card filters button', 'tainacan'), 'hideDashboardRepositoryCardImportersButton' => __('Hide repository card importers button', 'tainacan'), 'showDashboardRepositoryCardExportersButton' => __('Show repository card exporters button', 'tainacan'), 'showDashboardRepositoryCardProcessesButton' => __('Show repository card processes button', 'tainacan'), 'showDashboardRepositoryCardActivitiesButton' => __('Show repository card activities button', 'tainacan'), 'showDashboardRepositoryCardCapabilitiesButton' => __('Show repository card capabilities button', 'tainacan'), 'showDashboardRepositoryCardReportsButton' => __('Show repository card reports button', 'tainacan'), 'hideDashboardCollectionsCard' => __('Hide collections card', 'tainacan'), 'hideDashboardCollectionsCardCollectionsListButton' => __('Hide collections card collections list button', 'tainacan'), 'hideDashboardCollectionsCardNewCollectionButton' => __('Hide collections card new collection button', 'tainacan'), 'hideDashboardCollectionsCardItemsListButton' => __('Hide collections card items list button', 'tainacan'), 'hideDashboardCollectionsCardMyItemsListButton' => __('Hide collections card "My items list" button', 'tainacan'), 'hideDashboardCollectionCards' => __('Hide collection cards', 'tainacan'), 'showOnlyCollectionCardsThatUserCanEdit' => __('Show only collections that user can edit items', 'tainacan'), 'showOnlyCollectionCardsAuthoredByUser' => __('Show only collections authored by the user', 'tainacan'), 'hideDashboardCollectionCardsItemsButton' => __('Hide collection cards items button', 'tainacan'), 'hideDashboardCollectionCardsExternalLinkButton' => __('Hide collection cards external link button', 'tainacan'), 'showDashboardCollectionCardsMyItemsButton' => __('Show collection cards "My items" button', 'tainacan'), 'hideDashboardCollectionCardsMetadataButton' => __('Hide collection cards metadata button', 'tainacan'), 'showDashboardCollectionCardsFiltersButton' => __('Show collection cards filters button', 'tainacan'), 'showDashboardCollectionCardsImportersButton' => __('Show collection cards importers button', 'tainacan'), 'showDashboardCollectionCardsExportersButton' => __('Show collection cards exporters button', 'tainacan'), 'showDashboardCollectionCardsActivitiesButton' => __('Show collection cards activities button', 'tainacan'), 'showDashboardCollectionCardsCapabilitiesButton' => __('Show collection cards capabilities button', 'tainacan'), 'showDashboardCollectionCardsReportsButton' => __('Show collection cards reports button', 'tainacan'), 'hideDashboardInfoCard' => __('Hide info card', 'tainacan'), 'hideDashboardInfoCardForumButton' => __('Hide info card user\'s forum button', 'tainacan'), 'hideDashboardInfoCardFAQButton' => __('Hide info card FAQ button', 'tainacan'), 'hideDashboardInfoCardWikiButton' => __('Hide info card wiki button', 'tainacan'), 'hideDashboardInfoCardSourceCodeButton' => __('Hide info card source code button', 'tainacan'), 'showDashboardInfoCardVideosButton' => __('Show info card videos button', 'tainacan'), 'hideDashboardNewsCard' => __('Hide news card', 'tainacan'))), 'items-list' => array('label' => __('Items list', 'tainacan'), 'description' => __('Options related to the admin pages that display the faceted search with items list.', 'tainacan'), 'items' => array('hideItemsListPageTitle' => __('Hide page title', 'tainacan'), 'hideItemsListBulkActionsButton' => __('Hide bulk actions button', 'tainacan'), 'hideItemsListMultipleSelection' => __('Hide multiple item selection', 'tainacan'), 'hideItemsListSelection' => __('Hide individual item selection', 'tainacan'), 'hideItemsListExposersButton' => __('Hide "View as..." button', 'tainacan'), 'hideItemsListViewModesButton' => __('Hide view mode selector button', 'tainacan'), 'hideDisplayedMetadataDropdown' => __('Hide displayed metadata dropdown', 'tainacan'), 'hideItemsListAdvancedSearch' => __('Hide advanced search', 'tainacan'), 'hideItemsListStatusTabs' => __('Hide status tabs', 'tainacan'), 'hideItemsListStatusTabsTotalItems' => __('Hide total items in status tabs', 'tainacan'), 'hideItemsListCreationDropdownBulkAdd' => __('Hide bulk add button in creation dropdown', 'tainacan'), 'hideItemsListCreationDropdownImport' => __('Hide import button in creation dropdown', 'tainacan'), 'hideItemsListContextMenu' => __('Hide right-click context menu', 'tainacan'), 'hideItemsListFilterCreationButton' => __('Hide create filters button', 'tainacan'), 'hideItemsListGoToPageButton' => __('Hide "Go to page" button', 'tainacan'), 'hideItemsListItemsPerPageButton' => __('Hide "Items per page" button', 'tainacan'))), 'item-editing-page' => array('label' => __('Item editing page', 'tainacan'), 'description' => __('Options related to the item edition form. Some of this settings may also be achieved via collection settings, but doing here will override any option.', 'tainacan'), 'items' => array('hideItemEditionPageTitle' => __('Hide page title', 'tainacan'), 'itemEditionPublicationSectionInsideTabs' => __('Show publication section inside tabs', 'tainacan'), 'itemEditionDocumentInsideTabs' => __('Show document entry inside tabs', 'tainacan'), 'itemEditionAttachmentsInsideTabs' => __('Show attachments inside tabs', 'tainacan'), 'hideItemEditionPublicationSection' => __('Hide publication section', 'tainacan'), 'hideItemEditionStatusOption' => __('Hide status options', 'tainacan'), 'hideItemEditionStatusPublishOption' => __('Hide public status option', 'tainacan'), 'hideItemEditionStatusPrivateOption' => __('Hide private status option', 'tainacan'), 'hideItemEditionStatusPendingOption' => __('Hide pending status option', 'tainacan'), 'hideItemEditionCommentsToggle' => __('Hide comments option', 'tainacan'), 'hideItemEditionDocument' => __('Hide document entry completely', 'tainacan'), 'hideItemEditionDocumentFileInput' => __('Hide file type document entry', 'tainacan'), 'hideItemEditionDocumentTextInput' => __('Hide text type document entry', 'tainacan'), 'hideItemEditionDocumentUrlInput' => __('Hide URL type document entry', 'tainacan'), 'hideItemEditionThumbnail' => __('Hide thumbnail', 'tainacan'), 'hideItemEditionAttachments' => __('Hide attachments', 'tainacan'), 'itemEditionStatusOptionOnFooterDropdown' => __('Show status option in footer dropdown', 'tainacan'), 'allowItemEditionModalInsideModal' => __('Allow item creation modal inside another modal (experimental)', 'tainacan'))), 'item-page' => array('label' => __('Item page', 'tainacan'), 'description' => __('Options related to the item page inside the admin', 'tainacan'), 'items' => array('hideItemSinglePageTitle' => __('Hide page title', 'tainacan'), 'hideItemSingleCurrentStatus' => __('Hide status', 'tainacan'), 'hideItemSingleCurrentVisibility' => __('Hide visibility status', 'tainacan'), 'hideItemSingleCommentsOpen' => __('Hide comments condition', 'tainacan'), 'hideItemSingleDocument' => __('Hide document', 'tainacan'), 'hideItemSingleThumbnail' => __('Hide thumbnail', 'tainacan'), 'hideItemSingleAttachments' => __('Hide attachments', 'tainacan'), 'hideItemSingleActivities' => __('Hide activities', 'tainacan'), 'hideItemSingleExposers' => __('Hide "View as..." button', 'tainacan'))))` |  | 
 
-Source: [class-tainacan-mappers-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/mappers/class-tainacan-mappers-handler.php), [line 139](https://github.com/tainacan/tainacan/blob/master/src/classes/mappers/class-tainacan-mappers-handler.php#L139-L165)
+Source: [class-tainacan-admin-ui-options.php](https://github.com/tainacan/tainacan/blob/master/src/classes/traits/class-tainacan-admin-ui-options.php), [line 15](https://github.com/tainacan/tainacan/blob/master/src/classes/traits/class-tainacan-admin-ui-options.php#L15-L178)
+
+---------------------------------
+<br>
+
+## `tainacan-svg-icons-folder-path` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$icons_folder_path` |  | 
+
+Source: [class-tainacan-svg-icon.php](https://github.com/tainacan/tainacan/blob/master/src/classes/traits/class-tainacan-svg-icon.php), [line 13](https://github.com/tainacan/tainacan/blob/master/src/classes/traits/class-tainacan-svg-icon.php#L13-L22)
+
+---------------------------------
+<br>
+
+## `tainacan-default-search-sentence` <!-- {docsify-ignore} -->
+
+*Default value for the sentence query var when not explicitly set.*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`!$search_each_word_by_default` |  | 
+
+Source: [class-tainacan-search-engine.php](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-search-engine.php), [line 404](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-search-engine.php#L404-L414)
+
+---------------------------------
+<br>
+
+## `tainacan-entity-get-property` <!-- {docsify-ignore} -->
+
+*return the value for a mapped property*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$value` |  | 
+`$prop` | `string` | id of property
+`$this` |  | 
+
+Source: [class-tainacan-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php), [line 189](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php#L189-L203)
+
+---------------------------------
+<br>
+
+## `tainacan-entity-set-property` <!-- {docsify-ignore} -->
+
+*set the value of a mapped property*
+
+This is a protected method. If you want to set an entity prop
+using the prop name dynamically, use the set() method
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$value` | `mixed` | the value to be setted
+`$prop` | `string` | id of the property
+`$this` |  | 
+
+Source: [class-tainacan-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php), [line 206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php#L206-L217)
+
+---------------------------------
+<br>
+
+## `tainacan-set-post-status` <!-- {docsify-ignore} -->
+
+*set the status of the entity*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$value` | `string` | 
+
+Source: [class-tainacan-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php), [line 256](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php#L256-L261)
+
+---------------------------------
+<br>
+
+## `tainacan-get-post-status` <!-- {docsify-ignore} -->
+
+*Abstract base class for all Tainacan entities.*
+
+Provides common functionality for all Tainacan entities including
+validation, error handling, and WordPress post type integration.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$value` |  | 
+
+**Changelog**
+
+Version | Description
+------- | -----------
+`1.0.0` | 
+
+Source: [class-tainacan-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php#L7-L350)
+
+---------------------------------
+<br>
+
+## `{$hook_prefix}-to-array` <!-- {docsify-ignore} -->
+
+*Abstract base class for all Tainacan entities.*
+
+Provides common functionality for all Tainacan entities including
+validation, error handling, and WordPress post type integration.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$attributes` |  | 
+`$this` |  | 
+
+**Changelog**
+
+Version | Description
+------- | -----------
+`1.0.0` | 
+
+Source: [class-tainacan-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php#L7-L410)
 
 ---------------------------------
 <br>
@@ -4973,89 +5266,17 @@ Source: [class-tainacan-term.php](https://github.com/tainacan/tainacan/blob/mast
 ---------------------------------
 <br>
 
-## `tainacan-entity-get-property` <!-- {docsify-ignore} -->
+## `tainacan-collection-to-string` <!-- {docsify-ignore} -->
 
-*return the value for a mapped property*
+*Represents a Tainacan Collection entity.*
 
-
-Argument | Type | Description
--------- | ---- | -----------
-`$value` |  | 
-`$prop` | `string` | id of property
-`$this` |  | 
-
-Source: [class-tainacan-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php), [line 189](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php#L189-L203)
-
----------------------------------
-<br>
-
-## `tainacan-entity-set-property` <!-- {docsify-ignore} -->
-
-*set the value of a mapped property*
-
-This is a protected method. If you want to set an entity prop
-using the prop name dynamically, use the set() method
+Collections are the main organizational units in Tainacan, containing
+items and their associated metadata, filters, and display settings.
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$value` | `mixed` | the value to be setted
-`$prop` | `string` | id of the property
-`$this` |  | 
-
-Source: [class-tainacan-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php), [line 206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php#L206-L217)
-
----------------------------------
-<br>
-
-## `tainacan-set-post-status` <!-- {docsify-ignore} -->
-
-*set the status of the entity*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$value` | `string` | 
-
-Source: [class-tainacan-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php), [line 256](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php#L256-L261)
-
----------------------------------
-<br>
-
-## `tainacan-get-post-status` <!-- {docsify-ignore} -->
-
-*Abstract base class for all Tainacan entities.*
-
-Provides common functionality for all Tainacan entities including
-validation, error handling, and WordPress post type integration.
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$value` |  | 
-
-**Changelog**
-
-Version | Description
-------- | -----------
-`1.0.0` | 
-
-Source: [class-tainacan-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php#L7-L350)
-
----------------------------------
-<br>
-
-## `{$hook_prefix}-to-array` <!-- {docsify-ignore} -->
-
-*Abstract base class for all Tainacan entities.*
-
-Provides common functionality for all Tainacan entities including
-validation, error handling, and WordPress post type integration.
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$attributes` |  | 
+`$this->get_name()` |  | 
 `$this` |  | 
 
 **Changelog**
@@ -5064,7 +5285,193 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-entity.php#L7-L410)
+Source: [class-tainacan-collection.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php#L7-L94)
+
+---------------------------------
+<br>
+
+## `tainacan-collection-to-array` <!-- {docsify-ignore} -->
+
+*Represents a Tainacan Collection entity.*
+
+Collections are the main organizational units in Tainacan, containing
+items and their associated metadata, filters, and display settings.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$array_collection` |  | 
+`$this` |  | 
+
+**Changelog**
+
+Version | Description
+------- | -----------
+`1.0.0` | 
+
+Source: [class-tainacan-collection.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php#L7-L107)
+
+---------------------------------
+<br>
+
+## `tainacan-collection-get-attachments` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$attachments` |  | 
+`$exclude` | `null` | 
+`$this` |  | 
+
+Source: [class-tainacan-collection.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php), [line 231](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php#L231-L254)
+
+---------------------------------
+<br>
+
+## `tainacan-collection-get-author-name` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$name` |  | 
+`$this` |  | 
+
+Source: [class-tainacan-collection.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php), [line 257](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php#L257-L262)
+
+---------------------------------
+<br>
+
+## `tainacan-collection-get-thumbnail` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$thumbs` |  | 
+`$this` |  | 
+
+Source: [class-tainacan-collection.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php), [line 265](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php#L265-L278)
+
+---------------------------------
+<br>
+
+## `tainacan-collection-get-header-image` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$header_image` |  | 
+`$this` |  | 
+
+Source: [class-tainacan-collection.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php), [line 281](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php#L281-L286)
+
+---------------------------------
+<br>
+
+## `tainacan-status-require-validation` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`['publish', 'future', 'private', 'pending']` |  | 
+
+Source: [class-tainacan-collection.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php), [line 1219](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php#L1219-L1224)
+
+---------------------------------
+<br>
+
+## `tainacan-metadatum-to-string` <!-- {docsify-ignore} -->
+
+*Represents a Tainacan Metadatum entity.*
+
+Metadata definitions that specify the structure and validation
+rules for item metadata within collections.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$this->get_name()` |  | 
+`$this` |  | 
+
+**Changelog**
+
+Version | Description
+------- | -----------
+`1.0.0` | 
+
+Source: [class-tainacan-metadatum.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-metadatum.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-metadatum.php#L7-L60)
+
+---------------------------------
+<br>
+
+## `tainacan-taxonomy-to-string` <!-- {docsify-ignore} -->
+
+*Represents a Tainacan Taxonomy entity.*
+
+Taxonomies define hierarchical classification systems for organizing
+and categorizing items within Tainacan collections.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$this->get_name()` |  | 
+`$this` |  | 
+
+**Changelog**
+
+Version | Description
+------- | -----------
+`1.0.0` | 
+
+Source: [class-tainacan-taxonomy.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-taxonomy.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-taxonomy.php#L7-L54)
+
+---------------------------------
+<br>
+
+## `tainacan-status-require-validation` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`['publish', 'future', 'private', 'pending']` |  | 
+
+Source: [class-tainacan-taxonomy.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-taxonomy.php), [line 264](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-taxonomy.php#L264-L269)
+
+---------------------------------
+<br>
+
+## `tainacan-filter-to-string` <!-- {docsify-ignore} -->
+
+*Represents a Tainacan Filter entity.*
+
+Filters define search and filtering capabilities for collections,
+allowing users to narrow down item results based on metadata criteria.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$this->get_name()` |  | 
+`$this` |  | 
+
+**Changelog**
+
+Version | Description
+------- | -----------
+`1.0.0` | 
+
+Source: [class-tainacan-filter.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-filter.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-filter.php#L7-L42)
+
+---------------------------------
+<br>
+
+## `tainacan-filter-to-array` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$filter_array` |  | 
+`$this` |  | 
+
+Source: [class-tainacan-filter.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-filter.php), [line 45](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-filter.php#L45-L69)
 
 ---------------------------------
 <br>
@@ -5089,6 +5496,160 @@ Version | Description
 `1.0.0` | 
 
 Source: [class-tainacan-metadata-section.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-metadata-section.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-metadata-section.php#L7-L40)
+
+---------------------------------
+<br>
+
+## `tainacan-item-metadata-get-multivalue-prefix` <!-- {docsify-ignore} -->
+
+*Gets the string used before each value when concatenating multiple values
+to display item metadata value as html or string*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$value` |  | 
+`$this` |  | 
+
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 73](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L73-L92)
+
+---------------------------------
+<br>
+
+## `tainacan-item-metadata-get-multivalue-suffix` <!-- {docsify-ignore} -->
+
+*Gets the string used after each value when concatenating multiple values
+to display item metadata value as html or string*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$value` |  | 
+`$this` |  | 
+
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 95](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L95-L114)
+
+---------------------------------
+<br>
+
+## `tainacan-item-metadata-get-multivalue-separator` <!-- {docsify-ignore} -->
+
+*Gets the string used in between each value when concatenating multiple values
+to display item metadata value as html or string*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$value` |  | 
+`$this` |  | 
+
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 117](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L117-L136)
+
+---------------------------------
+<br>
+
+## `tainacan-item-metadata-get-value-as-html` <!-- {docsify-ignore} -->
+
+*Filter the item metadatum value as HTML*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$return` | `string` | the item metadatum value HTML string
+`$this` | `\Tainacan\Entities\Item_Metadata_Entity` | the item metadatum entity
+
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 196](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L196-L204)
+
+---------------------------------
+<br>
+
+## `tainacan-item-metadata-get-value-as-string` <!-- {docsify-ignore} -->
+
+*Filter the item metadatum value as string*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`wp_strip_all_tags($this->get_value_as_html())` |  | 
+`$this` | `\Tainacan\Entities\Item_Metadata_Entity` | the item metadatum entity
+
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 223](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L223-L231)
+
+---------------------------------
+<br>
+
+## `tainacan-item-metadata-to-array` <!-- {docsify-ignore} -->
+
+*Convert the object to an Array*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$as_array` |  | 
+`$this` |  | 
+
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 313](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L313-L341)
+
+---------------------------------
+<br>
+
+## `tainacan-status-require-validation` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$validation_statuses` |  | 
+
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 515](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L515-L515)
+
+---------------------------------
+<br>
+
+## `tainacan-log-to-string` <!-- {docsify-ignore} -->
+
+*Represents a Tainacan Log entity.*
+
+Logs track changes and operations within Tainacan, providing
+an audit trail for entity modifications and system activities.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$this->get_title()` |  | 
+`$this` |  | 
+
+**Changelog**
+
+Version | Description
+------- | -----------
+`1.0.0` | 
+
+Source: [class-tainacan-log.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-log.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-log.php#L7-L49)
+
+---------------------------------
+<br>
+
+## `tainacan-log-to-array` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$array_log` |  | 
+`$this` |  | 
+
+Source: [class-tainacan-log.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-log.php), [line 52](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-log.php#L52-L60)
+
+---------------------------------
+<br>
+
+## `tainacan-log-set-title` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$value` |  | 
+
+Source: [class-tainacan-log.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-log.php), [line 186](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-log.php#L186-L186)
 
 ---------------------------------
 <br>
@@ -5491,7 +6052,7 @@ Argument | Type | Description
 `$img_size` |  | 
 `$this` |  | 
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 908](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L908-L956)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 908](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L908-L955)
 
 ---------------------------------
 <br>
@@ -5509,7 +6070,7 @@ Argument | Type | Description
 `$img_size` |  | 
 `$this` |  | 
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 959](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L959-L989)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 958](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L958-L986)
 
 ---------------------------------
 <br>
@@ -5524,7 +6085,7 @@ Argument | Type | Description
 `$args` | `array` | The arguments passed to the function
 `$metadata_section` | `object` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1300](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1300-L1305)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1297](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1297-L1302)
 
 ---------------------------------
 <br>
@@ -5543,7 +6104,7 @@ Argument | Type | Description
 `$before` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1323)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1320)
 
 ---------------------------------
 <br>
@@ -5562,7 +6123,7 @@ Argument | Type | Description
 `$before` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1324)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1321)
 
 ---------------------------------
 <br>
@@ -5581,7 +6142,7 @@ Argument | Type | Description
 `$before` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1326)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1323)
 
 ---------------------------------
 <br>
@@ -5600,7 +6161,7 @@ Argument | Type | Description
 `$before_name` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1341)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1338)
 
 ---------------------------------
 <br>
@@ -5619,7 +6180,7 @@ Argument | Type | Description
 `$before_name` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1342)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1339)
 
 ---------------------------------
 <br>
@@ -5638,7 +6199,7 @@ Argument | Type | Description
 `$before_name` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1344)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1341)
 
 ---------------------------------
 <br>
@@ -5657,7 +6218,7 @@ Argument | Type | Description
 `$after_name` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1351)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1348)
 
 ---------------------------------
 <br>
@@ -5676,7 +6237,7 @@ Argument | Type | Description
 `$after_name` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1352)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1349)
 
 ---------------------------------
 <br>
@@ -5695,7 +6256,7 @@ Argument | Type | Description
 `$after_name` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1354)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1351)
 
 ---------------------------------
 <br>
@@ -5714,7 +6275,7 @@ Argument | Type | Description
 `$before_description` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1373)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1370)
 
 ---------------------------------
 <br>
@@ -5733,7 +6294,7 @@ Argument | Type | Description
 `$before_description` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1374)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1371)
 
 ---------------------------------
 <br>
@@ -5752,7 +6313,7 @@ Argument | Type | Description
 `$before_description` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1376)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1373)
 
 ---------------------------------
 <br>
@@ -5771,7 +6332,7 @@ Argument | Type | Description
 `$after_description` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1411)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1408)
 
 ---------------------------------
 <br>
@@ -5790,7 +6351,7 @@ Argument | Type | Description
 `$after_description` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1412)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1409)
 
 ---------------------------------
 <br>
@@ -5809,7 +6370,7 @@ Argument | Type | Description
 `$after_description` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1414)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1411)
 
 ---------------------------------
 <br>
@@ -5828,7 +6389,7 @@ Argument | Type | Description
 `$after` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1425)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1422)
 
 ---------------------------------
 <br>
@@ -5847,7 +6408,7 @@ Argument | Type | Description
 `$after` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1427)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1424)
 
 ---------------------------------
 <br>
@@ -5866,454 +6427,31 @@ Argument | Type | Description
 `$after` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1206](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1206-L1428)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1425)
 
 ---------------------------------
 <br>
 
-## `tainacan-metadatum-to-string` <!-- {docsify-ignore} -->
-
-*Represents a Tainacan Metadatum entity.*
-
-Metadata definitions that specify the structure and validation
-rules for item metadata within collections.
+## `tainacan-terms-hierarchy-html-separator` <!-- {docsify-ignore} -->
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$this->get_name()` |  | 
-`$this` |  | 
+`'>'` |  | 
 
-**Changelog**
-
-Version | Description
-------- | -----------
-`1.0.0` | 
-
-Source: [class-tainacan-metadatum.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-metadatum.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-metadatum.php#L7-L60)
+Source: [class-tainacan-elastic-press.php](https://github.com/tainacan/tainacan/blob/master/src/classes/integrations/class-tainacan-elastic-press.php), [line 980](https://github.com/tainacan/tainacan/blob/master/src/classes/integrations/class-tainacan-elastic-press.php#L980-L980)
 
 ---------------------------------
 <br>
 
-## `tainacan-collection-to-string` <!-- {docsify-ignore} -->
-
-*Represents a Tainacan Collection entity.*
-
-Collections are the main organizational units in Tainacan, containing
-items and their associated metadata, filters, and display settings.
+## `tainacan-terms-hierarchy-html-separator` <!-- {docsify-ignore} -->
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$this->get_name()` |  | 
-`$this` |  | 
+`'>'` |  | 
 
-**Changelog**
-
-Version | Description
-------- | -----------
-`1.0.0` | 
-
-Source: [class-tainacan-collection.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php#L7-L94)
-
----------------------------------
-<br>
-
-## `tainacan-collection-to-array` <!-- {docsify-ignore} -->
-
-*Represents a Tainacan Collection entity.*
-
-Collections are the main organizational units in Tainacan, containing
-items and their associated metadata, filters, and display settings.
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$array_collection` |  | 
-`$this` |  | 
-
-**Changelog**
-
-Version | Description
-------- | -----------
-`1.0.0` | 
-
-Source: [class-tainacan-collection.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php#L7-L107)
-
----------------------------------
-<br>
-
-## `tainacan-collection-get-attachments` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$attachments` |  | 
-`$exclude` | `null` | 
-`$this` |  | 
-
-Source: [class-tainacan-collection.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php), [line 231](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php#L231-L254)
-
----------------------------------
-<br>
-
-## `tainacan-collection-get-author-name` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$name` |  | 
-`$this` |  | 
-
-Source: [class-tainacan-collection.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php), [line 257](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php#L257-L262)
-
----------------------------------
-<br>
-
-## `tainacan-collection-get-thumbnail` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$thumbs` |  | 
-`$this` |  | 
-
-Source: [class-tainacan-collection.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php), [line 265](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php#L265-L278)
-
----------------------------------
-<br>
-
-## `tainacan-collection-get-header-image` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$header_image` |  | 
-`$this` |  | 
-
-Source: [class-tainacan-collection.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php), [line 281](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php#L281-L286)
-
----------------------------------
-<br>
-
-## `tainacan-status-require-validation` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`['publish', 'future', 'private', 'pending']` |  | 
-
-Source: [class-tainacan-collection.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php), [line 1219](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-collection.php#L1219-L1224)
-
----------------------------------
-<br>
-
-## `tainacan-filter-to-string` <!-- {docsify-ignore} -->
-
-*Represents a Tainacan Filter entity.*
-
-Filters define search and filtering capabilities for collections,
-allowing users to narrow down item results based on metadata criteria.
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$this->get_name()` |  | 
-`$this` |  | 
-
-**Changelog**
-
-Version | Description
-------- | -----------
-`1.0.0` | 
-
-Source: [class-tainacan-filter.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-filter.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-filter.php#L7-L42)
-
----------------------------------
-<br>
-
-## `tainacan-filter-to-array` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$filter_array` |  | 
-`$this` |  | 
-
-Source: [class-tainacan-filter.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-filter.php), [line 45](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-filter.php#L45-L69)
-
----------------------------------
-<br>
-
-## `tainacan-log-to-string` <!-- {docsify-ignore} -->
-
-*Represents a Tainacan Log entity.*
-
-Logs track changes and operations within Tainacan, providing
-an audit trail for entity modifications and system activities.
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$this->get_title()` |  | 
-`$this` |  | 
-
-**Changelog**
-
-Version | Description
-------- | -----------
-`1.0.0` | 
-
-Source: [class-tainacan-log.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-log.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-log.php#L7-L49)
-
----------------------------------
-<br>
-
-## `tainacan-log-to-array` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$array_log` |  | 
-`$this` |  | 
-
-Source: [class-tainacan-log.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-log.php), [line 52](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-log.php#L52-L60)
-
----------------------------------
-<br>
-
-## `tainacan-log-set-title` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$value` |  | 
-
-Source: [class-tainacan-log.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-log.php), [line 186](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-log.php#L186-L186)
-
----------------------------------
-<br>
-
-## `tainacan-taxonomy-to-string` <!-- {docsify-ignore} -->
-
-*Represents a Tainacan Taxonomy entity.*
-
-Taxonomies define hierarchical classification systems for organizing
-and categorizing items within Tainacan collections.
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$this->get_name()` |  | 
-`$this` |  | 
-
-**Changelog**
-
-Version | Description
-------- | -----------
-`1.0.0` | 
-
-Source: [class-tainacan-taxonomy.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-taxonomy.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-taxonomy.php#L7-L54)
-
----------------------------------
-<br>
-
-## `tainacan-status-require-validation` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`['publish', 'future', 'private', 'pending']` |  | 
-
-Source: [class-tainacan-taxonomy.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-taxonomy.php), [line 264](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-taxonomy.php#L264-L269)
-
----------------------------------
-<br>
-
-## `tainacan-item-metadata-get-multivalue-prefix` <!-- {docsify-ignore} -->
-
-*Gets the string used before each value when concatenating multiple values
-to display item metadata value as html or string*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$value` |  | 
-`$this` |  | 
-
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 73](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L73-L92)
-
----------------------------------
-<br>
-
-## `tainacan-item-metadata-get-multivalue-suffix` <!-- {docsify-ignore} -->
-
-*Gets the string used after each value when concatenating multiple values
-to display item metadata value as html or string*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$value` |  | 
-`$this` |  | 
-
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 95](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L95-L114)
-
----------------------------------
-<br>
-
-## `tainacan-item-metadata-get-multivalue-separator` <!-- {docsify-ignore} -->
-
-*Gets the string used in between each value when concatenating multiple values
-to display item metadata value as html or string*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$value` |  | 
-`$this` |  | 
-
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 117](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L117-L136)
-
----------------------------------
-<br>
-
-## `tainacan-item-metadata-get-value-as-html` <!-- {docsify-ignore} -->
-
-*Filter the item metadatum value as HTML*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$return` | `string` | the item metadatum value HTML string
-`$this` | `\Tainacan\Entities\Item_Metadata_Entity` | the item metadatum entity
-
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 196](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L196-L204)
-
----------------------------------
-<br>
-
-## `tainacan-item-metadata-get-value-as-string` <!-- {docsify-ignore} -->
-
-*Filter the item metadatum value as string*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`wp_strip_all_tags($this->get_value_as_html())` |  | 
-`$this` | `\Tainacan\Entities\Item_Metadata_Entity` | the item metadatum entity
-
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 223](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L223-L231)
-
----------------------------------
-<br>
-
-## `tainacan-item-metadata-to-array` <!-- {docsify-ignore} -->
-
-*Convert the object to an Array*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$as_array` |  | 
-`$this` |  | 
-
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 313](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L313-L341)
-
----------------------------------
-<br>
-
-## `tainacan-status-require-validation` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$validation_statuses` |  | 
-
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 515](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L515-L515)
-
----------------------------------
-<br>
-
-## `tainacan_sanitize_document_content_index` <!-- {docsify-ignore} -->
-
-*Filters sanitized document content index text after automatic extraction cleanup.*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$content` | `string` | Sanitized content.
-
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 151](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L151-L156)
-
----------------------------------
-<br>
-
-## `tainacan-extract-pdf-cover` <!-- {docsify-ignore} -->
-
-*Extract an image from the first page of a pdf file*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`null` |  | 
-`$filepath` | `string` | The pdf filepath in the server
-
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 472](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L472-L479)
-
----------------------------------
-<br>
-
-## `tainacan-index-pdf` <!-- {docsify-ignore} -->
-
-*Extract textual content from a PDF file*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`null` |  | 
-`$file` | `string` | Absolute path to the PDF file.
-`$item_id` | `int\|null` | Optional item ID for filters.
-
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 520](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L520-L538)
-
----------------------------------
-<br>
-
-## `tainacan-default-image-blurhash` <!-- {docsify-ignore} -->
-
-*Handles media functionality for Tainacan.*
-
-Provides methods for managing images, attachments, and media-related features
-including custom image sizes, attachment pages, and content indexing.
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`"V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj"` |  | 
-
-**Changelog**
-
-Version | Description
-------- | -----------
-`0.1.0` | 
-
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L7-L770)
-
----------------------------------
-<br>
-
-## `tainacan_pdf_extracted_text_is_usable` <!-- {docsify-ignore} -->
-
-*Whether extracted PDF text is usable for storage and search.*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$passes` |  | 
-`$text` | `string` | Extracted text.
-
-Source: [class-tainacan-pdf-extracted-text-quality.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-pdf-extracted-text-quality.php), [line 22](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-pdf-extracted-text-quality.php#L22-L45)
+Source: [class-tainacan-elastic-press.php](https://github.com/tainacan/tainacan/blob/master/src/classes/integrations/class-tainacan-elastic-press.php), [line 1121](https://github.com/tainacan/tainacan/blob/master/src/classes/integrations/class-tainacan-elastic-press.php#L1121-L1121)
 
 ---------------------------------
 <br>
@@ -6356,155 +6494,17 @@ Source: [class-tainacan-elastic-press-lte4.php](https://github.com/tainacan/tain
 ---------------------------------
 <br>
 
-## `tainacan-terms-hierarchy-html-separator` <!-- {docsify-ignore} -->
+## `tainacan-get-mapper-from-request` <!-- {docsify-ignore} -->
+
+*Check if there is a mapper*
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`'>'` |  | 
+`$return_mapper` |  | 
+`$request` | `\WP_REST_Request` | 
 
-Source: [class-tainacan-elastic-press.php](https://github.com/tainacan/tainacan/blob/master/src/classes/integrations/class-tainacan-elastic-press.php), [line 980](https://github.com/tainacan/tainacan/blob/master/src/classes/integrations/class-tainacan-elastic-press.php#L980-L980)
-
----------------------------------
-<br>
-
-## `tainacan-terms-hierarchy-html-separator` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`'>'` |  | 
-
-Source: [class-tainacan-elastic-press.php](https://github.com/tainacan/tainacan/blob/master/src/classes/integrations/class-tainacan-elastic-press.php), [line 1121](https://github.com/tainacan/tainacan/blob/master/src/classes/integrations/class-tainacan-elastic-press.php#L1121-L1121)
-
----------------------------------
-<br>
-
-## `https_local_ssl_verify` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`false` |  | 
-
-Source: [class-tainacan-async-request.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-async-request.php), [line 136](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-async-request.php#L136-L136)
-
----------------------------------
-<br>
-
-## `{$this->identifier}_queue_lock_time` <!-- {docsify-ignore} -->
-
-*Lock process*
-
-Lock the process so that multiple instances can't run simultaneously.
-Override if applicable, but the duration should be greater than that
-defined in the time_exceeded() method.
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$lock_duration` |  | 
-
-Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 266](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L266-L278)
-
----------------------------------
-<br>
-
-## `{$this->identifier}_memory_exceeded` <!-- {docsify-ignore} -->
-
-*Memory exceeded*
-
-Ensures the batch process never exceeds 90%%
-of the maximum WordPress memory.
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$return` |  | 
-
-Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 386](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L386-L403)
-
----------------------------------
-<br>
-
-## `{$this->identifier}_default_time_limit` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`20` |  | 
-
-Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 436](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L436-L436)
-
----------------------------------
-<br>
-
-## `{$this->identifier}_time_exceeded` <!-- {docsify-ignore} -->
-
-*Time exceeded.*
-
-Ensures the batch never exceeds a sensible time limit.
-A timeout limit of 30s is common on shared hosting.
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$return` |  | 
-
-Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 427](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L427-L443)
-
----------------------------------
-<br>
-
-## `{$this->identifier}_cron_interval` <!-- {docsify-ignore} -->
-
-*Schedule cron healthcheck*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`5` |  | 
-
-Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 457](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L457-L465)
-
----------------------------------
-<br>
-
-## `{$this->identifier}_cron_interval` <!-- {docsify-ignore} -->
-
-*Schedule cron healthcheck*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$this->cron_interval` |  | 
-
-Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 457](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L457-L468)
-
----------------------------------
-<br>
-
-## `tainacan-the-modified-author` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$last_user->display_name` |  | 
-
-Source: [class-tainacan-exporter-handler-cell.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/exporter/traits/class-tainacan-exporter-handler-cell.php), [line 87](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/exporter/traits/class-tainacan-exporter-handler-cell.php#L87-L87)
-
----------------------------------
-<br>
-
-## `tainacan-exporter-step-length-items` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`20` |  | 
-`$this->get_current_step()` |  | 
-
-Source: [class-tainacan-exporter.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/exporter/class-tainacan-exporter.php), [line 261](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/exporter/class-tainacan-exporter.php#L261-L261)
+Source: [class-tainacan-mappers-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/mappers/class-tainacan-mappers-handler.php), [line 139](https://github.com/tainacan/tainacan/blob/master/src/classes/mappers/class-tainacan-mappers-handler.php#L139-L165)
 
 ---------------------------------
 <br>

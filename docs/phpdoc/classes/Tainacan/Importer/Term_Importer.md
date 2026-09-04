@@ -10,16 +10,6 @@
 ```mermaid
 classDiagram
     direction TB
-    class Term_Importer {
-        #steps : mixed
-        +__construct(attributes)
-        #open_tmp_file()
-        +options_form()
-        +process_item(index, collection_definition)
-        +create_terms()
-        +create_taxonomy()
-        +get_output()
-    }
     class Importer {
         -id : identifier
         #tmp_file : string
@@ -97,6 +87,16 @@ classDiagram
         +after_inserted_item(insertedItem, collection_index)
         +run()
         +create_new_metadata(metadata_description, collection_id, parent_id)
+    }
+    class Term_Importer {
+        #steps : mixed
+        +__construct(attributes)
+        #open_tmp_file()
+        +options_form()
+        +process_item(index, collection_definition)
+        +create_terms()
+        +create_taxonomy()
+        +get_output()
     }
     Importer <|-- Term_Importer
 ```
