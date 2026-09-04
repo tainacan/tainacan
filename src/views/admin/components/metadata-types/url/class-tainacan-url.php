@@ -132,7 +132,6 @@ class URL extends Metadata_Type {
 	 * @return string
 	 */
 	public function get_single_value_as_html($value) {
-		global $wp_embed;
 
 		$link_as_button = $this->get_option('link-as-button') == 'yes';
 		$return = '';
@@ -147,7 +146,8 @@ class URL extends Metadata_Type {
 		} else {
 
 			// First, we try WordPress autoembed
-			$embed = $wp_embed->autoembed($value);
+			$tainacan_embed = \Tainacan\Embed::get_instance();
+			$embed = $tainacan_embed->embed( $value );
 			
 			// If it didn't work, it will still ba a URL
  			if ( esc_url($embed) == esc_url($value) ) {
