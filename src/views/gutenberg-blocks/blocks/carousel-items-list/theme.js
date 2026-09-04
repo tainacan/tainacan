@@ -46,6 +46,9 @@ export default (element) => {
                             collectionTextColor: getDataAttribute(block, 'collection-text-color', '#ffffff'),
                             tainacanApiRoot: getDataAttribute(block, 'tainacan-api-root'),
                             variableItemsWidth: getDataAttribute(block, 'variable-items-width', false) == 'true',
+                            order: getDataAttribute(block, 'order', ''),
+                            orderBy: getDataAttribute(block, 'order-by', 'date'),
+                            orderByMetaKey: getDataAttribute(block, 'order-by-meta-key', ''),
                         });
                     },
                     mounted() {

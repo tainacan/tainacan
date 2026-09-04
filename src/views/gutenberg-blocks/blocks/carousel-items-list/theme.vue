@@ -176,7 +176,10 @@ export default {
         collectionBackgroundColor: String,
         collectionTextColor: String,
         tainacanApiRoot: String,
-        variableItemsWidth: Boolean
+        variableItemsWidth: Boolean,
+        order: String,
+        orderBy: String,
+        orderByMetaKey: String
     },
     data() {
         return {
@@ -288,6 +291,12 @@ export default {
                     this.paged = queryObject.paged;
                 else
                     this.paged = 1;
+
+                // Set up sorting
+                if (this.orderBy != undefined)
+                    queryObject.orderby = this.orderBy;
+                if (this.order != undefined && this.orderBy !== 'rand')
+                    queryObject.order = this.order;
 
                 // Remove unecessary queries
                 delete queryObject.admin_view_mode;
