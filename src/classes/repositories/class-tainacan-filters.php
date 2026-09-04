@@ -67,15 +67,15 @@ class Filters extends Repository {
 				'description' => __( 'The filter type class name, such as filter_type: Tainacan\Filter_Types\Checkbox', 'tainacan' ),
 				'validation'  => ''
 			],
-			'begin_with_filter_collapsed' => [
+			'initial_display' => [
 				'map'         => 'meta',
-				'title'       => __( 'Begin with filter collapsed', 'tainacan' ),
+				'title'       => __( 'Initial display', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'With this option enabled, the filter will appear as a button with an add icon, that should be pressed prior to loading any facet information.', 'tainacan' ),
-				'on_error'    => __( 'Please set the "Begin with filter collapsed" value as "yes" or "no"', 'tainacan' ),
-				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
-				'enum'		  => [ 'yes', 'no' ],
-				'default'     => 'no'
+				'description' => __( 'Controls how the filter starts in the faceted search: shown by default, collapsed until the user expands it, or hidden until the user adds it from the "Add filters" control.', 'tainacan' ),
+				'on_error'    => __( 'Please set the "Initial display" value as "default", "collapsed" or "hidden"', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'default', 'collapsed', 'hidden' ] ),
+				'enum'		  => [ 'default', 'collapsed', 'hidden' ],
+				'default'     => 'default'
 			],
 			'display_in_repository_level_lists' => [
 				'map'         => 'meta',

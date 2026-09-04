@@ -1,4 +1,25 @@
 @startuml class-diagram
+  class "JSON_LD\n<b>Generate a text formated response</b>" as JSON_LD {
+    +mappers : 
+    +slug : 
+    +name : 
+    #contexts : 
+    +rest_request_after_callbacks(response, handler, request)
+    #array_to_jsonld(data, jsonld)
+    +get_locale(obj)
+  }
+  class "Xml\n<b>Generate a Csv formated response</b>" as Xml {
+    #extension : string
+    +slug : 
+    +name : 
+    +rest_request_after_callbacks(response, handler, request)
+    #array_to_xml(data, xml_data, namespace)
+  }
+  class "Csv\n<b>Generate a Csv formated response</b>" as Csv {
+    +slug : 
+    +__construct()
+    +rest_request_after_callbacks(response, handler, request)
+  }
   class "Exposers_Handler\n<b>Load exposers classes</b>" as Exposers_Handler {
     #exposers : 
     -instance : 
@@ -41,26 +62,12 @@
     {abstract} +rest_request_after_callbacks(response, handler, request)
     +get_mappers()
   }
-  class "JSON_LD\n<b>Generate a text formated response</b>" as JSON_LD {
+  class "Txt\n<b>Generate a text formated response</b>" as Txt {
     +mappers : 
     +slug : 
     +name : 
-    #contexts : 
     +rest_request_after_callbacks(response, handler, request)
-    #array_to_jsonld(data, jsonld)
-    +get_locale(obj)
-  }
-  class "Csv\n<b>Generate a Csv formated response</b>" as Csv {
-    +slug : 
-    +__construct()
-    +rest_request_after_callbacks(response, handler, request)
-  }
-  class "Xml\n<b>Generate a Csv formated response</b>" as Xml {
-    #extension : string
-    +slug : 
-    +name : 
-    +rest_request_after_callbacks(response, handler, request)
-    #array_to_xml(data, xml_data, namespace)
+    #array_to_txt(data, txt)
   }
   class "JSON_flat\n<b>Generate a text formated response</b>" as JSON_flat {
     +slug : 
@@ -69,13 +76,6 @@
     #mappers : 
     +__construct()
     +rest_request_after_callbacks(response, handler, request)
-  }
-  class "Txt\n<b>Generate a text formated response</b>" as Txt {
-    +mappers : 
-    +slug : 
-    +name : 
-    +rest_request_after_callbacks(response, handler, request)
-    #array_to_txt(data, txt)
   }
   class "OAI_PMH\n<b>Generate a OAI_PMH/oai_dc formated response</b>" as OAI_PMH {
     +mappers : 

@@ -144,6 +144,18 @@
                             <b-field
                                     v-if="form.document_options && form.document_options.forced_iframe"
                                     :addons="false"
+                                    :label="$i18n.get('label_document_option_iframe_allowfullscreen')">
+                                    &nbsp;
+                                <b-switch
+                                        v-model="form.document_options.forced_iframe_allowfullscreen"
+                                        size="is-small" />
+                                <help-button
+                                        :title="$i18n.get('label_document_option_iframe_allowfullscreen')"
+                                        :message="$i18n.get('info_document_option_iframe_allowfullscreen')" />
+                            </b-field>
+                            <b-field
+                                    v-if="form.document_options && form.document_options.forced_iframe"
+                                    :addons="false"
                                     :label="$i18n.get('label_document_option_is_image')">
                                     &nbsp;
                                 <b-switch
@@ -452,7 +464,6 @@
                     ref="item-submission-steps-layout"
                     v-model="activeSectionStep"
                     :has-navigation="false"
-                    type="is-secondary"
                     mobile-mode="compact"
                     size="is-small">
                 <component
@@ -860,6 +871,7 @@ export default {
                     forced_iframe: false,
                     forced_iframe_width: 600,
                     forced_iframe_height: 450,
+                    forced_iframe_allowfullscreen: false,
                     is_image: false
                 }
             },
@@ -1705,8 +1717,9 @@ export default {
 
     .b-steps {
         border: 1px solid var(--tainacan-input-border-color);
-        border-radius: 2px;
-        margin-top: 1em;
+        border-radius: var(--tainacan-input-border-radius);
+        margin-top: 1.75em;
+        --bulma-primary: var(--tainacan-secondary);
 
         .step-items {
             margin-top: -1em;
@@ -1715,11 +1728,31 @@ export default {
             padding-left: 0px;
             margin-left: 0px;
 
-            .step-item.is-active .step-title {
-                color: var(--tainacan-secondary);
+            .step-item.is-active {
+                .step-title {
+                    color: var(--tainacan-secondary);
+                }
+                .step-marker {
+                    border-color: var(--tainacan-secondary);
+                    color: var(--tainacan-secondary);
+                }
             }
-            .step-item:not(.is-active) .step-title {
-                color: var(--tainacan-label-color);
+            .step-item:not(.is-active) {
+                .step-title {
+                    color: var(--tainacan-label-color);
+                }
+                .step-marker {
+                    background-color: var(--tainacan-label-color);
+                }
+            }
+            .step-item:not(.is-active).is-previous {
+                .step-title {
+                    color: var(--tainacan-info-color);
+                }
+                .step-marker {
+                    background-color: var(--tainacan-info-color);
+                    color: var(--tainacan-input-background-color);
+                }
             }
             .step-link,
             .step-link:hover {

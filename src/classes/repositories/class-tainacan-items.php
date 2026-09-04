@@ -24,6 +24,13 @@ class Items extends Repository {
 	// temporary variable used to filter items query
 	private $fetching_from_collections = [];
 
+	/**
+	 * Temporary state for the optional relationship metaquery posts_where filter.
+	 *
+	 * @var array{meta_id?: string, search_meta_id?: string, search_meta_value?: string}
+	 */
+	private $relationsip_metaquery = [];
+
 	protected function init() {
 		add_filter( 'comments_open', [$this, 'hook_comments_open'], 10, 2);
 		add_action( 'tainacan-api-item-updated', array( &$this, 'hook_api_updated_item' ), 10, 2 );
@@ -144,6 +151,12 @@ class Items extends Repository {
 						'type'        => 'number',
 						'context'     => array( 'view', 'edit', 'embed' ),
 						'default'     => 600
+					),
+					'forced_iframe_allowfullscreen' => array(
+						'description' => __( 'Allow fullscreen on forced iframe', 'tainacan' ),
+						'type'        => 'boolean',
+						'context'     => array( 'view', 'edit', 'embed' ),
+						'default'     => false
 					),
 				)
 			],
@@ -890,23 +903,34 @@ class Items extends Repository {
 	}
 
 	private function parse_relationship_metaquery ($args) {
-		if( isset($args['meta_query']) ) {
+		if ( isset($args['meta_query']) ) {
 			$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 			foreach($args['meta_query'] as $idx => $meta) {
+				if ( ! is_array( $meta ) || ! isset( $meta['key'] ) || $meta['key'] === '' ) {
+					continue;
+				}
 				$meta_id = $meta['key'];
 				$metadata = $Tainacan_Metadata->fetch($meta_id);
-				if(
+				if (
 					isset($metadata) &&
 					$metadata instanceof \Tainacan\Entities\Metadatum &&
 					$metadata->get_metadata_type() === 'Tainacan\\Metadata_Types\\Relationship' &&
 					(isset($meta['compare']) && !in_array($meta['compare'], ['IN', 'NOT IN', '=']))
 				) {
 					$options  = $metadata->get_metadata_type_options();
-					if( isset($options) && isset($options['search']) ) {
+					if ( isset($options) && isset($options['search']) ) {
+						$search_meta_value = $args['meta_query'][$idx]['value'] ?? '';
+						// metaquery value may be a string or an array. This SQL path only
+						// supports one LIKE term, so take the first value for now.
+						// How to handle multiple values (OR vs AND vs a single phrase)
+						// is still an open decision.
+						if ( is_array( $search_meta_value ) ) {
+							$search_meta_value = reset( $search_meta_value );
+						}
 						$this->relationsip_metaquery = array(
-							'meta_id' => $meta_id,
-							'search_meta_id' => $options['search'],
-							'search_meta_value' => $args['meta_query'][$idx]['value']
+							'meta_id' => (string) $meta_id,
+							'search_meta_id' => (string) $options['search'],
+							'search_meta_value' => (string) $search_meta_value,
 						);
 						$args['meta_query'][$idx]['compare'] = '!=';
 						$args['meta_query'][$idx]['value'] = '';
@@ -920,11 +944,21 @@ class Items extends Repository {
 	}
 
 	function posts_where_relationship_metaquery( $where ) {
-		$meta_id = $this->relationsip_metaquery['meta_id'];
-		$search_meta_id = $this->relationsip_metaquery['search_meta_id'];
-		$search_meta_value = $this->relationsip_metaquery['search_meta_value'];
-		$SQL_related_item = " SELECT DISTINCT post_id FROM wp_postmeta WHERE meta_key=$search_meta_id AND meta_value LIKE '%$search_meta_value%'";
-		$where .= " AND (wp_postmeta.meta_key = '$meta_id' AND wp_postmeta.meta_value IN ( $SQL_related_item ) ) ";
+		global $wpdb;
+
+		$meta_id = $this->relationsip_metaquery['meta_id'] ?? '';
+		$search_meta_id = $this->relationsip_metaquery['search_meta_id'] ?? '';
+		$search_meta_value = $this->relationsip_metaquery['search_meta_value'] ?? '';
+		$like = '%' . $wpdb->esc_like( $search_meta_value ) . '%';
+
+		$where .= $wpdb->prepare(
+			" AND ({$wpdb->postmeta}.meta_key = %s AND {$wpdb->postmeta}.meta_value IN (
+				SELECT DISTINCT post_id FROM {$wpdb->postmeta} WHERE meta_key = %s AND meta_value LIKE %s
+			) ) ",
+			$meta_id,
+			$search_meta_id,
+			$like
+		);
 		remove_filter( 'posts_where', array($this, 'posts_where_relationship_metaquery') );
 		return $where;
 	}

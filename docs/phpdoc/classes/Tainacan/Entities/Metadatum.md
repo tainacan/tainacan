@@ -15,6 +15,44 @@ rules for item metadata within collections.
 ```mermaid
 classDiagram
     direction TB
+    class Entity {
+        #repository : Repository
+        -errors : array
+        #post_type : string|false
+        #capability_type : string|false
+        +WP_Post : WP_Post
+        -validated : bool
+        +cap : object
+        +__construct(which)
+        +get_repository()
+        +get_date_i18n(date)
+        +get_mapped_property(prop)
+        #set_mapped_property(prop, value)
+        +set(prop, value)
+        +get(prop)
+        +set_status(value)
+        +validate()
+        +validate_prop(prop)
+        +get_errors()
+        +$get_post_type()
+        +$get_capability_type()
+        +get_status()
+        +get_db_identifier()
+        +get_id()
+        +add_error(type, message)
+        +reset_errors()
+        +get_validated()
+        #set_validated(value)
+        #set_as_valid()
+        +_toArray()
+        +_toJson()
+        +can_read(user)
+        +can_edit(user)
+        +can_delete(user)
+        +can_publish(user)
+        +get_capabilities()
+        +diff(which)
+    }
     class Metadatum {
         #name : mixed
         +enabled_for_collection : mixed
@@ -72,44 +110,6 @@ classDiagram
         +is_required()
         +is_repository_level()
         +validate()
-    }
-    class Entity {
-        #repository : Repository
-        -errors : array
-        #post_type : string|false
-        #capability_type : string|false
-        +WP_Post : WP_Post
-        -validated : bool
-        +cap : object
-        +__construct(which)
-        +get_repository()
-        +get_date_i18n(date)
-        +get_mapped_property(prop)
-        #set_mapped_property(prop, value)
-        +set(prop, value)
-        +get(prop)
-        +set_status(value)
-        +validate()
-        +validate_prop(prop)
-        +get_errors()
-        +$get_post_type()
-        +$get_capability_type()
-        +get_status()
-        +get_db_identifier()
-        +get_id()
-        +add_error(type, message)
-        +reset_errors()
-        +get_validated()
-        #set_validated(value)
-        #set_as_valid()
-        +_toArray()
-        +_toJson()
-        +can_read(user)
-        +can_edit(user)
-        +can_delete(user)
-        +can_publish(user)
-        +get_capabilities()
-        +diff(which)
     }
     Entity ..> Entity
     Entity <|-- Metadatum
@@ -378,6 +378,10 @@ public get_html_formatting(): string
 public get_allow_advanced_search(): string
 ```
 
+**Return Value:**
+
+'yes', 'no' or 'default'
+
 ***
 
 ### set_allow_advanced_search
@@ -388,9 +392,9 @@ public set_allow_advanced_search(string $allow_advanced_search): void
 
 **Parameters:**
 
-| Parameter                | Type       | Description |
-|--------------------------|------------|-------------|
-| `$allow_advanced_search` | **string** |             |
+| Parameter                | Type       | Description                                                                                      |
+|--------------------------|------------|--------------------------------------------------------------------------------------------------|
+| `$allow_advanced_search` | **string** | 'yes' (offer but not by default), 'no' (never offer) or 'default' (offer by default / pre-build) |
 
 ***
 

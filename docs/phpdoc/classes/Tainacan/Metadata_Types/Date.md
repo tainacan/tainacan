@@ -13,9 +13,14 @@ Class TainacanMetadatumType
 classDiagram
     direction TB
     class Date {
+        -format : mixed
+        +output_date_format : mixed
         +__construct()
         +get_form_labels()
-        +validate_options(filter)
+        +validate(item_metadata)
+        +get_value_as_html(item_metadata)
+        -format_date_value(value)
+        -format_error_msg(value)
     }
 ```
 
@@ -509,6 +514,28 @@ public set_sortable(mixed $sortable): mixed
 | Parameter   | Type      | Description |
 |-------------|-----------|-------------|
 | `$sortable` | **mixed** |             |
+
+***
+
+### get_manage_multiple_input
+
+```php
+public get_manage_multiple_input(): mixed
+```
+
+***
+
+### set_manage_multiple_input
+
+```php
+public set_manage_multiple_input(mixed $manage_multiple_input): mixed
+```
+
+**Parameters:**
+
+| Parameter                | Type      | Description |
+|--------------------------|-----------|-------------|
+| `$manage_multiple_input` | **mixed** |             |
 
 ***
 

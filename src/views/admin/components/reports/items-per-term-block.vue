@@ -1,7 +1,7 @@
 <template>
     <div 
             v-if="taxonomiesListArray.length"
-            :class="{ 'skeleton': isFetchingData || isBuildingChart || isFetchingTaxonomyTerms || !selectedTaxonomy || !selectedTaxonomy.id }"
+            :class="{ 'skeleton': !hasChartSeries && (isFetchingData || isFetchingTaxonomyTerms || !selectedTaxonomy || !selectedTaxonomy.id) }"
             class="report-card is-full">
         <div class="report-card-header">
             <div class="report-card-header__item">
@@ -40,7 +40,7 @@
                         class="screen-per-page"
                         name="max_terms"
                         maxlength="3"
-                        :disabled="isBuildingChart">
+                        :disabled="isFetchingTaxonomyTerms">
             </div>
             <div 
                     v-if="selectedTaxonomy && selectedTaxonomy.id && currentTotalTerms >= 56"
@@ -48,17 +48,17 @@
                 <span class="displaying-num">{{ currentTotalTerms + ' ' + $i18n.get('terms') }}</span>
                 <span class="pagination-links">
                     <span
-                            :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isBuildingChart}"
+                            :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isFetchingTaxonomyTerms}"
                             class="first-page button"
                             aria-hidden="true"
-                            @click="!isBuildingChart ? termsDisplayedPage = 1 : null">
+                            @click="!isFetchingTaxonomyTerms ? termsDisplayedPage = 1 : null">
                         «
                     </span>
                     <span
-                            :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isBuildingChart}"
+                            :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isFetchingTaxonomyTerms}"
                             class="prev-page button"
                             aria-hidden="true"
-                            @click="(termsDisplayedPage > 1 && !isBuildingChart) ? termsDisplayedPage-- : null">
+                            @click="(termsDisplayedPage > 1 && !isFetchingTaxonomyTerms) ? termsDisplayedPage-- : null">
                         ‹
                     </span>
                     <span class="paging-input">
@@ -74,7 +74,7 @@
                                 type="number"
                                 step="1"
                                 min="1"
-                                :disabled="isBuildingChart || maxTermsToDisplay >= currentTotalTerms"
+                                :disabled="isFetchingTaxonomyTerms || maxTermsToDisplay >= currentTotalTerms"
                                 :max="Math.ceil(currentTotalTerms/maxTermsToDisplay)"
                                 name="paged"
                                 size="1"
@@ -82,46 +82,57 @@
                         <span class="tablenav-paging-text"> de <span class="total-pages">{{ Math.ceil(currentTotalTerms/maxTermsToDisplay) }}</span></span>
                     </span>
                     <span 
-                            :class="{'tablenav-pages-navspan disabled' : isBuildingChart || termsDisplayedPage >= Math.ceil(currentTotalTerms/maxTermsToDisplay) }"
+                            :class="{'tablenav-pages-navspan disabled' : isFetchingTaxonomyTerms || termsDisplayedPage >= Math.ceil(currentTotalTerms/maxTermsToDisplay) }"
                             aria-hidden="true"
                             class="next-page button"
-                            @click="(!isBuildingChart && termsDisplayedPage < Math.ceil(currentTotalTerms/maxTermsToDisplay)) ? termsDisplayedPage++ : null">
+                            @click="(!isFetchingTaxonomyTerms && termsDisplayedPage < Math.ceil(currentTotalTerms/maxTermsToDisplay)) ? termsDisplayedPage++ : null">
                         ›
                     </span>
                     <span
-                            :class="{'tablenav-pages-navspan disabled': isBuildingChart || termsDisplayedPage >= Math.ceil(currentTotalTerms/maxTermsToDisplay) }"
+                            :class="{'tablenav-pages-navspan disabled': isFetchingTaxonomyTerms || termsDisplayedPage >= Math.ceil(currentTotalTerms/maxTermsToDisplay) }"
                             class="last-page button"
                             aria-hidden="true"
-                            @click="!isBuildingChart ? termsDisplayedPage = Math.ceil(currentTotalTerms/maxTermsToDisplay) : null">
+                            @click="!isFetchingTaxonomyTerms ? termsDisplayedPage = Math.ceil(currentTotalTerms/maxTermsToDisplay) : null">
                         »
                     </span>
                 </span>
             </div>
         </div>
-        <apexchart
-                v-if="!isFetchingData && !isBuildingChart && !isFetchingTaxonomyTerms && selectedTaxonomy && selectedTaxonomy.id"
-                height="380px"
-                :series="chartSeries"
-                :options="chartOptions" />
+        <div
+                class="report-chart"
+                :class="{ 'is-reloading-cache': isReloadingCache }"
+                :aria-busy="isReloadingCache ? 'true' : 'false'">
+            <apexchart
+                    v-if="hasChartSeries && selectedTaxonomy && selectedTaxonomy.id"
+                    ref="termsChart"
+                    type="bar"
+                    height="380px"
+                    :series="chartSeries"
+                    :options="chartOptions" />
+        </div>
         <div 
                 v-if="taxonomiesList != undefined && taxonomyTermsLatestCachedOn"
-                class="report-last-cached-on">
+                class="report-last-cached-on"
+                :class="{ 'is-reloading': isReloadingCache }">
             <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(taxonomyTermsLatestCachedOn).toLocaleString() }}</span>
             <button 
                     type="button"
+                    :disabled="isReloadingCache"
                     @click="loadTaxonomyTerms(true)">
                 <span class="sr-only">
                     {{ $i18n.get('label_get_latest_report') }}
                 </span>
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                    <i 
+                            class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270"
+                            :class="{ 'tainacan-icon-spin': isReloadingCache }" />
                 </span>
             </button>
         </div>
     </div>
    
     <div 
-            v-if="!isFetchingData && !isBuildingChart && (!taxonomiesListArray || !taxonomiesListArray.length)"
+            v-if="!isFetchingData && (!taxonomiesListArray || !taxonomiesListArray.length)"
             style="min-height:380px"
             class="report-card is-full">
         <div class="empty-report-card-placeholder">
@@ -148,6 +159,7 @@ export default {
     data() {
         return {
             isFetchingTaxonomyTerms: false,
+            isReloadingCache: false,
             selectedTaxonomy: {},
             maxTermsToDisplay: 56,
             termsDisplayedPage: 1
@@ -200,65 +212,71 @@ export default {
             'fetchTaxonomyTerms'
         ]),
         buildTaxonomyTermsChart() {
-        
-            this.isBuildingChart = true;
-            
-            // Building Taxonomy term usage chart
+            if (!Array.isArray(this.chartData))
+                return;
+
             let orderedTerms = JSON.parse(JSON.stringify(this.chartData)).sort((a, b) => b.count - a.count);
             orderedTerms = orderedTerms.slice((this.termsDisplayedPage - 1) * this.maxTermsToDisplay, ((this.termsDisplayedPage - 1) * this.maxTermsToDisplay) + this.maxTermsToDisplay);
-            
-            let termsValues = [];
-            let termsLabels = [];
 
-            orderedTerms.forEach(term => {
-                termsValues.push(term.count);
-                termsLabels.push(term.name);
-            });           
-            
+            const termsLabels = orderedTerms.map(term => term.name);
+
             this.chartSeries = [
                 {
                     name: this.$i18n.get('label_items_per_term'),
-                    data: termsValues
+                    data: orderedTerms.map(term => ({ x: term.name, y: term.count }))
                 }
             ];
-            this.chartOptions = {
-                ...this.stackedBarChartOptions, 
-                ...{
-                    title: {},
-                    xaxis: {
-                        type: 'category',
-                        tickPlacement: 'on',
-                        categories: termsLabels,
-                        labels: {
-                            show: true,
-                            trim: true,
-                            hideOverlappingLabels: false
+            if (!this.chartOptions.chart) {
+                this.chartOptions = {
+                    ...this.stackedBarChartOptions, 
+                    ...{
+                        title: {},
+                        xaxis: {
+                            type: 'category',
+                            tickPlacement: 'on',
+                            categories: termsLabels,
+                            labels: {
+                                show: true,
+                                trim: true,
+                                hideOverlappingLabels: false
+                            },
+                            tooltip: { enabled: true }
                         },
-                        tooltip: { enabled: true }
-                    },
-                    yaxis: {
-                        title: {
-                            text: this.$i18n.get('label_number_of_items')
-                        }
-                    },
-                    animations: {
-                        enabled: orderedTerms.length <= 40
-                    },
-                    colors: ['#062a57'],
-                }
+                        yaxis: {
+                            title: {
+                                text: this.$i18n.get('label_number_of_items')
+                            }
+                        },
+                        animations: {
+                            enabled: orderedTerms.length <= 40
+                        },
+                        colors: ['#062a57'],
+                    }
+                };
+            } else if (this.$refs.termsChart && this.$refs.termsChart.updateOptions) {
+                this.$nextTick(() => {
+                    if (this.$refs.termsChart && this.$refs.termsChart.updateOptions) {
+                        this.$refs.termsChart.updateOptions({
+                            xaxis: { categories: termsLabels }
+                        }, false, true);
+                    }
+                });
             }
-
-            setTimeout(() => this.isBuildingChart = false, 500);
         },
         loadTaxonomyTerms(force) {
             this.isFetchingTaxonomyTerms = true;
+            this.isReloadingCache = !!force;
             
             this.fetchTaxonomyTerms({ taxonomyId: this.selectedTaxonomy.id, force: force })
                 .then(() => {
                     this.buildTaxonomyTermsChart();
                     this.isFetchingTaxonomyTerms = false;
+                    this.isReloadingCache = false;
                 })
-                .catch(() => this.isFetchingTaxonomyTerms = false);
+                .catch(() => {
+                    this.isFetchingTaxonomyTerms = false;
+                    this.isReloadingCache = false;
+                });
         }
     }
 }

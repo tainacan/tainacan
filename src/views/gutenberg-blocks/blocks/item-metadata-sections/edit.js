@@ -166,7 +166,10 @@ export default function ({ attributes, setAttributes, isSelected }) {
                                 });
                             }}
                             onApplySelectedItem={ (selectedItemId) => {
-                                itemId = Number(selectedItemId);
+                                const nextItemId = Number(selectedItemId);
+                                if ( !Number.isFinite(nextItemId) || nextItemId <= 0 )
+                                    return;
+                                itemId = nextItemId;
                                 setAttributes({
                                     itemId: itemId,
                                     isModalOpen: false

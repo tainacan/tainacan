@@ -31,6 +31,8 @@ As you know, **Tainacan is a [WordPress](https://wordpress.org) plugin** and is 
 > [!NOTE]
 > ## Plugin Extension 
 > 
+> Start here if you are building a plugin that integrates with Tainacan: [Plugin Development Guidelines](/dev/plugin-development-guidelines.md) — when to write a plugin vs. contributing to core, and which Tainacan APIs to use for settings, entities, and UI.
+> 
 > <div class="two-columns-list">
 > 
 > - [Using Admin Form Hooks](/dev/admin-form-hooks.md) - Insert extra options to entities forms such as collection and items forms.
@@ -42,6 +44,7 @@ As you know, **Tainacan is a [WordPress](https://wordpress.org) plugin** and is 
 > - [Registering New Vue Components](/dev/registering-custom-vue-components.md) - Registering new Vue components that can be used by your plugin, such as metadata and filter types or extra view modes.
 > - [Tweaking the Tainacan Admin UI](/dev/admin-ui-options.md) - Using a filter to set variables for customizing the Tainacan Admin panel.
 > - [Using React Selection Components](/dev/react-selection-modules) - Use our React selection components in your plugin to offer an advanced items selection flow.
+> - [Reloading the Item Editing Form](/dev/reloading-the-item-editing-form.md) - Refresh item metadata fields on screen after your plugin updates them via API.
 > 
 > </div>
 
@@ -96,3 +99,5 @@ As you know, **Tainacan is a [WordPress](https://wordpress.org) plugin** and is 
 > - [Template Hierarchy](https://developer.wordpress.org/themes/basics/template-hierarchy/ ":ignore") - Crucial if working with themes.
 > 
 > </div>
+>
+> After those fundamentals, the [Plugin Development Guidelines](/dev/plugin-development-guidelines.md) are the next stop for building a plugin that integrates with Tainacan.

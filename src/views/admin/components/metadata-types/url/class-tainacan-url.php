@@ -168,7 +168,8 @@ class URL extends Metadata_Type {
 
 						// Creates an embed with responsive wrapper
 						$tainacan_embed = \Tainacan\Embed::get_instance();
-						$return = $tainacan_embed->add_responsive_wrapper( '<iframe src="' . $value . '" width="100%" height="' . $iframeMininumHeight  . '" style="border:none;" allowfullscreen="' . ($this->get_option('iframe-allowfullscreen') == 'yes' ? 'true' : 'false') . '"></iframe>' );
+						$iframe_allowfullscreen = $this->get_option('iframe-allowfullscreen') == 'yes' ? ' allowfullscreen' : '';
+						$return = $tainacan_embed->add_responsive_wrapper( '<iframe src="' . $value . '" width="100%" height="' . $iframeMininumHeight  . '" style="border:none;"' . $iframe_allowfullscreen . '></iframe>' );
 					}
 
 				// Or we can leave it as a link

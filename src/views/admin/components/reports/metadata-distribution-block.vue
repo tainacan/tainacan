@@ -1,14 +1,21 @@
 <template>
     <div 
-            v-if="!isFetchingData && chartData.totals && chartData.totals.metadata && !isBuildingChart"
+            v-if="hasChartSeries"
             :style="{
-                maxHeight: ((170 + (chartData.totals.metadata.total * 36)) <= 660 ? (170 + (chartData.totals.metadata.total * 36)) : 660) + 'px'
+                maxHeight: distributionChartMaxHeight + 'px'
             }"
             class="report-card metadata-distribution-box">
-        <apexchart
-                :height="100 + (chartData.totals.metadata.total * 36) > 630 ? 100 + (chartData.totals.metadata.total * 36) : 630"
-                :series="chartSeries"
-                :options="chartOptions" />
+        <div
+                class="report-chart"
+                :class="{ 'is-reloading-cache': isReloadingChart }"
+                :aria-busy="isReloadingChart ? 'true' : 'false'">
+            <apexchart
+                    ref="metadataDistributionChart"
+                    type="bar"
+                    :height="distributionChartHeight"
+                    :series="chartSeries"
+                    :options="chartOptions" />
+        </div>
         <slot />
     </div>
     <div 
@@ -26,7 +33,17 @@ export default {
     computed: {
         ...mapGetters('report', {
             horizontalBarChartOptions: 'getHorizontalBarChartOptions',
-        })
+        }),
+        distributionChartHeight() {
+            if (!this.chartData.totals?.metadata) return 630;
+            const height = 100 + (this.chartData.totals.metadata.total * 36);
+            return height > 630 ? height : 630;
+        },
+        distributionChartMaxHeight() {
+            if (!this.chartData.totals?.metadata) return 660;
+            const height = 170 + (this.chartData.totals.metadata.total * 36);
+            return height <= 660 ? height : 660;
+        }
     },
     watch: {
         chartData: {
@@ -39,8 +56,6 @@ export default {
     },
     methods: {
         buildMetadataDistributionChart() {
-            this.isBuildingChart = true;
-
             if (this.chartData.distribution) {
                 // Building Metadata Distribution Bar chart
                 const orderedMetadataDistributions = Object.values(this.chartData.distribution).sort((a, b) => b.fill_percentage - a.fill_percentage );
@@ -69,75 +84,90 @@ export default {
                         data: metadataDistributionValuesInverted
                     }
                 ];
-                this.chartOptions = {
-                    ...this.horizontalBarChartOptions,
-                    ...{
-                        chart: {
-                            type: 'bar',
-                            height: metadataCount,
-                            stacked: true,
-                            stackType: '100%',
-                            toolbar: {
-                                show: true,
-                                export: {
-                                    scale: 3
+
+                if (!this.chartOptions.chart) {
+                    this.chartOptions = {
+                        ...this.horizontalBarChartOptions,
+                        ...{
+                            chart: {
+                                type: 'bar',
+                                height: metadataCount,
+                                stacked: true,
+                                stackType: '100%',
+                                toolbar: {
+                                    show: true,
+                                    export: {
+                                        scale: 3
+                                    }
+                                },
+                                zoom: {
+                                    type: 'y',
+                                    enabled: true,
+                                    autoScaleYaxis: true,
                                 }
                             },
-                            zoom: {
-                                type: 'y',
-                                enabled: true,
-                                autoScaleYaxis: true,
-                            }
-                        },
-                        title: {
-                            text: this.$i18n.get('label_fill_distribution')
-                        },
-                        labels: metadataDistributionLabels,
-                        tooltip: {
-                            y: {
-                                formatter: (val) => val + "%"
-                            }
-                        },
-                        yaxis: {
                             title: {
-                                text: ''
+                                text: this.$i18n.get('label_fill_distribution')
                             },
-                            labels: {
-                                maxWidth: 110
-                            },
-                            tooltip: { enabled: true }
-                        },
-                        colors: ['#187181', '#dbdbdb'],
-                        fill: {
-                            colors: ['#187181', '#dbdbdb']
-                        },
-                        dataLabels: {
-                            style: {
-                                colors: ['#ffffff', '#373839']
-                            },
-                            formatter(val) {
-                                return (!Number.isNaN(val) && val > 0) ? (val.toFixed(2) + '%') : ''
-                            },
-                        },
-                        states: {
-                            normal: {
-                                filter: {
-                                    type: 'none',
-                                    value: 0,
+                            labels: metadataDistributionLabels,
+                            tooltip: {
+                                y: {
+                                    formatter: (val) => val + "%"
                                 }
                             },
-                            hover: {
-                                filter: {
-                                    type: 'darken',
-                                    value: 0.85,
-                                }
+                            yaxis: {
+                                title: {
+                                    text: ''
+                                },
+                                labels: {
+                                    maxWidth: 110
+                                },
+                                tooltip: { enabled: true }
                             },
+                            colors: ['#187181', '#dbdbdb'],
+                            fill: {
+                                colors: ['#187181', '#dbdbdb']
+                            },
+                            dataLabels: {
+                                style: {
+                                    colors: ['#ffffff', '#373839']
+                                },
+                                formatter(val) {
+                                    return (!Number.isNaN(val) && val > 0) ? (val.toFixed(2) + '%') : ''
+                                },
+                            },
+                            states: {
+                                normal: {
+                                    filter: {
+                                        type: 'none',
+                                        value: 0,
+                                    }
+                                },
+                                hover: {
+                                    filter: {
+                                        type: 'darken',
+                                        value: 0.85,
+                                    }
+                                },
+                            }
                         }
                     }
+                } else {
+                    this.chartOptions.labels = metadataDistributionLabels;
+                    if (this.chartOptions.chart)
+                        this.chartOptions.chart.height = metadataCount;
+                    this.$nextTick(() => {
+                        if (this.$refs.metadataDistributionChart && this.$refs.metadataDistributionChart.updateOptions) {
+                            this.$refs.metadataDistributionChart.updateOptions({
+                                labels: metadataDistributionLabels,
+                                chart: { height: metadataCount }
+                            }, false, true);
+                        }
+                    });
                 }
+            } else {
+                this.chartSeries = [];
             }
-
-            setTimeout(() => this.isBuildingChart = false, 300);
         }
     }
 }
@@ -147,7 +177,15 @@ export default {
 .report-card.metadata-distribution-box {
     grid-row: span 2;
     padding-bottom: 2rem;
-    overflow-y: auto;
+    overflow: hidden;
     min-height: 660px !important;
+    display: flex;
+    flex-direction: column;
+
+    .report-chart {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+    }
 }
 </style>

@@ -24,6 +24,7 @@ class User extends Metadata_Type {
 			'default_author' => 'no'
 		]);
 		$this->set_sortable( false );
+		$this->set_manage_multiple_input( true );
 		$this->set_preview_template('
 			<div class="taginput control is-expanded has-selected">
 				<div class="taginput-container is-small is-focusable">

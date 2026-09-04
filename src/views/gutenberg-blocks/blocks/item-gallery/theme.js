@@ -521,7 +521,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             }
             
             // Add title if no media description is available unless it is an img with alt text (those will be read from the img tag)
-            if ( !img.alt && ariaLabelParts.length === 0 && titleElement && titleElement.textContent.trim() ) {
+            if ( (!img || !img.alt) && ariaLabelParts.length === 0 && titleElement && titleElement.textContent.trim() ) {
                 ariaLabelParts.push(titleElement.textContent.trim());
             }
             

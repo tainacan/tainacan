@@ -210,11 +210,11 @@ class Metadata extends Repository {
 			],
 			'allow_advanced_search' => [
 				'map'         => 'meta',
-				'title'       => __( 'Allow advanced search', 'tainacan' ),
+				'title'       => __( 'Offer on advanced search', 'tainacan' ),
 				'type'        => 'string',
-				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ),
-				'enum'		  => [ 'yes', 'no' ],
-				'description' => __( 'Allow this metadata to be offered as an option for advanced search', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no', 'default' ] ),
+				'enum'		  => [ 'yes', 'no', 'default' ],
+				'description' => __( 'Offer this metadata by default on advanced search, offer it but not by default, or never offer it.', 'tainacan' ),
 				'default'     => 'yes'
 			],
 			'semantic_uri'          => [
@@ -1286,6 +1286,9 @@ class Metadata extends Repository {
 				$search_q = $wpdb->prepare("AND t.name LIKE %s", '%' . $search . '%');
 			} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\User' ) {
 				$search_q = $wpdb->prepare("AND meta_value IN ( SELECT ID FROM $wpdb->users WHERE display_name LIKE %s )", '%' . $search . '%');
+			} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\Control' ) {
+				$metadata_type_object = $metadatum->get_metadata_type_object();
+				$search_q = $metadata_type_object->get_control_metadatum_search_sql( $search );
 			} else {
 				$search_q = $wpdb->prepare("AND meta_value LIKE %s", '%' . $search . '%');
 			}

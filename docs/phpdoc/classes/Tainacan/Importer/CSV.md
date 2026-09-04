@@ -10,120 +10,6 @@
 ```mermaid
 classDiagram
     direction TB
-    class Importer {
-        -id : identifier
-        #tmp_file : string
-        #collections : array
-        -options : array
-        #default_options : array
-        -accepts : mixed
-        #steps : array
-        -transients : array
-        -current_step : mixed
-        -in_step_count : mixed
-        -current_collection : mixed
-        -current_collection_item : mixed
-        -url : mixed
-        -log : mixed
-        -error_log : mixed
-        -abort : bool
-        -array_attributes : array
-        +__construct(attributes)
-        +_to_Array(short)
-        +get_id()
-        +set_url(url)
-        +get_url()
-        +get_current_step()
-        +set_current_step(value)
-        +get_in_step_count()
-        +set_in_step_count(value)
-        +get_current_collection()
-        +set_current_collection(value)
-        +get_current_collection_item()
-        +set_current_collection_item(value)
-        +get_tmp_file()
-        +set_tmp_file(filepath)
-        +get_collections()
-        +set_collections(value)
-        +get_options()
-        +set_options(options)
-        #set_default_options(options)
-        +set_steps(steps)
-        +get_steps()
-        -get_transients()
-        -set_transients(data)
-        +get_log()
-        +get_error_log()
-        +add_file(file)
-        +add_log(message)
-        +add_error_log(message)
-        +add_collection(collection)
-        +remove_collection(col_id)
-        -upload_file(file_array)
-        +fetch_from_remote(url)
-        +get_option(key)
-        +add_import_method(method)
-        +remove_import_method(method)
-        +add_transient(key, data)
-        +delete_transient(key)
-        +get_transient(key)
-        +is_finished()
-        #cancel_abort()
-        #abort()
-        +get_abort()
-        +get_progress_label()
-        +get_progress_value()
-        #set_current_step_total(value)
-        #set_step_total(step, value)
-        +get_source_metadata()
-        +get_source_number_of_items()
-        +options_form()
-        +get_output()
-        +process_collections()
-        #next_item()
-        #next_collection()
-        #next_step()
-        +insert(processed_item, collection_index)
-        +after_inserted_item(insertedItem, collection_index)
-        +run()
-        +create_new_metadata(metadata_description, collection_id, parent_id)
-    }
-    class CSV {
-        -items_repo : mixed
-        +__construct(attributes)
-        +set_option(key, value)
-        +get_source_metadata()
-        +get_source_file_name()
-        +get_source_special_fields()
-        +raw_source_metadata()
-        +process_item(index, collection_definition)
-        +after_inserted_item(inserted_item, collection_index)
-        +get_source_number_of_items()
-        +options_form()
-        -handle_encoding(string)
-        -handle_document(column_value, item_inserted)
-        -handle_thumbnail(column_value, item_inserted)
-        -handle_attachment(column_value, item_inserted)
-        -handle_enclosure(file)
-        -handle_item_status(status, item_inserted)
-        -handle_item_comment_status(comment_status, item_inserted)
-        -handle_item_author_id(author, item_inserted)
-        -handle_item_slug(slug, item_inserted)
-        -handle_item_id(values)
-        +insert(processed_item, collection_index)
-        -is_assoc(arr)
-        -deleteAllValuesCompoundItemMetadata(item, compoundMetadataID)
-        +is_empty_value(value)
-        -is_clear_value(value)
-        -insert_hierarchy(metadatum, values)
-        +save_mapping(collection_id, mapping)
-        +get_mapping(collection_id)
-        +add_collection(collection)
-        -get_collections_names()
-        +get_output()
-        -delete_previous_document_imgs(item_id, item_document)
-    }
-    Importer <|-- CSV
 ```
 
 ## Properties
@@ -149,6 +35,24 @@ public __construct(mixed $attributes = array()): mixed
 | Parameter     | Type      | Description |
 |---------------|-----------|-------------|
 | `$attributes` | **mixed** |             |
+
+***
+
+### open_tmp_file
+
+Opens the temporary CSV file for reading, skipping a UTF-8 BOM when present.
+
+```php
+protected open_tmp_file(): resource|false
+```
+
+Excel and other tools often save UTF-8 CSV files with a leading BOM (EF BB BF),
+which would otherwise become part of the first column name and break exact
+matches such as special_item_id.
+
+**Return Value:**
+
+File handle positioned after the BOM, or false on failure.
 
 ***
 

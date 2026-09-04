@@ -392,12 +392,26 @@
 
                             // We create and object keyed by IDs to easily match the query params,
                             // but keep an array version to use the order in the select
-                            metadata.forEach(metadatum => {
+                            this.metadataAsArray.forEach(metadatum => {
                                 this.metadataAsObject[metadatum.id] = metadatum;
+
+                                if (
+                                    metadatum.metadata_type_object &&
+                                    metadatum.metadata_type_object.component === 'tainacan-compound' &&
+                                    metadatum.metadata_type_options &&
+                                    metadatum.metadata_type_options.children_objects
+                                ) {
+                                    metadatum.metadata_type_options.children_objects.forEach(childMetadatum => {
+                                        this.metadataAsObject[childMetadatum.id] = childMetadatum;
+                                    });
+                                }
                             });
 
                             // Search Request Token for cancelling
                             this.metadataSearchCancel = resp.source;
+
+                            // Pre-build empty criteria for metadata marked as "offer by default"
+                            this.presetSearchCriteriaFromMetadata();
 
                             // Loads existing search query
                             this.buildAdvancedSearchQueryFromRoute();
@@ -434,8 +448,16 @@
 
                 const hasMetaQueries = this.$route.query.metaquery && Object.keys(this.$route.query.metaquery).length > 0;
                 const hasTaxQueries = this.$route.query.taxquery && Object.keys(this.$route.query.taxquery).length > 0;
-                if (hasMetaQueries || hasTaxQueries)
+
+                // Route query wins over any pre-built criteria
+                if (hasMetaQueries || hasTaxQueries) {
                     this.searchCriteria = [];
+                    this.advancedSearchQuery = {
+                        advancedSearch: true,
+                        metaquery: [],
+                        taxquery: []
+                    };
+                }
 
                 if (hasMetaQueries) {
 
@@ -479,14 +501,82 @@
                         this.searchCriteria.push({ index: taxkey, type: 'taxquery' });
                 }
 
-                // If we're coming from a preset advanced search, execute it,
-                // otherwise, create an empty row.
-                if (this.searchCriteria.length) {
+                // If we're coming from a URL advanced search, execute it.
+                // If criteria were already pre-built, keep them without searching
+                // (empty values must not hit the query). Otherwise, create an empty row.
+                if (hasMetaQueries || hasTaxQueries) {
                     this.$eventBusSearch.updateStoreFromURL();
                     this.performAdvancedSearch();
-                } else {
+                } else if (!this.searchCriteria.length) {
                     this.addSearchCriteria();
                 }
+            },
+            /**
+             * Pre-builds one criterion row per metadatum marked as
+             * allow_advanced_search === 'default', with the default comparator and no value.
+             */
+            presetSearchCriteriaFromMetadata() {
+                const addCriterionForMetadatum = (metadatum) => {
+                    if (metadatum.allow_advanced_search !== 'default')
+                        return;
+
+                    const component = metadatum.metadata_type_object
+                        ? metadatum.metadata_type_object.component
+                        : '';
+
+                    if (
+                        component === 'tainacan-user' ||
+                        component === 'tainacan-geocoordinate' ||
+                        component === 'tainacan-relationship' ||
+                        component === 'tainacan-compound'
+                    )
+                        return;
+
+                    const primitiveType = metadatum.metadata_type_object
+                        ? metadatum.metadata_type_object.primitive_type
+                        : '';
+                    const taxonomy = metadatum.metadata_type_options
+                        ? metadatum.metadata_type_options.taxonomy
+                        : '';
+
+                    if (primitiveType === 'term') {
+                        const index = this.advancedSearchQuery.taxquery.length;
+                        this.advancedSearchQuery.taxquery.push({
+                            key: metadatum.id,
+                            taxonomy: taxonomy,
+                            operator: 'LIKE'
+                        });
+                        this.searchCriteria.push({ index: index, type: 'taxquery' });
+                    } else {
+                        const index = this.advancedSearchQuery.metaquery.length;
+                        const compare = (
+                            primitiveType != 'date' &&
+                            primitiveType != 'int' &&
+                            primitiveType != 'float'
+                        ) ? 'LIKE' : '=';
+
+                        this.advancedSearchQuery.metaquery.push({
+                            key: metadatum.id,
+                            compare: compare
+                        });
+                        this.searchCriteria.push({ index: index, type: 'metaquery' });
+                    }
+                };
+
+                this.metadataAsArray.forEach(metadatum => {
+                    if (
+                        metadatum.metadata_type_object &&
+                        metadatum.metadata_type_object.component === 'tainacan-compound' &&
+                        metadatum.metadata_type_options &&
+                        metadatum.metadata_type_options.children_objects
+                    ) {
+                        metadatum.metadata_type_options.children_objects.forEach(childMetadatum => {
+                            addCriterionForMetadatum(childMetadatum);
+                        });
+                    } else if (metadatum.parent <= 0) {
+                        addCriterionForMetadatum(metadatum);
+                    }
+                });
             },
             addSearchCriteria() {
                 let aleatoryKey = Math.floor(Math.random() * (1000 - 2 + 1)) + 2;
@@ -634,56 +724,117 @@
 
                 this.hasUpdatedSearch = true;
             },
+            /**
+             * Returns a copy of the advanced search query with empty criteria removed.
+             * Criteria whose comparator does not expect a value (EXISTS / NOT EXISTS)
+             * are kept. The form state is left untouched so preset empty rows remain.
+             */
+            getFilteredAdvancedSearchQuery() {
+                const isEmptyValue = (value) => {
+                    return value === undefined || value === null || value === '';
+                };
+
+                const metaquery = Array.isArray(this.advancedSearchQuery.metaquery)
+                    ? this.advancedSearchQuery.metaquery.filter((criterion) => {
+                        if (!criterion || criterion.key === undefined)
+                            return false;
+
+                        if (criterion.compare === 'EXISTS' || criterion.compare === 'NOT EXISTS')
+                            return true;
+
+                        return !isEmptyValue(criterion.value);
+                    }).map((criterion) => Object.assign({}, criterion))
+                    : [];
+
+                const taxquery = Array.isArray(this.advancedSearchQuery.taxquery)
+                    ? this.advancedSearchQuery.taxquery.filter((criterion) => {
+                        if (!criterion || criterion.key === undefined)
+                            return false;
+
+                        if (criterion.operator === 'EXISTS' || criterion.operator === 'NOT EXISTS')
+                            return true;
+
+                        return !isEmptyValue(criterion.terms);
+                    }).map((criterion) => Object.assign({}, criterion))
+                    : [];
+
+                const filteredQuery = {
+                    advancedSearch: true,
+                    metaquery: metaquery,
+                    taxquery: taxquery
+                };
+
+                if (Object.keys(this.advancedSearchQuery).includes('relation'))
+                    filteredQuery.relation = this.advancedSearchQuery.relation;
+
+                return filteredQuery;
+            },
             performAdvancedSearch() {
 
+                // Work on a filtered copy so empty preset criteria stay in the form
+                // but are not sent to the API (see tainacan/tainacan#1071).
+                const advancedSearchQuery = this.getFilteredAdvancedSearchQuery();
+
                 if (
-                    Object.keys(this.advancedSearchQuery.taxquery).length > 0 &&
-                    Object.keys(this.advancedSearchQuery.metaquery).length > 0
+                    Object.keys(advancedSearchQuery.taxquery).length > 0 &&
+                    Object.keys(advancedSearchQuery.metaquery).length > 0
                 ) {
-                    this.advancedSearchQuery.relation = 'AND';
+                    advancedSearchQuery.relation = 'AND';
                 } 
 
-                if ( Object.keys(this.advancedSearchQuery.taxquery).length > 1 )
-                    Object.assign(this.advancedSearchQuery.taxquery, { 'relation': 'AND' });
-                else if ( Object.prototype.hasOwnProperty.call(this.advancedSearchQuery.taxquery, 'relation') )
-                    delete this.advancedSearchQuery.taxquery.relation;
+                if ( Object.keys(advancedSearchQuery.taxquery).length > 1 )
+                    Object.assign(advancedSearchQuery.taxquery, { 'relation': 'AND' });
+                else if ( Object.prototype.hasOwnProperty.call(advancedSearchQuery.taxquery, 'relation') )
+                    delete advancedSearchQuery.taxquery.relation;
 
                 // Convert date values to a format (ISO_8601) that will match in database
-                if ( Object.keys(this.advancedSearchQuery.metaquery).length > 0 ) {
+                if ( Object.keys(advancedSearchQuery.metaquery).length > 0 ) {
 
-                    for (let metaquery in this.advancedSearchQuery.metaquery) {
-                        if (this.getAdvancedSearchQueryCriterionMetadataType(metaquery) == 'date') {
-                            let value = this.advancedSearchQuery.metaquery[metaquery].value;
+                    for (let metaquery in advancedSearchQuery.metaquery) {
+                        if (
+                            advancedSearchQuery.metaquery[metaquery] &&
+                            advancedSearchQuery.metaquery[metaquery].key &&
+                            this.metadataAsObject[advancedSearchQuery.metaquery[metaquery].key] &&
+                            this.metadataAsObject[advancedSearchQuery.metaquery[metaquery].key].metadata_type_object &&
+                            this.metadataAsObject[advancedSearchQuery.metaquery[metaquery].key].metadata_type_object.primitive_type == 'date'
+                        ) {
+                            let value = advancedSearchQuery.metaquery[metaquery].value;
                             
                             if (value != null && value != undefined && value.includes('/'))
-                                Object.assign(this.advancedSearchQuery.metaquery[metaquery], { 'value': this.convertDateToMatchInDB(value) });
+                                Object.assign(advancedSearchQuery.metaquery[metaquery], { 'value': this.convertDateToMatchInDB(value) });
                         }
                     }
                 }
 
-                if ( Object.keys(this.advancedSearchQuery.metaquery).length > 1 )
-                    Object.assign(this.advancedSearchQuery.metaquery, { 'relation': 'AND' });
-                else if ( Object.prototype.hasOwnProperty.call(this.advancedSearchQuery.metaquery, 'relation') )
-                    delete this.advancedSearchQuery.metaquery.relation;
+                if ( Object.keys(advancedSearchQuery.metaquery).length > 1 )
+                    Object.assign(advancedSearchQuery.metaquery, { 'relation': 'AND' });
+                else if ( Object.prototype.hasOwnProperty.call(advancedSearchQuery.metaquery, 'relation') )
+                    delete advancedSearchQuery.metaquery.relation;
                 
-                if ( Object.prototype.hasOwnProperty.call(this.advancedSearchQuery, 'relation') && Object.keys(this.advancedSearchQuery).length <= 3)
-                    delete this.advancedSearchQuery.relation;
+                if ( Object.prototype.hasOwnProperty.call(advancedSearchQuery, 'relation') && Object.keys(advancedSearchQuery).length <= 3)
+                    delete advancedSearchQuery.relation;
                 
-                if ( Object.keys(this.advancedSearchQuery.metaquery).length > 0 ) {
+                if ( Object.keys(advancedSearchQuery.metaquery).length > 0 ) {
 
-                    for (let metaquery in this.advancedSearchQuery.metaquery) {
-                        if (this.getAdvancedSearchQueryCriterionMetadataType(metaquery) == 'date') {
-                            let value = this.advancedSearchQuery.metaquery[metaquery].value;
+                    for (let metaquery in advancedSearchQuery.metaquery) {
+                        if (
+                            advancedSearchQuery.metaquery[metaquery] &&
+                            advancedSearchQuery.metaquery[metaquery].key &&
+                            this.metadataAsObject[advancedSearchQuery.metaquery[metaquery].key] &&
+                            this.metadataAsObject[advancedSearchQuery.metaquery[metaquery].key].metadata_type_object &&
+                            this.metadataAsObject[advancedSearchQuery.metaquery[metaquery].key].metadata_type_object.primitive_type == 'date'
+                        ) {
+                            let value = advancedSearchQuery.metaquery[metaquery].value;
                             
                             if (value != null && value != undefined && value.includes('-'))
-                                Object.assign(this.advancedSearchQuery.metaquery[metaquery], { 'value': this.parseValidDateToNavigatorLanguage(value) });
+                                Object.assign(advancedSearchQuery.metaquery[metaquery], { 'value': this.parseValidDateToNavigatorLanguage(value) });
                         }
                     }
                 }
 
                 this.hasUpdatedSearch = false;
                 this.$store.dispatch('search/setPage', 1);
-                this.$eventBusSearch.performAdvancedSearch(this.advancedSearchQuery);
+                this.$eventBusSearch.performAdvancedSearch(advancedSearchQuery);
             },
             getAdvancedSearchQueryCriterionMetadataType(searchCriterion) {
                 if (this.advancedSearchQuery.metaquery[searchCriterion] &&

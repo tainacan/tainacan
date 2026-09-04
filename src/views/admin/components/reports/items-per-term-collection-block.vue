@@ -1,7 +1,7 @@
 <template>
     <div 
             v-if="metadataList != undefined && metadataListArray.length"
-            :class="{ 'skeleton': isFetchingData || isBuildingChart || isFetchingMetadatumTerms || !selectedMetadatum || !selectedMetadatum.id }"
+            :class="{ 'skeleton': !hasChartSeries && (isFetchingData || isFetchingMetadatumTerms || !selectedMetadatum || !selectedMetadatum.id) }"
             class="report-card is-full">
         <div 
                 :style="!isChildColumnCollapsed ? 'margin-inline-start: 0px;' : ''"
@@ -85,7 +85,7 @@
                                 class="screen-per-page"
                                 name="max_terms"
                                 maxlength="3"
-                                :disabled="isBuildingChart">
+                                :disabled="isFetchingMetadatumTerms">
                     </div>
                     <div 
                             v-if="selectedMetadatum && selectedMetadatum.id && currentTotalTerms >= 56"
@@ -93,17 +93,17 @@
                         <span class="displaying-num">{{ currentTotalTerms + ' ' + $i18n.get('terms') }}</span>
                         <span class="pagination-links">
                             <span
-                                    :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isBuildingChart}"
+                                    :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isFetchingMetadatumTerms}"
                                     class="first-page button"
                                     aria-hidden="true"
-                                    @click="!isBuildingChart ? termsDisplayedPage = 1 : null">
+                                    @click="!isFetchingMetadatumTerms ? termsDisplayedPage = 1 : null">
                                 «
                             </span>
                             <span
-                                    :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isBuildingChart}"
+                                    :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isFetchingMetadatumTerms}"
                                     class="prev-page button"
                                     aria-hidden="true"
-                                    @click="(termsDisplayedPage > 1 && !isBuildingChart) ? termsDisplayedPage-- : null">
+                                    @click="(termsDisplayedPage > 1 && !isFetchingMetadatumTerms) ? termsDisplayedPage-- : null">
                                 ‹
                             </span>
                             <span class="paging-input">
@@ -119,7 +119,7 @@
                                         type="number"
                                         step="1"
                                         min="1"
-                                        :disabled="isBuildingChart || maxTermsToDisplay >= currentTotalTerms"
+                                        :disabled="isFetchingMetadatumTerms || maxTermsToDisplay >= currentTotalTerms"
                                         :max="Math.ceil(currentTotalTerms/maxTermsToDisplay)"
                                         name="paged"
                                         size="1"
@@ -127,30 +127,38 @@
                                 <span class="tablenav-paging-text"> {{ $i18n.get('info_of') }} <span class="total-pages">{{ Math.ceil(currentTotalTerms/maxTermsToDisplay) }}</span></span>
                             </span>
                             <span 
-                                    :class="{'tablenav-pages-navspan disabled' : isBuildingChart || termsDisplayedPage >= Math.ceil(currentTotalTerms/maxTermsToDisplay) }"
+                                    :class="{'tablenav-pages-navspan disabled' : isFetchingMetadatumTerms || termsDisplayedPage >= Math.ceil(currentTotalTerms/maxTermsToDisplay) }"
                                     aria-hidden="true"
                                     class="icon next-page button is-outlined"
-                                    @click="(!isBuildingChart && termsDisplayedPage < Math.ceil(currentTotalTerms/maxTermsToDisplay)) ? termsDisplayedPage++ : null">
+                                    @click="(!isFetchingMetadatumTerms && termsDisplayedPage < Math.ceil(currentTotalTerms/maxTermsToDisplay)) ? termsDisplayedPage++ : null">
                                 <i class="tainacan-icon tainacan-icon-previous tainacan-icon-is-rtl-mirrored tainacan-icon-1-25em" />
                             </span>
                             <span
-                                    :class="{'tablenav-pages-navspan disabled': isBuildingChart || termsDisplayedPage >= Math.ceil(currentTotalTerms/maxTermsToDisplay) }"
+                                    :class="{'tablenav-pages-navspan disabled': isFetchingMetadatumTerms || termsDisplayedPage >= Math.ceil(currentTotalTerms/maxTermsToDisplay) }"
                                     class="icon last-page button is-outlined"
                                     aria-hidden="true"
-                                    @click="!isBuildingChart ? termsDisplayedPage = Math.ceil(currentTotalTerms/maxTermsToDisplay) : null">
+                                    @click="!isFetchingMetadatumTerms ? termsDisplayedPage = Math.ceil(currentTotalTerms/maxTermsToDisplay) : null">
                                 <i class="tainacan-icon tainacan-icon-next tainacan-icon-1-25em" />
                             </span>
                         </span>
                     </div>
                 </div>
-                <apexchart
-                        v-if="!isFetchingData && !isBuildingChart && !isFetchingMetadatumTerms && selectedMetadatum && selectedMetadatum.id"
-                        height="380px"
-                        :series="chartSeries"
-                        :options="chartOptions"
-                        @data-point-selection="handleDataPointClick" />
+                <div
+                        class="report-chart"
+                        :class="{ 'is-reloading-cache': isReloadingCache }"
+                        :aria-busy="isReloadingCache ? 'true' : 'false'">
+                    <apexchart
+                            v-if="hasChartSeries && selectedMetadatum && selectedMetadatum.id"
+                            ref="parentTermsChart"
+                            :key="'parent-' + itemsPerTermChartMode"
+                            :type="itemsPerTermChartMode"
+                            height="380px"
+                            :series="chartSeries"
+                            :options="chartOptions"
+                            @data-point-selection="handleDataPointClick" />
+                </div>
                 <button 
-                        v-if="!isFetchingData && !isFetchingMetadatumTerms && selectedMetadatum"
+                        v-if="!isFetchingData && selectedMetadatum"
                         type="button"
                         class="button is-outlined hide-column-button"
                         @click="isChildColumnCollapsed = !isChildColumnCollapsed">
@@ -162,7 +170,7 @@
                 </button>
             </div>
             <div 
-                    v-if="!isChildColumnCollapsed && !isFetchingData && !isFetchingMetadatumTerms && selectedMetadatum"
+                    v-if="!isChildColumnCollapsed && !isFetchingData && selectedMetadatum"
                     class="child-term-column column is-half is-full-tablet"
                     style="position: relative;">
                 <div v-if="selectedParentTerm[selectedParentTerm.length - 1]">
@@ -187,7 +195,7 @@
                                     class="screen-per-page"
                                     name="max_terms"
                                     maxlength="3"
-                                    :disabled="isBuildingChildrenChart">
+                                    :disabled="isFetchingMetadatumChildTerms">
                         </div>
                         <div 
                                 v-if="currentTotalChildTerms >= 56"
@@ -195,17 +203,17 @@
                             <span class="displaying-num">{{ currentTotalChildTerms + ' ' + $i18n.get('terms') }}</span>
                             <span class="pagination-links">
                                 <span
-                                        :class="{'tablenav-pages-navspan disabled' : childTermsDisplayedPage <= 1 || isBuildingChildrenChart}"
+                                        :class="{'tablenav-pages-navspan disabled' : childTermsDisplayedPage <= 1 || isFetchingMetadatumChildTerms}"
                                         class="first-page button"
                                         aria-hidden="true"
-                                        @click="!isBuildingChildrenChart ? childTermsDisplayedPage = 1 : null">
+                                        @click="!isFetchingMetadatumChildTerms ? childTermsDisplayedPage = 1 : null">
                                     «
                                 </span>
                                 <span
-                                        :class="{'tablenav-pages-navspan disabled' : childTermsDisplayedPage <= 1 || isBuildingChildrenChart}"
+                                        :class="{'tablenav-pages-navspan disabled' : childTermsDisplayedPage <= 1 || isFetchingMetadatumChildTerms}"
                                         class="prev-page button"
                                         aria-hidden="true"
-                                        @click="(childTermsDisplayedPage > 1 && !isBuildingChildrenChart) ? childTermsDisplayedPage-- : null">
+                                        @click="(childTermsDisplayedPage > 1 && !isFetchingMetadatumChildTerms) ? childTermsDisplayedPage-- : null">
                                     ‹
                                 </span>
                                 <span class="paging-input">
@@ -221,7 +229,7 @@
                                             type="number"
                                             step="1"
                                             min="1"
-                                            :disabled="isBuildingChildrenChart || maxChildTermsToDisplay >= currentTotalChildTerms"
+                                            :disabled="isFetchingMetadatumChildTerms || maxChildTermsToDisplay >= currentTotalChildTerms"
                                             :max="Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay)"
                                             name="paged"
                                             size="1"
@@ -229,28 +237,36 @@
                                     <span class="tablenav-paging-text"> {{ $i18n.get('info_of') }} <span class="total-pages">{{ Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) }}</span></span>
                                 </span>
                                 <span 
-                                        :class="{'tablenav-pages-navspan disabled' : isBuildingChildrenChart || childTermsDisplayedPage >= Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) }"
+                                        :class="{'tablenav-pages-navspan disabled' : isFetchingMetadatumChildTerms || childTermsDisplayedPage >= Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) }"
                                         aria-hidden="true"
                                         class="next-page button"
-                                        @click="(!isBuildingChildrenChart && childTermsDisplayedPage < Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay)) ? childTermsDisplayedPage++ : null">
+                                        @click="(!isFetchingMetadatumChildTerms && childTermsDisplayedPage < Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay)) ? childTermsDisplayedPage++ : null">
                                     ›
                                 </span>
                                 <span
-                                        :class="{'tablenav-pages-navspan disabled': isBuildingChildrenChart || childTermsDisplayedPage >= Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) }"
+                                        :class="{'tablenav-pages-navspan disabled': isFetchingMetadatumChildTerms || childTermsDisplayedPage >= Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) }"
                                         class="last-page button"
                                         aria-hidden="true"
-                                        @click="!isBuildingChildrenChart ? childTermsDisplayedPage = Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) : null">
+                                        @click="!isFetchingMetadatumChildTerms ? childTermsDisplayedPage = Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) : null">
                                     »
                                 </span>
                             </span>
                         </div>
                     </div>
-                    <apexchart
-                            v-if="!isBuildingChildrenChart && !isFetchingMetadatumChildTerms"
-                            height="380px"
-                            :series="childrenChartSeries"
-                            :options="childrenChartOptions"
-                            @data-point-selection="handleDataPointClickChildren" />
+                    <div
+                            class="report-chart"
+                            :class="{ 'is-reloading-cache': isReloadingChildCache }"
+                            :aria-busy="isReloadingChildCache ? 'true' : 'false'">
+                        <apexchart
+                                v-if="hasChildrenChartSeries"
+                                ref="childTermsChart"
+                                :key="'child-' + itemsPerTermChartMode"
+                                :type="itemsPerTermChartMode"
+                                height="380px"
+                                :series="childrenChartSeries"
+                                :options="childrenChartOptions"
+                                @data-point-selection="handleDataPointClickChildren" />
+                    </div>
                 </div>
                 <div 
                         v-else
@@ -271,38 +287,46 @@
         <div 
                 v-if="metadatumTermsLatestCachedOn"
                 style="left: calc(1px + 0.75rem); right: auto;"
-                class="report-last-cached-on">
+                class="report-last-cached-on"
+                :class="{ 'is-reloading': isReloadingCache }">
             <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(metadatumTermsLatestCachedOn).toLocaleString() }}</span>
             <button 
                     type="button"
+                    :disabled="isReloadingCache"
                     @click="loadMetadatumTerms(true)">
                 <span class="sr-only">
                     {{ $i18n.get('label_get_latest_report') }}
                 </span>
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                    <i 
+                            class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270"
+                            :class="{ 'tainacan-icon-spin': isReloadingCache }" />
                 </span>
             </button>
         </div>
         <div 
                 v-if="!isChildColumnCollapsed && !isFetchingData && !isFetchingMetadatumTerms && selectedMetadatum && metadatumChildTermsLatestCachedOn"
-                class="report-last-cached-on">
+                class="report-last-cached-on"
+                :class="{ 'is-reloading': isReloadingChildCache }">
             <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(metadatumChildTermsLatestCachedOn).toLocaleString() }}</span>
             <button 
                     type="button"
+                    :disabled="isReloadingChildCache"
                     @click="loadMetadatumChildTerms(true)">
                 <span class="sr-only">
                     {{ $i18n.get('label_get_latest_report') }}
                 </span>
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                    <i 
+                            class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270"
+                            :class="{ 'tainacan-icon-spin': isReloadingChildCache }" />
                 </span>
             </button>
         </div>
     </div>
     
     <div 
-            v-if="metadataList != undefined && !isFetchingData && !isBuildingChart && (!metadataListArray || !metadataListArray.length)"
+            v-if="metadataList != undefined && !isFetchingData && (!metadataListArray || !metadataListArray.length)"
             style="min-height:380px"
             class="report-card is-full">
         <div class="empty-report-card-placeholder">
@@ -332,12 +356,13 @@ export default {
     data() {
         return {
             isFetchingMetadatumTerms: false,
+            isReloadingCache: false,
             selectedMetadatum: {},
             maxTermsToDisplay: 56,
             termsDisplayedPage: 1,
             selectedParentTerm: [],
             isFetchingMetadatumChildTerms: false,
-            isBuildingChildrenChart: false,
+            isReloadingChildCache: false,
             childrenChartSeries: [],
             childrenChartOptions: {},
             maxChildTermsToDisplay: 56,
@@ -371,6 +396,9 @@ export default {
         },
         currentTotalChildTerms() {
             return Array.isArray(this.taxonomyChildTerms) ? this.taxonomyChildTerms.length : 0 
+        },
+        hasChildrenChartSeries() {
+            return Array.isArray(this.childrenChartSeries) && this.childrenChartSeries.length > 0;
         }
     },
     watch: {
@@ -411,13 +439,20 @@ export default {
             handler() {
                 if (this.selectedParentTerm[this.selectedParentTerm.length - 1] && this.selectedParentTerm[this.selectedParentTerm.length - 1].id) {
                     this.loadMetadatumChildTerms();
+                } else {
+                    this.childrenChartSeries = [];
+                    this.childrenChartOptions = {};
+                    this.orderedChildTerms = [];
                 }
             },
             deep: true
         },
         itemsPerTermChartMode() {
             this.termsDisplayedPage = 1;
-            this.loadMetadatumTerms();
+            this.childTermsDisplayedPage = 1;
+            this.buildMetadatumTermsChart();
+            if (this.selectedParentTerm.length && this.selectedParentTerm[this.selectedParentTerm.length - 1])
+                this.buildMetadatumChildTermsChart();
         },
     },
     methods: {
@@ -496,285 +531,176 @@ export default {
                 }
             }
         },
+        getItemsPerTermTooltipHtml(terms, dataPointIndex) {
+            const term = terms[dataPointIndex];
+            if (!term)
+                return '';
+
+            return `<div class="tainacan-custom-tooltip">
+                    <div class="tainacan-custom-tooltip__header">` + term.label + `</div>
+                    <div class="tainacan-custom-tooltip__body">
+                        <span>` + this.$i18n.get('label_items_per_term') + `: <strong>` + term.total_items + `</strong></span>
+                        `+ (term.total_children 
+                            ? (`<span>` + this.$i18n.getWithVariables(term.total_children > 1 ? 'instruction_click_to_see_%s_child_terms' : 'instruction_click_to_see_%s_child_term', [ term.total_children ]) + `</span>`) 
+                            : ``
+                        ) +
+                    `</div></div>`;
+        },
+        buildItemsPerTermChartOptions({ stacked, getTerms }) {
+            const tooltipCustom = ({ dataPointIndex }) => this.getItemsPerTermTooltipHtml(getTerms(), dataPointIndex);
+
+            if (this.itemsPerTermChartMode == 'treemap') {
+                return {
+                    ...this.treeMapChartOptions, 
+                    ...{
+                        title: {},
+                        chart: {
+                            type: 'treemap',
+                            height: 350,
+                            toolbar: {
+                                show: true,
+                                export: {
+                                    scale: 3
+                                }
+                            },
+                            zoom: {
+                                enabled: false
+                            }
+                        },
+                        dataLabels: {
+                            enabled: true,
+                            style: {
+                                fontSize: '16px',
+                            },
+                            formatter: function(text, op) {
+                                return [text, op.value]
+                            },
+                            offsetY: -4
+                        },
+                        tooltip: {
+                            custom: tooltipCustom
+                        },
+                        noData: {
+                            text: '0 ' + this.$i18n.get('label_items_with_this_metadatum_value')
+                        }
+                    }
+                };
+            }
+
+            return {
+                ...this.stackedBarChartOptions, 
+                ...{
+                    title: {},
+                    xaxis: {
+                        type: 'category',
+                        tickPlacement: 'on',
+                        labels: {
+                            show: true,
+                            trim: true,
+                            hideOverlappingLabels: false
+                        },
+                        tooltip: { enabled: true }
+                    },
+                    chart: {
+                        type: 'bar',
+                        height: 350,
+                        stacked: stacked,
+                        toolbar: {
+                            show: true,
+                            export: {
+                                scale: 3
+                            }
+                        },
+                        zoom: {
+                            enabled: true,
+                            autoScaleYaxis: true,
+                        }
+                    },
+                    tooltip: {
+                        custom: tooltipCustom
+                    },
+                    yaxis: {
+                        title: {
+                            text: this.$i18n.get('label_number_of_items')
+                        }
+                    },
+                    animations: {
+                        enabled: getTerms().length <= 40
+                    },
+                    noData: {
+                        text: '0 ' + this.$i18n.get('label_items_with_this_metadatum_value')
+                    }
+                }
+            };
+        },
         buildMetadatumTermsChart() {
-            this.isBuildingChart = true;
-            
-            // Building Taxonomy term usage chart
+            if (!Array.isArray(this.taxonomyTerms))
+                return;
+
             let preOrderedTerms = JSON.parse(JSON.stringify(this.taxonomyTerms)).sort((a, b) => b.total_items - a.total_items );
             this.orderedTerms = preOrderedTerms.slice((this.termsDisplayedPage - 1) * this.maxTermsToDisplay, ((this.termsDisplayedPage - 1) * this.maxTermsToDisplay) + this.maxTermsToDisplay);
-            
-            if (this.itemsPerTermChartMode == 'treemap') {
-                this.chartSeries = [
-                    {
-                        name: this.$i18n.get('label_items_per_term'),
-                        data: this.orderedTerms.map((aTerm) => { return { 
-                            x: aTerm.label,
-                            y: aTerm.total_items
-                        } })
-                    }
-                ];
-                this.chartOptions = {
-                    ...this.treeMapChartOptions, 
-                    ...{
-                        title: {},
-                        chart: {
-                            type: 'treemap',
-                            height: 350,
-                            toolbar: {
-                                show: true,
-                                export: {
-                                    scale: 3
-                                }
-                            },
-                            zoom: {
-                                enabled: false
-                            }
-                        },
-                        dataLabels: {
-                            enabled: true,
-                            style: {
-                                fontSize: '16px',
-                            },
-                            formatter: function(text, op) {
-                                return [text, op.value]
-                            },
-                            offsetY: -4
-                        },
-                        tooltip: {
-                            custom: ({ dataPointIndex }) => {
-                                return `<div class="tainacan-custom-tooltip">
-                                        <div class="tainacan-custom-tooltip__header">` + this.orderedTerms[dataPointIndex].label + `</div>
-                                        <div class="tainacan-custom-tooltip__body">
-                                            <span>` + this.$i18n.get('label_items_per_term') + `: <strong>` + this.orderedTerms[dataPointIndex].total_items + `</strong></span>
-                                            `+ (this.orderedTerms[dataPointIndex].total_children 
-                                                ? (`<span>` + this.$i18n.getWithVariables(this.orderedTerms[dataPointIndex].total_children > 1 ? 'instruction_click_to_see_%s_child_terms' : 'instruction_click_to_see_%s_child_term', [ this.orderedTerms[dataPointIndex].total_children ]) + `</span>`) 
-                                                : ``
-                                            ) +
-                                        `</div></div>`;
-                            }
-                        },
-                        noData: {
-                            text: '0 ' + this.$i18n.get('label_items_with_this_metadatum_value')
-                        }
-                    }
+
+            this.chartSeries = [
+                {
+                    name: this.$i18n.get('label_items_per_term'),
+                    data: this.orderedTerms.map((aTerm) => ({ 
+                        x: aTerm.label,
+                        y: aTerm.total_items
+                    }))
                 }
-            } else {
+            ];
 
-                let termsValues = [];
-                let termsLabels = [];
-
-                this.orderedTerms.forEach(term => {
-                    termsValues.push(term.total_items);
-                    termsLabels.push(term.label);
+            if (!this.chartOptions.chart || this.chartOptions.chart.type !== this.itemsPerTermChartMode) {
+                this.chartOptions = this.buildItemsPerTermChartOptions({
+                    stacked: false,
+                    getTerms: () => this.orderedTerms
                 });
-                
-                this.chartSeries = [
-                    {
-                        name: this.$i18n.get('label_items_per_term'),
-                        data: termsValues
-                    }
-                ];
-                this.chartOptions = {
-                    ...this.stackedBarChartOptions, 
-                    ...{
-                        title: {},
-                        xaxis: {
-                            type: 'category',
-                            tickPlacement: 'on',
-                            categories: termsLabels,
-                            labels: {
-                                show: true,
-                                trim: true,
-                                hideOverlappingLabels: false
-                            },
-                            tooltip: { enabled: true }
-                        },
-                        chart: {
-                            type: 'bar',
-                            height: 350,
-                            stacked: false,
-                            toolbar: {
-                                show: true,
-                                export: {
-                                    scale: 3
-                                }
-                            },
-                            zoom: {
-                                enabled: true,
-                                autoScaleYaxis: true,
-                            }
-                        },
-                        tooltip: {
-                            custom: ({ dataPointIndex }) => {
-                                return `<div class="tainacan-custom-tooltip">
-                                        <div class="tainacan-custom-tooltip__header">` + this.orderedTerms[dataPointIndex].label + `</div>
-                                        <div class="tainacan-custom-tooltip__body">
-                                            <span>` + this.$i18n.get('label_items_per_term') + `: <strong>` + this.orderedTerms[dataPointIndex].total_items + `</strong></span>
-                                            `+ (this.orderedTerms[dataPointIndex].total_children 
-                                                ? (`<span>` + this.$i18n.getWithVariables(this.orderedTerms[dataPointIndex].total_children > 1 ? 'instruction_click_to_see_%s_child_terms' : 'instruction_click_to_see_%s_child_term', [ this.orderedTerms[dataPointIndex].total_children ]) + `</span>`) 
-                                                : ``
-                                            ) +
-                                        `</div></div>`;
-                            }
-                        },
-                        yaxis: {
-                            title: {
-                                text: this.$i18n.get('label_number_of_items')
-                            }
-                        },
-                        animations: {
-                            enabled: this.orderedTerms.length <= 40
-                        },
-                        noData: {
-                            text: '0 ' + this.$i18n.get('label_items_with_this_metadatum_value')
-                        }
-                    }
-                }
+            } else {
+                this.syncBarChartCategories('parentTermsChart', this.orderedTerms);
             }
-
-            setTimeout(() => this.isBuildingChart = false, 500);
         },
         buildMetadatumChildTermsChart() {
-        
-            this.isBuildingChildrenChart = true;
-            
-            // Building Taxonomy term usage chart
+            if (!Array.isArray(this.taxonomyChildTerms))
+                return;
+
             let preOrderedTerms = JSON.parse(JSON.stringify(this.taxonomyChildTerms)).sort((a, b) => b.total_items - a.total_items );
-            this.orderedChildTerms = preOrderedTerms.slice((this.termsDisplayedPage - 1) * this.maxTermsToDisplay, ((this.termsDisplayedPage - 1) * this.maxTermsToDisplay) + this.maxTermsToDisplay);
-            
-            if (this.itemsPerTermChartMode == 'treemap') {
-                this.childrenChartSeries = [
-                    {
-                        name: this.$i18n.get('label_items_per_term'),
-                        data: this.orderedChildTerms.map((aTerm) => { return { 
-                            x: aTerm.label,
-                            y: aTerm.total_items
-                        } })
-                    }
-                ];
-                this.childrenChartOptions = {
-                    ...this.treeMapChartOptions, 
-                    ...{
-                        title: {},
-                        chart: {
-                            type: 'treemap',
-                            height: 350,
-                            toolbar: {
-                                show: true,
-                                export: {
-                                    scale: 3
-                                }
-                            },
-                            zoom: {
-                                enabled: false
-                            }
-                        },
-                        dataLabels: {
-                            enabled: true,
-                            style: {
-                                fontSize: '16px',
-                            },
-                            formatter: function(text, op) {
-                                return [text, op.value]
-                            },
-                            offsetY: -4
-                        },
-                        tooltip: {
-                             custom: ({ dataPointIndex }) => {
-                                return `<div class="tainacan-custom-tooltip">
-                                        <div class="tainacan-custom-tooltip__header">` + this.orderedChildTerms[dataPointIndex].label + `</div>
-                                        <div class="tainacan-custom-tooltip__body">
-                                            <span>` + this.$i18n.get('label_items_per_term') + `: <strong>` + this.orderedChildTerms[dataPointIndex].total_items + `</strong></span>
-                                            `+ (this.orderedChildTerms[dataPointIndex].total_children 
-                                                ? (`<span>` + this.$i18n.getWithVariables(this.orderedChildTerms[dataPointIndex].total_children > 1 ? 'instruction_click_to_see_%s_child_terms' : 'instruction_click_to_see_%s_child_term', [ this.orderedChildTerms[dataPointIndex].total_children ]) + `</span>`) 
-                                                : ``
-                                            ) +
-                                        `</div></div>`;
-                            }
-                        },
-                        noData: {
-                            text: '0 ' + this.$i18n.get('label_items_with_this_metadatum_value')
-                        }
-                    }
+            this.orderedChildTerms = preOrderedTerms.slice((this.childTermsDisplayedPage - 1) * this.maxChildTermsToDisplay, ((this.childTermsDisplayedPage - 1) * this.maxChildTermsToDisplay) + this.maxChildTermsToDisplay);
+
+            this.childrenChartSeries = [
+                {
+                    name: this.$i18n.get('label_items_per_term'),
+                    data: this.orderedChildTerms.map((aTerm) => ({ 
+                        x: aTerm.label,
+                        y: aTerm.total_items
+                    }))
                 }
-            } else {
+            ];
 
-                let termsValues = [];
-                let termsLabels = [];
-
-                this.orderedChildTerms.forEach(term => {
-                    termsValues.push(term.total_items);
-                    termsLabels.push(term.label);
+            if (!this.childrenChartOptions.chart || this.childrenChartOptions.chart.type !== this.itemsPerTermChartMode) {
+                this.childrenChartOptions = this.buildItemsPerTermChartOptions({
+                    stacked: true,
+                    getTerms: () => this.orderedChildTerms
                 });
-                
-                this.childrenChartSeries = [
-                    {
-                        name: this.$i18n.get('label_items_per_term'),
-                        data: termsValues
-                    }
-                ];
-                this.childrenChartOptions = {
-                    ...this.stackedBarChartOptions, 
-                    ...{
-                        title: {},
-                        xaxis: {
-                            type: 'category',
-                            tickPlacement: 'on',
-                            categories: termsLabels,
-                            labels: {
-                                show: true,
-                                trim: true,
-                                hideOverlappingLabels: false
-                            },
-                            tooltip: { enabled: true }
-                        },
-                        chart: {
-                            type: 'bar',
-                            height: 350,
-                            stacked: true,
-                            toolbar: {
-                                show: true,
-                                export: {
-                                    scale: 3
-                                }
-                            },
-                            zoom: {
-                                enabled: true,
-                                autoScaleYaxis: true,
-                            }
-                        },
-                        yaxis: {
-                            title: {
-                                text: this.$i18n.get('label_number_of_items')
-                            }
-                        },
-                        tooltip: {
-                            custom: ({ dataPointIndex }) => {
-                                return `<div class="tainacan-custom-tooltip">
-                                        <div class="tainacan-custom-tooltip__header">` + this.orderedChildTerms[dataPointIndex].label + `</div>
-                                        <div class="tainacan-custom-tooltip__body">
-                                            <span>` + this.$i18n.get('label_items_per_term') + `: <strong>` + this.orderedChildTerms[dataPointIndex].total_items + `</strong></span>
-                                            `+ (this.orderedChildTerms[dataPointIndex].total_children 
-                                                ? (`<span>` + this.$i18n.getWithVariables(this.orderedChildTerms[dataPointIndex].total_children > 1 ? 'instruction_click_to_see_%s_child_terms' : 'instruction_click_to_see_%s_child_term', [ this.orderedChildTerms[dataPointIndex].total_children ]) + `</span>`) 
-                                                : ``
-                                            ) +
-                                        `</div></div>`;
-                            }
-                        },
-                        animations: {
-                            enabled: this.orderedChildTerms.length <= 40
-                        },
-                        noData: {
-                            text: this.$i18n.get('label_items_with_this_metadatum_value')
-                        }
-                    }
-                }
+            } else {
+                this.syncBarChartCategories('childTermsChart', this.orderedChildTerms);
             }
+        },
+        syncBarChartCategories(refName, terms) {
+            if (this.itemsPerTermChartMode !== 'bar')
+                return;
 
-            setTimeout(() => this.isBuildingChildrenChart = false, 500);
+            this.$nextTick(() => {
+                const chartComponent = this.$refs[refName];
+                if (chartComponent && chartComponent.updateOptions) {
+                    chartComponent.updateOptions({
+                        xaxis: { categories: terms.map(term => term.label) }
+                    }, false, true);
+                }
+            });
         },
         loadMetadatumTerms(force) {
             this.isFetchingMetadatumTerms = true;
+            this.isReloadingCache = !!force;
             
             this.fetchTaxonomyTerms({
                     taxonomyId: this.selectedMetadatum.id,
@@ -785,11 +711,16 @@ export default {
                 .then(() => {
                     this.buildMetadatumTermsChart();
                     this.isFetchingMetadatumTerms = false;
+                    this.isReloadingCache = false;
                 })
-                .catch(() => this.isFetchingMetadatumTerms = false);
+                .catch(() => {
+                    this.isFetchingMetadatumTerms = false;
+                    this.isReloadingCache = false;
+                });
         },
         loadMetadatumChildTerms(force) {
             this.isFetchingMetadatumChildTerms = true;
+            this.isReloadingChildCache = !!force;
             
             this.fetchTaxonomyTerms({
                     taxonomyId: this.selectedMetadatum.id,
@@ -801,8 +732,12 @@ export default {
                 .then(() => {
                     this.buildMetadatumChildTermsChart();
                     this.isFetchingMetadatumChildTerms = false;
+                    this.isReloadingChildCache = false;
                 })
-                .catch(() => this.isFetchingMetadatumChildTerms = false);
+                .catch(() => {
+                    this.isFetchingMetadatumChildTerms = false;
+                    this.isReloadingChildCache = false;
+                });
         },
         backToParentTerm() {
             this.selectedParentTerm.pop();

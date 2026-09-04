@@ -24,7 +24,7 @@ class Filter extends Entity {
         $max_options,
         $filter_type,
         $filter_type_options,
-        $begin_with_filter_collapsed,
+        $initial_display,
         $display_in_repository_level_lists,
         $description_bellow_name;
 
@@ -61,6 +61,9 @@ class Filter extends Entity {
 				$filter_array['metadatum']['metadata_type_object'] = $meta_object->_toArray();
 			}
 		}
+
+		// Keep the legacy attribute for older clients while initial_display is the source of truth.
+		$filter_array['begin_with_filter_collapsed'] = $this->get_begin_with_filter_collapsed();
 		
 		
 		return apply_filters('tainacan-filter-to-array', $filter_array, $this);
@@ -185,12 +188,51 @@ class Filter extends Entity {
     }
 
     /**
-     * Return 'yes' or 'no' to the option of begining the filter collapsed
-     * 
+     * Return how the filter should initially appear in the faceted search.
+     *
+     * Possible values: 'default', 'collapsed', 'hidden'.
+     * Falls back to the legacy begin_with_filter_collapsed meta when needed.
+     *
      * @return string
      */
+    public function get_initial_display() {
+        $allowed = [ 'default', 'collapsed', 'hidden' ];
+
+        // Prefer the in-memory value set during the current request.
+        if ( isset( $this->initial_display ) && in_array( $this->initial_display, $allowed, true ) ) {
+            return $this->initial_display;
+        }
+
+        if ( isset( $this->WP_Post->ID ) ) {
+            $stored = get_post_meta( $this->WP_Post->ID, 'initial_display', true );
+
+            if ( in_array( $stored, $allowed, true ) ) {
+                return $stored;
+            }
+
+            // Legacy yes/no option.
+            $legacy = get_post_meta( $this->WP_Post->ID, 'begin_with_filter_collapsed', true );
+            if ( $legacy === 'yes' ) {
+                return 'collapsed';
+            }
+            if ( $legacy === 'no' ) {
+                return 'default';
+            }
+        }
+
+        $value = $this->get_mapped_property( 'initial_display' );
+        return in_array( $value, $allowed, true ) ? $value : 'default';
+    }
+
+    /**
+     * Legacy accessor kept for compatibility.
+     *
+     * @deprecated Use get_initial_display() instead.
+     * @return string 'yes' or 'no'
+     */
     public function get_begin_with_filter_collapsed() {
-        return $this->get_mapped_property('begin_with_filter_collapsed');
+        $initial_display = $this->get_initial_display();
+        return ( $initial_display === 'collapsed' || $initial_display === 'hidden' ) ? 'yes' : 'no';
     }
 
     /**
@@ -285,12 +327,22 @@ class Filter extends Entity {
     }
 
     /**
-     * Tells if filter should begin collapsed, not loading facets
-     * 
-     * @param string $begin_with_filter_collapsed
+     * Define how the filter should initially appear in the faceted search.
+     *
+     * @param string $initial_display One of 'default', 'collapsed', 'hidden'.
      */
-    public function set_begin_with_filter_collapsed($begin_with_filter_collapsed) {
-        $this->set_mapped_property('begin_with_filter_collapsed', $begin_with_filter_collapsed);
+    public function set_initial_display( $initial_display ) {
+        $this->set_mapped_property( 'initial_display', $initial_display );
+    }
+
+    /**
+     * Legacy setter kept for compatibility.
+     *
+     * @deprecated Use set_initial_display() instead.
+     * @param string $begin_with_filter_collapsed 'yes' or 'no'
+     */
+    public function set_begin_with_filter_collapsed( $begin_with_filter_collapsed ) {
+        $this->set_initial_display( $begin_with_filter_collapsed === 'yes' ? 'collapsed' : 'default' );
     }
 
     /**

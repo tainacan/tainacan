@@ -1,10 +1,12 @@
 import mitt from 'mitt';
+import { isIframeSelectionMode, broadcastSelectionState, toPlainItemIds } from './selection-bridge.js';
 
 export default {
 
     install(app) {
 
         const emitter = mitt();
+
         const bus = {
             collectionId: undefined,
             defaultOrder: 'ASC',
@@ -166,8 +168,17 @@ export default {
             setTotalItems(totalItems) {
                 app.config.globalProperties.$store.dispatch('search/setTotalItems', totalItems);
             },
-            setSentenceMode(sentenceMode) {
-                app.config.globalProperties.$store.dispatch('search/setSentenceMode', sentenceMode);
+            setPerWordSearchMode(perWordSearchMode) {
+                app.config.globalProperties.$store.dispatch('search/setPerWordSearchMode', perWordSearchMode);
+                this.updateURLQueries();
+            },
+            applyPerWordSearchDefaultIfNeeded() {
+                const postquery = app.config.globalProperties.$store.getters['search/getPostQuery'];
+                const isPerWordSearchByDefault = app.config.globalProperties.$store.getters['search/getIsPerWordSearchByDefault'];
+
+                if ( isPerWordSearchByDefault && (postquery.search || postquery.s) && postquery.sentence === undefined ) {
+                    app.config.globalProperties.$store.dispatch('search/setPerWordSearchMode', true);
+                }
             },
             setSearchQuery(searchQuery) {
                 app.config.globalProperties.$store.dispatch('search/setSearchQuery', searchQuery);
@@ -201,24 +212,46 @@ export default {
                 app.config.globalProperties.$store.dispatch('search/setAdminViewMode', adminViewMode);
                 this.updateURLQueries();  
             },
+            publishSelectionState(selectedItems) {
+                if (!isIframeSelectionMode(app))
+                    return;
+
+                let items = toPlainItemIds(selectedItems);
+                if (!items.length) {
+                    try {
+                        items = toPlainItemIds(
+                            app.config.globalProperties.$store.getters['search/getSelectedItems']
+                        );
+                    } catch (e) {
+                        items = [];
+                    }
+                }
+
+                let query = {};
+                try {
+                    query = JSON.parse(JSON.stringify(
+                        app.config.globalProperties.$store.getters['search/getPostQuery'] || {}
+                    ));
+                } catch (e) {
+                    query = {};
+                }
+
+                broadcastSelectionState({
+                    selectedItems: items,
+                    query: query,
+                    href: window.location.href,
+                    collectionId: this.collectionId
+                });
+            },
             async setSelectedItemsForIframe(selectedItems, singleSelection) {
 
                 if (singleSelection)
                     app.config.globalProperties.$store.dispatch('search/cleanSelectedItems');
 
                 app.config.globalProperties.$store.dispatch('search/setSelectedItems', selectedItems);
-
-                let currentSelectedItems = app.config.globalProperties.$store.getters['search/getSelectedItems'];
-
-                if (window.history.replaceState) {
-                    let searchParams = new URLSearchParams(window.location.search);
-                    searchParams.delete('selecteditems');
-                    for (let selectedItem of currentSelectedItems)
-                        searchParams.append('selecteditems', selectedItem);
-
-                    let newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + searchParams.toString() + window.location.hash;
-                    window.history.pushState({path: newurl}, '', newurl);
-                }      
+                this.publishSelectionState(
+                    toPlainItemIds(app.config.globalProperties.$store.getters['search/getSelectedItems'])
+                );
             },
             cleanSelectedItems() {
                 app.config.globalProperties.$store.dispatch('search/cleanSelectedItems');
@@ -228,10 +261,16 @@ export default {
             },
             updateURLQueries() {
                 const newQueries = JSON.parse(JSON.stringify(app.config.globalProperties.$store.getters['search/getPostQuery']));
-                app.config.globalProperties.$router.replace({ path: app.config.globalProperties.$route.path, query: newQueries });
+                const navigation = app.config.globalProperties.$router.replace({ path: app.config.globalProperties.$route.path, query: newQueries });
+                if (navigation && typeof navigation.finally === 'function') {
+                    navigation.finally(() => this.publishSelectionState());
+                } else {
+                    this.publishSelectionState();
+                }
             },
             updateStoreFromURL() {
                 app.config.globalProperties.$store.dispatch('search/setPostQuery', JSON.parse(JSON.stringify(app.config.globalProperties.$route.query)));
+                this.applyPerWordSearchDefaultIfNeeded();
             },
             loadItems() {
                 // Forces fetch_only to be filled before any search happens
@@ -285,6 +324,9 @@ export default {
             }
         }
         app.config.globalProperties.$eventBusSearch = bus;
+
+        if (isIframeSelectionMode(app))
+            bus.publishSelectionState();
 
         // Defines the global $eventBusSearchEmitter for handling events across different search components
         emitter.on('input', data => {

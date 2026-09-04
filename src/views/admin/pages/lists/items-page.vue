@@ -174,16 +174,15 @@
                                 :focusable="false"
                                 @click="updateSearch()">
                             <span v-html="$i18n.get('instruction_press_enter_to_search_for')" />&nbsp;
-                            <em>{{ sentenceMode == true ? futureSearchQuery : ('"' + futureSearchQuery + '"') }}.</em>
+                            <em>{{ isPerWordSearchMode ? formatPerWordSearchQueryDisplay(futureSearchQuery) : ('"' + futureSearchQuery + '"') }}.</em>
                         </b-dropdown-item>
                         <b-dropdown-item
+                                v-if="!isPerWordSearchByDefault"
                                 custom
                                 :focusable="false">
                             <b-checkbox 
-                                    :model-value="sentenceMode"
-                                    :true-value="false"
-                                    :false-value="true"
-                                    @update:model-value="$eventBusSearch.setSentenceMode($event)">
+                                    :model-value="isPerWordSearchMode"
+                                    @update:model-value="$eventBusSearch.setPerWordSearchMode($event)">
                                 {{ $i18n.get('label_use_search_separated_words') }}
                             </b-checkbox>
                             <small class="is-small help">{{ $i18n.get('info_use_search_separated_words') }}</small>
@@ -786,22 +785,33 @@
                         </button>
 
                         <p v-if="searchQuery">
-                            <template v-if="!sentenceMode">
-                                <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_enabling_search_by_word') }}
-                                <br>
-                                {{ $i18n.get('info_details_about_search_by_word') }}
+                            <template v-if="isPerWordSearchByDefault">
+                                <span>{{ $i18n.getWithVariables('info_you_searched_for_%s', [hasExecutedSearchByMoreThanOneWord ? formatPerWordSearchQueryDisplay(searchQuery) : ('"' + searchQuery + '"')]) }}</span>.
+                                <template v-if="hasExecutedSearchByMoreThanOneWord && !isExecutedSearchWrappedInQuotes">
+                                    {{ $i18n.get('info_use_search_separated_words') }}
+                                </template>
                             </template>
                             <template v-else>
-                                <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_disabling_search_by_word') }}
+                                <template v-if="!hasExecutedSearchByMoreThanOneWord">
+                                    <span>{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>.
+                                </template>
+                                <template v-else-if="!isPerWordSearchMode">
+                                    <span>{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_enabling_search_by_word') }}
+                                    <br>
+                                    {{ $i18n.get('info_details_about_search_by_word') }}
+                                </template>
+                                <template v-else>
+                                    <span>{{ $i18n.getWithVariables('info_you_searched_for_%s', [formatPerWordSearchQueryDisplay(searchQuery)]) }}</span>. {{ $i18n.get('info_try_disabling_search_by_word') }}
+                                </template>
+                                <template v-if="hasExecutedSearchByMoreThanOneWord">
+                                    <br>
+                                    <b-checkbox 
+                                            :model-value="isPerWordSearchMode"
+                                            @update:model-value="$eventBusSearch.setPerWordSearchMode($event); updateSearch();">
+                                        {{ $i18n.get('label_use_search_separated_words') }}
+                                    </b-checkbox>
+                                </template>
                             </template>
-                            <br>
-                            <b-checkbox 
-                                    :model-value="sentenceMode"
-                                    :true-value="false"
-                                    :false-value="true"
-                                    @update:model-value="$eventBusSearch.setSentenceMode($event); updateSearch();">
-                                {{ $i18n.get('label_use_search_separated_words') }}
-                            </b-checkbox>
                         </p>
                     </div>
                 </section>
@@ -879,7 +889,8 @@
             }),
             ...mapGetters('search', {
                 'searchQuery': 'getSearchQuery',
-                'sentenceMode': 'getSentenceMode',
+                'isPerWordSearchMode': 'getIsPerWordSearchMode',
+                'isPerWordSearchByDefault': 'getIsPerWordSearchByDefault',
                 'status': 'getStatus',
                 'orderBy': 'getOrderBy',
                 'order': 'getOrder',
@@ -905,7 +916,14 @@
                 return this.$route.query.metakey ? metadatumName : this.$i18n.get(metadatumName);
             },
             hasSearchByMoreThanOneWord() {
-                return this.futureSearchQuery && this.futureSearchQuery.split(' ').length > 1;
+                return this.futureSearchQuery && /\s/.test(this.futureSearchQuery.trim());
+            },
+            hasExecutedSearchByMoreThanOneWord() {
+                return this.searchQuery && /\s/.test(String(this.searchQuery).trim());
+            },
+            isExecutedSearchWrappedInQuotes() {
+                const query = String(this.searchQuery || '').trim();
+                return query.length > 1 && query.startsWith('"') && query.endsWith('"');
             },
             isAdminIframeMode() {
                 return this.$adminOptions.itemsSingleSelectionMode || this.$adminOptions.itemsMultipleSelectionMode || this.$adminOptions.itemsSearchSelectionMode;
@@ -996,6 +1014,7 @@
                     
                     // Passes the current URL to store
                     this.$store.dispatch('search/setPostQuery', JSON.parse(JSON.stringify(this.$route.query)));
+                    this.$eventBusSearch.applyPerWordSearchDefaultIfNeeded();
 
                     // Advanced Search
                     if (this.$route.query && this.$route.query.advancedSearch)
@@ -1132,7 +1151,10 @@
                     this.$eventBusSearch.setInitialAdminViewMode('table');
             }
 
-            this.$eventBusSearch.cleanSelectedItems();
+            // Gutenberg iframe selection hydrates selecteditems from initiallySelectedItems
+            // on location.search. Clearing here would drop that before the list can show it.
+            if (!this.$adminOptions.itemsSingleSelectionMode && !this.$adminOptions.itemsMultipleSelectionMode)
+                this.$eventBusSearch.cleanSelectedItems();
 
             // Watches window resize to adjust filter's top position and compression on mobile 
             this.hideFiltersOnMobile();
@@ -1225,6 +1247,25 @@
             },
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
+            },
+            /**
+             * Formats a per-word search query for display, e.g. `texto poesia` → `"texto" or "poesia"`.
+             * Quoted groups are kept as a single term.
+             */
+            formatPerWordSearchQueryDisplay(query) {
+                if (!query)
+                    return '';
+
+                const tokens = String(query).match(/"[^"]*"|\S+/g) || [];
+                const terms = tokens
+                    .map((token) => token.replace(/^"+|"+$/g, '').trim())
+                    .filter(Boolean)
+                    .map((term) => '"' + term + '"');
+
+                if (!terms.length)
+                    return '"' + String(query).trim() + '"';
+
+                return terms.join(' ' + this.$i18n.get('label_or') + ' ');
             },
             onChangeOrderAndOrderBy(newOrder, newOrderBy) {
                 this.$refs['sortingDropdown'].toggle();
@@ -1700,6 +1741,7 @@
             :deep(.modal-content) {
                 padding-inline-start: 0 !important;
                 padding-inline-end: 28px !important;
+                overflow: visible;
             }
         }
     }
@@ -1838,7 +1880,7 @@
             .label {
                 color: var(--tainacan-label-color);
                 font-size: 0.875em;
-                line-height: calc(var(--tainacan-button-min-height, 2.571em) - 2px);
+                line-height: calc(var(--tainacan-button-min-height, 2.571em) - 4px);
                 font-weight: normal;
                 margin-top: 2px;
                 margin-bottom: 2px;

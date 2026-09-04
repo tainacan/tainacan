@@ -1,23 +1,64 @@
 @startuml class-diagram
-  class "Collections\n<b>Repository for managing Tainacan collections.</b>" as Collections {
+  class "Repository\n<b>Abstract base class for all Tainacan repositories.</b>" as Repository {
     +entities_type : string
-    -old_collection : Collection
-    -old_core_title : string
-    -old_core_description : string
+    #use_logs : bool
+    #logs_repository : Logs
+    -map : array
+    +disable_logs()
+    +enable_logs()
+    +get_enabled_logs()
+    #__construct()
+    +init_objects()
+    {abstract} #_get_map()
+    +get_map()
+    +get_name()
+    +insert(obj)
+    +insert_metadata(obj, prop, diffs)
+    +maybe_add_slashes(value)
+    +fetch_output(WP_Query, output)
+    +parse_fetch_args(args)
+    +get_default_properties(map)
+    +get_mapped_property(entity, prop)
+    {static} +get_collections_db_identifiers()
+    {static} +get_entity_by_post(post)
+    {static} +get_entity_by_post_type(post_type, post)
+    {static} +get_repository(entity)
+    +fetch_one(args)
+    +trash(entity)
+    +delete(entity, permanent)
+    -delete_attachments(entity)
+    {abstract} +fetch(args, output)
+    {abstract} +update(object, new_values)
+    {abstract} +register_post_type()
+    +can_edit(entity, user)
+    +can_read(entity, user)
+    +can_delete(entity, user)
+    +can_publish(entity, user)
+    +unique_multidimensional_array(array, key)
+    -insert_thumbnail(obj, diffs)
+    +get_descendants_ids(id, depth)
+    +get_capabilities()
+    #sanitize_value(content)
+  }
+  class "Filters\n<b>Repository for managing Tainacan filters.</b>" as Filters {
+    +entities_type : 
+    +filters_types : 
     #init()
-    +get_max_items_per_page()
     #_get_map()
     +get_cpt_labels()
     +register_post_type()
-    +insert(collection)
     +update(object, new_values)
     +fetch(args, output)
-    +fetch_by_db_identifier(db_identifier)
-    +get_id_by_db_identifier(db_identifier)
-    +pre_process(collection)
-    +handle_core_metadata(collection)
-    +handle_control_metadata(collection)
-    +handle_parent_order_clone(collection)
+    +register_filter_type(class_name)
+    +deregister_filter_type(class_name)
+    +fetch_filter_types(output)
+    +fetch_supported_filter_types(types)
+    +fetch_ids(args)
+    +fetch_by_collection(collection, args)
+    +fetch_ids_by_collection(collection, args)
+    +order_result(result, collection, include_disabled)
+    +hook_delete_when_metadata_deleted(metadatum, permanent)
+    +hook_update_when_metadata_saved_as_private(metadatum)
   }
   class "Terms\n<b>Repository for managing Tainacan taxonomy terms.</b>" as Terms {
     +entities_type : 
@@ -37,26 +78,29 @@
     +can_delete(term, user)
     +can_publish(term, user)
   }
-  class "Metadata_Sections\n<b>Repository for managing Tainacan metadata sections.</b>" as Metadata_Sections {
+  class "Logs" as Logs {
     +entities_type : 
+    -current_diff : 
+    -current_deleting_entity : 
+    -current_action : 
     #init()
     #_get_map()
-    +get_cpt_labels()
     +register_post_type()
-    +get_default_section(collection)
     +fetch(args, output)
-    +fetch_ids(args)
-    +fetch_by_collection(collection, args)
-    +insert(metadata_section)
     +update(object, new_values)
-    +add_metadata(metadata_section_id, metadata_list)
-    +delete_metadata(metadata_section_id, metadata_list)
-    +get_metadata_object_list(metadata_section_id, args)
-    +get_default_section_metadata_object_list(collection, args)
-    +delete(entity, permanent)
-    +order_result(result, collection, include_disabled)
-    +can_read(entity, user)
-    +can_edit(entity, user)
+    +fetch_last()
+    +insert_attachment(post_ID)
+    +pre_delete_attachment(attachment_id)
+    +delete_attachment(attachment_id)
+    +pre_insert_entity(unsaved)
+    -prepare_item_metadata_diff(unsaved)
+    +__temporary_multivalue_separator(sep)
+    +insert_entity(entity)
+    +pre_delete_entity(entity, permanent)
+    +delete_entity(entity, permanent)
+    -insert_item_metadata(entity)
+    +filter_log_title(title)
+    +tainacan_set_log_slug(override, slug, post_ID, post_status, post_type, post_parent)
   }
   class "Logs\n<b>Repository for managing Tainacan logs.</b>" as Logs {
     +entities_type : 
@@ -88,6 +132,27 @@
     +filter_log_title(title)
     +tainacan_set_log_slug(override, slug, post_ID, post_status, post_type, post_parent)
   }
+  class "Metadata_Sections\n<b>Repository for managing Tainacan metadata sections.</b>" as Metadata_Sections {
+    +entities_type : 
+    #init()
+    #_get_map()
+    +get_cpt_labels()
+    +register_post_type()
+    +get_default_section(collection)
+    +fetch(args, output)
+    +fetch_ids(args)
+    +fetch_by_collection(collection, args)
+    +insert(metadata_section)
+    +update(object, new_values)
+    +add_metadata(metadata_section_id, metadata_list)
+    +delete_metadata(metadata_section_id, metadata_list)
+    +get_metadata_object_list(metadata_section_id, args)
+    +get_default_section_metadata_object_list(collection, args)
+    +delete(entity, permanent)
+    +order_result(result, collection, include_disabled)
+    +can_read(entity, user)
+    +can_edit(entity, user)
+  }
   class "Item_Metadata\n<b>Repository for managing Tainacan item metadata.</b>" as Item_Metadata {
     +entities_type : 
     #init()
@@ -108,29 +173,33 @@
     +update(object, new_values)
     +suggest(item_metadata)
   }
-  class "Logs" as Logs {
+  class "Items\n<b>Repository for managing Tainacan items.</b>" as Items {
     +entities_type : 
-    -current_diff : 
-    -current_deleting_entity : 
-    -current_action : 
+    -fetching_from_collections : 
+    -relationsip_metaquery : array{meta_id?: string, search_meta_id?: string, search_meta_value?: string}
     #init()
     #_get_map()
+    +get_cpt_labels()
     +register_post_type()
-    +fetch(args, output)
+    +insert(item)
+    +fetch(args, collections, output)
+    +fetch_ids(args, collections)
+    +_filter_where(where, wp_query)
     +update(object, new_values)
-    +fetch_last()
-    +insert_attachment(post_ID)
-    +pre_delete_attachment(attachment_id)
-    +delete_attachment(attachment_id)
-    +pre_insert_entity(unsaved)
-    -prepare_item_metadata_diff(unsaved)
-    +__temporary_multivalue_separator(sep)
-    +insert_entity(entity)
-    +pre_delete_entity(entity, permanent)
-    +delete_entity(entity, permanent)
-    -insert_item_metadata(entity)
-    +filter_log_title(title)
-    +tainacan_set_log_slug(override, slug, post_ID, post_status, post_type, post_parent)
+    +generate_index_content(item)
+    +extract_document_content(item, context)
+    +supports_document_content_extraction(item)
+    -validate_default_pdf_document_extraction(item)
+    -extract_document_content_default(item)
+    +get_thumbnail_id_from_document(item)
+    +hook_api_updated_item(updated_item, attributes)
+    +hook_comments_open(comments_open, post_id)
+    +map_meta_cap(caps, cap, user_id, args)
+    -get_related_items_by_collection(item, collection, metadata, args)
+    +fetch_related_items(item, args)
+    -parse_relationship_metaquery(args)
+    +posts_where_relationship_metaquery(where)
+    -parse_core_metadata_for_advanced_search(args, collections)
   }
   class "Taxonomies\n<b>Repository for managing Tainacan taxonomies.</b>" as Taxonomies {
     +entities_type : 
@@ -151,6 +220,26 @@
     +get_db_identifier_by_id(id)
     +get_id_by_db_identifier(db_identifier)
     +term_exists(taxonomy, term_name, parent, return_term)
+  }
+  class "Collections\n<b>Repository for managing Tainacan collections.</b>" as Collections {
+    +entities_type : string
+    -old_collection : Collection
+    -old_core_title : string
+    -old_core_description : string
+    #init()
+    +get_max_items_per_page()
+    #_get_map()
+    +get_cpt_labels()
+    +register_post_type()
+    +insert(collection)
+    +update(object, new_values)
+    +fetch(args, output)
+    +fetch_by_db_identifier(db_identifier)
+    +get_id_by_db_identifier(db_identifier)
+    +pre_process(collection)
+    +handle_core_metadata(collection)
+    +handle_control_metadata(collection)
+    +handle_parent_order_clone(collection)
   }
   class "Metadata\n<b>Repository for managing Tainacan metadata definitions.</b>" as Metadata {
     +entities_type : 
@@ -196,94 +285,6 @@
     +hook_taxonomies_saved_not_allow_insert_new_terms(taxonomy)
     +metadata_is_enabled(collection, metadata)
     +hook_metadata_update_order(metadata)
-  }
-  class "Repository\n<b>Abstract base class for all Tainacan repositories.</b>" as Repository {
-    +entities_type : string
-    #use_logs : bool
-    #logs_repository : Logs
-    -map : array
-    +disable_logs()
-    +enable_logs()
-    +get_enabled_logs()
-    #__construct()
-    +init_objects()
-    {abstract} #_get_map()
-    +get_map()
-    +get_name()
-    +insert(obj)
-    +insert_metadata(obj, prop, diffs)
-    +maybe_add_slashes(value)
-    +fetch_output(WP_Query, output)
-    +parse_fetch_args(args)
-    +get_default_properties(map)
-    +get_mapped_property(entity, prop)
-    {static} +get_collections_db_identifiers()
-    {static} +get_entity_by_post(post)
-    {static} +get_entity_by_post_type(post_type, post)
-    {static} +get_repository(entity)
-    +fetch_one(args)
-    +trash(entity)
-    +delete(entity, permanent)
-    -delete_attachments(entity)
-    {abstract} +fetch(args, output)
-    {abstract} +update(object, new_values)
-    {abstract} +register_post_type()
-    +can_edit(entity, user)
-    +can_read(entity, user)
-    +can_delete(entity, user)
-    +can_publish(entity, user)
-    +unique_multidimensional_array(array, key)
-    -insert_thumbnail(obj, diffs)
-    +get_descendants_ids(id, depth)
-    +get_capabilities()
-    #sanitize_value(content)
-  }
-  class "Items\n<b>Repository for managing Tainacan items.</b>" as Items {
-    +entities_type : 
-    -fetching_from_collections : 
-    #init()
-    #_get_map()
-    +get_cpt_labels()
-    +register_post_type()
-    +insert(item)
-    +fetch(args, collections, output)
-    +fetch_ids(args, collections)
-    +_filter_where(where, wp_query)
-    +update(object, new_values)
-    +generate_index_content(item)
-    +extract_document_content(item, context)
-    +supports_document_content_extraction(item)
-    -validate_default_pdf_document_extraction(item)
-    -extract_document_content_default(item)
-    +get_thumbnail_id_from_document(item)
-    +hook_api_updated_item(updated_item, attributes)
-    +hook_comments_open(comments_open, post_id)
-    +map_meta_cap(caps, cap, user_id, args)
-    -get_related_items_by_collection(item, collection, metadata, args)
-    +fetch_related_items(item, args)
-    -parse_relationship_metaquery(args)
-    +posts_where_relationship_metaquery(where)
-    -parse_core_metadata_for_advanced_search(args, collections)
-  }
-  class "Filters\n<b>Repository for managing Tainacan filters.</b>" as Filters {
-    +entities_type : 
-    +filters_types : 
-    #init()
-    #_get_map()
-    +get_cpt_labels()
-    +register_post_type()
-    +update(object, new_values)
-    +fetch(args, output)
-    +register_filter_type(class_name)
-    +deregister_filter_type(class_name)
-    +fetch_filter_types(output)
-    +fetch_supported_filter_types(types)
-    +fetch_ids(args)
-    +fetch_by_collection(collection, args)
-    +fetch_ids_by_collection(collection, args)
-    +order_result(result, collection, include_disabled)
-    +hook_delete_when_metadata_deleted(metadatum, permanent)
-    +hook_update_when_metadata_saved_as_private(metadatum)
   }
   Collections ..> Metadata
   Item_Metadata ..> Items

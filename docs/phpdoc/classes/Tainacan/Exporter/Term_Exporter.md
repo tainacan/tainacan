@@ -10,18 +10,6 @@
 ```mermaid
 classDiagram
     direction TB
-    class Term_Exporter {
-        #steps : mixed
-        +__construct(attributes)
-        +get_output()
-        +str_putcsv(item, delimiter, enclosure)
-        +output_header()
-        +output_footer()
-        +options_form()
-        +process_item(index, collection_definition)
-        +exporting_terms()
-        +get_terms_recursively(term_repo, taxonomy, parent, level)
-    }
     class Exporter {
         #id : identifier
         #options : array
@@ -111,6 +99,18 @@ classDiagram
         -set_output_files(output_files)
         #get_output_files()
         +run()
+    }
+    class Term_Exporter {
+        #steps : mixed
+        +__construct(attributes)
+        +get_output()
+        +str_putcsv(item, delimiter, enclosure)
+        +output_header()
+        +output_footer()
+        +options_form()
+        +process_item(index, collection_definition)
+        +exporting_terms()
+        +get_terms_recursively(term_repo, taxonomy, parent, level)
     }
     Exporter <|-- Term_Exporter
 ```

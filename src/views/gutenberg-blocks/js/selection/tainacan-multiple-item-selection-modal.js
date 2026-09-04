@@ -1,5 +1,6 @@
 import tainacanApi from '../axios.js';
 import axios from 'axios';
+import { subscribeSelectionState, appendInitiallySelectedItemsParam } from './tainacan-selection.js';
 
 const { __ } = wp.i18n;
 
@@ -12,14 +13,19 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
 
         const existingCollectionId = props.existingCollectionId;
         const loadStrategy = props.loadStrategy || 'search';
-        const searchURL = existingCollectionId ? (
+        const existingSelectedItems = loadStrategy == 'selection' ? props.existingSelectedItems : undefined;
+        const useExistingSearchURL = loadStrategy == 'search' &&
             props.existingSearchURL &&
             props.existingSearchURL.indexOf('iframemode') < 0 &&
-            props.existingSearchURL.includes(tainacan_blocks.admin_url)
-        )
-            ? props.existingSearchURL
-            : tainacan_blocks.admin_url + '?' + (loadStrategy == 'search' ? 'itemsSearchSelectionMode' : 'itemsMultipleSelectionMode') + '=true&page=tainacan_admin#/collections/' + existingCollectionId + '/items/?status=publish'
-        : '';
+            props.existingSearchURL.includes(tainacan_blocks.admin_url);
+        const searchURL = existingCollectionId ? (
+            useExistingSearchURL
+                ? props.existingSearchURL
+                : appendInitiallySelectedItemsParam(
+                    tainacan_blocks.admin_url + '?' + (loadStrategy == 'search' ? 'itemsSearchSelectionMode' : 'itemsMultipleSelectionMode') + '=true&page=tainacan_admin#/collections/' + existingCollectionId + '/items/?status=publish',
+                    existingSelectedItems
+                )
+        ) : '';
 
         // Initialize state from block attributes so the correct step renders on first paint.
         this.state = {
@@ -39,6 +45,9 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
             itemsPerPage: 12,
             loadStrategy: loadStrategy
         };
+        this.selectionState = existingSelectedItems && existingSelectedItems.length
+            ? { selectedItems: existingSelectedItems.map(String), query: {}, href: '', collectionId: existingCollectionId ? String(existingCollectionId) : '' }
+            : null;
         
         // Bind events
         this.resetCollections = this.resetCollections.bind(this);
@@ -48,15 +57,27 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
         this.fetchCollection = this.fetchCollection.bind(this);
         this.applySelectedSearchURL = this.applySelectedSearchURL.bind(this);
         this.applySelectedItems = this.applySelectedItems.bind(this);
+        this.onSelectionState = this.onSelectionState.bind(this);
+    }
+
+    onSelectionState(state) {
+        this.selectionState = state;
     }
 
     componentDidMount() {
+        this.unsubscribeSelectionState = subscribeSelectionState(this.onSelectionState);
+
         if (this.props.existingCollectionId) {
             this.fetchCollection(this.props.existingCollectionId);
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();
         }
+    }
+
+    componentWillUnmount() {
+        if (this.unsubscribeSelectionState)
+            this.unsubscribeSelectionState();
     }
 
     // COLLECTIONS RELATED --------------------------------------------------
@@ -123,6 +144,7 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
     }
 
     selectCollection(selectedCollectionId) {
+        this.selectionState = null;
         this.setState({
             collectionId: selectedCollectionId,
             searchURL: tainacan_blocks.admin_url + '?' + (this.props.loadStrategy == 'search' ? 'itemsSearchSelectionMode' : 'itemsMultipleSelectionMode') + '=true&page=tainacan_admin#/collections/' + selectedCollectionId + '/items/?status=publish'
@@ -174,25 +196,19 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
             });
     }
 
-    applySelectedSearchURL() {    
-        let iframe = document.getElementById("itemsFrame");
-        if (iframe) {
-            this.props.onApplySearchURL(iframe.contentWindow.location.href);
-        }
+    applySelectedSearchURL() {
+        if (this.selectionState && this.selectionState.href)
+            this.props.onApplySearchURL(this.selectionState.href);
     }
 
     applySelectedItems() {
-        let iframe = document.getElementById("itemsFrame");
-        if (iframe) {
-            let params = new URLSearchParams(iframe.contentWindow.location.search);
-            let selectedItems = params.getAll('selecteditems');
-            params.delete('selecteditems')
-            this.props.onApplySelectedItems(selectedItems);
-        }
+        if (this.selectionState && this.selectionState.selectedItems && this.selectionState.selectedItems.length)
+            this.props.onApplySelectedItems(this.selectionState.selectedItems);
     }
 
     resetCollections() {
 
+        this.selectionState = null;
         this.setState({
             collectionId: null,
             collectionPage: 1,

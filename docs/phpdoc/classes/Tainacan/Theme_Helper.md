@@ -58,6 +58,7 @@ classDiagram
         +get_enabled_view_modes()
         +get_default_order()
         +get_default_orderby()
+        +get_default_search_sentence()
         +get_enable_item_link_query_params()
         +tainacan_get_collection_id()
         +tainacan_get_collection(args)
@@ -729,6 +730,18 @@ public get_default_orderby(): string
 **Return Value:**
 
 The default orderby slug
+
+***
+
+### get_default_search_sentence
+
+Get the default value for the sentence search parameter.
+
+```php
+public get_default_search_sentence(): bool
+```
+
+When true, search matches the full phrase. When false, each word is matched separately.
 
 ***
 

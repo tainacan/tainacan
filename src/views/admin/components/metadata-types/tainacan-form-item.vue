@@ -61,7 +61,7 @@
         <transition name="filter-item">
             <div   
                     v-show="hideCollapses || isCollapsed || !!errorMessage"
-                    v-if="isTextInputComponent">
+                    v-if="!manageMultipleInput">
                 <p
                         v-if="itemMetadatum.metadatum &&
                             itemMetadatum.metadatum.description &&
@@ -158,7 +158,7 @@
                 </template>
             </div>
 
-            <!-- Non-textual metadata such as taxonomy, relationship, geocoordinate and compound manage multiple state in different ways -->
+            <!-- Metadata types with manage_multiple_input (taxonomy, relationship, etc.) manage multiple state themselves -->
             <div 
                     v-show="hideCollapses || isCollapsed"
                     v-else>
@@ -256,9 +256,13 @@
                     this.itemMetadatum.metadatum.cardinality > 1
                 ) ? this.itemMetadatum.metadatum.cardinality : undefined;
             },
-            isTextInputComponent() {
-                const array = ['tainacan-relationship','tainacan-taxonomy', 'tainacan-compound', 'tainacan-user', 'tainacan-geocoordinate'];
-                return !(array.indexOf(this.metadatumComponent) >= 0 );
+            manageMultipleInput() {
+                return !!(
+                    this.itemMetadatum &&
+                    this.itemMetadatum.metadatum &&
+                    this.itemMetadatum.metadatum.metadata_type_object &&
+                    this.itemMetadatum.metadatum.metadata_type_object.manage_multiple_input
+                );
             },
             metadatumFormClasses() {
                 return '' + 
@@ -328,7 +332,7 @@
                     return;
 
                 if ( this.itemMetadatum.value !== null && this.itemMetadatum.value !== false ) {
-
+                    
                     // This routine avoids calling the API if the value did not changed
                     switch(this.itemMetadatum.value.constructor.name) {
 
@@ -387,6 +391,16 @@
                             )
                                 return;
                     }
+
+                // If the value is null or false, don't update unless the user actually set something
+                // Sometimes when the page is loaded the itemMetadatum.value is null or false from the API, but the user has not set anything yet.
+                } else {
+                    // Stored value on this.values is empty: don't update unless the user actually set something
+                    const isLocalEmpty =
+                        !this.values ||
+                        (Array.isArray(this.values) && this.values.filter(v => v !== false && v !== null && v !== undefined && v !== '').length === 0);
+                    if (isLocalEmpty)
+                        return;
                 }
                 
                 // If none is the case, the value is update request is sent to the API
