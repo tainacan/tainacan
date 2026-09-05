@@ -24,22 +24,28 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Notes regarding supported versions in WP:
-        # The base matrix only contains the PHP versions which are supported on all supported WP versions.
-        php: ['7.4', '8.3', '8.4']
+        # Test the shared PHP matrix against both the latest and minimum
+        # supported WordPress versions.
+        php: ['7.4', '8.0', '8.1', '8.3', '8.4']
         wp: ['latest', '5.9']
         experimental: [false]
 
-        # include:
-          # Complement the builds run via the matrix with high/low WP builds for PHP 7.4 and 8.0.
-          # PHP 8.0 is sort of supported since WP 5.6.
-          # PHP 7.4 is supported since WP 5.3.
-          # - php: '8.0'
-          #   wp: 'latest'
-          #   experimental: true
-          # - php: '8.0'
-          #   wp: '5.6'
-          #   experimental: true
+        include:
+          # PHP 8.2 is not supported by WordPress 5.9, so test it only
+          # with the latest supported WordPress version.
+          - php: '8.2'
+            wp: 'latest'
+            experimental: false
+
+          # Test the next stable PHP version only with the latest WordPress.
+          - php: '8.5'
+            wp: 'latest'
+            experimental: false
+
+          # Track the future PHP development version without blocking CI.
+          - php: '8.6'
+            wp: 'latest'
+            experimental: true
 
     name: "PHP ${{ matrix.php }} - WP ${{ matrix.wp }}"
 
@@ -62,7 +68,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
@@ -71,7 +77,7 @@ jobs:
           coverage: none
           # The PHP 5.6 and 7.0 images don't include mysql[i] by default.
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, mysql, mysqli, pdo_mysql, bcmath, soap, intl, gd, exif, iconv, imagick
-      
+
       - name: Check PHP Version
         run: php -v
 
@@ -98,11 +104,12 @@ jobs:
       - name: Determine supported PHPUnit version
         id: set_phpunit
         run: |
-          if [[ "${{ matrix.php }}" > "8.0" ]]; then
+          php_version="${{ matrix.php }}"
+          if [[ "$php_version" == 8.* ]]; then
             wget https://phar.phpunit.de/phpunit-9.6.16.phar -P /tmp
             chmod +x /tmp/phpunit-9.6.16.phar
             mv /tmp/phpunit-9.6.16.phar /usr/local/bin/phpunit
-          else 
+          else
             wget https://phar.phpunit.de/phpunit-6.5.7.phar -P /tmp
             chmod +x /tmp/phpunit-6.5.7.phar
             mv /tmp/phpunit-6.5.7.phar /usr/local/bin/phpunit
@@ -116,12 +123,17 @@ jobs:
         with:
           composer-options: --ignore-platform-reqs
 
-      # For the PHP 8.0 and above, we need to install with ignore platform reqs as not all dependencies allow it yet.
-      - name: Install Composer dependencies for PHP >= 8.0
-        if: ${{ matrix.php >= 8.0 }}
+      # The current lock file contains dependencies that require PHP 8.3,
+      # so older PHP 8 versions need platform requirements to be ignored.
+      - name: Install Composer dependencies for PHP 8.0 to 8.2
+        if: ${{ matrix.php >= 8.0 && matrix.php < 8.3 }}
         uses: "ramsey/composer-install@v1"
-        # with:
-        #   composer-options: --ignore-platform-reqs
+        with:
+          composer-options: --ignore-platform-reqs
+
+      - name: Install Composer dependencies for PHP >= 8.3
+        if: ${{ matrix.php >= 8.3 }}
+        uses: "ramsey/composer-install@v1"
 
       - name: Run the unit tests - single site
         run: /usr/local/bin/phpunit
