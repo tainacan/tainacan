@@ -2132,11 +2132,10 @@ class Theme_Helper {
 					$document_description = ($attachment instanceof \WP_Post) ? $attachment->post_content : '';
 				}
 
+				$document_download_link = tainacan_get_the_item_document_download_link($item_id);
 				$media_items_main[] =
 					tainacan_get_the_media_component_slide(array(
-						'after_slide_metadata' => (( $show_download_button_main && tainacan_the_item_document_download_link($item_id) != '' ) ?
-														sprintf('<span class="tainacan-item-file-download">%s</span>', tainacan_the_item_document_download_link($item_id))
-												: ''),
+						'after_slide_metadata' => ( $show_download_button_main && $document_download_link != '' ) ? $document_download_link : '',
 						'media_content' => tainacan_get_the_document($item_id),
 						'media_content_full' => $open_lightbox_on_click ?
 												(
@@ -2147,7 +2146,8 @@ class Theme_Helper {
 						'media_title' => $document_type === 'attachment' ? get_the_title(tainacan_get_the_document_raw($item_id)) : '',
 						'media_description' => $document_type === 'attachment' ? $document_description : '',
 						'media_caption' => $document_type === 'attachment' ? wp_get_attachment_caption(tainacan_get_the_document_raw($item_id)) : '',
-						'media_type' => tainacan_get_the_document_type($item_id),
+						'media_type' => tainacan_get_the_document_mimetype($item_id),
+						'media_source' => 'document',
 						'class_slide_metadata' => $class_slide_metadata
 					));
 			}
@@ -2156,11 +2156,10 @@ class Theme_Helper {
 				foreach ( $attachments as $attachment ) {
 					$is_attachment_an_image = wp_attachment_is('image', $attachment->ID);
 
+					$attachment_download_link = tainacan_get_the_item_attachment_download_link($attachment->ID);
 					$media_items_main[] =
 						tainacan_get_the_media_component_slide(array(
-							'after_slide_metadata' => (( $show_download_button_main && tainacan_the_item_attachment_download_link($attachment->ID) != '' ) ?
-															sprintf('<span class="tainacan-item-file-download">%s</span>', tainacan_the_item_attachment_download_link($attachment->ID))
-													: ''),
+							'after_slide_metadata' => ( $show_download_button_main && $attachment_download_link != '' ) ? $attachment_download_link : '',
 							'media_content' => tainacan_get_attachment_as_html($attachment->ID, $item_id),
 							'media_content_full' => $open_lightbox_on_click ?
 													( 
@@ -2172,6 +2171,7 @@ class Theme_Helper {
 							'media_description' => $attachment->post_content,
 							'media_caption' => $attachment->post_excerpt,
 							'media_type' => $attachment->post_mime_type,
+							'media_source' => 'attachment',
 							'class_slide_metadata' => $class_slide_metadata
 						));
 				}
@@ -2203,7 +2203,8 @@ class Theme_Helper {
 						'media_title' => $is_document_type_attachment ? get_the_title(tainacan_get_the_document_raw($item_id)) : '',
 						'media_description' => $is_document_type_attachment ? get_the_content(null, false, tainacan_get_the_document_raw($item_id)) : '',
 						'media_caption' => $is_document_type_attachment ? wp_get_attachment_caption(tainacan_get_the_document_raw($item_id)) : '',
-						'media_type' => tainacan_get_the_document_type($item_id),
+						'media_type' => tainacan_get_the_document_mimetype($item_id),
+						'media_source' => 'document',
 						'class_slide_metadata' => $class_slide_metadata
 					));			
 			}
@@ -2219,6 +2220,7 @@ class Theme_Helper {
 							'media_description' => $attachment->post_content,
 							'media_caption' => $attachment->post_excerpt,
 							'media_type' => $attachment->post_mime_type,
+							'media_source' => 'attachment',
 							'class_slide_metadata' => $class_slide_metadata
 						));
 				}
@@ -2341,10 +2343,10 @@ class Theme_Helper {
 		// Apply wp_kses to ensure safety while preserving necessary HTML elements and attributes
 		// The content is already escaped in tainacan_get_the_media_component(), but we apply
 		// wp_kses here to satisfy plugin check requirements and ensure filter output is safe
-		// The 'tainacan_content' context now includes data-module and SVG support
+		// The 'tainacan_media_slide' context extends tainacan_content with data-media-type.
 		// Temporarily add safe_style_css filter to allow CSS properties needed for .media-full-content
 		add_filter('safe_style_css', 'tainacan_get_default_allowed_styles', 10, 1);
-		$gallery_html = wp_kses($gallery_html, wp_kses_allowed_html('tainacan_content'));
+		$gallery_html = wp_kses($gallery_html, wp_kses_allowed_html('tainacan_media_slide'));
 		remove_filter('safe_style_css', 'tainacan_get_default_allowed_styles', 10);
 		
 		return apply_filters(
@@ -2519,7 +2521,8 @@ class Theme_Helper {
 						'media_title' => $item ? $item->get_title() : '',
 						'media_description' =>  $item ? $item->get_description() : '',
 						'media_caption' => '<a href="' . esc_url(get_permalink($item_id)) . '" target="_blank" rel="noopener noreferrer">' . __( 'Visit the page', 'tainacan' ) . '</a>',
-						'media_type' => tainacan_get_the_document_type($item_id),
+						'media_type' => tainacan_get_the_document_mimetype($item_id),
+						'media_source' => 'document',
 						'class_slide_metadata' => $class_slide_metadata
 					));
 			
@@ -2550,7 +2553,8 @@ class Theme_Helper {
 						'media_title' => $item ? $item->get_title() : '',
 						'media_description' => $item ? $item->get_description() : '',
 						'media_caption' => '<a href="' . esc_url(get_permalink($item_id)) . '" target="_blank" rel="noopener noreferrer">' . __( 'Visit the page', 'tainacan' ) . '</a>',
-						'media_type' => tainacan_get_the_document_type($item_id),
+						'media_type' => tainacan_get_the_document_mimetype($item_id),
+						'media_source' => 'document',
 						'class_slide_metadata' => $class_slide_metadata
 					));			
 			}
@@ -2672,10 +2676,10 @@ class Theme_Helper {
 		// Apply wp_kses to ensure safety while preserving necessary HTML elements and attributes
 		// The content is already escaped in tainacan_get_the_media_component(), but we apply
 		// wp_kses here to satisfy plugin check requirements and ensure filter output is safe
-		// The 'tainacan_content' context now includes data-module and SVG support
+		// The 'tainacan_media_slide' context extends tainacan_content with data-media-type.
 		// Temporarily add safe_style_css filter to allow CSS properties needed for .media-full-content
 		add_filter('safe_style_css', 'tainacan_get_default_allowed_styles', 10, 1);
-		$gallery_html = wp_kses($gallery_html, wp_kses_allowed_html('tainacan_content'));
+		$gallery_html = wp_kses($gallery_html, wp_kses_allowed_html('tainacan_media_slide'));
 		remove_filter('safe_style_css', 'tainacan_get_default_allowed_styles', 10);
 		
 		return apply_filters(

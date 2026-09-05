@@ -164,15 +164,38 @@ function tainacan_get_the_document_type($item_id = 0) {
 /**
  * To be used inside The Loop
  *
+ * Return the item document MIME type. For attachment documents this is the file MIME type
+ * (e.g. 'image/jpeg', 'application/pdf'). For URL or text documents this is the document type itself.
+ *
+ * @param int|string $item_id (Optional) The item ID. Default is the global $post
+ *
+ * @return string The document MIME type or document type, or empty string if item is not found
+ */
+function tainacan_get_the_document_mimetype($item_id = 0) {
+	$item = tainacan_get_item($item_id);
+
+	if ( ! $item instanceof \Tainacan\Entities\Item ) {
+		return '';
+	}
+
+	$mimetype = $item->get_document_mimetype();
+
+	return apply_filters( 'tainacan_get_the_document_mimetype', $mimetype ? $mimetype : '', $item );
+}
+
+/**
+ * To be used inside The Loop
+ *
  * Return the item document download link as HTML.
  *
  * Only returns a link for attachment-type documents. Returns empty string for text or URL documents.
+ * The HTML includes a `.tainacan-item-file-download` wrapper around the link so themes can style the control.
  *
  * @param int|string $item_id (Optional) The item ID. Default is the global $post
  *
  * @return string The HTML download link, or empty string if item is not found, has no document, or document is not downloadable
  */
-function tainacan_the_item_document_download_link($item_id = 0) {
+function tainacan_get_the_item_document_download_link($item_id = 0) {
 	$item = tainacan_get_item($item_id);
 
 	if ( ! $item instanceof \Tainacan\Entities\Item ) {
@@ -180,31 +203,96 @@ function tainacan_the_item_document_download_link($item_id = 0) {
 	}
 
 	$link = $item->get_document_download_url();
-	
-	if ( ! $link || $item->get_document_type() == 'text' || $item->get_document_type() == 'url' ) {
-		return '';
+	$html = '';
+
+	if ( $link && $item->get_document_type() != 'text' && $item->get_document_type() != 'url' ) {
+		$html = sprintf(
+			'<span class="tainacan-item-file-download"><a download="%1$s" href="%1$s" target="_blank" aria-label="%2$s"><span class="tainacan-item-file-download__label">%3$s</span></a></span>',
+			esc_url( $link ),
+			esc_attr( __( 'Download the item document', 'tainacan' ) ),
+			esc_html( __( 'Download', 'tainacan' ) )
+		);
 	}
 
-	return '<a name="' . __('Download the item document', 'tainacan') . '" download="'. esc_url($link) . '" href="' . esc_url($link) . '" target="_blank">' . __('Download', 'tainacan') . '</a>';
+	/**
+	 * Filters the item document download link HTML.
+	 *
+	 * @param string                  $html The HTML download link, or empty string.
+	 * @param \Tainacan\Entities\Item $item The item object.
+	 * @param string|false            $link The document download URL.
+	 */
+	return apply_filters( 'tainacan_get_the_item_document_download_link', $html, $item, $link );
+}
+
+/**
+ * To be used inside The Loop
+ *
+ * Return the item document download link as HTML.
+ *
+ * Only returns a link for attachment-type documents. Returns empty string for text or URL documents.
+ *
+ * Unlike typical WordPress `the_*` helpers, this function returns the HTML instead of echoing it.
+ * The original implementation returned a string and themes concatenate that value, so echoing
+ * here would break existing templates. Prefer tainacan_get_the_item_document_download_link() in new code.
+ *
+ * @param int|string $item_id (Optional) The item ID. Default is the global $post
+ *
+ * @return string The HTML download link, or empty string if item is not found, has no document, or document is not downloadable
+ */
+function tainacan_the_item_document_download_link($item_id = 0) {
+	return tainacan_get_the_item_document_download_link($item_id);
 }
 
 
 /**
  * Return the item attachment download link as HTML.
+ * The HTML includes a `.tainacan-item-file-download` wrapper around the link so themes can style the control.
+ *
+ * @param int $attachment_id The attachment ID
+ *
+ * @return string The HTML download link, or empty string if attachment is not found or has no URL
+ */
+function tainacan_get_the_item_attachment_download_link($attachment_id) {
+
+	if ( ! $attachment_id ) {
+		return '';
+	}
+
+	$link = wp_get_attachment_url($attachment_id);
+	$html = '';
+
+	if ( $link ) {
+		$html = sprintf(
+			'<span class="tainacan-item-file-download"><a download="%1$s" href="%1$s" aria-label="%2$s"><span class="tainacan-item-file-download__label">%3$s</span></a></span>',
+			esc_url( $link ),
+			esc_attr( __( 'Download the item attachment', 'tainacan' ) ),
+			esc_html( __( 'Download', 'tainacan' ) )
+		);
+	}
+
+	/**
+	 * Filters the item attachment download link HTML.
+	 *
+	 * @param string     $html          The HTML download link, or empty string.
+	 * @param int        $attachment_id The attachment ID.
+	 * @param string|false $link        The attachment URL.
+	 */
+	return apply_filters( 'tainacan_get_the_item_attachment_download_link', $html, $attachment_id, $link );
+}
+
+/**
+ * Return the item attachment download link as HTML.
+ *
+ * Unlike typical WordPress `the_*` helpers, this function returns the HTML instead of echoing it.
+ * The original implementation returned a string and themes concatenate that value, so echoing
+ * here would break existing templates. Prefer tainacan_get_the_item_attachment_download_link() in new code.
  *
  * @param int $attachment_id The attachment ID
  *
  * @return string The HTML download link, or empty string if attachment is not found or has no URL
  */
 function tainacan_the_item_attachment_download_link($attachment_id) {
-
-	if ( ! $attachment_id || ! wp_get_attachment_url($attachment_id) ) {
-		return '';
-	}
-
-	$link = wp_get_attachment_url($attachment_id);
-
-	return '<a name="' . __('Download the item attachment', 'tainacan') . '" download="'. esc_url($link) . '" href="' . esc_url($link) . '">' . __('Download', 'tainacan') . '</a>';
+	return tainacan_get_the_item_attachment_download_link($attachment_id);
 }
 
 /**
@@ -512,6 +600,7 @@ function tainacan_get_the_media_component(
 			'fill' => true,
 		)
 	);
+	$media_slide_allowed_html = wp_kses_allowed_html('tainacan_media_slide');
 	add_filter( 'safe_style_css', 'tainacan_get_default_allowed_styles');
 
 	ob_start();
@@ -543,7 +632,7 @@ function tainacan_get_the_media_component(
 							<?php foreach($media_items_main as $media_item) { ?>
 								<li class="tainacan-media-item <?php echo !$args['disable_main_carousel'] ? 'swiper-slide ' : '' ?> <?php echo esc_attr($args['class_main_li']) ?>">
 									<?php 
-										echo wp_kses($media_item, wp_kses_allowed_html('tainacan_content'));
+										echo wp_kses($media_item, $media_slide_allowed_html);
 									?>
 								</li>
 							<?php }; ?>
@@ -551,7 +640,7 @@ function tainacan_get_the_media_component(
 					<?php elseif ( count($media_items_main) === 1 ) : ?>
 						<div class="tainacan-media-items <?php echo !$args['disable_main_carousel'] ? 'swiper-wrapper ' : '' ?> <?php echo esc_attr($args['class_main_ul']) ?>">
 							<div class="tainacan-media-item <?php echo !$args['disable_main_carousel'] ? 'swiper-slide ' : '' ?> <?php echo esc_attr($args['class_main_li']) ?>">
-								<?php echo wp_kses($media_items_main[0], wp_kses_allowed_html('tainacan_content')); ?>
+								<?php echo wp_kses($media_items_main[0], $media_slide_allowed_html); ?>
 							</div>
 						</div>
 					<?php endif; ?>
@@ -608,14 +697,14 @@ function tainacan_get_the_media_component(
 						<ul class="tainacan-media-items <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-wrapper ' : '' ?> <?php echo esc_attr($args['class_thumbs_ul']) ?>">
 							<?php foreach($media_items_thumbs as $media_item) { ?>
 								<li class="tainacan-media-item <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-slide ' : '' ?> <?php echo esc_attr($args['class_thumbs_li']) ?>">
-									<?php echo wp_kses($media_item, wp_kses_allowed_html('tainacan_content')); ?>
+									<?php echo wp_kses($media_item, $media_slide_allowed_html); ?>
 								</li>
 							<?php }; ?>
 						</ul>
 					<?php elseif ( count($media_items_thumbs) === 1 ) : ?>
 						<div class="tainacan-media-items <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-wrapper ' : '' ?> <?php echo esc_attr($args['class_thumbs_ul']) ?>">
 							<div class="tainacan-media-item <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-slide ' : '' ?> <?php echo esc_attr($args['class_thumbs_li']) ?>">
-								<?php echo wp_kses($media_items_thumbs[0], wp_kses_allowed_html('tainacan_content')); ?>
+								<?php echo wp_kses($media_items_thumbs[0], $media_slide_allowed_html); ?>
 							</div>
 						</div>
 					<?php endif; ?>
@@ -692,7 +781,8 @@ function tainacan_get_the_media_component(
  *     @type string      media_title             The media title, if available
  *     @type string      media_description       The media description, if available
  *     @type string      media_caption           The media caption, if available
- *     @type string      media_type              The media type or mime_type, used to render an icon if media_content is empty
+ *     @type string      media_type              The media type or mime_type, used to render an icon if media_content is empty. Also output as data-media-type on the slide content wrapper.
+ *     @type string      media_source            The media source, either 'document' or 'attachment'. Also output as data-media-source on the slide content wrapper.
  * }
  * @return string
  */
@@ -711,7 +801,8 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 		'media_title' => '',
 		'media_description' => '',
 		'media_caption' => '',
-		'media_type' => ''
+		'media_type' => '',
+		'media_source' => ''
 	), $args);
 
 	ob_start();
@@ -719,7 +810,10 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 ?>
 	<?php echo wp_kses_post($args['before_slide_content']) ?>
 
-	<div class="swiper-slide-content <?php echo esc_attr($args['class_slide_content']) ?>">
+	<div class="swiper-slide-content <?php echo esc_attr($args['class_slide_content']) ?>"<?php
+		echo ! empty( $args['media_type'] ) ? ' data-media-type="' . esc_attr( $args['media_type'] ) . '"' : '';
+		echo ! empty( $args['media_source'] ) ? ' data-media-source="' . esc_attr( $args['media_source'] ) . '"' : '';
+	?>>
 
 		<?php if ( isset($args['media_content']) && !empty($args['media_content']) && $args['media_content'] !== false ) :?>
 			<?php echo wp_kses($args['media_content'], wp_kses_allowed_html('tainacan_content')) ?>
