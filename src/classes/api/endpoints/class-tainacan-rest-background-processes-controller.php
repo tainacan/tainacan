@@ -322,9 +322,24 @@ class REST_Background_Processes_Controller extends REST_Controller {
             }
         }
 
-        $query = "UPDATE $this->table SET $status_q WHERE 1=1 $id_q $user_q";
+        $query = "SELECT * FROM $this->table WHERE 1=1 $id_q $user_q LIMIT 1";
 
-        $result = $wpdb->query($query);
+        $result = $wpdb->get_row($query);
+
+        if ( ! $result ) {
+            return new \WP_REST_Response([
+                'error_message' => __('Background process not found', 'tainacan' ),
+                'session_id' => $id
+            ], 404);
+        }
+
+        if ( $body['status'] === 'closed' && $result->action === 'import' ) {
+            $background_importer = new \Tainacan\Background_Importer();
+            $background_importer->close( $result->ID, 'cancelled' );
+        } else {
+            $query = "UPDATE $this->table SET $status_q WHERE 1=1 $id_q $user_q";
+            $wpdb->query($query);
+        }
 
         $query = "SELECT * FROM $this->table WHERE 1=1 $id_q $user_q LIMIT 1";
 
