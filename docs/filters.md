@@ -2205,7 +2205,7 @@ Argument | Type | Description
 `$item` |  | 
 `$args` | `array` | {<br>    Optional. Array of arguments.<br>     @type string  $item_id						  The Item ID<br>	   @type string	 $blockId 						  A unique identifier for the gallery, will be generated automatically if not provided,<br>   @type bool    $isBlock						  An identifier if we're comming from a block renderer, to avois using functions not available outside of the gutenberg scope;<br>	   @type array 	 $layoutElements 				  Array of elements present in the gallery. Possible values are 'main' and 'carousel'<br>	   @type array 	 $mediaSources 					  Array of sources for the gallery. Possible values are 'document' and 'attachments'<br>	   @type bool 	 $hideFileNameMain 				  Hides the Main slider file name<br>	   @type bool 	 $hideFileCaptionMain 			  Hides the Main slider file caption<br>	   @type bool 	 $hideFileDescriptionMain		  Hides the Main slider file description<br>	   @type bool 	 $hideFileNameThumbnails 		  Hides the Thumbnails carousel file name<br>	   @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption<br>	   @type bool 	 $hideFileDescriptionThumbnails   Hides the Thumbnails carousel file description<br>	   @type bool 	 $hideFileNameLightbox 			  Hides the Lightbox file name<br>	   @type bool 	 $hideFileCaptionLightbox 		  Hides the Lightbox file caption<br>	   @type bool 	 $hideFileDescriptionLightbox	  Hides the Lightbox file description<br>	   @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item<br>   @type bool	 $showDownloadButtonMain		  Displays a download button below the Main slider<br>   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox<br>   @type bool    $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon<br>   @type string  $thumbnailsSize				  Media size for the thumbnail images. Defaults to 'tainacan-medium'<br>   @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.<br>}
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 1983](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L1983-L2279)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 1983](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L1983-L2281)
 
 ---------------------------------
 <br>
@@ -2222,7 +2222,7 @@ Argument | Type | Description
 `$item` |  | 
 `$args` | `array` | {<br>    Optional. Array of arguments.<br>     @type string  $item_id						  The Item ID<br>	   @type string	 $blockId 						  A unique identifier for the gallery, will be generated automatically if not provided,<br>   @type bool    $isBlock						  An identifier if we're comming from a block renderer, to avois using functions not available outside of the gutenberg scope;<br>	   @type array 	 $layoutElements 				  Array of elements present in the gallery. Possible values are 'main' and 'carousel'<br>	   @type array 	 $mediaSources 					  Array of sources for the gallery. Possible values are 'document' and 'attachments'<br>	   @type bool 	 $hideFileNameMain 				  Hides the Main slider file name<br>	   @type bool 	 $hideFileCaptionMain 			  Hides the Main slider file caption<br>	   @type bool 	 $hideFileDescriptionMain		  Hides the Main slider file description<br>	   @type bool 	 $hideFileNameThumbnails 		  Hides the Thumbnails carousel file name<br>	   @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption<br>	   @type bool 	 $hideFileDescriptionThumbnails   Hides the Thumbnails carousel file description<br>	   @type bool 	 $hideFileNameLightbox 			  Hides the Lightbox file name<br>	   @type bool 	 $hideFileCaptionLightbox 		  Hides the Lightbox file caption<br>	   @type bool 	 $hideFileDescriptionLightbox	  Hides the Lightbox file description<br>	   @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item<br>   @type bool	 $showDownloadButtonMain		  Displays a download button below the Main slider<br>   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox<br>   @type bool    $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon<br>   @type string  $thumbnailsSize				  Media size for the thumbnail images. Defaults to 'tainacan-medium'<br>   @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.<br>}
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 1983](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L1983-L2301)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 1983](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L1983-L2303)
 
 ---------------------------------
 <br>
@@ -2238,7 +2238,7 @@ Argument | Type | Description
 `$gallery_html` |  | 
 `$args` | `array` | {<br>    Optional. Array of arguments.<br>     @type string  $item_id						  The Item ID<br>	   @type string	 $blockId 						  A unique identifier for the gallery, will be generated automatically if not provided,<br>   @type bool    $isBlock						  An identifier if we're comming from a block renderer, to avois using functions not available outside of the gutenberg scope;<br>	   @type array 	 $layoutElements 				  Array of elements present in the gallery. Possible values are 'main' and 'carousel'<br>	   @type array 	 $mediaSources 					  Array of sources for the gallery. Possible values are 'document' and 'attachments'<br>	   @type bool 	 $hideFileNameMain 				  Hides the Main slider file name<br>	   @type bool 	 $hideFileCaptionMain 			  Hides the Main slider file caption<br>	   @type bool 	 $hideFileDescriptionMain		  Hides the Main slider file description<br>	   @type bool 	 $hideFileNameThumbnails 		  Hides the Thumbnails carousel file name<br>	   @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption<br>	   @type bool 	 $hideFileDescriptionThumbnails   Hides the Thumbnails carousel file description<br>	   @type bool 	 $hideFileNameLightbox 			  Hides the Lightbox file name<br>	   @type bool 	 $hideFileCaptionLightbox 		  Hides the Lightbox file caption<br>	   @type bool 	 $hideFileDescriptionLightbox	  Hides the Lightbox file description<br>	   @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item<br>   @type bool	 $showDownloadButtonMain		  Displays a download button below the Main slider<br>   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox<br>   @type bool    $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon<br>   @type string  $thumbnailsSize				  Media size for the thumbnail images. Defaults to 'tainacan-medium'<br>   @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.<br>}
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 1983](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L1983-L2354)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 1983](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L1983-L2356)
 
 ---------------------------------
 <br>
@@ -2254,7 +2254,7 @@ Argument | Type | Description
 `$items_ids` |  | 
 `$args` | `array` | {<br>    Optional. Array of arguments.<br>  @type string   $collectionId					  The Collection ID<br>  @type string   $searchURL						  A query string to fetch items from, if load strategy is 'search'<br>  @type array    $searchParams					  An array of query params to fetch items from, if load strategy is 'search'<br>  @type array    $selectedItems					  An array of item IDs to fetch items from, if load strategy is 'selection' and an array of items, if the load strategy is 'parent'<br>  @type string   $loadStrategy					  Either 'search' or 'selection', to determine how items will be fetch<br>  @type integer  $maxItemsNumber				  Maximum number of items to be fetch<br>  @type string	 $blockId 						  A unique identifier for the gallery, will be generated automatically if not provided,<br>  @type bool     $isBlock						  An identifier if we're comming from a block renderer, to avois using functions not available outside of the gutenberg scope;<br>	  @type array 	 $layoutElements 				  Array of elements present in the gallery. Possible values are 'main' and 'carousel'<br>	  @type bool 	 $hideItemTitleMain 			  Hides the Main slider item title<br>	  @type bool 	 $hideItemLinkMain 			  	  Hides the Main slider item link<br>	  @type bool 	 $hideItemDescriptionMain		  Hides the Main slider item description<br>	  @type bool 	 $hideItemTitleThumbnails 		  Hides the Thumbnails carousel item title<br>	  @type bool 	 $hideItemTitleLightbox 		  Hides the Lightbox item title<br>	  @type bool 	 $hideItemLinkLightbox 		  	  Hides the Lightbox item link<br>	  @type bool 	 $hideItemDescriptionLightbox	  Hides the Lightbox file description<br>	  @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item<br>  @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox<br>  @type bool     $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon<br>  @type string   $thumbnailsSize				  Media size for the thumbnail images. Defaults to 'tainacan-medium'<br>  @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.<br>}
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2357](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2357-L2610)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2359](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2359-L2614)
 
 ---------------------------------
 <br>
@@ -2270,7 +2270,7 @@ Argument | Type | Description
 `$items_ids` |  | 
 `$args` | `array` | {<br>    Optional. Array of arguments.<br>  @type string   $collectionId					  The Collection ID<br>  @type string   $searchURL						  A query string to fetch items from, if load strategy is 'search'<br>  @type array    $searchParams					  An array of query params to fetch items from, if load strategy is 'search'<br>  @type array    $selectedItems					  An array of item IDs to fetch items from, if load strategy is 'selection' and an array of items, if the load strategy is 'parent'<br>  @type string   $loadStrategy					  Either 'search' or 'selection', to determine how items will be fetch<br>  @type integer  $maxItemsNumber				  Maximum number of items to be fetch<br>  @type string	 $blockId 						  A unique identifier for the gallery, will be generated automatically if not provided,<br>  @type bool     $isBlock						  An identifier if we're comming from a block renderer, to avois using functions not available outside of the gutenberg scope;<br>	  @type array 	 $layoutElements 				  Array of elements present in the gallery. Possible values are 'main' and 'carousel'<br>	  @type bool 	 $hideItemTitleMain 			  Hides the Main slider item title<br>	  @type bool 	 $hideItemLinkMain 			  	  Hides the Main slider item link<br>	  @type bool 	 $hideItemDescriptionMain		  Hides the Main slider item description<br>	  @type bool 	 $hideItemTitleThumbnails 		  Hides the Thumbnails carousel item title<br>	  @type bool 	 $hideItemTitleLightbox 		  Hides the Lightbox item title<br>	  @type bool 	 $hideItemLinkLightbox 		  	  Hides the Lightbox item link<br>	  @type bool 	 $hideItemDescriptionLightbox	  Hides the Lightbox file description<br>	  @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item<br>  @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox<br>  @type bool     $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon<br>  @type string   $thumbnailsSize				  Media size for the thumbnail images. Defaults to 'tainacan-medium'<br>  @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.<br>}
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2357](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2357-L2632)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2359](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2359-L2636)
 
 ---------------------------------
 <br>
@@ -2285,7 +2285,7 @@ Argument | Type | Description
 `$gallery_html` |  | 
 `$args` | `array` | {<br>    Optional. Array of arguments.<br>  @type string   $collectionId					  The Collection ID<br>  @type string   $searchURL						  A query string to fetch items from, if load strategy is 'search'<br>  @type array    $searchParams					  An array of query params to fetch items from, if load strategy is 'search'<br>  @type array    $selectedItems					  An array of item IDs to fetch items from, if load strategy is 'selection' and an array of items, if the load strategy is 'parent'<br>  @type string   $loadStrategy					  Either 'search' or 'selection', to determine how items will be fetch<br>  @type integer  $maxItemsNumber				  Maximum number of items to be fetch<br>  @type string	 $blockId 						  A unique identifier for the gallery, will be generated automatically if not provided,<br>  @type bool     $isBlock						  An identifier if we're comming from a block renderer, to avois using functions not available outside of the gutenberg scope;<br>	  @type array 	 $layoutElements 				  Array of elements present in the gallery. Possible values are 'main' and 'carousel'<br>	  @type bool 	 $hideItemTitleMain 			  Hides the Main slider item title<br>	  @type bool 	 $hideItemLinkMain 			  	  Hides the Main slider item link<br>	  @type bool 	 $hideItemDescriptionMain		  Hides the Main slider item description<br>	  @type bool 	 $hideItemTitleThumbnails 		  Hides the Thumbnails carousel item title<br>	  @type bool 	 $hideItemTitleLightbox 		  Hides the Lightbox item title<br>	  @type bool 	 $hideItemLinkLightbox 		  	  Hides the Lightbox item link<br>	  @type bool 	 $hideItemDescriptionLightbox	  Hides the Lightbox file description<br>	  @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item<br>  @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox<br>  @type bool     $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon<br>  @type string   $thumbnailsSize				  Media size for the thumbnail images. Defaults to 'tainacan-medium'<br>  @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.<br>}
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2357](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2357-L2685)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2359](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2359-L2689)
 
 ---------------------------------
 <br>
@@ -2307,7 +2307,7 @@ Argument | Type | Description
 `$before` |  | 
 `$item_metadatum` |  | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2800](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2800-L2896)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2804](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2804-L2900)
 
 ---------------------------------
 <br>
@@ -2329,7 +2329,7 @@ Argument | Type | Description
 `$before` |  | 
 `$item_metadatum` |  | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2800](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2800-L2897)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2804](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2804-L2901)
 
 ---------------------------------
 <br>
@@ -2351,7 +2351,7 @@ Argument | Type | Description
 `$before` |  | 
 `$item_metadatum` |  | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2800](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2800-L2898)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2804](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2804-L2902)
 
 ---------------------------------
 <br>
@@ -2373,7 +2373,7 @@ Argument | Type | Description
 `$metadatum_title_before` |  | 
 `$item_metadatum` |  | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2800](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2800-L2905)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2804](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2804-L2909)
 
 ---------------------------------
 <br>
@@ -2395,7 +2395,7 @@ Argument | Type | Description
 `$metadatum_title_after` |  | 
 `$item_metadatum` |  | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2800](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2800-L2907)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2804](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2804-L2911)
 
 ---------------------------------
 <br>
@@ -2417,7 +2417,7 @@ Argument | Type | Description
 `$metadatum_value_before` |  | 
 `$item_metadatum` |  | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2800](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2800-L2912)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2804](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2804-L2916)
 
 ---------------------------------
 <br>
@@ -2439,7 +2439,7 @@ Argument | Type | Description
 `$metadatum_value_after` |  | 
 `$item_metadatum` |  | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2800](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2800-L2914)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2804](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2804-L2918)
 
 ---------------------------------
 <br>
@@ -2461,7 +2461,7 @@ Argument | Type | Description
 `$after` |  | 
 `$item_metadatum` |  | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2800](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2800-L2922)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2804](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2804-L2926)
 
 ---------------------------------
 <br>
@@ -2483,7 +2483,7 @@ Argument | Type | Description
 `$after` |  | 
 `$item_metadatum` |  | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2800](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2800-L2923)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2804](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2804-L2927)
 
 ---------------------------------
 <br>
@@ -2505,7 +2505,7 @@ Argument | Type | Description
 `$after` |  | 
 `$item_metadatum` |  | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2800](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2800-L2924)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 2804](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L2804-L2928)
 
 ---------------------------------
 <br>
@@ -2529,7 +2529,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3096)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3100)
 
 ---------------------------------
 <br>
@@ -2553,7 +2553,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3097)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3101)
 
 ---------------------------------
 <br>
@@ -2577,7 +2577,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3099)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3103)
 
 ---------------------------------
 <br>
@@ -2601,7 +2601,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3114)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3118)
 
 ---------------------------------
 <br>
@@ -2625,7 +2625,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3115)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3119)
 
 ---------------------------------
 <br>
@@ -2649,7 +2649,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3117)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3121)
 
 ---------------------------------
 <br>
@@ -2673,7 +2673,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3124)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3128)
 
 ---------------------------------
 <br>
@@ -2697,7 +2697,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3125)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3129)
 
 ---------------------------------
 <br>
@@ -2721,7 +2721,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3127)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3131)
 
 ---------------------------------
 <br>
@@ -2745,7 +2745,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3146)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3150)
 
 ---------------------------------
 <br>
@@ -2769,7 +2769,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3147)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3151)
 
 ---------------------------------
 <br>
@@ -2793,7 +2793,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3149)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3153)
 
 ---------------------------------
 <br>
@@ -2817,7 +2817,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3178)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3182)
 
 ---------------------------------
 <br>
@@ -2841,7 +2841,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3179)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3183)
 
 ---------------------------------
 <br>
@@ -2865,7 +2865,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3181)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3185)
 
 ---------------------------------
 <br>
@@ -2889,7 +2889,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3192)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3196)
 
 ---------------------------------
 <br>
@@ -2913,7 +2913,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3194)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3198)
 
 ---------------------------------
 <br>
@@ -2937,7 +2937,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3195)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3199)
 
 ---------------------------------
 <br>
@@ -2949,7 +2949,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `'ASC'` |  | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 3362](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L3362-L3362)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 3366](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L3366-L3366)
 
 ---------------------------------
 <br>
@@ -2961,7 +2961,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `'name'` |  | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 3363](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L3363-L3363)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 3367](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L3367-L3367)
 
 ---------------------------------
 <br>
@@ -2973,7 +2973,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `12` |  | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 3365](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L3365-L3365)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 3369](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L3369-L3369)
 
 ---------------------------------
 <br>
@@ -3046,6 +3046,56 @@ Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src
 ---------------------------------
 <br>
 
+## `tainacan_get_the_document_mimetype` <!-- {docsify-ignore} -->
+
+*To be used inside The Loop*
+
+Return the item document MIME type. For attachment documents this is the file MIME type
+(e.g. 'image/jpeg', 'application/pdf'). For URL or text documents this is the document type itself.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$mimetype ? $mimetype : ''` |  | 
+`$item` |  | 
+
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 164](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L164-L183)
+
+---------------------------------
+<br>
+
+## `tainacan_get_the_item_document_download_link` <!-- {docsify-ignore} -->
+
+*Filters the item document download link HTML.*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$html` | `string` | The HTML download link, or empty string.
+`$item` | `\Tainacan\Entities\Item` | The item object.
+`$link` | `string\|false` | The document download URL.
+
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 217](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L217-L224)
+
+---------------------------------
+<br>
+
+## `tainacan_get_the_item_attachment_download_link` <!-- {docsify-ignore} -->
+
+*Filters the item attachment download link HTML.*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$html` | `string` | The HTML download link, or empty string.
+`$attachment_id` | `int` | The attachment ID.
+`$link` | `string\|false` | The attachment URL.
+
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 273](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L273-L280)
+
+---------------------------------
+<br>
+
 ## `tainacan-get-collection-name` <!-- {docsify-ignore} -->
 
 *When visiting a collection archive or single, returns the collection name*
@@ -3056,7 +3106,7 @@ Argument | Type | Description
 `''` |  | 
 `$collection` |  | 
 
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 299](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L299-L307)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 387](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L387-L395)
 
 ---------------------------------
 <br>
@@ -3071,7 +3121,7 @@ Argument | Type | Description
 `esc_html($name)` |  | 
 `$collection` |  | 
 
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 299](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L299-L310)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 387](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L387-L398)
 
 ---------------------------------
 <br>
@@ -3086,7 +3136,7 @@ Argument | Type | Description
 `''` |  | 
 `$collection` |  | 
 
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 341](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L341-L349)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 429](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L429-L437)
 
 ---------------------------------
 <br>
@@ -3101,7 +3151,7 @@ Argument | Type | Description
 `wp_kses_post($description)` |  | 
 `$collection` |  | 
 
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 341](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L341-L356)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 429](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L429-L444)
 
 ---------------------------------
 <br>
@@ -3116,7 +3166,7 @@ Argument | Type | Description
 `''` |  | 
 `$collection` |  | 
 
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 772](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L772-L780)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 866](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L866-L874)
 
 ---------------------------------
 <br>
@@ -3131,7 +3181,7 @@ Argument | Type | Description
 `esc_url($url)` |  | 
 `$collection` |  | 
 
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 772](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L772-L783)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 866](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L866-L877)
 
 ---------------------------------
 <br>
@@ -3146,7 +3196,7 @@ Argument | Type | Description
 `''` |  | 
 `$term` |  | 
 
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 911](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L911-L919)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1005](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1005-L1013)
 
 ---------------------------------
 <br>
@@ -3161,7 +3211,7 @@ Argument | Type | Description
 `esc_html($name)` |  | 
 `$term` |  | 
 
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 911](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L911-L922)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1005](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1005-L1016)
 
 ---------------------------------
 <br>
@@ -3176,7 +3226,7 @@ Argument | Type | Description
 `''` |  | 
 `$term` |  | 
 
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 939](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L939-L947)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1033](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1033-L1041)
 
 ---------------------------------
 <br>
@@ -3191,7 +3241,7 @@ Argument | Type | Description
 `wp_kses_post($description)` |  | 
 `$term` |  | 
 
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 939](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L939-L954)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1033](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1033-L1048)
 
 ---------------------------------
 <br>
@@ -3208,7 +3258,7 @@ Argument | Type | Description
 `$item->get_attachments($exclude)` |  | 
 `$item` |  | 
 
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 970](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L970-L986)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1064](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1064-L1080)
 
 ---------------------------------
 <br>
@@ -3226,7 +3276,7 @@ Argument | Type | Description
 `$string` | `string` | The name to extract the initials from
 `$one` | `bool` | whether to return only the first letter, instead of two
 
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1094](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1094-L1131)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1188](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1188-L1225)
 
 ---------------------------------
 <br>
@@ -3242,7 +3292,7 @@ Argument | Type | Description
 `$mime_type` |  | 
 `$image_size` |  | 
 
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1216](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1216-L1224)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1310](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1310-L1318)
 
 ---------------------------------
 <br>
@@ -3261,7 +3311,7 @@ Argument | Type | Description
 `$terms_query_args` |  | 
 `$post` | `object` | The original tainacan-taxonomy post object. It contains the $post->ID, which can be used to query the taxonomy of slug tnc_tax_<$post-id>
 
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1481](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1481-L1629)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1575](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1575-L1723)
 
 ---------------------------------
 <br>
@@ -3273,7 +3323,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `'>'` |  | 
 
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1641](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1641-L1641)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1735](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1735-L1735)
 
 ---------------------------------
 <br>
@@ -3292,7 +3342,7 @@ Argument | Type | Description
 `['content' => $content, 'total_terms' => $total_terms]` |  | 
 `$post` | `object` | The original tainacan-taxonomy post object. It contains the $post->ID, which can be used to query the taxonomy of slug tnc_tax_<$post-id>
 
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1481](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1481-L1805)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1575](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1575-L1899)
 
 ---------------------------------
 <br>
@@ -3304,7 +3354,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$html` |  | 
 
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1869](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1869-L1869)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1963](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1963-L1963)
 
 ---------------------------------
 <br>
@@ -3316,7 +3366,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$html` |  | 
 
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1939](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1939-L1939)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 2033](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L2033-L2033)
 
 ---------------------------------
 <br>
@@ -3328,7 +3378,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `wp_kses_post($html)` |  | 
 
-Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 1981](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L1981-L1981)
+Source: [template-tags.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php), [line 2075](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/template-tags.php#L2075-L2075)
 
 ---------------------------------
 <br>

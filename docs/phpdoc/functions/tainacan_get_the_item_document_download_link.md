@@ -1,18 +1,15 @@
-# tainacan_the_item_document_download_link
+# tainacan_get_the_item_document_download_link
 
 To be used inside The Loop
 
 Return the item document download link as HTML.
 
 Only returns a link for attachment-type documents. Returns empty string for text or URL documents.
-
-Unlike typical WordPress `the_*` helpers, this function returns the HTML instead of echoing it.
-The original implementation returned a string and themes concatenate that value, so echoing
-here would break existing templates. Prefer tainacan_get_the_item_document_download_link() in new code.
+The HTML includes a `.tainacan-item-file-download` wrapper around the link so themes can style the control.
 
 ***
 
-* Full name: `tainacan_the_item_document_download_link`
+* Full name: `tainacan_get_the_item_document_download_link`
 * Defined in: `classes/theme-helper/template-tags.php`
 
 ## Parameters
