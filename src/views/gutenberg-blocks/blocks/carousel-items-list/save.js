@@ -24,7 +24,10 @@ export default function ({ attributes }) {
         showCollectionLabel,
         collectionBackgroundColor,
         collectionTextColor,
-        variableItemsWidth
+        variableItemsWidth,
+        order,
+        orderBy,
+        orderByMetaKey
     } = attributes;
     
     // Gets attributes such as style, that are automatically added by the editor hook
@@ -55,6 +58,9 @@ export default function ({ attributes }) {
                 data-space-around-carousel={ spaceAroundCarousel }
                 data-tainacan-api-root={ tainacan_blocks.root }
                 data-variable-items-width={ '' + variableItemsWidth }
+                data-order={ order }
+                data-order-by={ orderBy }
+                data-order-by-meta-key={ orderByMetaKey }
                 id={ 'wp-block-tainacan-carousel-items-list_' + blockId }>
                     { content }
             </div>

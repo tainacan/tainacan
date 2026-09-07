@@ -48,6 +48,7 @@
             v-if="showSearchBar"
             class="dynamic-items-search-bar">
         <button
+                v-if="orderBy !== 'rand'"
                 :class="localOrder == 'asc' ? 'sorting-button-selected' : ''"
                 :label="wpI18n('Sort ascending', 'tainacan')"
                 @click="localOrder = 'asc'; fetchItems()">
@@ -65,6 +66,7 @@
             </span>
         </button>  
         <button
+                v-if="orderBy !== 'rand'"
                 :class="localOrder == 'desc' ? 'sorting-button-selected' : ''"
                 :label="wpI18n('Sort descending', 'tainacan')"
                 @click="localOrder = 'desc'; fetchItems(); ">
@@ -482,6 +484,10 @@ export default {
                 // Set up orderBy
                 if (this.orderBy != undefined)
                     queryObject.orderby = this.orderBy;
+
+                // Omit order when random
+                if (this.orderBy === 'rand')
+                    delete queryObject.order;
                 
                  // Set up orderByMetaKey
                 if (this.orderByMetaKey != undefined)
