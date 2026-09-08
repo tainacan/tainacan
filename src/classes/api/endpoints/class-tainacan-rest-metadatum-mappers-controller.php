@@ -16,7 +16,7 @@ use Tainacan\Entities\Metadatum;
  * @since 1.0.0
  */
 class REST_Metadatum_Mappers_Controller extends REST_Controller {
-	protected function get_schema() {
+	public function get_schema() {
 	       return [
 	           '$schema'    => 'http://json-schema.org/draft-04/schema#',
 	           'title'      => 'metadatum-mapper',
