@@ -163,8 +163,16 @@ class REST_Terms_Controller extends REST_Controller {
 
 		if( is_array($body) ){
 			if ( count($body) > TAINACAN_API_MAX_BATCH_TERMS ) {
+				$message = sprintf( __('Batch size exceeds the maximum allowed (%d).', 'tainacan'), TAINACAN_API_MAX_BATCH_TERMS );
+				// Same shape as per-term validation errors returned below (array of objects).
 				return new \WP_REST_Response([
-					'error_message' => sprintf( __('Batch size exceeds the maximum allowed (%d).', 'tainacan'), TAINACAN_API_MAX_BATCH_TERMS ),
+					[
+						'error_message' => $message,
+						'errors'        => [
+							[ 'name' => $message ],
+						],
+						'term_name'     => '',
+					],
 				], 400);
 			}
 

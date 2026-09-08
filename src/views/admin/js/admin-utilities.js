@@ -611,6 +611,10 @@ AxiosErrorHandlerPlugin.install = function (app, options = {}) {
     
     const tainacanVisualErrorHandler = function({ error, errorMessage, errorMessageDetail }) {
 
+        // Caller will show its own feedback (e.g. form/snackbar for known API errors).
+        if ( error && error.config && error.config.silentError )
+            return;
+
         if (errorMessage) {
             app.config.globalProperties.$buefy.snackbar.open({
                 message: tainacanSanitize(errorMessage),
