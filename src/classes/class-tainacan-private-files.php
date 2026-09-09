@@ -178,7 +178,7 @@ class Private_Files {
 
 		$post = get_post($post_id);
 
-		if ( !$theme_helper->is_post_an_item($post) ) {
+		if ( ! ( $post instanceof \WP_Post ) || ! $theme_helper->is_post_an_item($post) ) {
 			return $path;
 		}
 
