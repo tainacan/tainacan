@@ -465,7 +465,10 @@
       +save_remote_file(url)
       +insert_attachment_from_blob(blob, filename, post_id)
       +get_mime_content_type(filename)
+      +normalize_mime_types(mime_types)
       +get_pdf_cover(filepath)
+      +get_attachment_cover_html(attachment_id, size, wrap_in_link)
+      +get_item_document_cover_html(item_id, size, wrap_in_link)
       +shutdown_function()
       +extract_pdf_content(file, item_id)
       {static} -normalize_extracted_pdf_content(content)
@@ -2840,6 +2843,7 @@
   theme-helper_Theme_Helper ..> entities_Taxonomy
   theme-helper_Theme_Helper ..> entities_Term
   theme-helper_Theme_Helper ..> mappers_Mappers_Handler
+  theme-helper_Theme_Helper ..> media-helper_Media
   theme-helper_Theme_Helper ..> repositories_Collections
   theme-helper_Theme_Helper ..> repositories_Items
   theme-helper_Theme_Helper ..> repositories_Metadata

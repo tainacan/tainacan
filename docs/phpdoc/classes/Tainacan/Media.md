@@ -39,7 +39,10 @@ classDiagram
         +save_remote_file(url)
         +insert_attachment_from_blob(blob, filename, post_id)
         +get_mime_content_type(filename)
+        +normalize_mime_types(mime_types)
         +get_pdf_cover(filepath)
+        +get_attachment_cover_html(attachment_id, size, wrap_in_link)
+        +get_item_document_cover_html(item_id, size, wrap_in_link)
         +shutdown_function()
         +extract_pdf_content(file, item_id)
         -$normalize_extracted_pdf_content(content)
@@ -412,6 +415,22 @@ mime type           @see \mime_content_type()
 
 ***
 
+### normalize_mime_types
+
+Normalizes a list of MIME types.
+
+```php
+public normalize_mime_types(mixed $mime_types): array
+```
+
+**Parameters:**
+
+| Parameter     | Type      | Description          |
+|---------------|-----------|----------------------|
+| `$mime_types` | **mixed** | Array of MIME types. |
+
+***
+
 ### get_pdf_cover
 
 Extract an image from the first page of a pdf file
@@ -429,6 +448,46 @@ public get_pdf_cover(string $filepath): \Tainacan\blob
 **Return Value:**
 
 bitstream of the image in jpg format
+
+***
+
+### get_attachment_cover_html
+
+Returns HTML for an attachment cover image.
+
+```php
+public get_attachment_cover_html(int $attachment_id, string $size = 'large', bool $wrap_in_link = false): string
+```
+
+Cascade: attachment featured image → WordPress generated image → empty string.
+
+**Parameters:**
+
+| Parameter        | Type       | Description                                                 |
+|------------------|------------|-------------------------------------------------------------|
+| `$attachment_id` | **int**    | Attachment ID.                                              |
+| `$size`          | **string** | Image size. Default 'large'.                                |
+| `$wrap_in_link`  | **bool**   | Whether to wrap the image in a link to the attachment file. |
+
+***
+
+### get_item_document_cover_html
+
+Returns HTML for an item document cover image.
+
+```php
+public get_item_document_cover_html(int $item_id, string $size = 'large', bool $wrap_in_link = false): string
+```
+
+Cascade: item featured image → attachment cover → empty string.
+
+**Parameters:**
+
+| Parameter       | Type       | Description                                               |
+|-----------------|------------|-----------------------------------------------------------|
+| `$item_id`      | **int**    | Item ID.                                                  |
+| `$size`         | **string** | Image size. Default 'large'.                              |
+| `$wrap_in_link` | **bool**   | Whether to wrap the image in a link to the document file. |
 
 ***
 
