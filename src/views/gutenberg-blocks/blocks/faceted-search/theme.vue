@@ -1064,15 +1064,10 @@
                         
                         // Finally, loads items even before facets so they won't stuck them
                         if (to.fullPath != from.fullPath) {
-                            if (this.pendingInitialLoad) {
-                                const hasFetchOnly = this.$store.getters['search/getPostQuery']['fetch_only'] != undefined;
-                                if (hasFetchOnly) {
-                                    this.pendingInitialLoad = false;
-                                    this.$eventBusSearch.loadItems();
-                                }
-                            } else {
+                            if (this.pendingInitialLoad)
+                                this.tryLoadInitialItems();
+                            else
                                 this.$eventBusSearch.loadItems();
-                            }
                         }
 
                         // Checks current metaqueries and taxqueries to alert filters that should reload
@@ -1455,6 +1450,20 @@
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
             },
             /**
+             * First items fetch must wait for fetch_only (set by prepareMetadata / addFetchOnly).
+             * Idempotent: only one successful initial load per page instance.
+             */
+            tryLoadInitialItems() {
+                if (!this.pendingInitialLoad)
+                    return;
+
+                if (this.$store.getters['search/getPostQuery']['fetch_only'] == undefined)
+                    return;
+
+                this.pendingInitialLoad = false;
+                this.$eventBusSearch.loadItems();
+            },
+            /**
              * Formats a per-word search query for display, e.g. `texto poesia` → `"texto" or "poesia"`.
              * Quoted groups are kept as a single term.
              */
@@ -1709,8 +1718,10 @@
                                     })
                                 }
 
-                                // Initial item load runs from the $route watcher once fetch_only exists
-                                // (addFetchOnly -> updateURLQueries / router.replace).
+                                // Prefer route-watcher load after addFetchOnly updates the URL; if
+                                // replace does not land fetch_only in the URL, still load once from store.
+                                this.tryLoadInitialItems();
+
                                 this.isLoadingMetadata = false;
                                 this.displayedMetadata = metadata;
                             })
