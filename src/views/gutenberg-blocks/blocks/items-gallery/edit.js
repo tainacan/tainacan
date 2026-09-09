@@ -445,8 +445,8 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                             }
                         />
                         <ToggleControl
-                            label={__('Show PDF cover instead of iframe', 'tainacan')}
-                            help={ __('PDF files in the main slider display the item thumbnail or a cover image instead of an embedded viewer. Other media types are not affected. The lightbox can still show the PDF.', 'tainacan') }
+                            label={__('Show PDF cover instead of embedded reader', 'tainacan')}
+                            help={ __('The lightbox can still show the PDF reader.', 'tainacan') }
                             checked={ Array.isArray( coverMimeTypesMain ) && coverMimeTypesMain.includes( 'application/pdf' ) }
                             onChange={ ( isChecked ) => {
                                 const mimeTypes = Array.isArray( coverMimeTypesMain ) ? [ ...coverMimeTypesMain ] : [];
