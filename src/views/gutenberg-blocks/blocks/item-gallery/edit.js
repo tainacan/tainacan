@@ -49,8 +49,10 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
         thumbnailsCarouselWidth,
         thumbnailsCarouselItemSize,
         showDownloadButtonMain,
+        coverMimeTypesMain,
         lightboxHasLightBackground,
         templateMode,
+        mainImagesSize,
         thumbnailsSize,
         thumbsHaveFixedHeight
     } = attributes;
@@ -203,6 +205,16 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                             min={ 10 }
                             max={ 150 }
                         />
+                        <SelectControl
+                            label={__('Image size', 'tainacan')}
+                            help={ __('WordPress image size used for pictures in the main slider. The lightbox still uses the original file.', 'tainacan') }
+                            value={ mainImagesSize }
+                            options={ imageSizeOptions }
+                            onChange={ ( aMainImagesSize ) => {
+                                mainImagesSize = aMainImagesSize;
+                                setAttributes({ mainImagesSize: mainImagesSize });
+                            }}
+                        />
                         <ToggleControl
                             label={__('Hide file name', 'tainacan')}
                             checked={ hideFileNameMain }
@@ -238,6 +250,23 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                                     setAttributes({ showDownloadButtonMain: showDownloadButtonMain });
                                 } 
                             }
+                        />
+                        <ToggleControl
+                            label={__('Show PDF cover instead of iframe', 'tainacan')}
+                            help={ __('PDF files in the main slider display a cover image instead of an embedded viewer. Other media types are not affected. The lightbox can still show the PDF.', 'tainacan') }
+                            checked={ Array.isArray( coverMimeTypesMain ) && coverMimeTypesMain.includes( 'application/pdf' ) }
+                            onChange={ ( isChecked ) => {
+                                const mimeTypes = Array.isArray( coverMimeTypesMain ) ? [ ...coverMimeTypesMain ] : [];
+                                const hasPdfCover = mimeTypes.includes( 'application/pdf' );
+
+                                if ( isChecked && ! hasPdfCover ) {
+                                    mimeTypes.push( 'application/pdf' );
+                                } else if ( ! isChecked && hasPdfCover ) {
+                                    mimeTypes.splice( mimeTypes.indexOf( 'application/pdf' ), 1 );
+                                }
+
+                                setAttributes({ coverMimeTypesMain: mimeTypes });
+                            } }
                         />
                     </PanelBody>
                 : null }

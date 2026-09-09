@@ -470,6 +470,32 @@ class Media {
 	}
 
 	/**
+	 * Normalizes a list of MIME types.
+	 *
+	 * @param mixed $mime_types Array of MIME types.
+	 * @return array
+	 */
+	public function normalize_mime_types( $mime_types ) {
+		if ( ! is_array( $mime_types ) ) {
+			return array();
+		}
+
+		$normalized = array();
+		foreach ( $mime_types as $mime_type ) {
+			if ( ! is_string( $mime_type ) ) {
+				continue;
+			}
+
+			$mime_type = sanitize_mime_type( strtolower( trim( $mime_type ) ) );
+			if ( $mime_type !== '' ) {
+				$normalized[] = $mime_type;
+			}
+		}
+
+		return array_values( array_unique( $normalized ) );
+	}
+
+	/**
 	 * Extract an image from the first page of a pdf file
 	 *
 	 * @param  string $filepath The pdf filepath in the server
@@ -509,6 +535,78 @@ class Media {
 		} catch (\Error $ex) {
 			return null;
 		}
+	}
+
+	/**
+	 * Returns HTML for an attachment cover image.
+	 *
+	 * Cascade: attachment featured image → WordPress generated image → empty string.
+	 *
+	 * @param int    $attachment_id Attachment ID.
+	 * @param string $size          Image size. Default 'large'.
+	 * @param bool   $wrap_in_link  Whether to wrap the image in a link to the attachment file.
+	 * @return string
+	 */
+	public function get_attachment_cover_html( $attachment_id, $size = 'large', $wrap_in_link = false ) {
+		$attachment_id = absint( $attachment_id );
+		if ( ! $attachment_id ) {
+			return '';
+		}
+
+		$cover = get_the_post_thumbnail( $attachment_id, $size );
+		if ( empty( $cover ) ) {
+			$cover = wp_get_attachment_image( $attachment_id, $size, false );
+		}
+
+		if ( empty( $cover ) ) {
+			return '';
+		}
+
+		if ( ! $wrap_in_link ) {
+			return $cover;
+		}
+
+		$url = wp_get_attachment_url( $attachment_id );
+		if ( ! $url ) {
+			return $cover;
+		}
+
+		return sprintf( '<a class="tainacan-media-cover" href="%s" target="blank">%s</a>', esc_url( $url ), $cover );
+	}
+
+	/**
+	 * Returns HTML for an item document cover image.
+	 *
+	 * Cascade: item featured image → attachment cover → empty string.
+	 *
+	 * @param int    $item_id      Item ID.
+	 * @param string $size         Image size. Default 'large'.
+	 * @param bool   $wrap_in_link Whether to wrap the image in a link to the document file.
+	 * @return string
+	 */
+	public function get_item_document_cover_html( $item_id, $size = 'large', $wrap_in_link = false ) {
+		$item_id = absint( $item_id );
+		if ( ! $item_id ) {
+			return '';
+		}
+
+		$cover = get_the_post_thumbnail( $item_id, $size );
+		if ( empty( $cover ) ) {
+			$document_id = tainacan_get_the_document_raw( $item_id );
+			return is_numeric( $document_id ) ? $this->get_attachment_cover_html( (int) $document_id, $size, $wrap_in_link ) : '';
+		}
+
+		if ( ! $wrap_in_link ) {
+			return $cover;
+		}
+
+		$document_id = tainacan_get_the_document_raw( $item_id );
+		$url = is_numeric( $document_id ) ? wp_get_attachment_url( (int) $document_id ) : '';
+		if ( ! $url ) {
+			return $cover;
+		}
+
+		return sprintf( '<a class="tainacan-media-cover" href="%s" target="blank">%s</a>', esc_url( $url ), $cover );
 	}
 
 	private $THROW_EXCPTION_ON_FATAL_ERROR = false;
