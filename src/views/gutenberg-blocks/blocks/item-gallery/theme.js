@@ -493,6 +493,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             const audio = mainLink ? mainLink.querySelector('audio') : slideContent.querySelector('audio');
             const figure = slideContent.querySelector('figure');
             const titleElement = slide.querySelector('.swiper-slide-metadata__name');
+            const mediaType = slideContent.getAttribute('data-media-type') || '';
             
             // Build aria-label based on media type
             let ariaLabelParts = [];
@@ -505,6 +506,8 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             } else if (audio) {
                 const audioTitle = audio.getAttribute('title') || audio.getAttribute('aria-label');
                 mediaDescription = audioTitle || __('Audio', 'tainacan');
+            } else if (mediaType === 'application/pdf') {
+                mediaDescription = __('PDF document', 'tainacan');
             } else if (iframe) {
                 // Check if it's a PDF, etc.
                 const iframeSrc = iframe.getAttribute('src') || '';

@@ -103,6 +103,13 @@
             "type": "boolean",
             "default": false
         },
+        "coverMimeTypesMain": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            }
+        },
         "lightboxHasLightBackground": {
             "type": "boolean",
             "default": false
@@ -110,6 +117,10 @@
         "templateMode": {
             "type": "boolean",
             "default": false
+        },
+        "mainImagesSize": {
+            "type": "string",
+            "default": "large"
         },
         "thumbnailsSize": {
             "type": "string",

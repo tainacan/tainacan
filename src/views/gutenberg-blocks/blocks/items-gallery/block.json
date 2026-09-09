@@ -112,6 +112,17 @@
             "type": "boolean",
             "default": false
         },
+        "coverMimeTypesMain": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            }
+        },
+        "mainImagesSize": {
+            "type": "string",
+            "default": "large"
+        },
         "thumbnailsSize": {
             "type": "string",
             "default": "tainacan-medium"

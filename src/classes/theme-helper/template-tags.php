@@ -101,7 +101,7 @@ function tainacan_get_the_document($item_id = 0, $img_size = 'large') {
 		return '';
 	}
 
-	return apply_filters('tainacan-get-the-document', $item->get_document_as_html($item_id, $img_size), $item);
+	return apply_filters('tainacan-get-the-document', $item->get_document_as_html($img_size), $item);
 }
 
 /**
@@ -1489,8 +1489,10 @@ function tainacan_has_related_items($item_id = false) {
 	* 	   @type bool 	 $hideFileDescriptionLightbox	  Hides the Lightbox file description
 	* 	   @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item
 	*	   @type bool	 $showDownloadButtonMain		  Displays a download button below the Main slider
+	*	   @type array	 $coverMimeTypesMain			  MIME types that should show a cover image in the Main slider instead of an embed. Defaults to empty (current embed behaviour).
 	*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
 	*	   @type bool    $showArrowsAsSVG			      Decides if the swiper carousel arrows will be an SVG icon or font icon
+	*	   @type string  $mainImagesSize				  Media size for the Main slider images. Defaults to 'large'
 	*	   @type string  $thumbnailsSize				  Media size for the thumbnail images. Defaults to 'tainacan-medium'
 	*	   @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.
 	* }		

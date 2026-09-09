@@ -45,6 +45,8 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
         thumbnailsCarouselWidth,
         thumbnailsCarouselItemSize,
         lightboxHasLightBackground,
+        coverMimeTypesMain,
+        mainImagesSize,
         thumbnailsSize,
         thumbsHaveFixedHeight
     } = attributes;
@@ -405,6 +407,16 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                             min={ 10 }
                             max={ 150 }
                         />
+                        <SelectControl
+                            label={__('Image size', 'tainacan')}
+                            help={ __('WordPress image size used for pictures in the main slider. The lightbox still uses the original file.', 'tainacan') }
+                            value={ mainImagesSize }
+                            options={ imageSizeOptions }
+                            onChange={ ( aMainImagesSize ) => {
+                                mainImagesSize = aMainImagesSize;
+                                setAttributes({ mainImagesSize: mainImagesSize });
+                            }}
+                        />
                         <ToggleControl
                              label={__('Hide item link', 'tainacan')}
                              checked={ hideItemLinkMain }
@@ -431,6 +443,23 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                                     setAttributes({ hideItemDescriptionMain: hideItemDescriptionMain });
                                 } 
                             }
+                        />
+                        <ToggleControl
+                            label={__('Show PDF cover instead of embedded reader', 'tainacan')}
+                            help={ __('The lightbox can still show the PDF reader.', 'tainacan') }
+                            checked={ Array.isArray( coverMimeTypesMain ) && coverMimeTypesMain.includes( 'application/pdf' ) }
+                            onChange={ ( isChecked ) => {
+                                const mimeTypes = Array.isArray( coverMimeTypesMain ) ? [ ...coverMimeTypesMain ] : [];
+                                const hasPdfCover = mimeTypes.includes( 'application/pdf' );
+
+                                if ( isChecked && ! hasPdfCover ) {
+                                    mimeTypes.push( 'application/pdf' );
+                                } else if ( ! isChecked && hasPdfCover ) {
+                                    mimeTypes.splice( mimeTypes.indexOf( 'application/pdf' ), 1 );
+                                }
+
+                                setAttributes({ coverMimeTypesMain: mimeTypes });
+                            } }
                         />
                     </PanelBody>
                 : null }
