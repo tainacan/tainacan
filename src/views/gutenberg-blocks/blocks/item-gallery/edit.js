@@ -161,6 +161,7 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                     />
                     <ToggleControl
                         label={__('Open lightbox on click', 'tainacan')}
+                        help={ __('Images and document covers open the large viewer on click. Video, audio and embedded files stay interactive; use Expand to open the gallery.', 'tainacan') }
                         checked={ openLightboxOnClick }
                         onChange={ ( isChecked ) => {
                                 openLightboxOnClick = isChecked;

@@ -2170,9 +2170,24 @@ class Theme_Helper {
 				}
 
 				$document_download_link = tainacan_get_the_item_document_download_link($item_id);
+				$document_is_image = false;
+				if ( $document_type === 'attachment' ) {
+					$document_is_image = wp_attachment_is( 'image', tainacan_get_the_document_raw( $item_id ) );
+				} else if ( $document_type === 'url' ) {
+					$document_options = $item->get_document_options();
+					$document_is_image = isset( $document_options['is_image'] ) && $document_options['is_image'];
+				}
+
 				$media_items_main[] =
 					tainacan_get_the_media_component_slide(array(
-						'after_slide_metadata' => ( $show_download_button_main && $document_download_link != '' ) ? $document_download_link : '',
+						'after_slide_metadata' => tainacan_get_the_media_item_actions( array(
+							'expand_html' => ( $open_lightbox_on_click && ! $document_is_image && ! $document_uses_cover ) ? tainacan_get_the_media_item_expand_control() : '',
+							'download_html' => ( $show_download_button_main && $document_download_link != '' ) ? $document_download_link : '',
+							'item_id' => $item_id,
+							'attachment_id' => ( $document_type === 'attachment' ) ? tainacan_get_the_document_raw( $item_id ) : 0,
+							'media_source' => 'document',
+							'media_type' => $document_mimetype,
+						) ),
 						'media_content' => $document_media_content,
 						'media_content_full' => $open_lightbox_on_click ?
 												(
@@ -2205,7 +2220,14 @@ class Theme_Helper {
 					$attachment_download_link = tainacan_get_the_item_attachment_download_link($attachment->ID);
 					$media_items_main[] =
 						tainacan_get_the_media_component_slide(array(
-							'after_slide_metadata' => ( $show_download_button_main && $attachment_download_link != '' ) ? $attachment_download_link : '',
+							'after_slide_metadata' => tainacan_get_the_media_item_actions( array(
+								'expand_html' => ( $open_lightbox_on_click && ! $is_attachment_an_image && ! $attachment_uses_cover ) ? tainacan_get_the_media_item_expand_control() : '',
+								'download_html' => ( $show_download_button_main && $attachment_download_link != '' ) ? $attachment_download_link : '',
+								'item_id' => $item_id,
+								'attachment_id' => $attachment->ID,
+								'media_source' => 'attachment',
+								'media_type' => $attachment->post_mime_type,
+							) ),
 							'media_content' => $attachment_media_content,
 							'media_content_full' => $open_lightbox_on_click ?
 													( 
@@ -2587,8 +2609,23 @@ class Theme_Helper {
 					$class_slide_content = 'has-cover';
 				}
 
+				$document_is_image = false;
+				if ( $document_type === 'attachment' ) {
+					$document_is_image = wp_attachment_is( 'image', tainacan_get_the_document_raw( $item_id ) );
+				} else if ( $document_type === 'url' ) {
+					$document_options = $item ? $item->get_document_options() : array();
+					$document_is_image = isset( $document_options['is_image'] ) && $document_options['is_image'];
+				}
+
 				$media_items_main[] = 
 					tainacan_get_the_media_component_slide(array(
+						'after_slide_metadata' => tainacan_get_the_media_item_actions( array(
+							'expand_html' => ( $open_lightbox_on_click && ! $document_is_image && ! $document_uses_cover ) ? tainacan_get_the_media_item_expand_control() : '',
+							'item_id' => $item_id,
+							'attachment_id' => ( $document_type === 'attachment' ) ? tainacan_get_the_document_raw( $item_id ) : 0,
+							'media_source' => 'document',
+							'media_type' => $document_mimetype,
+						) ),
 						'media_content' => $document_media_content,
 						'media_content_full' => $open_lightbox_on_click ?
 												(

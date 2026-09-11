@@ -206,11 +206,13 @@ function tainacan_get_the_item_document_download_link($item_id = 0) {
 	$html = '';
 
 	if ( $link && $item->get_document_type() != 'text' && $item->get_document_type() != 'url' ) {
+		$label = __( 'Download', 'tainacan' );
 		$html = sprintf(
-			'<span class="tainacan-item-file-download"><a download="%1$s" href="%1$s" target="_blank" aria-label="%2$s"><span class="tainacan-item-file-download__label">%3$s</span></a></span>',
+			'<span class="tainacan-item-file-download"><a download="%1$s" href="%1$s" target="_blank" aria-label="%2$s" title="%3$s"><span class="tainacan-item-file-download__label">%4$s</span></a></span>',
 			esc_url( $link ),
 			esc_attr( __( 'Download the item document', 'tainacan' ) ),
-			esc_html( __( 'Download', 'tainacan' ) )
+			esc_attr( $label ),
+			esc_html( $label )
 		);
 	}
 
@@ -262,11 +264,13 @@ function tainacan_get_the_item_attachment_download_link($attachment_id) {
 	$html = '';
 
 	if ( $link ) {
+		$label = __( 'Download', 'tainacan' );
 		$html = sprintf(
-			'<span class="tainacan-item-file-download"><a download="%1$s" href="%1$s" aria-label="%2$s"><span class="tainacan-item-file-download__label">%3$s</span></a></span>',
+			'<span class="tainacan-item-file-download"><a download="%1$s" href="%1$s" aria-label="%2$s" title="%3$s"><span class="tainacan-item-file-download__label">%4$s</span></a></span>',
 			esc_url( $link ),
 			esc_attr( __( 'Download the item attachment', 'tainacan' ) ),
-			esc_html( __( 'Download', 'tainacan' ) )
+			esc_attr( $label ),
+			esc_html( $label )
 		);
 	}
 
@@ -293,6 +297,93 @@ function tainacan_get_the_item_attachment_download_link($attachment_id) {
  */
 function tainacan_the_item_attachment_download_link($attachment_id) {
 	return tainacan_get_the_item_attachment_download_link($attachment_id);
+}
+
+/**
+ * Return the item gallery Expand control as HTML.
+ *
+ * Opens PhotoSwipe at the current slide. Markup matches the Download control: a
+ * `.tainacan-media-item-expand` wrapper around a plain link so themes that style
+ * `a` (and `.tainacan-item-file-download`) can restyle both the same way.
+ *
+ * @return string The HTML expand control.
+ */
+function tainacan_get_the_media_item_expand_control() {
+	/* translators: Opens this media in the large gallery viewer. */
+	$label = __( 'Expand', 'tainacan' );
+	$html = sprintf(
+		'<span class="tainacan-media-item-expand"><a href="#" title="%1$s"><span class="tainacan-media-item-expand__label">%2$s</span></a></span>',
+		esc_attr( $label ),
+		esc_html( $label )
+	);
+
+	/**
+	 * Filters the item gallery Expand control HTML.
+	 *
+	 * @param string $html The HTML expand control.
+	 */
+	return apply_filters( 'tainacan_get_the_media_item_expand_control', $html );
+}
+
+/**
+ * Return a slide actions wrapper around Expand, Download, and similar controls.
+ *
+ * @param array $args {
+ *     Optional. Array of arguments.
+ *     @type string $expand_html    Expand control HTML, or empty. Default ''.
+ *     @type string $download_html  Download control HTML, or empty. Default ''.
+ *     @type int    $item_id        The item ID this slide belongs to. Default 0.
+ *     @type int    $attachment_id WP attachment ID when the slide is an attachment (item document or extra file). Default 0.
+ *     @type string $media_source   'document' or 'attachment'. Default ''.
+ *     @type string $media_type     MIME type or media type string. Default ''.
+ * }
+ * @return string The actions wrapper HTML, or empty string if there is nothing to show.
+ */
+function tainacan_get_the_media_item_actions( $args = array() ) {
+	$args = wp_parse_args(
+		$args,
+		array(
+			'expand_html'    => '',
+			'download_html'  => '',
+			'item_id'        => 0,
+			'attachment_id' => 0,
+			'media_source'   => '',
+			'media_type'     => '',
+		)
+	);
+
+	$inner = '';
+	if ( ! empty( $args['expand_html'] ) ) {
+		$inner .= $args['expand_html'];
+	}
+	if ( ! empty( $args['download_html'] ) ) {
+		$inner .= $args['download_html'];
+	}
+
+	/**
+	 * Filters the HTML inside the slide actions row.
+	 *
+	 * Runs even when Expand and Download are empty, so extra controls can still
+	 * create the row. The wrapper `.tainacan-media-item-actions` is added after
+	 * this filter if the result is not empty.
+	 *
+	 * @param string $html The inner actions HTML, or empty.
+	 * @param array  $args {
+	 *     @type string $expand_html    Expand control HTML, or empty.
+	 *     @type string $download_html  Download control HTML, or empty.
+	 *     @type int    $item_id        The item ID this slide belongs to.
+	 *     @type int    $attachment_id WP attachment ID, or 0.
+	 *     @type string $media_source   'document' or 'attachment'.
+	 *     @type string $media_type     MIME type or media type string.
+	 * }
+	 */
+	$inner = apply_filters( 'tainacan_get_the_media_item_actions', $inner, $args );
+
+	if ( $inner === '' ) {
+		return '';
+	}
+
+	return '<div class="tainacan-media-item-actions">' . $inner . '</div>';
 }
 
 /**
@@ -843,13 +934,15 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 			</div>
 		<?php endif; ?>
 
+		<?php if ( ! empty( $args['after_slide_metadata'] ) ) : ?>
+			<?php echo wp_kses( $args['after_slide_metadata'], wp_kses_allowed_html( 'tainacan_media_slide' ) ); ?>
+		<?php endif; ?>
+
 		<?php if ( !empty($args['media_content_full']) ) : ?>
 			<div class="media-full-content" style="display: none; position: absolute; visibility: hidden;">
 				<?php echo wp_kses($args['media_content_full'], wp_kses_allowed_html('tainacan_content')) ?>
 			</div>
 		<?php endif; ?>
-
-		<?php echo wp_kses_post($args['after_slide_metadata']) ?>
 
 	</div>
 
