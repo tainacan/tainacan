@@ -346,6 +346,16 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             });
         });
 
+        /* Stops propagation of slide actions (Expand, Download) to avoid opening the gallery on them */
+        let carouselSlideActions = galleryElement.getElementsByClassName('tainacan-media-item-actions');
+        if (carouselSlideActions && carouselSlideActions.length) {
+            for (let i = 0; i < carouselSlideActions.length; i++) {
+                carouselSlideActions[i].addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+        }
+
         /* Stops propagation of download button to avoid opening the gallery on it */
         let carouselDownloadButtons = galleryElement.getElementsByClassName('tainacan-item-file-download');
         if (carouselDownloadButtons && carouselDownloadButtons.length) {
@@ -355,6 +365,8 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 });
             }
         }
+
+        this.setupLightboxExpandControls(galleryElement, items);
 
         /* Stops propagation inside links that are inside metatada */
         let carouselMetadataLinks = galleryElement.querySelectorAll('.swiper-slide-metadata a');
@@ -476,6 +488,8 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             return true;
         if (node.closest('.swiper-slide-metadata'))
             return true;
+        if (node.closest('.tainacan-media-item-actions'))
+            return true;
         if (node.closest('.tainacan-item-file-download'))
             return true;
         return false;
@@ -514,6 +528,8 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         for (let i = 0; i < allLinks.length; i++) {
             const link = allLinks[i];
             if (metadataElement && metadataElement.contains(link))
+                continue;
+            if (link.closest('.tainacan-media-item-actions'))
                 continue;
             if (link.closest('.tainacan-item-file-download'))
                 continue;
@@ -652,6 +668,31 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                         slide.dispatchEvent(clickEvent);
                     }
                 }
+            });
+        });
+    }
+
+    /**
+     * Expand opens PhotoSwipe at the slide index without stealing player clicks.
+     * @param {HTMLElement} galleryElement
+     * @param {Array} items Parsed PhotoSwipe items (same index as Swiper).
+     */
+    setupLightboxExpandControls(galleryElement, items) {
+        const self = this;
+        const expandControls = galleryElement.querySelectorAll('.tainacan-media-item-expand');
+
+        Array.prototype.forEach.call(expandControls, (expandControl) => {
+            expandControl.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (!self.lightbox)
+                    return;
+
+                const slide = expandControl.closest('.tainacan-media-item');
+                const index = items.findIndex(anItem => anItem.el === slide);
+                if (index >= 0)
+                    self.lightbox.loadAndOpen(index);
             });
         });
     }
