@@ -1995,6 +1995,7 @@ class Theme_Helper {
 		* 	   @type bool 	 $hideFileCaptionMain 			  Hides the Main slider file caption
 		* 	   @type bool 	 $hideFileDescriptionMain		  Hides the Main slider file description
 		* 	   @type bool 	 $hideFileNameThumbnails 		  Hides the Thumbnails carousel file name
+		* 	   @type bool 	 $hideImageThumbnails 			  Hides the thumbnail image in list layout. Defaults to false.
 		* 	   @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption
 		* 	   @type bool 	 $hideFileDescriptionThumbnails   Hides the Thumbnails carousel file description
 		* 	   @type bool 	 $hideFileNameLightbox 			  Hides the Lightbox file name
@@ -2008,6 +2009,7 @@ class Theme_Helper {
 		*	   @type string  $mainImagesSize				  Media size for the Main slider images. Defaults to 'large'
 		*	   @type string  $thumbnailsSize				  Media size for the thumbnail images. Defaults to 'tainacan-medium'
 		*	   @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.
+		*	   @type string  $thumbsLayout					  Thumbnails layout slug. Core values: 'carousel' (default), 'grid' or 'list'. Other slugs are passed through.
 		* }		
 		* @return string  The HTML div to be used for rendering the item galery component
 	 */
@@ -2026,6 +2028,7 @@ class Theme_Helper {
 			'hideFileCaptionMain' => 			false,
 			'hideFileDescriptionMain' =>		true,
 			'hideFileNameThumbnails' => 		true, 
+			'hideImageThumbnails' => 			false,
 			'hideFileCaptionThumbnails' => 		true,
 			'hideFileDescriptionThumbnails' =>  true,
 			'hideFileNameLightbox' =>	 		false, 
@@ -2038,7 +2041,8 @@ class Theme_Helper {
 			'showArrowsAsSVG' =>				true,
 			'mainImagesSize' =>					'large',
 			'thumbnailsSize' =>					'tainacan-medium',
-			'thumbsHaveFixedHeight'	=>			false	
+			'thumbsHaveFixedHeight'	=>			false,
+			'thumbsLayout' =>					'carousel'
 		);
 		$args = wp_parse_args($args, $defaults);
 		
@@ -2065,6 +2069,7 @@ class Theme_Helper {
 		$hide_file_caption_main = $args['hideFileCaptionMain'];
 		$hide_file_description_main = $args['hideFileDescriptionMain'];
 		$hide_file_name_thumbnails = $args['hideFileNameThumbnails'];
+		$hide_image_thumbnails = $args['hideImageThumbnails'];
 		$hide_file_caption_thumbnails = $args['hideFileCaptionThumbnails'];
 		$hide_file_description_thumbnails = $args['hideFileDescriptionThumbnails'];
 		$hide_file_name_lightbox = $args['hideFileNameLightbox'];
@@ -2077,6 +2082,7 @@ class Theme_Helper {
 		$main_images_size = $args['mainImagesSize'];
 		$thumbnails_size = $args['thumbnailsSize'];
 		$thumbs_have_fixed_height = $args['thumbsHaveFixedHeight'];
+		$thumbs_layout = tainacan_sanitize_media_thumbs_layout( $args['thumbsLayout'] );
 
 		$media = Media::get_instance();
 		$cover_mime_types_main = $media->normalize_mime_types( $args['coverMimeTypesMain'] );
@@ -2247,7 +2253,7 @@ class Theme_Helper {
 		if ( $layout_elements['thumbnails'] ) {
 
 			$class_slide_metadata = '';
-			if ($hide_file_name_thumbnails)
+			if ($hide_file_name_thumbnails && $thumbs_layout !== 'list')
 				$class_slide_metadata .= ' hide-name';
 			if ($hide_file_description_thumbnails)
 				$class_slide_metadata .= ' hide-description';
@@ -2385,13 +2391,14 @@ class Theme_Helper {
 			array(
 				'wrapper_attributes' => $wrapper_attributes,
 				'class_main_div' => '',
-				'class_thumbs_div' => '',
+				'class_thumbs_div' => ( $thumbs_layout === 'list' && $hide_image_thumbnails ) ? 'tainacan-media-thumbs--hide-image' : '',
 				'class_thumbs_li' => $thumbs_have_fixed_height ? 'has-fixed-height' : '',
 				'swiper_main_options' => $swiper_main_options,
 				'swiper_thumbs_options' => $swiper_thumbs_options,
 				'swiper_arrows_as_svg' => $show_arrows_as_svg,
 				'disable_main_carousel' => !is_array($media_items_main) || count($media_items_main) <= 1,
-				'disable_thumbs_carousel' => !is_array($media_items_thumbnails) || count($media_items_thumbnails) <= 1,
+				'disable_thumbs_carousel' => !is_array($media_items_thumbnails) || count($media_items_thumbnails) <= 1 || $thumbs_layout !== 'carousel',
+				'thumbs_layout' => $thumbs_layout,
 				'disable_lightbox' => !$open_lightbox_on_click,
 				'hide_media_name' => $hide_file_name_lightbox,
 				'hide_media_caption' => $hide_file_caption_lightbox,
@@ -2434,6 +2441,7 @@ class Theme_Helper {
 		* 	  @type bool 	 $hideItemLinkMain 			  	  Hides the Main slider item link
 		* 	  @type bool 	 $hideItemDescriptionMain		  Hides the Main slider item description
 		* 	  @type bool 	 $hideItemTitleThumbnails 		  Hides the Thumbnails carousel item title
+		* 	  @type bool 	 $hideImageThumbnails 			  Hides the thumbnail image in list layout. Defaults to false.
 		* 	  @type bool 	 $hideItemTitleLightbox 		  Hides the Lightbox item title
 		* 	  @type bool 	 $hideItemLinkLightbox 		  	  Hides the Lightbox item link
 		* 	  @type bool 	 $hideItemDescriptionLightbox	  Hides the Lightbox file description
@@ -2444,6 +2452,7 @@ class Theme_Helper {
 		*	  @type string   $mainImagesSize				  Media size for the Main slider images. Defaults to 'large'
 		*	  @type string   $thumbnailsSize				  Media size for the thumbnail images. Defaults to 'tainacan-medium'
 		*	  @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.
+		*	  @type string   $thumbsLayout					  Thumbnails layout slug. Core values: 'carousel' (default), 'grid' or 'list'. Other slugs are passed through.
 		* }		
 		* @return string  The HTML div to be used for rendering the items galery component
 	 */
@@ -2467,6 +2476,7 @@ class Theme_Helper {
 			'hideItemLinkMain' => 				false,
 			'hideItemDescriptionMain' =>		true,
 			'hideItemTitleThumbnails' => 		true, 
+			'hideImageThumbnails' => 			false,
 			'hideItemTitleLightbox' =>	 		false, 
 			'hideItemLinkLightbox' => 			false,
 			'hideItemDescriptionLightbox' =>	false,
@@ -2476,7 +2486,8 @@ class Theme_Helper {
 			'showArrowsAsSVG' =>				true,
 			'mainImagesSize' =>					'large',
 			'thumbnailsSize' =>					'tainacan-medium',
-			'thumbsHaveFixedHeight'	=>			false	
+			'thumbsHaveFixedHeight'	=>			false,
+			'thumbsLayout' =>					'carousel'
 		);
 		$args = wp_parse_args($args, $defaults);
 
@@ -2500,6 +2511,7 @@ class Theme_Helper {
 		$hide_item_link_main = $args['hideItemLinkMain'];
 		$hide_item_description_main = $args['hideItemDescriptionMain'];
 		$hide_item_title_thumbnails = $args['hideItemTitleThumbnails'];
+		$hide_image_thumbnails = $args['hideImageThumbnails'];
 		$hide_item_title_lightbox = $args['hideItemTitleLightbox'];
 		$hide_item_link_lightbox = $args['hideItemLinkLightbox'];
 		$hide_item_description_lightbox = $args['hideItemDescriptionLightbox'];
@@ -2509,6 +2521,7 @@ class Theme_Helper {
 		$main_images_size = $args['mainImagesSize'];
 		$thumbnails_size = $args['thumbnailsSize'];
 		$thumbs_have_fixed_height = $args['thumbsHaveFixedHeight'];
+		$thumbs_layout = tainacan_sanitize_media_thumbs_layout( $args['thumbsLayout'] );
 
 		// Prefils arrays with proper values to avoid messsy IFs
 		$layout_elements = array(
@@ -2638,7 +2651,7 @@ class Theme_Helper {
 		if ( $layout_elements['thumbnails'] ) {
 
 			$class_slide_metadata = ' hide-caption hide-description';
-			if ($hide_item_title_thumbnails)
+			if ($hide_item_title_thumbnails && $thumbs_layout !== 'list')
 				$class_slide_metadata .= ' hide-name';
 
 			// Adds the items thumbnails as carousel
@@ -2758,13 +2771,14 @@ class Theme_Helper {
 			array(
 				'wrapper_attributes' => $wrapper_attributes,
 				'class_main_div' => '',
-				'class_thumbs_div' => '',
+				'class_thumbs_div' => ( $thumbs_layout === 'list' && $hide_image_thumbnails ) ? 'tainacan-media-thumbs--hide-image' : '',
 				'class_thumbs_li' => $thumbs_have_fixed_height ? 'has-fixed-height' : '',
 				'swiper_main_options' => $swiper_main_options,
 				'swiper_thumbs_options' => $swiper_thumbs_options,
 				'swiper_arrows_as_svg' => $show_arrows_as_svg,
 				'disable_main_carousel' => !is_array($media_items_main) || count($media_items_main) <= 1,
-				'disable_thumbs_carousel' => !is_array($media_items_thumbnails) || count($media_items_thumbnails) <= 1,
+				'disable_thumbs_carousel' => !is_array($media_items_thumbnails) || count($media_items_thumbnails) <= 1 || $thumbs_layout !== 'carousel',
+				'thumbs_layout' => $thumbs_layout,
 				'disable_lightbox' => !$open_lightbox_on_click,
 				'hide_media_name' => $hide_item_title_lightbox,
 				'hide_media_caption' => $hide_item_link_lightbox,
@@ -3321,6 +3335,7 @@ class Theme_Helper {
 		* 	   @type bool 	 $hideFileCaptionMain 			  Hides the Main slider file caption
 		* 	   @type bool 	 $hideFileDescriptionMain		  Hides the Main slider file description
 		* 	   @type bool 	 $hideFileNameThumbnails 		  Hides the Thumbnails carousel file name
+		* 	   @type bool 	 $hideImageThumbnails 			  Hides the thumbnail image in list layout. Defaults to false.
 		* 	   @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption
 		* 	   @type bool 	 $hideFileDescriptionThumbnails   Hides the Thumbnails carousel file description
 		* 	   @type bool 	 $hideFileNameLightbox 			  Hides the Lightbox file name
@@ -3334,6 +3349,7 @@ class Theme_Helper {
 		*	   @type string  $mainImagesSize				  Media size for the Main slider images. Defaults to 'large'
 		*	   @type string  $thumbnailsSize	 		      Media size for the thumbnail images. Defaults to 'tainacan-medium'
 		*	   @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.
+		*	   @type string  $thumbsLayout					  Thumbnails layout slug. Core values: 'carousel' (default), 'grid' or 'list'. Other slugs are passed through.
 		* @return string  The HTML div to be used for rendering the item galery component
 	 */
 	public function get_tainacan_item_gallery_template($args = []) {
@@ -3351,6 +3367,7 @@ class Theme_Helper {
 			'hideFileCaptionMain' => 			false,
 			'hideFileDescriptionMain' =>		true,
 			'hideFileNameThumbnails' => 		true, 
+			'hideImageThumbnails' => 			false,
 			'hideFileCaptionThumbnails' => 		true,
 			'hideFileDescriptionThumbnails' =>  true,
 			'hideFileNameLightbox' =>	 		false, 
@@ -3363,7 +3380,8 @@ class Theme_Helper {
 			'showArrowsAsSVG' =>				true,
 			'mainImagesSize' =>					'large',
 			'thumbnailsSize' =>					'tainacan-medium',
-			'thumbsHaveFixedHeight' =>			false
+			'thumbsHaveFixedHeight' =>			false,
+			'thumbsLayout' =>					'carousel'
 		);
 		$args = wp_parse_args($args, $defaults);
 
@@ -3375,6 +3393,7 @@ class Theme_Helper {
 		$hide_file_caption_main = $args['hideFileCaptionMain'];
 		$hide_file_description_main = $args['hideFileDescriptionMain'];
 		$hide_file_name_thumbnails = $args['hideFileNameThumbnails'];
+		$hide_image_thumbnails = $args['hideImageThumbnails'];
 		$hide_file_caption_thumbnails = $args['hideFileCaptionThumbnails'];
 		$hide_file_description_thumbnails = $args['hideFileDescriptionThumbnails'];
 		$hide_file_name_lightbox = $args['hideFileNameLightbox'];
@@ -3386,6 +3405,7 @@ class Theme_Helper {
 		$show_arrows_as_svg = $args['showArrowsAsSVG'];
 		$thumbnails_size = $args['thumbnailsSize'];
 		$thumbs_have_fixed_height = $args['thumbsHaveFixedHeight'];
+		$thumbs_layout = tainacan_sanitize_media_thumbs_layout( $args['thumbsLayout'] );
 
 		// Prefils arrays with proper values to avoid messsy IFs
 		$layout_elements = array(
@@ -3442,24 +3462,29 @@ class Theme_Helper {
 		if ($layout_elements['main'])
 			$placeholder_content .= '<div class="tainacan-gallery-main-placeholder wp-block-post-featured-image wp-block-post-featured-image"><div class="wp-block-post-featured-image__placeholder"><svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" preserveAspectRatio="none" class="components-placeholder__illustration" aria-hidden="true" focusable="false"><path vector-effect="non-scaling-stroke" d="M60 60 0 0"></path></svg></div></div>';
 		
-		if ($layout_elements['thumbnails'])
-			$placeholder_content .= '<ul class="tainacan-gallery-thumbnails-placeholder">
-				<li class="wp-block-post-featured-image wp-block-post-featured-image">
+		if ($layout_elements['thumbnails']) {
+			$placeholder_thumbs_class = 'tainacan-gallery-thumbnails-placeholder tainacan-media-thumbs--layout-' . esc_attr( $thumbs_layout );
+			if ( $thumbs_layout === 'list' && $hide_image_thumbnails ) {
+				$placeholder_thumbs_class .= ' tainacan-media-thumbs--hide-image';
+			}
+			$placeholder_content .= '<ul class="' . esc_attr( $placeholder_thumbs_class ) . '">
+				<li class="tainacan-media-item wp-block-post-featured-image">
 					<div class="wp-block-post-featured-image__placeholder"><svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" preserveAspectRatio="none" class="components-placeholder__illustration" aria-hidden="true" focusable="false"><path vector-effect="non-scaling-stroke" d="M60 60 0 0"></path></svg></div>
 				</li>
-				<li class="wp-block-post-featured-image wp-block-post-featured-image">
+				<li class="tainacan-media-item wp-block-post-featured-image">
 					<div class="wp-block-post-featured-image__placeholder"><svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" preserveAspectRatio="none" class="components-placeholder__illustration" aria-hidden="true" focusable="false"><path vector-effect="non-scaling-stroke" d="M60 60 0 0"></path></svg></div>
 				</li>
-				<li class="wp-block-post-featured-image wp-block-post-featured-image">
+				<li class="tainacan-media-item wp-block-post-featured-image">
 					<div class="wp-block-post-featured-image__placeholder"><svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" preserveAspectRatio="none" class="components-placeholder__illustration" aria-hidden="true" focusable="false"><path vector-effect="non-scaling-stroke" d="M60 60 0 0"></path></svg></div>
 				</li>
-				<li class="wp-block-post-featured-image wp-block-post-featured-image">
+				<li class="tainacan-media-item wp-block-post-featured-image">
 					<div class="wp-block-post-featured-image__placeholder"><svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" preserveAspectRatio="none" class="components-placeholder__illustration" aria-hidden="true" focusable="false"><path vector-effect="non-scaling-stroke" d="M60 60 0 0"></path></svg></div>
 				</li>
-				<li class="wp-block-post-featured-image wp-block-post-featured-image">
+				<li class="tainacan-media-item wp-block-post-featured-image">
 					<div class="wp-block-post-featured-image__placeholder"><svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" preserveAspectRatio="none" class="components-placeholder__illustration" aria-hidden="true" focusable="false"><path vector-effect="non-scaling-stroke" d="M60 60 0 0"></path></svg></div>
 				</li>
 			</ul>';
+		}
 
 		return '<div ' . $wrapper_attributes . '>' . $placeholder_content . '</div>';
 	}

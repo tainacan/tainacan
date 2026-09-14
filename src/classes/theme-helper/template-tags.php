@@ -549,6 +549,27 @@ function tainacan_the_collection_description() {
 }
 
 /**
+ * Sanitize a thumbnails layout slug for the media gallery.
+ *
+ * Core layouts are 'carousel', 'grid' and 'list'. Other class-safe slugs are
+ * kept so themes and plugins can add a layout, style
+ * `.tainacan-media-thumbs--layout-{slug}`, and handle it in
+ * tainacan_get_the_media_component(). Empty or invalid values fall back to
+ * 'carousel'.
+ *
+ * @param mixed $layout Layout name.
+ * @return string
+ */
+function tainacan_sanitize_media_thumbs_layout( $layout ) {
+	if ( ! is_string( $layout ) || $layout === '' ) {
+		return 'carousel';
+	}
+
+	$layout = sanitize_html_class( $layout );
+	return $layout !== '' ? $layout : 'carousel';
+}
+
+/**
  * Tainacan Gallery component, used to render document, attachments and other files
  *
  * @param string       $media_id           ID to be added to the gallery div
@@ -602,6 +623,7 @@ function tainacan_the_media_component($media_id, $media_items_thumbs, $media_ite
  *     @type string      swiper_arrow_prev_custom_svg 	Custom SVG icon to render previous navigation arrow
  *     @type bool 		 disable_main_carousel			Disable the main carousel, removing swiper classes and wrappers
  *     @type bool 		 disable_thumbs_carousel		Disable the thumbs carousel, removing swiper classes and wrappers
+ *     @type string		 thumbs_layout					Thumbnails layout slug. Core values: 'carousel' (default), 'grid' or 'list'. Other slugs are passed through. Non-carousel layouts also disable the thumbs Swiper.
  *     @type bool 		 disable_lightbox				Do not open photoswipe layer on click
  *     @type bool        show_share_button        		Shows share button on lightbox
  *	   @type bool	 	 lightbox_has_light_background  Show a light background instead of dark in the lightbox 
@@ -645,6 +667,7 @@ function tainacan_get_the_media_component(
 		'swiper_arrow_prev_custom_svg' => '',
 		'disable_main_carousel' => false,
 		'disable_thumbs_carousel' => false,
+		'thumbs_layout' => 'carousel',
 		'disable_lightbox' => false,
 		'show_share_button' => false,
 		'lightbox_has_light_background' => false
@@ -656,6 +679,12 @@ function tainacan_get_the_media_component(
 	$args['media_thumbs_id'] = $media_id . '-thumbs';
 	$args['media_id'] = $media_id;
 
+	$args['thumbs_layout'] = tainacan_sanitize_media_thumbs_layout( $args['thumbs_layout'] );
+	if ( $args['thumbs_layout'] !== 'carousel' ) {
+		$args['disable_thumbs_carousel'] = true;
+	}
+	$args['class_thumbs_div'] = trim( $args['class_thumbs_div'] . ' tainacan-media-thumbs--layout-' . $args['thumbs_layout'] );
+
 	$media_component_js_config = [
 		'media_main_id' => $args['media_main_id'],
 		'media_thumbs_id' => $args['media_thumbs_id'],
@@ -666,6 +695,7 @@ function tainacan_get_the_media_component(
 		'swiper_thumbs_options' => $args['swiper_thumbs_options'],
 		'disable_main_carousel' => $args['disable_main_carousel'],
 		'disable_thumbs_carousel' => $args['disable_thumbs_carousel'],
+		'thumbs_layout' => $args['thumbs_layout'],
 		'disable_lightbox' => $args['disable_lightbox'],
 		'lightbox_has_light_background' => $args['lightbox_has_light_background'],
 		'hide_media_name' => isset($args['hide_media_name']) ? (bool) $args['hide_media_name'] : false,
@@ -896,12 +926,15 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 		'media_source' => ''
 	), $args);
 
+	$slide_content_classes = trim( 'tainacan-media-item-content swiper-slide-content ' . $args['class_slide_content'] );
+	$slide_metadata_classes = trim( 'tainacan-media-item-metadata swiper-slide-metadata ' . ( ! empty( $args['media_title'] ) ? 'has-name ' : '' ) . ( ! empty( $args['media_caption'] ) ? 'has-caption ' : '' ) . ( ! empty( $args['media_description'] ) ? 'has-description ' : '' ) . $args['class_slide_metadata'] );
+
 	ob_start();
 
 ?>
 	<?php echo wp_kses_post($args['before_slide_content']) ?>
 
-	<div class="swiper-slide-content <?php echo esc_attr($args['class_slide_content']) ?>"<?php
+	<div class="<?php echo esc_attr($slide_content_classes) ?>"<?php
 		echo ! empty( $args['media_type'] ) ? ' data-media-type="' . esc_attr( $args['media_type'] ) . '"' : '';
 		echo ! empty( $args['media_source'] ) ? ' data-media-source="' . esc_attr( $args['media_source'] ) . '"' : '';
 	?>>
@@ -915,19 +948,19 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 		<?php echo wp_kses_post($args['before_slide_metadata']); ?>
 
 		<?php if ( !empty($args['media_title']) || !empty($args['description']) || !empty($args['media_caption']) ) : ?>
-			<div class="swiper-slide-metadata <?php echo !empty($args['media_title']) ? 'has-name ' : ''; echo !empty($args['media_caption']) ? 'has-caption ' : ''; echo !empty($args['media_description']) ? 'has-description ' : ''; ?> <?php echo wp_kses_post($args['class_slide_metadata']); ?>">
+			<div class="<?php echo esc_attr( $slide_metadata_classes ); ?>">
 				<?php if ( !empty($args['media_caption']) ) :?>
-					<span class="swiper-slide-metadata__caption">
+					<span class="tainacan-media-item-metadata__caption swiper-slide-metadata__caption">
 						<?php echo wp_kses_post($args['media_caption']); ?>
 					</span>
 				<?php endif; ?>	
 				<?php if ( !empty($args['media_title']) ) :?>
-					<span class="swiper-slide-metadata__name">
+					<span class="tainacan-media-item-metadata__name swiper-slide-metadata__name">
 						<?php echo wp_kses_post($args['media_title']); ?>
 					</span>
 				<?php endif; ?>
 				<?php if ( !empty($args['media_description']) ) :?>
-					<span class="swiper-slide-metadata__description">
+					<span class="tainacan-media-item-metadata__description swiper-slide-metadata__description">
 						<?php echo wp_kses_post($args['media_description']); ?>
 					</span>
 				<?php endif; ?>
@@ -1574,8 +1607,9 @@ function tainacan_has_related_items($item_id = false) {
 	* 	   @type bool 	 $hideFileNameMain 				  Hides the Main slider file name
 	* 	   @type bool 	 $hideFileCaptionMain 			  Hides the Main slider file caption
 	* 	   @type bool 	 $hideFileDescriptionMain		  Hides the Main slider file description
-	* 	   @type bool 	 $hideFileNameThumbnails 		  Hides the Thumbnails carousel file name
-	* 	   @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption
+		* 	   @type bool 	 $hideFileNameThumbnails 		  Hides the Thumbnails carousel file name
+		* 	   @type bool 	 $hideImageThumbnails 			  Hides the thumbnail image in list layout. Defaults to false.
+		* 	   @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption
 	* 	   @type bool 	 $hideFileDescriptionThumbnails   Hides the Thumbnails carousel file description
 	* 	   @type bool 	 $hideFileNameLightbox 			  Hides the Lightbox file name
 	* 	   @type bool 	 $hideFileCaptionLightbox 		  Hides the Lightbox file caption
@@ -1588,6 +1622,7 @@ function tainacan_has_related_items($item_id = false) {
 	*	   @type string  $mainImagesSize				  Media size for the Main slider images. Defaults to 'large'
 	*	   @type string  $thumbnailsSize				  Media size for the thumbnail images. Defaults to 'tainacan-medium'
 	*	   @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.
+	*	   @type string  $thumbsLayout					  Thumbnails layout slug. Core values: 'carousel' (default), 'grid' or 'list'. Other slugs are passed through.
 	* }		
 	* @return void
  */

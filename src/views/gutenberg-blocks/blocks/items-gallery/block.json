@@ -72,6 +72,10 @@
             "type": "boolean",
             "default": true
         },
+        "hideImageThumbnails": {
+            "type": "boolean",
+            "default": false
+        },
         "hideItemTitleLightbox": {
             "type": "boolean",
             "default": false
@@ -130,6 +134,11 @@
         "thumbsHaveFixedHeight": {
             "type": "boolean",
             "default": false
+        },
+        "thumbsLayout": {
+            "type": "string",
+            "default": "carousel",
+            "enum": [ "carousel", "grid", "list" ]
         }
     },
     "supports": {

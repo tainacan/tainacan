@@ -26,6 +26,8 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
      * @param  {Object}  options.swiper_thumbs_options          object with SwiperJS options for the thumbnails list (https://swiperjs.com/swiper-api)
      * @param  {Object}  options.swiper_main_options            object with SwiperJS options for the main list
      * @param  {Boolean} options.disable_lightbox               do not open photoswipes lightbox when clicking the main gallery
+     * @param  {Boolean} options.disable_thumbs_carousel        do not initialize Swiper on the thumbnails list
+     * @param  {String}  options.thumbs_layout                  thumbnails layout slug. Core: 'carousel' (default), 'grid' or 'list'
      * @param  {Boolean} options.show_share_button              show share button on lightbox
      * @param  {Boolean} options.show_download_button           show share download button on lightbox
      * @param  {Boolean} options.hide_media_name                hide media name on lightbox
@@ -44,6 +46,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         this.options = options;
 
         this.initializeSwiper();
+        this.initializeThumbsLayoutNavigation();
         
         if (!this.options.disable_lightbox) {
             if (this.main_gallery_selector)
@@ -165,6 +168,83 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             }
         }
         
+    }
+
+    /**
+     * Thumbnails layout used by the gallery.
+     * Core values are carousel, grid and list; other slugs are passed through.
+     * @return {String}
+     */
+    getThumbsLayout() {
+        const layout = this.options.thumbs_layout;
+        if (typeof layout === 'string' && layout !== '')
+            return layout;
+        return 'carousel';
+    }
+
+    /**
+     * When thumbs are not a carousel, Swiper is not initialized.
+     * Keep them in sync with the main slider by index, reusing the
+     * same active class the carousel thumbs already style.
+     */
+    initializeThumbsLayoutNavigation() {
+        if (!this.thumbs_gallery_selector || this.getThumbsLayout() === 'carousel')
+            return;
+
+        const thumbsElement = document.querySelector(this.thumbs_gallery_selector);
+        if (!thumbsElement)
+            return;
+
+        const thumbsList = thumbsElement.querySelector('.tainacan-media-items');
+        if (!thumbsList)
+            return;
+
+        const thumbs = this.getGallerySlides(thumbsList);
+        if (!thumbs.length)
+            return;
+
+        const setActiveThumb = (index) => {
+            thumbs.forEach((thumb, i) => {
+                const isActive = i === index;
+                thumb.classList.toggle('tainacan-media-item--thumb-active', isActive);
+                if (isActive)
+                    thumb.setAttribute('aria-current', 'true');
+                else
+                    thumb.removeAttribute('aria-current');
+            });
+        };
+
+        setActiveThumb(this.mainSwiper ? this.mainSwiper.activeIndex : 0);
+
+        if (!this.mainSwiper)
+            return;
+
+        thumbs.forEach((thumb, index) => {
+            thumb.addEventListener('click', (event) => {
+                if (event.target.closest('.tainacan-media-item-actions'))
+                    return;
+                if (event.target.closest('.tainacan-item-file-download'))
+                    return;
+
+                event.preventDefault();
+                this.mainSwiper.slideTo(index);
+            });
+
+            if (!thumb.querySelector('a[href], button, [tabindex]')) {
+                thumb.setAttribute('tabindex', '0');
+                thumb.setAttribute('role', 'button');
+                thumb.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        this.mainSwiper.slideTo(index);
+                    }
+                });
+            }
+        });
+
+        this.mainSwiper.on('slideChange', () => {
+            setActiveThumb(this.mainSwiper.activeIndex);
+        });
     }
   
     /* Initializes Photoswipe Lightbox */
@@ -369,7 +449,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         this.setupLightboxExpandControls(galleryElement, items);
 
         /* Stops propagation inside links that are inside metatada */
-        let carouselMetadataLinks = galleryElement.querySelectorAll('.swiper-slide-metadata a');
+        let carouselMetadataLinks = galleryElement.querySelectorAll('.tainacan-media-item-metadata a, .swiper-slide-metadata a');
         if (carouselMetadataLinks && carouselMetadataLinks.length) {
             for (let i = 0; i < carouselMetadataLinks.length; i++) {
                 carouselMetadataLinks[i].addEventListener('click',function(e){
@@ -410,11 +490,11 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 }
             }
 
-            let metadataElement = liElement.querySelector('.swiper-slide-metadata');
+            let metadataElement = this.getSlideMetadataElement(liElement);
             if (metadataElement) {
-                const name = metadataElement.querySelector('.swiper-slide-metadata__name');
-                const caption = metadataElement.querySelector('.swiper-slide-metadata__caption');
-                const description = metadataElement.querySelector('.swiper-slide-metadata__description');
+                const name = metadataElement.querySelector('.tainacan-media-item-metadata__name, .swiper-slide-metadata__name');
+                const caption = metadataElement.querySelector('.tainacan-media-item-metadata__caption, .swiper-slide-metadata__caption');
+                const description = metadataElement.querySelector('.tainacan-media-item-metadata__description, .swiper-slide-metadata__description');
 
                 item.title = {
                     name,
@@ -461,7 +541,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
 
     /**
      * Direct children of the gallery list that are media items.
-     * Uses .tainacan-media-item so Swiper-disabled single items and future
+     * Uses .tainacan-media-item so Swiper-disabled single items and
      * grid/list thumbs stay in the same PhotoSwipe index as carousel slides.
      * @param {HTMLElement} galleryElement
      * @return {HTMLElement[]}
@@ -476,6 +556,29 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
     }
 
     /**
+     * Inner media wrapper. Generic class is canonical; swiper-slide-content
+     * remains as a compatibility alias when Swiper is active.
+     * @param {Element} slide
+     * @return {Element|null}
+     */
+    getSlideContentElement(slide) {
+        if (!slide)
+            return null;
+        return slide.querySelector('.tainacan-media-item-content, .swiper-slide-content');
+    }
+
+    /**
+     * Caption/name/description wrapper on a slide.
+     * @param {Element} root
+     * @return {Element|null}
+     */
+    getSlideMetadataElement(root) {
+        if (!root)
+            return null;
+        return root.querySelector('.tainacan-media-item-metadata, .swiper-slide-metadata');
+    }
+
+    /**
      * Whether a node sits outside the visible slide media (lightbox payload, captions, download).
      * @param {Element} node
      * @param {Element} slideContent
@@ -486,7 +589,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             return true;
         if (node.closest('.media-full-content'))
             return true;
-        if (node.closest('.swiper-slide-metadata'))
+        if (node.closest('.tainacan-media-item-metadata, .swiper-slide-metadata'))
             return true;
         if (node.closest('.tainacan-media-item-actions'))
             return true;
@@ -523,7 +626,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             return null;
 
         const allLinks = slideContent.querySelectorAll('a[href]');
-        const metadataElement = slideContent.querySelector('.swiper-slide-metadata');
+        const metadataElement = this.getSlideMetadataElement(slideContent);
 
         for (let i = 0; i < allLinks.length; i++) {
             const link = allLinks[i];
@@ -546,7 +649,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
      * @return {Boolean}
      */
     slideOpensLightboxOnClick(slide) {
-        const slideContent = slide && slide.querySelector('.swiper-slide-content');
+        const slideContent = this.getSlideContentElement(slide);
         if (!slideContent)
             return false;
 
@@ -585,12 +688,12 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             if (!this.slideOpensLightboxOnClick(slide))
                 return;
 
-            const slideContent = slide.querySelector('.swiper-slide-content');
+            const slideContent = this.getSlideContentElement(slide);
             if (!slideContent) return;
 
             const mainLink = this.getSlideMainLink(slideContent);
             const img = this.getVisibleSlideMedia(slideContent, 'img');
-            const titleElement = slide.querySelector('.swiper-slide-metadata__name');
+            const titleElement = slide.querySelector('.tainacan-media-item-metadata__name, .swiper-slide-metadata__name');
             const mediaType = slideContent.getAttribute('data-media-type') || '';
 
             let ariaLabelParts = [];
@@ -639,7 +742,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             if (!this.slideOpensLightboxOnClick(slide))
                 return;
 
-            const slideContent = slide.querySelector('.swiper-slide-content');
+            const slideContent = this.getSlideContentElement(slide);
             if (!slideContent) return;
 
             const mainLink = this.getSlideMainLink(slideContent);
@@ -713,6 +816,7 @@ export default (element) => {
         swiper_thumbs_options: {},
         disable_main_carousel: false,
         disable_thumbs_carousel: false,
+        thumbs_layout: 'carousel',
         disable_lightbox: false,
         lightbox_has_light_background: false,
         hide_media_name: false,
