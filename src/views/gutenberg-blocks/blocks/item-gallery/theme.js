@@ -186,9 +186,14 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
      * When thumbs are not a carousel, Swiper is not initialized.
      * Keep them in sync with the main slider by index, reusing the
      * same active class the carousel thumbs already style.
+     * Thumbs-only galleries (no main slider) open a lightbox instead;
+     * there is no current slide to mark.
      */
     initializeThumbsLayoutNavigation() {
         if (!this.thumbs_gallery_selector || this.getThumbsLayout() === 'carousel')
+            return;
+
+        if (!this.mainSwiper)
             return;
 
         const thumbsElement = document.querySelector(this.thumbs_gallery_selector);
@@ -214,10 +219,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             });
         };
 
-        setActiveThumb(this.mainSwiper ? this.mainSwiper.activeIndex : 0);
-
-        if (!this.mainSwiper)
-            return;
+        setActiveThumb(this.mainSwiper.activeIndex);
 
         thumbs.forEach((thumb, index) => {
             thumb.addEventListener('click', (event) => {
