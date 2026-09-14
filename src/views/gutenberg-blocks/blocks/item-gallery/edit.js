@@ -37,6 +37,7 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
         hideFileCaptionMain,
         hideFileDescriptionMain,
         hideFileNameThumbnails,
+        hideImageThumbnails,
         hideFileCaptionThumbnails,
         hideFileDescriptionThumbnails,
         hideFileNameLightbox,
@@ -54,7 +55,8 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
         templateMode,
         mainImagesSize,
         thumbnailsSize,
-        thumbsHaveFixedHeight
+        thumbsHaveFixedHeight,
+        thumbsLayout
     } = attributes;
 
     // Gets blocks props from hook
@@ -150,7 +152,7 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                         }
                     />
                     <ToggleControl
-                        label={__('Thumbnails carousel', 'tainacan')}
+                        label={__('Thumbnails', 'tainacan')}
                         checked={ layoutElements['thumbnails'] === true }
                         onChange={ (isChecked) => {
                                 let updatedElements = Object.assign({},layoutElements);
@@ -273,20 +275,11 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                 : null }
                 { layoutElements['thumbnails'] === true ?
                     <PanelBody
-                            title={__('Thumbnails carousel settings', 'tainacan')}
+                            title={__('Thumbnails settings', 'tainacan')}
                             initialOpen={ true }
                         >
-                        <SelectControl
-                                label={__('Image size', 'tainacan')}
-                                value={ thumbnailsSize }
-                                options={ imageSizeOptions }
-                                onChange={ ( aThumbnailsSize ) => { 
-                                    thumbnailsSize = aThumbnailsSize;
-                                    setAttributes({ thumbnailsSize: thumbnailsSize });
-                                }}
-                            />
                         <RangeControl
-                            label={ __('Carousel width (%)', 'tainacan') }
+                            label={ __('Thumbnails area width (%)', 'tainacan') }
                             value={ thumbnailsCarouselWidth }
                             onChange={ ( updatedThumbnailsCarouselWidth ) => {
                                 thumbnailsCarouselWidth = updatedThumbnailsCarouselWidth;
@@ -295,34 +288,121 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                             min={ 10 }
                             max={ 150 }
                         />
-                        <RangeControl
-                            label={ __('Carousel item size (px)', 'tainacan') }
-                            value={ thumbnailsCarouselItemSize }
-                            onChange={ ( updatedThumbnailsCarouselItemSize ) => {
-                                thumbnailsCarouselItemSize = updatedThumbnailsCarouselItemSize;
-                                setAttributes({ thumbnailsCarouselItemSize: updatedThumbnailsCarouselItemSize });
-                            }}
-                            min={ 32 }
-                            max={ 400 }
-                        />
-                        <ToggleControl
-                            label={ __('Thumbnails have fixed height', 'tainacan') }
-                            help={ __( 'If checked, the thumbnails will have fixed the item size height, otherwise they will have fixed the item size width.', 'tainacan' ) }
-                            checked={ thumbsHaveFixedHeight }
-                            onChange={ ( isChecked ) => {
-                                thumbsHaveFixedHeight = isChecked;
-                                setAttributes({ thumbsHaveFixedHeight: thumbsHaveFixedHeight });
-                            }}
-                        />
-                        <ToggleControl
-                            label={__('Hide file name', 'tainacan')}
-                            checked={ hideFileNameThumbnails }
-                            onChange={ ( isChecked ) => {
-                                    hideFileNameThumbnails = isChecked;
-                                    setAttributes({ hideFileNameThumbnails: hideFileNameThumbnails });
-                                } 
+                        <BaseControl
+                                id="thumbnails-layout"
+                                label={ __('Layout', 'tainacan') }
+                                help={ thumbsLayout === 'list'
+                                    ? __( 'List rows show the file name. Slide actions stay on the main slider for now.', 'tainacan' )
+                                    : __( 'Same files as the carousel: images and icons, not live embeds.', 'tainacan' )
+                                }>
+                            { tainacan_blocks.wp_version >= '6.8' ?
+                                <ToggleGroupControl
+                                        __next40pxDefaultSize
+                                        __nextHasNoMarginBottom
+                                        isBlock
+                                        id="thumbnails-layout"
+                                        onChange={ ( aThumbsLayout ) => {
+                                            setAttributes({ thumbsLayout: aThumbsLayout });
+                                        } }
+                                        value={ thumbsLayout || 'carousel' }
+                                >
+                                    <ToggleGroupControlOption
+                                        label={ __('Carousel', 'tainacan') }
+                                        value="carousel"
+                                    />
+                                    <ToggleGroupControlOption
+                                        label={ __('Grid', 'tainacan') }
+                                        value="grid"
+                                    />
+                                    <ToggleGroupControlOption
+                                        label={ __('List', 'tainacan') }
+                                        value="list"
+                                    />
+                                </ToggleGroupControl>
+                                :
+                                <ButtonGroup id="thumbnails-layout">
+                                    <Button
+                                            onClick={ () => {
+                                                const updates = { thumbsLayout: 'carousel' };
+                                                setAttributes( updates );
+                                            } }
+                                            variant={ ( thumbsLayout || 'carousel' ) === 'carousel' ? 'primary' : 'secondary' }>
+                                        { __('Carousel', 'tainacan') }
+                                    </Button>
+                                    <Button
+                                            onClick={ () => {
+                                                setAttributes({ thumbsLayout: 'grid' });
+                                            } }
+                                            variant={ thumbsLayout === 'grid' ? 'primary' : 'secondary' }>
+                                        { __('Grid', 'tainacan') }
+                                    </Button>
+                                    <Button
+                                            onClick={ () => {
+                                                setAttributes({ thumbsLayout: 'list' });
+                                            } }
+                                            variant={ thumbsLayout === 'list' ? 'primary' : 'secondary' }>
+                                        { __('List', 'tainacan') }
+                                    </Button>
+                                </ButtonGroup>
                             }
-                        />
+                        </BaseControl>
+                        { thumbsLayout === 'list' ?
+                            <ToggleControl
+                                label={__('Hide thumbnail image', 'tainacan')}
+                                help={ hideImageThumbnails ? __('Toggle to show the file thumbnail beside the name', 'tainacan') : __('Toggle to hide the file thumbnail and show only the name', 'tainacan') }
+                                checked={ hideImageThumbnails }
+                                onChange={ ( isChecked ) => {
+                                        hideImageThumbnails = isChecked;
+                                        setAttributes({ hideImageThumbnails: hideImageThumbnails });
+                                    } 
+                                }
+                            />
+                        : null }
+                        { thumbsLayout !== 'list' || !hideImageThumbnails ?
+                            <SelectControl
+                                label={__('Image size', 'tainacan')}
+                                value={ thumbnailsSize }
+                                options={ imageSizeOptions }
+                                onChange={ ( aThumbnailsSize ) => { 
+                                    thumbnailsSize = aThumbnailsSize;
+                                    setAttributes({ thumbnailsSize: thumbnailsSize });
+                                }}
+                            />
+                        : null }
+                        { thumbsLayout !== 'list' || !hideImageThumbnails ?
+                            <RangeControl
+                                label={ __('Thumbnail size (px)', 'tainacan') }
+                                value={ thumbnailsCarouselItemSize }
+                                onChange={ ( updatedThumbnailsCarouselItemSize ) => {
+                                    thumbnailsCarouselItemSize = updatedThumbnailsCarouselItemSize;
+                                    setAttributes({ thumbnailsCarouselItemSize: updatedThumbnailsCarouselItemSize });
+                                }}
+                                min={ 32 }
+                                max={ 400 }
+                            />
+                        : null }
+                        { thumbsLayout !== 'list' ?
+                            <>
+                                <ToggleControl
+                                    label={ __('Thumbnails have fixed height', 'tainacan') }
+                                    help={ __( 'If checked, the thumbnails will have fixed the item size height, otherwise they will have fixed the item size width.', 'tainacan' ) }
+                                    checked={ thumbsHaveFixedHeight }
+                                    onChange={ ( isChecked ) => {
+                                        thumbsHaveFixedHeight = isChecked;
+                                        setAttributes({ thumbsHaveFixedHeight: thumbsHaveFixedHeight });
+                                    }}
+                                />
+                                <ToggleControl
+                                    label={__('Hide file name', 'tainacan')}
+                                    checked={ hideFileNameThumbnails }
+                                    onChange={ ( isChecked ) => {
+                                            hideFileNameThumbnails = isChecked;
+                                            setAttributes({ hideFileNameThumbnails: hideFileNameThumbnails });
+                                        } 
+                                    }
+                                />
+                            </>
+                        : null }
                        <ToggleControl
                             label={__('Hide file caption', 'tainacan')}
                             checked={ hideFileCaptionThumbnails }
