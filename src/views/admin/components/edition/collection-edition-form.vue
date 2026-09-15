@@ -53,11 +53,9 @@
                         <help-button 
                                 :title="$i18n.getHelperTitle('collections', 'description')" 
                                 :message="$i18n.getHelperMessage('collections', 'description')" />
-                        <b-input
+                        <tainacan-wysiwyg
                                 id="tainacan-text-description"
                                 v-model="form.description"
-                                type="textarea"
-                                rows="4"
                                 :placeholder="$i18n.get('instruction_collection_description')"
                                 @focus="clearErrors('description')" />
                     </b-field>
