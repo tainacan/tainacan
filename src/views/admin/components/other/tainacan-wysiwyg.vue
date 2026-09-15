@@ -7,8 +7,8 @@
                 :disabled="disabled"
                 :aria-describedby="ariaDescribedby"
                 @update:model-value="onUpdate"
-                @on-focus="onFocus"
-                @on-blur="onBlur" />
+                @focus="onFocus"
+                @blur="onBlur" />
     </div>
 </template>
 
@@ -21,11 +21,15 @@ import 'tinymce/themes/silver';
 import 'tinymce/plugins/link';
 import 'tinymce/plugins/lists';
 import 'tinymce/skins/ui/oxide/skin.css';
-import 'tinymce/skins/content/default/content.css';
+import contentCss from 'tinymce/skins/content/default/content.css';
+import contentUiCss from 'tinymce/skins/ui/oxide/content.css';
 
 const EDITOR_INIT = {
     menubar: false,
     plugins: 'link lists',
+    skin: false,
+    content_css: false,
+    content_style: `${contentCss}\n${contentUiCss}`,
     toolbar: 'undo redo | blocks | bold italic | bullist numlist | link',
     block_formats: 'Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3;Heading 4=h4;Heading 5=h5;Heading 6=h6',
     valid_elements: 'p,h1,h2,h3,h4,h5,h6,ul,ol,li,br,strong,em,b,i,a[href|title]',
