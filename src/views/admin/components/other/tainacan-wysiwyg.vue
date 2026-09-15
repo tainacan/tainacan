@@ -32,7 +32,7 @@ const EDITOR_INIT = {
     skin: false,
     content_css: false,
     content_style: `${contentCss}\n${contentUiCss}`,
-    toolbar: 'undo redo | blocks | bold italic | bullist numlist | link',
+    toolbar: 'blocks | bold italic | bullist numlist | link | undo redo',
     block_formats: 'Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3;Heading 4=h4;Heading 5=h5;Heading 6=h6',
     valid_elements: 'p,h1,h2,h3,h4,h5,h6,ul,ol,li,br,strong,em,b,i,a[href|title]',
     link_title: true,
