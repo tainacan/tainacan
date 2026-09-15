@@ -5,6 +5,7 @@
 | Requirement | Production boundary | Automated proof | Browser proof |
 | --- | --- | --- | --- |
 | Undo and Redo are the final TinyMCE toolbar group | `src/views/admin/components/other/tainacan-wysiwyg.vue` | `tests/js/tainacan-wysiwyg-toolbar.test.mjs` | New-collection form using the rich-text description editor |
+| Focused TinyMCE edit-area border uses Tainacan’s secondary color | `src/views/admin/components/other/tainacan-wysiwyg.vue` | `tests/js/tainacan-wysiwyg-toolbar.test.mjs` | New-collection form with the description editor focused |
 
 ## TDD evidence
 
@@ -32,6 +33,18 @@ Command: `npm run test:wysiwyg`
 
 Observed result: passed (2 tests, 0 failures). The scoped rules remove toolbar group padding and set the editor header padding to `0 6px`.
 
+### Focus color RED
+
+Command: `npm run test:wysiwyg`
+
+Observed result: failed as expected. The new focused edit-area assertion could not find a `.tox.tox-edit-focus .tox-edit-area::before` rule using `var(--tainacan-secondary)`.
+
+### Focus color GREEN
+
+Command: `npm run test:wysiwyg`
+
+Observed result: passed (3 tests, 0 failures). The focused TinyMCE edit-area selector sets its pseudo-border to `var(--tainacan-secondary)`.
+
 ### Build and runtime checks
 
 - `npm run build`: passed. Webpack 5.110.1 compiled both configurations successfully.
@@ -44,5 +57,9 @@ Runner: Playwright with Chromium, viewport 1440×900. The supplied local account
 Visible toolbar order: Block Paragraph, Bold, Italic, Bullet list, Numbered list, Insert/edit link, Undo, Redo. The final two controls were asserted by their accessible labels. An unsaved editor update confirmed the form remained interactive and was not submitted. Screenshot: `.local-dev/w582-wysiwyg-toolbar.png`.
 
 After the toolbar spacing change, the same Playwright check observed computed header padding of `0px 6px` and computed padding of `0px` for all five toolbar groups. The local `build.sh` workflow compiled and deployed the updated Vue bundle before this check.
+
+For the focus-color check, the browser first recorded TinyMCE’s default focused pseudo-border as `rgb(0, 108, 231)`. After the focused TinyMCE selector was built and deployed, the editor had the `.tox-edit-focus` class and its `::before` border computed as `rgb(29, 57, 104)`, exactly matching the page’s resolved `--tainacan-secondary`. Screenshot: `.local-dev/w582-wysiwyg-focus.png`. The new-collection route deliberately overrides the secondary custom property to its repository-level accent; the check compares the resolved custom property, so it remains correct in other Tainacan color contexts.
+
+`npm run build` compiles the Vue bundle but does not update the separately deployed local WordPress plugin directory. The browser still served the prior bundle until `sudo ./build.sh` performed its project-provided deployment sync; that command then completed successfully.
 
 The local site was initially unavailable because its mounted `src` plugin lacked `src/vendor/autoload.php` and was inactive. Running `composer install` in this checkout restored the ignored dependency directory; activating the local `src` plugin restored the admin UI before this browser check.

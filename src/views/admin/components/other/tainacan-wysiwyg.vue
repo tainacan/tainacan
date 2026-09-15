@@ -123,6 +123,10 @@ export default {
         padding: 0 6px;
     }
 
+    :deep(.tox.tox-edit-focus .tox-edit-area::before) {
+        border-color: var(--tainacan-secondary) !important;
+    }
+
     &:not(.is-invalid):focus-within {
         :deep(.tox-tinymce) {
             border: 1px solid var(--tainacan-secondary) !important;
@@ -132,10 +136,6 @@ export default {
             outline-color: color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
             outline-style: solid;
             box-shadow: none !important;
-        }
-
-        :deep(.tox .tox-edit-area::before) {
-            border-color: var(--tainacan-secondary) !important;
         }
     }
 }

@@ -23,3 +23,15 @@ test('uses header padding instead of toolbar group padding', async () => {
     assert.match(component, /:deep\(\.tox \.tox-toolbar__group\)\s*\{\s*padding:\s*0;/);
     assert.match(component, /:deep\(\.tox:not\(\.tox-tinymce-inline\) \.tox-editor-header\)\s*\{\s*padding:\s*0 6px;/);
 });
+
+test('uses Tainacan secondary color for the focused edit-area border', async () => {
+    const component = await readFile(
+        new URL('../../src/views/admin/components/other/tainacan-wysiwyg.vue', import.meta.url),
+        'utf8'
+    );
+
+    assert.match(
+        component,
+        /:deep\(\.tox\.tox-edit-focus \.tox-edit-area::before\)\s*\{\s*border-color:\s*var\(--tainacan-secondary\) !important;/
+    );
+});
