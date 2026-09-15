@@ -48,9 +48,13 @@
                     <b-field
                             :addons="false"
                             label-for="tainacan-text-description"
-                            :label="$i18n.get('label_description')"
                             :type="editFormErrors['description'] != undefined ? 'is-danger' : ''"
                             :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
+                        <template #label>
+                            <span id="tainacan-text-description-label">
+                                {{ $i18n.get('label_description') }}
+                            </span>
+                        </template>
                         <help-button
                                 :title="$i18n.getHelperTitle('collections', 'description')"
                                 :message="$i18n.getHelperMessage('collections', 'description')" />
@@ -58,6 +62,7 @@
                                 id="tainacan-text-description"
                                 v-model="form.description"
                                 :invalid="editFormErrors['description'] != undefined"
+                                aria-labelledby="tainacan-text-description-label"
                                 aria-describedby="tainacan-text-description-error"
                                 :placeholder="$i18n.get('instruction_collection_description')"
                                 @focus="clearErrors('description')" />

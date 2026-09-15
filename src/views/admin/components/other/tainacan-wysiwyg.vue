@@ -70,6 +70,10 @@ export default {
             type: Boolean,
             default: false
         },
+        ariaLabelledby: {
+            type: String,
+            default: undefined
+        },
         ariaDescribedby: {
             type: String,
             default: undefined
@@ -81,9 +85,14 @@ export default {
             editorInit: {
                 ...EDITOR_INIT,
                 placeholder: this.placeholder,
-                iframe_attrs: this.ariaDescribedby
-                    ? { 'aria-describedby': this.ariaDescribedby }
-                    : {}
+                iframe_attrs: {
+                    ...(this.ariaLabelledby
+                        ? { 'aria-labelledby': this.ariaLabelledby }
+                        : {}),
+                    ...(this.ariaDescribedby
+                        ? { 'aria-describedby': this.ariaDescribedby }
+                        : {})
+                }
             }
         };
     },
