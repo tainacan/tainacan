@@ -115,6 +115,14 @@ export default {
 .tainacan-wysiwyg {
     width: 100%;
 
+    :deep(.tox .tox-toolbar__group) {
+        padding: 0;
+    }
+
+    :deep(.tox:not(.tox-tinymce-inline) .tox-editor-header) {
+        padding: 0 6px;
+    }
+
     &:not(.is-invalid):focus-within {
         :deep(.tox-tinymce) {
             border: 1px solid var(--tainacan-secondary) !important;
