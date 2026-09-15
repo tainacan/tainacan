@@ -1,11 +1,12 @@
 <template>
-    <div class="tainacan-wysiwyg">
+    <div
+            class="tainacan-wysiwyg"
+            :class="{ 'is-invalid': invalid }">
         <Editor
                 :id="id"
                 :model-value="modelValue"
                 :init="editorInit"
                 :disabled="disabled"
-                :aria-describedby="ariaDescribedby"
                 @update:model-value="onUpdate"
                 @focus="onFocus"
                 @blur="onBlur" />
@@ -65,6 +66,10 @@ export default {
             type: Boolean,
             default: false
         },
+        invalid: {
+            type: Boolean,
+            default: false
+        },
         ariaDescribedby: {
             type: String,
             default: undefined
@@ -75,7 +80,10 @@ export default {
         return {
             editorInit: {
                 ...EDITOR_INIT,
-                placeholder: this.placeholder
+                placeholder: this.placeholder,
+                iframe_attrs: this.ariaDescribedby
+                    ? { 'aria-describedby': this.ariaDescribedby }
+                    : {}
             }
         };
     },
@@ -96,5 +104,9 @@ export default {
 <style lang="scss" scoped>
 .tainacan-wysiwyg {
     width: 100%;
+}
+
+.tainacan-wysiwyg.is-invalid :deep(.tox-tinymce) {
+    border-color: var(--bulma-danger);
 }
 </style>

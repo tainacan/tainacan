@@ -46,18 +46,28 @@
 
                     <!-- Description -------------------------------- --> 
                     <b-field
-                            :addons="false" 
+                            :addons="false"
+                            label-for="tainacan-text-description"
                             :label="$i18n.get('label_description')"
-                            :type="editFormErrors['description'] != undefined ? 'is-danger' : ''" 
+                            :type="editFormErrors['description'] != undefined ? 'is-danger' : ''"
                             :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'description')" 
+                        <help-button
+                                :title="$i18n.getHelperTitle('collections', 'description')"
                                 :message="$i18n.getHelperMessage('collections', 'description')" />
                         <tainacan-wysiwyg
                                 id="tainacan-text-description"
                                 v-model="form.description"
+                                :invalid="editFormErrors['description'] != undefined"
+                                aria-describedby="tainacan-text-description-error"
                                 :placeholder="$i18n.get('instruction_collection_description')"
                                 @focus="clearErrors('description')" />
+                        <template
+                                v-if="editFormErrors['description'] != undefined"
+                                #message>
+                            <span id="tainacan-text-description-error">
+                                {{ editFormErrors['description'] }}
+                            </span>
+                        </template>
                     </b-field>
 
                     <!-- Collection Taxonomies options ------------------------ -->
