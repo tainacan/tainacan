@@ -6,6 +6,7 @@
                 :id="id"
                 :model-value="modelValue"
                 :init="editorInit"
+                license-key="gpl"
                 :disabled="disabled"
                 @update:model-value="onUpdate"
                 @focus="onFocus"
@@ -14,7 +15,7 @@
 </template>
 
 <script>
-import { Editor } from '@tinymce/tinymce-vue';
+import Editor from '@tinymce/tinymce-vue';
 import 'tinymce/tinymce';
 import 'tinymce/icons/default';
 import 'tinymce/models/dom';
@@ -113,9 +114,29 @@ export default {
 <style lang="scss" scoped>
 .tainacan-wysiwyg {
     width: 100%;
+
+    &:not(.is-invalid):focus-within {
+        :deep(.tox-tinymce) {
+            border: 1px solid var(--tainacan-secondary) !important;
+            outline-width: 2px;
+            outline-offset: -1px;
+            outline-color: var(--tainacan-secondary);
+            outline-color: color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
+            outline-style: solid;
+            box-shadow: none !important;
+        }
+
+        :deep(.tox .tox-edit-area::before) {
+            border-color: var(--tainacan-secondary) !important;
+        }
+    }
 }
 
 .tainacan-wysiwyg.is-invalid :deep(.tox-tinymce) {
     border-color: var(--bulma-danger);
+}
+
+.tainacan-wysiwyg.is-invalid :deep(.tox .tox-edit-area::before) {
+    border-color: var(--bulma-danger) !important;
 }
 </style>
