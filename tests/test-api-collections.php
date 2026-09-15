@@ -209,7 +209,7 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals('Test API', $data['name']);
     }
 	public function test_collection_description_round_trips_allowed_markup_via_api() {
-		$description = '<p>Intro</p><h1>Heading</h1><h2>Subheading</h2><ul><li><strong>Bold</strong> and <em>emphasis</em></li></ul><ol><li><b>Bold two</b> <i>Italic</i><br /><a href="geo:12.34,56.78" title="Map">Map label</a></li></ol>';
+		$description = '<p>Intro</p><h1>Heading</h1><h2>Subheading</h2><h3>Heading three</h3><h4>Heading four</h4><h5>Heading five</h5><h6>Heading six</h6><ul><li><strong>Bold</strong> and <em>emphasis</em></li></ul><ol><li><b>Bold two</b> <i>Italic</i><br /><a href="geo:12.34,56.78" title="Map">Map label</a></li></ol>';
 
 		$create = new \WP_REST_Request( 'POST', $this->namespace . '/collections' );
 		$create->set_body(
