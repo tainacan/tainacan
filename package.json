@@ -5,8 +5,7 @@
   "private": true,
   "scripts": {
     "build": "cross-env NODE_ENV=development webpack --config webpack.dev.js --progress --mode development",
-    "build-prod": "cross-env NODE_ENV=production webpack --config webpack.prod.js --progress --mode production",
-    "test:wysiwyg": "node tests/js/tainacan-wysiwyg-toolbar.test.mjs"
+    "build-prod": "cross-env NODE_ENV=production webpack --config webpack.prod.js --progress --mode production"
   },
   "dependencies": {
     "@tinymce/tinymce-vue": "6.3.0",
