@@ -35,3 +35,15 @@ test('uses Tainacan secondary color for the focused edit-area border', async () 
         /:deep\(\.tox\.tox-edit-focus \.tox-edit-area::before\)\s*\{\s*border-color:\s*var\(--tainacan-secondary\) !important;/
     );
 });
+
+test('uses the standard Tainacan focus border and outline for TinyMCE', async () => {
+    const component = await readFile(
+        new URL('../../src/views/admin/components/other/tainacan-wysiwyg.vue', import.meta.url),
+        'utf8'
+    );
+
+    assert.match(
+        component,
+        /&:not\(\.is-invalid\)\s*\{\s*:deep\(\.tox\.tox-edit-focus\)\s*\{\s*border:\s*1px solid var\(--tainacan-secondary\) !important;\s*outline-width:\s*2px;\s*outline-offset:\s*-1px;\s*outline-color:\s*var\(--tainacan-secondary\);\s*outline-color:\s*color-mix\(in srgb, var\(--tainacan-secondary\) 60%, var\(--tainacan-background-color\)\);\s*outline-style:\s*solid;/
+    );
+});

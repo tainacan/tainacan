@@ -6,6 +6,7 @@
 | --- | --- | --- | --- |
 | Undo and Redo are the final TinyMCE toolbar group | `src/views/admin/components/other/tainacan-wysiwyg.vue` | `tests/js/tainacan-wysiwyg-toolbar.test.mjs` | New-collection form using the rich-text description editor |
 | Focused TinyMCE edit-area border uses Tainacan’s secondary color | `src/views/admin/components/other/tainacan-wysiwyg.vue` | `tests/js/tainacan-wysiwyg-toolbar.test.mjs` | New-collection form with the description editor focused |
+| Focused TinyMCE container follows the standard input border-and-outline treatment | `src/views/admin/components/other/tainacan-wysiwyg.vue` | `tests/js/tainacan-wysiwyg-toolbar.test.mjs` | New-collection form with the description editor focused |
 
 ## TDD evidence
 
@@ -45,6 +46,18 @@ Command: `npm run test:wysiwyg`
 
 Observed result: passed (3 tests, 0 failures). The focused TinyMCE edit-area selector sets its pseudo-border to `var(--tainacan-secondary)`.
 
+### Focus outline RED
+
+Command: `npm run test:wysiwyg`
+
+Observed result: failed as expected. The new assertion could not find the standard border and blended outline on `.tox.tox-edit-focus` outside the iframe-incompatible `:focus-within` state.
+
+### Focus outline GREEN
+
+Command: `npm run test:wysiwyg`
+
+Observed result: passed (4 tests, 0 failures). The non-invalid TinyMCE focus class now receives the same secondary border, 2px outline, -1px offset, and blended outline color as standard Tainacan inputs.
+
 ### Build and runtime checks
 
 - `npm run build`: passed. Webpack 5.110.1 compiled both configurations successfully.
@@ -60,6 +73,8 @@ After the toolbar spacing change, the same Playwright check observed computed he
 
 For the focus-color check, the browser first recorded TinyMCE’s default focused pseudo-border as `rgb(0, 108, 231)`. After the focused TinyMCE selector was built and deployed, the editor had the `.tox-edit-focus` class and its `::before` border computed as `rgb(29, 57, 104)`, exactly matching the page’s resolved `--tainacan-secondary`. Screenshot: `.local-dev/w582-wysiwyg-focus.png`. The new-collection route deliberately overrides the secondary custom property to its repository-level accent; the check compares the resolved custom property, so it remains correct in other Tainacan color contexts.
 
-`npm run build` compiles the Vue bundle but does not update the separately deployed local WordPress plugin directory. The browser still served the prior bundle until `sudo ./build.sh` performed its project-provided deployment sync; that command then completed successfully.
+`npm run build` emits the Vue bundle under the checkout’s `src/assets/js` directory, which is directly bind-mounted into the local WordPress container. The earlier stale browser result was not caused by a separate deployment directory.
+
+For the standard focus-outline check, `npm run build` compiled successfully and the local WordPress container was restarted after its read-only bind mount retained a stale directory view. The mounted and HTTP-served Webpack runtime then referenced the current WYSIWYG chunk. In cache-disabled Chromium, the focused `.tox.tox-edit-focus` container computed a secondary border of `rgb(29, 57, 104)`, a 2px solid outline with -1px offset, and an outline color of `color(srgb 0.468235 0.534118 0.644706)`, matching the same `color-mix(...)` expression. Screenshot: `.local-dev/w582-wysiwyg-focus-outline.png`.
 
 The local site was initially unavailable because its mounted `src` plugin lacked `src/vendor/autoload.php` and was inactive. Running `composer install` in this checkout restored the ignored dependency directory; activating the local `src` plugin restored the admin UI before this browser check.
