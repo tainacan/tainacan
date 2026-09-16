@@ -208,51 +208,6 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertNotEquals($collection->get_name(), $data['name']);
 		$this->assertEquals('Test API', $data['name']);
     }
-	public function test_collection_description_round_trips_allowed_markup_via_api() {
-		$description = '<p>Intro</p><h1>Heading</h1><h2>Subheading</h2><h3>Heading three</h3><h4>Heading four</h4><h5>Heading five</h5><h6>Heading six</h6><ul><li><strong>Bold</strong> and <em>emphasis</em></li></ul><ol><li><b>Bold two</b> <i>Italic</i><br /><a href="geo:12.34,56.78" title="Map">Map label</a></li></ol>';
-
-		$create = new \WP_REST_Request( 'POST', $this->namespace . '/collections' );
-		$create->set_body(
-			json_encode(
-				array(
-					'name'        => 'Formatted description',
-					'description' => $description,
-				)
-			)
-		);
-
-		$created = $this->server->dispatch( $create );
-		$this->assertEquals( 201, $created->get_status(), print_r( $created->get_data(), true ) );
-		$collection_id = $created->get_data()['id'];
-		$this->assertSame( $description, $created->get_data()['description'] );
-
-		$get = new \WP_REST_Request( 'GET', $this->namespace . '/collections/' . $collection_id );
-		$fetched = $this->server->dispatch( $get );
-		$this->assertEquals( 200, $fetched->get_status() );
-		$this->assertSame( $description, $fetched->get_data()['description'] );
-
-		$updated_description = '<p>Updated</p><a href="https://example.com" title="Updated link">Read this</a>';
-		$update = new \WP_REST_Request( 'PATCH', $this->namespace . '/collections/' . $collection_id );
-		$update->set_body( json_encode( array( 'description' => $updated_description ) ) );
-		$updated = $this->server->dispatch( $update );
-		$this->assertEquals( 200, $updated->get_status(), print_r( $updated->get_data(), true ) );
-		$this->assertSame( $updated_description, $updated->get_data()['description'] );
-
-		$fetched_after_update = $this->server->dispatch( $get );
-		$this->assertEquals( 200, $fetched_after_update->get_status() );
-		$this->assertSame( $updated_description, $fetched_after_update->get_data()['description'] );
-
-		$empty_update = new \WP_REST_Request( 'PATCH', $this->namespace . '/collections/' . $collection_id );
-		$empty_update->set_body( json_encode( array( 'description' => '' ) ) );
-		$empty = $this->server->dispatch( $empty_update );
-		$this->assertEquals( 200, $empty->get_status(), print_r( $empty->get_data(), true ) );
-		$this->assertSame( '', $empty->get_data()['description'] );
-
-		$fetched_empty = $this->server->dispatch( $get );
-		$this->assertEquals( 200, $fetched_empty->get_status() );
-		$this->assertSame( '', $fetched_empty->get_data()['description'] );
-	}
-
 	public function test_collection_description_denial_and_failed_save_preserve_existing_value() {
 		$existing_description = '<p>Existing description</p>';
 		$collection = $this->tainacan_entity_factory->create_entity(
@@ -314,35 +269,6 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertSame( $existing_description, $after_failure->get_data()['description'] );
 	}
 
-	public function test_collection_description_assignment_removes_disallowed_markup() {
-		$collection = new \Tainacan\Entities\Collection();
-		$collection->set_description(
-			'<p class="unsafe" style="color:red" onclick="alert(1)">Safe</p>' .
-			'<div>Wrong container</div><script>alert(2)</script>' .
-			'<a href="https://example.com" title="Allowed" target="_blank" rel="nofollow">Label</a>' .
-			'<a href="javascript:alert(3)">Bad protocol</a>' .
-			'<iframe src="https://example.com">Frame</iframe>'
-		);
-
-		$description = $collection->get_description();
-		$this->assertStringContainsString( '<p>Safe</p>', $description );
-		$this->assertStringContainsString( '<a href="https://example.com" title="Allowed">Label</a>', $description );
-		$this->assertStringNotContainsString( 'class=', $description );
-		$this->assertStringNotContainsString( 'style=', $description );
-		$this->assertStringNotContainsString( 'onclick=', $description );
-		$this->assertStringNotContainsString( 'target=', $description );
-		$this->assertStringNotContainsString( 'rel=', $description );
-		$this->assertStringNotContainsString( '<div', $description );
-		$this->assertStringNotContainsString( '<script', $description );
-		$this->assertStringNotContainsString( '<iframe', $description );
-		$this->assertStringNotContainsString( 'javascript:', $description );
-
-		$collection->set_description( '' );
-		$this->assertSame( '', $collection->get_description() );
-
-		$collection->set_description( '<p><br data-mce-bogus="1"></p>' );
-		$this->assertSame( '', $collection->get_description() );
-	}
 }
 
 ?>

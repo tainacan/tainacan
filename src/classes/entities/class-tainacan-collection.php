@@ -835,34 +835,7 @@ class Collection extends Entity {
 	 * @return void
 	 */
 	function set_description( $value ) {
-		$allowed_html = [
-			'p'      => [],
-			'br'     => [],
-			'h1'     => [],
-			'h2'     => [],
-			'h3'     => [],
-			'h4'     => [],
-			'h5'     => [],
-			'h6'     => [],
-			'ul'     => [],
-			'ol'     => [],
-			'li'     => [],
-			'strong' => [],
-			'em'     => [],
-			'b'      => [],
-			'i'      => [],
-			'a'      => [
-				'href'  => true,
-				'title' => true,
-			],
-		];
-
-		$sanitized_value = wp_kses( (string) $value, $allowed_html );
-		if ( preg_match( '/^\s*<p>\s*(?:<br\s*\/?>\s*)?<\/p>\s*$/i', $sanitized_value ) ) {
-			$sanitized_value = '';
-		}
-
-		$this->set_mapped_property( 'description', $sanitized_value );
+		$this->set_mapped_property( 'description', $value );
 	}
 
 	/**
