@@ -754,6 +754,37 @@ public output_footer(): mixed
 
 ***
 
+### get_mapped_metadata_slugs
+
+Ordered mapper field slugs for the current collection: built-in mapper
+metadata first, then extra fields added through the mapper UI.
+
+```php
+protected get_mapped_metadata_slugs(): string[]
+```
+
+***
+
+### map_item_metadata
+
+Gets an Item as input and return an array of ItemMetadataObjects
+If a mapper is selected, the array keys will be the slugs of the metadata
+declared by the mapper, in the same order.
+
+```php
+protected map_item_metadata(\Tainacan\Entities\Item $item): mixed
+```
+
+Note that if one of the metadata is not mapped, this array item will be null
+
+**Parameters:**
+
+| Parameter | Type                        | Description |
+|-----------|-----------------------------|-------------|
+| `$item`   | **\Tainacan\Entities\Item** |             |
+
+***
+
 ### add_new_file
 
 ```php
