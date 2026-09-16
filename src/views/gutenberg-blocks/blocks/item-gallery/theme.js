@@ -142,6 +142,12 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             if ( !this.options.disable_main_carousel)
                 this.mainSwiper = new Swiper(this.main_gallery_selector, mainSwiperOptions);
 
+            if (this.mainSwiper) {
+                this.mainSwiper.on('slideChangeTransitionEnd', () => {
+                    this.reflowNativeAudioPlayers(this.mainSwiper.slides[this.mainSwiper.activeIndex]);
+                });
+            }
+
             if (
                 !this.options.disable_thumbs_carousel &&
                 !this.options.disable_main_carousel &&
@@ -567,6 +573,24 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         if (!slide)
             return null;
         return slide.querySelector('.tainacan-media-item-content, .swiper-slide-content');
+    }
+
+    /**
+     * Chrome sizes native <audio> controls on first layout and will not
+     * rebuild them when Swiper later gives the slide a real width. Toggling
+     * width forces that second layout; window resize already does the same.
+     * @param {Element} slide
+     */
+    reflowNativeAudioPlayers(slide) {
+        if (!slide)
+            return;
+
+        Array.prototype.forEach.call(slide.querySelectorAll('audio'), (audio) => {
+            const previousWidth = audio.style.width;
+            audio.style.width = '99%';
+            void audio.offsetWidth;
+            audio.style.width = previousWidth;
+        });
     }
 
     /**
