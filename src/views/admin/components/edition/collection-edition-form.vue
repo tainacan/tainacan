@@ -59,11 +59,20 @@
                                 :title="$i18n.getHelperTitle('collections', 'description')"
                                 :message="$i18n.getHelperMessage('collections', 'description')" />
                         <tainacan-wysiwyg
+                                v-if="tainacan_plugin.tainacan_allow_wysiwyg_editor === true"
                                 id="tainacan-text-description"
                                 v-model="form.description"
                                 :invalid="editFormErrors['description'] != undefined"
                                 aria-labelledby="tainacan-text-description-label"
                                 aria-describedby="tainacan-text-description-error"
+                                :placeholder="$i18n.get('instruction_collection_description')"
+                                @focus="clearErrors('description')" />
+                        <b-input
+                                v-else
+                                id="tainacan-text-description"
+                                v-model="form.description"
+                                type="textarea"
+                                rows="4"
                                 :placeholder="$i18n.get('instruction_collection_description')"
                                 @focus="clearErrors('description')" />
                         <template
@@ -2329,4 +2338,3 @@ export default {
     }
 
 </style>
-

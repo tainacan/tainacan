@@ -279,6 +279,10 @@ abstract class Pages {
 				defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') &&
 				true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY
 			),
+			'tainacan_allow_wysiwyg_editor' => (
+				defined('TAINACAN_ALLOW_WYSIWYG_EDITOR') &&
+				true === TAINACAN_ALLOW_WYSIWYG_EDITOR
+			),
 			'tainacan_index_pdf_content' => \Tainacan\Media::is_index_pdf_content_enabled(),
 			'document_content_index_max_characters' => \Tainacan\Media::get_document_content_index_max_characters(),
 			'has_permalinks_structure' => get_option('permalink_structure') !== '',
@@ -906,4 +910,3 @@ abstract class Pages {
 	}
 
 }
-

@@ -227,7 +227,9 @@ export default (element) => {
             /* Others */
             app.component('help-button', HelpButton);
             app.component('tainacan-title', TainacanTitle);
-            app.component('tainacan-wysiwyg', defineAsyncComponent(() => import('../components/other/tainacan-wysiwyg.vue')));
+            if (tainacan_plugin.tainacan_allow_wysiwyg_editor === true) {
+                app.component('tainacan-wysiwyg', defineAsyncComponent(() => import('../components/other/tainacan-wysiwyg.vue')));
+            }
             app.component('tainacan-external-link', TainacanExternalLink)
             
             // Event bus are needed to facilate comunication between child-parent-child components
