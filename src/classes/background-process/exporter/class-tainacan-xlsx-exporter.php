@@ -305,7 +305,9 @@ class XLSX_Exporter extends Exporter {
 		$headerRowContents = [];
 
 		if ($mapper) {
-			$headerRowContents = array_values( $this->get_mapped_column_headers() );
+			foreach ( $this->get_mapped_metadata_slugs() as $meta_slug ) {
+				$headerRowContents[] = $mapper->metadata[ $meta_slug ]['field'] ?? $meta_slug;
+			}
 		} else {
 			$headerRowContents = ['special_item_id'];
 

@@ -661,28 +661,26 @@ abstract class Exporter {
 	}
 	
 	/**
-	 * Column headers for a mapped export: built-in mapper fields first, then extra
-	 * fields added through the mapper UI, in collection metadata order.
+	 * Ordered mapper field slugs for the current collection: built-in mapper
+	 * metadata first, then extra fields added through the mapper UI.
 	 *
-	 * @return array<string, string> Map of mapper slug => header label
+	 * @return string[]
 	 */
-	protected function get_mapped_column_headers() {
+	protected function get_mapped_metadata_slugs() {
 		$mapper = $this->get_current_mapper();
 		if ( ! $mapper ) {
 			return [];
 		}
 
-		$columns = [];
+		$slugs = [];
 		if ( is_array( $mapper->metadata ) ) {
-			foreach ( $mapper->metadata as $meta_slug => $meta ) {
-				$columns[ $meta_slug ] = $meta['field'] ?? $meta_slug;
-			}
+			$slugs = array_keys( $mapper->metadata );
 		}
 
 		$mapper_slug = $this->get_mapping_selected();
 		$collection  = $this->get_current_collection_object();
 		if ( ! $collection || ! $mapper_slug ) {
-			return $columns;
+			return $slugs;
 		}
 
 		$mappers_handler = \Tainacan\Mappers_Handler::get_instance();
@@ -693,14 +691,14 @@ abstract class Exporter {
 			}
 
 			$normalized = $mappers_handler->normalize_mapping_value( $mappings[ $mapper_slug ], $mapper );
-			if ( ! $normalized || array_key_exists( $normalized['slug'], $columns ) ) {
+			if ( ! $normalized || in_array( $normalized['slug'], $slugs, true ) ) {
 				continue;
 			}
 
-			$columns[ $normalized['slug'] ] = $normalized['slug'];
+			$slugs[] = $normalized['slug'];
 		}
 
-		return $columns;
+		return $slugs;
 	}
 
 	/**
@@ -737,7 +735,7 @@ abstract class Exporter {
 		}
 		
 		$return = [];
-		foreach ( array_keys( $this->get_mapped_column_headers() ) as $meta_slug ) {
+		foreach ( $this->get_mapped_metadata_slugs() as $meta_slug ) {
 			$return[ $meta_slug ] = array_key_exists( $meta_slug, $pre ) ? $pre[ $meta_slug ] : null;
 		}
 		

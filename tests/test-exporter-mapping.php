@@ -82,13 +82,12 @@ class TAINACAN_Exporter_Mapping extends TAINACAN_UnitTestCase {
 		list( $collection, $item ) = $this->create_mapped_collection_with_extra_field();
 		$exporter = $this->create_mapped_csv_exporter( $collection );
 
-		$headers_method = new \ReflectionMethod( $exporter, 'get_mapped_column_headers' );
-		$headers_method->setAccessible( true );
-		$headers = $headers_method->invoke( $exporter );
+		$slugs_method = new \ReflectionMethod( $exporter, 'get_mapped_metadata_slugs' );
+		$slugs_method->setAccessible( true );
+		$slugs = $slugs_method->invoke( $exporter );
 
-		$this->assertArrayHasKey( 'dc:language', $headers );
-		$this->assertArrayHasKey( 'bibliographic-citation', $headers );
-		$this->assertSame( 'bibliographic-citation', $headers['bibliographic-citation'] );
+		$this->assertContains( 'dc:language', $slugs );
+		$this->assertContains( 'bibliographic-citation', $slugs );
 
 		$map_method = new \ReflectionMethod( $exporter, 'map_item_metadata' );
 		$map_method->setAccessible( true );
@@ -106,14 +105,14 @@ class TAINACAN_Exporter_Mapping extends TAINACAN_UnitTestCase {
 		list( $collection ) = $this->create_mapped_collection_with_extra_field();
 		$exporter = $this->create_mapped_csv_exporter( $collection );
 
-		$headers_method = new \ReflectionMethod( $exporter, 'get_mapped_column_headers' );
-		$headers_method->setAccessible( true );
-		$headers = array_values( $headers_method->invoke( $exporter ) );
+		$slugs_method = new \ReflectionMethod( $exporter, 'get_mapped_metadata_slugs' );
+		$slugs_method->setAccessible( true );
+		$slugs = $slugs_method->invoke( $exporter );
 
 		$dc = new \Tainacan\Mappers\Dublin_Core();
-		$this->assertCount( count( $dc->metadata ) + 1, $headers );
-		$this->assertContains( 'dc:language', $headers );
-		$this->assertContains( 'bibliographic-citation', $headers );
-		$this->assertSame( 'bibliographic-citation', end( $headers ) );
+		$this->assertCount( count( $dc->metadata ) + 1, $slugs );
+		$this->assertContains( 'dc:language', $slugs );
+		$this->assertContains( 'bibliographic-citation', $slugs );
+		$this->assertSame( 'bibliographic-citation', end( $slugs ) );
 	}
 }
