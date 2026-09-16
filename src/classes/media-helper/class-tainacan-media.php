@@ -269,8 +269,6 @@ class Media {
 		body:not([class]) > audio {
 			width: 100%;
 			height: auto;
-			border-radius: 20px;
-			background: black;
 			min-height: 38px;
 			max-height: 100%;
 		}
