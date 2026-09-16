@@ -67,7 +67,7 @@
                                         }"
                                         v-html="item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />                             
                                 <div class="tainacan-map-card-thumbnail">
-                                    <blur-hash-image
+                                    <tainacan-progressive-image
                                             v-if="item.thumbnail != undefined"
                                             class="tainacan-map-card-item-thumbnail"
                                             :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-small', 40)"
@@ -340,7 +340,7 @@
                                             <div 
                                                     v-if="item.thumbnail != undefined"
                                                     class="tainacan-record-thumbnail">
-                                                <blur-hash-image
+                                                <tainacan-progressive-image
                                                         v-if="item.thumbnail != undefined"
                                                         class="tainacan-record-item-thumbnail"
                                                         :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"

@@ -84,7 +84,7 @@
                                     </div>
                                     <div>
                                         <span class="item-thumb">
-                                            <blur-hash-image
+                                            <tainacan-progressive-image
                                                     :width="$thumbHelper.getWidth(relatedItem['thumbnail'], 'tainacan-small', 40)"
                                                     :height="$thumbHelper.getHeight(relatedItem['thumbnail'], 'tainacan-small', 40)"
                                                     :hash="$thumbHelper.getBlurhashString(relatedItem['thumbnail'], 'tainacan-small')"

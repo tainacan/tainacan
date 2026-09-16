@@ -97,7 +97,7 @@
                             <div 
                                     v-if="item.thumbnail != undefined"
                                     class="tainacan-list-thumbnail">
-                                <blur-hash-image
+                                <tainacan-progressive-image
                                         v-if="item.thumbnail != undefined"
                                         class="tainacan-list-item-thumbnail"
                                         :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"

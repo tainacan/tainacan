@@ -211,7 +211,7 @@
                         :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                         :href="item.url"
                         :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
-                    <blur-hash-image
+                    <tainacan-progressive-image
                             v-if="showImage"
                             :height="$thumbHelper.getHeight(item['thumbnail'], imageSize)"
                             :width="$thumbHelper.getWidth(item['thumbnail'], imageSize)"
@@ -258,7 +258,7 @@
                             :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                             :href="item.url"
                             :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
-                        <blur-hash-image
+                        <tainacan-progressive-image
                                 :height="$thumbHelper.getHeight(item['thumbnail'], imageSize)"
                                 :width="$thumbHelper.getWidth(item['thumbnail'], imageSize)"
                                 :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"
@@ -608,9 +608,6 @@ export default {
     // Tooltips
     @use '../../../admin/scss/_tooltips.scss';
     @import url('floating-vue/dist/style.css');
-
-    // Vue Blurhash transtition effect
-    @import url('../../../../../node_modules/another-vue3-blurhash/dist/style.css');
 
     .metadata-value {
         .tainacan-compound-group {

@@ -83,7 +83,7 @@
                     <a 
                             :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                             :href="item.url">
-                        <blur-hash-image
+                        <tainacan-progressive-image
                                 :height="$thumbHelper.getHeight(item['thumbnail'], imageSize)"
                                 :width="$thumbHelper.getWidth(item['thumbnail'], imageSize)"
                                 :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"

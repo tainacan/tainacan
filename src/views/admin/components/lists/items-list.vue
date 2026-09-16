@@ -273,7 +273,7 @@
                             class="grid-item-thumbnail"
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)">
-                        <blur-hash-image
+                        <tainacan-progressive-image
                                 :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 255)"
                                 :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 255)"
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
@@ -455,7 +455,7 @@
                         </div>
 
                         <!-- Thumbnail -->
-                        <blur-hash-image
+                        <tainacan-progressive-image
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-masonry-item-thumbnail"
                                 :width="$thumbHelper.getWidth(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', 320)"
@@ -740,7 +740,7 @@
                         <div
                                 v-if="!collection || (collection && collection.hide_items_thumbnail_on_lists != 'yes')"
                                 class="card-thumbnail">
-                            <blur-hash-image
+                            <tainacan-progressive-image
                                     v-if="item.thumbnail != undefined"
                                     class="tainacan-masonry-item-thumbnail"
                                     :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 120)"
@@ -1003,7 +1003,7 @@
                                 @click.right="onRightClickItem($event, item)">
                             <div class="list-metadata media-body">
                                 <div class="tainacan-record-thumbnail">
-                                    <blur-hash-image
+                                    <tainacan-progressive-image
                                             v-if="item.thumbnail != undefined"
                                             class="tainacan-record-item-thumbnail"
                                             :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
@@ -1233,7 +1233,7 @@
                                 <span 
                                         v-if="column.metadatum == 'row_thumbnail'"
                                         class="table-thumb">
-                                    <blur-hash-image
+                                    <tainacan-progressive-image
                                             :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-small', 40)"
                                             :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-small', 40)"
                                             :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-small')"
@@ -1594,7 +1594,7 @@
                         <div 
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-list-thumbnail">
-                            <blur-hash-image
+                            <tainacan-progressive-image
                                     v-if="item.thumbnail != undefined"
                                     class="tainacan-list-item-thumbnail"
                                     :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
@@ -1736,7 +1736,7 @@
                                         }"
                                         v-html="item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                                 <div class="tainacan-map-card-thumbnail">
-                                    <blur-hash-image
+                                    <tainacan-progressive-image
                                             v-if="item.thumbnail != undefined"
                                             class="tainacan-map-card-item-thumbnail"
                                             :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-small', 40)"
@@ -2142,7 +2142,7 @@
                                             @click.right="onRightClickItem($event, item)">
                                         <div class="list-metadata media-body">
                                             <div class="tainacan-record-thumbnail">
-                                                <blur-hash-image
+                                                <tainacan-progressive-image
                                                         v-if="item.thumbnail != undefined"
                                                         class="tainacan-record-item-thumbnail"
                                                         :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
@@ -2217,7 +2217,7 @@
                             @click.right="onRightClickItem($event, item)">
 
                         <!-- Thumbnail -->
-                        <blur-hash-image
+                        <tainacan-progressive-image
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-mosaic-item-thumbnail"
                                 :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-large-full', 320)"
@@ -3197,12 +3197,6 @@ export default {
     @use "../../scss/_view-mode-records.scss";
     @use "../../scss/_view-mode-list.scss";
     @use "../../scss/_view-mode-map.scss";
-    
-    // Vue Blurhash transtition effect
-    @import url('../../../../../node_modules/another-vue3-blurhash/dist/style.css');
-    :deep(canvas.child) {
-        max-width: 100%;
-    }
 
     .selection-control {
         margin-bottom: 6px;

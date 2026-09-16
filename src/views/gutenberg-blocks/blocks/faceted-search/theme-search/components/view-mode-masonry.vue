@@ -65,7 +65,7 @@
                         </div>
 
                         <!-- Thumbnail -->
-                        <blur-hash-image
+                        <tainacan-progressive-image
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-masonry-item-thumbnail"
                                 :width="$thumbHelper.getWidth(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', 320)"

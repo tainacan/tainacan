@@ -31,7 +31,6 @@ import {
 } from 'buefy';
 import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
-import VueBlurHash from 'another-vue3-blurhash';
 
 import VueApexCharts from 'vue3-apexcharts/core';
 import 'apexcharts/bar';
@@ -47,6 +46,7 @@ import 'apexcharts/features/keyboard';
 // Remaining imports
 import AdminPage from '../admin.vue'
 import HelpButton from '../components/other/help-button.vue';
+import TainacanProgressiveImage from '../components/other/tainacan-progressive-image.vue';
 import TainacanTitle from '../components/navigation/tainacan-title.vue';
 import TainacanExternalLink from '../components/navigation/tainacan-external-link.vue';
 import store from './store/store';
@@ -163,7 +163,6 @@ export default (element) => {
                     }
                 }
             });
-            app.use(VueBlurHash);
             app.use(I18NPlugin);
             app.use(UserPrefsPlugin);
             app.use(RouterHelperPlugin);
@@ -226,6 +225,7 @@ export default (element) => {
 
             /* Others */
             app.component('help-button', HelpButton);
+            app.component('tainacan-progressive-image', TainacanProgressiveImage);
             app.component('tainacan-title', TainacanTitle);
             app.component('tainacan-external-link', TainacanExternalLink)
             

@@ -45,7 +45,7 @@
                                 v-html="getBeforeHook(item)" />
 
                         <!-- Thumbnail -->
-                        <blur-hash-image
+                        <tainacan-progressive-image
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-mosaic-item-thumbnail"
                                 :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-large-full', 320)"

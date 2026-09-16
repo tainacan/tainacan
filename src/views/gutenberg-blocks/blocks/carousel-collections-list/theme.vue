@@ -61,7 +61,7 @@
                             :id="isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id"
                             :href="collection.url">
                         <div class="collection-items-grid">
-                            <blur-hash-image
+                            <tainacan-progressive-image
                                     :height="collectionItems[collection.id][0] ? $thumbHelper.getHeight(collectionItems[collection.id][0]['thumbnail'], imageSize) : 275"
                                     :width="collectionItems[collection.id][0] ? $thumbHelper.getWidth(collectionItems[collection.id][0]['thumbnail'], imageSize) : 275"
                                     :src="collectionItems[collection.id][0] ? $thumbHelper.getSrc(collectionItems[collection.id][0]['thumbnail'], imageSize, collectionItems[collection.id][0]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
@@ -69,7 +69,7 @@
                                     :hash="collectionItems[collection.id][0] ? $thumbHelper.getBlurhashString(collectionItems[collection.id][0]['thumbnail'], imageSize) : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
                                     :alt="collectionItems[collection.id][0] && collectionItems[collection.id][0].thumbnail_alt ? collectionItems[collection.id][0].thumbnail_alt : (collectionItems[collection.id][0] && collectionItems[collection.id][0].name ? collectionItems[collection.id][0].name : '')"
                                     :transition-duration="500" />
-                            <blur-hash-image
+                            <tainacan-progressive-image
                                     :height="collectionItems[collection.id][1] ? $thumbHelper.getHeight(collectionItems[collection.id][1]['thumbnail'], imageSize) : 275"
                                     :width="collectionItems[collection.id][1] ? $thumbHelper.getWidth(collectionItems[collection.id][1]['thumbnail'], imageSize) : 275"
                                     :src="collectionItems[collection.id][1] ? $thumbHelper.getSrc(collectionItems[collection.id][1]['thumbnail'], imageSize, collectionItems[collection.id][1]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
@@ -77,7 +77,7 @@
                                     :hash="collectionItems[collection.id][1] ? $thumbHelper.getBlurhashString(collectionItems[collection.id][1]['thumbnail'], imageSize) : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
                                     :alt="collectionItems[collection.id][1] && collectionItems[collection.id][1].thumbnail_alt ? collectionItems[collection.id][1].thumbnail_alt : (collectionItems[collection.id][1] && collectionItems[collection.id][1].name ? collectionItems[collection.id][1].name : '')"
                                     :transition-duration="500" />
-                            <blur-hash-image
+                            <tainacan-progressive-image
                                     :height="collectionItems[collection.id][2] ? $thumbHelper.getHeight(collectionItems[collection.id][2]['thumbnail'], imageSize) : 275"
                                     :width="collectionItems[collection.id][2] ? $thumbHelper.getWidth(collectionItems[collection.id][2]['thumbnail'], imageSize) : 275"
                                     :src="collectionItems[collection.id][2] ? $thumbHelper.getSrc(collectionItems[collection.id][2]['thumbnail'], imageSize, collectionItems[collection.id][2]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"

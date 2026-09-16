@@ -25,7 +25,6 @@ import {
 } from 'buefy';
 import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
-import VueBlurHash from 'another-vue3-blurhash';
 
 import getDataAttribute from '../../js/compatibility/tainacan-blocks-compat-data-attributes.js';
 import ThemeSearch from './theme.vue';
@@ -33,6 +32,7 @@ import ThemeSearch from './theme.vue';
 // Remaining imports
 import store from '../../../admin/js/store/store';
 import HelpButton from '../../../admin/components/other/help-button.vue';
+import TainacanProgressiveImage from '../../../admin/components/other/tainacan-progressive-image.vue';
 import routerTheme from './theme-search/js/theme-router.js';
 import eventBusSearch from '../../../admin/js/event-bus-search';
 import { 
@@ -193,7 +193,6 @@ export default (element) => {
                     }
                 }
             });
-            VueItemsList.use(VueBlurHash);
             VueItemsList.use(I18NPlugin);
             VueItemsList.use(UserPrefsPlugin);
             VueItemsList.use(ThumbnailHelperPlugin);
@@ -206,6 +205,7 @@ export default (element) => {
             VueItemsList.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
             VueItemsList.use(ModalFocusReturnPlugin);
             VueItemsList.component('help-button', HelpButton);
+            VueItemsList.component('tainacan-progressive-image', TainacanProgressiveImage);
 
             /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
             if (typeof window.tainacan_extra_components != "undefined") {
