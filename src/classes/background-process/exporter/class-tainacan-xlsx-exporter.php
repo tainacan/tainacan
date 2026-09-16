@@ -167,37 +167,6 @@ class XLSX_Exporter extends Exporter {
 		return $data;
 	}
 
-	private function map_item_metadata(\Tainacan\Entities\Item $item) {
-		
-		$mapper = $this->get_current_mapper();
-		$metadata = $item->get_metadata();
-		if (!$mapper) {
-			return $metadata;
-		}
-		$pre = [];
-		foreach ($metadata as $item_metadata) {
-			$metadatum = $item_metadata->get_metadatum();
-			$meta_mappings = $metadatum->get_exposer_mapping();
-			if ( array_key_exists($this->get_mapping_selected(), $meta_mappings) ) {
-				
-				$pre[ $meta_mappings[$this->get_mapping_selected()] ] = $item_metadata;
-			}
-		}
-		
-		// reorder
-		$return = [];
-		foreach ( $mapper->metadata as $meta_slug => $meta ) {
-			if ( array_key_exists($meta_slug, $pre) ) {
-				$return[$meta_slug] = $pre[$meta_slug];
-			} else {
-				$return[$meta_slug] = null;
-			}
-		}
-		
-		return $return;
-		
-	}
-
 	public function process_item($item, $metadata) {
 		
 		$mapper = $this->get_current_mapper();
@@ -336,8 +305,8 @@ class XLSX_Exporter extends Exporter {
 		$headerRowContents = [];
 
 		if ($mapper) {
-			foreach ($mapper->metadata as $meta_slug => $meta) {
-				$headerRowContents[] = $meta['field'] ?? $meta_slug;
+			foreach ( $this->get_mapped_metadata_slugs() as $meta_slug ) {
+				$headerRowContents[] = $mapper->metadata[ $meta_slug ]['field'] ?? $meta_slug;
 			}
 		} else {
 			$headerRowContents = ['special_item_id'];

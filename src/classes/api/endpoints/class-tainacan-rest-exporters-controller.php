@@ -271,13 +271,11 @@ class REST_Exporters_Controller extends REST_Controller {
 			) {
 				throw new \Exception('Invalid Mapper Option');
 			}
-			$slug = '';
-			if(is_string($metadatum_mapping[$mapper->slug])) {
-				$slug = $metadatum_mapping[$mapper->slug];
-			} else {
-				$slug = $metadatum_mapping[$mapper->slug]['slug'];
+			$normalized = \Tainacan\Mappers_Handler::get_instance()->normalize_mapping_value( $metadatum_mapping[ $mapper->slug ], $mapper );
+			if ( ! $normalized ) {
+				return [];
 			}
-			$ret = [$mapper->prefix.$slug.$mapper->sufix => $item_arr['value']]; //TODO Validate option
+			$ret = [ $mapper->prefix . $normalized['slug'] . $mapper->sufix => $item_arr['value'] ]; //TODO Validate option
 		} elseif($mapper->slug == 'value') {
 			$ret = [$item_arr['metadatum']['name'] => $item_arr['value']];
 		} else {
