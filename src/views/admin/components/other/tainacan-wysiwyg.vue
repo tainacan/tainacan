@@ -44,15 +44,27 @@ const EDITOR_INIT = {
     resize: false,
     toolbar_mode: 'wrap',
     setup(editor) {
-        editor.on('OpenWindow', () => {
-            requestAnimationFrame(() => {
-                const dialogs = document.querySelectorAll('.tox-dialog-wrap');
-                const dialog = dialogs[dialogs.length - 1];
+        let linkDialogPending = false;
+        const linkDialogObserver = new MutationObserver(() => {
+            if (!linkDialogPending) {
+                return;
+            }
 
-                if (dialog?.querySelector('input[type="url"]') && dialog.querySelector('input[data-mce-name="text"]')) {
-                    dialog.classList.add('tainacan-wysiwyg-link-dialog');
-                }
-            });
+            const dialogs = document.querySelectorAll('.tox-dialog-wrap');
+            const dialog = dialogs[dialogs.length - 1];
+
+            if (dialog?.querySelector('input[type="url"]') && dialog.querySelector('input[data-mce-name="text"]')) {
+                dialog.classList.add('tainacan-wysiwyg-link-dialog');
+                linkDialogPending = false;
+            }
+        });
+
+        linkDialogObserver.observe(document.body, { childList: true, subtree: true });
+        editor.on('BeforeExecCommand', (event) => {
+            linkDialogPending = event.command === 'mceLink';
+        });
+        editor.on('remove', () => {
+            linkDialogObserver.disconnect();
         });
     }
 };
