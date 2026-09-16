@@ -32,13 +32,13 @@ const EDITOR_INIT = {
     skin: false,
     content_css: false,
     content_style: `${contentCss}\n${contentUiCss}`,
-    toolbar: 'blocks | bold italic | bullist numlist | link | undo redo',
-    block_formats: 'Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3;Heading 4=h4;Heading 5=h5;Heading 6=h6',
-    valid_elements: 'p,h1,h2,h3,h4,h5,h6,ul,ol,li,br,strong,em,b,i,a[href|title]',
+    toolbar: 'bold italic bullist numlist link | undo redo',
+    // block_formats: 'Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3;Heading 4=h4;Heading 5=h5;Heading 6=h6',
+    // valid_elements: 'p,h1,h2,h3,h4,h5,h6,ul,ol,li,br,strong,em,b,i,a[href|title]',
     link_title: true,
     target_list: false,
     rel_list: false,
-    link_context_toolbar: false,
+    link_context_toolbar: true,
     branding: false,
     statusbar: false,
     resize: false,
@@ -123,9 +123,13 @@ export default {
         padding: 0 6px;
     }
 
+    :deep(.tox .tox-toolbar) {
+        justify-content: space-between;
+    }
+
     &:not(.is-invalid) {
         :deep(.tox.tox-edit-focus) {
-            border: 1px solid var(--tainacan-secondary) !important;
+            // border: 1px solid var(--tainacan-secondary) !important;
             outline-width: 2px;
             outline-offset: -1px;
             outline-color: var(--tainacan-secondary);
@@ -135,7 +139,9 @@ export default {
         }
 
         :deep(.tox.tox-edit-focus .tox-edit-area::before) {
-            border-color: var(--tainacan-secondary) !important;
+        //    border-color: var(--tainacan-secondary) !important;
+        //    border: 3px solid color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color))
+            border: none;
         }
     }
 }
