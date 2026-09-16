@@ -279,7 +279,6 @@
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
                                 :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                :transition-duration="500"
                             />
                     </a>
 
@@ -464,7 +463,6 @@
                                 :src="$thumbHelper.getSrc(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', item.document_mimetype)"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', item.document_mimetype)"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                :transition-duration="500"
                             />
 
                         <!-- Actions -->
@@ -748,7 +746,6 @@
                                     :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
                                     :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                    :transition-duration="500"
                                 />
                         </div>
                         
@@ -1012,7 +1009,6 @@
                                             :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                             :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                             :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                            :transition-duration="500"
                                         />
                                 </div>
                                 <span
@@ -1239,7 +1235,6 @@
                                             :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-small')"
                                             :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)"
                                             :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                            :transition-duration="500"
                                         />
                                 </span>
                                 <p
@@ -1603,7 +1598,6 @@
                                     :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                     :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                    :transition-duration="500"
                                 />
                         </div>
                         <div class="list-metadata media-body">
@@ -1745,7 +1739,6 @@
                                             :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)"
                                             :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-small', item.document_mimetype)"
                                             :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                            :transition-duration="500"
                                         />
                                 </div>
                             </div>
@@ -2151,7 +2144,6 @@
                                                         :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                                         :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                                        :transition-duration="500"
                                                     />
                                             </div>
                                             <span
@@ -2226,7 +2218,6 @@
                                 :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-large-full', item.document_mimetype)"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-large-full', item.document_mimetype)"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                :transition-duration="500"
                             />
 
                         <!-- Title -->

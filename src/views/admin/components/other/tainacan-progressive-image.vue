@@ -100,7 +100,7 @@ export default {
         },
         transitionDuration: {
             type: Number,
-            default: 500
+            default: 200
         }
     },
     data() {
@@ -134,7 +134,9 @@ export default {
             ];
         },
         imageAttrs() {
-            const { class: _className, style: _style, ...attrs } = this.$attrs;
+            const attrs = { ...this.$attrs };
+            delete attrs.class;
+            delete attrs.style;
             return attrs;
         }
     },
@@ -209,7 +211,7 @@ export default {
                 const imageData = context.createImageData(width, height);
                 imageData.data.set(pixels);
                 context.putImageData(imageData, 0, 0);
-            } catch (error) {
+            } catch {
                 // Invalid hashes should not block the real image.
             }
         }
@@ -221,7 +223,7 @@ export default {
     .parent {
         display: grid;
         grid-template: 1fr / 1fr;
-        --tainacan-progressive-image-duration: 500ms;
+        --tainacan-progressive-image-duration: 200ms;
     }
     .child {
         grid-area: 1 / 1 / 2 / 2;

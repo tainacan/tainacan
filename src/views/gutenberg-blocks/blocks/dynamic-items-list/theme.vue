@@ -218,8 +218,7 @@
                             :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"
                             :srcset="$thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype'])"
                             :hash="$thumbHelper.getBlurhashString(item['thumbnail'], imageSize)"
-                            :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : '')"
-                            :transition-duration="500" />
+                            :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : '')" />
                     <span v-if="item.title">{{ item.title }}</span>
                 </a>
             </li>
@@ -264,8 +263,7 @@
                                 :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype'])"
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], imageSize)"
-                                :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : '')"
-                                :transition-duration="500" />
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : '')" />
                         <span v-if="item.title">{{ item.title }}</span>
                     </a>
                 </li>
