@@ -67,7 +67,11 @@
     border-color: var(--bulma-danger);
 }
 
-.tainacan-wysiwyg-link-dialog {
+.tox.tox-silver-sink.tox-tinymce-aux:has(.tainacan-wysiwyg-dialog) {
+    z-index: 10000;
+}
+
+.tainacan-wysiwyg-dialog {
     font-family: var(--tainacan-font-family, inherit);
 
     .tox-dialog-wrap__backdrop {
@@ -110,6 +114,7 @@
         font-size: 0.875em;
     }
 
+    .tox-textarea,
     .tox-textfield,
     .tox-listbox {
         background-color: var(--tainacan-input-background-color);
@@ -120,10 +125,26 @@
         font-family: var(--tainacan-font-family, inherit);
     }
 
+    .tox-dialog__body-content .tox-textarea-wrap {
+        background-color: var(--tainacan-input-background-color);
+        border: 1px solid var(--tainacan-input-border-color);
+        border-radius: var(--tainacan-input-border-radius, 2px);
+        box-shadow: none;
+    }
+
+    .tox-textarea:focus,
+    .tox-textarea:focus-visible,
     .tox-textfield:focus,
     .tox-textfield:focus-visible,
     .tox-listbox:focus,
     .tox-listbox:focus-visible {
+        border-color: var(--tainacan-secondary);
+        box-shadow: none;
+        outline: 2px solid color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
+        outline-offset: -1px;
+    }
+
+    .tox-dialog__body-content .tox-textarea-wrap:focus-within {
         border-color: var(--tainacan-secondary);
         box-shadow: none;
         outline: 2px solid color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));

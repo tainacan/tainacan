@@ -20,6 +20,7 @@ import 'tinymce/tinymce';
 import 'tinymce/icons/default';
 import 'tinymce/models/dom';
 import 'tinymce/themes/silver';
+import 'tinymce/plugins/code';
 import 'tinymce/plugins/link';
 import 'tinymce/plugins/lists';
 import './tainacan-tinymce-skin.scss';
@@ -28,11 +29,11 @@ import contentUiCss from 'tinymce/skins/ui/oxide/content.css';
 
 const EDITOR_INIT = {
     menubar: false,
-    plugins: 'link lists',
+    plugins: 'link lists code',
     skin: false,
     content_css: false,
     content_style: `${contentCss}\n${contentUiCss}`,
-    toolbar: 'bold italic align bullist numlist link unlink | undo redo',
+    toolbar: 'bold italic align bullist numlist link unlink code | undo redo',
     // block_formats: 'Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3;Heading 4=h4;Heading 5=h5;Heading 6=h6',
     // valid_elements: 'p,h1,h2,h3,h4,h5,h6,ul,ol,li,br,strong,em,b,i,a[href|title]',
     link_title: true,
@@ -44,27 +45,33 @@ const EDITOR_INIT = {
     resize: false,
     toolbar_mode: 'wrap',
     setup(editor) {
-        let linkDialogPending = false;
-        const linkDialogObserver = new MutationObserver(() => {
-            if (!linkDialogPending) {
+        let wysiwygDialogMatcher;
+        const wysiwygDialogObserver = new MutationObserver(() => {
+            if (!wysiwygDialogMatcher) {
                 return;
             }
 
             const dialogs = document.querySelectorAll('.tox-dialog-wrap');
             const dialog = dialogs[dialogs.length - 1];
 
-            if (dialog?.querySelector('input[type="url"]') && dialog.querySelector('input[data-mce-name="text"]')) {
-                dialog.classList.add('tainacan-wysiwyg-link-dialog');
-                linkDialogPending = false;
+            if (dialog && wysiwygDialogMatcher(dialog)) {
+                dialog.classList.add('tainacan-wysiwyg-dialog');
+                wysiwygDialogMatcher = undefined;
             }
         });
 
-        linkDialogObserver.observe(document.body, { childList: true, subtree: true });
+        wysiwygDialogObserver.observe(document.body, { childList: true, subtree: true });
         editor.on('BeforeExecCommand', (event) => {
-            linkDialogPending = event.command === 'mceLink';
+            if (event.command === 'mceLink') {
+                wysiwygDialogMatcher = (dialog) => dialog.querySelector('input[type="url"]') && dialog.querySelector('input[data-mce-name="text"]');
+            }
+
+            if (event.command === 'mceCodeEditor') {
+                wysiwygDialogMatcher = (dialog) => dialog.querySelector('textarea[data-mce-name="code"]');
+            }
         });
         editor.on('remove', () => {
-            linkDialogObserver.disconnect();
+            wysiwygDialogObserver.disconnect();
         });
     }
 };
