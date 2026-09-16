@@ -166,14 +166,15 @@ export default {
     }
  
     &:not(.is-invalid) {
-        :deep(.tox.tox-tinymce) {
+        :deep(.tox.tox-tinymce:not(.tox-edit-focus)) {
             outline: 0px solid transparent;
-            outline-offset: -1px;
+            outline-offset: 0;
             transition: outline 0.3s ease, outline-offset 0.3s ease;
         }
         :deep(.tox.tox-tinymce:hover:not(.tox-edit-focus)) {
             outline: 1px solid var(--tainacan-input-color);
             outline-offset: -1px;
+            transition: outline 0.3s ease, outline-offset 0.3s ease;
         }
 
         :deep(.tox.tox-edit-focus) {
@@ -183,9 +184,12 @@ export default {
             outline-color: color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
             outline-style: solid;
             box-shadow: none !important;
+            transition: none;
         }
 
-        :deep(.tox.tox-edit-focus .tox-edit-area::before) {
+        // :deep(.tox.tox-edit-focus .tox-edit-area::before),
+        :deep(.tox.tox-tinymce .tox-edit-area::before){
+            transition: none;
             border: none;
         }
     }
