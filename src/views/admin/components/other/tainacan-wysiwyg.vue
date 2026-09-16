@@ -151,9 +151,32 @@ export default {
         justify-content: space-between;
     }
 
+    :deep(.tox .tox-tbtn) {
+        height: auto !important;
+        width: auto !important;
+        transform: scale(0.9);
+        padding-inline-end: 2px;
+    }
+
+    :deep(.tox .tox-tbtn--active), 
+    :deep(.tox .tox-tbtn--enabled), 
+    :deep(.tox .tox-tbtn--enabled:hover), 
+    :deep(.tox .tox-tbtn--enabled:focus){
+        background-color: var(--tainacan-primary);
+    }
+ 
     &:not(.is-invalid) {
+        :deep(.tox.tox-tinymce) {
+            outline: 0px solid transparent;
+            outline-offset: -1px;
+            transition: outline 0.3s ease, outline-offset 0.3s ease;
+        }
+        :deep(.tox.tox-tinymce:hover:not(.tox-edit-focus)) {
+            outline: 1px solid var(--tainacan-input-color);
+            outline-offset: -1px;
+        }
+
         :deep(.tox.tox-edit-focus) {
-            // border: 1px solid var(--tainacan-secondary) !important;
             outline-width: 2px;
             outline-offset: -1px;
             outline-color: var(--tainacan-secondary);
@@ -163,8 +186,6 @@ export default {
         }
 
         :deep(.tox.tox-edit-focus .tox-edit-area::before) {
-        //    border-color: var(--tainacan-secondary) !important;
-        //    border: 3px solid color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color))
             border: none;
         }
     }
@@ -251,7 +272,7 @@ export default {
     }
 
     .tox-dialog__footer .tox-button:not(.tox-button--secondary) {
-        background-color: var(--tainacan-secondary) !important;
+        background-color: var(--tainacan-success) !important;
         color: var(--tainacan-white) !important;
     }
 
