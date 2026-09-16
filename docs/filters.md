@@ -4304,7 +4304,7 @@ Argument | Type | Description
 `null` |  | 
 `$filepath` | `string` | The pdf filepath in the server
 
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 498](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L498-L505)
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 496](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L496-L503)
 
 ---------------------------------
 <br>
@@ -4320,7 +4320,7 @@ Argument | Type | Description
 `$file` | `string` | Absolute path to the PDF file.
 `$item_id` | `int\|null` | Optional item ID for filters.
 
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 618](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L618-L636)
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 616](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L616-L634)
 
 ---------------------------------
 <br>
@@ -4343,7 +4343,7 @@ Version | Description
 ------- | -----------
 `0.1.0` | 
 
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L7-L868)
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L7-L866)
 
 ---------------------------------
 <br>
