@@ -245,7 +245,7 @@ export default {
 
     .tox-dialog__footer .tox-button--secondary {
         background-color: var(--tainacan-background-color) !important;
-        border: 1px solid var(--tainacan-gray4) !important;
+        border: 1px solid var(--tainacan-input-border-color) !important;
         color: var(--tainacan-secondary) !important;
     }
 
