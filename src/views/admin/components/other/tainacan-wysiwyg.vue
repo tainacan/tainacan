@@ -42,7 +42,19 @@ const EDITOR_INIT = {
     branding: false,
     statusbar: false,
     resize: false,
-    toolbar_mode: 'wrap'
+    toolbar_mode: 'wrap',
+    setup(editor) {
+        editor.on('OpenWindow', () => {
+            requestAnimationFrame(() => {
+                const dialogs = document.querySelectorAll('.tox-dialog-wrap');
+                const dialog = dialogs[dialogs.length - 1];
+
+                if (dialog?.querySelector('input[type="url"]') && dialog.querySelector('input[data-mce-name="text"]')) {
+                    dialog.classList.add('tainacan-wysiwyg-link-dialog');
+                }
+            });
+        });
+    }
 };
 
 export default {
@@ -152,5 +164,95 @@ export default {
 
 .tainacan-wysiwyg.is-invalid :deep(.tox .tox-edit-area::before) {
     border-color: var(--bulma-danger) !important;
+}
+</style>
+
+<style lang="scss">
+.tainacan-wysiwyg-link-dialog {
+    font-family: var(--tainacan-font-family, inherit);
+
+    .tox-dialog-wrap__backdrop {
+        background-color: var(--tainacan-backdrop-background-color, rgba(0, 0, 0, 0.35));
+        opacity: 1;
+    }
+
+    .tox-dialog {
+        background-color: var(--tainacan-background-color);
+        border-radius: var(--tainacan-modal-border-radius, 8px);
+        box-shadow: var(--tainacan-modal-box-shadow, 0 5px 15px #00000014, 0 15px 27px #00000012, 0 30px 36px #0000000a, 0 50px 43px #00000005);
+        color: var(--tainacan-gray5);
+    }
+
+    .tox-dialog__header,
+    .tox-dialog__footer {
+        background-color: var(--tainacan-background-color);
+        border: none;
+        padding: 20px 24px;
+    }
+
+    .tox-dialog__header {
+        padding-bottom: 12px;
+    }
+
+    .tox-dialog__title {
+        color: var(--tainacan-heading-color);
+        font-size: 1.25em;
+        font-weight: 500;
+    }
+
+    .tox-dialog__body-content {
+        background-color: var(--tainacan-background-color);
+        padding: 12px 24px;
+    }
+
+    .tox-label {
+        color: var(--tainacan-gray5);
+        font-family: var(--tainacan-font-family, inherit);
+        font-size: 0.875em;
+    }
+
+    .tox-textfield,
+    .tox-listbox {
+        background-color: var(--tainacan-input-background-color) !important;
+        border: 1px solid var(--tainacan-input-border-color) !important;
+        border-radius: var(--tainacan-input-border-radius, 2px);
+        box-shadow: none !important;
+        color: var(--tainacan-input-color) !important;
+        font-family: var(--tainacan-font-family, inherit);
+    }
+
+    .tox-textfield:focus,
+    .tox-textfield:focus-visible,
+    .tox-listbox:focus,
+    .tox-listbox:focus-visible {
+        border-color: var(--tainacan-secondary) !important;
+        box-shadow: none !important;
+        outline: 2px solid color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
+        outline-offset: -1px;
+    }
+
+    .tox-button {
+        border-radius: var(--tainacan-button-border-radius, 4px);
+        box-shadow: none;
+        font-family: var(--tainacan-font-family, inherit);
+        font-weight: normal;
+    }
+
+    .tox-dialog__footer .tox-button:not(.tox-button--secondary) {
+        background-color: var(--tainacan-secondary) !important;
+        color: var(--tainacan-white) !important;
+    }
+
+    .tox-dialog__footer .tox-button--secondary {
+        background-color: var(--tainacan-background-color) !important;
+        border: 1px solid var(--tainacan-gray4) !important;
+        color: var(--tainacan-secondary) !important;
+    }
+
+    .tox-button:focus-visible {
+        box-shadow: none;
+        outline: 2px solid color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
+        outline-offset: -1px;
+    }
 }
 </style>
