@@ -151,6 +151,20 @@ export default {
         justify-content: space-between;
     }
 
+    :deep(.tox .tox-toolbar .tox-tbtn) {
+        width: 30px;
+    }
+
+    :deep(.tox .tox-toolbar .tox-tbtn .tox-icon) {
+        height: 20px;
+        width: 20px;
+    }
+
+    :deep(.tox .tox-toolbar .tox-tbtn .tox-icon svg) {
+        height: 100%;
+        width: 100%;
+    }
+
     &:not(.is-invalid) {
         :deep(.tox.tox-edit-focus) {
             // border: 1px solid var(--tainacan-secondary) !important;
