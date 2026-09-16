@@ -16,8 +16,8 @@
     }
 
     .tox .tox-tbtn {
-        height: auto !important;
-        width: auto !important;
+        height: auto;
+        width: auto;
         transform: scale(0.9);
         padding-inline-end: 2px;
     }
@@ -48,7 +48,7 @@
             outline-color: var(--tainacan-secondary);
             outline-color: color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
             outline-style: solid;
-            box-shadow: none !important;
+            box-shadow: none;
             transition: none;
         }
 
@@ -64,7 +64,7 @@
 }
 
 .tainacan-wysiwyg.is-invalid .tox .tox-edit-area::before {
-    border-color: var(--bulma-danger) !important;
+    border-color: var(--bulma-danger);
 }
 
 .tainacan-wysiwyg-link-dialog {
@@ -112,11 +112,11 @@
 
     .tox-textfield,
     .tox-listbox {
-        background-color: var(--tainacan-input-background-color) !important;
-        border: 1px solid var(--tainacan-input-border-color) !important;
+        background-color: var(--tainacan-input-background-color);
+        border: 1px solid var(--tainacan-input-border-color);
         border-radius: var(--tainacan-input-border-radius, 2px);
-        box-shadow: none !important;
-        color: var(--tainacan-input-color) !important;
+        box-shadow: none;
+        color: var(--tainacan-input-color);
         font-family: var(--tainacan-font-family, inherit);
     }
 
@@ -124,8 +124,8 @@
     .tox-textfield:focus-visible,
     .tox-listbox:focus,
     .tox-listbox:focus-visible {
-        border-color: var(--tainacan-secondary) !important;
-        box-shadow: none !important;
+        border-color: var(--tainacan-secondary);
+        box-shadow: none;
         outline: 2px solid color-mix(in srgb, var(--tainacan-secondary) 60%, var(--tainacan-background-color));
         outline-offset: -1px;
     }
@@ -138,14 +138,14 @@
     }
 
     .tox-dialog__footer .tox-button:not(.tox-button--secondary) {
-        background-color: var(--tainacan-success) !important;
-        color: var(--tainacan-white) !important;
+        background-color: var(--tainacan-success);
+        color: var(--tainacan-white);
     }
 
     .tox-dialog__footer .tox-button--secondary {
-        background-color: var(--tainacan-background-color) !important;
-        border: 1px solid var(--tainacan-input-border-color) !important;
-        color: var(--tainacan-secondary) !important;
+        background-color: var(--tainacan-background-color);
+        border: 1px solid var(--tainacan-input-border-color);
+        color: var(--tainacan-secondary);
     }
 
     .tox-button:focus-visible {
